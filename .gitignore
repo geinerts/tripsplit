@@ -1,0 +1,49 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+api/.env
+api/config.local.php
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
+
+# Logs and runtime artifacts
+*.log
+api/logs/
+
+# Server-side backups and temp
+api/backups/
+api/lib_backup_*/
+uploads/
+
+# Flutter/Dart generated files
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/.metadata
+mobile/flutter_export_environment.sh
+
+# iOS generated/dependency folders
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Flutter/ephemeral/
+mobile/ios/Runner.xcworkspace/
+
+# Android generated files
+mobile/android/.gradle/
+mobile/android/app/debug/
+mobile/android/app/profile/
+mobile/android/app/release/
+
+# Signing keys and certificates
+*.jks
+*.keystore
+*.p8
+*.p12
+*.pem
+*.key

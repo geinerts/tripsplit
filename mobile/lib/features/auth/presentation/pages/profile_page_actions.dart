@@ -1,0 +1,390 @@
+part of 'profile_page.dart';
+
+extension _ProfilePageActions on _ProfilePageState {
+  void _bindCommandController(ProfilePageCommandController? controller) {
+    if (controller == null) {
+      return;
+    }
+    _handledRefreshRequestCount = controller.refreshRequestCount;
+    _handledCloseEditModeRequestCount = controller.closeEditModeRequestCount;
+    controller.addListener(_onCommandControllerChanged);
+  }
+
+  void _unbindCommandController(ProfilePageCommandController? controller) {
+    controller?.removeListener(_onCommandControllerChanged);
+  }
+
+  void _onCommandControllerChanged() {
+    final controller = widget.commandController;
+    if (controller == null) {
+      return;
+    }
+
+    final refreshRequestCount = controller.refreshRequestCount;
+    if (refreshRequestCount != _handledRefreshRequestCount) {
+      _handledRefreshRequestCount = refreshRequestCount;
+      unawaited(_loadProfile());
+    }
+
+    final closeEditModeRequestCount = controller.closeEditModeRequestCount;
+    if (closeEditModeRequestCount != _handledCloseEditModeRequestCount) {
+      _handledCloseEditModeRequestCount = closeEditModeRequestCount;
+      if (_isEditMode) {
+        _handleEditBackNavigation();
+      }
+    }
+  }
+
+  Future<void> _loadProfile() async {
+    _updateState(() {
+      _isLoading = true;
+      _errorText = null;
+    });
+
+    try {
+      final user = await widget.controller.loadCurrentUser();
+      if (!mounted) {
+        return;
+      }
+      _applyUser(user);
+    } on ApiException catch (error) {
+      final fallback = widget.controller.currentUser;
+      if (!mounted) {
+        return;
+      }
+      if (fallback != null) {
+        _applyUser(fallback);
+        _errorText = context.l10n.profileRefreshCachedData;
+      } else {
+        _errorText = error.message;
+      }
+    } catch (_) {
+      final fallback = widget.controller.currentUser;
+      if (!mounted) {
+        return;
+      }
+      if (fallback != null) {
+        _applyUser(fallback);
+        _errorText = context.l10n.profileRefreshCachedData;
+      } else {
+        _errorText = context.l10n.unexpectedErrorLoadingProfile;
+      }
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _applyUser(AuthUser user) {
+    _user = user;
+    _avatarBytes = widget.controller.avatarBytesFor(user);
+    _initialFullName = _joinFullName(user.firstName, user.lastName);
+    _initialNickname = user.nickname;
+    _initialEmail = user.email;
+    _fullNameController.text = _initialFullName;
+    _nicknameController.text = user.nickname;
+    _emailController.text = user.email ?? '';
+    _draftFullName = _initialFullName;
+    _draftEmail = user.email ?? '';
+    _draftPassword = '';
+    _draftRepeatPassword = '';
+    _deactivateDraftPassword = '';
+    _isDeactivateAccountPage = false;
+    _editErrorText = null;
+    widget.onProfileChanged?.call();
+  }
+
+  String _joinFullName(String? firstName, String? lastName) {
+    final first = (firstName ?? '').trim();
+    final last = (lastName ?? '').trim();
+    return '$first $last'.trim();
+  }
+
+  ({String firstName, String lastName})? _parseFullName(String raw) {
+    final normalized = raw.trim().replaceAll(RegExp(r'\s+'), ' ');
+    if (normalized.isEmpty) {
+      return null;
+    }
+    final parts = normalized.split(' ');
+    if (parts.length < 2) {
+      return null;
+    }
+    final firstName = parts.first.trim();
+    final lastName = parts.sublist(1).join(' ').trim();
+    if (firstName.length < 2 || lastName.length < 2) {
+      return null;
+    }
+    return (firstName: firstName, lastName: lastName);
+  }
+
+  bool _isValidEmail(String value) {
+    return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value);
+  }
+
+  Future<bool> _onSavePressed() async {
+    final t = context.l10n;
+    if (_isSubmitting || _isLoading) {
+      return false;
+    }
+
+    final fullNameInput = _fullNameController.text.trim();
+    final parsedName = fullNameInput.isEmpty
+        ? null
+        : _parseFullName(fullNameInput);
+    if (fullNameInput.isNotEmpty && parsedName == null) {
+      _updateState(() {
+        _errorText = t.fullNameValidation;
+      });
+      return false;
+    }
+    if (fullNameInput.isEmpty && _initialFullName.isNotEmpty) {
+      _updateState(() {
+        _errorText = t.fullNameValidation;
+      });
+      return false;
+    }
+    final normalizedFullName = parsedName == null
+        ? _initialFullName
+        : _joinFullName(parsedName.firstName, parsedName.lastName);
+    final nickname = _nicknameController.text.trim();
+    if (nickname.length < 2 || nickname.length > 32) {
+      _updateState(() {
+        _errorText = t.nicknameLengthValidation;
+      });
+      return false;
+    }
+
+    final email = _emailController.text.trim().toLowerCase();
+    final baseEmail = (_initialEmail ?? '').trim().toLowerCase();
+    final password = _passwordController.text;
+    final repeat = _repeatController.text;
+
+    final emailChanged = email != baseEmail;
+    final passwordTouched = password.isNotEmpty || repeat.isNotEmpty;
+    final wantsCredentialsUpdate = emailChanged || passwordTouched;
+
+    if (wantsCredentialsUpdate) {
+      if (!_isValidEmail(email)) {
+        _updateState(() {
+          _errorText = t.invalidEmailFormat;
+        });
+        return false;
+      }
+      if (password.length < 8) {
+        _updateState(() {
+          _errorText = t.passwordMinLengthShort;
+        });
+        return false;
+      }
+      if (password != repeat) {
+        _updateState(() {
+          _errorText = t.passwordsDoNotMatch;
+        });
+        return false;
+      }
+    }
+
+    final fullNameChanged = normalizedFullName != _initialFullName;
+    final nicknameChanged = nickname != _initialNickname;
+    if (!fullNameChanged && !nicknameChanged && !wantsCredentialsUpdate) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.noChangesToSave)));
+      return false;
+    }
+
+    _updateState(() {
+      _isSubmitting = true;
+      _errorText = null;
+    });
+
+    try {
+      final updated = await widget.controller.updateProfile(
+        firstName: fullNameChanged ? parsedName?.firstName : null,
+        lastName: fullNameChanged ? parsedName?.lastName : null,
+        nickname: nickname,
+        email: wantsCredentialsUpdate ? email : null,
+        password: wantsCredentialsUpdate ? password : null,
+      );
+      if (!mounted) {
+        return false;
+      }
+      _applyUser(updated);
+      _passwordController.clear();
+      _repeatController.clear();
+      _updateState(() {});
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.profileUpdated)));
+      return true;
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return false;
+      }
+      _updateState(() {
+        _errorText = error.message;
+      });
+      return false;
+    } catch (_) {
+      if (!mounted) {
+        return false;
+      }
+      _updateState(() {
+        _errorText = context.l10n.unexpectedErrorUpdatingProfile;
+      });
+      return false;
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _onPickAvatarPressed() async {
+    if (_isSubmitting || _isLoading) {
+      return;
+    }
+
+    try {
+      final picked = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+        withData: true,
+      );
+      if (!mounted || picked == null || picked.files.isEmpty) {
+        return;
+      }
+
+      final prepared = await _prepareAvatarForUpload(picked.files.first);
+      if (!mounted) {
+        return;
+      }
+      if (prepared == null) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.avatarPickFailed)));
+        return;
+      }
+
+      final bytes = prepared.bytes;
+      final fileName = prepared.fileName;
+      if (bytes.length > _ProfilePageState._maxAvatarBytes) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.avatarFileTooLarge)),
+        );
+        return;
+      }
+
+      final updated = await widget.controller.uploadAvatar(
+        fileName: fileName,
+        bytes: bytes,
+      );
+      if (!mounted || updated == null) {
+        return;
+      }
+      _applyUser(updated);
+      _updateState(() {});
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.avatarUpdatedMessage)),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.message)));
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.avatarPickFailed)));
+    }
+  }
+
+  Future<({Uint8List bytes, String fileName})?> _prepareAvatarForUpload(
+    PlatformFile file,
+  ) async {
+    final rawBytes = file.bytes;
+    if (rawBytes == null || rawBytes.isEmpty) {
+      return null;
+    }
+
+    final originalName = file.name.trim().isEmpty ? 'avatar' : file.name.trim();
+    final lowered = originalName.toLowerCase();
+    final isDirectSupported =
+        lowered.endsWith('.jpg') ||
+        lowered.endsWith('.jpeg') ||
+        lowered.endsWith('.png') ||
+        lowered.endsWith('.webp');
+    if (isDirectSupported) {
+      return (bytes: rawBytes, fileName: originalName);
+    }
+
+    final pngBytes = await _tryTranscodeToPng(rawBytes);
+    if (pngBytes == null || pngBytes.isEmpty) {
+      _showSnack(
+        'This image format is not supported on this device. Please choose JPG or PNG.',
+      );
+      return null;
+    }
+
+    final dot = originalName.lastIndexOf('.');
+    final baseName = dot > 0 ? originalName.substring(0, dot) : originalName;
+    final safeBase = baseName.trim().isEmpty ? 'avatar' : baseName.trim();
+    return (bytes: pngBytes, fileName: '$safeBase.png');
+  }
+
+  Future<Uint8List?> _tryTranscodeToPng(Uint8List bytes) async {
+    try {
+      final codec = await ui.instantiateImageCodec(bytes);
+      final frame = await codec.getNextFrame();
+      final data = await frame.image.toByteData(format: ui.ImageByteFormat.png);
+      return data?.buffer.asUint8List();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _onRemoveAvatarPressed() async {
+    if (_isSubmitting || _isLoading) {
+      return;
+    }
+    AuthUser? updated;
+    try {
+      updated = await widget.controller.removeAvatar();
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(error.message)));
+      return;
+    }
+    if (!mounted || updated == null) {
+      return;
+    }
+    _applyUser(updated);
+    _updateState(() {});
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.avatarRemovedMessage)));
+  }
+
+  void _showSnack(String message) {
+    if (!mounted) {
+      return;
+    }
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(SnackBar(content: Text(message)));
+  }
+}

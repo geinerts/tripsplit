@@ -1,0 +1,29 @@
+import 'dart:typed_data';
+
+import '../entities/trip.dart';
+import '../entities/trip_user.dart';
+import '../entities/uploaded_trip_image.dart';
+
+abstract class TripsRepository {
+  Future<List<Trip>> listTrips();
+  Future<List<TripUser>> listDirectoryUsers({
+    String query = '',
+    int limit = 20,
+    List<int> excludeIds = const <int>[],
+  });
+  Future<Trip> createTrip({required String name, required List<int> memberIds});
+  Future<Trip> updateTrip({
+    required int tripId,
+    required String name,
+    String? imagePath,
+  });
+  Future<UploadedTripImageData> uploadTripImage({
+    required int tripId,
+    required String fileName,
+    required Uint8List bytes,
+  });
+  Future<int> addTripMembers({
+    required int tripId,
+    required List<int> memberIds,
+  });
+}

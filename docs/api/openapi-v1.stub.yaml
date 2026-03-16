@@ -1,0 +1,62 @@
+openapi: 3.0.3
+info:
+  title: TripSplit API v1
+  version: 1.0.0
+servers:
+  - url: https://example.com/api/v1
+paths:
+  /auth/login:
+    post:
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login success
+        '401':
+          description: Invalid credentials
+  /trips:
+    get:
+      summary: List current user trips
+      responses:
+        '200':
+          description: Trips list
+    post:
+      summary: Create new trip
+      responses:
+        '201':
+          description: Trip created
+  /trips/{tripId}/expenses:
+    get:
+      summary: List trip expenses
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Expenses list
+    post:
+      summary: Add expense
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Expense created
