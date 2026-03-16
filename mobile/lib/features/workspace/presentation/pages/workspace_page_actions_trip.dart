@@ -76,7 +76,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text(t.finishTripAction),
+              child: Text(t.finishTripStartSettlementsAction),
             ),
           ],
         );

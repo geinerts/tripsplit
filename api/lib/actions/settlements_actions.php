@@ -365,6 +365,7 @@ function end_trip_action(): void
 
     $tripsTable = table_name('trips');
     $settlementsTable = table_name('settlements');
+    $tripMembersTable = table_name('trip_members');
 
     $pdo->beginTransaction();
     try {
@@ -404,6 +405,52 @@ function end_trip_action(): void
                     'amount_cents' => (int) $item['amount_cents'],
                 ]);
             }
+        }
+
+        $memberStmt = $pdo->prepare(
+            'SELECT tm.user_id
+             FROM ' . $tripMembersTable . ' tm
+             WHERE tm.trip_id = :trip_id'
+        );
+        $memberStmt->execute(['trip_id' => $tripId]);
+        $memberIds = array_values(
+            array_filter(
+                array_map(
+                    static fn(array $row): int => (int) ($row['user_id'] ?? 0),
+                    $memberStmt->fetchAll()
+                ),
+                static fn(int $id): bool => $id > 0
+            )
+        );
+        $memberIds = normalize_user_ids($memberIds);
+
+        $tripName = trim((string) ($trip['name'] ?? ''));
+        if ($tripName === '') {
+            $tripName = 'Trip';
+        }
+        $creatorName = trim((string) ($me['nickname'] ?? ''));
+        if ($creatorName === '') {
+            $creatorName = 'Trip creator';
+        }
+        $notificationBody = $nextStatus === 'settling'
+            ? $creatorName . ' finished "' . $tripName . '". Settlements are ready.'
+            : $creatorName . ' finished "' . $tripName . '". Trip is archived.';
+
+        foreach ($memberIds as $userId) {
+            create_user_notification(
+                $pdo,
+                $tripId,
+                $userId,
+                'trip_finished',
+                'Trip finished',
+                $notificationBody,
+                [
+                    'trip_id' => $tripId,
+                    'ended_by_user_id' => (int) $me['id'],
+                    'status' => $nextStatus,
+                    'settlements_count' => count($recommended),
+                ]
+            );
         }
 
         $pdo->commit();
@@ -689,4 +736,3 @@ function confirm_settlement_received_action(): void
         'updated_settlement_id' => $settlementId,
     ]);
 }
-

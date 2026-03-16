@@ -283,6 +283,8 @@ extension _MainShellPageNotifications on _MainShellPageState {
                               icon = Icons.person_add_alt_1_outlined;
                             } else if (notification.type == 'expense_added') {
                               icon = Icons.receipt_long_outlined;
+                            } else if (notification.type == 'trip_finished') {
+                              icon = Icons.flag_outlined;
                             } else if (notification.type == 'trip_added' ||
                                 notification.type == 'trip_member_added') {
                               icon = Icons.group_add_outlined;

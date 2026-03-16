@@ -298,7 +298,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get finishTripConfirmationText => 'Finish this trip and start settlements?';
 
   @override
-  String get finishTripStartSettlementsAction => 'Finish trip and start settlements';
+  String get finishTripStartSettlementsAction => 'Finish and start settlements';
 
   @override
   String get finishTripTitle => 'Finish trip';

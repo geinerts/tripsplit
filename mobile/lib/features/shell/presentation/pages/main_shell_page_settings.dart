@@ -112,7 +112,7 @@ extension _MainShellPageSettings on _MainShellPageState {
   }
 
   Future<void> _openReportIssueDialog() async {
-    final noteController = TextEditingController();
+    String draftNote = '';
     final t = context.l10n;
     final note = await showDialog<String>(
       context: context,
@@ -127,12 +127,14 @@ extension _MainShellPageSettings on _MainShellPageState {
                 child: Text('Describe what happened (optional).'),
               ),
               const SizedBox(height: 12),
-              TextField(
-                controller: noteController,
+              TextFormField(
                 minLines: 3,
                 maxLines: 6,
                 textInputAction: TextInputAction.newline,
                 decoration: const InputDecoration(hintText: 'What happened?'),
+                onChanged: (value) {
+                  draftNote = value;
+                },
               ),
             ],
           ),
@@ -142,15 +144,13 @@ extension _MainShellPageSettings on _MainShellPageState {
               child: Text(t.cancelAction),
             ),
             ElevatedButton(
-              onPressed: () =>
-                  Navigator.of(dialogContext).pop(noteController.text),
+              onPressed: () => Navigator.of(dialogContext).pop(draftNote),
               child: const Text('Send'),
             ),
           ],
         );
       },
     );
-    noteController.dispose();
     if (!mounted || note == null) {
       return;
     }

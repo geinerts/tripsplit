@@ -386,7 +386,7 @@
    "filterSettlementByMemberSubtitle" : "Filter settlements by member",
    "finishTripAction" : "Finish trip",
    "finishTripConfirmationText" : "Finish this trip and start settlements?",
-   "finishTripStartSettlementsAction" : "Finish trip and start settlements",
+   "finishTripStartSettlementsAction" : "Finish and start settlements",
    "finishTripTitle" : "Finish trip",
    "forParticipants" : "For: {participants}",
    "forgotPassword" : "Forgot password?",
