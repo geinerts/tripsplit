@@ -10,6 +10,7 @@ require_once __DIR__ . '/actions/uploads_actions.php';
 require_once __DIR__ . '/actions/expenses_actions.php';
 require_once __DIR__ . '/actions/settlements_actions.php';
 require_once __DIR__ . '/actions/notifications_actions.php';
+require_once __DIR__ . '/actions/feedback_actions.php';
 require_once __DIR__ . '/actions/orders_actions.php';
 require_once __DIR__ . '/actions/workspace_actions.php';
 require_once __DIR__ . '/actions/admin_actions.php';

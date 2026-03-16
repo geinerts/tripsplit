@@ -44,6 +44,7 @@ function api_action_handlers(): array
         'list_notifications_global' => 'list_notifications_global_action',
         'mark_notifications_read' => 'mark_notifications_read_action',
         'mark_notifications_read_global' => 'mark_notifications_read_global_action',
+        'submit_feedback' => 'submit_feedback_action',
         'workspace_snapshot' => 'workspace_snapshot_action',
         'generate_order' => 'generate_order_action',
         'list_orders' => 'list_orders_action',

@@ -20,6 +20,8 @@ define('AVATARS_REL_DIR', env_string('TRIP_AVATARS_REL_DIR', 'uploads/avatars'))
 define('AVATARS_MAX_BYTES', env_int('TRIP_AVATARS_MAX_BYTES', 5_242_880)); // 5 MB
 define('TRIP_IMAGES_REL_DIR', env_string('TRIP_IMAGES_REL_DIR', 'uploads/trips'));
 define('TRIP_IMAGES_MAX_BYTES', env_int('TRIP_IMAGES_MAX_BYTES', 8_388_608)); // 8 MB
+define('FEEDBACK_REL_DIR', env_string('TRIP_FEEDBACK_REL_DIR', 'uploads/feedback'));
+define('FEEDBACK_MAX_BYTES', env_int('TRIP_FEEDBACK_MAX_BYTES', 8_388_608)); // 8 MB
 define('UPLOAD_IMAGE_WEBP_QUALITY', env_int('TRIP_UPLOAD_IMAGE_WEBP_QUALITY', 84));
 define('UPLOAD_IMAGE_THUMB_MAX_SIDE', env_int('TRIP_UPLOAD_IMAGE_THUMB_MAX_SIDE', 420));
 define('UPLOAD_IMAGE_THUMB_WEBP_QUALITY', env_int('TRIP_UPLOAD_IMAGE_THUMB_WEBP_QUALITY', 76));
@@ -44,6 +46,8 @@ define('RATE_LIMIT_TRIP_WRITE_IP_MAX', env_int('TRIP_RATE_LIMIT_TRIP_WRITE_IP_MA
 define('RATE_LIMIT_TRIP_WRITE_USER_MAX', env_int('TRIP_RATE_LIMIT_TRIP_WRITE_USER_MAX', 60));
 define('RATE_LIMIT_EXPENSE_WRITE_IP_MAX', env_int('TRIP_RATE_LIMIT_EXPENSE_WRITE_IP_MAX', 240));
 define('RATE_LIMIT_EXPENSE_WRITE_USER_MAX', env_int('TRIP_RATE_LIMIT_EXPENSE_WRITE_USER_MAX', 180));
+define('RATE_LIMIT_FEEDBACK_IP_MAX', env_int('TRIP_RATE_LIMIT_FEEDBACK_IP_MAX', 40));
+define('RATE_LIMIT_FEEDBACK_USER_MAX', env_int('TRIP_RATE_LIMIT_FEEDBACK_USER_MAX', 30));
 define('RATE_LIMIT_ADMIN_AUTH_IP_MAX', env_int('TRIP_RATE_LIMIT_ADMIN_AUTH_IP_MAX', 60));
 
 define('RATE_LIMIT_REGISTER_WINDOW_SEC', env_int('TRIP_RATE_LIMIT_REGISTER_WINDOW_SEC', 3600));
@@ -181,6 +185,7 @@ function table_name(string $key): string
         'expense_participants' => DB_TABLE_PREFIX . 'expense_participants',
         'settlements' => DB_TABLE_PREFIX . 'settlements',
         'notifications' => DB_TABLE_PREFIX . 'notifications',
+        'feedback' => DB_TABLE_PREFIX . 'feedback',
         'random_orders' => DB_TABLE_PREFIX . 'random_orders',
         'random_order_members' => DB_TABLE_PREFIX . 'random_order_members',
         'random_draw_state' => DB_TABLE_PREFIX . 'random_draw_state',
@@ -211,6 +216,11 @@ function avatars_dir_abs(): string
 function trip_images_dir_abs(): string
 {
     return upload_dir_abs(TRIP_IMAGES_REL_DIR);
+}
+
+function feedback_dir_abs(): string
+{
+    return upload_dir_abs(FEEDBACK_REL_DIR);
 }
 
 function upload_dir_abs(string $relativeDir): string
@@ -385,6 +395,11 @@ function ensure_trip_images_dir(): void
     ensure_upload_dir_abs(trip_images_dir_abs(), 'Unable to create trip images directory.');
 }
 
+function ensure_feedback_dir(): void
+{
+    ensure_upload_dir_abs(feedback_dir_abs(), 'Unable to create feedback upload directory.');
+}
+
 function ensure_upload_dir_abs(string $dir, string $errorMessage): void
 {
     if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
@@ -417,6 +432,11 @@ function trip_image_public_url(?string $tripImagePath): ?string
     return project_public_url($tripImagePath);
 }
 
+function feedback_public_url(?string $feedbackPath): ?string
+{
+    return project_public_url($feedbackPath);
+}
+
 function receipt_thumb_public_url(?string $receiptPath): ?string
 {
     return upload_thumb_public_url($receiptPath, 'receipt_public_url');
@@ -430,6 +450,11 @@ function avatar_thumb_public_url(?string $avatarPath): ?string
 function trip_image_thumb_public_url(?string $tripImagePath): ?string
 {
     return upload_thumb_public_url($tripImagePath, 'trip_image_public_url');
+}
+
+function feedback_thumb_public_url(?string $feedbackPath): ?string
+{
+    return upload_thumb_public_url($feedbackPath, 'feedback_public_url');
 }
 
 function upload_thumb_public_url(?string $relativePath, callable $fallbackUrlResolver): ?string
@@ -575,6 +600,11 @@ function normalize_trip_image_path(string $path, bool $allowEmpty = true): strin
     return normalize_upload_path($path, TRIP_IMAGES_REL_DIR, 'Trip image path', $allowEmpty);
 }
 
+function normalize_feedback_path(string $path, bool $allowEmpty = true): string
+{
+    return normalize_upload_path($path, FEEDBACK_REL_DIR, 'Feedback screenshot path', $allowEmpty);
+}
+
 function normalize_upload_path(
     string $path,
     string $relativeDir,
@@ -611,6 +641,11 @@ function delete_avatar_file(?string $avatarPath): void
 function delete_trip_image_file(?string $tripImagePath): void
 {
     delete_upload_file($tripImagePath, 'normalize_trip_image_path', trip_images_dir_abs());
+}
+
+function delete_feedback_file(?string $feedbackPath): void
+{
+    delete_upload_file($feedbackPath, 'normalize_feedback_path', feedback_dir_abs());
 }
 
 function delete_upload_file(

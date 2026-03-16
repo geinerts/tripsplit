@@ -5,6 +5,7 @@ import '../../../../core/auth/auth_session_store.dart';
 import '../../../../core/auth/device_token_store.dart';
 import '../../../../core/auth/user_avatar_store.dart';
 import '../../../../core/network/legacy_avatar_uploader.dart';
+import '../../../../core/network/legacy_feedback_reporter.dart';
 import '../../data/models/auth_user_model.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../domain/usecases/get_me_use_case.dart';
@@ -24,6 +25,7 @@ class AuthController {
     this._authSessionStore,
     this._avatarStore,
     this._avatarUploader,
+    this._feedbackReporter,
   );
 
   final LoginUseCase _loginUseCase;
@@ -35,6 +37,7 @@ class AuthController {
   final AuthSessionStore _authSessionStore;
   final UserAvatarStore _avatarStore;
   final LegacyAvatarUploader _avatarUploader;
+  final LegacyFeedbackReporter _feedbackReporter;
 
   AuthUser? currentUser;
 
@@ -162,10 +165,7 @@ class AuthController {
       bytes: bytes,
     );
     final encoded = base64Encode(bytes);
-    final merged = _mergeRemoteMe(
-      user,
-      uploaded.mePayload,
-    ).copyWith(
+    final merged = _mergeRemoteMe(user, uploaded.mePayload).copyWith(
       avatarBase64: encoded,
       avatarUrl: uploaded.avatarUrl,
       avatarThumbUrl: uploaded.avatarThumbUrl,
@@ -194,6 +194,26 @@ class AuthController {
     await _avatarStore.writeAvatarBase64(userId: merged.id, avatarBase64: null);
     currentUser = merged;
     return merged;
+  }
+
+  Future<void> submitFeedback({
+    required String type,
+    required String note,
+    int? tripId,
+    String? localeCode,
+    Map<String, Object?>? contextData,
+    String? screenshotFileName,
+    Uint8List? screenshotBytes,
+  }) {
+    return _feedbackReporter.submitFeedback(
+      type: type,
+      note: note,
+      tripId: tripId,
+      localeCode: localeCode,
+      contextData: contextData,
+      screenshotFileName: screenshotFileName,
+      screenshotBytes: screenshotBytes,
+    );
   }
 
   Future<void> logout() async {

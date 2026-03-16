@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
@@ -67,6 +69,7 @@ class _MainShellPageState extends State<MainShellPage>
   Trip? _openedTrip;
   bool _isProfileInEditMode = false;
   bool _isLoggingOut = false;
+  bool _isSendingFeedback = false;
   bool _isNotificationsLoading = false;
   bool _isNotificationsLoadingMore = false;
   int _unreadNotificationsCount = 0;

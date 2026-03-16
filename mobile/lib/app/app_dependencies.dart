@@ -4,6 +4,7 @@ import '../core/auth/user_avatar_store.dart';
 import '../core/config/app_env.dart';
 import '../core/network/legacy_api_client.dart';
 import '../core/network/legacy_avatar_uploader.dart';
+import '../core/network/legacy_feedback_reporter.dart';
 import '../core/network/legacy_receipt_uploader.dart';
 import '../core/network/legacy_trip_image_uploader.dart';
 import '../core/perf/perf_monitor.dart';
@@ -83,6 +84,11 @@ class AppDependencies {
       tokenStore: tokenStore,
       authSessionStore: authSessionStore,
     );
+    final feedbackReporter = LegacyFeedbackReporter(
+      baseUrl: env.apiBaseUrl,
+      tokenStore: tokenStore,
+      authSessionStore: authSessionStore,
+    );
     final tripImageUploader = LegacyTripImageUploader(
       baseUrl: env.apiBaseUrl,
       tokenStore: tokenStore,
@@ -101,6 +107,7 @@ class AppDependencies {
       authSessionStore,
       avatarStore,
       avatarUploader,
+      feedbackReporter,
     );
 
     final tripsRemote = TripsRemoteDataSourceImpl(apiClient, tripImageUploader);

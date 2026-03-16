@@ -135,6 +135,28 @@ CREATE TABLE IF NOT EXISTS trip_notifications (
   CONSTRAINT fk_trip_notifications_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS trip_feedback (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  trip_id INT UNSIGNED NULL,
+  type ENUM('bug', 'suggestion') NOT NULL,
+  note TEXT NULL,
+  screenshot_path VARCHAR(255) NULL,
+  screenshot_size INT UNSIGNED NULL,
+  app_platform VARCHAR(32) NULL,
+  app_version VARCHAR(64) NULL,
+  build_number VARCHAR(32) NULL,
+  locale VARCHAR(24) NULL,
+  context_json LONGTEXT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_trip_feedback_user_created (user_id, created_at, id),
+  KEY idx_trip_feedback_trip_created (trip_id, created_at, id),
+  KEY idx_trip_feedback_type_created (type, created_at, id),
+  CONSTRAINT fk_trip_feedback_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_trip_feedback_trip_id FOREIGN KEY (trip_id) REFERENCES trip_trips(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS trip_request_limits (
   scope VARCHAR(48) NOT NULL,
   subject_hash CHAR(64) NOT NULL,
