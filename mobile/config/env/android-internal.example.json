@@ -1,0 +1,10 @@
+{
+  "TRIPSPLIT_API_BASE_URL": "https://egm.lv/projekti/trip",
+  "TRIPSPLIT_SENTRY_DSN": "https://<public_key>@<org>.ingest.sentry.io/<project_id>",
+  "TRIPSPLIT_MONITORING_ENV": "android-internal",
+  "TRIPSPLIT_RELEASE_CHANNEL": "android-internal",
+  "TRIPSPLIT_MONITORING_TRACE_SAMPLE_RATE": "0.10",
+  "TRIPSPLIT_VERBOSE_LOGS": "false",
+  "TRIPSPLIT_PERF_LOGS": "false",
+  "TRIPSPLIT_API_TIMEOUT_SEC": "20"
+}

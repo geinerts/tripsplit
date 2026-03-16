@@ -19,6 +19,30 @@ flutter run \
   --dart-define=TRIPSPLIT_MONITORING_TRACE_SAMPLE_RATE=0.05
 ```
 
+Recommended (file-based):
+
+```bash
+cp mobile/config/env/testflight.example.json mobile/config/env/testflight.local.json
+# edit TRIPSPLIT_SENTRY_DSN in testflight.local.json
+```
+
+Then build with:
+
+```bash
+flutter build ipa --release \
+  --dart-define-from-file=mobile/config/env/testflight.local.json
+```
+
+Android internal testing:
+
+```bash
+cp mobile/config/env/android-internal.example.json mobile/config/env/android-internal.local.json
+# edit TRIPSPLIT_SENTRY_DSN in android-internal.local.json
+
+flutter build appbundle --release \
+  --dart-define-from-file=mobile/config/env/android-internal.local.json
+```
+
 ## 2) What is captured
 
 - Unhandled Flutter errors.
