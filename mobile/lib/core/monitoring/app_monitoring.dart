@@ -32,82 +32,69 @@ class AppMonitoring {
     required AppDependencies dependencies,
     required Widget Function() appBuilder,
   }) async {
-    _dependencies = dependencies;
+    await runZonedGuarded(
+      () async {
+        WidgetsFlutterBinding.ensureInitialized();
+        _dependencies = dependencies;
 
-    final env = AppEnv.current;
-    _releaseChannel = _nonEmptyOrFallback(env.releaseChannel, 'dev');
-    _monitoringEnvironment = _nonEmptyOrFallback(
-      env.monitoringEnvironment,
-      _releaseChannel,
-    );
+        final env = AppEnv.current;
+        _releaseChannel = _nonEmptyOrFallback(env.releaseChannel, 'dev');
+        _monitoringEnvironment = _nonEmptyOrFallback(
+          env.monitoringEnvironment,
+          _releaseChannel,
+        );
 
-    final packageInfo = await _loadPackageInfo();
-    _appVersion = packageInfo?.version.trim().isNotEmpty == true
-        ? packageInfo!.version.trim()
-        : 'unknown';
-    _buildNumber = packageInfo?.buildNumber.trim().isNotEmpty == true
-        ? packageInfo!.buildNumber.trim()
-        : '0';
-    _release = 'splyto@$_appVersion+$_buildNumber';
+        final packageInfo = await _loadPackageInfo();
+        _appVersion = packageInfo?.version.trim().isNotEmpty == true
+            ? packageInfo!.version.trim()
+            : 'unknown';
+        _buildNumber = packageInfo?.buildNumber.trim().isNotEmpty == true
+            ? packageInfo!.buildNumber.trim()
+            : '0';
+        _release = 'splyto@$_appVersion+$_buildNumber';
 
-    _activeUserId = dependencies.authController.currentUser?.id;
-    _activeTripId = null;
+        _activeUserId = dependencies.authController.currentUser?.id;
+        _activeTripId = null;
 
-    final dsn = env.monitoringDsn.trim();
-    if (dsn.isEmpty) {
-      _enabled = false;
-      _installGlobalHandlers();
-      runZonedGuarded(
-        () {
+        final dsn = env.monitoringDsn.trim();
+        if (dsn.isEmpty) {
+          _enabled = false;
+          _installGlobalHandlers();
           runApp(appBuilder());
-        },
-        (error, stackTrace) {
-          unawaited(
-            _captureException(
-              error,
-              stackTrace: stackTrace,
-              origin: 'zone',
-              isFatal: true,
-            ),
-          );
-        },
-      );
-      return;
-    }
+          return;
+        }
 
-    final tracesSampleRate = _normalizeSampleRate(
-      env.monitoringTraceSampleRate,
-    );
-    _enabled = true;
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = dsn;
-        options.environment = _monitoringEnvironment;
-        options.release = _release;
-        options.attachStacktrace = true;
-        options.sendDefaultPii = false;
-        options.tracesSampleRate = tracesSampleRate;
-      },
-      appRunner: () {
-        _installGlobalHandlers();
-        runZonedGuarded(
-          () {
+        final tracesSampleRate = _normalizeSampleRate(
+          env.monitoringTraceSampleRate,
+        );
+        _enabled = true;
+        await SentryFlutter.init(
+          (options) {
+            options.dsn = dsn;
+            options.environment = _monitoringEnvironment;
+            options.release = _release;
+            options.attachStacktrace = true;
+            options.sendDefaultPii = false;
+            options.tracesSampleRate = tracesSampleRate;
+          },
+          appRunner: () {
+            _installGlobalHandlers();
             runApp(appBuilder());
           },
-          (error, stackTrace) {
-            unawaited(
-              _captureException(
-                error,
-                stackTrace: stackTrace,
-                origin: 'zone',
-                isFatal: true,
-              ),
-            );
-          },
+        );
+        await _syncScope();
+      },
+      (error, stackTrace) {
+        unawaited(
+          _captureException(
+            error,
+            stackTrace: stackTrace,
+            origin: 'zone',
+            isFatal: true,
+          ),
         );
       },
     );
-    await _syncScope();
   }
 
   static Future<void> updateRuntimeContext({int? userId, int? tripId}) async {

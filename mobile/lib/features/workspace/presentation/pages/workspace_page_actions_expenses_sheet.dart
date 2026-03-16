@@ -307,8 +307,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                     ),
                                     subtitle: Text(
                                       t.paidOwesLine(
-                                        _formatMoney(shownLines[i].paid),
                                         _formatMoney(shownLines[i].owes),
+                                        _formatMoney(shownLines[i].paid),
                                       ),
                                     ),
                                     trailing: Text(
