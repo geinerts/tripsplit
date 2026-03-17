@@ -26,11 +26,6 @@ extension _LoginPageWidgets on _LoginPageState {
                         24,
                       ),
                       children: [
-                        if (_isRestoringSession)
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 12),
-                            child: LinearProgressIndicator(minHeight: 2),
-                          ),
                         _buildTopActions(context),
                         SizedBox(
                           height: responsive.pick(
@@ -78,44 +73,17 @@ extension _LoginPageWidgets on _LoginPageState {
     final responsive = context.responsive;
     final colorScheme = Theme.of(context).colorScheme;
     final isLogin = _mode == _AuthMode.login;
-    final heroSize = responsive.pick(compact: 84, medium: 96, expanded: 108);
-    final iconSize = responsive.pick(compact: 40, medium: 46, expanded: 52);
+    final logoWidth = responsive.pick(compact: 220.0, medium: 260.0, expanded: 300.0);
 
     return Column(
       children: [
-        Container(
-          width: heroSize,
-          height: heroSize,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              responsive.pick(compact: 24, medium: 30, expanded: 34),
-            ),
-            gradient: AppDesign.brandGradient,
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x3A5D6DFF),
-                blurRadius: 24,
-                offset: Offset(0, 12),
-              ),
-            ],
-          ),
-          child: Icon(
-            Icons.flight_takeoff,
-            color: Colors.white,
-            size: iconSize,
-          ),
+        Image.asset(
+          'assets/branding/logo_full.png',
+          width: logoWidth,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.high,
         ),
         const SizedBox(height: 16),
-        Text(
-          'Splyto',
-          textAlign: TextAlign.center,
-          style:
-              (responsive.isCompact
-                      ? Theme.of(context).textTheme.displaySmall
-                      : Theme.of(context).textTheme.displayMedium)
-                  ?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.4),
-        ),
-        const SizedBox(height: 8),
         Text(
           isLogin ? t.authSubtitleLogin : t.authSubtitleRegister,
           textAlign: TextAlign.center,

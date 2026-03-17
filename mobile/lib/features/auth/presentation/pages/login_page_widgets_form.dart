@@ -183,11 +183,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          gradient: const LinearGradient(
-            colors: [Color(0xFF2F7DF6), Color(0xFF8A1CF3)],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
+          gradient: AppDesign.logoBackgroundGradient,
         ),
         child: ElevatedButton(
           key: const ValueKey(AppTestKeys.authSubmitButton),

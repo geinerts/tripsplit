@@ -1,6 +1,197 @@
 <?php
 declare(strict_types=1);
 
+function admin_feedback_feed_action(): void
+{
+    require_admin();
+    $pdo = db();
+    $feedbackTable = table_name('feedback');
+    $usersTable = table_name('users');
+    $tripsTable = table_name('trips');
+
+    $limit = (int) ($_GET['limit'] ?? 40);
+    if ($limit < 1) {
+        $limit = 40;
+    }
+    if ($limit > 120) {
+        $limit = 120;
+    }
+
+    $offset = (int) ($_GET['offset'] ?? 0);
+    if ($offset < 0) {
+        $offset = 0;
+    }
+
+    $type = strtolower(trim((string) ($_GET['type'] ?? 'all')));
+    if ($type !== 'all' && $type !== 'bug' && $type !== 'suggestion') {
+        json_out(['ok' => false, 'error' => 'Invalid type filter.'], 400);
+    }
+
+    $hasScreenshot = strtolower(trim((string) ($_GET['has_screenshot'] ?? 'all')));
+    if ($hasScreenshot !== 'all' && $hasScreenshot !== 'yes' && $hasScreenshot !== 'no') {
+        json_out(['ok' => false, 'error' => 'Invalid screenshot filter.'], 400);
+    }
+
+    $query = trim((string) ($_GET['q'] ?? ''));
+    if (str_length($query) > 100) {
+        json_out(['ok' => false, 'error' => 'Search query is too long.'], 400);
+    }
+
+    $where = ['1=1'];
+    $params = [];
+    if ($type !== 'all') {
+        $where[] = 'f.type = :type';
+        $params['type'] = $type;
+    }
+    if ($hasScreenshot === 'yes') {
+        $where[] = 'f.screenshot_path IS NOT NULL AND f.screenshot_path <> ""';
+    } elseif ($hasScreenshot === 'no') {
+        $where[] = '(f.screenshot_path IS NULL OR f.screenshot_path = "")';
+    }
+    if ($query !== '') {
+        $where[] = '(
+            u.nickname LIKE :query
+            OR u.email LIKE :query
+            OR u.first_name LIKE :query
+            OR u.last_name LIKE :query
+            OR f.note LIKE :query
+            OR t.name LIKE :query
+        )';
+        $params['query'] = '%' . $query . '%';
+    }
+
+    $whereSql = implode(' AND ', $where);
+
+    $countStmt = $pdo->prepare(
+        'SELECT COUNT(*)
+         FROM ' . $feedbackTable . ' f
+         JOIN ' . $usersTable . ' u ON u.id = f.user_id
+         LEFT JOIN ' . $tripsTable . ' t ON t.id = f.trip_id
+         WHERE ' . $whereSql
+    );
+    foreach ($params as $key => $value) {
+        $countStmt->bindValue(':' . $key, $value, PDO::PARAM_STR);
+    }
+    $countStmt->execute();
+    $total = (int) ($countStmt->fetchColumn() ?: 0);
+
+    $listStmt = $pdo->prepare(
+        'SELECT
+            f.id,
+            f.user_id,
+            f.trip_id,
+            f.type,
+            f.note,
+            f.screenshot_path,
+            f.screenshot_size,
+            f.app_platform,
+            f.app_version,
+            f.build_number,
+            f.locale,
+            f.context_json,
+            f.created_at,
+            u.nickname AS user_nickname,
+            u.first_name AS user_first_name,
+            u.last_name AS user_last_name,
+            u.email AS user_email,
+            t.name AS trip_name
+         FROM ' . $feedbackTable . ' f
+         JOIN ' . $usersTable . ' u ON u.id = f.user_id
+         LEFT JOIN ' . $tripsTable . ' t ON t.id = f.trip_id
+         WHERE ' . $whereSql . '
+         ORDER BY f.id DESC
+         LIMIT :limit OFFSET :offset'
+    );
+    foreach ($params as $key => $value) {
+        $listStmt->bindValue(':' . $key, $value, PDO::PARAM_STR);
+    }
+    $listStmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $listStmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $listStmt->execute();
+    $rows = $listStmt->fetchAll();
+
+    $items = [];
+    foreach ($rows as $row) {
+        $screenshotPath = trim((string) ($row['screenshot_path'] ?? ''));
+        $fullName = trim(
+            trim((string) ($row['user_first_name'] ?? '')) . ' ' .
+            trim((string) ($row['user_last_name'] ?? ''))
+        );
+        $context = null;
+        $rawContext = trim((string) ($row['context_json'] ?? ''));
+        if ($rawContext !== '') {
+            $decoded = json_decode($rawContext, true);
+            if (is_array($decoded)) {
+                $context = $decoded;
+            }
+        }
+
+        $items[] = [
+            'id' => (int) ($row['id'] ?? 0),
+            'type' => (string) ($row['type'] ?? 'bug'),
+            'note' => (string) ($row['note'] ?? ''),
+            'created_at' => $row['created_at'] ?: null,
+            'user' => [
+                'id' => (int) ($row['user_id'] ?? 0),
+                'nickname' => (string) ($row['user_nickname'] ?? ''),
+                'full_name' => $fullName,
+                'email' => (string) ($row['user_email'] ?? ''),
+            ],
+            'trip' => [
+                'id' => array_key_exists('trip_id', $row) && $row['trip_id'] !== null
+                    ? (int) $row['trip_id']
+                    : null,
+                'name' => (string) ($row['trip_name'] ?? ''),
+            ],
+            'app' => [
+                'platform' => (string) ($row['app_platform'] ?? ''),
+                'version' => (string) ($row['app_version'] ?? ''),
+                'build_number' => (string) ($row['build_number'] ?? ''),
+                'locale' => (string) ($row['locale'] ?? ''),
+            ],
+            'screenshot' => $screenshotPath !== '' ? [
+                'path' => $screenshotPath,
+                'size' => (int) ($row['screenshot_size'] ?? 0),
+                'url' => feedback_public_url($screenshotPath),
+                'thumb_url' => feedback_thumb_public_url($screenshotPath),
+            ] : null,
+            'context' => $context,
+        ];
+    }
+
+    $statsRow = $pdo->query(
+        'SELECT
+            COUNT(*) AS total_count,
+            SUM(CASE WHEN type = "bug" THEN 1 ELSE 0 END) AS bug_count,
+            SUM(CASE WHEN type = "suggestion" THEN 1 ELSE 0 END) AS suggestion_count,
+            SUM(CASE WHEN screenshot_path IS NOT NULL AND screenshot_path <> "" THEN 1 ELSE 0 END) AS with_screenshot_count
+         FROM ' . $feedbackTable
+    )->fetch() ?: [];
+
+    json_out([
+        'ok' => true,
+        'stats' => [
+            'total' => (int) ($statsRow['total_count'] ?? 0),
+            'bug' => (int) ($statsRow['bug_count'] ?? 0),
+            'suggestion' => (int) ($statsRow['suggestion_count'] ?? 0),
+            'with_screenshot' => (int) ($statsRow['with_screenshot_count'] ?? 0),
+        ],
+        'paging' => [
+            'offset' => $offset,
+            'limit' => $limit,
+            'total' => $total,
+            'has_more' => ($offset + count($items)) < $total,
+            'next_offset' => ($offset + count($items)) < $total ? ($offset + count($items)) : null,
+        ],
+        'filters' => [
+            'type' => $type,
+            'has_screenshot' => $hasScreenshot,
+            'q' => $query,
+        ],
+        'items' => $items,
+    ]);
+}
+
 function admin_summary_action(): void
 {
     require_admin();

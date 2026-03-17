@@ -16,12 +16,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
                 tooltip: MaterialLocalizations.of(context).backButtonTooltip,
               )
             : null,
-        title: Text(
-          _topTitle(context),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: titleStyle,
-        ),
+        title: _buildAppBarTitle(context, titleStyle),
         actions: [
           IconButton(
             onPressed: _isLoggingOut ? null : _onRefreshPressed,
@@ -81,6 +76,41 @@ extension _MainShellPageWidgets on _MainShellPageState {
               ],
             ),
       bottomNavigationBar: _buildBottomNav(context),
+    );
+  }
+
+  Widget _buildAppBarTitle(BuildContext context, TextStyle? titleStyle) {
+    final title = _topTitle(context);
+    final showLogo =
+        !_isWorkspaceOpen &&
+        _selectedTabIndex == _MainShellPageState._tabHome;
+    if (!showLogo) {
+      return Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: titleStyle,
+      );
+    }
+    return Row(
+      children: [
+        Image.asset(
+          'assets/branding/logo_mark.png',
+          width: 26,
+          height: 26,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.high,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: titleStyle,
+          ),
+        ),
+      ],
     );
   }
 
@@ -208,13 +238,13 @@ extension _MainShellPageWidgets on _MainShellPageState {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        gradient: AppDesign.brandGradient,
+        gradient: AppDesign.logoBackgroundGradient,
         border: Border.all(
           color: Colors.white.withValues(alpha: selected ? 0.55 : 0.30),
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0x665D6DFF),
+            color: const Color(0x66141E30),
             blurRadius: selected ? 14 : 10,
             offset: const Offset(0, 5),
           ),

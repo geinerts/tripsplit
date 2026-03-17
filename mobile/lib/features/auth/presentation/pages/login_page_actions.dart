@@ -2,31 +2,20 @@ part of 'login_page.dart';
 
 extension _LoginPageActions on _LoginPageState {
   Future<void> _tryRestoreSession() async {
-    _updateState(() {
-      _isRestoringSession = true;
-    });
-
     try {
-      final user = await widget.controller.loadCurrentUser();
+      final user = await widget.controller.loadCurrentUser().timeout(
+        const Duration(seconds: 4),
+      );
       if (!mounted) {
         return;
       }
       _goAfterAuth(user);
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      if (error.statusCode == 401 || error.isNetworkError) {
-        return;
-      }
+    } on TimeoutException {
+      // Keep auth form open if restore takes too long.
+    } on ApiException catch (_) {
+      // Keep auth form open on unauthorized/network restore failures.
     } catch (_) {
-      // Ignore restore failures and keep auth form open.
-    } finally {
-      if (mounted && !_isNavigatingAway) {
-        _updateState(() {
-          _isRestoringSession = false;
-        });
-      }
+      // Keep auth form open on restore failures.
     }
   }
 

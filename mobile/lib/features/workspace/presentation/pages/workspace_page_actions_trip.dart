@@ -74,9 +74,21 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
               onPressed: () => Navigator.of(context).pop(false),
               child: Text(t.cancelAction),
             ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(t.finishTripStartSettlementsAction),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: AppDesign.logoBackgroundGradient,
+              ),
+              child: ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  foregroundColor: Colors.white,
+                ),
+                child: Text(t.finishTripStartSettlementsAction),
+              ),
             ),
           ],
         );

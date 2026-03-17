@@ -87,15 +87,7 @@ extension _TripsPageWidgets on _TripsPageState {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(radius),
             border: Border.all(color: Colors.white.withValues(alpha: 0.28)),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppDesign.brandStart.withValues(alpha: 0.62),
-                AppDesign.brandEnd.withValues(alpha: 0.48),
-                const Color(0xFF1E293B).withValues(alpha: 0.42),
-              ],
-            ),
+            gradient: AppDesign.logoBackgroundGradient,
             boxShadow: const [
               BoxShadow(
                 color: Color(0x2B0F172A),

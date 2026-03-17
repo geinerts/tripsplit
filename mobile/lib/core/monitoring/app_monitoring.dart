@@ -36,6 +36,15 @@ class AppMonitoring {
       () async {
         WidgetsFlutterBinding.ensureInitialized();
         _dependencies = dependencies;
+        var appStarted = false;
+        void runAppOnce() {
+          if (appStarted) {
+            return;
+          }
+          appStarted = true;
+          _installGlobalHandlers();
+          runApp(appBuilder());
+        }
 
         final env = AppEnv.current;
         _releaseChannel = _nonEmptyOrFallback(env.releaseChannel, 'dev');
@@ -44,7 +53,10 @@ class AppMonitoring {
           _releaseChannel,
         );
 
-        final packageInfo = await _loadPackageInfo();
+        final packageInfo = await _loadPackageInfo().timeout(
+          const Duration(seconds: 2),
+          onTimeout: () => null,
+        );
         _appVersion = packageInfo?.version.trim().isNotEmpty == true
             ? packageInfo!.version.trim()
             : 'unknown';
@@ -59,8 +71,7 @@ class AppMonitoring {
         final dsn = env.monitoringDsn.trim();
         if (dsn.isEmpty) {
           _enabled = false;
-          _installGlobalHandlers();
-          runApp(appBuilder());
+          runAppOnce();
           return;
         }
 
@@ -68,21 +79,26 @@ class AppMonitoring {
           env.monitoringTraceSampleRate,
         );
         _enabled = true;
-        await SentryFlutter.init(
-          (options) {
-            options.dsn = dsn;
-            options.environment = _monitoringEnvironment;
-            options.release = _release;
-            options.attachStacktrace = true;
-            options.sendDefaultPii = false;
-            options.tracesSampleRate = tracesSampleRate;
-          },
-          appRunner: () {
-            _installGlobalHandlers();
-            runApp(appBuilder());
-          },
-        );
-        await _syncScope();
+        try {
+          await SentryFlutter.init(
+            (options) {
+              options.dsn = dsn;
+              options.environment = _monitoringEnvironment;
+              options.release = _release;
+              options.attachStacktrace = true;
+              options.sendDefaultPii = false;
+              options.tracesSampleRate = tracesSampleRate;
+            },
+            appRunner: runAppOnce,
+          ).timeout(const Duration(seconds: 5));
+          await _syncScope();
+        } on TimeoutException {
+          _enabled = false;
+          runAppOnce();
+        } catch (_) {
+          _enabled = false;
+          runAppOnce();
+        }
       },
       (error, stackTrace) {
         unawaited(

@@ -151,6 +151,10 @@ class _WorkspacePageState extends State<WorkspacePage> {
   @override
   void initState() {
     super.initState();
+    final initialUserId = widget.authController.currentUser?.id ?? 0;
+    if (initialUserId > 0) {
+      _currentUserId = initialUserId;
+    }
     _openAddExpenseAfterLoad = widget.openAddExpenseOnStart;
     unawaited(
       AppMonitoring.updateRuntimeContext(

@@ -13,20 +13,12 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
       children: [
         if (snapshot.isActive) ...[
-          if (_canEditMembers)
-            FilledButton.icon(
-              onPressed: canFinishTrip ? _onEndTripPressed : null,
-              icon: const Icon(Icons.flag_outlined),
-              label: Text(t.finishTripStartSettlementsAction),
-            )
-          else
-            _WorkspaceSectionCard(
-              accent: colors.tertiary,
-              child: Text(
-                t.creatorMustFinishTripFirst,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
+          _buildFinishTripActionBlock(
+            colors: colors,
+            canFinishTrip: canFinishTrip,
+            finishLabel: t.finishTripStartSettlementsAction,
+            creatorMustFinishLabel: t.creatorMustFinishTripFirst,
+          ),
           const SizedBox(height: 12),
         ] else
           _WorkspaceSectionCard(
@@ -199,6 +191,61 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         const SizedBox(height: 8),
         _buildSettlementsOverviewCard(snapshot),
       ],
+    );
+  }
+
+  Widget _buildFinishTripActionBlock({
+    required ColorScheme colors,
+    required bool canFinishTrip,
+    required String finishLabel,
+    required String creatorMustFinishLabel,
+  }) {
+    // Keep a stable slot while current user id is being resolved to avoid
+    // first-frame button/content jumping.
+    if (_currentUserId <= 0) {
+      return const SizedBox(height: 50);
+    }
+
+    if (_canEditMembers) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          gradient: canFinishTrip
+              ? AppDesign.logoBackgroundGradient
+              : LinearGradient(
+                  colors: [
+                    colors.surfaceContainerHighest,
+                    colors.surfaceContainerHighest,
+                  ],
+                ),
+        ),
+        child: ElevatedButton.icon(
+          onPressed: canFinishTrip ? _onEndTripPressed : null,
+          icon: const Icon(Icons.flag_outlined),
+          label: Text(finishLabel),
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            foregroundColor: canFinishTrip
+                ? Colors.white
+                : colors.onSurfaceVariant,
+            disabledForegroundColor: colors.onSurfaceVariant,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return _WorkspaceSectionCard(
+      accent: colors.tertiary,
+      child: Text(
+        creatorMustFinishLabel,
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
     );
   }
 

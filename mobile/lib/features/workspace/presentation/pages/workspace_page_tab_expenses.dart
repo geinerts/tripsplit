@@ -13,6 +13,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
               .toList(growable: false)
         : sourceExpenses;
     final showLoadMoreFooter = _expensesHasMore;
+    final canAddExpense = !_isMutating && snapshot.isActive;
     WorkspaceUser? selectedUser;
     for (final user in snapshot.users) {
       if (user.id == _expenseFilterUserId) {
@@ -62,12 +63,46 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                           ),
                         ),
                         const Spacer(),
-                        FilledButton.icon(
-                          onPressed: _isMutating || !snapshot.isActive
-                              ? null
-                              : _onAddExpensePressed,
-                          icon: const Icon(Icons.add),
-                          label: Text(t.addAction),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            gradient: canAddExpense
+                                ? AppDesign.logoBackgroundGradient
+                                : LinearGradient(
+                                    colors: [
+                                      colors.surfaceContainerHighest,
+                                      colors.surfaceContainerHighest,
+                                    ],
+                                  ),
+                            border: Border.all(
+                              color: canAddExpense
+                                  ? Colors.white.withValues(alpha: 0.34)
+                                  : colors.outlineVariant.withValues(
+                                      alpha: 0.35,
+                                    ),
+                            ),
+                          ),
+                          child: ElevatedButton.icon(
+                            onPressed: canAddExpense ? _onAddExpensePressed : null,
+                            icon: const Icon(Icons.add),
+                            label: Text(t.addAction),
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: Colors.transparent,
+                              shadowColor: Colors.transparent,
+                              foregroundColor: canAddExpense
+                                  ? Colors.white
+                                  : colors.onSurfaceVariant,
+                              disabledForegroundColor: colors.onSurfaceVariant,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 10,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),

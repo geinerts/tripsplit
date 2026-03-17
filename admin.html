@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Splyto Admin - Feedback</title>
+    <link rel="stylesheet" href="./admin.css?v=20260316b" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div>
+          <h1>Splyto Admin</h1>
+          <p>Feedback and bug reports</p>
+        </div>
+        <button id="logoutBtn" class="ghost" type="button">Log out</button>
+      </header>
+
+      <section id="authCard" class="card auth-card">
+        <h2>Admin Access</h2>
+        <p>Enter admin key to view reports.</p>
+        <form id="authForm">
+          <label for="adminKey">Admin key</label>
+          <input
+            id="adminKey"
+            name="adminKey"
+            type="password"
+            autocomplete="off"
+            placeholder="Enter admin key"
+            required
+          />
+          <button id="authSubmit" type="submit">Open dashboard</button>
+        </form>
+      </section>
+
+      <section id="dashboard" class="dashboard hidden">
+        <div class="stats-grid">
+          <article class="card stat">
+            <span>Total</span>
+            <strong id="statTotal">0</strong>
+          </article>
+          <article class="card stat">
+            <span>Bugs</span>
+            <strong id="statBug">0</strong>
+          </article>
+          <article class="card stat">
+            <span>Suggestions</span>
+            <strong id="statSuggestion">0</strong>
+          </article>
+          <article class="card stat">
+            <span>With screenshot</span>
+            <strong id="statWithScreenshot">0</strong>
+          </article>
+        </div>
+
+        <section class="card filters">
+          <div class="filter-row">
+            <label>
+              Type
+              <select id="filterType">
+                <option value="all">All</option>
+                <option value="bug">Bug</option>
+                <option value="suggestion">Suggestion</option>
+              </select>
+            </label>
+            <label>
+              Screenshot
+              <select id="filterScreenshot">
+                <option value="all">All</option>
+                <option value="yes">Only with screenshot</option>
+                <option value="no">Only without screenshot</option>
+              </select>
+            </label>
+            <label class="search-field">
+              Search
+              <input id="filterSearch" type="search" placeholder="User, email, trip, note..." />
+            </label>
+          </div>
+          <div class="filter-actions">
+            <button id="applyFiltersBtn" type="button">Apply</button>
+            <button id="clearFiltersBtn" class="ghost" type="button">Clear</button>
+          </div>
+        </section>
+
+        <section id="feedbackList" class="feedback-list"></section>
+
+        <div id="loadMoreWrap" class="load-more-wrap hidden">
+          <button id="loadMoreBtn" type="button">Load more</button>
+        </div>
+      </section>
+
+      <p id="statusMessage" class="status"></p>
+    </div>
+
+    <template id="feedbackCardTpl">
+      <article class="card feedback-item">
+        <div class="feedback-head">
+          <div class="feedback-meta">
+            <span class="badge"></span>
+            <span class="report-id"></span>
+            <span class="created-at"></span>
+          </div>
+        </div>
+        <div class="feedback-body">
+          <div class="feedback-main">
+            <p class="note"></p>
+            <dl class="meta-grid"></dl>
+          </div>
+          <a class="screenshot-link hidden" target="_blank" rel="noopener noreferrer">
+            <img class="screenshot" alt="Feedback screenshot" loading="lazy" />
+          </a>
+        </div>
+      </article>
+    </template>
+
+    <script src="./admin.js?v=20260316b"></script>
+  </body>
+</html>
