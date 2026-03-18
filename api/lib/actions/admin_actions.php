@@ -1,6 +1,35 @@
 <?php
 declare(strict_types=1);
 
+function normalize_admin_feedback_status_filter(string $raw): string
+{
+    $status = strtolower(trim($raw));
+    if ($status === '') {
+        return 'all';
+    }
+    if ($status === 'all' || $status === 'open' || $status === 'archived') {
+        return $status;
+    }
+    json_out(['ok' => false, 'error' => 'Invalid status filter.'], 400);
+}
+
+function admin_feedback_actor(): string
+{
+    return normalize_feedback_history_actor((string) ($_SERVER['HTTP_X_ADMIN_ACTOR'] ?? ''), 'admin');
+}
+
+function admin_feedback_comment_from_body(array $body, bool $required): string
+{
+    $comment = trim((string) ($body['comment'] ?? ''));
+    if ($required && $comment === '') {
+        json_out(['ok' => false, 'error' => 'Comment is required.'], 400);
+    }
+    if (str_length($comment) > 500) {
+        json_out(['ok' => false, 'error' => 'Comment is too long (max 500 chars).'], 400);
+    }
+    return $comment;
+}
+
 function admin_feedback_feed_action(): void
 {
     require_admin();
@@ -26,6 +55,7 @@ function admin_feedback_feed_action(): void
     if ($type !== 'all' && $type !== 'bug' && $type !== 'suggestion') {
         json_out(['ok' => false, 'error' => 'Invalid type filter.'], 400);
     }
+    $statusFilter = normalize_admin_feedback_status_filter((string) ($_GET['status'] ?? 'all'));
 
     $hasScreenshot = strtolower(trim((string) ($_GET['has_screenshot'] ?? 'all')));
     if ($hasScreenshot !== 'all' && $hasScreenshot !== 'yes' && $hasScreenshot !== 'no') {
@@ -42,6 +72,10 @@ function admin_feedback_feed_action(): void
     if ($type !== 'all') {
         $where[] = 'f.type = :type';
         $params['type'] = $type;
+    }
+    if ($statusFilter !== 'all') {
+        $where[] = 'f.status = :status_filter';
+        $params['status_filter'] = $statusFilter;
     }
     if ($hasScreenshot === 'yes') {
         $where[] = 'f.screenshot_path IS NOT NULL AND f.screenshot_path <> ""';
@@ -82,6 +116,10 @@ function admin_feedback_feed_action(): void
             f.trip_id,
             f.type,
             f.note,
+            f.status,
+            f.archived_at,
+            f.archived_comment,
+            f.updated_at,
             f.screenshot_path,
             f.screenshot_size,
             f.app_platform,
@@ -109,6 +147,11 @@ function admin_feedback_feed_action(): void
     $listStmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $listStmt->execute();
     $rows = $listStmt->fetchAll();
+    $feedbackIds = array_map(
+        static fn(array $row): int => (int) ($row['id'] ?? 0),
+        $rows
+    );
+    $historyByFeedbackId = load_feedback_history_map($pdo, $feedbackIds);
 
     $items = [];
     foreach ($rows as $row) {
@@ -125,12 +168,39 @@ function admin_feedback_feed_action(): void
                 $context = $decoded;
             }
         }
+        $feedbackId = (int) ($row['id'] ?? 0);
+        $history = $historyByFeedbackId[$feedbackId] ?? [];
+        if (count($history) === 0) {
+            $history[] = [
+                'action' => 'created',
+                'from_status' => null,
+                'to_status' => 'open',
+                'comment' => null,
+                'actor' => 'system',
+                'created_at' => $row['created_at'] ?: null,
+            ];
+            if ((string) ($row['status'] ?? '') === 'archived') {
+                $history[] = [
+                    'action' => 'archived',
+                    'from_status' => 'open',
+                    'to_status' => 'archived',
+                    'comment' => ($row['archived_comment'] ?? null) !== null
+                        ? (string) $row['archived_comment']
+                        : null,
+                    'actor' => 'admin',
+                    'created_at' => ($row['archived_at'] ?? null) !== null
+                        ? (string) $row['archived_at']
+                        : null,
+                ];
+            }
+        }
 
         $items[] = [
-            'id' => (int) ($row['id'] ?? 0),
+            'id' => $feedbackId,
             'type' => (string) ($row['type'] ?? 'bug'),
             'note' => (string) ($row['note'] ?? ''),
             'created_at' => $row['created_at'] ?: null,
+            'updated_at' => $row['updated_at'] ?: null,
             'user' => [
                 'id' => (int) ($row['user_id'] ?? 0),
                 'nickname' => (string) ($row['user_nickname'] ?? ''),
@@ -149,6 +219,11 @@ function admin_feedback_feed_action(): void
                 'build_number' => (string) ($row['build_number'] ?? ''),
                 'locale' => (string) ($row['locale'] ?? ''),
             ],
+            'status' => [
+                'current' => (string) ($row['status'] ?? 'open'),
+                'archived_at' => ($row['archived_at'] ?? null) !== null ? (string) $row['archived_at'] : null,
+                'archived_comment' => ($row['archived_comment'] ?? null) !== null ? (string) $row['archived_comment'] : null,
+            ],
             'screenshot' => $screenshotPath !== '' ? [
                 'path' => $screenshotPath,
                 'size' => (int) ($row['screenshot_size'] ?? 0),
@@ -156,6 +231,7 @@ function admin_feedback_feed_action(): void
                 'thumb_url' => feedback_thumb_public_url($screenshotPath),
             ] : null,
             'context' => $context,
+            'history' => $history,
         ];
     }
 
@@ -164,6 +240,8 @@ function admin_feedback_feed_action(): void
             COUNT(*) AS total_count,
             SUM(CASE WHEN type = "bug" THEN 1 ELSE 0 END) AS bug_count,
             SUM(CASE WHEN type = "suggestion" THEN 1 ELSE 0 END) AS suggestion_count,
+            SUM(CASE WHEN status = "open" THEN 1 ELSE 0 END) AS open_count,
+            SUM(CASE WHEN status = "archived" THEN 1 ELSE 0 END) AS archived_count,
             SUM(CASE WHEN screenshot_path IS NOT NULL AND screenshot_path <> "" THEN 1 ELSE 0 END) AS with_screenshot_count
          FROM ' . $feedbackTable
     )->fetch() ?: [];
@@ -174,6 +252,8 @@ function admin_feedback_feed_action(): void
             'total' => (int) ($statsRow['total_count'] ?? 0),
             'bug' => (int) ($statsRow['bug_count'] ?? 0),
             'suggestion' => (int) ($statsRow['suggestion_count'] ?? 0),
+            'open' => (int) ($statsRow['open_count'] ?? 0),
+            'archived' => (int) ($statsRow['archived_count'] ?? 0),
             'with_screenshot' => (int) ($statsRow['with_screenshot_count'] ?? 0),
         ],
         'paging' => [
@@ -185,10 +265,153 @@ function admin_feedback_feed_action(): void
         ],
         'filters' => [
             'type' => $type,
+            'status' => $statusFilter,
             'has_screenshot' => $hasScreenshot,
             'q' => $query,
         ],
         'items' => $items,
+    ]);
+}
+
+function admin_archive_feedback_action(): void
+{
+    require_post();
+    require_admin();
+    $body = read_json();
+    $feedbackId = (int) ($body['feedback_id'] ?? 0);
+    if ($feedbackId <= 0) {
+        json_out(['ok' => false, 'error' => 'feedback_id is required.'], 400);
+    }
+
+    $comment = admin_feedback_comment_from_body($body, true);
+    ensure_text_has_no_links($comment, 'Comment');
+    $actor = admin_feedback_actor();
+
+    $pdo = db();
+    $feedbackTable = table_name('feedback');
+
+    $select = $pdo->prepare(
+        'SELECT id, status
+         FROM ' . $feedbackTable . '
+         WHERE id = :id
+         LIMIT 1'
+    );
+    $select->execute(['id' => $feedbackId]);
+    $feedback = $select->fetch();
+    if (!$feedback) {
+        json_out(['ok' => false, 'error' => 'Report not found.'], 404);
+    }
+
+    $currentStatus = (string) ($feedback['status'] ?? 'open');
+    if ($currentStatus === 'archived') {
+        json_out(['ok' => false, 'error' => 'Report is already archived.'], 409);
+    }
+
+    $update = $pdo->prepare(
+        'UPDATE ' . $feedbackTable . '
+         SET status = "archived",
+             archived_at = CURRENT_TIMESTAMP,
+             archived_comment = :archived_comment,
+             archived_by_admin = :archived_by_admin
+         WHERE id = :id
+           AND status <> "archived"'
+    );
+    $update->execute([
+        'archived_comment' => $comment,
+        'archived_by_admin' => $actor,
+        'id' => $feedbackId,
+    ]);
+    if ((int) $update->rowCount() < 1) {
+        json_out(['ok' => false, 'error' => 'Report could not be archived.'], 409);
+    }
+
+    append_feedback_history_event(
+        $pdo,
+        $feedbackId,
+        'archived',
+        $currentStatus,
+        'archived',
+        $comment,
+        $actor
+    );
+
+    json_out([
+        'ok' => true,
+        'feedback_id' => $feedbackId,
+        'status' => 'archived',
+        'archived_comment' => $comment,
+    ]);
+}
+
+function admin_delete_feedback_action(): void
+{
+    require_post();
+    require_admin();
+    $body = read_json();
+    $feedbackId = (int) ($body['feedback_id'] ?? 0);
+    if ($feedbackId <= 0) {
+        json_out(['ok' => false, 'error' => 'feedback_id is required.'], 400);
+    }
+
+    $comment = admin_feedback_comment_from_body($body, false);
+    if ($comment !== '') {
+        ensure_text_has_no_links($comment, 'Comment');
+    }
+    $actor = admin_feedback_actor();
+
+    $pdo = db();
+    $feedbackTable = table_name('feedback');
+
+    $select = $pdo->prepare(
+        'SELECT id, status, screenshot_path
+         FROM ' . $feedbackTable . '
+         WHERE id = :id
+         LIMIT 1'
+    );
+    $select->execute(['id' => $feedbackId]);
+    $feedback = $select->fetch();
+    if (!$feedback) {
+        json_out(['ok' => false, 'error' => 'Report not found.'], 404);
+    }
+
+    $screenshotPath = trim((string) ($feedback['screenshot_path'] ?? ''));
+    $status = (string) ($feedback['status'] ?? 'open');
+
+    $pdo->beginTransaction();
+    try {
+        append_feedback_history_event(
+            $pdo,
+            $feedbackId,
+            'deleted',
+            $status,
+            null,
+            $comment !== '' ? $comment : null,
+            $actor
+        );
+
+        $delete = $pdo->prepare('DELETE FROM ' . $feedbackTable . ' WHERE id = :id');
+        $delete->execute(['id' => $feedbackId]);
+        if ((int) $delete->rowCount() < 1) {
+            throw new RuntimeException('Report could not be deleted.');
+        }
+
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $error;
+    }
+
+    if ($screenshotPath !== '') {
+        delete_feedback_file($screenshotPath);
+    }
+
+    json_out([
+        'ok' => true,
+        'deleted' => [
+            'id' => $feedbackId,
+        ],
     ]);
 }
 

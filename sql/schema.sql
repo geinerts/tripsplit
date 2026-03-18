@@ -140,6 +140,7 @@ CREATE TABLE IF NOT EXISTS trip_feedback (
   user_id INT UNSIGNED NOT NULL,
   trip_id INT UNSIGNED NULL,
   type ENUM('bug', 'suggestion') NOT NULL,
+  status ENUM('open', 'archived') NOT NULL DEFAULT 'open',
   note TEXT NULL,
   screenshot_path VARCHAR(255) NULL,
   screenshot_size INT UNSIGNED NULL,
@@ -148,13 +149,32 @@ CREATE TABLE IF NOT EXISTS trip_feedback (
   build_number VARCHAR(32) NULL,
   locale VARCHAR(24) NULL,
   context_json LONGTEXT NULL,
+  archived_at TIMESTAMP NULL DEFAULT NULL,
+  archived_comment VARCHAR(500) NULL,
+  archived_by_admin VARCHAR(80) NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
+  KEY idx_trip_feedback_status_created (status, created_at, id),
   KEY idx_trip_feedback_user_created (user_id, created_at, id),
   KEY idx_trip_feedback_trip_created (trip_id, created_at, id),
   KEY idx_trip_feedback_type_created (type, created_at, id),
   CONSTRAINT fk_trip_feedback_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE,
   CONSTRAINT fk_trip_feedback_trip_id FOREIGN KEY (trip_id) REFERENCES trip_trips(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS trip_feedback_status_history (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  feedback_id BIGINT UNSIGNED NOT NULL,
+  action ENUM('created', 'archived', 'deleted') NOT NULL,
+  from_status ENUM('open', 'archived') NULL,
+  to_status ENUM('open', 'archived') NULL,
+  comment VARCHAR(500) NULL,
+  actor VARCHAR(80) NOT NULL DEFAULT 'system',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_trip_feedback_status_history_feedback (feedback_id, id),
+  KEY idx_trip_feedback_status_history_created (created_at, id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS trip_request_limits (

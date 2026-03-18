@@ -26,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Splyto needs photo library access so you can attach receipts, trip images, and profile photos.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Splyto uses iOS file/media picker to let you select files to upload.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -72,13 +72,20 @@ extension _LoginPageWidgets on _LoginPageState {
     final t = context.l10n;
     final responsive = context.responsive;
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isLogin = _mode == _AuthMode.login;
-    final logoWidth = responsive.pick(compact: 220.0, medium: 260.0, expanded: 300.0);
+    final logoWidth = responsive.pick(
+      compact: 220.0,
+      medium: 260.0,
+      expanded: 300.0,
+    );
 
     return Column(
       children: [
         Image.asset(
-          'assets/branding/logo_full.png',
+          isDark
+              ? 'assets/branding/logo_full_dark.png'
+              : 'assets/branding/logo_full.png',
           width: logoWidth,
           fit: BoxFit.contain,
           filterQuality: FilterQuality.high,

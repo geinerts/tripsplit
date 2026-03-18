@@ -82,8 +82,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
   Widget _buildAppBarTitle(BuildContext context, TextStyle? titleStyle) {
     final title = _topTitle(context);
     final showLogo =
-        !_isWorkspaceOpen &&
-        _selectedTabIndex == _MainShellPageState._tabHome;
+        !_isWorkspaceOpen && _selectedTabIndex == _MainShellPageState._tabHome;
     if (!showLogo) {
       return Text(
         title,
@@ -96,8 +95,8 @@ extension _MainShellPageWidgets on _MainShellPageState {
       children: [
         Image.asset(
           'assets/branding/logo_mark.png',
-          width: 26,
-          height: 26,
+          width: 30,
+          height: 30,
           fit: BoxFit.contain,
           filterQuality: FilterQuality.high,
         ),

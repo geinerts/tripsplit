@@ -111,7 +111,10 @@ class _TripSplitAppState extends State<TripSplitApp> {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.38),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         border: fieldBorder,
         enabledBorder: fieldBorder.copyWith(
           borderSide: BorderSide(
@@ -160,8 +163,12 @@ class _TripSplitAppState extends State<TripSplitApp> {
           alpha: 0.6,
         ),
         selectedColor: colorScheme.primaryContainer,
-        disabledColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-        side: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
+        disabledColor: colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.3,
+        ),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         labelStyle: TextStyle(color: colorScheme.onSurface),
         secondaryLabelStyle: TextStyle(color: colorScheme.onPrimaryContainer),
@@ -187,9 +194,25 @@ class _TripSplitAppState extends State<TripSplitApp> {
   }
 
   ThemeData _buildDarkTheme() {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF14B8A6),
+    final baseScheme = ColorScheme.fromSeed(
+      seedColor: AppDesign.brandStart,
       brightness: Brightness.dark,
+    );
+    final colorScheme = baseScheme.copyWith(
+      primary: const Color(0xFF79A7FF),
+      secondary: const Color(0xFFB28DFF),
+      surface: AppDesign.darkSurface,
+      surfaceContainerLowest: AppDesign.darkCanvas,
+      surfaceContainerLow: AppDesign.darkCanvasSoft,
+      surfaceContainer: AppDesign.darkSurface,
+      surfaceContainerHigh: AppDesign.darkSurfaceRaised,
+      surfaceContainerHighest: const Color(0xFF1C2B42),
+      outline: const Color(0xFF537099),
+      outlineVariant: AppDesign.darkOutline,
+      onSurface: const Color(0xFFF4F7FD),
+      onSurfaceVariant: const Color(0xFFB7C6DF),
+      primaryContainer: const Color(0xFF18335A),
+      onPrimaryContainer: const Color(0xFFE7F0FF),
     );
     const fieldRadius = 16.0;
     final fieldBorder = OutlineInputBorder(
@@ -199,7 +222,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
     return ThemeData(
       colorScheme: colorScheme,
       useMaterial3: true,
-      scaffoldBackgroundColor: const Color(0xFF0F172A),
+      scaffoldBackgroundColor: AppDesign.darkCanvas,
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -209,24 +232,27 @@ class _TripSplitAppState extends State<TripSplitApp> {
         systemOverlayStyle: _overlayStyleFor(Brightness.dark),
       ),
       cardTheme: CardThemeData(
-        color: const Color(0xFF111B31),
+        color: AppDesign.darkSurfaceRaised,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
           side: BorderSide(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+            color: colorScheme.outlineVariant.withValues(alpha: 0.52),
           ),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.22),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        fillColor: Colors.white.withValues(alpha: 0.06),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         border: fieldBorder,
         enabledBorder: fieldBorder.copyWith(
           borderSide: BorderSide(
-            color: colorScheme.outlineVariant.withValues(alpha: 0.65),
+            color: colorScheme.outlineVariant.withValues(alpha: 0.72),
           ),
         ),
         focusedBorder: fieldBorder.copyWith(
@@ -267,12 +293,12 @@ class _TripSplitAppState extends State<TripSplitApp> {
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: colorScheme.surfaceContainerHighest.withValues(
-          alpha: 0.26,
-        ),
+        backgroundColor: Colors.white.withValues(alpha: 0.07),
         selectedColor: colorScheme.primaryContainer.withValues(alpha: 0.55),
-        disabledColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.2),
-        side: BorderSide(color: colorScheme.outlineVariant.withValues(alpha: 0.45)),
+        disabledColor: Colors.white.withValues(alpha: 0.04),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.52),
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         labelStyle: TextStyle(color: colorScheme.onSurface),
         secondaryLabelStyle: TextStyle(color: colorScheme.onPrimaryContainer),
@@ -287,12 +313,12 @@ class _TripSplitAppState extends State<TripSplitApp> {
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 0,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: colorScheme.surface.withValues(alpha: 0.88),
+        backgroundColor: AppDesign.darkSurfaceRaised.withValues(alpha: 0.92),
         selectedItemColor: colorScheme.primary,
         unselectedItemColor: colorScheme.onSurfaceVariant,
       ),
       dividerTheme: DividerThemeData(
-        color: colorScheme.outlineVariant.withValues(alpha: 0.35),
+        color: colorScheme.outlineVariant.withValues(alpha: 0.42),
       ),
     );
   }

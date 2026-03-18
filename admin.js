@@ -9,6 +9,7 @@
     hasMore: false,
     filters: {
       type: "all",
+      status: "all",
       hasScreenshot: "all",
       q: "",
     },
@@ -25,7 +26,10 @@
     statBug: document.getElementById("statBug"),
     statSuggestion: document.getElementById("statSuggestion"),
     statWithScreenshot: document.getElementById("statWithScreenshot"),
+    statOpen: document.getElementById("statOpen"),
+    statArchived: document.getElementById("statArchived"),
     filterType: document.getElementById("filterType"),
+    filterStatus: document.getElementById("filterStatus"),
     filterScreenshot: document.getElementById("filterScreenshot"),
     filterSearch: document.getElementById("filterSearch"),
     applyFiltersBtn: document.getElementById("applyFiltersBtn"),
@@ -79,12 +83,48 @@
     ui.statBug.textContent = `${stats.bug || 0}`;
     ui.statSuggestion.textContent = `${stats.suggestion || 0}`;
     ui.statWithScreenshot.textContent = `${stats.with_screenshot || 0}`;
+    ui.statOpen.textContent = `${stats.open || 0}`;
+    ui.statArchived.textContent = `${stats.archived || 0}`;
+  }
+
+  function normalizeStatus(status) {
+    return safeText(status).toLowerCase() === "archived" ? "archived" : "open";
+  }
+
+  function statusLabel(status) {
+    return normalizeStatus(status) === "archived" ? "Archived" : "Open";
+  }
+
+  function historyActionLabel(action) {
+    const key = safeText(action).toLowerCase();
+    if (key === "created") return "Created";
+    if (key === "archived") return "Archived";
+    if (key === "deleted") return "Deleted";
+    return key || "Event";
+  }
+
+  function renderHistory(item) {
+    const history = Array.isArray(item.history) ? item.history : [];
+    if (!history.length) {
+      return `<li>No status history.</li>`;
+    }
+    return history
+      .map((event) => {
+        const action = historyActionLabel(event.action);
+        const actor = safeText(event.actor) || "system";
+        const when = toDateLabel(event.created_at);
+        const comment = safeText(event.comment);
+        const commentText = comment ? ` - ${escapeHtml(comment)}` : "";
+        return `<li><strong>${escapeHtml(action)}</strong> by ${escapeHtml(actor)} at ${escapeHtml(when)}${commentText}</li>`;
+      })
+      .join("");
   }
 
   function renderMetaGrid(item) {
     const user = item.user || {};
     const app = item.app || {};
     const trip = item.trip || {};
+    const status = item.status || {};
     const context = item.context && typeof item.context === "object"
       ? JSON.stringify(item.context)
       : "";
@@ -97,6 +137,7 @@
       ["Version", safeText(app.version) || "-"],
       ["Build", safeText(app.build_number) || "-"],
       ["Locale", safeText(app.locale) || "-"],
+      ["Status", statusLabel(status.current)],
       ["Screenshot", item.screenshot ? "Yes" : "No"],
     ];
 
@@ -125,16 +166,26 @@
     const fragment = ui.feedbackCardTpl.content.cloneNode(true);
     const root = fragment.querySelector(".feedback-item");
     const badge = fragment.querySelector(".badge");
+    const statusBadge = fragment.querySelector(".status-badge");
     const reportId = fragment.querySelector(".report-id");
     const createdAt = fragment.querySelector(".created-at");
     const note = fragment.querySelector(".note");
     const metaGrid = fragment.querySelector(".meta-grid");
+    const archiveBtn = fragment.querySelector(".archive-btn");
+    const deleteBtn = fragment.querySelector(".delete-btn");
+    const archiveNote = fragment.querySelector(".archive-note");
+    const historyList = fragment.querySelector(".history-list");
     const screenshotLink = fragment.querySelector(".screenshot-link");
     const screenshotImg = fragment.querySelector(".screenshot");
+    const status = item.status || {};
+    const currentStatus = normalizeStatus(status.current);
+    const archivedComment = safeText(status.archived_comment);
 
     const type = safeText(item.type).toLowerCase() === "suggestion" ? "suggestion" : "bug";
     badge.classList.add(type);
     badge.textContent = type === "bug" ? "Bug" : "Suggestion";
+    statusBadge.classList.add(currentStatus);
+    statusBadge.textContent = statusLabel(currentStatus);
     reportId.textContent = `#${item.id || 0}`;
     createdAt.textContent = toDateLabel(item.created_at);
 
@@ -143,6 +194,22 @@
     note.style.opacity = noteText ? "1" : "0.7";
 
     metaGrid.innerHTML = renderMetaGrid(item);
+    historyList.innerHTML = renderHistory(item);
+
+    root.dataset.feedbackId = String(item.id || 0);
+    archiveBtn.dataset.feedbackId = String(item.id || 0);
+    deleteBtn.dataset.feedbackId = String(item.id || 0);
+    archiveBtn.disabled = currentStatus === "archived";
+    archiveBtn.textContent = currentStatus === "archived" ? "Archived" : "Archive";
+
+    if (currentStatus === "archived") {
+      archiveNote.classList.remove("hidden");
+      const archivedAt = toDateLabel(status.archived_at);
+      const noteText = archivedComment ? ` Comment: ${archivedComment}` : "";
+      archiveNote.textContent = `Archived at ${archivedAt}.${noteText}`;
+    } else {
+      archiveNote.classList.add("hidden");
+    }
 
     if (item.screenshot && item.screenshot.url) {
       screenshotLink.classList.remove("hidden");
@@ -170,6 +237,87 @@
     ui.feedbackList.appendChild(frag);
   }
 
+  async function apiPost(action, body) {
+    const response = await fetch("./api/api.php?action=" + encodeURIComponent(action), {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-Admin-Key": state.adminKey,
+        "X-Admin-Actor": "web-admin",
+      },
+      body: JSON.stringify(body || {}),
+    });
+    const payload = await response.json();
+    if (!response.ok || payload.ok !== true) {
+      const message = payload && payload.error ? payload.error : `HTTP ${response.status}`;
+      throw new Error(message);
+    }
+    return payload;
+  }
+
+  async function archiveReport(feedbackId) {
+    const comment = window.prompt("Archive comment (required):", "Resolved in latest build");
+    if (comment == null) {
+      return;
+    }
+    const trimmed = safeText(comment);
+    if (!trimmed) {
+      setStatus("Archive comment is required.", true);
+      return;
+    }
+
+    setLoading(true);
+    setStatus(`Archiving report #${feedbackId}...`);
+    try {
+      await apiPost("admin_archive_feedback", {
+        feedback_id: Number(feedbackId),
+        comment: trimmed,
+      });
+    } catch (error) {
+      const message = error && error.message ? error.message : "Failed to archive report.";
+      setStatus(message, true);
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
+    await fetchFeed({ reset: true });
+    if (!state.loading) {
+      setStatus(`Report #${feedbackId} archived.`);
+    }
+  }
+
+  async function deleteReport(feedbackId) {
+    const confirmed = window.confirm(`Delete report #${feedbackId}? This cannot be undone.`);
+    if (!confirmed) {
+      return;
+    }
+    const optionalComment = window.prompt("Optional delete comment:", "");
+    if (optionalComment == null) {
+      return;
+    }
+
+    setLoading(true);
+    setStatus(`Deleting report #${feedbackId}...`);
+    try {
+      await apiPost("admin_delete_feedback", {
+        feedback_id: Number(feedbackId),
+        comment: safeText(optionalComment),
+      });
+    } catch (error) {
+      const message = error && error.message ? error.message : "Failed to delete report.";
+      setStatus(message, true);
+      setLoading(false);
+      return;
+    } finally {
+      setLoading(false);
+    }
+    await fetchFeed({ reset: true });
+    if (!state.loading) {
+      setStatus(`Report #${feedbackId} deleted.`);
+    }
+  }
+
   async function fetchFeed({ reset = false } = {}) {
     if (!state.adminKey || state.loading) return;
     setLoading(true);
@@ -184,6 +332,7 @@
       limit: String(PAGE_LIMIT),
       offset: String(state.offset),
       type: state.filters.type,
+      status: state.filters.status,
       has_screenshot: state.filters.hasScreenshot,
       q: state.filters.q,
     });
@@ -245,12 +394,14 @@
 
   function applyFilterControlsToState() {
     state.filters.type = ui.filterType.value;
+    state.filters.status = ui.filterStatus.value;
     state.filters.hasScreenshot = ui.filterScreenshot.value;
     state.filters.q = safeText(ui.filterSearch.value);
   }
 
   function clearFilters() {
     ui.filterType.value = "all";
+    ui.filterStatus.value = "all";
     ui.filterScreenshot.value = "all";
     ui.filterSearch.value = "";
     applyFilterControlsToState();
@@ -292,13 +443,29 @@
     await fetchFeed({ reset: false });
   });
 
+  ui.feedbackList.addEventListener("click", async (event) => {
+    const button = event.target.closest("button[data-admin-action]");
+    if (!button || state.loading) return;
+    const feedbackId = Number(button.dataset.feedbackId || 0);
+    if (!Number.isFinite(feedbackId) || feedbackId <= 0) return;
+
+    const action = button.dataset.adminAction;
+    if (action === "archive") {
+      await archiveReport(feedbackId);
+      return;
+    }
+    if (action === "delete") {
+      await deleteReport(feedbackId);
+    }
+  });
+
   ui.logoutBtn.addEventListener("click", () => {
     state.adminKey = "";
     localStorage.removeItem(LS_KEY);
     ui.adminKey.value = "";
     ui.feedbackList.innerHTML = "";
     ui.loadMoreWrap.classList.add("hidden");
-    renderStats({ total: 0, bug: 0, suggestion: 0, with_screenshot: 0 });
+    renderStats({ total: 0, bug: 0, suggestion: 0, with_screenshot: 0, open: 0, archived: 0 });
     setStatus("Logged out.");
     showAuth();
   });

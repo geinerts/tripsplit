@@ -49,6 +49,8 @@ function api_action_handlers(): array
         'generate_order' => 'generate_order_action',
         'list_orders' => 'list_orders_action',
         'admin_feedback_feed' => 'admin_feedback_feed_action',
+        'admin_archive_feedback' => 'admin_archive_feedback_action',
+        'admin_delete_feedback' => 'admin_delete_feedback_action',
         'admin_summary' => 'admin_summary_action',
         'admin_users' => 'admin_users_action',
         'admin_user_detail' => 'admin_user_detail_action',

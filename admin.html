@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Splyto Admin - Feedback</title>
-    <link rel="stylesheet" href="./admin.css?v=20260316b" />
+    <link rel="stylesheet" href="./admin.css?v=20260318a" />
   </head>
   <body>
     <div class="app">
@@ -51,6 +51,14 @@
             <span>With screenshot</span>
             <strong id="statWithScreenshot">0</strong>
           </article>
+          <article class="card stat">
+            <span>Open</span>
+            <strong id="statOpen">0</strong>
+          </article>
+          <article class="card stat">
+            <span>Archived</span>
+            <strong id="statArchived">0</strong>
+          </article>
         </div>
 
         <section class="card filters">
@@ -61,6 +69,14 @@
                 <option value="all">All</option>
                 <option value="bug">Bug</option>
                 <option value="suggestion">Suggestion</option>
+              </select>
+            </label>
+            <label>
+              Status
+              <select id="filterStatus">
+                <option value="all">All</option>
+                <option value="open">Open</option>
+                <option value="archived">Archived</option>
               </select>
             </label>
             <label>
@@ -97,14 +113,24 @@
         <div class="feedback-head">
           <div class="feedback-meta">
             <span class="badge"></span>
+            <span class="status-badge"></span>
             <span class="report-id"></span>
             <span class="created-at"></span>
+          </div>
+          <div class="feedback-controls">
+            <button class="ghost action-btn archive-btn" type="button" data-admin-action="archive">Archive</button>
+            <button class="ghost action-btn danger delete-btn" type="button" data-admin-action="delete">Delete</button>
           </div>
         </div>
         <div class="feedback-body">
           <div class="feedback-main">
             <p class="note"></p>
             <dl class="meta-grid"></dl>
+            <div class="archive-note hidden"></div>
+            <div class="history-block">
+              <h3>Status history</h3>
+              <ul class="history-list"></ul>
+            </div>
           </div>
           <a class="screenshot-link hidden" target="_blank" rel="noopener noreferrer">
             <img class="screenshot" alt="Feedback screenshot" loading="lazy" />
@@ -113,6 +139,6 @@
       </article>
     </template>
 
-    <script src="./admin.js?v=20260316b"></script>
+    <script src="./admin.js?v=20260318a"></script>
   </body>
 </html>

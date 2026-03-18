@@ -10,8 +10,13 @@ class AppBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final brightness = Theme.of(context).brightness;
+    final primaryGlowAlpha = brightness == Brightness.dark ? 0.18 : 0.12;
+    final secondaryGlowAlpha = brightness == Brightness.dark ? 0.14 : 0.08;
     return DecoratedBox(
-      decoration: BoxDecoration(gradient: AppDesign.pageGradient(colors)),
+      decoration: BoxDecoration(
+        gradient: AppDesign.pageGradient(colors, brightness: brightness),
+      ),
       child: Stack(
         children: [
           Positioned(
@@ -23,7 +28,7 @@ class AppBackground extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppDesign.brandStart.withValues(alpha: 0.12),
+                      AppDesign.brandStart.withValues(alpha: primaryGlowAlpha),
                       Colors.transparent,
                     ],
                   ),
@@ -41,7 +46,7 @@ class AppBackground extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppDesign.brandEnd.withValues(alpha: 0.08),
+                      AppDesign.brandEnd.withValues(alpha: secondaryGlowAlpha),
                       Colors.transparent,
                     ],
                   ),

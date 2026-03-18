@@ -168,9 +168,20 @@ function submit_feedback_action(): void
         throw $error;
     }
 
+    $feedbackId = (int) $pdo->lastInsertId();
+    append_feedback_history_event(
+        $pdo,
+        $feedbackId,
+        'created',
+        null,
+        'open',
+        null,
+        'user:' . (string) $userId
+    );
+
     json_out([
         'ok' => true,
-        'feedback_id' => (int) $pdo->lastInsertId(),
+        'feedback_id' => $feedbackId,
         'type' => $type,
         'screenshot_url' => $screenshotPath !== '' ? feedback_public_url($screenshotPath) : null,
         'screenshot_thumb_url' => $screenshotPath !== '' ? feedback_thumb_public_url($screenshotPath) : null,

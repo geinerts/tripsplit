@@ -186,6 +186,7 @@ function table_name(string $key): string
         'settlements' => DB_TABLE_PREFIX . 'settlements',
         'notifications' => DB_TABLE_PREFIX . 'notifications',
         'feedback' => DB_TABLE_PREFIX . 'feedback',
+        'feedback_status_history' => DB_TABLE_PREFIX . 'feedback_status_history',
         'random_orders' => DB_TABLE_PREFIX . 'random_orders',
         'random_order_members' => DB_TABLE_PREFIX . 'random_order_members',
         'random_draw_state' => DB_TABLE_PREFIX . 'random_draw_state',
