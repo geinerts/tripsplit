@@ -163,6 +163,7 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
     }
 
     final rows = <_CategoryTotalRow>[];
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final base = Theme.of(context).colorScheme.tertiary;
     final hsv = HSVColor.fromColor(base);
     var idx = 0;
@@ -179,8 +180,8 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
           total: entry.value,
           color: hsv
               .withHue((hsv.hue + (idx * 29)) % 360)
-              .withSaturation(0.62)
-              .withValue(0.84)
+              .withSaturation(isDark ? 0.56 : 0.62)
+              .withValue(isDark ? 0.98 : 0.84)
               .toColor(),
         ),
       );

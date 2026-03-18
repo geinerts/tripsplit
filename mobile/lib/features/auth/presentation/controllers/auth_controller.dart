@@ -109,6 +109,15 @@ class AuthController {
     return user;
   }
 
+  Future<bool> hasRecoverableSession() async {
+    final accessToken = await _authSessionStore.readValidAccessToken();
+    if ((accessToken ?? '').trim().isNotEmpty) {
+      return true;
+    }
+    final refreshToken = await _authSessionStore.readValidRefreshToken();
+    return (refreshToken ?? '').trim().isNotEmpty;
+  }
+
   Uint8List? avatarBytesFor(AuthUser? user) {
     final encoded = user?.avatarBase64;
     if (encoded == null || encoded.trim().isEmpty) {

@@ -66,7 +66,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
                   child: child ?? const SizedBox.shrink(),
                 );
               },
-              initialRoute: AppRouter.login,
+              home: _AppLaunchGate(dependencies: widget.dependencies),
               routes: router.routes,
             );
           },
@@ -348,5 +348,56 @@ class _TripSplitAppState extends State<TripSplitApp> {
     }
     _lastAppliedOverlayStyle = style;
     SystemChrome.setSystemUIOverlayStyle(style);
+  }
+}
+
+class _AppLaunchGate extends StatefulWidget {
+  const _AppLaunchGate({required this.dependencies});
+
+  final AppDependencies dependencies;
+
+  @override
+  State<_AppLaunchGate> createState() => _AppLaunchGateState();
+}
+
+class _AppLaunchGateState extends State<_AppLaunchGate> {
+  bool _navigated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_resolveAndNavigate());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: const SizedBox.expand(),
+    );
+  }
+
+  Future<void> _resolveAndNavigate() async {
+    String nextRoute = AppRouter.login;
+    try {
+      final hasSession = await widget.dependencies.authController
+          .hasRecoverableSession();
+      if (hasSession) {
+        final user = await widget.dependencies.authController
+            .loadCurrentUser()
+            .timeout(const Duration(seconds: 4));
+        nextRoute = user.needsCredentials
+            ? AppRouter.credentials
+            : AppRouter.trips;
+      }
+    } catch (_) {
+      nextRoute = AppRouter.login;
+    }
+
+    if (!mounted || _navigated) {
+      return;
+    }
+    _navigated = true;
+    Navigator.of(context).pushNamedAndRemoveUntil(nextRoute, (route) => false);
   }
 }

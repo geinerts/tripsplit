@@ -1088,7 +1088,23 @@ function json_out(array $payload, int $status = 200): void
         header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
     }
 
-    echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    $jsonFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+    if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+        $jsonFlags |= JSON_INVALID_UTF8_SUBSTITUTE;
+    }
+    if (defined('JSON_PARTIAL_OUTPUT_ON_ERROR')) {
+        $jsonFlags |= JSON_PARTIAL_OUTPUT_ON_ERROR;
+    }
+
+    $json = json_encode($payload, $jsonFlags);
+    if (!is_string($json)) {
+        if ($status < 500) {
+            http_response_code(500);
+        }
+        $json = '{"ok":false,"error":"Response encoding failed."}';
+    }
+
+    echo $json;
     exit;
 }
 

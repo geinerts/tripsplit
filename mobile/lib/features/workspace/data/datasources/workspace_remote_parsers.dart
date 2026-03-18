@@ -8,6 +8,67 @@ import '../../domain/entities/workspace_notification.dart';
 import '../../domain/entities/workspace_user.dart';
 
 class WorkspaceRemoteParsers {
+  static int _toInt(Object? value, {int fallback = 0}) {
+    if (value is num) {
+      return value.toInt();
+    }
+    if (value is String) {
+      final normalized = value.trim();
+      if (normalized.isEmpty) {
+        return fallback;
+      }
+      final parsedInt = int.tryParse(normalized);
+      if (parsedInt != null) {
+        return parsedInt;
+      }
+      final parsedDouble = double.tryParse(normalized);
+      if (parsedDouble != null) {
+        return parsedDouble.toInt();
+      }
+    }
+    return fallback;
+  }
+
+  static bool _toBool(Object? value, {bool fallback = false}) {
+    if (value is bool) {
+      return value;
+    }
+    if (value is num) {
+      return value.toInt() == 1;
+    }
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      if (normalized == '1' ||
+          normalized == 'true' ||
+          normalized == 'yes' ||
+          normalized == 'y') {
+        return true;
+      }
+      if (normalized == '0' ||
+          normalized == 'false' ||
+          normalized == 'no' ||
+          normalized == 'n') {
+        return false;
+      }
+    }
+    return fallback;
+  }
+
+  static String _toString(Object? value, {String fallback = ''}) {
+    if (value == null) {
+      return fallback;
+    }
+    if (value is String) {
+      return value;
+    }
+    return value.toString();
+  }
+
+  static String? _toNullableString(Object? value) {
+    final result = _toString(value).trim();
+    return result.isEmpty ? null : result;
+  }
+
   static WorkspaceUser parseUser(Map<String, dynamic> item) {
     final displayName = (item['display_name'] as String? ?? '').trim();
     final avatarUrl = (item['avatar_url'] as String? ?? '').trim();
@@ -100,17 +161,16 @@ class WorkspaceRemoteParsers {
   }
 
   static WorkspaceNotification parseNotification(Map<String, dynamic> item) {
-    final tripName = (item['trip_name'] as String?)?.trim();
+    final tripName = _toNullableString(item['trip_name']);
     return WorkspaceNotification(
-      id: (item['id'] as num?)?.toInt() ?? 0,
-      tripId: (item['trip_id'] as num?)?.toInt() ?? 0,
-      tripName: tripName != null && tripName.isNotEmpty ? tripName : null,
-      type: (item['type'] as String? ?? 'info').trim(),
-      title: (item['title'] as String? ?? '').trim(),
-      body: (item['body'] as String? ?? '').trim(),
-      isRead:
-          item['is_read'] == true || (item['is_read'] as num?)?.toInt() == 1,
-      createdAt: item['created_at'] as String?,
+      id: _toInt(item['id']),
+      tripId: _toInt(item['trip_id']),
+      tripName: tripName,
+      type: _toString(item['type'], fallback: 'info').trim(),
+      title: _toString(item['title']).trim(),
+      body: _toString(item['body']).trim(),
+      isRead: _toBool(item['is_read']),
+      createdAt: _toNullableString(item['created_at']),
     );
   }
 

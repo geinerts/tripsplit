@@ -304,6 +304,13 @@ class _HorizontalMemberBar extends StatelessWidget {
         .clamp(0.0, 1.0)
         .toDouble();
     final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final barColor = isDark
+        ? Color.lerp(color, Colors.white, 0.42) ?? color
+        : color;
+    final trackColor = isDark
+        ? Colors.white.withValues(alpha: 0.10)
+        : colors.surfaceContainerHighest.withValues(alpha: 0.46);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -337,27 +344,33 @@ class _HorizontalMemberBar extends StatelessWidget {
           const SizedBox(height: 6),
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: SizedBox(
-              height: 10,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ColoredBox(
-                      color: colors.surfaceContainerHighest.withValues(
-                        alpha: 0.46,
-                      ),
-                    ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final maxWidth = constraints.maxWidth;
+                final width = ratio <= 0
+                    ? 0.0
+                    : math.max(4.0, maxWidth * ratio);
+                return SizedBox(
+                  height: 10,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: ColoredBox(color: trackColor)),
+                      if (width > 0)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            width: width,
+                            decoration: BoxDecoration(
+                              color: barColor.withValues(
+                                alpha: isDark ? 1 : 0.92,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                  FractionallySizedBox(
-                    widthFactor: ratio,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.92),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ],
@@ -389,6 +402,13 @@ class _HorizontalCategoryBar extends StatelessWidget {
         .clamp(0.0, 1.0)
         .toDouble();
     final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final barColor = isDark
+        ? Color.lerp(color, Colors.white, 0.44) ?? color
+        : color;
+    final trackColor = isDark
+        ? Colors.white.withValues(alpha: 0.10)
+        : colors.surfaceContainerHighest.withValues(alpha: 0.46);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -397,7 +417,7 @@ class _HorizontalCategoryBar extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 18, color: color),
+              Icon(icon, size: 18, color: barColor),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -421,27 +441,33 @@ class _HorizontalCategoryBar extends StatelessWidget {
           const SizedBox(height: 6),
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: SizedBox(
-              height: 10,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ColoredBox(
-                      color: colors.surfaceContainerHighest.withValues(
-                        alpha: 0.46,
-                      ),
-                    ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final maxWidth = constraints.maxWidth;
+                final width = ratio <= 0
+                    ? 0.0
+                    : math.max(4.0, maxWidth * ratio);
+                return SizedBox(
+                  height: 10,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: ColoredBox(color: trackColor)),
+                      if (width > 0)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            width: width,
+                            decoration: BoxDecoration(
+                              color: barColor.withValues(
+                                alpha: isDark ? 1 : 0.92,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                  FractionallySizedBox(
-                    widthFactor: ratio,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.92),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
         ],
