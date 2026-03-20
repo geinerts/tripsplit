@@ -7,6 +7,9 @@ import '../core/network/legacy_avatar_uploader.dart';
 import '../core/network/legacy_feedback_reporter.dart';
 import '../core/network/legacy_receipt_uploader.dart';
 import '../core/network/legacy_trip_image_uploader.dart';
+import '../core/push/push_native_bridge.dart';
+import '../core/push/push_registration_service.dart';
+import '../core/push/push_registration_store.dart';
 import '../core/perf/perf_monitor.dart';
 import 'locale/app_locale_controller.dart';
 import 'theme/theme_mode_controller.dart';
@@ -30,7 +33,9 @@ import '../features/friends/presentation/controllers/friends_controller.dart';
 import '../features/trips/data/datasources/trips_remote_data_source.dart';
 import '../features/trips/data/repositories/trips_repository_impl.dart';
 import '../features/trips/domain/usecases/add_trip_members_use_case.dart';
+import '../features/trips/domain/usecases/create_trip_invite_link_use_case.dart';
 import '../features/trips/domain/usecases/create_trip_use_case.dart';
+import '../features/trips/domain/usecases/delete_trip_use_case.dart';
 import '../features/trips/domain/usecases/list_directory_users_use_case.dart';
 import '../features/trips/domain/usecases/list_trips_use_case.dart';
 import '../features/trips/domain/usecases/update_trip_use_case.dart';
@@ -94,6 +99,12 @@ class AppDependencies {
       tokenStore: tokenStore,
       authSessionStore: authSessionStore,
     );
+    final pushRegistrationService = PushRegistrationService(
+      apiClient: apiClient,
+      deviceTokenStore: tokenStore,
+      nativeBridge: PushNativeBridge(),
+      registrationStore: PushRegistrationStore(),
+    );
 
     final authRemote = AuthRemoteDataSourceImpl(apiClient);
     final authRepository = AuthRepositoryImpl(authRemote);
@@ -108,6 +119,7 @@ class AppDependencies {
       avatarStore,
       avatarUploader,
       feedbackReporter,
+      pushRegistrationService,
     );
 
     final tripsRemote = TripsRemoteDataSourceImpl(apiClient, tripImageUploader);
@@ -117,6 +129,8 @@ class AppDependencies {
       ListDirectoryUsersUseCase(tripsRepository),
       CreateTripUseCase(tripsRepository),
       AddTripMembersUseCase(tripsRepository),
+      DeleteTripUseCase(tripsRepository),
+      CreateTripInviteLinkUseCase(tripsRepository),
       UpdateTripUseCase(tripsRepository),
       UploadTripImageUseCase(tripsRepository),
     );

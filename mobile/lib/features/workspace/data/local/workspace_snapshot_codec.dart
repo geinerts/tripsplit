@@ -22,6 +22,8 @@ class WorkspaceSnapshotCodec {
               'display_name': user.displayName,
               'avatar_url': user.avatarUrl,
               'avatar_thumb_url': user.avatarThumbUrl,
+              'is_ready_to_settle': user.isReadyToSettle,
+              'ready_to_settle_at': user.readyToSettleAt,
             },
           )
           .toList(growable: false),
@@ -142,6 +144,16 @@ class WorkspaceSnapshotCodec {
                 ((item['avatar_thumb_url'] as String?) ?? '').trim().isEmpty
                 ? null
                 : (item['avatar_thumb_url'] as String?)?.trim(),
+            isReadyToSettle:
+                item['is_ready_to_settle'] == true ||
+                (item['is_ready_to_settle'] as num?)?.toInt() == 1 ||
+                (item['is_ready_to_settle'] as String?)?.trim() == '1' ||
+                (item['is_ready_to_settle'] as String?)?.trim().toLowerCase() ==
+                    'true',
+            readyToSettleAt:
+                ((item['ready_to_settle_at'] as String?) ?? '').trim().isEmpty
+                ? null
+                : (item['ready_to_settle_at'] as String?)?.trim(),
           ),
         )
         .toList(growable: false);

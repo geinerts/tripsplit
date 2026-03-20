@@ -27,11 +27,19 @@ abstract class WorkspaceRemoteDataSource {
   });
 
   Future<void> endTrip({required int tripId});
+  Future<void> setReadyToSettle({
+    required int tripId,
+    required bool isReady,
+  });
   Future<void> markSettlementSent({
     required int tripId,
     required int settlementId,
   });
   Future<void> confirmSettlementReceived({
+    required int tripId,
+    required int settlementId,
+  });
+  Future<void> remindSettlement({
     required int tripId,
     required int settlementId,
   });
@@ -135,6 +143,14 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   }
 
   @override
+  Future<void> setReadyToSettle({
+    required int tripId,
+    required bool isReady,
+  }) {
+    return _mutationApi.setReadyToSettle(tripId: tripId, isReady: isReady);
+  }
+
+  @override
   Future<void> markSettlementSent({
     required int tripId,
     required int settlementId,
@@ -151,6 +167,17 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required int settlementId,
   }) {
     return _mutationApi.confirmSettlementReceived(
+      tripId: tripId,
+      settlementId: settlementId,
+    );
+  }
+
+  @override
+  Future<void> remindSettlement({
+    required int tripId,
+    required int settlementId,
+  }) {
+    return _mutationApi.remindSettlement(
       tripId: tripId,
       settlementId: settlementId,
     );

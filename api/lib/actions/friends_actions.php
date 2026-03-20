@@ -178,6 +178,43 @@ function find_public_user_by_id(PDO $pdo, int $userId): ?array
     return is_array($row) ? $row : null;
 }
 
+function resolve_notification_trip_id(PDO $pdo, int $primaryUserId, int $fallbackUserId = 0): int
+{
+    $candidateUserIds = normalize_user_ids([$primaryUserId, $fallbackUserId]);
+    foreach ($candidateUserIds as $candidateUserId) {
+        $trip = find_default_trip_for_user($pdo, (int) $candidateUserId);
+        $tripId = (int) ($trip['id'] ?? 0);
+        if ($tripId > 0) {
+            return $tripId;
+        }
+    }
+
+    $tripsTable = table_name('trips');
+    $stmt = $pdo->query(
+        'SELECT id
+         FROM ' . $tripsTable . '
+         ORDER BY id DESC
+         LIMIT 1'
+    );
+    $tripId = (int) ($stmt->fetchColumn() ?: 0);
+    return $tripId > 0 ? $tripId : 0;
+}
+
+function actor_display_name(array $me): string
+{
+    $nickname = trim((string) ($me['nickname'] ?? ''));
+    if ($nickname !== '') {
+        return $nickname;
+    }
+
+    $fullName = trim((string) ($me['full_name'] ?? ''));
+    if ($fullName !== '') {
+        return $fullName;
+    }
+
+    return 'Trip member';
+}
+
 function friends_list_action(): void
 {
     $me = get_me();
@@ -632,6 +669,25 @@ function send_friend_invite_action(): void
         throw $error;
     }
 
+    if ($autoAccepted && $requestId > 0) {
+        $tripIdForNotification = resolve_notification_trip_id($pdo, $targetUserId, $meId);
+        if ($tripIdForNotification > 0) {
+            create_user_notification(
+                $pdo,
+                $tripIdForNotification,
+                $targetUserId,
+                'friend_invite_accepted',
+                'Invite accepted',
+                actor_display_name($me) . ' accepted your friend invite.',
+                [
+                    'request_id' => $requestId,
+                    'from_user_id' => $meId,
+                    'status' => 'accepted',
+                ]
+            );
+        }
+    }
+
     json_out([
         'ok' => true,
         'request_id' => $requestId,
@@ -727,6 +783,30 @@ function respond_friend_invite_action(): void
             $pdo->rollBack();
         }
         throw $error;
+    }
+
+    if ($otherUserId > 0 && $requestId > 0) {
+        $tripIdForNotification = resolve_notification_trip_id($pdo, $otherUserId, $meId);
+        if ($tripIdForNotification > 0) {
+            $type = $accept ? 'friend_invite_accepted' : 'friend_invite_rejected';
+            $title = $accept ? 'Invite accepted' : 'Invite declined';
+            $bodyText = $accept
+                ? actor_display_name($me) . ' accepted your friend invite.'
+                : actor_display_name($me) . ' declined your friend invite.';
+            create_user_notification(
+                $pdo,
+                $tripIdForNotification,
+                $otherUserId,
+                $type,
+                $title,
+                $bodyText,
+                [
+                    'request_id' => $requestId,
+                    'from_user_id' => $meId,
+                    'status' => $nextStatus,
+                ]
+            );
+        }
     }
 
     $otherUser = find_public_user_by_id($pdo, $otherUserId);

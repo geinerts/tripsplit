@@ -32,11 +32,19 @@ abstract class WorkspaceRepository {
   });
 
   Future<void> endTrip({required int tripId});
+  Future<void> setReadyToSettle({
+    required int tripId,
+    required bool isReady,
+  });
   Future<void> markSettlementSent({
     required int tripId,
     required int settlementId,
   });
   Future<void> confirmSettlementReceived({
+    required int tripId,
+    required int settlementId,
+  });
+  Future<void> remindSettlement({
     required int tripId,
     required int settlementId,
   });

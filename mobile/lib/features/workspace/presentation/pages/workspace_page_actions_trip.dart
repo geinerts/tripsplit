@@ -61,6 +61,16 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       _showSnack(context.l10n.onlyCreatorCanFinishTrip, isError: true);
       return;
     }
+    if (!snapshot.allMembersReadyToSettle) {
+      _showSnack(
+        _plainLocalizedText(
+          en: 'All members must mark ready before starting settlements.',
+          lv: 'Pirms norēķinu sākšanas visiem dalībniekiem jāatzīmē gatavība.',
+        ),
+        isError: true,
+      );
+      return;
+    }
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -120,6 +130,40 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     );
   }
 
+  Future<void> _onReadyToSettleChanged(bool isReady) async {
+    final snapshot = _snapshot;
+    if (snapshot == null || _isMutating || !snapshot.isActive) {
+      return;
+    }
+    if (_currentUserId <= 0) {
+      return;
+    }
+
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.setReadyToSettle(
+          tripId: widget.trip.id,
+          isReady: isReady,
+        );
+        await _loadData(showLoader: false);
+        if (!mounted) {
+          return;
+        }
+        _showSnack(
+          isReady
+              ? _plainLocalizedText(
+                  en: 'You marked yourself ready to settle.',
+                  lv: 'Tu atzīmēji sevi kā gatavu norēķiniem.',
+                )
+              : _plainLocalizedText(
+                  en: 'Ready-to-settle mark removed.',
+                  lv: 'Gatavības atzīme noņemta.',
+                ),
+        );
+      },
+    );
+  }
+
   Future<void> _onSettlementMarkSent(SettlementItem settlement) async {
     final settlementId = settlement.id;
     if (settlementId == null || settlementId <= 0) {
@@ -164,6 +208,29 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     );
   }
 
+  Future<void> _onSettlementRemind(SettlementItem settlement) async {
+    final settlementId = settlement.id;
+    if (settlementId == null || settlementId <= 0) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.remindSettlement(
+          tripId: widget.trip.id,
+          settlementId: settlementId,
+        );
+        if (mounted) {
+          _showSnack(
+            _plainLocalizedText(
+              en: 'Reminder sent.',
+              lv: 'Atgādinājums nosūtīts.',
+            ),
+          );
+        }
+      },
+    );
+  }
+
   Future<void> _openReceiptUrl(String url) async {
     final parsed = Uri.tryParse(url.trim());
     if (parsed == null) {
@@ -185,6 +252,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
 
+    final canDeleteTrip = _canEditMembers && _isTripActive;
     final choice = await showModalBottomSheet<String>(
       context: context,
       showDragHandle: true,
@@ -209,6 +277,20 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                 title: Text(t.logOutButton),
                 onTap: () => Navigator.of(sheetContext).pop('logout'),
               ),
+              if (canDeleteTrip)
+                ListTile(
+                  leading: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(sheetContext).colorScheme.error,
+                  ),
+                  title: Text(
+                    '${t.deleteAction} ${t.tripTitleShort}',
+                    style: TextStyle(
+                      color: Theme.of(sheetContext).colorScheme.error,
+                    ),
+                  ),
+                  onTap: () => Navigator.of(sheetContext).pop('delete_trip'),
+                ),
             ],
           ),
         );
@@ -229,8 +311,117 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       case 'logout':
         await _onLogoutPressed();
         return;
+      case 'delete_trip':
+        await _onDeleteCurrentTripPressed();
+        return;
       default:
         return;
+    }
+  }
+
+  Future<void> _onDeleteCurrentTripPressed() async {
+    if (_isMutating || _isLoading) {
+      return;
+    }
+    if (!_canEditMembers) {
+      _showSnack(
+        _plainLocalizedText(
+          en: 'Only trip creator can delete this trip.',
+          lv: 'Šo ceļojumu drīkst dzēst tikai izveidotājs.',
+        ),
+        isError: true,
+      );
+      return;
+    }
+    if (!_isTripActive) {
+      _showSnack(
+        _plainLocalizedText(
+          en: 'Only active trips can be deleted.',
+          lv: 'Dzēst var tikai aktīvus ceļojumus.',
+        ),
+        isError: true,
+      );
+      return;
+    }
+
+    final t = context.l10n;
+    final tripName = widget.trip.name.trim();
+    final tripLabel = tripName.isNotEmpty
+        ? tripName
+        : t.tripWithId(widget.trip.id);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text('${t.deleteAction} ${t.tripTitleShort}'),
+          content: Text(
+            _plainLocalizedText(
+              en: 'Delete "$tripLabel"? This is allowed only before any expenses are added.',
+              lv: 'Dzēst "$tripLabel"? Tas ir atļauts tikai pirms ceļojumam pievienoti izdevumi.',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(t.cancelAction),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(dialogContext).colorScheme.error,
+                foregroundColor: Theme.of(dialogContext).colorScheme.onError,
+              ),
+              child: Text(t.deleteAction),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    _updateState(() {
+      _isMutating = true;
+    });
+    try {
+      await widget.tripsController.deleteTrip(tripId: widget.trip.id);
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _plainLocalizedText(en: 'Trip deleted.', lv: 'Ceļojums izdzēsts.'),
+      );
+
+      final onExitRequested = widget.onExitRequested;
+      if (onExitRequested != null) {
+        onExitRequested();
+      } else {
+        Navigator.of(context).maybePop();
+      }
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(error.message, isError: true);
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _plainLocalizedText(
+          en: 'Failed to delete trip.',
+          lv: 'Neizdevās izdzēst ceļojumu.',
+        ),
+        isError: true,
+      );
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isMutating = false;
+        });
+      }
     }
   }
 

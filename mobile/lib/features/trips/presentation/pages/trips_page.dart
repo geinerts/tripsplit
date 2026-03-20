@@ -14,8 +14,10 @@ import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
+import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../friends/presentation/controllers/friends_controller.dart';
 import '../../domain/entities/trip.dart';
 import '../../domain/entities/trip_user.dart';
 import '../controllers/trips_controller.dart';
@@ -55,6 +57,7 @@ class TripsPage extends StatefulWidget {
     super.key,
     required this.controller,
     required this.authController,
+    required this.friendsController,
     this.openCreateTripOnStart = false,
     this.showInlineHeader = true,
     this.showBottomNav = true,
@@ -64,6 +67,7 @@ class TripsPage extends StatefulWidget {
 
   final TripsController controller;
   final AuthController authController;
+  final FriendsController friendsController;
   final bool openCreateTripOnStart;
   final bool showInlineHeader;
   final bool showBottomNav;
@@ -200,10 +204,7 @@ class _TripsPageState extends State<TripsPage> {
                               _buildTopHeader(context),
                               const SizedBox(height: 12),
                             ],
-                            _buildSummaryCard(
-                              context,
-                              allTrips: _trips,
-                            ),
+                            _buildSummaryCard(context, allTrips: _trips),
                             const SizedBox(height: 18),
                             _buildTripsHeader(
                               context,

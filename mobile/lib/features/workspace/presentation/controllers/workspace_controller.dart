@@ -44,6 +44,13 @@ class WorkspaceController {
     return _repository.endTrip(tripId: tripId);
   }
 
+  Future<void> setReadyToSettle({
+    required int tripId,
+    required bool isReady,
+  }) {
+    return _repository.setReadyToSettle(tripId: tripId, isReady: isReady);
+  }
+
   Future<void> markSettlementSent({
     required int tripId,
     required int settlementId,
@@ -59,6 +66,16 @@ class WorkspaceController {
     required int settlementId,
   }) {
     return _repository.confirmSettlementReceived(
+      tripId: tripId,
+      settlementId: settlementId,
+    );
+  }
+
+  Future<void> remindSettlement({
+    required int tripId,
+    required int settlementId,
+  }) {
+    return _repository.remindSettlement(
       tripId: tripId,
       settlementId: settlementId,
     );

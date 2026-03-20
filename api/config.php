@@ -28,6 +28,23 @@ define('UPLOAD_IMAGE_THUMB_WEBP_QUALITY', env_int('TRIP_UPLOAD_IMAGE_THUMB_WEBP_
 define('CLASS_UPLOAD_REL_PATH', env_string('TRIP_CLASS_UPLOAD_REL_PATH', 'api/lib/verot/class.upload.php'));
 define('API_ERROR_LOG_REL_PATH', env_string('TRIP_API_ERROR_LOG_REL_PATH', 'logs/api-error.log'));
 
+define('PUSH_ENABLED', env_bool('TRIP_PUSH_ENABLED', false));
+define('PUSH_FCM_SERVER_KEY', env_string('TRIP_PUSH_FCM_SERVER_KEY', ''));
+define('PUSH_APNS_ENABLED', env_bool('TRIP_PUSH_APNS_ENABLED', false));
+define('PUSH_APNS_TEAM_ID', env_string('TRIP_PUSH_APNS_TEAM_ID', ''));
+define('PUSH_APNS_KEY_ID', env_string('TRIP_PUSH_APNS_KEY_ID', ''));
+define('PUSH_APNS_BUNDLE_ID', env_string('TRIP_PUSH_APNS_BUNDLE_ID', ''));
+define('PUSH_APNS_PRIVATE_KEY_REL_PATH', env_string('TRIP_PUSH_APNS_PRIVATE_KEY_REL_PATH', ''));
+define('PUSH_APNS_USE_SANDBOX', env_bool('TRIP_PUSH_APNS_USE_SANDBOX', false));
+define('PUSH_TIMEOUT_SEC', env_int('TRIP_PUSH_TIMEOUT_SEC', 8));
+define('PUSH_MAX_TOKENS_PER_USER', env_int('TRIP_PUSH_MAX_TOKENS_PER_USER', 5));
+define('PUSH_QUEUE_BATCH_LIMIT', env_int('TRIP_PUSH_QUEUE_BATCH_LIMIT', 100));
+
+define('SETTLEMENT_REMINDER_ENABLED', env_bool('TRIP_SETTLEMENT_REMINDER_ENABLED', false));
+define('SETTLEMENT_REMINDER_INTERVAL_MIN', env_int('TRIP_SETTLEMENT_REMINDER_INTERVAL_MIN', 720));
+define('SETTLEMENT_REMINDER_MIN_AGE_MIN', env_int('TRIP_SETTLEMENT_REMINDER_MIN_AGE_MIN', 180));
+define('SETTLEMENT_REMINDER_BATCH_LIMIT', env_int('TRIP_SETTLEMENT_REMINDER_BATCH_LIMIT', 120));
+
 define('RATE_LIMIT_REGISTER_IP_MAX', env_int('TRIP_RATE_LIMIT_REGISTER_IP_MAX', 40));
 define('RATE_LIMIT_REGISTER_TOKEN_MAX', env_int('TRIP_RATE_LIMIT_REGISTER_TOKEN_MAX', 15));
 define('RATE_LIMIT_REGISTER_PROOF_IP_MAX', env_int('TRIP_RATE_LIMIT_REGISTER_PROOF_IP_MAX', 120));
@@ -194,6 +211,9 @@ function table_name(string $key): string
         'request_limits' => DB_TABLE_PREFIX . 'request_limits',
         'upload_daily_usage' => DB_TABLE_PREFIX . 'upload_daily_usage',
         'refresh_tokens' => DB_TABLE_PREFIX . 'refresh_tokens',
+        'push_tokens' => DB_TABLE_PREFIX . 'user_push_tokens',
+        'push_queue' => DB_TABLE_PREFIX . 'push_queue',
+        'settlement_reminder_state' => DB_TABLE_PREFIX . 'settlement_reminder_state',
     ];
 
     $raw = $map[$key] ?? '';

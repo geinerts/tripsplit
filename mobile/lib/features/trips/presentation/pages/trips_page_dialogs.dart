@@ -10,6 +10,9 @@ extension _TripsPageDialogs on _TripsPageState {
     final selectedUsers = <int, TripUser>{};
     BuildContext? dialogBuildContext;
     var searchResults = const <TripUser>[];
+    var friendQuickPicks = const <TripUser>[];
+    var isLoadingFriendQuickPicks = false;
+    var friendQuickPicksRequested = false;
     var isSearching = false;
     var searchSeq = 0;
     Timer? searchDebounce;
@@ -85,10 +88,64 @@ extension _TripsPageDialogs on _TripsPageState {
             }
           }
 
+          Future<void> loadFriendQuickPicks(StateSetter setDialogState) async {
+            if (isLoadingFriendQuickPicks) {
+              return;
+            }
+            bool canUpdateDialog() {
+              final c = dialogBuildContext;
+              return mounted && c != null && c.mounted;
+            }
+
+            setDialogState(() {
+              isLoadingFriendQuickPicks = true;
+            });
+
+            try {
+              final cached = widget.friendsController.peekSnapshotCache(
+                allowStale: false,
+              );
+              final snapshot = cached ??
+                  await widget.friendsController.loadSnapshot(forceRefresh: false);
+              if (!canUpdateDialog()) {
+                return;
+              }
+              setDialogState(() {
+                friendQuickPicks = snapshot.friends
+                    .map(
+                      (friend) => TripUser(
+                        id: friend.id,
+                        nickname: friend.nickname,
+                        avatarUrl: friend.avatarUrl,
+                        avatarThumbUrl: friend.avatarThumbUrl,
+                      ),
+                    )
+                    .toList(growable: false);
+              });
+            } catch (_) {
+              if (!canUpdateDialog()) {
+                return;
+              }
+              setDialogState(() {
+                friendQuickPicks = const <TripUser>[];
+              });
+            } finally {
+              if (canUpdateDialog()) {
+                setDialogState(() {
+                  isLoadingFriendQuickPicks = false;
+                });
+              }
+            }
+          }
+
           return StatefulBuilder(
             builder: (context, setDialogState) {
               dialogBuildContext = context;
               final hasQuery = searchController.text.trim().isNotEmpty;
+              if (!friendQuickPicksRequested) {
+                friendQuickPicksRequested = true;
+                unawaited(loadFriendQuickPicks(setDialogState));
+              }
 
               return AlertDialog(
                 title: Text(t.createNewTripTitle),
@@ -165,6 +222,35 @@ extension _TripsPageDialogs on _TripsPageState {
                                 ),
                             ],
                           ),
+                        if (isLoadingFriendQuickPicks) ...[
+                          const SizedBox(height: 10),
+                          const LinearProgressIndicator(minHeight: 2),
+                        ],
+                        if (friendQuickPicks.isNotEmpty) ...[
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              for (final friend in friendQuickPicks)
+                                FilterChip(
+                                  label: Text(friend.nickname),
+                                  selected: selected.contains(friend.id),
+                                  onSelected: (isSelected) {
+                                    setDialogState(() {
+                                      if (isSelected) {
+                                        selected.add(friend.id);
+                                        selectedUsers[friend.id] = friend;
+                                      } else {
+                                        selected.remove(friend.id);
+                                        selectedUsers.remove(friend.id);
+                                      }
+                                    });
+                                  },
+                                ),
+                            ],
+                          ),
+                        ],
                         const SizedBox(height: 12),
                         Text(
                           t.searchUsersHint,

@@ -73,12 +73,20 @@ class WorkspaceRemoteParsers {
     final displayName = (item['display_name'] as String? ?? '').trim();
     final avatarUrl = (item['avatar_url'] as String? ?? '').trim();
     final avatarThumbUrl = (item['avatar_thumb_url'] as String? ?? '').trim();
+    final isReadyToSettle = _toBool(
+      item['is_ready_to_settle'] ?? item['is_ready'],
+    );
+    final readyToSettleAt = _toNullableString(
+      item['ready_to_settle_at'] ?? item['ready_at'],
+    );
     return WorkspaceUser(
       id: (item['id'] as num?)?.toInt() ?? 0,
       nickname: item['nickname'] as String? ?? '',
       displayName: displayName.isEmpty ? null : displayName,
       avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
       avatarThumbUrl: avatarThumbUrl.isEmpty ? null : avatarThumbUrl,
+      isReadyToSettle: isReadyToSettle,
+      readyToSettleAt: readyToSettleAt,
     );
   }
 

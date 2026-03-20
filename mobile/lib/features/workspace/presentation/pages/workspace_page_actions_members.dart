@@ -7,7 +7,9 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
     }
 
     final memberIds = _snapshot!.users.map((user) => user.id).toSet();
-    final selected = await _showAddMembersSearchDialog(existingMemberIds: memberIds);
+    final selected = await _showAddMembersSearchDialog(
+      existingMemberIds: memberIds,
+    );
 
     if (selected == null || selected.isEmpty || !mounted) {
       return;
@@ -40,6 +42,11 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
     BuildContext? dialogBuildContext;
     var searchResults = const <TripUser>[];
     var isSearching = false;
+    var isInviteLinkLoading = false;
+    var inviteLinkRequested = false;
+    var inviteLink = '';
+    String? inviteLinkErrorText;
+    String? inviteLinkExpiresAt;
     var searchSeq = 0;
     Timer? searchDebounce;
 
@@ -50,7 +57,10 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
           final t = dialogContext.l10n;
           String? searchErrorText;
 
-          Future<void> runSearch(StateSetter setDialogState, String rawQuery) async {
+          Future<void> runSearch(
+            StateSetter setDialogState,
+            String rawQuery,
+          ) async {
             final query = rawQuery.trim();
             if (query.length < 2) {
               setDialogState(() {
@@ -64,7 +74,10 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
 
             bool canUpdateDialog() {
               final c = dialogBuildContext;
-              return mounted && c != null && c.mounted && requestId == searchSeq;
+              return mounted &&
+                  c != null &&
+                  c.mounted &&
+                  requestId == searchSeq;
             }
 
             setDialogState(() {
@@ -116,12 +129,73 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
             }
           }
 
+          Future<void> loadInviteLink(StateSetter setDialogState) async {
+            if (isInviteLinkLoading) {
+              return;
+            }
+            bool canUpdateDialog() {
+              final c = dialogBuildContext;
+              return mounted && c != null && c.mounted;
+            }
+
+            setDialogState(() {
+              isInviteLinkLoading = true;
+              inviteLinkErrorText = null;
+            });
+
+            try {
+              final payload = await widget.tripsController.createTripInviteLink(
+                tripId: widget.trip.id,
+              );
+              if (!canUpdateDialog()) {
+                return;
+              }
+              setDialogState(() {
+                inviteLink = payload.inviteUrl.trim();
+                inviteLinkExpiresAt = payload.expiresAt;
+                inviteLinkErrorText = null;
+              });
+            } on ApiException catch (error) {
+              if (!canUpdateDialog()) {
+                return;
+              }
+              final normalized = error.message.trim();
+              setDialogState(() {
+                inviteLinkErrorText = normalized.isNotEmpty
+                    ? normalized
+                    : _plainLocalizedText(
+                        en: 'Failed to generate invite link.',
+                        lv: 'Neizdevās izveidot ielūguma saiti.',
+                      );
+              });
+            } catch (_) {
+              if (!canUpdateDialog()) {
+                return;
+              }
+              setDialogState(() {
+                inviteLinkErrorText = _plainLocalizedText(
+                  en: 'Failed to generate invite link.',
+                  lv: 'Neizdevās izveidot ielūguma saiti.',
+                );
+              });
+            } finally {
+              if (canUpdateDialog()) {
+                setDialogState(() {
+                  isInviteLinkLoading = false;
+                });
+              }
+            }
+          }
+
           return StatefulBuilder(
             builder: (context, setDialogState) {
               dialogBuildContext = context;
+              if (!inviteLinkRequested) {
+                inviteLinkRequested = true;
+                unawaited(loadInviteLink(setDialogState));
+              }
 
               final hasQuery = searchController.text.trim().isNotEmpty;
-              final inviteLink = _buildDemoMembersInviteLink();
 
               return AlertDialog(
                 title: Text(t.addTripMembersTitle),
@@ -133,52 +207,112 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Invite link (demo)',
+                          _plainLocalizedText(
+                            en: 'Invite link',
+                            lv: 'Ielūguma saite',
+                          ),
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         const SizedBox(height: 6),
                         Container(
                           padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
                           decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest.withValues(
-                              alpha: 0.45,
-                            ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest
+                                .withValues(alpha: 0.45),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.outlineVariant.withValues(alpha: 0.55),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .outlineVariant
+                                  .withValues(alpha: 0.55),
                             ),
                           ),
                           child: Row(
                             children: [
                               Expanded(
-                                child: Text(
-                                  inviteLink,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(fontWeight: FontWeight.w600),
-                                ),
+                                child: isInviteLinkLoading
+                                    ? Text(
+                                        _plainLocalizedText(
+                                          en: 'Generating invite link...',
+                                          lv: 'Veido ielūguma saiti...',
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      )
+                                    : Text(
+                                        inviteLink.isEmpty
+                                            ? _plainLocalizedText(
+                                                en: 'Invite link unavailable.',
+                                                lv: 'Ielūguma saite nav pieejama.',
+                                              )
+                                            : inviteLink,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
                               ),
                               IconButton(
-                                tooltip: 'Copy invite link',
-                                onPressed: () async {
-                                  await Clipboard.setData(
-                                    ClipboardData(text: inviteLink),
-                                  );
-                                  if (!mounted) {
-                                    return;
-                                  }
-                                  _showSnack('Demo invite link copied.');
-                                },
+                                tooltip: _plainLocalizedText(
+                                  en: 'Copy invite link',
+                                  lv: 'Kopēt ielūguma saiti',
+                                ),
+                                onPressed:
+                                    isInviteLinkLoading || inviteLink.isEmpty
+                                    ? null
+                                    : () async {
+                                        await Clipboard.setData(
+                                          ClipboardData(text: inviteLink),
+                                        );
+                                        if (!mounted) {
+                                          return;
+                                        }
+                                        _showSnack(
+                                          _plainLocalizedText(
+                                            en: 'Invite link copied.',
+                                            lv: 'Ielūguma saite nokopēta.',
+                                          ),
+                                        );
+                                      },
                                 icon: const Icon(Icons.copy_all_outlined),
                               ),
                             ],
                           ),
                         ),
+                        if (inviteLinkErrorText != null) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            inviteLinkErrorText!,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                        if (!isInviteLinkLoading &&
+                            inviteLinkErrorText == null &&
+                            inviteLinkExpiresAt != null) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            _plainLocalizedText(
+                              en: 'Expires: $inviteLinkExpiresAt UTC',
+                              lv: 'Derīga līdz: $inviteLinkExpiresAt UTC',
+                            ),
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
                         const SizedBox(height: 12),
                         Text(
                           t.selectedPeopleLabel,
@@ -314,27 +448,5 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
         searchController.dispose();
       });
     }
-  }
-
-  String _buildDemoMembersInviteLink() {
-    final slug = _slugifyTripInviteName(widget.trip.name);
-    final compactSlug = slug.replaceAll('-', '').toUpperCase();
-    final seed = '${compactSlug}T${widget.trip.id}';
-    final prefix = seed.length >= 8 ? seed.substring(0, 8) : seed.padRight(8, 'X');
-    final code = '$prefix-DEMO';
-    return 'https://egm.lv/projekti/trip/join/$code';
-  }
-
-  String _slugifyTripInviteName(String rawName) {
-    final normalized = rawName
-        .trim()
-        .toLowerCase()
-        .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
-        .replaceAll(RegExp(r'-+'), '-')
-        .replaceAll(RegExp(r'^-|-$'), '');
-    if (normalized.isEmpty) {
-      return 'trip';
-    }
-    return normalized;
   }
 }

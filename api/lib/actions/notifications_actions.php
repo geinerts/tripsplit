@@ -592,3 +592,111 @@ function mark_notifications_read_global_action(): void
         'pending_friend_invites_count' => $pendingFriendInvitesCount,
     ]);
 }
+
+function register_push_token_action(): void
+{
+    require_post();
+    $me = get_me();
+    $userId = (int) ($me['id'] ?? 0);
+    if ($userId <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid session user.'], 401);
+    }
+
+    $pdo = db();
+    enforce_rate_limit(
+        $pdo,
+        'push_register_ip',
+        client_ip_address(),
+        RATE_LIMIT_REFRESH_IP_MAX,
+        RATE_LIMIT_REFRESH_WINDOW_SEC
+    );
+    enforce_rate_limit(
+        $pdo,
+        'push_register_user',
+        (string) $userId,
+        RATE_LIMIT_REFRESH_TOKEN_MAX,
+        RATE_LIMIT_REFRESH_WINDOW_SEC
+    );
+
+    if (!push_tokens_table_available($pdo)) {
+        json_out([
+            'ok' => false,
+            'error' => 'Push registration is not enabled on server yet. Run migration first.',
+        ], 409);
+    }
+
+    $body = read_json();
+    $token = normalize_push_token_value((string) ($body['push_token'] ?? $body['token'] ?? ''));
+    if ($token === '') {
+        json_out(['ok' => false, 'error' => 'push_token is required.'], 400);
+    }
+
+    $platform = normalize_push_platform((string) ($body['platform'] ?? ''));
+    if ($platform === '') {
+        json_out(['ok' => false, 'error' => 'platform must be one of: ios, android, web.'], 400);
+    }
+
+    $provider = normalize_push_provider((string) ($body['provider'] ?? ''), $platform);
+    if ($provider === '') {
+        json_out(['ok' => false, 'error' => 'provider must be apns or fcm.'], 400);
+    }
+
+    $deviceUid = normalize_push_device_uid((string) ($body['device_uid'] ?? $body['device_id'] ?? ''));
+    $appBundle = normalize_push_app_bundle((string) ($body['app_bundle'] ?? ''));
+
+    register_user_push_token(
+        $pdo,
+        $userId,
+        $token,
+        $platform,
+        $provider,
+        $deviceUid,
+        $appBundle
+    );
+
+    json_out([
+        'ok' => true,
+        'registered' => true,
+        'platform' => $platform,
+        'provider' => $provider,
+        'push_enabled' => push_notifications_enabled(),
+    ]);
+}
+
+function unregister_push_token_action(): void
+{
+    require_post();
+    $me = get_me();
+    $userId = (int) ($me['id'] ?? 0);
+    if ($userId <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid session user.'], 401);
+    }
+
+    $pdo = db();
+    enforce_rate_limit(
+        $pdo,
+        'push_unregister_ip',
+        client_ip_address(),
+        RATE_LIMIT_REFRESH_IP_MAX,
+        RATE_LIMIT_REFRESH_WINDOW_SEC
+    );
+    enforce_rate_limit(
+        $pdo,
+        'push_unregister_user',
+        (string) $userId,
+        RATE_LIMIT_REFRESH_TOKEN_MAX,
+        RATE_LIMIT_REFRESH_WINDOW_SEC
+    );
+
+    $body = read_json();
+    $token = normalize_push_token_value((string) ($body['push_token'] ?? $body['token'] ?? ''));
+    if ($token === '') {
+        json_out(['ok' => false, 'error' => 'push_token is required.'], 400);
+    }
+
+    $removed = unregister_user_push_token($pdo, $userId, $token);
+    json_out([
+        'ok' => true,
+        'removed_count' => $removed,
+    ]);
+}

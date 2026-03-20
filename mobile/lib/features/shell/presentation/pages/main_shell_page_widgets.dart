@@ -48,6 +48,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
                 TripsPage(
                   controller: widget.tripsController,
                   authController: widget.authController,
+                  friendsController: widget.friendsController,
                   showInlineHeader: false,
                   showBottomNav: false,
                   commandController: _tripsCommandController,
@@ -114,11 +115,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
   }
 
   Widget _buildBottomNav(BuildContext context) {
-    final t = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
-    final labelStyle = Theme.of(
-      context,
-    ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700);
+    final neutralSelection = _isWorkspaceOpen;
     final user = widget.authController.currentUser;
     final avatarBytes = widget.authController.avatarBytesFor(user);
     final avatarUrl = widget.authController.avatarUrlFor(
@@ -126,61 +123,43 @@ extension _MainShellPageWidgets on _MainShellPageState {
       preferThumb: true,
     );
     final displayName = (user?.displayName ?? user?.nickname ?? '').trim();
-    final avatarLetter = displayName.isEmpty
-        ? t.travelerFallbackName.substring(0, 1).toUpperCase()
-        : displayName.substring(0, 1).toUpperCase();
+    final avatarLetter =
+        (displayName.isEmpty ? context.l10n.travelerFallbackName : displayName)
+            .substring(0, 1)
+            .toUpperCase();
+    final selectedItem = neutralSelection
+        ? null
+        : switch (_selectedTabIndex) {
+            _MainShellPageState._tabActivities => AppBottomNavItem.analytics,
+            _MainShellPageState._tabFriends => AppBottomNavItem.friends,
+            _MainShellPageState._tabProfile => AppBottomNavItem.profile,
+            _ => AppBottomNavItem.home,
+          };
 
-    return NavigationBarTheme(
-      data: NavigationBarThemeData(
-        labelTextStyle: WidgetStateProperty.resolveWith<TextStyle?>((states) {
-          if (states.contains(WidgetState.selected)) {
-            return labelStyle?.copyWith(color: colorScheme.onPrimaryContainer);
-          }
-          return labelStyle?.copyWith(color: colorScheme.onSurfaceVariant);
-        }),
-      ),
-      child: NavigationBar(
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        selectedIndex: _selectedTabIndex,
-        onDestinationSelected: _onDestinationSelected,
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.home_outlined, size: 26),
-            selectedIcon: const Icon(Icons.home, size: 26),
-            label: t.navHome,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.query_stats_outlined, size: 26),
-            selectedIcon: const Icon(Icons.query_stats, size: 26),
-            label: t.navActivities,
-          ),
-          NavigationDestination(
-            icon: _buildAddExpenseNavIcon(selected: false),
-            selectedIcon: _buildAddExpenseNavIcon(selected: true),
-            label: t.navExpenses,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.people_outline, size: 26),
-            selectedIcon: const Icon(Icons.people, size: 26),
-            label: t.navFriends,
-          ),
-          NavigationDestination(
-            icon: _profileNavAvatar(
-              avatarBytes: avatarBytes,
-              avatarUrl: avatarUrl,
-              avatarLetter: avatarLetter,
-              color: colorScheme.onSurfaceVariant,
-            ),
-            selectedIcon: _profileNavAvatar(
-              avatarBytes: avatarBytes,
-              avatarUrl: avatarUrl,
-              avatarLetter: avatarLetter,
-              color: colorScheme.onPrimaryContainer,
-            ),
-            label: t.navProfile,
-          ),
-        ],
-      ),
+    return AppBottomNavBar(
+      selectedItem: selectedItem,
+      avatarBytes: avatarBytes,
+      avatarUrl: avatarUrl,
+      avatarLetter: avatarLetter,
+      onSelected: (item) {
+        switch (item) {
+          case AppBottomNavItem.home:
+            _onDestinationSelected(_MainShellPageState._tabHome);
+            break;
+          case AppBottomNavItem.analytics:
+            _onDestinationSelected(_MainShellPageState._tabActivities);
+            break;
+          case AppBottomNavItem.expenses:
+            _onDestinationSelected(_MainShellPageState._tabAddExpense);
+            break;
+          case AppBottomNavItem.friends:
+            _onDestinationSelected(_MainShellPageState._tabFriends);
+            break;
+          case AppBottomNavItem.profile:
+            _onDestinationSelected(_MainShellPageState._tabProfile);
+            break;
+        }
+      },
     );
   }
 
@@ -224,95 +203,6 @@ extension _MainShellPageWidgets on _MainShellPageState {
               ),
             ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildAddExpenseNavIcon({required bool selected}) {
-    const width = 70.0;
-    const height = 36.0;
-    const iconSize = 20.0;
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        gradient: AppDesign.logoBackgroundGradient,
-        border: Border.all(
-          color: Colors.white.withValues(alpha: selected ? 0.55 : 0.30),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0x66141E30),
-            blurRadius: selected ? 14 : 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      alignment: Alignment.center,
-      child: Icon(Icons.add_rounded, size: iconSize, color: Colors.white),
-    );
-  }
-
-  Widget _profileNavAvatar({
-    required Uint8List? avatarBytes,
-    required String? avatarUrl,
-    required String avatarLetter,
-    required Color color,
-  }) {
-    const size = 26.0;
-    final imageCacheSize = (size * MediaQuery.devicePixelRatioOf(context))
-        .round();
-    if (avatarBytes != null && avatarBytes.isNotEmpty) {
-      return ClipOval(
-        child: Image.memory(
-          avatarBytes,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          gaplessPlayback: true,
-        ),
-      );
-    }
-    if (avatarUrl != null && avatarUrl.trim().isNotEmpty) {
-      return ClipOval(
-        child: Image.network(
-          avatarUrl,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          filterQuality: FilterQuality.low,
-          gaplessPlayback: true,
-          cacheWidth: imageCacheSize,
-          cacheHeight: imageCacheSize,
-          errorBuilder: (context, error, stackTrace) =>
-              _profileNavAvatarLetter(avatarLetter: avatarLetter, color: color),
-        ),
-      );
-    }
-    return _profileNavAvatarLetter(avatarLetter: avatarLetter, color: color);
-  }
-
-  Widget _profileNavAvatarLetter({
-    required String avatarLetter,
-    required Color color,
-  }) {
-    const size = 26.0;
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color.withValues(alpha: 0.16),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        avatarLetter,
-        style: TextStyle(
-          color: color,
-          fontWeight: FontWeight.w700,
-          fontSize: 11,
-        ),
       ),
     );
   }

@@ -26,7 +26,9 @@ extension _TripsPageActions on _TripsPageState {
     }
 
     try {
-      final trips = await widget.controller.loadTrips(forceRefresh: forceRefresh);
+      final trips = await widget.controller.loadTrips(
+        forceRefresh: forceRefresh,
+      );
       if (!mounted) {
         return;
       }
@@ -97,7 +99,9 @@ extension _TripsPageActions on _TripsPageState {
       );
       final imageBytes = result.imageBytes;
       final imageFileName = result.imageFileName?.trim() ?? '';
-      if (imageBytes != null && imageBytes.isNotEmpty && imageFileName.isNotEmpty) {
+      if (imageBytes != null &&
+          imageBytes.isNotEmpty &&
+          imageFileName.isNotEmpty) {
         try {
           final uploaded = await widget.controller.uploadTripImage(
             tripId: createdTrip.id,
@@ -172,6 +176,20 @@ extension _TripsPageActions on _TripsPageState {
                   title: Text('${t.editAction} ${t.tripTitleShort}'),
                   onTap: () => Navigator.of(sheetContext).pop('edit'),
                 ),
+              if (canEdit)
+                ListTile(
+                  leading: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(sheetContext).colorScheme.error,
+                  ),
+                  title: Text(
+                    '${t.deleteAction} ${t.tripTitleShort}',
+                    style: TextStyle(
+                      color: Theme.of(sheetContext).colorScheme.error,
+                    ),
+                  ),
+                  onTap: () => Navigator.of(sheetContext).pop('delete'),
+                ),
             ],
           ),
         );
@@ -183,6 +201,10 @@ extension _TripsPageActions on _TripsPageState {
     }
     if (choice == 'edit') {
       await _onEditTripPressed(trip);
+      return;
+    }
+    if (choice == 'delete') {
+      await _onDeleteTripPressed(trip);
       return;
     }
     await _openWorkspace(trip);
@@ -206,7 +228,8 @@ extension _TripsPageActions on _TripsPageState {
     final hasNameChange = nextName != trip.name.trim();
     final imageBytes = result.imageBytes;
     final imageFileName = result.imageFileName?.trim() ?? '';
-    final hasNewImage = imageBytes != null && imageBytes.isNotEmpty && imageFileName.isNotEmpty;
+    final hasNewImage =
+        imageBytes != null && imageBytes.isNotEmpty && imageFileName.isNotEmpty;
     if (!hasNameChange && !hasNewImage) {
       _showSnack(context.l10n.noChangesToSave);
       return;
@@ -254,6 +277,105 @@ extension _TripsPageActions on _TripsPageState {
     }
   }
 
+  Future<void> _onDeleteTripPressed(Trip trip) async {
+    if (_isMutating) {
+      return;
+    }
+    if (!_isTripOwner(trip)) {
+      _showSnack(
+        _plainLocalizedText(
+          en: 'Only trip creator can delete this trip.',
+          lv: 'Šo ceļojumu drīkst dzēst tikai izveidotājs.',
+        ),
+        isError: true,
+      );
+      return;
+    }
+    if (!trip.isActive) {
+      _showSnack(
+        _plainLocalizedText(
+          en: 'Only active trips can be deleted.',
+          lv: 'Dzēst var tikai aktīvus ceļojumus.',
+        ),
+        isError: true,
+      );
+      return;
+    }
+
+    final t = context.l10n;
+    final tripLabel = trip.name.trim().isEmpty
+        ? t.tripWithId(trip.id)
+        : trip.name;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text('${t.deleteAction} ${t.tripTitleShort}'),
+          content: Text(
+            _plainLocalizedText(
+              en: 'Delete "$tripLabel"? This is allowed only before any expenses are added.',
+              lv: 'Dzēst "$tripLabel"? Tas ir atļauts tikai pirms ceļojumam pievienoti izdevumi.',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(t.cancelAction),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(dialogContext).colorScheme.error,
+                foregroundColor: Theme.of(dialogContext).colorScheme.onError,
+              ),
+              child: Text(t.deleteAction),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    _updateState(() {
+      _isMutating = true;
+    });
+    try {
+      await widget.controller.deleteTrip(tripId: trip.id);
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _plainLocalizedText(en: 'Trip deleted.', lv: 'Ceļojums izdzēsts.'),
+      );
+      await _loadTrips();
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(error.message, isError: true);
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _plainLocalizedText(
+          en: 'Failed to delete trip.',
+          lv: 'Neizdevās izdzēst ceļojumu.',
+        ),
+        isError: true,
+      );
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isMutating = false;
+        });
+      }
+    }
+  }
+
   Future<void> _openWorkspace(Trip trip, {bool openAddExpense = false}) async {
     final onTripOpened = widget.onTripOpened;
     if (onTripOpened != null) {
@@ -267,14 +389,6 @@ extension _TripsPageActions on _TripsPageState {
         'open_add_expense': openAddExpense,
       },
     );
-    if (!mounted) {
-      return;
-    }
-    await _loadTrips();
-  }
-
-  Future<void> _openProfile() async {
-    await Navigator.of(context).pushNamed(AppRouter.profile);
     if (!mounted) {
       return;
     }
@@ -335,20 +449,45 @@ extension _TripsPageActions on _TripsPageState {
     }
   }
 
-  Future<void> _onBottomNavTapped(int index) async {
-    switch (index) {
-      case 0:
+  void _onBottomNavTapped(AppBottomNavItem item) {
+    switch (item) {
+      case AppBottomNavItem.home:
         return;
-      case 1:
-        await _openCreateTripDialog();
+      case AppBottomNavItem.analytics:
+        unawaited(
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRouter.shell,
+            (route) => false,
+            arguments: const <String, Object>{'initial_tab': 1},
+          ),
+        );
         return;
-      case 2:
-        _showSnack(context.l10n.friendsSectionComingSoon);
+      case AppBottomNavItem.expenses:
+        unawaited(
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRouter.shell,
+            (route) => false,
+            arguments: const <String, Object>{'open_add_expense': true},
+          ),
+        );
         return;
-      case 3:
-        await _openProfile();
+      case AppBottomNavItem.friends:
+        unawaited(
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRouter.shell,
+            (route) => false,
+            arguments: const <String, Object>{'initial_tab': 3},
+          ),
+        );
         return;
-      default:
+      case AppBottomNavItem.profile:
+        unawaited(
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRouter.shell,
+            (route) => false,
+            arguments: const <String, Object>{'initial_tab': 4},
+          ),
+        );
         return;
     }
   }
@@ -415,5 +554,15 @@ extension _TripsPageActions on _TripsPageState {
         backgroundColor: isError ? Theme.of(context).colorScheme.error : null,
       ),
     );
+  }
+
+  String _plainLocalizedText({required String en, required String lv}) {
+    final languageCode = Localizations.localeOf(
+      context,
+    ).languageCode.toLowerCase();
+    if (languageCode.startsWith('lv')) {
+      return lv;
+    }
+    return en;
   }
 }

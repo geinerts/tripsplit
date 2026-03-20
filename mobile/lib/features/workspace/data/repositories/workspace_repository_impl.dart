@@ -39,12 +39,30 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     int limit = 80,
     String? cursor,
     int? offset,
-  }) {
-    return _remote.loadGlobalNotifications(
-      limit: limit,
-      cursor: cursor,
-      offset: offset,
-    );
+  }) async {
+    final isFirstPage =
+        (cursor == null || cursor.trim().isEmpty) &&
+        (offset == null || offset <= 0);
+    try {
+      final inbox = await _remote.loadGlobalNotifications(
+        limit: limit,
+        cursor: cursor,
+        offset: offset,
+      );
+      if (isFirstPage) {
+        await _localStore.writeGlobalNotificationsInbox(inbox);
+      }
+      return inbox;
+    } on ApiException catch (error) {
+      if (!error.isNetworkError || !isFirstPage) {
+        rethrow;
+      }
+      final cached = await _localStore.readGlobalNotificationsInbox();
+      if (cached != null) {
+        return cached;
+      }
+      rethrow;
+    }
   }
 
   @override
@@ -57,6 +75,14 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   @override
   Future<void> endTrip({required int tripId}) {
     return _remote.endTrip(tripId: tripId);
+  }
+
+  @override
+  Future<void> setReadyToSettle({
+    required int tripId,
+    required bool isReady,
+  }) {
+    return _remote.setReadyToSettle(tripId: tripId, isReady: isReady);
   }
 
   @override
@@ -79,6 +105,14 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       tripId: tripId,
       settlementId: settlementId,
     );
+  }
+
+  @override
+  Future<void> remindSettlement({
+    required int tripId,
+    required int settlementId,
+  }) {
+    return _remote.remindSettlement(tripId: tripId, settlementId: settlementId);
   }
 
   @override

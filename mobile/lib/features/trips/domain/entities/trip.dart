@@ -12,7 +12,9 @@ class Trip {
     required this.archivedAt,
     required this.settlementsTotal,
     required this.settlementsConfirmed,
+    required this.settlementsPending,
     required this.allSettled,
+    required this.readyToSettle,
     required this.totalAmountCents,
     required this.myPaidCents,
     required this.myOwedCents,
@@ -31,7 +33,9 @@ class Trip {
   final String? archivedAt;
   final int settlementsTotal;
   final int settlementsConfirmed;
+  final int settlementsPending;
   final bool allSettled;
+  final bool readyToSettle;
   final int totalAmountCents;
   final int myPaidCents;
   final int myOwedCents;

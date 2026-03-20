@@ -1,6 +1,109 @@
 <?php
 declare(strict_types=1);
 
+function trip_invite_secret(): string
+{
+    return hash('sha256', auth_access_token_secret() . '|trip-invite');
+}
+
+function trip_invite_ttl_seconds(): int
+{
+    // 14 days by default for practical sharing.
+    return 1_209_600;
+}
+
+function create_trip_invite_token(int $tripId, int $issuedByUserId): string
+{
+    if ($tripId <= 0 || $issuedByUserId <= 0) {
+        throw new RuntimeException('Invalid invite token payload.');
+    }
+
+    $issuedAt = time();
+    $payload = [
+        'trip_id' => $tripId,
+        'issued_by' => $issuedByUserId,
+        'iat' => $issuedAt,
+        'exp' => $issuedAt + trip_invite_ttl_seconds(),
+    ];
+    $json = json_encode($payload, JSON_UNESCAPED_SLASHES);
+    if (!is_string($json) || $json === '') {
+        throw new RuntimeException('Failed to encode invite token.');
+    }
+
+    $encodedPayload = base64url_encode($json);
+    $signature = hash_hmac('sha256', $encodedPayload, trip_invite_secret());
+    return $encodedPayload . '.' . $signature;
+}
+
+function decode_trip_invite_token(string $token): array
+{
+    $parts = explode('.', trim($token), 2);
+    if (count($parts) !== 2) {
+        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+    }
+
+    $encodedPayload = trim((string) $parts[0]);
+    $signature = trim((string) $parts[1]);
+    if ($encodedPayload === '' || !preg_match('/^[a-f0-9]{64}$/', $signature)) {
+        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+    }
+
+    $expected = hash_hmac('sha256', $encodedPayload, trip_invite_secret());
+    if (!hash_equals($expected, $signature)) {
+        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+    }
+
+    $decodedPayload = base64url_decode($encodedPayload);
+    if (!is_string($decodedPayload) || $decodedPayload === '') {
+        json_out(['ok' => false, 'error' => 'Invalid invite token payload.'], 400);
+    }
+
+    $payload = json_decode($decodedPayload, true);
+    if (!is_array($payload)) {
+        json_out(['ok' => false, 'error' => 'Invalid invite token payload.'], 400);
+    }
+
+    $tripId = (int) ($payload['trip_id'] ?? 0);
+    $issuedBy = (int) ($payload['issued_by'] ?? 0);
+    $issuedAt = (int) ($payload['iat'] ?? 0);
+    $expiresAt = (int) ($payload['exp'] ?? 0);
+    $now = time();
+    $ttl = trip_invite_ttl_seconds();
+
+    if ($tripId <= 0 || $issuedBy <= 0 || $issuedAt <= 0 || $expiresAt <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid invite token payload.'], 400);
+    }
+    if ($issuedAt > ($now + 300)) {
+        json_out(['ok' => false, 'error' => 'Invite token is not valid yet.'], 400);
+    }
+    if (($expiresAt - $issuedAt) > $ttl || ($expiresAt - $issuedAt) <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid invite token expiry.'], 400);
+    }
+    if ($expiresAt < $now) {
+        json_out(['ok' => false, 'error' => 'Invite token expired.'], 409);
+    }
+
+    return [
+        'trip_id' => $tripId,
+        'issued_by' => $issuedBy,
+        'iat' => $issuedAt,
+        'exp' => $expiresAt,
+    ];
+}
+
+function build_trip_invite_url(string $token): string
+{
+    $base = trim((string) PUBLIC_BASE_URL);
+    if ($base === '') {
+        $base = 'https://egm.lv/projekti/trip/flutter';
+    }
+    $base = rtrim($base, '/');
+    $base = preg_replace('#/api$#', '', $base) ?: $base;
+
+    $separator = strpos($base, '?') === false ? '?' : '&';
+    return $base . $separator . 'invite=' . rawurlencode($token);
+}
+
 function trips_action(): void
 {
     $me = get_me();
@@ -92,6 +195,10 @@ function trips_action(): void
         $row['total_amount_cents'] = (int) ($row['total_amount_cents'] ?? 0);
         $row['my_paid_cents'] = (int) ($row['my_paid_cents'] ?? 0);
         $row['my_owed_cents'] = (int) ($row['my_owed_cents'] ?? 0);
+        $row['settlements_pending'] = max(
+            0,
+            $row['settlements_total'] - $row['settlements_confirmed']
+        );
 
         // Keep trips list math consistent with workspace balances math.
         $computed = compute_trip_balance_data($pdo, (int) $row['id']);
@@ -103,6 +210,7 @@ function trips_action(): void
         }
         $row['my_balance_cents'] = $row['my_owed_cents'] - $row['my_paid_cents'];
         $row['all_settled'] = $row['settlements_total'] > 0 && $row['settlements_total'] === $row['settlements_confirmed'];
+        $row['ready_to_settle'] = $row['status'] === 'settling' && $row['settlements_pending'] > 0;
         if ($activeTripId === null && $row['status'] === 'active') {
             $activeTripId = (int) $row['id'];
         }
@@ -135,8 +243,11 @@ function all_users_action(): void
 
     $usersTable = table_name('users');
     $tripMembersTable = table_name('trip_members');
+    $readySelect = trip_members_ready_columns_available($pdo)
+        ? 'tm.ready_to_settle, tm.ready_to_settle_at, '
+        : '1 AS ready_to_settle, NULL AS ready_to_settle_at, ';
     $stmt = $pdo->prepare(
-        'SELECT u.id, u.nickname, u.avatar_path
+        'SELECT u.id, ' . $readySelect . 'u.nickname, u.avatar_path
          FROM ' . $tripMembersTable . ' tm
          JOIN ' . $usersTable . ' u ON u.id = tm.user_id
          WHERE tm.trip_id = :trip_id
@@ -146,10 +257,12 @@ function all_users_action(): void
     $rows = $stmt->fetchAll();
     foreach ($rows as &$row) {
         $row['id'] = (int) $row['id'];
+        $row['is_ready_to_settle'] = ((int) ($row['ready_to_settle'] ?? 0)) === 1;
+        $row['ready_to_settle_at'] = $row['ready_to_settle_at'] ?: null;
         $avatarPath = trim((string) ($row['avatar_path'] ?? ''));
         $row['avatar_url'] = $avatarPath !== '' ? avatar_public_url($avatarPath) : null;
         $row['avatar_thumb_url'] = $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null;
-        unset($row['avatar_path']);
+        unset($row['avatar_path'], $row['ready_to_settle']);
     }
     unset($row);
     json_out([
@@ -406,6 +519,93 @@ function update_trip_action(): void
     ]);
 }
 
+function delete_trip_action(): void
+{
+    require_post();
+    $me = get_me();
+    $body = read_json();
+    $pdo = db();
+    $tripsTable = table_name('trips');
+    $expensesTable = table_name('expenses');
+
+    $tripId = (int) ($body['id'] ?? 0);
+    if ($tripId <= 0) {
+        $tripId = parse_trip_id_from_request();
+    }
+    if ($tripId <= 0) {
+        json_out(['ok' => false, 'error' => 'Trip id is required.'], 400);
+    }
+
+    $actorId = (int) ($me['id'] ?? 0);
+    $trip = find_trip_for_user($pdo, $actorId, $tripId);
+    if (!$trip) {
+        json_out(['ok' => false, 'error' => 'Trip not found or access denied.'], 403);
+    }
+    $trip = normalize_trip_row($trip);
+
+    $creatorId = (int) ($trip['created_by'] ?? 0);
+    if ($creatorId <= 0 || $creatorId !== $actorId) {
+        json_out(['ok' => false, 'error' => 'Only trip creator can delete this trip.'], 403);
+    }
+
+    if (normalize_trip_status($trip['status'] ?? 'active') !== 'active') {
+        json_out([
+            'ok' => false,
+            'error' => 'Only active trips can be deleted.',
+        ], 409);
+    }
+
+    enforce_rate_limit(
+        $pdo,
+        'trip_write_ip',
+        client_ip_address(),
+        RATE_LIMIT_TRIP_WRITE_IP_MAX,
+        RATE_LIMIT_MUTATION_WINDOW_SEC
+    );
+    enforce_rate_limit(
+        $pdo,
+        'trip_write_user',
+        (string) $actorId,
+        RATE_LIMIT_TRIP_WRITE_USER_MAX,
+        RATE_LIMIT_MUTATION_WINDOW_SEC
+    );
+
+    $expensesCountStmt = $pdo->prepare(
+        'SELECT COUNT(*)
+         FROM ' . $expensesTable . '
+         WHERE trip_id = :trip_id'
+    );
+    $expensesCountStmt->execute(['trip_id' => $tripId]);
+    $expensesCount = (int) ($expensesCountStmt->fetchColumn() ?: 0);
+    if ($expensesCount > 0) {
+        json_out([
+            'ok' => false,
+            'error' => 'Trip cannot be deleted because it already has expenses.',
+        ], 409);
+    }
+
+    $delete = $pdo->prepare(
+        'DELETE FROM ' . $tripsTable . '
+         WHERE id = :id
+         LIMIT 1'
+    );
+    $delete->execute(['id' => $tripId]);
+    if ((int) $delete->rowCount() < 1) {
+        json_out(['ok' => false, 'error' => 'Trip not found.'], 404);
+    }
+
+    $imagePath = trim((string) ($trip['image_path'] ?? ''));
+    if ($imagePath !== '') {
+        delete_trip_image_file($imagePath);
+    }
+
+    json_out([
+        'ok' => true,
+        'deleted' => true,
+        'trip_id' => $tripId,
+    ]);
+}
+
 function add_trip_members_action(): void
 {
     require_post();
@@ -539,6 +739,166 @@ function add_trip_members_action(): void
     ]);
 }
 
+function create_trip_invite_action(): void
+{
+    require_post();
+    $me = get_me();
+    $pdo = db();
+    $trip = get_current_trip($pdo, $me, true);
+    $tripId = (int) ($trip['id'] ?? 0);
+    if ($tripId <= 0) {
+        json_out(['ok' => false, 'error' => 'Trip not found.'], 404);
+    }
+
+    $status = normalize_trip_status($trip['status'] ?? 'active');
+    if ($status !== 'active') {
+        json_out(['ok' => false, 'error' => 'Invite links are available only for active trips.'], 409);
+    }
+
+    $creatorId = (int) ($trip['created_by'] ?? 0);
+    $actorId = (int) ($me['id'] ?? 0);
+    if ($creatorId <= 0 || $creatorId !== $actorId) {
+        json_out(['ok' => false, 'error' => 'Only trip creator can generate invite links.'], 403);
+    }
+
+    enforce_rate_limit(
+        $pdo,
+        'trip_write_ip',
+        client_ip_address(),
+        RATE_LIMIT_TRIP_WRITE_IP_MAX,
+        RATE_LIMIT_MUTATION_WINDOW_SEC
+    );
+    enforce_rate_limit(
+        $pdo,
+        'trip_write_user',
+        (string) $actorId,
+        RATE_LIMIT_TRIP_WRITE_USER_MAX,
+        RATE_LIMIT_MUTATION_WINDOW_SEC
+    );
+
+    $token = create_trip_invite_token($tripId, $actorId);
+    $expiresAt = time() + trip_invite_ttl_seconds();
+
+    json_out([
+        'ok' => true,
+        'trip_id' => $tripId,
+        'invite_token' => $token,
+        'invite_url' => build_trip_invite_url($token),
+        'expires_in_sec' => trip_invite_ttl_seconds(),
+        'expires_at' => gmdate('Y-m-d H:i:s', $expiresAt),
+    ]);
+}
+
+function join_trip_invite_action(): void
+{
+    require_post();
+    $me = get_me();
+    $body = read_json();
+    $token = trim((string) ($body['invite_token'] ?? ''));
+    if ($token === '') {
+        json_out(['ok' => false, 'error' => 'invite_token is required.'], 400);
+    }
+
+    $decoded = decode_trip_invite_token($token);
+    $tripId = (int) ($decoded['trip_id'] ?? 0);
+    if ($tripId <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+    }
+
+    $pdo = db();
+    $actorId = (int) ($me['id'] ?? 0);
+    enforce_rate_limit(
+        $pdo,
+        'trip_write_ip',
+        client_ip_address(),
+        RATE_LIMIT_TRIP_WRITE_IP_MAX,
+        RATE_LIMIT_MUTATION_WINDOW_SEC
+    );
+    enforce_rate_limit(
+        $pdo,
+        'trip_write_user',
+        (string) $actorId,
+        RATE_LIMIT_TRIP_WRITE_USER_MAX,
+        RATE_LIMIT_MUTATION_WINDOW_SEC
+    );
+
+    $tripsTable = table_name('trips');
+    $tripMembersTable = table_name('trip_members');
+    $tripImageSelect = trips_image_column_available($pdo)
+        ? 't.image_path'
+        : 'NULL AS image_path';
+
+    $pdo->beginTransaction();
+    try {
+        $tripStmt = $pdo->prepare(
+            'SELECT
+                t.id,
+                t.name,
+                t.status,
+                t.created_by,
+                t.ended_at,
+                t.archived_at,
+                ' . $tripImageSelect . '
+             FROM ' . $tripsTable . ' t
+             WHERE t.id = :trip_id
+             LIMIT 1
+             FOR UPDATE'
+        );
+        $tripStmt->execute(['trip_id' => $tripId]);
+        $trip = $tripStmt->fetch();
+        if (!$trip) {
+            json_out(['ok' => false, 'error' => 'Trip not found.'], 404);
+        }
+
+        $status = normalize_trip_status($trip['status'] ?? 'active');
+        if ($status !== 'active') {
+            json_out(['ok' => false, 'error' => 'Trip is closed.'], 409);
+        }
+
+        $memberStmt = $pdo->prepare(
+            'SELECT user_id
+             FROM ' . $tripMembersTable . '
+             WHERE trip_id = :trip_id
+               AND user_id = :user_id
+             LIMIT 1'
+        );
+        $memberStmt->execute([
+            'trip_id' => $tripId,
+            'user_id' => $actorId,
+        ]);
+        $alreadyMember = (bool) $memberStmt->fetch();
+
+        if (!$alreadyMember) {
+            $insertMember = $pdo->prepare(
+                'INSERT INTO ' . $tripMembersTable . ' (trip_id, user_id)
+                 VALUES (:trip_id, :user_id)'
+            );
+            $insertMember->execute([
+                'trip_id' => $tripId,
+                'user_id' => $actorId,
+            ]);
+        }
+
+        $pdo->commit();
+
+        $freshTrip = find_trip_for_user($pdo, $actorId, $tripId);
+        if (!$freshTrip) {
+            json_out(['ok' => false, 'error' => 'Trip not found after join.'], 404);
+        }
+
+        json_out([
+            'ok' => true,
+            'already_member' => $alreadyMember,
+            'trip' => build_trip_payload(normalize_trip_row($freshTrip)),
+        ]);
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $error;
+    }
+}
+
 function users_action(): void
 {
     $me = get_me();
@@ -549,9 +909,12 @@ function users_action(): void
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $readySelect = trip_members_ready_columns_available($pdo)
+        ? 'tm.ready_to_settle, tm.ready_to_settle_at, '
+        : '1 AS ready_to_settle, NULL AS ready_to_settle_at, ';
 
     $stmt = $pdo->prepare(
-        'SELECT u.id, ' . $nameSelect . 'u.nickname, u.avatar_path
+        'SELECT u.id, ' . $nameSelect . $readySelect . 'u.nickname, u.avatar_path
          FROM ' . $tripMembersTable . ' tm
          JOIN ' . $usersTable . ' u ON u.id = tm.user_id
          WHERE tm.trip_id = :trip_id
@@ -569,10 +932,12 @@ function users_action(): void
         $row['display_name'] = $displayName !== null
             ? $displayName
             : trim((string) ($row['nickname'] ?? ''));
+        $row['is_ready_to_settle'] = ((int) ($row['ready_to_settle'] ?? 0)) === 1;
+        $row['ready_to_settle_at'] = $row['ready_to_settle_at'] ?: null;
         $avatarPath = trim((string) ($row['avatar_path'] ?? ''));
         $row['avatar_url'] = $avatarPath !== '' ? avatar_public_url($avatarPath) : null;
         $row['avatar_thumb_url'] = $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null;
-        unset($row['avatar_path']);
+        unset($row['avatar_path'], $row['ready_to_settle']);
     }
     unset($row);
 

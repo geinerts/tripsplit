@@ -1,8 +1,11 @@
 part of 'workspace_page.dart';
 
 extension _WorkspacePageSettlementDetails on _WorkspacePageState {
-  Future<void> _openSettlementProgressDetails(WorkspaceSnapshot snapshot) async {
-    var selectedUserId = _currentUserId > 0 &&
+  Future<void> _openSettlementProgressDetails(
+    WorkspaceSnapshot snapshot,
+  ) async {
+    var selectedUserId =
+        _currentUserId > 0 &&
             snapshot.users.any((user) => user.id == _currentUserId)
         ? _currentUserId
         : 0;
@@ -151,137 +154,192 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                           child: Column(
                             children: [
                               for (var i = 0; i < settlements.length; i++) ...[
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    10,
-                                    8,
-                                    10,
-                                    8,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
+                                Builder(
+                                  builder: (context) {
+                                    final item = settlements[i];
+                                    final normalizedStatus = item.status
+                                        .trim()
+                                        .toLowerCase();
+                                    final canRemind =
+                                        item.id != null &&
+                                        ((normalizedStatus == 'pending' &&
+                                                _currentUserId > 0 &&
+                                                _currentUserId ==
+                                                    item.toUserId) ||
+                                            (normalizedStatus == 'sent' &&
+                                                _currentUserId > 0 &&
+                                                _currentUserId ==
+                                                    item.fromUserId));
+
+                                    return Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        10,
+                                        8,
+                                        10,
+                                        8,
+                                      ),
+                                      child: Column(
                                         children: [
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                _settlementPairTitle(
-                                                  context,
-                                                  settlements[i].from,
-                                                  settlements[i].to,
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    _settlementPairTitle(
+                                                      context,
+                                                      item.from,
+                                                      item.to,
+                                                    ),
+                                                    const SizedBox(height: 4),
+                                                    Text(
+                                                      item.id != null
+                                                          ? t.settlementWithId(
+                                                              item.id!,
+                                                            )
+                                                          : _settlementPairText(
+                                                              item.from,
+                                                              item.to,
+                                                            ),
+                                                      style: Theme.of(
+                                                        context,
+                                                      ).textTheme.bodySmall,
+                                                    ),
+                                                  ],
                                                 ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  settlements[i].id != null
-                                                      ? t.settlementWithId(
-                                                          settlements[i].id!,
-                                                        )
-                                                      : _settlementPairText(
-                                                          settlements[i].from,
-                                                          settlements[i].to,
-                                                        ),
-                                                  style: Theme.of(
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                _formatMoney(item.amount),
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 9,
+                                                      vertical: 4,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: _settlementStatusColor(
                                                     context,
-                                                  ).textTheme.bodySmall,
+                                                    item.status,
+                                                  ).withValues(alpha: 0.14),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        999,
+                                                      ),
+                                                  border: Border.all(
+                                                    color:
+                                                        _settlementStatusColor(
+                                                          context,
+                                                          item.status,
+                                                        ).withValues(
+                                                          alpha: 0.32,
+                                                        ),
+                                                  ),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            _formatMoney(settlements[i].amount),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                            ),
+                                                child: Text(
+                                                  _settlementStatusLabel(
+                                                    context,
+                                                    item.status,
+                                                  ),
+                                                  style: TextStyle(
+                                                    color:
+                                                        _settlementStatusColor(
+                                                          context,
+                                                          item.status,
+                                                        ),
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              if (canRemind)
+                                                TextButton.icon(
+                                                  onPressed: _isMutating
+                                                      ? null
+                                                      : () async {
+                                                          await _onSettlementRemind(
+                                                            item,
+                                                          );
+                                                          if (!mounted ||
+                                                              !context
+                                                                  .mounted) {
+                                                            return;
+                                                          }
+                                                          setSheetState(() {});
+                                                        },
+                                                  icon: const Icon(
+                                                    Icons
+                                                        .notifications_active_outlined,
+                                                    size: 17,
+                                                  ),
+                                                  label: Text(
+                                                    _plainLocalizedText(
+                                                      en: 'Remind',
+                                                      lv: 'Atgādināt',
+                                                    ),
+                                                  ),
+                                                ),
+                                              if (item.canMarkSent)
+                                                TextButton.icon(
+                                                  onPressed: _isMutating
+                                                      ? null
+                                                      : () async {
+                                                          await _onSettlementMarkSent(
+                                                            item,
+                                                          );
+                                                          if (!mounted ||
+                                                              !context
+                                                                  .mounted) {
+                                                            return;
+                                                          }
+                                                          setSheetState(() {});
+                                                        },
+                                                  icon: const Icon(
+                                                    Icons.send_outlined,
+                                                    size: 17,
+                                                  ),
+                                                  label: Text(t.iSentAction),
+                                                ),
+                                              if (item.canConfirmReceived)
+                                                TextButton.icon(
+                                                  onPressed: _isMutating
+                                                      ? null
+                                                      : () async {
+                                                          await _onSettlementConfirmReceived(
+                                                            item,
+                                                          );
+                                                          if (!mounted ||
+                                                              !context
+                                                                  .mounted) {
+                                                            return;
+                                                          }
+                                                          setSheetState(() {});
+                                                        },
+                                                  icon: const Icon(
+                                                    Icons.check_circle_outline,
+                                                    size: 17,
+                                                  ),
+                                                  label: Text(
+                                                    t.confirmReceivedAction,
+                                                  ),
+                                                ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 9,
-                                              vertical: 4,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: _settlementStatusColor(
-                                                context,
-                                                settlements[i].status,
-                                              ).withValues(alpha: 0.14),
-                                              borderRadius:
-                                                  BorderRadius.circular(999),
-                                              border: Border.all(
-                                                color: _settlementStatusColor(
-                                                  context,
-                                                  settlements[i].status,
-                                                ).withValues(alpha: 0.32),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              _settlementStatusLabel(
-                                                context,
-                                                settlements[i].status,
-                                              ),
-                                              style: TextStyle(
-                                                color: _settlementStatusColor(
-                                                  context,
-                                                  settlements[i].status,
-                                                ),
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          if (settlements[i].canMarkSent)
-                                            TextButton.icon(
-                                              onPressed: _isMutating
-                                                  ? null
-                                                  : () async {
-                                                      await _onSettlementMarkSent(
-                                                        settlements[i],
-                                                      );
-                                                      if (!mounted ||
-                                                          !context.mounted) {
-                                                        return;
-                                                      }
-                                                      setSheetState(() {});
-                                                    },
-                                              icon: const Icon(
-                                                Icons.send_outlined,
-                                                size: 17,
-                                              ),
-                                              label: Text(t.iSentAction),
-                                            ),
-                                          if (settlements[i].canConfirmReceived)
-                                            TextButton.icon(
-                                              onPressed: _isMutating
-                                                  ? null
-                                                  : () async {
-                                                      await _onSettlementConfirmReceived(
-                                                        settlements[i],
-                                                      );
-                                                      if (!mounted ||
-                                                          !context.mounted) {
-                                                        return;
-                                                      }
-                                                      setSheetState(() {});
-                                                    },
-                                              icon: const Icon(
-                                                Icons.check_circle_outline,
-                                                size: 17,
-                                              ),
-                                              label: Text(
-                                                t.confirmReceivedAction,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
                                 if (i < settlements.length - 1)
                                   const Divider(height: 1),
@@ -299,7 +357,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                               Text(
                                 settlements.isEmpty
                                     ? t.noSettlements
-                                    : t.settlementCountLabel(settlements.length),
+                                    : t.settlementCountLabel(
+                                        settlements.length,
+                                      ),
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               const SizedBox(height: 8),
@@ -310,7 +370,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                   _DetailChip(
                                     icon: Icons.hourglass_bottom,
                                     label: t.pendingLabel,
-                                    value: t.breakdownPendingCount(pendingCount),
+                                    value: t.breakdownPendingCount(
+                                      pendingCount,
+                                    ),
                                   ),
                                   _DetailChip(
                                     icon: Icons.send_outlined,

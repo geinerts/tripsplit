@@ -5,6 +5,8 @@ class WorkspaceUser {
     this.displayName,
     this.avatarUrl,
     this.avatarThumbUrl,
+    this.isReadyToSettle = false,
+    this.readyToSettleAt,
   });
 
   final int id;
@@ -12,6 +14,8 @@ class WorkspaceUser {
   final String? displayName;
   final String? avatarUrl;
   final String? avatarThumbUrl;
+  final bool isReadyToSettle;
+  final String? readyToSettleAt;
 
   String get preferredName {
     final fullName = (displayName ?? '').trim();

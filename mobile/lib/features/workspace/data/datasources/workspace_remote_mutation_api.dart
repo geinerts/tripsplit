@@ -23,6 +23,18 @@ class WorkspaceRemoteMutationApi {
     );
   }
 
+  Future<void> setReadyToSettle({
+    required int tripId,
+    required bool isReady,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('set_ready_to_settle'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'is_ready': isReady},
+    );
+  }
+
   Future<void> markSettlementSent({
     required int tripId,
     required int settlementId,
@@ -41,6 +53,18 @@ class WorkspaceRemoteMutationApi {
   }) async {
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('confirm_settlement_received'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'settlement_id': settlementId},
+    );
+  }
+
+  Future<void> remindSettlement({
+    required int tripId,
+    required int settlementId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('remind_settlement'),
       method: HttpMethod.post,
       headers: _tripHeaders(tripId),
       body: <String, dynamic>{'settlement_id': settlementId},

@@ -4,7 +4,21 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
   Widget _buildBalancesTab(WorkspaceSnapshot snapshot) {
     final colors = Theme.of(context).colorScheme;
     final t = context.l10n;
-    final canFinishTrip = snapshot.isActive && _canEditMembers && !_isMutating;
+    final totalMembers = snapshot.readyToSettleMembersTotal;
+    final readyMembers = snapshot.readyToSettleMembersReady;
+    final allMembersReady = snapshot.allMembersReadyToSettle;
+    final canFinishTrip =
+        snapshot.isActive && _canEditMembers && !_isMutating && allMembersReady;
+    WorkspaceUser? currentUser;
+    for (final user in snapshot.users) {
+      if (user.id == _currentUserId) {
+        currentUser = user;
+        break;
+      }
+    }
+    final isCurrentUserReady = currentUser?.isReadyToSettle ?? false;
+    final canToggleReady =
+        snapshot.isActive && !_isMutating && _currentUserId > 0;
     final usersById = <int, WorkspaceUser>{
       for (final user in snapshot.users) user.id: user,
     };
@@ -16,6 +30,11 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           _buildFinishTripActionBlock(
             colors: colors,
             canFinishTrip: canFinishTrip,
+            allMembersReady: allMembersReady,
+            readyMembers: readyMembers,
+            totalMembers: totalMembers,
+            isCurrentUserReady: isCurrentUserReady,
+            canToggleReady: canToggleReady,
             finishLabel: t.finishTripStartSettlementsAction,
             creatorMustFinishLabel: t.creatorMustFinishTripFirst,
           ),
@@ -197,55 +216,162 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
   Widget _buildFinishTripActionBlock({
     required ColorScheme colors,
     required bool canFinishTrip,
+    required bool allMembersReady,
+    required int readyMembers,
+    required int totalMembers,
+    required bool isCurrentUserReady,
+    required bool canToggleReady,
     required String finishLabel,
     required String creatorMustFinishLabel,
   }) {
-    // Keep a stable slot while current user id is being resolved to avoid
-    // first-frame button/content jumping.
-    if (_currentUserId <= 0) {
-      return const SizedBox(height: 50);
-    }
+    final readyTitle = _plainLocalizedText(
+      en: 'Ready to settle',
+      lv: 'Gatavi norēķiniem',
+    );
+    final readySubtitle = allMembersReady
+        ? _plainLocalizedText(
+            en: 'All members are ready. You can start settlements.',
+            lv: 'Visi dalībnieki gatavi. Var sākt norēķinus.',
+          )
+        : _plainLocalizedText(
+            en: 'Waiting for everyone to mark ready.',
+            lv: 'Gaidām, kamēr visi atzīmē gatavību.',
+          );
+    final markReadyTitle = _plainLocalizedText(
+      en: "I'm ready",
+      lv: 'Esmu gatavs/-a',
+    );
+    final markReadySubtitle = _plainLocalizedText(
+      en: 'Confirm that you added all your expenses.',
+      lv: 'Apstiprini, ka visi tavi izdevumi ir pievienoti.',
+    );
+
+    final readyCard = _WorkspaceSectionCard(
+      accent: allMembersReady ? colors.primary : colors.tertiary,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                allMembersReady
+                    ? Icons.check_circle_outline
+                    : Icons.pending_actions_outlined,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  readyTitle,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: (allMembersReady ? colors.primary : colors.tertiary)
+                      .withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  '$readyMembers/$totalMembers',
+                  style: TextStyle(
+                    color: allMembersReady ? colors.primary : colors.tertiary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(readySubtitle, style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 8),
+          SwitchListTile.adaptive(
+            contentPadding: EdgeInsets.zero,
+            value: isCurrentUserReady,
+            onChanged: canToggleReady ? _onReadyToSettleChanged : null,
+            title: Text(
+              markReadyTitle,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            subtitle: Text(markReadySubtitle),
+          ),
+        ],
+      ),
+    );
 
     if (_canEditMembers) {
-      return DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          gradient: canFinishTrip
-              ? AppDesign.logoBackgroundGradient
-              : LinearGradient(
-                  colors: [
-                    colors.surfaceContainerHighest,
-                    colors.surfaceContainerHighest,
-                  ],
-                ),
-        ),
-        child: ElevatedButton.icon(
-          onPressed: canFinishTrip ? _onEndTripPressed : null,
-          icon: const Icon(Icons.flag_outlined),
-          label: Text(finishLabel),
-          style: ElevatedButton.styleFrom(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            foregroundColor: canFinishTrip
-                ? Colors.white
-                : colors.onSurfaceVariant,
-            disabledForegroundColor: colors.onSurfaceVariant,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          readyCard,
+          const SizedBox(height: 8),
+          DecoratedBox(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
+              gradient: canFinishTrip
+                  ? AppDesign.logoBackgroundGradient
+                  : LinearGradient(
+                      colors: [
+                        colors.surfaceContainerHighest,
+                        colors.surfaceContainerHighest,
+                      ],
+                    ),
+            ),
+            child: ElevatedButton.icon(
+              onPressed: canFinishTrip ? _onEndTripPressed : null,
+              icon: const Icon(Icons.flag_outlined),
+              label: Text(finishLabel),
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                foregroundColor: canFinishTrip
+                    ? Colors.white
+                    : colors.onSurfaceVariant,
+                disabledForegroundColor: colors.onSurfaceVariant,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
             ),
           ),
-        ),
+          if (!allMembersReady)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                _plainLocalizedText(
+                  en: 'Finish button unlocks once everyone marks ready.',
+                  lv: 'Poga aktivizēsies, kad visi atzīmēs gatavību.',
+                ),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+        ],
       );
     }
 
-    return _WorkspaceSectionCard(
-      accent: colors.tertiary,
-      child: Text(
-        creatorMustFinishLabel,
-        style: Theme.of(context).textTheme.bodyMedium,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        readyCard,
+        const SizedBox(height: 8),
+        _WorkspaceSectionCard(
+          accent: colors.tertiary,
+          child: Text(
+            creatorMustFinishLabel,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ],
     );
   }
 

@@ -4,6 +4,7 @@ import '../../../../core/network/legacy_trip_image_uploader.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/http_method.dart';
+import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../models/trip_model.dart';
 import '../models/trip_user_model.dart';
@@ -33,6 +34,8 @@ abstract class TripsRemoteDataSource {
     required int tripId,
     required List<int> memberIds,
   });
+  Future<void> deleteTrip({required int tripId});
+  Future<TripInviteLink> createTripInviteLink({required int tripId});
 }
 
 class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
@@ -68,9 +71,7 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
         .toSet()
         .toList(growable: false);
 
-    final queryParams = <String, dynamic>{
-      'limit': normalizedLimit,
-    };
+    final queryParams = <String, dynamic>{'limit': normalizedLimit};
     if (normalizedQuery.isNotEmpty) {
       queryParams['q'] = normalizedQuery;
     }
@@ -163,5 +164,40 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
       body: <String, dynamic>{'member_ids': memberIds},
     );
     return (response['added_count'] as num?)?.toInt() ?? 0;
+  }
+
+  @override
+  Future<void> deleteTrip({required int tripId}) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('delete_trip'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'id': tripId},
+    );
+  }
+
+  @override
+  Future<TripInviteLink> createTripInviteLink({required int tripId}) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('create_trip_invite'),
+      method: HttpMethod.post,
+      headers: <String, String>{'X-Trip-Id': '$tripId'},
+    );
+
+    final inviteUrl = (response['invite_url'] as String? ?? '').trim();
+    final inviteToken = (response['invite_token'] as String? ?? '').trim();
+    if (inviteUrl.isEmpty || inviteToken.isEmpty) {
+      throw StateError(
+        'Missing invite link payload in create_trip_invite response.',
+      );
+    }
+    return TripInviteLink(
+      tripId: (response['trip_id'] as num?)?.toInt() ?? tripId,
+      inviteUrl: inviteUrl,
+      inviteToken: inviteToken,
+      expiresAt: (response['expires_at'] as String?)?.trim().isNotEmpty == true
+          ? (response['expires_at'] as String).trim()
+          : null,
+      expiresInSeconds: (response['expires_in_sec'] as num?)?.toInt() ?? 0,
+    );
   }
 }

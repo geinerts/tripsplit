@@ -17,6 +17,7 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
+import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../trips/domain/entities/trip.dart';
 import '../../../trips/domain/entities/trip_user.dart';

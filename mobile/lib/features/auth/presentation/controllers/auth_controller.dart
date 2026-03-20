@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -6,6 +7,7 @@ import '../../../../core/auth/device_token_store.dart';
 import '../../../../core/auth/user_avatar_store.dart';
 import '../../../../core/network/legacy_avatar_uploader.dart';
 import '../../../../core/network/legacy_feedback_reporter.dart';
+import '../../../../core/push/push_registration_service.dart';
 import '../../data/models/auth_user_model.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../domain/usecases/get_me_use_case.dart';
@@ -26,6 +28,7 @@ class AuthController {
     this._avatarStore,
     this._avatarUploader,
     this._feedbackReporter,
+    this._pushRegistrationService,
   );
 
   final LoginUseCase _loginUseCase;
@@ -38,6 +41,7 @@ class AuthController {
   final UserAvatarStore _avatarStore;
   final LegacyAvatarUploader _avatarUploader;
   final LegacyFeedbackReporter _feedbackReporter;
+  final PushRegistrationService _pushRegistrationService;
 
   AuthUser? currentUser;
 
@@ -49,6 +53,7 @@ class AuthController {
       await _loginUseCase.call(email: email, password: password),
     );
     currentUser = user;
+    unawaited(_syncPushRegistration());
     return user;
   }
 
@@ -69,6 +74,7 @@ class AuthController {
       ),
     );
     currentUser = user;
+    unawaited(_syncPushRegistration());
     return user;
   }
 
@@ -80,6 +86,7 @@ class AuthController {
       await _setCredentialsUseCase.call(email: email, password: password),
     );
     currentUser = user;
+    unawaited(_syncPushRegistration());
     return user;
   }
 
@@ -100,12 +107,14 @@ class AuthController {
       ),
     );
     currentUser = user;
+    unawaited(_syncPushRegistration());
     return user;
   }
 
   Future<AuthUser> loadCurrentUser() async {
     final user = await _withStoredAvatar(await _getMeUseCase.call());
     currentUser = user;
+    unawaited(_syncPushRegistration());
     return user;
   }
 
@@ -226,9 +235,26 @@ class AuthController {
   }
 
   Future<void> logout() async {
+    try {
+      await _pushRegistrationService.unregisterCurrentDevice();
+    } catch (_) {
+      // Ignore push unregister errors during logout.
+    }
     await _authSessionStore.clear();
     await _tokenStore.resetToken();
     currentUser = null;
+  }
+
+  Future<void> syncPushRegistration() {
+    return _syncPushRegistration();
+  }
+
+  Future<void> _syncPushRegistration() async {
+    try {
+      await _pushRegistrationService.syncRegistration();
+    } catch (_) {
+      // Push setup is best-effort and must not block auth flow.
+    }
   }
 
   Future<AuthUser> _withStoredAvatar(AuthUser user) async {

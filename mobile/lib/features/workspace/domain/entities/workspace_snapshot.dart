@@ -42,6 +42,31 @@ class WorkspaceSnapshot {
   bool get isSettling => tripStatus == 'settling';
   bool get isArchived => tripStatus == 'archived';
 
+  int get readyToSettleMembersTotal {
+    var total = 0;
+    for (final user in users) {
+      if (user.id > 0) {
+        total += 1;
+      }
+    }
+    return total;
+  }
+
+  int get readyToSettleMembersReady {
+    var ready = 0;
+    for (final user in users) {
+      if (user.id > 0 && user.isReadyToSettle) {
+        ready += 1;
+      }
+    }
+    return ready;
+  }
+
+  bool get allMembersReadyToSettle {
+    final total = readyToSettleMembersTotal;
+    return total > 0 && readyToSettleMembersReady >= total;
+  }
+
   WorkspaceSnapshot copyWith({
     String? tripStatus,
     String? tripEndedAt,

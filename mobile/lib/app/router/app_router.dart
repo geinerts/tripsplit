@@ -31,6 +31,7 @@ class AppRouter {
             ? (args['initial_tab'] as int)
             : 0;
         final openCreateTrip = args is Map && args['open_create_trip'] == true;
+        final openAddExpense = args is Map && args['open_add_expense'] == true;
         return MainShellPage(
           authController: _dependencies.authController,
           tripsController: _dependencies.tripsController,
@@ -38,6 +39,7 @@ class AppRouter {
           workspaceController: _dependencies.workspaceController,
           initialTabIndex: initialTab,
           openCreateTripOnStart: openCreateTrip,
+          openAddExpenseOnStart: openAddExpense,
         );
       },
       profile: (_) => MainShellPage(
@@ -50,6 +52,7 @@ class AppRouter {
       trips: (context) {
         final args = ModalRoute.of(context)?.settings.arguments;
         final openCreateTrip = args is Map && args['open_create_trip'] == true;
+        final openAddExpense = args is Map && args['open_add_expense'] == true;
         return MainShellPage(
           authController: _dependencies.authController,
           tripsController: _dependencies.tripsController,
@@ -57,6 +60,7 @@ class AppRouter {
           workspaceController: _dependencies.workspaceController,
           initialTabIndex: 0,
           openCreateTripOnStart: openCreateTrip,
+          openAddExpenseOnStart: openAddExpense,
         );
       },
       workspace: (context) {

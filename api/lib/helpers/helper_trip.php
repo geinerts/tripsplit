@@ -31,6 +31,36 @@ function trips_image_column_available(PDO $pdo): bool
     return $cached;
 }
 
+function trip_members_ready_columns_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if (is_bool($cached)) {
+        return $cached;
+    }
+
+    $tripMembersTable = DB_TABLE_PREFIX . 'trip_members';
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $tripMembersTable)) {
+        $cached = false;
+        return $cached;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(1)
+             FROM information_schema.columns
+             WHERE table_schema = DATABASE()
+               AND table_name = :table_name
+               AND column_name IN (\'ready_to_settle\', \'ready_to_settle_at\')'
+        );
+        $stmt->execute(['table_name' => $tripMembersTable]);
+        $cached = ((int) ($stmt->fetchColumn() ?: 0)) >= 2;
+    } catch (Throwable $error) {
+        $cached = false;
+    }
+
+    return $cached;
+}
+
 function normalize_trip_status($value): string
 {
     $raw = strtolower(trim((string) $value));
@@ -118,6 +148,21 @@ function create_user_notification(
         'body' => trim($body),
         'payload_json' => $payloadJson,
     ]);
+
+    try {
+        queue_push_notification(
+            $pdo,
+            $userId,
+            $tripId,
+            trim($type) !== '' ? trim($type) : 'info',
+            trim($title) !== '' ? trim($title) : 'Notification',
+            trim($body),
+            $payload,
+            (int) $pdo->lastInsertId()
+        );
+    } catch (Throwable $error) {
+        log_api_exception($error, 'queue_push_notification');
+    }
 }
 
 function parse_trip_id_from_request(): int

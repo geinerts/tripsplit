@@ -1,10 +1,13 @@
 import 'dart:typed_data';
 
 import '../../domain/entities/trip.dart';
+import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_user.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../../domain/usecases/add_trip_members_use_case.dart';
+import '../../domain/usecases/delete_trip_use_case.dart';
 import '../../domain/usecases/create_trip_use_case.dart';
+import '../../domain/usecases/create_trip_invite_link_use_case.dart';
 import '../../domain/usecases/list_directory_users_use_case.dart';
 import '../../domain/usecases/list_trips_use_case.dart';
 import '../../domain/usecases/update_trip_use_case.dart';
@@ -16,6 +19,8 @@ class TripsController {
     this._listDirectoryUsersUseCase,
     this._createTripUseCase,
     this._addTripMembersUseCase,
+    this._deleteTripUseCase,
+    this._createTripInviteLinkUseCase,
     this._updateTripUseCase,
     this._uploadTripImageUseCase,
   );
@@ -24,6 +29,8 @@ class TripsController {
   final ListDirectoryUsersUseCase _listDirectoryUsersUseCase;
   final CreateTripUseCase _createTripUseCase;
   final AddTripMembersUseCase _addTripMembersUseCase;
+  final DeleteTripUseCase _deleteTripUseCase;
+  final CreateTripInviteLinkUseCase _createTripInviteLinkUseCase;
   final UpdateTripUseCase _updateTripUseCase;
   final UploadTripImageUseCase _uploadTripImageUseCase;
   List<Trip> _cachedTrips = const <Trip>[];
@@ -102,6 +109,15 @@ class TripsController {
 
   Future<int> addMembers({required int tripId, required List<int> memberIds}) {
     return _addTripMembersUseCase.call(tripId: tripId, memberIds: memberIds);
+  }
+
+  Future<void> deleteTrip({required int tripId}) async {
+    await _deleteTripUseCase.call(tripId: tripId);
+    clearTripsCache();
+  }
+
+  Future<TripInviteLink> createTripInviteLink({required int tripId}) {
+    return _createTripInviteLinkUseCase.call(tripId: tripId);
   }
 
   void clearTripsCache() {

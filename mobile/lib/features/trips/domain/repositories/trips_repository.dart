@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import '../entities/trip.dart';
+import '../entities/trip_invite_link.dart';
 import '../entities/trip_user.dart';
 import '../entities/uploaded_trip_image.dart';
 
@@ -26,4 +27,6 @@ abstract class TripsRepository {
     required int tripId,
     required List<int> memberIds,
   });
+  Future<void> deleteTrip({required int tripId});
+  Future<TripInviteLink> createTripInviteLink({required int tripId});
 }

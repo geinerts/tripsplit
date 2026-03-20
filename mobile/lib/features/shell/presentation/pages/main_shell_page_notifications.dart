@@ -6,6 +6,13 @@ extension _MainShellPageNotifications on _MainShellPageState {
     return code == 'lv' ? lv : en;
   }
 
+  bool _isFriendNotificationType(String rawType) {
+    final type = rawType.trim().toLowerCase();
+    return type == 'friend_invite' ||
+        type == 'friend_invite_accepted' ||
+        type == 'friend_invite_rejected';
+  }
+
   Future<void> _refreshGlobalNotifications({
     bool showErrorSnack = false,
   }) async {
@@ -14,12 +21,17 @@ extension _MainShellPageNotifications on _MainShellPageState {
     }
     _isNotificationsLoading = true;
     try {
+      final previousUnread = _unreadNotificationsCount;
       final inbox = await widget.workspaceController.loadGlobalNotifications(
         limit: 40,
       );
       if (!mounted) {
         return;
       }
+      _maybeShowForegroundNotificationHint(
+        previousUnread: previousUnread,
+        inbox: inbox,
+      );
       _updateState(() {
         _unreadNotificationsCount = inbox.unreadCount < 0
             ? 0
@@ -56,6 +68,48 @@ extension _MainShellPageNotifications on _MainShellPageState {
     }
   }
 
+  void _maybeShowForegroundNotificationHint({
+    required int previousUnread,
+    required WorkspaceNotificationsInbox inbox,
+  }) {
+    final nextUnread = inbox.unreadCount < 0 ? 0 : inbox.unreadCount;
+    if (!_notificationsPrimed) {
+      _notificationsPrimed = true;
+      return;
+    }
+    if (!_isAppInForeground || nextUnread <= previousUnread) {
+      return;
+    }
+
+    final now = DateTime.now();
+    final last = _lastUnreadNotificationHintAt;
+    if (last != null && now.difference(last) < const Duration(seconds: 12)) {
+      return;
+    }
+
+    WorkspaceNotification? newestUnread;
+    for (final item in _sortNotifications(inbox.notifications)) {
+      if (!item.isRead) {
+        newestUnread = item;
+        break;
+      }
+    }
+    if (newestUnread == null) {
+      return;
+    }
+
+    final title = newestUnread.title.trim();
+    if (title.isEmpty) {
+      return;
+    }
+
+    _lastUnreadNotificationHintAt = now;
+    _showSnack(
+      _txt(en: 'New notification: $title', lv: 'Jauns paziņojums: $title'),
+      isError: false,
+    );
+  }
+
   Future<void> _loadMoreGlobalNotifications({
     required VoidCallback onUpdated,
   }) async {
@@ -79,9 +133,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
       if (!mounted) {
         return;
       }
-      final seenIds = _globalNotifications
-          .map((item) => item.id)
-          .toSet();
+      final seenIds = _globalNotifications.map((item) => item.id).toSet();
       final merged = <WorkspaceNotification>[..._globalNotifications];
       for (final item in inbox.notifications) {
         if (seenIds.add(item.id)) {
@@ -99,7 +151,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
         _globalNotificationsNextOffset = inbox.nextOffset;
       });
     } catch (_) {
-      // Keep silent in scroll loading to avoid noisy UX.
+      // Keep silent in manual load-more to avoid noisy UX.
     } finally {
       _isNotificationsLoadingMore = false;
       if (mounted) {
@@ -117,30 +169,62 @@ extension _MainShellPageNotifications on _MainShellPageState {
       return;
     }
     await _showNotificationsSheet();
-    if (!mounted) {
-      return;
-    }
+  }
 
-    final unreadIds = _globalNotifications
-        .where((item) => !item.isRead && item.id > 0)
-        .map((item) => item.id)
+  Future<void> _markGlobalNotificationsRead({
+    List<int> notificationIds = const <int>[],
+    bool markAll = false,
+    bool showErrorSnack = true,
+  }) async {
+    final ids = notificationIds
+        .where((id) => id > 0)
+        .toSet()
         .toList(growable: false);
-    if (unreadIds.isEmpty) {
+    if (!markAll && ids.isEmpty) {
       return;
     }
 
     try {
       final unreadCount = await widget.workspaceController
-          .markGlobalNotificationsRead(notificationIds: unreadIds);
+          .markGlobalNotificationsRead(
+            notificationIds: markAll ? const <int>[] : ids,
+          );
       if (!mounted) {
         return;
       }
+
+      final readIdSet = markAll
+          ? _globalNotifications
+                .where((item) => item.id > 0)
+                .map((item) => item.id)
+                .toSet()
+          : ids.toSet();
+
+      final updatedNotifications = _globalNotifications
+          .map((item) {
+            if (item.isRead || !readIdSet.contains(item.id)) {
+              return item;
+            }
+            return WorkspaceNotification(
+              id: item.id,
+              tripId: item.tripId,
+              tripName: item.tripName,
+              type: item.type,
+              title: item.title,
+              body: item.body,
+              isRead: true,
+              createdAt: item.createdAt,
+            );
+          })
+          .toList(growable: false);
+
       _updateState(() {
         _unreadNotificationsCount = unreadCount < 0 ? 0 : unreadCount;
+        _globalNotifications = updatedNotifications;
       });
       unawaited(_refreshGlobalNotifications(showErrorSnack: false));
     } on ApiException catch (error) {
-      if (!mounted) {
+      if (!mounted || !showErrorSnack) {
         return;
       }
       final message = error.message.trim().isNotEmpty
@@ -151,46 +235,186 @@ extension _MainShellPageNotifications on _MainShellPageState {
             );
       _showSnack(message, isError: true);
     } catch (_) {
-      if (mounted) {
-        _showSnack(
-          _txt(
-            en: 'Failed to update notifications.',
-            lv: 'Neizdevās atjaunot paziņojumus.',
-          ),
-          isError: true,
-        );
+      if (!mounted || !showErrorSnack) {
+        return;
       }
+      _showSnack(
+        _txt(
+          en: 'Failed to update notifications.',
+          lv: 'Neizdevās atjaunot paziņojumus.',
+        ),
+        isError: true,
+      );
     }
+  }
+
+  Widget _buildNotificationSectionHeader(BuildContext context, String label) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
+      child: Text(
+        label,
+        style: Theme.of(
+          context,
+        ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+
+  List<WorkspaceNotification> _sortNotifications(
+    List<WorkspaceNotification> source,
+  ) {
+    final sorted = source.toList(growable: false)
+      ..sort((a, b) {
+        final aTime =
+            DateTime.tryParse(a.createdAt ?? '')?.millisecondsSinceEpoch ?? 0;
+        final bTime =
+            DateTime.tryParse(b.createdAt ?? '')?.millisecondsSinceEpoch ?? 0;
+        if (aTime != bTime) {
+          return bTime.compareTo(aTime);
+        }
+        return b.id.compareTo(a.id);
+      });
+    return sorted;
+  }
+
+  Widget _buildNotificationTile(
+    BuildContext context,
+    BuildContext sheetContext,
+    WorkspaceNotification notification,
+  ) {
+    final t = context.l10n;
+    final title = notification.title.trim().isNotEmpty
+        ? notification.title.trim()
+        : t.notificationFallbackTitle;
+    final body = notification.body.trim();
+    final tripName = notification.tripName?.trim() ?? '';
+    final createdAtLabel = _formatNotificationTime(notification.createdAt);
+    final isFriendNotification = _isFriendNotificationType(notification.type);
+    final metaParts = <String>[
+      if (!isFriendNotification &&
+          tripName.isNotEmpty &&
+          notification.tripId > 0)
+        tripName,
+      if (createdAtLabel.isNotEmpty) createdAtLabel,
+    ];
+    final metaText = metaParts.join(' • ');
+    final isUnread = !notification.isRead;
+    IconData icon = Icons.notifications_none_outlined;
+    if (notification.type == 'friend_invite') {
+      icon = Icons.person_add_alt_1_outlined;
+    } else if (notification.type == 'friend_invite_accepted') {
+      icon = Icons.how_to_reg_outlined;
+    } else if (notification.type == 'friend_invite_rejected') {
+      icon = Icons.person_off_outlined;
+    } else if (notification.type == 'expense_added') {
+      icon = Icons.receipt_long_outlined;
+    } else if (notification.type == 'trip_finished') {
+      icon = Icons.flag_outlined;
+    } else if (notification.type == 'settlement_reminder') {
+      icon = Icons.notifications_active_outlined;
+    } else if (notification.type == 'member_ready_to_settle') {
+      icon = Icons.person_pin_circle_outlined;
+    } else if (notification.type == 'trip_ready_to_settle') {
+      icon = Icons.task_alt_outlined;
+    } else if (notification.type == 'trip_added' ||
+        notification.type == 'trip_member_added') {
+      icon = Icons.group_add_outlined;
+    } else if (isUnread) {
+      icon = Icons.notifications_active_outlined;
+    }
+
+    return ListTile(
+      leading: Icon(icon),
+      title: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontWeight: isUnread ? FontWeight.w700 : null),
+            ),
+          ),
+          if (isUnread)
+            Container(
+              width: 8,
+              height: 8,
+              margin: const EdgeInsets.only(left: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(99),
+              ),
+            ),
+        ],
+      ),
+      subtitle: (body.isEmpty && metaText.isEmpty)
+          ? null
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (body.isNotEmpty)
+                  Text(body, maxLines: 2, overflow: TextOverflow.ellipsis),
+                if (metaText.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      metaText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+              ],
+            ),
+      onTap: () {
+        if (!notification.isRead && notification.id > 0) {
+          unawaited(
+            _markGlobalNotificationsRead(
+              notificationIds: [notification.id],
+              showErrorSnack: false,
+            ),
+          );
+        }
+        Navigator.of(sheetContext).pop();
+        unawaited(_openTripFromNotification(notification));
+      },
+    );
   }
 
   Future<void> _showNotificationsSheet() async {
     final t = context.l10n;
+    const initialEarlierVisibleCount = 5;
+    var earlierVisibleCount = initialEarlierVisibleCount;
+    var isSheetActive = true;
+
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (context, setSheetState) {
-            final sorted = _globalNotifications.toList(growable: false)
-              ..sort((a, b) {
-                final aTime =
-                    DateTime.tryParse(a.createdAt ?? '')
-                        ?.millisecondsSinceEpoch ??
-                    0;
-                final bTime =
-                    DateTime.tryParse(b.createdAt ?? '')
-                        ?.millisecondsSinceEpoch ??
-                    0;
-                if (aTime != bTime) {
-                  return bTime.compareTo(aTime);
-                }
-                return b.id.compareTo(a.id);
-              });
-            final hasFooter = _globalNotificationsHasMore;
+            final sorted = _sortNotifications(_globalNotifications);
+            final newNotifications = sorted
+                .where((item) => !item.isRead)
+                .toList(growable: false);
+            final earlierNotifications = sorted
+                .where((item) => item.isRead)
+                .toList(growable: false);
+            final visibleEarlierCount =
+                earlierVisibleCount < earlierNotifications.length
+                ? earlierVisibleCount
+                : earlierNotifications.length;
+            final visibleEarlier = earlierNotifications
+                .take(visibleEarlierCount)
+                .toList(growable: false);
+            final hasMoreEarlierHidden =
+                earlierNotifications.length > visibleEarlier.length;
+            final canMarkAllRead = newNotifications.any((item) => item.id > 0);
 
             return SafeArea(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 560),
+                constraints: const BoxConstraints(maxHeight: 620),
                 child: sorted.isEmpty
                     ? Center(
                         child: Padding(
@@ -198,152 +422,140 @@ extension _MainShellPageNotifications on _MainShellPageState {
                           child: Text(t.noNotificationsYet),
                         ),
                       )
-                    : NotificationListener<ScrollNotification>(
-                        onNotification: (notification) {
-                          if (notification.metrics.pixels <
-                              notification.metrics.maxScrollExtent - 180) {
-                            return false;
-                          }
-                          if (_isNotificationsLoadingMore ||
-                              !_globalNotificationsHasMore) {
-                            return false;
-                          }
-                          unawaited(
-                            _loadMoreGlobalNotifications(
-                              onUpdated: () {
-                                if (Navigator.of(sheetContext).mounted) {
-                                  setSheetState(() {});
-                                }
-                              },
-                            ),
-                          );
-                          return false;
-                        },
-                        child: ListView.separated(
-                          itemCount: sorted.length + (hasFooter ? 1 : 0),
-                          separatorBuilder: (context, index) =>
-                              const Divider(height: 1),
-                          itemBuilder: (context, index) {
-                            if (hasFooter && index == sorted.length) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 14,
+                    : ListView(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    t.notificationsTitle,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.w700),
+                                  ),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    if (_isNotificationsLoadingMore)
-                                      const SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                        ),
-                                      ),
-                                    if (_isNotificationsLoadingMore)
-                                      const SizedBox(width: 8),
-                                    Text(
-                                      _isNotificationsLoadingMore
-                                          ? _txt(
-                                              en: 'Loading more...',
-                                              lv: 'Ielādē vēl...',
-                                            )
-                                          : _txt(
-                                              en: 'Scroll for more',
-                                              lv: 'Ritini, lai ielādētu vairāk',
-                                            ),
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall,
+                                TextButton(
+                                  onPressed:
+                                      (!canMarkAllRead ||
+                                          _isNotificationsLoading)
+                                      ? null
+                                      : () async {
+                                          await _markGlobalNotificationsRead(
+                                            markAll: true,
+                                            showErrorSnack: true,
+                                          );
+                                          if (!mounted || !isSheetActive) {
+                                            return;
+                                          }
+                                          setSheetState(() {});
+                                        },
+                                  child: Text(
+                                    _txt(
+                                      en: 'Mark all as read',
+                                      lv: 'Atzīmēt visu kā lasītu',
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              );
-                            }
-
-                            final notification = sorted[index];
-                            final title = notification.title.trim().isNotEmpty
-                                ? notification.title.trim()
-                                : t.notificationFallbackTitle;
-                            final body = notification.body.trim();
-                            final tripName = notification.tripName?.trim() ?? '';
-                            final createdAtLabel = _formatNotificationTime(
-                              notification.createdAt,
-                            );
-                            final metaParts = <String>[
-                              if (tripName.isNotEmpty && notification.tripId > 0)
-                                tripName,
-                              if (createdAtLabel.isNotEmpty) createdAtLabel,
-                            ];
-                            final metaText = metaParts.join(' • ');
-                            final isUnread = !notification.isRead;
-                            IconData icon = Icons.notifications_none_outlined;
-                            if (notification.type == 'friend_invite') {
-                              icon = Icons.person_add_alt_1_outlined;
-                            } else if (notification.type == 'expense_added') {
-                              icon = Icons.receipt_long_outlined;
-                            } else if (notification.type == 'trip_finished') {
-                              icon = Icons.flag_outlined;
-                            } else if (notification.type == 'trip_added' ||
-                                notification.type == 'trip_member_added') {
-                              icon = Icons.group_add_outlined;
-                            } else if (isUnread) {
-                              icon = Icons.notifications_active_outlined;
-                            }
-                            return ListTile(
-                              leading: Icon(icon),
-                              title: Text(
-                                title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontWeight: isUnread ? FontWeight.w700 : null,
+                              ],
+                            ),
+                          ),
+                          if (newNotifications.isNotEmpty) ...[
+                            _buildNotificationSectionHeader(
+                              context,
+                              _txt(en: 'New', lv: 'Jaunie'),
+                            ),
+                            ...newNotifications.map(
+                              (item) => _buildNotificationTile(
+                                context,
+                                sheetContext,
+                                item,
+                              ),
+                            ),
+                          ],
+                          if (earlierNotifications.isNotEmpty) ...[
+                            _buildNotificationSectionHeader(
+                              context,
+                              _txt(en: 'Earlier', lv: 'Iepriekšējie'),
+                            ),
+                            ...visibleEarlier.map(
+                              (item) => _buildNotificationTile(
+                                context,
+                                sheetContext,
+                                item,
+                              ),
+                            ),
+                            if (hasMoreEarlierHidden)
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  6,
+                                  16,
+                                  0,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setSheetState(() {
+                                        earlierVisibleCount += 10;
+                                      });
+                                    },
+                                    child: Text(
+                                      _txt(
+                                        en: 'Show more earlier',
+                                        lv: 'Rādīt vairāk iepriekšējos',
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                              subtitle: (body.isEmpty && metaText.isEmpty)
-                                  ? null
-                                  : Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if (body.isNotEmpty)
-                                          Text(
-                                            body,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        if (metaText.isNotEmpty)
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              top: 2,
-                                            ),
-                                            child: Text(
-                                              metaText,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.bodySmall,
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                              onTap: () {
-                                Navigator.of(sheetContext).pop();
-                                unawaited(_openTripFromNotification(notification));
-                              },
-                            );
-                          },
-                        ),
+                          ],
+                          if (_globalNotificationsHasMore)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+                              child: OutlinedButton(
+                                onPressed: _isNotificationsLoadingMore
+                                    ? null
+                                    : () async {
+                                        await _loadMoreGlobalNotifications(
+                                          onUpdated: () {
+                                            if (isSheetActive) {
+                                              setSheetState(() {});
+                                            }
+                                          },
+                                        );
+                                        if (!mounted || !isSheetActive) {
+                                          return;
+                                        }
+                                        setSheetState(() {});
+                                      },
+                                child: Text(
+                                  _isNotificationsLoadingMore
+                                      ? _txt(
+                                          en: 'Loading more...',
+                                          lv: 'Ielādē vēl...',
+                                        )
+                                      : _txt(
+                                          en: 'Load more notifications',
+                                          lv: 'Ielādēt vēl paziņojumus',
+                                        ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
               ),
             );
           },
         );
       },
-    );
+    ).whenComplete(() {
+      isSheetActive = false;
+    });
   }
 
   Future<void> _openTripFromNotification(
@@ -352,7 +564,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
     if (!mounted) {
       return;
     }
-    if (notification.type == 'friend_invite') {
+    if (_isFriendNotificationType(notification.type)) {
       if (_selectedTabIndex != _MainShellPageState._tabFriends ||
           _isWorkspaceOpen) {
         _updateState(() {

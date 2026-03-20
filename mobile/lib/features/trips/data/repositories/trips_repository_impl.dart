@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import '../../domain/entities/trip.dart';
+import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_user.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../../domain/repositories/trips_repository.dart';
@@ -65,5 +66,15 @@ class TripsRepositoryImpl implements TripsRepository {
     required List<int> memberIds,
   }) {
     return _remote.addTripMembers(tripId: tripId, memberIds: memberIds);
+  }
+
+  @override
+  Future<void> deleteTrip({required int tripId}) {
+    return _remote.deleteTrip(tripId: tripId);
+  }
+
+  @override
+  Future<TripInviteLink> createTripInviteLink({required int tripId}) {
+    return _remote.createTripInviteLink(tripId: tripId);
   }
 }

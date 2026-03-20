@@ -22,6 +22,14 @@ extension _MainShellPageSettings on _MainShellPageState {
       return;
     }
 
+    final openedTrip = _openedTrip;
+    final currentUserId = widget.authController.currentUser?.id ?? 0;
+    final canDeleteOpenedTrip =
+        openedTrip != null &&
+        openedTrip.isActive &&
+        currentUserId > 0 &&
+        (openedTrip.createdBy ?? 0) == currentUserId;
+
     final choice = await showModalBottomSheet<String>(
       context: context,
       showDragHandle: true,
@@ -51,6 +59,20 @@ extension _MainShellPageSettings on _MainShellPageState {
                 title: Text(t.logOutButton),
                 onTap: () => Navigator.of(sheetContext).pop('logout'),
               ),
+              if (canDeleteOpenedTrip)
+                ListTile(
+                  leading: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(sheetContext).colorScheme.error,
+                  ),
+                  title: Text(
+                    '${t.deleteAction} ${t.tripTitleShort}',
+                    style: TextStyle(
+                      color: Theme.of(sheetContext).colorScheme.error,
+                    ),
+                  ),
+                  onTap: () => Navigator.of(sheetContext).pop('delete_trip'),
+                ),
             ],
           ),
         );
@@ -74,9 +96,121 @@ extension _MainShellPageSettings on _MainShellPageState {
       case 'logout':
         await _onLogoutPressed();
         return;
+      case 'delete_trip':
+        await _onDeleteOpenedTripPressed();
+        return;
       default:
         return;
     }
+  }
+
+  Future<void> _onDeleteOpenedTripPressed() async {
+    if (_isLoggingOut || _isSendingFeedback) {
+      return;
+    }
+    final trip = _openedTrip;
+    if (trip == null) {
+      return;
+    }
+
+    final currentUserId = widget.authController.currentUser?.id ?? 0;
+    final isOwner = currentUserId > 0 && (trip.createdBy ?? 0) == currentUserId;
+    if (!isOwner) {
+      _showSnack(
+        _settingsLocalizedText(
+          en: 'Only trip creator can delete this trip.',
+          lv: 'Šo ceļojumu drīkst dzēst tikai izveidotājs.',
+        ),
+        isError: true,
+      );
+      return;
+    }
+    if (!trip.isActive) {
+      _showSnack(
+        _settingsLocalizedText(
+          en: 'Only active trips can be deleted.',
+          lv: 'Dzēst var tikai aktīvus ceļojumus.',
+        ),
+        isError: true,
+      );
+      return;
+    }
+
+    final t = context.l10n;
+    final tripLabel = _tripDisplayName(context, trip);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text('${t.deleteAction} ${t.tripTitleShort}'),
+          content: Text(
+            _settingsLocalizedText(
+              en: 'Delete "$tripLabel"? This is allowed only before any expenses are added.',
+              lv: 'Dzēst "$tripLabel"? Tas ir atļauts tikai pirms ceļojumam pievienoti izdevumi.',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(t.cancelAction),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(dialogContext).colorScheme.error,
+                foregroundColor: Theme.of(dialogContext).colorScheme.onError,
+              ),
+              child: Text(t.deleteAction),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    _updateState(() {
+      _isSendingFeedback = true;
+    });
+    try {
+      await widget.tripsController.deleteTrip(tripId: trip.id);
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _settingsLocalizedText(en: 'Trip deleted.', lv: 'Ceļojums izdzēsts.'),
+        isError: false,
+      );
+      _closeWorkspaceInShell();
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(error.message, isError: true);
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _settingsLocalizedText(
+          en: 'Failed to delete trip.',
+          lv: 'Neizdevās izdzēst ceļojumu.',
+        ),
+        isError: true,
+      );
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isSendingFeedback = false;
+        });
+      }
+    }
+  }
+
+  String _settingsLocalizedText({required String en, required String lv}) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    return languageCode.toLowerCase() == 'lv' ? lv : en;
   }
 
   Future<void> _onLogoutPressed() async {

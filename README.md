@@ -35,11 +35,33 @@ If tables already exist, run incremental migrations from [`sql/migrations/`](./s
    - `TRIP_DB_USER`
    - `TRIP_DB_PASS`
    - `TRIP_ADMIN_KEY` (strong random secret for admin panel)
+   - if using push:
+     - `TRIP_PUSH_ENABLED=true`
+     - `TRIP_PUSH_FCM_SERVER_KEY` (Android/Web via FCM legacy key)
+     - `TRIP_PUSH_APNS_ENABLED=true`
+     - `TRIP_PUSH_APNS_TEAM_ID`
+     - `TRIP_PUSH_APNS_KEY_ID`
+     - `TRIP_PUSH_APNS_BUNDLE_ID`
+     - `TRIP_PUSH_APNS_PRIVATE_KEY_REL_PATH`
+     - `TRIP_PUSH_APNS_USE_SANDBOX=true` for TestFlight/dev, `false` for production
+   - if using auto settlement reminders:
+     - `TRIP_SETTLEMENT_REMINDER_ENABLED=true`
+     - `TRIP_SETTLEMENT_REMINDER_INTERVAL_MIN` (default 720)
+     - `TRIP_SETTLEMENT_REMINDER_MIN_AGE_MIN` (default 180)
    - optional limits for rate-limit and upload quotas
 3. Upload project files to `public_html` (or your target subdirectory).
 4. Upload `.env` to project root (`.../trip/.env`) or `api/.env`.
-5. Ensure directories `uploads/receipts` and `uploads/avatars` exist and are writable by PHP process.
+5. Ensure directories `uploads/receipts`, `uploads/avatars`, `uploads/trips`, `uploads/feedback` exist and are writable by PHP process.
 6. Place Verot `class.upload.php` at `api/lib/verot/class.upload.php` (or change `TRIP_CLASS_UPLOAD_REL_PATH`).
+
+### Cron jobs (recommended)
+
+Run every 5 minutes:
+
+```bash
+php /home3/<user>/public_html/projekti/trip/scripts/run_settlement_reminders.php
+php /home3/<user>/public_html/projekti/trip/scripts/run_push_delivery.php
+```
 
 ## 3) Run
 
@@ -48,9 +70,29 @@ If tables already exist, run incremental migrations from [`sql/migrations/`](./s
 3. Install to home screen from browser install prompt.
 4. Admin panel is available at `/admin.html`.
 
+## 4) Mobile push setup
+
+### Android (FCM)
+
+1. In Firebase Console, add Android app with package id:
+   - `com.tripsplit.app.tripsplit`
+2. Download `google-services.json`.
+3. Place file at:
+   - `mobile/android/app/google-services.json`
+4. Rebuild Android app (`flutter run` or Gradle build).
+
+Notes:
+- Project is configured to enable Google Services plugin only if `google-services.json` exists.
+- Without this file, Android app works, but push token registration returns empty and background push is unavailable.
+
+### iOS (direct APNs, no Firebase required)
+
+- iOS push in this project is sent directly through APNs from backend.
+- Ensure Apple Push capability/signing is configured and APNs env keys are set in server `.env`.
+
 ## API actions
 
-`register_proof`, `register`, `login`, `set_credentials`, `me`, `update_profile`, `users`, `search_users`, `friends_list`, `send_friend_invite`, `respond_friend_invite`, `cancel_friend_invite`, `remove_friend`, `upload_receipt`, `upload_avatar`, `remove_avatar`, `add_expense`, `update_expense`, `delete_expense`, `list_expenses`, `balances`, `end_trip`, `mark_settlement_sent`, `confirm_settlement_received`, `list_notifications`, `mark_notifications_read`, `generate_order`, `list_orders`, `admin_summary`, `admin_users`, `admin_user_detail`, `admin_delete_expense`, `admin_update_user`, `admin_delete_user`
+`register_proof`, `register`, `login`, `refresh_session`, `set_credentials`, `me`, `update_profile`, `trips`, `all_users`, `search_users`, `friends_list`, `send_friend_invite`, `respond_friend_invite`, `cancel_friend_invite`, `remove_friend`, `create_trip`, `update_trip`, `delete_trip`, `add_trip_members`, `users`, `upload_trip_image`, `upload_receipt`, `upload_avatar`, `remove_avatar`, `add_expense`, `update_expense`, `delete_expense`, `list_expenses`, `balances`, `end_trip`, `set_ready_to_settle`, `mark_settlement_sent`, `confirm_settlement_received`, `remind_settlement`, `list_notifications`, `list_notifications_global`, `mark_notifications_read`, `mark_notifications_read_global`, `register_push_token`, `unregister_push_token`, `create_trip_invite`, `join_trip_invite`, `submit_feedback`, `workspace_snapshot`, `generate_order`, `list_orders`, `admin_feedback_feed`, `admin_archive_feedback`, `admin_delete_feedback`, `admin_summary`, `admin_users`, `admin_user_detail`, `admin_delete_expense`, `admin_update_user`, `admin_delete_user`
 
 ## Notes about realtime on Hostinger shared hosting
 

@@ -12,6 +12,7 @@ import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_background.dart';
+import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../domain/entities/auth_user.dart';
 import '../controllers/auth_controller.dart';

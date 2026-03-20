@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
 import '../../../../app/router/app_router.dart';
-import '../../../../app/theme/app_design.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
+import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/test_keys.dart';
 import '../../../analytics/presentation/pages/analytics_page.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
@@ -23,6 +23,7 @@ import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../../trips/presentation/pages/trips_page.dart';
 import '../../../workspace/presentation/controllers/workspace_controller.dart';
 import '../../../workspace/domain/entities/workspace_notification.dart';
+import '../../../workspace/domain/entities/workspace_notifications_inbox.dart';
 import '../../../workspace/presentation/pages/workspace_page.dart';
 
 part 'main_shell_page_navigation.dart';
@@ -39,6 +40,7 @@ class MainShellPage extends StatefulWidget {
     required this.workspaceController,
     this.initialTabIndex = 0,
     this.openCreateTripOnStart = false,
+    this.openAddExpenseOnStart = false,
   });
 
   final AuthController authController;
@@ -47,6 +49,7 @@ class MainShellPage extends StatefulWidget {
   final WorkspaceController workspaceController;
   final int initialTabIndex;
   final bool openCreateTripOnStart;
+  final bool openAddExpenseOnStart;
 
   @override
   State<MainShellPage> createState() => _MainShellPageState();
@@ -78,6 +81,8 @@ class _MainShellPageState extends State<MainShellPage>
   bool _globalNotificationsHasMore = false;
   String? _globalNotificationsNextCursor;
   int? _globalNotificationsNextOffset;
+  bool _notificationsPrimed = false;
+  DateTime? _lastUnreadNotificationHintAt;
   Timer? _notificationsPollTimer;
   Duration? _activeNotificationsPollInterval;
   bool _isAppInForeground = true;
@@ -108,6 +113,14 @@ class _MainShellPageState extends State<MainShellPage>
         _requestCreateTrip();
       });
     }
+    if (widget.openAddExpenseOnStart) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        unawaited(_requestAddExpenseFromNav());
+      });
+    }
   }
 
   @override
@@ -135,6 +148,9 @@ class _MainShellPageState extends State<MainShellPage>
       return;
     }
     _isAppInForeground = nextIsForeground;
+    if (_isAppInForeground) {
+      unawaited(widget.authController.syncPushRegistration());
+    }
     _syncNotificationsPollingSchedule();
   }
 

@@ -103,9 +103,12 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $readySelect = trip_members_ready_columns_available($pdo)
+        ? 'tm.ready_to_settle, tm.ready_to_settle_at, '
+        : '1 AS ready_to_settle, NULL AS ready_to_settle_at, ';
 
     $stmt = $pdo->prepare(
-        'SELECT u.id, ' . $nameSelect . 'u.nickname, u.avatar_path
+        'SELECT u.id, ' . $nameSelect . $readySelect . 'u.nickname, u.avatar_path
          FROM ' . $tripMembersTable . ' tm
          JOIN ' . $usersTable . ' u ON u.id = tm.user_id
          WHERE tm.trip_id = :trip_id
@@ -123,10 +126,12 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
         $row['display_name'] = $displayName !== null
             ? $displayName
             : trim((string) ($row['nickname'] ?? ''));
+        $row['is_ready_to_settle'] = ((int) ($row['ready_to_settle'] ?? 0)) === 1;
+        $row['ready_to_settle_at'] = $row['ready_to_settle_at'] ?: null;
         $avatarPath = trim((string) ($row['avatar_path'] ?? ''));
         $row['avatar_url'] = $avatarPath !== '' ? avatar_public_url($avatarPath) : null;
         $row['avatar_thumb_url'] = $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null;
-        unset($row['avatar_path']);
+        unset($row['avatar_path'], $row['ready_to_settle']);
     }
     unset($row);
 
@@ -434,6 +439,7 @@ function workspace_snapshot_action(): void
     $expenses = workspace_load_trip_expenses($pdo, $tripId, 300);
     $orders = workspace_load_trip_orders($pdo, $tripId, 30);
     $tripNotifications = workspace_load_trip_notifications($pdo, $tripId, $userId, 50);
+    $readyToSettle = load_trip_ready_to_settle_state($pdo, $tripId, $userId);
 
     json_out([
         'ok' => true,
@@ -452,5 +458,6 @@ function workspace_snapshot_action(): void
         'orders' => $orders,
         'notifications' => $tripNotifications['notifications'],
         'unread_count' => (int) ($tripNotifications['unread_count'] ?? 0),
+        'ready_to_settle' => $readyToSettle,
     ]);
 }

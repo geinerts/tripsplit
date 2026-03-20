@@ -16,6 +16,8 @@ extension _TripsPageCardWidgets on _TripsPageState {
         : (netBalanceCents < 0
               ? Theme.of(context).colorScheme.primary
               : Theme.of(context).colorScheme.onSurface);
+    final showReadyToSettle =
+        trip.readyToSettle && trip.settlementsPending > 0 && !trip.isArchived;
 
     return Padding(
       padding: EdgeInsets.only(bottom: withBottomSpacing ? 12 : 0),
@@ -103,6 +105,45 @@ extension _TripsPageCardWidgets on _TripsPageState {
                             ),
                           ],
                         ),
+                        if (showReadyToSettle) ...[
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .tertiaryContainer
+                                  .withValues(alpha: 0.65),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.payments_outlined,
+                                  size: 14,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onTertiaryContainer,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  t.settlementInProgress,
+                                  style: Theme.of(context).textTheme.labelMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onTertiaryContainer,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 10),
                         Divider(
                           height: 1,
@@ -292,6 +333,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
       ),
     );
   }
+
   Color _statusColor(BuildContext context, Trip trip) {
     if (trip.isArchived) {
       return Theme.of(context).colorScheme.secondary;
