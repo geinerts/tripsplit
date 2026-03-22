@@ -37,7 +37,11 @@ If tables already exist, run incremental migrations from [`sql/migrations/`](./s
    - `TRIP_ADMIN_KEY` (strong random secret for admin panel)
    - if using push:
      - `TRIP_PUSH_ENABLED=true`
-     - `TRIP_PUSH_FCM_SERVER_KEY` (Android/Web via FCM legacy key)
+     - Android/Web FCM (recommended HTTP v1):
+       - `TRIP_PUSH_FCM_PROJECT_ID` (optional if present in service account JSON)
+       - `TRIP_PUSH_FCM_SERVICE_ACCOUNT_REL_PATH` (e.g. `keys/firebase-service-account.json`)
+     - Android/Web FCM legacy (optional fallback only):
+       - `TRIP_PUSH_FCM_SERVER_KEY`
      - `TRIP_PUSH_APNS_ENABLED=true`
      - `TRIP_PUSH_APNS_TEAM_ID`
      - `TRIP_PUSH_APNS_KEY_ID`
@@ -74,16 +78,28 @@ php /home3/<user>/public_html/projekti/trip/scripts/run_push_delivery.php
 
 ### Android (FCM)
 
+0. Java/JDK for Android build:
+   - Use JDK 21 (Android Studio Embedded JDK).
+   - This repo pins Gradle to:
+     - `org.gradle.java.home=/Applications/Android Studio.app/Contents/jbr/Contents/Home`
+   - If path differs on another machine, update `mobile/android/gradle.properties`.
+
 1. In Firebase Console, add Android app with package id:
    - `com.tripsplit.app.tripsplit`
 2. Download `google-services.json`.
 3. Place file at:
    - `mobile/android/app/google-services.json`
 4. Rebuild Android app (`flutter run` or Gradle build).
+5. Server-side FCM credentials:
+   - preferred: service account JSON at `keys/firebase-service-account.json` and set:
+     - `TRIP_PUSH_FCM_SERVICE_ACCOUNT_REL_PATH=keys/firebase-service-account.json`
+     - `TRIP_PUSH_FCM_PROJECT_ID=<your-project-id>` (optional if JSON includes it)
+   - optional fallback: set legacy `TRIP_PUSH_FCM_SERVER_KEY` (if your Firebase project still provides it).
 
 Notes:
 - Project is configured to enable Google Services plugin only if `google-services.json` exists.
 - Without this file, Android app works, but push token registration returns empty and background push is unavailable.
+- If Firebase legacy API is disabled, backend must use HTTP v1 service account mode.
 
 ### iOS (direct APNs, no Firebase required)
 
