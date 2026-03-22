@@ -10,9 +10,7 @@
         </shape>
     </item>
 
-    <item>
-        <bitmap
-            android:gravity="center"
-            android:src="@drawable/launch_symbol" />
-    </item>
+    <item
+        android:drawable="@drawable/splash_symbol_scaled"
+        android:gravity="center" />
 </layer-list>

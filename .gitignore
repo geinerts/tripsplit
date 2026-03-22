@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+keys/
 mobile/config/env/*.local.json
 api/.env
 api/config.local.php
