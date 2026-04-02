@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
+import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../domain/entities/friend_request.dart';
 import '../../domain/entities/friends_section_page.dart';
@@ -48,12 +50,16 @@ class _FriendsPageState extends State<FriendsPage> {
   static const String _sectionFriends = 'friends';
   static const String _sectionPendingSent = 'pending_sent';
   static const String _sectionPendingReceived = 'pending_received';
+  static const int _tabFriends = 0;
+  static const int _tabIncoming = 1;
+  static const int _tabSent = 2;
 
   bool _isLoading = true;
   bool _isSearching = false;
   bool _isLoadingMoreFriends = false;
   bool _isLoadingMorePendingSent = false;
   bool _isLoadingMorePendingReceived = false;
+  int _sectionTabIndex = _tabFriends;
   String? _errorText;
   FriendsSnapshot? _snapshot;
   List<FriendUser> _searchResults = const <FriendUser>[];

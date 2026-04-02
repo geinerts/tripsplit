@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'dart:ui';
+import 'dart:ui' show ImageByteFormat, instantiateImageCodec;
 
-import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
 import '../../../../app/router/app_router.dart';
@@ -15,6 +15,8 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
+import '../../../../core/ui/app_components.dart';
+import '../../../../core/ui/app_formatters.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../friends/presentation/controllers/friends_controller.dart';
@@ -79,8 +81,6 @@ class TripsPage extends StatefulWidget {
 }
 
 class _TripsPageState extends State<TripsPage> {
-  static const int _maxTripImageBytes = 8 * 1024 * 1024;
-
   bool _isLoading = true;
   bool _isMutating = false;
   bool _showAllTrips = false;
@@ -95,6 +95,11 @@ class _TripsPageState extends State<TripsPage> {
       return;
     }
     setState(update);
+  }
+
+  String _pageText({required String en, required String lv}) {
+    final code = Localizations.localeOf(context).languageCode.toLowerCase();
+    return code == 'lv' ? lv : en;
   }
 
   @override
@@ -161,9 +166,6 @@ class _TripsPageState extends State<TripsPage> {
     final activeTrips = _trips
         .where((trip) => trip.isActive)
         .toList(growable: false);
-    final archivedTrips = _trips
-        .where((trip) => trip.isArchived)
-        .toList(growable: false);
     final visibleTrips = _showAllTrips ? _trips : activeTrips;
 
     return Scaffold(
@@ -206,11 +208,7 @@ class _TripsPageState extends State<TripsPage> {
                             ],
                             _buildSummaryCard(context, allTrips: _trips),
                             const SizedBox(height: 18),
-                            _buildTripsHeader(
-                              context,
-                              currentCount: activeTrips.length,
-                              archivedCount: archivedTrips.length,
-                            ),
+                            _buildTripsHeader(context),
                             const SizedBox(height: 10),
                             if (visibleTrips.isEmpty)
                               _buildEmptyTripsState(context)

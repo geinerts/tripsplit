@@ -259,10 +259,13 @@ class _CredentialsPageState extends State<CredentialsPage> {
                                 if (_errorText != null) ...[
                                   Text(
                                     _errorText!,
-                                    style: TextStyle(
-                                      color: colorScheme.error,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: colorScheme.error,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                   ),
                                   const SizedBox(height: 12),
                                 ],

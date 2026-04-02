@@ -30,6 +30,18 @@ function parse_request_bool($value, bool $fallback = false): bool
     return $fallback;
 }
 
+function settlement_manual_reminder_cooldown_minutes(): int
+{
+    $minutes = (int) SETTLEMENT_MANUAL_REMINDER_COOLDOWN_MIN;
+    if ($minutes < 0) {
+        return 0;
+    }
+    if ($minutes > 1_440) {
+        return 1_440;
+    }
+    return $minutes;
+}
+
 function load_trip_ready_to_settle_state(PDO $pdo, int $tripId, int $currentUserId): array
 {
     $usersTable = table_name('users');

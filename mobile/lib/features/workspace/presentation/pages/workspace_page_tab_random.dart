@@ -36,12 +36,11 @@ extension _WorkspacePageRandomTab on _WorkspacePageState {
                       ),
                       child: Text(
                         '${t.membersLabel}: ${snapshot.users.length}',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.labelMedium?.copyWith(
-                          color: colors.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: colors.primary,
+                              fontWeight: FontWeight.w700,
+                            ),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -61,12 +60,11 @@ extension _WorkspacePageRandomTab on _WorkspacePageState {
                       ),
                       child: Text(
                         '${t.selectedLabel}: ${_randomSelection.length}',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.labelMedium?.copyWith(
-                          color: colors.tertiary,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: colors.tertiary,
+                              fontWeight: FontWeight.w700,
+                            ),
                       ),
                     ),
                   ],

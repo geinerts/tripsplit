@@ -127,6 +127,9 @@ function create_user_notification(
     }
 
     $notificationsTable = table_name('notifications');
+    $normalizedType = trim($type) !== '' ? trim($type) : 'info';
+    $normalizedTitle = trim($title) !== '' ? trim($title) : 'Notification';
+    $normalizedBody = trim($body);
     $payloadJson = null;
     if ($payload) {
         $encoded = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -143,20 +146,24 @@ function create_user_notification(
     $insert->execute([
         'trip_id' => $tripId,
         'user_id' => $userId,
-        'type' => trim($type) !== '' ? trim($type) : 'info',
-        'title' => trim($title) !== '' ? trim($title) : 'Notification',
-        'body' => trim($body),
+        'type' => $normalizedType,
+        'title' => $normalizedTitle,
+        'body' => $normalizedBody,
         'payload_json' => $payloadJson,
     ]);
+
+    if (!push_should_queue_notification_type($normalizedType)) {
+        return;
+    }
 
     try {
         queue_push_notification(
             $pdo,
             $userId,
             $tripId,
-            trim($type) !== '' ? trim($type) : 'info',
-            trim($title) !== '' ? trim($title) : 'Notification',
-            trim($body),
+            $normalizedType,
+            $normalizedTitle,
+            $normalizedBody,
             $payload,
             (int) $pdo->lastInsertId()
         );

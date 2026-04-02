@@ -4,7 +4,7 @@ extension _WorkspacePageLayout on _WorkspacePageState {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     final t = context.l10n;
     final titleStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w800,
       letterSpacing: 0.1,
     );
 
@@ -92,25 +92,31 @@ extension _WorkspacePageLayout on _WorkspacePageState {
     }
 
     final tabIndex = _workspaceTabIndex.clamp(0, 2);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBackground(
-      child: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return <Widget>[
-            SliverToBoxAdapter(child: _buildOverviewPanel(context, snapshot)),
-            SliverAppBar(
-              pinned: true,
-              automaticallyImplyLeading: false,
-              primary: false,
-              toolbarHeight: 84,
-              collapsedHeight: 84,
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              elevation: 0,
-              flexibleSpace: _buildWorkspaceStickyHeader(context),
-            ),
-          ];
-        },
-        body: _buildWorkspaceTab(snapshot, tabIndex),
+      child: ColoredBox(
+        color: isDark
+            ? Theme.of(context).scaffoldBackgroundColor
+            : _splytoCreamBg,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return <Widget>[
+              SliverToBoxAdapter(child: _buildOverviewPanel(context, snapshot)),
+              SliverAppBar(
+                pinned: true,
+                automaticallyImplyLeading: false,
+                primary: false,
+                toolbarHeight: 84,
+                collapsedHeight: 84,
+                backgroundColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                elevation: 0,
+                flexibleSpace: _buildWorkspaceStickyHeader(context),
+              ),
+            ];
+          },
+          body: _buildWorkspaceTab(snapshot, tabIndex),
+        ),
       ),
     );
   }
@@ -118,59 +124,59 @@ extension _WorkspacePageLayout on _WorkspacePageState {
   Widget _buildWorkspaceTab(WorkspaceSnapshot snapshot, int tabIndex) {
     switch (tabIndex) {
       case 0:
-        return _buildBalancesTab(snapshot);
-      case 1:
         return _buildExpensesTab(snapshot);
-      case 2:
-        return _buildRandomTab(snapshot);
-      default:
+      case 1:
         return _buildBalancesTab(snapshot);
+      case 2:
+        return _buildSettleTab(snapshot);
+      default:
+        return _buildExpensesTab(snapshot);
     }
   }
 
   Widget _buildWorkspaceTabSwitcher(BuildContext context) {
-    final t = context.l10n;
     final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final labelStyle = Theme.of(context).textTheme.labelMedium?.copyWith(
       fontWeight: FontWeight.w700,
-      fontSize: 13,
+      fontSize: 15,
       height: 1.0,
     );
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final showIcons = constraints.maxWidth >= 390;
         final selectedTab = _workspaceTabIndex.clamp(0, 2);
 
-        Widget buildTab({
-          required int index,
-          required String label,
-          required IconData icon,
-        }) {
+        Widget buildTab({required int index, required String label}) {
           final selected = selectedTab == index;
           final foreground = selected
-              ? colors.onPrimaryContainer
-              : colors.onSurfaceVariant;
+              ? (isDark ? colors.onSurface : _splytoFg)
+              : (isDark ? colors.onSurfaceVariant : _splytoMuted);
           return Expanded(
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
+              duration: const Duration(milliseconds: 220),
               curve: Curves.easeOutCubic,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: selected
-                      ? colors.primary.withValues(alpha: 0.42)
-                      : colors.outlineVariant.withValues(alpha: 0.42),
-                  width: selected ? 1.4 : 1,
-                ),
+                borderRadius: BorderRadius.circular(22),
                 color: selected
-                    ? colors.primaryContainer.withValues(alpha: 0.72)
-                    : colors.surface.withValues(alpha: 0.76),
+                    ? (isDark ? colors.surface : _splytoCard)
+                    : Colors.transparent,
+                boxShadow: selected
+                    ? [
+                        BoxShadow(
+                          color: isDark
+                              ? colors.shadow.withValues(alpha: 0.25)
+                              : const Color(0x1A2C2418),
+                          blurRadius: 14,
+                          offset: const Offset(0, 5),
+                        ),
+                      ]
+                    : null,
               ),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(22),
                   onTap: () {
                     if (index == _workspaceTabIndex) {
                       return;
@@ -181,32 +187,21 @@ extension _WorkspacePageLayout on _WorkspacePageState {
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 11,
+                      horizontal: 12,
+                      vertical: 14,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (showIcons) ...[
-                          Icon(icon, size: 16, color: foreground),
-                          const SizedBox(width: 6),
-                        ],
-                        Flexible(
-                          child: Text(
-                            label,
-                            maxLines: 1,
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: labelStyle?.copyWith(
-                              color: foreground,
-                              fontWeight: selected
-                                  ? FontWeight.w800
-                                  : FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ],
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: labelStyle?.copyWith(
+                        color: foreground,
+                        fontWeight: selected
+                            ? FontWeight.w800
+                            : FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
@@ -217,23 +212,18 @@ extension _WorkspacePageLayout on _WorkspacePageState {
 
         return DecoratedBox(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(24),
+            color: isDark ? colors.surfaceContainer : const Color(0xFFF0ECE3),
             border: Border.all(
-              color: colors.outlineVariant.withValues(alpha: 0.46),
-            ),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                colors.surface.withValues(alpha: 0.96),
-                colors.surfaceContainerLow.withValues(alpha: 0.88),
-              ],
+              color: isDark
+                  ? colors.outlineVariant.withValues(alpha: 0.35)
+                  : _splytoStroke,
             ),
             boxShadow: const [
               BoxShadow(
-                color: Color(0x1F0F172A),
-                blurRadius: 14,
-                offset: Offset(0, 6),
+                color: Color(0x12000000),
+                blurRadius: 12,
+                offset: Offset(0, 4),
               ),
             ],
           ),
@@ -243,20 +233,25 @@ extension _WorkspacePageLayout on _WorkspacePageState {
               children: [
                 buildTab(
                   index: 0,
-                  label: t.navBalances,
-                  icon: Icons.account_balance_wallet_outlined,
+                  label: _localizedText(
+                    context,
+                    en: 'Expenses',
+                    lv: 'Izdevumi',
+                  ),
                 ),
                 const SizedBox(width: 8),
                 buildTab(
                   index: 1,
-                  label: t.navExpenses,
-                  icon: Icons.receipt_long_outlined,
+                  label: _localizedText(
+                    context,
+                    en: 'Balances',
+                    lv: 'Bilances',
+                  ),
                 ),
                 const SizedBox(width: 8),
                 buildTab(
                   index: 2,
-                  label: t.navRandom,
-                  icon: Icons.casino_outlined,
+                  label: _localizedText(context, en: 'Settle', lv: 'Norēķini'),
                 ),
               ],
             ),
@@ -268,11 +263,18 @@ extension _WorkspacePageLayout on _WorkspacePageState {
 
   Widget _buildWorkspaceStickyHeader(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.94),
+        color: isDark
+            ? Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.94)
+            : _splytoCreamBg,
         border: Border(
-          bottom: BorderSide(color: colors.outlineVariant.withValues(alpha: 0.2)),
+          bottom: BorderSide(
+            color: isDark
+                ? colors.outlineVariant.withValues(alpha: 0.2)
+                : _splytoStroke,
+          ),
         ),
       ),
       child: Padding(
@@ -281,6 +283,4 @@ extension _WorkspacePageLayout on _WorkspacePageState {
       ),
     );
   }
-
-
 }

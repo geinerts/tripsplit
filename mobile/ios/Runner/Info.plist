@@ -26,6 +26,8 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Splyto needs camera access so you can take profile photos and attach receipt pictures.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Splyto needs photo library access so you can attach receipts, trip images, and profile photos.</string>
 	<key>NSAppleMusicUsageDescription</key>

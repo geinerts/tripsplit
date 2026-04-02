@@ -12,7 +12,10 @@ extension _TripsPageWidgets on _TripsPageState {
             Text(
               _errorText ?? t.unknownError,
               textAlign: TextAlign.center,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 12),
             ElevatedButton.icon(
@@ -67,115 +70,113 @@ extension _TripsPageWidgets on _TripsPageState {
     BuildContext context, {
     required List<Trip> allTrips,
   }) {
-    final responsive = context.responsive;
     final totalTrips = allTrips.length;
     final totalSpentCents = allTrips.fold<int>(
       0,
       (sum, trip) => sum + trip.myPaidCents,
     );
-    final isLv = Localizations.localeOf(context).languageCode == 'lv';
-    final titleText = isLv ? 'Pārskats' : 'Overview';
-    final totalTripsLabel = isLv ? 'Kopā ceļojumi' : 'Trips total';
-    final totalSpentLabel = isLv ? 'Kopā iztērēts' : 'Total spent';
+    final t = context.l10n;
+    final totalTripsLabel = _pageText(en: 'Total trips', lv: 'Ceļojumi kopā');
+    final totalSpentLabel = _pageText(en: 'Total spent', lv: 'Kopā iztērēts');
 
-    final radius = responsive.pick(compact: 20, medium: 24, expanded: 28);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(radius),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.28)),
-            gradient: AppDesign.logoBackgroundGradient,
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x2B0F172A),
-                blurRadius: 26,
-                offset: Offset(0, 14),
+    return AppSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            t.overviewTitle,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.2,
+              color: AppDesign.titleColor(context),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: AppStatCard(
+                  icon: Icons.luggage_outlined,
+                  label: totalTripsLabel,
+                  value: '$totalTrips',
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: AppStatCard(
+                  icon: Icons.payments_outlined,
+                  label: totalSpentLabel,
+                  value: AppFormatters.euroFromCents(context, totalSpentCents),
+                ),
               ),
             ],
           ),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              responsive.pick(compact: 16, medium: 20, expanded: 24),
-              responsive.pick(compact: 16, medium: 18, expanded: 20),
-              responsive.pick(compact: 16, medium: 20, expanded: 24),
-              responsive.pick(compact: 14, medium: 16, expanded: 18),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  titleText,
-                  style: const TextStyle(color: Colors.white70),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _summaryMetricTile(
-                        context,
-                        icon: Icons.luggage_outlined,
-                        label: totalTripsLabel,
-                        value: '$totalTrips',
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _summaryMetricTile(
-                        context,
-                        icon: Icons.payments_outlined,
-                        label: totalSpentLabel,
-                        value: _formatCents(totalSpentCents),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _summaryMetricTile(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.24)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildTripsHeader(BuildContext context) {
+    final t = context.l10n;
+    final controlsEnabled = !(_isLoading || _isMutating);
+
+    return AppSurfaceCard(
+      radius: AppDesign.radiusLg,
+      padding: const EdgeInsets.all(6),
+      child: Row(
         children: [
-          Icon(icon, color: Colors.white, size: 18),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.2,
+          Expanded(
+            child: _buildTripsToggleButton(
+              label: t.activeTrips,
+              selected: !_showAllTrips,
+              enabled: controlsEnabled,
+              onTap: () {
+                _updateState(() {
+                  _showAllTrips = false;
+                });
+              },
             ),
           ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: Colors.white70,
-              fontWeight: FontWeight.w600,
+          const SizedBox(width: 8),
+          Expanded(
+            child: _buildTripsToggleButton(
+              label: t.allTrips,
+              selected: _showAllTrips,
+              enabled: controlsEnabled,
+              onTap: () {
+                _updateState(() {
+                  _showAllTrips = true;
+                });
+              },
+            ),
+          ),
+          const SizedBox(width: 8),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+              onTap: controlsEnabled ? _openCreateTripDialog : null,
+              child: Ink(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+                  color: controlsEnabled
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.10)
+                      : Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.70),
+                ),
+                child: Icon(
+                  Icons.add,
+                  size: 22,
+                  color: controlsEnabled
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
             ),
           ),
         ],
@@ -183,60 +184,80 @@ extension _TripsPageWidgets on _TripsPageState {
     );
   }
 
-  Widget _buildTripsHeader(
-    BuildContext context, {
-    required int currentCount,
-    required int archivedCount,
+  Widget _buildTripsToggleButton({
+    required String label,
+    required bool selected,
+    required bool enabled,
+    required VoidCallback onTap,
   }) {
-    final t = context.l10n;
-    return Row(
-      children: [
-        Expanded(
+    final colors = Theme.of(context).colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+        onTap: enabled ? onTap : null,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOutCubic,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: selected
+                ? (AppDesign.isDark(context)
+                      ? colors.primary.withValues(alpha: 0.20)
+                      : AppDesign.lightSurface)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+            boxShadow: selected ? AppDesign.cardShadow(context) : null,
+          ),
           child: Text(
-            _showAllTrips ? t.allTrips : t.activeTrips,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.2,
+            label,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: selected
+                  ? AppDesign.titleColor(context)
+                  : AppDesign.mutedColor(context),
             ),
           ),
         ),
-        TextButton(
-          onPressed: (_isLoading || _isMutating)
-              ? null
-              : () => _updateState(() {
-                  _showAllTrips = !_showAllTrips;
-                }),
-          child: Text(_showAllTrips ? t.showActiveTrips : t.viewAllTrips),
-        ),
-        IconButton(
-          onPressed: (_isLoading || _isMutating) ? null : _openCreateTripDialog,
-          icon: const Icon(Icons.add),
-          tooltip: t.createTripAction,
-        ),
-      ],
+      ),
     );
   }
 
   Widget _buildEmptyTripsState(BuildContext context) {
     final t = context.l10n;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          children: [
-            const Icon(Icons.luggage_outlined, size: 32),
-            const SizedBox(height: 8),
-            Text(t.noTripsYet, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Text(t.createFirstTripHint, textAlign: TextAlign.center),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              onPressed: _isMutating ? null : _openCreateTripDialog,
-              icon: const Icon(Icons.add),
-              label: Text(t.createTripAction),
+    return AppSurfaceCard(
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        children: [
+          Icon(
+            Icons.luggage_outlined,
+            size: 32,
+            color: AppDesign.mutedColor(context),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            t.noTripsYet,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppDesign.titleColor(context),
+              fontWeight: FontWeight.w700,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            t.createFirstTripHint,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppDesign.mutedColor(context),
+            ),
+          ),
+          const SizedBox(height: 12),
+          ElevatedButton.icon(
+            onPressed: _isMutating ? null : _openCreateTripDialog,
+            icon: const Icon(Icons.add),
+            label: Text(t.createTripAction),
+          ),
+        ],
       ),
     );
   }
@@ -273,5 +294,4 @@ extension _TripsPageWidgets on _TripsPageState {
       },
     );
   }
-
 }

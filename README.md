@@ -44,15 +44,17 @@ If tables already exist, run incremental migrations from [`sql/migrations/`](./s
        - `TRIP_PUSH_FCM_SERVER_KEY`
      - `TRIP_PUSH_APNS_ENABLED=true`
      - `TRIP_PUSH_APNS_TEAM_ID`
-     - `TRIP_PUSH_APNS_KEY_ID`
-     - `TRIP_PUSH_APNS_BUNDLE_ID`
-     - `TRIP_PUSH_APNS_PRIVATE_KEY_REL_PATH`
-     - `TRIP_PUSH_APNS_USE_SANDBOX=true` for TestFlight/dev, `false` for production
-   - if using auto settlement reminders:
-     - `TRIP_SETTLEMENT_REMINDER_ENABLED=true`
-     - `TRIP_SETTLEMENT_REMINDER_INTERVAL_MIN` (default 720)
-     - `TRIP_SETTLEMENT_REMINDER_MIN_AGE_MIN` (default 180)
-   - optional limits for rate-limit and upload quotas
+	     - `TRIP_PUSH_APNS_KEY_ID`
+	     - `TRIP_PUSH_APNS_BUNDLE_ID`
+	     - `TRIP_PUSH_APNS_PRIVATE_KEY_REL_PATH`
+	     - `TRIP_PUSH_APNS_USE_SANDBOX=true` for TestFlight/dev, `false` for production
+	     - `TRIP_PUSH_CRITICAL_TYPES` (comma-separated push allowlist; in-app notifications are still saved for all types)
+	   - if using auto settlement reminders:
+	     - `TRIP_SETTLEMENT_REMINDER_ENABLED=true`
+	     - `TRIP_SETTLEMENT_REMINDER_INTERVAL_MIN` (default 720)
+	     - `TRIP_SETTLEMENT_REMINDER_MIN_AGE_MIN` (default 180)
+	     - `TRIP_SETTLEMENT_MANUAL_REMINDER_COOLDOWN_MIN` (default 15)
+	   - optional limits for rate-limit and upload quotas
 3. Upload project files to `public_html` (or your target subdirectory).
 4. Upload `.env` to project root (`.../trip/.env`) or `api/.env`.
 5. Ensure directories `uploads/receipts`, `uploads/avatars`, `uploads/trips`, `uploads/feedback` exist and are writable by PHP process.

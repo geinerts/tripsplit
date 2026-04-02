@@ -48,6 +48,9 @@ extension _AnalyticsPageActions on _AnalyticsPageState {
       _updateState(() {
         _trips = trips;
         _selectedTripId = selectedTripId;
+        if (trips.isEmpty) {
+          _showTripSelectorMenu = false;
+        }
       });
 
       await _loadSelectedTripSnapshot(forceReload: forceReload);

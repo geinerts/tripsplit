@@ -42,6 +42,50 @@ function push_max_tokens_per_user(): int
     return $limit;
 }
 
+function push_critical_types(): array
+{
+    static $cached = null;
+    if (is_array($cached)) {
+        return $cached;
+    }
+
+    $raw = trim((string) PUSH_CRITICAL_TYPES);
+    if ($raw === '') {
+        $cached = [];
+        return $cached;
+    }
+
+    $parts = preg_split('/[\s,;]+/', strtolower($raw)) ?: [];
+    $allowed = [];
+    foreach ($parts as $part) {
+        $type = trim((string) $part);
+        if ($type === '') {
+            continue;
+        }
+        if (!preg_match('/^[a-z0-9_]+$/', $type)) {
+            continue;
+        }
+        $allowed[$type] = true;
+    }
+    $cached = array_keys($allowed);
+    return $cached;
+}
+
+function push_should_queue_notification_type(string $type): bool
+{
+    $normalizedType = strtolower(trim($type));
+    if ($normalizedType === '') {
+        return false;
+    }
+
+    $critical = push_critical_types();
+    if (!$critical) {
+        return true;
+    }
+
+    return in_array($normalizedType, $critical, true);
+}
+
 function push_tokens_table_available(PDO $pdo): bool
 {
     return push_table_available($pdo, 'push_tokens');

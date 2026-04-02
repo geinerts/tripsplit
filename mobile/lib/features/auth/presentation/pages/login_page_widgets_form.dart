@@ -48,7 +48,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
               const SizedBox(height: 2),
               Text(
                 _errorText!,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: colorScheme.error,
                   fontWeight: FontWeight.w700,
                 ),
@@ -209,7 +209,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
                 )
               : Text(
                   isLogin ? t.logInButton : t.signUpButton,
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontSize: responsive.pick(
                       compact: 17,
                       medium: 18,
@@ -235,7 +235,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
         children: [
           Text(
             isLogin ? t.noAccountQuestion : t.hasAccountQuestion,
-            style: TextStyle(
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: colorScheme.outline,
               fontSize: responsive.pick(compact: 16, medium: 17, expanded: 18),
             ),
@@ -248,7 +248,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
                   ),
             child: Text(
               isLogin ? t.signUpButton : t.logInButton,
-              style: TextStyle(
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontSize: responsive.pick(
                   compact: 16,
                   medium: 17,

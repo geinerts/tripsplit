@@ -1,2 +1,6 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
+
+// Flutter native-assets step may look for SdkRoot (camel-case define).
+// Mirror SDKROOT into that alias to avoid non-blocking SdkRoot warnings.
+SdkRoot=$(SDKROOT)

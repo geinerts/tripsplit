@@ -76,11 +76,36 @@ class _TripSplitAppState extends State<TripSplitApp> {
   }
 
   ThemeData _buildLightTheme() {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF0F766E),
+    final baseScheme = ColorScheme.fromSeed(
+      seedColor: AppDesign.lightPrimary,
       brightness: Brightness.light,
     );
-    const fieldRadius = 16.0;
+    final colorScheme = baseScheme.copyWith(
+      primary: AppDesign.lightPrimary,
+      secondary: AppDesign.lightAccent,
+      tertiary: const Color(0xFF63B88A),
+      surface: AppDesign.lightSurface,
+      surfaceContainerLowest: AppDesign.lightCanvas,
+      surfaceContainerLow: const Color(0xFFF4F1EA),
+      surfaceContainer: const Color(0xFFF0EDE6),
+      surfaceContainerHigh: const Color(0xFFECE7DF),
+      surfaceContainerHighest: const Color(0xFFE8E2D8),
+      onSurface: AppDesign.lightForeground,
+      onSurfaceVariant: AppDesign.lightMuted,
+      outline: const Color(0xFFAFA79A),
+      outlineVariant: AppDesign.lightStroke,
+      error: AppDesign.lightDestructive,
+      onError: Colors.white,
+      primaryContainer: const Color(0xFFDCEFE6),
+      onPrimaryContainer: AppDesign.lightPrimary,
+      secondaryContainer: const Color(0xFFF3E6DA),
+      onSecondaryContainer: const Color(0xFF4E2D13),
+    );
+    final textTheme = _buildTextTheme(
+      ThemeData(brightness: Brightness.light, useMaterial3: true).textTheme,
+      brightness: Brightness.light,
+    );
+    const fieldRadius = AppDesign.radiusSm;
     final fieldBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(fieldRadius),
       borderSide: BorderSide(color: colorScheme.outlineVariant),
@@ -88,7 +113,8 @@ class _TripSplitAppState extends State<TripSplitApp> {
     return ThemeData(
       colorScheme: colorScheme,
       useMaterial3: true,
-      scaffoldBackgroundColor: const Color(0xFFF6F8FA),
+      textTheme: textTheme,
+      scaffoldBackgroundColor: AppDesign.lightCanvas,
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -98,11 +124,11 @@ class _TripSplitAppState extends State<TripSplitApp> {
         systemOverlayStyle: _overlayStyleFor(Brightness.light),
       ),
       cardTheme: CardThemeData(
-        color: Colors.white,
+        color: AppDesign.lightSurface,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppDesign.radiusLg),
           side: BorderSide(
             color: colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
@@ -110,7 +136,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.38),
+        fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.60),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
@@ -127,10 +153,10 @@ class _TripSplitAppState extends State<TripSplitApp> {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: AppDesign.brandStart,
+          backgroundColor: colorScheme.primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppDesign.radiusSm),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         ),
@@ -138,10 +164,10 @@ class _TripSplitAppState extends State<TripSplitApp> {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor: AppDesign.brandStart,
+          backgroundColor: colorScheme.primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppDesign.radiusSm),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         ),
@@ -150,7 +176,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
         style: OutlinedButton.styleFrom(
           foregroundColor: colorScheme.onSurface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppDesign.radiusSm),
           ),
           side: BorderSide(
             color: colorScheme.outlineVariant.withValues(alpha: 0.8),
@@ -177,8 +203,12 @@ class _TripSplitAppState extends State<TripSplitApp> {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: colorScheme.surfaceContainerHighest,
-        contentTextStyle: TextStyle(color: colorScheme.onSurface),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurface,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+        ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 0,
@@ -214,7 +244,11 @@ class _TripSplitAppState extends State<TripSplitApp> {
       primaryContainer: const Color(0xFF18335A),
       onPrimaryContainer: const Color(0xFFE7F0FF),
     );
-    const fieldRadius = 16.0;
+    final textTheme = _buildTextTheme(
+      ThemeData(brightness: Brightness.dark, useMaterial3: true).textTheme,
+      brightness: Brightness.dark,
+    );
+    const fieldRadius = AppDesign.radiusSm;
     final fieldBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(fieldRadius),
       borderSide: BorderSide(color: colorScheme.outlineVariant),
@@ -222,6 +256,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
     return ThemeData(
       colorScheme: colorScheme,
       useMaterial3: true,
+      textTheme: textTheme,
       scaffoldBackgroundColor: AppDesign.darkCanvas,
       appBarTheme: AppBarTheme(
         elevation: 0,
@@ -236,7 +271,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppDesign.radiusLg),
           side: BorderSide(
             color: colorScheme.outlineVariant.withValues(alpha: 0.52),
           ),
@@ -261,10 +296,10 @@ class _TripSplitAppState extends State<TripSplitApp> {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: AppDesign.brandStart,
+          backgroundColor: colorScheme.primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppDesign.radiusSm),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         ),
@@ -272,10 +307,10 @@ class _TripSplitAppState extends State<TripSplitApp> {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor: AppDesign.brandStart,
+          backgroundColor: colorScheme.primary,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppDesign.radiusSm),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         ),
@@ -284,7 +319,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
         style: OutlinedButton.styleFrom(
           foregroundColor: colorScheme.onSurface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(AppDesign.radiusSm),
           ),
           side: BorderSide(
             color: colorScheme.outlineVariant.withValues(alpha: 0.65),
@@ -307,8 +342,12 @@ class _TripSplitAppState extends State<TripSplitApp> {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: colorScheme.surfaceContainerHigh,
-        contentTextStyle: TextStyle(color: colorScheme.onSurface),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurface,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+        ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 0,
@@ -319,6 +358,82 @@ class _TripSplitAppState extends State<TripSplitApp> {
       ),
       dividerTheme: DividerThemeData(
         color: colorScheme.outlineVariant.withValues(alpha: 0.42),
+      ),
+    );
+  }
+
+  TextTheme _buildTextTheme(TextTheme base, {required Brightness brightness}) {
+    final titleColor = brightness == Brightness.dark
+        ? AppDesign.darkForeground
+        : AppDesign.lightForeground;
+    final mutedColor = brightness == Brightness.dark
+        ? AppDesign.darkMuted
+        : AppDesign.lightMuted;
+    return base.copyWith(
+      headlineLarge: base.headlineLarge?.copyWith(
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.4,
+        color: titleColor,
+      ),
+      headlineMedium: base.headlineMedium?.copyWith(
+        fontSize: 26,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.35,
+        color: titleColor,
+      ),
+      headlineSmall: base.headlineSmall?.copyWith(
+        fontSize: 24,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.3,
+        color: titleColor,
+      ),
+      titleLarge: base.titleLarge?.copyWith(
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.2,
+        color: titleColor,
+      ),
+      titleMedium: base.titleMedium?.copyWith(
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.1,
+        color: titleColor,
+      ),
+      titleSmall: base.titleSmall?.copyWith(
+        fontSize: 14,
+        fontWeight: FontWeight.w700,
+        color: titleColor,
+      ),
+      bodyLarge: base.bodyLarge?.copyWith(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: titleColor,
+      ),
+      bodyMedium: base.bodyMedium?.copyWith(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: titleColor,
+      ),
+      bodySmall: base.bodySmall?.copyWith(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: mutedColor,
+      ),
+      labelLarge: base.labelLarge?.copyWith(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: titleColor,
+      ),
+      labelMedium: base.labelMedium?.copyWith(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: mutedColor,
+      ),
+      labelSmall: base.labelSmall?.copyWith(
+        fontSize: 11,
+        fontWeight: FontWeight.w600,
+        color: mutedColor,
       ),
     );
   }

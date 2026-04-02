@@ -271,9 +271,31 @@ function set_ready_to_settle_action(): void
     $tripMembersTable = table_name('trip_members');
     $tripsTable = table_name('trips');
     $actorId = (int) ($me['id'] ?? 0);
+    $readyToSettleAfter = [];
 
     $pdo->beginTransaction();
     try {
+        $readyToSettleBefore = load_trip_ready_to_settle_state($pdo, $tripId, $actorId);
+
+        $memberSelect = $pdo->prepare(
+            'SELECT ready_to_settle, ready_to_settle_at
+             FROM ' . $tripMembersTable . '
+             WHERE trip_id = :trip_id
+               AND user_id = :user_id
+             LIMIT 1
+             FOR UPDATE'
+        );
+        $memberSelect->execute([
+            'trip_id' => $tripId,
+            'user_id' => $actorId,
+        ]);
+        $memberRow = $memberSelect->fetch();
+        if (!is_array($memberRow)) {
+            json_out(['ok' => false, 'error' => 'Trip member not found.'], 404);
+        }
+        $wasReady = ((int) ($memberRow['ready_to_settle'] ?? 0)) === 1;
+        $stateChanged = $wasReady !== $isReady;
+
         $memberUpdate = $pdo->prepare(
             'UPDATE ' . $tripMembersTable . '
              SET ready_to_settle = :ready_to_settle,
@@ -283,13 +305,12 @@ function set_ready_to_settle_action(): void
         );
         $memberUpdate->execute([
             'ready_to_settle' => $isReady ? 1 : 0,
-            'ready_to_settle_at' => $isReady ? date('Y-m-d H:i:s') : null,
+            'ready_to_settle_at' => $isReady
+                ? ($stateChanged ? date('Y-m-d H:i:s') : ($memberRow['ready_to_settle_at'] ?: date('Y-m-d H:i:s')))
+                : null,
             'trip_id' => $tripId,
             'user_id' => $actorId,
         ]);
-        if ($memberUpdate->rowCount() < 1) {
-            json_out(['ok' => false, 'error' => 'Trip member not found.'], 404);
-        }
 
         $touchTrip = $pdo->prepare(
             'UPDATE ' . $tripsTable . '
@@ -298,13 +319,13 @@ function set_ready_to_settle_action(): void
         );
         $touchTrip->execute(['trip_id' => $tripId]);
 
-        $readyToSettle = load_trip_ready_to_settle_state($pdo, $tripId, $actorId);
+        $readyToSettleAfter = load_trip_ready_to_settle_state($pdo, $tripId, $actorId);
         $tripName = trim((string) ($trip['name'] ?? ''));
         if ($tripName === '') {
             $tripName = 'Trip';
         }
 
-        if ($isReady) {
+        if ($stateChanged && $isReady) {
             $actorName = trim((string) ($me['nickname'] ?? ''));
             if ($actorName === '') {
                 $actorName = trim((string) ($me['full_name'] ?? ''));
@@ -313,8 +334,8 @@ function set_ready_to_settle_action(): void
                 $actorName = 'Trip member';
             }
 
-            foreach ($readyToSettle['members'] as $memberRow) {
-                $targetUserId = (int) ($memberRow['user_id'] ?? 0);
+            foreach ($readyToSettleAfter['members'] as $readyMember) {
+                $targetUserId = (int) ($readyMember['user_id'] ?? 0);
                 if ($targetUserId <= 0 || $targetUserId === $actorId) {
                     continue;
                 }
@@ -333,9 +354,11 @@ function set_ready_to_settle_action(): void
                 );
             }
 
-            if (($readyToSettle['all_ready'] ?? false) === true) {
-                foreach ($readyToSettle['members'] as $memberRow) {
-                    $targetUserId = (int) ($memberRow['user_id'] ?? 0);
+            $becameAllReady = (($readyToSettleBefore['all_ready'] ?? false) !== true)
+                && (($readyToSettleAfter['all_ready'] ?? false) === true);
+            if ($becameAllReady) {
+                foreach ($readyToSettleAfter['members'] as $readyMember) {
+                    $targetUserId = (int) ($readyMember['user_id'] ?? 0);
                     if ($targetUserId <= 0) {
                         continue;
                     }
@@ -366,7 +389,7 @@ function set_ready_to_settle_action(): void
     json_out([
         'ok' => true,
         'trip' => build_trip_payload($trip),
-        'ready_to_settle' => load_trip_ready_to_settle_state($pdo, $tripId, $actorId),
+        'ready_to_settle' => $readyToSettleAfter ?: load_trip_ready_to_settle_state($pdo, $tripId, $actorId),
     ]);
 }
 
@@ -404,6 +427,8 @@ function remind_settlement_action(): void
 
     $settlementsTable = table_name('settlements');
     $usersTable = table_name('users');
+    $notificationsTable = table_name('notifications');
+    $manualReminderCooldownMinutes = settlement_manual_reminder_cooldown_minutes();
 
     $pdo->beginTransaction();
     try {
@@ -479,6 +504,44 @@ function remind_settlement_action(): void
 
         if ($targetUserId <= 0 || $targetUserId === $actorId) {
             json_out(['ok' => false, 'error' => 'Reminder target is invalid.'], 409);
+        }
+
+        if ($manualReminderCooldownMinutes > 0) {
+            $lastReminderStmt = $pdo->prepare(
+                'SELECT created_at
+                 FROM ' . $notificationsTable . '
+                 WHERE trip_id = :trip_id
+                   AND user_id = :user_id
+                   AND type = "settlement_reminder"
+                   AND CAST(JSON_UNQUOTE(JSON_EXTRACT(payload_json, "$.settlement_id")) AS UNSIGNED) = :settlement_id
+                 ORDER BY id DESC
+                 LIMIT 1'
+            );
+            $lastReminderStmt->execute([
+                'trip_id' => $tripId,
+                'user_id' => $targetUserId,
+                'settlement_id' => $settlementId,
+            ]);
+            $lastReminderAtRaw = (string) ($lastReminderStmt->fetchColumn() ?: '');
+            if ($lastReminderAtRaw !== '') {
+                $lastReminderAtTs = strtotime($lastReminderAtRaw . ' UTC');
+                if (!is_int($lastReminderAtTs) || $lastReminderAtTs <= 0) {
+                    $lastReminderAtTs = strtotime($lastReminderAtRaw) ?: 0;
+                }
+                if ($lastReminderAtTs > 0) {
+                    $cooldownSec = $manualReminderCooldownMinutes * 60;
+                    $elapsed = time() - $lastReminderAtTs;
+                    if ($elapsed < $cooldownSec) {
+                        $retryAfterSec = max(1, $cooldownSec - $elapsed);
+                        $retryAfterMin = (int) ceil($retryAfterSec / 60);
+                        json_out([
+                            'ok' => false,
+                            'error' => 'Reminder was sent recently. Try again in about ' . $retryAfterMin . ' minute(s).',
+                            'retry_after_sec' => $retryAfterSec,
+                        ], 429);
+                    }
+                }
+            }
         }
 
         create_user_notification(

@@ -211,7 +211,10 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                               ),
                                               const SizedBox(width: 8),
                                               Text(
-                                                _formatMoney(item.amount),
+                                                _formatMoney(
+                                                  context,
+                                                  item.amount,
+                                                ),
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w700,
                                                 ),

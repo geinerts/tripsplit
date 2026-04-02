@@ -51,7 +51,12 @@ extension _MainShellPageSettings on _MainShellPageState {
               ),
               ListTile(
                 leading: const Icon(Icons.feedback_outlined),
-                title: const Text('Send feedback'),
+                title: Text(
+                  _settingsLocalizedText(
+                    en: 'Send feedback',
+                    lv: 'Sūtīt atsauksmi',
+                  ),
+                ),
                 onTap: () => Navigator.of(sheetContext).pop('send_feedback'),
               ),
               ListTile(
@@ -67,8 +72,9 @@ extension _MainShellPageSettings on _MainShellPageState {
                   ),
                   title: Text(
                     '${t.deleteAction} ${t.tripTitleShort}',
-                    style: TextStyle(
+                    style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(sheetContext).colorScheme.error,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   onTap: () => Navigator.of(sheetContext).pop('delete_trip'),
@@ -297,7 +303,10 @@ extension _MainShellPageSettings on _MainShellPageState {
               if (picked.bytes.length > _maxFeedbackScreenshotBytes) {
                 setDialogState(() {
                   isPickingScreenshot = false;
-                  validationError = 'Screenshot size must be up to 8 MB.';
+                  validationError = _settingsLocalizedText(
+                    en: 'Screenshot size must be up to 8 MB',
+                    lv: 'Ekrānattēla izmēram jābūt līdz 8 MB',
+                  );
                 });
                 return;
               }
@@ -310,7 +319,12 @@ extension _MainShellPageSettings on _MainShellPageState {
             }
 
             return AlertDialog(
-              title: const Text('Send feedback'),
+              title: Text(
+                _settingsLocalizedText(
+                  en: 'Send feedback',
+                  lv: 'Sūtīt atsauksmi',
+                ),
+              ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -318,12 +332,27 @@ extension _MainShellPageSettings on _MainShellPageState {
                   children: [
                     DropdownButtonFormField<String>(
                       initialValue: feedbackType,
-                      decoration: const InputDecoration(labelText: 'Type'),
-                      items: const [
-                        DropdownMenuItem(value: 'bug', child: Text('Bug')),
+                      decoration: InputDecoration(
+                        labelText: _settingsLocalizedText(
+                          en: 'Type',
+                          lv: 'Tips',
+                        ),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value: 'bug',
+                          child: Text(
+                            _settingsLocalizedText(en: 'Bug', lv: 'Kļūda'),
+                          ),
+                        ),
                         DropdownMenuItem(
                           value: 'suggestion',
-                          child: Text('Suggestion'),
+                          child: Text(
+                            _settingsLocalizedText(
+                              en: 'Suggestion',
+                              lv: 'Ieteikums',
+                            ),
+                          ),
                         ),
                       ],
                       onChanged: (value) {
@@ -340,8 +369,11 @@ extension _MainShellPageSettings on _MainShellPageState {
                       minLines: 3,
                       maxLines: 8,
                       textInputAction: TextInputAction.newline,
-                      decoration: const InputDecoration(
-                        hintText: 'Describe issue or suggestion',
+                      decoration: InputDecoration(
+                        hintText: _settingsLocalizedText(
+                          en: 'Describe issue or suggestion',
+                          lv: 'Apraksti problēmu vai ieteikumu',
+                        ),
                       ),
                       onChanged: (value) {
                         feedbackNote = value;
@@ -362,10 +394,19 @@ extension _MainShellPageSettings on _MainShellPageState {
                           icon: const Icon(Icons.add_photo_alternate_outlined),
                           label: Text(
                             isPickingScreenshot
-                                ? 'Picking image...'
+                                ? _settingsLocalizedText(
+                                    en: 'Picking image...',
+                                    lv: 'Tiek izvēlēts attēls...',
+                                  )
                                 : (screenshotBytes == null
-                                      ? 'Attach screenshot'
-                                      : 'Change screenshot'),
+                                      ? _settingsLocalizedText(
+                                          en: 'Attach screenshot',
+                                          lv: 'Pievienot ekrānattēlu',
+                                        )
+                                      : _settingsLocalizedText(
+                                          en: 'Change screenshot',
+                                          lv: 'Mainīt ekrānattēlu',
+                                        )),
                           ),
                         ),
                         if (screenshotBytes != null)
@@ -377,7 +418,12 @@ extension _MainShellPageSettings on _MainShellPageState {
                               });
                             },
                             icon: const Icon(Icons.close),
-                            label: const Text('Remove image'),
+                            label: Text(
+                              _settingsLocalizedText(
+                                en: 'Remove image',
+                                lv: 'Noņemt attēlu',
+                              ),
+                            ),
                           ),
                       ],
                     ),
@@ -393,16 +439,21 @@ extension _MainShellPageSettings on _MainShellPageState {
                     ],
                     const SizedBox(height: 8),
                     Text(
-                      'Tip: attach screenshot for faster bug triage.',
+                      _settingsLocalizedText(
+                        en: 'Tip: attach screenshot for faster bug triage',
+                        lv: 'Ieteikums: pievieno ekrānattēlu ātrākai kļūdas analīzei',
+                      ),
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     if (validationError != null) ...[
                       const SizedBox(height: 8),
                       Text(
                         validationError!,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
+                        style: Theme.of(stateContext).textTheme.bodyMedium
+                            ?.copyWith(
+                              color: Theme.of(stateContext).colorScheme.error,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ],
                   ],
@@ -418,8 +469,10 @@ extension _MainShellPageSettings on _MainShellPageState {
                     final note = feedbackNote.trim();
                     if (note.isEmpty && screenshotBytes == null) {
                       setDialogState(() {
-                        validationError =
-                            'Add details or attach screenshot before sending.';
+                        validationError = _settingsLocalizedText(
+                          en: 'Add details or attach screenshot before sending',
+                          lv: 'Pirms sūtīšanas pievieno aprakstu vai ekrānattēlu',
+                        );
                       });
                       return;
                     }
@@ -432,7 +485,7 @@ extension _MainShellPageSettings on _MainShellPageState {
                       ),
                     );
                   },
-                  child: const Text('Send'),
+                  child: Text(_settingsLocalizedText(en: 'Send', lv: 'Sūtīt')),
                 ),
               ],
             );
@@ -479,7 +532,13 @@ extension _MainShellPageSettings on _MainShellPageState {
       if (!mounted) {
         return;
       }
-      _showSnack('Thanks! Feedback sent.', isError: false);
+      _showSnack(
+        _settingsLocalizedText(
+          en: 'Thanks! Feedback sent',
+          lv: 'Paldies! Atsauksme nosūtīta',
+        ),
+        isError: false,
+      );
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -489,7 +548,13 @@ extension _MainShellPageSettings on _MainShellPageState {
       if (!mounted) {
         return;
       }
-      _showSnack('Failed to send feedback.', isError: true);
+      _showSnack(
+        _settingsLocalizedText(
+          en: 'Failed to send feedback',
+          lv: 'Neizdevās nosūtīt atsauksmi',
+        ),
+        isError: true,
+      );
     } finally {
       if (mounted) {
         _updateState(() {

@@ -184,8 +184,9 @@ extension _TripsPageActions on _TripsPageState {
                   ),
                   title: Text(
                     '${t.deleteAction} ${t.tripTitleShort}',
-                    style: TextStyle(
+                    style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(sheetContext).colorScheme.error,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   onTap: () => Navigator.of(sheetContext).pop('delete'),

@@ -520,6 +520,8 @@
    "profileTitle" : "Profils",
    "profileUpdated" : "Profils atjaunināts.",
    "uploadAvatarAction" : "Augšupielādēt avataru",
+   "takePhotoAction" : "Uzņemt bildi",
+   "chooseFromLibraryAction" : "Izvēlēties no galerijas",
    "removeAvatarAction" : "Noņemt avataru",
    "avatarUpdatedMessage" : "Avatars atjaunināts.",
    "avatarRemovedMessage" : "Avatars noņemts.",

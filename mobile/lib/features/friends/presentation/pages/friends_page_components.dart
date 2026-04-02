@@ -13,24 +13,24 @@ class _InlineErrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              message,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+    return AppSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            message,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppDesign.destructiveColor(context),
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(height: 8),
-            TextButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh),
-              label: Text(retryLabel),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          TextButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: Text(retryLabel),
+          ),
+        ],
       ),
     );
   }

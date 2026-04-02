@@ -90,7 +90,7 @@ extension _WorkspacePageExpensesDetailsActions on _WorkspacePageState {
     switch (splitMode.trim().toLowerCase()) {
       case 'exact':
         final exact = participant.splitValue ?? participant.owedAmount ?? owed;
-        return t.exactAmountWithValue(_formatMoney(exact));
+        return t.exactAmountWithValue(_formatMoney(context, exact));
       case 'percent':
         final percent = participant.splitValue ?? 0;
         return t.percentWithValue('${_formatCompactNumber(percent)}%');

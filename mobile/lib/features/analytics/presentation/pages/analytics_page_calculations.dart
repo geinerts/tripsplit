@@ -7,23 +7,7 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
   }
 
   String _formatMoney(double amount) {
-    final localeTag = Localizations.localeOf(context).toLanguageTag();
-    final positiveValue = amount.abs();
-    try {
-      final formatter = NumberFormat.currency(
-        locale: localeTag,
-        symbol: '€',
-        decimalDigits: 2,
-      );
-      return formatter.format(positiveValue);
-    } catch (_) {
-      final fallback = NumberFormat.currency(
-        locale: 'en_US',
-        symbol: '€',
-        decimalDigits: 2,
-      );
-      return fallback.format(positiveValue);
-    }
+    return AppFormatters.euro(context, amount);
   }
 
   DateTime _dayOnly(DateTime day) {
@@ -47,9 +31,7 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
       '${day.year.toString().padLeft(4, '0')}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}';
 
   String _dayShortLabel(DateTime day) {
-    final dd = day.day.toString().padLeft(2, '0');
-    final mm = day.month.toString().padLeft(2, '0');
-    return '$dd.$mm';
+    return AppFormatters.shortDayMonth(context, day);
   }
 
   List<DateTime> _lastFiveDays(WorkspaceSnapshot snapshot) {
@@ -98,16 +80,17 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
     List<_MemberMeta> members,
     BuildContext context,
   ) {
-    final base = Theme.of(context).colorScheme.primary;
-    final hsv = HSVColor.fromColor(base);
+    const palette = <Color>[
+      Color(0xFF6BC48E), // green
+      Color(0xFFF48E57), // orange
+      Color(0xFFBE6EAF), // purple/pink
+      Color(0xFF0E8E96), // teal
+      Color(0xFF4E96E8), // blue
+      Color(0xFF77A65A), // olive
+    ];
     final map = <int, Color>{};
     for (var i = 0; i < members.length; i++) {
-      final hue = (hsv.hue + (i * 41)) % 360;
-      map[members[i].id] = hsv
-          .withHue(hue)
-          .withSaturation(0.72)
-          .withValue(0.86)
-          .toColor();
+      map[members[i].id] = palette[i % palette.length];
     }
     return map;
   }
@@ -163,10 +146,16 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
     }
 
     final rows = <_CategoryTotalRow>[];
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final base = Theme.of(context).colorScheme.tertiary;
-    final hsv = HSVColor.fromColor(base);
-    var idx = 0;
+    const categoryColorMap = <String, Color>{
+      'accommodation': Color(0xFF4FD180),
+      'food': Color(0xFFF7943D),
+      'transport': Color(0xFF5A94E5),
+      'activities': Color(0xFFE372B3),
+      'shopping': Color(0xFF0E8E96),
+      'groceries': Color(0xFF7CC06A),
+      'nightlife': Color(0xFFBE6EAF),
+      'other': Color(0xFF8A8277),
+    };
     for (final entry in totals.entries) {
       final rawCategory = rawByGroupKey[entry.key] ?? 'other';
       rows.add(
@@ -178,18 +167,37 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
           ),
           icon: ExpenseCategoryCatalog.iconFor(rawCategory),
           total: entry.value,
-          color: hsv
-              .withHue((hsv.hue + (idx * 29)) % 360)
-              .withSaturation(isDark ? 0.56 : 0.62)
-              .withValue(isDark ? 0.98 : 0.84)
-              .toColor(),
+          color:
+              categoryColorMap[entry.key] ??
+              categoryColorMap['other'] ??
+              const Color(0xFF8A8277),
         ),
       );
-      idx += 1;
     }
 
     rows.sort((a, b) => b.total.compareTo(a.total));
-    return rows;
+    if (rows.length <= 4) {
+      return rows;
+    }
+
+    final topRows = rows.take(4).toList(growable: true);
+    final otherTotal = rows
+        .skip(4)
+        .fold<double>(0, (sum, row) => sum + row.total);
+
+    if (otherTotal > 0) {
+      topRows.add(
+        _CategoryTotalRow(
+          key: 'other_aggregate',
+          label: _txt(en: 'Other', lv: 'Pārējās'),
+          icon: Icons.more_horiz_rounded,
+          total: otherTotal,
+          color: categoryColorMap['other'] ?? const Color(0xFF8A8277),
+        ),
+      );
+    }
+
+    return topRows;
   }
 
   String _tripName(BuildContext context, Trip trip) {

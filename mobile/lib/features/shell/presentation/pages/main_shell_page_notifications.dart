@@ -332,7 +332,9 @@ extension _MainShellPageNotifications on _MainShellPageState {
               title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontWeight: isUnread ? FontWeight.w700 : null),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: isUnread ? FontWeight.w700 : FontWeight.w600,
+              ),
             ),
           ),
           if (isUnread)

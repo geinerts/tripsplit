@@ -1,6 +1,51 @@
 part of 'profile_page.dart';
 
 extension _ProfilePageEditFlow on _ProfilePageState {
+  void _openDeactivateAccountPage() {
+    if (_isLoading || _isSubmitting) {
+      return;
+    }
+    _updateState(() {
+      _isEditMode = true;
+      _editSession += 1;
+      _isDeactivateAccountPage = true;
+      _isChangePasswordPage = false;
+      _deactivateDraftPassword = '';
+      _activeEditField = null;
+      _editErrorText = null;
+      _errorText = null;
+    });
+    widget.onEditModeChanged?.call(true);
+  }
+
+  void _openChangePasswordPage() {
+    if (_isLoading || _isSubmitting) {
+      return;
+    }
+    final email = (_initialEmail ?? '').trim().toLowerCase();
+    if (email.isEmpty || !_isValidEmail(email)) {
+      _showSnack(
+        _profileText(
+          en: 'Set a valid email in Edit profile before changing password.',
+          lv: 'Pirms paroles maiņas ievadi derīgu e-pastu sadaļā "Edit profile".',
+        ),
+      );
+      return;
+    }
+    _updateState(() {
+      _isEditMode = true;
+      _editSession += 1;
+      _isDeactivateAccountPage = false;
+      _isChangePasswordPage = true;
+      _draftPassword = '';
+      _draftRepeatPassword = '';
+      _activeEditField = null;
+      _editErrorText = null;
+      _errorText = null;
+    });
+    widget.onEditModeChanged?.call(true);
+  }
+
   void _openEditProfilePage() {
     if (_isLoading || _isSubmitting) {
       return;
@@ -10,6 +55,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _isEditMode = true;
       _editSession += 1;
       _isDeactivateAccountPage = false;
+      _isChangePasswordPage = false;
       _deactivateDraftPassword = '';
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
@@ -26,6 +72,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     _updateState(() {
       _isEditMode = false;
       _isDeactivateAccountPage = false;
+      _isChangePasswordPage = false;
       _deactivateDraftPassword = '';
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
@@ -38,31 +85,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   }
 
   void _handleEditBackNavigation() {
-    if (_isDeactivateAccountPage) {
-      _closeDeactivateAccountPage();
-      return;
-    }
     _closeEditMode();
-  }
-
-  void _openDeactivateAccountPage() {
-    if (!_isEditMode || _isSubmitting) {
-      return;
-    }
-    _updateState(() {
-      _isDeactivateAccountPage = true;
-      _activeEditField = null;
-      _editErrorText = null;
-      _deactivateDraftPassword = '';
-    });
-  }
-
-  void _closeDeactivateAccountPage() {
-    _updateState(() {
-      _isDeactivateAccountPage = false;
-      _deactivateDraftPassword = '';
-      _editErrorText = null;
-    });
   }
 
   void _onDeactivatePasswordChanged(String value) {
@@ -81,22 +104,25 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     }
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
   void _onDeactivateAccountPressed() {
     _showDeactivateComingSoon(
-      'Deactivate account flow will be enabled in the next step.',
+      _profileText(
+        en: 'Deactivate account flow will be enabled in the next step.',
+        lv: 'Konta deaktivēšanas plūsma tiks ieslēgta nākamajā solī.',
+      ),
     );
   }
 
   void _onSendDeletionLinkPressed() {
     _showDeactivateComingSoon(
-      'Email deletion link flow will be enabled in the next step.',
+      _profileText(
+        en: 'Email deletion link flow will be enabled in the next step.',
+        lv: 'Dzēšanas saites nosūtīšana uz e-pastu tiks ieslēgta nākamajā solī.',
+      ),
     );
   }
 
@@ -109,11 +135,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _editErrorText = null;
       if (field == _ProfileEditField.fullName) {
         _draftFullName = _fullNameController.text.trim();
-      } else if (field == _ProfileEditField.email) {
-        _draftEmail = _emailController.text.trim();
       } else {
-        _draftPassword = '';
-        _draftRepeatPassword = '';
+        _draftEmail = _emailController.text.trim();
       }
     });
   }
@@ -206,30 +229,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _emailController.text = _draftEmail.trim();
       _passwordController.text = _draftPassword;
       _repeatController.text = _draftRepeatPassword;
-    } else {
-      if (_draftPassword.isEmpty && _draftRepeatPassword.isEmpty) {
-        _updateState(() {
-          _activeEditField = null;
-          _editErrorText = null;
-        });
-        return;
-      }
-      if (_draftPassword.length < 8) {
-        _updateState(() {
-          _editErrorText = t.passwordMinLengthShort;
-        });
-        return;
-      }
-      if (_draftPassword != _draftRepeatPassword) {
-        _updateState(() {
-          _editErrorText = t.passwordsDoNotMatch;
-        });
-        return;
-      }
-      _fullNameController.text = _fullNameController.text.trim();
-      _emailController.text = _emailController.text.trim();
-      _passwordController.text = _draftPassword;
-      _repeatController.text = _draftRepeatPassword;
     }
 
     final success = await _onSavePressed();
@@ -259,132 +258,315 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     if (_isDeactivateAccountPage) {
       return _buildDeactivateAccountPage(context);
     }
+    if (_isChangePasswordPage) {
+      return _buildChangePasswordPage(context);
+    }
 
     final t = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
-        child: Column(
-          key: ValueKey('profile-edit-page-$_editSession'),
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildEditableProfileRow(
-              context: context,
-              field: _ProfileEditField.fullName,
-              label: t.fullNameLabel,
-              displayValue: _draftFullName.trim().isEmpty
-                  ? t.notSetValue
-                  : _draftFullName.trim(),
-              editor: _buildFullNameInlineEditor,
-            ),
-            const Divider(height: 1),
-            _buildEditableProfileRow(
-              context: context,
-              field: _ProfileEditField.email,
-              label: t.emailAddressLabel,
-              displayValue: _draftEmail.trim().isEmpty
-                  ? t.notSetValue
-                  : _draftEmail.trim(),
-              editor: _buildEmailInlineEditor,
-            ),
-            const Divider(height: 1),
-            _buildEditableProfileRow(
-              context: context,
-              field: _ProfileEditField.password,
-              label: t.newPasswordLabel,
-              displayValue:
-                  (_draftPassword.isNotEmpty || _draftRepeatPassword.isNotEmpty)
-                  ? '••••••••'
-                  : t.notSetValue,
-              editor: _buildPasswordInlineEditor,
-            ),
-            if (_editErrorText != null) ...[
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Text(
-                  _editErrorText!,
-                  style: TextStyle(
-                    color: colorScheme.error,
-                    fontWeight: FontWeight.w600,
-                  ),
+    return AppSurfaceCard(
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
+      child: Column(
+        key: ValueKey('profile-edit-page-$_editSession'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildEditableProfileRow(
+            context: context,
+            field: _ProfileEditField.fullName,
+            label: t.fullNameLabel,
+            displayValue: _draftFullName.trim().isEmpty
+                ? t.notSetValue
+                : _draftFullName.trim(),
+            editor: _buildFullNameInlineEditor,
+          ),
+          const Divider(height: 1),
+          _buildEditableProfileRow(
+            context: context,
+            field: _ProfileEditField.email,
+            label: t.emailAddressLabel,
+            displayValue: _draftEmail.trim().isEmpty
+                ? t.notSetValue
+                : _draftEmail.trim(),
+            editor: _buildEmailInlineEditor,
+          ),
+          if (_editErrorText != null) ...[
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                _editErrorText!,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.error,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ],
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
 
   Widget _buildDeactivateAccountPage(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-        child: Column(
-          key: ValueKey('deactivate-page-$_editSession'),
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Deactivate Account',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w800,
+    return AppSurfaceCard(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      child: Column(
+        key: ValueKey('deactivate-page-$_editSession'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _profileText(en: 'Deactivate account', lv: 'Deaktivēt kontu'),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _profileText(
+              en: 'You can deactivate account access with password or request an email link to permanently delete the account.',
+              lv: 'Vari deaktivēt konta piekļuvi ar paroli vai pieprasīt e-pasta saiti neatgriezeniskai konta dzēšanai.',
+            ),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 14),
+          TextFormField(
+            key: ValueKey('deactivate-password-$_editSession'),
+            initialValue: _deactivateDraftPassword,
+            textInputAction: TextInputAction.done,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: _profileText(en: 'Password', lv: 'Parole'),
+              hintText: _profileText(
+                en: 'Enter your password',
+                lv: 'Ievadi savu paroli',
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'You can deactivate account access with password or request an email link to permanently delete the account.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+            onChanged: _onDeactivatePasswordChanged,
+            onFieldSubmitted: (_) => _onDeactivateAccountPressed(),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: _onDeactivateAccountPressed,
+              icon: const Icon(Icons.person_off),
+              style: FilledButton.styleFrom(
+                backgroundColor: colorScheme.error,
+                foregroundColor: colorScheme.onError,
+              ),
+              label: Text(
+                _profileText(en: 'Deactivate account', lv: 'Deaktivēt kontu'),
               ),
             ),
-            const SizedBox(height: 14),
-            TextFormField(
-              key: ValueKey('deactivate-password-$_editSession'),
-              initialValue: _deactivateDraftPassword,
-              textInputAction: TextInputAction.done,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                hintText: 'Enter your password',
-              ),
-              onChanged: _onDeactivatePasswordChanged,
-              onFieldSubmitted: (_) => _onDeactivateAccountPressed(),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: _onDeactivateAccountPressed,
-                icon: const Icon(Icons.person_off),
-                style: FilledButton.styleFrom(
-                  backgroundColor: colorScheme.error,
-                  foregroundColor: colorScheme.onError,
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _onSendDeletionLinkPressed,
+              icon: const Icon(Icons.mark_email_read_outlined),
+              label: Text(
+                _profileText(
+                  en: 'Send deletion link to email',
+                  lv: 'Nosūtīt dzēšanas saiti uz e-pastu',
                 ),
-                label: const Text('Deactivate account'),
               ),
             ),
+          ),
+          const SizedBox(height: 8),
+          Center(
+            child: TextButton(
+              onPressed: _closeEditMode,
+              child: Text(
+                _profileText(
+                  en: 'Back to profile',
+                  lv: 'Atpakaļ uz profilu',
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onSubmitPasswordChange() async {
+    final t = context.l10n;
+    if (_isSubmitting || _isLoading) {
+      return;
+    }
+    final email = (_initialEmail ?? '').trim().toLowerCase();
+    if (email.isEmpty || !_isValidEmail(email)) {
+      _updateState(() {
+        _editErrorText = _profileText(
+          en: 'Set a valid email in profile before changing password.',
+          lv: 'Pirms paroles maiņas iestati derīgu e-pastu profilā.',
+        );
+      });
+      return;
+    }
+    if (_draftPassword.trim().length < 8) {
+      _updateState(() {
+        _editErrorText = t.passwordMinLengthShort;
+      });
+      return;
+    }
+    if (_draftPassword != _draftRepeatPassword) {
+      _updateState(() {
+        _editErrorText = t.passwordsDoNotMatch;
+      });
+      return;
+    }
+
+    final nickname = _nicknameController.text.trim().isNotEmpty
+        ? _nicknameController.text.trim()
+        : (_user?.nickname.trim().isNotEmpty ?? false)
+            ? _user!.nickname.trim()
+            : _initialNickname;
+
+    _updateState(() {
+      _isSubmitting = true;
+      _editErrorText = null;
+    });
+    try {
+      final updated = await widget.controller.updateProfile(
+        nickname: nickname,
+        email: email,
+        password: _draftPassword,
+      );
+      if (!mounted) {
+        return;
+      }
+      _applyUser(updated);
+      _showSnack(
+        _profileText(
+          en: 'Password updated.',
+          lv: 'Parole atjaunināta.',
+        ),
+      );
+      _closeEditMode();
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _editErrorText = error.message;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _editErrorText = _profileText(
+          en: 'Failed to update password.',
+          lv: 'Neizdevās atjaunināt paroli.',
+        );
+      });
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
+  }
+
+  Widget _buildChangePasswordPage(BuildContext context) {
+    final t = context.l10n;
+    final email = (_initialEmail ?? '').trim().toLowerCase();
+    return AppSurfaceCard(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      child: Column(
+        key: ValueKey('change-password-page-$_editSession'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _profileText(en: 'Change password', lv: 'Mainīt paroli'),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _profileText(
+              en: 'Account: $email',
+              lv: 'Konts: $email',
+            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppDesign.mutedColor(context)),
+          ),
+          const SizedBox(height: 14),
+          TextFormField(
+            key: ValueKey('change-password-$_editSession'),
+            initialValue: _draftPassword,
+            textInputAction: TextInputAction.next,
+            obscureText: true,
+            autofillHints: const [AutofillHints.newPassword],
+            decoration: InputDecoration(
+              labelText: t.newPasswordLabel,
+              helperText: t.passwordMinLengthShort,
+            ),
+            onChanged: _onDraftPasswordChanged,
+          ),
+          const SizedBox(height: 10),
+          TextFormField(
+            key: ValueKey('change-password-repeat-$_editSession'),
+            initialValue: _draftRepeatPassword,
+            textInputAction: TextInputAction.done,
+            obscureText: true,
+            autofillHints: const [AutofillHints.newPassword],
+            decoration: InputDecoration(
+              labelText: t.repeatNewPasswordLabel,
+            ),
+            onChanged: _onDraftRepeatPasswordChanged,
+            onFieldSubmitted: (_) {
+              unawaited(_onSubmitPasswordChange());
+            },
+          ),
+          if (_editErrorText != null) ...[
             const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: _onSendDeletionLinkPressed,
-                icon: const Icon(Icons.mark_email_read_outlined),
-                label: const Text('Send deletion link to email'),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Center(
-              child: TextButton(
-                onPressed: _closeDeactivateAccountPage,
-                child: const Text('Back to edit profile'),
-              ),
+            Text(
+              _editErrorText!,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
           ],
-        ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _isSubmitting ? null : _closeEditMode,
+                  child: Text(t.cancelAction),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: FilledButton(
+                  onPressed: _isSubmitting
+                      ? null
+                      : () {
+                          unawaited(_onSubmitPasswordChange());
+                        },
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(t.saveAction),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -410,9 +592,9 @@ extension _ProfilePageEditFlow on _ProfilePageState {
               children: [
                 Text(
                   label,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 6),
                 if (isActive)
@@ -477,10 +659,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           textInputAction: TextInputAction.next,
           keyboardType: TextInputType.emailAddress,
           autofillHints: const [AutofillHints.email],
-          decoration: InputDecoration(
-            isDense: true,
-            hintText: t.emailHint,
-          ),
+          decoration: InputDecoration(isDense: true, hintText: t.emailHint),
           onChanged: _onDraftEmailChanged,
         ),
         const SizedBox(height: 8),
@@ -515,38 +694,4 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     );
   }
 
-  Widget _buildPasswordInlineEditor(BuildContext context) {
-    final t = context.l10n;
-    return Column(
-      children: [
-        TextFormField(
-          key: ValueKey('edit-password-$_editSession'),
-          initialValue: _draftPassword,
-          textInputAction: TextInputAction.next,
-          obscureText: true,
-          autofillHints: const [AutofillHints.newPassword],
-          decoration: InputDecoration(
-            isDense: true,
-            labelText: t.newPasswordLabel,
-            helperText: t.leaveEmptyKeepPasswordHelper,
-          ),
-          onChanged: _onDraftPasswordChanged,
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          key: ValueKey('edit-repeat-password-$_editSession'),
-          initialValue: _draftRepeatPassword,
-          textInputAction: TextInputAction.done,
-          obscureText: true,
-          autofillHints: const [AutofillHints.newPassword],
-          decoration: InputDecoration(
-            isDense: true,
-            labelText: t.repeatNewPasswordLabel,
-          ),
-          onChanged: _onDraftRepeatPasswordChanged,
-          onFieldSubmitted: (_) => _saveInlineField(_ProfileEditField.password),
-        ),
-      ],
-    );
-  }
 }

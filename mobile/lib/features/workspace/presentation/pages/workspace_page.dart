@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
@@ -18,6 +19,7 @@ import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
+import '../../../../core/ui/app_formatters.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../trips/domain/entities/trip.dart';
 import '../../../trips/domain/entities/trip_user.dart';
@@ -32,6 +34,7 @@ import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/settlement_item.dart';
 import '../../domain/entities/trip_expense.dart';
 import '../../domain/entities/uploaded_receipt.dart';
+import '../../domain/entities/workspace_notification.dart';
 import '../../domain/entities/workspace_snapshot.dart';
 import '../../domain/entities/workspace_user.dart';
 import '../controllers/workspace_controller.dart';
@@ -57,6 +60,16 @@ part 'workspace_page_support_sync.dart';
 part 'workspace_page_support_models.dart';
 part 'workspace_page_support_widgets.dart';
 part 'workspace_page_formatters.dart';
+
+const Color _splytoCreamBg = Color(0xFFF7F5F0);
+const Color _splytoCard = Color(0xFFFFFFFF);
+const Color _splytoPrimary = Color(0xFF2D7A5E);
+const Color _splytoAccent = Color(0xFFD4915C);
+const Color _splytoFg = Color(0xFF2C2418);
+const Color _splytoMuted = Color(0xFF8A8277);
+const Color _splytoSuccess = Color(0xFF3D8B5F);
+const Color _splytoDestructive = Color(0xFFC45C4A);
+const Color _splytoStroke = Color(0xFFE9E4DD);
 
 class WorkspacePage extends StatefulWidget {
   const WorkspacePage({
@@ -114,6 +127,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
   int _expenseFilterUserId = 0;
   int _workspaceTabIndex = 0;
   bool _isOverviewExpanded = false;
+  bool _showAllBalances = false;
   int _handledRefreshRequestCount = 0;
   int _handledOpenAddExpenseRequestCount = 0;
   bool _openAddExpenseAfterLoad = false;
@@ -240,6 +254,63 @@ class _WorkspacePageState extends State<WorkspacePage> {
       bottomNavigationBar: widget.showBottomNav
           ? _buildAppBottomNavigationBar(context)
           : null,
+    );
+  }
+}
+
+class _SplytoPressScale extends StatefulWidget {
+  const _SplytoPressScale({
+    required this.child,
+    required this.onTap,
+    this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+    this.enabled = true,
+  });
+
+  final Widget child;
+  final VoidCallback onTap;
+  final BorderRadius borderRadius;
+  final bool enabled;
+
+  @override
+  State<_SplytoPressScale> createState() => _SplytoPressScaleState();
+}
+
+class _SplytoPressScaleState extends State<_SplytoPressScale> {
+  bool _pressed = false;
+
+  void _setPressed(bool value) {
+    if (!mounted || !widget.enabled) {
+      return;
+    }
+    if (_pressed == value) {
+      return;
+    }
+    setState(() {
+      _pressed = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
+      onTap: widget.enabled ? widget.onTap : null,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 130),
+        curve: Curves.easeOutCubic,
+        scale: _pressed ? 0.97 : 1.0,
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: widget.borderRadius,
+          child: Ink(
+            decoration: BoxDecoration(borderRadius: widget.borderRadius),
+            child: widget.child,
+          ),
+        ),
+      ),
     );
   }
 }

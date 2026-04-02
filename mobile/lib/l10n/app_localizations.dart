@@ -596,7 +596,7 @@ abstract class AppLocalizations {
   /// No description provided for @finishTripStartSettlementsAction.
   ///
   /// In en, this message translates to:
-  /// **'Finish trip and start settlements'**
+  /// **'Finish and start settlements'**
   String get finishTripStartSettlementsAction;
 
   /// No description provided for @finishTripTitle.
@@ -878,7 +878,7 @@ abstract class AppLocalizations {
   /// No description provided for @navActivities.
   ///
   /// In en, this message translates to:
-  /// **'Activities'**
+  /// **'Analytics'**
   String get navActivities;
 
   /// No description provided for @navAddTrip.
@@ -1390,6 +1390,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upload avatar'**
   String get uploadAvatarAction;
+
+  /// No description provided for @takePhotoAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a picture'**
+  String get takePhotoAction;
+
+  /// No description provided for @chooseFromLibraryAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Library'**
+  String get chooseFromLibraryAction;
 
   /// No description provided for @removeAvatarAction.
   ///

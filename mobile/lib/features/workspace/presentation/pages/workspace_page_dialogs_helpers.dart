@@ -190,5 +190,4 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
       return null;
     }
   }
-
 }

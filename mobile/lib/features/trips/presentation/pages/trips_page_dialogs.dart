@@ -3,90 +3,24 @@ part of 'trips_page.dart';
 extension _TripsPageDialogs on _TripsPageState {
   Future<_CreateTripResult?> _showCreateTripDialog() async {
     final nameController = TextEditingController();
-    final searchController = TextEditingController();
     Uint8List? selectedImageBytes;
     String? selectedImageName;
     final selected = <int>{};
     final selectedUsers = <int, TripUser>{};
     BuildContext? dialogBuildContext;
-    var searchResults = const <TripUser>[];
     var friendQuickPicks = const <TripUser>[];
     var isLoadingFriendQuickPicks = false;
     var friendQuickPicksRequested = false;
-    var isSearching = false;
-    var searchSeq = 0;
-    Timer? searchDebounce;
 
     try {
-      return await showDialog<_CreateTripResult>(
+      return await showModalBottomSheet<_CreateTripResult>(
         context: context,
-        builder: (context) {
-          final t = context.l10n;
+        showDragHandle: true,
+        isScrollControlled: true,
+        useSafeArea: true,
+        builder: (sheetContext) {
+          final t = sheetContext.l10n;
           String? errorText;
-          String? searchErrorText;
-
-          Future<void> runSearch(StateSetter setDialogState, String rawQuery) async {
-            final query = rawQuery.trim();
-            if (query.length < 2) {
-              setDialogState(() {
-                isSearching = false;
-                searchErrorText = null;
-                searchResults = const <TripUser>[];
-              });
-              return;
-            }
-            final requestId = ++searchSeq;
-
-            bool canUpdateDialog() {
-              final c = dialogBuildContext;
-              return mounted && c != null && c.mounted && requestId == searchSeq;
-            }
-
-            setDialogState(() {
-              isSearching = true;
-              searchErrorText = null;
-            });
-
-            try {
-              final users = await widget.controller.loadDirectoryUsers(
-                query: query,
-                limit: 25,
-              );
-              if (!canUpdateDialog()) {
-                return;
-              }
-              setDialogState(() {
-                searchResults = users;
-                for (final user in users) {
-                  if (selected.contains(user.id)) {
-                    selectedUsers[user.id] = user;
-                  }
-                }
-              });
-            } on ApiException catch (error) {
-              if (!canUpdateDialog()) {
-                return;
-              }
-              setDialogState(() {
-                searchResults = const <TripUser>[];
-                searchErrorText = error.message;
-              });
-            } catch (_) {
-              if (!canUpdateDialog()) {
-                return;
-              }
-              setDialogState(() {
-                searchResults = const <TripUser>[];
-                searchErrorText = t.failedToLoadUsersDirectory;
-              });
-            } finally {
-              if (canUpdateDialog()) {
-                setDialogState(() {
-                  isSearching = false;
-                });
-              }
-            }
-          }
 
           Future<void> loadFriendQuickPicks(StateSetter setDialogState) async {
             if (isLoadingFriendQuickPicks) {
@@ -105,8 +39,11 @@ extension _TripsPageDialogs on _TripsPageState {
               final cached = widget.friendsController.peekSnapshotCache(
                 allowStale: false,
               );
-              final snapshot = cached ??
-                  await widget.friendsController.loadSnapshot(forceRefresh: false);
+              final snapshot =
+                  cached ??
+                  await widget.friendsController.loadSnapshot(
+                    forceRefresh: false,
+                  );
               if (!canUpdateDialog()) {
                 return;
               }
@@ -138,253 +75,409 @@ extension _TripsPageDialogs on _TripsPageState {
             }
           }
 
+          Future<void> onPickTripImage(StateSetter setDialogState) async {
+            final hasImage = selectedImageBytes != null;
+            final platform = Theme.of(context).platform;
+            final isIOS = platform == TargetPlatform.iOS;
+
+            if (isIOS) {
+              final selectedSource =
+                  await showCupertinoModalPopup<_TripImageSourceOption>(
+                    context: context,
+                    builder: (cupertinoContext) => CupertinoActionSheet(
+                      actions: [
+                        if (hasImage)
+                          CupertinoActionSheetAction(
+                            isDestructiveAction: true,
+                            onPressed: () => Navigator.of(
+                              cupertinoContext,
+                            ).pop(_TripImageSourceOption.remove),
+                            child: Text(
+                              _pageText(
+                                en: 'Remove image',
+                                lv: 'Noņemt attēlu',
+                              ),
+                            ),
+                          ),
+                        CupertinoActionSheetAction(
+                          onPressed: () => Navigator.of(
+                            cupertinoContext,
+                          ).pop(_TripImageSourceOption.camera),
+                          child: Text(t.takePhotoAction),
+                        ),
+                        CupertinoActionSheetAction(
+                          onPressed: () => Navigator.of(
+                            cupertinoContext,
+                          ).pop(_TripImageSourceOption.library),
+                          child: Text(t.chooseFromLibraryAction),
+                        ),
+                      ],
+                      cancelButton: CupertinoActionSheetAction(
+                        onPressed: () => Navigator.of(cupertinoContext).pop(),
+                        child: Text(t.cancelAction),
+                      ),
+                    ),
+                  );
+
+              if (!mounted || !context.mounted || selectedSource == null) {
+                return;
+              }
+
+              if (selectedSource == _TripImageSourceOption.remove) {
+                setDialogState(() {
+                  selectedImageBytes = null;
+                  selectedImageName = null;
+                });
+                return;
+              }
+
+              final source = selectedSource == _TripImageSourceOption.camera
+                  ? ImageSource.camera
+                  : ImageSource.gallery;
+              final picked = await _pickTripImageForUploadFromSource(source);
+              if (!mounted || !context.mounted || picked == null) {
+                return;
+              }
+              setDialogState(() {
+                selectedImageBytes = picked.bytes;
+                selectedImageName = picked.fileName;
+              });
+              return;
+            }
+
+            final selectedSource = await showModalBottomSheet<_TripImageSourceOption>(
+              context: context,
+              showDragHandle: true,
+              builder: (bottomSheetContext) {
+                return SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.photo_camera_outlined),
+                        title: Text(t.takePhotoAction),
+                        onTap: () => Navigator.of(
+                          bottomSheetContext,
+                        ).pop(_TripImageSourceOption.camera),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.photo_library_outlined),
+                        title: Text(t.chooseFromLibraryAction),
+                        onTap: () => Navigator.of(
+                          bottomSheetContext,
+                        ).pop(_TripImageSourceOption.library),
+                      ),
+                      if (hasImage)
+                        ListTile(
+                          leading: const Icon(Icons.delete_outline),
+                          title: Text(
+                            _pageText(
+                              en: 'Remove image',
+                              lv: 'Noņemt attēlu',
+                            ),
+                          ),
+                          onTap: () => Navigator.of(
+                            bottomSheetContext,
+                          ).pop(_TripImageSourceOption.remove),
+                        ),
+                      ListTile(
+                        leading: const Icon(Icons.close),
+                        title: Text(t.cancelAction),
+                        onTap: () => Navigator.of(bottomSheetContext).pop(),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+            if (!mounted || !context.mounted || selectedSource == null) {
+              return;
+            }
+            if (selectedSource == _TripImageSourceOption.remove) {
+              setDialogState(() {
+                selectedImageBytes = null;
+                selectedImageName = null;
+              });
+              return;
+            }
+            final source = selectedSource == _TripImageSourceOption.camera
+                ? ImageSource.camera
+                : ImageSource.gallery;
+            final picked = await _pickTripImageForUploadFromSource(source);
+            if (!mounted || !context.mounted || picked == null) {
+              return;
+            }
+            setDialogState(() {
+              selectedImageBytes = picked.bytes;
+              selectedImageName = picked.fileName;
+            });
+          }
+
           return StatefulBuilder(
             builder: (context, setDialogState) {
               dialogBuildContext = context;
-              final hasQuery = searchController.text.trim().isNotEmpty;
+              final viewInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
+              final maxSheetHeight = MediaQuery.sizeOf(context).height * 0.9;
               if (!friendQuickPicksRequested) {
                 friendQuickPicksRequested = true;
                 unawaited(loadFriendQuickPicks(setDialogState));
               }
 
-              return AlertDialog(
-                title: Text(t.createNewTripTitle),
-                content: SizedBox(
-                  width: 450,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          controller: nameController,
-                          decoration: InputDecoration(
-                            labelText: t.tripNameLabel,
-                            hintText: t.tripNameHint,
+              return Padding(
+                padding: EdgeInsets.only(bottom: viewInsetsBottom),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: maxSheetHeight),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            t.createNewTripTitle,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
                           ),
-                          onChanged: (_) {
-                            setDialogState(() {
-                              errorText = null;
-                            });
-                          },
                         ),
-                        const SizedBox(height: 12),
-                        OutlinedButton.icon(
-                          onPressed: () async {
-                            final picked = await _pickTripImageForUpload();
-                            if (!mounted || !context.mounted) {
-                              return;
-                            }
-                            if (picked == null) {
-                              return;
-                            }
-                            setDialogState(() {
-                              selectedImageBytes = picked.bytes;
-                              selectedImageName = picked.fileName;
-                            });
-                          },
-                          icon: const Icon(Icons.image_outlined),
-                          label: const Text('Choose trip image (optional)'),
-                        ),
-                        if (selectedImageName != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            'Selected image: $selectedImageName',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                        const SizedBox(height: 12),
-                        Text(
-                          t.selectedPeopleLabel,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: 6),
-                        if (selectedUsers.isEmpty)
-                          Text(
-                            'No members selected yet.',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          )
-                        else
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
+                      ),
+                      Flexible(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              for (final user in selectedUsers.values)
-                                InputChip(
-                                  label: Text(user.nickname),
-                                  selected: true,
-                                  onDeleted: () {
-                                    setDialogState(() {
-                                      selected.remove(user.id);
-                                      selectedUsers.remove(user.id);
-                                    });
-                                  },
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => unawaited(
+                                      onPickTripImage(setDialogState),
+                                    ),
+                                    behavior: HitTestBehavior.opaque,
+                                    child: SizedBox(
+                                      width: 62,
+                                      height: 62,
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Container(
+                                            width: 56,
+                                            height: 56,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: AppDesign.cardStroke(context),
+                                              ),
+                                              gradient: selectedImageBytes == null
+                                                  ? AppDesign.brandGradient
+                                                  : null,
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: selectedImageBytes == null
+                                                ? const Icon(
+                                                    Icons.image_outlined,
+                                                    color: Colors.white,
+                                                    size: 22,
+                                                  )
+                                                : ClipOval(
+                                                    child: Image.memory(
+                                                      selectedImageBytes!,
+                                                      width: 56,
+                                                      height: 56,
+                                                      fit: BoxFit.cover,
+                                                      gaplessPlayback: true,
+                                                    ),
+                                                  ),
+                                          ),
+                                          Positioned(
+                                            right: 0,
+                                            bottom: 0,
+                                            child: Container(
+                                              width: 24,
+                                              height: 24,
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.surface,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: AppDesign.cardStroke(context),
+                                                ),
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Icon(
+                                                Icons.photo_camera_rounded,
+                                                size: 14,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurface,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: TextField(
+                                      controller: nameController,
+                                      decoration: InputDecoration(
+                                        labelText: t.tripNameLabel,
+                                        hintText: t.tripNameHint,
+                                      ),
+                                      onChanged: (_) {
+                                        setDialogState(() {
+                                          errorText = null;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (selectedImageName != null) ...[
+                                const SizedBox(height: 6),
+                                Text(
+                                  _pageText(
+                                    en: 'Selected image: $selectedImageName',
+                                    lv: 'Izvēlētais attēls: $selectedImageName',
+                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall,
                                 ),
+                              ],
+                              const SizedBox(height: 12),
+                              Text(
+                                t.selectedPeopleLabel,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              const SizedBox(height: 6),
+                              if (selectedUsers.isEmpty)
+                                Text(
+                                  'No members selected yet.',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                )
+                              else
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    for (final user in selectedUsers.values)
+                                      InputChip(
+                                        label: Text(user.nickname),
+                                        selected: true,
+                                        onDeleted: () {
+                                          setDialogState(() {
+                                            selected.remove(user.id);
+                                            selectedUsers.remove(user.id);
+                                          });
+                                        },
+                                      ),
+                                  ],
+                                ),
+                              if (isLoadingFriendQuickPicks) ...[
+                                const SizedBox(height: 10),
+                                const LinearProgressIndicator(minHeight: 2),
+                              ],
+                              if (friendQuickPicks.isNotEmpty) ...[
+                                const SizedBox(height: 10),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    for (final friend in friendQuickPicks)
+                                      FilterChip(
+                                        label: Text(friend.nickname),
+                                        selected: selected.contains(friend.id),
+                                        onSelected: (isSelected) {
+                                          setDialogState(() {
+                                            if (isSelected) {
+                                              selected.add(friend.id);
+                                              selectedUsers[friend.id] = friend;
+                                            } else {
+                                              selected.remove(friend.id);
+                                              selectedUsers.remove(friend.id);
+                                            }
+                                          });
+                                        },
+                                      ),
+                                  ],
+                                ),
+                              ],
+                              if (errorText != null) ...[
+                                const SizedBox(height: 12),
+                                Text(
+                                  errorText!,
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.error,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                              ],
                             ],
                           ),
-                        if (isLoadingFriendQuickPicks) ...[
-                          const SizedBox(height: 10),
-                          const LinearProgressIndicator(minHeight: 2),
-                        ],
-                        if (friendQuickPicks.isNotEmpty) ...[
-                          const SizedBox(height: 10),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              for (final friend in friendQuickPicks)
-                                FilterChip(
-                                  label: Text(friend.nickname),
-                                  selected: selected.contains(friend.id),
-                                  onSelected: (isSelected) {
-                                    setDialogState(() {
-                                      if (isSelected) {
-                                        selected.add(friend.id);
-                                        selectedUsers[friend.id] = friend;
-                                      } else {
-                                        selected.remove(friend.id);
-                                        selectedUsers.remove(friend.id);
-                                      }
-                                    });
-                                  },
-                                ),
-                            ],
-                          ),
-                        ],
-                        const SizedBox(height: 12),
-                        Text(
-                          t.searchUsersHint,
-                          style: Theme.of(context).textTheme.bodySmall,
                         ),
-                        const SizedBox(height: 6),
-                        TextField(
-                          controller: searchController,
-                          decoration: InputDecoration(
-                            hintText: t.searchUsersHint,
-                            prefixIcon: const Icon(Icons.search),
-                          ),
-                          onChanged: (value) {
-                            searchDebounce?.cancel();
-                            final query = value.trim();
-                            if (query.length < 2) {
-                              setDialogState(() {
-                                isSearching = false;
-                                searchErrorText = null;
-                                searchResults = const <TripUser>[];
-                              });
-                              return;
-                            }
-                            searchDebounce = Timer(
-                              const Duration(milliseconds: 320),
-                              () => runSearch(setDialogState, query),
-                            );
-                          },
-                        ),
-                        if (isSearching) ...[
-                          const SizedBox(height: 10),
-                          const LinearProgressIndicator(minHeight: 2),
-                        ],
-                        const SizedBox(height: 10),
-                        if (searchErrorText != null)
-                          Text(
-                            searchErrorText!,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                              fontWeight: FontWeight.w600,
+                      ),
+                      const Divider(height: 1),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextButton(
+                                onPressed: () =>
+                                    Navigator.of(sheetContext).pop(),
+                                child: Text(t.cancelAction),
+                              ),
                             ),
-                          )
-                        else if (!hasQuery)
-                          Text(
-                            'Type at least 2 letters to search members.',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          )
-                        else if (searchResults.isEmpty)
-                          Text(t.noSearchMatches)
-                        else
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxHeight: 260),
-                            child: ListView.separated(
-                              shrinkWrap: true,
-                              itemCount: searchResults.length,
-                              separatorBuilder: (context, index) =>
-                                  const Divider(height: 1),
-                              itemBuilder: (context, index) {
-                                final user = searchResults[index];
-                                final isPicked = selected.contains(user.id);
-                                return CheckboxListTile(
-                                  dense: true,
-                                  value: isPicked,
-                                  title: Text(user.nickname),
-                                  onChanged: (value) {
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  final name = nameController.text.trim();
+                                  if (name.length < 2 || name.length > 120) {
                                     setDialogState(() {
-                                      if (value == true) {
-                                        selected.add(user.id);
-                                        selectedUsers[user.id] = user;
-                                      } else {
-                                        selected.remove(user.id);
-                                        selectedUsers.remove(user.id);
-                                      }
+                                      errorText = t.tripNameLengthValidation;
                                     });
-                                  },
-                                );
-                              },
+                                    return;
+                                  }
+
+                                  final memberIds = selected.toList(
+                                    growable: false,
+                                  )..sort();
+                                  Navigator.of(sheetContext).pop(
+                                    _CreateTripResult(
+                                      name: name,
+                                      memberIds: memberIds,
+                                      imageFileName: selectedImageName,
+                                      imageBytes: selectedImageBytes,
+                                    ),
+                                  );
+                                },
+                                child: Text(t.createAction),
+                              ),
                             ),
-                          ),
-                        if (errorText != null) ...[
-                          const SizedBox(height: 12),
-                          Text(
-                            errorText!,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(t.cancelAction),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      final name = nameController.text.trim();
-                      if (name.length < 2 || name.length > 120) {
-                        setDialogState(() {
-                          errorText = t.tripNameLengthValidation;
-                        });
-                        return;
-                      }
-
-                      final memberIds = selected.toList(growable: false)
-                        ..sort();
-                      Navigator.of(context).pop(
-                        _CreateTripResult(
-                          name: name,
-                          memberIds: memberIds,
-                          imageFileName: selectedImageName,
-                          imageBytes: selectedImageBytes,
-                        ),
-                      );
-                    },
-                    child: Text(t.createAction),
-                  ),
-                ],
               );
             },
           );
         },
       );
     } finally {
-      searchDebounce?.cancel();
       Future<void>.delayed(const Duration(milliseconds: 350), () {
-        searchController.dispose();
         nameController.dispose();
       });
     }
   }
-
 }
+
+enum _TripImageSourceOption { camera, library, remove }

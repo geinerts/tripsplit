@@ -3,16 +3,22 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
+import '../../../../app/locale/app_locale_controller.dart';
+import '../../../../app/locale/app_locale_scope.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_design.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
+import '../../../../app/theme/theme_mode_scope.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
+import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../domain/entities/auth_user.dart';
 import '../controllers/auth_controller.dart';
@@ -74,7 +80,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   bool _isLoading = true;
   bool _isSubmitting = false;
+  bool _isSendingFeedback = false;
   bool _isEditMode = false;
+  bool _isChangePasswordPage = false;
   String? _errorText;
   String? _editErrorText;
   AuthUser? _user;
@@ -88,6 +96,9 @@ class _ProfilePageState extends State<ProfilePage> {
   String _draftRepeatPassword = '';
   String _deactivateDraftPassword = '';
   bool _isDeactivateAccountPage = false;
+  bool _pushNotificationsEnabled = true;
+  bool _inAppNotificationsEnabled = true;
+  bool _settlementRemindersEnabled = true;
   _ProfileEditField? _activeEditField;
   int _editSession = 0;
   int _handledRefreshRequestCount = 0;
@@ -98,6 +109,11 @@ class _ProfilePageState extends State<ProfilePage> {
       return;
     }
     setState(update);
+  }
+
+  String _profileText({required String en, required String lv}) {
+    final code = Localizations.localeOf(context).languageCode.toLowerCase();
+    return code == 'lv' ? lv : en;
   }
 
   @override
@@ -138,4 +154,4 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-enum _ProfileEditField { fullName, email, password }
+enum _ProfileEditField { fullName, email }

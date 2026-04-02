@@ -93,6 +93,7 @@ extension _ProfilePageActions on _ProfilePageState {
     _draftRepeatPassword = '';
     _deactivateDraftPassword = '';
     _isDeactivateAccountPage = false;
+    _isChangePasswordPage = false;
     _editErrorText = null;
     widget.onProfileChanged?.call();
   }
@@ -245,22 +246,140 @@ extension _ProfilePageActions on _ProfilePageState {
     }
   }
 
-  Future<void> _onPickAvatarPressed() async {
+  bool _hasAvatarImage() {
+    final hasBytes = _avatarBytes != null && _avatarBytes!.isNotEmpty;
+    final hasRemote = widget.controller.avatarUrlFor(_user) != null;
+    return hasBytes || hasRemote;
+  }
+
+  Future<void> _onAvatarTapped() async {
+    if (_isSubmitting || _isLoading) {
+      return;
+    }
+
+    final selected = await _showAvatarActionSheet();
+    if (!mounted || selected == null) {
+      return;
+    }
+    if (selected == _AvatarSourceOption.remove) {
+      await _onRemoveAvatarPressed();
+      return;
+    }
+
+    final source = selected == _AvatarSourceOption.camera
+        ? ImageSource.camera
+        : ImageSource.gallery;
+    await _pickAvatarFromSource(source);
+  }
+
+  Future<_AvatarSourceOption?> _showAvatarActionSheet() async {
+    final t = context.l10n;
+    final hasAvatar = _hasAvatarImage();
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+    if (isIOS) {
+      return showCupertinoModalPopup<_AvatarSourceOption>(
+        context: context,
+        builder: (cupertinoContext) => CupertinoActionSheet(
+          actions: [
+            if (hasAvatar)
+              CupertinoActionSheetAction(
+                isDestructiveAction: true,
+                onPressed: () => Navigator.of(
+                  cupertinoContext,
+                ).pop(_AvatarSourceOption.remove),
+                child: Text(t.removeAvatarAction),
+              ),
+            CupertinoActionSheetAction(
+              onPressed: () => Navigator.of(
+                cupertinoContext,
+              ).pop(_AvatarSourceOption.camera),
+              child: Text(t.takePhotoAction),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () => Navigator.of(
+                cupertinoContext,
+              ).pop(_AvatarSourceOption.library),
+              child: Text(t.chooseFromLibraryAction),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => Navigator.of(cupertinoContext).pop(),
+            child: Text(t.cancelAction),
+          ),
+        ),
+      );
+    }
+
+    return showModalBottomSheet<_AvatarSourceOption>(
+      context: context,
+      showDragHandle: true,
+      builder: (bottomSheetContext) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_camera_outlined),
+                title: Text(t.takePhotoAction),
+                onTap: () => Navigator.of(
+                  bottomSheetContext,
+                ).pop(_AvatarSourceOption.camera),
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library_outlined),
+                title: Text(t.chooseFromLibraryAction),
+                onTap: () => Navigator.of(
+                  bottomSheetContext,
+                ).pop(_AvatarSourceOption.library),
+              ),
+              if (hasAvatar)
+                ListTile(
+                  leading: const Icon(Icons.delete_outline),
+                  title: Text(t.removeAvatarAction),
+                  onTap: () => Navigator.of(
+                    bottomSheetContext,
+                  ).pop(_AvatarSourceOption.remove),
+                ),
+              ListTile(
+                leading: const Icon(Icons.close),
+                title: Text(t.cancelAction),
+                onTap: () => Navigator.of(bottomSheetContext).pop(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickAvatarFromSource(ImageSource source) async {
     if (_isSubmitting || _isLoading) {
       return;
     }
 
     try {
-      final picked = await FilePicker.platform.pickFiles(
-        type: FileType.image,
-        allowMultiple: false,
-        withData: true,
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(
+        source: source,
+        imageQuality: 94,
+        maxWidth: 2048,
+        maxHeight: 2048,
       );
-      if (!mounted || picked == null || picked.files.isEmpty) {
+      if (!mounted || picked == null) {
         return;
       }
 
-      final prepared = await _prepareAvatarForUpload(picked.files.first);
+      final rawBytes = await picked.readAsBytes();
+      final incomingName = picked.name.trim().isEmpty
+          ? (source == ImageSource.camera
+                ? 'avatar_camera.jpg'
+                : 'avatar_gallery.jpg')
+          : picked.name.trim();
+      final prepared = await _prepareAvatarForUpload(
+        rawBytes: rawBytes,
+        fileName: incomingName,
+      );
       if (!mounted) {
         return;
       }
@@ -309,15 +428,15 @@ extension _ProfilePageActions on _ProfilePageState {
     }
   }
 
-  Future<({Uint8List bytes, String fileName})?> _prepareAvatarForUpload(
-    PlatformFile file,
-  ) async {
-    final rawBytes = file.bytes;
-    if (rawBytes == null || rawBytes.isEmpty) {
+  Future<({Uint8List bytes, String fileName})?> _prepareAvatarForUpload({
+    required Uint8List rawBytes,
+    required String fileName,
+  }) async {
+    if (rawBytes.isEmpty) {
       return null;
     }
 
-    final originalName = file.name.trim().isEmpty ? 'avatar' : file.name.trim();
+    final originalName = fileName.trim().isEmpty ? 'avatar' : fileName.trim();
     final lowered = originalName.toLowerCase();
     final isDirectSupported =
         lowered.endsWith('.jpg') ||
@@ -331,7 +450,10 @@ extension _ProfilePageActions on _ProfilePageState {
     final pngBytes = await _tryTranscodeToPng(rawBytes);
     if (pngBytes == null || pngBytes.isEmpty) {
       _showSnack(
-        'This image format is not supported on this device. Please choose JPG or PNG.',
+        _profileText(
+          en: 'This image format is not supported on this device. Please choose JPG or PNG.',
+          lv: 'Šis attēla formāts šajā ierīcē netiek atbalstīts. Lūdzu, izvēlies JPG vai PNG.',
+        ),
       );
       return null;
     }
@@ -388,3 +510,5 @@ extension _ProfilePageActions on _ProfilePageState {
     messenger.showSnackBar(SnackBar(content: Text(message)));
   }
 }
+
+enum _AvatarSourceOption { camera, library, remove }

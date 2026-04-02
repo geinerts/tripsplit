@@ -273,6 +273,16 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                 onTap: () => Navigator.of(sheetContext).pop('language'),
               ),
               ListTile(
+                leading: const Icon(Icons.casino_outlined),
+                title: Text(
+                  _plainLocalizedText(
+                    en: 'Random picker',
+                    lv: 'Nejaušā izvēle',
+                  ),
+                ),
+                onTap: () => Navigator.of(sheetContext).pop('random_picker'),
+              ),
+              ListTile(
                 leading: const Icon(Icons.logout),
                 title: Text(t.logOutButton),
                 onTap: () => Navigator.of(sheetContext).pop('logout'),
@@ -308,6 +318,9 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       case 'language':
         showAppLocalePicker(context);
         return;
+      case 'random_picker':
+        await _openRandomPickerSheet();
+        return;
       case 'logout':
         await _onLogoutPressed();
         return;
@@ -317,6 +330,45 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       default:
         return;
     }
+  }
+
+  Future<void> _openRandomPickerSheet() async {
+    final snapshot = _snapshot;
+    if (snapshot == null || !mounted) {
+      return;
+    }
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sheetContext) {
+        final maxHeight = MediaQuery.sizeOf(sheetContext).height * 0.88;
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    _plainLocalizedText(
+                      en: 'Random picker',
+                      lv: 'Nejaušā izvēle',
+                    ),
+                    style: Theme.of(sheetContext).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+              Expanded(child: _buildRandomTab(snapshot)),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _onDeleteCurrentTripPressed() async {

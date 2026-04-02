@@ -519,6 +519,8 @@
    "profileTitle" : "Profile",
    "profileUpdated" : "Profile updated.",
    "uploadAvatarAction" : "Upload avatar",
+   "takePhotoAction" : "Take a picture",
+   "chooseFromLibraryAction" : "Choose from Library",
    "removeAvatarAction" : "Remove avatar",
    "avatarUpdatedMessage" : "Avatar updated.",
    "avatarRemovedMessage" : "Avatar removed.",

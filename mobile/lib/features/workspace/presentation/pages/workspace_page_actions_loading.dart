@@ -327,7 +327,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
       case QueuedMutationType.addExpense:
         final amount = mutation.amount;
         if (amount != null && amount > 0) {
-          return t.queueAddExpenseAmount(_formatMoney(amount));
+          return t.queueAddExpenseAmount(_formatMoney(context, amount));
         }
         return t.queueAddExpense;
       case QueuedMutationType.updateExpense:
@@ -352,7 +352,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
     }
     final date = (mutation.date ?? '').trim();
     if (date.isNotEmpty) {
-      return date;
+      return _formatDisplayDate(context, date);
     }
     return context.l10n.tripWithId(mutation.tripId);
   }
@@ -364,8 +364,6 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
     final dt = DateTime.fromMillisecondsSinceEpoch(millis);
     final hh = dt.hour.toString().padLeft(2, '0');
     final mm = dt.minute.toString().padLeft(2, '0');
-    final dd = dt.day.toString().padLeft(2, '0');
-    final mon = dt.month.toString().padLeft(2, '0');
-    return '$dd.$mon $hh:$mm';
+    return '${AppFormatters.shortDayMonth(context, dt)} $hh:$mm';
   }
 }

@@ -1,38 +1,40 @@
 part of 'trips_page.dart';
 
 extension _TripsPageDialogHelpers on _TripsPageState {
-  Future<({Uint8List bytes, String fileName})?> _pickTripImageForUpload() async {
-    final picked = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false,
-      withData: true,
-    );
-    if (picked == null || picked.files.isEmpty) {
+  Future<({Uint8List bytes, String fileName})?> _pickTripImageForUploadFromSource(
+    ImageSource source,
+  ) async {
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(
+        source: source,
+        imageQuality: 94,
+        maxWidth: 2048,
+        maxHeight: 2048,
+      );
+      if (picked == null) {
+        return null;
+      }
+      final rawBytes = await picked.readAsBytes();
+      final incomingName = picked.name.trim().isEmpty
+          ? (source == ImageSource.camera
+                ? 'trip_camera.jpg'
+                : 'trip_gallery.jpg')
+          : picked.name.trim();
+      return _prepareTripImageBytesForUpload(
+        rawBytes: rawBytes,
+        fileName: incomingName,
+      );
+    } catch (_) {
       return null;
     }
-    final prepared = await _prepareTripImageForUpload(picked.files.first);
-    if (prepared == null) {
-      return null;
-    }
-    final bytes = prepared.bytes;
-    if (bytes.length > _TripsPageState._maxTripImageBytes) {
-      _showSnack('Trip image is too large (max 8 MB).', isError: true);
-      return null;
-    }
-    return prepared;
   }
 
-  Future<({Uint8List bytes, String fileName})?> _prepareTripImageForUpload(
-    PlatformFile file,
-  ) async {
-    final rawBytes = file.bytes;
-    if (rawBytes == null || rawBytes.isEmpty) {
-      return null;
-    }
-
-    final originalName = file.name.trim().isEmpty
-        ? 'trip-image'
-        : file.name.trim();
+  Future<({Uint8List bytes, String fileName})?> _prepareTripImageBytesForUpload({
+    required Uint8List rawBytes,
+    required String fileName,
+  }) async {
+    final originalName = fileName.trim().isEmpty ? 'trip-image' : fileName.trim();
     final lowered = originalName.toLowerCase();
     final isDirectSupported =
         lowered.endsWith('.jpg') ||

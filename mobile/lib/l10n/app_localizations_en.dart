@@ -731,6 +731,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uploadAvatarAction => 'Upload avatar';
 
   @override
+  String get takePhotoAction => 'Take a picture';
+
+  @override
+  String get chooseFromLibraryAction => 'Choose from Library';
+
+  @override
   String get removeAvatarAction => 'Remove avatar';
 
   @override

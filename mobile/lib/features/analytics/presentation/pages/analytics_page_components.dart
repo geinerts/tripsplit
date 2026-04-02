@@ -70,6 +70,89 @@ class _LegendItem extends StatelessWidget {
   }
 }
 
+class _AnalyticsFadeSlide extends StatelessWidget {
+  const _AnalyticsFadeSlide({required this.index, required this.child});
+
+  final int index;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final durationMs = 260 + (index * 80);
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: Duration(milliseconds: durationMs),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, _) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 8),
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _AnalyticsPressScale extends StatefulWidget {
+  const _AnalyticsPressScale({
+    required this.child,
+    required this.onTap,
+    this.enabled = true,
+    this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+  });
+
+  final Widget child;
+  final VoidCallback onTap;
+  final bool enabled;
+  final BorderRadius borderRadius;
+
+  @override
+  State<_AnalyticsPressScale> createState() => _AnalyticsPressScaleState();
+}
+
+class _AnalyticsPressScaleState extends State<_AnalyticsPressScale> {
+  bool _pressed = false;
+
+  void _setPressed(bool value) {
+    if (!mounted || !widget.enabled) {
+      return;
+    }
+    if (_pressed == value) {
+      return;
+    }
+    setState(() {
+      _pressed = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
+      onTap: widget.enabled ? widget.onTap : null,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 120),
+        curve: Curves.easeOutCubic,
+        scale: _pressed ? 0.97 : 1.0,
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: widget.borderRadius,
+          child: Ink(
+            decoration: BoxDecoration(borderRadius: widget.borderRadius),
+            child: widget.child,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _MemberDaySegment {
   const _MemberDaySegment({
     required this.memberId,
@@ -102,6 +185,7 @@ class _DayStackedBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final barHeight = 112.0;
     final fillRatio = (maxDayTotal <= 0 ? 0.0 : (dayTotal / maxDayTotal))
         .clamp(0.0, 1.0)
@@ -122,9 +206,11 @@ class _DayStackedBar extends StatelessWidget {
                 children: [
                   Positioned.fill(
                     child: ColoredBox(
-                      color: colors.surfaceContainerHighest.withValues(
-                        alpha: 0.42,
-                      ),
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.14)
+                          : colors.surfaceContainerHighest.withValues(
+                              alpha: 0.42,
+                            ),
                     ),
                   ),
                   if (fillHeight > 0)
@@ -193,7 +279,7 @@ class _StackedSegmentsArea extends StatelessWidget {
               height: segmentHeight,
               child: Tooltip(
                 message:
-                    '${segment.memberName}: ${segment.amount.toStringAsFixed(2)} €',
+                    '${segment.memberName}: ${AppFormatters.euro(context, segment.amount)}',
                 child: InkWell(
                   onTap: () => onSegmentTap(segment),
                   child: ColoredBox(
@@ -306,10 +392,10 @@ class _HorizontalMemberBar extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final barColor = isDark
-        ? Color.lerp(color, Colors.white, 0.42) ?? color
+        ? Color.lerp(color, Colors.white, 0.36) ?? color
         : color;
     final trackColor = isDark
-        ? Colors.white.withValues(alpha: 0.10)
+        ? Colors.white.withValues(alpha: 0.14)
         : colors.surfaceContainerHighest.withValues(alpha: 0.46);
 
     return Container(
@@ -349,7 +435,7 @@ class _HorizontalMemberBar extends StatelessWidget {
                 final maxWidth = constraints.maxWidth;
                 final width = ratio <= 0
                     ? 0.0
-                    : math.max(4.0, maxWidth * ratio);
+                    : math.max(12.0, maxWidth * ratio);
                 return SizedBox(
                   height: 10,
                   child: Stack(
@@ -404,10 +490,10 @@ class _HorizontalCategoryBar extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final barColor = isDark
-        ? Color.lerp(color, Colors.white, 0.44) ?? color
+        ? Color.lerp(color, Colors.white, 0.34) ?? color
         : color;
     final trackColor = isDark
-        ? Colors.white.withValues(alpha: 0.10)
+        ? Colors.white.withValues(alpha: 0.14)
         : colors.surfaceContainerHighest.withValues(alpha: 0.46);
 
     return Container(
@@ -446,7 +532,7 @@ class _HorizontalCategoryBar extends StatelessWidget {
                 final maxWidth = constraints.maxWidth;
                 final width = ratio <= 0
                     ? 0.0
-                    : math.max(4.0, maxWidth * ratio);
+                    : math.max(12.0, maxWidth * ratio);
                 return SizedBox(
                   height: 10,
                   child: Stack(
@@ -473,6 +559,359 @@ class _HorizontalCategoryBar extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _DonutChart extends StatelessWidget {
+  const _DonutChart({
+    required this.rows,
+    required this.total,
+    required this.backgroundColor,
+  });
+
+  final List<_CategoryTotalRow> rows;
+  final double total;
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _DonutChartPainter(
+        rows: rows,
+        total: total,
+        backgroundColor: backgroundColor,
+      ),
+    );
+  }
+}
+
+class _DonutChartPainter extends CustomPainter {
+  _DonutChartPainter({
+    required this.rows,
+    required this.total,
+    required this.backgroundColor,
+  });
+
+  final List<_CategoryTotalRow> rows;
+  final double total;
+  final Color backgroundColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = math.min(size.width, size.height) / 2;
+    final stroke = math.max(10.0, radius * 0.42);
+    final rect = Rect.fromCircle(center: center, radius: radius - stroke / 2);
+
+    final trackPaint = Paint()
+      ..color = backgroundColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = stroke
+      ..strokeCap = StrokeCap.round;
+    canvas.drawArc(rect, 0, math.pi * 2, false, trackPaint);
+
+    if (rows.isEmpty || total <= 0) {
+      return;
+    }
+
+    final segmentGap = 0.02;
+    var start = -math.pi / 2;
+    for (final row in rows) {
+      final sweepRaw = ((row.total / total) * (math.pi * 2)).clamp(
+        0.0,
+        math.pi * 2,
+      );
+      var sweep = sweepRaw - segmentGap;
+      if (sweep < 0) {
+        sweep = sweepRaw;
+      }
+      final paint = Paint()
+        ..color = row.color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..strokeCap = StrokeCap.round;
+      canvas.drawArc(rect, start, sweep, false, paint);
+      start += sweepRaw;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DonutChartPainter oldDelegate) {
+    return oldDelegate.rows != rows ||
+        oldDelegate.total != total ||
+        oldDelegate.backgroundColor != backgroundColor;
+  }
+}
+
+class _MemberAvatarStack extends StatelessWidget {
+  const _MemberAvatarStack({required this.rows});
+
+  final List<_MemberTotalRow> rows;
+
+  String _initials(String name) {
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .toList(growable: false);
+    if (parts.isEmpty) {
+      return '?';
+    }
+    if (parts.length == 1) {
+      return parts.first
+          .substring(0, math.min(2, parts.first.length))
+          .toUpperCase();
+    }
+    return (parts.first[0] + parts.last[0]).toUpperCase();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleRows = rows.take(4).toList(growable: false);
+    final extraCount = rows.length - visibleRows.length;
+    final itemCount = visibleRows.length + (extraCount > 0 ? 1 : 0);
+    return SizedBox(
+      width: (itemCount * 20) + 16,
+      height: 30,
+      child: Stack(
+        children: [
+          for (var index = 0; index < visibleRows.length; index++)
+            Positioned(
+              left: index * 20,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: visibleRows[index].color,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black.withValues(alpha: 0.24)
+                        : Colors.white,
+                    width: 2,
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  _initials(visibleRows[index].name),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          if (extraCount > 0)
+            Positioned(
+              left: visibleRows.length * 20,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white.withValues(alpha: 0.18)
+                      : const Color(0xFFEDE8DF),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black.withValues(alpha: 0.22)
+                        : Colors.white,
+                    width: 2,
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  '+$extraCount',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w800),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MemberAmountChip extends StatelessWidget {
+  const _MemberAmountChip({
+    required this.initials,
+    required this.amount,
+    required this.color,
+  });
+
+  final String initials;
+  final String amount;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color.withValues(alpha: isDark ? 0.92 : 1),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.24)
+                  : Colors.white,
+              width: 2,
+            ),
+          ),
+          child: Text(
+            initials,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontSize: 14,
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          amount,
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+        ),
+      ],
+    );
+  }
+}
+
+class _AreaSparkline extends StatelessWidget {
+  const _AreaSparkline({
+    required this.points,
+    required this.color,
+    required this.axisColor,
+    required this.emptyColor,
+  });
+
+  final List<_DayPoint> points;
+  final Color color;
+  final Color axisColor;
+  final Color emptyColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _AreaSparklinePainter(
+        points: points,
+        color: color,
+        axisColor: axisColor,
+        emptyColor: emptyColor,
+      ),
+      child: const SizedBox.expand(),
+    );
+  }
+}
+
+class _AreaSparklinePainter extends CustomPainter {
+  _AreaSparklinePainter({
+    required this.points,
+    required this.color,
+    required this.axisColor,
+    required this.emptyColor,
+  });
+
+  final List<_DayPoint> points;
+  final Color color;
+  final Color axisColor;
+  final Color emptyColor;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final axisPaint = Paint()
+      ..color = axisColor.withValues(alpha: 0.35)
+      ..strokeWidth = 1;
+    canvas.drawLine(
+      Offset(0, size.height - 1),
+      Offset(size.width, size.height - 1),
+      axisPaint,
+    );
+
+    if (points.isEmpty) {
+      final emptyPaint = Paint()..color = emptyColor;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(0, size.height * 0.45, size.width, 10),
+          const Radius.circular(6),
+        ),
+        emptyPaint,
+      );
+      return;
+    }
+
+    final maxValue = points.fold<double>(
+      0,
+      (max, point) => math.max(max, point.value),
+    );
+    if (maxValue <= 0) {
+      final emptyPaint = Paint()..color = emptyColor;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(0, size.height * 0.45, size.width, 10),
+          const Radius.circular(6),
+        ),
+        emptyPaint,
+      );
+      return;
+    }
+
+    final usableHeight = size.height - 18;
+    final stepX = points.length <= 1 ? 0.0 : size.width / (points.length - 1);
+    final linePath = Path();
+    final areaPath = Path();
+
+    for (var i = 0; i < points.length; i++) {
+      final x = stepX * i;
+      final ratio = (points[i].value / maxValue).clamp(0.0, 1.0);
+      final y = usableHeight - (usableHeight * ratio);
+      if (i == 0) {
+        linePath.moveTo(x, y);
+        areaPath.moveTo(x, size.height - 1);
+        areaPath.lineTo(x, y);
+      } else {
+        linePath.lineTo(x, y);
+        areaPath.lineTo(x, y);
+      }
+    }
+
+    areaPath.lineTo(size.width, size.height - 1);
+    areaPath.close();
+
+    final areaPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [color.withValues(alpha: 0.34), color.withValues(alpha: 0.06)],
+      ).createShader(Offset.zero & size)
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(areaPath, areaPaint);
+
+    final linePaint = Paint()
+      ..color = color
+      ..strokeWidth = 2.5
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke;
+    canvas.drawPath(linePath, linePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _AreaSparklinePainter oldDelegate) {
+    return oldDelegate.points != points ||
+        oldDelegate.color != color ||
+        oldDelegate.axisColor != axisColor ||
+        oldDelegate.emptyColor != emptyColor;
   }
 }
 

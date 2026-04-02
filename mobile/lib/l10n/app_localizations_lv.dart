@@ -731,6 +731,12 @@ class AppLocalizationsLv extends AppLocalizations {
   String get uploadAvatarAction => 'Augšupielādēt avataru';
 
   @override
+  String get takePhotoAction => 'Uzņemt bildi';
+
+  @override
+  String get chooseFromLibraryAction => 'Izvēlēties no galerijas';
+
+  @override
   String get removeAvatarAction => 'Noņemt avataru';
 
   @override

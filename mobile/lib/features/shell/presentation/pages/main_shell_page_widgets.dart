@@ -3,7 +3,7 @@ part of 'main_shell_page.dart';
 extension _MainShellPageWidgets on _MainShellPageState {
   Widget _buildShellScaffold(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w800,
       letterSpacing: 0.1,
     );
     return Scaffold(
@@ -18,17 +18,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
             : null,
         title: _buildAppBarTitle(context, titleStyle),
         actions: [
-          IconButton(
-            onPressed: _isLoggingOut ? null : _onRefreshPressed,
-            icon: const Icon(Icons.refresh),
-            tooltip: context.l10n.syncAction,
-          ),
           _buildNotificationsAction(context),
-          IconButton(
-            onPressed: _isLoggingOut ? null : _openSettingsSheet,
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: context.l10n.settings,
-          ),
         ],
       ),
       body: _isWorkspaceOpen
@@ -92,25 +82,24 @@ extension _MainShellPageWidgets on _MainShellPageState {
         style: titleStyle,
       );
     }
-    return Row(
-      children: [
-        Image.asset(
-          'assets/branding/logo_mark.png',
-          width: 30,
-          height: 30,
-          fit: BoxFit.contain,
-          filterQuality: FilterQuality.high,
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: titleStyle,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8, top: 4),
+        child: SizedBox(
+          height: 42,
+          child: Transform.scale(
+            alignment: Alignment.centerLeft,
+            scaleX: 1.1,
+            scaleY: 1.0,
+            child: Image.asset(
+              'assets/branding/logo_full.png',
+              fit: BoxFit.fitHeight,
+              filterQuality: FilterQuality.high,
+            ),
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -166,43 +155,46 @@ extension _MainShellPageWidgets on _MainShellPageState {
   Widget _buildNotificationsAction(BuildContext context) {
     final unread = _unreadNotificationsCount;
     final badgeText = unread > 99 ? '99+' : '$unread';
-    return IconButton(
-      key: const ValueKey(AppTestKeys.shellNotificationsButton),
-      onPressed: (_isLoggingOut || _isNotificationsLoading)
-          ? null
-          : _onNotificationsPressed,
-      tooltip: context.l10n.notificationsTitle,
-      icon: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          const Icon(Icons.notifications_none_outlined),
-          if (unread > 0)
-            Positioned(
-              right: -7,
-              top: -7,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                  vertical: 1.5,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.error,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                constraints: const BoxConstraints(minWidth: 18, minHeight: 16),
-                alignment: Alignment.center,
-                child: Text(
-                  badgeText,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onError,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 10,
-                    height: 1.0,
+    return Padding(
+      padding: const EdgeInsets.only(right: 16),
+      child: IconButton(
+        key: const ValueKey(AppTestKeys.shellNotificationsButton),
+        onPressed: (_isLoggingOut || _isNotificationsLoading)
+            ? null
+            : _onNotificationsPressed,
+        tooltip: context.l10n.notificationsTitle,
+        icon: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            const Icon(Icons.notifications_none_outlined),
+            if (unread > 0)
+              Positioned(
+                right: -7,
+                top: -7,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 1.5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.error,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  constraints: const BoxConstraints(minWidth: 18, minHeight: 16),
+                  alignment: Alignment.center,
+                  child: Text(
+                    badgeText,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onError,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 10,
+                      height: 1.0,
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

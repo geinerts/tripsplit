@@ -33,20 +33,14 @@ double _parseAmount(String raw) {
   return double.tryParse(normalized) ?? 0;
 }
 
-String _formatMoney(double value) {
+String _formatMoney(BuildContext context, double value) {
   final rounded = value.abs() < 0.005 ? 0.0 : value;
-  return '${rounded.toStringAsFixed(2)} €';
+  return AppFormatters.euro(context, rounded);
 }
 
-String _signedMoney(double value) {
+String _signedMoney(BuildContext context, double value) {
   final rounded = value.abs() < 0.005 ? 0.0 : value;
-  if (rounded > 0) {
-    return '+${_formatMoney(rounded)}';
-  }
-  if (rounded < 0) {
-    return '-${_formatMoney(rounded.abs())}';
-  }
-  return _formatMoney(0);
+  return AppFormatters.euro(context, rounded, signed: true);
 }
 
 String _splitModeShortLabel(BuildContext context, String splitMode) {
@@ -61,6 +55,20 @@ String _splitModeShortLabel(BuildContext context, String splitMode) {
     default:
       return t.equalSplitLabel;
   }
+}
+
+String _formatDisplayDate(BuildContext context, String raw) {
+  final value = raw.trim();
+  if (value.isEmpty) {
+    return '';
+  }
+  final parsed =
+      AppFormatters.parseIsoDate(value) ??
+      DateTime.tryParse(value.split(' ').first);
+  if (parsed == null) {
+    return value;
+  }
+  return AppFormatters.shortDayMonth(context, parsed);
 }
 
 String _formatCompactNumber(double value) {
