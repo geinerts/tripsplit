@@ -87,20 +87,46 @@ extension _FriendsPageWidgets on _FriendsPageState {
                               color: Colors.transparent,
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(999),
-                                onTap: () => unawaited(_openAddFriendSheet(snapshot)),
+                                onTap: () => unawaited(_openScanFriendQr()),
                                 child: Ink(
                                   width: 32,
                                   height: 32,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(999),
+                                    color: Theme.of(context).colorScheme.primary
+                                        .withValues(alpha: 0.12),
+                                  ),
+                                  child: Icon(
+                                    Icons.qr_code_scanner_rounded,
+                                    size: 18,
                                     color: Theme.of(
                                       context,
-                                    ).colorScheme.primary.withValues(alpha: 0.12),
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(999),
+                                onTap: () =>
+                                    unawaited(_openAddFriendActions(snapshot)),
+                                child: Ink(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(999),
+                                    color: Theme.of(context).colorScheme.primary
+                                        .withValues(alpha: 0.12),
                                   ),
                                   child: Icon(
                                     Icons.add,
                                     size: 20,
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                   ),
                                 ),
                               ),
@@ -210,7 +236,9 @@ extension _FriendsPageWidgets on _FriendsPageState {
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
           color: isDark
-              ? Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.30)
+              ? Theme.of(
+                  context,
+                ).colorScheme.outlineVariant.withValues(alpha: 0.30)
               : AppDesign.cardStroke(context),
         ),
         boxShadow: const [
@@ -255,10 +283,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
     );
   }
 
-  Widget _buildSectionHeadingRow({
-    required String title,
-    Widget? trailing,
-  }) {
+  Widget _buildSectionHeadingRow({required String title, Widget? trailing}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: Row(
@@ -722,13 +747,17 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
     final query = _searchController.text.trim();
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
         child: FractionallySizedBox(
           heightFactor: 0.84,
           child: Container(
             decoration: BoxDecoration(
               color: AppDesign.cardSurface(context),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
             ),
             child: Column(
               children: [
@@ -737,7 +766,9 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                   width: 46,
                   height: 6,
                   decoration: BoxDecoration(
-                    color: AppDesign.mutedColor(context).withValues(alpha: 0.35),
+                    color: AppDesign.mutedColor(
+                      context,
+                    ).withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(999),
                   ),
                 ),
@@ -749,7 +780,10 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                         children: [
                           Expanded(
                             child: Text(
-                              widget.txt(en: 'Add friend', lv: 'Pievienot draugu'),
+                              widget.txt(
+                                en: 'Add friend',
+                                lv: 'Pievienot draugu',
+                              ),
                               style: Theme.of(context).textTheme.headlineSmall
                                   ?.copyWith(
                                     fontWeight: FontWeight.w800,
@@ -758,7 +792,9 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                             ),
                           ),
                           IconButton(
-                            tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                            tooltip: MaterialLocalizations.of(
+                              context,
+                            ).closeButtonTooltip,
                             onPressed: () => Navigator.of(context).pop(),
                             icon: const Icon(Icons.close_rounded),
                           ),
@@ -782,7 +818,9 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                                   child: SizedBox(
                                     width: 18,
                                     height: 18,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
                                   ),
                                 )
                               : (query.isNotEmpty
@@ -793,7 +831,8 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                                           if (mounted) {
                                             setState(() {
                                               _isSearching = false;
-                                              _searchResults = const <FriendUser>[];
+                                              _searchResults =
+                                                  const <FriendUser>[];
                                             });
                                           }
                                         },
@@ -809,16 +848,17 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                             en: 'Type at least 2 characters to search.',
                             lv: 'Ievadi vismaz 2 simbolus, lai meklētu.',
                           ),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppDesign.mutedColor(context),
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppDesign.mutedColor(context)),
                         )
                       else if (!_isSearching && _searchResults.isEmpty)
                         Text(
-                          widget.txt(en: 'No users found', lv: 'Lietotāji nav atrasti'),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppDesign.mutedColor(context),
+                          widget.txt(
+                            en: 'No users found',
+                            lv: 'Lietotāji nav atrasti',
                           ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppDesign.mutedColor(context)),
                         )
                       else
                         ..._searchResults.map((user) {
@@ -827,15 +867,24 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                             leading: widget.userAvatarBuilder(user),
                             title: user.nickname,
                             trailing: OutlinedButton.icon(
-                              onPressed: busy ? null : () => unawaited(_invite(user)),
+                              onPressed: busy
+                                  ? null
+                                  : () => unawaited(_invite(user)),
                               icon: busy
                                   ? const SizedBox(
                                       width: 16,
                                       height: 16,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
                                     )
-                                  : const Icon(Icons.person_add_alt_1, size: 18),
-                              label: Text(widget.txt(en: 'Invite', lv: 'Uzaicināt')),
+                                  : const Icon(
+                                      Icons.person_add_alt_1,
+                                      size: 18,
+                                    ),
+                              label: Text(
+                                widget.txt(en: 'Invite', lv: 'Uzaicināt'),
+                              ),
                             ),
                           );
                         }),

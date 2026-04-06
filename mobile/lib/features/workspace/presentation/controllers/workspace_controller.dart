@@ -44,10 +44,7 @@ class WorkspaceController {
     return _repository.endTrip(tripId: tripId);
   }
 
-  Future<void> setReadyToSettle({
-    required int tripId,
-    required bool isReady,
-  }) {
+  Future<void> setReadyToSettle({required int tripId, required bool isReady}) {
     return _repository.setReadyToSettle(tripId: tripId, isReady: isReady);
   }
 
@@ -125,9 +122,14 @@ class WorkspaceController {
     return _repository.listQueuedMutations(tripId: tripId);
   }
 
+  Future<void> flushPendingMutations() {
+    return _repository.flushPendingMutations();
+  }
+
   Future<MutationResult> addExpense({
     required int tripId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -139,6 +141,7 @@ class WorkspaceController {
     return _repository.addExpense(
       tripId: tripId,
       amount: amount,
+      currencyCode: currencyCode,
       category: category,
       note: note,
       date: date,
@@ -153,6 +156,7 @@ class WorkspaceController {
     required int tripId,
     required int expenseId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -166,6 +170,7 @@ class WorkspaceController {
       tripId: tripId,
       expenseId: expenseId,
       amount: amount,
+      currencyCode: currencyCode,
       category: category,
       note: note,
       date: date,

@@ -8,7 +8,7 @@ import '../../domain/entities/workspace_snapshot.dart';
 import 'workspace_snapshot_codec.dart';
 
 class WorkspaceLocalStore {
-  static const String _snapshotPrefix = 'workspace_snapshot_trip_v3_';
+  static const String _snapshotPrefix = 'workspace_snapshot_trip_v4_';
   static const String _queueKey = 'workspace_mutation_queue_v1';
   static const String _globalNotificationsKey =
       'workspace_global_notifications_v1';

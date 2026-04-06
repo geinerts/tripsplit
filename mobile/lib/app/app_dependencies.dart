@@ -1,4 +1,5 @@
 import '../core/auth/auth_session_store.dart';
+import '../core/auth/current_user_store.dart';
 import '../core/auth/device_token_store.dart';
 import '../core/auth/user_avatar_store.dart';
 import '../core/config/app_env.dart';
@@ -31,12 +32,14 @@ import '../features/friends/domain/usecases/respond_friend_invite_use_case.dart'
 import '../features/friends/domain/usecases/send_friend_invite_use_case.dart';
 import '../features/friends/presentation/controllers/friends_controller.dart';
 import '../features/trips/data/datasources/trips_remote_data_source.dart';
+import '../features/trips/data/local/trips_local_store.dart';
 import '../features/trips/data/repositories/trips_repository_impl.dart';
 import '../features/trips/domain/usecases/add_trip_members_use_case.dart';
 import '../features/trips/domain/usecases/create_trip_invite_link_use_case.dart';
 import '../features/trips/domain/usecases/create_trip_use_case.dart';
 import '../features/trips/domain/usecases/delete_trip_use_case.dart';
 import '../features/trips/domain/usecases/list_directory_users_use_case.dart';
+import '../features/trips/domain/usecases/join_trip_invite_use_case.dart';
 import '../features/trips/domain/usecases/list_trips_use_case.dart';
 import '../features/trips/domain/usecases/update_trip_use_case.dart';
 import '../features/trips/domain/usecases/upload_trip_image_use_case.dart';
@@ -71,6 +74,7 @@ class AppDependencies {
 
     final tokenStore = DeviceTokenStore();
     final authSessionStore = AuthSessionStore();
+    final currentUserStore = CurrentUserStore();
     final avatarStore = UserAvatarStore();
     final apiClient = LegacyApiClient(
       baseUrl: env.apiBaseUrl,
@@ -116,6 +120,7 @@ class AppDependencies {
       GetMeUseCase(authRepository),
       tokenStore,
       authSessionStore,
+      currentUserStore,
       avatarStore,
       avatarUploader,
       feedbackReporter,
@@ -123,7 +128,8 @@ class AppDependencies {
     );
 
     final tripsRemote = TripsRemoteDataSourceImpl(apiClient, tripImageUploader);
-    final tripsRepository = TripsRepositoryImpl(tripsRemote);
+    final tripsLocalStore = TripsLocalStore();
+    final tripsRepository = TripsRepositoryImpl(tripsRemote, tripsLocalStore);
     final tripsController = TripsController(
       ListTripsUseCase(tripsRepository),
       ListDirectoryUsersUseCase(tripsRepository),
@@ -131,8 +137,10 @@ class AppDependencies {
       AddTripMembersUseCase(tripsRepository),
       DeleteTripUseCase(tripsRepository),
       CreateTripInviteLinkUseCase(tripsRepository),
+      JoinTripInviteUseCase(tripsRepository),
       UpdateTripUseCase(tripsRepository),
       UploadTripImageUseCase(tripsRepository),
+      tripsLocalStore,
     );
 
     final friendsRemote = FriendsRemoteDataSourceImpl(apiClient);

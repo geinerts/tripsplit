@@ -214,6 +214,8 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                                 _formatMoney(
                                                   context,
                                                   item.amount,
+                                                  currencyCode:
+                                                      widget.trip.currencyCode,
                                                 ),
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.w700,

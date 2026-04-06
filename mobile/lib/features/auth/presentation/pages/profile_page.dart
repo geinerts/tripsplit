@@ -1,11 +1,14 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
 import '../../../../app/locale/app_locale_controller.dart';
@@ -16,6 +19,7 @@ import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../app/theme/theme_mode_scope.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/media/app_image_cropper.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_components.dart';
@@ -103,6 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
   int _editSession = 0;
   int _handledRefreshRequestCount = 0;
   int _handledCloseEditModeRequestCount = 0;
+  String _appVersionLabel = '—';
 
   void _updateState(VoidCallback update) {
     if (!mounted) {
@@ -121,6 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     _bindCommandController(widget.commandController);
     widget.onEditModeChanged?.call(false);
+    unawaited(_loadAppVersion());
     _loadProfile();
   }
 

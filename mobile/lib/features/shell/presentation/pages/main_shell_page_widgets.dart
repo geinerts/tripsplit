@@ -17,9 +17,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
               )
             : null,
         title: _buildAppBarTitle(context, titleStyle),
-        actions: [
-          _buildNotificationsAction(context),
-        ],
+        actions: [_buildNotificationsAction(context)],
       ),
       body: _isWorkspaceOpen
           ? WorkspacePage(
@@ -29,6 +27,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
               authController: widget.authController,
               showAppBar: false,
               showBottomNav: false,
+              openAddExpenseOnStart: _openAddExpenseOnWorkspaceStart,
               commandController: _workspaceCommandController,
               onExitRequested: _closeWorkspaceInShell,
             )
@@ -54,6 +53,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
                 ),
                 FriendsPage(
                   controller: widget.friendsController,
+                  authController: widget.authController,
                   commandController: _friendsCommandController,
                 ),
                 ProfilePage(
@@ -180,7 +180,10 @@ extension _MainShellPageWidgets on _MainShellPageState {
                     color: Theme.of(context).colorScheme.error,
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  constraints: const BoxConstraints(minWidth: 18, minHeight: 16),
+                  constraints: const BoxConstraints(
+                    minWidth: 18,
+                    minHeight: 16,
+                  ),
                   alignment: Alignment.center,
                   child: Text(
                     badgeText,

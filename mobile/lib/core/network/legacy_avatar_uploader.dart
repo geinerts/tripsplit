@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import '../auth/auth_session_store.dart';
 import '../auth/device_token_store.dart';
 import '../errors/api_exception.dart';
+import 'media_url_resolver.dart';
 
 class UploadedAvatar {
   const UploadedAvatar({
@@ -68,8 +69,10 @@ class LegacyAvatarUploader {
 
     return UploadedAvatar(
       avatarPath: payload['avatar_path'] as String?,
-      avatarUrl: payload['avatar_url'] as String?,
-      avatarThumbUrl: payload['avatar_thumb_url'] as String?,
+      avatarUrl: MediaUrlResolver.normalize(payload['avatar_url'] as String?),
+      avatarThumbUrl: MediaUrlResolver.normalize(
+        payload['avatar_thumb_url'] as String?,
+      ),
       mePayload: payload['me'] as Map<String, dynamic>?,
     );
   }
@@ -98,7 +101,10 @@ class LegacyAvatarUploader {
 
     return UploadedAvatar(
       avatarPath: payload['avatar_path'] as String?,
-      avatarUrl: payload['avatar_url'] as String?,
+      avatarUrl: MediaUrlResolver.normalize(payload['avatar_url'] as String?),
+      avatarThumbUrl: MediaUrlResolver.normalize(
+        payload['avatar_thumb_url'] as String?,
+      ),
       mePayload: payload['me'] as Map<String, dynamic>?,
     );
   }

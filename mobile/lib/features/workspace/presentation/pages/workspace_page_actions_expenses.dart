@@ -29,22 +29,15 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
 
     await _runMutation(
       action: () async {
-        UploadedReceiptData? receipt;
-        if (result.receiptFileBytes != null &&
-            result.receiptFileName != null &&
-            result.receiptFileName!.trim().isNotEmpty) {
-          receipt = await widget.workspaceController.uploadReceipt(
-            payload: ReceiptUploadPayload(
-              fileName: result.receiptFileName!,
-              bytes: result.receiptFileBytes!,
-              tripId: widget.trip.id,
-            ),
-          );
-        }
+        final receipt = await _uploadReceiptBestEffort(
+          fileName: result.receiptFileName,
+          bytes: result.receiptFileBytes,
+        );
 
         final mutation = await widget.workspaceController.addExpense(
           tripId: widget.trip.id,
           amount: result.amount,
+          currencyCode: result.currencyCode,
           category: result.category,
           note: result.note,
           date: result.date,
@@ -94,23 +87,16 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
 
     await _runMutation(
       action: () async {
-        UploadedReceiptData? receipt;
-        if (result.receiptFileBytes != null &&
-            result.receiptFileName != null &&
-            result.receiptFileName!.trim().isNotEmpty) {
-          receipt = await widget.workspaceController.uploadReceipt(
-            payload: ReceiptUploadPayload(
-              fileName: result.receiptFileName!,
-              bytes: result.receiptFileBytes!,
-              tripId: widget.trip.id,
-            ),
-          );
-        }
+        final receipt = await _uploadReceiptBestEffort(
+          fileName: result.receiptFileName,
+          bytes: result.receiptFileBytes,
+        );
 
         final mutation = await widget.workspaceController.updateExpense(
           tripId: widget.trip.id,
           expenseId: expense.id,
           amount: result.amount,
+          currencyCode: result.currencyCode,
           category: result.category,
           note: result.note,
           date: result.date,
@@ -139,6 +125,43 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
         }
       },
     );
+  }
+
+  Future<UploadedReceiptData?> _uploadReceiptBestEffort({
+    required String? fileName,
+    required Uint8List? bytes,
+  }) async {
+    final safeName = (fileName ?? '').trim();
+    final safeBytes = bytes;
+    if (safeName.isEmpty || safeBytes == null || safeBytes.isEmpty) {
+      return null;
+    }
+    try {
+      return await widget.workspaceController.uploadReceipt(
+        payload: ReceiptUploadPayload(
+          fileName: safeName,
+          bytes: safeBytes,
+          tripId: widget.trip.id,
+        ),
+      );
+    } on ApiException catch (error) {
+      if (!error.isNetworkError) {
+        rethrow;
+      }
+      if (mounted) {
+        _showSnack(_receiptSkippedOfflineMessage());
+      }
+      return null;
+    }
+  }
+
+  String _receiptSkippedOfflineMessage() {
+    final isLv =
+        Localizations.localeOf(context).languageCode.toLowerCase() == 'lv';
+    if (isLv) {
+      return 'Nav interneta. Izdevums tiks saglabāts bez čeka attēla.';
+    }
+    return 'No internet. Expense will be saved without receipt image.';
   }
 
   Future<void> _onDeleteExpensePressed(TripExpense expense) async {

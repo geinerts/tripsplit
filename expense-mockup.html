@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Expense — Mockup v2 (UI/UX Pro Max)</title>
+<link href="https://fonts.googleapis.com/css2?family=Calistoga:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Design tokens from UI/UX Pro Max skill ── */
+  :root {
+    --color-primary:    #059669;
+    --color-secondary:  #10B981;
+    --color-accent:     #DC2626;
+    --color-bg:         #060811;       /* OLED dark */
+    --color-surface:    #0e1220;
+    --color-surface-2:  #141926;
+    --color-border:     rgba(255,255,255,0.07);
+    --color-border-focus: rgba(5,150,105,0.45);
+    --color-text:       #f1f5f9;
+    --color-text-muted: rgba(255,255,255,0.35);
+    --color-text-label: rgba(16,185,129,0.65);
+    --radius-card:      18px;
+    --radius-chip:      50px;
+    --transition:       150ms ease;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #030508;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, sans-serif;
+  }
+
+  .phone {
+    width: 393px;
+    background: #111;
+    border-radius: 52px;
+    padding: 10px;
+    box-shadow:
+      0 60px 120px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.07),
+      0 0 0 1px rgba(255,255,255,0.04);
+  }
+
+  .screen {
+    background: var(--color-bg);
+    border-radius: 44px;
+    overflow: hidden;
+    height: 852px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 30px 0;
+    flex-shrink: 0;
+  }
+  .status-time {
+    color: var(--color-text);
+    font-size: 15px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .status-icons { display: flex; gap: 5px; align-items: center; }
+
+  /* ── Sheet handle ── */
+  .handle {
+    width: 38px; height: 4px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 2px;
+    margin: 12px auto 0;
+    flex-shrink: 0;
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 18px 24px 0;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header h1 {
+    font-family: 'Calistoga', serif;
+    font-size: 28px;
+    font-weight: 400; /* Calistoga is already bold by nature */
+    color: var(--color-text);
+    letter-spacing: -0.3px;
+  }
+  .close-btn {
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background var(--transition);
+  }
+  .close-btn:hover { background: rgba(255,255,255,0.1); }
+
+  /* ── Scroll area ── */
+  .scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 130px;
+    scrollbar-width: none;
+  }
+  .scroll-area::-webkit-scrollbar { display: none; }
+
+  /* ── Amount hero ── */
+  .amount-hero {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-focus);
+    border-radius: var(--radius-card);
+    padding: 18px 20px 20px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .amount-hero::after {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 160px; height: 160px;
+    background: radial-gradient(circle, rgba(5,150,105,0.14) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .field-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-label);
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .amount-row {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+  }
+  .currency {
+    font-family: 'Calistoga', serif;
+    font-size: 28px;
+    color: rgba(255,255,255,0.22);
+    line-height: 1;
+  }
+  .amount-value {
+    font-family: 'Calistoga', serif;
+    font-size: 52px;
+    color: rgba(255,255,255,0.15);
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+
+  /* ── Date field ── */
+  .date-field {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border-color var(--transition);
+  }
+  .date-field:hover { border-color: rgba(255,255,255,0.13); }
+  .field-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text);
+    margin-top: 2px;
+  }
+
+  /* ── Section title ── */
+  .section-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* ── Categories ── */
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 22px;
+  }
+  .cat-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    border-radius: var(--radius-chip);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .cat-chip:hover {
+    border-color: rgba(255,255,255,0.13);
+    background: rgba(255,255,255,0.05);
+  }
+  .cat-chip.active {
+    background: rgba(5,150,105,0.14);
+    border-color: rgba(5,150,105,0.4);
+  }
+  .cat-chip svg {
+    width: 14px; height: 14px;
+    stroke: rgba(255,255,255,0.4);
+    stroke-width: 1.8;
+    fill: none;
+    flex-shrink: 0;
+  }
+  .cat-chip.active svg { stroke: var(--color-secondary); }
+  .cat-chip span {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    white-space: nowrap;
+  }
+  .cat-chip.active span { color: var(--color-secondary); }
+  .cat-chip.custom {
+    background: transparent;
+    border: 1px dashed rgba(5,150,105,0.3);
+  }
+  .cat-chip.custom svg { stroke: rgba(5,150,105,0.6); }
+  .cat-chip.custom span { color: rgba(5,150,105,0.7); }
+
+  /* ── Note ── */
+  .note-field {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    min-height: 76px;
+    cursor: text;
+    transition: border-color var(--transition);
+  }
+  .note-field:hover { border-color: rgba(255,255,255,0.13); }
+  .note-placeholder {
+    font-size: 15px;
+    color: rgba(255,255,255,0.18);
+    font-weight: 400;
+  }
+
+  /* ── Participants ── */
+  .participants-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .participant-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 13px 7px 7px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-chip);
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .participant-chip:hover { border-color: rgba(255,255,255,0.13); }
+  .participant-chip.active {
+    background: rgba(5,150,105,0.1);
+    border-color: rgba(5,150,105,0.35);
+  }
+  .avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .av-k { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+  .av-t { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); }
+  .participant-chip span {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+  }
+  .participant-chip.active span { color: var(--color-secondary); }
+
+  /* ── Split mode ── */
+  .split-field {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: border-color var(--transition);
+  }
+  .split-field:hover { border-color: rgba(255,255,255,0.13); }
+
+  /* ── Bottom bar ── */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 16px 24px 36px;
+    background: linear-gradient(to top, var(--color-bg) 65%, transparent);
+    display: flex;
+    gap: 10px;
+  }
+  .btn-cancel {
+    flex: 1;
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .btn-cancel:hover { background: rgba(255,255,255,0.08); }
+  .btn-add {
+    flex: 2;
+    padding: 16px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--color-primary), #047857);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(5,150,105,0.4);
+    letter-spacing: 0.1px;
+    transition: all var(--transition);
+  }
+  .btn-add:hover {
+    box-shadow: 0 8px 28px rgba(5,150,105,0.55);
+    transform: translateY(-1px);
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <!-- Signal -->
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="white" opacity="0.9">
+          <rect x="0" y="6" width="3" height="6" rx="1"/>
+          <rect x="4.5" y="4" width="3" height="8" rx="1"/>
+          <rect x="9" y="2" width="3" height="10" rx="1"/>
+          <rect x="13.5" y="0" width="3" height="12" rx="1" opacity="0.3"/>
+        </svg>
+        <!-- WiFi -->
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.9">
+          <path d="M1 4.5C3.8 1.8 8 1.5 11 3" opacity="0.3"/>
+          <path d="M2.5 6.5C4.5 4.5 7.5 4.2 10 5.5"/>
+          <path d="M4.5 8.5C5.8 7.2 7.2 7 9 7.8"/>
+          <circle cx="6.8" cy="10.5" r="1" fill="white" stroke="none"/>
+        </svg>
+        <!-- Battery -->
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none" opacity="0.9">
+          <rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="white" stroke-opacity="0.4"/>
+          <rect x="2" y="2" width="16" height="8" rx="1.5" fill="white"/>
+          <path d="M23 4.5v3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Handle -->
+    <div class="handle"></div>
+
+    <!-- Header -->
+    <div class="header">
+      <h1>Add expense</h1>
+      <div class="close-btn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round">
+          <path d="M1 1l12 12M13 1L1 13"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="scroll-area">
+
+      <!-- Amount -->
+      <div class="amount-hero">
+        <span class="field-label">Amount</span>
+        <div class="amount-row">
+          <span class="currency">€</span>
+          <span class="amount-value">0.00</span>
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div class="date-field">
+        <div>
+          <span class="field-label">Date</span>
+          <div class="field-value">April 3, 2026</div>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="3"/>
+          <path d="M16 2v4M8 2v4M3 10h18"/>
+        </svg>
+      </div>
+
+      <!-- Category -->
+      <div class="section-title">Category</div>
+      <div class="categories">
+
+        <!-- Food -->
+        <div class="cat-chip active">
+          <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          <span>Food</span>
+        </div>
+
+        <!-- Groceries -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span>Groceries</span>
+        </div>
+
+        <!-- Fuel -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><path d="M3 22V8l7-6 7 6v14H3z"/><rect x="7" y="14" width="6" height="8"/><path d="M17 8h1a2 2 0 012 2v6a2 2 0 01-2 2h-1"/><path d="M17 12h2"/></svg>
+          <span>Fuel</span>
+        </div>
+
+        <!-- Transport -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <span>Transport</span>
+        </div>
+
+        <!-- Accommodation -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Accommodation</span>
+        </div>
+
+        <!-- Activities -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>Activities</span>
+        </div>
+
+        <!-- Tickets -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><path d="M2 9a3 3 0 010 6v2a2 2 0 002 2h16a2 2 0 002-2v-2a3 3 0 010-6V7a2 2 0 00-2-2H4a2 2 0 00-2 2v2z"/><line x1="9" y1="12" x2="9.01" y2="12"/><line x1="12" y1="12" x2="12.01" y2="12"/><line x1="15" y1="12" x2="15.01" y2="12"/></svg>
+          <span>Tickets</span>
+        </div>
+
+        <!-- Shopping -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          <span>Shopping</span>
+        </div>
+
+        <!-- Party -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          <span>Party</span>
+        </div>
+
+        <!-- Parking -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 010 6H9"/></svg>
+          <span>Parking</span>
+        </div>
+
+        <!-- Other -->
+        <div class="cat-chip">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          <span>Other</span>
+        </div>
+
+        <!-- Custom -->
+        <div class="cat-chip custom">
+          <svg viewBox="0 0 24 24" stroke="rgba(5,150,105,0.6)"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Custom</span>
+        </div>
+
+      </div>
+
+      <!-- Note -->
+      <div class="section-title">Note</div>
+      <div class="note-field">
+        <span class="note-placeholder">Add a note…</span>
+      </div>
+
+      <!-- Participants -->
+      <div class="section-title">Participants</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.22); margin-bottom:10px; font-weight:400;">Empty = all members</div>
+      <div class="participants-row">
+        <div class="participant-chip active">
+          <div class="avatar av-k">K</div>
+          <span>Kisis</span>
+        </div>
+        <div class="participant-chip active">
+          <div class="avatar av-t">T</div>
+          <span>Tests</span>
+        </div>
+      </div>
+
+      <!-- Split mode -->
+      <div class="section-title">Split mode</div>
+      <div class="split-field">
+        <div>
+          <span class="field-label">Mode</span>
+          <div class="field-value">Equal split</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+      <div class="btn-cancel">Cancel</div>
+      <div class="btn-add">Add expense</div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

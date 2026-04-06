@@ -215,6 +215,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                 _formatMoney(
                                                   context,
                                                   expense.amount,
+                                                  currencyCode:
+                                                      expense.tripCurrencyCode,
                                                 ),
                                                 style: Theme.of(context)
                                                     .textTheme
@@ -227,6 +229,40 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                           : _splytoFg,
                                                     ),
                                               ),
+                                              if (expense.expenseCurrencyCode !=
+                                                  expense.tripCurrencyCode)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        top: 4,
+                                                      ),
+                                                  child: Text(
+                                                    '${_localizedText(context, en: 'Original', lv: 'Sākotnēji')}: ${_formatMoney(context, expense.originalAmount, currencyCode: expense.expenseCurrencyCode)}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.copyWith(
+                                                          color: isDark
+                                                              ? colors
+                                                                    .onSurfaceVariant
+                                                              : _splytoMuted,
+                                                        ),
+                                                  ),
+                                                ),
+                                              if (expense.expenseCurrencyCode !=
+                                                  expense.tripCurrencyCode)
+                                                Text(
+                                                  '1 ${expense.expenseCurrencyCode} ≈ ${_formatMoney(context, expense.fxRateToTrip, currencyCode: expense.tripCurrencyCode)}',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall
+                                                      ?.copyWith(
+                                                        color: isDark
+                                                            ? colors
+                                                                  .onSurfaceVariant
+                                                            : _splytoMuted,
+                                                      ),
+                                                ),
                                             ],
                                           ),
                                         ),
@@ -433,6 +469,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                 _formatMoney(
                                                   context,
                                                   line.owes,
+                                                  currencyCode:
+                                                      expense.tripCurrencyCode,
                                                 ),
                                                 style: Theme.of(context)
                                                     .textTheme

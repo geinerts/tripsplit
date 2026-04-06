@@ -2,6 +2,7 @@ class Trip {
   const Trip({
     required this.id,
     required this.name,
+    required this.currencyCode,
     required this.status,
     required this.imageUrl,
     this.imageThumbUrl,
@@ -23,6 +24,7 @@ class Trip {
 
   final int id;
   final String name;
+  final String currencyCode;
   final String status;
   final String? imageUrl;
   final String? imageThumbUrl;

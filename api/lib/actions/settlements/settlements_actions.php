@@ -470,7 +470,10 @@ function remind_settlement_action(): void
         $targetUserId = 0;
         $title = 'Settlement reminder';
         $message = '';
-        $amount = '€' . cents_to_decimal((int) ($row['amount_cents'] ?? 0));
+        $amount = format_cents_with_currency(
+            (int) ($row['amount_cents'] ?? 0),
+            trip_currency_code_from_trip($trip)
+        );
 
         $actorName = trim((string) ($me['nickname'] ?? ''));
         if ($actorName === '') {
@@ -656,7 +659,10 @@ function mark_settlement_sent_action(): void
             if ($fromName === '') {
                 $fromName = 'Trip member';
             }
-            $amount = '€' . cents_to_decimal((int) ($row['amount_cents'] ?? 0));
+            $amount = format_cents_with_currency(
+                (int) ($row['amount_cents'] ?? 0),
+                trip_currency_code_from_trip($trip)
+            );
             create_user_notification(
                 $pdo,
                 $tripId,
@@ -774,7 +780,10 @@ function confirm_settlement_received_action(): void
             if ($toName === '') {
                 $toName = 'Trip member';
             }
-            $amount = '€' . cents_to_decimal((int) ($row['amount_cents'] ?? 0));
+            $amount = format_cents_with_currency(
+                (int) ($row['amount_cents'] ?? 0),
+                trip_currency_code_from_trip($trip)
+            );
             create_user_notification(
                 $pdo,
                 $tripId,

@@ -139,7 +139,11 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                               const SizedBox(height: 8),
                               Center(
                                 child: Text(
-                                  _signedMoney(context, item.net),
+                                  _signedMoney(
+                                    context,
+                                    item.net,
+                                    currencyCode: widget.trip.currencyCode,
+                                  ),
                                   style: Theme.of(context)
                                       .textTheme
                                       .displayMedium
@@ -160,7 +164,11 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                         en: 'Total Paid',
                                         lv: 'Kopā samaksāts',
                                       ),
-                                      value: _formatMoney(context, item.paid),
+                                      value: _formatMoney(
+                                        context,
+                                        item.paid,
+                                        currencyCode: widget.trip.currencyCode,
+                                      ),
                                       color: positiveColor,
                                     ),
                                   ),
@@ -173,7 +181,11 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                         en: 'Total Owes',
                                         lv: 'Kopā parādā',
                                       ),
-                                      value: _formatMoney(context, item.owed),
+                                      value: _formatMoney(
+                                        context,
+                                        item.owed,
+                                        currencyCode: widget.trip.currencyCode,
+                                      ),
                                       color: negativeColor,
                                     ),
                                   ),
@@ -299,7 +311,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
-                                            '${entry.isPositive ? '+' : '-'}${_formatMoney(context, entry.amount)}',
+                                            '${entry.isPositive ? '+' : '-'}${_formatMoney(context, entry.amount, currencyCode: widget.trip.currencyCode)}',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge

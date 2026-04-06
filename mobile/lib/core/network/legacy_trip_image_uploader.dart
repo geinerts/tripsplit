@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import '../auth/auth_session_store.dart';
 import '../auth/device_token_store.dart';
 import '../errors/api_exception.dart';
+import 'media_url_resolver.dart';
 
 class UploadedTripImage {
   const UploadedTripImage({
@@ -86,9 +87,12 @@ class LegacyTripImageUploader {
     final rawThumbUrl = (payload['image_thumb_url'] as String?)?.trim();
     return UploadedTripImage(
       imagePath: imagePath,
-      imageUrl: rawUrl == null || rawUrl.isEmpty ? null : rawUrl,
-      imageThumbUrl:
-          rawThumbUrl == null || rawThumbUrl.isEmpty ? null : rawThumbUrl,
+      imageUrl: rawUrl == null || rawUrl.isEmpty
+          ? null
+          : MediaUrlResolver.normalize(rawUrl),
+      imageThumbUrl: rawThumbUrl == null || rawThumbUrl.isEmpty
+          ? null
+          : MediaUrlResolver.normalize(rawThumbUrl),
     );
   }
 

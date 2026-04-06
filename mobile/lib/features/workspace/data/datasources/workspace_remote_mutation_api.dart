@@ -125,6 +125,7 @@ class WorkspaceRemoteMutationApi {
   Future<void> addExpense({
     required int tripId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -132,13 +133,15 @@ class WorkspaceRemoteMutationApi {
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
     String? receiptPath,
+    String? clientMutationId,
   }) async {
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('add_expense'),
       method: HttpMethod.post,
-      headers: _tripHeaders(tripId),
+      headers: _tripHeaders(tripId, clientMutationId: clientMutationId),
       body: <String, dynamic>{
         'amount': amount,
+        'currency_code': currencyCode,
         'category': category,
         'note': note,
         'date': date,
@@ -163,6 +166,7 @@ class WorkspaceRemoteMutationApi {
     required int tripId,
     required int expenseId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -171,14 +175,16 @@ class WorkspaceRemoteMutationApi {
     required List<ExpenseSplitValue> splitValues,
     String? receiptPath,
     bool removeReceipt = false,
+    String? clientMutationId,
   }) async {
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('update_expense'),
       method: HttpMethod.post,
-      headers: _tripHeaders(tripId),
+      headers: _tripHeaders(tripId, clientMutationId: clientMutationId),
       body: <String, dynamic>{
         'id': expenseId,
         'amount': amount,
+        'currency_code': currencyCode,
         'category': category,
         'note': note,
         'date': date,
@@ -203,11 +209,12 @@ class WorkspaceRemoteMutationApi {
   Future<void> deleteExpense({
     required int tripId,
     required int expenseId,
+    String? clientMutationId,
   }) async {
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('delete_expense'),
       method: HttpMethod.post,
-      headers: _tripHeaders(tripId),
+      headers: _tripHeaders(tripId, clientMutationId: clientMutationId),
       body: <String, dynamic>{'id': expenseId},
     );
   }
@@ -235,8 +242,13 @@ class WorkspaceRemoteMutationApi {
     );
   }
 
-  Map<String, String> _tripHeaders(int tripId) {
-    return <String, String>{'X-Trip-Id': '$tripId'};
+  Map<String, String> _tripHeaders(int tripId, {String? clientMutationId}) {
+    final headers = <String, String>{'X-Trip-Id': '$tripId'};
+    final mutationId = (clientMutationId ?? '').trim();
+    if (mutationId.isNotEmpty) {
+      headers['X-Client-Mutation-Id'] = mutationId;
+    }
+    return headers;
   }
 
   bool _isMissingGlobalNotificationsAction(ApiException error) {

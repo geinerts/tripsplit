@@ -32,13 +32,8 @@ extension _LoginPageWidgetsForm on _LoginPageState {
             const SizedBox(height: 16),
             _buildPasswordField(context, isLogin),
             if (!isLogin) ...[
-              const SizedBox(height: 8),
-              Text(
-                t.passwordComplexityHelper,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
-              ),
+              const SizedBox(height: 10),
+              _buildPasswordStrengthIndicator(context),
               const SizedBox(height: 16),
               _buildRepeatPasswordField(context),
             ],
@@ -56,6 +51,10 @@ extension _LoginPageWidgetsForm on _LoginPageState {
             ],
             const SizedBox(height: 12),
             _buildSubmitButton(context),
+            if (isLogin) ...[
+              const SizedBox(height: 12),
+              _buildSocialPlaceholders(context),
+            ],
             const SizedBox(height: 14),
             _buildModeSwitchRow(context),
           ],
@@ -67,33 +66,123 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   List<Widget> _buildRegistrationFields(BuildContext context) {
     final t = context.l10n;
     return [
-      _buildLabeledTextField(
-        context: context,
-        label: t.firstNameLabel,
-        hint: t.firstNameHint,
-        controller: _firstNameController,
-        validator: _validateFirstName,
-        autocorrect: false,
-      ),
-      const SizedBox(height: 16),
-      _buildLabeledTextField(
-        context: context,
-        label: t.lastNameLabel,
-        hint: t.lastNameHint,
-        controller: _lastNameController,
-        validator: _validateLastName,
-        autocorrect: false,
-      ),
-      const SizedBox(height: 16),
-      _buildLabeledTextField(
-        context: context,
-        label: t.nicknameLabel,
-        hint: t.nicknameHint,
-        controller: _nicknameController,
-        validator: _validateNickname,
-        autocorrect: false,
+      _buildSocialPlaceholders(context),
+      const SizedBox(height: 14),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _buildLabeledTextField(
+              context: context,
+              label: t.firstNameLabel,
+              hint: t.firstNameHint,
+              controller: _firstNameController,
+              validator: _validateFirstName,
+              autocorrect: false,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 14,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildLabeledTextField(
+              context: context,
+              label: t.lastNameLabel,
+              hint: t.lastNameHint,
+              controller: _lastNameController,
+              validator: _validateLastName,
+              autocorrect: false,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 14,
+              ),
+            ),
+          ),
+        ],
       ),
     ];
+  }
+
+  Widget _buildSocialPlaceholders(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildSocialPlaceholderButton(
+            context: context,
+            label: 'Google',
+            icon: _buildGooglePlaceholderLogo(context),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildSocialPlaceholderButton(
+            context: context,
+            label: 'Apple',
+            icon: _buildApplePlaceholderLogo(context),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSocialPlaceholderButton({
+    required BuildContext context,
+    required String label,
+    required Widget icon,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return OutlinedButton.icon(
+      onPressed: _isSubmitting ? null : () => _showSnack('Coming soon'),
+      icon: icon,
+      label: Text(
+        label,
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: colorScheme.onSurface,
+        ),
+      ),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: colorScheme.onSurface,
+        backgroundColor: colorScheme.surface.withValues(alpha: 0.92),
+        minimumSize: const Size.fromHeight(46),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        side: BorderSide(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.8),
+          width: 1.0,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+    );
+  }
+
+  Widget _buildGooglePlaceholderLogo(BuildContext context) {
+    const iconSize = 26.0;
+    return SizedBox(
+      width: iconSize,
+      height: iconSize,
+      child: SvgPicture.asset(
+        'assets/branding/google_g_logo.svg',
+        width: iconSize,
+        height: iconSize,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  Widget _buildApplePlaceholderLogo(BuildContext context) {
+    const iconSize = 26.0;
+    return SizedBox(
+      width: iconSize,
+      height: iconSize,
+      child: SvgPicture.asset(
+        'assets/branding/apple_logo.svg',
+        width: iconSize,
+        height: iconSize,
+        fit: BoxFit.contain,
+      ),
+    );
   }
 
   Widget _buildPasswordField(BuildContext context, bool isLogin) {
@@ -118,6 +207,11 @@ extension _LoginPageWidgetsForm on _LoginPageState {
               : Icons.visibility_off_outlined,
         ),
       ),
+      onChanged: isLogin
+          ? null
+          : (_) {
+              _updateState(() {});
+            },
       onFieldSubmitted: isLogin ? (_) => _onSubmitPressed() : null,
     );
   }
@@ -144,6 +238,87 @@ extension _LoginPageWidgetsForm on _LoginPageState {
         ),
       ),
       onFieldSubmitted: (_) => _onSubmitPressed(),
+    );
+  }
+
+  Widget _buildPasswordStrengthIndicator(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final strength = _resolvePasswordStrength(context, _passwordController.text);
+    return SizedBox(
+      height: 7,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final fullWidth = constraints.maxWidth;
+          final fillWidth = (fullWidth * strength.fillFactor).clamp(
+            0.0,
+            fullWidth,
+          );
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: ColoredBox(
+                    color: colors.surfaceContainerHighest.withValues(alpha: 0.8),
+                  ),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  curve: Curves.easeOutCubic,
+                  width: fillWidth,
+                  color: strength.color,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  _PasswordStrength _resolvePasswordStrength(BuildContext context, String text) {
+    final value = text.trim();
+    if (value.isEmpty) {
+      return _PasswordStrength(
+        fillFactor: 0,
+        color: Theme.of(context).colorScheme.outlineVariant,
+      );
+    }
+
+    final colors = Theme.of(context).colorScheme;
+    final minLengthMet = value.length >= 8;
+    final hasUpper = RegExp(r'[A-Z]').hasMatch(value);
+    final hasNumber = RegExp(r'[0-9]').hasMatch(value);
+    final hasSymbol = RegExp(r'[^A-Za-z0-9]').hasMatch(value);
+    final requiredChecksMet = [minLengthMet, hasUpper, hasNumber, hasSymbol]
+        .where((met) => met)
+        .length;
+
+    final meetsGreenLevel =
+        minLengthMet && hasUpper && hasNumber && hasSymbol;
+    if (meetsGreenLevel) {
+      final veryStrong = value.length >= 14;
+      return _PasswordStrength(
+        fillFactor: veryStrong ? 1.0 : 0.8,
+        color: veryStrong ? colors.primary : const Color(0xFF3B9A62),
+      );
+    }
+
+    if (requiredChecksMet <= 1) {
+      return _PasswordStrength(
+        fillFactor: requiredChecksMet == 0 ? 0.0 : 0.25,
+        color: const Color(0xFFE35D50),
+      );
+    }
+    if (requiredChecksMet == 2) {
+      return const _PasswordStrength(
+        fillFactor: 0.5,
+        color: Color(0xFFD4A72C),
+      );
+    }
+    return const _PasswordStrength(
+      fillFactor: 0.72,
+      color: Color(0xFFD4A72C),
     );
   }
 
@@ -177,13 +352,18 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     final isLogin = _mode == _AuthMode.login;
     final t = context.l10n;
     final responsive = context.responsive;
+    const gradient = LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [Color(0xFF9BDFC3), Color(0xFF57B487)],
+    );
 
     return SizedBox(
       width: double.infinity,
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          gradient: AppDesign.logoBackgroundGradient,
+          gradient: gradient,
         ),
         child: ElevatedButton(
           key: const ValueKey(AppTestKeys.authSubmitButton),
@@ -276,6 +456,8 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     Widget? suffixIcon,
     Key? fieldKey,
     ValueChanged<String>? onFieldSubmitted,
+    ValueChanged<String>? onChanged,
+    EdgeInsetsGeometry? contentPadding,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -298,9 +480,11 @@ extension _LoginPageWidgetsForm on _LoginPageState {
             context,
             hint: hint,
             suffixIcon: suffixIcon,
+            contentPadding: contentPadding,
           ),
           validator: validator,
           onFieldSubmitted: onFieldSubmitted,
+          onChanged: onChanged,
         ),
       ],
     );
@@ -310,6 +494,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     BuildContext context, {
     required String hint,
     Widget? suffixIcon,
+    EdgeInsetsGeometry? contentPadding,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
     return InputDecoration(
@@ -330,8 +515,17 @@ extension _LoginPageWidgetsForm on _LoginPageState {
         borderRadius: BorderRadius.circular(18),
         borderSide: BorderSide(color: colorScheme.primary, width: 1.4),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+      contentPadding:
+          contentPadding ??
+          const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
       suffixIcon: suffixIcon,
     );
   }
+}
+
+class _PasswordStrength {
+  const _PasswordStrength({required this.fillFactor, required this.color});
+
+  final double fillFactor;
+  final Color color;
 }

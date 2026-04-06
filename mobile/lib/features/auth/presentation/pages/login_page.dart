@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
 import '../../../../app/router/app_router.dart';
@@ -34,7 +35,6 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  final _nicknameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _repeatController = TextEditingController();
@@ -64,7 +64,6 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _nicknameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _repeatController.dispose();

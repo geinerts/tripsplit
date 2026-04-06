@@ -27,10 +27,7 @@ abstract class WorkspaceRemoteDataSource {
   });
 
   Future<void> endTrip({required int tripId});
-  Future<void> setReadyToSettle({
-    required int tripId,
-    required bool isReady,
-  });
+  Future<void> setReadyToSettle({required int tripId, required bool isReady});
   Future<void> markSettlementSent({
     required int tripId,
     required int settlementId,
@@ -58,6 +55,7 @@ abstract class WorkspaceRemoteDataSource {
   Future<void> addExpense({
     required int tripId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -65,12 +63,14 @@ abstract class WorkspaceRemoteDataSource {
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
     String? receiptPath,
+    String? clientMutationId,
   });
 
   Future<void> updateExpense({
     required int tripId,
     required int expenseId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -79,9 +79,14 @@ abstract class WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     String? receiptPath,
     bool removeReceipt,
+    String? clientMutationId,
   });
 
-  Future<void> deleteExpense({required int tripId, required int expenseId});
+  Future<void> deleteExpense({
+    required int tripId,
+    required int expenseId,
+    String? clientMutationId,
+  });
 
   Future<RandomDrawResult> generateOrder({
     required int tripId,
@@ -143,10 +148,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   }
 
   @override
-  Future<void> setReadyToSettle({
-    required int tripId,
-    required bool isReady,
-  }) {
+  Future<void> setReadyToSettle({required int tripId, required bool isReady}) {
     return _mutationApi.setReadyToSettle(tripId: tripId, isReady: isReady);
   }
 
@@ -214,6 +216,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   Future<void> addExpense({
     required int tripId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -221,10 +224,12 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
     String? receiptPath,
+    String? clientMutationId,
   }) {
     return _mutationApi.addExpense(
       tripId: tripId,
       amount: amount,
+      currencyCode: currencyCode,
       category: category,
       note: note,
       date: date,
@@ -232,6 +237,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       splitMode: splitMode,
       splitValues: splitValues,
       receiptPath: receiptPath,
+      clientMutationId: clientMutationId,
     );
   }
 
@@ -240,6 +246,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required int tripId,
     required int expenseId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -248,11 +255,13 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     String? receiptPath,
     bool removeReceipt = false,
+    String? clientMutationId,
   }) {
     return _mutationApi.updateExpense(
       tripId: tripId,
       expenseId: expenseId,
       amount: amount,
+      currencyCode: currencyCode,
       category: category,
       note: note,
       date: date,
@@ -261,12 +270,21 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       splitValues: splitValues,
       receiptPath: receiptPath,
       removeReceipt: removeReceipt,
+      clientMutationId: clientMutationId,
     );
   }
 
   @override
-  Future<void> deleteExpense({required int tripId, required int expenseId}) {
-    return _mutationApi.deleteExpense(tripId: tripId, expenseId: expenseId);
+  Future<void> deleteExpense({
+    required int tripId,
+    required int expenseId,
+    String? clientMutationId,
+  }) {
+    return _mutationApi.deleteExpense(
+      tripId: tripId,
+      expenseId: expenseId,
+      clientMutationId: clientMutationId,
+    );
   }
 
   @override

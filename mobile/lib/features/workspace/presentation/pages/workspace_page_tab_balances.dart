@@ -139,7 +139,11 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              _signedMoney(context, item.net),
+                              _signedMoney(
+                                context,
+                                item.net,
+                                currencyCode: widget.trip.currencyCode,
+                              ),
                               style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(
                                     fontSize: 20,
@@ -404,7 +408,8 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                         userId: item.fromUserId,
                         name: item.from,
                         role: fromRole,
-                        avatarUrl: fromUser?.avatarThumbUrl ?? fromUser?.avatarUrl,
+                        avatarUrl:
+                            fromUser?.avatarThumbUrl ?? fromUser?.avatarUrl,
                         alignEnd: false,
                       ),
                     ),
@@ -430,13 +435,18 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            _formatMoney(context, item.amount),
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: amountColor,
-                              letterSpacing: -0.2,
+                            _formatMoney(
+                              context,
+                              item.amount,
+                              currencyCode: widget.trip.currencyCode,
                             ),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: amountColor,
+                                  letterSpacing: -0.2,
+                                ),
                           ),
                         ],
                       ),
@@ -469,19 +479,21 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                         children: [
                           Text(
                             detailTitle,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: isDark ? null : _splytoPrimary,
-                            ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: isDark ? null : _splytoPrimary,
+                                ),
                           ),
                           const SizedBox(height: 2),
                           Text(
                             detailSubtitle,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: isDark
-                                  ? colors.onSurfaceVariant
-                                  : _splytoMuted,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: isDark
+                                      ? colors.onSurfaceVariant
+                                      : _splytoMuted,
+                                ),
                           ),
                         ],
                       ),

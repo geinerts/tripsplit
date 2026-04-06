@@ -11,118 +11,190 @@ extension _TripsPageDialogs on _TripsPageState {
     var friendQuickPicks = const <TripUser>[];
     var isLoadingFriendQuickPicks = false;
     var friendQuickPicksRequested = false;
+    var selectedCurrencyCode = AppCurrencyCatalog.defaultCode;
 
     try {
-      return await showModalBottomSheet<_CreateTripResult>(
-        context: context,
-        showDragHandle: true,
-        isScrollControlled: true,
-        useSafeArea: true,
-        builder: (sheetContext) {
-          final t = sheetContext.l10n;
-          String? errorText;
+      return await Navigator.of(context).push<_CreateTripResult>(
+        MaterialPageRoute<_CreateTripResult>(
+          builder: (sheetContext) {
+            final t = sheetContext.l10n;
+            String? errorText;
 
-          Future<void> loadFriendQuickPicks(StateSetter setDialogState) async {
-            if (isLoadingFriendQuickPicks) {
-              return;
-            }
-            bool canUpdateDialog() {
-              final c = dialogBuildContext;
-              return mounted && c != null && c.mounted;
-            }
-
-            setDialogState(() {
-              isLoadingFriendQuickPicks = true;
-            });
-
-            try {
-              final cached = widget.friendsController.peekSnapshotCache(
-                allowStale: false,
-              );
-              final snapshot =
-                  cached ??
-                  await widget.friendsController.loadSnapshot(
-                    forceRefresh: false,
-                  );
-              if (!canUpdateDialog()) {
+            Future<void> loadFriendQuickPicks(
+              StateSetter setDialogState,
+            ) async {
+              if (isLoadingFriendQuickPicks) {
                 return;
               }
-              setDialogState(() {
-                friendQuickPicks = snapshot.friends
-                    .map(
-                      (friend) => TripUser(
-                        id: friend.id,
-                        nickname: friend.nickname,
-                        avatarUrl: friend.avatarUrl,
-                        avatarThumbUrl: friend.avatarThumbUrl,
-                      ),
-                    )
-                    .toList(growable: false);
-              });
-            } catch (_) {
-              if (!canUpdateDialog()) {
-                return;
+              bool canUpdateDialog() {
+                final c = dialogBuildContext;
+                return mounted && c != null && c.mounted;
               }
+
               setDialogState(() {
-                friendQuickPicks = const <TripUser>[];
+                isLoadingFriendQuickPicks = true;
               });
-            } finally {
-              if (canUpdateDialog()) {
+
+              try {
+                final cached = widget.friendsController.peekSnapshotCache(
+                  allowStale: false,
+                );
+                final snapshot =
+                    cached ??
+                    await widget.friendsController.loadSnapshot(
+                      forceRefresh: false,
+                    );
+                if (!canUpdateDialog()) {
+                  return;
+                }
                 setDialogState(() {
-                  isLoadingFriendQuickPicks = false;
+                  friendQuickPicks = snapshot.friends
+                      .map(
+                        (friend) => TripUser(
+                          id: friend.id,
+                          nickname: friend.nickname,
+                          avatarUrl: friend.avatarUrl,
+                          avatarThumbUrl: friend.avatarThumbUrl,
+                        ),
+                      )
+                      .toList(growable: false);
                 });
+              } catch (_) {
+                if (!canUpdateDialog()) {
+                  return;
+                }
+                setDialogState(() {
+                  friendQuickPicks = const <TripUser>[];
+                });
+              } finally {
+                if (canUpdateDialog()) {
+                  setDialogState(() {
+                    isLoadingFriendQuickPicks = false;
+                  });
+                }
               }
             }
-          }
 
-          Future<void> onPickTripImage(StateSetter setDialogState) async {
-            final hasImage = selectedImageBytes != null;
-            final platform = Theme.of(context).platform;
-            final isIOS = platform == TargetPlatform.iOS;
+            Future<void> onPickTripImage(StateSetter setDialogState) async {
+              final hasImage = selectedImageBytes != null;
+              final platform = Theme.of(context).platform;
+              final isIOS = platform == TargetPlatform.iOS;
 
-            if (isIOS) {
-              final selectedSource =
-                  await showCupertinoModalPopup<_TripImageSourceOption>(
-                    context: context,
-                    builder: (cupertinoContext) => CupertinoActionSheet(
-                      actions: [
-                        if (hasImage)
-                          CupertinoActionSheetAction(
-                            isDestructiveAction: true,
-                            onPressed: () => Navigator.of(
-                              cupertinoContext,
-                            ).pop(_TripImageSourceOption.remove),
-                            child: Text(
-                              _pageText(
-                                en: 'Remove image',
-                                lv: 'Noņemt attēlu',
+              if (isIOS) {
+                final selectedSource =
+                    await showCupertinoModalPopup<_TripImageSourceOption>(
+                      context: context,
+                      builder: (cupertinoContext) => CupertinoActionSheet(
+                        actions: [
+                          if (hasImage)
+                            CupertinoActionSheetAction(
+                              isDestructiveAction: true,
+                              onPressed: () => Navigator.of(
+                                cupertinoContext,
+                              ).pop(_TripImageSourceOption.remove),
+                              child: Text(
+                                _pageText(
+                                  en: 'Remove image',
+                                  lv: 'Noņemt attēlu',
+                                ),
                               ),
                             ),
+                          CupertinoActionSheetAction(
+                            onPressed: () => Navigator.of(
+                              cupertinoContext,
+                            ).pop(_TripImageSourceOption.camera),
+                            child: Text(t.takePhotoAction),
                           ),
-                        CupertinoActionSheetAction(
-                          onPressed: () => Navigator.of(
-                            cupertinoContext,
-                          ).pop(_TripImageSourceOption.camera),
-                          child: Text(t.takePhotoAction),
+                          CupertinoActionSheetAction(
+                            onPressed: () => Navigator.of(
+                              cupertinoContext,
+                            ).pop(_TripImageSourceOption.library),
+                            child: Text(t.chooseFromLibraryAction),
+                          ),
+                        ],
+                        cancelButton: CupertinoActionSheetAction(
+                          onPressed: () => Navigator.of(cupertinoContext).pop(),
+                          child: Text(t.cancelAction),
                         ),
-                        CupertinoActionSheetAction(
-                          onPressed: () => Navigator.of(
-                            cupertinoContext,
-                          ).pop(_TripImageSourceOption.library),
-                          child: Text(t.chooseFromLibraryAction),
-                        ),
-                      ],
-                      cancelButton: CupertinoActionSheetAction(
-                        onPressed: () => Navigator.of(cupertinoContext).pop(),
-                        child: Text(t.cancelAction),
                       ),
-                    ),
-                  );
+                    );
 
+                if (!mounted || !context.mounted || selectedSource == null) {
+                  return;
+                }
+
+                if (selectedSource == _TripImageSourceOption.remove) {
+                  setDialogState(() {
+                    selectedImageBytes = null;
+                    selectedImageName = null;
+                  });
+                  return;
+                }
+
+                final source = selectedSource == _TripImageSourceOption.camera
+                    ? ImageSource.camera
+                    : ImageSource.gallery;
+                final picked = await _pickTripImageForUploadFromSource(source);
+                if (!mounted || !context.mounted || picked == null) {
+                  return;
+                }
+                setDialogState(() {
+                  selectedImageBytes = picked.bytes;
+                  selectedImageName = picked.fileName;
+                });
+                return;
+              }
+
+              final selectedSource =
+                  await showModalBottomSheet<_TripImageSourceOption>(
+                    context: context,
+                    showDragHandle: true,
+                    builder: (bottomSheetContext) {
+                      return SafeArea(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.photo_camera_outlined),
+                              title: Text(t.takePhotoAction),
+                              onTap: () => Navigator.of(
+                                bottomSheetContext,
+                              ).pop(_TripImageSourceOption.camera),
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.photo_library_outlined),
+                              title: Text(t.chooseFromLibraryAction),
+                              onTap: () => Navigator.of(
+                                bottomSheetContext,
+                              ).pop(_TripImageSourceOption.library),
+                            ),
+                            if (hasImage)
+                              ListTile(
+                                leading: const Icon(Icons.delete_outline),
+                                title: Text(
+                                  _pageText(
+                                    en: 'Remove image',
+                                    lv: 'Noņemt attēlu',
+                                  ),
+                                ),
+                                onTap: () => Navigator.of(
+                                  bottomSheetContext,
+                                ).pop(_TripImageSourceOption.remove),
+                              ),
+                            ListTile(
+                              leading: const Icon(Icons.close),
+                              title: Text(t.cancelAction),
+                              onTap: () =>
+                                  Navigator.of(bottomSheetContext).pop(),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
               if (!mounted || !context.mounted || selectedSource == null) {
                 return;
               }
-
               if (selectedSource == _TripImageSourceOption.remove) {
                 setDialogState(() {
                   selectedImageBytes = null;
@@ -130,7 +202,6 @@ extension _TripsPageDialogs on _TripsPageState {
                 });
                 return;
               }
-
               final source = selectedSource == _TripImageSourceOption.camera
                   ? ImageSource.camera
                   : ImageSource.gallery;
@@ -142,335 +213,663 @@ extension _TripsPageDialogs on _TripsPageState {
                 selectedImageBytes = picked.bytes;
                 selectedImageName = picked.fileName;
               });
-              return;
             }
 
-            final selectedSource = await showModalBottomSheet<_TripImageSourceOption>(
-              context: context,
-              showDragHandle: true,
-              builder: (bottomSheetContext) {
-                return SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.photo_camera_outlined),
-                        title: Text(t.takePhotoAction),
-                        onTap: () => Navigator.of(
-                          bottomSheetContext,
-                        ).pop(_TripImageSourceOption.camera),
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.photo_library_outlined),
-                        title: Text(t.chooseFromLibraryAction),
-                        onTap: () => Navigator.of(
-                          bottomSheetContext,
-                        ).pop(_TripImageSourceOption.library),
-                      ),
-                      if (hasImage)
-                        ListTile(
-                          leading: const Icon(Icons.delete_outline),
-                          title: Text(
-                            _pageText(
-                              en: 'Remove image',
-                              lv: 'Noņemt attēlu',
+            Future<String?> pickCurrencyCode(
+              BuildContext dialogContext,
+              String currentCode,
+            ) async {
+              var query = '';
+              return showModalBottomSheet<String>(
+                context: dialogContext,
+                showDragHandle: true,
+                useSafeArea: true,
+                builder: (pickerContext) {
+                  final maxHeight =
+                      MediaQuery.sizeOf(pickerContext).height * 0.62;
+                  return SizedBox(
+                    height: maxHeight,
+                    child: StatefulBuilder(
+                      builder: (context, setPickerState) {
+                        final normalizedQuery = query.trim().toUpperCase();
+                        final filtered = AppCurrencyCatalog.supported
+                            .where((item) {
+                              if (normalizedQuery.isEmpty) {
+                                return true;
+                              }
+                              final haystack =
+                                  '${item.code} ${item.label} ${item.symbol}'
+                                      .toUpperCase();
+                              return haystack.contains(normalizedQuery);
+                            })
+                            .toList(growable: false);
+
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
+                              child: TextField(
+                                textInputAction: TextInputAction.search,
+                                onChanged: (value) {
+                                  setPickerState(() {
+                                    query = value;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  hintText: _pageText(
+                                    en: 'Search currency',
+                                    lv: 'Meklēt valūtu',
+                                  ),
+                                  prefixIcon: const Icon(Icons.search_rounded),
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          onTap: () => Navigator.of(
-                            bottomSheetContext,
-                          ).pop(_TripImageSourceOption.remove),
-                        ),
-                      ListTile(
-                        leading: const Icon(Icons.close),
-                        title: Text(t.cancelAction),
-                        onTap: () => Navigator.of(bottomSheetContext).pop(),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-            if (!mounted || !context.mounted || selectedSource == null) {
-              return;
-            }
-            if (selectedSource == _TripImageSourceOption.remove) {
-              setDialogState(() {
-                selectedImageBytes = null;
-                selectedImageName = null;
-              });
-              return;
-            }
-            final source = selectedSource == _TripImageSourceOption.camera
-                ? ImageSource.camera
-                : ImageSource.gallery;
-            final picked = await _pickTripImageForUploadFromSource(source);
-            if (!mounted || !context.mounted || picked == null) {
-              return;
-            }
-            setDialogState(() {
-              selectedImageBytes = picked.bytes;
-              selectedImageName = picked.fileName;
-            });
-          }
-
-          return StatefulBuilder(
-            builder: (context, setDialogState) {
-              dialogBuildContext = context;
-              final viewInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
-              final maxSheetHeight = MediaQuery.sizeOf(context).height * 0.9;
-              if (!friendQuickPicksRequested) {
-                friendQuickPicksRequested = true;
-                unawaited(loadFriendQuickPicks(setDialogState));
-              }
-
-              return Padding(
-                padding: EdgeInsets.only(bottom: viewInsetsBottom),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: maxSheetHeight),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            t.createNewTripTitle,
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                      ),
-                      Flexible(
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () => unawaited(
-                                      onPickTripImage(setDialogState),
-                                    ),
-                                    behavior: HitTestBehavior.opaque,
-                                    child: SizedBox(
-                                      width: 62,
-                                      height: 62,
-                                      child: Stack(
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          Container(
-                                            width: 56,
-                                            height: 56,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: AppDesign.cardStroke(context),
-                                              ),
-                                              gradient: selectedImageBytes == null
-                                                  ? AppDesign.brandGradient
-                                                  : null,
+                            Expanded(
+                              child: filtered.isEmpty
+                                  ? Center(
+                                      child: Text(
+                                        _pageText(
+                                          en: 'No currencies found',
+                                          lv: 'Valūtas netika atrastas',
+                                        ),
+                                        style: Theme.of(
+                                          pickerContext,
+                                        ).textTheme.bodyMedium,
+                                      ),
+                                    )
+                                  : ListView.separated(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        12,
+                                        0,
+                                        12,
+                                        12,
+                                      ),
+                                      itemCount: filtered.length,
+                                      separatorBuilder: (_, _) =>
+                                          const SizedBox(height: 6),
+                                      itemBuilder: (context, index) {
+                                        final item = filtered[index];
+                                        final selected =
+                                            item.code == currentCode;
+                                        return Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
                                             ),
-                                            alignment: Alignment.center,
-                                            child: selectedImageBytes == null
-                                                ? const Icon(
-                                                    Icons.image_outlined,
-                                                    color: Colors.white,
-                                                    size: 22,
-                                                  )
-                                                : ClipOval(
-                                                    child: Image.memory(
-                                                      selectedImageBytes!,
-                                                      width: 56,
-                                                      height: 56,
-                                                      fit: BoxFit.cover,
-                                                      gaplessPlayback: true,
-                                                    ),
+                                            onTap: () => Navigator.of(
+                                              pickerContext,
+                                            ).pop(item.code),
+                                            child: Ink(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                    12,
+                                                    10,
+                                                    12,
+                                                    10,
                                                   ),
-                                          ),
-                                          Positioned(
-                                            right: 0,
-                                            bottom: 0,
-                                            child: Container(
-                                              width: 24,
-                                              height: 24,
                                               decoration: BoxDecoration(
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.surface,
-                                                shape: BoxShape.circle,
+                                                borderRadius:
+                                                    BorderRadius.circular(14),
+                                                color: selected
+                                                    ? Theme.of(pickerContext)
+                                                          .colorScheme
+                                                          .primary
+                                                          .withValues(
+                                                            alpha: 0.10,
+                                                          )
+                                                    : Theme.of(pickerContext)
+                                                          .colorScheme
+                                                          .surfaceContainerHighest
+                                                          .withValues(
+                                                            alpha: 0.45,
+                                                          ),
                                                 border: Border.all(
-                                                  color: AppDesign.cardStroke(context),
+                                                  color: selected
+                                                      ? Theme.of(
+                                                          pickerContext,
+                                                        ).colorScheme.primary
+                                                      : AppDesign.cardStroke(
+                                                          pickerContext,
+                                                        ),
                                                 ),
                                               ),
-                                              alignment: Alignment.center,
-                                              child: Icon(
-                                                Icons.photo_camera_rounded,
-                                                size: 14,
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.onSurface,
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    width: 34,
+                                                    height: 34,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Theme.of(
+                                                        pickerContext,
+                                                      ).colorScheme.surface,
+                                                      border: Border.all(
+                                                        color:
+                                                            AppDesign.cardStroke(
+                                                              pickerContext,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    child: Text(
+                                                      item.symbol,
+                                                      style:
+                                                          Theme.of(
+                                                                pickerContext,
+                                                              )
+                                                              .textTheme
+                                                              .titleMedium
+                                                              ?.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w800,
+                                                              ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Expanded(
+                                                    child: Text(
+                                                      '${item.code} - ${item.label}',
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style:
+                                                          Theme.of(
+                                                                pickerContext,
+                                                              )
+                                                              .textTheme
+                                                              .titleSmall
+                                                              ?.copyWith(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                              ),
+                                                    ),
+                                                  ),
+                                                  if (selected)
+                                                    Icon(
+                                                      Icons
+                                                          .check_circle_rounded,
+                                                      color: Theme.of(
+                                                        pickerContext,
+                                                      ).colorScheme.primary,
+                                                    ),
+                                                ],
                                               ),
                                             ),
                                           ),
-                                        ],
+                                        );
+                                      },
+                                    ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                },
+              );
+            }
+
+            return StatefulBuilder(
+              builder: (context, setDialogState) {
+                dialogBuildContext = context;
+                AppCurrencyOption selectedCurrency =
+                    AppCurrencyCatalog.supported.first;
+                for (final item in AppCurrencyCatalog.supported) {
+                  if (item.code == selectedCurrencyCode) {
+                    selectedCurrency = item;
+                    break;
+                  }
+                }
+                final viewInsetsBottom = MediaQuery.of(
+                  context,
+                ).viewInsets.bottom;
+                final maxSheetHeight = MediaQuery.sizeOf(context).height;
+                if (!friendQuickPicksRequested) {
+                  friendQuickPicksRequested = true;
+                  unawaited(loadFriendQuickPicks(setDialogState));
+                }
+
+                return Scaffold(
+                  body: SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: viewInsetsBottom),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: maxSheetHeight),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  t.createNewTripTitle,
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                            ),
+                            Flexible(
+                              child: SingleChildScrollView(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  0,
+                                  16,
+                                  12,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () => unawaited(
+                                            onPickTripImage(setDialogState),
+                                          ),
+                                          behavior: HitTestBehavior.opaque,
+                                          child: SizedBox(
+                                            width: 62,
+                                            height: 62,
+                                            child: Stack(
+                                              clipBehavior: Clip.none,
+                                              children: [
+                                                Container(
+                                                  width: 56,
+                                                  height: 56,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                      color:
+                                                          AppDesign.cardStroke(
+                                                            context,
+                                                          ),
+                                                    ),
+                                                    gradient:
+                                                        selectedImageBytes ==
+                                                            null
+                                                        ? AppDesign
+                                                              .brandGradient
+                                                        : null,
+                                                  ),
+                                                  alignment: Alignment.center,
+                                                  child:
+                                                      selectedImageBytes == null
+                                                      ? const Icon(
+                                                          Icons.image_outlined,
+                                                          color: Colors.white,
+                                                          size: 22,
+                                                        )
+                                                      : ClipOval(
+                                                          child: Image.memory(
+                                                            selectedImageBytes!,
+                                                            width: 56,
+                                                            height: 56,
+                                                            fit: BoxFit.cover,
+                                                            gaplessPlayback:
+                                                                true,
+                                                          ),
+                                                        ),
+                                                ),
+                                                Positioned(
+                                                  right: 0,
+                                                  bottom: 0,
+                                                  child: Container(
+                                                    width: 24,
+                                                    height: 24,
+                                                    decoration: BoxDecoration(
+                                                      color: Theme.of(
+                                                        context,
+                                                      ).colorScheme.surface,
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color:
+                                                            AppDesign.cardStroke(
+                                                              context,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    alignment: Alignment.center,
+                                                    child: Icon(
+                                                      Icons
+                                                          .photo_camera_rounded,
+                                                      size: 14,
+                                                      color: Theme.of(
+                                                        context,
+                                                      ).colorScheme.onSurface,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: TextField(
+                                            controller: nameController,
+                                            decoration: InputDecoration(
+                                              labelText: t.tripNameLabel,
+                                              hintText: t.tripNameHint,
+                                            ),
+                                            onChanged: (_) {
+                                              setDialogState(() {
+                                                errorText = null;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: TextButton.icon(
+                                        onPressed: () => unawaited(
+                                          onPickTripImage(setDialogState),
+                                        ),
+                                        icon: const Icon(
+                                          Icons.tune_rounded,
+                                          size: 18,
+                                        ),
+                                        label: Text(
+                                          _pageText(
+                                            en: selectedImageBytes == null
+                                                ? 'Choose trip image'
+                                                : 'Adjust trip image',
+                                            lv: selectedImageBytes == null
+                                                ? 'Izvēlēties tripa attēlu'
+                                                : 'Pielāgot tripa attēlu',
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: TextField(
-                                      controller: nameController,
-                                      decoration: InputDecoration(
-                                        labelText: t.tripNameLabel,
-                                        hintText: t.tripNameHint,
+                                    if (selectedImageName != null) ...[
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        _pageText(
+                                          en: 'Selected image: $selectedImageName',
+                                          lv: 'Izvēlētais attēls: $selectedImageName',
+                                        ),
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodySmall,
                                       ),
-                                      onChanged: (_) {
-                                        setDialogState(() {
-                                          errorText = null;
-                                        });
+                                    ],
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      _pageText(
+                                        en: 'Main currency',
+                                        lv: 'Galvenā valūta',
+                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(18),
+                                        onTap: () async {
+                                          final picked = await pickCurrencyCode(
+                                            sheetContext,
+                                            selectedCurrencyCode,
+                                          );
+                                          if (!mounted ||
+                                              !context.mounted ||
+                                              picked == null) {
+                                            return;
+                                          }
+                                          setDialogState(() {
+                                            selectedCurrencyCode =
+                                                AppCurrencyCatalog.normalize(
+                                                  picked,
+                                                );
+                                          });
+                                        },
+                                        child: Ink(
+                                          padding: const EdgeInsets.fromLTRB(
+                                            12,
+                                            12,
+                                            12,
+                                            12,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              18,
+                                            ),
+                                            border: Border.all(
+                                              color: AppDesign.cardStroke(
+                                                context,
+                                              ),
+                                            ),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surfaceContainerHighest
+                                                .withValues(alpha: 0.35),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                width: 34,
+                                                height: 34,
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Theme.of(
+                                                    context,
+                                                  ).colorScheme.surface,
+                                                  border: Border.all(
+                                                    color: AppDesign.cardStroke(
+                                                      context,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  selectedCurrency.symbol,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleMedium
+                                                      ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                      ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: Text(
+                                                  '${selectedCurrency.code} - ${selectedCurrency.label}',
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleMedium
+                                                      ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                      ),
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons
+                                                    .keyboard_arrow_down_rounded,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurfaceVariant,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      t.selectedPeopleLabel,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    if (selectedUsers.isEmpty)
+                                      Text(
+                                        'No members selected yet.',
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodySmall,
+                                      )
+                                    else
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: [
+                                          for (final user
+                                              in selectedUsers.values)
+                                            InputChip(
+                                              label: Text(user.nickname),
+                                              selected: true,
+                                              onDeleted: () {
+                                                setDialogState(() {
+                                                  selected.remove(user.id);
+                                                  selectedUsers.remove(user.id);
+                                                });
+                                              },
+                                            ),
+                                        ],
+                                      ),
+                                    if (isLoadingFriendQuickPicks) ...[
+                                      const SizedBox(height: 10),
+                                      const LinearProgressIndicator(
+                                        minHeight: 2,
+                                      ),
+                                    ],
+                                    if (friendQuickPicks.isNotEmpty) ...[
+                                      const SizedBox(height: 10),
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: [
+                                          for (final friend in friendQuickPicks)
+                                            FilterChip(
+                                              label: Text(friend.nickname),
+                                              selected: selected.contains(
+                                                friend.id,
+                                              ),
+                                              onSelected: (isSelected) {
+                                                setDialogState(() {
+                                                  if (isSelected) {
+                                                    selected.add(friend.id);
+                                                    selectedUsers[friend.id] =
+                                                        friend;
+                                                  } else {
+                                                    selected.remove(friend.id);
+                                                    selectedUsers.remove(
+                                                      friend.id,
+                                                    );
+                                                  }
+                                                });
+                                              },
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                    if (errorText != null) ...[
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        errorText!,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.error,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const Divider(height: 1),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                12,
+                                10,
+                                12,
+                                12,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(sheetContext).pop(),
+                                      child: Text(t.cancelAction),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        final name = nameController.text.trim();
+                                        if (name.length < 2 ||
+                                            name.length > 120) {
+                                          setDialogState(() {
+                                            errorText =
+                                                t.tripNameLengthValidation;
+                                          });
+                                          return;
+                                        }
+
+                                        final memberIds = selected.toList(
+                                          growable: false,
+                                        )..sort();
+                                        Navigator.of(sheetContext).pop(
+                                          _CreateTripResult(
+                                            name: name,
+                                            currencyCode: selectedCurrencyCode,
+                                            memberIds: memberIds,
+                                            imageFileName: selectedImageName,
+                                            imageBytes: selectedImageBytes,
+                                          ),
+                                        );
                                       },
+                                      child: Text(t.createAction),
                                     ),
                                   ),
                                 ],
-                              ),
-                              if (selectedImageName != null) ...[
-                                const SizedBox(height: 6),
-                                Text(
-                                  _pageText(
-                                    en: 'Selected image: $selectedImageName',
-                                    lv: 'Izvēlētais attēls: $selectedImageName',
-                                  ),
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                              ],
-                              const SizedBox(height: 12),
-                              Text(
-                                t.selectedPeopleLabel,
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                              const SizedBox(height: 6),
-                              if (selectedUsers.isEmpty)
-                                Text(
-                                  'No members selected yet.',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                )
-                              else
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: [
-                                    for (final user in selectedUsers.values)
-                                      InputChip(
-                                        label: Text(user.nickname),
-                                        selected: true,
-                                        onDeleted: () {
-                                          setDialogState(() {
-                                            selected.remove(user.id);
-                                            selectedUsers.remove(user.id);
-                                          });
-                                        },
-                                      ),
-                                  ],
-                                ),
-                              if (isLoadingFriendQuickPicks) ...[
-                                const SizedBox(height: 10),
-                                const LinearProgressIndicator(minHeight: 2),
-                              ],
-                              if (friendQuickPicks.isNotEmpty) ...[
-                                const SizedBox(height: 10),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: [
-                                    for (final friend in friendQuickPicks)
-                                      FilterChip(
-                                        label: Text(friend.nickname),
-                                        selected: selected.contains(friend.id),
-                                        onSelected: (isSelected) {
-                                          setDialogState(() {
-                                            if (isSelected) {
-                                              selected.add(friend.id);
-                                              selectedUsers[friend.id] = friend;
-                                            } else {
-                                              selected.remove(friend.id);
-                                              selectedUsers.remove(friend.id);
-                                            }
-                                          });
-                                        },
-                                      ),
-                                  ],
-                                ),
-                              ],
-                              if (errorText != null) ...[
-                                const SizedBox(height: 12),
-                                Text(
-                                  errorText!,
-                                  style: Theme.of(context).textTheme.bodyMedium
-                                      ?.copyWith(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                      const Divider(height: 1),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextButton(
-                                onPressed: () =>
-                                    Navigator.of(sheetContext).pop(),
-                                child: Text(t.cancelAction),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  final name = nameController.text.trim();
-                                  if (name.length < 2 || name.length > 120) {
-                                    setDialogState(() {
-                                      errorText = t.tripNameLengthValidation;
-                                    });
-                                    return;
-                                  }
-
-                                  final memberIds = selected.toList(
-                                    growable: false,
-                                  )..sort();
-                                  Navigator.of(sheetContext).pop(
-                                    _CreateTripResult(
-                                      name: name,
-                                      memberIds: memberIds,
-                                      imageFileName: selectedImageName,
-                                      imageBytes: selectedImageBytes,
-                                    ),
-                                  );
-                                },
-                                child: Text(t.createAction),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       );
     } finally {
       Future<void>.delayed(const Duration(milliseconds: 350), () {

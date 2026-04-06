@@ -1,6 +1,145 @@
 part of 'profile_page.dart';
 
 extension _ProfilePageActions on _ProfilePageState {
+  static final Uri _portfolioUri = Uri.parse('https://portfolio.egm.lv');
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      if (!mounted) {
+        return;
+      }
+      final version = info.version.trim();
+      final build = info.buildNumber.trim();
+      final label = build.isEmpty ? version : '$version+$build';
+      _updateState(() {
+        _appVersionLabel = label.isEmpty ? '—' : label;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _appVersionLabel = '—';
+      });
+    }
+  }
+
+  Future<void> _openPortfolioUrl() async {
+    final opened = await launchUrl(
+      _portfolioUri,
+      mode: LaunchMode.externalApplication,
+    );
+    if (!opened && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _profileText(
+              en: 'Could not open website.',
+              lv: 'Neizdevās atvērt mājaslapu.',
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onFooterVersionTap() async {
+    await _openPortfolioUrl();
+  }
+
+  Future<void> _onFooterLogoTap() async {
+    if (!mounted) {
+      return;
+    }
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      await showCupertinoModalPopup<void>(
+        context: context,
+        builder: (sheetContext) {
+          return CupertinoActionSheet(
+            title: Text(
+              _profileText(
+                en: 'Open website?',
+                lv: 'Atvērt mājaslapu?',
+              ),
+            ),
+            message: Text('portfolio.egm.lv'),
+            actions: [
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  Navigator.of(sheetContext).pop();
+                  unawaited(_openPortfolioUrl());
+                },
+                child: Text(
+                  _profileText(
+                    en: 'Open portfolio.egm.lv',
+                    lv: 'Atvērt portfolio.egm.lv',
+                  ),
+                ),
+              ),
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              isDefaultAction: true,
+              onPressed: () => Navigator.of(sheetContext).pop(),
+              child: Text(_profileText(en: 'Cancel', lv: 'Atcelt')),
+            ),
+          );
+        },
+      );
+      return;
+    }
+
+    final shouldOpen = await showModalBottomSheet<bool>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  _profileText(
+                    en: 'Open website?',
+                    lv: 'Atvērt mājaslapu?',
+                  ),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'https://portfolio.egm.lv',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 14),
+                FilledButton(
+                  onPressed: () => Navigator.of(sheetContext).pop(true),
+                  child: Text(
+                    _profileText(
+                      en: 'Open portfolio.egm.lv',
+                      lv: 'Atvērt portfolio.egm.lv',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  onPressed: () => Navigator.of(sheetContext).pop(false),
+                  child: Text(_profileText(en: 'Cancel', lv: 'Atcelt')),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (shouldOpen == true) {
+      await _openPortfolioUrl();
+    }
+  }
+
   void _bindCommandController(ProfilePageCommandController? controller) {
     if (controller == null) {
       return;
@@ -370,12 +509,24 @@ extension _ProfilePageActions on _ProfilePageState {
         return;
       }
 
-      final rawBytes = await picked.readAsBytes();
-      final incomingName = picked.name.trim().isEmpty
+      final cropped = await AppImageCropper.cropAvatar(
+        context: context,
+        source: picked,
+      );
+      if (!mounted || cropped == null) {
+        return;
+      }
+
+      final rawBytes = await cropped.readAsBytes();
+      final fallbackName = picked.name.trim().isEmpty
           ? (source == ImageSource.camera
                 ? 'avatar_camera.jpg'
                 : 'avatar_gallery.jpg')
           : picked.name.trim();
+      final incomingName = _fileNameFromPath(
+        cropped.path,
+        fallbackName: fallbackName,
+      );
       final prepared = await _prepareAvatarForUpload(
         rawBytes: rawBytes,
         fileName: incomingName,
@@ -426,6 +577,22 @@ extension _ProfilePageActions on _ProfilePageState {
         context,
       ).showSnackBar(SnackBar(content: Text(context.l10n.avatarPickFailed)));
     }
+  }
+
+  String _fileNameFromPath(String path, {required String fallbackName}) {
+    final normalized = path.trim();
+    if (normalized.isEmpty) {
+      return fallbackName;
+    }
+    final slashIndex = normalized.lastIndexOf('/');
+    final candidate = slashIndex >= 0
+        ? normalized.substring(slashIndex + 1)
+        : normalized;
+    final trimmed = candidate.trim();
+    if (trimmed.isEmpty) {
+      return fallbackName;
+    }
+    return trimmed;
   }
 
   Future<({Uint8List bytes, String fileName})?> _prepareAvatarForUpload({

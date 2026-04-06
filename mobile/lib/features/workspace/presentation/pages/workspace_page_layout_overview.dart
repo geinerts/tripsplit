@@ -14,9 +14,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
       }
     }
     final yourShare = currentBalance?.owed ?? 0;
-    final unsettledAmount = snapshot.settlements
-        .where((item) => !item.isConfirmed)
-        .fold<double>(0, (sum, item) => sum + item.amount);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
@@ -26,13 +23,8 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             context,
             snapshot: snapshot,
             totalAmount: totalAmount,
-          ),
-          const SizedBox(height: 10),
-          _buildQuickStatsRow(
-            context,
-            totalAmount: totalAmount,
             yourShare: yourShare,
-            unsettledAmount: unsettledAmount,
+            currentBalance: currentBalance,
           ),
           if (!snapshot.isActive) ...[
             const SizedBox(height: 8),
@@ -55,6 +47,8 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     BuildContext context, {
     required WorkspaceSnapshot snapshot,
     required double totalAmount,
+    required double yourShare,
+    required BalanceItem? currentBalance,
   }) {
     final t = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -72,11 +66,70 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
         ? Colors.white.withValues(alpha: 0.20)
         : Colors.white.withValues(alpha: 0.74);
     final glassTitle = isDark ? Colors.white : _splytoFg;
+    final statusIcon = snapshot.isArchived
+        ? Icons.archive_outlined
+        : (snapshot.isSettling
+              ? Icons.payments_outlined
+              : Icons.play_circle_outline);
     final statusText = snapshot.isArchived
         ? t.archivedStatus
         : (snapshot.isSettling
               ? t.settlingStatus
               : (snapshot.allSettled ? t.settledStatus : t.activeStatus));
+    final isSettledState = snapshot.isArchived || snapshot.allSettled;
+    final statusChipForeground = snapshot.isSettling
+        ? (isDark ? const Color(0xFFFFC278) : const Color(0xFF9A5A16))
+        : (isSettledState
+              ? (isDark ? const Color(0xFFE7E2D8) : const Color(0xFF5E5448))
+              : (isDark ? const Color(0xFFA6E7C8) : const Color(0xFF2D7A5E)));
+    final statusChipBackground = snapshot.isSettling
+        ? (isDark ? const Color(0x33D4915C) : const Color(0x22D4915C))
+        : (isSettledState
+              ? (isDark
+                    ? Colors.white.withValues(alpha: 0.10)
+                    : Colors.white.withValues(alpha: 0.72))
+              : (isDark ? const Color(0x332D7A5E) : const Color(0x1F2D7A5E)));
+    final statusChipBorder = snapshot.isSettling
+        ? (isDark ? const Color(0x66D4915C) : const Color(0x66D4915C))
+        : (isSettledState
+              ? (isDark ? Colors.white.withValues(alpha: 0.24) : _splytoStroke)
+              : (isDark ? const Color(0x6654B77E) : const Color(0x6654B77E)));
+
+    final currentNet = currentBalance?.net ?? 0;
+    final showsPositive = currentNet > 0.004;
+    final showsNegative = currentNet < -0.004;
+    final primaryLabel = isSettledState
+        ? _localizedText(context, en: 'Settled', lv: 'Norēķināts')
+        : (showsNegative
+              ? _localizedText(context, en: 'You owe', lv: 'Tu esi parādā')
+              : (showsPositive
+                    ? _localizedText(
+                        context,
+                        en: 'They owe you',
+                        lv: 'Tev ir parādā',
+                      )
+                    : _localizedText(
+                        context,
+                        en: 'Settled',
+                        lv: 'Norēķināts',
+                      )));
+    final primaryValue = _formatMoney(
+      context,
+      currentNet.abs(),
+      currencyCode: widget.trip.currencyCode,
+    );
+    final primaryIcon = isSettledState
+        ? Icons.check_circle_outline
+        : (showsNegative
+              ? Icons.arrow_upward_rounded
+              : (showsPositive
+                    ? Icons.arrow_downward_rounded
+                    : Icons.check_circle_outline));
+    final primaryIconColor = isSettledState
+        ? _splytoPrimary
+        : (showsNegative
+              ? _splytoDestructive
+              : (showsPositive ? _splytoPrimary : _splytoPrimary));
 
     return Container(
       width: double.infinity,
@@ -159,60 +212,29 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
               ),
             ),
           ),
-          Positioned(
-            right: 16,
-            top: 16,
-            child: Container(
-              width: 11,
-              height: 11,
-              decoration: BoxDecoration(
-                color: _splytoAccent.withValues(alpha: 0.92),
-                shape: BoxShape.circle,
+          if (_isCurrentTripOwner())
+            Positioned(
+              right: 12,
+              top: 10,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.22),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: _openTripActionsSheet,
+                  icon: const Icon(Icons.more_vert),
+                  color: Colors.white,
+                  visualDensity: VisualDensity.compact,
+                  tooltip: context.l10n.settings,
+                ),
               ),
             ),
-          ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: isDark ? 0.28 : 0.24),
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.30),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        snapshot.isArchived
-                            ? Icons.archive_outlined
-                            : (snapshot.isSettling
-                                  ? Icons.payments_outlined
-                                  : Icons.play_circle_outline),
-                        size: 14,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        statusText,
-                        style: Theme.of(context).textTheme.labelMedium
-                            ?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -229,16 +251,17 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: _buildTripHeroMemberStack(snapshot.users),
-                    ),
                   ],
                 ),
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: _buildTripHeroMemberStack(snapshot.users),
+                ),
+                const SizedBox(height: 8),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
                   decoration: BoxDecoration(
                     color: glassBgColor,
                     borderRadius: BorderRadius.circular(16),
@@ -267,25 +290,102 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                                   ),
                             ),
                           ),
+                          const SizedBox(width: 8),
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 148),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusChipBackground,
+                                borderRadius: BorderRadius.circular(9),
+                                border: Border.all(color: statusChipBorder),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    statusIcon,
+                                    size: 13,
+                                    color: statusChipForeground,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Flexible(
+                                    child: Text(
+                                      statusText,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall
+                                          ?.copyWith(
+                                            color: statusChipForeground,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Divider(
-                        height: 1,
-                        color: glassBorderColor,
-                      ),
+                      Divider(height: 1, color: glassBorderColor),
                       const SizedBox(height: 8),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          _formatMoney(context, totalAmount),
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(
-                                color: glassTitle,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: -0.2,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildHeroStatItem(
+                              context,
+                              icon: Icons.account_balance_wallet_outlined,
+                              label: _localizedText(
+                                context,
+                                en: 'Total cost',
+                                lv: 'Kopējās izmaksas',
                               ),
-                        ),
+                              value: _formatMoney(
+                                context,
+                                totalAmount,
+                                currencyCode: widget.trip.currencyCode,
+                              ),
+                              iconColor: _splytoPrimary,
+                              textColor: glassTitle,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: _buildHeroStatItem(
+                              context,
+                              icon: Icons.credit_card_outlined,
+                              label: _localizedText(
+                                context,
+                                en: 'Your share',
+                                lv: 'Tava daļa',
+                              ),
+                              value: _formatMoney(
+                                context,
+                                yourShare,
+                                currencyCode: widget.trip.currencyCode,
+                              ),
+                              iconColor: _splytoAccent,
+                              textColor: glassTitle,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: _buildHeroStatItem(
+                              context,
+                              icon: primaryIcon,
+                              label: primaryLabel,
+                              value: primaryValue,
+                              iconColor: primaryIconColor,
+                              textColor: glassTitle,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -295,6 +395,50 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildHeroStatItem(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color iconColor,
+    required Color textColor,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 14, color: iconColor),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                label.toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: textColor.withValues(alpha: 0.82),
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.25,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            color: textColor,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.15,
+          ),
+        ),
+      ],
     );
   }
 
@@ -356,131 +500,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                 ),
               ),
             ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickStatsRow(
-    BuildContext context, {
-    required double totalAmount,
-    required double yourShare,
-    required double unsettledAmount,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDark
-        ? Theme.of(context).colorScheme.surface
-        : _splytoCard;
-
-    return Row(
-      children: [
-        Expanded(
-          child: _buildQuickStatCard(
-            context,
-            icon: Icons.account_balance_wallet_outlined,
-            label: _localizedText(
-              context,
-              en: 'Total cost',
-              lv: 'Kopējās izmaksas',
-            ),
-            value: _formatMoney(context, totalAmount),
-            iconColor: _splytoPrimary,
-            cardColor: cardColor,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _buildQuickStatCard(
-            context,
-            icon: Icons.credit_card_outlined,
-            label: _localizedText(context, en: 'Your share', lv: 'Tava daļa'),
-            value: _formatMoney(context, yourShare),
-            iconColor: _splytoAccent,
-            cardColor: cardColor,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _buildQuickStatCard(
-            context,
-            icon: Icons.arrow_forward_rounded,
-            label: _localizedText(context, en: 'Unsettled', lv: 'Atlikums'),
-            value: _formatMoney(context, unsettledAmount),
-            iconColor: _splytoDestructive,
-            cardColor: cardColor,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildQuickStatCard(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required String value,
-    required Color iconColor,
-    required Color cardColor,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final labelText = label.toUpperCase();
-    return Container(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: isDark
-              ? Theme.of(
-                  context,
-                ).colorScheme.outlineVariant.withValues(alpha: 0.30)
-              : _splytoStroke,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x12000000),
-            blurRadius: 14,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            alignment: Alignment.center,
-            child: Icon(icon, size: 17, color: iconColor),
-          ),
-          const SizedBox(height: 9),
-          Text(
-            labelText,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: isDark
-                  ? Theme.of(context).colorScheme.onSurfaceVariant
-                  : _splytoMuted,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.35,
-            ),
-          ),
-          const SizedBox(height: 5),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: isDark ? null : _splytoFg,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.2,
-            ),
-          ),
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../../../../core/auth/auth_session_store.dart';
+import '../../../../core/auth/current_user_store.dart';
 import '../../../../core/auth/device_token_store.dart';
 import '../../../../core/auth/user_avatar_store.dart';
 import '../../../../core/network/legacy_avatar_uploader.dart';
@@ -25,6 +26,7 @@ class AuthController {
     this._getMeUseCase,
     this._tokenStore,
     this._authSessionStore,
+    this._currentUserStore,
     this._avatarStore,
     this._avatarUploader,
     this._feedbackReporter,
@@ -38,6 +40,7 @@ class AuthController {
   final GetMeUseCase _getMeUseCase;
   final DeviceTokenStore _tokenStore;
   final AuthSessionStore _authSessionStore;
+  final CurrentUserStore _currentUserStore;
   final UserAvatarStore _avatarStore;
   final LegacyAvatarUploader _avatarUploader;
   final LegacyFeedbackReporter _feedbackReporter;
@@ -52,7 +55,7 @@ class AuthController {
     final user = await _withStoredAvatar(
       await _loginUseCase.call(email: email, password: password),
     );
-    currentUser = user;
+    await _setCurrentUser(user);
     unawaited(_syncPushRegistration());
     return user;
   }
@@ -73,7 +76,7 @@ class AuthController {
         password: password,
       ),
     );
-    currentUser = user;
+    await _setCurrentUser(user);
     unawaited(_syncPushRegistration());
     return user;
   }
@@ -85,7 +88,7 @@ class AuthController {
     final user = await _withStoredAvatar(
       await _setCredentialsUseCase.call(email: email, password: password),
     );
-    currentUser = user;
+    await _setCurrentUser(user);
     unawaited(_syncPushRegistration());
     return user;
   }
@@ -106,16 +109,30 @@ class AuthController {
         password: password,
       ),
     );
-    currentUser = user;
+    await _setCurrentUser(user);
     unawaited(_syncPushRegistration());
     return user;
   }
 
   Future<AuthUser> loadCurrentUser() async {
     final user = await _withStoredAvatar(await _getMeUseCase.call());
-    currentUser = user;
+    await _setCurrentUser(user);
     unawaited(_syncPushRegistration());
     return user;
+  }
+
+  Future<AuthUser?> readCachedCurrentUser() async {
+    final inMemory = currentUser;
+    if (inMemory != null && inMemory.id > 0) {
+      return inMemory;
+    }
+    final stored = await _currentUserStore.read();
+    if (stored == null || stored.id <= 0) {
+      return null;
+    }
+    final merged = await _withStoredAvatar(stored);
+    await _setCurrentUser(merged);
+    return merged;
   }
 
   Future<bool> hasRecoverableSession() async {
@@ -165,7 +182,7 @@ class AuthController {
     final next = encoded == null
         ? user.copyWith(clearAvatar: true)
         : user.copyWith(avatarBase64: encoded);
-    currentUser = next;
+    await _setCurrentUser(next);
     return next;
   }
 
@@ -193,7 +210,7 @@ class AuthController {
       userId: merged.id,
       avatarBase64: encoded,
     );
-    currentUser = merged;
+    await _setCurrentUser(merged);
     return merged;
   }
 
@@ -210,7 +227,7 @@ class AuthController {
     ).copyWith(clearAvatar: true);
 
     await _avatarStore.writeAvatarBase64(userId: merged.id, avatarBase64: null);
-    currentUser = merged;
+    await _setCurrentUser(merged);
     return merged;
   }
 
@@ -243,6 +260,7 @@ class AuthController {
     await _authSessionStore.clear();
     await _tokenStore.resetToken();
     currentUser = null;
+    await _currentUserStore.clear();
   }
 
   Future<void> syncPushRegistration() {
@@ -263,6 +281,11 @@ class AuthController {
       return user;
     }
     return user.copyWith(avatarBase64: stored);
+  }
+
+  Future<void> _setCurrentUser(AuthUser user) async {
+    currentUser = user;
+    await _currentUserStore.write(user);
   }
 
   AuthUser _mergeRemoteMe(AuthUser fallback, Map<String, dynamic>? mePayload) {

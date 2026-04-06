@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'dart:typed_data';
 
+import '../../../../core/errors/api_exception.dart';
+import '../../data/local/trips_local_store.dart';
 import '../../domain/entities/trip.dart';
+import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_user.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
@@ -9,6 +13,7 @@ import '../../domain/usecases/delete_trip_use_case.dart';
 import '../../domain/usecases/create_trip_use_case.dart';
 import '../../domain/usecases/create_trip_invite_link_use_case.dart';
 import '../../domain/usecases/list_directory_users_use_case.dart';
+import '../../domain/usecases/join_trip_invite_use_case.dart';
 import '../../domain/usecases/list_trips_use_case.dart';
 import '../../domain/usecases/update_trip_use_case.dart';
 import '../../domain/usecases/upload_trip_image_use_case.dart';
@@ -21,8 +26,10 @@ class TripsController {
     this._addTripMembersUseCase,
     this._deleteTripUseCase,
     this._createTripInviteLinkUseCase,
+    this._joinTripInviteUseCase,
     this._updateTripUseCase,
     this._uploadTripImageUseCase,
+    this._localStore,
   );
 
   final ListTripsUseCase _listTripsUseCase;
@@ -31,10 +38,14 @@ class TripsController {
   final AddTripMembersUseCase _addTripMembersUseCase;
   final DeleteTripUseCase _deleteTripUseCase;
   final CreateTripInviteLinkUseCase _createTripInviteLinkUseCase;
+  final JoinTripInviteUseCase _joinTripInviteUseCase;
   final UpdateTripUseCase _updateTripUseCase;
   final UploadTripImageUseCase _uploadTripImageUseCase;
+  final TripsLocalStore _localStore;
   List<Trip> _cachedTrips = const <Trip>[];
   DateTime? _cachedTripsAt;
+  bool _diskCachePrimed = false;
+  Future<void>? _primeDiskCacheInFlight;
   static const Duration _cacheTtl = Duration(minutes: 2);
 
   List<Trip>? peekTripsCache({bool allowStale = true}) {
@@ -52,16 +63,33 @@ class TripsController {
 
   Future<List<Trip>> loadTrips({bool forceRefresh = false}) async {
     if (!forceRefresh) {
+      await _primeCacheFromDisk();
       final cached = peekTripsCache(allowStale: false);
       if (cached != null) {
         return cached;
       }
     }
 
-    final trips = await _listTripsUseCase.call();
-    _cachedTrips = List<Trip>.unmodifiable(trips);
-    _cachedTripsAt = DateTime.now();
-    return _cachedTrips;
+    try {
+      final trips = await _listTripsUseCase.call();
+      await _setCachedTrips(trips, persist: true);
+      return _cachedTrips;
+    } on ApiException catch (error) {
+      if (!error.isNetworkError) {
+        rethrow;
+      }
+      await _primeCacheFromDisk();
+      final cached = peekTripsCache(allowStale: true);
+      if (cached != null) {
+        return cached;
+      }
+      rethrow;
+    }
+  }
+
+  Future<List<Trip>?> primeTripsCacheFromDisk() async {
+    await _primeCacheFromDisk();
+    return peekTripsCache(allowStale: true);
   }
 
   Future<List<TripUser>> loadDirectoryUsers({
@@ -78,20 +106,27 @@ class TripsController {
 
   Future<Trip> createTrip({
     required String name,
+    required String currencyCode,
     required List<int> memberIds,
   }) {
-    return _createTripUseCase.call(name: name, memberIds: memberIds);
+    return _createTripUseCase.call(
+      name: name,
+      currencyCode: currencyCode,
+      memberIds: memberIds,
+    );
   }
 
   Future<Trip> updateTrip({
     required int tripId,
     required String name,
     String? imagePath,
+    bool removeImage = false,
   }) {
     return _updateTripUseCase.call(
       tripId: tripId,
       name: name,
       imagePath: imagePath,
+      removeImage: removeImage,
     );
   }
 
@@ -120,8 +155,51 @@ class TripsController {
     return _createTripInviteLinkUseCase.call(tripId: tripId);
   }
 
+  Future<TripInviteJoinResult> joinTripInvite({required String inviteToken}) {
+    return _joinTripInviteUseCase.call(inviteToken: inviteToken);
+  }
+
   void clearTripsCache() {
     _cachedTrips = const <Trip>[];
     _cachedTripsAt = null;
+    _diskCachePrimed = true;
+    _primeDiskCacheInFlight = null;
+    unawaited(_localStore.clear());
+  }
+
+  Future<void> _setCachedTrips(
+    List<Trip> trips, {
+    required bool persist,
+  }) async {
+    _cachedTrips = List<Trip>.unmodifiable(trips);
+    _cachedTripsAt = DateTime.now();
+    _diskCachePrimed = true;
+    if (persist) {
+      await _localStore.writeTrips(_cachedTrips);
+    }
+  }
+
+  Future<void> _primeCacheFromDisk() async {
+    if (_diskCachePrimed) {
+      return;
+    }
+    final inFlight = _primeDiskCacheInFlight;
+    if (inFlight != null) {
+      await inFlight;
+      return;
+    }
+    final next = () async {
+      try {
+        final persisted = await _localStore.readTrips();
+        if (persisted.isNotEmpty) {
+          await _setCachedTrips(persisted, persist: false);
+        }
+      } finally {
+        _diskCachePrimed = true;
+      }
+    }();
+    _primeDiskCacheInFlight = next;
+    await next;
+    _primeDiskCacheInFlight = null;
   }
 }

@@ -254,7 +254,11 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                _formatMoney(context, expense.amount),
+                                _formatMoney(
+                                  context,
+                                  expense.amount,
+                                  currencyCode: expense.tripCurrencyCode,
+                                ),
                                 style: Theme.of(context).textTheme.headlineSmall
                                     ?.copyWith(
                                       fontWeight: FontWeight.w800,
@@ -276,6 +280,21 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                                       fontWeight: FontWeight.w500,
                                     ),
                               ),
+                              if (expense.expenseCurrencyCode !=
+                                  expense.tripCurrencyCode)
+                                Text(
+                                  _formatMoney(
+                                    context,
+                                    expense.originalAmount,
+                                    currencyCode: expense.expenseCurrencyCode,
+                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: isDark
+                                            ? colors.onSurfaceVariant
+                                            : _splytoMuted,
+                                      ),
+                                ),
                             ],
                           ),
                         ],

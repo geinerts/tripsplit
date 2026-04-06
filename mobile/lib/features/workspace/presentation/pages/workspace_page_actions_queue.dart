@@ -42,6 +42,10 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
     final queuedExpense = TripExpense(
       id: -DateTime.now().millisecondsSinceEpoch,
       amount: form.amount,
+      originalAmount: form.amount,
+      tripCurrencyCode: widget.trip.currencyCode,
+      expenseCurrencyCode: form.currencyCode,
+      fxRateToTrip: 1.0,
       category: form.category,
       note: _tagQueuedNote(form.note),
       expenseDate: form.date,
@@ -105,6 +109,10 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
           return TripExpense(
             id: expense.id,
             amount: form.amount,
+            originalAmount: form.amount,
+            tripCurrencyCode: widget.trip.currencyCode,
+            expenseCurrencyCode: form.currencyCode,
+            fxRateToTrip: 1.0,
             category: form.category,
             note: _tagQueuedNote(form.note),
             expenseDate: form.date,

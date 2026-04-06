@@ -6,13 +6,18 @@ extension _TripsPageEditDialog on _TripsPageState {
     final nameController = TextEditingController(text: trip.name.trim());
     Uint8List? selectedImageBytes;
     String? selectedImageName;
+    bool removeImageRequested = false;
     String? errorText;
 
     Future<void> onPickTripImage(
       StateSetter setDialogState,
       BuildContext dialogContext,
     ) async {
-      final hasImage = selectedImageBytes != null;
+      final existingTripImageUrl = (trip.imageUrl ?? trip.imageThumbUrl ?? '')
+          .trim();
+      final hasExistingTripImage =
+          !removeImageRequested && existingTripImageUrl.isNotEmpty;
+      final hasImage = selectedImageBytes != null || hasExistingTripImage;
       final platform = Theme.of(dialogContext).platform;
       final isIOS = platform == TargetPlatform.iOS;
 
@@ -62,6 +67,7 @@ extension _TripsPageEditDialog on _TripsPageState {
           setDialogState(() {
             selectedImageBytes = null;
             selectedImageName = null;
+            removeImageRequested = true;
           });
           return;
         }
@@ -76,6 +82,7 @@ extension _TripsPageEditDialog on _TripsPageState {
         setDialogState(() {
           selectedImageBytes = picked.bytes;
           selectedImageName = picked.fileName;
+          removeImageRequested = false;
         });
         return;
       }
@@ -132,6 +139,7 @@ extension _TripsPageEditDialog on _TripsPageState {
         setDialogState(() {
           selectedImageBytes = null;
           selectedImageName = null;
+          removeImageRequested = true;
         });
         return;
       }
@@ -145,6 +153,7 @@ extension _TripsPageEditDialog on _TripsPageState {
       setDialogState(() {
         selectedImageBytes = picked.bytes;
         selectedImageName = picked.fileName;
+        removeImageRequested = false;
       });
     }
 
@@ -154,9 +163,10 @@ extension _TripsPageEditDialog on _TripsPageState {
         builder: (dialogContext) {
           return StatefulBuilder(
             builder: (context, setDialogState) {
-              final hasExistingTripImage = (trip.imageUrl ?? '')
-                  .trim()
-                  .isNotEmpty;
+              final existingTripImageUrl =
+                  (trip.imageUrl ?? trip.imageThumbUrl ?? '').trim();
+              final hasExistingTripImage =
+                  !removeImageRequested && existingTripImageUrl.isNotEmpty;
               return AlertDialog(
                 title: Text('${t.editAction} ${t.tripTitleShort}'),
                 content: SizedBox(
@@ -213,7 +223,7 @@ extension _TripsPageEditDialog on _TripsPageState {
                                           : hasExistingTripImage
                                           ? ClipOval(
                                               child: Image.network(
-                                                trip.imageUrl!,
+                                                existingTripImageUrl,
                                                 width: 56,
                                                 height: 56,
                                                 fit: BoxFit.cover,
@@ -277,6 +287,26 @@ extension _TripsPageEditDialog on _TripsPageState {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton.icon(
+                            onPressed: () => unawaited(
+                              onPickTripImage(setDialogState, dialogContext),
+                            ),
+                            icon: const Icon(Icons.tune_rounded, size: 18),
+                            label: Text(
+                              _pageText(
+                                en: selectedImageBytes == null
+                                    ? 'Choose trip image'
+                                    : 'Adjust trip image',
+                                lv: selectedImageBytes == null
+                                    ? 'Izvēlēties tripa attēlu'
+                                    : 'Pielāgot tripa attēlu',
+                              ),
+                            ),
+                          ),
+                        ),
                         if (selectedImageName != null) ...[
                           const SizedBox(height: 4),
                           Text(
@@ -286,7 +316,8 @@ extension _TripsPageEditDialog on _TripsPageState {
                             ),
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
-                        ] else if ((trip.imageUrl ?? '').trim().isNotEmpty) ...[
+                        ] else if (existingTripImageUrl.isNotEmpty &&
+                            !removeImageRequested) ...[
                           const SizedBox(height: 4),
                           Text(
                             _pageText(
@@ -330,6 +361,7 @@ extension _TripsPageEditDialog on _TripsPageState {
                           name: nextName,
                           imageFileName: selectedImageName,
                           imageBytes: selectedImageBytes,
+                          removeImage: removeImageRequested,
                         ),
                       );
                     },

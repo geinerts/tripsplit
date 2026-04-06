@@ -4,8 +4,10 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
@@ -15,6 +17,8 @@ import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/expenses/expense_category_catalog.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/currency/app_currency.dart';
+import '../../../../core/media/app_image_cropper.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
@@ -126,11 +130,12 @@ class _WorkspacePageState extends State<WorkspacePage> {
   int _pendingQueueCount = 0;
   int _expenseFilterUserId = 0;
   int _workspaceTabIndex = 0;
-  bool _isOverviewExpanded = false;
-  bool _showAllBalances = false;
+  final bool _isOverviewExpanded = false;
+  final bool _showAllBalances = false;
   int _handledRefreshRequestCount = 0;
   int _handledOpenAddExpenseRequestCount = 0;
   bool _openAddExpenseAfterLoad = false;
+  bool _isStartingWithAddExpense = false;
   List<QueuedMutation> _queuedMutations = const <QueuedMutation>[];
   WorkspaceSnapshot? _snapshot;
   List<TripExpense> _expensesFeed = const <TripExpense>[];
@@ -171,6 +176,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
       _currentUserId = initialUserId;
     }
     _openAddExpenseAfterLoad = widget.openAddExpenseOnStart;
+    _isStartingWithAddExpense = widget.openAddExpenseOnStart;
     unawaited(
       AppMonitoring.updateRuntimeContext(
         userId: widget.authController.currentUser?.id,

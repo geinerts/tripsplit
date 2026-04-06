@@ -277,6 +277,8 @@ extension _ProfilePageWidgets on _ProfilePageState {
             ),
             const SizedBox(height: 12),
             _buildProfileLogoutCard(context),
+            const SizedBox(height: 16),
+            _buildProfileFooter(context),
           ],
         ],
       ),
@@ -306,43 +308,78 @@ extension _ProfilePageWidgets on _ProfilePageState {
   }
 
   Widget _buildProfileLogoutCard(BuildContext context) {
-    final color = AppDesign.destructiveColor(context);
-    return AppSurfaceCard(
-      padding: EdgeInsets.zero,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(AppDesign.radiusLg),
-          onTap: _isBusy ? null : _onLogoutPressed,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  context.l10n.logOutButton,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  _profileText(
-                    en: 'Sign out from this device',
-                    lv: 'Izrakstīties no šīs ierīces',
-                  ),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: color.withValues(alpha: 0.72),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+    final textColor = AppDesign.titleColor(context);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+        onTap: _isBusy ? null : _onLogoutPressed,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+          child: Center(
+            child: Text(
+              context.l10n.logOutButton,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: textColor,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfileFooter(BuildContext context) {
+    final muted = AppDesign.mutedColor(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        children: [
+          Text(
+            _profileText(en: 'Made with', lv: 'Veidots ar'),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: muted,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 2),
+          InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: _onFooterLogoTap,
+            child: Transform.translate(
+              offset: const Offset(-3, 0),
+              child: SizedBox(
+                width: 54,
+                child: SvgPicture.asset(
+                  'assets/branding/egmlogo.svg',
+                  fit: BoxFit.contain,
+                  alignment: Alignment.center,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: _onFooterVersionTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              child: Text(
+                'v$_appVersionLabel',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: muted.withValues(alpha: 0.92),
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.2,
+                  decoration: TextDecoration.none,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

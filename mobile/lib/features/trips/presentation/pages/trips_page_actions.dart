@@ -4,10 +4,14 @@ extension _TripsPageActions on _TripsPageState {
   Future<void> _loadTrips({bool forceRefresh = true}) async {
     final trace = PerfMonitor.start('screen.trips.load');
     var success = false;
-    final cached = widget.controller.peekTripsCache(allowStale: true);
+    var cached = widget.controller.peekTripsCache(allowStale: true);
+    if (_trips.isEmpty && cached == null) {
+      cached = await widget.controller.primeTripsCacheFromDisk();
+    }
     if (_trips.isEmpty && cached != null) {
+      final cachedTrips = cached;
       _updateState(() {
-        _trips = cached;
+        _trips = cachedTrips;
         _isLoading = false;
         _errorText = null;
       });
@@ -95,6 +99,7 @@ extension _TripsPageActions on _TripsPageState {
     try {
       var createdTrip = await widget.controller.createTrip(
         name: result.name,
+        currencyCode: result.currencyCode,
         memberIds: result.memberIds,
       );
       final imageBytes = result.imageBytes;
@@ -231,7 +236,8 @@ extension _TripsPageActions on _TripsPageState {
     final imageFileName = result.imageFileName?.trim() ?? '';
     final hasNewImage =
         imageBytes != null && imageBytes.isNotEmpty && imageFileName.isNotEmpty;
-    if (!hasNameChange && !hasNewImage) {
+    final removeImage = result.removeImage && !hasNewImage;
+    if (!hasNameChange && !hasNewImage && !removeImage) {
       _showSnack(context.l10n.noChangesToSave);
       return;
     }
@@ -253,6 +259,7 @@ extension _TripsPageActions on _TripsPageState {
         tripId: trip.id,
         name: nextName,
         imagePath: imagePath,
+        removeImage: removeImage,
       );
       if (!mounted) {
         return;

@@ -6,6 +6,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
       _updateState(() {
         _selectedTabIndex = _MainShellPageState._tabHome;
         _openedTrip = null;
+        _openAddExpenseOnWorkspaceStart = false;
       });
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -149,6 +150,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
           _updateState(() {
             _selectedTabIndex = _MainShellPageState._tabActivities;
             _openedTrip = null;
+            _openAddExpenseOnWorkspaceStart = false;
           });
         }
         return;
@@ -158,6 +160,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
           _updateState(() {
             _selectedTabIndex = _MainShellPageState._tabFriends;
             _openedTrip = null;
+            _openAddExpenseOnWorkspaceStart = false;
           });
         }
         return;
@@ -167,6 +170,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
           _updateState(() {
             _selectedTabIndex = _MainShellPageState._tabProfile;
             _openedTrip = null;
+            _openAddExpenseOnWorkspaceStart = false;
           });
         }
         return;
@@ -176,6 +180,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
           _updateState(() {
             _selectedTabIndex = _MainShellPageState._tabHome;
             _openedTrip = null;
+            _openAddExpenseOnWorkspaceStart = false;
           });
         }
         return;
@@ -186,17 +191,9 @@ extension _MainShellPageNavigation on _MainShellPageState {
     _updateState(() {
       _selectedTabIndex = _MainShellPageState._tabHome;
       _openedTrip = trip;
+      _openAddExpenseOnWorkspaceStart = openAddExpense;
     });
     unawaited(_refreshGlobalNotifications());
-    if (!openAddExpense) {
-      return;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      _workspaceCommandController.requestOpenAddExpense();
-    });
   }
 
   void _closeWorkspaceInShell() {
@@ -205,6 +202,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
     }
     _updateState(() {
       _openedTrip = null;
+      _openAddExpenseOnWorkspaceStart = false;
     });
     _tripsCommandController.requestRefresh();
     unawaited(_refreshGlobalNotifications());

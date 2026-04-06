@@ -10,11 +10,13 @@ class UpdateTripUseCase {
     required int tripId,
     required String name,
     String? imagePath,
+    bool removeImage = false,
   }) {
     return _repository.updateTrip(
       tripId: tripId,
       name: name,
       imagePath: imagePath,
+      removeImage: removeImage,
     );
   }
 }

@@ -1,4 +1,4 @@
-# Trip Split Ultra (Hostinger-Friendly)
+# Trip Split Ultra (nano.lv-Friendly)
 
 ## Web UI status (March 12, 2026)
 
@@ -65,8 +65,8 @@ If tables already exist, run incremental migrations from [`sql/migrations/`](./s
 Run every 5 minutes:
 
 ```bash
-php /home3/<user>/public_html/projekti/trip/scripts/run_settlement_reminders.php
-php /home3/<user>/public_html/projekti/trip/scripts/run_push_delivery.php
+php /home/<user>/public_html/projekti/trip/scripts/run_settlement_reminders.php
+php /home/<user>/public_html/projekti/trip/scripts/run_push_delivery.php
 ```
 
 ## 3) Run
@@ -112,8 +112,8 @@ Notes:
 
 `register_proof`, `register`, `login`, `refresh_session`, `set_credentials`, `me`, `update_profile`, `trips`, `all_users`, `search_users`, `friends_list`, `send_friend_invite`, `respond_friend_invite`, `cancel_friend_invite`, `remove_friend`, `create_trip`, `update_trip`, `delete_trip`, `add_trip_members`, `users`, `upload_trip_image`, `upload_receipt`, `upload_avatar`, `remove_avatar`, `add_expense`, `update_expense`, `delete_expense`, `list_expenses`, `balances`, `end_trip`, `set_ready_to_settle`, `mark_settlement_sent`, `confirm_settlement_received`, `remind_settlement`, `list_notifications`, `list_notifications_global`, `mark_notifications_read`, `mark_notifications_read_global`, `register_push_token`, `unregister_push_token`, `create_trip_invite`, `join_trip_invite`, `submit_feedback`, `workspace_snapshot`, `generate_order`, `list_orders`, `admin_feedback_feed`, `admin_archive_feedback`, `admin_delete_feedback`, `admin_summary`, `admin_users`, `admin_user_detail`, `admin_delete_expense`, `admin_update_user`, `admin_delete_user`
 
-## Notes about realtime on Hostinger shared hosting
+## Notes about realtime on nano.lv shared hosting
 
-- Shared hosting typically does not support inbound WebSocket servers.
+- nano.lv shared hosting typically does not support inbound WebSocket servers.
 - This project uses polling every ~3.2s for instant-enough shared updates.
 - If you need true socket backend, use VPS or external realtime service.

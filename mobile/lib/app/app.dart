@@ -498,15 +498,35 @@ class _AppLaunchGateState extends State<_AppLaunchGate> {
       final hasSession = await widget.dependencies.authController
           .hasRecoverableSession();
       if (hasSession) {
-        final user = await widget.dependencies.authController
-            .loadCurrentUser()
-            .timeout(const Duration(seconds: 4));
-        nextRoute = user.needsCredentials
-            ? AppRouter.credentials
-            : AppRouter.trips;
+        var user = widget.dependencies.authController.currentUser;
+        if (user == null) {
+          try {
+            user = await widget.dependencies.authController
+                .loadCurrentUser()
+                .timeout(const Duration(seconds: 4));
+          } catch (_) {
+            user = await widget.dependencies.authController
+                .readCachedCurrentUser();
+          }
+        }
+        if (user == null) {
+          nextRoute = AppRouter.login;
+        } else {
+          nextRoute = user.needsCredentials
+              ? AppRouter.credentials
+              : AppRouter.trips;
+        }
       }
     } catch (_) {
-      nextRoute = AppRouter.login;
+      final fallback = await widget.dependencies.authController
+          .readCachedCurrentUser();
+      if (fallback != null) {
+        nextRoute = fallback.needsCredentials
+            ? AppRouter.credentials
+            : AppRouter.trips;
+      } else {
+        nextRoute = AppRouter.login;
+      }
     }
 
     if (!mounted || _navigated) {

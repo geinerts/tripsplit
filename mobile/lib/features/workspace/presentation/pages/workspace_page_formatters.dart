@@ -33,14 +33,27 @@ double _parseAmount(String raw) {
   return double.tryParse(normalized) ?? 0;
 }
 
-String _formatMoney(BuildContext context, double value) {
+String _formatMoney(
+  BuildContext context,
+  double value, {
+  String currencyCode = AppCurrencyCatalog.defaultCode,
+}) {
   final rounded = value.abs() < 0.005 ? 0.0 : value;
-  return AppFormatters.euro(context, rounded);
+  return AppFormatters.currency(context, rounded, currencyCode: currencyCode);
 }
 
-String _signedMoney(BuildContext context, double value) {
+String _signedMoney(
+  BuildContext context,
+  double value, {
+  String currencyCode = AppCurrencyCatalog.defaultCode,
+}) {
   final rounded = value.abs() < 0.005 ? 0.0 : value;
-  return AppFormatters.euro(context, rounded, signed: true);
+  return AppFormatters.currency(
+    context,
+    rounded,
+    currencyCode: currencyCode,
+    signed: true,
+  );
 }
 
 String _splitModeShortLabel(BuildContext context, String splitMode) {

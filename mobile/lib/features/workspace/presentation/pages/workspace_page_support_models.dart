@@ -3,6 +3,7 @@ part of 'workspace_page.dart';
 class _ExpenseFormResult {
   const _ExpenseFormResult({
     required this.amount,
+    required this.currencyCode,
     required this.date,
     required this.category,
     required this.note,
@@ -15,6 +16,7 @@ class _ExpenseFormResult {
   });
 
   final double amount;
+  final String currencyCode;
   final String date;
   final String category;
   final String note;
@@ -32,6 +34,22 @@ class _PickedFile {
   final String fileName;
   final Uint8List bytes;
 }
+
+class _EditTripResult {
+  const _EditTripResult({
+    required this.name,
+    this.imageFileName,
+    this.imageBytes,
+    this.removeImage = false,
+  });
+
+  final String name;
+  final String? imageFileName;
+  final Uint8List? imageBytes;
+  final bool removeImage;
+}
+
+enum _TripImageSourceOption { camera, library, remove }
 
 class _ExpenseShareLine {
   const _ExpenseShareLine({

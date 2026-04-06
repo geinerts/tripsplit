@@ -7,6 +7,8 @@ import '../../domain/entities/trip_expense.dart';
 import '../../domain/entities/workspace_notification.dart';
 import '../../domain/entities/workspace_snapshot.dart';
 import '../../domain/entities/workspace_user.dart';
+import '../../../../core/currency/app_currency.dart';
+import '../../../../core/network/media_url_resolver.dart';
 
 class WorkspaceSnapshotCodec {
   static Map<String, dynamic> toMap(WorkspaceSnapshot snapshot) {
@@ -77,6 +79,10 @@ class WorkspaceSnapshotCodec {
             (expense) => <String, dynamic>{
               'id': expense.id,
               'amount': expense.amount,
+              'original_amount': expense.originalAmount,
+              'trip_currency_code': expense.tripCurrencyCode,
+              'expense_currency_code': expense.expenseCurrencyCode,
+              'fx_rate_to_trip': expense.fxRateToTrip,
               'category': expense.category,
               'note': expense.note,
               'expense_date': expense.expenseDate,
@@ -130,20 +136,22 @@ class WorkspaceSnapshotCodec {
 
     final users = (map['users'] as List<dynamic>? ?? <dynamic>[])
         .whereType<Map<String, dynamic>>()
-        .map(
-          (item) => WorkspaceUser(
+        .map((item) {
+          final displayName = (item['display_name'] as String?)?.trim();
+          final avatarUrl = MediaUrlResolver.normalize(item['avatar_url']);
+          final avatarThumbUrl = MediaUrlResolver.normalize(
+            item['avatar_thumb_url'],
+          );
+          final readyToSettleAt = (item['ready_to_settle_at'] as String?)
+              ?.trim();
+          return WorkspaceUser(
             id: (item['id'] as num?)?.toInt() ?? 0,
             nickname: item['nickname'] as String? ?? '',
-            displayName: ((item['display_name'] as String?) ?? '').trim().isEmpty
+            displayName: (displayName == null || displayName.isEmpty)
                 ? null
-                : (item['display_name'] as String?)?.trim(),
-            avatarUrl: ((item['avatar_url'] as String?) ?? '').trim().isEmpty
-                ? null
-                : (item['avatar_url'] as String?)?.trim(),
-            avatarThumbUrl:
-                ((item['avatar_thumb_url'] as String?) ?? '').trim().isEmpty
-                ? null
-                : (item['avatar_thumb_url'] as String?)?.trim(),
+                : displayName,
+            avatarUrl: avatarUrl,
+            avatarThumbUrl: avatarThumbUrl,
             isReadyToSettle:
                 item['is_ready_to_settle'] == true ||
                 (item['is_ready_to_settle'] as num?)?.toInt() == 1 ||
@@ -151,11 +159,11 @@ class WorkspaceSnapshotCodec {
                 (item['is_ready_to_settle'] as String?)?.trim().toLowerCase() ==
                     'true',
             readyToSettleAt:
-                ((item['ready_to_settle_at'] as String?) ?? '').trim().isEmpty
+                (readyToSettleAt == null || readyToSettleAt.isEmpty)
                 ? null
-                : (item['ready_to_settle_at'] as String?)?.trim(),
-          ),
-        )
+                : readyToSettleAt,
+          );
+        })
         .toList(growable: false);
 
     final balances = (map['balances'] as List<dynamic>? ?? <dynamic>[])
@@ -210,9 +218,27 @@ class WorkspaceSnapshotCodec {
                   )
                   .toList(growable: false);
 
+          final amount = (item['amount'] as num?)?.toDouble() ?? 0;
+          final tripCurrencyCode = AppCurrencyCatalog.normalize(
+            item['trip_currency_code'] as String?,
+          );
+          final expenseCurrencyCode = AppCurrencyCatalog.normalize(
+            item['expense_currency_code'] as String?,
+            fallback: tripCurrencyCode,
+          );
+          final originalAmount =
+              (item['original_amount'] as num?)?.toDouble() ?? amount;
+          final rawFxRateToTrip =
+              (item['fx_rate_to_trip'] as num?)?.toDouble() ?? 1.0;
+          final fxRateToTrip = rawFxRateToTrip > 0 ? rawFxRateToTrip : 1.0;
+
           return TripExpense(
             id: (item['id'] as num?)?.toInt() ?? 0,
-            amount: (item['amount'] as num?)?.toDouble() ?? 0,
+            amount: amount,
+            originalAmount: originalAmount,
+            tripCurrencyCode: tripCurrencyCode,
+            expenseCurrencyCode: expenseCurrencyCode,
+            fxRateToTrip: fxRateToTrip,
             category: (item['category'] as String? ?? '').trim().isEmpty
                 ? 'other'
                 : (item['category'] as String? ?? '').trim(),
@@ -223,8 +249,10 @@ class WorkspaceSnapshotCodec {
             ),
             paidById: (item['paid_by_id'] as num?)?.toInt() ?? 0,
             paidByNickname: item['paid_by_nickname'] as String? ?? '',
-            receiptUrl: item['receipt_url'] as String?,
-            receiptThumbUrl: item['receipt_thumb_url'] as String?,
+            receiptUrl: MediaUrlResolver.normalize(item['receipt_url']),
+            receiptThumbUrl: MediaUrlResolver.normalize(
+              item['receipt_thumb_url'],
+            ),
             participants: participants,
           );
         })

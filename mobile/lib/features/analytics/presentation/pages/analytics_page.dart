@@ -7,6 +7,7 @@ import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/expenses/expense_category_catalog.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/currency/app_currency.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_formatters.dart';

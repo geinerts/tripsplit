@@ -59,8 +59,12 @@ extension _WorkspacePageLayout on _WorkspacePageState {
   }
 
   Widget _buildBody(BuildContext context) {
+    if (_isStartingWithAddExpense) {
+      return _buildWorkspaceLoadingSurface(context);
+    }
+
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return _buildWorkspaceLoadingSurface(context);
     }
 
     if (_errorText != null) {
@@ -280,6 +284,18 @@ extension _WorkspacePageLayout on _WorkspacePageState {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         child: _buildWorkspaceTabSwitcher(context),
+      ),
+    );
+  }
+
+  Widget _buildWorkspaceLoadingSurface(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return AppBackground(
+      child: ColoredBox(
+        color: isDark
+            ? Theme.of(context).scaffoldBackgroundColor
+            : _splytoCreamBg,
+        child: const Center(child: CircularProgressIndicator()),
       ),
     );
   }

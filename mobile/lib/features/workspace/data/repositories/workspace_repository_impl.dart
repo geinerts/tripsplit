@@ -23,6 +23,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   final WorkspaceRemoteDataSource _remote;
   final WorkspaceLocalStore _localStore;
   final WorkspaceOfflineQueue _offlineQueue;
+  int _mutationSeed = 0;
 
   @override
   Future<int> loadCurrentUserId() {
@@ -78,10 +79,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   }
 
   @override
-  Future<void> setReadyToSettle({
-    required int tripId,
-    required bool isReady,
-  }) {
+  Future<void> setReadyToSettle({required int tripId, required bool isReady}) {
     return _remote.setReadyToSettle(tripId: tripId, isReady: isReady);
   }
 
@@ -185,6 +183,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   Future<MutationResult> addExpense({
     required int tripId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -193,11 +192,16 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required List<ExpenseSplitValue> splitValues,
     String? receiptPath,
   }) {
+    final mutationId = _newClientMutationId(
+      type: 'add_expense',
+      tripId: tripId,
+    );
     return _runMutationOrQueue(
       remoteAction: () {
         return _remote.addExpense(
           tripId: tripId,
           amount: amount,
+          currencyCode: currencyCode,
           category: category,
           note: note,
           date: date,
@@ -205,12 +209,14 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitMode: splitMode,
           splitValues: splitValues,
           receiptPath: receiptPath,
+          clientMutationId: mutationId,
         );
       },
       enqueueOnNetworkError: () {
         return _offlineQueue.enqueueAddExpense(
           tripId: tripId,
           amount: amount,
+          currencyCode: currencyCode,
           category: category,
           note: note,
           date: date,
@@ -218,6 +224,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitMode: splitMode,
           splitValues: splitValues,
           receiptPath: receiptPath,
+          mutationId: mutationId,
         );
       },
     );
@@ -228,6 +235,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required int tripId,
     required int expenseId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -237,12 +245,17 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     String? receiptPath,
     bool removeReceipt = false,
   }) {
+    final mutationId = _newClientMutationId(
+      type: 'update_expense',
+      tripId: tripId,
+    );
     return _runMutationOrQueue(
       remoteAction: () {
         return _remote.updateExpense(
           tripId: tripId,
           expenseId: expenseId,
           amount: amount,
+          currencyCode: currencyCode,
           category: category,
           note: note,
           date: date,
@@ -251,6 +264,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
+          clientMutationId: mutationId,
         );
       },
       enqueueOnNetworkError: () {
@@ -258,6 +272,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           tripId: tripId,
           expenseId: expenseId,
           amount: amount,
+          currencyCode: currencyCode,
           category: category,
           note: note,
           date: date,
@@ -266,6 +281,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
+          mutationId: mutationId,
         );
       },
     );
@@ -276,17 +292,31 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required int tripId,
     required int expenseId,
   }) {
+    final mutationId = _newClientMutationId(
+      type: 'delete_expense',
+      tripId: tripId,
+    );
     return _runMutationOrQueue(
       remoteAction: () {
-        return _remote.deleteExpense(tripId: tripId, expenseId: expenseId);
+        return _remote.deleteExpense(
+          tripId: tripId,
+          expenseId: expenseId,
+          clientMutationId: mutationId,
+        );
       },
       enqueueOnNetworkError: () {
         return _offlineQueue.enqueueDeleteExpense(
           tripId: tripId,
           expenseId: expenseId,
+          mutationId: mutationId,
         );
       },
     );
+  }
+
+  @override
+  Future<void> flushPendingMutations() {
+    return _offlineQueue.flushBestEffort();
   }
 
   @override
@@ -312,5 +342,12 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       await enqueueOnNetworkError();
       return const MutationResult(queued: true);
     }
+  }
+
+  String _newClientMutationId({required String type, required int tripId}) {
+    _mutationSeed += 1;
+    final now = DateTime.now().microsecondsSinceEpoch;
+    final seed = _mutationSeed.toString().padLeft(4, '0');
+    return 'm_${type}_${tripId}_${now}_$seed';
   }
 }

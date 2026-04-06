@@ -7,7 +7,9 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
   }
 
   String _formatMoney(double amount) {
-    return AppFormatters.euro(context, amount);
+    final currencyCode =
+        _selectedTrip?.currencyCode ?? AppCurrencyCatalog.defaultCode;
+    return AppFormatters.currency(context, amount, currencyCode: currencyCode);
   }
 
   DateTime _dayOnly(DateTime day) {

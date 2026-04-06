@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' show ImageByteFormat, instantiateImageCodec;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
@@ -12,6 +12,8 @@ import '../../../../app/theme/app_design.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/currency/app_currency.dart';
+import '../../../../core/media/app_image_cropper.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
@@ -28,6 +30,7 @@ part 'trips_page_actions.dart';
 part 'trips_page_dialogs.dart';
 part 'trips_page_dialogs_edit.dart';
 part 'trips_page_dialogs_helpers.dart';
+part 'trips_page_invite.dart';
 part 'trips_page_widgets.dart';
 part 'trips_page_widgets_cards.dart';
 part 'trips_page_widgets_navigation.dart';
@@ -84,6 +87,7 @@ class _TripsPageState extends State<TripsPage> {
   bool _isLoading = true;
   bool _isMutating = false;
   bool _showAllTrips = false;
+  int _activeTripsPageIndex = 0;
   bool _openCreateAfterLoad = false;
   int _handledCreateTripRequestCount = 0;
   int _handledRefreshRequestCount = 0;
@@ -199,7 +203,7 @@ class _TripsPageState extends State<TripsPage> {
                             responsive.pageHorizontalPadding,
                             12,
                             responsive.pageHorizontalPadding,
-                            18,
+                            widget.showBottomNav ? 104 : 24,
                           ),
                           children: [
                             if (widget.showInlineHeader) ...[
@@ -208,7 +212,7 @@ class _TripsPageState extends State<TripsPage> {
                             ],
                             _buildSummaryCard(context, allTrips: _trips),
                             const SizedBox(height: 18),
-                            _buildTripsHeader(context),
+                            _buildTripsSectionHeader(context),
                             const SizedBox(height: 10),
                             if (visibleTrips.isEmpty)
                               _buildEmptyTripsState(context)
@@ -228,6 +232,10 @@ class _TripsPageState extends State<TripsPage> {
       bottomNavigationBar: widget.showBottomNav
           ? _buildBottomNav(context)
           : null,
+      floatingActionButton: (!_isLoading && _errorText == null)
+          ? _buildAddTripFloatingButton(context)
+          : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }

@@ -109,10 +109,32 @@ function mime_to_extension(string $mime): string
 
 function project_root_abs(): string
 {
-    $root = realpath(__DIR__ . '/..');
-    if ($root === false) {
+    static $root = null;
+    if (is_string($root) && $root !== '') {
+        return $root;
+    }
+
+    $candidates = [
+        realpath(__DIR__ . '/../..'),
+        realpath(__DIR__ . '/..'),
+    ];
+
+    foreach ($candidates as $candidate) {
+        if (!is_string($candidate) || $candidate === '') {
+            continue;
+        }
+        $apiEntry = $candidate . DIRECTORY_SEPARATOR . 'api' . DIRECTORY_SEPARATOR . 'api.php';
+        if (is_file($apiEntry)) {
+            $root = $candidate;
+            return $root;
+        }
+    }
+
+    $fallback = realpath(__DIR__ . '/../..');
+    if ($fallback === false) {
         throw new RuntimeException('Cannot resolve project root directory.');
     }
+    $root = $fallback;
     return $root;
 }
 

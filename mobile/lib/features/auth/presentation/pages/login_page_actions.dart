@@ -39,10 +39,12 @@ extension _LoginPageActions on _LoginPageState {
           password: _passwordController.text,
         );
       } else {
+        final firstName = _firstNameController.text.trim();
+        final lastName = _lastNameController.text.trim();
         user = await widget.controller.register(
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          nickname: _nicknameController.text.trim(),
+          firstName: firstName,
+          lastName: lastName,
+          nickname: _deriveNickname(firstName: firstName, lastName: lastName),
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
@@ -114,5 +116,16 @@ extension _LoginPageActions on _LoginPageState {
     final messenger = ScaffoldMessenger.of(context);
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  String _deriveNickname({
+    required String firstName,
+    required String lastName,
+  }) {
+    final combined = '$firstName $lastName'.trim();
+    if (combined.isNotEmpty) {
+      return combined;
+    }
+    return firstName.isNotEmpty ? firstName : lastName;
   }
 }

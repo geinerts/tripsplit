@@ -117,14 +117,21 @@ function trips_action(): void
     $tripImageSelect = trips_image_column_available($pdo)
         ? 't.image_path'
         : 'NULL AS image_path';
+    $tripCurrencySelect = trips_currency_column_available($pdo)
+        ? 't.currency_code'
+        : '\'' . default_trip_currency_code() . '\' AS currency_code';
     $tripImageGroupBy = trips_image_column_available($pdo)
         ? ', t.image_path'
+        : '';
+    $tripCurrencyGroupBy = trips_currency_column_available($pdo)
+        ? ', t.currency_code'
         : '';
 
     $stmt = $pdo->prepare(
         'SELECT
             t.id,
             t.name,
+            ' . $tripCurrencySelect . ',
             t.status,
             t.created_by,
             ' . $tripImageSelect . ',
@@ -172,7 +179,7 @@ function trips_action(): void
             t.created_by,
             t.created_at,
             t.ended_at,
-            t.archived_at' . $tripImageGroupBy . '
+            t.archived_at' . $tripImageGroupBy . $tripCurrencyGroupBy . '
          ORDER BY t.created_at DESC, t.id DESC'
     );
     $stmt->execute(['user_id' => $currentUserId]);
@@ -181,6 +188,9 @@ function trips_action(): void
     $activeTripId = null;
     foreach ($rows as &$row) {
         $row['id'] = (int) $row['id'];
+        $row['currency_code'] = normalize_currency_code(
+            $row['currency_code'] ?? default_trip_currency_code()
+        );
         $row['status'] = normalize_trip_status($row['status'] ?? 'active');
         $row['created_by'] = $row['created_by'] !== null ? (int) $row['created_by'] : null;
         $imagePath = trim((string) ($row['image_path'] ?? ''));
@@ -281,12 +291,20 @@ function create_trip_action(): void
     $pdo = db();
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
+    $tripCurrencyColumnAvailable = trips_currency_column_available($pdo);
 
     $name = trim((string) ($body['name'] ?? ''));
     if (str_length($name) < 2 || str_length($name) > 120) {
         json_out(['ok' => false, 'error' => 'Trip name must be 2-120 chars.'], 400);
     }
     ensure_text_has_no_links($name, 'Trip name');
+    $currencyCode = normalize_currency_code($body['currency_code'] ?? default_trip_currency_code());
+    if (!$tripCurrencyColumnAvailable && $currencyCode !== default_trip_currency_code()) {
+        json_out([
+            'ok' => false,
+            'error' => 'Trip currency support is not enabled on server yet. Run migration first.',
+        ], 409);
+    }
 
     $meId = (int) ($me['id'] ?? 0);
     enforce_rate_limit(
@@ -318,14 +336,26 @@ function create_trip_action(): void
 
     $pdo->beginTransaction();
     try {
-        $insertTrip = $pdo->prepare(
-            'INSERT INTO ' . $tripsTable . ' (name, created_by)
-             VALUES (:name, :created_by)'
-        );
-        $insertTrip->execute([
-            'name' => $name,
-            'created_by' => $meId,
-        ]);
+        if ($tripCurrencyColumnAvailable) {
+            $insertTrip = $pdo->prepare(
+                'INSERT INTO ' . $tripsTable . ' (name, currency_code, created_by)
+                 VALUES (:name, :currency_code, :created_by)'
+            );
+            $insertTrip->execute([
+                'name' => $name,
+                'currency_code' => $currencyCode,
+                'created_by' => $meId,
+            ]);
+        } else {
+            $insertTrip = $pdo->prepare(
+                'INSERT INTO ' . $tripsTable . ' (name, created_by)
+                 VALUES (:name, :created_by)'
+            );
+            $insertTrip->execute([
+                'name' => $name,
+                'created_by' => $meId,
+            ]);
+        }
         $tripId = (int) $pdo->lastInsertId();
 
         $insertMember = $pdo->prepare(
@@ -371,6 +401,7 @@ function create_trip_action(): void
         'trip' => [
             'id' => $tripId,
             'name' => $name,
+            'currency_code' => $currencyCode,
             'status' => 'active',
             'created_by' => $meId,
             'ended_at' => null,
@@ -391,6 +422,7 @@ function update_trip_action(): void
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
     $tripImageColumnAvailable = trips_image_column_available($pdo);
+    $tripCurrencyColumnAvailable = trips_currency_column_available($pdo);
 
     $tripId = (int) ($body['id'] ?? 0);
     if ($tripId <= 0) {
@@ -409,12 +441,16 @@ function update_trip_action(): void
     }
 
     $hasName = array_key_exists('name', $body);
+    $hasCurrencyCode = array_key_exists('currency_code', $body);
     $hasImagePath = array_key_exists('image_path', $body);
     $removeImage = (bool) ($body['remove_image'] ?? false);
     if (($hasImagePath || $removeImage) && !$tripImageColumnAvailable) {
         json_out(['ok' => false, 'error' => 'Trip image support is not enabled on server yet. Run migration first.'], 409);
     }
-    if (!$hasName && !$hasImagePath && !$removeImage) {
+    if ($hasCurrencyCode && !$tripCurrencyColumnAvailable) {
+        json_out(['ok' => false, 'error' => 'Trip currency support is not enabled on server yet. Run migration first.'], 409);
+    }
+    if (!$hasName && !$hasCurrencyCode && !$hasImagePath && !$removeImage) {
         json_out(['ok' => false, 'error' => 'No trip changes provided.'], 400);
     }
 
@@ -426,6 +462,12 @@ function update_trip_action(): void
         }
         ensure_text_has_no_links($name, 'Trip name');
         $nextName = $name;
+    }
+    $nextCurrencyCode = normalize_currency_code(
+        $trip['currency_code'] ?? default_trip_currency_code()
+    );
+    if ($hasCurrencyCode) {
+        $nextCurrencyCode = normalize_currency_code($body['currency_code'] ?? '');
     }
 
     enforce_rate_limit(
@@ -455,7 +497,33 @@ function update_trip_action(): void
         $nextImagePath = '';
     }
 
-    if ($tripImageColumnAvailable) {
+    if ($tripImageColumnAvailable && $tripCurrencyColumnAvailable) {
+        $update = $pdo->prepare(
+            'UPDATE ' . $tripsTable . '
+             SET name = :name,
+                 currency_code = :currency_code,
+                 image_path = :image_path
+             WHERE id = :id'
+        );
+        $update->execute([
+            'name' => $nextName,
+            'currency_code' => $nextCurrencyCode,
+            'image_path' => $nextImagePath !== '' ? $nextImagePath : null,
+            'id' => $tripId,
+        ]);
+    } elseif ($tripCurrencyColumnAvailable) {
+        $update = $pdo->prepare(
+            'UPDATE ' . $tripsTable . '
+             SET name = :name,
+                 currency_code = :currency_code
+             WHERE id = :id'
+        );
+        $update->execute([
+            'name' => $nextName,
+            'currency_code' => $nextCurrencyCode,
+            'id' => $tripId,
+        ]);
+    } elseif ($tripImageColumnAvailable) {
         $update = $pdo->prepare(
             'UPDATE ' . $tripsTable . '
              SET name = :name,
@@ -502,6 +570,9 @@ function update_trip_action(): void
         'trip' => [
             'id' => (int) ($fresh['id'] ?? 0),
             'name' => (string) ($fresh['name'] ?? ''),
+            'currency_code' => normalize_currency_code(
+                $fresh['currency_code'] ?? default_trip_currency_code()
+            ),
             'status' => normalize_trip_status($fresh['status'] ?? 'active'),
             'created_by' => array_key_exists('created_by', $fresh) && $fresh['created_by'] !== null
                 ? (int) $fresh['created_by']
@@ -620,9 +691,12 @@ function add_trip_members_action(): void
     $tripImageSelect = trips_image_column_available($pdo)
         ? 'image_path'
         : 'NULL AS image_path';
+    $tripCurrencySelect = trips_currency_column_available($pdo)
+        ? 'currency_code'
+        : '\'' . default_trip_currency_code() . '\' AS currency_code';
 
     $metaStmt = $pdo->prepare(
-        'SELECT id, name, status, created_by, ended_at, archived_at, ' . $tripImageSelect . '
+        'SELECT id, name, ' . $tripCurrencySelect . ', status, created_by, ended_at, archived_at, ' . $tripImageSelect . '
          FROM ' . $tripsTable . '
          WHERE id = :id
          LIMIT 1'
@@ -723,6 +797,9 @@ function add_trip_members_action(): void
         'trip' => [
             'id' => $tripId,
             'name' => (string) ($tripMeta['name'] ?? ''),
+            'currency_code' => normalize_currency_code(
+                $tripMeta['currency_code'] ?? default_trip_currency_code()
+            ),
             'status' => (string) ($tripMeta['status'] ?? 'active'),
             'created_by' => $creatorId,
             'ended_at' => $tripMeta['ended_at'] ?: null,

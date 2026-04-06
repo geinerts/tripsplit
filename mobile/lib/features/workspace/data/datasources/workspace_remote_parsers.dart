@@ -6,6 +6,8 @@ import '../../domain/entities/settlement_item.dart';
 import '../../domain/entities/trip_expense.dart';
 import '../../domain/entities/workspace_notification.dart';
 import '../../domain/entities/workspace_user.dart';
+import '../../../../core/network/media_url_resolver.dart';
+import '../../../../core/currency/app_currency.dart';
 
 class WorkspaceRemoteParsers {
   static int _toInt(Object? value, {int fallback = 0}) {
@@ -71,8 +73,12 @@ class WorkspaceRemoteParsers {
 
   static WorkspaceUser parseUser(Map<String, dynamic> item) {
     final displayName = (item['display_name'] as String? ?? '').trim();
-    final avatarUrl = (item['avatar_url'] as String? ?? '').trim();
-    final avatarThumbUrl = (item['avatar_thumb_url'] as String? ?? '').trim();
+    final avatarUrl = MediaUrlResolver.normalize(
+      (item['avatar_url'] as String? ?? '').trim(),
+    );
+    final avatarThumbUrl = MediaUrlResolver.normalize(
+      (item['avatar_thumb_url'] as String? ?? '').trim(),
+    );
     final isReadyToSettle = _toBool(
       item['is_ready_to_settle'] ?? item['is_ready'],
     );
@@ -83,8 +89,8 @@ class WorkspaceRemoteParsers {
       id: (item['id'] as num?)?.toInt() ?? 0,
       nickname: item['nickname'] as String? ?? '',
       displayName: displayName.isEmpty ? null : displayName,
-      avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
-      avatarThumbUrl: avatarThumbUrl.isEmpty ? null : avatarThumbUrl,
+      avatarUrl: avatarUrl,
+      avatarThumbUrl: avatarThumbUrl,
       isReadyToSettle: isReadyToSettle,
       readyToSettleAt: readyToSettleAt,
     );
@@ -118,6 +124,17 @@ class WorkspaceRemoteParsers {
 
   static TripExpense parseExpense(Map<String, dynamic> item) {
     final splitMode = parseExpenseSplitMode(item['split_mode']);
+    final amount = (item['amount'] as num?)?.toDouble() ?? 0;
+    final tripCurrencyCode = AppCurrencyCatalog.normalize(
+      item['trip_currency_code'] as String?,
+    );
+    final expenseCurrencyCode = AppCurrencyCatalog.normalize(
+      item['expense_currency_code'] as String?,
+      fallback: tripCurrencyCode,
+    );
+    final originalAmount =
+        (item['original_amount'] as num?)?.toDouble() ?? amount;
+    final fxRateToTrip = (item['fx_rate_to_trip'] as num?)?.toDouble() ?? 1;
     final participants = (item['participants'] as List<dynamic>? ?? <dynamic>[])
         .whereType<Map<String, dynamic>>()
         .map(
@@ -132,15 +149,21 @@ class WorkspaceRemoteParsers {
 
     return TripExpense(
       id: (item['id'] as num?)?.toInt() ?? 0,
-      amount: (item['amount'] as num?)?.toDouble() ?? 0,
+      amount: amount,
+      originalAmount: originalAmount,
+      tripCurrencyCode: tripCurrencyCode,
+      expenseCurrencyCode: expenseCurrencyCode,
+      fxRateToTrip: fxRateToTrip > 0 ? fxRateToTrip : 1,
       category: _parseExpenseCategory(item['category']),
       note: item['note'] as String? ?? '',
       expenseDate: item['expense_date'] as String? ?? '',
       splitMode: splitMode,
       paidById: (item['paid_by_id'] as num?)?.toInt() ?? 0,
       paidByNickname: item['paid_by_nickname'] as String? ?? '',
-      receiptUrl: item['receipt_url'] as String?,
-      receiptThumbUrl: item['receipt_thumb_url'] as String?,
+      receiptUrl: MediaUrlResolver.normalize(item['receipt_url'] as String?),
+      receiptThumbUrl: MediaUrlResolver.normalize(
+        item['receipt_thumb_url'] as String?,
+      ),
       participants: participants,
     );
   }

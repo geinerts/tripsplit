@@ -252,6 +252,7 @@ extension _MainShellPageSettings on _MainShellPageState {
     });
     try {
       await widget.authController.logout();
+      widget.tripsController.clearTripsCache();
       if (!mounted) {
         return;
       }

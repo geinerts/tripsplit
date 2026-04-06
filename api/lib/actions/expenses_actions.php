@@ -267,6 +267,157 @@ function build_expense_split_rows(
     json_out(['ok' => false, 'error' => 'Unsupported split mode.'], 400);
 }
 
+function convert_exact_split_source_to_trip_rows(
+    int $sourceAmountCents,
+    int $tripAmountCents,
+    float $fxRateToTrip,
+    array $participantIds,
+    array $rawSplits
+): array {
+    $participantIds = normalize_user_ids($participantIds);
+    if (count($participantIds) < 1) {
+        json_out(['ok' => false, 'error' => 'Pick at least one participant.'], 400);
+    }
+    if ($sourceAmountCents <= 0 || $tripAmountCents <= 0) {
+        json_out(['ok' => false, 'error' => 'Amount must be greater than zero.'], 400);
+    }
+    if ($fxRateToTrip <= 0) {
+        json_out(['ok' => false, 'error' => 'FX rate must be positive.'], 400);
+    }
+
+    $splitEntries = parse_expense_split_entries($rawSplits);
+    foreach ($participantIds as $userId) {
+        if (!array_key_exists($userId, $splitEntries)) {
+            json_out(['ok' => false, 'error' => 'Split values are missing for some participants.'], 400);
+        }
+    }
+    foreach ($splitEntries as $userId => $_value) {
+        if (!in_array((int) $userId, $participantIds, true)) {
+            json_out(['ok' => false, 'error' => 'Split values include user outside participants.'], 400);
+        }
+    }
+
+    $sourceCentsByUser = [];
+    $sourceSum = 0;
+    foreach ($participantIds as $userId) {
+        $value = (float) ($splitEntries[$userId] ?? 0);
+        $cents = (int) round($value * 100);
+        if ($cents < 0) {
+            json_out(['ok' => false, 'error' => 'Exact split cannot be negative.'], 400);
+        }
+        $sourceCentsByUser[$userId] = $cents;
+        $sourceSum += $cents;
+    }
+    if ($sourceSum !== $sourceAmountCents) {
+        json_out(['ok' => false, 'error' => 'Exact split must sum to full expense amount.'], 400);
+    }
+
+    $tripCentsByUser = [];
+    $remainders = [];
+    $sumFloor = 0;
+    foreach ($participantIds as $index => $userId) {
+        $sourceCents = (int) ($sourceCentsByUser[$userId] ?? 0);
+        $exactTrip = $sourceCents * $fxRateToTrip;
+        $floorTrip = (int) floor($exactTrip);
+        $remainder = $exactTrip - $floorTrip;
+        $tripCentsByUser[$userId] = $floorTrip;
+        $sumFloor += $floorTrip;
+        $remainders[] = [
+            'user_id' => $userId,
+            'index' => (int) $index,
+            'remainder' => $remainder,
+        ];
+    }
+
+    $delta = $tripAmountCents - $sumFloor;
+    if ($delta > 0) {
+        usort(
+            $remainders,
+            static function (array $a, array $b): int {
+                $cmp = ((float) $b['remainder']) <=> ((float) $a['remainder']);
+                if ($cmp !== 0) {
+                    return $cmp;
+                }
+                return ((int) $a['index']) <=> ((int) $b['index']);
+            }
+        );
+        $count = count($remainders);
+        $cursor = 0;
+        while ($delta > 0 && $count > 0) {
+            $row = $remainders[$cursor % $count];
+            $userId = (int) ($row['user_id'] ?? 0);
+            $tripCentsByUser[$userId] = (int) ($tripCentsByUser[$userId] ?? 0) + 1;
+            $delta--;
+            $cursor++;
+        }
+    } elseif ($delta < 0) {
+        $toRemove = abs($delta);
+        usort(
+            $remainders,
+            static function (array $a, array $b): int {
+                $cmp = ((float) $a['remainder']) <=> ((float) $b['remainder']);
+                if ($cmp !== 0) {
+                    return $cmp;
+                }
+                return ((int) $a['index']) <=> ((int) $b['index']);
+            }
+        );
+        $count = count($remainders);
+        $cursor = 0;
+        while ($toRemove > 0 && $count > 0 && $cursor < ($count * 4)) {
+            $row = $remainders[$cursor % $count];
+            $userId = (int) ($row['user_id'] ?? 0);
+            $current = (int) ($tripCentsByUser[$userId] ?? 0);
+            if ($current > 0) {
+                $tripCentsByUser[$userId] = $current - 1;
+                $toRemove--;
+            }
+            $cursor++;
+        }
+    }
+
+    $rows = [];
+    $tripSum = 0;
+    foreach ($participantIds as $userId) {
+        $owedTripCents = (int) ($tripCentsByUser[$userId] ?? 0);
+        $tripSum += $owedTripCents;
+        $rows[] = [
+            'user_id' => (int) $userId,
+            'owed_cents' => $owedTripCents,
+            // Keep exact split value in source-currency cents.
+            'split_value' => (int) ($sourceCentsByUser[$userId] ?? 0),
+        ];
+    }
+    if ($tripSum !== $tripAmountCents) {
+        json_out(['ok' => false, 'error' => 'Failed to normalize exact split conversion.'], 400);
+    }
+
+    return $rows;
+}
+
+function build_expense_split_rows_with_currency_conversion(
+    int $sourceAmountCents,
+    int $tripAmountCents,
+    float $fxRateToTrip,
+    array $participantIds,
+    string $splitMode,
+    array $rawSplits,
+    string $sourceCurrencyCode,
+    string $tripCurrencyCode
+): array {
+    if ($splitMode === 'exact' && $sourceCurrencyCode !== $tripCurrencyCode) {
+        return convert_exact_split_source_to_trip_rows(
+            $sourceAmountCents,
+            $tripAmountCents,
+            $fxRateToTrip,
+            $participantIds,
+            $rawSplits
+        );
+    }
+
+    return build_expense_split_rows($tripAmountCents, $participantIds, $splitMode, $rawSplits);
+}
+
 function add_expense_action(): void
 {
     require_post();
@@ -275,6 +426,16 @@ function add_expense_action(): void
     $pdo = db();
     $trip = get_current_trip($pdo, $me, true);
     assert_trip_is_active($trip);
+    $tripId = (int) ($trip['id'] ?? 0);
+    $userId = (int) ($me['id'] ?? 0);
+    $clientMutationId = request_client_mutation_id();
+    mutation_idempotency_try_replay(
+        $pdo,
+        $userId,
+        $tripId,
+        'add_expense',
+        $clientMutationId
+    );
 
     enforce_rate_limit(
         $pdo,
@@ -293,8 +454,11 @@ function add_expense_action(): void
 
     $expensesTable = table_name('expenses');
     $participantsTable = table_name('expense_participants');
+    $expenseCurrencyColumnsAvailable = expenses_currency_columns_available($pdo);
 
-    $amountCents = validate_amount_cents($body['amount'] ?? null);
+    $tripCurrencyCode = trip_currency_code_from_trip($trip);
+    $sourceCurrencyCode = normalize_currency_code($body['currency_code'] ?? $tripCurrencyCode);
+    $sourceAmountCents = validate_amount_cents($body['amount'] ?? null);
     $category = normalize_expense_category($body['category'] ?? '');
     $note = trim((string) ($body['note'] ?? ''));
     if (str_length($note) > 255) {
@@ -302,6 +466,20 @@ function add_expense_action(): void
     }
     ensure_text_has_no_links($note, 'Note');
     $expenseDate = validate_date_iso((string) ($body['date'] ?? date('Y-m-d')));
+    $conversion = convert_amount_to_trip_currency(
+        $sourceAmountCents,
+        $sourceCurrencyCode,
+        $tripCurrencyCode,
+        $expenseDate
+    );
+    $amountCents = (int) ($conversion['converted_cents'] ?? 0);
+    $fxRateToTrip = (float) ($conversion['fx_rate_to_trip'] ?? 1.0);
+    if (!$expenseCurrencyColumnsAvailable && $sourceCurrencyCode !== $tripCurrencyCode) {
+        json_out([
+            'ok' => false,
+            'error' => 'Expense currency support is not enabled on server yet. Run migration first.',
+        ], 409);
+    }
     $rawParticipants = $body['participants'] ?? [];
     if (is_array($rawParticipants) && count($rawParticipants) > 0) {
         $participants = require_valid_trip_member_ids($pdo, (int) $trip['id'], $rawParticipants, true);
@@ -314,31 +492,60 @@ function add_expense_action(): void
     if (!is_array($rawSplits)) {
         json_out(['ok' => false, 'error' => 'Invalid splits payload.'], 400);
     }
-    $participantRows = build_expense_split_rows($amountCents, $participants, $splitMode, $rawSplits);
-    $payerId = (int) ($me['id'] ?? 0);
+    $participantRows = build_expense_split_rows_with_currency_conversion(
+        $sourceAmountCents,
+        $amountCents,
+        $fxRateToTrip,
+        $participants,
+        $splitMode,
+        $rawSplits,
+        $sourceCurrencyCode,
+        $tripCurrencyCode
+    );
+    $payerId = $userId;
     $payerName = trim((string) ($me['nickname'] ?? ''));
     if ($payerName === '') {
         $payerName = 'Trip member';
     }
-    $tripId = (int) ($trip['id'] ?? 0);
     $tripName = trim((string) ($trip['name'] ?? ''));
 
     $pdo->beginTransaction();
     try {
-        $insertExpense = $pdo->prepare(
-            'INSERT INTO ' . $expensesTable . ' (trip_id, amount, category, note, split_mode, paid_by, expense_date, receipt_path)
-             VALUES (:trip_id, :amount, :category, :note, :split_mode, :paid_by, :expense_date, :receipt_path)'
-        );
-        $insertExpense->execute([
-            'trip_id' => (int) $trip['id'],
-            'amount' => cents_to_decimal($amountCents),
-            'category' => $category,
-            'note' => $note,
-            'split_mode' => $splitMode,
-            'paid_by' => (int) $me['id'],
-            'expense_date' => $expenseDate,
-            'receipt_path' => $receiptPath !== '' ? $receiptPath : null,
-        ]);
+        if ($expenseCurrencyColumnsAvailable) {
+            $insertExpense = $pdo->prepare(
+                'INSERT INTO ' . $expensesTable . '
+                 (trip_id, amount, currency_code, source_amount, fx_rate_to_trip, category, note, split_mode, paid_by, expense_date, receipt_path)
+                 VALUES (:trip_id, :amount, :currency_code, :source_amount, :fx_rate_to_trip, :category, :note, :split_mode, :paid_by, :expense_date, :receipt_path)'
+            );
+            $insertExpense->execute([
+                'trip_id' => (int) $trip['id'],
+                'amount' => cents_to_decimal($amountCents),
+                'currency_code' => $sourceCurrencyCode,
+                'source_amount' => cents_to_decimal($sourceAmountCents),
+                'fx_rate_to_trip' => $fxRateToTrip,
+                'category' => $category,
+                'note' => $note,
+                'split_mode' => $splitMode,
+                'paid_by' => (int) $me['id'],
+                'expense_date' => $expenseDate,
+                'receipt_path' => $receiptPath !== '' ? $receiptPath : null,
+            ]);
+        } else {
+            $insertExpense = $pdo->prepare(
+                'INSERT INTO ' . $expensesTable . ' (trip_id, amount, category, note, split_mode, paid_by, expense_date, receipt_path)
+                 VALUES (:trip_id, :amount, :category, :note, :split_mode, :paid_by, :expense_date, :receipt_path)'
+            );
+            $insertExpense->execute([
+                'trip_id' => (int) $trip['id'],
+                'amount' => cents_to_decimal($amountCents),
+                'category' => $category,
+                'note' => $note,
+                'split_mode' => $splitMode,
+                'paid_by' => (int) $me['id'],
+                'expense_date' => $expenseDate,
+                'receipt_path' => $receiptPath !== '' ? $receiptPath : null,
+            ]);
+        }
         $expenseId = (int) $pdo->lastInsertId();
 
         $insertParticipant = $pdo->prepare(
@@ -362,7 +569,7 @@ function add_expense_action(): void
             }
         }
         $notifyTripName = $tripName !== '' ? $tripName : ('Trip #' . $tripId);
-        $amountText = '€' . cents_to_decimal($amountCents);
+        $amountText = format_cents_with_currency($amountCents, $tripCurrencyCode);
         $expenseBody = $payerName . ' added an expense of ' . $amountText . ' in "' . $notifyTripName . '".';
         if ($note !== '') {
             $expenseBody = $payerName . ' added an expense of ' . $amountText . ': ' . $note;
@@ -380,18 +587,36 @@ function add_expense_action(): void
                     'expense_id' => $expenseId,
                     'paid_by_user_id' => $payerId,
                     'amount_cents' => $amountCents,
+                    'trip_currency_code' => $tripCurrencyCode,
+                    'expense_currency_code' => $sourceCurrencyCode,
+                    'source_amount_cents' => $sourceAmountCents,
+                    'fx_rate_to_trip' => $fxRateToTrip,
                 ]
             );
         }
 
         $pdo->commit();
-        json_out([
+        $responsePayload = [
             'ok' => true,
             'expense_id' => $expenseId,
             'trip_id' => $tripId,
+            'trip_currency_code' => $tripCurrencyCode,
+            'expense_currency_code' => $sourceCurrencyCode,
+            'amount' => cents_to_float($amountCents),
+            'original_amount' => cents_to_float($sourceAmountCents),
+            'fx_rate_to_trip' => $fxRateToTrip,
             'receipt_url' => $receiptPath !== '' ? receipt_public_url($receiptPath) : null,
             'receipt_thumb_url' => $receiptPath !== '' ? receipt_thumb_public_url($receiptPath) : null,
-        ]);
+        ];
+        mutation_idempotency_store_response(
+            $pdo,
+            $userId,
+            $tripId,
+            'add_expense',
+            $clientMutationId,
+            $responsePayload
+        );
+        json_out($responsePayload);
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -408,6 +633,16 @@ function update_expense_action(): void
     $pdo = db();
     $trip = get_current_trip($pdo, $me, true);
     assert_trip_is_active($trip);
+    $tripId = (int) ($trip['id'] ?? 0);
+    $userId = (int) ($me['id'] ?? 0);
+    $clientMutationId = request_client_mutation_id();
+    mutation_idempotency_try_replay(
+        $pdo,
+        $userId,
+        $tripId,
+        'update_expense',
+        $clientMutationId
+    );
 
     enforce_rate_limit(
         $pdo,
@@ -426,14 +661,18 @@ function update_expense_action(): void
 
     $expensesTable = table_name('expenses');
     $participantsTable = table_name('expense_participants');
+    $expenseCurrencyColumnsAvailable = expenses_currency_columns_available($pdo);
 
     $expenseId = (int) ($body['id'] ?? 0);
     if ($expenseId <= 0) {
         json_out(['ok' => false, 'error' => 'Expense id is required.'], 400);
     }
 
+    $currencySelect = $expenseCurrencyColumnsAvailable
+        ? 'currency_code, source_amount, fx_rate_to_trip, '
+        : '\'' . default_trip_currency_code() . '\' AS currency_code, amount AS source_amount, 1.00000000 AS fx_rate_to_trip, ';
     $ownerStmt = $pdo->prepare(
-        'SELECT id, trip_id, paid_by, category, receipt_path
+        'SELECT id, trip_id, paid_by, category, receipt_path, ' . $currencySelect . '
          FROM ' . $expensesTable . '
          WHERE id = :id
          LIMIT 1'
@@ -443,10 +682,10 @@ function update_expense_action(): void
     if (!$expense) {
         json_out(['ok' => false, 'error' => 'Expense not found.'], 404);
     }
-    if ((int) $expense['trip_id'] !== (int) $trip['id']) {
-        json_out(['ok' => false, 'error' => 'Expense not found in this trip.'], 404);
-    }
-    if ((int) $expense['paid_by'] !== (int) $me['id']) {
+        if ((int) $expense['trip_id'] !== $tripId) {
+            json_out(['ok' => false, 'error' => 'Expense not found in this trip.'], 404);
+        }
+    if ((int) $expense['paid_by'] !== $userId) {
         json_out(['ok' => false, 'error' => 'Only expense owner can edit.'], 403);
     }
 
@@ -460,7 +699,14 @@ function update_expense_action(): void
         $nextReceiptPath = '';
     }
 
-    $amountCents = validate_amount_cents($body['amount'] ?? null);
+    $tripCurrencyCode = trip_currency_code_from_trip($trip);
+    $existingExpenseCurrencyCode = normalize_currency_code(
+        $expense['currency_code'] ?? $tripCurrencyCode
+    );
+    $sourceCurrencyCode = array_key_exists('currency_code', $body)
+        ? normalize_currency_code($body['currency_code'] ?? '')
+        : $existingExpenseCurrencyCode;
+    $sourceAmountCents = validate_amount_cents($body['amount'] ?? null);
     $existingCategory = trim((string) ($expense['category'] ?? ''));
     $category = array_key_exists('category', $body)
         ? normalize_expense_category($body['category'] ?? '')
@@ -471,6 +717,20 @@ function update_expense_action(): void
     }
     ensure_text_has_no_links($note, 'Note');
     $expenseDate = validate_date_iso((string) ($body['date'] ?? date('Y-m-d')));
+    $conversion = convert_amount_to_trip_currency(
+        $sourceAmountCents,
+        $sourceCurrencyCode,
+        $tripCurrencyCode,
+        $expenseDate
+    );
+    $amountCents = (int) ($conversion['converted_cents'] ?? 0);
+    $fxRateToTrip = (float) ($conversion['fx_rate_to_trip'] ?? 1.0);
+    if (!$expenseCurrencyColumnsAvailable && $sourceCurrencyCode !== $tripCurrencyCode) {
+        json_out([
+            'ok' => false,
+            'error' => 'Expense currency support is not enabled on server yet. Run migration first.',
+        ], 409);
+    }
     $rawParticipants = $body['participants'] ?? [];
     if (is_array($rawParticipants) && count($rawParticipants) > 0) {
         $participants = require_valid_trip_member_ids($pdo, (int) $trip['id'], $rawParticipants, true);
@@ -482,25 +742,63 @@ function update_expense_action(): void
     if (!is_array($rawSplits)) {
         json_out(['ok' => false, 'error' => 'Invalid splits payload.'], 400);
     }
-    $participantRows = build_expense_split_rows($amountCents, $participants, $splitMode, $rawSplits);
+    $participantRows = build_expense_split_rows_with_currency_conversion(
+        $sourceAmountCents,
+        $amountCents,
+        $fxRateToTrip,
+        $participants,
+        $splitMode,
+        $rawSplits,
+        $sourceCurrencyCode,
+        $tripCurrencyCode
+    );
 
     $pdo->beginTransaction();
     try {
-        $update = $pdo->prepare(
-            'UPDATE ' . $expensesTable . '
-             SET amount = :amount, category = :category, note = :note, split_mode = :split_mode, expense_date = :expense_date, receipt_path = :receipt_path
-             WHERE id = :id AND trip_id = :trip_id'
-        );
-        $update->execute([
-            'amount' => cents_to_decimal($amountCents),
-            'category' => $category,
-            'note' => $note,
-            'split_mode' => $splitMode,
-            'expense_date' => $expenseDate,
-            'receipt_path' => $nextReceiptPath !== '' ? $nextReceiptPath : null,
-            'id' => $expenseId,
-            'trip_id' => (int) $trip['id'],
-        ]);
+        if ($expenseCurrencyColumnsAvailable) {
+            $update = $pdo->prepare(
+                'UPDATE ' . $expensesTable . '
+                 SET amount = :amount,
+                     currency_code = :currency_code,
+                     source_amount = :source_amount,
+                     fx_rate_to_trip = :fx_rate_to_trip,
+                     category = :category,
+                     note = :note,
+                     split_mode = :split_mode,
+                     expense_date = :expense_date,
+                     receipt_path = :receipt_path
+                 WHERE id = :id AND trip_id = :trip_id'
+            );
+            $update->execute([
+                'amount' => cents_to_decimal($amountCents),
+                'currency_code' => $sourceCurrencyCode,
+                'source_amount' => cents_to_decimal($sourceAmountCents),
+                'fx_rate_to_trip' => $fxRateToTrip,
+                'category' => $category,
+                'note' => $note,
+                'split_mode' => $splitMode,
+                'expense_date' => $expenseDate,
+                'receipt_path' => $nextReceiptPath !== '' ? $nextReceiptPath : null,
+                'id' => $expenseId,
+                'trip_id' => $tripId,
+            ]);
+        } else {
+            $update = $pdo->prepare(
+                'UPDATE ' . $expensesTable . '
+                 SET amount = :amount, category = :category, note = :note, split_mode = :split_mode, expense_date = :expense_date, receipt_path = :receipt_path
+                 WHERE id = :id AND trip_id = :trip_id'
+            );
+            $update->execute([
+                'amount' => cents_to_decimal($amountCents),
+                'category' => $category,
+                'note' => $note,
+                'split_mode' => $splitMode,
+                'expense_date' => $expenseDate,
+                'receipt_path' => $nextReceiptPath !== '' ? $nextReceiptPath : null,
+                'id' => $expenseId,
+                'trip_id' => $tripId,
+            ]);
+        }
 
         $deleteParticipants = $pdo->prepare('DELETE FROM ' . $participantsTable . ' WHERE expense_id = :expense_id');
         $deleteParticipants->execute(['expense_id' => $expenseId]);
@@ -524,12 +822,26 @@ function update_expense_action(): void
             delete_receipt_file($oldReceiptPath);
         }
 
-        json_out([
+        $responsePayload = [
             'ok' => true,
             'expense_id' => $expenseId,
+            'trip_currency_code' => $tripCurrencyCode,
+            'expense_currency_code' => $sourceCurrencyCode,
+            'amount' => cents_to_float($amountCents),
+            'original_amount' => cents_to_float($sourceAmountCents),
+            'fx_rate_to_trip' => $fxRateToTrip,
             'receipt_url' => $nextReceiptPath !== '' ? receipt_public_url($nextReceiptPath) : null,
             'receipt_thumb_url' => $nextReceiptPath !== '' ? receipt_thumb_public_url($nextReceiptPath) : null,
-        ]);
+        ];
+        mutation_idempotency_store_response(
+            $pdo,
+            $userId,
+            $tripId,
+            'update_expense',
+            $clientMutationId,
+            $responsePayload
+        );
+        json_out($responsePayload);
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -546,6 +858,16 @@ function delete_expense_action(): void
     $pdo = db();
     $trip = get_current_trip($pdo, $me, true);
     assert_trip_is_active($trip);
+    $tripId = (int) ($trip['id'] ?? 0);
+    $userId = (int) ($me['id'] ?? 0);
+    $clientMutationId = request_client_mutation_id();
+    mutation_idempotency_try_replay(
+        $pdo,
+        $userId,
+        $tripId,
+        'delete_expense',
+        $clientMutationId
+    );
 
     enforce_rate_limit(
         $pdo,
@@ -580,21 +902,30 @@ function delete_expense_action(): void
     if (!$expense) {
         json_out(['ok' => false, 'error' => 'Expense not found.'], 404);
     }
-    if ((int) $expense['trip_id'] !== (int) $trip['id']) {
+    if ((int) $expense['trip_id'] !== $tripId) {
         json_out(['ok' => false, 'error' => 'Expense not found in this trip.'], 404);
     }
-    if ((int) $expense['paid_by'] !== (int) $me['id']) {
+    if ((int) $expense['paid_by'] !== $userId) {
         json_out(['ok' => false, 'error' => 'Only expense owner can delete.'], 403);
     }
 
     $delete = $pdo->prepare('DELETE FROM ' . $expensesTable . ' WHERE id = :id AND trip_id = :trip_id');
     $delete->execute([
         'id' => $expenseId,
-        'trip_id' => (int) $trip['id'],
+        'trip_id' => $tripId,
     ]);
 
     delete_receipt_file((string) ($expense['receipt_path'] ?? ''));
-    json_out(['ok' => true, 'deleted_id' => $expenseId]);
+    $responsePayload = ['ok' => true, 'deleted_id' => $expenseId];
+    mutation_idempotency_store_response(
+        $pdo,
+        $userId,
+        $tripId,
+        'delete_expense',
+        $clientMutationId,
+        $responsePayload
+    );
+    json_out($responsePayload);
 }
 
 function list_expenses_action(): void
@@ -605,6 +936,8 @@ function list_expenses_action(): void
     $expensesTable = table_name('expenses');
     $usersTable = table_name('users');
     $participantsTable = table_name('expense_participants');
+    $expenseCurrencyColumnsAvailable = expenses_currency_columns_available($pdo);
+    $tripCurrencyCode = trip_currency_code_from_trip($trip);
 
     $query = $_GET;
     $hasCursor = trim((string) ($query['cursor'] ?? '')) !== '';
@@ -634,6 +967,11 @@ function list_expenses_action(): void
         'SELECT
             e.id,
             e.amount,
+            ' . (
+            $expenseCurrencyColumnsAvailable
+                ? 'e.currency_code AS expense_currency_code, e.source_amount, e.fx_rate_to_trip,'
+                : '\'' . default_trip_currency_code() . '\' AS expense_currency_code, e.amount AS source_amount, 1.00000000 AS fx_rate_to_trip,'
+        ) . '
             e.category,
             e.note,
             e.split_mode,
@@ -702,6 +1040,7 @@ function list_expenses_action(): void
     foreach ($rows as &$row) {
         $id = (int) $row['id'];
         $amountCents = decimal_to_cents($row['amount']);
+        $sourceAmountCents = decimal_to_cents($row['source_amount']);
         $splitMode = normalize_expense_split_mode($row['split_mode'] ?? 'equal');
         $participantRows = $participantsByExpense[$id] ?? [];
         $storedOwedTotal = 0;
@@ -713,6 +1052,12 @@ function list_expenses_action(): void
         $row['id'] = $id;
         $row['paid_by_id'] = (int) $row['paid_by_id'];
         $row['amount'] = cents_to_float($amountCents);
+        $row['trip_currency_code'] = $tripCurrencyCode;
+        $row['expense_currency_code'] = normalize_currency_code(
+            $row['expense_currency_code'] ?? $tripCurrencyCode
+        );
+        $row['original_amount'] = cents_to_float($sourceAmountCents);
+        $row['fx_rate_to_trip'] = (float) ($row['fx_rate_to_trip'] ?? 1.0);
         $rowCategory = trim((string) ($row['category'] ?? ''));
         $row['category'] = $rowCategory !== '' ? $rowCategory : 'other';
         $row['split_mode'] = $splitMode;

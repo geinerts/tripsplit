@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS trip_users (
 CREATE TABLE IF NOT EXISTS trip_trips (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(120) NOT NULL,
+  currency_code CHAR(3) NOT NULL DEFAULT 'EUR',
   status ENUM('active', 'settling', 'archived') NOT NULL DEFAULT 'active',
   created_by INT UNSIGNED NULL,
   image_path VARCHAR(255) NULL,
@@ -67,6 +68,9 @@ CREATE TABLE IF NOT EXISTS trip_expenses (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   trip_id INT UNSIGNED NOT NULL,
   amount DECIMAL(12,2) NOT NULL,
+  currency_code CHAR(3) NOT NULL DEFAULT 'EUR',
+  source_amount DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  fx_rate_to_trip DECIMAL(18,8) NOT NULL DEFAULT 1.00000000,
   category VARCHAR(64) NOT NULL DEFAULT 'other',
   note VARCHAR(255) NOT NULL DEFAULT '',
   split_mode ENUM('equal', 'exact', 'percent', 'shares') NOT NULL DEFAULT 'equal',
@@ -248,6 +252,27 @@ CREATE TABLE IF NOT EXISTS trip_request_limits (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (scope, subject_hash, window_start),
   KEY idx_trip_request_limits_updated_at (updated_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS trip_mutation_idempotency (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  trip_id INT UNSIGNED NOT NULL,
+  action VARCHAR(64) NOT NULL,
+  mutation_id VARCHAR(96) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
+  response_status SMALLINT UNSIGNED NOT NULL DEFAULT 200,
+  response_json LONGTEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_trip_mutation_idempotency_user_trip_action_mutation (
+    user_id,
+    trip_id,
+    action,
+    mutation_id
+  ),
+  KEY idx_trip_mutation_idempotency_created (created_at, id),
+  CONSTRAINT fk_trip_mutation_idempotency_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_trip_mutation_idempotency_trip_id FOREIGN KEY (trip_id) REFERENCES trip_trips(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS trip_upload_daily_usage (

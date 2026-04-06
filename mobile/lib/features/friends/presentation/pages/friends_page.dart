@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
@@ -8,6 +12,7 @@ import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/responsive.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../domain/entities/friend_request.dart';
 import '../../domain/entities/friends_section_page.dart';
 import '../../domain/entities/friend_user.dart';
@@ -17,6 +22,7 @@ import '../controllers/friends_controller.dart';
 part 'friends_page_actions_core.dart';
 part 'friends_page_actions_search.dart';
 part 'friends_page_actions_relationships.dart';
+part 'friends_page_actions_qr.dart';
 part 'friends_page_widgets.dart';
 part 'friends_page_components.dart';
 
@@ -35,10 +41,12 @@ class FriendsPage extends StatefulWidget {
   const FriendsPage({
     super.key,
     required this.controller,
+    required this.authController,
     this.commandController,
   });
 
   final FriendsController controller;
+  final AuthController authController;
   final FriendsPageCommandController? commandController;
 
   @override

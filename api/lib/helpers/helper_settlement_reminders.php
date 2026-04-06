@@ -180,7 +180,10 @@ function build_settlement_reminder_notification(array $row): ?array
     if ($toName === '') {
         $toName = 'Receiver';
     }
-    $amount = '€' . cents_to_decimal($amountCents);
+    $tripCurrencyCode = normalize_currency_code(
+        $row['trip_currency_code'] ?? default_trip_currency_code()
+    );
+    $amount = format_cents_with_currency($amountCents, $tripCurrencyCode);
 
     if ($status === 'pending') {
         return [
@@ -304,6 +307,11 @@ function process_auto_settlement_reminders(PDO $pdo, array $options = []): array
             s.updated_at,
             s.marked_sent_at,
             t.name AS trip_name,
+            ' . (
+            trips_currency_column_available($pdo)
+                ? 't.currency_code'
+                : '\'' . default_trip_currency_code() . '\''
+        ) . ' AS trip_currency_code,
             uf.nickname AS from_nickname,
             ut.nickname AS to_nickname,
             rs.last_reminded_at,
@@ -371,6 +379,11 @@ function process_auto_settlement_reminders(PDO $pdo, array $options = []): array
                     s.updated_at,
                     s.marked_sent_at,
                     t.name AS trip_name,
+                    ' . (
+                trips_currency_column_available($pdo)
+                    ? 't.currency_code'
+                    : '\'' . default_trip_currency_code() . '\''
+            ) . ' AS trip_currency_code,
                     uf.nickname AS from_nickname,
                     ut.nickname AS to_nickname
                  FROM ' . $settlementsTable . ' s

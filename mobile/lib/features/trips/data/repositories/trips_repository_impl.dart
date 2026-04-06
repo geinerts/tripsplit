@@ -1,20 +1,37 @@
 import 'dart:typed_data';
 
+import '../../../../core/errors/api_exception.dart';
 import '../../domain/entities/trip.dart';
+import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_user.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../../domain/repositories/trips_repository.dart';
 import '../datasources/trips_remote_data_source.dart';
+import '../local/trips_local_store.dart';
 
 class TripsRepositoryImpl implements TripsRepository {
-  TripsRepositoryImpl(this._remote);
+  TripsRepositoryImpl(this._remote, this._localStore);
 
   final TripsRemoteDataSource _remote;
+  final TripsLocalStore _localStore;
 
   @override
-  Future<List<Trip>> listTrips() {
-    return _remote.listTrips();
+  Future<List<Trip>> listTrips() async {
+    try {
+      final trips = await _remote.listTrips();
+      await _localStore.writeTrips(trips);
+      return trips;
+    } on ApiException catch (error) {
+      if (!error.isNetworkError) {
+        rethrow;
+      }
+      final cached = await _localStore.readTrips();
+      if (cached.isNotEmpty) {
+        return cached;
+      }
+      rethrow;
+    }
   }
 
   @override
@@ -33,9 +50,14 @@ class TripsRepositoryImpl implements TripsRepository {
   @override
   Future<Trip> createTrip({
     required String name,
+    required String currencyCode,
     required List<int> memberIds,
   }) {
-    return _remote.createTrip(name: name, memberIds: memberIds);
+    return _remote.createTrip(
+      name: name,
+      currencyCode: currencyCode,
+      memberIds: memberIds,
+    );
   }
 
   @override
@@ -43,8 +65,14 @@ class TripsRepositoryImpl implements TripsRepository {
     required int tripId,
     required String name,
     String? imagePath,
+    bool removeImage = false,
   }) {
-    return _remote.updateTrip(tripId: tripId, name: name, imagePath: imagePath);
+    return _remote.updateTrip(
+      tripId: tripId,
+      name: name,
+      imagePath: imagePath,
+      removeImage: removeImage,
+    );
   }
 
   @override
@@ -69,12 +97,30 @@ class TripsRepositoryImpl implements TripsRepository {
   }
 
   @override
-  Future<void> deleteTrip({required int tripId}) {
-    return _remote.deleteTrip(tripId: tripId);
+  Future<void> deleteTrip({required int tripId}) async {
+    await _remote.deleteTrip(tripId: tripId);
+    if (tripId <= 0) {
+      return;
+    }
+    final cached = await _localStore.readTrips();
+    if (cached.isEmpty) {
+      return;
+    }
+    final next = cached
+        .where((trip) => trip.id != tripId)
+        .toList(growable: false);
+    await _localStore.writeTrips(next);
   }
 
   @override
   Future<TripInviteLink> createTripInviteLink({required int tripId}) {
     return _remote.createTripInviteLink(tripId: tripId);
+  }
+
+  @override
+  Future<TripInviteJoinResult> joinTripInvite({
+    required String inviteToken,
+  }) {
+    return _remote.joinTripInvite(inviteToken: inviteToken);
   }
 }

@@ -1,9 +1,12 @@
 import '../../domain/entities/trip.dart';
+import '../../../../core/network/media_url_resolver.dart';
+import '../../../../core/currency/app_currency.dart';
 
 class TripModel extends Trip {
   const TripModel({
     required super.id,
     required super.name,
+    required super.currencyCode,
     required super.status,
     required super.imageUrl,
     super.imageThumbUrl,
@@ -30,12 +33,12 @@ class TripModel extends Trip {
         : 'active';
     final rawImageUrl = map['image_url'];
     final imageUrl = rawImageUrl is String && rawImageUrl.trim().isNotEmpty
-        ? rawImageUrl.trim()
+        ? MediaUrlResolver.normalize(rawImageUrl.trim())
         : null;
     final rawImageThumbUrl = map['image_thumb_url'];
     final imageThumbUrl =
         rawImageThumbUrl is String && rawImageThumbUrl.trim().isNotEmpty
-        ? rawImageThumbUrl.trim()
+        ? MediaUrlResolver.normalize(rawImageThumbUrl.trim())
         : null;
     final settlementsTotal = (map['settlements_total'] as num?)?.toInt() ?? 0;
     final settlementsConfirmed =
@@ -56,6 +59,7 @@ class TripModel extends Trip {
     return TripModel(
       id: (map['id'] as num?)?.toInt() ?? 0,
       name: map['name'] as String? ?? '',
+      currencyCode: AppCurrencyCatalog.normalize(map['currency_code'] as String?),
       status: status,
       imageUrl: imageUrl,
       imageThumbUrl: imageThumbUrl,

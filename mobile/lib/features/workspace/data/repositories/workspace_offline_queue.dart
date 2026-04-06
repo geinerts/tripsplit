@@ -38,6 +38,7 @@ class WorkspaceOfflineQueue {
   Future<void> enqueueAddExpense({
     required int tripId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -45,13 +46,17 @@ class WorkspaceOfflineQueue {
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
     String? receiptPath,
+    String? mutationId,
   }) {
+    final normalizedMutationId = _normalizeMutationId(mutationId);
     return _localStore.enqueue(<String, dynamic>{
       'id': _newQueueId(),
       'type': typeAddExpense,
       'trip_id': tripId,
+      if (normalizedMutationId != null) 'mutation_id': normalizedMutationId,
       'payload': <String, dynamic>{
         'amount': amount,
+        'currency_code': currencyCode,
         'category': category,
         'note': note,
         'date': date,
@@ -77,6 +82,7 @@ class WorkspaceOfflineQueue {
     required int tripId,
     required int expenseId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -85,14 +91,18 @@ class WorkspaceOfflineQueue {
     required List<ExpenseSplitValue> splitValues,
     String? receiptPath,
     bool removeReceipt = false,
+    String? mutationId,
   }) {
+    final normalizedMutationId = _normalizeMutationId(mutationId);
     return _localStore.enqueue(<String, dynamic>{
       'id': _newQueueId(),
       'type': typeUpdateExpense,
       'trip_id': tripId,
+      if (normalizedMutationId != null) 'mutation_id': normalizedMutationId,
       'payload': <String, dynamic>{
         'expense_id': expenseId,
         'amount': amount,
+        'currency_code': currencyCode,
         'category': category,
         'note': note,
         'date': date,
@@ -118,11 +128,14 @@ class WorkspaceOfflineQueue {
   Future<void> enqueueDeleteExpense({
     required int tripId,
     required int expenseId,
+    String? mutationId,
   }) {
+    final normalizedMutationId = _normalizeMutationId(mutationId);
     return _localStore.enqueue(<String, dynamic>{
       'id': _newQueueId(),
       'type': typeDeleteExpense,
       'trip_id': tripId,
+      if (normalizedMutationId != null) 'mutation_id': normalizedMutationId,
       'payload': <String, dynamic>{'expense_id': expenseId},
       'created_at': DateTime.now().millisecondsSinceEpoch,
     });
@@ -157,6 +170,7 @@ class WorkspaceOfflineQueue {
   Future<void> _executeQueuedItem(Map<String, dynamic> item) async {
     final type = item['type'] as String? ?? '';
     final tripId = (item['trip_id'] as num?)?.toInt() ?? 0;
+    final mutationId = _resolveMutationId(item);
     final payload = item['payload'];
     if (tripId <= 0 || payload is! Map<String, dynamic>) {
       throw const ApiException('Invalid queued payload.');
@@ -167,6 +181,7 @@ class WorkspaceOfflineQueue {
         await _remote.addExpense(
           tripId: tripId,
           amount: (payload['amount'] as num?)?.toDouble() ?? 0,
+          currencyCode: payload['currency_code'] as String? ?? 'EUR',
           category: payload['category'] as String? ?? 'other',
           note: payload['note'] as String? ?? '',
           date: payload['date'] as String? ?? '',
@@ -174,6 +189,7 @@ class WorkspaceOfflineQueue {
           splitMode: _normalizeSplitMode(payload['split_mode']),
           splitValues: _toSplitValues(payload['splits']),
           receiptPath: payload['receipt_path'] as String?,
+          clientMutationId: mutationId,
         );
         break;
       case typeUpdateExpense:
@@ -181,6 +197,7 @@ class WorkspaceOfflineQueue {
           tripId: tripId,
           expenseId: (payload['expense_id'] as num?)?.toInt() ?? 0,
           amount: (payload['amount'] as num?)?.toDouble() ?? 0,
+          currencyCode: payload['currency_code'] as String? ?? 'EUR',
           category: payload['category'] as String? ?? 'other',
           note: payload['note'] as String? ?? '',
           date: payload['date'] as String? ?? '',
@@ -189,12 +206,14 @@ class WorkspaceOfflineQueue {
           splitValues: _toSplitValues(payload['splits']),
           receiptPath: payload['receipt_path'] as String?,
           removeReceipt: payload['remove_receipt'] == true,
+          clientMutationId: mutationId,
         );
         break;
       case typeDeleteExpense:
         await _remote.deleteExpense(
           tripId: tripId,
           expenseId: (payload['expense_id'] as num?)?.toInt() ?? 0,
+          clientMutationId: mutationId,
         );
         break;
       default:
@@ -269,6 +288,29 @@ class WorkspaceOfflineQueue {
       return value;
     }
     return 'equal';
+  }
+
+  static String? _normalizeMutationId(String? raw) {
+    final value = (raw ?? '').trim();
+    if (value.isEmpty) {
+      return null;
+    }
+    return value;
+  }
+
+  static String _resolveMutationId(Map<String, dynamic> item) {
+    final fromField = (item['mutation_id'] as String? ?? '').trim();
+    if (fromField.isNotEmpty) {
+      return fromField;
+    }
+    final fallback = (item['id'] as String? ?? '').trim();
+    if (fallback.isNotEmpty) {
+      return fallback;
+    }
+    final createdAt = (item['created_at'] as num?)?.toInt() ?? 0;
+    final tripId = (item['trip_id'] as num?)?.toInt() ?? 0;
+    final type = (item['type'] as String? ?? 'unknown').trim();
+    return 'queued_${type}_${tripId}_$createdAt';
   }
 
   static List<ExpenseSplitValue> _toSplitValues(Object? raw) {

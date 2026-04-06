@@ -26,16 +26,14 @@ abstract class WorkspaceRepository {
   });
   Future<int> pendingQueueCount({int? tripId});
   Future<List<QueuedMutation>> listQueuedMutations({int? tripId});
+  Future<void> flushPendingMutations();
 
   Future<UploadedReceiptData> uploadReceipt({
     required ReceiptUploadPayload payload,
   });
 
   Future<void> endTrip({required int tripId});
-  Future<void> setReadyToSettle({
-    required int tripId,
-    required bool isReady,
-  });
+  Future<void> setReadyToSettle({required int tripId, required bool isReady});
   Future<void> markSettlementSent({
     required int tripId,
     required int settlementId,
@@ -59,6 +57,7 @@ abstract class WorkspaceRepository {
   Future<MutationResult> addExpense({
     required int tripId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,
@@ -72,6 +71,7 @@ abstract class WorkspaceRepository {
     required int tripId,
     required int expenseId,
     required double amount,
+    required String currencyCode,
     required String category,
     required String note,
     required String date,

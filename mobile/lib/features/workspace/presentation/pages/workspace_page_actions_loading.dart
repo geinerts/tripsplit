@@ -1,9 +1,20 @@
 part of 'workspace_page.dart';
 
 extension _WorkspacePageLoadingActions on _WorkspacePageState {
+  Future<void> _runStartupAddExpenseFlow() async {
+    await _onAddExpensePressed();
+    if (!mounted) {
+      return;
+    }
+    _updateState(() {
+      _isStartingWithAddExpense = false;
+    });
+  }
+
   Future<void> _loadData({required bool showLoader}) async {
     final trace = PerfMonitor.start('screen.workspace.load');
     var success = false;
+    var openedAddExpenseDuringLoad = false;
     final shouldTryCachedFirst = _snapshot == null;
     if (showLoader) {
       _updateState(() {
@@ -45,6 +56,16 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
             _randomSelection = nextSelection;
             _isLoading = false;
           });
+          if (_openAddExpenseAfterLoad) {
+            _openAddExpenseAfterLoad = false;
+            openedAddExpenseDuringLoad = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) {
+                return;
+              }
+              unawaited(_runStartupAddExpenseFlow());
+            });
+          }
         }
       } catch (_) {
         // Ignore cache read errors and continue with live fetch.
@@ -92,14 +113,9 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
       });
       unawaited(_primeExpensesFeed());
 
-      if (_openAddExpenseAfterLoad) {
+      if (_openAddExpenseAfterLoad && !openedAddExpenseDuringLoad) {
         _openAddExpenseAfterLoad = false;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (!mounted) {
-            return;
-          }
-          unawaited(_onAddExpensePressed());
-        });
+        unawaited(_runStartupAddExpenseFlow());
       }
       success = true;
     } on ApiException catch (error) {
@@ -107,6 +123,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
         return;
       }
       _openAddExpenseAfterLoad = false;
+      _isStartingWithAddExpense = false;
       if (_snapshot != null) {
         _updateState(() {
           if (error.isNetworkError) {
@@ -135,6 +152,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
         return;
       }
       _openAddExpenseAfterLoad = false;
+      _isStartingWithAddExpense = false;
       if (_snapshot != null) {
         _updateState(() {
           _syncState = _pendingQueueCount > 0
@@ -327,7 +345,13 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
       case QueuedMutationType.addExpense:
         final amount = mutation.amount;
         if (amount != null && amount > 0) {
-          return t.queueAddExpenseAmount(_formatMoney(context, amount));
+          return t.queueAddExpenseAmount(
+            _formatMoney(
+              context,
+              amount,
+              currencyCode: widget.trip.currencyCode,
+            ),
+          );
         }
         return t.queueAddExpense;
       case QueuedMutationType.updateExpense:

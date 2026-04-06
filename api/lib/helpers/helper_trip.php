@@ -73,9 +73,11 @@ function normalize_trip_status($value): string
 function build_trip_payload(array $trip): array
 {
     $imagePath = trim((string) ($trip['image_path'] ?? ''));
+    $currencyCode = normalize_currency_code($trip['currency_code'] ?? default_trip_currency_code());
     return [
         'id' => (int) ($trip['id'] ?? 0),
         'name' => (string) ($trip['name'] ?? ''),
+        'currency_code' => $currencyCode,
         'status' => normalize_trip_status($trip['status'] ?? 'active'),
         'created_by' => array_key_exists('created_by', $trip) && $trip['created_by'] !== null
             ? (int) $trip['created_by']
@@ -91,6 +93,9 @@ function normalize_trip_row(array $trip): array
 {
     $trip['id'] = (int) ($trip['id'] ?? 0);
     $trip['name'] = (string) ($trip['name'] ?? '');
+    $trip['currency_code'] = normalize_currency_code(
+        $trip['currency_code'] ?? default_trip_currency_code()
+    );
     $trip['status'] = normalize_trip_status($trip['status'] ?? 'active');
     $trip['created_by'] = array_key_exists('created_by', $trip) && $trip['created_by'] !== null
         ? (int) $trip['created_by']
@@ -189,8 +194,11 @@ function find_trip_for_user(PDO $pdo, int $userId, int $tripId): ?array
     $tripImageSelect = trips_image_column_available($pdo)
         ? 't.image_path'
         : 'NULL AS image_path';
+    $tripCurrencySelect = trips_currency_column_available($pdo)
+        ? 't.currency_code'
+        : '"' . default_trip_currency_code() . '" AS currency_code';
     $stmt = $pdo->prepare(
-        'SELECT t.id, t.name, t.status, t.created_by, t.ended_at, t.archived_at, ' . $tripImageSelect . '
+        'SELECT t.id, t.name, ' . $tripCurrencySelect . ', t.status, t.created_by, t.ended_at, t.archived_at, ' . $tripImageSelect . '
          FROM ' . $tripsTable . ' t
          JOIN ' . $tripMembersTable . ' tm ON tm.trip_id = t.id
          WHERE t.id = :trip_id AND tm.user_id = :user_id
@@ -211,8 +219,11 @@ function find_default_trip_for_user(PDO $pdo, int $userId): ?array
     $tripImageSelect = trips_image_column_available($pdo)
         ? 't.image_path'
         : 'NULL AS image_path';
+    $tripCurrencySelect = trips_currency_column_available($pdo)
+        ? 't.currency_code'
+        : '"' . default_trip_currency_code() . '" AS currency_code';
     $stmt = $pdo->prepare(
-        'SELECT t.id, t.name, t.status, t.created_by, t.ended_at, t.archived_at, ' . $tripImageSelect . '
+        'SELECT t.id, t.name, ' . $tripCurrencySelect . ', t.status, t.created_by, t.ended_at, t.archived_at, ' . $tripImageSelect . '
          FROM ' . $tripsTable . ' t
          JOIN ' . $tripMembersTable . ' tm ON tm.trip_id = t.id
          WHERE tm.user_id = :user_id

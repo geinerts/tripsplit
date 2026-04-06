@@ -267,11 +267,30 @@ function push_fcm_service_account_abs(): string
 {
     $relative = trim(str_replace('\\', '/', (string) PUSH_FCM_SERVICE_ACCOUNT_REL_PATH));
     $relative = ltrim($relative, '/');
+    if ($relative === '') {
+        return '';
+    }
+
+    // Backward compatibility: old deployments used ../keys/... with /api root.
+    while (strpos($relative, '../') === 0) {
+        $relative = substr($relative, 3);
+    }
     if ($relative === '' || strpos($relative, '..') !== false) {
         return '';
     }
 
-    return project_root_abs() . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative);
+    $roots = [
+        project_root_abs(),
+        project_root_abs() . DIRECTORY_SEPARATOR . 'api',
+    ];
+    foreach ($roots as $root) {
+        $candidate = $root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative);
+        if (is_file($candidate) && is_readable($candidate)) {
+            return $candidate;
+        }
+    }
+
+    return $roots[0] . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative);
 }
 
 function push_fcm_service_account_data(): array

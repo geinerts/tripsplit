@@ -1,4 +1,5 @@
 import '../../domain/entities/auth_user.dart';
+import '../../../../core/network/media_url_resolver.dart';
 
 class AuthUserModel extends AuthUser {
   const AuthUserModel({
@@ -18,9 +19,11 @@ class AuthUserModel extends AuthUser {
     final rawAvatar = (map['avatar_base64'] ?? map['avatar']) as String?;
     final avatar = (rawAvatar ?? '').trim();
     final rawAvatarUrl = map['avatar_url'] as String?;
-    final avatarUrl = (rawAvatarUrl ?? '').trim();
+    final avatarUrl = MediaUrlResolver.normalize((rawAvatarUrl ?? '').trim());
     final rawAvatarThumbUrl = map['avatar_thumb_url'] as String?;
-    final avatarThumbUrl = (rawAvatarThumbUrl ?? '').trim();
+    final avatarThumbUrl = MediaUrlResolver.normalize(
+      (rawAvatarThumbUrl ?? '').trim(),
+    );
     final firstName = (map['first_name'] as String?)?.trim();
     final lastName = (map['last_name'] as String?)?.trim();
     final fullName = (map['full_name'] as String?)?.trim();
@@ -36,8 +39,8 @@ class AuthUserModel extends AuthUser {
       email: map['email'] as String?,
       needsCredentials: map['needs_credentials'] as bool? ?? false,
       avatarBase64: avatar.isEmpty ? null : avatar,
-      avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
-      avatarThumbUrl: avatarThumbUrl.isEmpty ? null : avatarThumbUrl,
+      avatarUrl: avatarUrl,
+      avatarThumbUrl: avatarThumbUrl,
     );
   }
 }

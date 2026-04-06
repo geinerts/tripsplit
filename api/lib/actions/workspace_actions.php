@@ -143,12 +143,33 @@ function workspace_load_trip_expenses(PDO $pdo, int $tripId, int $limit = 300): 
     $expensesTable = table_name('expenses');
     $usersTable = table_name('users');
     $participantsTable = table_name('expense_participants');
+    $expenseCurrencyColumnsAvailable = expenses_currency_columns_available($pdo);
+    $tripStmt = $pdo->prepare(
+        'SELECT
+            ' . (
+            trips_currency_column_available($pdo)
+                ? 'currency_code'
+                : '\'' . default_trip_currency_code() . '\' AS currency_code'
+        ) . '
+         FROM ' . table_name('trips') . '
+         WHERE id = :trip_id
+         LIMIT 1'
+    );
+    $tripStmt->execute(['trip_id' => $tripId]);
+    $tripCurrencyCode = normalize_currency_code(
+        (string) ($tripStmt->fetchColumn() ?: default_trip_currency_code())
+    );
     $limit = pagination_limit($limit, 300, 500);
 
     $stmt = $pdo->prepare(
         'SELECT
             e.id,
             e.amount,
+            ' . (
+            $expenseCurrencyColumnsAvailable
+                ? 'e.currency_code AS expense_currency_code, e.source_amount, e.fx_rate_to_trip,'
+                : '\'' . default_trip_currency_code() . '\' AS expense_currency_code, e.amount AS source_amount, 1.00000000 AS fx_rate_to_trip,'
+        ) . '
             e.category,
             e.note,
             e.split_mode,
@@ -192,6 +213,7 @@ function workspace_load_trip_expenses(PDO $pdo, int $tripId, int $limit = 300): 
     foreach ($rows as &$row) {
         $id = (int) ($row['id'] ?? 0);
         $amountCents = decimal_to_cents($row['amount'] ?? 0);
+        $sourceAmountCents = decimal_to_cents($row['source_amount'] ?? 0);
         $splitMode = normalize_expense_split_mode($row['split_mode'] ?? 'equal');
         $participantRows = $participantsByExpense[$id] ?? [];
         $storedOwedTotal = 0;
@@ -204,6 +226,12 @@ function workspace_load_trip_expenses(PDO $pdo, int $tripId, int $limit = 300): 
         $row['id'] = $id;
         $row['paid_by_id'] = (int) ($row['paid_by_id'] ?? 0);
         $row['amount'] = cents_to_float($amountCents);
+        $row['trip_currency_code'] = $tripCurrencyCode;
+        $row['expense_currency_code'] = normalize_currency_code(
+            $row['expense_currency_code'] ?? $tripCurrencyCode
+        );
+        $row['original_amount'] = cents_to_float($sourceAmountCents);
+        $row['fx_rate_to_trip'] = (float) ($row['fx_rate_to_trip'] ?? 1.0);
         $rowCategory = trim((string) ($row['category'] ?? ''));
         $row['category'] = $rowCategory !== '' ? $rowCategory : 'other';
         $row['split_mode'] = $splitMode;

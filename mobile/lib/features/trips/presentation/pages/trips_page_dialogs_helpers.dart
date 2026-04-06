@@ -15,12 +15,24 @@ extension _TripsPageDialogHelpers on _TripsPageState {
       if (picked == null) {
         return null;
       }
-      final rawBytes = await picked.readAsBytes();
-      final incomingName = picked.name.trim().isEmpty
+      final cropped = await AppImageCropper.cropTripImage(
+        context: context,
+        source: picked,
+      );
+      if (cropped == null) {
+        return null;
+      }
+
+      final rawBytes = await cropped.readAsBytes();
+      final fallbackName = picked.name.trim().isEmpty
           ? (source == ImageSource.camera
                 ? 'trip_camera.jpg'
                 : 'trip_gallery.jpg')
           : picked.name.trim();
+      final incomingName = _fileNameFromPath(
+        cropped.path,
+        fallbackName: fallbackName,
+      );
       return _prepareTripImageBytesForUpload(
         rawBytes: rawBytes,
         fileName: incomingName,
@@ -28,6 +40,22 @@ extension _TripsPageDialogHelpers on _TripsPageState {
     } catch (_) {
       return null;
     }
+  }
+
+  String _fileNameFromPath(String path, {required String fallbackName}) {
+    final normalized = path.trim();
+    if (normalized.isEmpty) {
+      return fallbackName;
+    }
+    final slashIndex = normalized.lastIndexOf('/');
+    final candidate = slashIndex >= 0
+        ? normalized.substring(slashIndex + 1)
+        : normalized;
+    final trimmed = candidate.trim();
+    if (trimmed.isEmpty) {
+      return fallbackName;
+    }
+    return trimmed;
   }
 
   Future<({Uint8List bytes, String fileName})?> _prepareTripImageBytesForUpload({

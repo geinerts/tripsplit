@@ -6,7 +6,15 @@ class CreateTripUseCase {
 
   final TripsRepository _repository;
 
-  Future<Trip> call({required String name, required List<int> memberIds}) {
-    return _repository.createTrip(name: name, memberIds: memberIds);
+  Future<Trip> call({
+    required String name,
+    required String currencyCode,
+    required List<int> memberIds,
+  }) {
+    return _repository.createTrip(
+      name: name,
+      currencyCode: currencyCode,
+      memberIds: memberIds,
+    );
   }
 }

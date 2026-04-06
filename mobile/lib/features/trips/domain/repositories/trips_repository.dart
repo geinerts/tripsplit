@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import '../entities/trip.dart';
+import '../entities/trip_invite_join_result.dart';
 import '../entities/trip_invite_link.dart';
 import '../entities/trip_user.dart';
 import '../entities/uploaded_trip_image.dart';
@@ -12,11 +13,16 @@ abstract class TripsRepository {
     int limit = 20,
     List<int> excludeIds = const <int>[],
   });
-  Future<Trip> createTrip({required String name, required List<int> memberIds});
+  Future<Trip> createTrip({
+    required String name,
+    required String currencyCode,
+    required List<int> memberIds,
+  });
   Future<Trip> updateTrip({
     required int tripId,
     required String name,
     String? imagePath,
+    bool removeImage = false,
   });
   Future<UploadedTripImageData> uploadTripImage({
     required int tripId,
@@ -29,4 +35,5 @@ abstract class TripsRepository {
   });
   Future<void> deleteTrip({required int tripId});
   Future<TripInviteLink> createTripInviteLink({required int tripId});
+  Future<TripInviteJoinResult> joinTripInvite({required String inviteToken});
 }

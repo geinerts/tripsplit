@@ -4,6 +4,10 @@ class TripExpense {
   const TripExpense({
     required this.id,
     required this.amount,
+    required this.originalAmount,
+    required this.tripCurrencyCode,
+    required this.expenseCurrencyCode,
+    required this.fxRateToTrip,
     required this.category,
     required this.note,
     required this.expenseDate,
@@ -17,6 +21,10 @@ class TripExpense {
 
   final int id;
   final double amount;
+  final double originalAmount;
+  final String tripCurrencyCode;
+  final String expenseCurrencyCode;
+  final double fxRateToTrip;
   final String category;
   final String note;
   final String expenseDate;

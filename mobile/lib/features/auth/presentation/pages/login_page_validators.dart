@@ -1,18 +1,6 @@
 part of 'login_page.dart';
 
 extension _LoginPageValidators on _LoginPageState {
-  String? _validateNickname(String? value) {
-    final t = context.l10n;
-    if (_mode != _AuthMode.register) {
-      return null;
-    }
-    final nickname = (value ?? '').trim();
-    if (nickname.length < 2 || nickname.length > 32) {
-      return t.nicknameLengthValidation;
-    }
-    return null;
-  }
-
   String? _validateFirstName(String? value) {
     final t = context.l10n;
     if (_mode != _AuthMode.register) {

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -70,6 +71,7 @@ class _MainShellPageState extends State<MainShellPage>
   late final WorkspacePageCommandController _workspaceCommandController;
   late int _selectedTabIndex;
   Trip? _openedTrip;
+  bool _openAddExpenseOnWorkspaceStart = false;
   bool _isProfileInEditMode = false;
   bool _isLoggingOut = false;
   bool _isSendingFeedback = false;
@@ -86,6 +88,8 @@ class _MainShellPageState extends State<MainShellPage>
   Timer? _notificationsPollTimer;
   Duration? _activeNotificationsPollInterval;
   bool _isAppInForeground = true;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  bool _isFlushingWorkspaceQueue = false;
 
   @override
   void initState() {
@@ -105,6 +109,8 @@ class _MainShellPageState extends State<MainShellPage>
     );
     _syncNotificationsPollingSchedule();
     unawaited(_refreshGlobalNotifications());
+    _startConnectivityQueueSync();
+    unawaited(_flushWorkspaceQueueBestEffort());
     if (widget.openCreateTripOnStart) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) {
@@ -126,6 +132,7 @@ class _MainShellPageState extends State<MainShellPage>
   @override
   void dispose() {
     _notificationsPollTimer?.cancel();
+    _connectivitySubscription?.cancel();
     unawaited(
       AppMonitoring.updateRuntimeContext(
         userId: widget.authController.currentUser?.id,
@@ -150,8 +157,46 @@ class _MainShellPageState extends State<MainShellPage>
     _isAppInForeground = nextIsForeground;
     if (_isAppInForeground) {
       unawaited(widget.authController.syncPushRegistration());
+      unawaited(_flushWorkspaceQueueBestEffort());
     }
     _syncNotificationsPollingSchedule();
+  }
+
+  void _startConnectivityQueueSync() {
+    final connectivity = Connectivity();
+    _connectivitySubscription = connectivity.onConnectivityChanged.listen((
+      results,
+    ) {
+      if (!_hasOnlineConnectivity(results)) {
+        return;
+      }
+      unawaited(_flushWorkspaceQueueBestEffort());
+    });
+
+    unawaited(() async {
+      final current = await connectivity.checkConnectivity();
+      if (_hasOnlineConnectivity(current)) {
+        await _flushWorkspaceQueueBestEffort();
+      }
+    }());
+  }
+
+  bool _hasOnlineConnectivity(List<ConnectivityResult> results) {
+    return results.any((result) => result != ConnectivityResult.none);
+  }
+
+  Future<void> _flushWorkspaceQueueBestEffort() async {
+    if (_isFlushingWorkspaceQueue || _isLoggingOut) {
+      return;
+    }
+    _isFlushingWorkspaceQueue = true;
+    try {
+      await widget.workspaceController.flushPendingMutations();
+    } catch (_) {
+      // Queue flush is best-effort and must never block UI flow.
+    } finally {
+      _isFlushingWorkspaceQueue = false;
+    }
   }
 
   void _syncNotificationsPollingSchedule() {

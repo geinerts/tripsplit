@@ -69,7 +69,11 @@ class _SummaryCard extends StatelessWidget {
                   border: Border.all(color: netColor.withValues(alpha: 0.32)),
                 ),
                 child: Text(
-                  _signedMoney(context, net),
+                  _signedMoney(
+                    context,
+                    net,
+                    currencyCode: AppCurrencyCatalog.defaultCode,
+                  ),
                   style: TextStyle(
                     color: netColor,
                     fontWeight: FontWeight.w800,
@@ -93,7 +97,11 @@ class _SummaryCard extends StatelessWidget {
                 child: _DetailChip(
                   icon: Icons.account_balance_wallet_outlined,
                   label: t.paidLabel,
-                  value: _formatMoney(context, paid),
+                  value: _formatMoney(
+                    context,
+                    paid,
+                    currencyCode: AppCurrencyCatalog.defaultCode,
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -101,7 +109,11 @@ class _SummaryCard extends StatelessWidget {
                 child: _DetailChip(
                   icon: Icons.payments_outlined,
                   label: t.owesLabel,
-                  value: _formatMoney(context, owed),
+                  value: _formatMoney(
+                    context,
+                    owed,
+                    currencyCode: AppCurrencyCatalog.defaultCode,
+                  ),
                 ),
               ),
             ],
@@ -329,7 +341,11 @@ class _SummaryCard extends StatelessWidget {
   }
 
   String _positionMessage(BuildContext context, double net) {
-    final absolute = _formatMoney(context, net.abs());
+    final absolute = _formatMoney(
+      context,
+      net.abs(),
+      currencyCode: AppCurrencyCatalog.defaultCode,
+    );
     if (net > 0.004) {
       return _localizedText(
         context,
@@ -571,7 +587,7 @@ class _DetailChip extends StatelessWidget {
 class _WorkspaceSectionCard extends StatelessWidget {
   const _WorkspaceSectionCard({
     required this.child,
-    this.padding = const EdgeInsets.all(12),
+    this.padding = const EdgeInsets.all(14),
     this.accent,
     this.radius = 16,
   });
