@@ -330,7 +330,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
         TextButton(
           onPressed: _isSubmitting
               ? null
-              : () => _showSnack(t.passwordResetComingSoon),
+              : () => Navigator.of(context).pushNamed(AppRouter.forgotPassword),
           child: Text(t.forgotPassword),
         ),
       ],

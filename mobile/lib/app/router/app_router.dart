@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app_dependencies.dart';
 import '../../core/l10n/l10n.dart';
 import '../../features/auth/presentation/pages/credentials_page.dart';
+import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/shell/presentation/pages/main_shell_page.dart';
 import '../../features/workspace/presentation/pages/workspace_page.dart';
@@ -14,6 +15,7 @@ class AppRouter {
   static const String shell = '/app';
   static const String login = '/login';
   static const String credentials = '/credentials';
+  static const String forgotPassword = '/forgot-password';
   static const String profile = '/profile';
   static const String trips = '/trips';
   static const String workspace = '/workspace';
@@ -25,6 +27,8 @@ class AppRouter {
       login: (_) => LoginPage(controller: _dependencies.authController),
       credentials: (_) =>
           CredentialsPage(controller: _dependencies.authController),
+      forgotPassword: (_) =>
+          ForgotPasswordPage(controller: _dependencies.authController),
       shell: (context) {
         final args = ModalRoute.of(context)?.settings.arguments;
         final initialTab = args is Map && args['initial_tab'] is int

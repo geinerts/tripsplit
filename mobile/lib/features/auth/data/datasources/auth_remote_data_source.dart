@@ -29,6 +29,8 @@ abstract class AuthRemoteDataSource {
   });
 
   Future<AuthUserModel> getMe();
+
+  Future<void> requestPasswordReset({required String email});
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -152,5 +154,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw StateError('Missing me payload in me response.');
     }
     return AuthUserModel.fromLegacyMap(me);
+  }
+
+  @override
+  Future<void> requestPasswordReset({required String email}) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('forgot_password'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'email': email},
+    );
   }
 }

@@ -617,6 +617,24 @@ abstract class AppLocalizations {
   /// **'Forgot password?'**
   String get forgotPassword;
 
+  /// No description provided for @forgotPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email and we will send a password reset link.'**
+  String get forgotPasswordSubtitle;
+
+  /// No description provided for @forgotPasswordSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'If an account with this email exists, we have sent a password reset link.'**
+  String get forgotPasswordSuccessMessage;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get forgotPasswordTitle;
+
   /// No description provided for @friendsProgressSubtitle.
   ///
   /// In en, this message translates to:
@@ -1571,6 +1589,12 @@ abstract class AppLocalizations {
   /// **'Rows'**
   String get rowsLabel;
 
+  /// No description provided for @backToLoginAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to login'**
+  String get backToLoginAction;
+
   /// No description provided for @saveAction.
   ///
   /// In en, this message translates to:
@@ -1588,6 +1612,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save profile'**
   String get saveProfileButton;
+
+  /// No description provided for @sendResetLinkButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Send reset link'**
+  String get sendResetLinkButton;
 
   /// No description provided for @searchUsersHint.
   ///

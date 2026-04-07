@@ -312,6 +312,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPassword => 'Forgot password?';
 
   @override
+  String get forgotPasswordSubtitle => 'Enter your email and we will send a password reset link.';
+
+  @override
+  String get forgotPasswordSuccessMessage => 'If an account with this email exists, we have sent a password reset link.';
+
+  @override
+  String get forgotPasswordTitle => 'Reset password';
+
+  @override
   String get friendsProgressSubtitle => 'Each member and their confirmation state.';
 
   @override
@@ -833,6 +842,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rowsLabel => 'Rows';
 
   @override
+  String get backToLoginAction => 'Back to login';
+
+  @override
   String get saveAction => 'Save';
 
   @override
@@ -840,6 +852,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get saveProfileButton => 'Save profile';
+
+  @override
+  String get sendResetLinkButton => 'Send reset link';
 
   @override
   String get searchUsersHint => 'Search people by name or email';

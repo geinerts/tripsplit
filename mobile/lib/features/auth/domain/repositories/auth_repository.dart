@@ -26,4 +26,6 @@ abstract class AuthRepository {
   });
 
   Future<AuthUser> getMe();
+
+  Future<void> requestPasswordReset({required String email});
 }

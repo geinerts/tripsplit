@@ -312,6 +312,15 @@ class AppLocalizationsLv extends AppLocalizations {
   String get forgotPassword => 'Aizmirsi paroli?';
 
   @override
+  String get forgotPasswordSubtitle => 'Ievadi savu e-pastu, un mēs nosūtīsim paroles atiestatīšanas saiti.';
+
+  @override
+  String get forgotPasswordSuccessMessage => 'Ja konts ar šo e-pastu eksistē, paroles atiestatīšanas saite ir nosūtīta.';
+
+  @override
+  String get forgotPasswordTitle => 'Atiestatīt paroli';
+
+  @override
   String get friendsProgressSubtitle => 'Katrs dalībnieks un viņa apstiprinājumu statuss.';
 
   @override
@@ -833,6 +842,9 @@ class AppLocalizationsLv extends AppLocalizations {
   String get rowsLabel => 'Rindas';
 
   @override
+  String get backToLoginAction => 'Atpakaļ uz pieslēgšanos';
+
+  @override
   String get saveAction => 'Saglabāt';
 
   @override
@@ -840,6 +852,9 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get saveProfileButton => 'Saglabāt profilu';
+
+  @override
+  String get sendResetLinkButton => 'Nosūtīt atiestatīšanas saiti';
 
   @override
   String get searchUsersHint => 'Meklē cilvēkus pēc vārda vai e-pasta';

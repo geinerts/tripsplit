@@ -11,6 +11,7 @@ import '../../../../core/network/legacy_feedback_reporter.dart';
 import '../../../../core/push/push_registration_service.dart';
 import '../../data/models/auth_user_model.dart';
 import '../../domain/entities/auth_user.dart';
+import '../../domain/usecases/forgot_password_use_case.dart';
 import '../../domain/usecases/get_me_use_case.dart';
 import '../../domain/usecases/login_use_case.dart';
 import '../../domain/usecases/register_use_case.dart';
@@ -24,6 +25,7 @@ class AuthController {
     this._setCredentialsUseCase,
     this._updateProfileUseCase,
     this._getMeUseCase,
+    this._forgotPasswordUseCase,
     this._tokenStore,
     this._authSessionStore,
     this._currentUserStore,
@@ -38,6 +40,7 @@ class AuthController {
   final SetCredentialsUseCase _setCredentialsUseCase;
   final UpdateProfileUseCase _updateProfileUseCase;
   final GetMeUseCase _getMeUseCase;
+  final ForgotPasswordUseCase _forgotPasswordUseCase;
   final DeviceTokenStore _tokenStore;
   final AuthSessionStore _authSessionStore;
   final CurrentUserStore _currentUserStore;
@@ -115,6 +118,10 @@ class AuthController {
     await _setCurrentUser(user);
     unawaited(_syncPushRegistration());
     return user;
+  }
+
+  Future<void> requestPasswordReset({required String email}) {
+    return _forgotPasswordUseCase.call(email: email);
   }
 
   Future<AuthUser?> readCachedCurrentUser() async {
