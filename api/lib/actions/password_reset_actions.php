@@ -17,7 +17,7 @@ function forgot_password_action(): void
         json_out(['ok' => false, 'error' => 'Email is invalid.'], 400);
     }
 
-    $pdo        = get_pdo();
+    $pdo        = db();
     $usersTable = table_name('users');
     $resetsTable = table_name('password_resets');
 
@@ -85,7 +85,7 @@ function reset_password_action(): void
 
     $password = validate_password_plain($password);
 
-    $pdo         = get_pdo();
+    $pdo         = db();
     $resetsTable = table_name('password_resets');
     $usersTable  = table_name('users');
 
