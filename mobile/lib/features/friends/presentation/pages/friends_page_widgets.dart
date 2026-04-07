@@ -401,15 +401,30 @@ extension _FriendsPageWidgets on _FriendsPageState {
                     _userAvatar(request.user),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Text(
-                        request.user.nickname,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: AppDesign.titleColor(context),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _friendPrimaryName(request.user),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppDesign.titleColor(context),
+                                ),
+                          ),
+                          if (_friendSecondaryLabel(request.user) != null)
+                            Text(
+                              _friendSecondaryLabel(request.user)!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: AppDesign.mutedColor(context),
+                                  ),
                             ),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -465,7 +480,8 @@ extension _FriendsPageWidgets on _FriendsPageState {
               final busy = _cancelLoading.contains(request.requestId);
               return AppListRow(
                 leading: _userAvatar(request.user),
-                title: request.user.nickname,
+                title: _friendPrimaryName(request.user),
+                subtitle: _friendSecondaryLabel(request.user),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -528,13 +544,12 @@ extension _FriendsPageWidgets on _FriendsPageState {
             ...snapshot.friends.map(
               (friend) => AppListRow(
                 leading: _userAvatar(friend),
-                title: friend.nickname,
-                trailing: TextButton.icon(
-                  onPressed: _removeLoading.contains(friend.id)
-                      ? null
-                      : () => _removeFriend(friend),
-                  icon: const Icon(Icons.person_remove_outlined, size: 18),
-                  label: Text(_txt(en: 'Remove', lv: 'Noņemt')),
+                title: _friendPrimaryName(friend),
+                subtitle: _friendSecondaryLabel(friend),
+                onTap: () => unawaited(_openFriendProfile(friend)),
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppDesign.mutedColor(context),
                 ),
               ),
             ),
@@ -571,9 +586,10 @@ extension _FriendsPageWidgets on _FriendsPageState {
     const size = 36.0;
     final imageCacheSize = (size * MediaQuery.devicePixelRatioOf(context))
         .round();
-    final initial = user.nickname.trim().isEmpty
+    final display = _friendPrimaryName(user);
+    final initial = display.trim().isEmpty
         ? '?'
-        : user.nickname.trim().substring(0, 1).toUpperCase();
+        : display.trim().substring(0, 1).toUpperCase();
     final avatarUrl = (user.avatarThumbUrl ?? user.avatarUrl)?.trim();
 
     if (avatarUrl != null && avatarUrl.isNotEmpty) {
@@ -594,6 +610,30 @@ extension _FriendsPageWidgets on _FriendsPageState {
     }
 
     return CircleAvatar(radius: 18, child: Text(initial));
+  }
+
+  String _friendPrimaryName(FriendUser user) {
+    final display = user.preferredName.trim();
+    if (display.isNotEmpty) {
+      return display;
+    }
+    final fallback = user.nickname.trim();
+    if (fallback.isNotEmpty) {
+      return fallback;
+    }
+    return _txt(en: 'User', lv: 'Lietotājs');
+  }
+
+  String? _friendSecondaryLabel(FriendUser user) {
+    final nickname = user.nickname.trim();
+    if (nickname.isEmpty) {
+      return null;
+    }
+    final primary = _friendPrimaryName(user).trim();
+    if (primary.toLowerCase() == nickname.toLowerCase()) {
+      return null;
+    }
+    return '@$nickname';
   }
 }
 
@@ -865,7 +905,15 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                           final busy = _inviteLoading.contains(user.id);
                           return AppListRow(
                             leading: widget.userAvatarBuilder(user),
-                            title: user.nickname,
+                            title: user.preferredName.trim().isNotEmpty
+                                ? user.preferredName.trim()
+                                : user.nickname,
+                            subtitle:
+                                user.preferredName.trim().isNotEmpty &&
+                                    user.preferredName.trim().toLowerCase() !=
+                                        user.nickname.trim().toLowerCase()
+                                ? '@${user.nickname.trim()}'
+                                : null,
                             trailing: OutlinedButton.icon(
                               onPressed: busy
                                   ? null

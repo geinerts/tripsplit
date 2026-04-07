@@ -87,16 +87,13 @@ extension _MainShellPageWidgets on _MainShellPageState {
       child: Padding(
         padding: const EdgeInsets.only(left: 8, top: 4),
         child: SizedBox(
-          height: 42,
-          child: Transform.scale(
+          width: 170,
+          height: 46,
+          child: Image.asset(
+            'assets/branding/logo_full.png',
+            fit: BoxFit.contain,
             alignment: Alignment.centerLeft,
-            scaleX: 1.1,
-            scaleY: 1.0,
-            child: Image.asset(
-              'assets/branding/logo_full.png',
-              fit: BoxFit.fitHeight,
-              filterQuality: FilterQuality.high,
-            ),
+            filterQuality: FilterQuality.high,
           ),
         ),
       ),

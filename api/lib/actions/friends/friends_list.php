@@ -22,6 +22,9 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
 {
     $friendsTable = table_name('friends');
     $usersTable = table_name('users');
+    $nameSelect = users_name_columns_available($pdo)
+        ? 'u.first_name, u.last_name, '
+        : 'NULL AS first_name, NULL AS last_name, ';
 
     $acceptedStmt = $pdo->prepare(
         'SELECT
@@ -29,6 +32,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
             f.requested_by,
             f.created_at,
             f.updated_at,
+            ' . $nameSelect . '
             u.id AS user_id,
             u.nickname,
             u.avatar_path
@@ -51,6 +55,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
             f.id AS request_id,
             f.requested_by,
             f.created_at,
+            ' . $nameSelect . '
             u.id AS user_id,
             u.nickname,
             u.avatar_path
@@ -75,6 +80,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
             f.id AS request_id,
             f.requested_by,
             f.created_at,
+            ' . $nameSelect . '
             u.id AS user_id,
             u.nickname,
             u.avatar_path
@@ -204,6 +210,9 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
 
     $friendsTable = table_name('friends');
     $usersTable = table_name('users');
+    $nameSelect = users_name_columns_available($pdo)
+        ? 'u.first_name, u.last_name, '
+        : 'NULL AS first_name, NULL AS last_name, ';
     $params = [
         'join_me_id' => $meId,
         'where_me_a' => $meId,
@@ -264,6 +273,7 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
             f.requested_by,
             f.created_at,
             f.updated_at,
+            ' . $nameSelect . '
             u.id AS user_id,
             u.nickname,
             u.avatar_path

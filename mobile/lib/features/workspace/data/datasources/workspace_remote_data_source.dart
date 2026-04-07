@@ -6,6 +6,7 @@ import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/trip_expenses_page.dart';
 import '../../domain/entities/uploaded_receipt.dart';
 import '../../domain/entities/workspace_notifications_inbox.dart';
+import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
 import 'workspace_remote_mutation_api.dart';
 import 'workspace_remote_snapshot_loader.dart';
@@ -24,6 +25,10 @@ abstract class WorkspaceRemoteDataSource {
     int limit,
     String? cursor,
     int? offset,
+  });
+  Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
+    required int userId,
+    int limit,
   });
 
   Future<void> endTrip({required int tripId});
@@ -139,6 +144,17 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       limit: limit,
       cursor: cursor,
       offset: offset,
+    );
+  }
+
+  @override
+  Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
+    required int userId,
+    int limit = 20,
+  }) {
+    return _snapshotLoader.loadSharedTripsWithUser(
+      userId: userId,
+      limit: limit,
     );
   }
 

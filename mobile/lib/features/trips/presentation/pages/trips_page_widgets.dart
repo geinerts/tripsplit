@@ -167,7 +167,12 @@ extension _TripsPageWidgets on _TripsPageState {
           onPressed: controlsEnabled
               ? () {
                   _updateState(() {
-                    _showAllTrips = !_showAllTrips;
+                    final nextShowAllTrips = !_showAllTrips;
+                    _showAllTrips = nextShowAllTrips;
+                    if (nextShowAllTrips) {
+                      _allTripsVisibleCount =
+                          _TripsPageState._allTripsInitialCount;
+                    }
                   });
                 }
               : null,
@@ -263,40 +268,75 @@ extension _TripsPageWidgets on _TripsPageState {
     );
   }
 
-  Widget _buildTripsCollection(BuildContext context, List<Trip> trips) {
+  Widget _buildTripsCollection(
+    BuildContext context,
+    List<Trip> trips, {
+    bool hasMoreAllTrips = false,
+  }) {
     if (!_showAllTrips) {
       return _buildActiveTripsCarousel(context, trips);
     }
 
     final responsive = context.responsive;
+    late final Widget listContent;
     if (responsive.isCompact) {
-      return Column(
+      listContent = Column(
         children: [for (final trip in trips) _buildTripCard(context, trip)],
+      );
+    } else {
+      listContent = LayoutBuilder(
+        builder: (context, constraints) {
+          var columns = responsive.isExpanded ? 3 : 2;
+          if (columns == 3 && constraints.maxWidth < 860) {
+            columns = 2;
+          }
+          const spacing = 12.0;
+          final itemWidth =
+              (constraints.maxWidth - ((columns - 1) * spacing)) / columns;
+
+          return Wrap(
+            spacing: spacing,
+            runSpacing: spacing,
+            children: [
+              for (final trip in trips)
+                SizedBox(
+                  width: itemWidth,
+                  child: _buildTripCard(
+                    context,
+                    trip,
+                    withBottomSpacing: false,
+                  ),
+                ),
+            ],
+          );
+        },
       );
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        var columns = responsive.isExpanded ? 3 : 2;
-        if (columns == 3 && constraints.maxWidth < 860) {
-          columns = 2;
-        }
-        const spacing = 12.0;
-        final itemWidth =
-            (constraints.maxWidth - ((columns - 1) * spacing)) / columns;
-
-        return Wrap(
-          spacing: spacing,
-          runSpacing: spacing,
-          children: [
-            for (final trip in trips)
-              SizedBox(
-                width: itemWidth,
-                child: _buildTripCard(context, trip, withBottomSpacing: false),
-              ),
-          ],
-        );
-      },
+    return Column(
+      children: [
+        listContent,
+        if (hasMoreAllTrips) ...[
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                _updateState(() {
+                  final nextCount =
+                      _allTripsVisibleCount +
+                      _TripsPageState._allTripsLoadMoreStep;
+                  _allTripsVisibleCount = nextCount > _trips.length
+                      ? _trips.length
+                      : nextCount;
+                });
+              },
+              icon: const Icon(Icons.expand_more_rounded),
+              label: Text(_pageText(en: 'Load more', lv: 'Ielādēt vēl')),
+            ),
+          ),
+        ],
+      ],
     );
   }
 

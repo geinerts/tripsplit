@@ -103,6 +103,7 @@ class FriendsController {
           (user) => FriendUser(
             id: user.id,
             nickname: user.nickname,
+            displayName: null,
             avatarUrl: user.avatarUrl,
             avatarThumbUrl: user.avatarThumbUrl,
           ),

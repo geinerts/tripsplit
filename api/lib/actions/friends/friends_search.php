@@ -46,6 +46,12 @@ function search_users_action(): void
     $usersTable = table_name('users');
     $tripMembersTable = table_name('trip_members');
     $tripsTable = table_name('trips');
+    $nameSelect = users_name_columns_available($pdo)
+        ? 'u.first_name, u.last_name, '
+        : 'NULL AS first_name, NULL AS last_name, ';
+    $nameGroupBy = users_name_columns_available($pdo)
+        ? ', u.first_name, u.last_name'
+        : '';
 
     $excludeClause = '';
     $excludeParams = [];
@@ -62,7 +68,7 @@ function search_users_action(): void
     if ($qRaw === '') {
         $recentParams = array_merge(['me_id' => $meId], $excludeParams);
         $recentSql =
-            'SELECT u.id, u.nickname, u.avatar_path, MAX(t.created_at) AS last_shared_at
+            'SELECT u.id, ' . $nameSelect . 'u.nickname, u.avatar_path, MAX(t.created_at) AS last_shared_at
              FROM ' . $tripMembersTable . ' tm_me
              JOIN ' . $tripMembersTable . ' tm_other
                ON tm_other.trip_id = tm_me.trip_id
@@ -70,7 +76,7 @@ function search_users_action(): void
              JOIN ' . $usersTable . ' u ON u.id = tm_other.user_id
              JOIN ' . $tripsTable . ' t ON t.id = tm_me.trip_id
              WHERE tm_me.user_id = :me_id' . $excludeClause . '
-             GROUP BY u.id, u.nickname, u.avatar_path
+             GROUP BY u.id' . $nameGroupBy . ', u.nickname, u.avatar_path
              ORDER BY last_shared_at DESC, u.nickname ASC, u.id ASC
              LIMIT ' . $limit;
 
@@ -80,7 +86,7 @@ function search_users_action(): void
 
         if (!$rows) {
             $fallbackSql =
-                'SELECT u.id, u.nickname, u.avatar_path
+                'SELECT u.id, ' . $nameSelect . 'u.nickname, u.avatar_path
                  FROM ' . $usersTable . ' u
                  WHERE 1=1' . $excludeClause . '
                  ORDER BY u.created_at DESC, u.id DESC
@@ -102,6 +108,7 @@ function search_users_action(): void
         $searchSql =
             'SELECT
                 u.id,
+                ' . $nameSelect . '
                 u.nickname,
                 u.avatar_path,
                 CASE WHEN u.nickname LIKE :q_prefix THEN 0 ELSE 1 END AS rank_prefix,
@@ -119,6 +126,14 @@ function search_users_action(): void
     foreach ($rows as &$row) {
         $row['id'] = (int) ($row['id'] ?? 0);
         $row['nickname'] = trim((string) ($row['nickname'] ?? ''));
+        $firstName = normalize_me_name_value($row['first_name'] ?? null);
+        $lastName = normalize_me_name_value($row['last_name'] ?? null);
+        $displayName = combine_full_name($firstName, $lastName);
+        $row['first_name'] = $firstName;
+        $row['last_name'] = $lastName;
+        $row['display_name'] = $displayName !== null
+            ? $displayName
+            : $row['nickname'];
         $avatarPath = trim((string) ($row['avatar_path'] ?? ''));
         $row['avatar_url'] = $avatarPath !== '' ? avatar_public_url($avatarPath) : null;
         $row['avatar_thumb_url'] = $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null;

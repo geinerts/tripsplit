@@ -212,24 +212,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
               ),
             ),
           ),
-          if (_isCurrentTripOwner())
-            Positioned(
-              right: 12,
-              top: 10,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.22),
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  onPressed: _openTripActionsSheet,
-                  icon: const Icon(Icons.more_vert),
-                  color: Colors.white,
-                  visualDensity: VisualDensity.compact,
-                  tooltip: context.l10n.settings,
-                ),
-              ),
-            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
             child: Column(
@@ -393,6 +375,24 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
               ],
             ),
           ),
+          if (_isCurrentTripOwner())
+            Positioned(
+              right: 12,
+              top: 10,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.22),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  onPressed: _openTripActionsSheet,
+                  icon: const Icon(Icons.more_vert),
+                  color: Colors.white,
+                  visualDensity: VisualDensity.compact,
+                  tooltip: context.l10n.settings,
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -453,54 +453,59 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     const step = 28.0;
     const stroke = 2.0;
 
-    return SizedBox(
-      height: avatarSize + 4,
-      width: (itemCount * step) + (avatarSize - step) + 2,
-      child: Stack(
-        children: [
-          for (var i = 0; i < visible.length; i++)
-            Positioned(
-              left: i * step,
-              top: 2,
-              child: Container(
-                width: avatarSize,
-                height: avatarSize,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: stroke),
-                ),
-                child: _largeMemberAvatar(
-                  id: visible[i].id,
-                  name: visible[i].preferredName,
-                  avatarUrl: visible[i].avatarThumbUrl ?? visible[i].avatarUrl,
-                  size: avatarSize,
-                ),
-              ),
-            ),
-          if (extraCount > 0)
-            Positioned(
-              left: visible.length * step,
-              top: 2,
-              child: Container(
-                width: avatarSize,
-                height: avatarSize,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.18),
-                  border: Border.all(color: Colors.white, width: stroke),
-                ),
-                child: Text(
-                  '+$extraCount',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
+    return GestureDetector(
+      onTap: () => _openTripMembersListSheet(users),
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        height: avatarSize + 4,
+        width: (itemCount * step) + (avatarSize - step) + 2,
+        child: Stack(
+          children: [
+            for (var i = 0; i < visible.length; i++)
+              Positioned(
+                left: i * step,
+                top: 2,
+                child: Container(
+                  width: avatarSize,
+                  height: avatarSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: stroke),
+                  ),
+                  child: _largeMemberAvatar(
+                    id: visible[i].id,
+                    name: visible[i].preferredName,
+                    avatarUrl:
+                        visible[i].avatarThumbUrl ?? visible[i].avatarUrl,
+                    size: avatarSize,
                   ),
                 ),
               ),
-            ),
-        ],
+            if (extraCount > 0)
+              Positioned(
+                left: visible.length * step,
+                top: 2,
+                child: Container(
+                  width: avatarSize,
+                  height: avatarSize,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.18),
+                    border: Border.all(color: Colors.white, width: stroke),
+                  ),
+                  child: Text(
+                    '+$extraCount',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

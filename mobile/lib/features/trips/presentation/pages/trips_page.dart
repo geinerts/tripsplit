@@ -84,10 +84,14 @@ class TripsPage extends StatefulWidget {
 }
 
 class _TripsPageState extends State<TripsPage> {
+  static const int _allTripsInitialCount = 3;
+  static const int _allTripsLoadMoreStep = 2;
+
   bool _isLoading = true;
   bool _isMutating = false;
   bool _showAllTrips = false;
   int _activeTripsPageIndex = 0;
+  int _allTripsVisibleCount = _allTripsInitialCount;
   bool _openCreateAfterLoad = false;
   int _handledCreateTripRequestCount = 0;
   int _handledRefreshRequestCount = 0;
@@ -170,7 +174,16 @@ class _TripsPageState extends State<TripsPage> {
     final activeTrips = _trips
         .where((trip) => trip.isActive)
         .toList(growable: false);
-    final visibleTrips = _showAllTrips ? _trips : activeTrips;
+    final normalizedAllTripsVisibleCount = _allTripsVisibleCount.clamp(
+      0,
+      _trips.length,
+    );
+    final allTripsVisible = _trips
+        .take(normalizedAllTripsVisibleCount)
+        .toList(growable: false);
+    final visibleTrips = _showAllTrips ? allTripsVisible : activeTrips;
+    final hasMoreAllTrips =
+        _showAllTrips && normalizedAllTripsVisibleCount < _trips.length;
 
     return Scaffold(
       body: AppBackground(
@@ -217,7 +230,11 @@ class _TripsPageState extends State<TripsPage> {
                             if (visibleTrips.isEmpty)
                               _buildEmptyTripsState(context)
                             else
-                              _buildTripsCollection(context, visibleTrips),
+                              _buildTripsCollection(
+                                context,
+                                visibleTrips,
+                                hasMoreAllTrips: hasMoreAllTrips,
+                              ),
                           ],
                         ),
                       ),

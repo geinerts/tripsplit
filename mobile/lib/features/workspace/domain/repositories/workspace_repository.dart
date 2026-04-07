@@ -6,6 +6,7 @@ import '../entities/receipt_upload_payload.dart';
 import '../entities/trip_expenses_page.dart';
 import '../entities/uploaded_receipt.dart';
 import '../entities/workspace_notifications_inbox.dart';
+import '../entities/workspace_shared_trip.dart';
 import '../entities/workspace_snapshot.dart';
 
 abstract class WorkspaceRepository {
@@ -23,6 +24,10 @@ abstract class WorkspaceRepository {
     int limit,
     String? cursor,
     int? offset,
+  });
+  Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
+    required int userId,
+    int limit,
   });
   Future<int> pendingQueueCount({int? tripId});
   Future<List<QueuedMutation>> listQueuedMutations({int? tripId});

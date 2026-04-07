@@ -37,24 +37,18 @@ If tables already exist, run incremental migrations from [`sql/migrations/`](./s
    - `TRIP_ADMIN_KEY` (strong random secret for admin panel)
    - if using push:
      - `TRIP_PUSH_ENABLED=true`
-     - Android/Web FCM (recommended HTTP v1):
+     - FCM for Android + iOS + Web (recommended HTTP v1):
        - `TRIP_PUSH_FCM_PROJECT_ID` (optional if present in service account JSON)
        - `TRIP_PUSH_FCM_SERVICE_ACCOUNT_REL_PATH` (e.g. `keys/firebase-service-account.json`)
-     - Android/Web FCM legacy (optional fallback only):
+     - FCM legacy (optional fallback only):
        - `TRIP_PUSH_FCM_SERVER_KEY`
-     - `TRIP_PUSH_APNS_ENABLED=true`
-     - `TRIP_PUSH_APNS_TEAM_ID`
-	     - `TRIP_PUSH_APNS_KEY_ID`
-	     - `TRIP_PUSH_APNS_BUNDLE_ID`
-	     - `TRIP_PUSH_APNS_PRIVATE_KEY_REL_PATH`
-	     - `TRIP_PUSH_APNS_USE_SANDBOX=true` for TestFlight/dev, `false` for production
-	     - `TRIP_PUSH_CRITICAL_TYPES` (comma-separated push allowlist; in-app notifications are still saved for all types)
-	   - if using auto settlement reminders:
-	     - `TRIP_SETTLEMENT_REMINDER_ENABLED=true`
-	     - `TRIP_SETTLEMENT_REMINDER_INTERVAL_MIN` (default 720)
-	     - `TRIP_SETTLEMENT_REMINDER_MIN_AGE_MIN` (default 180)
-	     - `TRIP_SETTLEMENT_MANUAL_REMINDER_COOLDOWN_MIN` (default 15)
-	   - optional limits for rate-limit and upload quotas
+     - `TRIP_PUSH_CRITICAL_TYPES` (comma-separated push allowlist; in-app notifications are still saved for all types)
+   - if using auto settlement reminders:
+     - `TRIP_SETTLEMENT_REMINDER_ENABLED=true`
+     - `TRIP_SETTLEMENT_REMINDER_INTERVAL_MIN` (default 720)
+     - `TRIP_SETTLEMENT_REMINDER_MIN_AGE_MIN` (default 180)
+     - `TRIP_SETTLEMENT_MANUAL_REMINDER_COOLDOWN_MIN` (default 15)
+   - optional limits for rate-limit and upload quotas
 3. Upload project files to `public_html` (or your target subdirectory).
 4. Upload `.env` to project root (`.../trip/.env`) or `api/.env`.
 5. Ensure directories `uploads/receipts`, `uploads/avatars`, `uploads/trips`, `uploads/feedback` exist and are writable by PHP process.
@@ -103,10 +97,15 @@ Notes:
 - Without this file, Android app works, but push token registration returns empty and background push is unavailable.
 - If Firebase legacy API is disabled, backend must use HTTP v1 service account mode.
 
-### iOS (direct APNs, no Firebase required)
+### iOS (FCM + APNs key in Firebase)
 
-- iOS push in this project is sent directly through APNs from backend.
-- Ensure Apple Push capability/signing is configured and APNs env keys are set in server `.env`.
+1. In Firebase Console, add iOS app with bundle id:
+   - `com.tripsplit.app.tripsplit`
+2. Download `GoogleService-Info.plist`.
+3. Place file at:
+   - `mobile/ios/Runner/GoogleService-Info.plist`
+4. In Firebase Console -> Cloud Messaging, upload APNs auth key (`.p8`) for development and production.
+5. Rebuild iOS app (Xcode/TestFlight build).
 
 ## API actions
 

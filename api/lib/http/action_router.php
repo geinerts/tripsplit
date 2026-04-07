@@ -53,6 +53,7 @@ function api_action_handlers(): array
         'join_trip_invite' => 'join_trip_invite_action',
         'submit_feedback' => 'submit_feedback_action',
         'workspace_snapshot' => 'workspace_snapshot_action',
+        'shared_trips_with_user' => 'shared_trips_with_user_action',
         'generate_order' => 'generate_order_action',
         'list_orders' => 'list_orders_action',
         'admin_feedback_feed' => 'admin_feedback_feed_action',

@@ -5,6 +5,7 @@ class FriendUserModel extends FriendUser {
   const FriendUserModel({
     required super.id,
     required super.nickname,
+    super.displayName,
     super.avatarUrl,
     super.avatarThumbUrl,
   });
@@ -19,6 +20,7 @@ class FriendUserModel extends FriendUser {
     return FriendUserModel(
       id: (map['id'] as num?)?.toInt() ?? 0,
       nickname: (map['nickname'] as String? ?? '').trim(),
+      displayName: (map['display_name'] as String?)?.trim(),
       avatarUrl: avatarUrl,
       avatarThumbUrl: avatarThumbUrl,
     );

@@ -131,7 +131,9 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         return;
       }
 
-      final existing = snapshot.pendingSent.map((item) => item.requestId).toSet();
+      final existing = snapshot.pendingSent
+          .map((item) => item.requestId)
+          .toSet();
       final merged = <FriendRequest>[...snapshot.pendingSent];
       for (final req in page.requests) {
         if (existing.add(req.requestId)) {
@@ -276,14 +278,6 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         _pendingReceivedNextOffset = receivedPage.nextOffset;
         _snapshot = snapshot;
       });
-      final query = _searchController.text.trim();
-      if (query.length >= 2) {
-        await _performSearch(query);
-      } else {
-        _updateState(() {
-          _searchResults = const <FriendUser>[];
-        });
-      }
       success = true;
     } on ApiException catch (error) {
       if (!mounted) {

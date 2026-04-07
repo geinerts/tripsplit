@@ -258,8 +258,9 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
   Future<void> _openTripActionsSheet() async {
     final t = context.l10n;
     final canEdit = _isCurrentTripOwner();
+    final canManageMembers = _canEditMembers;
     final canDelete = _canEditMembers;
-    if (!canEdit && !canDelete) {
+    if (!canEdit && !canDelete && !canManageMembers) {
       return;
     }
 
@@ -276,6 +277,18 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                   leading: const Icon(Icons.edit_outlined),
                   title: Text('${t.editAction} ${t.tripTitleShort}'),
                   onTap: () => Navigator.of(sheetContext).pop('edit'),
+                ),
+              if (canManageMembers)
+                ListTile(
+                  leading: const Icon(Icons.group_add_outlined),
+                  title: Text(t.addMembersAction),
+                  subtitle: Text(
+                    _plainLocalizedText(
+                      en: 'Invite link or add from friends',
+                      lv: 'Ielūguma saite vai pievienošana no draugiem',
+                    ),
+                  ),
+                  onTap: () => Navigator.of(sheetContext).pop('members'),
                 ),
               if (canDelete)
                 ListTile(
@@ -304,6 +317,10 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
 
     if (choice == 'edit') {
       await _onEditCurrentTripPressed();
+      return;
+    }
+    if (choice == 'members') {
+      await _openAddMembersDialog();
       return;
     }
     if (choice == 'delete') {
@@ -427,9 +444,9 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                   if (hasImage)
                     CupertinoActionSheetAction(
                       isDestructiveAction: true,
-                      onPressed: () => Navigator.of(cupertinoContext).pop(
-                        _TripImageSourceOption.remove,
-                      ),
+                      onPressed: () => Navigator.of(
+                        cupertinoContext,
+                      ).pop(_TripImageSourceOption.remove),
                       child: Text(
                         _plainLocalizedText(
                           en: 'Remove image',
@@ -438,15 +455,15 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                       ),
                     ),
                   CupertinoActionSheetAction(
-                    onPressed: () => Navigator.of(cupertinoContext).pop(
-                      _TripImageSourceOption.camera,
-                    ),
+                    onPressed: () => Navigator.of(
+                      cupertinoContext,
+                    ).pop(_TripImageSourceOption.camera),
                     child: Text(t.takePhotoAction),
                   ),
                   CupertinoActionSheetAction(
-                    onPressed: () => Navigator.of(cupertinoContext).pop(
-                      _TripImageSourceOption.library,
-                    ),
+                    onPressed: () => Navigator.of(
+                      cupertinoContext,
+                    ).pop(_TripImageSourceOption.library),
                     child: Text(t.chooseFromLibraryAction),
                   ),
                 ],
@@ -496,16 +513,16 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                 ListTile(
                   leading: const Icon(Icons.photo_camera_outlined),
                   title: Text(t.takePhotoAction),
-                  onTap: () => Navigator.of(bottomSheetContext).pop(
-                    _TripImageSourceOption.camera,
-                  ),
+                  onTap: () => Navigator.of(
+                    bottomSheetContext,
+                  ).pop(_TripImageSourceOption.camera),
                 ),
                 ListTile(
                   leading: const Icon(Icons.photo_library_outlined),
                   title: Text(t.chooseFromLibraryAction),
-                  onTap: () => Navigator.of(bottomSheetContext).pop(
-                    _TripImageSourceOption.library,
-                  ),
+                  onTap: () => Navigator.of(
+                    bottomSheetContext,
+                  ).pop(_TripImageSourceOption.library),
                 ),
                 if (hasImage)
                   ListTile(
@@ -516,9 +533,9 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                         lv: 'Noņemt attēlu',
                       ),
                     ),
-                    onTap: () => Navigator.of(bottomSheetContext).pop(
-                      _TripImageSourceOption.remove,
-                    ),
+                    onTap: () => Navigator.of(
+                      bottomSheetContext,
+                    ).pop(_TripImageSourceOption.remove),
                   ),
                 ListTile(
                   leading: const Icon(Icons.close),
@@ -599,15 +616,17 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                                         border: Border.all(
                                           color: AppDesign.cardStroke(context),
                                         ),
-                                        gradient: selectedImageBytes == null &&
+                                        gradient:
+                                            selectedImageBytes == null &&
                                                 !hasExistingTripImage
                                             ? AppDesign.brandGradient
                                             : null,
-                                        color: selectedImageBytes == null &&
+                                        color:
+                                            selectedImageBytes == null &&
                                                 hasExistingTripImage
                                             ? Theme.of(context)
-                                                .colorScheme
-                                                .surfaceContainerHighest
+                                                  .colorScheme
+                                                  .surfaceContainerHighest
                                             : null,
                                       ),
                                       alignment: Alignment.center,
@@ -654,7 +673,9 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                                           ).colorScheme.surface,
                                           shape: BoxShape.circle,
                                           border: Border.all(
-                                            color: AppDesign.cardStroke(context),
+                                            color: AppDesign.cardStroke(
+                                              context,
+                                            ),
                                           ),
                                         ),
                                         alignment: Alignment.center,

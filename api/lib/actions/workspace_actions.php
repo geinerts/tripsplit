@@ -392,6 +392,94 @@ function workspace_load_trip_notifications(
     ];
 }
 
+function shared_trips_with_user_action(): void
+{
+    $me = get_me();
+    $pdo = db();
+    $meId = (int) ($me['id'] ?? 0);
+    if ($meId <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid session user.'], 401);
+    }
+
+    $otherUserId = (int) ($_GET['user_id'] ?? 0);
+    if ($otherUserId <= 0) {
+        json_out(['ok' => false, 'error' => 'Missing or invalid user_id.'], 400);
+    }
+
+    $limit = pagination_limit($_GET['limit'] ?? 20, 20, 60);
+    $tripsTable = table_name('trips');
+    $tripMembersTable = table_name('trip_members');
+    $tripImageSelect = trips_image_column_available($pdo)
+        ? 't.image_path'
+        : 'NULL AS image_path';
+    $tripImageGroupBy = trips_image_column_available($pdo)
+        ? ', t.image_path'
+        : '';
+
+    $stmt = $pdo->prepare(
+        'SELECT
+            t.id,
+            t.name,
+            t.status,
+            t.created_at,
+            t.ended_at,
+            t.archived_at,
+            ' . $tripImageSelect . ',
+            COUNT(tm_count.user_id) AS members_count
+         FROM ' . $tripsTable . ' t
+         JOIN ' . $tripMembersTable . ' tm_me
+           ON tm_me.trip_id = t.id
+          AND tm_me.user_id = :me_user_id
+         JOIN ' . $tripMembersTable . ' tm_other
+           ON tm_other.trip_id = t.id
+          AND tm_other.user_id = :other_user_id
+         LEFT JOIN ' . $tripMembersTable . ' tm_count
+           ON tm_count.trip_id = t.id
+         GROUP BY
+            t.id,
+            t.name,
+            t.status,
+            t.created_at,
+            t.ended_at,
+            t.archived_at' . $tripImageGroupBy . '
+         ORDER BY
+            CASE
+                WHEN t.status = "active" THEN 0
+                WHEN t.status = "settling" THEN 1
+                ELSE 2
+            END ASC,
+            COALESCE(t.ended_at, t.created_at) DESC,
+            t.id DESC
+         LIMIT ' . $limit
+    );
+    $stmt->execute([
+        'me_user_id' => $meId,
+        'other_user_id' => $otherUserId,
+    ]);
+    $rows = $stmt->fetchAll();
+
+    foreach ($rows as &$row) {
+        $row['id'] = (int) ($row['id'] ?? 0);
+        $row['name'] = trim((string) ($row['name'] ?? ''));
+        $row['status'] = normalize_trip_status($row['status'] ?? 'active');
+        $row['members_count'] = (int) ($row['members_count'] ?? 0);
+        $row['created_at'] = $row['created_at'] ?: null;
+        $row['ended_at'] = $row['ended_at'] ?: null;
+        $row['archived_at'] = $row['archived_at'] ?: null;
+        $imagePath = trim((string) ($row['image_path'] ?? ''));
+        $row['image_url'] = $imagePath !== '' ? trip_image_public_url($imagePath) : null;
+        $row['image_thumb_url'] = $imagePath !== '' ? trip_image_thumb_public_url($imagePath) : null;
+        unset($row['image_path']);
+    }
+    unset($row);
+
+    json_out([
+        'ok' => true,
+        'user_id' => $otherUserId,
+        'trips' => $rows,
+    ]);
+}
+
 function workspace_snapshot_action(): void
 {
     $me = get_me();

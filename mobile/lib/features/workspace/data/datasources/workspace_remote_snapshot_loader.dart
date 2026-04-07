@@ -3,6 +3,7 @@ import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/http_method.dart';
 import '../../domain/entities/workspace_notifications_inbox.dart';
+import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
 import '../../domain/entities/trip_expenses_page.dart';
 import 'workspace_remote_parsers.dart';
@@ -58,7 +59,8 @@ class WorkspaceRemoteSnapshotLoader {
     }
 
     final response = await _apiClient.request(
-      path: '${ApiEndpoints.legacyAction('list_expenses')}&${queryParts.join('&')}',
+      path:
+          '${ApiEndpoints.legacyAction('list_expenses')}&${queryParts.join('&')}',
       method: HttpMethod.get,
       headers: headers,
     );
@@ -70,8 +72,8 @@ class WorkspaceRemoteSnapshotLoader {
     return TripExpensesPage(
       items: items,
       hasMore: pagination?['has_more'] == true,
-      nextCursor: (pagination?['next_cursor'] as String?)?.trim().isEmpty ==
-              true
+      nextCursor:
+          (pagination?['next_cursor'] as String?)?.trim().isEmpty == true
           ? null
           : pagination?['next_cursor'] as String?,
       nextOffset: (pagination?['next_offset'] as num?)?.toInt(),
@@ -288,11 +290,33 @@ class WorkspaceRemoteSnapshotLoader {
       unreadCount: unreadCount < 0 ? 0 : unreadCount,
       notifications: notifications,
       hasMore: pagination?['has_more'] == true,
-      nextCursor: (pagination?['next_cursor'] as String?)?.trim().isEmpty == true
+      nextCursor:
+          (pagination?['next_cursor'] as String?)?.trim().isEmpty == true
           ? null
           : pagination?['next_cursor'] as String?,
       nextOffset: (pagination?['next_offset'] as num?)?.toInt(),
     );
+  }
+
+  Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
+    required int userId,
+    int limit = 20,
+  }) async {
+    final normalizedUserId = userId <= 0 ? 0 : userId;
+    if (normalizedUserId <= 0) {
+      return const <WorkspaceSharedTrip>[];
+    }
+    final normalizedLimit = limit.clamp(1, 60);
+    final response = await _apiClient.request(
+      path:
+          '${ApiEndpoints.legacyAction('shared_trips_with_user')}&user_id=$normalizedUserId&limit=$normalizedLimit',
+      method: HttpMethod.get,
+    );
+    return (response['trips'] as List<dynamic>? ?? const <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map(WorkspaceRemoteParsers.parseSharedTrip)
+        .where((item) => item.id > 0)
+        .toList(growable: false);
   }
 
   bool _isMissingWorkspaceSnapshotAction(ApiException error) {

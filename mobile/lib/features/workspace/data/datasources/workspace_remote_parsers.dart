@@ -5,6 +5,7 @@ import '../../domain/entities/random_order_member.dart';
 import '../../domain/entities/settlement_item.dart';
 import '../../domain/entities/trip_expense.dart';
 import '../../domain/entities/workspace_notification.dart';
+import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_user.dart';
 import '../../../../core/network/media_url_resolver.dart';
 import '../../../../core/currency/app_currency.dart';
@@ -202,6 +203,23 @@ class WorkspaceRemoteParsers {
       body: _toString(item['body']).trim(),
       isRead: _toBool(item['is_read']),
       createdAt: _toNullableString(item['created_at']),
+    );
+  }
+
+  static WorkspaceSharedTrip parseSharedTrip(Map<String, dynamic> item) {
+    final name = _toString(item['name']).trim();
+    return WorkspaceSharedTrip(
+      id: _toInt(item['id']),
+      name: name.isEmpty ? 'Trip' : name,
+      status: parseTripStatus(item['status']),
+      imageUrl: MediaUrlResolver.normalize(item['image_url'] as String?),
+      imageThumbUrl: MediaUrlResolver.normalize(
+        item['image_thumb_url'] as String?,
+      ),
+      membersCount: _toInt(item['members_count']),
+      createdAt: _toNullableString(item['created_at']),
+      endedAt: _toNullableString(item['ended_at']),
+      archivedAt: _toNullableString(item['archived_at']),
     );
   }
 

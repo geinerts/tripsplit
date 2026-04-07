@@ -7,6 +7,7 @@ import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/trip_expenses_page.dart';
 import '../../domain/entities/uploaded_receipt.dart';
 import '../../domain/entities/workspace_notifications_inbox.dart';
+import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
 import '../../domain/repositories/workspace_repository.dart';
 import '../datasources/workspace_remote_data_source.dart';
@@ -64,6 +65,14 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       }
       rethrow;
     }
+  }
+
+  @override
+  Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
+    required int userId,
+    int limit = 20,
+  }) {
+    return _remote.loadSharedTripsWithUser(userId: userId, limit: limit);
   }
 
   @override

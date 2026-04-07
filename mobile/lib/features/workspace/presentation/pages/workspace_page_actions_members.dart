@@ -1,6 +1,158 @@
 part of 'workspace_page.dart';
 
 extension _WorkspacePageMembersActions on _WorkspacePageState {
+  Future<void> _openTripMembersListSheet(List<WorkspaceUser> users) async {
+    if (users.isEmpty) {
+      return;
+    }
+    final members = users.toList(growable: false);
+
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final maxHeight = MediaQuery.sizeOf(sheetContext).height * 0.72;
+        final title = _plainLocalizedText(
+          en: 'Trip members',
+          lv: 'Trip dalībnieki',
+        );
+        final youLabel = _plainLocalizedText(en: 'You', lv: 'Tu');
+
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '$title (${members.length})',
+                        style: Theme.of(sheetContext).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: MaterialLocalizations.of(
+                        sheetContext,
+                      ).closeButtonTooltip,
+                      onPressed: () => Navigator.of(sheetContext).pop(),
+                      icon: const Icon(Icons.close_rounded),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
+                  itemCount: members.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 6),
+                  itemBuilder: (context, index) {
+                    final user = members[index];
+                    final isCurrent = user.id == _currentUserId;
+                    final name = user.preferredName.trim().isEmpty
+                        ? context.l10n.userWithId(user.id)
+                        : user.preferredName.trim();
+
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(14),
+                        onTap: () async {
+                          Navigator.of(sheetContext).pop();
+                          await Future<void>.delayed(
+                            const Duration(milliseconds: 120),
+                          );
+                          if (!mounted) {
+                            return;
+                          }
+                          await _openTripMemberProfilePage(user);
+                        },
+                        child: Ink(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(sheetContext)
+                                .colorScheme
+                                .surfaceContainerHighest
+                                .withValues(alpha: 0.35),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: Theme.of(sheetContext)
+                                  .colorScheme
+                                  .outlineVariant
+                                  .withValues(alpha: 0.5),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              _largeMemberAvatar(
+                                id: user.id,
+                                name: name,
+                                avatarUrl:
+                                    user.avatarThumbUrl ?? user.avatarUrl,
+                                size: 36,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  name,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(sheetContext)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              if (isCurrent)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(sheetContext)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                  child: Text(
+                                    youLabel,
+                                    style: Theme.of(sheetContext)
+                                        .textTheme
+                                        .labelMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: Theme.of(
+                                            sheetContext,
+                                          ).colorScheme.primary,
+                                        ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _openAddMembersDialog() async {
     if (!_canEditMembers || _snapshot == null || _isMutating) {
       return;
