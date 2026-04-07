@@ -107,6 +107,39 @@ Notes:
 4. In Firebase Console -> Cloud Messaging, upload APNs auth key (`.p8`) for development and production.
 5. Rebuild iOS app (Xcode/TestFlight build).
 
+## 5) GitHub Actions (CI + VPS deploy)
+
+This repository includes workflow:
+
+- `.github/workflows/ci-deploy-vps.yml`
+
+Behavior:
+
+- Pull request to `main`: runs backend PHPUnit tests.
+- Push to `main`: runs backend PHPUnit tests, then deploys to VPS and runs API health checks.
+- Manual run: available via `workflow_dispatch`.
+- If required VPS secrets are missing, deploy job is skipped and only tests run.
+
+Required GitHub repository secrets:
+
+- `VPS_HOST` (example: `204.168.239.179`)
+- `VPS_USER` (example: `root`)
+- `VPS_SSH_PRIVATE_KEY` (private key matching server authorized key)
+- `VPS_PORT` (optional, default `22`)
+- `VPS_APP_DIR` (optional, default `/var/www/splyto`)
+- `API_BASE_URL` (example: `https://splyto.egm.lv`)
+
+Deploy strategy used in workflow:
+
+- `git fetch origin`
+- `git checkout main`
+- `git reset --hard origin/main`
+- ensure upload/log directories exist (`uploads/*`, `logs`)
+- PHP lint smoke checks on critical backend files
+- HTTP health checks:
+  - `/api/api.php?action=unknown` -> expects `404`
+  - `/api/api.php?action=me` -> expects `401`
+
 ## API actions
 
 `register_proof`, `register`, `login`, `refresh_session`, `set_credentials`, `me`, `update_profile`, `trips`, `all_users`, `search_users`, `friends_list`, `send_friend_invite`, `respond_friend_invite`, `cancel_friend_invite`, `remove_friend`, `create_trip`, `update_trip`, `delete_trip`, `add_trip_members`, `users`, `upload_trip_image`, `upload_receipt`, `upload_avatar`, `remove_avatar`, `add_expense`, `update_expense`, `delete_expense`, `list_expenses`, `balances`, `end_trip`, `set_ready_to_settle`, `mark_settlement_sent`, `confirm_settlement_received`, `remind_settlement`, `list_notifications`, `list_notifications_global`, `mark_notifications_read`, `mark_notifications_read_global`, `register_push_token`, `unregister_push_token`, `create_trip_invite`, `join_trip_invite`, `submit_feedback`, `workspace_snapshot`, `generate_order`, `list_orders`, `admin_feedback_feed`, `admin_archive_feedback`, `admin_delete_feedback`, `admin_summary`, `admin_users`, `admin_user_detail`, `admin_delete_expense`, `admin_update_user`, `admin_delete_user`
