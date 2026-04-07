@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "53P9V598BG.com.tripsplit.app.tripsplit",
+        "paths": [
+          "/",
+          "/*"
+        ]
+      }
+    ]
+  }
+}

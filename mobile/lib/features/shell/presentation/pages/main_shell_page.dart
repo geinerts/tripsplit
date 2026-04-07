@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/locale/app_locale_picker.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
+import '../../../../core/deeplink/invite_deep_link_controller.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
@@ -39,6 +40,7 @@ class MainShellPage extends StatefulWidget {
     required this.tripsController,
     required this.friendsController,
     required this.workspaceController,
+    required this.inviteDeepLinkController,
     this.initialTabIndex = 0,
     this.openCreateTripOnStart = false,
     this.openAddExpenseOnStart = false,
@@ -48,6 +50,7 @@ class MainShellPage extends StatefulWidget {
   final TripsController tripsController;
   final FriendsController friendsController;
   final WorkspaceController workspaceController;
+  final InviteDeepLinkController inviteDeepLinkController;
   final int initialTabIndex;
   final bool openCreateTripOnStart;
   final bool openAddExpenseOnStart;
@@ -89,7 +92,12 @@ class _MainShellPageState extends State<MainShellPage>
   Duration? _activeNotificationsPollInterval;
   bool _isAppInForeground = true;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  StreamSubscription<String>? _inviteCodeSubscription;
   bool _isFlushingWorkspaceQueue = false;
+  bool _isProcessingInviteDeepLink = false;
+  String? _queuedInviteDeepLinkCode;
+  String? _lastProcessedInviteDeepLinkCode;
+  DateTime? _lastProcessedInviteDeepLinkAt;
 
   @override
   void initState() {
@@ -110,6 +118,7 @@ class _MainShellPageState extends State<MainShellPage>
     _syncNotificationsPollingSchedule();
     unawaited(_refreshGlobalNotifications());
     _startConnectivityQueueSync();
+    _bindInviteDeepLinkHandling();
     unawaited(_flushWorkspaceQueueBestEffort());
     if (widget.openCreateTripOnStart) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -133,6 +142,7 @@ class _MainShellPageState extends State<MainShellPage>
   void dispose() {
     _notificationsPollTimer?.cancel();
     _connectivitySubscription?.cancel();
+    _inviteCodeSubscription?.cancel();
     unawaited(
       AppMonitoring.updateRuntimeContext(
         userId: widget.authController.currentUser?.id,
@@ -179,6 +189,120 @@ class _MainShellPageState extends State<MainShellPage>
         await _flushWorkspaceQueueBestEffort();
       }
     }());
+  }
+
+  void _bindInviteDeepLinkHandling() {
+    final pending = widget.inviteDeepLinkController.consumePendingInviteCode();
+    if (pending != null && pending.trim().isNotEmpty) {
+      unawaited(_handleInviteDeepLinkCode(pending));
+    }
+    _inviteCodeSubscription = widget.inviteDeepLinkController.inviteCodeStream
+        .listen((inviteCode) {
+          unawaited(_handleInviteDeepLinkCode(inviteCode));
+        });
+  }
+
+  Future<void> _handleInviteDeepLinkCode(String rawInviteCode) async {
+    final inviteCode = rawInviteCode.trim().toLowerCase();
+    if (inviteCode.isEmpty || _isLoggingOut) {
+      return;
+    }
+
+    if (_isProcessingInviteDeepLink) {
+      _queuedInviteDeepLinkCode = inviteCode;
+      return;
+    }
+
+    final now = DateTime.now();
+    final lastCode = _lastProcessedInviteDeepLinkCode;
+    final lastAt = _lastProcessedInviteDeepLinkAt;
+    if (lastCode == inviteCode &&
+        lastAt != null &&
+        now.difference(lastAt) < const Duration(seconds: 3)) {
+      return;
+    }
+    _lastProcessedInviteDeepLinkCode = inviteCode;
+    _lastProcessedInviteDeepLinkAt = now;
+    _isProcessingInviteDeepLink = true;
+
+    try {
+      final joined = await widget.tripsController.joinTripInvite(
+        inviteToken: inviteCode,
+      );
+      if (!mounted) {
+        return;
+      }
+
+      Trip resolvedTrip = joined.trip;
+      try {
+        final refreshedTrips = await widget.tripsController.loadTrips(
+          forceRefresh: true,
+        );
+        if (!mounted) {
+          return;
+        }
+        for (final trip in refreshedTrips) {
+          if (trip.id == joined.trip.id) {
+            resolvedTrip = trip;
+            break;
+          }
+        }
+      } catch (_) {
+        // Keep fallback trip from join payload when reload fails.
+      }
+
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        joined.alreadyMember
+            ? _txt(
+                en: 'Trip already in your list. Opened it for you.',
+                lv: 'Ceļojums jau ir tavā sarakstā. Atvēru to tev.',
+              )
+            : _txt(
+                en: 'Joined trip from invite link.',
+                lv: 'Veiksmīgi pievienojies ceļojumam no saites.',
+              ),
+        isError: false,
+      );
+      _openWorkspaceInShell(resolvedTrip);
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      final message = error.message.trim();
+      _showSnack(
+        message.isNotEmpty
+            ? message
+            : _txt(
+                en: 'Failed to open invite link.',
+                lv: 'Neizdevās atvērt ielūguma saiti.',
+              ),
+        isError: true,
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _txt(
+          en: 'Failed to open invite link.',
+          lv: 'Neizdevās atvērt ielūguma saiti.',
+        ),
+        isError: true,
+      );
+    } finally {
+      _isProcessingInviteDeepLink = false;
+      final queued = _queuedInviteDeepLinkCode;
+      _queuedInviteDeepLinkCode = null;
+      if (queued != null &&
+          queued.isNotEmpty &&
+          queued != inviteCode &&
+          mounted) {
+        unawaited(_handleInviteDeepLinkCode(queued));
+      }
+    }
   }
 
   bool _hasOnlineConnectivity(List<ConnectivityResult> results) {

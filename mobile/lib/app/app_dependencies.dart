@@ -3,6 +3,7 @@ import '../core/auth/current_user_store.dart';
 import '../core/auth/device_token_store.dart';
 import '../core/auth/user_avatar_store.dart';
 import '../core/config/app_env.dart';
+import '../core/deeplink/invite_deep_link_controller.dart';
 import '../core/network/legacy_api_client.dart';
 import '../core/network/legacy_avatar_uploader.dart';
 import '../core/network/legacy_feedback_reporter.dart';
@@ -56,6 +57,7 @@ class AppDependencies {
     required this.tripsController,
     required this.friendsController,
     required this.workspaceController,
+    required this.inviteDeepLinkController,
     required this.themeModeController,
     required this.localeController,
   });
@@ -64,6 +66,7 @@ class AppDependencies {
   final TripsController tripsController;
   final FriendsController friendsController;
   final WorkspaceController workspaceController;
+  final InviteDeepLinkController inviteDeepLinkController;
   final ThemeModeController themeModeController;
   final AppLocaleController localeController;
 
@@ -110,6 +113,7 @@ class AppDependencies {
       nativeBridge: PushNativeBridge(),
       registrationStore: PushRegistrationStore(),
     );
+    final inviteDeepLinkController = InviteDeepLinkController();
 
     final authRemote = AuthRemoteDataSourceImpl(apiClient);
     final authRepository = AuthRepositoryImpl(authRemote);
@@ -175,6 +179,7 @@ class AppDependencies {
       tripsController: tripsController,
       friendsController: friendsController,
       workspaceController: workspaceController,
+      inviteDeepLinkController: inviteDeepLinkController,
       themeModeController: themeModeController,
       localeController: localeController,
     );

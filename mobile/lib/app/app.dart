@@ -28,6 +28,13 @@ class _TripSplitAppState extends State<TripSplitApp> {
     super.initState();
     unawaited(widget.dependencies.themeModeController.load());
     unawaited(widget.dependencies.localeController.load());
+    widget.dependencies.inviteDeepLinkController.start();
+  }
+
+  @override
+  void dispose() {
+    unawaited(widget.dependencies.inviteDeepLinkController.dispose());
+    super.dispose();
   }
 
   @override

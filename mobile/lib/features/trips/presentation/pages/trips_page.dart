@@ -13,6 +13,7 @@ import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/currency/app_currency.dart';
+import '../../../../core/deeplink/invite_deep_link_controller.dart';
 import '../../../../core/media/app_image_cropper.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';

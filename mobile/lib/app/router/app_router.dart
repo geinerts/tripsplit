@@ -41,6 +41,7 @@ class AppRouter {
           tripsController: _dependencies.tripsController,
           friendsController: _dependencies.friendsController,
           workspaceController: _dependencies.workspaceController,
+          inviteDeepLinkController: _dependencies.inviteDeepLinkController,
           initialTabIndex: initialTab,
           openCreateTripOnStart: openCreateTrip,
           openAddExpenseOnStart: openAddExpense,
@@ -51,6 +52,7 @@ class AppRouter {
         tripsController: _dependencies.tripsController,
         friendsController: _dependencies.friendsController,
         workspaceController: _dependencies.workspaceController,
+        inviteDeepLinkController: _dependencies.inviteDeepLinkController,
         initialTabIndex: 4,
       ),
       trips: (context) {
@@ -62,6 +64,7 @@ class AppRouter {
           tripsController: _dependencies.tripsController,
           friendsController: _dependencies.friendsController,
           workspaceController: _dependencies.workspaceController,
+          inviteDeepLinkController: _dependencies.inviteDeepLinkController,
           initialTabIndex: 0,
           openCreateTripOnStart: openCreateTrip,
           openAddExpenseOnStart: openAddExpense,
