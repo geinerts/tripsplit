@@ -90,6 +90,10 @@ define('AUTH_REFRESH_TOKEN_TTL_SEC', env_int('TRIP_AUTH_REFRESH_TOKEN_TTL_SEC', 
 define('FX_PROVIDER_BASE_URL', env_string('TRIP_FX_PROVIDER_BASE_URL', 'https://api.frankfurter.app'));
 define('FX_TIMEOUT_SEC', env_int('TRIP_FX_TIMEOUT_SEC', 8));
 
+define('RESEND_API_KEY', env_string('TRIP_RESEND_API_KEY', ''));
+define('RESEND_FROM_ADDRESS', env_string('TRIP_RESEND_FROM_ADDRESS', 'Splyto <noreply@egm.lv>'));
+define('APP_BASE_URL', env_string('TRIP_APP_BASE_URL', 'https://splyto.egm.lv'));
+
 define('UPLOAD_USER_MAX_FILES_PER_DAY', env_int('TRIP_UPLOAD_USER_MAX_FILES_PER_DAY', 60));
 define('UPLOAD_USER_MAX_BYTES_PER_DAY', env_int('TRIP_UPLOAD_USER_MAX_BYTES_PER_DAY', 251_658_240)); // 240 MB
 define('UPLOAD_TRIP_MAX_FILES_PER_DAY', env_int('TRIP_UPLOAD_TRIP_MAX_FILES_PER_DAY', 300));

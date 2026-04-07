@@ -9,9 +9,11 @@ function api_action_handlers(): array
     }
 
     $handlers = [
-        'register_proof' => 'register_proof_action',
-        'register' => 'register_action',
-        'login' => 'login_action',
+        'forgot_password'  => 'forgot_password_action',
+        'reset_password'   => 'reset_password_action',
+        'register_proof'   => 'register_proof_action',
+        'register'         => 'register_action',
+        'login'            => 'login_action',
         'refresh_session' => 'refresh_session_action',
         'set_credentials' => 'set_credentials_action',
         'update_profile' => 'update_profile_action',
