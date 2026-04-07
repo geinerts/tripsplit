@@ -1,87 +1,57 @@
 <?php
 declare(strict_types=1);
 
-function trip_invite_secret(): string
-{
-    return hash('sha256', auth_access_token_secret() . '|trip-invite');
-}
-
 function trip_invite_ttl_seconds(): int
 {
     // 14 days by default for practical sharing.
     return 1_209_600;
 }
 
-function create_trip_invite_token(int $tripId, int $issuedByUserId): string
+function trip_invite_code_length(): int
 {
-    if ($tripId <= 0 || $issuedByUserId <= 0) {
-        throw new RuntimeException('Invalid invite token payload.');
-    }
-
-    $issuedAt = time();
-    $expiresAt = $issuedAt + trip_invite_ttl_seconds();
-
-    // Compact payload (trip_id, issued_at, expires_at) to keep links short.
-    $payload = pack('N3', $tripId, $issuedAt, $expiresAt);
-    $encodedPayload = base64url_encode($payload);
-    // 128-bit truncated signature is sufficient and makes token shorter.
-    $signature = substr(hash_hmac('sha256', $encodedPayload, trip_invite_secret()), 0, 32);
-    return $encodedPayload . '.' . $signature;
+    return 10;
 }
 
-function decode_trip_invite_token(string $token): array
+function create_trip_invite_code(): string
 {
-    $parts = explode('.', trim($token), 2);
-    if (count($parts) !== 2) {
-        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+    $alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    $maxIndex = strlen($alphabet) - 1;
+    $length = trip_invite_code_length();
+    $code = '';
+    for ($i = 0; $i < $length; $i++) {
+        $code .= $alphabet[random_int(0, $maxIndex)];
+    }
+    return $code;
+}
+
+function normalize_trip_invite_code(string $raw): string
+{
+    $value = strtolower(trim($raw));
+    if ($value === '') {
+        json_out(['ok' => false, 'error' => 'invite_token is required.'], 400);
+    }
+    $value = trim(rawurldecode($value));
+
+    if (str_contains($value, '://')) {
+        $query = (string) parse_url($value, PHP_URL_QUERY);
+        if ($query !== '') {
+            $queryParams = [];
+            parse_str($query, $queryParams);
+            $candidate = strtolower(trim((string) ($queryParams['invite'] ?? '')));
+            if ($candidate !== '') {
+                $value = $candidate;
+            }
+        }
     }
 
-    $encodedPayload = trim((string) $parts[0]);
-    $signature = trim((string) $parts[1]);
-    if ($encodedPayload === '' || !preg_match('/^[a-f0-9]{32}$/', $signature)) {
-        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+    if (preg_match('/^[a-z0-9]{' . trip_invite_code_length() . '}$/', $value)) {
+        return $value;
+    }
+    if (preg_match('/^[a-z0-9][a-z0-9-]*-([a-z0-9]{' . trip_invite_code_length() . '})$/', $value, $match)) {
+        return (string) ($match[1] ?? '');
     }
 
-    $expected = substr(hash_hmac('sha256', $encodedPayload, trip_invite_secret()), 0, 32);
-    if (!hash_equals($expected, $signature)) {
-        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
-    }
-
-    $decodedPayload = base64url_decode($encodedPayload);
-    if (!is_string($decodedPayload) || strlen($decodedPayload) !== 12) {
-        json_out(['ok' => false, 'error' => 'Invalid invite token payload.'], 400);
-    }
-
-    $unpacked = unpack('Ntrip_id/Niat/Nexp', $decodedPayload);
-    if (!is_array($unpacked)) {
-        json_out(['ok' => false, 'error' => 'Invalid invite token payload.'], 400);
-    }
-
-    $tripId = (int) ($unpacked['trip_id'] ?? 0);
-    $issuedAt = (int) ($unpacked['iat'] ?? 0);
-    $expiresAt = (int) ($unpacked['exp'] ?? 0);
-    $now = time();
-    $ttl = trip_invite_ttl_seconds();
-
-    if ($tripId <= 0 || $issuedAt <= 0 || $expiresAt <= 0) {
-        json_out(['ok' => false, 'error' => 'Invalid invite token payload.'], 400);
-    }
-    if ($issuedAt > ($now + 300)) {
-        json_out(['ok' => false, 'error' => 'Invite token is not valid yet.'], 400);
-    }
-    if (($expiresAt - $issuedAt) > $ttl || ($expiresAt - $issuedAt) <= 0) {
-        json_out(['ok' => false, 'error' => 'Invalid invite token expiry.'], 400);
-    }
-    if ($expiresAt < $now) {
-        json_out(['ok' => false, 'error' => 'Invite token expired.'], 409);
-    }
-
-    return [
-        'trip_id' => $tripId,
-        'issued_by' => 0,
-        'iat' => $issuedAt,
-        'exp' => $expiresAt,
-    ];
+    json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
 }
 
 function trip_invite_trip_slug(string $tripName): string
@@ -112,7 +82,7 @@ function trip_invite_trip_slug(string $tripName): string
     return $slug !== '' ? $slug : 'trip';
 }
 
-function build_trip_invite_url(string $token, string $tripName = ''): string
+function build_trip_invite_url(string $inviteCode, string $tripName = ''): string
 {
     $base = trim((string) PUBLIC_BASE_URL);
     if ($base === '') {
@@ -121,19 +91,14 @@ function build_trip_invite_url(string $token, string $tripName = ''): string
     $base = rtrim($base, '/');
     $base = preg_replace('#/api$#', '', $base) ?: $base;
 
-    $parts = explode('.', $token, 2);
-    $signature = strtolower(trim((string) ($parts[1] ?? '')));
-    $suffix = substr((string) preg_replace('/[^a-z0-9]/', '', $signature), 0, 6);
-    if ($suffix === '') {
-        $suffix = substr(hash('crc32b', $token), 0, 6);
+    $code = strtolower(trim($inviteCode));
+    if (!preg_match('/^[a-z0-9]{' . trip_invite_code_length() . '}$/', $code)) {
+        throw new RuntimeException('Invalid invite code.');
     }
-    $tripTag = trip_invite_trip_slug($tripName) . '-' . $suffix;
+    $tripTag = trip_invite_trip_slug($tripName) . '-' . $code;
 
     $separator = strpos($base, '?') === false ? '?' : '&';
-    return $base
-        . $separator
-        . 'trip=' . rawurlencode($tripTag)
-        . '&i=' . rawurlencode($token);
+    return $base . $separator . 'invite=' . rawurlencode($tripTag);
 }
 
 function trips_action(): void
@@ -886,16 +851,55 @@ function create_trip_invite_action(): void
         RATE_LIMIT_MUTATION_WINDOW_SEC
     );
 
-    $token = create_trip_invite_token($tripId, $actorId);
-    $expiresAt = time() + trip_invite_ttl_seconds();
+    $tripInvitesTable = table_name('trip_invites');
+    $expiresAtTs = time() + trip_invite_ttl_seconds();
+    $expiresAt = gmdate('Y-m-d H:i:s', $expiresAtTs);
+
+    $inviteCode = '';
+    for ($attempt = 0; $attempt < 6; $attempt++) {
+        $candidate = create_trip_invite_code();
+        try {
+            // Keep a single currently active invite per trip to avoid stale links.
+            $pdo->prepare(
+                'UPDATE ' . $tripInvitesTable . '
+                 SET revoked_at = NOW()
+                 WHERE trip_id = :trip_id
+                   AND revoked_at IS NULL
+                   AND expires_at > NOW()'
+            )->execute(['trip_id' => $tripId]);
+
+            $pdo->prepare(
+                'INSERT INTO ' . $tripInvitesTable . ' (trip_id, created_by, invite_code, expires_at)
+                 VALUES (:trip_id, :created_by, :invite_code, :expires_at)'
+            )->execute([
+                'trip_id' => $tripId,
+                'created_by' => $actorId,
+                'invite_code' => $candidate,
+                'expires_at' => $expiresAt,
+            ]);
+
+            $inviteCode = $candidate;
+            break;
+        } catch (Throwable $error) {
+            $errorCode = (string) ($error->getCode() ?? '');
+            if ($errorCode === '23000') {
+                continue;
+            }
+            throw $error;
+        }
+    }
+
+    if ($inviteCode === '') {
+        json_out(['ok' => false, 'error' => 'Failed to generate invite link.'], 500);
+    }
 
     json_out([
         'ok' => true,
         'trip_id' => $tripId,
-        'invite_token' => $token,
-        'invite_url' => build_trip_invite_url($token, (string) ($trip['name'] ?? '')),
+        'invite_token' => $inviteCode,
+        'invite_url' => build_trip_invite_url($inviteCode, (string) ($trip['name'] ?? '')),
         'expires_in_sec' => trip_invite_ttl_seconds(),
-        'expires_at' => gmdate('Y-m-d H:i:s', $expiresAt),
+        'expires_at' => $expiresAt,
     ]);
 }
 
@@ -904,16 +908,7 @@ function join_trip_invite_action(): void
     require_post();
     $me = get_me();
     $body = read_json();
-    $token = trim((string) ($body['invite_token'] ?? ''));
-    if ($token === '') {
-        json_out(['ok' => false, 'error' => 'invite_token is required.'], 400);
-    }
-
-    $decoded = decode_trip_invite_token($token);
-    $tripId = (int) ($decoded['trip_id'] ?? 0);
-    if ($tripId <= 0) {
-        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
-    }
+    $inviteCode = normalize_trip_invite_code((string) ($body['invite_token'] ?? ''));
 
     $pdo = db();
     $actorId = (int) ($me['id'] ?? 0);
@@ -934,12 +929,39 @@ function join_trip_invite_action(): void
 
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
+    $tripInvitesTable = table_name('trip_invites');
     $tripImageSelect = trips_image_column_available($pdo)
         ? 't.image_path'
         : 'NULL AS image_path';
 
     $pdo->beginTransaction();
     try {
+        $inviteStmt = $pdo->prepare(
+            'SELECT trip_id, expires_at, revoked_at
+             FROM ' . $tripInvitesTable . '
+             WHERE invite_code = :invite_code
+             LIMIT 1
+             FOR UPDATE'
+        );
+        $inviteStmt->execute(['invite_code' => $inviteCode]);
+        $invite = $inviteStmt->fetch();
+        if (!$invite) {
+            json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+        }
+
+        $revokedAt = trim((string) ($invite['revoked_at'] ?? ''));
+        if ($revokedAt !== '') {
+            json_out(['ok' => false, 'error' => 'Invite token expired.'], 409);
+        }
+        $expiresAt = trim((string) ($invite['expires_at'] ?? ''));
+        if ($expiresAt === '' || strtotime($expiresAt) === false || strtotime($expiresAt) < time()) {
+            json_out(['ok' => false, 'error' => 'Invite token expired.'], 409);
+        }
+        $tripId = (int) ($invite['trip_id'] ?? 0);
+        if ($tripId <= 0) {
+            json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+        }
+
         $tripStmt = $pdo->prepare(
             'SELECT
                 t.id,

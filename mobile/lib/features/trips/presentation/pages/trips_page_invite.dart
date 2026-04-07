@@ -98,8 +98,8 @@ extension _TripsPageInviteActions on _TripsPageState {
                         maxLines: 3,
                         decoration: InputDecoration(
                           hintText: _plainLocalizedText(
-                            en: 'https://.../?trip=...&i=...',
-                            lv: 'https://.../?trip=...&i=...',
+                            en: 'https://.../?invite=north-sea-abc123def4',
+                            lv: 'https://.../?invite=north-sea-abc123def4',
                           ),
                           prefixIcon: const Icon(Icons.link_rounded),
                         ),
@@ -209,39 +209,40 @@ extension _TripsPageInviteActions on _TripsPageState {
     if (raw.isEmpty) {
       return null;
     }
-    if (_looksLikeInviteToken(raw)) {
-      return raw;
+    final directCode = _extractInviteCode(raw);
+    if (directCode != null) {
+      return directCode;
     }
 
     final uri = Uri.tryParse(raw);
     if (uri != null) {
-      final fromQuery = (uri.queryParameters['i'] ?? '').trim();
+      final fromQuery = (uri.queryParameters['invite'] ?? '').trim();
       if (fromQuery.isNotEmpty) {
-        final decoded = Uri.decodeComponent(fromQuery).trim();
-        if (decoded.isNotEmpty) {
-          return decoded;
+        final code = _extractInviteCode(Uri.decodeComponent(fromQuery).trim());
+        if (code != null) {
+          return code;
         }
       }
 
       final fragment = uri.fragment.trim();
       if (fragment.isNotEmpty) {
-        final match = RegExp(r'(?:^|[?&])i=([^&]+)').firstMatch(fragment);
+        final match = RegExp(r'(?:^|[?&])invite=([^&]+)').firstMatch(fragment);
         final value = (match?.group(1) ?? '').trim();
         if (value.isNotEmpty) {
-          final decoded = Uri.decodeComponent(value).trim();
-          if (decoded.isNotEmpty) {
-            return decoded;
+          final code = _extractInviteCode(Uri.decodeComponent(value).trim());
+          if (code != null) {
+            return code;
           }
         }
       }
     }
 
-    final fromRaw = RegExp(r'(?:^|[?&])i=([^&\s]+)').firstMatch(raw);
+    final fromRaw = RegExp(r'(?:^|[?&])invite=([^&\s]+)').firstMatch(raw);
     final rawValue = (fromRaw?.group(1) ?? '').trim();
     if (rawValue.isNotEmpty) {
-      final decoded = Uri.decodeComponent(rawValue).trim();
-      if (decoded.isNotEmpty) {
-        return decoded;
+      final code = _extractInviteCode(Uri.decodeComponent(rawValue).trim());
+      if (code != null) {
+        return code;
       }
     }
 
@@ -250,26 +251,37 @@ extension _TripsPageInviteActions on _TripsPageState {
       '',
     );
     final normalized = withoutPrefix.trim();
-    if (_looksLikeInviteToken(normalized)) {
-      return normalized;
+    final normalizedCode = _extractInviteCode(normalized);
+    if (normalizedCode != null) {
+      return normalizedCode;
     }
     return null;
   }
 
-  bool _looksLikeInviteToken(String value) {
+  String? _extractInviteCode(String value) {
+    final raw = value.trim().toLowerCase();
+    if (raw.isEmpty || raw.contains(RegExp(r'\s'))) {
+      return null;
+    }
+    if (_looksLikeInviteCode(raw)) {
+      return raw;
+    }
+    final tagged = RegExp(r'^[a-z0-9][a-z0-9-]*-([a-z0-9]{10})$').firstMatch(
+      raw,
+    );
+    final code = (tagged?.group(1) ?? '').trim();
+    if (_looksLikeInviteCode(code)) {
+      return code;
+    }
+    return null;
+  }
+
+  bool _looksLikeInviteCode(String value) {
     final raw = value.trim();
     if (raw.isEmpty || raw.contains(RegExp(r'\s'))) {
       return false;
     }
-    final parts = raw.split('.');
-    if (parts.length != 2) {
-      return false;
-    }
-    final signature = parts[1].trim();
-    if (!RegExp(r'^[a-f0-9]{32}$').hasMatch(signature)) {
-      return false;
-    }
-    return parts[0].trim().isNotEmpty;
+    return RegExp(r'^[a-z0-9]{10}$').hasMatch(raw);
   }
 
   Trip _resolveJoinedTrip(int tripId, {required Trip fallback}) {
