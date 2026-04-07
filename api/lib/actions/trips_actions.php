@@ -859,15 +859,6 @@ function create_trip_invite_action(): void
     for ($attempt = 0; $attempt < 6; $attempt++) {
         $candidate = create_trip_invite_code();
         try {
-            // Keep a single currently active invite per trip to avoid stale links.
-            $pdo->prepare(
-                'UPDATE ' . $tripInvitesTable . '
-                 SET revoked_at = NOW()
-                 WHERE trip_id = :trip_id
-                   AND revoked_at IS NULL
-                   AND expires_at > NOW()'
-            )->execute(['trip_id' => $tripId]);
-
             $pdo->prepare(
                 'INSERT INTO ' . $tripInvitesTable . ' (trip_id, created_by, invite_code, expires_at)
                  VALUES (:trip_id, :created_by, :invite_code, :expires_at)'
@@ -876,6 +867,19 @@ function create_trip_invite_action(): void
                 'created_by' => $actorId,
                 'invite_code' => $candidate,
                 'expires_at' => $expiresAt,
+            ]);
+
+            // Keep a single currently active invite per trip to avoid stale links.
+            $pdo->prepare(
+                'UPDATE ' . $tripInvitesTable . '
+                 SET revoked_at = NOW()
+                 WHERE trip_id = :trip_id
+                   AND invite_code <> :invite_code
+                   AND revoked_at IS NULL
+                   AND expires_at > NOW()'
+            )->execute([
+                'trip_id' => $tripId,
+                'invite_code' => $candidate,
             ]);
 
             $inviteCode = $candidate;
