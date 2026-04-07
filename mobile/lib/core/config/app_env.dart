@@ -22,7 +22,7 @@ class AppEnv {
   static final AppEnv current = AppEnv(
     apiBaseUrl: String.fromEnvironment(
       'TRIPSPLIT_API_BASE_URL',
-      defaultValue: 'https://egm.lv/projekti/trip',
+      defaultValue: 'https://splyto.egm.lv',
     ),
     enableVerboseLogs: bool.fromEnvironment(
       'TRIPSPLIT_VERBOSE_LOGS',

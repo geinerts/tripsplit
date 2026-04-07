@@ -1,28 +1,39 @@
 part of 'login_page.dart';
 
 extension _LoginPageValidators on _LoginPageState {
-  String? _validateFirstName(String? value) {
+  String? _validateFullName(String? value) {
     final t = context.l10n;
     if (_mode != _AuthMode.register) {
       return null;
     }
-    final name = (value ?? '').trim();
-    if (name.length < 2 || name.length > 64) {
-      return t.firstNameLengthValidation;
+    final nameParts = _parseFullName(value ?? '');
+    if (nameParts == null) {
+      return t.fullNameValidation;
     }
     return null;
   }
 
-  String? _validateLastName(String? value) {
-    final t = context.l10n;
-    if (_mode != _AuthMode.register) {
+  MapEntry<String, String>? _parseFullName(String rawValue) {
+    final normalized = rawValue.trim().replaceAll(RegExp(r'\s+'), ' ');
+    if (normalized.isEmpty) {
       return null;
     }
-    final name = (value ?? '').trim();
-    if (name.length < 2 || name.length > 64) {
-      return t.lastNameLengthValidation;
+
+    final segments = normalized.split(' ');
+    if (segments.length < 2) {
+      return null;
     }
-    return null;
+
+    final firstName = segments.first.trim();
+    final lastName = segments.sublist(1).join(' ').trim();
+    if (firstName.length < 2 ||
+        firstName.length > 64 ||
+        lastName.length < 2 ||
+        lastName.length > 64) {
+      return null;
+    }
+
+    return MapEntry<String, String>(firstName, lastName);
   }
 
   String? _validateEmail(String? value) {

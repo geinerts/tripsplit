@@ -32,8 +32,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         ? <int>{}
         : existing.participants.map((p) => p.id).toSet();
     final rawSplitMode = (existing?.splitMode ?? 'equal').trim().toLowerCase();
-    final isLegacySplitMode =
-        rawSplitMode != 'equal' && rawSplitMode != 'exact';
+    final supportedSplitModes = <String>{'equal', 'exact', 'percent', 'shares'};
+    final isLegacySplitMode = !supportedSplitModes.contains(rawSplitMode);
     var splitMode = isLegacySplitMode ? 'exact' : rawSplitMode;
     final splitControllers = <int, TextEditingController>{};
     if (existing != null && splitMode != 'equal') {
@@ -579,6 +579,14 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                           value: 'exact',
                                           child: Text(t.exactAmountsLabel),
                                         ),
+                                        DropdownMenuItem(
+                                          value: 'percent',
+                                          child: Text(t.percentagesLabel),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 'shares',
+                                          child: Text(t.sharesLabel),
+                                        ),
                                       ],
                                       onChanged: (value) {
                                         if (value == null) {
@@ -852,6 +860,68 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                     );
                                               });
                                               return;
+                                            }
+                                          } else if (splitMode == 'percent') {
+                                            var totalBasisPoints = 0;
+                                            for (final userId
+                                                in resolvedParticipants) {
+                                              final controller =
+                                                  splitControllers[userId];
+                                              final raw =
+                                                  controller?.text.trim() ?? '';
+                                              final value = _parseAmount(raw);
+                                              if (raw.isEmpty || value < 0) {
+                                                setDialogState(() {
+                                                  errorText = _plainLocalizedText(
+                                                    en: 'Enter valid percentages for all participants.',
+                                                    lv: 'Ievadi derīgus procentus visiem dalībniekiem.',
+                                                  );
+                                                });
+                                                return;
+                                              }
+                                              final basisPoints = (value * 100)
+                                                  .round();
+                                              totalBasisPoints += basisPoints;
+                                              splitValues.add(
+                                                ExpenseSplitValue(
+                                                  userId: userId,
+                                                  value: basisPoints / 100,
+                                                ),
+                                              );
+                                            }
+                                            if (totalBasisPoints != 10000) {
+                                              setDialogState(() {
+                                                errorText = _plainLocalizedText(
+                                                  en: 'Percentage split must total 100%.',
+                                                  lv: 'Procentu sadalei jāsummējas līdz 100%.',
+                                                );
+                                              });
+                                              return;
+                                            }
+                                          } else if (splitMode == 'shares') {
+                                            for (final userId
+                                                in resolvedParticipants) {
+                                              final controller =
+                                                  splitControllers[userId];
+                                              final raw =
+                                                  controller?.text.trim() ?? '';
+                                              final value = _parseAmount(raw);
+                                              final rounded = value.round();
+                                              if (raw.isEmpty || rounded <= 0) {
+                                                setDialogState(() {
+                                                  errorText = _plainLocalizedText(
+                                                    en: 'Shares must be greater than 0 for all participants.',
+                                                    lv: 'Daļām jābūt lielākām par 0 visiem dalībniekiem.',
+                                                  );
+                                                });
+                                                return;
+                                              }
+                                              splitValues.add(
+                                                ExpenseSplitValue(
+                                                  userId: userId,
+                                                  value: rounded.toDouble(),
+                                                ),
+                                              );
                                             }
                                           }
                                         }

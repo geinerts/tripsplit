@@ -1,0 +1,18 @@
+{
+    "name": "tripsplit/api",
+    "description": "TripSplit PHP API",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "files": []
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-text"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

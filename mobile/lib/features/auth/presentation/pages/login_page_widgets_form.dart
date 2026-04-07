@@ -68,39 +68,24 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     return [
       _buildSocialPlaceholders(context),
       const SizedBox(height: 14),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: _buildLabeledTextField(
-              context: context,
-              label: t.firstNameLabel,
-              hint: t.firstNameHint,
-              controller: _firstNameController,
-              validator: _validateFirstName,
-              autocorrect: false,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 14,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildLabeledTextField(
-              context: context,
-              label: t.lastNameLabel,
-              hint: t.lastNameHint,
-              controller: _lastNameController,
-              validator: _validateLastName,
-              autocorrect: false,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 14,
-              ),
-            ),
-          ),
-        ],
+      _buildLabeledTextField(
+        context: context,
+        label: t.fullNameLabel,
+        hint: t.fullNameHint,
+        controller: _fullNameController,
+        validator: _validateFullName,
+        autocorrect: false,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 14,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        t.fullNameHelper,
+        style: Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(color: AppDesign.mutedColor(context)),
       ),
     ];
   }
@@ -243,7 +228,10 @@ extension _LoginPageWidgetsForm on _LoginPageState {
 
   Widget _buildPasswordStrengthIndicator(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final strength = _resolvePasswordStrength(context, _passwordController.text);
+    final strength = _resolvePasswordStrength(
+      context,
+      _passwordController.text,
+    );
     return SizedBox(
       height: 7,
       child: LayoutBuilder(
@@ -259,7 +247,9 @@ extension _LoginPageWidgetsForm on _LoginPageState {
               children: [
                 Positioned.fill(
                   child: ColoredBox(
-                    color: colors.surfaceContainerHighest.withValues(alpha: 0.8),
+                    color: colors.surfaceContainerHighest.withValues(
+                      alpha: 0.8,
+                    ),
                   ),
                 ),
                 AnimatedContainer(
@@ -276,7 +266,10 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     );
   }
 
-  _PasswordStrength _resolvePasswordStrength(BuildContext context, String text) {
+  _PasswordStrength _resolvePasswordStrength(
+    BuildContext context,
+    String text,
+  ) {
     final value = text.trim();
     if (value.isEmpty) {
       return _PasswordStrength(
@@ -290,12 +283,14 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     final hasUpper = RegExp(r'[A-Z]').hasMatch(value);
     final hasNumber = RegExp(r'[0-9]').hasMatch(value);
     final hasSymbol = RegExp(r'[^A-Za-z0-9]').hasMatch(value);
-    final requiredChecksMet = [minLengthMet, hasUpper, hasNumber, hasSymbol]
-        .where((met) => met)
-        .length;
+    final requiredChecksMet = [
+      minLengthMet,
+      hasUpper,
+      hasNumber,
+      hasSymbol,
+    ].where((met) => met).length;
 
-    final meetsGreenLevel =
-        minLengthMet && hasUpper && hasNumber && hasSymbol;
+    final meetsGreenLevel = minLengthMet && hasUpper && hasNumber && hasSymbol;
     if (meetsGreenLevel) {
       final veryStrong = value.length >= 14;
       return _PasswordStrength(
@@ -311,15 +306,9 @@ extension _LoginPageWidgetsForm on _LoginPageState {
       );
     }
     if (requiredChecksMet == 2) {
-      return const _PasswordStrength(
-        fillFactor: 0.5,
-        color: Color(0xFFD4A72C),
-      );
+      return const _PasswordStrength(fillFactor: 0.5, color: Color(0xFFD4A72C));
     }
-    return const _PasswordStrength(
-      fillFactor: 0.72,
-      color: Color(0xFFD4A72C),
-    );
+    return const _PasswordStrength(fillFactor: 0.72, color: Color(0xFFD4A72C));
   }
 
   Widget _buildRememberAndForgotRow(BuildContext context) {

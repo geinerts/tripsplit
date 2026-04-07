@@ -1043,11 +1043,6 @@ function list_expenses_action(): void
         $sourceAmountCents = decimal_to_cents($row['source_amount']);
         $splitMode = normalize_expense_split_mode($row['split_mode'] ?? 'equal');
         $participantRows = $participantsByExpense[$id] ?? [];
-        $storedOwedTotal = 0;
-        foreach ($participantRows as $participantRow) {
-            $storedOwedTotal += (int) ($participantRow['owed_cents'] ?? 0);
-        }
-        $hasStoredOwed = count($participantRows) > 0 && $storedOwedTotal === $amountCents;
         $receiptPath = (string) ($row['receipt_path'] ?? '');
         $row['id'] = $id;
         $row['paid_by_id'] = (int) $row['paid_by_id'];
@@ -1064,37 +1059,11 @@ function list_expenses_action(): void
         $row['receipt_path'] = $receiptPath !== '' ? $receiptPath : null;
         $row['receipt_url'] = $receiptPath !== '' ? receipt_public_url($receiptPath) : null;
         $row['receipt_thumb_url'] = $receiptPath !== '' ? receipt_thumb_public_url($receiptPath) : null;
-
-        $count = count($participantRows);
-        $base = $count > 0 ? intdiv($amountCents, $count) : 0;
-        $remainder = $count > 0 ? ($amountCents % $count) : 0;
-
-        $participants = [];
-        foreach ($participantRows as $index => $participantRow) {
-            $storedOwedCents = (int) ($participantRow['owed_cents'] ?? 0);
-            $owedCents = $hasStoredOwed
-                ? $storedOwedCents
-                : ($base + ($index < $remainder ? 1 : 0));
-
-            $splitValue = null;
-            $rawSplitValue = (int) ($participantRow['split_value'] ?? 0);
-            if ($splitMode === 'exact') {
-                $splitValue = cents_to_float($rawSplitValue);
-            } elseif ($splitMode === 'percent') {
-                $splitValue = $rawSplitValue / 100;
-            } elseif ($splitMode === 'shares') {
-                $splitValue = $rawSplitValue;
-            }
-
-            $participants[] = [
-                'id' => (int) ($participantRow['id'] ?? 0),
-                'nickname' => (string) ($participantRow['nickname'] ?? ''),
-                'owed' => cents_to_float($owedCents),
-                'split_value' => $splitValue,
-            ];
-        }
-
-        $row['participants'] = $participants;
+        $row['participants'] = build_expense_participants_payload_rows(
+            $amountCents,
+            $splitMode,
+            $participantRows
+        );
     }
     unset($row);
 

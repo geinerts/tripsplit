@@ -39,12 +39,21 @@ extension _LoginPageActions on _LoginPageState {
           password: _passwordController.text,
         );
       } else {
-        final firstName = _firstNameController.text.trim();
-        final lastName = _lastNameController.text.trim();
+        final fullName = _fullNameController.text.trim();
+        final nameParts = _parseFullName(fullName);
+        if (nameParts == null) {
+          _updateState(() {
+            _errorText = context.l10n.fullNameValidation;
+            _isSubmitting = false;
+          });
+          return;
+        }
+        final firstName = nameParts.key;
+        final lastName = nameParts.value;
         user = await widget.controller.register(
           firstName: firstName,
           lastName: lastName,
-          nickname: _deriveNickname(firstName: firstName, lastName: lastName),
+          nickname: _deriveNickname(fullName: fullName),
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
@@ -118,14 +127,11 @@ extension _LoginPageActions on _LoginPageState {
     messenger.showSnackBar(SnackBar(content: Text(message)));
   }
 
-  String _deriveNickname({
-    required String firstName,
-    required String lastName,
-  }) {
-    final combined = '$firstName $lastName'.trim();
-    if (combined.isNotEmpty) {
-      return combined;
+  String _deriveNickname({required String fullName}) {
+    final normalized = fullName.trim().replaceAll(RegExp(r'\s+'), ' ');
+    if (normalized.isNotEmpty) {
+      return normalized;
     }
-    return firstName.isNotEmpty ? firstName : lastName;
+    return context.l10n.nameLabel;
   }
 }

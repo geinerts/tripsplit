@@ -15,11 +15,14 @@ api/config.local.php
 # Logs and runtime artifacts
 *.log
 api/logs/
+api/.phpunit.result.cache
+api/.phpunit.cache/
 
 # Server-side backups and temp
 api/backups/
 api/lib_backup_*/
 uploads/
+api/vendor/
 
 # Flutter/Dart generated files
 mobile/.dart_tool/

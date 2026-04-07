@@ -174,6 +174,7 @@ function trips_action(): void
          WHERE tm.user_id = :user_id
          GROUP BY
             t.id,
+            tm.user_id,
             t.name,
             t.status,
             t.created_by,
