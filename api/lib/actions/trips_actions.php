@@ -19,19 +19,13 @@ function create_trip_invite_token(int $tripId, int $issuedByUserId): string
     }
 
     $issuedAt = time();
-    $payload = [
-        'trip_id' => $tripId,
-        'issued_by' => $issuedByUserId,
-        'iat' => $issuedAt,
-        'exp' => $issuedAt + trip_invite_ttl_seconds(),
-    ];
-    $json = json_encode($payload, JSON_UNESCAPED_SLASHES);
-    if (!is_string($json) || $json === '') {
-        throw new RuntimeException('Failed to encode invite token.');
-    }
+    $expiresAt = $issuedAt + trip_invite_ttl_seconds();
 
-    $encodedPayload = base64url_encode($json);
-    $signature = hash_hmac('sha256', $encodedPayload, trip_invite_secret());
+    // Compact payload (trip_id, issued_at, expires_at) to keep links short.
+    $payload = pack('N3', $tripId, $issuedAt, $expiresAt);
+    $encodedPayload = base64url_encode($payload);
+    // 128-bit truncated signature is sufficient and makes token shorter.
+    $signature = substr(hash_hmac('sha256', $encodedPayload, trip_invite_secret()), 0, 32);
     return $encodedPayload . '.' . $signature;
 }
 
@@ -44,33 +38,32 @@ function decode_trip_invite_token(string $token): array
 
     $encodedPayload = trim((string) $parts[0]);
     $signature = trim((string) $parts[1]);
-    if ($encodedPayload === '' || !preg_match('/^[a-f0-9]{64}$/', $signature)) {
+    if ($encodedPayload === '' || !preg_match('/^[a-f0-9]{32}$/', $signature)) {
         json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
     }
 
-    $expected = hash_hmac('sha256', $encodedPayload, trip_invite_secret());
+    $expected = substr(hash_hmac('sha256', $encodedPayload, trip_invite_secret()), 0, 32);
     if (!hash_equals($expected, $signature)) {
         json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
     }
 
     $decodedPayload = base64url_decode($encodedPayload);
-    if (!is_string($decodedPayload) || $decodedPayload === '') {
+    if (!is_string($decodedPayload) || strlen($decodedPayload) !== 12) {
         json_out(['ok' => false, 'error' => 'Invalid invite token payload.'], 400);
     }
 
-    $payload = json_decode($decodedPayload, true);
-    if (!is_array($payload)) {
+    $unpacked = unpack('Ntrip_id/Niat/Nexp', $decodedPayload);
+    if (!is_array($unpacked)) {
         json_out(['ok' => false, 'error' => 'Invalid invite token payload.'], 400);
     }
 
-    $tripId = (int) ($payload['trip_id'] ?? 0);
-    $issuedBy = (int) ($payload['issued_by'] ?? 0);
-    $issuedAt = (int) ($payload['iat'] ?? 0);
-    $expiresAt = (int) ($payload['exp'] ?? 0);
+    $tripId = (int) ($unpacked['trip_id'] ?? 0);
+    $issuedAt = (int) ($unpacked['iat'] ?? 0);
+    $expiresAt = (int) ($unpacked['exp'] ?? 0);
     $now = time();
     $ttl = trip_invite_ttl_seconds();
 
-    if ($tripId <= 0 || $issuedBy <= 0 || $issuedAt <= 0 || $expiresAt <= 0) {
+    if ($tripId <= 0 || $issuedAt <= 0 || $expiresAt <= 0) {
         json_out(['ok' => false, 'error' => 'Invalid invite token payload.'], 400);
     }
     if ($issuedAt > ($now + 300)) {
@@ -85,23 +78,62 @@ function decode_trip_invite_token(string $token): array
 
     return [
         'trip_id' => $tripId,
-        'issued_by' => $issuedBy,
+        'issued_by' => 0,
         'iat' => $issuedAt,
         'exp' => $expiresAt,
     ];
 }
 
-function build_trip_invite_url(string $token): string
+function trip_invite_trip_slug(string $tripName): string
+{
+    $normalized = trim((string) preg_replace('/\s+/u', ' ', $tripName));
+    if ($normalized === '') {
+        return 'trip';
+    }
+
+    $ascii = $normalized;
+    if (function_exists('iconv')) {
+        $converted = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $normalized);
+        if (is_string($converted) && trim($converted) !== '') {
+            $ascii = $converted;
+        }
+    }
+
+    $slug = strtolower($ascii);
+    $slug = (string) preg_replace('/[^a-z0-9]+/', '-', $slug);
+    $slug = trim($slug, '-');
+    if ($slug === '') {
+        $slug = 'trip';
+    }
+
+    if (strlen($slug) > 40) {
+        $slug = rtrim(substr($slug, 0, 40), '-');
+    }
+    return $slug !== '' ? $slug : 'trip';
+}
+
+function build_trip_invite_url(string $token, string $tripName = ''): string
 {
     $base = trim((string) PUBLIC_BASE_URL);
     if ($base === '') {
-        $base = 'https://egm.lv/projekti/trip/flutter';
+        $base = 'https://splyto.egm.lv';
     }
     $base = rtrim($base, '/');
     $base = preg_replace('#/api$#', '', $base) ?: $base;
 
+    $parts = explode('.', $token, 2);
+    $signature = strtolower(trim((string) ($parts[1] ?? '')));
+    $suffix = substr((string) preg_replace('/[^a-z0-9]/', '', $signature), 0, 6);
+    if ($suffix === '') {
+        $suffix = substr(hash('crc32b', $token), 0, 6);
+    }
+    $tripTag = trip_invite_trip_slug($tripName) . '-' . $suffix;
+
     $separator = strpos($base, '?') === false ? '?' : '&';
-    return $base . $separator . 'invite=' . rawurlencode($token);
+    return $base
+        . $separator
+        . 'trip=' . rawurlencode($tripTag)
+        . '&i=' . rawurlencode($token);
 }
 
 function trips_action(): void
@@ -861,7 +893,7 @@ function create_trip_invite_action(): void
         'ok' => true,
         'trip_id' => $tripId,
         'invite_token' => $token,
-        'invite_url' => build_trip_invite_url($token),
+        'invite_url' => build_trip_invite_url($token, (string) ($trip['name'] ?? '')),
         'expires_in_sec' => trip_invite_ttl_seconds(),
         'expires_at' => gmdate('Y-m-d H:i:s', $expiresAt),
     ]);

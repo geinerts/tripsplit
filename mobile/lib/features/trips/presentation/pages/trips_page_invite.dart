@@ -98,8 +98,8 @@ extension _TripsPageInviteActions on _TripsPageState {
                         maxLines: 3,
                         decoration: InputDecoration(
                           hintText: _plainLocalizedText(
-                            en: 'https://.../?invite=...',
-                            lv: 'https://.../?invite=...',
+                            en: 'https://.../?trip=...&i=...',
+                            lv: 'https://.../?trip=...&i=...',
                           ),
                           prefixIcon: const Icon(Icons.link_rounded),
                         ),
@@ -215,7 +215,7 @@ extension _TripsPageInviteActions on _TripsPageState {
 
     final uri = Uri.tryParse(raw);
     if (uri != null) {
-      final fromQuery = (uri.queryParameters['invite'] ?? '').trim();
+      final fromQuery = (uri.queryParameters['i'] ?? '').trim();
       if (fromQuery.isNotEmpty) {
         final decoded = Uri.decodeComponent(fromQuery).trim();
         if (decoded.isNotEmpty) {
@@ -225,7 +225,7 @@ extension _TripsPageInviteActions on _TripsPageState {
 
       final fragment = uri.fragment.trim();
       if (fragment.isNotEmpty) {
-        final match = RegExp(r'(?:^|[?&])invite=([^&]+)').firstMatch(fragment);
+        final match = RegExp(r'(?:^|[?&])i=([^&]+)').firstMatch(fragment);
         final value = (match?.group(1) ?? '').trim();
         if (value.isNotEmpty) {
           final decoded = Uri.decodeComponent(value).trim();
@@ -236,7 +236,7 @@ extension _TripsPageInviteActions on _TripsPageState {
       }
     }
 
-    final fromRaw = RegExp(r'(?:^|[?&])invite=([^&\s]+)').firstMatch(raw);
+    final fromRaw = RegExp(r'(?:^|[?&])i=([^&\s]+)').firstMatch(raw);
     final rawValue = (fromRaw?.group(1) ?? '').trim();
     if (rawValue.isNotEmpty) {
       final decoded = Uri.decodeComponent(rawValue).trim();
@@ -266,7 +266,7 @@ extension _TripsPageInviteActions on _TripsPageState {
       return false;
     }
     final signature = parts[1].trim();
-    if (!RegExp(r'^[a-f0-9]{64}$').hasMatch(signature)) {
+    if (!RegExp(r'^[a-f0-9]{32}$').hasMatch(signature)) {
       return false;
     }
     return parts[0].trim().isNotEmpty;
