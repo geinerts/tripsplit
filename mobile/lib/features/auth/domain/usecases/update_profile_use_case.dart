@@ -7,7 +7,6 @@ class UpdateProfileUseCase {
   final AuthRepository _repository;
 
   Future<AuthUser> call({
-    required String nickname,
     String? firstName,
     String? lastName,
     String? email,
@@ -16,7 +15,6 @@ class UpdateProfileUseCase {
     return _repository.updateProfile(
       firstName: firstName,
       lastName: lastName,
-      nickname: nickname,
       email: email,
       password: password,
     );

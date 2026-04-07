@@ -19,9 +19,15 @@ function get_me(): array
         json_out(['ok' => false, 'error' => 'User not found.'], 401);
     }
 
+    $firstName = trim((string) ($row['first_name'] ?? ''));
+    $lastName = trim((string) ($row['last_name'] ?? ''));
+    $fullName = trim($firstName . ' ' . $lastName);
+    $displayName = $fullName !== '' ? $fullName : trim((string) ($row['nickname'] ?? ''));
+
     return [
         'id' => (int) ($row['id'] ?? 0),
-        'nickname' => (string) ($row['nickname'] ?? ''),
+        'full_name' => $fullName !== '' ? $fullName : null,
+        'nickname' => $displayName,
     ];
 }
 
@@ -38,6 +44,48 @@ function validate_nickname(string $nickname): string
     ensure_text_has_no_links($nickname, 'Nickname');
 
     return $nickname;
+}
+
+function safe_substr_for_name(string $value, int $max): string
+{
+    if ($max <= 0) {
+        return '';
+    }
+    if (function_exists('mb_substr')) {
+        return (string) mb_substr($value, 0, $max);
+    }
+    return substr($value, 0, $max);
+}
+
+function derive_legacy_nickname_from_names(string $firstName, string $lastName): string
+{
+    $candidate = trim(preg_replace('/\s+/', ' ', $firstName . ' ' . $lastName) ?? '');
+    if ($candidate === '') {
+        $candidate = 'Traveler';
+    }
+
+    // Keep compatibility with existing nickname column validation rules.
+    $candidate = preg_replace('/[^\p{L}\p{N} ._\-]+/u', '', $candidate) ?? '';
+    $candidate = trim(preg_replace('/\s+/', ' ', $candidate) ?? '');
+
+    if (str_length($candidate) > 32) {
+        $candidate = trim(safe_substr_for_name($candidate, 32));
+    }
+    if (str_length($candidate) >= 2) {
+        return $candidate;
+    }
+
+    $fallback = trim(preg_replace('/\s+/', ' ', $firstName) ?? '');
+    $fallback = preg_replace('/[^\p{L}\p{N} ._\-]+/u', '', $fallback) ?? '';
+    $fallback = trim($fallback);
+    if (str_length($fallback) > 32) {
+        $fallback = trim(safe_substr_for_name($fallback, 32));
+    }
+    if (str_length($fallback) >= 2) {
+        return $fallback;
+    }
+
+    return 'Traveler';
 }
 
 function ensure_text_has_no_links(string $value, string $fieldLabel): void

@@ -84,7 +84,6 @@ class _FriendsPageState extends State<FriendsPage> {
   String? _pendingReceivedNextCursor;
   int? _pendingReceivedNextOffset;
   final ScrollController _scrollController = ScrollController();
-  final Set<int> _inviteLoading = <int>{};
   final Set<int> _respondLoading = <int>{};
   final Set<int> _cancelLoading = <int>{};
   int _handledRefreshRequestCount = 0;

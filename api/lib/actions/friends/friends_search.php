@@ -46,10 +46,11 @@ function search_users_action(): void
     $usersTable = table_name('users');
     $tripMembersTable = table_name('trip_members');
     $tripsTable = table_name('trips');
-    $nameSelect = users_name_columns_available($pdo)
+    $hasNameColumns = users_name_columns_available($pdo);
+    $nameSelect = $hasNameColumns
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
-    $nameGroupBy = users_name_columns_available($pdo)
+    $nameGroupBy = $hasNameColumns
         ? ', u.first_name, u.last_name'
         : '';
 
@@ -105,18 +106,42 @@ function search_users_action(): void
             'q_prefix_email' => $queryPrefix,
         ], $excludeParams);
 
-        $searchSql =
-            'SELECT
-                u.id,
-                ' . $nameSelect . '
-                u.nickname,
-                u.avatar_path,
-                CASE WHEN u.nickname LIKE :q_prefix THEN 0 ELSE 1 END AS rank_prefix,
-                CASE WHEN u.email IS NOT NULL AND u.email LIKE :q_prefix_email THEN 0 ELSE 1 END AS rank_email
-             FROM ' . $usersTable . ' u
-             WHERE (u.nickname LIKE :q_like_name OR (u.email IS NOT NULL AND u.email LIKE :q_like_email))' . $excludeClause . '
-             ORDER BY rank_prefix ASC, rank_email ASC, u.nickname ASC, u.id ASC
-             LIMIT ' . $limit;
+        if ($hasNameColumns) {
+            $displayExpr = 'TRIM(CONCAT(COALESCE(u.first_name, \'\'), \' \', COALESCE(u.last_name, \'\')))';
+            $searchSql =
+                'SELECT
+                    u.id,
+                    ' . $nameSelect . '
+                    u.nickname,
+                    u.avatar_path,
+                    CASE
+                        WHEN (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_prefix) THEN 0
+                        WHEN u.nickname LIKE :q_prefix THEN 1
+                        ELSE 2
+                    END AS rank_prefix,
+                    CASE WHEN u.email IS NOT NULL AND u.email LIKE :q_prefix_email THEN 0 ELSE 1 END AS rank_email
+                 FROM ' . $usersTable . ' u
+                 WHERE (
+                    (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_like_name)
+                    OR u.nickname LIKE :q_like_name
+                    OR (u.email IS NOT NULL AND u.email LIKE :q_like_email)
+                 )' . $excludeClause . '
+                 ORDER BY rank_prefix ASC, rank_email ASC, ' . $displayExpr . ' ASC, u.nickname ASC, u.id ASC
+                 LIMIT ' . $limit;
+        } else {
+            $searchSql =
+                'SELECT
+                    u.id,
+                    ' . $nameSelect . '
+                    u.nickname,
+                    u.avatar_path,
+                    CASE WHEN u.nickname LIKE :q_prefix THEN 0 ELSE 1 END AS rank_prefix,
+                    CASE WHEN u.email IS NOT NULL AND u.email LIKE :q_prefix_email THEN 0 ELSE 1 END AS rank_email
+                 FROM ' . $usersTable . ' u
+                 WHERE (u.nickname LIKE :q_like_name OR (u.email IS NOT NULL AND u.email LIKE :q_like_email))' . $excludeClause . '
+                 ORDER BY rank_prefix ASC, rank_email ASC, u.nickname ASC, u.id ASC
+                 LIMIT ' . $limit;
+        }
 
         $searchStmt = $pdo->prepare($searchSql);
         $searchStmt->execute($searchParams);

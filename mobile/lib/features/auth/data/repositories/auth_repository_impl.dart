@@ -19,14 +19,12 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<AuthUser> registerWithCredentials({
     required String firstName,
     required String lastName,
-    required String nickname,
     required String email,
     required String password,
   }) {
     return _remote.registerWithCredentials(
       firstName: firstName,
       lastName: lastName,
-      nickname: nickname,
       email: email,
       password: password,
     );
@@ -42,7 +40,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthUser> updateProfile({
-    required String nickname,
     String? firstName,
     String? lastName,
     String? email,
@@ -51,7 +48,6 @@ class AuthRepositoryImpl implements AuthRepository {
     return _remote.updateProfile(
       firstName: firstName,
       lastName: lastName,
-      nickname: nickname,
       email: email,
       password: password,
     );

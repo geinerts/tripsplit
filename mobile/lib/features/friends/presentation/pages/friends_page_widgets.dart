@@ -364,14 +364,14 @@ extension _FriendsPageWidgets on _FriendsPageState {
             excludeIds: _searchExcludeIds(_snapshot ?? snapshot),
           ),
           sendInvite: (userId) => widget.controller.sendInvite(userId: userId),
-          onInviteSuccess: (nickname) async {
+          onInviteSuccess: (displayName) async {
             if (!mounted) {
               return;
             }
             _showSnack(
               _txt(
-                en: 'Invite sent to $nickname.',
-                lv: 'Uzaicinājums nosūtīts lietotājam $nickname.',
+                en: 'Invite sent to $displayName.',
+                lv: 'Uzaicinājums nosūtīts lietotājam $displayName.',
               ),
             );
             await _loadSnapshot(showLoader: false);
@@ -624,17 +624,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
     return _txt(en: 'User', lv: 'Lietotājs');
   }
 
-  String? _friendSecondaryLabel(FriendUser user) {
-    final nickname = user.nickname.trim();
-    if (nickname.isEmpty) {
-      return null;
-    }
-    final primary = _friendPrimaryName(user).trim();
-    if (primary.toLowerCase() == nickname.toLowerCase()) {
-      return null;
-    }
-    return '@$nickname';
-  }
+  String? _friendSecondaryLabel(FriendUser _) => null;
 }
 
 typedef _FriendsTxt = String Function({required String en, required String lv});
@@ -654,7 +644,7 @@ class _AddFriendBottomSheet extends StatefulWidget {
   final _FriendsShowSnack showSnack;
   final Future<List<FriendUser>> Function(String query) searchUsers;
   final Future<void> Function(int userId) sendInvite;
-  final Future<void> Function(String nickname) onInviteSuccess;
+  final Future<void> Function(String displayName) onInviteSuccess;
   final Widget Function(FriendUser user) userAvatarBuilder;
 
   @override
@@ -749,7 +739,7 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
     }
     try {
       await widget.sendInvite(user.id);
-      await widget.onInviteSuccess(user.nickname);
+      await widget.onInviteSuccess(user.preferredName);
       if (!mounted) {
         return;
       }
@@ -848,8 +838,8 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                         onChanged: _onQueryChanged,
                         decoration: InputDecoration(
                           hintText: widget.txt(
-                            en: 'Search by nickname',
-                            lv: 'Meklēt pēc segvārda',
+                            en: 'Search by name or email',
+                            lv: 'Meklēt pēc vārda vai e-pasta',
                           ),
                           prefixIcon: const Icon(Icons.search),
                           suffixIcon: _isSearching
@@ -908,12 +898,7 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                             title: user.preferredName.trim().isNotEmpty
                                 ? user.preferredName.trim()
                                 : user.nickname,
-                            subtitle:
-                                user.preferredName.trim().isNotEmpty &&
-                                    user.preferredName.trim().toLowerCase() !=
-                                        user.nickname.trim().toLowerCase()
-                                ? '@${user.nickname.trim()}'
-                                : null,
+                            subtitle: null,
                             trailing: OutlinedButton.icon(
                               onPressed: busy
                                   ? null

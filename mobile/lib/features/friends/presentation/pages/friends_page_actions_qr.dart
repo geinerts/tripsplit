@@ -15,8 +15,8 @@ extension _FriendsPageActionsQr on _FriendsPageState {
                 title: Text(_txt(en: 'Search users', lv: 'Meklēt lietotājus')),
                 subtitle: Text(
                   _txt(
-                    en: 'Find by nickname and send invite',
-                    lv: 'Meklē pēc segvārda un nosūti uzaicinājumu',
+                    en: 'Find by name or email and send invite',
+                    lv: 'Meklē pēc vārda vai e-pasta un nosūti uzaicinājumu',
                   ),
                 ),
                 onTap: () => Navigator.of(sheetContext).pop('search'),
@@ -178,14 +178,13 @@ extension _FriendsPageActionsQr on _FriendsPageState {
     }
 
     final payload = _buildFriendQrPayload(currentUser.id);
-    final nickname = currentUser.nickname.trim().isEmpty
+    final name = currentUser.nickname.trim().isEmpty
         ? _txt(en: 'My profile', lv: 'Mans profils')
         : currentUser.nickname.trim();
 
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
-        builder: (context) =>
-            _MyFriendQrPage(nickname: nickname, payload: payload),
+        builder: (context) => _MyFriendQrPage(nickname: name, payload: payload),
       ),
     );
   }

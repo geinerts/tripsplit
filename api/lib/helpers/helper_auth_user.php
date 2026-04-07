@@ -75,7 +75,8 @@ function build_me_payload(array $user): array
         'last_name' => $lastName,
         'full_name' => combine_full_name($firstName, $lastName),
         'display_name' => me_display_name($user),
-        'nickname' => (string) ($user['nickname'] ?? ''),
+        // Backward-compatible field: now mirrors display_name.
+        'nickname' => me_display_name($user),
         'email' => $email !== '' ? $email : null,
         'needs_credentials' => $needsCredentials,
         'avatar_url' => $avatarPath !== '' ? avatar_public_url($avatarPath) : null,

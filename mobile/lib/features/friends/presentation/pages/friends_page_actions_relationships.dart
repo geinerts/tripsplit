@@ -1,51 +1,6 @@
 part of 'friends_page.dart';
 
 extension _FriendsPageActionsRelationships on _FriendsPageState {
-  Future<void> _sendInvite(FriendUser user) async {
-    if (_inviteLoading.contains(user.id)) {
-      return;
-    }
-    _updateState(() {
-      _inviteLoading.add(user.id);
-    });
-
-    try {
-      await widget.controller.sendInvite(userId: user.id);
-      if (!mounted) {
-        return;
-      }
-      _showSnack(
-        _txt(
-          en: 'Invite sent to ${user.nickname}.',
-          lv: 'Uzaicinājums nosūtīts lietotājam ${user.nickname}.',
-        ),
-      );
-      await _loadSnapshot(showLoader: false);
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _showSnack(error.message, isError: true);
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _showSnack(
-        _txt(
-          en: 'Failed to send invite.',
-          lv: 'Neizdevās nosūtīt uzaicinājumu.',
-        ),
-        isError: true,
-      );
-    } finally {
-      if (mounted) {
-        _updateState(() {
-          _inviteLoading.remove(user.id);
-        });
-      }
-    }
-  }
-
   Future<void> _respondInvite(FriendRequest request, bool accept) async {
     if (_respondLoading.contains(request.requestId)) {
       return;
@@ -100,8 +55,8 @@ extension _FriendsPageActionsRelationships on _FriendsPageState {
         title: Text(_txt(en: 'Cancel invite', lv: 'Atcelt uzaicinājumu')),
         content: Text(
           _txt(
-            en: 'Cancel invite to ${request.user.nickname}?',
-            lv: 'Atcelt uzaicinājumu lietotājam ${request.user.nickname}?',
+            en: 'Cancel invite to ${request.user.preferredName}?',
+            lv: 'Atcelt uzaicinājumu lietotājam ${request.user.preferredName}?',
           ),
         ),
         actions: [
@@ -139,8 +94,8 @@ extension _FriendsPageActionsRelationships on _FriendsPageState {
       }
       _showSnack(
         _txt(
-          en: 'Invite to ${request.user.nickname} cancelled.',
-          lv: 'Uzaicinājums lietotājam ${request.user.nickname} atcelts.',
+          en: 'Invite to ${request.user.preferredName} cancelled.',
+          lv: 'Uzaicinājums lietotājam ${request.user.preferredName} atcelts.',
         ),
       );
       await _loadSnapshot(showLoader: false);

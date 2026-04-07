@@ -12,7 +12,6 @@ abstract class AuthRemoteDataSource {
   Future<AuthUserModel> registerWithCredentials({
     required String firstName,
     required String lastName,
-    required String nickname,
     required String email,
     required String password,
   });
@@ -23,7 +22,6 @@ abstract class AuthRemoteDataSource {
   });
 
   Future<AuthUserModel> updateProfile({
-    required String nickname,
     String? firstName,
     String? lastName,
     String? email,
@@ -61,7 +59,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthUserModel> registerWithCredentials({
     required String firstName,
     required String lastName,
-    required String nickname,
     required String email,
     required String password,
   }) async {
@@ -81,7 +78,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       body: <String, dynamic>{
         'first_name': firstName,
         'last_name': lastName,
-        'nickname': nickname,
         'email': email,
         'password': password,
         'register_proof': registerProof,
@@ -117,13 +113,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<AuthUserModel> updateProfile({
-    required String nickname,
     String? firstName,
     String? lastName,
     String? email,
     String? password,
   }) async {
-    final payload = <String, dynamic>{'nickname': nickname};
+    final payload = <String, dynamic>{};
     if (firstName != null && lastName != null) {
       payload['first_name'] = firstName;
       payload['last_name'] = lastName;

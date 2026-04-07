@@ -58,10 +58,7 @@ extension _ProfilePageActions on _ProfilePageState {
         builder: (sheetContext) {
           return CupertinoActionSheet(
             title: Text(
-              _profileText(
-                en: 'Open website?',
-                lv: 'Atvērt mājaslapu?',
-              ),
+              _profileText(en: 'Open website?', lv: 'Atvērt mājaslapu?'),
             ),
             message: Text('portfolio.egm.lv'),
             actions: [
@@ -101,10 +98,7 @@ extension _ProfilePageActions on _ProfilePageState {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  _profileText(
-                    en: 'Open website?',
-                    lv: 'Atvērt mājaslapu?',
-                  ),
+                  _profileText(en: 'Open website?', lv: 'Atvērt mājaslapu?'),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -221,10 +215,8 @@ extension _ProfilePageActions on _ProfilePageState {
     _user = user;
     _avatarBytes = widget.controller.avatarBytesFor(user);
     _initialFullName = _joinFullName(user.firstName, user.lastName);
-    _initialNickname = user.nickname;
     _initialEmail = user.email;
     _fullNameController.text = _initialFullName;
-    _nicknameController.text = user.nickname;
     _emailController.text = user.email ?? '';
     _draftFullName = _initialFullName;
     _draftEmail = user.email ?? '';
@@ -289,14 +281,6 @@ extension _ProfilePageActions on _ProfilePageState {
     final normalizedFullName = parsedName == null
         ? _initialFullName
         : _joinFullName(parsedName.firstName, parsedName.lastName);
-    final nickname = _nicknameController.text.trim();
-    if (nickname.length < 2 || nickname.length > 32) {
-      _updateState(() {
-        _errorText = t.nicknameLengthValidation;
-      });
-      return false;
-    }
-
     final email = _emailController.text.trim().toLowerCase();
     final baseEmail = (_initialEmail ?? '').trim().toLowerCase();
     final password = _passwordController.text;
@@ -328,8 +312,7 @@ extension _ProfilePageActions on _ProfilePageState {
     }
 
     final fullNameChanged = normalizedFullName != _initialFullName;
-    final nicknameChanged = nickname != _initialNickname;
-    if (!fullNameChanged && !nicknameChanged && !wantsCredentialsUpdate) {
+    if (!fullNameChanged && !wantsCredentialsUpdate) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(t.noChangesToSave)));
@@ -345,7 +328,6 @@ extension _ProfilePageActions on _ProfilePageState {
       final updated = await widget.controller.updateProfile(
         firstName: fullNameChanged ? parsedName?.firstName : null,
         lastName: fullNameChanged ? parsedName?.lastName : null,
-        nickname: nickname,
         email: wantsCredentialsUpdate ? email : null,
         password: wantsCredentialsUpdate ? password : null,
       );

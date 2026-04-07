@@ -63,7 +63,6 @@ class AuthController {
   Future<AuthUser> register({
     required String firstName,
     required String lastName,
-    required String nickname,
     required String email,
     required String password,
   }) async {
@@ -71,7 +70,6 @@ class AuthController {
       await _registerUseCase.call(
         firstName: firstName,
         lastName: lastName,
-        nickname: nickname,
         email: email,
         password: password,
       ),
@@ -94,7 +92,6 @@ class AuthController {
   }
 
   Future<AuthUser> updateProfile({
-    required String nickname,
     String? firstName,
     String? lastName,
     String? email,
@@ -104,7 +101,6 @@ class AuthController {
       await _updateProfileUseCase.call(
         firstName: firstName,
         lastName: lastName,
-        nickname: nickname,
         email: email,
         password: password,
       ),

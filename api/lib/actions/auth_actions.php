@@ -119,7 +119,7 @@ function register_action(): void
     $body = read_json();
     $firstName = validate_person_name((string) ($body['first_name'] ?? ''), 'First name');
     $lastName = validate_person_name((string) ($body['last_name'] ?? ''), 'Last name');
-    $nickname = validate_nickname((string) ($body['nickname'] ?? ''));
+    $legacyNickname = derive_legacy_nickname_from_names($firstName, $lastName);
     $headerToken = (string) ($_SERVER['HTTP_X_DEVICE_TOKEN'] ?? '');
     $bodyToken = (string) ($body['device_token'] ?? '');
     $deviceToken = validate_token($headerToken !== '' ? $headerToken : $bodyToken);
@@ -189,7 +189,7 @@ function register_action(): void
             $stmt->execute([
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'nickname' => $nickname,
+                'nickname' => $legacyNickname,
                 'email' => $email,
                 'password_hash' => $passwordHash,
                 'device_token' => $deviceToken,
@@ -206,7 +206,7 @@ function register_action(): void
                      email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP)'
             );
             $stmt->execute([
-                'nickname' => $nickname,
+                'nickname' => $legacyNickname,
                 'email' => $email,
                 'password_hash' => $passwordHash,
                 'device_token' => $deviceToken,
@@ -225,7 +225,7 @@ function register_action(): void
             $stmt->execute([
                 'first_name' => $firstName,
                 'last_name' => $lastName,
-                'nickname' => $nickname,
+                'nickname' => $legacyNickname,
                 'device_token' => $deviceToken,
             ]);
         } else {
@@ -235,7 +235,7 @@ function register_action(): void
                  ON DUPLICATE KEY UPDATE nickname = VALUES(nickname)'
             );
             $stmt->execute([
-                'nickname' => $nickname,
+                'nickname' => $legacyNickname,
                 'device_token' => $deviceToken,
             ]);
         }
@@ -497,16 +497,13 @@ function update_profile_action(): void
     if ($hasFirstName && $hasLastName) {
         $firstName = validate_person_name((string) ($body['first_name'] ?? ''), 'First name');
         $lastName = validate_person_name((string) ($body['last_name'] ?? ''), 'Last name');
+        $legacyNickname = derive_legacy_nickname_from_names($firstName, $lastName);
         $updateParts[] = 'first_name = :first_name';
         $updateParts[] = 'last_name = :last_name';
+        $updateParts[] = 'nickname = :nickname';
         $params['first_name'] = $firstName;
         $params['last_name'] = $lastName;
-    }
-
-    if (array_key_exists('nickname', $body)) {
-        $nickname = validate_nickname((string) ($body['nickname'] ?? ''));
-        $updateParts[] = 'nickname = :nickname';
-        $params['nickname'] = $nickname;
+        $params['nickname'] = $legacyNickname;
     }
 
     $hasEmail = array_key_exists('email', $body);

@@ -382,10 +382,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             child: TextButton(
               onPressed: _closeEditMode,
               child: Text(
-                _profileText(
-                  en: 'Back to profile',
-                  lv: 'Atpakaļ uz profilu',
-                ),
+                _profileText(en: 'Back to profile', lv: 'Atpakaļ uz profilu'),
               ),
             ),
           ),
@@ -422,19 +419,12 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       return;
     }
 
-    final nickname = _nicknameController.text.trim().isNotEmpty
-        ? _nicknameController.text.trim()
-        : (_user?.nickname.trim().isNotEmpty ?? false)
-            ? _user!.nickname.trim()
-            : _initialNickname;
-
     _updateState(() {
       _isSubmitting = true;
       _editErrorText = null;
     });
     try {
       final updated = await widget.controller.updateProfile(
-        nickname: nickname,
         email: email,
         password: _draftPassword,
       );
@@ -443,10 +433,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       }
       _applyUser(updated);
       _showSnack(
-        _profileText(
-          en: 'Password updated.',
-          lv: 'Parole atjaunināta.',
-        ),
+        _profileText(en: 'Password updated.', lv: 'Parole atjaunināta.'),
       );
       _closeEditMode();
     } on ApiException catch (error) {
@@ -492,13 +479,10 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           ),
           const SizedBox(height: 8),
           Text(
-            _profileText(
-              en: 'Account: $email',
-              lv: 'Konts: $email',
+            _profileText(en: 'Account: $email', lv: 'Konts: $email'),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppDesign.mutedColor(context),
             ),
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: AppDesign.mutedColor(context)),
           ),
           const SizedBox(height: 14),
           TextFormField(
@@ -520,9 +504,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             textInputAction: TextInputAction.done,
             obscureText: true,
             autofillHints: const [AutofillHints.newPassword],
-            decoration: InputDecoration(
-              labelText: t.repeatNewPasswordLabel,
-            ),
+            decoration: InputDecoration(labelText: t.repeatNewPasswordLabel),
             onChanged: _onDraftRepeatPasswordChanged,
             onFieldSubmitted: (_) {
               unawaited(_onSubmitPasswordChange());
@@ -533,9 +515,9 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             Text(
               _editErrorText!,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                    fontWeight: FontWeight.w600,
-                  ),
+                color: Theme.of(context).colorScheme.error,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
           const SizedBox(height: 12),
@@ -693,5 +675,4 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       ],
     );
   }
-
 }

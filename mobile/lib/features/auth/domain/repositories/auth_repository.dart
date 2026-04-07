@@ -9,7 +9,6 @@ abstract class AuthRepository {
   Future<AuthUser> registerWithCredentials({
     required String firstName,
     required String lastName,
-    required String nickname,
     required String email,
     required String password,
   });
@@ -20,7 +19,6 @@ abstract class AuthRepository {
   });
 
   Future<AuthUser> updateProfile({
-    required String nickname,
     String? firstName,
     String? lastName,
     String? email,

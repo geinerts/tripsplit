@@ -77,7 +77,6 @@ class _ProfilePageState extends State<ProfilePage> {
   static const int _maxAvatarBytes = 5 * 1024 * 1024;
 
   final _fullNameController = TextEditingController();
-  final _nicknameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _repeatController = TextEditingController();
@@ -92,7 +91,6 @@ class _ProfilePageState extends State<ProfilePage> {
   AuthUser? _user;
   Uint8List? _avatarBytes;
   String _initialFullName = '';
-  String _initialNickname = '';
   String? _initialEmail;
   String _draftFullName = '';
   String _draftEmail = '';
@@ -147,7 +145,6 @@ class _ProfilePageState extends State<ProfilePage> {
     widget.onEditModeChanged?.call(false);
     _unbindCommandController(widget.commandController);
     _fullNameController.dispose();
-    _nicknameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _repeatController.dispose();

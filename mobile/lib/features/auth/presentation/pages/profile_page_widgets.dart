@@ -17,13 +17,13 @@ extension _ProfilePageWidgets on _ProfilePageState {
     final responsive = context.responsive;
     final horizontalPadding = responsive.pageHorizontalPadding;
     final fullName = _fullNameController.text.trim();
+    final rawPreferredName = (_user?.displayName ?? _user?.nickname ?? '')
+        .trim();
     final displayName = fullName.isNotEmpty
         ? fullName
-        : (_nicknameController.text.trim().isEmpty
-              ? (_user?.nickname.trim().isNotEmpty ?? false)
-                    ? _user!.nickname
-                    : t.travelerFallbackName
-              : _nicknameController.text.trim());
+        : (rawPreferredName.isNotEmpty
+              ? rawPreferredName
+              : t.travelerFallbackName);
     final avatarLetter = displayName.substring(0, 1).toUpperCase();
     final avatarUrl = widget.controller.avatarUrlFor(_user);
 
@@ -111,7 +111,10 @@ extension _ProfilePageWidgets on _ProfilePageState {
             const SizedBox(height: 16),
             _buildProfileSectionHeading(
               context: context,
-              title: _profileText(en: 'APP SETTINGS', lv: 'LIETOTNES IESTATĪJUMI'),
+              title: _profileText(
+                en: 'APP SETTINGS',
+                lv: 'LIETOTNES IESTATĪJUMI',
+              ),
             ),
             const SizedBox(height: 8),
             _buildProfileSectionCard(
@@ -211,7 +214,10 @@ extension _ProfilePageWidgets on _ProfilePageState {
               children: [
                 _buildProfileSectionTile(
                   context: context,
-                  title: _profileText(en: 'Contact us', lv: 'Sazināties ar mums'),
+                  title: _profileText(
+                    en: 'Contact us',
+                    lv: 'Sazināties ar mums',
+                  ),
                   icon: Icons.support_agent_outlined,
                   subtitle: _profileText(
                     en: 'Report bug / Suggestion',
@@ -242,7 +248,10 @@ extension _ProfilePageWidgets on _ProfilePageState {
               children: [
                 _buildProfileSectionTile(
                   context: context,
-                  title: _profileText(en: 'Change password', lv: 'Mainīt paroli'),
+                  title: _profileText(
+                    en: 'Change password',
+                    lv: 'Mainīt paroli',
+                  ),
                   icon: Icons.lock_outline_rounded,
                   subtitle: _profileText(
                     en: 'Update account password',
@@ -264,7 +273,10 @@ extension _ProfilePageWidgets on _ProfilePageState {
               children: [
                 _buildProfileSectionTile(
                   context: context,
-                  title: _profileText(en: 'Deactivate account', lv: 'Deaktivēt kontu'),
+                  title: _profileText(
+                    en: 'Deactivate account',
+                    lv: 'Deaktivēt kontu',
+                  ),
                   icon: Icons.warning_amber_rounded,
                   subtitle: _profileText(
                     en: 'Manage account access',
@@ -407,9 +419,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ...content,
-        ],
+        children: [...content],
       ),
     );
   }
@@ -458,9 +468,9 @@ extension _ProfilePageWidgets on _ProfilePageState {
                         subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: subtitleColor,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: subtitleColor),
                       ),
                   ],
                 ),
@@ -492,7 +502,9 @@ extension _ProfilePageWidgets on _ProfilePageState {
     required String? avatarUrl,
   }) {
     final t = context.l10n;
-    final email = (_initialEmail ?? '').isEmpty ? t.notSetValue : _initialEmail!;
+    final email = (_initialEmail ?? '').isEmpty
+        ? t.notSetValue
+        : _initialEmail!;
 
     return AppSurfaceCard(
       padding: EdgeInsets.all(
@@ -586,23 +598,25 @@ extension _ProfilePageWidgets on _ProfilePageState {
                       ),
                     )
                   : (avatarUrl != null
-                      ? ClipOval(
-                          child: Image.network(
-                            avatarUrl,
-                            width: 56,
-                            height: 56,
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.low,
-                            gaplessPlayback: true,
-                            cacheWidth:
-                                (56 * MediaQuery.devicePixelRatioOf(context)).round(),
-                            cacheHeight:
-                                (56 * MediaQuery.devicePixelRatioOf(context)).round(),
-                            errorBuilder: (context, error, stackTrace) =>
-                                _profileAvatarLetter(avatarLetter),
-                          ),
-                        )
-                      : _profileAvatarLetter(avatarLetter)),
+                        ? ClipOval(
+                            child: Image.network(
+                              avatarUrl,
+                              width: 56,
+                              height: 56,
+                              fit: BoxFit.cover,
+                              filterQuality: FilterQuality.low,
+                              gaplessPlayback: true,
+                              cacheWidth:
+                                  (56 * MediaQuery.devicePixelRatioOf(context))
+                                      .round(),
+                              cacheHeight:
+                                  (56 * MediaQuery.devicePixelRatioOf(context))
+                                      .round(),
+                              errorBuilder: (context, error, stackTrace) =>
+                                  _profileAvatarLetter(avatarLetter),
+                            ),
+                          )
+                        : _profileAvatarLetter(avatarLetter)),
             ),
             Positioned(
               right: 0,
@@ -654,17 +668,17 @@ extension _ProfilePageWidgets on _ProfilePageState {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppDesign.titleColor(context),
-                      ),
+                    fontWeight: FontWeight.w700,
+                    color: AppDesign.titleColor(context),
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppDesign.mutedColor(context),
-                        fontWeight: FontWeight.w600,
-                      ),
+                    color: AppDesign.mutedColor(context),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
