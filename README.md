@@ -116,8 +116,9 @@ This repository includes workflow:
 Behavior:
 
 - Pull request to `main`: runs backend PHPUnit tests.
-- Push to `main`: runs backend PHPUnit tests, then deploys to VPS and runs API health checks.
-- Manual run: available via `workflow_dispatch`.
+- Push to `main`: runs backend PHPUnit tests.
+- Deploy to VPS on push happens only if repository variable `AUTO_DEPLOY_VPS=true`.
+- Manual run (`workflow_dispatch`): deploy runs only when input `deploy_target=prod`.
 - If required VPS secrets are missing, deploy job is skipped and only tests run.
 
 Required GitHub repository secrets:
@@ -125,9 +126,24 @@ Required GitHub repository secrets:
 - `VPS_HOST` (example: `204.168.239.179`)
 - `VPS_USER` (example: `root`)
 - `VPS_SSH_PRIVATE_KEY` (private key matching server authorized key)
+- `VPS_SSH_KNOWN_HOSTS` (pinned host key line, e.g. output from `ssh-keyscan -H <host>`)
 - `VPS_PORT` (optional, default `22`)
 - `VPS_APP_DIR` (optional, default `/var/www/splyto`)
 - `API_BASE_URL` (example: `https://splyto.egm.lv`)
+
+Optional repository variable:
+
+- `AUTO_DEPLOY_VPS`:
+  - `false` (recommended for safer development; deploy only manual)
+  - `true` (auto deploy on every push to `main`)
+
+How to generate pinned known hosts value:
+
+```bash
+ssh-keyscan -p 22 -H 204.168.239.179
+```
+
+Copy full output line(s) into `VPS_SSH_KNOWN_HOSTS` secret (GitHub -> Settings -> Secrets and variables -> Actions).
 
 Deploy strategy used in workflow:
 
