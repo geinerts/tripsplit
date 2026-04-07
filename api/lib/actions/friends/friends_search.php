@@ -100,9 +100,11 @@ function search_users_action(): void
         $queryLike = '%' . $qRaw . '%';
         $queryPrefix = $qRaw . '%';
         $searchParams = array_merge([
-            'q_like_name' => $queryLike,
+            'q_like_display' => $queryLike,
+            'q_like_nickname' => $queryLike,
             'q_like_email' => $queryLike,
-            'q_prefix' => $queryPrefix,
+            'q_prefix_display' => $queryPrefix,
+            'q_prefix_nickname' => $queryPrefix,
             'q_prefix_email' => $queryPrefix,
         ], $excludeParams);
 
@@ -115,15 +117,15 @@ function search_users_action(): void
                     u.nickname,
                     u.avatar_path,
                     CASE
-                        WHEN (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_prefix) THEN 0
-                        WHEN u.nickname LIKE :q_prefix THEN 1
+                        WHEN (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_prefix_display) THEN 0
+                        WHEN u.nickname LIKE :q_prefix_nickname THEN 1
                         ELSE 2
                     END AS rank_prefix,
                     CASE WHEN u.email IS NOT NULL AND u.email LIKE :q_prefix_email THEN 0 ELSE 1 END AS rank_email
                  FROM ' . $usersTable . ' u
                  WHERE (
-                    (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_like_name)
-                    OR u.nickname LIKE :q_like_name
+                    (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_like_display)
+                    OR u.nickname LIKE :q_like_nickname
                     OR (u.email IS NOT NULL AND u.email LIKE :q_like_email)
                  )' . $excludeClause . '
                  ORDER BY rank_prefix ASC, rank_email ASC, ' . $displayExpr . ' ASC, u.nickname ASC, u.id ASC
@@ -135,10 +137,10 @@ function search_users_action(): void
                     ' . $nameSelect . '
                     u.nickname,
                     u.avatar_path,
-                    CASE WHEN u.nickname LIKE :q_prefix THEN 0 ELSE 1 END AS rank_prefix,
+                    CASE WHEN u.nickname LIKE :q_prefix_nickname THEN 0 ELSE 1 END AS rank_prefix,
                     CASE WHEN u.email IS NOT NULL AND u.email LIKE :q_prefix_email THEN 0 ELSE 1 END AS rank_email
                  FROM ' . $usersTable . ' u
-                 WHERE (u.nickname LIKE :q_like_name OR (u.email IS NOT NULL AND u.email LIKE :q_like_email))' . $excludeClause . '
+                 WHERE (u.nickname LIKE :q_like_nickname OR (u.email IS NOT NULL AND u.email LIKE :q_like_email))' . $excludeClause . '
                  ORDER BY rank_prefix ASC, rank_email ASC, u.nickname ASC, u.id ASC
                  LIMIT ' . $limit;
         }
