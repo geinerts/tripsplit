@@ -164,10 +164,13 @@ function trips_action(): void
               WHERE e3.trip_id = t.id
                 AND ep.user_id = tm.user_id
             ) AS my_owed_cents,
-            COUNT(tm2.user_id) AS members_count
+            (
+              SELECT COUNT(*)
+              FROM ' . $tripMembersTable . ' tm2
+              WHERE tm2.trip_id = t.id
+            ) AS members_count
          FROM ' . $tripsTable . ' t
          JOIN ' . $tripMembersTable . ' tm ON tm.trip_id = t.id
-         LEFT JOIN ' . $tripMembersTable . ' tm2 ON tm2.trip_id = t.id
          WHERE tm.user_id = :user_id
          GROUP BY
             t.id,
