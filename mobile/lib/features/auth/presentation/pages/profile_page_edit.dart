@@ -102,15 +102,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       return;
     }
     final password = _deactivateDraftPassword;
-    if (password.trim().isEmpty) {
-      _updateState(() {
-        _editErrorText = _profileText(
-          en: 'Enter your password to deactivate account.',
-          lv: 'Ievadi paroli, lai deaktivētu kontu.',
-        );
-      });
-      return;
-    }
 
     _updateState(() {
       _isSubmitting = true;
@@ -165,15 +156,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       return;
     }
     final password = _deactivateDraftPassword;
-    if (password.trim().isEmpty) {
-      _updateState(() {
-        _editErrorText = _profileText(
-          en: 'Enter your password to request deletion link.',
-          lv: 'Ievadi paroli, lai pieprasītu dzēšanas saiti.',
-        );
-      });
-      return;
-    }
 
     _updateState(() {
       _isSubmitting = true;
@@ -415,8 +397,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           const SizedBox(height: 8),
           Text(
             _profileText(
-              en: 'You can deactivate account access with password or request an email link to permanently delete the account.',
-              lv: 'Vari deaktivēt konta piekļuvi ar paroli vai pieprasīt e-pasta saiti neatgriezeniskai konta dzēšanai.',
+              en: 'You can deactivate account access or request an email link to permanently delete the account. Password is optional for Google/Apple accounts.',
+              lv: 'Vari deaktivēt konta piekļuvi vai pieprasīt e-pasta saiti neatgriezeniskai konta dzēšanai. Google/Apple kontiem parole nav obligāta.',
             ),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
@@ -431,8 +413,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             decoration: InputDecoration(
               labelText: _profileText(en: 'Password', lv: 'Parole'),
               hintText: _profileText(
-                en: 'Enter your password',
-                lv: 'Ievadi savu paroli',
+                en: 'Enter your password (optional for Google/Apple)',
+                lv: 'Ievadi paroli (Google/Apple nav obligāti)',
               ),
             ),
             onChanged: _onDeactivatePasswordChanged,

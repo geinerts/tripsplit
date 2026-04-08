@@ -288,6 +288,9 @@ class LegacyApiClient implements ApiClient {
     if (normalized.contains('action=register')) {
       return false;
     }
+    if (normalized.contains('action=social_auth')) {
+      return false;
+    }
     return true;
   }
 

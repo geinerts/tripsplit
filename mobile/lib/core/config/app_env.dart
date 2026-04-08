@@ -4,6 +4,8 @@ class AppEnv {
     required this.enableVerboseLogs,
     required this.enablePerformanceLogs,
     required this.apiRequestTimeout,
+    required this.googleServerClientId,
+    required this.googleIosClientId,
     required this.monitoringDsn,
     required this.monitoringEnvironment,
     required this.releaseChannel,
@@ -14,6 +16,8 @@ class AppEnv {
   final bool enableVerboseLogs;
   final bool enablePerformanceLogs;
   final Duration apiRequestTimeout;
+  final String googleServerClientId;
+  final String googleIosClientId;
   final String monitoringDsn;
   final String monitoringEnvironment;
   final String releaseChannel;
@@ -37,6 +41,14 @@ class AppEnv {
         'TRIPSPLIT_API_TIMEOUT_SEC',
         defaultValue: 15,
       ),
+    ),
+    googleServerClientId: String.fromEnvironment(
+      'TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID',
+      defaultValue: '',
+    ),
+    googleIosClientId: String.fromEnvironment(
+      'TRIPSPLIT_GOOGLE_IOS_CLIENT_ID',
+      defaultValue: '',
     ),
     monitoringDsn: String.fromEnvironment(
       'TRIPSPLIT_SENTRY_DSN',

@@ -16,6 +16,7 @@ function api_action_handlers(): array
         'register_proof'   => 'register_proof_action',
         'register'         => 'register_action',
         'login'            => 'login_action',
+        'social_auth'      => 'social_auth_action',
         'refresh_session' => 'refresh_session_action',
         'set_credentials' => 'set_credentials_action',
         'update_profile' => 'update_profile_action',

@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_design.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
+import '../../../../core/config/app_env.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/l10n/l10n.dart';
@@ -21,6 +25,33 @@ part 'login_page_widgets.dart';
 part 'login_page_widgets_form.dart';
 
 enum _AuthMode { login, register }
+
+enum _SocialAuthProvider { google, apple }
+
+extension _SocialAuthProviderValue on _SocialAuthProvider {
+  String get value {
+    switch (this) {
+      case _SocialAuthProvider.google:
+        return 'google';
+      case _SocialAuthProvider.apple:
+        return 'apple';
+    }
+  }
+}
+
+class _SocialAuthCredential {
+  const _SocialAuthCredential({
+    required this.idToken,
+    this.fullName,
+    this.email,
+  });
+
+  final String idToken;
+  final String? fullName;
+  final String? email;
+}
+
+class _SocialAuthCancelled implements Exception {}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.controller});
@@ -45,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscurePassword = true;
   bool _obscureRepeat = true;
   String? _errorText;
+  late final GoogleSignIn _googleSignIn;
 
   void _updateState(VoidCallback update) {
     if (!mounted) {
@@ -61,6 +93,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    final env = AppEnv.current;
+    final serverClientId = env.googleServerClientId.trim();
+    final iosClientId = env.googleIosClientId.trim();
+    _googleSignIn = GoogleSignIn(
+      scopes: const ['email', 'profile'],
+      serverClientId: serverClientId.isEmpty ? null : serverClientId,
+      clientId: iosClientId.isEmpty ? null : iosClientId,
+    );
     _tryRestoreSession();
   }
 

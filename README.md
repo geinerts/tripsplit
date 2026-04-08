@@ -40,6 +40,12 @@ If tables already exist, run incremental migrations from [`sql/migrations/`](./s
      - `TRIP_EMAIL_VERIFICATION_TOKEN_TTL_SEC` (default 86400, 24h link)
      - `TRIP_EMAIL_VERIFICATION_GRACE_DAYS` (default 7, auto-deactivate if still unverified)
      - `TRIP_EMAIL_VERIFICATION_CLEANUP_BATCH_LIMIT` (default 300)
+   - if using Google/Apple sign-in:
+     - `TRIP_SOCIAL_AUTH_ENABLED=true`
+     - `TRIP_SOCIAL_AUTH_GOOGLE_CLIENT_IDS=<comma-separated allowed Google token audiences>`
+     - `TRIP_SOCIAL_AUTH_APPLE_CLIENT_IDS=<comma-separated allowed Apple token audiences>`
+       - for iOS app-only flow this is usually your bundle id (example: `com.tripsplit.app.tripsplit`)
+     - `TRIP_SOCIAL_AUTH_TIMEOUT_SEC=8` (provider JWKS fetch timeout)
    - if using push:
      - `TRIP_PUSH_ENABLED=true`
      - FCM for Android + iOS + Web (recommended HTTP v1):
@@ -113,6 +119,31 @@ Notes:
 4. In Firebase Console -> Cloud Messaging, upload APNs auth key (`.p8`) for development and production.
 5. Rebuild iOS app (Xcode/TestFlight build).
 
+## 4.1) Mobile social login setup (Google + Apple)
+
+Backend:
+- Ensure migration `sql/migrations/2026-04-08-add-social-auth.sql` is applied.
+- Configure:
+  - `TRIP_SOCIAL_AUTH_GOOGLE_CLIENT_IDS`
+  - `TRIP_SOCIAL_AUTH_APPLE_CLIENT_IDS`
+
+Flutter build defines:
+- `TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID`
+- `TRIPSPLIT_GOOGLE_IOS_CLIENT_ID` (iOS OAuth client id)
+
+Example:
+
+```bash
+flutter run \
+  --dart-define=TRIPSPLIT_API_BASE_URL=https://splyto.egm.lv \
+  --dart-define=TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID=<google-server-client-id> \
+  --dart-define=TRIPSPLIT_GOOGLE_IOS_CLIENT_ID=<google-ios-client-id>
+```
+
+iOS note:
+- Add **Sign In with Apple** capability in Xcode target (`Runner`).
+- Add Google iOS URL scheme (`REVERSED_CLIENT_ID`) in `Info.plist` when configuring Google sign-in.
+
 ## 5) GitHub Actions (CI + VPS deploy)
 
 This repository includes workflow:
@@ -164,7 +195,7 @@ Deploy strategy used in workflow:
 
 ## API actions
 
-`register_proof`, `register`, `login`, `refresh_session`, `set_credentials`, `me`, `update_profile`, `forgot_password`, `reset_password`, `request_email_verification_link`, `confirm_email_verification`, `deactivate_account`, `request_reactivation_link`, `confirm_reactivation`, `request_account_deletion_link`, `confirm_account_deletion`, `trips`, `all_users`, `search_users`, `friends_list`, `send_friend_invite`, `respond_friend_invite`, `cancel_friend_invite`, `remove_friend`, `create_trip`, `update_trip`, `delete_trip`, `add_trip_members`, `users`, `upload_trip_image`, `upload_receipt`, `upload_avatar`, `remove_avatar`, `add_expense`, `update_expense`, `delete_expense`, `list_expenses`, `balances`, `end_trip`, `set_ready_to_settle`, `mark_settlement_sent`, `confirm_settlement_received`, `remind_settlement`, `list_notifications`, `list_notifications_global`, `mark_notifications_read`, `mark_notifications_read_global`, `register_push_token`, `unregister_push_token`, `create_trip_invite`, `join_trip_invite`, `submit_feedback`, `workspace_snapshot`, `generate_order`, `list_orders`, `admin_feedback_feed`, `admin_archive_feedback`, `admin_delete_feedback`, `admin_summary`, `admin_users`, `admin_user_detail`, `admin_delete_expense`, `admin_update_user`, `admin_delete_user`
+`register_proof`, `register`, `login`, `social_auth`, `refresh_session`, `set_credentials`, `me`, `update_profile`, `forgot_password`, `reset_password`, `request_email_verification_link`, `confirm_email_verification`, `deactivate_account`, `request_reactivation_link`, `confirm_reactivation`, `request_account_deletion_link`, `confirm_account_deletion`, `trips`, `all_users`, `search_users`, `friends_list`, `send_friend_invite`, `respond_friend_invite`, `cancel_friend_invite`, `remove_friend`, `create_trip`, `update_trip`, `delete_trip`, `add_trip_members`, `users`, `upload_trip_image`, `upload_receipt`, `upload_avatar`, `remove_avatar`, `add_expense`, `update_expense`, `delete_expense`, `list_expenses`, `balances`, `end_trip`, `set_ready_to_settle`, `mark_settlement_sent`, `confirm_settlement_received`, `remind_settlement`, `list_notifications`, `list_notifications_global`, `mark_notifications_read`, `mark_notifications_read_global`, `register_push_token`, `unregister_push_token`, `create_trip_invite`, `join_trip_invite`, `submit_feedback`, `workspace_snapshot`, `generate_order`, `list_orders`, `admin_feedback_feed`, `admin_archive_feedback`, `admin_delete_feedback`, `admin_summary`, `admin_users`, `admin_user_detail`, `admin_delete_expense`, `admin_update_user`, `admin_delete_user`
 
 ## Notes about realtime on nano.lv shared hosting
 

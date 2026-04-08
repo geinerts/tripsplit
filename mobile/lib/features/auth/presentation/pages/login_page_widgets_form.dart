@@ -53,7 +53,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
             _buildSubmitButton(context),
             if (isLogin) ...[
               const SizedBox(height: 12),
-              _buildSocialPlaceholders(context),
+              _buildSocialButtons(context),
             ],
             const SizedBox(height: 14),
             _buildModeSwitchRow(context),
@@ -66,7 +66,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   List<Widget> _buildRegistrationFields(BuildContext context) {
     final t = context.l10n;
     return [
-      _buildSocialPlaceholders(context),
+      _buildSocialButtons(context),
       const SizedBox(height: 14),
       _buildLabeledTextField(
         context: context,
@@ -90,36 +90,54 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     ];
   }
 
-  Widget _buildSocialPlaceholders(BuildContext context) {
+  Widget _buildSocialButtons(BuildContext context) {
+    final showApple = Platform.isIOS;
+    if (!showApple) {
+      return _buildSocialButton(
+        context: context,
+        label: 'Google',
+        icon: _buildGoogleLogo(context),
+        onPressed: _isSubmitting
+            ? null
+            : () => _onSocialPressed(_SocialAuthProvider.google),
+      );
+    }
     return Row(
       children: [
         Expanded(
-          child: _buildSocialPlaceholderButton(
+          child: _buildSocialButton(
             context: context,
             label: 'Google',
-            icon: _buildGooglePlaceholderLogo(context),
+            icon: _buildGoogleLogo(context),
+            onPressed: _isSubmitting
+                ? null
+                : () => _onSocialPressed(_SocialAuthProvider.google),
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildSocialPlaceholderButton(
+          child: _buildSocialButton(
             context: context,
             label: 'Apple',
-            icon: _buildApplePlaceholderLogo(context),
+            icon: _buildAppleLogo(context),
+            onPressed: _isSubmitting
+                ? null
+                : () => _onSocialPressed(_SocialAuthProvider.apple),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSocialPlaceholderButton({
+  Widget _buildSocialButton({
     required BuildContext context,
     required String label,
     required Widget icon,
+    required VoidCallback? onPressed,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
     return OutlinedButton.icon(
-      onPressed: _isSubmitting ? null : () => _showSnack('Coming soon'),
+      onPressed: onPressed,
       icon: icon,
       label: Text(
         label,
@@ -142,7 +160,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     );
   }
 
-  Widget _buildGooglePlaceholderLogo(BuildContext context) {
+  Widget _buildGoogleLogo(BuildContext context) {
     const iconSize = 26.0;
     return SizedBox(
       width: iconSize,
@@ -156,7 +174,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     );
   }
 
-  Widget _buildApplePlaceholderLogo(BuildContext context) {
+  Widget _buildAppleLogo(BuildContext context) {
     const iconSize = 26.0;
     return SizedBox(
       width: iconSize,

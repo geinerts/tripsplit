@@ -26,6 +26,7 @@ import '../features/auth/domain/usecases/request_account_deletion_link_use_case.
 import '../features/auth/domain/usecases/request_email_verification_link_use_case.dart';
 import '../features/auth/domain/usecases/request_reactivation_link_use_case.dart';
 import '../features/auth/domain/usecases/set_credentials_use_case.dart';
+import '../features/auth/domain/usecases/social_login_use_case.dart';
 import '../features/auth/domain/usecases/update_profile_use_case.dart';
 import '../features/auth/presentation/controllers/auth_controller.dart';
 import '../features/friends/data/datasources/friends_remote_data_source.dart';
@@ -123,6 +124,7 @@ class AppDependencies {
     final authRepository = AuthRepositoryImpl(authRemote);
     final authController = AuthController(
       LoginUseCase(authRepository),
+      SocialLoginUseCase(authRepository),
       RegisterUseCase(authRepository),
       SetCredentialsUseCase(authRepository),
       UpdateProfileUseCase(authRepository),

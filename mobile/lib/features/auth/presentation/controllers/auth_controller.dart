@@ -20,11 +20,13 @@ import '../../domain/usecases/request_account_deletion_link_use_case.dart';
 import '../../domain/usecases/request_email_verification_link_use_case.dart';
 import '../../domain/usecases/request_reactivation_link_use_case.dart';
 import '../../domain/usecases/set_credentials_use_case.dart';
+import '../../domain/usecases/social_login_use_case.dart';
 import '../../domain/usecases/update_profile_use_case.dart';
 
 class AuthController {
   AuthController(
     this._loginUseCase,
+    this._socialLoginUseCase,
     this._registerUseCase,
     this._setCredentialsUseCase,
     this._updateProfileUseCase,
@@ -44,6 +46,7 @@ class AuthController {
   );
 
   final LoginUseCase _loginUseCase;
+  final SocialLoginUseCase _socialLoginUseCase;
   final RegisterUseCase _registerUseCase;
   final SetCredentialsUseCase _setCredentialsUseCase;
   final UpdateProfileUseCase _updateProfileUseCase;
@@ -88,6 +91,25 @@ class AuthController {
         lastName: lastName,
         email: email,
         password: password,
+      ),
+    );
+    await _setCurrentUser(user);
+    unawaited(_syncPushRegistration());
+    return user;
+  }
+
+  Future<AuthUser> loginWithSocial({
+    required String provider,
+    required String idToken,
+    String? fullName,
+    String? email,
+  }) async {
+    final user = await _withStoredAvatar(
+      await _socialLoginUseCase.call(
+        provider: provider,
+        idToken: idToken,
+        fullName: fullName,
+        email: email,
       ),
     );
     await _setCurrentUser(user);

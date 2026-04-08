@@ -85,6 +85,13 @@ extension _LoginPageActions on _LoginPageState {
       _updateState(() {
         _errorText = error.message;
       });
+    } on StateError catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _errorText = error.message;
+      });
     } catch (_) {
       if (!mounted) {
         return;
@@ -99,6 +106,172 @@ extension _LoginPageActions on _LoginPageState {
         });
       }
     }
+  }
+
+  Future<void> _onSocialPressed(_SocialAuthProvider provider) async {
+    if (_isSubmitting) {
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+    _updateState(() {
+      _isSubmitting = true;
+      _errorText = null;
+    });
+
+    var socialEmail = '';
+    try {
+      final credential = switch (provider) {
+        _SocialAuthProvider.google => await _signInWithGoogle(),
+        _SocialAuthProvider.apple => await _signInWithApple(),
+      };
+      socialEmail = (credential.email ?? '').trim();
+
+      final user = await widget.controller.loginWithSocial(
+        provider: provider.value,
+        idToken: credential.idToken,
+        fullName: credential.fullName,
+        email: credential.email,
+      );
+      if (!mounted) {
+        return;
+      }
+      _goAfterAuth(user);
+    } on _SocialAuthCancelled {
+      // User cancelled sign-in flow — keep form unchanged.
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      if (_isAccountDeactivatedError(error)) {
+        final fallbackEmail = socialEmail.isNotEmpty
+            ? socialEmail
+            : _emailController.text.trim();
+        await _handleDeactivatedLogin(fallbackEmail);
+        return;
+      }
+      _updateState(() {
+        _errorText = error.message;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _errorText = _socialAuthFallbackError(provider);
+      });
+    } finally {
+      if (mounted && !_isNavigatingAway) {
+        _updateState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
+  }
+
+  Future<_SocialAuthCredential> _signInWithGoogle() async {
+    try {
+      final account = await _googleSignIn.signIn();
+      if (account == null) {
+        throw _SocialAuthCancelled();
+      }
+
+      final auth = await account.authentication;
+      final idToken = (auth.idToken ?? '').trim();
+      if (idToken.isEmpty) {
+        throw StateError(
+          _authText(
+            en: 'Google sign-in is not configured yet. Missing id token.',
+            lv: 'Google pieslēgums vēl nav nokonfigurēts. Trūkst id token.',
+          ),
+        );
+      }
+
+      final fullName = (account.displayName ?? '').trim();
+      final email = account.email.trim();
+      return _SocialAuthCredential(
+        idToken: idToken,
+        fullName: fullName.isEmpty ? null : fullName,
+        email: email.isEmpty ? null : email,
+      );
+    } on _SocialAuthCancelled {
+      rethrow;
+    } catch (error) {
+      final message = error.toString().toLowerCase();
+      if (message.contains('canceled') || message.contains('cancelled')) {
+        throw _SocialAuthCancelled();
+      }
+      rethrow;
+    }
+  }
+
+  Future<_SocialAuthCredential> _signInWithApple() async {
+    if (!Platform.isIOS) {
+      throw StateError(
+        _authText(
+          en: 'Apple sign-in is available on iOS devices.',
+          lv: 'Apple pieslēgšanās ir pieejama iOS ierīcēs.',
+        ),
+      );
+    }
+    if (!await SignInWithApple.isAvailable()) {
+      throw StateError(
+        _authText(
+          en: 'Apple sign-in is not available on this device.',
+          lv: 'Apple pieslēgšanās šajā ierīcē nav pieejama.',
+        ),
+      );
+    }
+
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: const [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      final idToken = (credential.identityToken ?? '').trim();
+      if (idToken.isEmpty) {
+        throw StateError(
+          _authText(
+            en: 'Apple sign-in did not return an identity token.',
+            lv: 'Apple pieslēgšanās neatgrieza identitātes tokenu.',
+          ),
+        );
+      }
+
+      final nameParts = [
+        (credential.givenName ?? '').trim(),
+        (credential.familyName ?? '').trim(),
+      ].where((part) => part.isNotEmpty).toList();
+      final fullName = nameParts.isEmpty ? null : nameParts.join(' ');
+      final email = (credential.email ?? '').trim();
+
+      return _SocialAuthCredential(
+        idToken: idToken,
+        fullName: fullName,
+        email: email.isEmpty ? null : email,
+      );
+    } on SignInWithAppleAuthorizationException catch (error) {
+      if (error.code == AuthorizationErrorCode.canceled) {
+        throw _SocialAuthCancelled();
+      }
+      rethrow;
+    }
+  }
+
+  String _socialAuthFallbackError(_SocialAuthProvider provider) {
+    if (provider == _SocialAuthProvider.apple) {
+      return _authText(
+        en: 'Apple sign-in failed. Please try again.',
+        lv: 'Apple pieslēgšanās neizdevās. Mēģini vēlreiz.',
+      );
+    }
+    return _authText(
+      en: 'Google sign-in failed. Please try again.',
+      lv: 'Google pieslēgšanās neizdevās. Mēģini vēlreiz.',
+    );
   }
 
   void _goAfterAuth(AuthUser user) {

@@ -6,6 +6,13 @@ abstract class AuthRepository {
     required String password,
   });
 
+  Future<AuthUser> loginWithSocial({
+    required String provider,
+    required String idToken,
+    String? fullName,
+    String? email,
+  });
+
   Future<AuthUser> registerWithCredentials({
     required String firstName,
     required String lastName,

@@ -10,6 +10,13 @@ abstract class AuthRemoteDataSource {
     required String password,
   });
 
+  Future<AuthUserModel> loginWithSocial({
+    required String provider,
+    required String idToken,
+    String? fullName,
+    String? email,
+  });
+
   Future<AuthUserModel> registerWithCredentials({
     required String firstName,
     required String lastName,
@@ -63,6 +70,39 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw StateError('Missing me payload in login response.');
     }
 
+    return AuthUserModel.fromLegacyMap(me);
+  }
+
+  @override
+  Future<AuthUserModel> loginWithSocial({
+    required String provider,
+    required String idToken,
+    String? fullName,
+    String? email,
+  }) async {
+    final payload = <String, dynamic>{
+      'provider': provider,
+      'id_token': idToken,
+    };
+    final normalizedFullName = (fullName ?? '').trim();
+    if (normalizedFullName.isNotEmpty) {
+      payload['full_name'] = normalizedFullName;
+    }
+    final normalizedEmail = (email ?? '').trim().toLowerCase();
+    if (normalizedEmail.isNotEmpty) {
+      payload['email'] = normalizedEmail;
+    }
+
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('social_auth'),
+      method: HttpMethod.post,
+      body: payload,
+    );
+
+    final me = response['me'] as Map<String, dynamic>?;
+    if (me == null) {
+      throw StateError('Missing me payload in social_auth response.');
+    }
     return AuthUserModel.fromLegacyMap(me);
   }
 

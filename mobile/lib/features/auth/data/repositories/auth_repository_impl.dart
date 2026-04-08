@@ -16,6 +16,21 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<AuthUser> loginWithSocial({
+    required String provider,
+    required String idToken,
+    String? fullName,
+    String? email,
+  }) {
+    return _remote.loginWithSocial(
+      provider: provider,
+      idToken: idToken,
+      fullName: fullName,
+      email: email,
+    );
+  }
+
+  @override
   Future<AuthUser> registerWithCredentials({
     required String firstName,
     required String lastName,

@@ -57,10 +57,7 @@ function deactivate_account_action(): void
     require_post();
     $me = get_me();
     $body = read_json();
-    $password = (string) ($body['password'] ?? '');
-    if ($password === '') {
-        json_out(['ok' => false, 'error' => 'Password is required.'], 400);
-    }
+    $password = trim((string) ($body['password'] ?? ''));
 
     $pdo = db();
     $userId = (int) ($me['id'] ?? 0);
@@ -117,15 +114,32 @@ function deactivate_account_action(): void
         $email = trim((string) ($user['email'] ?? ''));
         $hash = (string) ($user['password_hash'] ?? '');
         $requiresCredentials = ((int) ($user['credentials_required'] ?? 1)) === 1;
-        if ($requiresCredentials || $email === '' || $hash === '') {
+        $hasSocialIdentity = user_has_social_identity($pdo, $userId);
+
+        if ($email === '') {
             $pdo->rollBack();
             json_out([
                 'ok' => false,
-                'error' => 'Add email and password first before deactivating your account.',
+                'error' => 'Add email first before deactivating your account.',
             ], 409);
         }
-
-        if (!password_verify($password, $hash)) {
+        if (!$hasSocialIdentity) {
+            if ($requiresCredentials || $hash === '') {
+                $pdo->rollBack();
+                json_out([
+                    'ok' => false,
+                    'error' => 'Add email and password first before deactivating your account.',
+                ], 409);
+            }
+            if ($password === '') {
+                $pdo->rollBack();
+                json_out(['ok' => false, 'error' => 'Password is required.'], 400);
+            }
+            if (!password_verify($password, $hash)) {
+                $pdo->rollBack();
+                json_out(['ok' => false, 'error' => 'Password is incorrect.'], 401);
+            }
+        } elseif ($password !== '' && $hash !== '' && !password_verify($password, $hash)) {
             $pdo->rollBack();
             json_out(['ok' => false, 'error' => 'Password is incorrect.'], 401);
         }
@@ -343,10 +357,7 @@ function request_account_deletion_link_action(): void
     require_post();
     $me = get_me();
     $body = read_json();
-    $password = (string) ($body['password'] ?? '');
-    if ($password === '') {
-        json_out(['ok' => false, 'error' => 'Password is required.'], 400);
-    }
+    $password = trim((string) ($body['password'] ?? ''));
 
     $pdo = db();
     $userId = (int) ($me['id'] ?? 0);
@@ -396,13 +407,28 @@ function request_account_deletion_link_action(): void
     $email = strtolower(trim((string) ($user['email'] ?? '')));
     $hash = (string) ($user['password_hash'] ?? '');
     $requiresCredentials = ((int) ($user['credentials_required'] ?? 1)) === 1;
-    if ($requiresCredentials || $email === '' || $hash === '') {
+    $hasSocialIdentity = user_has_social_identity($pdo, $userId);
+
+    if ($email === '') {
         json_out([
             'ok' => false,
-            'error' => 'Add email and password first before requesting account deletion.',
+            'error' => 'Add email first before requesting account deletion.',
         ], 409);
     }
-    if (!password_verify($password, $hash)) {
+    if (!$hasSocialIdentity) {
+        if ($requiresCredentials || $hash === '') {
+            json_out([
+                'ok' => false,
+                'error' => 'Add email and password first before requesting account deletion.',
+            ], 409);
+        }
+        if ($password === '') {
+            json_out(['ok' => false, 'error' => 'Password is required.'], 400);
+        }
+        if (!password_verify($password, $hash)) {
+            json_out(['ok' => false, 'error' => 'Password is incorrect.'], 401);
+        }
+    } elseif ($password !== '' && $hash !== '' && !password_verify($password, $hash)) {
         json_out(['ok' => false, 'error' => 'Password is incorrect.'], 401);
     }
 
