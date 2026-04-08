@@ -22,10 +22,12 @@ function push_send_fcm_legacy(array $tokenRow, array $notification, string $serv
     }
 
     $dataPayload = push_fcm_data_payload($notification);
+    $notificationPayload = push_fcm_notification_payload($notification);
     $requestBody = [
         'to' => $token,
         'priority' => 'high',
         'data' => $dataPayload,
+        'notification' => $notificationPayload,
     ];
     $encodedBody = json_encode($requestBody, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     if (!is_string($encodedBody) || $encodedBody === '') {
@@ -141,16 +143,38 @@ function push_send_fcm_v1(array $tokenRow, array $notification): array
         ];
     }
 
+    $platform = normalize_push_platform((string) ($tokenRow['platform'] ?? ''));
     $dataPayload = push_fcm_data_payload($notification);
+    $notificationPayload = push_fcm_notification_payload($notification);
     $requestBody = [
         'message' => [
             'token' => $token,
             'data' => $dataPayload,
+            'notification' => $notificationPayload,
             'android' => [
                 'priority' => 'HIGH',
             ],
         ],
     ];
+    if ($platform === 'ios') {
+        $apnsHeaders = [
+            'apns-push-type' => 'alert',
+            'apns-priority' => '10',
+        ];
+        $topic = trim((string) ($tokenRow['app_bundle'] ?? ''));
+        if ($topic !== '') {
+            $apnsHeaders['apns-topic'] = $topic;
+        }
+        $requestBody['message']['apns'] = [
+            'headers' => $apnsHeaders,
+            'payload' => [
+                'aps' => [
+                    'alert' => $notificationPayload,
+                    'sound' => 'default',
+                ],
+            ],
+        ];
+    }
     $encodedBody = json_encode($requestBody, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     if (!is_string($encodedBody) || $encodedBody === '') {
         return [
@@ -228,6 +252,20 @@ function push_send_fcm_v1(array $tokenRow, array $notification): array
         'ok' => false,
         'permanent' => $isPermanent,
         'error' => 'FCM v1: ' . $label,
+    ];
+}
+
+function push_fcm_notification_payload(array $notification): array
+{
+    $title = trim((string) ($notification['title'] ?? 'Notification'));
+    if ($title === '') {
+        $title = 'Notification';
+    }
+    $body = trim((string) ($notification['body'] ?? ''));
+
+    return [
+        'title' => $title,
+        'body' => $body,
     ];
 }
 
