@@ -44,10 +44,12 @@ function find_public_user_by_id(PDO $pdo, int $userId): ?array
     $nameSelect = users_name_columns_available($pdo)
         ? 'first_name, last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $activeFilter = users_active_filter_sql($pdo, '');
     $stmt = $pdo->prepare(
         'SELECT id, ' . $nameSelect . 'nickname, avatar_path
          FROM ' . $usersTable . '
          WHERE id = :id
+         ' . $activeFilter . '
          LIMIT 1'
     );
     $stmt->execute(['id' => $userId]);

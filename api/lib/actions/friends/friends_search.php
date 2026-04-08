@@ -53,6 +53,7 @@ function search_users_action(): void
     $nameGroupBy = $hasNameColumns
         ? ', u.first_name, u.last_name'
         : '';
+    $activeFilter = users_active_filter_sql($pdo, 'u');
 
     $excludeClause = '';
     $excludeParams = [];
@@ -76,7 +77,7 @@ function search_users_action(): void
               AND tm_other.user_id <> tm_me.user_id
              JOIN ' . $usersTable . ' u ON u.id = tm_other.user_id
              JOIN ' . $tripsTable . ' t ON t.id = tm_me.trip_id
-             WHERE tm_me.user_id = :me_id' . $excludeClause . '
+             WHERE tm_me.user_id = :me_id' . $activeFilter . $excludeClause . '
              GROUP BY u.id' . $nameGroupBy . ', u.nickname, u.avatar_path
              ORDER BY last_shared_at DESC, u.nickname ASC, u.id ASC
              LIMIT ' . $limit;
@@ -89,7 +90,7 @@ function search_users_action(): void
             $fallbackSql =
                 'SELECT u.id, ' . $nameSelect . 'u.nickname, u.avatar_path
                  FROM ' . $usersTable . ' u
-                 WHERE 1=1' . $excludeClause . '
+                 WHERE 1=1' . $activeFilter . $excludeClause . '
                  ORDER BY u.created_at DESC, u.id DESC
                  LIMIT ' . $limit;
             $fallbackStmt = $pdo->prepare($fallbackSql);
@@ -127,7 +128,7 @@ function search_users_action(): void
                     (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_like_display)
                     OR u.nickname LIKE :q_like_nickname
                     OR (u.email IS NOT NULL AND u.email LIKE :q_like_email)
-                 )' . $excludeClause . '
+                 )' . $activeFilter . $excludeClause . '
                  ORDER BY rank_prefix ASC, rank_email ASC, ' . $displayExpr . ' ASC, u.nickname ASC, u.id ASC
                  LIMIT ' . $limit;
         } else {
@@ -140,7 +141,7 @@ function search_users_action(): void
                     CASE WHEN u.nickname LIKE :q_prefix_nickname THEN 0 ELSE 1 END AS rank_prefix,
                     CASE WHEN u.email IS NOT NULL AND u.email LIKE :q_prefix_email THEN 0 ELSE 1 END AS rank_email
                  FROM ' . $usersTable . ' u
-                 WHERE (u.nickname LIKE :q_like_nickname OR (u.email IS NOT NULL AND u.email LIKE :q_like_email))' . $excludeClause . '
+                 WHERE (u.nickname LIKE :q_like_nickname OR (u.email IS NOT NULL AND u.email LIKE :q_like_email))' . $activeFilter . $excludeClause . '
                  ORDER BY rank_prefix ASC, rank_email ASC, u.nickname ASC, u.id ASC
                  LIMIT ' . $limit;
         }

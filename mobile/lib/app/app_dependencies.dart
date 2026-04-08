@@ -18,9 +18,12 @@ import 'theme/theme_mode_controller.dart';
 import '../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../features/auth/data/repositories/auth_repository_impl.dart';
 import '../features/auth/domain/usecases/get_me_use_case.dart';
+import '../features/auth/domain/usecases/deactivate_account_use_case.dart';
 import '../features/auth/domain/usecases/forgot_password_use_case.dart';
 import '../features/auth/domain/usecases/login_use_case.dart';
 import '../features/auth/domain/usecases/register_use_case.dart';
+import '../features/auth/domain/usecases/request_account_deletion_link_use_case.dart';
+import '../features/auth/domain/usecases/request_reactivation_link_use_case.dart';
 import '../features/auth/domain/usecases/set_credentials_use_case.dart';
 import '../features/auth/domain/usecases/update_profile_use_case.dart';
 import '../features/auth/presentation/controllers/auth_controller.dart';
@@ -124,6 +127,9 @@ class AppDependencies {
       UpdateProfileUseCase(authRepository),
       GetMeUseCase(authRepository),
       ForgotPasswordUseCase(authRepository),
+      RequestReactivationLinkUseCase(authRepository),
+      DeactivateAccountUseCase(authRepository),
+      RequestAccountDeletionLinkUseCase(authRepository),
       tokenStore,
       authSessionStore,
       currentUserStore,

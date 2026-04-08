@@ -18,6 +18,9 @@ function get_me(): array
     if (!$row) {
         json_out(['ok' => false, 'error' => 'User not found.'], 401);
     }
+    if (function_exists('assert_user_account_is_active')) {
+        assert_user_account_is_active((array) $row);
+    }
 
     $firstName = trim((string) ($row['first_name'] ?? ''));
     $lastName = trim((string) ($row['last_name'] ?? ''));
@@ -179,15 +182,34 @@ function require_valid_user_ids(PDO $pdo, array $ids, bool $requireAtLeastOne = 
     }
 
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
-    $stmt = $pdo->prepare('SELECT id FROM ' . table_name('users') . " WHERE id IN ($placeholders)");
+    $hasAccountStatus = function_exists('users_account_status_column_available')
+        ? users_account_status_column_available($pdo)
+        : false;
+    $accountSelect = $hasAccountStatus ? ', account_status' : '';
+    $stmt = $pdo->prepare(
+        'SELECT id' . $accountSelect . '
+         FROM ' . table_name('users') . "
+         WHERE id IN ($placeholders)"
+    );
     $stmt->execute($ids);
-    $existing = array_map('intval', array_column($stmt->fetchAll(), 'id'));
+    $rows = $stmt->fetchAll();
+    $existing = array_map('intval', array_column($rows, 'id'));
     sort($existing);
     $copy = $ids;
     sort($copy);
 
     if ($existing !== $copy) {
         json_out(['ok' => false, 'error' => 'Some selected users do not exist.'], 400);
+    }
+    if ($hasAccountStatus) {
+        foreach ($rows as $row) {
+            $status = function_exists('normalize_user_account_status')
+                ? normalize_user_account_status($row['account_status'] ?? 'active')
+                : strtolower(trim((string) ($row['account_status'] ?? 'active')));
+            if ($status !== 'active') {
+                json_out(['ok' => false, 'error' => 'Some selected users are unavailable.'], 409);
+            }
+        }
     }
 
     return $ids;

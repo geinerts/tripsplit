@@ -68,6 +68,7 @@ function build_me_payload(array $user): array
     $avatarPath = trim((string) ($user['avatar_path'] ?? ''));
     $firstName = normalize_me_name_value($user['first_name'] ?? null);
     $lastName = normalize_me_name_value($user['last_name'] ?? null);
+    $accountStatus = user_account_status($user);
 
     return [
         'id' => (int) $user['id'],
@@ -79,6 +80,13 @@ function build_me_payload(array $user): array
         'nickname' => me_display_name($user),
         'email' => $email !== '' ? $email : null,
         'needs_credentials' => $needsCredentials,
+        'account_status' => $accountStatus,
+        'deactivated_at' => $accountStatus === 'active'
+            ? null
+            : (($user['deactivated_at'] ?? null) ?: null),
+        'deleted_at' => $accountStatus === 'deleted'
+            ? (($user['deleted_at'] ?? null) ?: null)
+            : null,
         'avatar_url' => $avatarPath !== '' ? avatar_public_url($avatarPath) : null,
         'avatar_thumb_url' => $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null,
     ];
@@ -90,8 +98,9 @@ function fetch_me_row_by_token(PDO $pdo, string $token): ?array
     $nameSelect = users_name_columns_available($pdo)
         ? 'first_name, last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $accountSelect = users_account_status_select_sql($pdo);
     $stmt = $pdo->prepare(
-        'SELECT id, ' . $nameSelect . 'nickname, email, password_hash, credentials_required, avatar_path
+        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, avatar_path
          FROM ' . $usersTable . '
          WHERE device_token = :token
          LIMIT 1'
@@ -107,8 +116,9 @@ function fetch_me_row_by_id(PDO $pdo, int $userId): ?array
     $nameSelect = users_name_columns_available($pdo)
         ? 'first_name, last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $accountSelect = users_account_status_select_sql($pdo);
     $stmt = $pdo->prepare(
-        'SELECT id, ' . $nameSelect . 'nickname, email, password_hash, credentials_required, avatar_path
+        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, avatar_path
          FROM ' . $usersTable . '
          WHERE id = :id
          LIMIT 1'

@@ -31,6 +31,12 @@ abstract class AuthRemoteDataSource {
   Future<AuthUserModel> getMe();
 
   Future<void> requestPasswordReset({required String email});
+
+  Future<void> requestReactivationLink({required String email});
+
+  Future<void> deactivateAccount({required String password});
+
+  Future<void> requestAccountDeletionLink({required String password});
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -162,6 +168,33 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       path: ApiEndpoints.legacyAction('forgot_password'),
       method: HttpMethod.post,
       body: <String, dynamic>{'email': email},
+    );
+  }
+
+  @override
+  Future<void> requestReactivationLink({required String email}) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('request_reactivation_link'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'email': email},
+    );
+  }
+
+  @override
+  Future<void> deactivateAccount({required String password}) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('deactivate_account'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'password': password},
+    );
+  }
+
+  @override
+  Future<void> requestAccountDeletionLink({required String password}) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('request_account_deletion_link'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'password': password},
     );
   }
 }

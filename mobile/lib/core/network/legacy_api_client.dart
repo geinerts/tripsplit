@@ -91,6 +91,10 @@ class LegacyApiClient implements ApiClient {
       final ok = payload['ok'] == true;
 
       if (!ok || response.statusCode < 200 || response.statusCode >= 300) {
+        final errorCode = _errorCode(payload);
+        if (_shouldClearAuthSessionForCode(errorCode)) {
+          await _authSessionStore.clear();
+        }
         final canRetry =
             allowRefreshRetry &&
             _isUnauthorizedResponse(response: response, payload: payload) &&
@@ -115,6 +119,7 @@ class LegacyApiClient implements ApiClient {
           _errorMessage(payload, response.statusCode),
           statusCode: response.statusCode,
           requestId: requestId,
+          code: errorCode,
         );
       }
 
@@ -393,6 +398,8 @@ class LegacyApiClient implements ApiClient {
 
     if (response.statusCode == 401 || response.statusCode == 400) {
       await _authSessionStore.clear();
+    } else if (_shouldClearAuthSessionForCode(_errorCode(payload))) {
+      await _authSessionStore.clear();
     }
     trace.stop(success: false, statusCode: response.statusCode);
     AppMonitoring.recordApiRequest(
@@ -487,6 +494,24 @@ class LegacyApiClient implements ApiClient {
       return raw.trim();
     }
     return 'HTTP $statusCode';
+  }
+
+  static String? _errorCode(Map<String, dynamic> payload) {
+    final raw = payload['code'];
+    if (raw is! String) {
+      return null;
+    }
+    final value = raw.trim();
+    return value.isEmpty ? null : value;
+  }
+
+  static bool _shouldClearAuthSessionForCode(String? code) {
+    if (code == null) {
+      return false;
+    }
+    final normalized = code.trim().toUpperCase();
+    return normalized == 'ACCOUNT_DEACTIVATED' ||
+        normalized == 'ACCOUNT_DELETED';
   }
 
   String _metricNameForPath(String path) {

@@ -53,6 +53,11 @@ class _LoginPageState extends State<LoginPage> {
     setState(update);
   }
 
+  String _authText({required String en, required String lv}) {
+    final code = Localizations.localeOf(context).languageCode.toLowerCase();
+    return code == 'lv' ? lv : en;
+  }
+
   @override
   void initState() {
     super.initState();

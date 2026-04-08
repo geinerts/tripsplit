@@ -245,6 +245,7 @@ function register_action(): void
     if (!$me) {
         json_out(['ok' => false, 'error' => 'Failed to resolve user.'], 500);
     }
+    assert_user_account_is_active($me);
 
     json_out([
         'ok' => true,
@@ -280,9 +281,10 @@ function login_action(): void
     $nameSelect = users_name_columns_available($pdo)
         ? 'first_name, last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $accountSelect = users_account_status_select_sql($pdo);
 
     $stmt = $pdo->prepare(
-        'SELECT id, ' . $nameSelect . 'nickname, email, password_hash, credentials_required, avatar_path
+        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, avatar_path
          FROM ' . $usersTable . '
          WHERE email = :email
          LIMIT 1'
@@ -296,6 +298,10 @@ function login_action(): void
     $hash = (string) ($user['password_hash'] ?? '');
     if ($hash === '' || !password_verify($password, $hash)) {
         json_out(['ok' => false, 'error' => 'Invalid email or password.'], 401);
+    }
+    if (!user_account_is_active((array) $user)) {
+        revoke_refresh_tokens_for_user($pdo, (int) ($user['id'] ?? 0));
+        json_out(user_account_block_error_payload((array) $user), 403);
     }
 
     $pdo->beginTransaction();
@@ -404,6 +410,10 @@ function refresh_session_action(): void
     $me = fetch_me_row_by_id($pdo, $userId);
     if (!$me) {
         json_out(['ok' => false, 'error' => 'User not found.'], 401);
+    }
+    if (!user_account_is_active((array) $me)) {
+        revoke_refresh_tokens_for_user($pdo, $userId);
+        json_out(user_account_block_error_payload((array) $me), 403);
     }
 
     json_out([

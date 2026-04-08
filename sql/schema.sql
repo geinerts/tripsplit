@@ -6,11 +6,15 @@ CREATE TABLE IF NOT EXISTS trip_users (
   email VARCHAR(255) NULL,
   password_hash VARCHAR(255) NULL,
   credentials_required TINYINT(1) NOT NULL DEFAULT 1,
+  account_status ENUM('active', 'deactivated', 'deleted') NOT NULL DEFAULT 'active',
   email_verified_at TIMESTAMP NULL DEFAULT NULL,
+  deactivated_at TIMESTAMP NULL DEFAULT NULL,
+  deleted_at TIMESTAMP NULL DEFAULT NULL,
   device_token CHAR(64) NOT NULL,
   avatar_path VARCHAR(255) NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
+  KEY idx_trip_users_account_status (account_status, created_at, id),
   UNIQUE KEY uq_trip_users_device_token (device_token),
   UNIQUE KEY uq_trip_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -303,6 +307,35 @@ CREATE TABLE IF NOT EXISTS trip_refresh_tokens (
   KEY idx_trip_refresh_tokens_user_active (user_id, revoked_at, expires_at),
   KEY idx_trip_refresh_tokens_expires (expires_at),
   CONSTRAINT fk_trip_refresh_tokens_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS trip_password_resets (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  token_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  used_at DATETIME NULL DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_trip_password_resets_token_hash (token_hash),
+  KEY idx_trip_password_resets_user (user_id),
+  KEY idx_trip_password_resets_expires (expires_at),
+  CONSTRAINT fk_trip_password_resets_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS trip_account_action_tokens (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  action ENUM('reactivate', 'delete') NOT NULL,
+  token_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  used_at DATETIME NULL DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_trip_account_action_tokens_hash (token_hash),
+  KEY idx_trip_account_action_tokens_user_action (user_id, action, used_at, expires_at),
+  KEY idx_trip_account_action_tokens_expires (expires_at),
+  CONSTRAINT fk_trip_account_action_tokens_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS trip_trip_invites (

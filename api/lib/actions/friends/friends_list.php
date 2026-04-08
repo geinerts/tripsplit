@@ -25,6 +25,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $activeFilter = users_active_filter_sql($pdo, 'u');
 
     $acceptedStmt = $pdo->prepare(
         'SELECT
@@ -41,6 +42,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
            ON u.id = IF(f.user_a_id = :join_me_id, f.user_b_id, f.user_a_id)
          WHERE (f.user_a_id = :where_me_a OR f.user_b_id = :where_me_b)
            AND f.status = "accepted"
+           ' . $activeFilter . '
          ORDER BY u.nickname ASC, u.id ASC'
     );
     $acceptedStmt->execute([
@@ -65,6 +67,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
          WHERE (f.user_a_id = :where_me_a OR f.user_b_id = :where_me_b)
            AND f.status = "pending"
            AND f.requested_by = :requested_by
+           ' . $activeFilter . '
          ORDER BY f.created_at DESC, f.id DESC'
     );
     $pendingSentStmt->execute([
@@ -90,6 +93,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
          WHERE (f.user_a_id = :where_me_a OR f.user_b_id = :where_me_b)
            AND f.status = "pending"
            AND f.requested_by <> :requested_by
+           ' . $activeFilter . '
          ORDER BY f.created_at DESC, f.id DESC'
     );
     $pendingReceivedStmt->execute([
@@ -137,15 +141,21 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
 function friends_list_counts(PDO $pdo, int $meId): array
 {
     $friendsTable = table_name('friends');
+    $usersTable = table_name('users');
+    $activeFilter = users_active_filter_sql($pdo, 'u');
     $baseWhere = '(f.user_a_id = :user_a_id OR f.user_b_id = :user_b_id)';
 
     $friendsCountStmt = $pdo->prepare(
         'SELECT COUNT(*)
          FROM ' . $friendsTable . ' f
+         JOIN ' . $usersTable . ' u
+           ON u.id = IF(f.user_a_id = :join_me_id_a, f.user_b_id, f.user_a_id)
          WHERE ' . $baseWhere . '
-           AND f.status = "accepted"'
+           AND f.status = "accepted"
+           ' . $activeFilter
     );
     $friendsCountStmt->execute([
+        'join_me_id_a' => $meId,
         'user_a_id' => $meId,
         'user_b_id' => $meId,
     ]);
@@ -154,11 +164,15 @@ function friends_list_counts(PDO $pdo, int $meId): array
     $pendingSentStmt = $pdo->prepare(
         'SELECT COUNT(*)
          FROM ' . $friendsTable . ' f
+         JOIN ' . $usersTable . ' u
+           ON u.id = IF(f.user_a_id = :join_me_id_b, f.user_b_id, f.user_a_id)
          WHERE ' . $baseWhere . '
            AND f.status = "pending"
-           AND f.requested_by = :requested_by'
+           AND f.requested_by = :requested_by
+           ' . $activeFilter
     );
     $pendingSentStmt->execute([
+        'join_me_id_b' => $meId,
         'user_a_id' => $meId,
         'user_b_id' => $meId,
         'requested_by' => $meId,
@@ -168,11 +182,15 @@ function friends_list_counts(PDO $pdo, int $meId): array
     $pendingReceivedStmt = $pdo->prepare(
         'SELECT COUNT(*)
          FROM ' . $friendsTable . ' f
+         JOIN ' . $usersTable . ' u
+           ON u.id = IF(f.user_a_id = :join_me_id_c, f.user_b_id, f.user_a_id)
          WHERE ' . $baseWhere . '
            AND f.status = "pending"
-           AND f.requested_by <> :requested_by'
+           AND f.requested_by <> :requested_by
+           ' . $activeFilter
     );
     $pendingReceivedStmt->execute([
+        'join_me_id_c' => $meId,
         'user_a_id' => $meId,
         'user_b_id' => $meId,
         'requested_by' => $meId,
@@ -213,6 +231,7 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $activeFilter = users_active_filter_sql($pdo, 'u');
     $params = [
         'join_me_id' => $meId,
         'where_me_a' => $meId,
@@ -220,6 +239,7 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
     ];
     $where =
         'WHERE (f.user_a_id = :where_me_a OR f.user_b_id = :where_me_b)';
+    $where .= $activeFilter;
 
     if ($section === 'friends') {
         $where .= ' AND f.status = "accepted"';

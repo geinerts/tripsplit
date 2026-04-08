@@ -62,4 +62,19 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> requestPasswordReset({required String email}) {
     return _remote.requestPasswordReset(email: email);
   }
+
+  @override
+  Future<void> requestReactivationLink({required String email}) {
+    return _remote.requestReactivationLink(email: email);
+  }
+
+  @override
+  Future<void> deactivateAccount({required String password}) {
+    return _remote.deactivateAccount(password: password);
+  }
+
+  @override
+  Future<void> requestAccountDeletionLink({required String password}) {
+    return _remote.requestAccountDeletionLink(password: password);
+  }
 }

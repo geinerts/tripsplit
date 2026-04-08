@@ -28,4 +28,10 @@ abstract class AuthRepository {
   Future<AuthUser> getMe();
 
   Future<void> requestPasswordReset({required String email});
+
+  Future<void> requestReactivationLink({required String email});
+
+  Future<void> deactivateAccount({required String password});
+
+  Future<void> requestAccountDeletionLink({required String password});
 }

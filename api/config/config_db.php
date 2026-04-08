@@ -46,6 +46,7 @@ function table_name(string $key): string
         'settlement_reminder_state' => DB_TABLE_PREFIX . 'settlement_reminder_state',
         'mutation_idempotency' => DB_TABLE_PREFIX . 'mutation_idempotency',
         'password_resets'      => DB_TABLE_PREFIX . 'password_resets',
+        'account_action_tokens' => DB_TABLE_PREFIX . 'account_action_tokens',
         'trip_invites'         => DB_TABLE_PREFIX . 'trip_invites',
     ];
 

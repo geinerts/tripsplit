@@ -20,11 +20,16 @@ function forgot_password_action(): void
     $pdo        = db();
     $usersTable = table_name('users');
     $resetsTable = table_name('password_resets');
+    $activeFilter = users_active_filter_sql($pdo, '');
 
     // Look up user — silent success if not found (anti-enumeration)
     $stmt = $pdo->prepare(
-        'SELECT id, first_name, email FROM ' . $usersTable . '
-         WHERE email = :email AND credentials_required = 0 LIMIT 1'
+        'SELECT id, first_name, email
+         FROM ' . $usersTable . '
+         WHERE email = :email
+           AND credentials_required = 0
+           ' . $activeFilter . '
+         LIMIT 1'
     );
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch();
@@ -107,6 +112,19 @@ function reset_password_action(): void
 
     $resetId = (int) $reset['id'];
     $userId  = (int) $reset['user_id'];
+
+    $accountSelect = users_account_status_select_sql($pdo);
+    $userStmt = $pdo->prepare(
+        'SELECT id, ' . $accountSelect . 'email
+         FROM ' . $usersTable . '
+         WHERE id = :id
+         LIMIT 1'
+    );
+    $userStmt->execute(['id' => $userId]);
+    $user = $userStmt->fetch();
+    if (!$user || !user_account_is_active((array) $user)) {
+        json_out(['ok' => false, 'error' => 'Invalid or expired reset link.'], 400);
+    }
 
     // Update password
     $passwordHash = password_hash($password, credential_password_algo());

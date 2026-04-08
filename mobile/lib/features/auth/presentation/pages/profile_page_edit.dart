@@ -97,33 +97,123 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     }
   }
 
-  void _showDeactivateComingSoon(String message) {
-    final messenger = ScaffoldMessenger.maybeOf(context);
-    if (messenger == null) {
+  Future<void> _onDeactivateAccountPressed() async {
+    if (_isSubmitting || _isLoading) {
       return;
     }
-    messenger.hideCurrentSnackBar();
-    messenger.showSnackBar(
-      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
-    );
+    final password = _deactivateDraftPassword;
+    if (password.trim().isEmpty) {
+      _updateState(() {
+        _editErrorText = _profileText(
+          en: 'Enter your password to deactivate account.',
+          lv: 'Ievadi paroli, lai deaktivētu kontu.',
+        );
+      });
+      return;
+    }
+
+    _updateState(() {
+      _isSubmitting = true;
+      _editErrorText = null;
+    });
+    try {
+      await widget.controller.deactivateAccount(password: password);
+      if (!mounted) {
+        return;
+      }
+      await widget.controller.logout();
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _profileText(
+          en: 'Account deactivated. Use reactivation link from email to restore access.',
+          lv: 'Konts deaktivēts. Lai atjaunotu piekļuvi, izmanto reaktivācijas saiti e-pastā.',
+        ),
+      );
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(AppRouter.login, (route) => false);
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _editErrorText = error.message;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _editErrorText = _profileText(
+          en: 'Could not deactivate account. Please try again.',
+          lv: 'Neizdevās deaktivēt kontu. Mēģini vēlreiz.',
+        );
+      });
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
-  void _onDeactivateAccountPressed() {
-    _showDeactivateComingSoon(
-      _profileText(
-        en: 'Deactivate account flow will be enabled in the next step.',
-        lv: 'Konta deaktivēšanas plūsma tiks ieslēgta nākamajā solī.',
-      ),
-    );
-  }
+  Future<void> _onSendDeletionLinkPressed() async {
+    if (_isSubmitting || _isLoading) {
+      return;
+    }
+    final password = _deactivateDraftPassword;
+    if (password.trim().isEmpty) {
+      _updateState(() {
+        _editErrorText = _profileText(
+          en: 'Enter your password to request deletion link.',
+          lv: 'Ievadi paroli, lai pieprasītu dzēšanas saiti.',
+        );
+      });
+      return;
+    }
 
-  void _onSendDeletionLinkPressed() {
-    _showDeactivateComingSoon(
-      _profileText(
-        en: 'Email deletion link flow will be enabled in the next step.',
-        lv: 'Dzēšanas saites nosūtīšana uz e-pastu tiks ieslēgta nākamajā solī.',
-      ),
-    );
+    _updateState(() {
+      _isSubmitting = true;
+      _editErrorText = null;
+    });
+    try {
+      await widget.controller.requestAccountDeletionLink(password: password);
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _profileText(
+          en: 'Deletion link sent to your email.',
+          lv: 'Dzēšanas saite nosūtīta uz tavu e-pastu.',
+        ),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _editErrorText = error.message;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _editErrorText = _profileText(
+          en: 'Could not send deletion link. Please try again.',
+          lv: 'Neizdevās nosūtīt dzēšanas saiti. Mēģini vēlreiz.',
+        );
+      });
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   void _startInlineFieldEdit(_ProfileEditField field) {
@@ -346,13 +436,23 @@ extension _ProfilePageEditFlow on _ProfilePageState {
               ),
             ),
             onChanged: _onDeactivatePasswordChanged,
-            onFieldSubmitted: (_) => _onDeactivateAccountPressed(),
+            onFieldSubmitted: (_) => unawaited(_onDeactivateAccountPressed()),
           ),
+          if (_editErrorText != null) ...[
+            const SizedBox(height: 10),
+            Text(
+              _editErrorText!,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.error,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed: _onDeactivateAccountPressed,
+              onPressed: _isSubmitting ? null : _onDeactivateAccountPressed,
               icon: const Icon(Icons.person_off),
               style: FilledButton.styleFrom(
                 backgroundColor: colorScheme.error,
@@ -367,7 +467,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: _onSendDeletionLinkPressed,
+              onPressed: _isSubmitting ? null : _onSendDeletionLinkPressed,
               icon: const Icon(Icons.mark_email_read_outlined),
               label: Text(
                 _profileText(

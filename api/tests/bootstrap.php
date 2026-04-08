@@ -37,9 +37,23 @@ function table_name(string $key): string
     return 'trip_' . $key;
 }
 
+if (!defined('DB_TABLE_PREFIX')) {
+    define('DB_TABLE_PREFIX', 'trip_');
+}
+if (!defined('APP_BASE_URL')) {
+    define('APP_BASE_URL', 'https://splyto.egm.lv');
+}
+if (!defined('ACCOUNT_REACTIVATION_TOKEN_TTL_SEC')) {
+    define('ACCOUNT_REACTIVATION_TOKEN_TTL_SEC', 86400);
+}
+if (!defined('ACCOUNT_DELETION_TOKEN_TTL_SEC')) {
+    define('ACCOUNT_DELETION_TOKEN_TTL_SEC', 3600);
+}
+
 // Load pure math + validation helpers
 require_once __DIR__ . '/../config/config_user_validation.php';
 require_once __DIR__ . '/../lib/helpers/helper_validation.php';
+require_once __DIR__ . '/../lib/helpers/helper_account_lifecycle.php';
 
 // Load settlements pure logic
 require_once __DIR__ . '/../lib/actions/settlements/settlements_core.php';

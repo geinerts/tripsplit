@@ -11,10 +11,13 @@ import '../../../../core/network/legacy_feedback_reporter.dart';
 import '../../../../core/push/push_registration_service.dart';
 import '../../data/models/auth_user_model.dart';
 import '../../domain/entities/auth_user.dart';
+import '../../domain/usecases/deactivate_account_use_case.dart';
 import '../../domain/usecases/forgot_password_use_case.dart';
 import '../../domain/usecases/get_me_use_case.dart';
 import '../../domain/usecases/login_use_case.dart';
 import '../../domain/usecases/register_use_case.dart';
+import '../../domain/usecases/request_account_deletion_link_use_case.dart';
+import '../../domain/usecases/request_reactivation_link_use_case.dart';
 import '../../domain/usecases/set_credentials_use_case.dart';
 import '../../domain/usecases/update_profile_use_case.dart';
 
@@ -26,6 +29,9 @@ class AuthController {
     this._updateProfileUseCase,
     this._getMeUseCase,
     this._forgotPasswordUseCase,
+    this._requestReactivationLinkUseCase,
+    this._deactivateAccountUseCase,
+    this._requestAccountDeletionLinkUseCase,
     this._tokenStore,
     this._authSessionStore,
     this._currentUserStore,
@@ -41,6 +47,9 @@ class AuthController {
   final UpdateProfileUseCase _updateProfileUseCase;
   final GetMeUseCase _getMeUseCase;
   final ForgotPasswordUseCase _forgotPasswordUseCase;
+  final RequestReactivationLinkUseCase _requestReactivationLinkUseCase;
+  final DeactivateAccountUseCase _deactivateAccountUseCase;
+  final RequestAccountDeletionLinkUseCase _requestAccountDeletionLinkUseCase;
   final DeviceTokenStore _tokenStore;
   final AuthSessionStore _authSessionStore;
   final CurrentUserStore _currentUserStore;
@@ -122,6 +131,18 @@ class AuthController {
 
   Future<void> requestPasswordReset({required String email}) {
     return _forgotPasswordUseCase.call(email: email);
+  }
+
+  Future<void> requestReactivationLink({required String email}) {
+    return _requestReactivationLinkUseCase.call(email: email);
+  }
+
+  Future<void> deactivateAccount({required String password}) {
+    return _deactivateAccountUseCase.call(password: password);
+  }
+
+  Future<void> requestAccountDeletionLink({required String password}) {
+    return _requestAccountDeletionLinkUseCase.call(password: password);
   }
 
   Future<AuthUser?> readCachedCurrentUser() async {
