@@ -60,6 +60,15 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
       _draftEmail = _emailController.text.trim();
+      _draftBankCountryCode = _initialBankCountryCode;
+      _draftBankAccountHolder = _initialBankAccountHolder;
+      _draftBankAccountNumber = _initialBankAccountNumber;
+      _draftBankIban = _initialBankIban;
+      _draftBankBic = _initialBankBic;
+      _draftBankSortCode = _initialBankSortCode;
+      _draftBankRoutingNumber = _initialBankRoutingNumber;
+      _draftRevolutHandle = _initialRevolutHandle;
+      _draftPaypalMeLink = _initialPaypalMeLink;
       _draftPassword = '';
       _draftRepeatPassword = '';
       _editErrorText = null;
@@ -77,6 +86,15 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
       _draftEmail = _emailController.text.trim();
+      _draftBankCountryCode = _initialBankCountryCode;
+      _draftBankAccountHolder = _initialBankAccountHolder;
+      _draftBankAccountNumber = _initialBankAccountNumber;
+      _draftBankIban = _initialBankIban;
+      _draftBankBic = _initialBankBic;
+      _draftBankSortCode = _initialBankSortCode;
+      _draftBankRoutingNumber = _initialBankRoutingNumber;
+      _draftRevolutHandle = _initialRevolutHandle;
+      _draftPaypalMeLink = _initialPaypalMeLink;
       _editErrorText = null;
       _draftPassword = '';
       _draftRepeatPassword = '';
@@ -249,6 +267,87 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     }
   }
 
+  void _onDraftBankCountryCodeChanged(String? value) {
+    _updateState(() {
+      _draftBankCountryCode = (value ?? '').trim().toUpperCase();
+      if (_editErrorText != null) {
+        _editErrorText = null;
+      }
+    });
+  }
+
+  void _onDraftBankAccountHolderChanged(String value) {
+    _draftBankAccountHolder = value;
+    if (_editErrorText != null) {
+      _updateState(() {
+        _editErrorText = null;
+      });
+    }
+  }
+
+  void _onDraftBankAccountNumberChanged(String value) {
+    _draftBankAccountNumber = value;
+    if (_editErrorText != null) {
+      _updateState(() {
+        _editErrorText = null;
+      });
+    }
+  }
+
+  void _onDraftBankIbanChanged(String value) {
+    _draftBankIban = value;
+    if (_editErrorText != null) {
+      _updateState(() {
+        _editErrorText = null;
+      });
+    }
+  }
+
+  void _onDraftBankBicChanged(String value) {
+    _draftBankBic = value;
+    if (_editErrorText != null) {
+      _updateState(() {
+        _editErrorText = null;
+      });
+    }
+  }
+
+  void _onDraftBankSortCodeChanged(String value) {
+    _draftBankSortCode = value;
+    if (_editErrorText != null) {
+      _updateState(() {
+        _editErrorText = null;
+      });
+    }
+  }
+
+  void _onDraftBankRoutingNumberChanged(String value) {
+    _draftBankRoutingNumber = value;
+    if (_editErrorText != null) {
+      _updateState(() {
+        _editErrorText = null;
+      });
+    }
+  }
+
+  void _onDraftRevolutHandleChanged(String value) {
+    _draftRevolutHandle = value;
+    if (_editErrorText != null) {
+      _updateState(() {
+        _editErrorText = null;
+      });
+    }
+  }
+
+  void _onDraftPaypalMeLinkChanged(String value) {
+    _draftPaypalMeLink = value;
+    if (_editErrorText != null) {
+      _updateState(() {
+        _editErrorText = null;
+      });
+    }
+  }
+
   Future<void> _saveInlineField(_ProfileEditField field) async {
     final t = context.l10n;
     if (_isSubmitting || _isLoading) {
@@ -362,6 +461,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                 : _draftEmail.trim(),
             editor: _buildEmailInlineEditor,
           ),
+          const Divider(height: 1),
+          _buildPaymentDetailsSection(context),
           if (_editErrorText != null) ...[
             const SizedBox(height: 10),
             Padding(
@@ -692,6 +793,338 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           ),
         ],
       ),
+    );
+  }
+
+  bool _isIbanPreferredCountry(String countryCode) {
+    const ibanCountries = <String>{
+      'AT',
+      'BE',
+      'BG',
+      'CH',
+      'CY',
+      'CZ',
+      'DE',
+      'DK',
+      'EE',
+      'ES',
+      'FI',
+      'FR',
+      'GR',
+      'HR',
+      'HU',
+      'IE',
+      'IS',
+      'IT',
+      'LI',
+      'LT',
+      'LU',
+      'LV',
+      'MT',
+      'NL',
+      'NO',
+      'PL',
+      'PT',
+      'RO',
+      'SE',
+      'SI',
+      'SK',
+    };
+    return ibanCountries.contains(countryCode);
+  }
+
+  bool _countryUsesSortCode(String countryCode) {
+    return countryCode == 'GB' || countryCode == 'AU' || countryCode == 'NZ';
+  }
+
+  bool _countryUsesRoutingNumber(String countryCode) {
+    return countryCode == 'US' || countryCode == 'CA';
+  }
+
+  String _sortCodeLabelForCountry(String countryCode) {
+    switch (countryCode) {
+      case 'AU':
+        return _profileText(en: 'BSB code', lv: 'BSB kods');
+      case 'NZ':
+        return _profileText(en: 'Branch code', lv: 'Filiāles kods');
+      default:
+        return _profileText(en: 'Sort code', lv: 'Sort code');
+    }
+  }
+
+  Widget _buildPaymentDetailsSection(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final countryCode = _draftBankCountryCode.trim().toUpperCase();
+    const supportedCountryCodes = <String>{
+      'LV',
+      'LT',
+      'EE',
+      'DE',
+      'FR',
+      'ES',
+      'IT',
+      'NL',
+      'BE',
+      'PT',
+      'IE',
+      'FI',
+      'SE',
+      'NO',
+      'DK',
+      'PL',
+      'CZ',
+      'SK',
+      'RO',
+      'HU',
+      'GB',
+      'US',
+      'CA',
+      'AU',
+      'CH',
+      'ZZ',
+    };
+    final selectedCountryCode = supportedCountryCodes.contains(countryCode)
+        ? countryCode
+        : '';
+    final usesIban = _isIbanPreferredCountry(selectedCountryCode);
+    final usesSortCode = _countryUsesSortCode(selectedCountryCode);
+    final usesRouting = _countryUsesRoutingNumber(selectedCountryCode);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          color: colorScheme.surfaceContainerLowest.withValues(alpha: 0.9),
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.55),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _profileText(en: 'Payment details', lv: 'Maksājumu dati'),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              _profileText(
+                en: 'Add preferred payout details for settlements.',
+                lv: 'Pievieno vēlamos izmaksas datus norēķiniem.',
+              ),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppDesign.mutedColor(context),
+              ),
+            ),
+            const SizedBox(height: 10),
+            DropdownButtonFormField<String>(
+              initialValue: selectedCountryCode,
+              isExpanded: true,
+              menuMaxHeight: 280,
+              borderRadius: BorderRadius.circular(14),
+              icon: Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: colorScheme.primary,
+              ),
+              decoration: InputDecoration(
+                isDense: true,
+                labelText: _profileText(
+                  en: 'Bank country',
+                  lv: 'Bankas valsts',
+                ),
+                prefixIcon: const Icon(Icons.public_outlined),
+              ),
+              items: [
+                DropdownMenuItem(
+                  value: '',
+                  child: Text(_profileText(en: 'Not set', lv: 'Nav iestatīts')),
+                ),
+                const DropdownMenuItem(value: 'LV', child: Text('Latvia')),
+                const DropdownMenuItem(value: 'LT', child: Text('Lithuania')),
+                const DropdownMenuItem(value: 'EE', child: Text('Estonia')),
+                const DropdownMenuItem(value: 'DE', child: Text('Germany')),
+                const DropdownMenuItem(value: 'FR', child: Text('France')),
+                const DropdownMenuItem(value: 'ES', child: Text('Spain')),
+                const DropdownMenuItem(value: 'IT', child: Text('Italy')),
+                const DropdownMenuItem(value: 'NL', child: Text('Netherlands')),
+                const DropdownMenuItem(value: 'BE', child: Text('Belgium')),
+                const DropdownMenuItem(value: 'PT', child: Text('Portugal')),
+                const DropdownMenuItem(value: 'IE', child: Text('Ireland')),
+                const DropdownMenuItem(value: 'FI', child: Text('Finland')),
+                const DropdownMenuItem(value: 'SE', child: Text('Sweden')),
+                const DropdownMenuItem(value: 'NO', child: Text('Norway')),
+                const DropdownMenuItem(value: 'DK', child: Text('Denmark')),
+                const DropdownMenuItem(value: 'PL', child: Text('Poland')),
+                const DropdownMenuItem(value: 'CZ', child: Text('Czechia')),
+                const DropdownMenuItem(value: 'SK', child: Text('Slovakia')),
+                const DropdownMenuItem(value: 'RO', child: Text('Romania')),
+                const DropdownMenuItem(value: 'HU', child: Text('Hungary')),
+                const DropdownMenuItem(
+                  value: 'GB',
+                  child: Text('United Kingdom'),
+                ),
+                const DropdownMenuItem(
+                  value: 'US',
+                  child: Text('United States'),
+                ),
+                const DropdownMenuItem(value: 'CA', child: Text('Canada')),
+                const DropdownMenuItem(value: 'AU', child: Text('Australia')),
+                const DropdownMenuItem(value: 'CH', child: Text('Switzerland')),
+                const DropdownMenuItem(
+                  value: 'ZZ',
+                  child: Text('Other country'),
+                ),
+              ],
+              onChanged: _isSubmitting ? null : _onDraftBankCountryCodeChanged,
+            ),
+            const SizedBox(height: 10),
+            _buildPaymentTextField(
+              key: ValueKey('edit-bank-holder-$_editSession'),
+              label: _profileText(
+                en: 'Account holder name',
+                lv: 'Konta turētāja vārds',
+              ),
+              hint: _profileText(en: 'Optional', lv: 'Pēc izvēles'),
+              initialValue: _draftBankAccountHolder,
+              onChanged: _onDraftBankAccountHolderChanged,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 8),
+            if (usesIban) ...[
+              _buildPaymentTextField(
+                key: ValueKey('edit-bank-iban-$_editSession'),
+                label: 'IBAN',
+                hint: _profileText(
+                  en: 'Example: LV80BANK0000435195001',
+                  lv: 'Piemērs: LV80BANK0000435195001',
+                ),
+                initialValue: _draftBankIban,
+                onChanged: _onDraftBankIbanChanged,
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 8),
+              _buildPaymentTextField(
+                key: ValueKey('edit-bank-bic-$_editSession'),
+                label: 'BIC / SWIFT',
+                hint: _profileText(en: '8 or 11 chars', lv: '8 vai 11 simboli'),
+                initialValue: _draftBankBic,
+                onChanged: _onDraftBankBicChanged,
+                textInputAction: TextInputAction.next,
+              ),
+            ] else ...[
+              _buildPaymentTextField(
+                key: ValueKey('edit-bank-account-number-$_editSession'),
+                label: _profileText(en: 'Account number', lv: 'Konta numurs'),
+                hint: _profileText(en: 'Optional', lv: 'Pēc izvēles'),
+                initialValue: _draftBankAccountNumber,
+                onChanged: _onDraftBankAccountNumberChanged,
+                textInputAction: TextInputAction.next,
+              ),
+              if (usesSortCode) ...[
+                const SizedBox(height: 8),
+                _buildPaymentTextField(
+                  key: ValueKey('edit-bank-sort-$_editSession'),
+                  label: _sortCodeLabelForCountry(selectedCountryCode),
+                  hint: _profileText(en: 'Optional', lv: 'Pēc izvēles'),
+                  initialValue: _draftBankSortCode,
+                  onChanged: _onDraftBankSortCodeChanged,
+                  textInputAction: TextInputAction.next,
+                ),
+              ],
+              if (usesRouting) ...[
+                const SizedBox(height: 8),
+                _buildPaymentTextField(
+                  key: ValueKey('edit-bank-routing-$_editSession'),
+                  label: _profileText(
+                    en: 'Routing number',
+                    lv: 'Routing numurs',
+                  ),
+                  hint: _profileText(en: 'Optional', lv: 'Pēc izvēles'),
+                  initialValue: _draftBankRoutingNumber,
+                  onChanged: _onDraftBankRoutingNumberChanged,
+                  textInputAction: TextInputAction.next,
+                ),
+              ],
+              if (!usesSortCode && !usesRouting) ...[
+                const SizedBox(height: 8),
+                _buildPaymentTextField(
+                  key: ValueKey('edit-bank-bic-generic-$_editSession'),
+                  label: 'BIC / SWIFT',
+                  hint: _profileText(en: 'Optional', lv: 'Pēc izvēles'),
+                  initialValue: _draftBankBic,
+                  onChanged: _onDraftBankBicChanged,
+                  textInputAction: TextInputAction.next,
+                ),
+              ],
+            ],
+            const SizedBox(height: 8),
+            _buildPaymentTextField(
+              key: ValueKey('edit-revolut-handle-$_editSession'),
+              label: _profileText(
+                en: 'Revolut handle',
+                lv: 'Revolut lietotājs',
+              ),
+              hint: _profileText(en: '@username', lv: '@lietotajs'),
+              initialValue: _draftRevolutHandle,
+              onChanged: _onDraftRevolutHandleChanged,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 8),
+            _buildPaymentTextField(
+              key: ValueKey('edit-paypal-me-$_editSession'),
+              label: 'PayPal.me',
+              hint: _profileText(
+                en: 'paypal.me/username or username',
+                lv: 'paypal.me/lietotajs vai lietotajs',
+              ),
+              initialValue: _draftPaypalMeLink,
+              onChanged: _onDraftPaypalMeLinkChanged,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => unawaited(_onSavePressed()),
+            ),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerRight,
+              child: FilledButton.icon(
+                onPressed: _isSubmitting
+                    ? null
+                    : () {
+                        unawaited(_onSavePressed());
+                      },
+                icon: const Icon(Icons.save_outlined),
+                label: Text(_profileText(en: 'Save details', lv: 'Saglabāt')),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentTextField({
+    required Key key,
+    required String label,
+    required String hint,
+    required String initialValue,
+    required ValueChanged<String> onChanged,
+    required TextInputAction textInputAction,
+    ValueChanged<String>? onSubmitted,
+  }) {
+    return TextFormField(
+      key: key,
+      initialValue: initialValue,
+      textInputAction: textInputAction,
+      decoration: InputDecoration(
+        isDense: true,
+        labelText: label,
+        hintText: hint,
+      ),
+      onChanged: onChanged,
+      onFieldSubmitted: onSubmitted,
     );
   }
 

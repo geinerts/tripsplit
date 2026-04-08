@@ -216,10 +216,28 @@ extension _ProfilePageActions on _ProfilePageState {
     _avatarBytes = widget.controller.avatarBytesFor(user);
     _initialFullName = _joinFullName(user.firstName, user.lastName);
     _initialEmail = user.email;
+    _initialBankCountryCode = (user.bankCountryCode ?? '').trim().toUpperCase();
+    _initialBankAccountHolder = (user.bankAccountHolder ?? '').trim();
+    _initialBankAccountNumber = (user.bankAccountNumber ?? '').trim();
+    _initialBankIban = (user.bankIban ?? '').trim().toUpperCase();
+    _initialBankBic = (user.bankBic ?? '').trim().toUpperCase();
+    _initialBankSortCode = (user.bankSortCode ?? '').trim();
+    _initialBankRoutingNumber = (user.bankRoutingNumber ?? '').trim();
+    _initialRevolutHandle = (user.revolutHandle ?? '').trim();
+    _initialPaypalMeLink = (user.paypalMeLink ?? '').trim();
     _fullNameController.text = _initialFullName;
     _emailController.text = user.email ?? '';
     _draftFullName = _initialFullName;
     _draftEmail = user.email ?? '';
+    _draftBankCountryCode = _initialBankCountryCode;
+    _draftBankAccountHolder = _initialBankAccountHolder;
+    _draftBankAccountNumber = _initialBankAccountNumber;
+    _draftBankIban = _initialBankIban;
+    _draftBankBic = _initialBankBic;
+    _draftBankSortCode = _initialBankSortCode;
+    _draftBankRoutingNumber = _initialBankRoutingNumber;
+    _draftRevolutHandle = _initialRevolutHandle;
+    _draftPaypalMeLink = _initialPaypalMeLink;
     _draftPassword = '';
     _draftRepeatPassword = '';
     _deactivateDraftPassword = '';
@@ -256,6 +274,92 @@ extension _ProfilePageActions on _ProfilePageState {
     return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value);
   }
 
+  String _normalizeDraftText(String value) => value.trim();
+
+  String _normalizeDraftUpper(String value) => value.trim().toUpperCase();
+
+  String _normalizeDraftIban(String value) =>
+      value.trim().replaceAll(RegExp(r'\s+'), '').toUpperCase();
+
+  String _normalizeDraftBic(String value) =>
+      value.trim().replaceAll(RegExp(r'\s+'), '').toUpperCase();
+
+  String _normalizeDraftCode(String value) =>
+      value.trim().replaceAll(RegExp(r'[^A-Za-z0-9]'), '').toUpperCase();
+
+  Map<String, String?> _buildPaymentDetailsPatch() {
+    final patch = <String, String?>{};
+
+    void putIfChanged({
+      required String key,
+      required String initial,
+      required String draft,
+      required String Function(String value) normalize,
+    }) {
+      if (normalize(initial) == normalize(draft)) {
+        return;
+      }
+      patch[key] = draft.trim();
+    }
+
+    putIfChanged(
+      key: 'bank_country_code',
+      initial: _initialBankCountryCode,
+      draft: _draftBankCountryCode,
+      normalize: _normalizeDraftUpper,
+    );
+    putIfChanged(
+      key: 'bank_account_holder',
+      initial: _initialBankAccountHolder,
+      draft: _draftBankAccountHolder,
+      normalize: _normalizeDraftText,
+    );
+    putIfChanged(
+      key: 'bank_account_number',
+      initial: _initialBankAccountNumber,
+      draft: _draftBankAccountNumber,
+      normalize: _normalizeDraftText,
+    );
+    putIfChanged(
+      key: 'bank_iban',
+      initial: _initialBankIban,
+      draft: _draftBankIban,
+      normalize: _normalizeDraftIban,
+    );
+    putIfChanged(
+      key: 'bank_bic',
+      initial: _initialBankBic,
+      draft: _draftBankBic,
+      normalize: _normalizeDraftBic,
+    );
+    putIfChanged(
+      key: 'bank_sort_code',
+      initial: _initialBankSortCode,
+      draft: _draftBankSortCode,
+      normalize: _normalizeDraftCode,
+    );
+    putIfChanged(
+      key: 'bank_routing_number',
+      initial: _initialBankRoutingNumber,
+      draft: _draftBankRoutingNumber,
+      normalize: _normalizeDraftCode,
+    );
+    putIfChanged(
+      key: 'revolut_handle',
+      initial: _initialRevolutHandle,
+      draft: _draftRevolutHandle,
+      normalize: _normalizeDraftText,
+    );
+    putIfChanged(
+      key: 'paypal_me_link',
+      initial: _initialPaypalMeLink,
+      draft: _draftPaypalMeLink,
+      normalize: _normalizeDraftText,
+    );
+
+    return patch;
+  }
+
   Future<bool> _onSavePressed() async {
     final t = context.l10n;
     if (_isSubmitting || _isLoading) {
@@ -289,6 +393,8 @@ extension _ProfilePageActions on _ProfilePageState {
     final emailChanged = email != baseEmail;
     final passwordTouched = password.isNotEmpty || repeat.isNotEmpty;
     final wantsCredentialsUpdate = emailChanged || passwordTouched;
+    final paymentPatch = _buildPaymentDetailsPatch();
+    final paymentDetailsChanged = paymentPatch.isNotEmpty;
 
     if (wantsCredentialsUpdate) {
       if (!_isValidEmail(email)) {
@@ -312,7 +418,7 @@ extension _ProfilePageActions on _ProfilePageState {
     }
 
     final fullNameChanged = normalizedFullName != _initialFullName;
-    if (!fullNameChanged && !wantsCredentialsUpdate) {
+    if (!fullNameChanged && !wantsCredentialsUpdate && !paymentDetailsChanged) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(t.noChangesToSave)));
@@ -330,6 +436,7 @@ extension _ProfilePageActions on _ProfilePageState {
         lastName: fullNameChanged ? parsedName?.lastName : null,
         email: wantsCredentialsUpdate ? email : null,
         password: wantsCredentialsUpdate ? password : null,
+        paymentDetails: paymentPatch.isEmpty ? null : paymentPatch,
       );
       if (!mounted) {
         return false;

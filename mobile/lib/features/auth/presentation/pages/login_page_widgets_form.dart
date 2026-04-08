@@ -136,6 +136,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     required VoidCallback? onPressed,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = AppDesign.isDark(context);
     return OutlinedButton.icon(
       onPressed: onPressed,
       icon: icon,
@@ -148,13 +149,15 @@ extension _LoginPageWidgetsForm on _LoginPageState {
       ),
       style: OutlinedButton.styleFrom(
         foregroundColor: colorScheme.onSurface,
-        backgroundColor: colorScheme.surface.withValues(alpha: 0.92),
+        backgroundColor: isDark
+            ? Colors.transparent
+            : colorScheme.surface.withValues(alpha: 0.92),
         minimumSize: const Size.fromHeight(46),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        side: BorderSide(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.8),
-          width: 1.0,
-        ),
+        side: BorderSide.none,
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
     );
@@ -162,11 +165,14 @@ extension _LoginPageWidgetsForm on _LoginPageState {
 
   Widget _buildGoogleLogo(BuildContext context) {
     const iconSize = 26.0;
+    final isDark = AppDesign.isDark(context);
     return SizedBox(
       width: iconSize,
       height: iconSize,
       child: SvgPicture.asset(
-        'assets/branding/google_g_logo.svg',
+        isDark
+            ? 'assets/branding/google_g_logo_white.svg'
+            : 'assets/branding/google_g_logo_black.svg',
         width: iconSize,
         height: iconSize,
         fit: BoxFit.contain,
@@ -176,11 +182,14 @@ extension _LoginPageWidgetsForm on _LoginPageState {
 
   Widget _buildAppleLogo(BuildContext context) {
     const iconSize = 26.0;
+    final isDark = AppDesign.isDark(context);
     return SizedBox(
       width: iconSize,
       height: iconSize,
       child: SvgPicture.asset(
-        'assets/branding/apple_logo.svg',
+        isDark
+            ? 'assets/branding/apple_logo_white.svg'
+            : 'assets/branding/apple_logo.svg',
         width: iconSize,
         height: iconSize,
         fit: BoxFit.contain,

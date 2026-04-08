@@ -100,14 +100,24 @@ function search_users_action(): void
     } else {
         $queryLike = '%' . $qRaw . '%';
         $queryPrefix = $qRaw . '%';
-        $searchParams = array_merge([
-            'q_like_display' => $queryLike,
-            'q_like_nickname' => $queryLike,
-            'q_like_email' => $queryLike,
-            'q_prefix_display' => $queryPrefix,
-            'q_prefix_nickname' => $queryPrefix,
-            'q_prefix_email' => $queryPrefix,
-        ], $excludeParams);
+
+        if ($hasNameColumns) {
+            $searchParams = array_merge([
+                'q_like_display' => $queryLike,
+                'q_like_nickname' => $queryLike,
+                'q_like_email' => $queryLike,
+                'q_prefix_display' => $queryPrefix,
+                'q_prefix_nickname' => $queryPrefix,
+                'q_prefix_email' => $queryPrefix,
+            ], $excludeParams);
+        } else {
+            $searchParams = array_merge([
+                'q_like_nickname' => $queryLike,
+                'q_like_email' => $queryLike,
+                'q_prefix_nickname' => $queryPrefix,
+                'q_prefix_email' => $queryPrefix,
+            ], $excludeParams);
+        }
 
         if ($hasNameColumns) {
             $displayExpr = 'TRIM(CONCAT(COALESCE(u.first_name, \'\'), \' \', COALESCE(u.last_name, \'\')))';

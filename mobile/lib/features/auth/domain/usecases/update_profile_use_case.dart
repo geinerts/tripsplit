@@ -11,12 +11,14 @@ class UpdateProfileUseCase {
     String? lastName,
     String? email,
     String? password,
+    Map<String, String?>? paymentDetails,
   }) {
     return _repository.updateProfile(
       firstName: firstName,
       lastName: lastName,
       email: email,
       password: password,
+      paymentDetails: paymentDetails,
     );
   }
 }

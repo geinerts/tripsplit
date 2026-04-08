@@ -134,6 +134,7 @@ class AuthController {
     String? lastName,
     String? email,
     String? password,
+    Map<String, String?>? paymentDetails,
   }) async {
     final user = await _withStoredAvatar(
       await _updateProfileUseCase.call(
@@ -141,6 +142,7 @@ class AuthController {
         lastName: lastName,
         email: email,
         password: password,
+        paymentDetails: paymentDetails,
       ),
     );
     await _setCurrentUser(user);

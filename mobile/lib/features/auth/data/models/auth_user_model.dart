@@ -10,6 +10,15 @@ class AuthUserModel extends AuthUser {
     required super.nickname,
     super.email,
     required super.needsCredentials,
+    super.bankCountryCode,
+    super.bankAccountHolder,
+    super.bankAccountNumber,
+    super.bankIban,
+    super.bankBic,
+    super.bankSortCode,
+    super.bankRoutingNumber,
+    super.revolutHandle,
+    super.paypalMeLink,
     super.avatarBase64,
     super.avatarUrl,
     super.avatarThumbUrl,
@@ -28,6 +37,15 @@ class AuthUserModel extends AuthUser {
     final lastName = (map['last_name'] as String?)?.trim();
     final fullName = (map['full_name'] as String?)?.trim();
     final displayName = (map['display_name'] as String?)?.trim();
+    final bankCountryCode = (map['bank_country_code'] as String?)?.trim();
+    final bankAccountHolder = (map['bank_account_holder'] as String?)?.trim();
+    final bankAccountNumber = (map['bank_account_number'] as String?)?.trim();
+    final bankIban = (map['bank_iban'] as String?)?.trim();
+    final bankBic = (map['bank_bic'] as String?)?.trim();
+    final bankSortCode = (map['bank_sort_code'] as String?)?.trim();
+    final bankRoutingNumber = (map['bank_routing_number'] as String?)?.trim();
+    final revolutHandle = (map['revolut_handle'] as String?)?.trim();
+    final paypalMeLink = (map['paypal_me_link'] as String?)?.trim();
     return AuthUserModel(
       id: (map['id'] as num?)?.toInt() ?? 0,
       firstName: (firstName == null || firstName.isEmpty) ? null : firstName,
@@ -38,6 +56,32 @@ class AuthUserModel extends AuthUser {
       nickname: map['nickname'] as String? ?? '',
       email: map['email'] as String?,
       needsCredentials: map['needs_credentials'] as bool? ?? false,
+      bankCountryCode: (bankCountryCode == null || bankCountryCode.isEmpty)
+          ? null
+          : bankCountryCode,
+      bankAccountHolder:
+          (bankAccountHolder == null || bankAccountHolder.isEmpty)
+          ? null
+          : bankAccountHolder,
+      bankAccountNumber:
+          (bankAccountNumber == null || bankAccountNumber.isEmpty)
+          ? null
+          : bankAccountNumber,
+      bankIban: (bankIban == null || bankIban.isEmpty) ? null : bankIban,
+      bankBic: (bankBic == null || bankBic.isEmpty) ? null : bankBic,
+      bankSortCode: (bankSortCode == null || bankSortCode.isEmpty)
+          ? null
+          : bankSortCode,
+      bankRoutingNumber:
+          (bankRoutingNumber == null || bankRoutingNumber.isEmpty)
+          ? null
+          : bankRoutingNumber,
+      revolutHandle: (revolutHandle == null || revolutHandle.isEmpty)
+          ? null
+          : revolutHandle,
+      paypalMeLink: (paypalMeLink == null || paypalMeLink.isEmpty)
+          ? null
+          : paypalMeLink,
       avatarBase64: avatar.isEmpty ? null : avatar,
       avatarUrl: avatarUrl,
       avatarThumbUrl: avatarThumbUrl,

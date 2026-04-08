@@ -24,6 +24,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
               trip: _openedTrip!,
               workspaceController: widget.workspaceController,
               tripsController: widget.tripsController,
+              friendsController: widget.friendsController,
               authController: widget.authController,
               showAppBar: false,
               showBottomNav: false,

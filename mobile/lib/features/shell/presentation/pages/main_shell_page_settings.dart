@@ -319,7 +319,7 @@ extension _MainShellPageSettings on _MainShellPageState {
               });
             }
 
-            return AlertDialog(
+          return AlertDialog(
               title: Text(
                 _settingsLocalizedText(
                   en: 'Send feedback',
@@ -331,38 +331,104 @@ extension _MainShellPageSettings on _MainShellPageState {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    DropdownButtonFormField<String>(
-                      initialValue: feedbackType,
-                      decoration: InputDecoration(
-                        labelText: _settingsLocalizedText(
-                          en: 'Type',
-                          lv: 'Tips',
-                        ),
-                      ),
-                      items: [
-                        DropdownMenuItem(
-                          value: 'bug',
-                          child: Text(
-                            _settingsLocalizedText(en: 'Bug', lv: 'Kļūda'),
+                    Builder(
+                      builder: (dropdownContext) {
+                        final colorScheme =
+                            Theme.of(dropdownContext).colorScheme;
+                        return DropdownButtonFormField<String>(
+                          initialValue: feedbackType,
+                          isExpanded: true,
+                          menuMaxHeight: 240,
+                          borderRadius: BorderRadius.circular(16),
+                          dropdownColor: colorScheme.surface,
+                          icon: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: colorScheme.primary,
                           ),
-                        ),
-                        DropdownMenuItem(
-                          value: 'suggestion',
-                          child: Text(
-                            _settingsLocalizedText(
-                              en: 'Suggestion',
-                              lv: 'Ieteikums',
+                          decoration: InputDecoration(
+                            labelText: _settingsLocalizedText(
+                              en: 'Type',
+                              lv: 'Tips',
+                            ),
+                            prefixIcon: const Icon(Icons.category_outlined),
+                            filled: true,
+                            fillColor: colorScheme.surfaceContainerLowest
+                                .withValues(alpha: 0.92),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 14,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: colorScheme.outlineVariant,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: colorScheme.outlineVariant.withValues(
+                                  alpha: 0.7,
+                                ),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: colorScheme.primary,
+                                width: 1.4,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value == null) {
-                          return;
-                        }
-                        setDialogState(() {
-                          feedbackType = value;
-                        });
+                          items: [
+                            DropdownMenuItem(
+                              value: 'bug',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.bug_report_rounded,
+                                    size: 18,
+                                    color: colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _settingsLocalizedText(
+                                      en: 'Bug',
+                                      lv: 'Kļūda',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: 'suggestion',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.tips_and_updates_rounded,
+                                    size: 18,
+                                    color: colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _settingsLocalizedText(
+                                      en: 'Suggestion',
+                                      lv: 'Ieteikums',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            if (value == null) {
+                              return;
+                            }
+                            setDialogState(() {
+                              feedbackType = value;
+                            });
+                          },
+                        );
                       },
                     ),
                     const SizedBox(height: 12),

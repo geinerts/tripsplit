@@ -501,6 +501,127 @@ function set_credentials_action(): void
     json_out(['ok' => true, 'me' => build_me_payload($fresh)]);
 }
 
+function normalize_profile_optional_short_text($value, string $fieldLabel, int $maxLength): ?string
+{
+    $normalized = trim(preg_replace('/\s+/', ' ', (string) ($value ?? '')) ?? '');
+    if ($normalized === '') {
+        return null;
+    }
+    if (str_length($normalized) > $maxLength) {
+        json_out(['ok' => false, 'error' => $fieldLabel . ' is too long.'], 400);
+    }
+    return $normalized;
+}
+
+function normalize_profile_bank_country_code($value): ?string
+{
+    $normalized = strtoupper(trim((string) ($value ?? '')));
+    if ($normalized === '') {
+        return null;
+    }
+    if (!preg_match('/^[A-Z]{2}$/', $normalized)) {
+        json_out(['ok' => false, 'error' => 'Bank country must be a 2-letter country code.'], 400);
+    }
+    return $normalized;
+}
+
+function normalize_profile_bank_iban($value): ?string
+{
+    $normalized = strtoupper(preg_replace('/\s+/', '', trim((string) ($value ?? ''))) ?? '');
+    if ($normalized === '') {
+        return null;
+    }
+    if (!preg_match('/^[A-Z]{2}[A-Z0-9]{13,32}$/', $normalized)) {
+        json_out(['ok' => false, 'error' => 'IBAN format is invalid.'], 400);
+    }
+    return $normalized;
+}
+
+function normalize_profile_bank_bic($value): ?string
+{
+    $normalized = strtoupper(preg_replace('/\s+/', '', trim((string) ($value ?? ''))) ?? '');
+    if ($normalized === '') {
+        return null;
+    }
+    if (!preg_match('/^[A-Z0-9]{8}([A-Z0-9]{3})?$/', $normalized)) {
+        json_out(['ok' => false, 'error' => 'BIC/SWIFT format is invalid.'], 400);
+    }
+    return $normalized;
+}
+
+function normalize_profile_bank_account_number($value): ?string
+{
+    $normalized = trim(preg_replace('/\s+/', ' ', (string) ($value ?? '')) ?? '');
+    if ($normalized === '') {
+        return null;
+    }
+    if (str_length($normalized) > 64 || !preg_match('/^[A-Za-z0-9 .\-\/]{3,64}$/', $normalized)) {
+        json_out(['ok' => false, 'error' => 'Bank account number format is invalid.'], 400);
+    }
+    return $normalized;
+}
+
+function normalize_profile_bank_sort_code($value): ?string
+{
+    $normalized = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', (string) ($value ?? '')) ?? '');
+    if ($normalized === '') {
+        return null;
+    }
+    if (!preg_match('/^[A-Z0-9]{3,16}$/', $normalized)) {
+        json_out(['ok' => false, 'error' => 'Sort/branch code format is invalid.'], 400);
+    }
+    return $normalized;
+}
+
+function normalize_profile_bank_routing_number($value): ?string
+{
+    $normalized = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', (string) ($value ?? '')) ?? '');
+    if ($normalized === '') {
+        return null;
+    }
+    if (!preg_match('/^[A-Z0-9]{3,16}$/', $normalized)) {
+        json_out(['ok' => false, 'error' => 'Routing number format is invalid.'], 400);
+    }
+    return $normalized;
+}
+
+function normalize_profile_revolut_handle($value): ?string
+{
+    $normalized = trim((string) ($value ?? ''));
+    if ($normalized === '') {
+        return null;
+    }
+    if (!preg_match('/^@?[A-Za-z0-9._-]{2,80}$/', $normalized)) {
+        json_out(['ok' => false, 'error' => 'Revolut handle format is invalid.'], 400);
+    }
+    return strpos($normalized, '@') === 0 ? $normalized : '@' . $normalized;
+}
+
+function normalize_profile_paypal_me_link($value): ?string
+{
+    $normalized = trim((string) ($value ?? ''));
+    if ($normalized === '') {
+        return null;
+    }
+
+    if (str_length($normalized) > 255) {
+        json_out(['ok' => false, 'error' => 'PayPal.me value is too long.'], 400);
+    }
+
+    if (preg_match('/^https?:\/\/(www\.)?paypal\.me\/([A-Za-z0-9._-]{2,50})\/?$/i', $normalized, $match)) {
+        return 'https://paypal.me/' . $match[2];
+    }
+    if (preg_match('/^(www\.)?paypal\.me\/([A-Za-z0-9._-]{2,50})\/?$/i', $normalized, $match)) {
+        return 'https://paypal.me/' . $match[2];
+    }
+    if (preg_match('/^[A-Za-z0-9._-]{2,50}$/', $normalized)) {
+        return 'https://paypal.me/' . $normalized;
+    }
+
+    json_out(['ok' => false, 'error' => 'PayPal.me value is invalid.'], 400);
+    return null;
+}
+
 function update_profile_action(): void
 {
     require_post();
@@ -511,6 +632,7 @@ function update_profile_action(): void
     $usersTable = table_name('users');
     $userId = (int) $me['id'];
     $nameColumnsAvailable = users_name_columns_available($pdo);
+    $paymentColumnsAvailable = users_payment_columns_available($pdo);
 
     $updateParts = [];
     $params = [
@@ -580,6 +702,48 @@ function update_profile_action(): void
         $updateParts[] = 'email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP)';
         $params['email'] = $email;
         $params['password_hash'] = $passwordHash;
+    }
+
+    $paymentFieldNormalizers = [
+        'bank_country_code' => 'normalize_profile_bank_country_code',
+        'bank_account_holder' => static function ($value): ?string {
+            return normalize_profile_optional_short_text($value, 'Bank account holder', 120);
+        },
+        'bank_account_number' => 'normalize_profile_bank_account_number',
+        'bank_iban' => 'normalize_profile_bank_iban',
+        'bank_bic' => 'normalize_profile_bank_bic',
+        'bank_sort_code' => 'normalize_profile_bank_sort_code',
+        'bank_routing_number' => 'normalize_profile_bank_routing_number',
+        'revolut_handle' => 'normalize_profile_revolut_handle',
+        'paypal_me_link' => 'normalize_profile_paypal_me_link',
+    ];
+
+    $paymentFieldWasProvided = false;
+    foreach ($paymentFieldNormalizers as $field => $_normalizer) {
+        if (array_key_exists($field, $body)) {
+            $paymentFieldWasProvided = true;
+            break;
+        }
+    }
+
+    if ($paymentFieldWasProvided && !$paymentColumnsAvailable) {
+        json_out([
+            'ok' => false,
+            'error' => 'Profile payment details are not available yet. Please run latest migration.',
+        ], 503);
+    }
+
+    if ($paymentColumnsAvailable) {
+        foreach ($paymentFieldNormalizers as $field => $normalizer) {
+            if (!array_key_exists($field, $body)) {
+                continue;
+            }
+            $normalizedValue = is_callable($normalizer)
+                ? $normalizer($body[$field] ?? null)
+                : null;
+            $updateParts[] = $field . ' = :' . $field;
+            $params[$field] = $normalizedValue;
+        }
     }
 
     if (!$updateParts) {

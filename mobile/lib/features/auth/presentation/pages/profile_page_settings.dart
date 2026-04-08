@@ -114,6 +114,8 @@ extension _ProfilePageSettings on _ProfilePageState {
 
         return StatefulBuilder(
           builder: (stateContext, setSheetState) {
+            final colorScheme = Theme.of(stateContext).colorScheme;
+
             Future<void> onPickScreenshot() async {
               if (isPickingScreenshot) {
                 return;
@@ -168,20 +170,77 @@ extension _ProfilePageSettings on _ProfilePageState {
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
                       initialValue: feedbackType,
+                      isExpanded: true,
+                      menuMaxHeight: 240,
+                      borderRadius: BorderRadius.circular(16),
+                      dropdownColor: colorScheme.surface,
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: colorScheme.primary,
+                      ),
                       decoration: InputDecoration(
                         labelText: _profileText(en: 'Type', lv: 'Tips'),
+                        prefixIcon: const Icon(Icons.category_outlined),
+                        filled: true,
+                        fillColor: colorScheme.surfaceContainerLowest
+                            .withValues(alpha: 0.92),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: colorScheme.outlineVariant,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: colorScheme.outlineVariant.withValues(
+                              alpha: 0.7,
+                            ),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: colorScheme.primary,
+                            width: 1.4,
+                          ),
+                        ),
                       ),
                       items: [
                         DropdownMenuItem(
                           value: 'bug',
-                          child: Text(
-                            _profileText(en: 'Bug', lv: 'Kļūda'),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.bug_report_rounded,
+                                size: 18,
+                                color: colorScheme.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                _profileText(en: 'Bug', lv: 'Kļūda'),
+                              ),
+                            ],
                           ),
                         ),
                         DropdownMenuItem(
                           value: 'suggestion',
-                          child: Text(
-                            _profileText(en: 'Suggestion', lv: 'Ieteikums'),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.tips_and_updates_rounded,
+                                size: 18,
+                                color: colorScheme.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                _profileText(en: 'Suggestion', lv: 'Ieteikums'),
+                              ),
+                            ],
                           ),
                         ),
                       ],

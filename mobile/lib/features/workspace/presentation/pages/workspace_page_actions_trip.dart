@@ -709,26 +709,6 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton.icon(
-                            onPressed: () => unawaited(
-                              onPickTripImage(setDialogState, dialogContext),
-                            ),
-                            icon: const Icon(Icons.tune_rounded, size: 18),
-                            label: Text(
-                              _plainLocalizedText(
-                                en: selectedImageBytes == null
-                                    ? 'Choose trip image'
-                                    : 'Adjust trip image',
-                                lv: selectedImageBytes == null
-                                    ? 'Izvēlēties tripa attēlu'
-                                    : 'Pielāgot tripa attēlu',
-                              ),
-                            ),
-                          ),
-                        ),
                         if (selectedImageName != null) ...[
                           const SizedBox(height: 4),
                           Text(

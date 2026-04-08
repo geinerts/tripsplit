@@ -59,12 +59,14 @@ class AuthRepositoryImpl implements AuthRepository {
     String? lastName,
     String? email,
     String? password,
+    Map<String, String?>? paymentDetails,
   }) {
     return _remote.updateProfile(
       firstName: firstName,
       lastName: lastName,
       email: email,
       password: password,
+      paymentDetails: paymentDetails,
     );
   }
 

@@ -30,6 +30,7 @@ abstract class AuthRepository {
     String? lastName,
     String? email,
     String? password,
+    Map<String, String?>? paymentDetails,
   });
 
   Future<AuthUser> getMe();

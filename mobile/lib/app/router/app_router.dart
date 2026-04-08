@@ -87,6 +87,7 @@ class AppRouter {
           trip: trip,
           workspaceController: _dependencies.workspaceController,
           tripsController: _dependencies.tripsController,
+          friendsController: _dependencies.friendsController,
           authController: _dependencies.authController,
           openAddExpenseOnStart: openAddExpense,
         );

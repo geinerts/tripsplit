@@ -26,6 +26,7 @@ import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_formatters.dart';
 import '../../../../core/ui/user_profile_page.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../friends/presentation/controllers/friends_controller.dart';
 import '../../../trips/domain/entities/trip.dart';
 import '../../../trips/domain/entities/trip_user.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
@@ -84,6 +85,7 @@ class WorkspacePage extends StatefulWidget {
     required this.trip,
     required this.workspaceController,
     required this.tripsController,
+    required this.friendsController,
     required this.authController,
     this.showAppBar = true,
     this.showBottomNav = true,
@@ -95,6 +97,7 @@ class WorkspacePage extends StatefulWidget {
   final Trip trip;
   final WorkspaceController workspaceController;
   final TripsController tripsController;
+  final FriendsController friendsController;
   final AuthController authController;
   final bool showAppBar;
   final bool showBottomNav;

@@ -188,94 +188,80 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
   Future<Set<int>?> _showAddMembersSearchDialog({
     required Set<int> existingMemberIds,
   }) async {
-    final searchController = TextEditingController();
     final selected = <int>{};
     final selectedUsers = <int, TripUser>{};
     BuildContext? dialogBuildContext;
-    var searchResults = const <TripUser>[];
-    var isSearching = false;
     var isInviteLinkLoading = false;
     var inviteLinkRequested = false;
     var inviteLink = '';
     String? inviteLinkErrorText;
     String? inviteLinkExpiresAt;
-    var searchSeq = 0;
-    Timer? searchDebounce;
+    var friendQuickPicks = const <TripUser>[];
+    var isLoadingFriendQuickPicks = false;
+    var friendQuickPicksRequested = false;
+    String? friendQuickPicksErrorText;
 
-    try {
-      return await showDialog<Set<int>>(
-        context: context,
-        builder: (dialogContext) {
+    return await showDialog<Set<int>>(
+      context: context,
+      builder: (dialogContext) {
           final t = dialogContext.l10n;
-          String? searchErrorText;
 
-          Future<void> runSearch(
-            StateSetter setDialogState,
-            String rawQuery,
-          ) async {
-            final query = rawQuery.trim();
-            if (query.length < 2) {
-              setDialogState(() {
-                isSearching = false;
-                searchErrorText = null;
-                searchResults = const <TripUser>[];
-              });
+          Future<void> loadFriendQuickPicks(StateSetter setDialogState) async {
+            if (isLoadingFriendQuickPicks) {
               return;
             }
-            final requestId = ++searchSeq;
 
             bool canUpdateDialog() {
               final c = dialogBuildContext;
-              return mounted &&
-                  c != null &&
-                  c.mounted &&
-                  requestId == searchSeq;
+              return mounted && c != null && c.mounted;
             }
 
             setDialogState(() {
-              isSearching = true;
-              searchErrorText = null;
+              isLoadingFriendQuickPicks = true;
+              friendQuickPicksErrorText = null;
             });
 
             try {
-              final users = await widget.tripsController.loadDirectoryUsers(
-                query: query,
-                limit: 25,
-                excludeIds: existingMemberIds.toList(growable: false),
+              final cached = widget.friendsController.peekSnapshotCache(
+                allowStale: false,
               );
+              final snapshot =
+                  cached ??
+                  await widget.friendsController.loadSnapshot(
+                    forceRefresh: false,
+                  );
               if (!canUpdateDialog()) {
                 return;
               }
+
               setDialogState(() {
-                searchResults = users
-                    .where((user) => !existingMemberIds.contains(user.id))
+                friendQuickPicks = snapshot.friends
+                    .where((friend) => !existingMemberIds.contains(friend.id))
+                    .map(
+                      (friend) => TripUser(
+                        id: friend.id,
+                        nickname: friend.nickname,
+                        avatarUrl: friend.avatarUrl,
+                        avatarThumbUrl: friend.avatarThumbUrl,
+                      ),
+                    )
                     .toList(growable: false);
-                for (final user in searchResults) {
-                  if (selected.contains(user.id)) {
-                    selectedUsers[user.id] = user;
-                  }
-                }
-              });
-            } on ApiException catch (error) {
-              if (!canUpdateDialog()) {
-                return;
-              }
-              setDialogState(() {
-                searchResults = const <TripUser>[];
-                searchErrorText = error.message;
               });
             } catch (_) {
               if (!canUpdateDialog()) {
                 return;
               }
               setDialogState(() {
-                searchResults = const <TripUser>[];
-                searchErrorText = t.failedToLoadUsersDirectory;
+                friendQuickPicks = const <TripUser>[];
+                friendQuickPicksErrorText = _plainLocalizedText(
+                  en: 'Failed to load friends.',
+                  lv: 'Neizdevās ielādēt draugus.',
+                );
               });
             } finally {
               if (canUpdateDialog()) {
                 setDialogState(() {
-                  isSearching = false;
+                  isLoadingFriendQuickPicks = false;
                 });
               }
             }
@@ -346,8 +332,10 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                 inviteLinkRequested = true;
                 unawaited(loadInviteLink(setDialogState));
               }
-
-              final hasQuery = searchController.text.trim().isNotEmpty;
+              if (!friendQuickPicksRequested) {
+                friendQuickPicksRequested = true;
+                unawaited(loadFriendQuickPicks(setDialogState));
+              }
 
               return AlertDialog(
                 title: Text(t.addTripMembersTitle),
@@ -496,82 +484,56 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                           ),
                         const SizedBox(height: 12),
                         Text(
-                          t.searchUsersHint,
+                          _plainLocalizedText(
+                            en: 'Friends',
+                            lv: 'Draugi',
+                          ),
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
-                        const SizedBox(height: 6),
-                        TextField(
-                          controller: searchController,
-                          decoration: InputDecoration(
-                            hintText: t.searchUsersHint,
-                            prefixIcon: const Icon(Icons.search),
-                          ),
-                          onChanged: (value) {
-                            searchDebounce?.cancel();
-                            final query = value.trim();
-                            if (query.length < 2) {
-                              setDialogState(() {
-                                isSearching = false;
-                                searchErrorText = null;
-                                searchResults = const <TripUser>[];
-                              });
-                              return;
-                            }
-                            searchDebounce = Timer(
-                              const Duration(milliseconds: 320),
-                              () => runSearch(setDialogState, query),
-                            );
-                          },
-                        ),
-                        if (isSearching) ...[
+                        if (isLoadingFriendQuickPicks) ...[
                           const SizedBox(height: 10),
                           const LinearProgressIndicator(minHeight: 2),
+                        ] else ...[
+                          const SizedBox(height: 8),
                         ],
-                        const SizedBox(height: 10),
-                        if (searchErrorText != null)
+                        if (friendQuickPicksErrorText != null)
                           Text(
-                            searchErrorText!,
+                            friendQuickPicksErrorText!,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w600,
                             ),
                           )
-                        else if (!hasQuery)
+                        else if (friendQuickPicks.isEmpty)
                           Text(
-                            'Type at least 2 letters to search members.',
+                            _plainLocalizedText(
+                              en: 'No friends available. Add friends first.',
+                              lv: 'Draugu saraksts ir tukšs. Vispirms pievieno draugus.',
+                            ),
                             style: Theme.of(context).textTheme.bodySmall,
                           )
-                        else if (searchResults.isEmpty)
-                          Text(t.noSearchMatches)
                         else
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxHeight: 260),
-                            child: ListView.separated(
-                              shrinkWrap: true,
-                              itemCount: searchResults.length,
-                              separatorBuilder: (context, index) =>
-                                  const Divider(height: 1),
-                              itemBuilder: (context, index) {
-                                final user = searchResults[index];
-                                final isPicked = selected.contains(user.id);
-                                return CheckboxListTile(
-                                  dense: true,
-                                  value: isPicked,
-                                  title: Text(user.nickname),
-                                  onChanged: (checked) {
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              for (final friend in friendQuickPicks)
+                                FilterChip(
+                                  label: Text(friend.nickname),
+                                  selected: selected.contains(friend.id),
+                                  onSelected: (isSelected) {
                                     setDialogState(() {
-                                      if (checked == true) {
-                                        selected.add(user.id);
-                                        selectedUsers[user.id] = user;
+                                      if (isSelected) {
+                                        selected.add(friend.id);
+                                        selectedUsers[friend.id] = friend;
                                       } else {
-                                        selected.remove(user.id);
-                                        selectedUsers.remove(user.id);
+                                        selected.remove(friend.id);
+                                        selectedUsers.remove(friend.id);
                                       }
                                     });
                                   },
-                                );
-                              },
-                            ),
+                                ),
+                            ],
                           ),
                       ],
                     ),
@@ -594,11 +556,5 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
           );
         },
       );
-    } finally {
-      searchDebounce?.cancel();
-      Future<void>.delayed(const Duration(milliseconds: 350), () {
-        searchController.dispose();
-      });
-    }
   }
 }

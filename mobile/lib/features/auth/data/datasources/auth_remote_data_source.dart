@@ -34,6 +34,7 @@ abstract class AuthRemoteDataSource {
     String? lastName,
     String? email,
     String? password,
+    Map<String, String?>? paymentDetails,
   });
 
   Future<AuthUserModel> getMe();
@@ -179,6 +180,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String? lastName,
     String? email,
     String? password,
+    Map<String, String?>? paymentDetails,
   }) async {
     final payload = <String, dynamic>{};
     if (firstName != null && lastName != null) {
@@ -188,6 +190,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     if (email != null && password != null) {
       payload['email'] = email;
       payload['password'] = password;
+    }
+    if (paymentDetails != null && paymentDetails.isNotEmpty) {
+      for (final entry in paymentDetails.entries) {
+        payload[entry.key] = entry.value ?? '';
+      }
     }
 
     final response = await _apiClient.request(
