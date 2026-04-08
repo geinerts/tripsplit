@@ -44,11 +44,13 @@ class AppEnv {
     ),
     googleServerClientId: String.fromEnvironment(
       'TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID',
-      defaultValue: '',
+      defaultValue:
+          '126032869696-qvttfvd5p8sq0js3mms0kqfnbpbig0mm.apps.googleusercontent.com',
     ),
     googleIosClientId: String.fromEnvironment(
       'TRIPSPLIT_GOOGLE_IOS_CLIENT_ID',
-      defaultValue: '',
+      defaultValue:
+          '126032869696-8tomvru488udp8n4lo01tsttan2jrqfo.apps.googleusercontent.com',
     ),
     monitoringDsn: String.fromEnvironment(
       'TRIPSPLIT_SENTRY_DSN',
