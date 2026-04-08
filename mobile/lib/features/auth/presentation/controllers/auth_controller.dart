@@ -17,6 +17,7 @@ import '../../domain/usecases/get_me_use_case.dart';
 import '../../domain/usecases/login_use_case.dart';
 import '../../domain/usecases/register_use_case.dart';
 import '../../domain/usecases/request_account_deletion_link_use_case.dart';
+import '../../domain/usecases/request_email_verification_link_use_case.dart';
 import '../../domain/usecases/request_reactivation_link_use_case.dart';
 import '../../domain/usecases/set_credentials_use_case.dart';
 import '../../domain/usecases/update_profile_use_case.dart';
@@ -29,6 +30,7 @@ class AuthController {
     this._updateProfileUseCase,
     this._getMeUseCase,
     this._forgotPasswordUseCase,
+    this._requestEmailVerificationLinkUseCase,
     this._requestReactivationLinkUseCase,
     this._deactivateAccountUseCase,
     this._requestAccountDeletionLinkUseCase,
@@ -47,6 +49,8 @@ class AuthController {
   final UpdateProfileUseCase _updateProfileUseCase;
   final GetMeUseCase _getMeUseCase;
   final ForgotPasswordUseCase _forgotPasswordUseCase;
+  final RequestEmailVerificationLinkUseCase
+  _requestEmailVerificationLinkUseCase;
   final RequestReactivationLinkUseCase _requestReactivationLinkUseCase;
   final DeactivateAccountUseCase _deactivateAccountUseCase;
   final RequestAccountDeletionLinkUseCase _requestAccountDeletionLinkUseCase;
@@ -131,6 +135,10 @@ class AuthController {
 
   Future<void> requestPasswordReset({required String email}) {
     return _forgotPasswordUseCase.call(email: email);
+  }
+
+  Future<void> requestEmailVerificationLink({required String email}) {
+    return _requestEmailVerificationLinkUseCase.call(email: email);
   }
 
   Future<void> requestReactivationLink({required String email}) {

@@ -21,6 +21,9 @@ function get_me(): array
     if (function_exists('assert_user_account_is_active')) {
         assert_user_account_is_active((array) $row);
     }
+    if (function_exists('assert_user_email_verified')) {
+        assert_user_email_verified((array) $row);
+    }
 
     $firstName = trim((string) ($row['first_name'] ?? ''));
     $lastName = trim((string) ($row['last_name'] ?? ''));

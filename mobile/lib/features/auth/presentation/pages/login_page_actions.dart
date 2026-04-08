@@ -66,6 +66,18 @@ extension _LoginPageActions on _LoginPageState {
       if (!mounted) {
         return;
       }
+      if (_mode == _AuthMode.register &&
+          _isEmailVerificationRequiredError(error)) {
+        await _handleRegisterEmailVerification(
+          _emailController.text.trim(),
+          error.message,
+        );
+        return;
+      }
+      if (_mode == _AuthMode.login && _isEmailNotVerifiedError(error)) {
+        await _handleEmailNotVerifiedLogin(_emailController.text.trim());
+        return;
+      }
       if (_mode == _AuthMode.login && _isAccountDeactivatedError(error)) {
         await _handleDeactivatedLogin(_emailController.text.trim());
         return;
@@ -139,6 +151,20 @@ extension _LoginPageActions on _LoginPageState {
     return message.contains('deactivated');
   }
 
+  bool _isEmailNotVerifiedError(ApiException error) {
+    final code = error.code?.trim().toUpperCase();
+    if (code == 'EMAIL_NOT_VERIFIED') {
+      return true;
+    }
+    final message = error.message.toLowerCase();
+    return message.contains('not verified');
+  }
+
+  bool _isEmailVerificationRequiredError(ApiException error) {
+    final code = error.code?.trim().toUpperCase();
+    return code == 'EMAIL_VERIFICATION_REQUIRED';
+  }
+
   Future<void> _handleDeactivatedLogin(String rawEmail) async {
     final email = rawEmail.trim().toLowerCase();
     if (email.isEmpty) {
@@ -208,6 +234,160 @@ extension _LoginPageActions on _LoginPageState {
         _errorText = _authText(
           en: 'Could not send reactivation link. Please try again.',
           lv: 'Neizdevās nosūtīt reaktivācijas saiti. Mēģini vēlreiz.',
+        );
+      });
+    }
+  }
+
+  Future<void> _handleEmailNotVerifiedLogin(String rawEmail) async {
+    final email = rawEmail.trim().toLowerCase();
+    if (email.isEmpty) {
+      _updateState(() {
+        _errorText = _authText(
+          en: 'Email is not verified. Enter your email to request verification link.',
+          lv: 'E-pasts nav verificēts. Ievadi e-pastu, lai pieprasītu verifikācijas saiti.',
+        );
+      });
+      return;
+    }
+
+    final shouldSend = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(
+            _authText(en: 'Email not verified', lv: 'E-pasts nav verificēts'),
+          ),
+          content: Text(
+            _authText(
+              en: 'Send verification link to $email?',
+              lv: 'Nosūtīt verifikācijas saiti uz $email?',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(_authText(en: 'Cancel', lv: 'Atcelt')),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(_authText(en: 'Send link', lv: 'Sūtīt saiti')),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!mounted || shouldSend != true) {
+      return;
+    }
+
+    try {
+      await widget.controller.requestEmailVerificationLink(email: email);
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _authText(
+          en: 'Verification link sent. Check your email.',
+          lv: 'Verifikācijas saite nosūtīta. Pārbaudi e-pastu.',
+        ),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _errorText = error.message;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _errorText = _authText(
+          en: 'Could not send verification link. Please try again.',
+          lv: 'Neizdevās nosūtīt verifikācijas saiti. Mēģini vēlreiz.',
+        );
+      });
+    }
+  }
+
+  Future<void> _handleRegisterEmailVerification(
+    String rawEmail,
+    String backendMessage,
+  ) async {
+    final email = rawEmail.trim().toLowerCase();
+    final message = backendMessage.trim().isNotEmpty
+        ? backendMessage.trim()
+        : _authText(
+            en: 'Verification email sent. Please verify your email before logging in.',
+            lv: 'Verifikācijas e-pasts nosūtīts. Pirms ielogošanās verificē e-pastu.',
+          );
+
+    _updateState(() {
+      _mode = _AuthMode.login;
+      _repeatController.clear();
+      _passwordController.clear();
+      _errorText = null;
+    });
+
+    final shouldResend = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(
+            _authText(en: 'Verify your email', lv: 'Verificē savu e-pastu'),
+          ),
+          content: Text(
+            email.isEmpty
+                ? message
+                : '$message\n\n${_authText(en: 'Email:', lv: 'E-pasts:')} $email',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(_authText(en: 'Close', lv: 'Aizvērt')),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(_authText(en: 'Resend link', lv: 'Sūtīt vēlreiz')),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!mounted || shouldResend != true || email.isEmpty) {
+      return;
+    }
+
+    try {
+      await widget.controller.requestEmailVerificationLink(email: email);
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        _authText(
+          en: 'Verification link sent. Check your email.',
+          lv: 'Verifikācijas saite nosūtīta. Pārbaudi e-pastu.',
+        ),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _errorText = error.message;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _errorText = _authText(
+          en: 'Could not send verification link. Please try again.',
+          lv: 'Neizdevās nosūtīt verifikācijas saiti. Mēģini vēlreiz.',
         );
       });
     }

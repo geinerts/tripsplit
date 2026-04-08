@@ -69,6 +69,8 @@ function build_me_payload(array $user): array
     $firstName = normalize_me_name_value($user['first_name'] ?? null);
     $lastName = normalize_me_name_value($user['last_name'] ?? null);
     $accountStatus = user_account_status($user);
+    $emailVerified = user_email_is_verified($user);
+    $emailVerificationRequired = user_has_email_credentials($user) && !$emailVerified;
 
     return [
         'id' => (int) $user['id'],
@@ -79,6 +81,8 @@ function build_me_payload(array $user): array
         // Backward-compatible field: now mirrors display_name.
         'nickname' => me_display_name($user),
         'email' => $email !== '' ? $email : null,
+        'email_verified' => $emailVerified,
+        'email_verification_required' => $emailVerificationRequired,
         'needs_credentials' => $needsCredentials,
         'account_status' => $accountStatus,
         'deactivated_at' => $accountStatus === 'active'

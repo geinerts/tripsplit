@@ -11,6 +11,8 @@ function api_action_handlers(): array
     $handlers = [
         'forgot_password'  => 'forgot_password_action',
         'reset_password'   => 'reset_password_action',
+        'request_email_verification_link' => 'request_email_verification_link_action',
+        'confirm_email_verification' => 'confirm_email_verification_action',
         'register_proof'   => 'register_proof_action',
         'register'         => 'register_action',
         'login'            => 'login_action',

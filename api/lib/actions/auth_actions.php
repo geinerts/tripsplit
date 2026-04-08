@@ -176,7 +176,7 @@ function register_action(): void
         if ($hasNameColumns) {
             $stmt = $pdo->prepare(
                 'INSERT INTO ' . $usersTable . ' (first_name, last_name, nickname, email, password_hash, credentials_required, email_verified_at, device_token)
-                 VALUES (:first_name, :last_name, :nickname, :email, :password_hash, 0, CURRENT_TIMESTAMP, :device_token)
+                 VALUES (:first_name, :last_name, :nickname, :email, :password_hash, 0, NULL, :device_token)
                  ON DUPLICATE KEY UPDATE
                      first_name = VALUES(first_name),
                      last_name = VALUES(last_name),
@@ -184,7 +184,10 @@ function register_action(): void
                      email = VALUES(email),
                      password_hash = VALUES(password_hash),
                      credentials_required = 0,
-                     email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP)'
+                     email_verified_at = CASE
+                         WHEN email <=> VALUES(email) THEN email_verified_at
+                         ELSE NULL
+                     END'
             );
             $stmt->execute([
                 'first_name' => $firstName,
@@ -197,13 +200,16 @@ function register_action(): void
         } else {
             $stmt = $pdo->prepare(
                 'INSERT INTO ' . $usersTable . ' (nickname, email, password_hash, credentials_required, email_verified_at, device_token)
-                 VALUES (:nickname, :email, :password_hash, 0, CURRENT_TIMESTAMP, :device_token)
+                 VALUES (:nickname, :email, :password_hash, 0, NULL, :device_token)
                  ON DUPLICATE KEY UPDATE
                      nickname = VALUES(nickname),
                      email = VALUES(email),
                      password_hash = VALUES(password_hash),
                      credentials_required = 0,
-                     email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP)'
+                     email_verified_at = CASE
+                         WHEN email <=> VALUES(email) THEN email_verified_at
+                         ELSE NULL
+                     END'
             );
             $stmt->execute([
                 'nickname' => $legacyNickname,
@@ -246,6 +252,16 @@ function register_action(): void
         json_out(['ok' => false, 'error' => 'Failed to resolve user.'], 500);
     }
     assert_user_account_is_active($me);
+    if ($hasCredentials && user_requires_email_verification((array) $me)) {
+        send_email_verification_link_for_user($pdo, (array) $me);
+        json_out([
+            'ok' => true,
+            'code' => 'EMAIL_VERIFICATION_REQUIRED',
+            'email_verification_required' => true,
+            'verification_email' => strtolower(trim((string) ($me['email'] ?? ''))),
+            'message' => 'Verification email sent. Please verify your email before logging in.',
+        ]);
+    }
 
     json_out([
         'ok' => true,
@@ -298,6 +314,13 @@ function login_action(): void
     $hash = (string) ($user['password_hash'] ?? '');
     if ($hash === '' || !password_verify($password, $hash)) {
         json_out(['ok' => false, 'error' => 'Invalid email or password.'], 401);
+    }
+    if (user_requires_email_verification((array) $user)) {
+        if (user_account_status((array) $user) === 'deleted') {
+            revoke_refresh_tokens_for_user($pdo, (int) ($user['id'] ?? 0));
+            json_out(user_account_block_error_payload((array) $user), 403);
+        }
+        json_out(user_email_verification_block_error_payload((array) $user), 403);
     }
     if (!user_account_is_active((array) $user)) {
         revoke_refresh_tokens_for_user($pdo, (int) ($user['id'] ?? 0));
@@ -410,6 +433,10 @@ function refresh_session_action(): void
     $me = fetch_me_row_by_id($pdo, $userId);
     if (!$me) {
         json_out(['ok' => false, 'error' => 'User not found.'], 401);
+    }
+    if (user_requires_email_verification((array) $me)) {
+        revoke_refresh_tokens_for_user($pdo, $userId);
+        json_out(user_email_verification_block_error_payload((array) $me), 403);
     }
     if (!user_account_is_active((array) $me)) {
         revoke_refresh_tokens_for_user($pdo, $userId);

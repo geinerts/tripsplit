@@ -44,4 +44,34 @@ final class AccountLifecycleHelpersTest extends TestCase
         self::assertSame(86400, account_action_ttl_seconds('reactivate'));
         self::assertSame(3600, account_action_ttl_seconds('delete'));
     }
+
+    public function test_email_verification_helpers_for_unverified_user(): void
+    {
+        $row = [
+            'credentials_required' => 0,
+            'email' => 'person@example.com',
+            'email_verified_at' => null,
+            'account_status' => 'active',
+        ];
+        self::assertTrue(user_has_email_credentials($row));
+        self::assertTrue(user_requires_email_verification($row));
+        self::assertFalse(user_email_is_verified($row));
+
+        $payload = user_email_verification_block_error_payload($row);
+        self::assertSame(false, $payload['ok']);
+        self::assertSame('EMAIL_NOT_VERIFIED', $payload['code']);
+        self::assertNotEmpty((string) $payload['error']);
+    }
+
+    public function test_email_verification_helpers_for_verified_user(): void
+    {
+        $row = [
+            'credentials_required' => 0,
+            'email' => 'person@example.com',
+            'email_verified_at' => '2026-04-08 12:00:00',
+            'account_status' => 'active',
+        ];
+        self::assertTrue(user_email_is_verified($row));
+        self::assertFalse(user_requires_email_verification($row));
+    }
 }

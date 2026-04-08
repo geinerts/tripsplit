@@ -1,6 +1,7 @@
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/http_method.dart';
+import '../../../../core/errors/api_exception.dart';
 import '../models/auth_user_model.dart';
 
 abstract class AuthRemoteDataSource {
@@ -31,6 +32,8 @@ abstract class AuthRemoteDataSource {
   Future<AuthUserModel> getMe();
 
   Future<void> requestPasswordReset({required String email});
+
+  Future<void> requestEmailVerificationLink({required String email});
 
   Future<void> requestReactivationLink({required String email});
 
@@ -93,6 +96,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'website': '',
       },
     );
+    final requiresVerification =
+        response['email_verification_required'] == true;
+    if (requiresVerification) {
+      final backendMessage = (response['message'] as String? ?? '').trim();
+      throw ApiException(
+        backendMessage.isNotEmpty
+            ? backendMessage
+            : 'Verification email sent. Please verify your email before logging in.',
+        code: 'EMAIL_VERIFICATION_REQUIRED',
+      );
+    }
 
     final me = response['me'] as Map<String, dynamic>?;
     if (me == null) {
@@ -166,6 +180,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> requestPasswordReset({required String email}) async {
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('forgot_password'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'email': email},
+    );
+  }
+
+  @override
+  Future<void> requestEmailVerificationLink({required String email}) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('request_email_verification_link'),
       method: HttpMethod.post,
       body: <String, dynamic>{'email': email},
     );

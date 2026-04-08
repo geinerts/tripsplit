@@ -511,7 +511,8 @@ class LegacyApiClient implements ApiClient {
     }
     final normalized = code.trim().toUpperCase();
     return normalized == 'ACCOUNT_DEACTIVATED' ||
-        normalized == 'ACCOUNT_DELETED';
+        normalized == 'ACCOUNT_DELETED' ||
+        normalized == 'EMAIL_NOT_VERIFIED';
   }
 
   String _metricNameForPath(String path) {

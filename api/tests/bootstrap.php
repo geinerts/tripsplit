@@ -49,6 +49,18 @@ if (!defined('ACCOUNT_REACTIVATION_TOKEN_TTL_SEC')) {
 if (!defined('ACCOUNT_DELETION_TOKEN_TTL_SEC')) {
     define('ACCOUNT_DELETION_TOKEN_TTL_SEC', 3600);
 }
+if (!defined('EMAIL_VERIFICATION_REQUIRED')) {
+    define('EMAIL_VERIFICATION_REQUIRED', true);
+}
+if (!defined('EMAIL_VERIFICATION_TOKEN_TTL_SEC')) {
+    define('EMAIL_VERIFICATION_TOKEN_TTL_SEC', 86400);
+}
+if (!defined('EMAIL_VERIFICATION_GRACE_DAYS')) {
+    define('EMAIL_VERIFICATION_GRACE_DAYS', 7);
+}
+if (!defined('EMAIL_VERIFICATION_CLEANUP_BATCH_LIMIT')) {
+    define('EMAIL_VERIFICATION_CLEANUP_BATCH_LIMIT', 300);
+}
 
 // Load pure math + validation helpers
 require_once __DIR__ . '/../config/config_user_validation.php';

@@ -64,6 +64,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<void> requestEmailVerificationLink({required String email}) {
+    return _remote.requestEmailVerificationLink(email: email);
+  }
+
+  @override
   Future<void> requestReactivationLink({required String email}) {
     return _remote.requestReactivationLink(email: email);
   }
