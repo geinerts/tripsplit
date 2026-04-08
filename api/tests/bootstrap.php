@@ -61,6 +61,9 @@ if (!defined('EMAIL_VERIFICATION_GRACE_DAYS')) {
 if (!defined('EMAIL_VERIFICATION_CLEANUP_BATCH_LIMIT')) {
     define('EMAIL_VERIFICATION_CLEANUP_BATCH_LIMIT', 300);
 }
+if (!defined('EMAIL_CHANGE_TOKEN_TTL_SEC')) {
+    define('EMAIL_CHANGE_TOKEN_TTL_SEC', 86400);
+}
 
 // Load pure math + validation helpers
 require_once __DIR__ . '/../config/config_user_validation.php';

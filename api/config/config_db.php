@@ -47,6 +47,7 @@ function table_name(string $key): string
         'mutation_idempotency' => DB_TABLE_PREFIX . 'mutation_idempotency',
         'password_resets'      => DB_TABLE_PREFIX . 'password_resets',
         'email_verification_tokens' => DB_TABLE_PREFIX . 'email_verification_tokens',
+        'email_change_requests' => DB_TABLE_PREFIX . 'email_change_requests',
         'account_action_tokens' => DB_TABLE_PREFIX . 'account_action_tokens',
         'trip_invites'         => DB_TABLE_PREFIX . 'trip_invites',
     ];

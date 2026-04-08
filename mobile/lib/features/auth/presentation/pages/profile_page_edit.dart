@@ -501,6 +501,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             displayValue: _draftEmail.trim().isEmpty
                 ? t.notSetValue
                 : _draftEmail.trim(),
+            labelTrailing: _buildPrimaryEmailBadge(context),
             editor: _buildEmailInlineEditor,
           ),
           const Divider(height: 1),
@@ -813,6 +814,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     required String label,
     required String displayValue,
     required Widget Function(BuildContext) editor,
+    Widget? labelTrailing,
   }) {
     final isActive = _activeEditField == field;
     final t = context.l10n;
@@ -832,6 +834,10 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                     context,
                   ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
+                if (labelTrailing != null) ...[
+                  const SizedBox(height: 6),
+                  labelTrailing,
+                ],
                 const SizedBox(height: 6),
                 if (isActive)
                   editor(context)
@@ -861,6 +867,36 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                   )
                 : Icon(isActive ? Icons.check_rounded : Icons.edit_outlined),
             tooltip: isActive ? t.saveAction : t.editAction,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPrimaryEmailBadge(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final dotColor = colorScheme.primary;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: dotColor.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            _profileText(en: 'Primary', lv: 'Primārais'),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: dotColor,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ],
       ),
