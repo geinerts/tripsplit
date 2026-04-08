@@ -239,6 +239,12 @@ function email_verification_cleanup_batch_limit(): int
     return $limit;
 }
 
+function email_change_token_ttl_seconds(): int
+{
+    $ttl = (int) EMAIL_CHANGE_TOKEN_TTL_SEC;
+    return $ttl > 300 ? $ttl : 86_400;
+}
+
 function user_has_email_credentials(array $row): bool
 {
     $credentialsRequired = ((int) ($row['credentials_required'] ?? 1)) === 1;
@@ -333,6 +339,46 @@ function ensure_email_verification_tokens_table_available(PDO $pdo): void
     json_out([
         'ok' => false,
         'error' => 'Email verification token storage is not initialized. Run migration.',
+    ], 503);
+}
+
+function email_change_requests_table_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if (is_bool($cached)) {
+        return $cached;
+    }
+
+    $table = DB_TABLE_PREFIX . 'email_change_requests';
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $table)) {
+        $cached = false;
+        return $cached;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(1)
+             FROM information_schema.tables
+             WHERE table_schema = DATABASE()
+               AND table_name = :table_name'
+        );
+        $stmt->execute(['table_name' => $table]);
+        $cached = ((int) ($stmt->fetchColumn() ?: 0)) >= 1;
+    } catch (Throwable $error) {
+        $cached = false;
+    }
+
+    return $cached;
+}
+
+function ensure_email_change_requests_table_available(PDO $pdo): void
+{
+    if (email_change_requests_table_available($pdo)) {
+        return;
+    }
+    json_out([
+        'ok' => false,
+        'error' => 'Email change request storage is not initialized. Run migration.',
     ], 503);
 }
 

@@ -128,6 +128,9 @@ function build_me_payload(array $user): array
     $emailVerificationRequired = user_has_email_credentials($user) && !$emailVerified;
     $bankCountryCode = normalize_me_country_code($user['bank_country_code'] ?? null);
     $bankAccountHolder = normalize_me_profile_text_value($user['bank_account_holder'] ?? null);
+    if ($bankAccountHolder === null) {
+        $bankAccountHolder = combine_full_name($firstName, $lastName);
+    }
     $bankAccountNumber = normalize_me_profile_text_value($user['bank_account_number'] ?? null);
     $bankIban = normalize_me_profile_text_value($user['bank_iban'] ?? null);
     $bankBic = normalize_me_profile_text_value($user['bank_bic'] ?? null);

@@ -23,6 +23,7 @@ import '../features/auth/domain/usecases/forgot_password_use_case.dart';
 import '../features/auth/domain/usecases/login_use_case.dart';
 import '../features/auth/domain/usecases/register_use_case.dart';
 import '../features/auth/domain/usecases/request_account_deletion_link_use_case.dart';
+import '../features/auth/domain/usecases/request_email_change_use_case.dart';
 import '../features/auth/domain/usecases/request_email_verification_link_use_case.dart';
 import '../features/auth/domain/usecases/request_reactivation_link_use_case.dart';
 import '../features/auth/domain/usecases/set_credentials_use_case.dart';
@@ -132,6 +133,7 @@ class AppDependencies {
       ForgotPasswordUseCase(authRepository),
       RequestEmailVerificationLinkUseCase(authRepository),
       RequestReactivationLinkUseCase(authRepository),
+      RequestEmailChangeUseCase(authRepository),
       DeactivateAccountUseCase(authRepository),
       RequestAccountDeletionLinkUseCase(authRepository),
       tokenStore,

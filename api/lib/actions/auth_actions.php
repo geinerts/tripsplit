@@ -681,26 +681,23 @@ function update_profile_action(): void
         if (!is_string($passwordHash) || $passwordHash === '') {
             json_out(['ok' => false, 'error' => 'Failed to hash password.'], 500);
         }
-
-        $existsStmt = $pdo->prepare(
-            'SELECT id
-             FROM ' . $usersTable . '
-             WHERE email = :email AND id <> :id
-             LIMIT 1'
-        );
-        $existsStmt->execute([
-            'email' => $email,
-            'id' => $userId,
-        ]);
-        if ($existsStmt->fetch()) {
-            json_out(['ok' => false, 'error' => 'Email is already used by another account.'], 409);
+        $currentEmail = strtolower(trim((string) ($me['email'] ?? '')));
+        if ($currentEmail === '') {
+            json_out([
+                'ok' => false,
+                'error' => 'Add email first before updating password.',
+            ], 409);
+        }
+        if ($email !== $currentEmail) {
+            json_out([
+                'ok' => false,
+                'error' => 'Email change now requires verification. Use request_email_change endpoint.',
+            ], 409);
         }
 
-        $updateParts[] = 'email = :email';
         $updateParts[] = 'password_hash = :password_hash';
         $updateParts[] = 'credentials_required = 0';
         $updateParts[] = 'email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP)';
-        $params['email'] = $email;
         $params['password_hash'] = $passwordHash;
     }
 
@@ -743,6 +740,15 @@ function update_profile_action(): void
                 : null;
             $updateParts[] = $field . ' = :' . $field;
             $params[$field] = $normalizedValue;
+        }
+
+        $hasIban = array_key_exists('bank_iban', $body);
+        $hasCountryCode = array_key_exists('bank_country_code', $body);
+        if ($hasIban && !$hasCountryCode) {
+            $normalizedIban = normalize_profile_bank_iban($body['bank_iban'] ?? null);
+            $autoCountryCode = $normalizedIban !== null ? substr($normalizedIban, 0, 2) : null;
+            $updateParts[] = 'bank_country_code = :bank_country_code';
+            $params['bank_country_code'] = $autoCountryCode;
         }
     }
 

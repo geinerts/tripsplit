@@ -216,26 +216,16 @@ extension _ProfilePageActions on _ProfilePageState {
     _avatarBytes = widget.controller.avatarBytesFor(user);
     _initialFullName = _joinFullName(user.firstName, user.lastName);
     _initialEmail = user.email;
-    _initialBankCountryCode = (user.bankCountryCode ?? '').trim().toUpperCase();
-    _initialBankAccountHolder = (user.bankAccountHolder ?? '').trim();
-    _initialBankAccountNumber = (user.bankAccountNumber ?? '').trim();
     _initialBankIban = (user.bankIban ?? '').trim().toUpperCase();
     _initialBankBic = (user.bankBic ?? '').trim().toUpperCase();
-    _initialBankSortCode = (user.bankSortCode ?? '').trim();
-    _initialBankRoutingNumber = (user.bankRoutingNumber ?? '').trim();
     _initialRevolutHandle = (user.revolutHandle ?? '').trim();
     _initialPaypalMeLink = (user.paypalMeLink ?? '').trim();
     _fullNameController.text = _initialFullName;
     _emailController.text = user.email ?? '';
     _draftFullName = _initialFullName;
     _draftEmail = user.email ?? '';
-    _draftBankCountryCode = _initialBankCountryCode;
-    _draftBankAccountHolder = _initialBankAccountHolder;
-    _draftBankAccountNumber = _initialBankAccountNumber;
     _draftBankIban = _initialBankIban;
     _draftBankBic = _initialBankBic;
-    _draftBankSortCode = _initialBankSortCode;
-    _draftBankRoutingNumber = _initialBankRoutingNumber;
     _draftRevolutHandle = _initialRevolutHandle;
     _draftPaypalMeLink = _initialPaypalMeLink;
     _draftPassword = '';
@@ -276,16 +266,11 @@ extension _ProfilePageActions on _ProfilePageState {
 
   String _normalizeDraftText(String value) => value.trim();
 
-  String _normalizeDraftUpper(String value) => value.trim().toUpperCase();
-
   String _normalizeDraftIban(String value) =>
       value.trim().replaceAll(RegExp(r'\s+'), '').toUpperCase();
 
   String _normalizeDraftBic(String value) =>
       value.trim().replaceAll(RegExp(r'\s+'), '').toUpperCase();
-
-  String _normalizeDraftCode(String value) =>
-      value.trim().replaceAll(RegExp(r'[^A-Za-z0-9]'), '').toUpperCase();
 
   Map<String, String?> _buildPaymentDetailsPatch() {
     final patch = <String, String?>{};
@@ -303,24 +288,6 @@ extension _ProfilePageActions on _ProfilePageState {
     }
 
     putIfChanged(
-      key: 'bank_country_code',
-      initial: _initialBankCountryCode,
-      draft: _draftBankCountryCode,
-      normalize: _normalizeDraftUpper,
-    );
-    putIfChanged(
-      key: 'bank_account_holder',
-      initial: _initialBankAccountHolder,
-      draft: _draftBankAccountHolder,
-      normalize: _normalizeDraftText,
-    );
-    putIfChanged(
-      key: 'bank_account_number',
-      initial: _initialBankAccountNumber,
-      draft: _draftBankAccountNumber,
-      normalize: _normalizeDraftText,
-    );
-    putIfChanged(
       key: 'bank_iban',
       initial: _initialBankIban,
       draft: _draftBankIban,
@@ -331,18 +298,6 @@ extension _ProfilePageActions on _ProfilePageState {
       initial: _initialBankBic,
       draft: _draftBankBic,
       normalize: _normalizeDraftBic,
-    );
-    putIfChanged(
-      key: 'bank_sort_code',
-      initial: _initialBankSortCode,
-      draft: _draftBankSortCode,
-      normalize: _normalizeDraftCode,
-    );
-    putIfChanged(
-      key: 'bank_routing_number',
-      initial: _initialBankRoutingNumber,
-      draft: _draftBankRoutingNumber,
-      normalize: _normalizeDraftCode,
     );
     putIfChanged(
       key: 'revolut_handle',

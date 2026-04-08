@@ -367,6 +367,27 @@ CREATE TABLE IF NOT EXISTS trip_email_verification_tokens (
   CONSTRAINT fk_trip_email_verification_tokens_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS trip_email_change_requests (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  old_email VARCHAR(255) NOT NULL,
+  new_email VARCHAR(255) NOT NULL,
+  verify_token_hash CHAR(64) NOT NULL,
+  cancel_token_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  verified_at DATETIME NULL DEFAULT NULL,
+  cancelled_at DATETIME NULL DEFAULT NULL,
+  consumed_at DATETIME NULL DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_trip_email_change_requests_verify_hash (verify_token_hash),
+  UNIQUE KEY uq_trip_email_change_requests_cancel_hash (cancel_token_hash),
+  KEY idx_trip_email_change_requests_user_state (user_id, consumed_at, expires_at, id),
+  KEY idx_trip_email_change_requests_new_email_state (new_email, consumed_at, expires_at, id),
+  KEY idx_trip_email_change_requests_expires (expires_at),
+  CONSTRAINT fk_trip_email_change_requests_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS trip_account_action_tokens (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id INT UNSIGNED NOT NULL,

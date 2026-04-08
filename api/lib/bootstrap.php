@@ -8,6 +8,7 @@ require_once __DIR__ . '/actions/auth_actions.php';
 require_once __DIR__ . '/actions/auth_social_actions.php';
 require_once __DIR__ . '/actions/password_reset_actions.php';
 require_once __DIR__ . '/actions/email_verification_actions.php';
+require_once __DIR__ . '/actions/email_change_actions.php';
 require_once __DIR__ . '/actions/account_lifecycle_actions.php';
 require_once __DIR__ . '/actions/friends_actions.php';
 require_once __DIR__ . '/actions/trips_actions.php';

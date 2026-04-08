@@ -41,6 +41,11 @@ abstract class AuthRepository {
 
   Future<void> requestReactivationLink({required String email});
 
+  Future<void> requestEmailChange({
+    required String newEmail,
+    required String currentPassword,
+  });
+
   Future<void> deactivateAccount({required String password});
 
   Future<void> requestAccountDeletionLink({required String password});

@@ -17,6 +17,7 @@ import '../../domain/usecases/get_me_use_case.dart';
 import '../../domain/usecases/login_use_case.dart';
 import '../../domain/usecases/register_use_case.dart';
 import '../../domain/usecases/request_account_deletion_link_use_case.dart';
+import '../../domain/usecases/request_email_change_use_case.dart';
 import '../../domain/usecases/request_email_verification_link_use_case.dart';
 import '../../domain/usecases/request_reactivation_link_use_case.dart';
 import '../../domain/usecases/set_credentials_use_case.dart';
@@ -34,6 +35,7 @@ class AuthController {
     this._forgotPasswordUseCase,
     this._requestEmailVerificationLinkUseCase,
     this._requestReactivationLinkUseCase,
+    this._requestEmailChangeUseCase,
     this._deactivateAccountUseCase,
     this._requestAccountDeletionLinkUseCase,
     this._tokenStore,
@@ -55,6 +57,7 @@ class AuthController {
   final RequestEmailVerificationLinkUseCase
   _requestEmailVerificationLinkUseCase;
   final RequestReactivationLinkUseCase _requestReactivationLinkUseCase;
+  final RequestEmailChangeUseCase _requestEmailChangeUseCase;
   final DeactivateAccountUseCase _deactivateAccountUseCase;
   final RequestAccountDeletionLinkUseCase _requestAccountDeletionLinkUseCase;
   final DeviceTokenStore _tokenStore;
@@ -167,6 +170,16 @@ class AuthController {
 
   Future<void> requestReactivationLink({required String email}) {
     return _requestReactivationLinkUseCase.call(email: email);
+  }
+
+  Future<void> requestEmailChange({
+    required String newEmail,
+    required String currentPassword,
+  }) {
+    return _requestEmailChangeUseCase.call(
+      newEmail: newEmail,
+      currentPassword: currentPassword,
+    );
   }
 
   Future<void> deactivateAccount({required String password}) {
