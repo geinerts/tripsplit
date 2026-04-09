@@ -547,8 +547,11 @@ function confirm_account_deletion_action(): void
 
         $pdo->prepare(
             'DELETE FROM ' . $friendsTable . '
-             WHERE user_a_id = :user_id OR user_b_id = :user_id'
-        )->execute(['user_id' => $userId]);
+             WHERE user_a_id = :user_a_id OR user_b_id = :user_b_id'
+        )->execute([
+            'user_a_id' => $userId,
+            'user_b_id' => $userId,
+        ]);
 
         revoke_refresh_tokens_for_user($pdo, $userId);
         deactivate_push_tokens_for_user($pdo, $userId);
