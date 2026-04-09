@@ -178,98 +178,45 @@ extension _LoginPageActions on _LoginPageState {
 
   Future<_SocialAuthCredential> _signInWithGoogle() async {
     final env = AppEnv.current;
-    final clientId = env.googleServerClientId.trim();
-    final baseUrl = env.apiBaseUrl.trim();
-    if (clientId.isEmpty || baseUrl.isEmpty) {
-      throw StateError(
-        _authText(
-          en: 'Google sign-in is not configured yet.',
-          lv: 'Google pieslēgšanās vēl nav nokonfigurēta.',
-        ),
-      );
-    }
+    final serverClientId = env.googleServerClientId.trim();
 
-    final redirectUri = '$baseUrl/auth/google/callback';
-    final state = DateTime.now().microsecondsSinceEpoch.toRadixString(36);
+    final googleSignIn = GoogleSignIn(
+      scopes: const ['email', 'profile'],
+      serverClientId: serverClientId.isNotEmpty ? serverClientId : null,
+    );
 
-    final authUrl = Uri.https('accounts.google.com', '/o/oauth2/v2/auth', {
-      'client_id': clientId,
-      'redirect_uri': redirectUri,
-      'response_type': 'code',
-      'scope': 'openid email profile',
-      'state': state,
-      'prompt': 'select_account',
-    });
-
-    final completer = Completer<_SocialAuthCredential>();
-    final appLinks = AppLinks();
-    StreamSubscription<Uri>? subscription;
-
-    subscription = appLinks.uriLinkStream.listen((uri) {
-      if (uri.scheme != 'splyto' || uri.host != 'auth') return;
-      if (!uri.path.startsWith('/google')) return;
-
-      subscription?.cancel();
-
-      final error = uri.queryParameters['error'] ?? '';
-      if (error.isNotEmpty) {
-        completer.completeError(StateError(
-          _authText(
-            en: 'Google sign-in failed: $error',
-            lv: 'Google pieslēgšanās neizdevās: $error',
-          ),
-        ));
-        return;
+    try {
+      final account = await googleSignIn.signIn();
+      if (account == null) {
+        throw _SocialAuthCancelled();
       }
 
-      final returnedState = uri.queryParameters['state'] ?? '';
-      if (returnedState != state) {
-        completer.completeError(StateError(
-          _authText(
-            en: 'Google sign-in failed: invalid state.',
-            lv: 'Google pieslēgšanās neizdevās: nederīgs state.',
-          ),
-        ));
-        return;
-      }
-
-      final idToken = (uri.queryParameters['id_token'] ?? '').trim();
+      final auth = await account.authentication;
+      final idToken = (auth.idToken ?? '').trim();
       if (idToken.isEmpty) {
-        completer.completeError(StateError(
+        throw StateError(
           _authText(
-            en: 'Google sign-in failed: no id_token received.',
-            lv: 'Google pieslēgšanās neizdevās: nav saņemts id_token.',
+            en: 'Google sign-in did not return an id token.',
+            lv: 'Google pieslēgšanās neatgrieza id token.',
           ),
-        ));
-        return;
+        );
       }
 
-      final payload = _decodeJwtPayload(idToken);
-      final fullName = (payload['name'] ?? '').toString().trim();
-      final email = (payload['email'] ?? '').toString().trim();
-      completer.complete(_SocialAuthCredential(
+      final fullName = (account.displayName ?? '').trim();
+      final email = account.email.trim();
+      return _SocialAuthCredential(
         idToken: idToken,
         fullName: fullName.isEmpty ? null : fullName,
         email: email.isEmpty ? null : email,
-      ));
-    });
-
-    final launched = await launchUrl(authUrl, mode: LaunchMode.externalApplication);
-    if (!launched) {
-      subscription?.cancel();
-      throw StateError(
-        _authText(
-          en: 'Could not open Google sign-in.',
-          lv: 'Nevar atvērt Google pieslēgšanos.',
-        ),
       );
-    }
-
-    try {
-      return await completer.future.timeout(const Duration(minutes: 5));
-    } on TimeoutException {
-      subscription?.cancel();
-      throw _SocialAuthCancelled();
+    } on PlatformException catch (error) {
+      final combined = '${error.code} ${error.message ?? ''}'.toLowerCase();
+      if (combined.contains('canceled') ||
+          combined.contains('cancelled') ||
+          combined.contains('sign_in_canceled')) {
+        throw _SocialAuthCancelled();
+      }
+      rethrow;
     }
   }
 
