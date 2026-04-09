@@ -6,6 +6,8 @@ class AppEnv {
     required this.apiRequestTimeout,
     required this.googleServerClientId,
     required this.googleIosClientId,
+    required this.googleAndroidClientId,
+    required this.googleReversedClientId,
     required this.monitoringDsn,
     required this.monitoringEnvironment,
     required this.releaseChannel,
@@ -18,6 +20,8 @@ class AppEnv {
   final Duration apiRequestTimeout;
   final String googleServerClientId;
   final String googleIosClientId;
+  final String googleAndroidClientId;
+  final String googleReversedClientId;
   final String monitoringDsn;
   final String monitoringEnvironment;
   final String releaseChannel;
@@ -51,6 +55,16 @@ class AppEnv {
       'TRIPSPLIT_GOOGLE_IOS_CLIENT_ID',
       defaultValue:
           '126032869696-8tomvru488udp8n4lo01tsttan2jrqfo.apps.googleusercontent.com',
+    ),
+    googleAndroidClientId: String.fromEnvironment(
+      'TRIPSPLIT_GOOGLE_ANDROID_CLIENT_ID',
+      defaultValue:
+          '126032869696-09noi60ibsohj4lcp2i01vpb4d0omrgp.apps.googleusercontent.com',
+    ),
+    googleReversedClientId: String.fromEnvironment(
+      'TRIPSPLIT_GOOGLE_REVERSED_CLIENT_ID',
+      defaultValue:
+          'com.googleusercontent.apps.126032869696-8tomvru488udp8n4lo01tsttan2jrqfo',
     ),
     monitoringDsn: String.fromEnvironment(
       'TRIPSPLIT_SENTRY_DSN',

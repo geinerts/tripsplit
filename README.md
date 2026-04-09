@@ -126,10 +126,13 @@ Backend:
 - Configure:
   - `TRIP_SOCIAL_AUTH_GOOGLE_CLIENT_IDS`
   - `TRIP_SOCIAL_AUTH_APPLE_CLIENT_IDS`
+  - Include all Google token audiences your app can issue (typically Web + iOS + Android client IDs).
 
 Flutter build defines:
 - `TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID`
 - `TRIPSPLIT_GOOGLE_IOS_CLIENT_ID` (iOS OAuth client id)
+- `TRIPSPLIT_GOOGLE_ANDROID_CLIENT_ID` (Android OAuth client id)
+- `TRIPSPLIT_GOOGLE_REVERSED_CLIENT_ID` (from iOS `GoogleService-Info.plist` -> `REVERSED_CLIENT_ID`)
 
 Example:
 
@@ -137,12 +140,18 @@ Example:
 flutter run \
   --dart-define=TRIPSPLIT_API_BASE_URL=https://splyto.egm.lv \
   --dart-define=TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID=<google-server-client-id> \
-  --dart-define=TRIPSPLIT_GOOGLE_IOS_CLIENT_ID=<google-ios-client-id>
+  --dart-define=TRIPSPLIT_GOOGLE_IOS_CLIENT_ID=<google-ios-client-id> \
+  --dart-define=TRIPSPLIT_GOOGLE_ANDROID_CLIENT_ID=<google-android-client-id> \
+  --dart-define=TRIPSPLIT_GOOGLE_REVERSED_CLIENT_ID=<ios-reversed-client-id>
 ```
 
 iOS note:
 - Add **Sign In with Apple** capability in Xcode target (`Runner`).
 - Add Google iOS URL scheme (`REVERSED_CLIENT_ID`) in `Info.plist` when configuring Google sign-in.
+
+Android note:
+- `mobile/android/app/build.gradle.kts` contains `appAuthRedirectScheme` for `flutter_appauth`.
+- Keep this value in sync with the reversed scheme of the Android OAuth client id used in build.
 
 ## 5) GitHub Actions (CI + VPS deploy)
 

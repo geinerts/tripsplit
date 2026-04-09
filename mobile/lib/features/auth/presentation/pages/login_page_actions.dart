@@ -153,6 +153,13 @@ extension _LoginPageActions on _LoginPageState {
       _updateState(() {
         _errorText = error.message;
       });
+    } on StateError catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _errorText = error.message;
+      });
     } catch (_) {
       if (!mounted) {
         return;
@@ -170,14 +177,37 @@ extension _LoginPageActions on _LoginPageState {
   }
 
   Future<_SocialAuthCredential> _signInWithGoogle() async {
-    try {
-      final account = await _googleSignIn.signIn();
-      if (account == null) {
-        throw _SocialAuthCancelled();
-      }
+    final clientId = _googleOauthClientId.trim();
+    final redirectUri = _googleOauthRedirectUri.trim();
+    if (clientId.isEmpty || redirectUri.isEmpty) {
+      throw StateError(
+        _authText(
+          en: 'Google sign-in is not configured yet. Missing OAuth client or redirect URI.',
+          lv: 'Google pieslēgšanās vēl nav nokonfigurēta. Trūkst OAuth klienta vai redirect URI.',
+        ),
+      );
+    }
 
-      final auth = await account.authentication;
-      final idToken = (auth.idToken ?? '').trim();
+    try {
+      final tokenResponse = await _googleAppAuth.authorizeAndExchangeCode(
+        AuthorizationTokenRequest(
+          clientId,
+          redirectUri,
+          serviceConfiguration: const AuthorizationServiceConfiguration(
+            authorizationEndpoint:
+                'https://accounts.google.com/o/oauth2/v2/auth',
+            tokenEndpoint: 'https://oauth2.googleapis.com/token',
+          ),
+          scopes: const ['openid', 'email', 'profile'],
+          promptValues: const ['consent', 'select_account'],
+          additionalParameters: const {
+            'access_type': 'offline',
+            'include_granted_scopes': 'true',
+          },
+        ),
+      );
+
+      final idToken = (tokenResponse.idToken ?? '').trim();
       if (idToken.isEmpty) {
         throw StateError(
           _authText(
@@ -187,14 +217,47 @@ extension _LoginPageActions on _LoginPageState {
         );
       }
 
-      final fullName = (account.displayName ?? '').trim();
-      final email = account.email.trim();
+      final payload = _decodeJwtPayload(idToken);
+      final fullName = (payload['name'] ?? '').toString().trim();
+      final email = (payload['email'] ?? '').toString().trim();
       return _SocialAuthCredential(
         idToken: idToken,
         fullName: fullName.isEmpty ? null : fullName,
         email: email.isEmpty ? null : email,
       );
     } on _SocialAuthCancelled {
+      rethrow;
+    } on PlatformException catch (error) {
+      final code = error.code.toLowerCase();
+      final message = (error.message ?? '').toLowerCase();
+      final details = (error.details ?? '').toString().toLowerCase();
+      final combined = '$code $message $details';
+      if (combined.contains('cancelled') ||
+          combined.contains('canceled') ||
+          combined.contains('user cancelled')) {
+        throw _SocialAuthCancelled();
+      }
+      final looksLikeConfigIssue =
+          combined.contains('developer_error') ||
+          combined.contains('error 10') ||
+          combined.contains('api exception: 10') ||
+          combined.contains('12500') ||
+          combined.contains('sign_in_failed') ||
+          combined.contains('redirect_uri_mismatch') ||
+          combined.contains('invalid_request') ||
+          combined.contains('oauth');
+      if (looksLikeConfigIssue) {
+        throw StateError(
+          _authText(
+            en:
+                'Google sign-in OAuth is not fully configured for this build yet. '
+                'Check OAuth client ID, redirect URI scheme, SHA fingerprints, and download fresh Firebase config files.',
+            lv:
+                'Google OAuth pieslēgšanās šim buildam vēl nav pilnībā nokonfigurēta. '
+                'Pārbaudi OAuth klienta ID, redirect URI shēmu, SHA fingerprintus un lejupielādē svaigus Firebase konfigurācijas failus.',
+          ),
+        );
+      }
       rethrow;
     } catch (error) {
       final message = error.toString().toLowerCase();
@@ -203,6 +266,31 @@ extension _LoginPageActions on _LoginPageState {
       }
       rethrow;
     }
+  }
+
+  Map<String, dynamic> _decodeJwtPayload(String idToken) {
+    final parts = idToken.split('.');
+    if (parts.length != 3) {
+      return const {};
+    }
+    final payload = parts[1];
+    var normalized = payload.replaceAll('-', '+').replaceAll('_', '/');
+    while (normalized.length % 4 != 0) {
+      normalized += '=';
+    }
+    try {
+      final decoded = utf8.decode(base64.decode(normalized));
+      final parsed = jsonDecode(decoded);
+      if (parsed is Map<String, dynamic>) {
+        return parsed;
+      }
+      if (parsed is Map) {
+        return parsed.map((key, value) => MapEntry(key.toString(), value));
+      }
+    } catch (_) {
+      return const {};
+    }
+    return const {};
   }
 
   Future<_SocialAuthCredential> _signInWithApple() async {

@@ -97,6 +97,97 @@ function request_trip_id_for_error_log(): ?int
     return request_positive_int_field('trip_id');
 }
 
+function is_sensitive_query_key_for_error_log(string $key): bool
+{
+    $normalized = strtolower(trim($key));
+    if ($normalized === '') {
+        return false;
+    }
+
+    $exact = [
+        'token',
+        'access_token',
+        'refresh_token',
+        'id_token',
+        'password',
+        'new_password',
+        'current_password',
+        'secret',
+        'code',
+    ];
+    if (in_array($normalized, $exact, true)) {
+        return true;
+    }
+
+    return str_contains($normalized, 'token')
+        || str_contains($normalized, 'password')
+        || str_contains($normalized, 'secret');
+}
+
+function sanitize_query_value_for_error_log(mixed $value): mixed
+{
+    if (is_array($value)) {
+        $out = [];
+        foreach ($value as $key => $item) {
+            $stringKey = is_string($key) ? $key : (string) $key;
+            if (is_sensitive_query_key_for_error_log($stringKey)) {
+                $out[$key] = '[redacted]';
+                continue;
+            }
+            $out[$key] = sanitize_query_value_for_error_log($item);
+        }
+        return $out;
+    }
+
+    if (is_scalar($value) || $value === null) {
+        return $value;
+    }
+
+    return '[redacted]';
+}
+
+function sanitize_request_uri_for_error_log(string $requestUri): string
+{
+    $raw = trim($requestUri);
+    if ($raw === '') {
+        return '';
+    }
+
+    $parts = parse_url($raw);
+    if (!is_array($parts)) {
+        return $raw;
+    }
+
+    $path = (string) ($parts['path'] ?? '');
+    $query = (string) ($parts['query'] ?? '');
+    if ($query === '') {
+        return $path !== '' ? $path : $raw;
+    }
+
+    $params = [];
+    parse_str($query, $params);
+    if (!is_array($params)) {
+        return $path !== '' ? $path : $raw;
+    }
+
+    $safe = [];
+    foreach ($params as $key => $value) {
+        $stringKey = is_string($key) ? $key : (string) $key;
+        if (is_sensitive_query_key_for_error_log($stringKey)) {
+            $safe[$stringKey] = '[redacted]';
+            continue;
+        }
+        $safe[$stringKey] = sanitize_query_value_for_error_log($value);
+    }
+
+    $built = http_build_query($safe, '', '&', PHP_QUERY_RFC3986);
+    if ($built === '') {
+        return $path;
+    }
+
+    return $path . '?' . $built;
+}
+
 function log_api_exception(
     Throwable $error,
     string $action = '',
@@ -124,7 +215,7 @@ function log_api_exception(
             'type' => get_class($error),
             'code' => (int) $error->getCode(),
             'method' => (string) ($_SERVER['REQUEST_METHOD'] ?? ''),
-            'path' => (string) ($_SERVER['REQUEST_URI'] ?? ''),
+            'path' => sanitize_request_uri_for_error_log((string) ($_SERVER['REQUEST_URI'] ?? '')),
             'ip' => client_ip_address(),
         ];
 

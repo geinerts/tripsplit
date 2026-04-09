@@ -52,7 +52,7 @@ dependencies:
   qr_flutter: ^4.1.0
   share_plus: ^12.0.1
   app_links: ^6.4.1
-  google_sign_in: ^6.3.0
+  flutter_appauth: ^8.0.3
   sign_in_with_apple: ^7.0.1
 
 dev_dependencies:
