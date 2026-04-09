@@ -48,16 +48,6 @@ extension _WorkspacePageLayout on _WorkspacePageState {
     unawaited(_loadData(showLoader: false));
   }
 
-  IconData _tripStatusIcon() {
-    if (_isTripActive) {
-      return Icons.play_circle_fill;
-    }
-    if (_isTripSettling) {
-      return Icons.payments_outlined;
-    }
-    return Icons.archive_outlined;
-  }
-
   Widget _buildBody(BuildContext context) {
     if (_isStartingWithAddExpense) {
       return _buildWorkspaceLoadingSurface(context);
@@ -102,24 +92,40 @@ extension _WorkspacePageLayout on _WorkspacePageState {
         color: isDark
             ? Theme.of(context).scaffoldBackgroundColor
             : _splytoCreamBg,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return <Widget>[
-              SliverToBoxAdapter(child: _buildOverviewPanel(context, snapshot)),
-              SliverAppBar(
-                pinned: true,
-                automaticallyImplyLeading: false,
-                primary: false,
-                toolbarHeight: 84,
-                collapsedHeight: 84,
-                backgroundColor: Colors.transparent,
-                surfaceTintColor: Colors.transparent,
-                elevation: 0,
-                flexibleSpace: _buildWorkspaceStickyHeader(context),
-              ),
-            ];
+        child: RefreshIndicator(
+          onRefresh: () {
+            if (_isMutating) {
+              return Future<void>.value();
+            }
+            return _loadData(showLoader: false);
           },
-          body: _buildWorkspaceTab(snapshot, tabIndex),
+          notificationPredicate: (notification) {
+            return notification.metrics.axis == Axis.vertical;
+          },
+          child: NestedScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return <Widget>[
+                SliverToBoxAdapter(
+                  child: _buildOverviewPanel(context, snapshot),
+                ),
+                SliverAppBar(
+                  pinned: true,
+                  automaticallyImplyLeading: false,
+                  primary: false,
+                  toolbarHeight: 84,
+                  collapsedHeight: 84,
+                  backgroundColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  elevation: 0,
+                  flexibleSpace: _buildWorkspaceStickyHeader(context),
+                ),
+              ];
+            },
+            body: _buildWorkspaceTab(snapshot, tabIndex),
+          ),
         ),
       ),
     );

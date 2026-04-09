@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Splyto Invite</title>
+  <style>
+    :root {
+      --bg: #0f1319;
+      --card: #171f2a;
+      --text: #eef3f7;
+      --muted: #a4b0bd;
+      --accent: #2f8f6a;
+      --accent-2: #1f6d4e;
+      --stroke: rgba(255, 255, 255, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(1000px 500px at 50% -20%, #233247 0%, var(--bg) 55%);
+      color: var(--text);
+    }
+
+    .card {
+      width: min(100%, 460px);
+      border: 1px solid var(--stroke);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+      padding: 22px 18px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 15px;
+    }
+
+    .code {
+      margin: 14px 0 18px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, 0.04);
+      word-break: break-word;
+      font-size: 14px;
+      color: #d9e8f6;
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    button,
+    a.action {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 44px;
+      border-radius: 12px;
+      border: 0;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    button.primary {
+      color: #fff;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    }
+
+    a.action.secondary {
+      color: var(--text);
+      border: 1px solid var(--stroke);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .hint {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #8f9cab;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Opening Splyto...</h1>
+    <p>If app does not open automatically, tap the button below.</p>
+    <div class="code" id="inviteCode">Invite code missing</div>
+    <div class="actions">
+      <button id="openAppBtn" type="button" class="primary">Open in app</button>
+      <a id="openPlayBtn" class="action secondary" href="https://play.google.com/store/apps/details?id=com.tripsplit.app.tripsplit">
+        Open on Google Play
+      </a>
+    </div>
+    <div class="hint">Trip invite links work only when you are logged in.</div>
+  </main>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var invite = (params.get('invite') || '').trim();
+      var codeEl = document.getElementById('inviteCode');
+      var openBtn = document.getElementById('openAppBtn');
+      var ua = navigator.userAgent.toLowerCase();
+      var isAndroid = ua.indexOf('android') >= 0;
+
+      if (invite) {
+        codeEl.textContent = invite;
+      } else {
+        codeEl.textContent = 'Invite code missing in URL';
+      }
+
+      function buildOpenTargets() {
+        var encoded = encodeURIComponent(invite);
+        return {
+          schemePrimary: 'splyto://join?invite=' + encoded,
+          schemeFallback: 'tripsplit://join?invite=' + encoded,
+          intentPrimary:
+            'intent://join?invite=' + encoded +
+            '#Intent;scheme=splyto;package=com.tripsplit.app.tripsplit;end'
+        };
+      }
+
+      function openApp() {
+        if (!invite) {
+          return;
+        }
+        var targets = buildOpenTargets();
+        if (isAndroid) {
+          window.location.href = targets.intentPrimary;
+          window.setTimeout(function () {
+            window.location.href = targets.schemePrimary;
+          }, 650);
+          return;
+        }
+        window.location.href = targets.schemePrimary;
+        window.setTimeout(function () {
+          window.location.href = targets.schemeFallback;
+        }, 650);
+      }
+
+      openBtn.addEventListener('click', openApp);
+      if (invite) {
+        window.setTimeout(openApp, 220);
+      }
+    })();
+  </script>
+</body>
+</html>

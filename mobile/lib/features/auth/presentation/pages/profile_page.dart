@@ -95,6 +95,9 @@ class _ProfilePageState extends State<ProfilePage> {
   String? _initialEmail;
   String _initialBankIban = '';
   String _initialBankBic = '';
+  String _initialBankCountryCode = '';
+  String _initialBankAccountNumber = '';
+  String _initialBankSortCode = '';
   String _initialRevolutHandle = '';
   String _initialRevolutMeLink = '';
   String _initialPaypalMeLink = '';
@@ -103,6 +106,9 @@ class _ProfilePageState extends State<ProfilePage> {
   String _draftEmail = '';
   String _draftBankIban = '';
   String _draftBankBic = '';
+  String _draftBankCountryCode = '';
+  String _draftBankAccountNumber = '';
+  String _draftBankSortCode = '';
   String _draftRevolutHandle = '';
   String _draftRevolutMeLink = '';
   String _draftPaypalMeLink = '';
@@ -170,11 +176,4 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-enum _ProfileEditField {
-  fullName,
-  email,
-  preferredCurrency,
-  bankTransfer,
-  revolut,
-  paypal,
-}
+enum _ProfileEditField { fullName, email, preferredCurrency }

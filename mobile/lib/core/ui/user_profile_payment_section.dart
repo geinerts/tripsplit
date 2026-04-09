@@ -93,7 +93,15 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
                 ),
                 title: bankTransferTitle,
                 detailLines: [
-                  _PaymentDetailLine(text: '$bankHolderLabel: $holder'),
+                  _PaymentDetailLine(
+                    text: '$bankHolderLabel: $holder',
+                    copyValue: holder,
+                    copySuccessText: _localizedText(
+                      context,
+                      en: 'Holder name copied.',
+                      lv: 'Turētāja vārds nokopēts.',
+                    ),
+                  ),
                   if (iban.isNotEmpty)
                     _PaymentDetailLine(
                       text: 'IBAN: $iban',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../app/theme/app_design.dart';
 import 'app_background.dart';
@@ -15,6 +16,11 @@ class UserProfilePage extends StatelessWidget {
     required this.bankTitle,
     required this.bankDescription,
     this.showBankDetails = true,
+    this.onRefresh,
+    this.enableNameCopy = false,
+    this.copyNameTooltip,
+    this.copyNameSuccessText,
+    this.copyNameFailureText,
   });
 
   final String title;
@@ -26,6 +32,11 @@ class UserProfilePage extends StatelessWidget {
   final String bankTitle;
   final String bankDescription;
   final bool showBankDetails;
+  final Future<void> Function()? onRefresh;
+  final bool enableNameCopy;
+  final String? copyNameTooltip;
+  final String? copyNameSuccessText;
+  final String? copyNameFailureText;
 
   @override
   Widget build(BuildContext context) {
@@ -37,51 +48,64 @@ class UserProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: AppBackground(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
-          children: [
-            _UserProfileHeroCard(
-              name: name,
-              nickname: visibleNickname,
-              avatarUrl: avatarUrl,
-              badges: badges,
-            ),
-            for (final section in sections) ...[
-              const SizedBox(height: 12),
-              section,
-            ],
-            if (showBankDetails) ...[
-              const SizedBox(height: 12),
-              UserProfileSectionCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.account_balance_outlined,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          bankTitle,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      bankDescription,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppDesign.mutedColor(context),
-                      ),
-                    ),
-                  ],
-                ),
+        child: RefreshIndicator(
+          onRefresh: onRefresh ?? () async {},
+          notificationPredicate: (_) => onRefresh != null,
+          child: ListView(
+            physics: onRefresh == null
+                ? null
+                : const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
+            children: [
+              _UserProfileHeroCard(
+                name: name,
+                nickname: visibleNickname,
+                avatarUrl: avatarUrl,
+                badges: badges,
+                enableNameCopy: enableNameCopy,
+                copyNameTooltip: copyNameTooltip,
+                copyNameSuccessText: copyNameSuccessText,
+                copyNameFailureText: copyNameFailureText,
               ),
+              for (final section in sections) ...[
+                const SizedBox(height: 12),
+                section,
+              ],
+              if (showBankDetails) ...[
+                const SizedBox(height: 12),
+                UserProfileSectionCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.account_balance_outlined,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            bankTitle,
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w800),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        bankDescription,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppDesign.mutedColor(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -204,12 +228,20 @@ class _UserProfileHeroCard extends StatelessWidget {
     this.nickname,
     this.avatarUrl,
     this.badges = const <String>[],
+    this.enableNameCopy = false,
+    this.copyNameTooltip,
+    this.copyNameSuccessText,
+    this.copyNameFailureText,
   });
 
   final String name;
   final String? nickname;
   final String? avatarUrl;
   final List<String> badges;
+  final bool enableNameCopy;
+  final String? copyNameTooltip;
+  final String? copyNameSuccessText;
+  final String? copyNameFailureText;
 
   @override
   Widget build(BuildContext context) {
@@ -235,12 +267,28 @@ class _UserProfileHeroCard extends StatelessWidget {
         children: [
           _UserProfileAvatar(name: name, avatarUrl: avatarUrl),
           const SizedBox(height: 10),
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Text(
+                  name,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              if (enableNameCopy && name.trim().isNotEmpty) ...[
+                const SizedBox(width: 4),
+                _UserProfileNameCopyButton(
+                  value: name.trim(),
+                  tooltip: copyNameTooltip,
+                  successText: copyNameSuccessText,
+                  failureText: copyNameFailureText,
+                ),
+              ],
+            ],
           ),
           if (nickname != null) ...[
             const SizedBox(height: 4),
@@ -262,6 +310,61 @@ class _UserProfileHeroCard extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+class _UserProfileNameCopyButton extends StatelessWidget {
+  const _UserProfileNameCopyButton({
+    required this.value,
+    this.tooltip,
+    this.successText,
+    this.failureText,
+  });
+
+  final String value;
+  final String? tooltip;
+  final String? successText;
+  final String? failureText;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        try {
+          await Clipboard.setData(ClipboardData(text: value));
+          if (!context.mounted) {
+            return;
+          }
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.hideCurrentSnackBar();
+          messenger.showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              content: Text(successText ?? 'Name copied.'),
+            ),
+          );
+        } catch (_) {
+          if (!context.mounted) {
+            return;
+          }
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.hideCurrentSnackBar();
+          messenger.showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              content: Text(failureText ?? 'Could not copy name.'),
+            ),
+          );
+        }
+      },
+      tooltip: tooltip ?? MaterialLocalizations.of(context).copyButtonLabel,
+      icon: Icon(
+        Icons.content_copy_rounded,
+        size: 20,
+        color: AppDesign.mutedColor(context),
+      ),
+      visualDensity: VisualDensity.compact,
     );
   }
 }

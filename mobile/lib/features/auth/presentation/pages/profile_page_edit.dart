@@ -60,8 +60,11 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
       _draftEmail = _emailController.text.trim();
+      _draftBankCountryCode = _initialBankCountryCode;
+      _draftBankAccountNumber = _initialBankAccountNumber;
       _draftBankIban = _initialBankIban;
       _draftBankBic = _initialBankBic;
+      _draftBankSortCode = _initialBankSortCode;
       _draftRevolutHandle = _initialRevolutHandle;
       _draftRevolutMeLink = _initialRevolutMeLink;
       _draftPaypalMeLink = _initialPaypalMeLink;
@@ -83,8 +86,11 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
       _draftEmail = _emailController.text.trim();
+      _draftBankCountryCode = _initialBankCountryCode;
+      _draftBankAccountNumber = _initialBankAccountNumber;
       _draftBankIban = _initialBankIban;
       _draftBankBic = _initialBankBic;
+      _draftBankSortCode = _initialBankSortCode;
       _draftRevolutHandle = _initialRevolutHandle;
       _draftRevolutMeLink = _initialRevolutMeLink;
       _draftPaypalMeLink = _initialPaypalMeLink;
@@ -232,17 +238,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                 _draftPreferredCurrencyCode,
               );
           break;
-        case _ProfileEditField.bankTransfer:
-          _draftBankIban = _draftBankIban.trim();
-          _draftBankBic = _draftBankBic.trim();
-          break;
-        case _ProfileEditField.revolut:
-          _draftRevolutHandle = _draftRevolutHandle.trim();
-          _draftRevolutMeLink = _draftRevolutMeLink.trim();
-          break;
-        case _ProfileEditField.paypal:
-          _draftPaypalMeLink = _draftPaypalMeLink.trim();
-          break;
       }
     });
   }
@@ -276,51 +271,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
 
   void _onDraftRepeatPasswordChanged(String value) {
     _draftRepeatPassword = value;
-    if (_editErrorText != null) {
-      _updateState(() {
-        _editErrorText = null;
-      });
-    }
-  }
-
-  void _onDraftBankIbanChanged(String value) {
-    _draftBankIban = value;
-    if (_editErrorText != null) {
-      _updateState(() {
-        _editErrorText = null;
-      });
-    }
-  }
-
-  void _onDraftBankBicChanged(String value) {
-    _draftBankBic = value;
-    if (_editErrorText != null) {
-      _updateState(() {
-        _editErrorText = null;
-      });
-    }
-  }
-
-  void _onDraftRevolutHandleChanged(String value) {
-    _draftRevolutHandle = value;
-    if (_editErrorText != null) {
-      _updateState(() {
-        _editErrorText = null;
-      });
-    }
-  }
-
-  void _onDraftRevolutMeLinkChanged(String value) {
-    _draftRevolutMeLink = value;
-    if (_editErrorText != null) {
-      _updateState(() {
-        _editErrorText = null;
-      });
-    }
-  }
-
-  void _onDraftPaypalMeLinkChanged(String value) {
-    _draftPaypalMeLink = value;
     if (_editErrorText != null) {
       _updateState(() {
         _editErrorText = null;
@@ -441,45 +391,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         return;
       }
       _draftPreferredCurrencyCode = proposed;
-    } else if (field == _ProfileEditField.bankTransfer) {
-      final proposedIban = _draftBankIban.trim().toUpperCase();
-      final proposedBic = _draftBankBic.trim().toUpperCase();
-      final currentIban = _initialBankIban.trim().toUpperCase();
-      final currentBic = _initialBankBic.trim().toUpperCase();
-      if (proposedIban == currentIban && proposedBic == currentBic) {
-        _updateState(() {
-          _activeEditField = null;
-          _editErrorText = null;
-        });
-        return;
-      }
-      _draftBankIban = proposedIban;
-      _draftBankBic = proposedBic;
-    } else if (field == _ProfileEditField.revolut) {
-      final proposedHandle = _draftRevolutHandle.trim();
-      final currentHandle = _initialRevolutHandle.trim();
-      final proposedMe = _draftRevolutMeLink.trim();
-      final currentMe = _initialRevolutMeLink.trim();
-      if (proposedHandle == currentHandle && proposedMe == currentMe) {
-        _updateState(() {
-          _activeEditField = null;
-          _editErrorText = null;
-        });
-        return;
-      }
-      _draftRevolutHandle = proposedHandle;
-      _draftRevolutMeLink = proposedMe;
-    } else if (field == _ProfileEditField.paypal) {
-      final proposed = _draftPaypalMeLink.trim();
-      final current = _initialPaypalMeLink.trim();
-      if (proposed == current) {
-        _updateState(() {
-          _activeEditField = null;
-          _editErrorText = null;
-        });
-        return;
-      }
-      _draftPaypalMeLink = proposed;
     }
 
     final success = await _onSavePressed();
@@ -551,33 +462,17 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             editor: _buildPreferredCurrencyInlineEditor,
           ),
           const Divider(height: 1),
-          _buildEditableProfileRow(
+          _buildProfileSectionTile(
             context: context,
-            field: _ProfileEditField.bankTransfer,
-            label: _profileText(
-              en: 'Bank transfer (IBAN / SWIFT)',
-              lv: 'Bankas pārskaitījums (IBAN / SWIFT)',
+            title: _profileText(en: 'Payment method', lv: 'Maksājuma metode'),
+            icon: Icons.account_balance_wallet_outlined,
+            subtitle: _profileText(
+              en: 'Bank transfer, Revolut, PayPal.me',
+              lv: 'Bankas pārskaitījums, Revolut, PayPal.me',
             ),
-            displayValue: _bankTransferDisplayValue(t.notSetValue),
-            editor: _buildBankTransferInlineEditor,
-          ),
-          const Divider(height: 1),
-          _buildEditableProfileRow(
-            context: context,
-            field: _ProfileEditField.revolut,
-            label: _profileText(en: 'Revolut', lv: 'Revolut'),
-            displayValue: _revolutDisplayValue(t.notSetValue),
-            editor: _buildRevolutInlineEditor,
-          ),
-          const Divider(height: 1),
-          _buildEditableProfileRow(
-            context: context,
-            field: _ProfileEditField.paypal,
-            label: 'PayPal.me',
-            displayValue: _draftPaypalMeLink.trim().isEmpty
-                ? t.notSetValue
-                : _draftPaypalMeLink.trim(),
-            editor: _buildPaypalInlineEditor,
+            onTap: _isSubmitting || _isLoading
+                ? null
+                : () => unawaited(_openPaymentInfoPage()),
           ),
           if (_editErrorText != null) ...[
             const SizedBox(height: 10),
@@ -1208,138 +1103,101 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     );
   }
 
-  String _bankTransferDisplayValue(String notSetLabel) {
-    final iban = _draftBankIban.trim();
-    final bic = _draftBankBic.trim();
-    if (iban.isEmpty && bic.isEmpty) {
-      return notSetLabel;
+  Future<void> _openPaymentInfoPage() async {
+    if (_isSubmitting || _isLoading) {
+      return;
     }
-    if (iban.isNotEmpty && bic.isNotEmpty) {
-      return 'IBAN: $iban\nSWIFT: $bic';
-    }
-    if (iban.isNotEmpty) {
-      return 'IBAN: $iban';
-    }
-    return 'SWIFT: $bic';
-  }
-
-  Widget _buildBankTransferInlineEditor(BuildContext context) {
-    return Column(
-      children: [
-        _buildPaymentTextField(
-          key: ValueKey('edit-bank-iban-inline-$_editSession'),
-          label: 'IBAN',
-          hint: _profileText(
-            en: 'Example: LV80BANK0000435195001',
-            lv: 'Piemērs: LV80BANK0000435195001',
-          ),
-          initialValue: _draftBankIban,
-          onChanged: _onDraftBankIbanChanged,
-          textInputAction: TextInputAction.next,
+    final result = await Navigator.of(context).push<_PaymentInfoEditorResult>(
+      MaterialPageRoute<_PaymentInfoEditorResult>(
+        fullscreenDialog: true,
+        builder: (pageContext) => _PaymentInfoEditorPage(
+          initialBankCountryCode: _draftBankCountryCode,
+          initialBankAccountNumber: _draftBankAccountNumber,
+          initialBankIban: _draftBankIban,
+          initialBankBic: _draftBankBic,
+          initialBankSortCode: _draftBankSortCode,
+          initialRevolutHandle: _draftRevolutHandle,
+          initialRevolutMeLink: _draftRevolutMeLink,
+          initialPaypalMeLink: _draftPaypalMeLink,
         ),
-        const SizedBox(height: 8),
-        _buildPaymentTextField(
-          key: ValueKey('edit-bank-bic-inline-$_editSession'),
-          label: 'BIC / SWIFT',
-          hint: _profileText(en: '8 or 11 chars', lv: '8 vai 11 simboli'),
-          initialValue: _draftBankBic,
-          onChanged: _onDraftBankBicChanged,
-          textInputAction: TextInputAction.done,
-          onSubmitted: (_) => _saveInlineField(_ProfileEditField.bankTransfer),
-        ),
-        const SizedBox(height: 6),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            _profileText(
-              en: 'Account holder name comes from your profile full name.',
-              lv: 'Konta turētāja vārds tiek ņemts no profila pilnā vārda.',
-            ),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppDesign.mutedColor(context),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRevolutInlineEditor(BuildContext context) {
-    return Column(
-      children: [
-        _buildPaymentTextField(
-          key: ValueKey('edit-revolut-me-inline-$_editSession'),
-          label: 'Revolut.me',
-          hint: _profileText(
-            en: 'revolut.me/username',
-            lv: 'revolut.me/lietotajs',
-          ),
-          initialValue: _draftRevolutMeLink,
-          onChanged: _onDraftRevolutMeLinkChanged,
-          textInputAction: TextInputAction.next,
-        ),
-        const SizedBox(height: 8),
-        _buildPaymentTextField(
-          key: ValueKey('edit-revolut-inline-$_editSession'),
-          label: _profileText(en: 'Revtag', lv: 'Revtag'),
-          hint: _profileText(en: '@username', lv: '@lietotajs'),
-          initialValue: _draftRevolutHandle,
-          onChanged: _onDraftRevolutHandleChanged,
-          textInputAction: TextInputAction.done,
-          onSubmitted: (_) => _saveInlineField(_ProfileEditField.revolut),
-        ),
-      ],
-    );
-  }
-
-  String _revolutDisplayValue(String notSetLabel) {
-    final meLink = _draftRevolutMeLink.trim();
-    if (meLink.isNotEmpty) {
-      return meLink;
-    }
-    final revtag = _draftRevolutHandle.trim();
-    if (revtag.isNotEmpty) {
-      return revtag;
-    }
-    return notSetLabel;
-  }
-
-  Widget _buildPaypalInlineEditor(BuildContext context) {
-    return _buildPaymentTextField(
-      key: ValueKey('edit-paypal-inline-$_editSession'),
-      label: 'PayPal.me',
-      hint: _profileText(
-        en: 'paypal.me/username or username',
-        lv: 'paypal.me/lietotajs vai lietotajs',
       ),
-      initialValue: _draftPaypalMeLink,
-      onChanged: _onDraftPaypalMeLinkChanged,
-      textInputAction: TextInputAction.done,
-      onSubmitted: (_) => _saveInlineField(_ProfileEditField.paypal),
     );
+
+    if (!mounted || result == null) {
+      return;
+    }
+
+    _updateState(() {
+      _draftBankCountryCode = result.bankCountryCode.trim().toUpperCase();
+      _draftBankAccountNumber = result.bankAccountNumber.trim();
+      _draftBankIban = result.bankIban.trim().toUpperCase();
+      _draftBankBic = result.bankBic.trim().toUpperCase();
+      _draftBankSortCode = result.bankSortCode.trim();
+      _draftRevolutHandle = result.revolutHandle.trim();
+      _draftRevolutMeLink = result.revolutMeLink.trim();
+      _draftPaypalMeLink = result.paypalMeLink.trim();
+      _activeEditField = null;
+      _editErrorText = null;
+      _errorText = null;
+    });
+
+    await _savePaymentDetailsOnly();
   }
 
-  Widget _buildPaymentTextField({
-    required Key key,
-    required String label,
-    required String hint,
-    required String initialValue,
-    required ValueChanged<String> onChanged,
-    required TextInputAction textInputAction,
-    ValueChanged<String>? onSubmitted,
-  }) {
-    return TextFormField(
-      key: key,
-      initialValue: initialValue,
-      textInputAction: textInputAction,
-      decoration: InputDecoration(
-        isDense: true,
-        labelText: label,
-        hintText: hint,
-      ),
-      onChanged: onChanged,
-      onFieldSubmitted: onSubmitted,
-    );
+  Future<void> _savePaymentDetailsOnly() async {
+    if (_isSubmitting || _isLoading) {
+      return;
+    }
+    final paymentPatch = _buildPaymentDetailsPatch();
+    if (paymentPatch.isEmpty) {
+      _showSnack(context.l10n.noChangesToSave);
+      return;
+    }
+
+    _updateState(() {
+      _isSubmitting = true;
+      _editErrorText = null;
+      _errorText = null;
+    });
+
+    try {
+      final updated = await widget.controller.updateProfile(
+        paymentDetails: paymentPatch,
+      );
+      if (!mounted) {
+        return;
+      }
+      _applyUser(updated);
+      _showSnack(
+        _profileText(
+          en: 'Payment info updated.',
+          lv: 'Maksājumu info atjaunināta.',
+        ),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _editErrorText = error.message;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _editErrorText = _profileText(
+          en: 'Could not save payment info. Please try again.',
+          lv: 'Neizdevās saglabāt maksājumu info. Mēģini vēlreiz.',
+        );
+      });
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   Widget _buildFullNameInlineEditor(BuildContext context) {
@@ -1392,6 +1250,650 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           onFieldSubmitted: (_) => _saveInlineField(_ProfileEditField.email),
         ),
       ],
+    );
+  }
+}
+
+enum _PaymentInfoMethod { bankTransfer, revolut, paypal }
+
+enum _BankTransferRegion { europe, uk }
+
+class _PaymentInfoEditorResult {
+  const _PaymentInfoEditorResult({
+    required this.bankCountryCode,
+    required this.bankAccountNumber,
+    required this.bankIban,
+    required this.bankBic,
+    required this.bankSortCode,
+    required this.revolutHandle,
+    required this.revolutMeLink,
+    required this.paypalMeLink,
+  });
+
+  final String bankCountryCode;
+  final String bankAccountNumber;
+  final String bankIban;
+  final String bankBic;
+  final String bankSortCode;
+  final String revolutHandle;
+  final String revolutMeLink;
+  final String paypalMeLink;
+}
+
+class _PaymentInfoEditorPage extends StatefulWidget {
+  const _PaymentInfoEditorPage({
+    required this.initialBankCountryCode,
+    required this.initialBankAccountNumber,
+    required this.initialBankIban,
+    required this.initialBankBic,
+    required this.initialBankSortCode,
+    required this.initialRevolutHandle,
+    required this.initialRevolutMeLink,
+    required this.initialPaypalMeLink,
+  });
+
+  final String initialBankCountryCode;
+  final String initialBankAccountNumber;
+  final String initialBankIban;
+  final String initialBankBic;
+  final String initialBankSortCode;
+  final String initialRevolutHandle;
+  final String initialRevolutMeLink;
+  final String initialPaypalMeLink;
+
+  @override
+  State<_PaymentInfoEditorPage> createState() => _PaymentInfoEditorPageState();
+}
+
+class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
+  late final TextEditingController _bankAccountNumberController;
+  late final TextEditingController _bankIbanController;
+  late final TextEditingController _bankBicController;
+  late final TextEditingController _bankSortCodeController;
+  late final TextEditingController _revolutHandleController;
+  late final TextEditingController _revolutMeController;
+  late final TextEditingController _paypalMeController;
+  late _PaymentInfoMethod _selectedMethod;
+  late _BankTransferRegion _bankRegion;
+  String? _formErrorText;
+  bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _bankAccountNumberController = TextEditingController(
+      text: widget.initialBankAccountNumber,
+    );
+    _bankIbanController = TextEditingController(text: widget.initialBankIban);
+    _bankBicController = TextEditingController(text: widget.initialBankBic);
+    _bankSortCodeController = TextEditingController(
+      text: widget.initialBankSortCode,
+    );
+    _revolutHandleController = TextEditingController(
+      text: widget.initialRevolutHandle,
+    );
+    _revolutMeController = TextEditingController(
+      text: widget.initialRevolutMeLink,
+    );
+    _paypalMeController = TextEditingController(
+      text: widget.initialPaypalMeLink,
+    );
+    _selectedMethod = _resolveInitialMethod();
+    _bankRegion = _resolveInitialBankRegion();
+  }
+
+  @override
+  void dispose() {
+    _bankAccountNumberController.dispose();
+    _bankIbanController.dispose();
+    _bankBicController.dispose();
+    _bankSortCodeController.dispose();
+    _revolutHandleController.dispose();
+    _revolutMeController.dispose();
+    _paypalMeController.dispose();
+    super.dispose();
+  }
+
+  _PaymentInfoMethod _resolveInitialMethod() {
+    final hasBank =
+        widget.initialBankIban.trim().isNotEmpty ||
+        widget.initialBankBic.trim().isNotEmpty ||
+        widget.initialBankSortCode.trim().isNotEmpty ||
+        widget.initialBankAccountNumber.trim().isNotEmpty;
+    if (hasBank) {
+      return _PaymentInfoMethod.bankTransfer;
+    }
+    final hasRevolut =
+        widget.initialRevolutHandle.trim().isNotEmpty ||
+        widget.initialRevolutMeLink.trim().isNotEmpty;
+    if (hasRevolut) {
+      return _PaymentInfoMethod.revolut;
+    }
+    if (widget.initialPaypalMeLink.trim().isNotEmpty) {
+      return _PaymentInfoMethod.paypal;
+    }
+    return _PaymentInfoMethod.bankTransfer;
+  }
+
+  _BankTransferRegion _resolveInitialBankRegion() {
+    final country = widget.initialBankCountryCode.trim().toUpperCase();
+    if (country == 'GB') {
+      return _BankTransferRegion.uk;
+    }
+    final hasUkSpecific =
+        widget.initialBankSortCode.trim().isNotEmpty ||
+        widget.initialBankAccountNumber.trim().isNotEmpty;
+    if (hasUkSpecific) {
+      return _BankTransferRegion.uk;
+    }
+    return _BankTransferRegion.europe;
+  }
+
+  String _txt({required String en, required String lv}) {
+    final code = Localizations.localeOf(context).languageCode.toLowerCase();
+    return code == 'lv' ? lv : en;
+  }
+
+  String _methodLabel(_PaymentInfoMethod method) {
+    switch (method) {
+      case _PaymentInfoMethod.bankTransfer:
+        return _txt(
+          en: 'Bank transfer (IBAN / SWIFT)',
+          lv: 'Bankas pārskaitījums (IBAN / SWIFT)',
+        );
+      case _PaymentInfoMethod.revolut:
+        return 'Revolut';
+      case _PaymentInfoMethod.paypal:
+        return 'PayPal.me';
+    }
+  }
+
+  String _methodHint(_PaymentInfoMethod method) {
+    switch (method) {
+      case _PaymentInfoMethod.bankTransfer:
+        return _txt(en: 'IBAN + SWIFT', lv: 'IBAN + SWIFT');
+      case _PaymentInfoMethod.revolut:
+        return _txt(en: 'Revtag / revolut.me', lv: 'Revtag / revolut.me');
+      case _PaymentInfoMethod.paypal:
+        return _txt(en: 'paypal.me link', lv: 'paypal.me saite');
+    }
+  }
+
+  IconData _methodIcon(_PaymentInfoMethod method) {
+    switch (method) {
+      case _PaymentInfoMethod.bankTransfer:
+        return Icons.account_balance_rounded;
+      case _PaymentInfoMethod.revolut:
+        return Icons.bolt_rounded;
+      case _PaymentInfoMethod.paypal:
+        return Icons.paypal_rounded;
+    }
+  }
+
+  Future<void> _openPaymentMethodPicker() async {
+    if (_isSaving) {
+      return;
+    }
+
+    final picked = await showModalBottomSheet<_PaymentInfoMethod>(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      builder: (sheetContext) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+                child: Text(
+                  _txt(
+                    en: 'Choose payment method',
+                    lv: 'Izvēlies maksājuma metodi',
+                  ),
+                  style: Theme.of(sheetContext).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              for (final method in _PaymentInfoMethod.values) ...[
+                _buildPaymentMethodOptionTile(sheetContext, method),
+                if (method != _PaymentInfoMethod.values.last)
+                  const SizedBox(height: 8),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+
+    if (!mounted || picked == null) {
+      return;
+    }
+    setState(() {
+      _selectedMethod = picked;
+      _formErrorText = null;
+    });
+  }
+
+  Widget _buildPaymentMethodOptionTile(
+    BuildContext context,
+    _PaymentInfoMethod method,
+  ) {
+    final selected = method == _selectedMethod;
+    final primary = Theme.of(context).colorScheme.primary;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: () => Navigator.of(context).pop(method),
+        child: Ink(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: selected
+                ? primary.withValues(alpha: 0.08)
+                : Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+            border: Border.all(
+              color: selected ? primary : AppDesign.cardStroke(context),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).colorScheme.surface,
+                  border: Border.all(color: AppDesign.cardStroke(context)),
+                ),
+                alignment: Alignment.center,
+                child: Icon(
+                  _methodIcon(method),
+                  size: 18,
+                  color: selected ? primary : AppDesign.mutedColor(context),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _methodLabel(method),
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _methodHint(method),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppDesign.mutedColor(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                selected ? Icons.check_circle_rounded : Icons.circle_outlined,
+                color: selected ? primary : AppDesign.mutedColor(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPaymentMethodField(BuildContext context) {
+    final method = _selectedMethod;
+    final primary = Theme.of(context).colorScheme.primary;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: _isSaving ? null : () => unawaited(_openPaymentMethodPicker()),
+        child: Ink(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppDesign.cardStroke(context)),
+            color: Theme.of(context).colorScheme.surface,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: primary.withValues(alpha: 0.10),
+                  border: Border.all(color: primary.withValues(alpha: 0.28)),
+                ),
+                alignment: Alignment.center,
+                child: Icon(_methodIcon(method), size: 18, color: primary),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _methodLabel(method),
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _txt(en: 'Tap to change', lv: 'Pieskaries, lai mainītu'),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppDesign.mutedColor(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.unfold_more_rounded,
+                color: AppDesign.mutedColor(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _saveAndClose() {
+    if (_isSaving) {
+      return;
+    }
+    var bankCountryCode = widget.initialBankCountryCode.trim().toUpperCase();
+    var bankAccountNumber = _bankAccountNumberController.text.trim();
+    var bankIban = _bankIbanController.text.trim().toUpperCase();
+    var bankBic = _bankBicController.text.trim().toUpperCase();
+    var bankSortCode = _bankSortCodeController.text.trim();
+
+    if (_selectedMethod == _PaymentInfoMethod.bankTransfer) {
+      if (_bankRegion == _BankTransferRegion.uk) {
+        final normalizedSortCode = bankSortCode.replaceAll(
+          RegExp(r'[^0-9]'),
+          '',
+        );
+        final normalizedAccountNumber = bankAccountNumber.replaceAll(
+          RegExp(r'[^0-9]'),
+          '',
+        );
+        if (normalizedSortCode.length != 6 ||
+            normalizedAccountNumber.length != 8) {
+          setState(() {
+            _formErrorText = _txt(
+              en: 'For UK transfers, sort code must be 6 digits and account number 8 digits.',
+              lv: 'UK pārskaitījumiem sort code jābūt 6 cipariem un account number 8 cipariem.',
+            );
+          });
+          return;
+        }
+        bankCountryCode = 'GB';
+        bankSortCode = normalizedSortCode;
+        bankAccountNumber = normalizedAccountNumber;
+        bankIban = '';
+        bankBic = '';
+      } else {
+        bankSortCode = '';
+        bankAccountNumber = '';
+        final ibanCountryMatch = RegExp(r'^[A-Z]{2}').firstMatch(bankIban);
+        bankCountryCode = ibanCountryMatch?.group(0) ?? '';
+      }
+    }
+
+    setState(() {
+      _isSaving = true;
+      _formErrorText = null;
+    });
+    Navigator.of(context).pop(
+      _PaymentInfoEditorResult(
+        bankCountryCode: bankCountryCode,
+        bankAccountNumber: bankAccountNumber,
+        bankIban: bankIban,
+        bankBic: bankBic,
+        bankSortCode: bankSortCode,
+        revolutHandle: _revolutHandleController.text.trim(),
+        revolutMeLink: _revolutMeController.text.trim(),
+        paypalMeLink: _paypalMeController.text.trim(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_txt(en: 'Payment info', lv: 'Maksājumu info')),
+      ),
+      body: AppBackground(
+        child: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              14,
+              16,
+              16 + MediaQuery.viewInsetsOf(context).bottom,
+            ),
+            children: [
+              AppSurfaceCard(
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _txt(en: 'Payment method', lv: 'Maksājuma metode'),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildPaymentMethodField(context),
+                    const SizedBox(height: 12),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 170),
+                      child: _buildMethodForm(context),
+                    ),
+                    if (_formErrorText != null) ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        _formErrorText!,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: _isSaving ? null : _saveAndClose,
+                        icon: _isSaving
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.save_outlined),
+                        label: Text(
+                          _txt(en: 'Save details', lv: 'Saglabāt datus'),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMethodForm(BuildContext context) {
+    switch (_selectedMethod) {
+      case _PaymentInfoMethod.bankTransfer:
+        return Column(
+          key: const ValueKey('payment-method-bank'),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _txt(en: 'Bank region', lv: 'Bankas reģions'),
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 8),
+            SegmentedButton<_BankTransferRegion>(
+              segments: [
+                ButtonSegment<_BankTransferRegion>(
+                  value: _BankTransferRegion.europe,
+                  label: Text(_txt(en: 'Europe', lv: 'Eiropa')),
+                  icon: const Icon(Icons.public_rounded),
+                ),
+                ButtonSegment<_BankTransferRegion>(
+                  value: _BankTransferRegion.uk,
+                  label: const Text('UK'),
+                  icon: const Icon(Icons.flag_rounded),
+                ),
+              ],
+              selected: <_BankTransferRegion>{_bankRegion},
+              onSelectionChanged: _isSaving
+                  ? null
+                  : (selection) {
+                      final next = selection.first;
+                      setState(() {
+                        _bankRegion = next;
+                        _formErrorText = null;
+                      });
+                    },
+            ),
+            const SizedBox(height: 12),
+            if (_bankRegion == _BankTransferRegion.uk) ...[
+              _buildTextField(
+                controller: _bankSortCodeController,
+                label: _txt(en: 'Sort code', lv: 'Sort code'),
+                hint: _txt(en: 'Example: 112233', lv: 'Piemērs: 112233'),
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 10),
+              _buildTextField(
+                controller: _bankAccountNumberController,
+                label: _txt(en: 'Account number', lv: 'Konta numurs'),
+                hint: _txt(en: '8 digits', lv: '8 cipari'),
+                textInputAction: TextInputAction.done,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _txt(
+                  en: 'For UK domestic transfers use sort code + account number.',
+                  lv: 'UK iekšzemes pārskaitījumiem izmanto sort code + account number.',
+                ),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppDesign.mutedColor(context),
+                ),
+              ),
+            ] else ...[
+              _buildTextField(
+                controller: _bankIbanController,
+                label: 'IBAN',
+                hint: _txt(
+                  en: 'Example: LV80BANK0000435195001',
+                  lv: 'Piemērs: LV80BANK0000435195001',
+                ),
+                textInputAction: TextInputAction.next,
+              ),
+              const SizedBox(height: 10),
+              _buildTextField(
+                controller: _bankBicController,
+                label: 'BIC / SWIFT',
+                hint: _txt(en: '8 or 11 chars', lv: '8 vai 11 simboli'),
+                textInputAction: TextInputAction.done,
+              ),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  _txt(
+                    en: 'Account holder name is taken from profile full name.',
+                    lv: 'Konta turētāja vārds tiek ņemts no profila pilnā vārda.',
+                  ),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppDesign.mutedColor(context),
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      case _PaymentInfoMethod.revolut:
+        return Column(
+          key: const ValueKey('payment-method-revolut'),
+          children: [
+            _buildTextField(
+              controller: _revolutMeController,
+              label: 'Revolut.me',
+              hint: _txt(en: 'revolut.me/username', lv: 'revolut.me/lietotajs'),
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 10),
+            _buildTextField(
+              controller: _revolutHandleController,
+              label: _txt(en: 'Revtag', lv: 'Revtag'),
+              hint: _txt(en: '@username', lv: '@lietotajs'),
+              textInputAction: TextInputAction.done,
+            ),
+          ],
+        );
+      case _PaymentInfoMethod.paypal:
+        return Column(
+          key: const ValueKey('payment-method-paypal'),
+          children: [
+            _buildTextField(
+              controller: _paypalMeController,
+              label: 'PayPal.me',
+              hint: _txt(
+                en: 'paypal.me/username or username',
+                lv: 'paypal.me/lietotajs vai lietotajs',
+              ),
+              textInputAction: TextInputAction.done,
+            ),
+          ],
+        );
+    }
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required TextInputAction textInputAction,
+  }) {
+    return TextField(
+      controller: controller,
+      textInputAction: textInputAction,
+      decoration: InputDecoration(
+        isDense: true,
+        labelText: label,
+        hintText: hint,
+      ),
     );
   }
 }

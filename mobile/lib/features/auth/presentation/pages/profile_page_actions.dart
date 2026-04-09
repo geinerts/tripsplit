@@ -216,8 +216,11 @@ extension _ProfilePageActions on _ProfilePageState {
     _avatarBytes = widget.controller.avatarBytesFor(user);
     _initialFullName = _joinFullName(user.firstName, user.lastName);
     _initialEmail = user.email;
+    _initialBankCountryCode = (user.bankCountryCode ?? '').trim().toUpperCase();
+    _initialBankAccountNumber = (user.bankAccountNumber ?? '').trim();
     _initialBankIban = (user.bankIban ?? '').trim().toUpperCase();
     _initialBankBic = (user.bankBic ?? '').trim().toUpperCase();
+    _initialBankSortCode = (user.bankSortCode ?? '').trim();
     _initialRevolutHandle = (user.revolutHandle ?? '').trim();
     _initialRevolutMeLink = (user.revolutMeLink ?? '').trim();
     _initialPaypalMeLink = (user.paypalMeLink ?? '').trim();
@@ -229,8 +232,11 @@ extension _ProfilePageActions on _ProfilePageState {
     _emailController.text = user.email ?? '';
     _draftFullName = _initialFullName;
     _draftEmail = user.email ?? '';
+    _draftBankCountryCode = _initialBankCountryCode;
+    _draftBankAccountNumber = _initialBankAccountNumber;
     _draftBankIban = _initialBankIban;
     _draftBankBic = _initialBankBic;
+    _draftBankSortCode = _initialBankSortCode;
     _draftRevolutHandle = _initialRevolutHandle;
     _draftRevolutMeLink = _initialRevolutMeLink;
     _draftPaypalMeLink = _initialPaypalMeLink;
@@ -279,6 +285,14 @@ extension _ProfilePageActions on _ProfilePageState {
   String _normalizeDraftBic(String value) =>
       value.trim().replaceAll(RegExp(r'\s+'), '').toUpperCase();
 
+  String _normalizeDraftCountryCode(String value) => value.trim().toUpperCase();
+
+  String _normalizeDraftSortCode(String value) =>
+      value.trim().replaceAll(RegExp(r'[^0-9]'), '');
+
+  String _normalizeDraftAccountNumber(String value) =>
+      value.trim().replaceAll(RegExp(r'[^0-9A-Za-z]'), '');
+
   Map<String, String?> _buildPaymentDetailsPatch() {
     final patch = <String, String?>{};
 
@@ -295,6 +309,18 @@ extension _ProfilePageActions on _ProfilePageState {
     }
 
     putIfChanged(
+      key: 'bank_country_code',
+      initial: _initialBankCountryCode,
+      draft: _draftBankCountryCode,
+      normalize: _normalizeDraftCountryCode,
+    );
+    putIfChanged(
+      key: 'bank_account_number',
+      initial: _initialBankAccountNumber,
+      draft: _draftBankAccountNumber,
+      normalize: _normalizeDraftAccountNumber,
+    );
+    putIfChanged(
       key: 'bank_iban',
       initial: _initialBankIban,
       draft: _draftBankIban,
@@ -305,6 +331,12 @@ extension _ProfilePageActions on _ProfilePageState {
       initial: _initialBankBic,
       draft: _draftBankBic,
       normalize: _normalizeDraftBic,
+    );
+    putIfChanged(
+      key: 'bank_sort_code',
+      initial: _initialBankSortCode,
+      draft: _draftBankSortCode,
+      normalize: _normalizeDraftSortCode,
     );
     putIfChanged(
       key: 'revolut_handle',

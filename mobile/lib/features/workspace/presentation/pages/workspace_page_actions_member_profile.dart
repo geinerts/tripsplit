@@ -2,117 +2,168 @@ part of 'workspace_page.dart';
 
 extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
   Future<void> _openTripMemberProfilePage(WorkspaceUser user) async {
+    var profileUser = user;
     final snapshot = _snapshot;
     var paidExpensesCount = 0;
     var involvedExpensesCount = 0;
     var paidTotal = 0.0;
-    final currencyCode = widget.trip.currencyCode;
-    final isOwner = (widget.trip.createdBy ?? 0) == user.id;
-    final sharedTripsFuture = widget.workspaceController
+    final isOwner = (widget.trip.createdBy ?? 0) == profileUser.id;
+    Future<List<WorkspaceSharedTrip>> sharedTripsFuture = widget
+        .workspaceController
         .loadSharedTripsWithUser(userId: user.id, limit: 20);
 
-    if (snapshot != null) {
-      for (final expense in snapshot.expenses) {
-        if (expense.paidById == user.id) {
+    void recomputeActivity(WorkspaceSnapshot? source, int userId) {
+      paidExpensesCount = 0;
+      involvedExpensesCount = 0;
+      paidTotal = 0.0;
+      if (source == null) {
+        return;
+      }
+      for (final expense in source.expenses) {
+        if (expense.paidById == userId) {
           paidExpensesCount += 1;
           paidTotal += expense.amount;
         }
-        final isParticipant = expense.participants.any((p) => p.id == user.id);
-        if (expense.paidById == user.id || isParticipant) {
+        final isParticipant = expense.participants.any((p) => p.id == userId);
+        if (expense.paidById == userId || isParticipant) {
           involvedExpensesCount += 1;
         }
       }
     }
 
+    recomputeActivity(snapshot, profileUser.id);
+
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         builder: (pageContext) {
-          final title = _plainLocalizedText(
-            en: 'Member profile',
-            lv: 'Dalībnieka profils',
-          );
-          final name = user.preferredName.trim().isEmpty
-              ? pageContext.l10n.userWithId(user.id)
-              : user.preferredName.trim();
-          final nickname = user.nickname.trim();
-          final hasDifferentNickname =
-              nickname.isNotEmpty &&
-              nickname.toLowerCase() != name.toLowerCase();
-          final roleText = isOwner
-              ? _plainLocalizedText(en: 'Trip owner', lv: 'Trip īpašnieks')
-              : _plainLocalizedText(en: 'Member', lv: 'Dalībnieks');
-          final readyText = user.isReadyToSettle
-              ? _plainLocalizedText(
-                  en: 'Ready for settlement',
-                  lv: 'Gatavs norēķiniem',
-                )
-              : _plainLocalizedText(
-                  en: 'Not ready for settlement',
-                  lv: 'Nav gatavs norēķiniem',
-                );
-          final holderName = (user.bankAccountHolder ?? '').trim().isNotEmpty
-              ? (user.bankAccountHolder ?? '').trim()
-              : name;
-          return UserProfilePage(
-            title: title,
-            name: name,
-            nickname: hasDifferentNickname ? nickname : null,
-            avatarUrl: user.avatarThumbUrl ?? user.avatarUrl,
-            badges: [roleText, readyText],
-            bankTitle: _plainLocalizedText(
-              en: 'Bank details',
-              lv: 'Bankas dati',
-            ),
-            bankDescription: _plainLocalizedText(
-              en: 'IBAN and payout details will be added here in a next update.',
-              lv: 'IBAN un izmaksu dati šeit tiks pievienoti nākamajā atjauninājumā.',
-            ),
-            showBankDetails: false,
-            sections: [
-              UserProfilePaymentDetailsSection(
-                sectionTitle: _plainLocalizedText(
-                  en: 'Payment details',
-                  lv: 'Maksājumu dati',
+          return StatefulBuilder(
+            builder: (profileContext, setProfileState) {
+              Future<void> refreshProfile() async {
+                final tripsRequest = widget.workspaceController
+                    .loadSharedTripsWithUser(userId: profileUser.id, limit: 20);
+                setProfileState(() {
+                  sharedTripsFuture = tripsRequest;
+                });
+
+                await _loadData(showLoader: false);
+                if (!mounted) {
+                  return;
+                }
+
+                final fresh = _snapshot;
+                WorkspaceUser? refreshedUser;
+                if (fresh != null) {
+                  recomputeActivity(fresh, profileUser.id);
+                  for (final candidate in fresh.users) {
+                    if (candidate.id == profileUser.id) {
+                      refreshedUser = candidate;
+                      break;
+                    }
+                  }
+                }
+                setProfileState(() {
+                  if (refreshedUser != null) {
+                    profileUser = refreshedUser;
+                  }
+                });
+
+                try {
+                  await tripsRequest;
+                } catch (_) {}
+              }
+
+              final title = _plainLocalizedText(
+                en: 'Member profile',
+                lv: 'Dalībnieka profils',
+              );
+              final name = profileUser.preferredName.trim().isEmpty
+                  ? profileContext.l10n.userWithId(profileUser.id)
+                  : profileUser.preferredName.trim();
+              final nickname = profileUser.nickname.trim();
+              final hasDifferentNickname =
+                  nickname.isNotEmpty &&
+                  nickname.toLowerCase() != name.toLowerCase();
+              final roleText = isOwner
+                  ? _plainLocalizedText(en: 'Trip owner', lv: 'Trip īpašnieks')
+                  : _plainLocalizedText(en: 'Member', lv: 'Dalībnieks');
+              final readyText = profileUser.isReadyToSettle
+                  ? _plainLocalizedText(
+                      en: 'Ready for settlement',
+                      lv: 'Gatavs norēķiniem',
+                    )
+                  : _plainLocalizedText(
+                      en: 'Not ready for settlement',
+                      lv: 'Nav gatavs norēķiniem',
+                    );
+              final holderName =
+                  (profileUser.bankAccountHolder ?? '').trim().isNotEmpty
+                  ? (profileUser.bankAccountHolder ?? '').trim()
+                  : name;
+              return UserProfilePage(
+                title: title,
+                name: name,
+                nickname: hasDifferentNickname ? nickname : null,
+                avatarUrl: profileUser.avatarThumbUrl ?? profileUser.avatarUrl,
+                badges: [roleText, readyText],
+                enableNameCopy: false,
+                bankTitle: _plainLocalizedText(
+                  en: 'Bank details',
+                  lv: 'Bankas dati',
                 ),
-                emptyText: _plainLocalizedText(
-                  en: 'This member has not added payout details yet.',
-                  lv: 'Šis dalībnieks vēl nav pievienojis izmaksu datus.',
+                bankDescription: _plainLocalizedText(
+                  en: 'IBAN and payout details will be added here in a next update.',
+                  lv: 'IBAN un izmaksu dati šeit tiks pievienoti nākamajā atjauninājumā.',
                 ),
-                bankTransferTitle: _plainLocalizedText(
-                  en: 'Bank transfer',
-                  lv: 'Bankas pārskaitījums',
-                ),
-                bankHolderLabel: _plainLocalizedText(
-                  en: 'Holder',
-                  lv: 'Turētājs',
-                ),
-                bankHolderName: holderName,
-                bankIban: user.bankIban,
-                bankBic: user.bankBic,
-                revolutTitle: 'Revolut',
-                revolutHandle: user.revolutHandle,
-                revolutMeLink: user.revolutMeLink,
-                paypalTitle: 'PayPal.me',
-                paypalMeLink: user.paypalMeLink,
-                openLinkFailedText: _plainLocalizedText(
-                  en: 'Could not open payment link.',
-                  lv: 'Neizdevās atvērt maksājuma saiti.',
-                ),
-                onErrorMessage: (message) => _showSnack(message, isError: true),
-              ),
-              _buildSharedTripsSection(
-                context: pageContext,
-                future: sharedTripsFuture,
-                fallbackTrip: _fallbackSharedTripForCurrentTrip(),
-              ),
-              _buildTripActivitySection(
-                context: pageContext,
-                paidExpensesCount: paidExpensesCount,
-                paidTotal: paidTotal,
-                involvedExpensesCount: involvedExpensesCount,
-                currencyCode: currencyCode,
-              ),
-            ],
+                showBankDetails: false,
+                onRefresh: refreshProfile,
+                sections: [
+                  UserProfilePaymentDetailsSection(
+                    sectionTitle: _plainLocalizedText(
+                      en: 'Payment details',
+                      lv: 'Maksājumu dati',
+                    ),
+                    emptyText: _plainLocalizedText(
+                      en: 'This member has not added payout details yet.',
+                      lv: 'Šis dalībnieks vēl nav pievienojis izmaksu datus.',
+                    ),
+                    bankTransferTitle: _plainLocalizedText(
+                      en: 'Bank transfer',
+                      lv: 'Bankas pārskaitījums',
+                    ),
+                    bankHolderLabel: _plainLocalizedText(
+                      en: 'Holder',
+                      lv: 'Turētājs',
+                    ),
+                    bankHolderName: holderName,
+                    bankIban: profileUser.bankIban,
+                    bankBic: profileUser.bankBic,
+                    revolutTitle: 'Revolut',
+                    revolutHandle: profileUser.revolutHandle,
+                    revolutMeLink: profileUser.revolutMeLink,
+                    paypalTitle: 'PayPal.me',
+                    paypalMeLink: profileUser.paypalMeLink,
+                    openLinkFailedText: _plainLocalizedText(
+                      en: 'Could not open payment link.',
+                      lv: 'Neizdevās atvērt maksājuma saiti.',
+                    ),
+                    onErrorMessage: (message) =>
+                        _showSnack(message, isError: true),
+                  ),
+                  _buildSharedTripsSection(
+                    context: profileContext,
+                    future: sharedTripsFuture,
+                    fallbackTrip: _fallbackSharedTripForCurrentTrip(),
+                  ),
+                  _buildTripActivitySection(
+                    context: profileContext,
+                    paidExpensesCount: paidExpensesCount,
+                    paidTotal: paidTotal,
+                    involvedExpensesCount: involvedExpensesCount,
+                    currencyCode: widget.trip.currencyCode,
+                  ),
+                ],
+              );
+            },
           );
         },
       ),

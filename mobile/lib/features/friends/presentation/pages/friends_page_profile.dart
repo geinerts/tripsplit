@@ -2,58 +2,113 @@ part of 'friends_page.dart';
 
 extension _FriendsPageProfile on _FriendsPageState {
   Future<void> _openFriendProfile(FriendUser user) async {
-    final name = _friendPrimaryName(user);
-    final sharedTripsFuture = widget.workspaceController
+    var profileUser = user;
+    Future<List<WorkspaceSharedTrip>> sharedTripsFuture = widget
+        .workspaceController
         .loadSharedTripsWithUser(userId: user.id, limit: 20);
 
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         builder: (pageContext) {
-          final holderName = (user.bankAccountHolder ?? '').trim().isNotEmpty
-              ? (user.bankAccountHolder ?? '').trim()
-              : name;
-          return UserProfilePage(
-            title: _txt(en: 'Friend profile', lv: 'Drauga profils'),
-            name: name,
-            nickname: user.nickname,
-            avatarUrl: user.avatarThumbUrl ?? user.avatarUrl,
-            sections: [
-              _buildCommonTripsSection(
-                context: pageContext,
-                future: sharedTripsFuture,
-              ),
-              UserProfilePaymentDetailsSection(
-                sectionTitle: _txt(en: 'Payment details', lv: 'Maksājumu dati'),
-                emptyText: _txt(
-                  en: 'This friend has not added payout details yet.',
-                  lv: 'Šis draugs vēl nav pievienojis izmaksu datus.',
+          return StatefulBuilder(
+            builder: (profileContext, setProfileState) {
+              Future<void> refreshProfile() async {
+                final tripsRequest = widget.workspaceController
+                    .loadSharedTripsWithUser(userId: profileUser.id, limit: 20);
+                setProfileState(() {
+                  sharedTripsFuture = tripsRequest;
+                });
+
+                await _loadSnapshot(showLoader: false);
+                if (!mounted) {
+                  return;
+                }
+
+                final snapshot = _snapshot;
+                if (snapshot != null) {
+                  for (final candidate in snapshot.friends) {
+                    if (candidate.id == profileUser.id) {
+                      setProfileState(() {
+                        profileUser = candidate;
+                      });
+                      break;
+                    }
+                  }
+                }
+
+                try {
+                  await tripsRequest;
+                } catch (_) {}
+              }
+
+              final name = _friendPrimaryName(profileUser);
+              final holderName =
+                  (profileUser.bankAccountHolder ?? '').trim().isNotEmpty
+                  ? (profileUser.bankAccountHolder ?? '').trim()
+                  : name;
+
+              return UserProfilePage(
+                title: _txt(en: 'Friend profile', lv: 'Drauga profils'),
+                name: name,
+                nickname: profileUser.nickname,
+                avatarUrl: profileUser.avatarThumbUrl ?? profileUser.avatarUrl,
+                enableNameCopy: true,
+                copyNameTooltip: _txt(
+                  en: 'Copy full name',
+                  lv: 'Kopēt pilno vārdu',
                 ),
-                bankTransferTitle: _txt(
-                  en: 'Bank transfer',
-                  lv: 'Bankas pārskaitījums',
+                copyNameSuccessText: _txt(
+                  en: 'Name copied.',
+                  lv: 'Vārds nokopēts.',
                 ),
-                bankHolderLabel: _txt(en: 'Holder', lv: 'Turētājs'),
-                bankHolderName: holderName,
-                bankIban: user.bankIban,
-                bankBic: user.bankBic,
-                revolutTitle: 'Revolut',
-                revolutHandle: user.revolutHandle,
-                revolutMeLink: user.revolutMeLink,
-                paypalTitle: 'PayPal.me',
-                paypalMeLink: user.paypalMeLink,
-                openLinkFailedText: _txt(
-                  en: 'Could not open payment link.',
-                  lv: 'Neizdevās atvērt maksājuma saiti.',
+                copyNameFailureText: _txt(
+                  en: 'Could not copy name.',
+                  lv: 'Neizdevās nokopēt vārdu.',
                 ),
-                onErrorMessage: (message) => _showSnack(message, isError: true),
-              ),
-            ],
-            bankTitle: _txt(en: 'Bank details', lv: 'Bankas dati'),
-            bankDescription: _txt(
-              en: 'IBAN and payout details will be added here in a next update.',
-              lv: 'IBAN un izmaksu dati šeit tiks pievienoti nākamajā atjauninājumā.',
-            ),
-            showBankDetails: false,
+                sections: [
+                  _buildCommonTripsSection(
+                    context: profileContext,
+                    future: sharedTripsFuture,
+                  ),
+                  UserProfilePaymentDetailsSection(
+                    sectionTitle: _txt(
+                      en: 'Payment details',
+                      lv: 'Maksājumu dati',
+                    ),
+                    emptyText: _txt(
+                      en: 'This friend has not added payout details yet.',
+                      lv: 'Šis draugs vēl nav pievienojis izmaksu datus.',
+                    ),
+                    bankTransferTitle: _txt(
+                      en: 'Bank transfer',
+                      lv: 'Bankas pārskaitījums',
+                    ),
+                    bankHolderLabel: _txt(en: 'Holder', lv: 'Turētājs'),
+                    bankHolderName: holderName,
+                    bankIban: profileUser.bankIban,
+                    bankBic: profileUser.bankBic,
+                    revolutTitle: 'Revolut',
+                    revolutHandle: profileUser.revolutHandle,
+                    revolutMeLink: profileUser.revolutMeLink,
+                    paypalTitle: 'PayPal.me',
+                    paypalMeLink: profileUser.paypalMeLink,
+                    openLinkFailedText: _txt(
+                      en: 'Could not open payment link.',
+                      lv: 'Neizdevās atvērt maksājuma saiti.',
+                    ),
+                    onErrorMessage: (message) =>
+                        _showSnack(message, isError: true),
+                  ),
+                ],
+                bankTitle: _txt(en: 'Bank details', lv: 'Bankas dati'),
+                bankDescription: _txt(
+                  en: 'IBAN and payout details will be added here in a next update.',
+                  lv: 'IBAN un izmaksu dati šeit tiks pievienoti nākamajā atjauninājumā.',
+                ),
+                showBankDetails: false,
+                onRefresh: refreshProfile,
+              );
+            },
           );
         },
       ),

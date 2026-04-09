@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.tripsplit.app.tripsplit",
+      "sha256_cert_fingerprints": [
+        "01:41:89:2C:64:69:74:AB:4F:68:2D:F8:C4:BA:63:D6:A1:00:0E:DD:82:50:2C:D0:0D:4E:3A:1B:67:58:D5:73",
+        "AF:D8:BB:90:A7:72:4A:79:8F:67:83:20:67:A4:0F:59:BC:E9:A1:EB:2D:C8:83:DF:F9:42:4D:B5:E8:D5:71:E7"
+      ]
+    }
+  }
+]

@@ -97,8 +97,7 @@ function build_trip_invite_url(string $inviteCode, string $tripName = ''): strin
     }
     $tripTag = trip_invite_trip_slug($tripName) . '-' . $code;
 
-    $separator = strpos($base, '?') === false ? '?' : '&';
-    return $base . $separator . 'invite=' . rawurlencode($tripTag);
+    return $base . '/invite?invite=' . rawurlencode($tripTag);
 }
 
 function trip_user_paid_in_preferred_currency_cents(
