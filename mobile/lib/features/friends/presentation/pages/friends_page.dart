@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
@@ -14,12 +12,15 @@ import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/responsive.dart';
+import '../../../../core/ui/user_profile_payment_section.dart';
 import '../../../../core/ui/user_profile_page.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../domain/entities/friend_request.dart';
 import '../../domain/entities/friends_section_page.dart';
 import '../../domain/entities/friend_user.dart';
 import '../../domain/entities/friends_snapshot.dart';
+import '../../../workspace/domain/entities/workspace_shared_trip.dart';
+import '../../../workspace/presentation/controllers/workspace_controller.dart';
 import '../controllers/friends_controller.dart';
 
 part 'friends_page_actions_core.dart';
@@ -46,11 +47,13 @@ class FriendsPage extends StatefulWidget {
     super.key,
     required this.controller,
     required this.authController,
+    required this.workspaceController,
     this.commandController,
   });
 
   final FriendsController controller;
   final AuthController authController;
+  final WorkspaceController workspaceController;
   final FriendsPageCommandController? commandController;
 
   @override

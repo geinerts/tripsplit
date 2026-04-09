@@ -3,16 +3,50 @@ part of 'friends_page.dart';
 extension _FriendsPageProfile on _FriendsPageState {
   Future<void> _openFriendProfile(FriendUser user) async {
     final name = _friendPrimaryName(user);
+    final sharedTripsFuture = widget.workspaceController
+        .loadSharedTripsWithUser(userId: user.id, limit: 20);
 
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         builder: (pageContext) {
+          final holderName = (user.bankAccountHolder ?? '').trim().isNotEmpty
+              ? (user.bankAccountHolder ?? '').trim()
+              : name;
           return UserProfilePage(
             title: _txt(en: 'Friend profile', lv: 'Drauga profils'),
             name: name,
             nickname: user.nickname,
             avatarUrl: user.avatarThumbUrl ?? user.avatarUrl,
-            sections: [_buildFriendPaymentDetailsSection(pageContext, user)],
+            sections: [
+              _buildCommonTripsSection(
+                context: pageContext,
+                future: sharedTripsFuture,
+              ),
+              UserProfilePaymentDetailsSection(
+                sectionTitle: _txt(en: 'Payment details', lv: 'Maksājumu dati'),
+                emptyText: _txt(
+                  en: 'This friend has not added payout details yet.',
+                  lv: 'Šis draugs vēl nav pievienojis izmaksu datus.',
+                ),
+                bankTransferTitle: _txt(
+                  en: 'Bank transfer',
+                  lv: 'Bankas pārskaitījums',
+                ),
+                bankHolderLabel: _txt(en: 'Holder', lv: 'Turētājs'),
+                bankHolderName: holderName,
+                bankIban: user.bankIban,
+                bankBic: user.bankBic,
+                revolutTitle: 'Revolut',
+                revolutHandle: user.revolutHandle,
+                paypalTitle: 'PayPal.me',
+                paypalMeLink: user.paypalMeLink,
+                openLinkFailedText: _txt(
+                  en: 'Could not open payment link.',
+                  lv: 'Neizdevās atvērt maksājuma saiti.',
+                ),
+                onErrorMessage: (message) => _showSnack(message, isError: true),
+              ),
+            ],
             bankTitle: _txt(en: 'Bank details', lv: 'Bankas dati'),
             bankDescription: _txt(
               en: 'IBAN and payout details will be added here in a next update.',
@@ -25,190 +59,132 @@ extension _FriendsPageProfile on _FriendsPageState {
     );
   }
 
-  Widget _buildFriendPaymentDetailsSection(
-    BuildContext context,
-    FriendUser user,
-  ) {
-    final iban = (user.bankIban ?? '').trim();
-    final bic = (user.bankBic ?? '').trim();
-    final revolut = (user.revolutHandle ?? '').trim();
-    final paypalRaw = (user.paypalMeLink ?? '').trim();
-    final paypalUri = _paypalUriOrNull(paypalRaw);
-    final paypalDisplay = _paypalDisplayLabel(paypalRaw, paypalUri);
-    final bankHolderRaw = (user.bankAccountHolder ?? '').trim();
-    final bankHolder = bankHolderRaw.isNotEmpty
-        ? bankHolderRaw
-        : user.preferredName;
-    final hasBank = iban.isNotEmpty || bic.isNotEmpty;
-    final hasRevolut = revolut.isNotEmpty;
-    final hasPaypal = paypalRaw.isNotEmpty;
-    final hasAny = hasBank || hasRevolut || hasPaypal;
-
+  Widget _buildCommonTripsSection({
+    required BuildContext context,
+    required Future<List<WorkspaceSharedTrip>> future,
+  }) {
     return UserProfileSectionCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      child: FutureBuilder<List<WorkspaceSharedTrip>>(
+        future: future,
+        builder: (context, snapshot) {
+          final isLoading = snapshot.connectionState == ConnectionState.waiting;
+          final hasError = snapshot.hasError;
+          final items = snapshot.data ?? const <WorkspaceSharedTrip>[];
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.account_balance_wallet_outlined,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(width: 8),
               Text(
-                _txt(en: 'Payment details', lv: 'Maksājumu dati'),
+                '${_txt(en: 'Common trips', lv: 'Kopīgie tripi')} (${items.length})',
                 style: Theme.of(
                   context,
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
               ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          if (!hasAny)
-            Text(
-              _txt(
-                en: 'This friend has not added payout details yet.',
-                lv: 'Šis draugs vēl nav pievienojis izmaksu datus.',
-              ),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppDesign.mutedColor(context),
-              ),
-            )
-          else ...[
-            if (hasBank)
-              _FriendPaymentMethodTile(
-                leading: Icon(
-                  Icons.account_balance_outlined,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                title: _txt(en: 'Bank transfer', lv: 'Bankas pārskaitījums'),
-                subtitleLines: [
-                  '${_txt(en: 'Holder', lv: 'Turētājs')}: $bankHolder',
-                  if (iban.isNotEmpty) 'IBAN: $iban',
-                  if (bic.isNotEmpty) 'SWIFT: $bic',
-                ],
-              ),
-            if (hasBank && (hasRevolut || hasPaypal)) const SizedBox(height: 8),
-            if (hasRevolut)
-              _FriendPaymentMethodTile(
-                leading: const _FriendPaymentBrandLogo(
-                  assetPath: 'assets/branding/revolut_logo.svg',
-                  semanticsLabel: 'Revolut',
-                ),
-                title: 'Revolut',
-                subtitleLines: [revolut],
-              ),
-            if (hasRevolut && hasPaypal) const SizedBox(height: 8),
-            if (hasPaypal)
-              _FriendPaymentMethodTile(
-                leading: const _FriendPaymentBrandLogo(
-                  assetPath: 'assets/branding/paypal_me_logo.svg',
-                  semanticsLabel: 'PayPal.me',
-                ),
-                title: 'PayPal.me',
-                subtitleLines: [paypalDisplay],
-                trailing: paypalUri == null
-                    ? null
-                    : Icon(
-                        Icons.open_in_new_rounded,
-                        size: 18,
-                        color: Theme.of(context).colorScheme.primary,
+              const SizedBox(height: 8),
+              if (isLoading)
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _txt(
+                          en: 'Loading common trips...',
+                          lv: 'Ielādē kopīgos tripus...',
+                        ),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppDesign.mutedColor(context),
+                        ),
                       ),
-                onTap: paypalUri == null
-                    ? null
-                    : () => unawaited(_openExternalPaymentLink(paypalUri)),
-              ),
-          ],
-        ],
+                    ),
+                  ],
+                )
+              else ...[
+                if (hasError)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(
+                      _txt(
+                        en: 'Could not load common trips right now.',
+                        lv: 'Šobrīd neizdevās ielādēt kopīgos tripus.',
+                      ),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppDesign.mutedColor(context),
+                      ),
+                    ),
+                  ),
+                if (items.isEmpty)
+                  Text(
+                    _txt(
+                      en: 'No common trips found yet.',
+                      lv: 'Kopīgi tripi vēl nav atrasti.',
+                    ),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppDesign.mutedColor(context),
+                    ),
+                  )
+                else
+                  Column(
+                    children: [
+                      for (var i = 0; i < items.length; i++) ...[
+                        _buildCommonTripTile(context, items[i]),
+                        if (i < items.length - 1) const SizedBox(height: 8),
+                      ],
+                    ],
+                  ),
+              ],
+            ],
+          );
+        },
       ),
     );
   }
 
-  Uri? _paypalUriOrNull(String rawValue) {
-    final raw = rawValue.trim();
-    if (raw.isEmpty) {
-      return null;
-    }
-    final candidate = raw.contains('://') ? raw : 'https://$raw';
-    final uri = Uri.tryParse(candidate);
-    if (uri == null) {
-      return null;
-    }
-    final scheme = uri.scheme.toLowerCase();
-    if (scheme != 'http' && scheme != 'https') {
-      return null;
-    }
-    if ((uri.host).trim().isEmpty) {
-      return null;
-    }
-    return uri;
-  }
+  Widget _buildCommonTripTile(BuildContext context, WorkspaceSharedTrip trip) {
+    final imageUrl = (trip.imageThumbUrl ?? trip.imageUrl ?? '').trim();
+    final hasImage = imageUrl.isNotEmpty;
+    final statusText = trip.isArchived
+        ? _txt(en: 'Finished', lv: 'Pabeigts')
+        : (trip.isSettling
+              ? _txt(en: 'Settling', lv: 'Norēķini')
+              : _txt(en: 'Active', lv: 'Aktīvs'));
+    final statusColor = trip.isArchived
+        ? AppDesign.mutedColor(context)
+        : (trip.isSettling
+              ? Theme.of(context).colorScheme.tertiary
+              : Theme.of(context).colorScheme.primary);
 
-  String _paypalDisplayLabel(String rawValue, Uri? uri) {
-    if (uri == null) {
-      return rawValue;
-    }
-    final host = uri.host.toLowerCase();
-    if (host == 'paypal.me' || host == 'www.paypal.me') {
-      final segments = uri.pathSegments
-          .where((s) => s.trim().isNotEmpty)
-          .toList();
-      if (segments.isEmpty) {
-        return 'paypal.me';
-      }
-      return 'paypal.me/${segments.first}';
-    }
-    return uri.toString();
-  }
-
-  Future<void> _openExternalPaymentLink(Uri uri) async {
-    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!opened) {
-      _showSnack(
-        _txt(
-          en: 'Could not open payment link.',
-          lv: 'Neizdevās atvērt maksājuma saiti.',
-        ),
-        isError: true,
-      );
-    }
-  }
-}
-
-class _FriendPaymentMethodTile extends StatelessWidget {
-  const _FriendPaymentMethodTile({
-    required this.leading,
-    required this.title,
-    required this.subtitleLines,
-    this.trailing,
-    this.onTap,
-  });
-
-  final Widget leading;
-  final String title;
-  final List<String> subtitleLines;
-  final Widget? trailing;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final content = Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 8, 10, 8),
       decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.78),
         borderRadius: BorderRadius.circular(14),
-        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.82),
-        border: Border.all(color: AppDesign.cardStroke(context)),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.outlineVariant.withValues(alpha: 0.4),
+        ),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 1),
-            child: SizedBox(
-              width: 26,
-              height: 26,
-              child: Center(child: leading),
-            ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: hasImage
+                ? Image.network(
+                    imageUrl,
+                    width: 52,
+                    height: 52,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.low,
+                    gaplessPlayback: true,
+                    errorBuilder: (_, _, _) =>
+                        _commonTripImageFallback(context),
+                  )
+                : _commonTripImageFallback(context),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -216,61 +192,80 @@ class _FriendPaymentMethodTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  trip.name.trim().isEmpty
+                      ? _txt(en: 'Trip #${trip.id}', lv: 'Trips #${trip.id}')
+                      : trip.name.trim(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(
                     context,
                   ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 3),
-                for (final line in subtitleLines)
-                  Text(
-                    line,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppDesign.mutedColor(context),
-                    ),
+                Text(
+                  _commonTripSubtitle(context, trip),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppDesign.mutedColor(context),
                   ),
+                ),
               ],
             ),
           ),
-          if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(999),
+              color: statusColor.withValues(alpha: 0.12),
+              border: Border.all(color: statusColor.withValues(alpha: 0.35)),
+            ),
+            child: Text(
+              statusText,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: statusColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
         ],
       ),
     );
+  }
 
-    if (onTap == null) {
-      return content;
-    }
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
-        child: content,
+  Widget _commonTripImageFallback(BuildContext context) {
+    return Container(
+      width: 52,
+      height: 52,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      alignment: Alignment.center,
+      child: Icon(
+        Icons.landscape_rounded,
+        size: 22,
+        color: AppDesign.mutedColor(context),
       ),
     );
   }
-}
 
-class _FriendPaymentBrandLogo extends StatelessWidget {
-  const _FriendPaymentBrandLogo({
-    required this.assetPath,
-    required this.semanticsLabel,
-  });
-
-  final String assetPath;
-  final String semanticsLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(6),
-      child: SvgPicture.asset(
-        assetPath,
-        width: 24,
-        height: 24,
-        fit: BoxFit.cover,
-        semanticsLabel: semanticsLabel,
-      ),
+  String _commonTripSubtitle(BuildContext context, WorkspaceSharedTrip trip) {
+    final dateLabel = _commonTripDateLabel(context, trip);
+    final membersText = _txt(
+      en: '${trip.membersCount} members',
+      lv: '${trip.membersCount} dalībnieki',
     );
+    return '$dateLabel • $membersText';
+  }
+
+  String _commonTripDateLabel(BuildContext context, WorkspaceSharedTrip trip) {
+    final raw = trip.archivedAt ?? trip.endedAt ?? trip.createdAt;
+    if (raw == null || raw.trim().isEmpty) {
+      return _txt(en: 'No date', lv: 'Nav datuma');
+    }
+    final parsed = DateTime.tryParse(raw);
+    if (parsed == null) {
+      return raw;
+    }
+    return MaterialLocalizations.of(context).formatMediumDate(parsed.toLocal());
   }
 }

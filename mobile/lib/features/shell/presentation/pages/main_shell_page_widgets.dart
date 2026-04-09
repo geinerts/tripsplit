@@ -55,6 +55,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
                 FriendsPage(
                   controller: widget.friendsController,
                   authController: widget.authController,
+                  workspaceController: widget.workspaceController,
                   commandController: _friendsCommandController,
                 ),
                 ProfilePage(

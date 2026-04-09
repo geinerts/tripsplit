@@ -24,6 +24,11 @@ class WorkspaceSnapshotCodec {
               'display_name': user.displayName,
               'avatar_url': user.avatarUrl,
               'avatar_thumb_url': user.avatarThumbUrl,
+              'bank_account_holder': user.bankAccountHolder,
+              'bank_iban': user.bankIban,
+              'bank_bic': user.bankBic,
+              'revolut_handle': user.revolutHandle,
+              'paypal_me_link': user.paypalMeLink,
               'is_ready_to_settle': user.isReadyToSettle,
               'ready_to_settle_at': user.readyToSettleAt,
             },
@@ -142,6 +147,12 @@ class WorkspaceSnapshotCodec {
           final avatarThumbUrl = MediaUrlResolver.normalize(
             item['avatar_thumb_url'],
           );
+          final bankAccountHolder = (item['bank_account_holder'] as String?)
+              ?.trim();
+          final bankIban = (item['bank_iban'] as String?)?.trim();
+          final bankBic = (item['bank_bic'] as String?)?.trim();
+          final revolutHandle = (item['revolut_handle'] as String?)?.trim();
+          final paypalMeLink = (item['paypal_me_link'] as String?)?.trim();
           final readyToSettleAt = (item['ready_to_settle_at'] as String?)
               ?.trim();
           return WorkspaceUser(
@@ -152,6 +163,18 @@ class WorkspaceSnapshotCodec {
                 : displayName,
             avatarUrl: avatarUrl,
             avatarThumbUrl: avatarThumbUrl,
+            bankAccountHolder:
+                bankAccountHolder == null || bankAccountHolder.isEmpty
+                ? null
+                : bankAccountHolder,
+            bankIban: bankIban == null || bankIban.isEmpty ? null : bankIban,
+            bankBic: bankBic == null || bankBic.isEmpty ? null : bankBic,
+            revolutHandle: revolutHandle == null || revolutHandle.isEmpty
+                ? null
+                : revolutHandle,
+            paypalMeLink: paypalMeLink == null || paypalMeLink.isEmpty
+                ? null
+                : paypalMeLink,
             isReadyToSettle:
                 item['is_ready_to_settle'] == true ||
                 (item['is_ready_to_settle'] as num?)?.toInt() == 1 ||

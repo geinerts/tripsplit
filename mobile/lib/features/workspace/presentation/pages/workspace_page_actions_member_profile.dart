@@ -8,7 +8,6 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
     var paidTotal = 0.0;
     final currencyCode = widget.trip.currencyCode;
     final isOwner = (widget.trip.createdBy ?? 0) == user.id;
-    final isCurrentUser = user.id == _currentUserId;
     final sharedTripsFuture = widget.workspaceController
         .loadSharedTripsWithUser(userId: user.id, limit: 20);
 
@@ -51,13 +50,15 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                   en: 'Not ready for settlement',
                   lv: 'Nav gatavs norēķiniem',
                 );
-          final youText = _plainLocalizedText(en: 'You', lv: 'Tu');
+          final holderName = (user.bankAccountHolder ?? '').trim().isNotEmpty
+              ? (user.bankAccountHolder ?? '').trim()
+              : name;
           return UserProfilePage(
             title: title,
             name: name,
             nickname: hasDifferentNickname ? nickname : null,
             avatarUrl: user.avatarThumbUrl ?? user.avatarUrl,
-            badges: [roleText, readyText, if (isCurrentUser) youText],
+            badges: [roleText, readyText],
             bankTitle: _plainLocalizedText(
               en: 'Bank details',
               lv: 'Bankas dati',
@@ -66,7 +67,38 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
               en: 'IBAN and payout details will be added here in a next update.',
               lv: 'IBAN un izmaksu dati šeit tiks pievienoti nākamajā atjauninājumā.',
             ),
+            showBankDetails: false,
             sections: [
+              UserProfilePaymentDetailsSection(
+                sectionTitle: _plainLocalizedText(
+                  en: 'Payment details',
+                  lv: 'Maksājumu dati',
+                ),
+                emptyText: _plainLocalizedText(
+                  en: 'This member has not added payout details yet.',
+                  lv: 'Šis dalībnieks vēl nav pievienojis izmaksu datus.',
+                ),
+                bankTransferTitle: _plainLocalizedText(
+                  en: 'Bank transfer',
+                  lv: 'Bankas pārskaitījums',
+                ),
+                bankHolderLabel: _plainLocalizedText(
+                  en: 'Holder',
+                  lv: 'Turētājs',
+                ),
+                bankHolderName: holderName,
+                bankIban: user.bankIban,
+                bankBic: user.bankBic,
+                revolutTitle: 'Revolut',
+                revolutHandle: user.revolutHandle,
+                paypalTitle: 'PayPal.me',
+                paypalMeLink: user.paypalMeLink,
+                openLinkFailedText: _plainLocalizedText(
+                  en: 'Could not open payment link.',
+                  lv: 'Neizdevās atvērt maksājuma saiti.',
+                ),
+                onErrorMessage: (message) => _showSnack(message, isError: true),
+              ),
               _buildSharedTripsSection(
                 context: pageContext,
                 future: sharedTripsFuture,

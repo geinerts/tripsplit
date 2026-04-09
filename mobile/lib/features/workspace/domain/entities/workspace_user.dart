@@ -5,6 +5,11 @@ class WorkspaceUser {
     this.displayName,
     this.avatarUrl,
     this.avatarThumbUrl,
+    this.bankAccountHolder,
+    this.bankIban,
+    this.bankBic,
+    this.revolutHandle,
+    this.paypalMeLink,
     this.isReadyToSettle = false,
     this.readyToSettleAt,
   });
@@ -14,6 +19,11 @@ class WorkspaceUser {
   final String? displayName;
   final String? avatarUrl;
   final String? avatarThumbUrl;
+  final String? bankAccountHolder;
+  final String? bankIban;
+  final String? bankBic;
+  final String? revolutHandle;
+  final String? paypalMeLink;
   final bool isReadyToSettle;
   final String? readyToSettleAt;
 
