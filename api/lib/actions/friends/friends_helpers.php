@@ -48,6 +48,7 @@ function friend_user_payload_from_row(array $row, bool $includePayment = false):
         'bank_iban' => normalize_me_profile_text_value($row['bank_iban'] ?? null),
         'bank_bic' => normalize_me_profile_text_value($row['bank_bic'] ?? null),
         'revolut_handle' => normalize_me_profile_text_value($row['revolut_handle'] ?? null),
+        'revolut_me_link' => normalize_me_profile_text_value($row['revolut_me_link'] ?? null),
         'paypal_me_link' => normalize_me_profile_text_value($row['paypal_me_link'] ?? null),
     ]);
 }

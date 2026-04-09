@@ -91,6 +91,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                 bankBic: user.bankBic,
                 revolutTitle: 'Revolut',
                 revolutHandle: user.revolutHandle,
+                revolutMeLink: user.revolutMeLink,
                 paypalTitle: 'PayPal.me',
                 paypalMeLink: user.paypalMeLink,
                 openLinkFailedText: _plainLocalizedText(

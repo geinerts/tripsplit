@@ -15,6 +15,7 @@ class AuthUser {
     this.bankSortCode,
     this.bankRoutingNumber,
     this.revolutHandle,
+    this.revolutMeLink,
     this.paypalMeLink,
     this.preferredCurrencyCode,
     this.avatarBase64,
@@ -37,6 +38,7 @@ class AuthUser {
   final String? bankSortCode;
   final String? bankRoutingNumber;
   final String? revolutHandle;
+  final String? revolutMeLink;
   final String? paypalMeLink;
   final String? preferredCurrencyCode;
   final String? avatarBase64;
@@ -59,6 +61,7 @@ class AuthUser {
     String? bankSortCode,
     String? bankRoutingNumber,
     String? revolutHandle,
+    String? revolutMeLink,
     String? paypalMeLink,
     String? preferredCurrencyCode,
     String? avatarBase64,
@@ -82,6 +85,7 @@ class AuthUser {
       bankSortCode: bankSortCode ?? this.bankSortCode,
       bankRoutingNumber: bankRoutingNumber ?? this.bankRoutingNumber,
       revolutHandle: revolutHandle ?? this.revolutHandle,
+      revolutMeLink: revolutMeLink ?? this.revolutMeLink,
       paypalMeLink: paypalMeLink ?? this.paypalMeLink,
       preferredCurrencyCode:
           preferredCurrencyCode ?? this.preferredCurrencyCode,

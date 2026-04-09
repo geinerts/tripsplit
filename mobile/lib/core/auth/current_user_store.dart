@@ -46,6 +46,7 @@ class CurrentUserStore {
       'bank_sort_code': user.bankSortCode,
       'bank_routing_number': user.bankRoutingNumber,
       'revolut_handle': user.revolutHandle,
+      'revolut_me_link': user.revolutMeLink,
       'paypal_me_link': user.paypalMeLink,
       'preferred_currency_code': user.preferredCurrencyCode,
       'avatar_base64': user.avatarBase64,

@@ -9,6 +9,7 @@ class WorkspaceUser {
     this.bankIban,
     this.bankBic,
     this.revolutHandle,
+    this.revolutMeLink,
     this.paypalMeLink,
     this.isReadyToSettle = false,
     this.readyToSettleAt,
@@ -23,6 +24,7 @@ class WorkspaceUser {
   final String? bankIban;
   final String? bankBic;
   final String? revolutHandle;
+  final String? revolutMeLink;
   final String? paypalMeLink;
   final bool isReadyToSettle;
   final String? readyToSettleAt;

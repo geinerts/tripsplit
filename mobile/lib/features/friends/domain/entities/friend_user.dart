@@ -9,6 +9,7 @@ class FriendUser {
     this.bankIban,
     this.bankBic,
     this.revolutHandle,
+    this.revolutMeLink,
     this.paypalMeLink,
   });
 
@@ -21,6 +22,7 @@ class FriendUser {
   final String? bankIban;
   final String? bankBic;
   final String? revolutHandle;
+  final String? revolutMeLink;
   final String? paypalMeLink;
 
   String get preferredName {
@@ -35,6 +37,7 @@ class FriendUser {
     return (bankIban ?? '').trim().isNotEmpty ||
         (bankBic ?? '').trim().isNotEmpty ||
         (revolutHandle ?? '').trim().isNotEmpty ||
+        (revolutMeLink ?? '').trim().isNotEmpty ||
         (paypalMeLink ?? '').trim().isNotEmpty;
   }
 }

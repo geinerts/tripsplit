@@ -63,6 +63,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftBankIban = _initialBankIban;
       _draftBankBic = _initialBankBic;
       _draftRevolutHandle = _initialRevolutHandle;
+      _draftRevolutMeLink = _initialRevolutMeLink;
       _draftPaypalMeLink = _initialPaypalMeLink;
       _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
       _draftPassword = '';
@@ -85,6 +86,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftBankIban = _initialBankIban;
       _draftBankBic = _initialBankBic;
       _draftRevolutHandle = _initialRevolutHandle;
+      _draftRevolutMeLink = _initialRevolutMeLink;
       _draftPaypalMeLink = _initialPaypalMeLink;
       _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
       _editErrorText = null;
@@ -236,6 +238,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           break;
         case _ProfileEditField.revolut:
           _draftRevolutHandle = _draftRevolutHandle.trim();
+          _draftRevolutMeLink = _draftRevolutMeLink.trim();
           break;
         case _ProfileEditField.paypal:
           _draftPaypalMeLink = _draftPaypalMeLink.trim();
@@ -300,6 +303,15 @@ extension _ProfilePageEditFlow on _ProfilePageState {
 
   void _onDraftRevolutHandleChanged(String value) {
     _draftRevolutHandle = value;
+    if (_editErrorText != null) {
+      _updateState(() {
+        _editErrorText = null;
+      });
+    }
+  }
+
+  void _onDraftRevolutMeLinkChanged(String value) {
+    _draftRevolutMeLink = value;
     if (_editErrorText != null) {
       _updateState(() {
         _editErrorText = null;
@@ -444,16 +456,19 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftBankIban = proposedIban;
       _draftBankBic = proposedBic;
     } else if (field == _ProfileEditField.revolut) {
-      final proposed = _draftRevolutHandle.trim();
-      final current = _initialRevolutHandle.trim();
-      if (proposed == current) {
+      final proposedHandle = _draftRevolutHandle.trim();
+      final currentHandle = _initialRevolutHandle.trim();
+      final proposedMe = _draftRevolutMeLink.trim();
+      final currentMe = _initialRevolutMeLink.trim();
+      if (proposedHandle == currentHandle && proposedMe == currentMe) {
         _updateState(() {
           _activeEditField = null;
           _editErrorText = null;
         });
         return;
       }
-      _draftRevolutHandle = proposed;
+      _draftRevolutHandle = proposedHandle;
+      _draftRevolutMeLink = proposedMe;
     } else if (field == _ProfileEditField.paypal) {
       final proposed = _draftPaypalMeLink.trim();
       final current = _initialPaypalMeLink.trim();
@@ -551,9 +566,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             context: context,
             field: _ProfileEditField.revolut,
             label: _profileText(en: 'Revolut', lv: 'Revolut'),
-            displayValue: _draftRevolutHandle.trim().isEmpty
-                ? t.notSetValue
-                : _draftRevolutHandle.trim(),
+            displayValue: _revolutDisplayValue(t.notSetValue),
             editor: _buildRevolutInlineEditor,
           ),
           const Divider(height: 1),
@@ -1252,15 +1265,43 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   }
 
   Widget _buildRevolutInlineEditor(BuildContext context) {
-    return _buildPaymentTextField(
-      key: ValueKey('edit-revolut-inline-$_editSession'),
-      label: _profileText(en: 'Revolut handle', lv: 'Revolut lietotājs'),
-      hint: _profileText(en: '@username', lv: '@lietotajs'),
-      initialValue: _draftRevolutHandle,
-      onChanged: _onDraftRevolutHandleChanged,
-      textInputAction: TextInputAction.done,
-      onSubmitted: (_) => _saveInlineField(_ProfileEditField.revolut),
+    return Column(
+      children: [
+        _buildPaymentTextField(
+          key: ValueKey('edit-revolut-me-inline-$_editSession'),
+          label: 'Revolut.me',
+          hint: _profileText(
+            en: 'revolut.me/username',
+            lv: 'revolut.me/lietotajs',
+          ),
+          initialValue: _draftRevolutMeLink,
+          onChanged: _onDraftRevolutMeLinkChanged,
+          textInputAction: TextInputAction.next,
+        ),
+        const SizedBox(height: 8),
+        _buildPaymentTextField(
+          key: ValueKey('edit-revolut-inline-$_editSession'),
+          label: _profileText(en: 'Revtag', lv: 'Revtag'),
+          hint: _profileText(en: '@username', lv: '@lietotajs'),
+          initialValue: _draftRevolutHandle,
+          onChanged: _onDraftRevolutHandleChanged,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) => _saveInlineField(_ProfileEditField.revolut),
+        ),
+      ],
     );
+  }
+
+  String _revolutDisplayValue(String notSetLabel) {
+    final meLink = _draftRevolutMeLink.trim();
+    if (meLink.isNotEmpty) {
+      return meLink;
+    }
+    final revtag = _draftRevolutHandle.trim();
+    if (revtag.isNotEmpty) {
+      return revtag;
+    }
+    return notSetLabel;
   }
 
   Widget _buildPaypalInlineEditor(BuildContext context) {

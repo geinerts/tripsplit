@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS trip_users (
   bank_sort_code VARCHAR(16) NULL,
   bank_routing_number VARCHAR(16) NULL,
   revolut_handle VARCHAR(80) NULL,
+  revolut_me_link VARCHAR(255) NULL,
   paypal_me_link VARCHAR(255) NULL,
   preferred_currency_code CHAR(3) NOT NULL DEFAULT 'EUR',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

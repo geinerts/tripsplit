@@ -597,6 +597,31 @@ function normalize_profile_revolut_handle($value): ?string
     return strpos($normalized, '@') === 0 ? $normalized : '@' . $normalized;
 }
 
+function normalize_profile_revolut_me_link($value): ?string
+{
+    $normalized = trim((string) ($value ?? ''));
+    if ($normalized === '') {
+        return null;
+    }
+
+    if (str_length($normalized) > 255) {
+        json_out(['ok' => false, 'error' => 'Revolut.me value is too long.'], 400);
+    }
+
+    if (preg_match('/^https?:\/\/(www\.)?revolut\.me\/(@?[A-Za-z0-9._-]{2,80})\/?$/i', $normalized, $match)) {
+        return 'https://revolut.me/' . ltrim($match[2], '@');
+    }
+    if (preg_match('/^(www\.)?revolut\.me\/(@?[A-Za-z0-9._-]{2,80})\/?$/i', $normalized, $match)) {
+        return 'https://revolut.me/' . ltrim($match[2], '@');
+    }
+    if (preg_match('/^@?[A-Za-z0-9._-]{2,80}$/', $normalized)) {
+        return 'https://revolut.me/' . ltrim($normalized, '@');
+    }
+
+    json_out(['ok' => false, 'error' => 'Revolut.me value is invalid.'], 400);
+    return null;
+}
+
 function normalize_profile_paypal_me_link($value): ?string
 {
     $normalized = trim((string) ($value ?? ''));
@@ -645,6 +670,7 @@ function update_profile_action(): void
     $userId = (int) $me['id'];
     $nameColumnsAvailable = users_name_columns_available($pdo);
     $paymentColumnsAvailable = users_payment_columns_available($pdo);
+    $revolutMeLinkColumnAvailable = users_revolut_me_link_column_available($pdo);
     $preferredCurrencyColumnAvailable = users_preferred_currency_column_available($pdo);
 
     $updateParts = [];
@@ -727,6 +753,9 @@ function update_profile_action(): void
         'revolut_handle' => 'normalize_profile_revolut_handle',
         'paypal_me_link' => 'normalize_profile_paypal_me_link',
     ];
+    if ($revolutMeLinkColumnAvailable) {
+        $paymentFieldNormalizers['revolut_me_link'] = 'normalize_profile_revolut_me_link';
+    }
 
     $paymentFieldWasProvided = false;
     foreach ($paymentFieldNormalizers as $field => $_normalizer) {
@@ -740,6 +769,12 @@ function update_profile_action(): void
         json_out([
             'ok' => false,
             'error' => 'Profile payment details are not available yet. Please run latest migration.',
+        ], 503);
+    }
+    if (array_key_exists('revolut_me_link', $body) && !$revolutMeLinkColumnAvailable) {
+        json_out([
+            'ok' => false,
+            'error' => 'Revolut.me profile link is not available yet. Please run latest migration.',
         ], 503);
     }
 

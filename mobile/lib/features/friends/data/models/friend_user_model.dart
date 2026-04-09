@@ -12,6 +12,7 @@ class FriendUserModel extends FriendUser {
     super.bankIban,
     super.bankBic,
     super.revolutHandle,
+    super.revolutMeLink,
     super.paypalMeLink,
   });
 
@@ -32,6 +33,7 @@ class FriendUserModel extends FriendUser {
       bankIban: (map['bank_iban'] as String?)?.trim(),
       bankBic: (map['bank_bic'] as String?)?.trim(),
       revolutHandle: (map['revolut_handle'] as String?)?.trim(),
+      revolutMeLink: (map['revolut_me_link'] as String?)?.trim(),
       paypalMeLink: (map['paypal_me_link'] as String?)?.trim(),
     );
   }

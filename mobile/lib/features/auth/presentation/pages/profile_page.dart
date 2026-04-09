@@ -96,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _initialBankIban = '';
   String _initialBankBic = '';
   String _initialRevolutHandle = '';
+  String _initialRevolutMeLink = '';
   String _initialPaypalMeLink = '';
   String _initialPreferredCurrencyCode = AppCurrencyCatalog.defaultCode;
   String _draftFullName = '';
@@ -103,6 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _draftBankIban = '';
   String _draftBankBic = '';
   String _draftRevolutHandle = '';
+  String _draftRevolutMeLink = '';
   String _draftPaypalMeLink = '';
   String _draftPreferredCurrencyCode = AppCurrencyCatalog.defaultCode;
   String _draftPassword = '';

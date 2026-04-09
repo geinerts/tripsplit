@@ -50,7 +50,7 @@ function users_payment_columns_available(PDO $pdo): bool
              FROM information_schema.columns
              WHERE table_schema = DATABASE()
                AND table_name = :table_name
-               AND column_name IN (
+                AND column_name IN (
                  \'bank_country_code\',
                  \'bank_account_holder\',
                  \'bank_account_number\',
@@ -64,6 +64,36 @@ function users_payment_columns_available(PDO $pdo): bool
         );
         $stmt->execute(['table_name' => $usersTable]);
         $cached = ((int) ($stmt->fetchColumn() ?: 0)) >= 9;
+    } catch (Throwable $error) {
+        $cached = false;
+    }
+
+    return $cached;
+}
+
+function users_revolut_me_link_column_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if (is_bool($cached)) {
+        return $cached;
+    }
+
+    $usersTable = DB_TABLE_PREFIX . 'users';
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $usersTable)) {
+        $cached = false;
+        return $cached;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(1)
+             FROM information_schema.columns
+             WHERE table_schema = DATABASE()
+               AND table_name = :table_name
+               AND column_name = \'revolut_me_link\''
+        );
+        $stmt->execute(['table_name' => $usersTable]);
+        $cached = ((int) ($stmt->fetchColumn() ?: 0)) >= 1;
     } catch (Throwable $error) {
         $cached = false;
     }
@@ -167,6 +197,7 @@ function build_me_payload(array $user): array
     $bankSortCode = normalize_me_profile_text_value($user['bank_sort_code'] ?? null);
     $bankRoutingNumber = normalize_me_profile_text_value($user['bank_routing_number'] ?? null);
     $revolutHandle = normalize_me_profile_text_value($user['revolut_handle'] ?? null);
+    $revolutMeLink = normalize_me_profile_text_value($user['revolut_me_link'] ?? null);
     $paypalMeLink = normalize_me_profile_text_value($user['paypal_me_link'] ?? null);
     $preferredCurrencyCode = normalize_profile_currency_code_or_default(
         $user['preferred_currency_code'] ?? null
@@ -199,6 +230,7 @@ function build_me_payload(array $user): array
         'bank_sort_code' => $bankSortCode,
         'bank_routing_number' => $bankRoutingNumber,
         'revolut_handle' => $revolutHandle,
+        'revolut_me_link' => $revolutMeLink,
         'paypal_me_link' => $paypalMeLink,
         'preferred_currency_code' => $preferredCurrencyCode,
         'avatar_url' => $avatarPath !== '' ? avatar_public_url($avatarPath) : null,
@@ -212,9 +244,12 @@ function fetch_me_row_by_token(PDO $pdo, string $token): ?array
     $nameSelect = users_name_columns_available($pdo)
         ? 'first_name, last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $revolutMeLinkSelect = users_revolut_me_link_column_available($pdo)
+        ? 'revolut_me_link, '
+        : 'NULL AS revolut_me_link, ';
     $paymentSelect = users_payment_columns_available($pdo)
-        ? 'bank_country_code, bank_account_holder, bank_account_number, bank_iban, bank_bic, bank_sort_code, bank_routing_number, revolut_handle, paypal_me_link, '
-        : 'NULL AS bank_country_code, NULL AS bank_account_holder, NULL AS bank_account_number, NULL AS bank_iban, NULL AS bank_bic, NULL AS bank_sort_code, NULL AS bank_routing_number, NULL AS revolut_handle, NULL AS paypal_me_link, ';
+        ? 'bank_country_code, bank_account_holder, bank_account_number, bank_iban, bank_bic, bank_sort_code, bank_routing_number, revolut_handle, ' . $revolutMeLinkSelect . 'paypal_me_link, '
+        : 'NULL AS bank_country_code, NULL AS bank_account_holder, NULL AS bank_account_number, NULL AS bank_iban, NULL AS bank_bic, NULL AS bank_sort_code, NULL AS bank_routing_number, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, ';
     $preferredCurrencySelect = users_preferred_currency_column_available($pdo)
         ? 'preferred_currency_code, '
         : '\'' . default_trip_currency_code() . '\' AS preferred_currency_code, ';
@@ -236,9 +271,12 @@ function fetch_me_row_by_id(PDO $pdo, int $userId): ?array
     $nameSelect = users_name_columns_available($pdo)
         ? 'first_name, last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $revolutMeLinkSelect = users_revolut_me_link_column_available($pdo)
+        ? 'revolut_me_link, '
+        : 'NULL AS revolut_me_link, ';
     $paymentSelect = users_payment_columns_available($pdo)
-        ? 'bank_country_code, bank_account_holder, bank_account_number, bank_iban, bank_bic, bank_sort_code, bank_routing_number, revolut_handle, paypal_me_link, '
-        : 'NULL AS bank_country_code, NULL AS bank_account_holder, NULL AS bank_account_number, NULL AS bank_iban, NULL AS bank_bic, NULL AS bank_sort_code, NULL AS bank_routing_number, NULL AS revolut_handle, NULL AS paypal_me_link, ';
+        ? 'bank_country_code, bank_account_holder, bank_account_number, bank_iban, bank_bic, bank_sort_code, bank_routing_number, revolut_handle, ' . $revolutMeLinkSelect . 'paypal_me_link, '
+        : 'NULL AS bank_country_code, NULL AS bank_account_holder, NULL AS bank_account_number, NULL AS bank_iban, NULL AS bank_bic, NULL AS bank_sort_code, NULL AS bank_routing_number, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, ';
     $preferredCurrencySelect = users_preferred_currency_column_available($pdo)
         ? 'preferred_currency_code, '
         : '\'' . default_trip_currency_code() . '\' AS preferred_currency_code, ';

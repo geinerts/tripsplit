@@ -219,6 +219,7 @@ extension _ProfilePageActions on _ProfilePageState {
     _initialBankIban = (user.bankIban ?? '').trim().toUpperCase();
     _initialBankBic = (user.bankBic ?? '').trim().toUpperCase();
     _initialRevolutHandle = (user.revolutHandle ?? '').trim();
+    _initialRevolutMeLink = (user.revolutMeLink ?? '').trim();
     _initialPaypalMeLink = (user.paypalMeLink ?? '').trim();
     _initialPreferredCurrencyCode =
         AppCurrencyCatalog.normalizeProfilePreferred(
@@ -231,6 +232,7 @@ extension _ProfilePageActions on _ProfilePageState {
     _draftBankIban = _initialBankIban;
     _draftBankBic = _initialBankBic;
     _draftRevolutHandle = _initialRevolutHandle;
+    _draftRevolutMeLink = _initialRevolutMeLink;
     _draftPaypalMeLink = _initialPaypalMeLink;
     _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
     _draftPassword = '';
@@ -308,6 +310,12 @@ extension _ProfilePageActions on _ProfilePageState {
       key: 'revolut_handle',
       initial: _initialRevolutHandle,
       draft: _draftRevolutHandle,
+      normalize: _normalizeDraftText,
+    );
+    putIfChanged(
+      key: 'revolut_me_link',
+      initial: _initialRevolutMeLink,
+      draft: _draftRevolutMeLink,
       normalize: _normalizeDraftText,
     );
     putIfChanged(

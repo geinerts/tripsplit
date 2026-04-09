@@ -28,6 +28,7 @@ class WorkspaceSnapshotCodec {
               'bank_iban': user.bankIban,
               'bank_bic': user.bankBic,
               'revolut_handle': user.revolutHandle,
+              'revolut_me_link': user.revolutMeLink,
               'paypal_me_link': user.paypalMeLink,
               'is_ready_to_settle': user.isReadyToSettle,
               'ready_to_settle_at': user.readyToSettleAt,
@@ -152,6 +153,7 @@ class WorkspaceSnapshotCodec {
           final bankIban = (item['bank_iban'] as String?)?.trim();
           final bankBic = (item['bank_bic'] as String?)?.trim();
           final revolutHandle = (item['revolut_handle'] as String?)?.trim();
+          final revolutMeLink = (item['revolut_me_link'] as String?)?.trim();
           final paypalMeLink = (item['paypal_me_link'] as String?)?.trim();
           final readyToSettleAt = (item['ready_to_settle_at'] as String?)
               ?.trim();
@@ -172,6 +174,9 @@ class WorkspaceSnapshotCodec {
             revolutHandle: revolutHandle == null || revolutHandle.isEmpty
                 ? null
                 : revolutHandle,
+            revolutMeLink: revolutMeLink == null || revolutMeLink.isEmpty
+                ? null
+                : revolutMeLink,
             paypalMeLink: paypalMeLink == null || paypalMeLink.isEmpty
                 ? null
                 : paypalMeLink,

@@ -38,6 +38,7 @@ extension _FriendsPageProfile on _FriendsPageState {
                 bankBic: user.bankBic,
                 revolutTitle: 'Revolut',
                 revolutHandle: user.revolutHandle,
+                revolutMeLink: user.revolutMeLink,
                 paypalTitle: 'PayPal.me',
                 paypalMeLink: user.paypalMeLink,
                 openLinkFailedText: _txt(

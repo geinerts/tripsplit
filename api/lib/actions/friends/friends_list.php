@@ -25,9 +25,12 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $revolutMeLinkSelect = users_revolut_me_link_column_available($pdo)
+        ? 'u.revolut_me_link, '
+        : 'NULL AS revolut_me_link, ';
     $paymentSelect = users_payment_columns_available($pdo)
-        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, u.paypal_me_link, '
-        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS paypal_me_link, ';
+        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, ' . $revolutMeLinkSelect . 'u.paypal_me_link, '
+        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, ';
     $activeFilter = users_active_filter_sql($pdo, 'u');
 
     $acceptedStmt = $pdo->prepare(
@@ -234,9 +237,12 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $revolutMeLinkSelect = users_revolut_me_link_column_available($pdo)
+        ? 'u.revolut_me_link, '
+        : 'NULL AS revolut_me_link, ';
     $paymentSelect = users_payment_columns_available($pdo)
-        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, u.paypal_me_link, '
-        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS paypal_me_link, ';
+        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, ' . $revolutMeLinkSelect . 'u.paypal_me_link, '
+        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, ';
     $activeFilter = users_active_filter_sql($pdo, 'u');
     $params = [
         'join_me_id' => $meId,

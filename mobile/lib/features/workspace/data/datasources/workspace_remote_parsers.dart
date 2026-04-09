@@ -90,6 +90,7 @@ class WorkspaceRemoteParsers {
     final bankIban = _toNullableString(item['bank_iban']);
     final bankBic = _toNullableString(item['bank_bic']);
     final revolutHandle = _toNullableString(item['revolut_handle']);
+    final revolutMeLink = _toNullableString(item['revolut_me_link']);
     final paypalMeLink = _toNullableString(item['paypal_me_link']);
     return WorkspaceUser(
       id: (item['id'] as num?)?.toInt() ?? 0,
@@ -101,6 +102,7 @@ class WorkspaceRemoteParsers {
       bankIban: bankIban,
       bankBic: bankBic,
       revolutHandle: revolutHandle,
+      revolutMeLink: revolutMeLink,
       paypalMeLink: paypalMeLink,
       isReadyToSettle: isReadyToSettle,
       readyToSettleAt: readyToSettleAt,
