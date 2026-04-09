@@ -8,6 +8,11 @@ class FriendUserModel extends FriendUser {
     super.displayName,
     super.avatarUrl,
     super.avatarThumbUrl,
+    super.bankAccountHolder,
+    super.bankIban,
+    super.bankBic,
+    super.revolutHandle,
+    super.paypalMeLink,
   });
 
   factory FriendUserModel.fromLegacyMap(Map<String, dynamic> map) {
@@ -23,6 +28,11 @@ class FriendUserModel extends FriendUser {
       displayName: (map['display_name'] as String?)?.trim(),
       avatarUrl: avatarUrl,
       avatarThumbUrl: avatarThumbUrl,
+      bankAccountHolder: (map['bank_account_holder'] as String?)?.trim(),
+      bankIban: (map['bank_iban'] as String?)?.trim(),
+      bankBic: (map['bank_bic'] as String?)?.trim(),
+      revolutHandle: (map['revolut_handle'] as String?)?.trim(),
+      paypalMeLink: (map['paypal_me_link'] as String?)?.trim(),
     );
   }
 }

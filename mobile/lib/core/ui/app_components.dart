@@ -88,12 +88,14 @@ class AppStatCard extends StatelessWidget {
     required this.value,
     required this.icon,
     this.valueColor,
+    this.valueWidget,
   });
 
   final String label;
   final String value;
   final IconData icon;
   final Color? valueColor;
+  final Widget? valueWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -106,16 +108,17 @@ class AppStatCard extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: AppDesign.mutedColor(context)),
           const SizedBox(height: 10),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.2,
-              color: valueColor ?? colors.onSurface,
-            ),
-          ),
+          valueWidget ??
+              Text(
+                value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.2,
+                  color: valueColor ?? colors.onSurface,
+                ),
+              ),
           const SizedBox(height: 2),
           Text(
             label,

@@ -30,6 +30,29 @@ class AppFormatters {
     }
   }
 
+  static NumberFormat _currencyCodeFormatter(
+    BuildContext context, {
+    required String currencyCode,
+  }) {
+    final normalizedCode = AppCurrencyCatalog.normalize(currencyCode);
+    final localeTag = Localizations.localeOf(context).toLanguageTag();
+    try {
+      return NumberFormat.currency(
+        locale: localeTag,
+        name: normalizedCode,
+        symbol: '',
+        decimalDigits: 2,
+      );
+    } catch (_) {
+      return NumberFormat.currency(
+        locale: 'en_US',
+        name: normalizedCode,
+        symbol: '',
+        decimalDigits: 2,
+      );
+    }
+  }
+
   static String currency(
     BuildContext context,
     double amount, {
@@ -65,6 +88,30 @@ class AppFormatters {
       currencyCode: currencyCode,
       signed: signed,
     );
+  }
+
+  static String currencyCodeFromCents(
+    BuildContext context,
+    int cents, {
+    String currencyCode = AppCurrencyCatalog.defaultCode,
+    bool signed = false,
+  }) {
+    final normalizedCode = AppCurrencyCatalog.normalize(currencyCode);
+    final formatted = _currencyCodeFormatter(
+      context,
+      currencyCode: normalizedCode,
+    ).format((cents / 100).abs()).trim();
+    final value = '$normalizedCode $formatted';
+    if (!signed) {
+      return value;
+    }
+    if (cents > 0) {
+      return '+$value';
+    }
+    if (cents < 0) {
+      return '-$value';
+    }
+    return value;
   }
 
   static String euro(

@@ -25,6 +25,9 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $paymentSelect = users_payment_columns_available($pdo)
+        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, u.paypal_me_link, '
+        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS paypal_me_link, ';
     $activeFilter = users_active_filter_sql($pdo, 'u');
 
     $acceptedStmt = $pdo->prepare(
@@ -33,7 +36,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
             f.requested_by,
             f.created_at,
             f.updated_at,
-            ' . $nameSelect . '
+            ' . $nameSelect . $paymentSelect . '
             u.id AS user_id,
             u.nickname,
             u.avatar_path
@@ -57,7 +60,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
             f.id AS request_id,
             f.requested_by,
             f.created_at,
-            ' . $nameSelect . '
+            ' . $nameSelect . $paymentSelect . '
             u.id AS user_id,
             u.nickname,
             u.avatar_path
@@ -83,7 +86,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
             f.id AS request_id,
             f.requested_by,
             f.created_at,
-            ' . $nameSelect . '
+            ' . $nameSelect . $paymentSelect . '
             u.id AS user_id,
             u.nickname,
             u.avatar_path
@@ -106,7 +109,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
 
     $friends = [];
     foreach ($acceptedRows as $row) {
-        $friends[] = array_merge(friend_user_payload_from_row((array) $row), [
+        $friends[] = array_merge(friend_user_payload_from_row((array) $row, true), [
             'since' => $row['created_at'] ?? null,
             'request_id' => (int) ($row['request_id'] ?? 0),
         ]);
@@ -231,6 +234,9 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
+    $paymentSelect = users_payment_columns_available($pdo)
+        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, u.paypal_me_link, '
+        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS paypal_me_link, ';
     $activeFilter = users_active_filter_sql($pdo, 'u');
     $params = [
         'join_me_id' => $meId,
@@ -293,7 +299,7 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
             f.requested_by,
             f.created_at,
             f.updated_at,
-            ' . $nameSelect . '
+            ' . $nameSelect . $paymentSelect . '
             u.id AS user_id,
             u.nickname,
             u.avatar_path
@@ -322,7 +328,7 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
     $items = [];
     foreach ($rows as $row) {
         if ($section === 'friends') {
-            $items[] = array_merge(friend_user_payload_from_row((array) $row), [
+            $items[] = array_merge(friend_user_payload_from_row((array) $row, true), [
                 'since' => $row['created_at'] ?? null,
                 'request_id' => (int) ($row['request_id'] ?? 0),
             ]);

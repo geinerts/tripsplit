@@ -106,19 +106,19 @@ extension _TripsPageWidgets on _TripsPageState {
     final totalTripsLabel = _pageText(en: 'Total trips', lv: 'Ceļojumi kopā');
     final totalSpentLabel = _pageText(en: 'Total spent', lv: 'Kopā iztērēts');
     final totalSpentValue = totalTrips == 0
-        ? AppFormatters.currencyFromCents(
+        ? AppFormatters.currencyCodeFromCents(
             context,
             0,
             currencyCode: preferredCurrencyCode,
           )
         : canUsePreferredTotals
-        ? AppFormatters.currencyFromCents(
+        ? AppFormatters.currencyCodeFromCents(
             context,
             preferredTotalSpentCents,
             currencyCode: preferredCurrencyCode,
           )
         : spentCurrencies.length <= 1
-        ? AppFormatters.currencyFromCents(
+        ? AppFormatters.currencyCodeFromCents(
             context,
             totalSpentCentsRaw,
             currencyCode: spentCurrencies.isEmpty
@@ -158,11 +158,70 @@ extension _TripsPageWidgets on _TripsPageState {
                 icon: Icons.payments_outlined,
                 label: totalSpentLabel,
                 value: totalSpentValue,
+                valueWidget: _buildOverviewTotalSpentValue(
+                  context,
+                  totalSpentValue,
+                ),
               ),
             ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildOverviewTotalSpentValue(BuildContext context, String rawValue) {
+    final colors = Theme.of(context).colorScheme;
+    final baseStyle =
+        Theme.of(context).textTheme.headlineSmall?.copyWith(
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.2,
+          color: colors.onSurface,
+        ) ??
+        TextStyle(
+          fontSize: 34,
+          fontWeight: FontWeight.w800,
+          color: colors.onSurface,
+        );
+
+    final value = rawValue.trim();
+    final match = RegExp(r'^([A-Z]{3})\s+(.+)$').firstMatch(value);
+    if (match == null) {
+      return Text(
+        value,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: baseStyle,
+      );
+    }
+
+    final code = (match.group(1) ?? '').trim();
+    final amount = (match.group(2) ?? '').trim();
+    if (amount.isEmpty) {
+      return Text(
+        value,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: baseStyle,
+      );
+    }
+
+    final codeStyle = baseStyle.copyWith(
+      fontSize: (baseStyle.fontSize ?? 34) * 0.56,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.2,
+      height: 1.0,
+    );
+
+    return RichText(
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      text: TextSpan(
+        children: [
+          TextSpan(text: '$code ', style: codeStyle),
+          TextSpan(text: amount, style: baseStyle),
+        ],
+      ),
     );
   }
 

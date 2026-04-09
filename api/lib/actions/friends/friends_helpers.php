@@ -15,7 +15,7 @@ function friend_pair_ids(int $leftUserId, int $rightUserId): array
     return [$rightUserId, $leftUserId];
 }
 
-function friend_user_payload_from_row(array $row): array
+function friend_user_payload_from_row(array $row, bool $includePayment = false): array
 {
     $userId = (int) ($row['user_id'] ?? $row['id'] ?? 0);
     $nickname = trim((string) ($row['nickname'] ?? ''));
@@ -24,7 +24,7 @@ function friend_user_payload_from_row(array $row): array
     $displayName = combine_full_name($firstName, $lastName);
     $avatarPath = trim((string) ($row['avatar_path'] ?? ''));
 
-    return [
+    $payload = [
         'id' => $userId,
         'nickname' => $nickname,
         'first_name' => $firstName,
@@ -33,6 +33,23 @@ function friend_user_payload_from_row(array $row): array
         'avatar_url' => $avatarPath !== '' ? avatar_public_url($avatarPath) : null,
         'avatar_thumb_url' => $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null,
     ];
+
+    if (!$includePayment) {
+        return $payload;
+    }
+
+    $bankAccountHolder = normalize_me_profile_text_value($row['bank_account_holder'] ?? null);
+    if ($bankAccountHolder === null) {
+        $bankAccountHolder = $displayName !== null ? $displayName : null;
+    }
+
+    return array_merge($payload, [
+        'bank_account_holder' => $bankAccountHolder,
+        'bank_iban' => normalize_me_profile_text_value($row['bank_iban'] ?? null),
+        'bank_bic' => normalize_me_profile_text_value($row['bank_bic'] ?? null),
+        'revolut_handle' => normalize_me_profile_text_value($row['revolut_handle'] ?? null),
+        'paypal_me_link' => normalize_me_profile_text_value($row['paypal_me_link'] ?? null),
+    ]);
 }
 
 function find_public_user_by_id(PDO $pdo, int $userId): ?array
