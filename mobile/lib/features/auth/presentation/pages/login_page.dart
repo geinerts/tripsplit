@@ -119,18 +119,19 @@ class _LoginPageState extends State<LoginPage> {
     if (Platform.isIOS) {
       return env.googleIosClientId.trim();
     }
-    return env.googleAndroidClientId.trim();
+    // Android uses the web client ID with a loopback redirect URI.
+    // AppAuth-Android spins up a local HTTP server to capture the response.
+    return env.googleServerClientId.trim();
   }
 
   String _resolveGoogleOauthRedirectUri(AppEnv env, String clientId) {
-    final iosReversed = env.googleReversedClientId.trim();
-    final scheme = Platform.isIOS
-        ? iosReversed
-        : _deriveGoogleReversedClientIdScheme(clientId);
-    if (scheme.isEmpty) {
-      return '';
+    if (Platform.isIOS) {
+      final iosReversed = env.googleReversedClientId.trim();
+      if (iosReversed.isEmpty) return '';
+      return '$iosReversed:/oauth2redirect/google';
     }
-    return '$scheme:/oauth2redirect/google';
+    // Android: loopback redirect — AppAuth opens a local HTTP server.
+    return 'http://localhost';
   }
 
   String _deriveGoogleReversedClientIdScheme(String clientId) {
