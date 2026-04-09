@@ -6,7 +6,13 @@ class JoinTripInviteUseCase {
 
   final TripsRepository _repository;
 
-  Future<TripInviteJoinResult> call({required String inviteToken}) {
-    return _repository.joinTripInvite(inviteToken: inviteToken);
+  Future<TripInviteJoinResult> call({
+    required String inviteToken,
+    required String previewNonce,
+  }) {
+    return _repository.joinTripInvite(
+      inviteToken: inviteToken,
+      previewNonce: previewNonce,
+    );
   }
 }

@@ -51,6 +51,7 @@ function table_name(string $key): string
         'account_action_tokens' => DB_TABLE_PREFIX . 'account_action_tokens',
         'user_identities' => DB_TABLE_PREFIX . 'user_identities',
         'trip_invites'         => DB_TABLE_PREFIX . 'trip_invites',
+        'trip_invite_preview_tokens' => DB_TABLE_PREFIX . 'trip_invite_preview_tokens',
     ];
 
     $raw = $map[$key] ?? '';

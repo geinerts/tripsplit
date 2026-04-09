@@ -41,7 +41,10 @@ abstract class TripsRemoteDataSource {
   Future<void> deleteTrip({required int tripId});
   Future<TripInviteLink> createTripInviteLink({required int tripId});
   Future<TripInvitePreview> previewTripInvite({required String inviteToken});
-  Future<TripInviteJoinResult> joinTripInvite({required String inviteToken});
+  Future<TripInviteJoinResult> joinTripInvite({
+    required String inviteToken,
+    required String previewNonce,
+  });
 }
 
 class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
@@ -217,12 +220,17 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
   @override
   Future<TripInviteJoinResult> joinTripInvite({
     required String inviteToken,
+    required String previewNonce,
   }) async {
     final normalizedToken = inviteToken.trim();
+    final normalizedPreviewNonce = previewNonce.trim();
     final response = await _apiClient.request(
       path: ApiEndpoints.legacyAction('join_trip_invite'),
       method: HttpMethod.post,
-      body: <String, dynamic>{'invite_token': normalizedToken},
+      body: <String, dynamic>{
+        'invite_token': normalizedToken,
+        'preview_nonce': normalizedPreviewNonce,
+      },
     );
 
     final trip = response['trip'] as Map<String, dynamic>?;
@@ -255,15 +263,27 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
 
     final inviter = invite['inviter'] as Map<String, dynamic>? ?? const {};
     final inviterName = (inviter['display_name'] as String? ?? '').trim();
+    final previewNonce = (invite['preview_nonce'] as String? ?? '').trim();
+    if (previewNonce.isEmpty) {
+      throw StateError(
+        'Missing preview nonce payload in preview_trip_invite response.',
+      );
+    }
 
     return TripInvitePreview(
       inviteToken: (invite['invite_token'] as String? ?? normalizedToken)
           .trim(),
+      previewNonce: previewNonce,
       tripId: (invite['trip_id'] as num?)?.toInt() ?? 0,
       tripName: (invite['trip_name'] as String? ?? '').trim(),
       inviterName: inviterName,
       expiresAt: (invite['expires_at'] as String?)?.trim().isNotEmpty == true
           ? (invite['expires_at'] as String).trim()
+          : null,
+      previewNonceExpiresAt:
+          (invite['preview_nonce_expires_at'] as String?)?.trim().isNotEmpty ==
+              true
+          ? (invite['preview_nonce_expires_at'] as String).trim()
           : null,
       alreadyMember: invite['already_member'] == true,
     );

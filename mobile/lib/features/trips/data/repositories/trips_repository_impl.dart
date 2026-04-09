@@ -119,8 +119,14 @@ class TripsRepositoryImpl implements TripsRepository {
   }
 
   @override
-  Future<TripInviteJoinResult> joinTripInvite({required String inviteToken}) {
-    return _remote.joinTripInvite(inviteToken: inviteToken);
+  Future<TripInviteJoinResult> joinTripInvite({
+    required String inviteToken,
+    required String previewNonce,
+  }) {
+    return _remote.joinTripInvite(
+      inviteToken: inviteToken,
+      previewNonce: previewNonce,
+    );
   }
 
   @override

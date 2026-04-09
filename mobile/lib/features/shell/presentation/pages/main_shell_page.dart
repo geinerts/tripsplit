@@ -241,6 +241,7 @@ class _MainShellPageState extends State<MainShellPage>
 
       final joined = await widget.tripsController.joinTripInvite(
         inviteToken: inviteCode,
+        previewNonce: preview.previewNonce,
       );
       if (!mounted) {
         return;

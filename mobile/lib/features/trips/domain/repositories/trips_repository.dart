@@ -37,5 +37,8 @@ abstract class TripsRepository {
   Future<void> deleteTrip({required int tripId});
   Future<TripInviteLink> createTripInviteLink({required int tripId});
   Future<TripInvitePreview> previewTripInvite({required String inviteToken});
-  Future<TripInviteJoinResult> joinTripInvite({required String inviteToken});
+  Future<TripInviteJoinResult> joinTripInvite({
+    required String inviteToken,
+    required String previewNonce,
+  });
 }

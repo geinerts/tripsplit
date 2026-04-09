@@ -163,8 +163,14 @@ class TripsController {
     return _previewTripInviteUseCase.call(inviteToken: inviteToken);
   }
 
-  Future<TripInviteJoinResult> joinTripInvite({required String inviteToken}) {
-    return _joinTripInviteUseCase.call(inviteToken: inviteToken);
+  Future<TripInviteJoinResult> joinTripInvite({
+    required String inviteToken,
+    required String previewNonce,
+  }) {
+    return _joinTripInviteUseCase.call(
+      inviteToken: inviteToken,
+      previewNonce: previewNonce,
+    );
   }
 
   void clearTripsCache() {

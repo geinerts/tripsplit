@@ -12,6 +12,59 @@ function trip_invite_code_length(): int
     return 10;
 }
 
+function trip_invite_preview_ttl_seconds(): int
+{
+    // Short-lived confirmation token to bind preview -> join.
+    return 180;
+}
+
+function trip_invite_preview_nonce_length(): int
+{
+    return 40;
+}
+
+function create_trip_invite_preview_nonce(): string
+{
+    // 20 bytes => 40 hex chars.
+    return bin2hex(random_bytes(20));
+}
+
+function normalize_trip_invite_preview_nonce(string $raw): string
+{
+    $nonce = strtolower(trim($raw));
+    if ($nonce === '') {
+        json_out(['ok' => false, 'error' => 'preview_nonce is required.'], 400);
+    }
+    if (!preg_match('/^[a-f0-9]{' . trip_invite_preview_nonce_length() . '}$/', $nonce)) {
+        json_out(['ok' => false, 'error' => 'Invalid preview_nonce.'], 400);
+    }
+    return $nonce;
+}
+
+function trip_invite_preview_tokens_table_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if (is_bool($cached)) {
+        return $cached;
+    }
+
+    $table = trim(table_name('trip_invite_preview_tokens'), '`');
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(1)
+             FROM information_schema.tables
+             WHERE table_schema = DATABASE()
+               AND table_name = :table_name'
+        );
+        $stmt->execute(['table_name' => $table]);
+        $cached = ((int) ($stmt->fetchColumn() ?: 0)) >= 1;
+    } catch (Throwable $error) {
+        $cached = false;
+    }
+
+    return $cached;
+}
+
 function create_trip_invite_code(): string
 {
     $alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -1018,9 +1071,16 @@ function preview_trip_invite_action(): void
 
     $pdo = db();
     $actorId = (int) ($me['id'] ?? 0);
+    if (!trip_invite_preview_tokens_table_available($pdo)) {
+        json_out([
+            'ok' => false,
+            'error' => 'Invite confirmation is not enabled on server yet. Run migration first.',
+        ], 409);
+    }
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
     $tripInvitesTable = table_name('trip_invites');
+    $tripInvitePreviewTokensTable = table_name('trip_invite_preview_tokens');
     $usersTable = table_name('users');
     $usersNameColumnsAvailable = users_name_columns_available($pdo);
     $inviterNameSelect = $usersNameColumnsAvailable
@@ -1087,10 +1147,58 @@ function preview_trip_invite_action(): void
         'nickname' => $invite['inviter_nickname'] ?? '',
     ]);
 
+    // Cleanup stale/used confirmation tokens for this user before issuing a new one.
+    $pdo->prepare(
+        'DELETE FROM ' . $tripInvitePreviewTokensTable . '
+         WHERE user_id = :user_id
+           AND (used_at IS NOT NULL OR expires_at <= UTC_TIMESTAMP())'
+    )->execute([
+        'user_id' => $actorId,
+    ]);
+
+    $previewNonce = '';
+    $previewNonceExpiresAt = '';
+    for ($attempt = 0; $attempt < 6; $attempt++) {
+        $candidate = create_trip_invite_preview_nonce();
+        $candidateHash = hash('sha256', $candidate);
+        $candidateExpiresTs = min(
+            strtotime($expiresAt) ?: (time() + trip_invite_preview_ttl_seconds()),
+            time() + trip_invite_preview_ttl_seconds()
+        );
+        $candidateExpiresAt = gmdate('Y-m-d H:i:s', $candidateExpiresTs);
+        try {
+            $pdo->prepare(
+                'INSERT INTO ' . $tripInvitePreviewTokensTable . '
+                 (user_id, trip_id, invite_code, nonce_hash, expires_at)
+                 VALUES (:user_id, :trip_id, :invite_code, :nonce_hash, :expires_at)'
+            )->execute([
+                'user_id' => $actorId,
+                'trip_id' => $tripId,
+                'invite_code' => $inviteCode,
+                'nonce_hash' => $candidateHash,
+                'expires_at' => $candidateExpiresAt,
+            ]);
+            $previewNonce = $candidate;
+            $previewNonceExpiresAt = $candidateExpiresAt;
+            break;
+        } catch (Throwable $error) {
+            $errorCode = (string) ($error->getCode() ?? '');
+            if ($errorCode === '23000') {
+                continue;
+            }
+            throw $error;
+        }
+    }
+    if ($previewNonce === '' || $previewNonceExpiresAt === '') {
+        json_out(['ok' => false, 'error' => 'Failed to create invite confirmation.'], 500);
+    }
+
     json_out([
         'ok' => true,
         'invite' => [
             'invite_token' => $inviteCode,
+            'preview_nonce' => $previewNonce,
+            'preview_nonce_expires_at' => $previewNonceExpiresAt,
             'trip_id' => $tripId,
             'trip_name' => trim((string) ($invite['trip_name'] ?? '')) !== ''
                 ? trim((string) ($invite['trip_name'] ?? ''))
@@ -1112,9 +1220,17 @@ function join_trip_invite_action(): void
     $me = get_me();
     $body = read_json();
     $inviteCode = normalize_trip_invite_code((string) ($body['invite_token'] ?? ''));
+    $previewNonce = normalize_trip_invite_preview_nonce((string) ($body['preview_nonce'] ?? ''));
+    $previewNonceHash = hash('sha256', $previewNonce);
 
     $pdo = db();
     $actorId = (int) ($me['id'] ?? 0);
+    if (!trip_invite_preview_tokens_table_available($pdo)) {
+        json_out([
+            'ok' => false,
+            'error' => 'Invite confirmation is not enabled on server yet. Run migration first.',
+        ], 409);
+    }
     enforce_rate_limit(
         $pdo,
         'trip_write_ip',
@@ -1133,12 +1249,53 @@ function join_trip_invite_action(): void
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
     $tripInvitesTable = table_name('trip_invites');
+    $tripInvitePreviewTokensTable = table_name('trip_invite_preview_tokens');
     $tripImageSelect = trips_image_column_available($pdo)
         ? 't.image_path'
         : 'NULL AS image_path';
 
     $pdo->beginTransaction();
     try {
+        $previewStmt = $pdo->prepare(
+            'SELECT id, trip_id, invite_code, expires_at, used_at
+             FROM ' . $tripInvitePreviewTokensTable . '
+             WHERE user_id = :user_id
+               AND nonce_hash = :nonce_hash
+             LIMIT 1
+             FOR UPDATE'
+        );
+        $previewStmt->execute([
+            'user_id' => $actorId,
+            'nonce_hash' => $previewNonceHash,
+        ]);
+        $preview = $previewStmt->fetch();
+        if (!$preview) {
+            json_out([
+                'ok' => false,
+                'error' => 'Invite confirmation expired. Please open the invite link again.',
+            ], 409);
+        }
+        $previewUsedAt = trim((string) ($preview['used_at'] ?? ''));
+        $previewExpiresAt = trim((string) ($preview['expires_at'] ?? ''));
+        if (
+            $previewUsedAt !== '' ||
+            $previewExpiresAt === '' ||
+            strtotime($previewExpiresAt) === false ||
+            strtotime($previewExpiresAt) < time()
+        ) {
+            json_out([
+                'ok' => false,
+                'error' => 'Invite confirmation expired. Please open the invite link again.',
+            ], 409);
+        }
+        $previewInviteCode = strtolower(trim((string) ($preview['invite_code'] ?? '')));
+        if ($previewInviteCode !== $inviteCode) {
+            json_out([
+                'ok' => false,
+                'error' => 'Invite confirmation does not match this invite link.',
+            ], 409);
+        }
+
         $inviteStmt = $pdo->prepare(
             'SELECT trip_id, expires_at, revoked_at
              FROM ' . $tripInvitesTable . '
@@ -1163,6 +1320,12 @@ function join_trip_invite_action(): void
         $tripId = (int) ($invite['trip_id'] ?? 0);
         if ($tripId <= 0) {
             json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+        }
+        if ((int) ($preview['trip_id'] ?? 0) !== $tripId) {
+            json_out([
+                'ok' => false,
+                'error' => 'Invite confirmation does not match this trip.',
+            ], 409);
         }
 
         $tripStmt = $pdo->prepare(
@@ -1213,6 +1376,15 @@ function join_trip_invite_action(): void
                 'user_id' => $actorId,
             ]);
         }
+
+        $pdo->prepare(
+            'UPDATE ' . $tripInvitePreviewTokensTable . '
+             SET used_at = UTC_TIMESTAMP()
+             WHERE id = :id
+               AND used_at IS NULL'
+        )->execute([
+            'id' => (int) ($preview['id'] ?? 0),
+        ]);
 
         $pdo->commit();
 

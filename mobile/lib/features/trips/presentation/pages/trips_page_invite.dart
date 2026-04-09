@@ -15,8 +15,12 @@ extension _TripsPageInviteActions on _TripsPageState {
       _isMutating = true;
     });
     try {
+      final preview = await widget.controller.previewTripInvite(
+        inviteToken: inviteToken,
+      );
       final joined = await widget.controller.joinTripInvite(
         inviteToken: inviteToken,
+        previewNonce: preview.previewNonce,
       );
       await _loadTrips(forceRefresh: true);
       if (!mounted) {
