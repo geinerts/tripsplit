@@ -553,6 +553,13 @@ function confirm_account_deletion_action(): void
             'user_b_id' => $userId,
         ]);
 
+        if (social_auth_identity_table_available($pdo)) {
+            $pdo->prepare(
+                'DELETE FROM ' . table_name('user_identities') . '
+                 WHERE user_id = :user_id'
+            )->execute(['user_id' => $userId]);
+        }
+
         revoke_refresh_tokens_for_user($pdo, $userId);
         deactivate_push_tokens_for_user($pdo, $userId);
 
