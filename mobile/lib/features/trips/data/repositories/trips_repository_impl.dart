@@ -4,6 +4,7 @@ import '../../../../core/errors/api_exception.dart';
 import '../../domain/entities/trip.dart';
 import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
+import '../../domain/entities/trip_invite_preview.dart';
 import '../../domain/entities/trip_user.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../../domain/repositories/trips_repository.dart';
@@ -118,9 +119,12 @@ class TripsRepositoryImpl implements TripsRepository {
   }
 
   @override
-  Future<TripInviteJoinResult> joinTripInvite({
-    required String inviteToken,
-  }) {
+  Future<TripInviteJoinResult> joinTripInvite({required String inviteToken}) {
     return _remote.joinTripInvite(inviteToken: inviteToken);
+  }
+
+  @override
+  Future<TripInvitePreview> previewTripInvite({required String inviteToken}) {
+    return _remote.previewTripInvite(inviteToken: inviteToken);
   }
 }

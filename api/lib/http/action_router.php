@@ -63,6 +63,7 @@ function api_action_handlers(): array
         'register_push_token' => 'register_push_token_action',
         'unregister_push_token' => 'unregister_push_token_action',
         'create_trip_invite' => 'create_trip_invite_action',
+        'preview_trip_invite' => 'preview_trip_invite_action',
         'join_trip_invite' => 'join_trip_invite_action',
         'submit_feedback' => 'submit_feedback_action',
         'workspace_snapshot' => 'workspace_snapshot_action',

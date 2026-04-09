@@ -1009,6 +1009,103 @@ function create_trip_invite_action(): void
     ]);
 }
 
+function preview_trip_invite_action(): void
+{
+    require_post();
+    $me = get_me();
+    $body = read_json();
+    $inviteCode = normalize_trip_invite_code((string) ($body['invite_token'] ?? ''));
+
+    $pdo = db();
+    $actorId = (int) ($me['id'] ?? 0);
+    $tripsTable = table_name('trips');
+    $tripMembersTable = table_name('trip_members');
+    $tripInvitesTable = table_name('trip_invites');
+    $usersTable = table_name('users');
+    $usersNameColumnsAvailable = users_name_columns_available($pdo);
+    $inviterNameSelect = $usersNameColumnsAvailable
+        ? 'u.first_name AS inviter_first_name, u.last_name AS inviter_last_name,'
+        : 'NULL AS inviter_first_name, NULL AS inviter_last_name,';
+
+    $inviteStmt = $pdo->prepare(
+        'SELECT
+            i.trip_id,
+            i.expires_at,
+            i.revoked_at,
+            t.name AS trip_name,
+            t.status AS trip_status,
+            t.created_by AS inviter_id,
+            ' . $inviterNameSelect . '
+            u.nickname AS inviter_nickname
+         FROM ' . $tripInvitesTable . ' i
+         JOIN ' . $tripsTable . ' t ON t.id = i.trip_id
+         JOIN ' . $usersTable . ' u ON u.id = t.created_by
+         WHERE i.invite_code = :invite_code
+         LIMIT 1'
+    );
+    $inviteStmt->execute(['invite_code' => $inviteCode]);
+    $invite = $inviteStmt->fetch();
+    if (!$invite) {
+        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+    }
+
+    $revokedAt = trim((string) ($invite['revoked_at'] ?? ''));
+    if ($revokedAt !== '') {
+        json_out(['ok' => false, 'error' => 'Invite token expired.'], 409);
+    }
+    $expiresAt = trim((string) ($invite['expires_at'] ?? ''));
+    if ($expiresAt === '' || strtotime($expiresAt) === false || strtotime($expiresAt) < time()) {
+        json_out(['ok' => false, 'error' => 'Invite token expired.'], 409);
+    }
+
+    $tripId = (int) ($invite['trip_id'] ?? 0);
+    if ($tripId <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid invite token.'], 400);
+    }
+
+    $status = normalize_trip_status($invite['trip_status'] ?? 'active');
+    if ($status !== 'active') {
+        json_out(['ok' => false, 'error' => 'Trip is closed.'], 409);
+    }
+
+    $memberStmt = $pdo->prepare(
+        'SELECT 1
+         FROM ' . $tripMembersTable . '
+         WHERE trip_id = :trip_id
+           AND user_id = :user_id
+         LIMIT 1'
+    );
+    $memberStmt->execute([
+        'trip_id' => $tripId,
+        'user_id' => $actorId,
+    ]);
+    $alreadyMember = (bool) $memberStmt->fetchColumn();
+
+    $inviterDisplayName = me_display_name([
+        'first_name' => $invite['inviter_first_name'] ?? null,
+        'last_name' => $invite['inviter_last_name'] ?? null,
+        'nickname' => $invite['inviter_nickname'] ?? '',
+    ]);
+
+    json_out([
+        'ok' => true,
+        'invite' => [
+            'invite_token' => $inviteCode,
+            'trip_id' => $tripId,
+            'trip_name' => trim((string) ($invite['trip_name'] ?? '')) !== ''
+                ? trim((string) ($invite['trip_name'] ?? ''))
+                : 'Trip',
+            'trip_status' => $status,
+            'expires_at' => $expiresAt,
+            'already_member' => $alreadyMember,
+            'inviter' => [
+                'id' => (int) ($invite['inviter_id'] ?? 0),
+                'display_name' => trim($inviterDisplayName),
+            ],
+        ],
+    ]);
+}
+
 function join_trip_invite_action(): void
 {
     require_post();

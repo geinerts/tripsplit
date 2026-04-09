@@ -6,6 +6,7 @@ import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/http_method.dart';
 import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
+import '../../domain/entities/trip_invite_preview.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../models/trip_model.dart';
 import '../models/trip_user_model.dart';
@@ -39,6 +40,7 @@ abstract class TripsRemoteDataSource {
   });
   Future<void> deleteTrip({required int tripId});
   Future<TripInviteLink> createTripInviteLink({required int tripId});
+  Future<TripInvitePreview> previewTripInvite({required String inviteToken});
   Future<TripInviteJoinResult> joinTripInvite({required String inviteToken});
 }
 
@@ -230,6 +232,40 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
     return TripInviteJoinResult(
       trip: TripModel.fromLegacyMap(trip),
       alreadyMember: response['already_member'] == true,
+    );
+  }
+
+  @override
+  Future<TripInvitePreview> previewTripInvite({
+    required String inviteToken,
+  }) async {
+    final normalizedToken = inviteToken.trim();
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('preview_trip_invite'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'invite_token': normalizedToken},
+    );
+
+    final invite = response['invite'] as Map<String, dynamic>?;
+    if (invite == null) {
+      throw StateError(
+        'Missing invite payload in preview_trip_invite response.',
+      );
+    }
+
+    final inviter = invite['inviter'] as Map<String, dynamic>? ?? const {};
+    final inviterName = (inviter['display_name'] as String? ?? '').trim();
+
+    return TripInvitePreview(
+      inviteToken: (invite['invite_token'] as String? ?? normalizedToken)
+          .trim(),
+      tripId: (invite['trip_id'] as num?)?.toInt() ?? 0,
+      tripName: (invite['trip_name'] as String? ?? '').trim(),
+      inviterName: inviterName,
+      expiresAt: (invite['expires_at'] as String?)?.trim().isNotEmpty == true
+          ? (invite['expires_at'] as String).trim()
+          : null,
+      alreadyMember: invite['already_member'] == true,
     );
   }
 }

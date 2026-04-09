@@ -21,6 +21,7 @@ import '../../../auth/presentation/pages/profile_page.dart';
 import '../../../friends/presentation/controllers/friends_controller.dart';
 import '../../../friends/presentation/pages/friends_page.dart';
 import '../../../trips/domain/entities/trip.dart';
+import '../../../trips/domain/entities/trip_invite_preview.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../../trips/presentation/pages/trips_page.dart';
 import '../../../workspace/presentation/controllers/workspace_controller.dart';
@@ -226,6 +227,18 @@ class _MainShellPageState extends State<MainShellPage>
     _isProcessingInviteDeepLink = true;
 
     try {
+      final preview = await widget.tripsController.previewTripInvite(
+        inviteToken: inviteCode,
+      );
+      if (!mounted) {
+        return;
+      }
+
+      final confirmed = await _showInviteJoinConfirmDialog(preview);
+      if (!mounted || !confirmed) {
+        return;
+      }
+
       final joined = await widget.tripsController.joinTripInvite(
         inviteToken: inviteCode,
       );
@@ -303,6 +316,43 @@ class _MainShellPageState extends State<MainShellPage>
         unawaited(_handleInviteDeepLinkCode(queued));
       }
     }
+  }
+
+  Future<bool> _showInviteJoinConfirmDialog(TripInvitePreview preview) async {
+    final inviterName = preview.inviterName.trim();
+    final tripName = preview.tripName.trim().isNotEmpty
+        ? preview.tripName.trim()
+        : _txt(en: 'Trip', lv: 'Ceļojums');
+
+    final message = preview.alreadyMember
+        ? _txt(
+            en: 'You are already a member of "$tripName". Open this trip now?\n\nInvited by: ${inviterName.isNotEmpty ? inviterName : _txt(en: 'Unknown', lv: 'Nav zināms')}',
+            lv: 'Tu jau esi ceļojuma "$tripName" dalībnieks. Atvērt šo ceļojumu tagad?\n\nUzaicināja: ${inviterName.isNotEmpty ? inviterName : _txt(en: 'Unknown', lv: 'Nav zināms')}',
+          )
+        : _txt(
+            en: 'Do you want to join trip "$tripName"?\n\nInvited by: ${inviterName.isNotEmpty ? inviterName : _txt(en: 'Unknown', lv: 'Nav zināms')}',
+            lv: 'Vai tiešām pievienoties ceļojumam "$tripName"?\n\nUzaicināja: ${inviterName.isNotEmpty ? inviterName : _txt(en: 'Unknown', lv: 'Nav zināms')}',
+          );
+
+    final decision = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(_txt(en: 'Trip invite', lv: 'Ceļojuma ielūgums')),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(_txt(en: 'No', lv: 'Nē')),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(_txt(en: 'Yes', lv: 'Jā')),
+          ),
+        ],
+      ),
+    );
+
+    return decision == true;
   }
 
   bool _hasOnlineConnectivity(List<ConnectivityResult> results) {
