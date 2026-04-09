@@ -187,8 +187,10 @@ function trips_action(): void
     $me = get_me();
     $pdo = db();
     $currentUserId = (int) ($me['id'] ?? 0);
+    $freshMe = $currentUserId > 0 ? fetch_me_row_by_id($pdo, $currentUserId) : null;
     $preferredCurrencyCode = normalize_profile_currency_code_or_default(
-        $me['preferred_currency_code'] ?? default_trip_currency_code()
+        (is_array($freshMe) ? ($freshMe['preferred_currency_code'] ?? null) : null)
+            ?? default_trip_currency_code()
     );
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
