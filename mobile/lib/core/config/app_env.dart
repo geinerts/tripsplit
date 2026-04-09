@@ -59,7 +59,7 @@ class AppEnv {
     googleAndroidClientId: String.fromEnvironment(
       'TRIPSPLIT_GOOGLE_ANDROID_CLIENT_ID',
       defaultValue:
-          '126032869696-09noi60ibsohj4lcp2i01vpb4d0omrgp.apps.googleusercontent.com',
+          '126032869696-1sh8tm9142db3vl6l6d38kkgngl6rgvh.apps.googleusercontent.com',
     ),
     googleReversedClientId: String.fromEnvironment(
       'TRIPSPLIT_GOOGLE_REVERSED_CLIENT_ID',
