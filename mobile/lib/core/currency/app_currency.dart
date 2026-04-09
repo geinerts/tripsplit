@@ -51,6 +51,32 @@ class AppCurrencyCatalog {
     AppCurrencyOption(code: 'AUD', label: 'Australian Dollar', symbol: r'A$'),
   ];
 
+  // Subset that backend can convert reliably via FX provider.
+  static const Set<String> profilePreferredSupportedCodes = <String>{
+    'AUD',
+    'BGN',
+    'CAD',
+    'CHF',
+    'CNY',
+    'CZK',
+    'DKK',
+    'EUR',
+    'GBP',
+    'HUF',
+    'ISK',
+    'JPY',
+    'NOK',
+    'PLN',
+    'RON',
+    'SEK',
+    'TRY',
+    'USD',
+  };
+
+  static final List<AppCurrencyOption> profilePreferredSupported = supported
+      .where((item) => profilePreferredSupportedCodes.contains(item.code))
+      .toList(growable: false);
+
   static String normalize(String? raw, {String fallback = defaultCode}) {
     final code = (raw ?? '').trim().toUpperCase();
     if (code.length != 3) {
@@ -60,6 +86,17 @@ class AppCurrencyCatalog {
       if (item.code == code) {
         return code;
       }
+    }
+    return fallback;
+  }
+
+  static String normalizeProfilePreferred(
+    String? raw, {
+    String fallback = defaultCode,
+  }) {
+    final code = normalize(raw, fallback: fallback);
+    if (profilePreferredSupportedCodes.contains(code)) {
+      return code;
     }
     return fallback;
   }

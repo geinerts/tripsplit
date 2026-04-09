@@ -88,7 +88,7 @@ extension _TripsPageWidgets on _TripsPageState {
     final firstTripPreferredCode = allTrips
         .map((trip) => (trip.preferredCurrencyCode ?? '').trim())
         .firstWhere((code) => code.isNotEmpty, orElse: () => '');
-    final preferredCurrencyCode = AppCurrencyCatalog.normalize(
+    final preferredCurrencyCode = AppCurrencyCatalog.normalizeProfilePreferred(
       firstTripPreferredCode.isNotEmpty
           ? firstTripPreferredCode
           : widget.authController.currentUser?.preferredCurrencyCode,

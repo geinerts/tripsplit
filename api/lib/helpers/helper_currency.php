@@ -22,6 +22,37 @@ function trip_supported_currency_codes(): array
     return $codes;
 }
 
+function fx_provider_supported_currency_codes(): array
+{
+    // Frankfurter-supported set (used for profile overview conversions).
+    static $codes = null;
+    if (is_array($codes)) {
+        return $codes;
+    }
+
+    $codes = [
+        'AUD', 'BGN', 'CAD', 'CHF', 'CNY', 'CZK', 'DKK', 'EUR',
+        'GBP', 'HUF', 'ISK', 'JPY', 'NOK', 'PLN', 'RON', 'SEK',
+        'TRY', 'USD',
+    ];
+    return $codes;
+}
+
+function currency_supported_by_fx_provider(string $code): bool
+{
+    $normalized = normalize_currency_code_or_default($code);
+    return in_array($normalized, fx_provider_supported_currency_codes(), true);
+}
+
+function normalize_profile_currency_code_or_default($value): string
+{
+    $normalized = normalize_currency_code_or_default($value);
+    if (!currency_supported_by_fx_provider($normalized)) {
+        return default_trip_currency_code();
+    }
+    return $normalized;
+}
+
 function default_trip_currency_code(): string
 {
     return 'EUR';

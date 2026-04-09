@@ -225,9 +225,10 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           _draftRepeatPassword = '';
           break;
         case _ProfileEditField.preferredCurrency:
-          _draftPreferredCurrencyCode = AppCurrencyCatalog.normalize(
-            _draftPreferredCurrencyCode,
-          );
+          _draftPreferredCurrencyCode =
+              AppCurrencyCatalog.normalizeProfilePreferred(
+                _draftPreferredCurrencyCode,
+              );
           break;
         case _ProfileEditField.bankTransfer:
           _draftBankIban = _draftBankIban.trim();
@@ -934,13 +935,13 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   }
 
   AppCurrencyOption _preferredCurrencyOptionFor(String? code) {
-    final normalized = AppCurrencyCatalog.normalize(code);
-    for (final item in AppCurrencyCatalog.supported) {
+    final normalized = AppCurrencyCatalog.normalizeProfilePreferred(code);
+    for (final item in AppCurrencyCatalog.profilePreferredSupported) {
       if (item.code == normalized) {
         return item;
       }
     }
-    return AppCurrencyCatalog.supported.first;
+    return AppCurrencyCatalog.profilePreferredSupported.first;
   }
 
   String _preferredCurrencyDisplayValue() {
@@ -954,7 +955,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     }
 
     var query = '';
-    final currentCode = AppCurrencyCatalog.normalize(
+    final currentCode = AppCurrencyCatalog.normalizeProfilePreferred(
       _draftPreferredCurrencyCode,
     );
     final picked = await showModalBottomSheet<String>(
@@ -968,7 +969,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           child: StatefulBuilder(
             builder: (pickerContext, setPickerState) {
               final normalizedQuery = query.trim().toUpperCase();
-              final filtered = AppCurrencyCatalog.supported
+              final filtered = AppCurrencyCatalog.profilePreferredSupported
                   .where((item) {
                     if (normalizedQuery.isEmpty) {
                       return true;
@@ -1131,7 +1132,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       return;
     }
     _updateState(() {
-      _draftPreferredCurrencyCode = AppCurrencyCatalog.normalize(picked);
+      _draftPreferredCurrencyCode =
+          AppCurrencyCatalog.normalizeProfilePreferred(picked);
       if (_editErrorText != null) {
         _editErrorText = null;
       }

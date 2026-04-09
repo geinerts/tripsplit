@@ -220,9 +220,10 @@ extension _ProfilePageActions on _ProfilePageState {
     _initialBankBic = (user.bankBic ?? '').trim().toUpperCase();
     _initialRevolutHandle = (user.revolutHandle ?? '').trim();
     _initialPaypalMeLink = (user.paypalMeLink ?? '').trim();
-    _initialPreferredCurrencyCode = AppCurrencyCatalog.normalize(
-      user.preferredCurrencyCode,
-    );
+    _initialPreferredCurrencyCode =
+        AppCurrencyCatalog.normalizeProfilePreferred(
+          user.preferredCurrencyCode,
+        );
     _fullNameController.text = _initialFullName;
     _emailController.text = user.email ?? '';
     _draftFullName = _initialFullName;
@@ -354,7 +355,7 @@ extension _ProfilePageActions on _ProfilePageState {
     final wantsCredentialsUpdate = emailChanged || passwordTouched;
     final paymentPatch = _buildPaymentDetailsPatch();
     final paymentDetailsChanged = paymentPatch.isNotEmpty;
-    final preferredCurrencyCode = AppCurrencyCatalog.normalize(
+    final preferredCurrencyCode = AppCurrencyCatalog.normalizeProfilePreferred(
       _draftPreferredCurrencyCode,
     );
     final preferredCurrencyChanged =

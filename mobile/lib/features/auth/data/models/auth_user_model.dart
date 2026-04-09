@@ -48,7 +48,7 @@ class AuthUserModel extends AuthUser {
     final bankRoutingNumber = (map['bank_routing_number'] as String?)?.trim();
     final revolutHandle = (map['revolut_handle'] as String?)?.trim();
     final paypalMeLink = (map['paypal_me_link'] as String?)?.trim();
-    final preferredCurrencyCode = AppCurrencyCatalog.normalize(
+    final preferredCurrencyCode = AppCurrencyCatalog.normalizeProfilePreferred(
       (map['preferred_currency_code'] as String?)?.trim(),
     );
     return AuthUserModel(

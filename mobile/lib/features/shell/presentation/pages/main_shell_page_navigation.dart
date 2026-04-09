@@ -229,6 +229,14 @@ extension _MainShellPageNavigation on _MainShellPageState {
     if (!mounted) {
       return;
     }
+    // Profile changes (for example preferred currency) must refresh
+    // trips-derived overview and dependent screens.
+    widget.tripsController.clearTripsCache();
+    _tripsCommandController.requestRefresh();
+    _analyticsCommandController?.requestRefresh();
+    if (_isWorkspaceOpen) {
+      _workspaceCommandController.requestRefresh();
+    }
     _updateState(() {});
   }
 

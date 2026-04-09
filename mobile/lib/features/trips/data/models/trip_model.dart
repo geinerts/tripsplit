@@ -82,7 +82,7 @@ class TripModel extends Trip {
       myPaidPreferredCents: (map['my_paid_preferred_cents'] as num?)?.toInt(),
       preferredCurrencyCode:
           (map['preferred_currency_code'] as String?)?.trim().isNotEmpty == true
-          ? AppCurrencyCatalog.normalize(
+          ? AppCurrencyCatalog.normalizeProfilePreferred(
               (map['preferred_currency_code'] as String?)?.trim(),
             )
           : null,

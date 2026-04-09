@@ -624,7 +624,14 @@ function normalize_profile_paypal_me_link($value): ?string
 
 function normalize_profile_preferred_currency_code($value): string
 {
-    return normalize_currency_code($value);
+    $code = normalize_currency_code($value);
+    if (!currency_supported_by_fx_provider($code)) {
+        json_out([
+            'ok' => false,
+            'error' => 'Preferred currency is not supported for overview conversion yet.',
+        ], 400);
+    }
+    return $code;
 }
 
 function update_profile_action(): void

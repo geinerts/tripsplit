@@ -168,7 +168,7 @@ function build_me_payload(array $user): array
     $bankRoutingNumber = normalize_me_profile_text_value($user['bank_routing_number'] ?? null);
     $revolutHandle = normalize_me_profile_text_value($user['revolut_handle'] ?? null);
     $paypalMeLink = normalize_me_profile_text_value($user['paypal_me_link'] ?? null);
-    $preferredCurrencyCode = normalize_currency_code_or_default(
+    $preferredCurrencyCode = normalize_profile_currency_code_or_default(
         $user['preferred_currency_code'] ?? null
     );
 
