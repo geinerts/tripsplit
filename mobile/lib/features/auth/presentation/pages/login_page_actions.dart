@@ -220,31 +220,6 @@ extension _LoginPageActions on _LoginPageState {
     }
   }
 
-  Map<String, dynamic> _decodeJwtPayload(String idToken) {
-    final parts = idToken.split('.');
-    if (parts.length != 3) {
-      return const {};
-    }
-    final payload = parts[1];
-    var normalized = payload.replaceAll('-', '+').replaceAll('_', '/');
-    while (normalized.length % 4 != 0) {
-      normalized += '=';
-    }
-    try {
-      final decoded = utf8.decode(base64.decode(normalized));
-      final parsed = jsonDecode(decoded);
-      if (parsed is Map<String, dynamic>) {
-        return parsed;
-      }
-      if (parsed is Map) {
-        return parsed.map((key, value) => MapEntry(key.toString(), value));
-      }
-    } catch (_) {
-      return const {};
-    }
-    return const {};
-  }
-
   Future<_SocialAuthCredential> _signInWithApple() async {
     if (!Platform.isIOS) {
       throw StateError(

@@ -78,7 +78,7 @@ php /home/<user>/public_html/projekti/trip/scripts/run_email_verification_cleanu
 ## 3) Run
 
 1. Open your domain over HTTPS.
-2. Enter nickname on first launch.
+2. Sign in or create account on first launch.
 3. Install to home screen from browser install prompt.
 4. Admin panel is available at `/admin.html`.
 
@@ -130,19 +130,13 @@ Backend:
 
 Flutter build defines:
 - `TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID`
-- `TRIPSPLIT_GOOGLE_IOS_CLIENT_ID` (iOS OAuth client id)
-- `TRIPSPLIT_GOOGLE_ANDROID_CLIENT_ID` (Android OAuth client id)
-- `TRIPSPLIT_GOOGLE_REVERSED_CLIENT_ID` (from iOS `GoogleService-Info.plist` -> `REVERSED_CLIENT_ID`)
 
 Example:
 
 ```bash
 flutter run \
   --dart-define=TRIPSPLIT_API_BASE_URL=https://splyto.egm.lv \
-  --dart-define=TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID=<google-server-client-id> \
-  --dart-define=TRIPSPLIT_GOOGLE_IOS_CLIENT_ID=<google-ios-client-id> \
-  --dart-define=TRIPSPLIT_GOOGLE_ANDROID_CLIENT_ID=<google-android-client-id> \
-  --dart-define=TRIPSPLIT_GOOGLE_REVERSED_CLIENT_ID=<ios-reversed-client-id>
+  --dart-define=TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID=<google-server-client-id>
 ```
 
 iOS note:
@@ -150,8 +144,8 @@ iOS note:
 - Add Google iOS URL scheme (`REVERSED_CLIENT_ID`) in `Info.plist` when configuring Google sign-in.
 
 Android note:
-- `mobile/android/app/build.gradle.kts` contains `appAuthRedirectScheme` for `flutter_appauth`.
-- Keep this value in sync with the reversed scheme of the Android OAuth client id used in build.
+- Google Sign-In uses the native `google_sign_in` plugin flow.
+- Ensure Android SHA fingerprints (debug/upload/Play signing) are all added in Firebase for package `com.tripsplit.app.tripsplit`.
 
 ## 5) GitHub Actions (CI + VPS deploy)
 
