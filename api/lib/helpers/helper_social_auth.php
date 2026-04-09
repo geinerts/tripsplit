@@ -85,7 +85,7 @@ function social_auth_identity_table_available(PDO $pdo): bool
         return $cached;
     }
 
-    $table = table_name('user_identities');
+    $table = trim(table_name('user_identities'), '`');
     if (!preg_match('/^[A-Za-z0-9_]+$/', $table)) {
         $cached = false;
         return $cached;
