@@ -1,4 +1,5 @@
 import '../../domain/entities/auth_user.dart';
+import '../../../../core/currency/app_currency.dart';
 import '../../../../core/network/media_url_resolver.dart';
 
 class AuthUserModel extends AuthUser {
@@ -19,6 +20,7 @@ class AuthUserModel extends AuthUser {
     super.bankRoutingNumber,
     super.revolutHandle,
     super.paypalMeLink,
+    super.preferredCurrencyCode,
     super.avatarBase64,
     super.avatarUrl,
     super.avatarThumbUrl,
@@ -46,6 +48,9 @@ class AuthUserModel extends AuthUser {
     final bankRoutingNumber = (map['bank_routing_number'] as String?)?.trim();
     final revolutHandle = (map['revolut_handle'] as String?)?.trim();
     final paypalMeLink = (map['paypal_me_link'] as String?)?.trim();
+    final preferredCurrencyCode = AppCurrencyCatalog.normalize(
+      (map['preferred_currency_code'] as String?)?.trim(),
+    );
     return AuthUserModel(
       id: (map['id'] as num?)?.toInt() ?? 0,
       firstName: (firstName == null || firstName.isEmpty) ? null : firstName,
@@ -82,6 +87,7 @@ class AuthUserModel extends AuthUser {
       paypalMeLink: (paypalMeLink == null || paypalMeLink.isEmpty)
           ? null
           : paypalMeLink,
+      preferredCurrencyCode: preferredCurrencyCode,
       avatarBase64: avatar.isEmpty ? null : avatar,
       avatarUrl: avatarUrl,
       avatarThumbUrl: avatarThumbUrl,

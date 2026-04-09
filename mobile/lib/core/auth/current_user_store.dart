@@ -47,6 +47,7 @@ class CurrentUserStore {
       'bank_routing_number': user.bankRoutingNumber,
       'revolut_handle': user.revolutHandle,
       'paypal_me_link': user.paypalMeLink,
+      'preferred_currency_code': user.preferredCurrencyCode,
       'avatar_base64': user.avatarBase64,
       'avatar_url': user.avatarUrl,
       'avatar_thumb_url': user.avatarThumbUrl,

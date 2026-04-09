@@ -45,6 +45,17 @@ function normalize_currency_code($value, bool $allowEmpty = false): string
     return $code;
 }
 
+function normalize_currency_code_or_default($value): string
+{
+    $code = strtoupper(trim((string) $value));
+    if ($code === '' || !preg_match('/^[A-Z]{3}$/', $code)) {
+        return default_trip_currency_code();
+    }
+    return in_array($code, trip_supported_currency_codes(), true)
+        ? $code
+        : default_trip_currency_code();
+}
+
 function format_cents_with_currency(int $cents, string $currencyCode): string
 {
     $code = normalize_currency_code($currencyCode);
@@ -284,4 +295,55 @@ function convert_amount_to_trip_currency(
         'converted_cents' => $convertedCents,
         'fx_rate_to_trip' => $rate,
     ];
+}
+
+function convert_expense_amount_to_target_currency_cents(
+    int $sourceAmountCents,
+    string $sourceCurrency,
+    int $tripAmountCents,
+    string $tripCurrency,
+    string $dateIso,
+    string $targetCurrency
+): ?int {
+    if ($sourceAmountCents <= 0 && $tripAmountCents <= 0) {
+        return 0;
+    }
+
+    $from = normalize_currency_code_or_default($sourceCurrency);
+    $trip = normalize_currency_code_or_default($tripCurrency);
+    $target = normalize_currency_code_or_default($targetCurrency);
+    $date = validate_date_iso($dateIso);
+
+    if ($sourceAmountCents > 0 && $from === $target) {
+        return $sourceAmountCents;
+    }
+    if ($tripAmountCents > 0 && $trip === $target) {
+        return $tripAmountCents;
+    }
+
+    if ($sourceAmountCents > 0) {
+        try {
+            $rate = fetch_historical_fx_rate($from, $target, $date);
+            $converted = (int) round($sourceAmountCents * $rate);
+            if ($converted > 0) {
+                return $converted;
+            }
+        } catch (Throwable $error) {
+            // Fallback below to trip amount conversion if available.
+        }
+    }
+
+    if ($tripAmountCents > 0) {
+        try {
+            $rate = fetch_historical_fx_rate($trip, $target, $date);
+            $converted = (int) round($tripAmountCents * $rate);
+            if ($converted > 0) {
+                return $converted;
+            }
+        } catch (Throwable $error) {
+            return null;
+        }
+    }
+
+    return null;
 }

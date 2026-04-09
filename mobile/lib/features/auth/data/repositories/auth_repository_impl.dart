@@ -59,6 +59,7 @@ class AuthRepositoryImpl implements AuthRepository {
     String? lastName,
     String? email,
     String? password,
+    String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   }) {
     return _remote.updateProfile(
@@ -66,6 +67,7 @@ class AuthRepositoryImpl implements AuthRepository {
       lastName: lastName,
       email: email,
       password: password,
+      preferredCurrencyCode: preferredCurrencyCode,
       paymentDetails: paymentDetails,
     );
   }

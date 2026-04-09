@@ -22,6 +22,8 @@ class TripModel extends Trip {
     required super.readyToSettle,
     required super.totalAmountCents,
     required super.myPaidCents,
+    super.myPaidPreferredCents,
+    super.preferredCurrencyCode,
     required super.myOwedCents,
     required super.myBalanceCents,
   });
@@ -59,7 +61,9 @@ class TripModel extends Trip {
     return TripModel(
       id: (map['id'] as num?)?.toInt() ?? 0,
       name: map['name'] as String? ?? '',
-      currencyCode: AppCurrencyCatalog.normalize(map['currency_code'] as String?),
+      currencyCode: AppCurrencyCatalog.normalize(
+        map['currency_code'] as String?,
+      ),
       status: status,
       imageUrl: imageUrl,
       imageThumbUrl: imageThumbUrl,
@@ -75,6 +79,13 @@ class TripModel extends Trip {
       readyToSettle: readyToSettle,
       totalAmountCents: (map['total_amount_cents'] as num?)?.toInt() ?? 0,
       myPaidCents: (map['my_paid_cents'] as num?)?.toInt() ?? 0,
+      myPaidPreferredCents: (map['my_paid_preferred_cents'] as num?)?.toInt(),
+      preferredCurrencyCode:
+          (map['preferred_currency_code'] as String?)?.trim().isNotEmpty == true
+          ? AppCurrencyCatalog.normalize(
+              (map['preferred_currency_code'] as String?)?.trim(),
+            )
+          : null,
       myOwedCents: (map['my_owed_cents'] as num?)?.toInt() ?? 0,
       myBalanceCents: (map['my_balance_cents'] as num?)?.toInt() ?? 0,
     );

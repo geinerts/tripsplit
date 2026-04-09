@@ -137,6 +137,7 @@ class AuthController {
     String? lastName,
     String? email,
     String? password,
+    String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   }) async {
     final user = await _withStoredAvatar(
@@ -145,6 +146,7 @@ class AuthController {
         lastName: lastName,
         email: email,
         password: password,
+        preferredCurrencyCode: preferredCurrencyCode,
         paymentDetails: paymentDetails,
       ),
     );

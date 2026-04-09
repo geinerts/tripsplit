@@ -622,6 +622,11 @@ function normalize_profile_paypal_me_link($value): ?string
     return null;
 }
 
+function normalize_profile_preferred_currency_code($value): string
+{
+    return normalize_currency_code($value);
+}
+
 function update_profile_action(): void
 {
     require_post();
@@ -633,6 +638,7 @@ function update_profile_action(): void
     $userId = (int) $me['id'];
     $nameColumnsAvailable = users_name_columns_available($pdo);
     $paymentColumnsAvailable = users_payment_columns_available($pdo);
+    $preferredCurrencyColumnAvailable = users_preferred_currency_column_available($pdo);
 
     $updateParts = [];
     $params = [
@@ -750,6 +756,20 @@ function update_profile_action(): void
             $updateParts[] = 'bank_country_code = :bank_country_code';
             $params['bank_country_code'] = $autoCountryCode;
         }
+    }
+
+    $hasPreferredCurrencyCode = array_key_exists('preferred_currency_code', $body);
+    if ($hasPreferredCurrencyCode && !$preferredCurrencyColumnAvailable) {
+        json_out([
+            'ok' => false,
+            'error' => 'Profile preferred currency is not available yet. Please run latest migration.',
+        ], 503);
+    }
+    if ($hasPreferredCurrencyCode) {
+        $updateParts[] = 'preferred_currency_code = :preferred_currency_code';
+        $params['preferred_currency_code'] = normalize_profile_preferred_currency_code(
+            $body['preferred_currency_code'] ?? null
+        );
     }
 
     if (!$updateParts) {

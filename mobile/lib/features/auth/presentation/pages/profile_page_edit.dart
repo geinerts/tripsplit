@@ -64,6 +64,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftBankBic = _initialBankBic;
       _draftRevolutHandle = _initialRevolutHandle;
       _draftPaypalMeLink = _initialPaypalMeLink;
+      _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
       _draftPassword = '';
       _draftRepeatPassword = '';
       _editErrorText = null;
@@ -85,6 +86,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftBankBic = _initialBankBic;
       _draftRevolutHandle = _initialRevolutHandle;
       _draftPaypalMeLink = _initialPaypalMeLink;
+      _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
       _editErrorText = null;
       _draftPassword = '';
       _draftRepeatPassword = '';
@@ -221,6 +223,11 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           _draftEmail = _emailController.text.trim();
           _draftPassword = '';
           _draftRepeatPassword = '';
+          break;
+        case _ProfileEditField.preferredCurrency:
+          _draftPreferredCurrencyCode = AppCurrencyCatalog.normalize(
+            _draftPreferredCurrencyCode,
+          );
           break;
         case _ProfileEditField.bankTransfer:
           _draftBankIban = _draftBankIban.trim();
@@ -406,6 +413,21 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         }
       }
       return;
+    } else if (field == _ProfileEditField.preferredCurrency) {
+      final proposed = AppCurrencyCatalog.normalize(
+        _draftPreferredCurrencyCode,
+      );
+      final current = AppCurrencyCatalog.normalize(
+        _initialPreferredCurrencyCode,
+      );
+      if (proposed == current) {
+        _updateState(() {
+          _activeEditField = null;
+          _editErrorText = null;
+        });
+        return;
+      }
+      _draftPreferredCurrencyCode = proposed;
     } else if (field == _ProfileEditField.bankTransfer) {
       final proposedIban = _draftBankIban.trim().toUpperCase();
       final proposedBic = _draftBankBic.trim().toUpperCase();
@@ -503,6 +525,14 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                 : _draftEmail.trim(),
             labelTrailing: _buildPrimaryEmailBadge(context),
             editor: _buildEmailInlineEditor,
+          ),
+          const Divider(height: 1),
+          _buildEditableProfileRow(
+            context: context,
+            field: _ProfileEditField.preferredCurrency,
+            label: _profileText(en: 'Overview currency', lv: 'Pārskata valūta'),
+            displayValue: _preferredCurrencyDisplayValue(),
+            editor: _buildPreferredCurrencyInlineEditor,
           ),
           const Divider(height: 1),
           _buildEditableProfileRow(
@@ -834,7 +864,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                     context,
                   ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
                 ),
-                if (labelTrailing != null) ...[
+                if (labelTrailing != null && isActive) ...[
                   const SizedBox(height: 6),
                   labelTrailing,
                 ],
@@ -900,6 +930,266 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           ),
         ],
       ),
+    );
+  }
+
+  AppCurrencyOption _preferredCurrencyOptionFor(String? code) {
+    final normalized = AppCurrencyCatalog.normalize(code);
+    for (final item in AppCurrencyCatalog.supported) {
+      if (item.code == normalized) {
+        return item;
+      }
+    }
+    return AppCurrencyCatalog.supported.first;
+  }
+
+  String _preferredCurrencyDisplayValue() {
+    final option = _preferredCurrencyOptionFor(_draftPreferredCurrencyCode);
+    return '${option.symbol} ${option.code} - ${option.label}';
+  }
+
+  Future<void> _pickPreferredCurrencyCode() async {
+    if (_isSubmitting || _isLoading) {
+      return;
+    }
+
+    var query = '';
+    final currentCode = AppCurrencyCatalog.normalize(
+      _draftPreferredCurrencyCode,
+    );
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      builder: (pickerContext) {
+        final maxHeight = MediaQuery.sizeOf(pickerContext).height * 0.62;
+        return SizedBox(
+          height: maxHeight,
+          child: StatefulBuilder(
+            builder: (pickerContext, setPickerState) {
+              final normalizedQuery = query.trim().toUpperCase();
+              final filtered = AppCurrencyCatalog.supported
+                  .where((item) {
+                    if (normalizedQuery.isEmpty) {
+                      return true;
+                    }
+                    final haystack = '${item.code} ${item.label} ${item.symbol}'
+                        .toUpperCase();
+                    return haystack.contains(normalizedQuery);
+                  })
+                  .toList(growable: false);
+
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
+                    child: TextField(
+                      textInputAction: TextInputAction.search,
+                      onChanged: (value) {
+                        setPickerState(() {
+                          query = value;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: _profileText(
+                          en: 'Search currency',
+                          lv: 'Meklēt valūtu',
+                        ),
+                        prefixIcon: const Icon(Icons.search_rounded),
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: filtered.isEmpty
+                        ? Center(
+                            child: Text(
+                              _profileText(
+                                en: 'No currencies found',
+                                lv: 'Valūtas netika atrastas',
+                              ),
+                              style: Theme.of(
+                                pickerContext,
+                              ).textTheme.bodyMedium,
+                            ),
+                          )
+                        : ListView.separated(
+                            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                            itemCount: filtered.length,
+                            separatorBuilder: (_, _) =>
+                                const SizedBox(height: 6),
+                            itemBuilder: (context, index) {
+                              final item = filtered[index];
+                              final selected = item.code == currentCode;
+                              return Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(14),
+                                  onTap: () => Navigator.of(
+                                    pickerContext,
+                                  ).pop(item.code),
+                                  child: Ink(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      12,
+                                      10,
+                                      12,
+                                      10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: selected
+                                          ? Theme.of(pickerContext)
+                                                .colorScheme
+                                                .primary
+                                                .withValues(alpha: 0.10)
+                                          : Theme.of(pickerContext)
+                                                .colorScheme
+                                                .surfaceContainerHighest
+                                                .withValues(alpha: 0.45),
+                                      border: Border.all(
+                                        color: selected
+                                            ? Theme.of(
+                                                pickerContext,
+                                              ).colorScheme.primary
+                                            : AppDesign.cardStroke(
+                                                pickerContext,
+                                              ),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 34,
+                                          height: 34,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Theme.of(
+                                              pickerContext,
+                                            ).colorScheme.surface,
+                                            border: Border.all(
+                                              color: AppDesign.cardStroke(
+                                                pickerContext,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            item.symbol,
+                                            style: Theme.of(pickerContext)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Text(
+                                            '${item.code} - ${item.label}',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(pickerContext)
+                                                .textTheme
+                                                .titleSmall
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                          ),
+                                        ),
+                                        if (selected)
+                                          Icon(
+                                            Icons.check_circle_rounded,
+                                            color: Theme.of(
+                                              pickerContext,
+                                            ).colorScheme.primary,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+
+    if (!mounted || picked == null) {
+      return;
+    }
+    _updateState(() {
+      _draftPreferredCurrencyCode = AppCurrencyCatalog.normalize(picked);
+      if (_editErrorText != null) {
+        _editErrorText = null;
+      }
+    });
+  }
+
+  Widget _buildPreferredCurrencyInlineEditor(BuildContext context) {
+    final option = _preferredCurrencyOptionFor(_draftPreferredCurrencyCode);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: _isSubmitting
+                ? null
+                : () => unawaited(_pickPreferredCurrencyCode()),
+            borderRadius: BorderRadius.circular(14),
+            child: Ink(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppDesign.cardStroke(context)),
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    option.symbol,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      '${option.code} - ${option.label}',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const Icon(Icons.keyboard_arrow_down_rounded),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          _profileText(
+            en: 'Overview totals are converted to this currency.',
+            lv: 'Pārskata summas tiks konvertētas uz šo valūtu.',
+          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: AppDesign.mutedColor(context)),
+        ),
+      ],
     );
   }
 

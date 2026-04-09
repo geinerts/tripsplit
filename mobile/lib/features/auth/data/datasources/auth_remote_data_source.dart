@@ -34,6 +34,7 @@ abstract class AuthRemoteDataSource {
     String? lastName,
     String? email,
     String? password,
+    String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   });
 
@@ -185,6 +186,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String? lastName,
     String? email,
     String? password,
+    String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   }) async {
     final payload = <String, dynamic>{};
@@ -195,6 +197,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     if (email != null && password != null) {
       payload['email'] = email;
       payload['password'] = password;
+    }
+    if (preferredCurrencyCode != null &&
+        preferredCurrencyCode.trim().isNotEmpty) {
+      payload['preferred_currency_code'] = preferredCurrencyCode.trim();
     }
     if (paymentDetails != null && paymentDetails.isNotEmpty) {
       for (final entry in paymentDetails.entries) {

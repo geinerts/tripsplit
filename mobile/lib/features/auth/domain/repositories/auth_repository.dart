@@ -30,6 +30,7 @@ abstract class AuthRepository {
     String? lastName,
     String? email,
     String? password,
+    String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   });
 

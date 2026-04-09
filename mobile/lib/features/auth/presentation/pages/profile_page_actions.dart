@@ -220,6 +220,9 @@ extension _ProfilePageActions on _ProfilePageState {
     _initialBankBic = (user.bankBic ?? '').trim().toUpperCase();
     _initialRevolutHandle = (user.revolutHandle ?? '').trim();
     _initialPaypalMeLink = (user.paypalMeLink ?? '').trim();
+    _initialPreferredCurrencyCode = AppCurrencyCatalog.normalize(
+      user.preferredCurrencyCode,
+    );
     _fullNameController.text = _initialFullName;
     _emailController.text = user.email ?? '';
     _draftFullName = _initialFullName;
@@ -228,6 +231,7 @@ extension _ProfilePageActions on _ProfilePageState {
     _draftBankBic = _initialBankBic;
     _draftRevolutHandle = _initialRevolutHandle;
     _draftPaypalMeLink = _initialPaypalMeLink;
+    _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
     _draftPassword = '';
     _draftRepeatPassword = '';
     _deactivateDraftPassword = '';
@@ -350,6 +354,11 @@ extension _ProfilePageActions on _ProfilePageState {
     final wantsCredentialsUpdate = emailChanged || passwordTouched;
     final paymentPatch = _buildPaymentDetailsPatch();
     final paymentDetailsChanged = paymentPatch.isNotEmpty;
+    final preferredCurrencyCode = AppCurrencyCatalog.normalize(
+      _draftPreferredCurrencyCode,
+    );
+    final preferredCurrencyChanged =
+        preferredCurrencyCode != _initialPreferredCurrencyCode;
 
     if (wantsCredentialsUpdate) {
       if (!_isValidEmail(email)) {
@@ -373,7 +382,10 @@ extension _ProfilePageActions on _ProfilePageState {
     }
 
     final fullNameChanged = normalizedFullName != _initialFullName;
-    if (!fullNameChanged && !wantsCredentialsUpdate && !paymentDetailsChanged) {
+    if (!fullNameChanged &&
+        !wantsCredentialsUpdate &&
+        !paymentDetailsChanged &&
+        !preferredCurrencyChanged) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(t.noChangesToSave)));
@@ -391,6 +403,9 @@ extension _ProfilePageActions on _ProfilePageState {
         lastName: fullNameChanged ? parsedName?.lastName : null,
         email: wantsCredentialsUpdate ? email : null,
         password: wantsCredentialsUpdate ? password : null,
+        preferredCurrencyCode: preferredCurrencyChanged
+            ? preferredCurrencyCode
+            : null,
         paymentDetails: paymentPatch.isEmpty ? null : paymentPatch,
       );
       if (!mounted) {

@@ -101,11 +101,95 @@ function build_trip_invite_url(string $inviteCode, string $tripName = ''): strin
     return $base . $separator . 'invite=' . rawurlencode($tripTag);
 }
 
+function trip_user_paid_in_preferred_currency_cents(
+    PDO $pdo,
+    int $tripId,
+    int $userId,
+    string $tripCurrencyCode,
+    string $preferredCurrencyCode
+): ?int {
+    if ($tripId <= 0 || $userId <= 0) {
+        return null;
+    }
+
+    $expensesTable = table_name('expenses');
+    $expenseCurrencyColumnsAvailable = expenses_currency_columns_available($pdo);
+    $selectCurrencySql = $expenseCurrencyColumnsAvailable
+        ? 'e.currency_code'
+        : 'NULL AS currency_code';
+    $selectSourceAmountSql = $expenseCurrencyColumnsAvailable
+        ? 'e.source_amount'
+        : 'e.amount AS source_amount';
+
+    $stmt = $pdo->prepare(
+        'SELECT
+            e.amount,
+            ' . $selectCurrencySql . ',
+            ' . $selectSourceAmountSql . ',
+            e.expense_date,
+            e.created_at
+         FROM ' . $expensesTable . ' e
+         WHERE e.trip_id = :trip_id
+           AND e.paid_by = :user_id'
+    );
+    $stmt->execute([
+        'trip_id' => $tripId,
+        'user_id' => $userId,
+    ]);
+    $rows = $stmt->fetchAll();
+    if (!$rows) {
+        return 0;
+    }
+
+    $tripCurrency = normalize_currency_code_or_default($tripCurrencyCode);
+    $preferredCurrency = normalize_currency_code_or_default($preferredCurrencyCode);
+    $totalCents = 0;
+
+    foreach ($rows as $row) {
+        $tripAmountCents = decimal_to_cents($row['amount'] ?? 0);
+        if ($tripAmountCents <= 0) {
+            continue;
+        }
+
+        $sourceAmountCents = decimal_to_cents($row['source_amount'] ?? 0);
+        if ($sourceAmountCents <= 0) {
+            $sourceAmountCents = $tripAmountCents;
+        }
+        $sourceCurrency = $expenseCurrencyColumnsAvailable
+            ? normalize_currency_code_or_default($row['currency_code'] ?? $tripCurrency)
+            : $tripCurrency;
+
+        $expenseDate = trim((string) ($row['expense_date'] ?? ''));
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $expenseDate)) {
+            $createdAt = trim((string) ($row['created_at'] ?? ''));
+            $expenseDate = strlen($createdAt) >= 10 ? substr($createdAt, 0, 10) : date('Y-m-d');
+        }
+
+        $converted = convert_expense_amount_to_target_currency_cents(
+            $sourceAmountCents,
+            $sourceCurrency,
+            $tripAmountCents,
+            $tripCurrency,
+            $expenseDate,
+            $preferredCurrency
+        );
+        if (!is_int($converted)) {
+            return null;
+        }
+        $totalCents += $converted;
+    }
+
+    return $totalCents;
+}
+
 function trips_action(): void
 {
     $me = get_me();
     $pdo = db();
     $currentUserId = (int) ($me['id'] ?? 0);
+    $preferredCurrencyCode = normalize_currency_code_or_default(
+        $me['preferred_currency_code'] ?? default_trip_currency_code()
+    );
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
     $settlementsTable = table_name('settlements');
@@ -218,6 +302,20 @@ function trips_action(): void
             $myStats = $stats[$currentUserId];
             $row['my_paid_cents'] = (int) ($myStats['paid_cents'] ?? 0);
             $row['my_owed_cents'] = (int) ($myStats['owed_cents'] ?? 0);
+        }
+        $row['preferred_currency_code'] = $preferredCurrencyCode;
+        if ($row['my_paid_cents'] <= 0) {
+            $row['my_paid_preferred_cents'] = 0;
+        } elseif ($row['currency_code'] === $preferredCurrencyCode) {
+            $row['my_paid_preferred_cents'] = $row['my_paid_cents'];
+        } else {
+            $row['my_paid_preferred_cents'] = trip_user_paid_in_preferred_currency_cents(
+                $pdo,
+                (int) $row['id'],
+                $currentUserId,
+                $row['currency_code'],
+                $preferredCurrencyCode
+            );
         }
         $row['my_balance_cents'] = $row['my_owed_cents'] - $row['my_paid_cents'];
         $row['all_settled'] = $row['settlements_total'] > 0 && $row['settlements_total'] === $row['settlements_confirmed'];

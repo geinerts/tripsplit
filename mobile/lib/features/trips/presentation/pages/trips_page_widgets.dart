@@ -79,22 +79,50 @@ extension _TripsPageWidgets on _TripsPageState {
     required List<Trip> allTrips,
   }) {
     final totalTrips = allTrips.length;
-    final totalSpentCents = allTrips.fold<int>(
-      0,
-      (sum, trip) => sum + trip.myPaidCents,
-    );
+    final totalSpentCentsRaw = allTrips.fold<int>(0, (sum, trip) {
+      return sum + trip.myPaidCents;
+    });
     final spentCurrencies = allTrips
         .map((trip) => AppCurrencyCatalog.normalize(trip.currencyCode))
         .toSet();
+    final firstTripPreferredCode = allTrips
+        .map((trip) => (trip.preferredCurrencyCode ?? '').trim())
+        .firstWhere((code) => code.isNotEmpty, orElse: () => '');
+    final preferredCurrencyCode = AppCurrencyCatalog.normalize(
+      firstTripPreferredCode.isNotEmpty
+          ? firstTripPreferredCode
+          : widget.authController.currentUser?.preferredCurrencyCode,
+    );
+    final canUsePreferredTotals =
+        allTrips.isNotEmpty &&
+        allTrips.every((trip) => trip.myPaidPreferredCents != null);
+    final preferredTotalSpentCents = canUsePreferredTotals
+        ? allTrips.fold<int>(
+            0,
+            (sum, trip) => sum + (trip.myPaidPreferredCents ?? 0),
+          )
+        : 0;
     final t = context.l10n;
     final totalTripsLabel = _pageText(en: 'Total trips', lv: 'Ceļojumi kopā');
     final totalSpentLabel = _pageText(en: 'Total spent', lv: 'Kopā iztērēts');
-    final totalSpentValue = spentCurrencies.length <= 1
+    final totalSpentValue = totalTrips == 0
         ? AppFormatters.currencyFromCents(
             context,
-            totalSpentCents,
+            0,
+            currencyCode: preferredCurrencyCode,
+          )
+        : canUsePreferredTotals
+        ? AppFormatters.currencyFromCents(
+            context,
+            preferredTotalSpentCents,
+            currencyCode: preferredCurrencyCode,
+          )
+        : spentCurrencies.length <= 1
+        ? AppFormatters.currencyFromCents(
+            context,
+            totalSpentCentsRaw,
             currencyCode: spentCurrencies.isEmpty
-                ? AppCurrencyCatalog.defaultCode
+                ? preferredCurrencyCode
                 : spentCurrencies.first,
           )
         : _pageText(en: 'Mixed currencies', lv: 'Jauktas valūtas');

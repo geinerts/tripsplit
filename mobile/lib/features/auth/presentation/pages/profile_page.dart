@@ -17,6 +17,7 @@ import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_design.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../app/theme/theme_mode_scope.dart';
+import '../../../../core/currency/app_currency.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/media/app_image_cropper.dart';
@@ -96,12 +97,14 @@ class _ProfilePageState extends State<ProfilePage> {
   String _initialBankBic = '';
   String _initialRevolutHandle = '';
   String _initialPaypalMeLink = '';
+  String _initialPreferredCurrencyCode = AppCurrencyCatalog.defaultCode;
   String _draftFullName = '';
   String _draftEmail = '';
   String _draftBankIban = '';
   String _draftBankBic = '';
   String _draftRevolutHandle = '';
   String _draftPaypalMeLink = '';
+  String _draftPreferredCurrencyCode = AppCurrencyCatalog.defaultCode;
   String _draftPassword = '';
   String _draftRepeatPassword = '';
   String _deactivateDraftPassword = '';
@@ -165,4 +168,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-enum _ProfileEditField { fullName, email, bankTransfer, revolut, paypal }
+enum _ProfileEditField {
+  fullName,
+  email,
+  preferredCurrency,
+  bankTransfer,
+  revolut,
+  paypal,
+}

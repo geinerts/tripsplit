@@ -18,6 +18,8 @@ class Trip {
     required this.readyToSettle,
     required this.totalAmountCents,
     required this.myPaidCents,
+    this.myPaidPreferredCents,
+    this.preferredCurrencyCode,
     required this.myOwedCents,
     required this.myBalanceCents,
   });
@@ -40,6 +42,8 @@ class Trip {
   final bool readyToSettle;
   final int totalAmountCents;
   final int myPaidCents;
+  final int? myPaidPreferredCents;
+  final String? preferredCurrencyCode;
   final int myOwedCents;
   final int myBalanceCents;
 

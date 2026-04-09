@@ -11,6 +11,7 @@ class UpdateProfileUseCase {
     String? lastName,
     String? email,
     String? password,
+    String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   }) {
     return _repository.updateProfile(
@@ -18,6 +19,7 @@ class UpdateProfileUseCase {
       lastName: lastName,
       email: email,
       password: password,
+      preferredCurrencyCode: preferredCurrencyCode,
       paymentDetails: paymentDetails,
     );
   }

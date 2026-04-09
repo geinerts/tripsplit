@@ -71,6 +71,36 @@ function users_payment_columns_available(PDO $pdo): bool
     return $cached;
 }
 
+function users_preferred_currency_column_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if (is_bool($cached)) {
+        return $cached;
+    }
+
+    $usersTable = DB_TABLE_PREFIX . 'users';
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $usersTable)) {
+        $cached = false;
+        return $cached;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(1)
+             FROM information_schema.columns
+             WHERE table_schema = DATABASE()
+               AND table_name = :table_name
+               AND column_name = \'preferred_currency_code\''
+        );
+        $stmt->execute(['table_name' => $usersTable]);
+        $cached = ((int) ($stmt->fetchColumn() ?: 0)) >= 1;
+    } catch (Throwable $error) {
+        $cached = false;
+    }
+
+    return $cached;
+}
+
 function combine_full_name(?string $firstName, ?string $lastName): ?string
 {
     $full = trim(trim((string) $firstName) . ' ' . trim((string) $lastName));
@@ -138,6 +168,9 @@ function build_me_payload(array $user): array
     $bankRoutingNumber = normalize_me_profile_text_value($user['bank_routing_number'] ?? null);
     $revolutHandle = normalize_me_profile_text_value($user['revolut_handle'] ?? null);
     $paypalMeLink = normalize_me_profile_text_value($user['paypal_me_link'] ?? null);
+    $preferredCurrencyCode = normalize_currency_code_or_default(
+        $user['preferred_currency_code'] ?? null
+    );
 
     return [
         'id' => (int) $user['id'],
@@ -167,6 +200,7 @@ function build_me_payload(array $user): array
         'bank_routing_number' => $bankRoutingNumber,
         'revolut_handle' => $revolutHandle,
         'paypal_me_link' => $paypalMeLink,
+        'preferred_currency_code' => $preferredCurrencyCode,
         'avatar_url' => $avatarPath !== '' ? avatar_public_url($avatarPath) : null,
         'avatar_thumb_url' => $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null,
     ];
@@ -181,9 +215,12 @@ function fetch_me_row_by_token(PDO $pdo, string $token): ?array
     $paymentSelect = users_payment_columns_available($pdo)
         ? 'bank_country_code, bank_account_holder, bank_account_number, bank_iban, bank_bic, bank_sort_code, bank_routing_number, revolut_handle, paypal_me_link, '
         : 'NULL AS bank_country_code, NULL AS bank_account_holder, NULL AS bank_account_number, NULL AS bank_iban, NULL AS bank_bic, NULL AS bank_sort_code, NULL AS bank_routing_number, NULL AS revolut_handle, NULL AS paypal_me_link, ';
+    $preferredCurrencySelect = users_preferred_currency_column_available($pdo)
+        ? 'preferred_currency_code, '
+        : '\'' . default_trip_currency_code() . '\' AS preferred_currency_code, ';
     $accountSelect = users_account_status_select_sql($pdo);
     $stmt = $pdo->prepare(
-        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, ' . $paymentSelect . 'avatar_path
+        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, ' . $paymentSelect . $preferredCurrencySelect . 'avatar_path
          FROM ' . $usersTable . '
          WHERE device_token = :token
          LIMIT 1'
@@ -202,9 +239,12 @@ function fetch_me_row_by_id(PDO $pdo, int $userId): ?array
     $paymentSelect = users_payment_columns_available($pdo)
         ? 'bank_country_code, bank_account_holder, bank_account_number, bank_iban, bank_bic, bank_sort_code, bank_routing_number, revolut_handle, paypal_me_link, '
         : 'NULL AS bank_country_code, NULL AS bank_account_holder, NULL AS bank_account_number, NULL AS bank_iban, NULL AS bank_bic, NULL AS bank_sort_code, NULL AS bank_routing_number, NULL AS revolut_handle, NULL AS paypal_me_link, ';
+    $preferredCurrencySelect = users_preferred_currency_column_available($pdo)
+        ? 'preferred_currency_code, '
+        : '\'' . default_trip_currency_code() . '\' AS preferred_currency_code, ';
     $accountSelect = users_account_status_select_sql($pdo);
     $stmt = $pdo->prepare(
-        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, ' . $paymentSelect . 'avatar_path
+        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, ' . $paymentSelect . $preferredCurrencySelect . 'avatar_path
          FROM ' . $usersTable . '
          WHERE id = :id
          LIMIT 1'
