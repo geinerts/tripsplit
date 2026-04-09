@@ -199,11 +199,7 @@ extension _LoginPageActions on _LoginPageState {
             tokenEndpoint: 'https://oauth2.googleapis.com/token',
           ),
           scopes: const ['openid', 'email', 'profile'],
-          promptValues: const ['consent', 'select_account'],
-          additionalParameters: const {
-            'access_type': 'offline',
-            'include_granted_scopes': 'true',
-          },
+          promptValues: const ['select_account'],
         ),
       );
 
