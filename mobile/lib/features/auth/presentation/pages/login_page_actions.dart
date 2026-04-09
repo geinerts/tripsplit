@@ -177,90 +177,99 @@ extension _LoginPageActions on _LoginPageState {
   }
 
   Future<_SocialAuthCredential> _signInWithGoogle() async {
-    final clientId = _googleOauthClientId.trim();
-    final redirectUri = _googleOauthRedirectUri.trim();
-    if (clientId.isEmpty || redirectUri.isEmpty) {
+    final env = AppEnv.current;
+    final clientId = env.googleServerClientId.trim();
+    final baseUrl = env.apiBaseUrl.trim();
+    if (clientId.isEmpty || baseUrl.isEmpty) {
       throw StateError(
         _authText(
-          en: 'Google sign-in is not configured yet. Missing OAuth client or redirect URI.',
-          lv: 'Google pieslēgšanās vēl nav nokonfigurēta. Trūkst OAuth klienta vai redirect URI.',
+          en: 'Google sign-in is not configured yet.',
+          lv: 'Google pieslēgšanās vēl nav nokonfigurēta.',
         ),
       );
     }
 
-    try {
-      final tokenResponse = await _googleAppAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          clientId,
-          redirectUri,
-          serviceConfiguration: const AuthorizationServiceConfiguration(
-            authorizationEndpoint:
-                'https://accounts.google.com/o/oauth2/v2/auth',
-            tokenEndpoint: 'https://oauth2.googleapis.com/token',
-          ),
-          scopes: const ['openid', 'email', 'profile'],
-          promptValues: const ['select_account'],
-        ),
-      );
+    final redirectUri = '$baseUrl/auth/google/callback';
+    final state = DateTime.now().microsecondsSinceEpoch.toRadixString(36);
 
-      final idToken = (tokenResponse.idToken ?? '').trim();
-      if (idToken.isEmpty) {
-        throw StateError(
+    final authUrl = Uri.https('accounts.google.com', '/o/oauth2/v2/auth', {
+      'client_id': clientId,
+      'redirect_uri': redirectUri,
+      'response_type': 'code',
+      'scope': 'openid email profile',
+      'state': state,
+      'prompt': 'select_account',
+    });
+
+    final completer = Completer<_SocialAuthCredential>();
+    final appLinks = AppLinks();
+    StreamSubscription<Uri>? subscription;
+
+    subscription = appLinks.uriLinkStream.listen((uri) {
+      if (uri.scheme != 'splyto' || uri.host != 'auth') return;
+      if (!uri.path.startsWith('/google')) return;
+
+      subscription?.cancel();
+
+      final error = uri.queryParameters['error'] ?? '';
+      if (error.isNotEmpty) {
+        completer.completeError(StateError(
           _authText(
-            en: 'Google sign-in is not configured yet. Missing id token.',
-            lv: 'Google pieslēgums vēl nav nokonfigurēts. Trūkst id token.',
+            en: 'Google sign-in failed: $error',
+            lv: 'Google pieslēgšanās neizdevās: $error',
           ),
-        );
+        ));
+        return;
+      }
+
+      final returnedState = uri.queryParameters['state'] ?? '';
+      if (returnedState != state) {
+        completer.completeError(StateError(
+          _authText(
+            en: 'Google sign-in failed: invalid state.',
+            lv: 'Google pieslēgšanās neizdevās: nederīgs state.',
+          ),
+        ));
+        return;
+      }
+
+      final idToken = (uri.queryParameters['id_token'] ?? '').trim();
+      if (idToken.isEmpty) {
+        completer.completeError(StateError(
+          _authText(
+            en: 'Google sign-in failed: no id_token received.',
+            lv: 'Google pieslēgšanās neizdevās: nav saņemts id_token.',
+          ),
+        ));
+        return;
       }
 
       final payload = _decodeJwtPayload(idToken);
       final fullName = (payload['name'] ?? '').toString().trim();
       final email = (payload['email'] ?? '').toString().trim();
-      return _SocialAuthCredential(
+      completer.complete(_SocialAuthCredential(
         idToken: idToken,
         fullName: fullName.isEmpty ? null : fullName,
         email: email.isEmpty ? null : email,
+      ));
+    });
+
+    final launched = await launchUrl(authUrl, mode: LaunchMode.externalApplication);
+    if (!launched) {
+      subscription?.cancel();
+      throw StateError(
+        _authText(
+          en: 'Could not open Google sign-in.',
+          lv: 'Nevar atvērt Google pieslēgšanos.',
+        ),
       );
-    } on _SocialAuthCancelled {
-      rethrow;
-    } on PlatformException catch (error) {
-      final code = error.code.toLowerCase();
-      final message = (error.message ?? '').toLowerCase();
-      final details = (error.details ?? '').toString().toLowerCase();
-      final combined = '$code $message $details';
-      if (combined.contains('cancelled') ||
-          combined.contains('canceled') ||
-          combined.contains('user cancelled')) {
-        throw _SocialAuthCancelled();
-      }
-      final looksLikeConfigIssue =
-          combined.contains('developer_error') ||
-          combined.contains('error 10') ||
-          combined.contains('api exception: 10') ||
-          combined.contains('12500') ||
-          combined.contains('sign_in_failed') ||
-          combined.contains('redirect_uri_mismatch') ||
-          combined.contains('invalid_request') ||
-          combined.contains('oauth');
-      if (looksLikeConfigIssue) {
-        throw StateError(
-          _authText(
-            en:
-                'Google sign-in OAuth is not fully configured for this build yet. '
-                'Check OAuth client ID, redirect URI scheme, SHA fingerprints, and download fresh Firebase config files.',
-            lv:
-                'Google OAuth pieslēgšanās šim buildam vēl nav pilnībā nokonfigurēta. '
-                'Pārbaudi OAuth klienta ID, redirect URI shēmu, SHA fingerprintus un lejupielādē svaigus Firebase konfigurācijas failus.',
-          ),
-        );
-      }
-      rethrow;
-    } catch (error) {
-      final message = error.toString().toLowerCase();
-      if (message.contains('canceled') || message.contains('cancelled')) {
-        throw _SocialAuthCancelled();
-      }
-      rethrow;
+    }
+
+    try {
+      return await completer.future.timeout(const Duration(minutes: 5));
+    } on TimeoutException {
+      subscription?.cancel();
+      throw _SocialAuthCancelled();
     }
   }
 

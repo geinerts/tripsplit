@@ -5,8 +5,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
@@ -79,9 +80,6 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscurePassword = true;
   bool _obscureRepeat = true;
   String? _errorText;
-  late final FlutterAppAuth _googleAppAuth;
-  late final String _googleOauthClientId;
-  late final String _googleOauthRedirectUri;
 
   void _updateState(VoidCallback update) {
     if (!mounted) {
@@ -98,53 +96,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    final env = AppEnv.current;
-    _googleAppAuth = const FlutterAppAuth();
-    _googleOauthClientId = _resolveGoogleOauthClientId(env);
-    _googleOauthRedirectUri = _resolveGoogleOauthRedirectUri(
-      env,
-      _googleOauthClientId,
-    );
-    if (kDebugMode) {
-      debugPrint(
-        'Google OAuth init: platform=${Platform.operatingSystem}, '
-        'clientIdSet=${_googleOauthClientId.isNotEmpty}, '
-        'redirectUriSet=${_googleOauthRedirectUri.isNotEmpty}',
-      );
-    }
     _tryRestoreSession();
-  }
-
-  String _resolveGoogleOauthClientId(AppEnv env) {
-    if (Platform.isIOS) {
-      return env.googleIosClientId.trim();
-    }
-    // Android uses the web client ID with a loopback redirect URI.
-    // AppAuth-Android spins up a local HTTP server to capture the response.
-    return env.googleServerClientId.trim();
-  }
-
-  String _resolveGoogleOauthRedirectUri(AppEnv env, String clientId) {
-    if (Platform.isIOS) {
-      final iosReversed = env.googleReversedClientId.trim();
-      if (iosReversed.isEmpty) return '';
-      return '$iosReversed:/oauth2redirect/google';
-    }
-    // Android: loopback redirect — AppAuth opens a local HTTP server.
-    return 'http://localhost';
-  }
-
-  String _deriveGoogleReversedClientIdScheme(String clientId) {
-    final normalized = clientId.trim();
-    const suffix = '.apps.googleusercontent.com';
-    if (normalized.isEmpty || !normalized.endsWith(suffix)) {
-      return '';
-    }
-    final core = normalized.substring(0, normalized.length - suffix.length);
-    if (core.isEmpty) {
-      return '';
-    }
-    return 'com.googleusercontent.apps.$core';
   }
 
   @override
