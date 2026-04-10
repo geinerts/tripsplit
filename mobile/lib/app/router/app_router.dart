@@ -4,6 +4,8 @@ import '../app_dependencies.dart';
 import '../../core/l10n/l10n.dart';
 import '../../features/auth/presentation/pages/credentials_page.dart';
 import '../../features/auth/presentation/pages/forgot_password_page.dart';
+import '../../features/auth/presentation/pages/auth_intro_page.dart';
+import '../../features/auth/presentation/pages/auth_sign_in_choice_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/shell/presentation/pages/main_shell_page.dart';
 import '../../features/workspace/presentation/pages/workspace_page.dart';
@@ -13,6 +15,8 @@ class AppRouter {
   const AppRouter(this._dependencies);
 
   static const String shell = '/app';
+  static const String authIntro = '/auth-intro';
+  static const String authSignInChoice = '/auth-sign-in-choice';
   static const String login = '/login';
   static const String credentials = '/credentials';
   static const String forgotPassword = '/forgot-password';
@@ -24,6 +28,8 @@ class AppRouter {
 
   Map<String, WidgetBuilder> get routes {
     return <String, WidgetBuilder>{
+      authIntro: (_) => const AuthIntroPage(),
+      authSignInChoice: (_) => const AuthSignInChoicePage(),
       login: (_) => LoginPage(controller: _dependencies.authController),
       credentials: (_) =>
           CredentialsPage(controller: _dependencies.authController),

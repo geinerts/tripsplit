@@ -67,8 +67,6 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   List<Widget> _buildRegistrationFields(BuildContext context) {
     final t = context.l10n;
     return [
-      _buildSocialButtons(context),
-      const SizedBox(height: 14),
       _buildLabeledTextField(
         context: context,
         label: t.fullNameLabel,
@@ -91,37 +89,36 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   Widget _buildSocialButtons(BuildContext context) {
     final showApple = Platform.isIOS;
     if (!showApple) {
-      return _buildSocialButton(
-        context: context,
-        label: 'Google',
-        icon: _buildGoogleLogo(context),
-        onPressed: _isSubmitting
-            ? null
-            : () => _onSocialPressed(_SocialAuthProvider.google),
+      return Center(
+        child: _buildSocialButton(
+          context: context,
+          semanticLabel: 'Google sign in',
+          icon: _buildGoogleLogo(context),
+          onPressed: _isSubmitting
+              ? null
+              : () => _onSocialPressed(_SocialAuthProvider.google),
+        ),
       );
     }
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(
-          child: _buildSocialButton(
-            context: context,
-            label: 'Google',
-            icon: _buildGoogleLogo(context),
-            onPressed: _isSubmitting
-                ? null
-                : () => _onSocialPressed(_SocialAuthProvider.google),
-          ),
+        _buildSocialButton(
+          context: context,
+          semanticLabel: 'Google sign in',
+          icon: _buildGoogleLogo(context),
+          onPressed: _isSubmitting
+              ? null
+              : () => _onSocialPressed(_SocialAuthProvider.google),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildSocialButton(
-            context: context,
-            label: 'Apple',
-            icon: _buildAppleLogo(context),
-            onPressed: _isSubmitting
-                ? null
-                : () => _onSocialPressed(_SocialAuthProvider.apple),
-          ),
+        const SizedBox(width: 14),
+        _buildSocialButton(
+          context: context,
+          semanticLabel: 'Apple sign in',
+          icon: _buildAppleLogo(context),
+          onPressed: _isSubmitting
+              ? null
+              : () => _onSocialPressed(_SocialAuthProvider.apple),
         ),
       ],
     );
@@ -129,34 +126,31 @@ extension _LoginPageWidgetsForm on _LoginPageState {
 
   Widget _buildSocialButton({
     required BuildContext context,
-    required String label,
+    required String semanticLabel,
     required Widget icon,
     required VoidCallback? onPressed,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isDark = AppDesign.isDark(context);
-    return OutlinedButton.icon(
-      onPressed: onPressed,
-      icon: icon,
-      label: Text(
-        label,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: colorScheme.onSurface,
+    final borderColor = colorScheme.outlineVariant.withValues(alpha: 0.9);
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: colorScheme.onSurface,
+          minimumSize: const Size(56, 56),
+          fixedSize: const Size(56, 56),
+          padding: EdgeInsets.zero,
+          side: BorderSide(color: borderColor, width: 1.4),
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
-      ),
-      style: OutlinedButton.styleFrom(
-        foregroundColor: colorScheme.onSurface,
-        backgroundColor: isDark
-            ? Colors.transparent
-            : colorScheme.surface.withValues(alpha: 0.92),
-        minimumSize: const Size.fromHeight(46),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        side: BorderSide.none,
-        elevation: 0,
-        shadowColor: Colors.transparent,
-        surfaceTintColor: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        child: Center(child: icon),
       ),
     );
   }

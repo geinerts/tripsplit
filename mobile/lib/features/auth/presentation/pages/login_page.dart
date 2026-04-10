@@ -77,6 +77,9 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscurePassword = true;
   bool _obscureRepeat = true;
   String? _errorText;
+  bool _didApplyInitialModeFromRoute = false;
+  _SocialAuthProvider? _pendingSocialProvider;
+  bool _didAutoTriggerSocial = false;
 
   void _updateState(VoidCallback update) {
     if (!mounted) {
@@ -94,6 +97,39 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _tryRestoreSession();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didApplyInitialModeFromRoute) {
+      return;
+    }
+    _didApplyInitialModeFromRoute = true;
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is Map && args['start_register'] == true) {
+      _mode = _AuthMode.register;
+    }
+    if (args is Map && args['social_provider'] is String) {
+      final providerRaw = (args['social_provider'] as String).trim();
+      if (providerRaw == 'google') {
+        _mode = _AuthMode.login;
+        _pendingSocialProvider = _SocialAuthProvider.google;
+      } else if (providerRaw == 'apple') {
+        _mode = _AuthMode.login;
+        _pendingSocialProvider = _SocialAuthProvider.apple;
+      }
+    }
+    if (_pendingSocialProvider != null && !_didAutoTriggerSocial) {
+      _didAutoTriggerSocial = true;
+      final provider = _pendingSocialProvider!;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _onSocialPressed(provider);
+      });
+    }
   }
 
   @override

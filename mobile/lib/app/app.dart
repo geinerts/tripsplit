@@ -500,7 +500,7 @@ class _AppLaunchGateState extends State<_AppLaunchGate> {
   }
 
   Future<void> _resolveAndNavigate() async {
-    String nextRoute = AppRouter.login;
+    String nextRoute = AppRouter.authIntro;
     try {
       final hasSession = await widget.dependencies.authController
           .hasRecoverableSession();
@@ -517,7 +517,7 @@ class _AppLaunchGateState extends State<_AppLaunchGate> {
           }
         }
         if (user == null) {
-          nextRoute = AppRouter.login;
+          nextRoute = AppRouter.authIntro;
         } else {
           nextRoute = user.needsCredentials
               ? AppRouter.credentials
@@ -532,7 +532,7 @@ class _AppLaunchGateState extends State<_AppLaunchGate> {
             ? AppRouter.credentials
             : AppRouter.trips;
       } else {
-        nextRoute = AppRouter.login;
+        nextRoute = AppRouter.authIntro;
       }
     }
 
