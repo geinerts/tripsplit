@@ -22,6 +22,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
               context: context,
               label: t.emailAddressLabel,
               hint: t.emailHint,
+              leadingIcon: Icons.mail_outline_rounded,
               controller: _emailController,
               validator: _validateEmail,
               keyboardType: TextInputType.emailAddress,
@@ -72,13 +73,10 @@ extension _LoginPageWidgetsForm on _LoginPageState {
         context: context,
         label: t.fullNameLabel,
         hint: t.fullNameHint,
+        leadingIcon: Icons.person_outline_rounded,
         controller: _fullNameController,
         validator: _validateFullName,
         autocorrect: false,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 14,
-        ),
       ),
       const SizedBox(height: 8),
       Text(
@@ -202,6 +200,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
       context: context,
       label: context.l10n.passwordLabel,
       hint: '••••••••',
+      leadingIcon: Icons.lock_outline_rounded,
       controller: _passwordController,
       validator: _validatePassword,
       obscureText: _obscurePassword,
@@ -233,6 +232,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
       context: context,
       label: context.l10n.repeatPasswordLabel,
       hint: '••••••••',
+      leadingIcon: Icons.lock_outline_rounded,
       controller: _repeatController,
       validator: _validateRepeat,
       obscureText: _obscureRepeat,
@@ -463,6 +463,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     required BuildContext context,
     required String label,
     required String hint,
+    required IconData leadingIcon,
     required TextEditingController controller,
     required String? Function(String?)? validator,
     TextInputAction textInputAction = TextInputAction.next,
@@ -475,65 +476,72 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     ValueChanged<String>? onChanged,
     EdgeInsetsGeometry? contentPadding,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+    return Semantics(
+      label: label,
+      textField: true,
+      child: TextFormField(
+        key: fieldKey,
+        controller: controller,
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
+        autocorrect: autocorrect,
+        obscureText: obscureText,
+        decoration: _buildInputDecoration(
+          context,
+          hint: hint,
+          leadingIcon: leadingIcon,
+          suffixIcon: suffixIcon,
+          contentPadding: contentPadding,
         ),
-        const SizedBox(height: 10),
-        TextFormField(
-          key: fieldKey,
-          controller: controller,
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          autocorrect: autocorrect,
-          obscureText: obscureText,
-          decoration: _buildInputDecoration(
-            context,
-            hint: hint,
-            suffixIcon: suffixIcon,
-            contentPadding: contentPadding,
-          ),
-          validator: validator,
-          onFieldSubmitted: onFieldSubmitted,
-          onChanged: onChanged,
-        ),
-      ],
+        validator: validator,
+        onFieldSubmitted: onFieldSubmitted,
+        onChanged: onChanged,
+      ),
     );
   }
 
   InputDecoration _buildInputDecoration(
     BuildContext context, {
     required String hint,
+    required IconData leadingIcon,
     Widget? suffixIcon,
     EdgeInsetsGeometry? contentPadding,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
+    final muted = AppDesign.mutedColor(context).withValues(alpha: 0.72);
     return InputDecoration(
       hintText: hint,
-      filled: true,
-      fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.75),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
-        borderSide: BorderSide(color: colorScheme.outlineVariant),
+      hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+        color: muted,
+        fontWeight: FontWeight.w500,
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
+      filled: false,
+      isDense: true,
+      prefixIcon: Icon(leadingIcon, color: muted, size: 22),
+      border: UnderlineInputBorder(
         borderSide: BorderSide(
           color: colorScheme.outlineVariant.withValues(alpha: 0.8),
+          width: 1.2,
         ),
       ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(18),
-        borderSide: BorderSide(color: colorScheme.primary, width: 1.4),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: colorScheme.outlineVariant.withValues(alpha: 0.8),
+          width: 1.2,
+        ),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.primary, width: 1.6),
+      ),
+      errorBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.error, width: 1.4),
+      ),
+      focusedErrorBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: colorScheme.error, width: 1.6),
       ),
       contentPadding:
           contentPadding ??
-          const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+          const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       suffixIcon: suffixIcon,
     );
   }
