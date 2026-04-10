@@ -252,7 +252,7 @@ extension _MainShellPageSettings on _MainShellPageState {
     });
     try {
       await widget.authController.logout();
-      widget.tripsController.clearTripsCache();
+      widget.tripsController.clearTripsCache(clearDisk: true);
       if (!mounted) {
         return;
       }
@@ -319,7 +319,7 @@ extension _MainShellPageSettings on _MainShellPageState {
               });
             }
 
-          return AlertDialog(
+            return AlertDialog(
               title: Text(
                 _settingsLocalizedText(
                   en: 'Send feedback',
@@ -333,8 +333,9 @@ extension _MainShellPageSettings on _MainShellPageState {
                   children: [
                     Builder(
                       builder: (dropdownContext) {
-                        final colorScheme =
-                            Theme.of(dropdownContext).colorScheme;
+                        final colorScheme = Theme.of(
+                          dropdownContext,
+                        ).colorScheme;
                         return DropdownButtonFormField<String>(
                           initialValue: feedbackType,
                           isExpanded: true,

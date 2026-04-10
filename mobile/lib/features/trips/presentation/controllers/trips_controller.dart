@@ -177,12 +177,14 @@ class TripsController {
     );
   }
 
-  void clearTripsCache() {
+  void clearTripsCache({bool clearDisk = false}) {
     _cachedTrips = const <Trip>[];
     _cachedTripsAt = null;
-    _diskCachePrimed = true;
+    _diskCachePrimed = false;
     _primeDiskCacheInFlight = null;
-    unawaited(_localStore.clear());
+    if (clearDisk) {
+      unawaited(_localStore.clear());
+    }
   }
 
   Future<void> _setCachedTrips(

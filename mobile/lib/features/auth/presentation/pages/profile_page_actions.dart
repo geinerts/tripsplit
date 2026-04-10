@@ -247,7 +247,6 @@ extension _ProfilePageActions on _ProfilePageState {
     _isDeactivateAccountPage = false;
     _isChangePasswordPage = false;
     _editErrorText = null;
-    widget.onProfileChanged?.call();
   }
 
   String _joinFullName(String? firstName, String? lastName) {
@@ -453,6 +452,7 @@ extension _ProfilePageActions on _ProfilePageState {
         return false;
       }
       _applyUser(updated);
+      widget.onProfileChanged?.call();
       _passwordController.clear();
       _repeatController.clear();
       _updateState(() {});
