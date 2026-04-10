@@ -9,6 +9,8 @@ class Trip {
     required this.membersCount,
     required this.createdAt,
     required this.createdBy,
+    required this.dateFrom,
+    required this.dateTo,
     required this.endedAt,
     required this.archivedAt,
     required this.settlementsTotal,
@@ -33,6 +35,8 @@ class Trip {
   final int membersCount;
   final String? createdAt;
   final int? createdBy;
+  final String? dateFrom;
+  final String? dateTo;
   final String? endedAt;
   final String? archivedAt;
   final int settlementsTotal;

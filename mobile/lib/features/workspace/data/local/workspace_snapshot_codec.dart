@@ -56,6 +56,9 @@ class WorkspaceSnapshotCodec {
               'to': item.to,
               'amount': item.amount,
               'status': item.status,
+              'created_at': item.createdAt,
+              'marked_sent_at': item.markedSentAt,
+              'confirmed_at': item.confirmedAt,
               'can_mark_sent': item.canMarkSent,
               'can_confirm_received': item.canConfirmReceived,
               'is_confirmed': item.isConfirmed,
@@ -220,6 +223,9 @@ class WorkspaceSnapshotCodec {
             status: (item['status'] as String? ?? 'suggested')
                 .trim()
                 .toLowerCase(),
+            createdAt: item['created_at'] as String?,
+            markedSentAt: item['marked_sent_at'] as String?,
+            confirmedAt: item['confirmed_at'] as String?,
             canMarkSent: item['can_mark_sent'] == true,
             canConfirmReceived: item['can_confirm_received'] == true,
             isConfirmed:

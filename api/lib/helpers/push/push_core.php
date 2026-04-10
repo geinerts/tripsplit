@@ -78,6 +78,12 @@ function push_should_queue_notification_type(string $type): bool
         return false;
     }
 
+    // Always deliver these high-frequency collaboration updates via push,
+    // even when env critical types is narrowed down.
+    if (in_array($normalizedType, ['expense_added', 'friend_invite_received'], true)) {
+        return true;
+    }
+
     $critical = push_critical_types();
     if (!$critical) {
         return true;

@@ -255,11 +255,20 @@ function trips_action(): void
     $tripCurrencySelect = trips_currency_column_available($pdo)
         ? 't.currency_code'
         : '\'' . default_trip_currency_code() . '\' AS currency_code';
+    $tripDateFromSelect = trips_date_range_columns_available($pdo)
+        ? 't.date_from'
+        : 'NULL AS date_from';
+    $tripDateToSelect = trips_date_range_columns_available($pdo)
+        ? 't.date_to'
+        : 'NULL AS date_to';
     $tripImageGroupBy = trips_image_column_available($pdo)
         ? ', t.image_path'
         : '';
     $tripCurrencyGroupBy = trips_currency_column_available($pdo)
         ? ', t.currency_code'
+        : '';
+    $tripDateGroupBy = trips_date_range_columns_available($pdo)
+        ? ', t.date_from, t.date_to'
         : '';
 
     $stmt = $pdo->prepare(
@@ -271,6 +280,8 @@ function trips_action(): void
             t.created_by,
             ' . $tripImageSelect . ',
             t.created_at,
+            ' . $tripDateFromSelect . ',
+            ' . $tripDateToSelect . ',
             t.ended_at,
             t.archived_at,
             (
@@ -318,7 +329,7 @@ function trips_action(): void
             t.created_by,
             t.created_at,
             t.ended_at,
-            t.archived_at' . $tripImageGroupBy . $tripCurrencyGroupBy . '
+            t.archived_at' . $tripImageGroupBy . $tripCurrencyGroupBy . $tripDateGroupBy . '
          ORDER BY t.created_at DESC, t.id DESC'
     );
     $stmt->execute(['user_id' => $currentUserId]);
@@ -337,6 +348,8 @@ function trips_action(): void
         $row['image_thumb_url'] = $imagePath !== '' ? trip_image_thumb_public_url($imagePath) : null;
         unset($row['image_path']);
         $row['members_count'] = (int) $row['members_count'];
+        $row['date_from'] = $row['date_from'] ?: null;
+        $row['date_to'] = $row['date_to'] ?: null;
         $row['ended_at'] = $row['ended_at'] ?: null;
         $row['archived_at'] = $row['archived_at'] ?: null;
         $row['settlements_total'] = (int) ($row['settlements_total'] ?? 0);
@@ -445,6 +458,7 @@ function create_trip_action(): void
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
     $tripCurrencyColumnAvailable = trips_currency_column_available($pdo);
+    $tripDateColumnsAvailable = trips_date_range_columns_available($pdo);
 
     $name = trim((string) ($body['name'] ?? ''));
     if (str_length($name) < 2 || str_length($name) > 120) {
@@ -456,6 +470,34 @@ function create_trip_action(): void
         json_out([
             'ok' => false,
             'error' => 'Trip currency support is not enabled on server yet. Run migration first.',
+        ], 409);
+    }
+    $dateFromRaw = trim((string) ($body['date_from'] ?? ''));
+    $dateToRaw = trim((string) ($body['date_to'] ?? ''));
+    $hasDateFrom = $dateFromRaw !== '';
+    $hasDateTo = $dateToRaw !== '';
+    if ($hasDateFrom xor $hasDateTo) {
+        json_out([
+            'ok' => false,
+            'error' => 'Trip period must include both date_from and date_to.',
+        ], 400);
+    }
+    $dateFrom = null;
+    $dateTo = null;
+    if ($hasDateFrom && $hasDateTo) {
+        $dateFrom = validate_date_iso($dateFromRaw);
+        $dateTo = validate_date_iso($dateToRaw);
+        if ($dateTo < $dateFrom) {
+            json_out([
+                'ok' => false,
+                'error' => 'Trip end date must be on or after start date.',
+            ], 400);
+        }
+    }
+    if (($dateFrom !== null || $dateTo !== null) && !$tripDateColumnsAvailable) {
+        json_out([
+            'ok' => false,
+            'error' => 'Trip date range support is not enabled on server yet. Run migration first.',
         ], 409);
     }
 
@@ -490,24 +532,51 @@ function create_trip_action(): void
     $pdo->beginTransaction();
     try {
         if ($tripCurrencyColumnAvailable) {
-            $insertTrip = $pdo->prepare(
-                'INSERT INTO ' . $tripsTable . ' (name, currency_code, created_by)
-                 VALUES (:name, :currency_code, :created_by)'
-            );
-            $insertTrip->execute([
-                'name' => $name,
-                'currency_code' => $currencyCode,
-                'created_by' => $meId,
-            ]);
+            if ($tripDateColumnsAvailable) {
+                $insertTrip = $pdo->prepare(
+                    'INSERT INTO ' . $tripsTable . ' (name, currency_code, created_by, date_from, date_to)
+                     VALUES (:name, :currency_code, :created_by, :date_from, :date_to)'
+                );
+                $insertTrip->execute([
+                    'name' => $name,
+                    'currency_code' => $currencyCode,
+                    'created_by' => $meId,
+                    'date_from' => $dateFrom,
+                    'date_to' => $dateTo,
+                ]);
+            } else {
+                $insertTrip = $pdo->prepare(
+                    'INSERT INTO ' . $tripsTable . ' (name, currency_code, created_by)
+                     VALUES (:name, :currency_code, :created_by)'
+                );
+                $insertTrip->execute([
+                    'name' => $name,
+                    'currency_code' => $currencyCode,
+                    'created_by' => $meId,
+                ]);
+            }
         } else {
-            $insertTrip = $pdo->prepare(
-                'INSERT INTO ' . $tripsTable . ' (name, created_by)
-                 VALUES (:name, :created_by)'
-            );
-            $insertTrip->execute([
-                'name' => $name,
-                'created_by' => $meId,
-            ]);
+            if ($tripDateColumnsAvailable) {
+                $insertTrip = $pdo->prepare(
+                    'INSERT INTO ' . $tripsTable . ' (name, created_by, date_from, date_to)
+                     VALUES (:name, :created_by, :date_from, :date_to)'
+                );
+                $insertTrip->execute([
+                    'name' => $name,
+                    'created_by' => $meId,
+                    'date_from' => $dateFrom,
+                    'date_to' => $dateTo,
+                ]);
+            } else {
+                $insertTrip = $pdo->prepare(
+                    'INSERT INTO ' . $tripsTable . ' (name, created_by)
+                     VALUES (:name, :created_by)'
+                );
+                $insertTrip->execute([
+                    'name' => $name,
+                    'created_by' => $meId,
+                ]);
+            }
         }
         $tripId = (int) $pdo->lastInsertId();
 
@@ -557,6 +626,8 @@ function create_trip_action(): void
             'currency_code' => $currencyCode,
             'status' => 'active',
             'created_by' => $meId,
+            'date_from' => $dateFrom,
+            'date_to' => $dateTo,
             'ended_at' => null,
             'archived_at' => null,
             'image_url' => null,
@@ -730,6 +801,8 @@ function update_trip_action(): void
             'created_by' => array_key_exists('created_by', $fresh) && $fresh['created_by'] !== null
                 ? (int) $fresh['created_by']
                 : null,
+            'date_from' => array_key_exists('date_from', $fresh) ? ($fresh['date_from'] ?: null) : null,
+            'date_to' => array_key_exists('date_to', $fresh) ? ($fresh['date_to'] ?: null) : null,
             'ended_at' => array_key_exists('ended_at', $fresh) ? ($fresh['ended_at'] ?: null) : null,
             'archived_at' => array_key_exists('archived_at', $fresh) ? ($fresh['archived_at'] ?: null) : null,
             'image_url' => trim((string) ($fresh['image_path'] ?? '')) !== ''

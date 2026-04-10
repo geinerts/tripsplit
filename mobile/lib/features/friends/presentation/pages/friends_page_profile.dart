@@ -3,6 +3,7 @@ part of 'friends_page.dart';
 extension _FriendsPageProfile on _FriendsPageState {
   Future<void> _openFriendProfile(FriendUser user) async {
     var profileUser = user;
+    var isRemovingFriend = false;
     Future<List<WorkspaceSharedTrip>> sharedTripsFuture = widget
         .workspaceController
         .loadSharedTripsWithUser(userId: user.id, limit: 20);
@@ -12,6 +13,12 @@ extension _FriendsPageProfile on _FriendsPageState {
         builder: (pageContext) {
           return StatefulBuilder(
             builder: (profileContext, setProfileState) {
+              final name = _friendPrimaryName(profileUser);
+              final holderName =
+                  (profileUser.bankAccountHolder ?? '').trim().isNotEmpty
+                  ? (profileUser.bankAccountHolder ?? '').trim()
+                  : name;
+
               Future<void> refreshProfile() async {
                 final tripsRequest = widget.workspaceController
                     .loadSharedTripsWithUser(userId: profileUser.id, limit: 20);
@@ -41,30 +48,189 @@ extension _FriendsPageProfile on _FriendsPageState {
                 } catch (_) {}
               }
 
-              final name = _friendPrimaryName(profileUser);
-              final holderName =
-                  (profileUser.bankAccountHolder ?? '').trim().isNotEmpty
-                  ? (profileUser.bankAccountHolder ?? '').trim()
-                  : name;
+              Future<_FriendProfileAction?> showProfileActionsSheet() async {
+                final isIOS =
+                    Theme.of(profileContext).platform == TargetPlatform.iOS;
+                if (isIOS) {
+                  return showCupertinoModalPopup<_FriendProfileAction>(
+                    context: profileContext,
+                    builder: (sheetContext) => CupertinoActionSheet(
+                      actions: [
+                        CupertinoActionSheetAction(
+                          isDestructiveAction: true,
+                          onPressed: () => Navigator.of(
+                            sheetContext,
+                          ).pop(_FriendProfileAction.removeFriend),
+                          child: Text(
+                            _txt(en: 'Remove friend', lv: 'Noņemt draugu'),
+                          ),
+                        ),
+                      ],
+                      cancelButton: CupertinoActionSheetAction(
+                        onPressed: () => Navigator.of(sheetContext).pop(),
+                        child: Text(_txt(en: 'Cancel', lv: 'Atcelt')),
+                      ),
+                    ),
+                  );
+                }
+
+                return showModalBottomSheet<_FriendProfileAction>(
+                  context: profileContext,
+                  showDragHandle: true,
+                  builder: (sheetContext) {
+                    final isDark =
+                        Theme.of(sheetContext).brightness == Brightness.dark;
+                    final removeColor = isDark
+                        ? Colors.red.shade200
+                        : Colors.red.shade700;
+                    return SafeArea(
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.person_remove_alt_1_rounded,
+                          color: removeColor,
+                        ),
+                        title: Text(
+                          _txt(en: 'Remove friend', lv: 'Noņemt draugu'),
+                          style: TextStyle(
+                            color: removeColor,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        onTap: () => Navigator.of(
+                          sheetContext,
+                        ).pop(_FriendProfileAction.removeFriend),
+                      ),
+                    );
+                  },
+                );
+              }
+
+              Future<bool> confirmRemoveFriend() async {
+                final title = _txt(
+                  en: 'Remove this friend?',
+                  lv: 'Noņemt šo draugu?',
+                );
+                final body = _txt(
+                  en: '$name will be removed from your friends list. You can add them again later.',
+                  lv: '$name tiks noņemts no tavas draugu listes. Vēlāk varēsi viņu pievienot atkal.',
+                );
+                final isIOS =
+                    Theme.of(profileContext).platform == TargetPlatform.iOS;
+                if (isIOS) {
+                  final result = await showCupertinoDialog<bool>(
+                    context: profileContext,
+                    builder: (dialogContext) => CupertinoAlertDialog(
+                      title: Text(title),
+                      content: Text(body),
+                      actions: [
+                        CupertinoDialogAction(
+                          onPressed: () =>
+                              Navigator.of(dialogContext).pop(false),
+                          child: Text(_txt(en: 'Cancel', lv: 'Atcelt')),
+                        ),
+                        CupertinoDialogAction(
+                          isDestructiveAction: true,
+                          onPressed: () =>
+                              Navigator.of(dialogContext).pop(true),
+                          child: Text(_txt(en: 'Continue', lv: 'Turpināt')),
+                        ),
+                      ],
+                    ),
+                  );
+                  return result == true;
+                }
+
+                final result = await showDialog<bool>(
+                  context: profileContext,
+                  builder: (dialogContext) => AlertDialog(
+                    title: Text(title),
+                    content: Text(body),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(dialogContext).pop(false),
+                        child: Text(_txt(en: 'Cancel', lv: 'Atcelt')),
+                      ),
+                      FilledButton(
+                        onPressed: () => Navigator.of(dialogContext).pop(true),
+                        child: Text(_txt(en: 'Continue', lv: 'Turpināt')),
+                      ),
+                    ],
+                  ),
+                );
+                return result == true;
+              }
+
+              Future<void> onOpenProfileActions() async {
+                if (isRemovingFriend) {
+                  return;
+                }
+                final selectedAction = await showProfileActionsSheet();
+                if (selectedAction != _FriendProfileAction.removeFriend ||
+                    !mounted ||
+                    !profileContext.mounted) {
+                  return;
+                }
+
+                final confirmed = await confirmRemoveFriend();
+                if (!confirmed || !mounted || !profileContext.mounted) {
+                  return;
+                }
+
+                setProfileState(() {
+                  isRemovingFriend = true;
+                });
+                try {
+                  await widget.controller.removeFriend(userId: profileUser.id);
+                  if (!mounted) {
+                    return;
+                  }
+                  _showSnack(
+                    _txt(en: 'Friend removed.', lv: 'Draugs noņemts.'),
+                  );
+                  await _loadSnapshot(showLoader: false);
+                  if (!profileContext.mounted) {
+                    return;
+                  }
+                  Navigator.of(profileContext).pop();
+                } on ApiException catch (error) {
+                  if (!mounted) {
+                    return;
+                  }
+                  _showSnack(error.message, isError: true);
+                } catch (_) {
+                  if (!mounted) {
+                    return;
+                  }
+                  _showSnack(
+                    _txt(
+                      en: 'Could not remove friend.',
+                      lv: 'Neizdevās noņemt draugu.',
+                    ),
+                    isError: true,
+                  );
+                } finally {
+                  if (mounted && profileContext.mounted) {
+                    setProfileState(() {
+                      isRemovingFriend = false;
+                    });
+                  }
+                }
+              }
 
               return UserProfilePage(
                 title: _txt(en: 'Friend profile', lv: 'Drauga profils'),
                 name: name,
                 nickname: profileUser.nickname,
                 avatarUrl: profileUser.avatarThumbUrl ?? profileUser.avatarUrl,
-                enableNameCopy: true,
-                copyNameTooltip: _txt(
-                  en: 'Copy full name',
-                  lv: 'Kopēt pilno vārdu',
-                ),
-                copyNameSuccessText: _txt(
-                  en: 'Name copied.',
-                  lv: 'Vārds nokopēts.',
-                ),
-                copyNameFailureText: _txt(
-                  en: 'Could not copy name.',
-                  lv: 'Neizdevās nokopēt vārdu.',
-                ),
+                appBarActions: [
+                  IconButton(
+                    onPressed: isRemovingFriend
+                        ? null
+                        : () => unawaited(onOpenProfileActions()),
+                    tooltip: _txt(en: 'More actions', lv: 'Vairāk darbību'),
+                    icon: const Icon(Icons.more_horiz_rounded),
+                  ),
+                ],
                 sections: [
                   _buildCommonTripsSection(
                     context: profileContext,
@@ -325,3 +491,5 @@ extension _FriendsPageProfile on _FriendsPageState {
     return MaterialLocalizations.of(context).formatMediumDate(parsed.toLocal());
   }
 }
+
+enum _FriendProfileAction { removeFriend }

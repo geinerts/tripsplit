@@ -12,6 +12,8 @@ extension _TripsPageDialogs on _TripsPageState {
     var isLoadingFriendQuickPicks = false;
     var friendQuickPicksRequested = false;
     var selectedCurrencyCode = AppCurrencyCatalog.defaultCode;
+    DateTime? tripDateFrom;
+    DateTime? tripDateTo;
 
     try {
       return await Navigator.of(context).push<_CreateTripResult>(
@@ -19,6 +21,39 @@ extension _TripsPageDialogs on _TripsPageState {
           builder: (sheetContext) {
             final t = sheetContext.l10n;
             String? errorText;
+            String formatTripDate(DateTime value) {
+              final dd = value.day.toString().padLeft(2, '0');
+              final mm = value.month.toString().padLeft(2, '0');
+              final yyyy = value.year.toString().padLeft(4, '0');
+              return '$dd.$mm.$yyyy';
+            }
+
+            String? toIsoDate(DateTime? value) {
+              if (value == null) {
+                return null;
+              }
+              final normalized = DateTime(value.year, value.month, value.day);
+              final mm = normalized.month.toString().padLeft(2, '0');
+              final dd = normalized.day.toString().padLeft(2, '0');
+              return '${normalized.year}-$mm-$dd';
+            }
+
+            Future<DateTime?> pickTripDate({
+              required DateTime initialDate,
+              required DateTime firstDate,
+              required DateTime lastDate,
+            }) async {
+              final picked = await showDatePicker(
+                context: sheetContext,
+                initialDate: initialDate,
+                firstDate: firstDate,
+                lastDate: lastDate,
+              );
+              if (picked == null) {
+                return null;
+              }
+              return DateTime(picked.year, picked.month, picked.day);
+            }
 
             Future<void> loadFriendQuickPicks(
               StateSetter setDialogState,
@@ -442,7 +477,9 @@ extension _TripsPageDialogs on _TripsPageState {
 
                 return Scaffold(
                   body: SafeArea(
-                    child: Padding(
+                    child: AnimatedPadding(
+                      duration: const Duration(milliseconds: 150),
+                      curve: Curves.easeOut,
                       padding: EdgeInsets.only(bottom: viewInsetsBottom),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(maxHeight: maxSheetHeight),
@@ -586,6 +623,148 @@ extension _TripsPageDialogs on _TripsPageState {
                                         ).textTheme.bodySmall,
                                       ),
                                     ],
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      _pageText(
+                                        en: 'Trip dates',
+                                        lv: 'Ceļojuma datumi',
+                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: InkWell(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            onTap: () async {
+                                              final now = DateTime.now();
+                                              final picked = await pickTripDate(
+                                                initialDate:
+                                                    tripDateFrom ??
+                                                    tripDateTo ??
+                                                    DateTime(
+                                                      now.year,
+                                                      now.month,
+                                                      now.day,
+                                                    ),
+                                                firstDate: DateTime(2020, 1, 1),
+                                                lastDate: DateTime(
+                                                  2100,
+                                                  12,
+                                                  31,
+                                                ),
+                                              );
+                                              if (!mounted || picked == null) {
+                                                return;
+                                              }
+                                              setDialogState(() {
+                                                tripDateFrom = picked;
+                                                if (tripDateTo != null &&
+                                                    tripDateTo!.isBefore(
+                                                      picked,
+                                                    )) {
+                                                  tripDateTo = picked;
+                                                }
+                                                errorText = null;
+                                              });
+                                            },
+                                            child: InputDecorator(
+                                              decoration: InputDecoration(
+                                                labelText: _pageText(
+                                                  en: 'From',
+                                                  lv: 'No',
+                                                ),
+                                                suffixIcon: const Icon(
+                                                  Icons.calendar_today_outlined,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                tripDateFrom == null
+                                                    ? _pageText(
+                                                        en: 'Select date',
+                                                        lv: 'Izvēlies datumu',
+                                                      )
+                                                    : formatTripDate(
+                                                        tripDateFrom!,
+                                                      ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: InkWell(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            onTap: () async {
+                                              final now = DateTime.now();
+                                              final firstDate =
+                                                  tripDateFrom ??
+                                                  DateTime(2020, 1, 1);
+                                              final initial =
+                                                  tripDateTo ??
+                                                  tripDateFrom ??
+                                                  DateTime(
+                                                    now.year,
+                                                    now.month,
+                                                    now.day,
+                                                  );
+                                              final picked = await pickTripDate(
+                                                initialDate:
+                                                    initial.isBefore(firstDate)
+                                                    ? firstDate
+                                                    : initial,
+                                                firstDate: firstDate,
+                                                lastDate: DateTime(
+                                                  2100,
+                                                  12,
+                                                  31,
+                                                ),
+                                              );
+                                              if (!mounted || picked == null) {
+                                                return;
+                                              }
+                                              setDialogState(() {
+                                                tripDateTo = picked;
+                                                errorText = null;
+                                              });
+                                            },
+                                            child: InputDecorator(
+                                              decoration: InputDecoration(
+                                                labelText: _pageText(
+                                                  en: 'To',
+                                                  lv: 'Līdz',
+                                                ),
+                                                suffixIcon: const Icon(
+                                                  Icons.calendar_today_outlined,
+                                                  size: 18,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                tripDateTo == null
+                                                    ? _pageText(
+                                                        en: 'Select date',
+                                                        lv: 'Izvēlies datumu',
+                                                      )
+                                                    : formatTripDate(
+                                                        tripDateTo!,
+                                                      ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                     const SizedBox(height: 12),
                                     Text(
                                       _pageText(
@@ -817,6 +996,41 @@ extension _TripsPageDialogs on _TripsPageState {
                                           });
                                           return;
                                         }
+                                        if (tripDateFrom == null ||
+                                            tripDateTo == null) {
+                                          setDialogState(() {
+                                            errorText = _pageText(
+                                              en: 'Please select trip period (from and to dates).',
+                                              lv: 'Lūdzu, izvēlies ceļojuma periodu (no un līdz).',
+                                            );
+                                          });
+                                          return;
+                                        }
+                                        if (tripDateTo!.isBefore(
+                                          tripDateFrom!,
+                                        )) {
+                                          setDialogState(() {
+                                            errorText = _pageText(
+                                              en: 'Trip end date must be on or after start date.',
+                                              lv: 'Ceļojuma beigu datumam jābūt vienādam vai vēlākam par sākuma datumu.',
+                                            );
+                                          });
+                                          return;
+                                        }
+                                        final dateFromIso = toIsoDate(
+                                          tripDateFrom,
+                                        );
+                                        final dateToIso = toIsoDate(tripDateTo);
+                                        if (dateFromIso == null ||
+                                            dateToIso == null) {
+                                          setDialogState(() {
+                                            errorText = _pageText(
+                                              en: 'Trip period format is invalid. Please pick dates again.',
+                                              lv: 'Ceļojuma perioda formāts nav derīgs. Izvēlies datumus vēlreiz.',
+                                            );
+                                          });
+                                          return;
+                                        }
 
                                         final memberIds = selected.toList(
                                           growable: false,
@@ -826,6 +1040,8 @@ extension _TripsPageDialogs on _TripsPageState {
                                             name: name,
                                             currencyCode: selectedCurrencyCode,
                                             memberIds: memberIds,
+                                            dateFrom: dateFromIso,
+                                            dateTo: dateToIso,
                                             imageFileName: selectedImageName,
                                             imageBytes: selectedImageBytes,
                                           ),

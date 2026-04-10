@@ -42,7 +42,7 @@ define(
     'PUSH_CRITICAL_TYPES',
     env_string(
         'TRIP_PUSH_CRITICAL_TYPES',
-        'trip_finished,trip_ready_to_settle,settlement_sent,settlement_confirmed,settlement_reminder,settlement_auto_reminder'
+        'trip_finished,trip_ready_to_settle,settlement_sent,settlement_confirmed,settlement_reminder,settlement_auto_reminder,expense_added,friend_invite_received'
     )
 );
 

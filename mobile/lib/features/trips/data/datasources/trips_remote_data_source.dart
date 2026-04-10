@@ -22,6 +22,8 @@ abstract class TripsRemoteDataSource {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String? dateFrom,
+    String? dateTo,
   });
   Future<TripModel> updateTrip({
     required int tripId,
@@ -106,6 +108,8 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String? dateFrom,
+    String? dateTo,
   }) async {
     final response = await _apiClient.request(
       path: ApiEndpoints.legacyAction('create_trip'),
@@ -114,6 +118,10 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
         'name': name,
         'currency_code': currencyCode,
         'member_ids': memberIds,
+        if (dateFrom != null && dateFrom.trim().isNotEmpty)
+          'date_from': dateFrom.trim(),
+        if (dateTo != null && dateTo.trim().isNotEmpty)
+          'date_to': dateTo.trim(),
       },
     );
 

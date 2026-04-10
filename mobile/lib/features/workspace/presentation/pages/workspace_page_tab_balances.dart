@@ -331,10 +331,11 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     final amountColor = isDark
         ? colors.onSurface
         : (isPositiveForCurrent ? _splytoSuccess : _splytoPrimary);
-    final actionLabel = item.canConfirmReceived
-        ? context.l10n.confirmReceivedAction
-        : context.l10n.settleUpAction;
-    final canPrimaryAction = item.canMarkSent || item.canConfirmReceived;
+    final openFlowLabel = _localizedText(
+      context,
+      en: 'Open flow',
+      lv: 'Atvērt plūsmu',
+    );
 
     final normalizedStatus = item.status.trim().toLowerCase();
     final isCompleted = normalizedStatus == 'confirmed';
@@ -386,16 +387,12 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         ),
         child: _SplytoPressScale(
           borderRadius: BorderRadius.circular(24),
-          enabled: !_isMutating && canPrimaryAction,
-          onTap: () async {
-            if (item.canConfirmReceived) {
-              await _onSettlementConfirmReceived(item);
-            } else if (item.canMarkSent) {
-              await _onSettlementMarkSent(item);
-            } else {
-              await _openSettlementProgressDetails(snapshot);
-            }
-          },
+          enabled: true,
+          onTap: () => _openSettlementFlowTimelineSheet(
+            snapshot: snapshot,
+            item: item,
+            usersById: usersById,
+          ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
             child: Column(
@@ -506,38 +503,16 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                           label: statusLabel,
                           color: statusColor,
                         ),
-                        if (!item.isConfirmed) ...[
-                          const SizedBox(height: 8),
-                          FilledButton(
-                            onPressed: !_isMutating && canPrimaryAction
-                                ? () async {
-                                    if (item.canConfirmReceived) {
-                                      await _onSettlementConfirmReceived(item);
-                                    } else if (item.canMarkSent) {
-                                      await _onSettlementMarkSent(item);
-                                    } else {
-                                      await _openSettlementProgressDetails(
-                                        snapshot,
-                                      );
-                                    }
-                                  }
-                                : null,
-                            style: FilledButton.styleFrom(
-                              backgroundColor: _splytoPrimary,
-                              foregroundColor: Colors.white,
-                              shape: const StadiumBorder(),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 10,
-                              ),
-                              textStyle: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            child: Text(actionLabel),
+                        const SizedBox(height: 8),
+                        TextButton.icon(
+                          onPressed: () => _openSettlementFlowTimelineSheet(
+                            snapshot: snapshot,
+                            item: item,
+                            usersById: usersById,
                           ),
-                        ],
+                          icon: const Icon(Icons.timeline_rounded, size: 16),
+                          label: Text(openFlowLabel),
+                        ),
                       ],
                     ),
                   ],

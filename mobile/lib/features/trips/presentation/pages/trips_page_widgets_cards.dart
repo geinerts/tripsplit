@@ -437,8 +437,8 @@ extension _TripsPageCardWidgets on _TripsPageState {
   String _formatTripPeriod(BuildContext context, Trip trip) {
     return AppFormatters.tripDateRange(
       context,
-      startRaw: trip.createdAt,
-      endRaw: trip.endedAt ?? trip.archivedAt,
+      startRaw: trip.dateFrom ?? trip.createdAt,
+      endRaw: trip.dateTo ?? trip.endedAt ?? trip.archivedAt,
       unknownLabel: context.l10n.dateUnknown,
     );
   }

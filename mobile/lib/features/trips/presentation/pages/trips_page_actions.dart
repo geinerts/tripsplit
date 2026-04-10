@@ -101,6 +101,8 @@ extension _TripsPageActions on _TripsPageState {
         name: result.name,
         currencyCode: result.currencyCode,
         memberIds: result.memberIds,
+        dateFrom: result.dateFrom,
+        dateTo: result.dateTo,
       );
       final imageBytes = result.imageBytes;
       final imageFileName = result.imageFileName?.trim() ?? '';

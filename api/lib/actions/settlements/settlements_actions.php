@@ -24,6 +24,7 @@ function balances_action(): void
                 'to' => (string) $item['to'],
                 'amount' => (float) $item['amount'],
                 'status' => 'suggested',
+                'created_at' => null,
                 'marked_sent_at' => null,
                 'confirmed_at' => null,
                 'can_mark_sent' => false,

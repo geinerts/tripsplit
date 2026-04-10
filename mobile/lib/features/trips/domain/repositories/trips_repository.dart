@@ -18,6 +18,8 @@ abstract class TripsRepository {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String? dateFrom,
+    String? dateTo,
   });
   Future<Trip> updateTrip({
     required int tripId,

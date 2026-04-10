@@ -53,11 +53,15 @@ class TripsRepositoryImpl implements TripsRepository {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String? dateFrom,
+    String? dateTo,
   }) {
     return _remote.createTrip(
       name: name,
       currencyCode: currencyCode,
       memberIds: memberIds,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
     );
   }
 

@@ -7,6 +7,9 @@ class SettlementItem {
     required this.to,
     required this.amount,
     required this.status,
+    required this.createdAt,
+    required this.markedSentAt,
+    required this.confirmedAt,
     required this.canMarkSent,
     required this.canConfirmReceived,
     required this.isConfirmed,
@@ -19,6 +22,9 @@ class SettlementItem {
   final String to;
   final double amount;
   final String status;
+  final String? createdAt;
+  final String? markedSentAt;
+  final String? confirmedAt;
   final bool canMarkSent;
   final bool canConfirmReceived;
   final bool isConfirmed;

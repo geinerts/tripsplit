@@ -112,11 +112,15 @@ class TripsController {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String? dateFrom,
+    String? dateTo,
   }) {
     return _createTripUseCase.call(
       name: name,
       currencyCode: currencyCode,
       memberIds: memberIds,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
     );
   }
 

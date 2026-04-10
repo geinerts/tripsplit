@@ -13,6 +13,8 @@ class TripModel extends Trip {
     required super.membersCount,
     required super.createdAt,
     required super.createdBy,
+    required super.dateFrom,
+    required super.dateTo,
     required super.endedAt,
     required super.archivedAt,
     required super.settlementsTotal,
@@ -70,6 +72,12 @@ class TripModel extends Trip {
       membersCount: (map['members_count'] as num?)?.toInt() ?? 0,
       createdAt: map['created_at'] as String?,
       createdBy: (map['created_by'] as num?)?.toInt(),
+      dateFrom: (map['date_from'] as String?)?.trim().isNotEmpty == true
+          ? (map['date_from'] as String).trim()
+          : null,
+      dateTo: (map['date_to'] as String?)?.trim().isNotEmpty == true
+          ? (map['date_to'] as String).trim()
+          : null,
       endedAt: map['ended_at'] as String?,
       archivedAt: map['archived_at'] as String?,
       settlementsTotal: settlementsTotal,

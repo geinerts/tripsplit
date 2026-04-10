@@ -31,6 +31,36 @@ function trips_image_column_available(PDO $pdo): bool
     return $cached;
 }
 
+function trips_date_range_columns_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if (is_bool($cached)) {
+        return $cached;
+    }
+
+    $tripsTable = DB_TABLE_PREFIX . 'trips';
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $tripsTable)) {
+        $cached = false;
+        return $cached;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(1)
+             FROM information_schema.columns
+             WHERE table_schema = DATABASE()
+               AND table_name = :table_name
+               AND column_name IN (\'date_from\', \'date_to\')'
+        );
+        $stmt->execute(['table_name' => $tripsTable]);
+        $cached = ((int) ($stmt->fetchColumn() ?: 0)) >= 2;
+    } catch (Throwable $error) {
+        $cached = false;
+    }
+
+    return $cached;
+}
+
 function trip_members_ready_columns_available(PDO $pdo): bool
 {
     static $cached = null;
@@ -82,6 +112,8 @@ function build_trip_payload(array $trip): array
         'created_by' => array_key_exists('created_by', $trip) && $trip['created_by'] !== null
             ? (int) $trip['created_by']
             : null,
+        'date_from' => array_key_exists('date_from', $trip) ? ($trip['date_from'] ?: null) : null,
+        'date_to' => array_key_exists('date_to', $trip) ? ($trip['date_to'] ?: null) : null,
         'ended_at' => array_key_exists('ended_at', $trip) ? ($trip['ended_at'] ?: null) : null,
         'archived_at' => array_key_exists('archived_at', $trip) ? ($trip['archived_at'] ?: null) : null,
         'image_url' => $imagePath !== '' ? trip_image_public_url($imagePath) : null,
@@ -100,6 +132,8 @@ function normalize_trip_row(array $trip): array
     $trip['created_by'] = array_key_exists('created_by', $trip) && $trip['created_by'] !== null
         ? (int) $trip['created_by']
         : null;
+    $trip['date_from'] = array_key_exists('date_from', $trip) ? ($trip['date_from'] ?: null) : null;
+    $trip['date_to'] = array_key_exists('date_to', $trip) ? ($trip['date_to'] ?: null) : null;
     $trip['ended_at'] = array_key_exists('ended_at', $trip) ? ($trip['ended_at'] ?: null) : null;
     $trip['archived_at'] = array_key_exists('archived_at', $trip) ? ($trip['archived_at'] ?: null) : null;
     $trip['image_path'] = trim((string) ($trip['image_path'] ?? ''));
@@ -197,8 +231,14 @@ function find_trip_for_user(PDO $pdo, int $userId, int $tripId): ?array
     $tripCurrencySelect = trips_currency_column_available($pdo)
         ? 't.currency_code'
         : '"' . default_trip_currency_code() . '" AS currency_code';
+    $tripDateFromSelect = trips_date_range_columns_available($pdo)
+        ? 't.date_from'
+        : 'NULL AS date_from';
+    $tripDateToSelect = trips_date_range_columns_available($pdo)
+        ? 't.date_to'
+        : 'NULL AS date_to';
     $stmt = $pdo->prepare(
-        'SELECT t.id, t.name, ' . $tripCurrencySelect . ', t.status, t.created_by, t.ended_at, t.archived_at, ' . $tripImageSelect . '
+        'SELECT t.id, t.name, ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
          FROM ' . $tripsTable . ' t
          JOIN ' . $tripMembersTable . ' tm ON tm.trip_id = t.id
          WHERE t.id = :trip_id AND tm.user_id = :user_id
@@ -222,8 +262,14 @@ function find_default_trip_for_user(PDO $pdo, int $userId): ?array
     $tripCurrencySelect = trips_currency_column_available($pdo)
         ? 't.currency_code'
         : '"' . default_trip_currency_code() . '" AS currency_code';
+    $tripDateFromSelect = trips_date_range_columns_available($pdo)
+        ? 't.date_from'
+        : 'NULL AS date_from';
+    $tripDateToSelect = trips_date_range_columns_available($pdo)
+        ? 't.date_to'
+        : 'NULL AS date_to';
     $stmt = $pdo->prepare(
-        'SELECT t.id, t.name, ' . $tripCurrencySelect . ', t.status, t.created_by, t.ended_at, t.archived_at, ' . $tripImageSelect . '
+        'SELECT t.id, t.name, ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
          FROM ' . $tripsTable . ' t
          JOIN ' . $tripMembersTable . ' tm ON tm.trip_id = t.id
          WHERE tm.user_id = :user_id

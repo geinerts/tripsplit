@@ -511,8 +511,12 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
   }
 
   String _heroDateLabel(BuildContext context, WorkspaceSnapshot snapshot) {
-    final created = _parseIsoDate(widget.trip.createdAt);
-    final ended = _parseIsoDate(widget.trip.endedAt ?? snapshot.tripEndedAt);
+    final created = _parseIsoDate(
+      widget.trip.dateFrom ?? widget.trip.createdAt,
+    );
+    final ended = _parseIsoDate(
+      widget.trip.dateTo ?? widget.trip.endedAt ?? snapshot.tripEndedAt,
+    );
     if (created != null && ended != null) {
       return '${_formatHeroDay(created)} - ${_formatHeroDay(ended)}';
     }

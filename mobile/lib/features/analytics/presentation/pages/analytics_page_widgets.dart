@@ -124,12 +124,11 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                               : _tripName(context, selectedTrip),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color: isDark ? null : _analyticsFg,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: isDark ? null : _analyticsFg,
+                              ),
                         ),
                         const SizedBox(height: 2),
                         Text(
@@ -144,14 +143,13 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                                 ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodySmall?.copyWith(
-                            color: isDark
-                                ? colors.onSurfaceVariant
-                                : _analyticsMuted,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: isDark
+                                    ? colors.onSurfaceVariant
+                                    : _analyticsMuted,
+                                fontWeight: FontWeight.w500,
+                              ),
                         ),
                       ],
                     ),
@@ -250,12 +248,15 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                                         _tripName(context, trip),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.titleMedium?.copyWith(
-                                          fontWeight: FontWeight.w800,
-                                          color: isDark ? null : _analyticsFg,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w800,
+                                              color: isDark
+                                                  ? null
+                                                  : _analyticsFg,
+                                            ),
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
@@ -263,13 +264,14 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                                           en: '${_tripStatusLabel(trip)} • ${trip.membersCount} members • ${_tripDateLabel(trip)} • ${_formatMoney(trip.totalAmountCents / 100)}',
                                           lv: '${_tripStatusLabel(trip)} • ${trip.membersCount} dalībnieki • ${_tripDateLabel(trip)} • ${_formatMoney(trip.totalAmountCents / 100)}',
                                         ),
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodySmall?.copyWith(
-                                          color: isDark
-                                              ? colors.onSurfaceVariant
-                                              : _analyticsMuted,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: isDark
+                                                  ? colors.onSurfaceVariant
+                                                  : _analyticsMuted,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -836,8 +838,8 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
   String _tripDateLabel(Trip trip) {
     return AppFormatters.tripDateRange(
       context,
-      startRaw: trip.createdAt,
-      endRaw: trip.endedAt ?? trip.archivedAt,
+      startRaw: trip.dateFrom ?? trip.createdAt,
+      endRaw: trip.dateTo ?? trip.endedAt ?? trip.archivedAt,
       unknownLabel: _txt(en: 'No dates', lv: 'Nav datumu'),
     );
   }

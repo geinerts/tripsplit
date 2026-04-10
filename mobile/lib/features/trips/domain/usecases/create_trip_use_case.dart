@@ -10,11 +10,15 @@ class CreateTripUseCase {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String? dateFrom,
+    String? dateTo,
   }) {
     return _repository.createTrip(
       name: name,
       currencyCode: currencyCode,
       memberIds: memberIds,
+      dateFrom: dateFrom,
+      dateTo: dateTo,
     );
   }
 }

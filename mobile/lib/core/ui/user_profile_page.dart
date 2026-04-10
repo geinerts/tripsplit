@@ -21,6 +21,7 @@ class UserProfilePage extends StatelessWidget {
     this.copyNameTooltip,
     this.copyNameSuccessText,
     this.copyNameFailureText,
+    this.appBarActions = const <Widget>[],
   });
 
   final String title;
@@ -37,6 +38,7 @@ class UserProfilePage extends StatelessWidget {
   final String? copyNameTooltip;
   final String? copyNameSuccessText;
   final String? copyNameFailureText;
+  final List<Widget> appBarActions;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,10 @@ class UserProfilePage extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(title),
+        actions: appBarActions.isEmpty ? null : appBarActions,
+      ),
       body: AppBackground(
         child: RefreshIndicator(
           onRefresh: onRefresh ?? () async {},

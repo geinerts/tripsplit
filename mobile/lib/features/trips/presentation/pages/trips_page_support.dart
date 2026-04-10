@@ -5,6 +5,8 @@ class _CreateTripResult {
     required this.name,
     required this.currencyCode,
     required this.memberIds,
+    required this.dateFrom,
+    required this.dateTo,
     this.imageFileName,
     this.imageBytes,
   });
@@ -12,6 +14,8 @@ class _CreateTripResult {
   final String name;
   final String currencyCode;
   final List<int> memberIds;
+  final String dateFrom;
+  final String dateTo;
   final String? imageFileName;
   final Uint8List? imageBytes;
 }

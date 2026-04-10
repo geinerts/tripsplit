@@ -55,6 +55,8 @@ CREATE TABLE IF NOT EXISTS trip_trips (
   currency_code CHAR(3) NOT NULL DEFAULT 'EUR',
   status ENUM('active', 'settling', 'archived') NOT NULL DEFAULT 'active',
   created_by INT UNSIGNED NULL,
+  date_from DATE NULL DEFAULT NULL,
+  date_to DATE NULL DEFAULT NULL,
   image_path VARCHAR(255) NULL,
   ended_at TIMESTAMP NULL DEFAULT NULL,
   archived_at TIMESTAMP NULL DEFAULT NULL,

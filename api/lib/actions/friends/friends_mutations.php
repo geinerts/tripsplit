@@ -138,6 +138,26 @@ function send_friend_invite_action(): void
         }
     }
 
+    if (!$autoAccepted && $status === 'pending' && $requestId > 0) {
+        $tripIdForPush = resolve_notification_trip_id($pdo, $targetUserId, $meId);
+        $pushTitle = 'Friend invite';
+        $pushBody = actor_display_name($me) . ' sent you a friend invite.';
+        queue_push_notification(
+            $pdo,
+            $targetUserId,
+            $tripIdForPush,
+            'friend_invite_received',
+            $pushTitle,
+            $pushBody,
+            [
+                'request_id' => $requestId,
+                'from_user_id' => $meId,
+                'status' => 'pending',
+            ],
+            null
+        );
+    }
+
     json_out([
         'ok' => true,
         'request_id' => $requestId,

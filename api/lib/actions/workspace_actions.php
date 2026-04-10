@@ -397,8 +397,17 @@ function shared_trips_with_user_action(): void
     $tripImageSelect = trips_image_column_available($pdo)
         ? 't.image_path'
         : 'NULL AS image_path';
+    $tripDateFromSelect = trips_date_range_columns_available($pdo)
+        ? 't.date_from'
+        : 'NULL AS date_from';
+    $tripDateToSelect = trips_date_range_columns_available($pdo)
+        ? 't.date_to'
+        : 'NULL AS date_to';
     $tripImageGroupBy = trips_image_column_available($pdo)
         ? ', t.image_path'
+        : '';
+    $tripDateGroupBy = trips_date_range_columns_available($pdo)
+        ? ', t.date_from, t.date_to'
         : '';
 
     $stmt = $pdo->prepare(
@@ -407,6 +416,8 @@ function shared_trips_with_user_action(): void
             t.name,
             t.status,
             t.created_at,
+            ' . $tripDateFromSelect . ',
+            ' . $tripDateToSelect . ',
             t.ended_at,
             t.archived_at,
             ' . $tripImageSelect . ',
@@ -426,7 +437,7 @@ function shared_trips_with_user_action(): void
             t.status,
             t.created_at,
             t.ended_at,
-            t.archived_at' . $tripImageGroupBy . '
+            t.archived_at' . $tripImageGroupBy . $tripDateGroupBy . '
          ORDER BY
             CASE
                 WHEN t.status = "active" THEN 0
@@ -449,6 +460,8 @@ function shared_trips_with_user_action(): void
         $row['status'] = normalize_trip_status($row['status'] ?? 'active');
         $row['members_count'] = (int) ($row['members_count'] ?? 0);
         $row['created_at'] = $row['created_at'] ?: null;
+        $row['date_from'] = $row['date_from'] ?: null;
+        $row['date_to'] = $row['date_to'] ?: null;
         $row['ended_at'] = $row['ended_at'] ?: null;
         $row['archived_at'] = $row['archived_at'] ?: null;
         $imagePath = trim((string) ($row['image_path'] ?? ''));
