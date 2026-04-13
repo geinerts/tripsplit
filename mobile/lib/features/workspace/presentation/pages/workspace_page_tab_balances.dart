@@ -32,7 +32,9 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           )
         else
           ...visibleBalances.map((item) {
-            final netColor = item.net < 0 ? _splytoDestructive : _splytoSuccess;
+            final netColor = item.net < 0
+                ? AppDesign.lightDestructive
+                : AppDesign.lightSuccess;
             final member = usersById[item.id];
             final preferredName = (member?.preferredName ?? item.nickname)
                 .trim();
@@ -49,13 +51,13 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: Card(
-                color: isDark ? colors.surface : _splytoCard,
+                color: isDark ? colors.surface : AppDesign.lightSurface,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                   side: BorderSide(
                     color: isDark
                         ? colors.outlineVariant.withValues(alpha: 0.32)
-                        : _splytoStroke,
+                        : AppDesign.lightStroke,
                   ),
                 ),
                 elevation: 0,
@@ -91,7 +93,9 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                                         ?.copyWith(
                                           fontSize: 17,
                                           fontWeight: FontWeight.w800,
-                                          color: isDark ? null : _splytoFg,
+                                          color: isDark
+                                              ? null
+                                              : AppDesign.lightForeground,
                                         ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -105,7 +109,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                                           ?.copyWith(
                                             color: isDark
                                                 ? colors.onSurfaceVariant
-                                                : _splytoMuted,
+                                                : AppDesign.lightMuted,
                                           ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -130,7 +134,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                                           fontSize: 15,
                                           color: isDark
                                               ? colors.onSurfaceVariant
-                                              : _splytoMuted,
+                                              : AppDesign.lightMuted,
                                           fontWeight: FontWeight.w500,
                                         ),
                                   ),
@@ -166,7 +170,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                                     color: isDark
                                         ? colors.surfaceContainerHighest
                                               .withValues(alpha: 0.45)
-                                        : const Color(0xFFE8E2D9),
+                                        : AppDesign.lightSurfaceTrack,
                                   ),
                                 ),
                                 Align(
@@ -212,7 +216,9 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
 
   Widget _buildSettleTab(WorkspaceSnapshot snapshot) {
     final colors = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.light;
     final settlements = snapshot.settlements.toList(growable: false)
       ..sort((a, b) => b.amount.compareTo(a.amount));
     final usersById = <int, WorkspaceUser>{
@@ -268,6 +274,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           if (pendingSettlements.isNotEmpty) ...[
             _buildSettlementSectionLabel(
               _localizedText(context, en: 'Pending', lv: 'Gaida'),
+              color: semantic.statusPendingForeground,
             ),
             const SizedBox(height: 8),
             ...pendingSettlements.map(
@@ -275,8 +282,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 snapshot: snapshot,
                 item: item,
                 usersById: usersById,
-                colors: colors,
-                isDark: isDark,
+                semantic: semantic,
               ),
             ),
           ],
@@ -284,6 +290,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
             if (pendingSettlements.isNotEmpty) const SizedBox(height: 8),
             _buildSettlementSectionLabel(
               _localizedText(context, en: 'Paid', lv: 'Apmaksāts'),
+              color: semantic.statusConfirmedForeground,
             ),
             const SizedBox(height: 8),
             ...paidSettlements.map(
@@ -291,8 +298,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 snapshot: snapshot,
                 item: item,
                 usersById: usersById,
-                colors: colors,
-                isDark: isDark,
+                semantic: semantic,
               ),
             ),
           ],
@@ -301,8 +307,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     );
   }
 
-  Widget _buildSettlementSectionLabel(String label) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget _buildSettlementSectionLabel(String label, {Color? color}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 2, 4, 4),
       child: Text(
@@ -311,7 +316,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
           fontWeight: FontWeight.w800,
           letterSpacing: 1.1,
-          color: isDark ? Theme.of(context).colorScheme.primary : _splytoMuted,
+          color: color ?? AppDesign.mutedColor(context),
         ),
       ),
     );
@@ -321,16 +326,15 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     required WorkspaceSnapshot snapshot,
     required SettlementItem item,
     required Map<int, WorkspaceUser> usersById,
-    required ColorScheme colors,
-    required bool isDark,
+    required AppSemanticColors semantic,
   }) {
     final fromUser = usersById[item.fromUserId];
     final toUser = usersById[item.toUserId];
     final isPositiveForCurrent =
         _currentUserId > 0 && item.toUserId == _currentUserId;
-    final amountColor = isDark
-        ? colors.onSurface
-        : (isPositiveForCurrent ? _splytoSuccess : _splytoPrimary);
+    final amountColor = isPositiveForCurrent
+        ? AppDesign.successColor(context)
+        : AppDesign.titleColor(context);
     final openFlowLabel = _localizedText(
       context,
       en: 'Open flow',
@@ -339,9 +343,21 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
 
     final normalizedStatus = item.status.trim().toLowerCase();
     final isCompleted = normalizedStatus == 'confirmed';
-    final statusColor = isCompleted
-        ? _splytoSuccess
-        : (normalizedStatus == 'sent' ? _splytoMuted : _splytoAccent);
+    final statusForeground = isCompleted
+        ? semantic.statusConfirmedForeground
+        : (normalizedStatus == 'sent'
+              ? semantic.statusSentForeground
+              : semantic.statusPendingForeground);
+    final statusBackground = isCompleted
+        ? semantic.statusConfirmedBackground
+        : (normalizedStatus == 'sent'
+              ? semantic.statusSentBackground
+              : semantic.statusPendingBackground);
+    final statusBorder = isCompleted
+        ? semantic.statusConfirmedBorder
+        : (normalizedStatus == 'sent'
+              ? semantic.statusSentBorder
+              : semantic.statusPendingBorder);
     final statusLabel = isCompleted
         ? context.l10n.settledStatus
         : (normalizedStatus == 'sent'
@@ -376,14 +392,10 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Card(
-        color: isDark ? colors.surface : _splytoCard,
+        color: AppDesign.cardSurface(context),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          side: BorderSide(
-            color: isDark
-                ? colors.outlineVariant.withValues(alpha: 0.32)
-                : _splytoStroke,
-          ),
+          side: BorderSide(color: AppDesign.cardStroke(context)),
         ),
         child: _SplytoPressScale(
           borderRadius: BorderRadius.circular(24),
@@ -418,15 +430,13 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                             width: 48,
                             height: 48,
                             decoration: BoxDecoration(
-                              color: isDark
-                                  ? colors.surfaceContainerHighest
-                                  : const Color(0xFFE6EDE4),
+                              color: semantic.statusActiveBackground,
                               shape: BoxShape.circle,
                             ),
                             alignment: Alignment.center,
                             child: Icon(
                               Icons.arrow_forward_rounded,
-                              color: _splytoPrimary,
+                              color: semantic.flowStepCurrent,
                               size: 28,
                             ),
                           ),
@@ -460,12 +470,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                   ],
                 ),
                 const SizedBox(height: 12),
-                Divider(
-                  height: 1,
-                  color: isDark
-                      ? colors.outlineVariant.withValues(alpha: 0.35)
-                      : _splytoStroke,
-                ),
+                Divider(height: 1, color: AppDesign.cardStroke(context)),
                 const SizedBox(height: 10),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -479,7 +484,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.w700,
-                                  color: isDark ? null : _splytoPrimary,
+                                  color: semantic.flowStepCurrent,
                                 ),
                           ),
                           const SizedBox(height: 2),
@@ -487,9 +492,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                             detailSubtitle,
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  color: isDark
-                                      ? colors.onSurfaceVariant
-                                      : _splytoMuted,
+                                  color: AppDesign.mutedColor(context),
                                 ),
                           ),
                         ],
@@ -501,7 +504,9 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                       children: [
                         _buildSettlementStatusPill(
                           label: statusLabel,
-                          color: statusColor,
+                          foreground: statusForeground,
+                          background: statusBackground,
+                          border: statusBorder,
                         ),
                         const SizedBox(height: 8),
                         TextButton.icon(
@@ -552,9 +557,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w800,
             fontSize: 16,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? null
-                : _splytoFg,
+            color: AppDesign.titleColor(context),
           ),
         ),
         const SizedBox(height: 2),
@@ -562,9 +565,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           role,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Theme.of(context).colorScheme.onSurfaceVariant
-                : _splytoMuted,
+            color: AppDesign.mutedColor(context),
           ),
         ),
       ],
@@ -573,20 +574,22 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
 
   Widget _buildSettlementStatusPill({
     required String label,
-    required Color color,
+    required Color foreground,
+    required Color background,
+    required Color border,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        color: color.withValues(alpha: 0.14),
-        border: Border.all(color: color.withValues(alpha: 0.28)),
+        color: background,
+        border: Border.all(color: border),
       ),
       child: Text(
         label,
         style: TextStyle(
           fontWeight: FontWeight.w700,
-          color: color,
+          color: foreground,
           fontSize: 12,
         ),
       ),
@@ -753,7 +756,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
               gradient: canFinishTrip
-                  ? AppDesign.logoBackgroundGradient
+                  ? AppDesign.actionGradient(context)
                   : LinearGradient(
                       colors: [
                         colors.surfaceContainerHighest,
@@ -770,7 +773,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
                 foregroundColor: canFinishTrip
-                    ? Colors.white
+                    ? AppDesign.darkForeground
                     : colors.onSurfaceVariant,
                 disabledForegroundColor: colors.onSurfaceVariant,
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -852,7 +855,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
       child: Text(
         letter.toUpperCase(),
         style: TextStyle(
-          color: Colors.white,
+          color: AppDesign.darkForeground,
           fontWeight: FontWeight.w700,
           fontSize: fontSize,
         ),
@@ -897,19 +900,13 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
       decoration: BoxDecoration(
         color: bg,
         shape: BoxShape.circle,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x26000000),
-            blurRadius: 12,
-            offset: Offset(0, 5),
-          ),
-        ],
+        boxShadow: AppDesign.avatarShadow(context),
       ),
       alignment: Alignment.center,
       child: Text(
         initials,
         style: TextStyle(
-          color: Colors.white,
+          color: AppDesign.darkForeground,
           fontWeight: FontWeight.w800,
           fontSize: size * 0.38,
           letterSpacing: 0.2,
@@ -935,14 +932,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
   }
 
   Color _memberAvatarColorById(int id) {
-    const palette = <Color>[
-      Color(0xFF6BC48E),
-      Color(0xFFF48E57),
-      Color(0xFFBE6EAF),
-      Color(0xFF0E8E96),
-      Color(0xFF4E96E8),
-      Color(0xFF77A65A),
-    ];
+    final palette = AppDesign.memberPalette;
     final safeId = id < 0 ? -id : id;
     return palette[safeId % palette.length];
   }

@@ -5,6 +5,71 @@ extension _LoginPageWidgets on _LoginPageState {
     final responsive = context.responsive;
     final horizontalPadding = responsive.pageHorizontalPadding;
 
+    if (widget.compactSheet) {
+      final semantic =
+          Theme.of(context).extension<AppSemanticColors>() ??
+          AppSemanticColors.dark;
+      final colorScheme = Theme.of(context).colorScheme;
+      final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        resizeToAvoidBottomInset: true,
+        body: Form(
+          key: _formKey,
+          child: SafeArea(
+            top: false,
+            child: AnimatedPadding(
+              duration: const Duration(milliseconds: 180),
+              curve: Curves.easeOutCubic,
+              padding: EdgeInsets.only(bottom: bottomInset),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppDesign.authCanvasSoft,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(30),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.shadow.withValues(alpha: 0.22),
+                        blurRadius: 20,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
+                  ),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(
+                      horizontalPadding,
+                      10,
+                      horizontalPadding,
+                      18,
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: semantic.cardGlassBorder.withValues(
+                              alpha: 0.8,
+                            ),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildAuthCard(context, asStandaloneContent: true),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: AppBackground(
         child: SafeArea(
@@ -36,7 +101,7 @@ extension _LoginPageWidgets on _LoginPageState {
                         ),
                         _buildBrandSection(context),
                         const SizedBox(height: 26),
-                        _buildAuthCard(context),
+                        _buildAuthCard(context, asStandaloneContent: false),
                       ],
                     ),
                   ),
@@ -53,6 +118,14 @@ extension _LoginPageWidgets on _LoginPageState {
     final t = context.l10n;
     return Row(
       children: [
+        if (widget.showSheetClose)
+          IconButton(
+            tooltip: _authText(en: 'Close', lv: 'Aizvērt'),
+            onPressed: () => Navigator.of(context).maybePop(),
+            icon: const Icon(Icons.close_rounded),
+          )
+        else
+          const SizedBox(width: 48),
         const Spacer(),
         IconButton(
           tooltip: t.languageAction,

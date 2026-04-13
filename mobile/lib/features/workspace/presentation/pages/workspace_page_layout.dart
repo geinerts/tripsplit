@@ -91,7 +91,7 @@ extension _WorkspacePageLayout on _WorkspacePageState {
       child: ColoredBox(
         color: isDark
             ? Theme.of(context).scaffoldBackgroundColor
-            : _splytoCreamBg,
+            : AppDesign.lightCanvas,
         child: RefreshIndicator(
           onRefresh: () {
             if (_isMutating) {
@@ -160,8 +160,8 @@ extension _WorkspacePageLayout on _WorkspacePageState {
         Widget buildTab({required int index, required String label}) {
           final selected = selectedTab == index;
           final foreground = selected
-              ? (isDark ? colors.onSurface : _splytoFg)
-              : (isDark ? colors.onSurfaceVariant : _splytoMuted);
+              ? (isDark ? colors.onSurface : AppDesign.lightForeground)
+              : (isDark ? colors.onSurfaceVariant : AppDesign.lightMuted);
           return Expanded(
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 220),
@@ -169,14 +169,12 @@ extension _WorkspacePageLayout on _WorkspacePageState {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(22),
                 color: selected
-                    ? (isDark ? colors.surface : _splytoCard)
+                    ? (isDark ? colors.surface : AppDesign.lightSurface)
                     : Colors.transparent,
                 boxShadow: selected
                     ? [
                         BoxShadow(
-                          color: isDark
-                              ? colors.shadow.withValues(alpha: 0.25)
-                              : const Color(0x1A2C2418),
+                          color: AppDesign.selectedTabShadow(context),
                           blurRadius: 14,
                           offset: const Offset(0, 5),
                         ),
@@ -223,19 +221,13 @@ extension _WorkspacePageLayout on _WorkspacePageState {
         return DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: isDark ? colors.surfaceContainer : const Color(0xFFF0ECE3),
+            color: isDark ? colors.surfaceContainer : AppDesign.lightSurfaceTab,
             border: Border.all(
               color: isDark
                   ? colors.outlineVariant.withValues(alpha: 0.35)
-                  : _splytoStroke,
+                  : AppDesign.lightStroke,
             ),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x12000000),
-                blurRadius: 12,
-                offset: Offset(0, 4),
-              ),
-            ],
+            boxShadow: AppDesign.softShadow(context),
           ),
           child: Padding(
             padding: const EdgeInsets.all(8),
@@ -278,12 +270,12 @@ extension _WorkspacePageLayout on _WorkspacePageState {
       decoration: BoxDecoration(
         color: isDark
             ? Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.94)
-            : _splytoCreamBg,
+            : AppDesign.lightCanvas,
         border: Border(
           bottom: BorderSide(
             color: isDark
                 ? colors.outlineVariant.withValues(alpha: 0.2)
-                : _splytoStroke,
+                : AppDesign.lightStroke,
           ),
         ),
       ),
@@ -300,7 +292,7 @@ extension _WorkspacePageLayout on _WorkspacePageState {
       child: ColoredBox(
         color: isDark
             ? Theme.of(context).scaffoldBackgroundColor
-            : _splytoCreamBg,
+            : AppDesign.lightCanvas,
         child: const Center(child: CircularProgressIndicator()),
       ),
     );

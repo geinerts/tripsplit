@@ -350,7 +350,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
               : context.l10n.activeStatus);
     final statusColor = trip.isArchived
         ? AppDesign.mutedColor(context)
-        : (trip.isSettling ? _splytoAccent : _splytoPrimary);
+        : (trip.isSettling ? AppDesign.lightAccent : AppDesign.lightPrimary);
     final subtitle = _sharedTripSubtitle(context, trip);
 
     return Container(

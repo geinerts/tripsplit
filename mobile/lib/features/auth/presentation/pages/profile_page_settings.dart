@@ -80,7 +80,7 @@ extension _ProfilePageSettings on _ProfilePageState {
       }
       Navigator.of(
         context,
-      ).pushNamedAndRemoveUntil(AppRouter.login, (route) => false);
+      ).pushNamedAndRemoveUntil(AppRouter.authIntro, (route) => false);
     } finally {
       if (mounted) {
         _updateState(() {
@@ -163,9 +163,8 @@ extension _ProfilePageSettings on _ProfilePageState {
                   children: [
                     Text(
                       _profileText(en: 'Send feedback', lv: 'Sūtīt atsauksmi'),
-                      style: Theme.of(stateContext).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
+                      style: Theme.of(stateContext).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
@@ -221,9 +220,7 @@ extension _ProfilePageSettings on _ProfilePageState {
                                 color: colorScheme.primary,
                               ),
                               const SizedBox(width: 8),
-                              Text(
-                                _profileText(en: 'Bug', lv: 'Kļūda'),
-                              ),
+                              Text(_profileText(en: 'Bug', lv: 'Kļūda')),
                             ],
                           ),
                         ),
@@ -308,7 +305,10 @@ extension _ProfilePageSettings on _ProfilePageState {
                             },
                             icon: const Icon(Icons.close),
                             label: Text(
-                              _profileText(en: 'Remove image', lv: 'Noņemt attēlu'),
+                              _profileText(
+                                en: 'Remove image',
+                                lv: 'Noņemt attēlu',
+                              ),
                             ),
                           ),
                       ],
@@ -359,10 +359,8 @@ extension _ProfilePageSettings on _ProfilePageState {
                               if (note.isEmpty && screenshotBytes == null) {
                                 setSheetState(() {
                                   validationError = _profileText(
-                                    en:
-                                        'Add details or attach screenshot before sending',
-                                    lv:
-                                        'Pirms sūtīšanas pievieno aprakstu vai ekrānattēlu',
+                                    en: 'Add details or attach screenshot before sending',
+                                    lv: 'Pirms sūtīšanas pievieno aprakstu vai ekrānattēlu',
                                   );
                                 });
                                 return;

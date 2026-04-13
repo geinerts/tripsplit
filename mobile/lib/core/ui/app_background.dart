@@ -13,6 +13,8 @@ class AppBackground extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
     final primaryGlowAlpha = brightness == Brightness.dark ? 0.18 : 0.12;
     final secondaryGlowAlpha = brightness == Brightness.dark ? 0.14 : 0.08;
+    final glowPrimary = AppDesign.glowPrimary(brightness);
+    final glowSecondary = AppDesign.glowSecondary(brightness);
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: AppDesign.pageGradient(colors, brightness: brightness),
@@ -28,7 +30,7 @@ class AppBackground extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppDesign.brandStart.withValues(alpha: primaryGlowAlpha),
+                      glowPrimary.withValues(alpha: primaryGlowAlpha),
                       Colors.transparent,
                     ],
                   ),
@@ -46,7 +48,7 @@ class AppBackground extends StatelessWidget {
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppDesign.brandEnd.withValues(alpha: secondaryGlowAlpha),
+                      glowSecondary.withValues(alpha: secondaryGlowAlpha),
                       Colors.transparent,
                     ],
                   ),

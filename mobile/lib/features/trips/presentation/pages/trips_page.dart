@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../app/locale/app_locale_picker.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_design.dart';
+import '../../../../app/theme/app_semantic_colors.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';

@@ -542,7 +542,7 @@ extension _TripsPageActions on _TripsPageState {
       }
       Navigator.of(
         context,
-      ).pushNamedAndRemoveUntil(AppRouter.login, (route) => false);
+      ).pushNamedAndRemoveUntil(AppRouter.authIntro, (route) => false);
     } finally {
       if (mounted) {
         _updateState(() {

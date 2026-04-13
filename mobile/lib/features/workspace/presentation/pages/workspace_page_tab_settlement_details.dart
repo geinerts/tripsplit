@@ -14,8 +14,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
         return StatefulBuilder(
           builder: (sheetContext, setSheetState) {
             final t = sheetContext.l10n;
-            final colors = Theme.of(sheetContext).colorScheme;
-            final isDark = Theme.of(sheetContext).brightness == Brightness.dark;
+            final semantic =
+                Theme.of(sheetContext).extension<AppSemanticColors>() ??
+                AppSemanticColors.light;
             final liveSnapshot = _snapshot ?? snapshot;
             final liveItem = _resolveLiveSettlement(
               snapshot: liveSnapshot,
@@ -162,7 +163,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                 heightFactor: 0.9,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isDark ? colors.surface : _splytoCard,
+                    color: semantic.sheetSurface,
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(30),
                     ),
@@ -174,9 +175,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                         width: 46,
                         height: 6,
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? Colors.white.withValues(alpha: 0.24)
-                              : const Color(0xFFD8D2C8),
+                          color: semantic.sheetHandle,
                           borderRadius: BorderRadius.circular(999),
                         ),
                       ),
@@ -210,19 +209,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: isDark
-                                    ? colors.surfaceContainerHighest.withValues(
-                                        alpha: 0.36,
-                                      )
-                                    : const Color(0xFFF6F3ED),
+                                color: semantic.sheetPanelSurfaceMuted,
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: isDark
-                                      ? colors.outlineVariant.withValues(
-                                          alpha: 0.36,
-                                        )
-                                      : _splytoStroke,
-                                ),
+                                border: Border.all(color: semantic.sheetBorder),
                               ),
                               child: Column(
                                 children: [
@@ -249,15 +238,14 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                           height: 30,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: _splytoPrimary.withValues(
-                                              alpha: isDark ? 0.26 : 0.12,
-                                            ),
+                                            color: semantic.flowStepCurrent
+                                                .withValues(alpha: 0.20),
                                           ),
                                           alignment: Alignment.center,
                                           child: Icon(
                                             Icons.arrow_forward_rounded,
                                             size: 18,
-                                            color: _splytoPrimary,
+                                            color: semantic.flowStepCurrent,
                                           ),
                                         ),
                                       ),
@@ -283,18 +271,10 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                       vertical: 10,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: isDark
-                                          ? colors.surface.withValues(
-                                              alpha: 0.72,
-                                            )
-                                          : Colors.white,
+                                      color: semantic.sheetPanelSurface,
                                       borderRadius: BorderRadius.circular(14),
                                       border: Border.all(
-                                        color: isDark
-                                            ? colors.outlineVariant.withValues(
-                                                alpha: 0.28,
-                                              )
-                                            : _splytoStroke,
+                                        color: semantic.sheetBorder,
                                       ),
                                     ),
                                     child: Row(
@@ -302,7 +282,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                         Icon(
                                           Icons.payments_outlined,
                                           size: 18,
-                                          color: _splytoPrimary,
+                                          color: semantic.flowStepCurrent,
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
@@ -316,9 +296,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                               .bodyMedium
                                               ?.copyWith(
                                                 fontWeight: FontWeight.w700,
-                                                color: isDark
-                                                    ? colors.onSurfaceVariant
-                                                    : _splytoMuted,
+                                                color: AppDesign.mutedColor(
+                                                  sheetContext,
+                                                ),
                                               ),
                                         ),
                                         const Spacer(),
@@ -334,7 +314,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                               .titleMedium
                                               ?.copyWith(
                                                 fontWeight: FontWeight.w800,
-                                                color: _splytoPrimary,
+                                                color: semantic.flowStepCurrent,
                                               ),
                                         ),
                                       ],
@@ -364,17 +344,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: isDark
-                                    ? colors.surfaceContainerHighest
-                                    : const Color(0xFFF6F3ED),
+                                color: semantic.sheetPanelSurfaceMuted,
                                 borderRadius: BorderRadius.circular(18),
-                                border: Border.all(
-                                  color: isDark
-                                      ? colors.outlineVariant.withValues(
-                                          alpha: 0.32,
-                                        )
-                                      : _splytoStroke,
-                                ),
+                                border: Border.all(color: semantic.sheetBorder),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,8 +390,10 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                         icon: Icon(primaryActionIcon),
                                         label: Text(primaryActionLabel),
                                         style: FilledButton.styleFrom(
-                                          backgroundColor: _splytoPrimary,
-                                          foregroundColor: Colors.white,
+                                          backgroundColor:
+                                              semantic.flowStepCurrent,
+                                          foregroundColor:
+                                              AppDesign.darkForeground,
                                           padding: const EdgeInsets.symmetric(
                                             vertical: 12,
                                           ),
@@ -446,9 +420,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                           .textTheme
                                           .bodyMedium
                                           ?.copyWith(
-                                            color: isDark
-                                                ? colors.onSurfaceVariant
-                                                : _splytoMuted,
+                                            color: AppDesign.mutedColor(
+                                              sheetContext,
+                                            ),
                                           ),
                                     ),
                                   if (canRemind) ...[
@@ -597,24 +571,22 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     required IconData icon,
   }) {
     final colors = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.light;
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
       decoration: BoxDecoration(
-        color: isDark ? colors.surface.withValues(alpha: 0.66) : Colors.white,
+        color: semantic.sheetPanelSurface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: isDark
-              ? colors.outlineVariant.withValues(alpha: 0.28)
-              : _splytoStroke,
-        ),
+        border: Border.all(color: semantic.sheetBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 14, color: _splytoPrimary),
+              Icon(icon, size: 14, color: semantic.flowStepCurrent),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
@@ -623,7 +595,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: isDark ? colors.onSurfaceVariant : _splytoMuted,
+                    color: AppDesign.mutedColor(context),
                   ),
                 ),
               ),
@@ -649,10 +621,10 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     required List<_SettlementFlowStep> steps,
     required int highlightIndex,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final inactiveColor = isDark
-        ? Theme.of(context).colorScheme.outline
-        : _splytoMuted.withValues(alpha: 0.35);
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.light;
+    final inactiveColor = semantic.flowConnectorPending;
 
     return Column(
       children: [
@@ -671,7 +643,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                     height: 2,
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     color: steps[i + 1].isDone
-                        ? _splytoSuccess.withValues(alpha: 0.55)
+                        ? semantic.flowConnectorDone
                         : inactiveColor,
                   ),
                 ),
@@ -689,9 +661,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: steps[i].isDone
-                        ? _splytoSuccess
+                        ? semantic.flowStepDone
                         : (!steps[i].isDone && i == highlightIndex
-                              ? _splytoPrimary
+                              ? semantic.flowStepCurrent
                               : Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                 ),
@@ -708,14 +680,12 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     required bool isDone,
     required bool isCurrent,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.light;
     final baseColor = isDone
-        ? _splytoSuccess
-        : (isCurrent
-              ? _splytoPrimary
-              : (isDark
-                    ? Theme.of(context).colorScheme.outline
-                    : _splytoMuted));
+        ? semantic.flowStepDone
+        : (isCurrent ? semantic.flowStepCurrent : semantic.flowStepPending);
     return Container(
       width: 34,
       height: 34,
@@ -741,15 +711,17 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     required _SettlementFlowStep step,
     required bool isCurrent,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.light;
     final stateLabel = step.isDone
         ? _localizedText(context, en: 'Done', lv: 'Pabeigts')
         : (isCurrent
               ? _localizedText(context, en: 'In progress', lv: 'Procesā')
               : _localizedText(context, en: 'Pending', lv: 'Gaida'));
     final stateColor = step.isDone
-        ? _splytoSuccess
-        : (isCurrent ? _splytoPrimary : _splytoMuted);
+        ? semantic.flowStepDone
+        : (isCurrent ? semantic.flowStepCurrent : semantic.flowStepPending);
     final completedAtLabel = step.isDone
         ? _formatSettlementStepTime(context, step.completedAtRaw)
         : null;
@@ -757,25 +729,19 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
       decoration: BoxDecoration(
-        color: isDark
-            ? (isCurrent
-                  ? Theme.of(context).colorScheme.surfaceContainerHigh
-                  : Theme.of(context).colorScheme.surfaceContainerHighest)
-            : (isCurrent ? const Color(0xFFF0F8F4) : const Color(0xFFF6F3ED)),
+        color: isCurrent
+            ? semantic.sheetPanelSurfaceHighlighted
+            : semantic.sheetPanelSurfaceMuted,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isCurrent
               ? stateColor.withValues(alpha: 0.36)
-              : (isDark
-                    ? Theme.of(
-                        context,
-                      ).colorScheme.outlineVariant.withValues(alpha: 0.28)
-                    : _splytoStroke),
+              : semantic.sheetBorder,
         ),
         boxShadow: isCurrent
             ? [
                 BoxShadow(
-                  color: _splytoPrimary.withValues(alpha: isDark ? 0.16 : 0.1),
+                  color: semantic.flowHighlightShadow,
                   blurRadius: 14,
                   offset: const Offset(0, 6),
                 ),

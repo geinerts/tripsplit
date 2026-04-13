@@ -64,8 +64,8 @@ class AppBottomNavBar extends StatelessWidget {
             label: t.navActivities,
           ),
           NavigationDestination(
-            icon: _buildExpensesNavIcon(selected: false),
-            selectedIcon: _buildExpensesNavIcon(selected: true),
+            icon: _buildExpensesNavIcon(context, selected: false),
+            selectedIcon: _buildExpensesNavIcon(context, selected: true),
             label: t.navExpenses,
           ),
           NavigationDestination(
@@ -95,29 +95,38 @@ class AppBottomNavBar extends StatelessWidget {
     );
   }
 
-  Widget _buildExpensesNavIcon({required bool selected}) {
+  Widget _buildExpensesNavIcon(BuildContext context, {required bool selected}) {
     const width = 70.0;
     const height = 36.0;
     const iconSize = 20.0;
+    final isDark = AppDesign.isDark(context);
+    final colors = Theme.of(context).colorScheme;
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        gradient: AppDesign.logoBackgroundGradient,
+        gradient: AppDesign.actionGradient(context),
         border: Border.all(
-          color: Colors.white.withValues(alpha: selected ? 0.55 : 0.30),
+          color: (isDark ? colors.onSurface : AppDesign.logoBackgroundEnd)
+              .withValues(alpha: selected ? 0.55 : 0.30),
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0x66141E30),
+            color: isDark
+                ? colors.shadow.withValues(alpha: 0.46)
+                : AppDesign.darkCanvas.withValues(alpha: 0.20),
             blurRadius: selected ? 14 : 10,
             offset: const Offset(0, 5),
           ),
         ],
       ),
       alignment: Alignment.center,
-      child: const Icon(Icons.add_rounded, size: iconSize, color: Colors.white),
+      child: const Icon(
+        Icons.add_rounded,
+        size: iconSize,
+        color: AppDesign.darkForeground,
+      ),
     );
   }
 

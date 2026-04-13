@@ -142,7 +142,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       );
       Navigator.of(
         context,
-      ).pushNamedAndRemoveUntil(AppRouter.login, (route) => false);
+      ).pushNamedAndRemoveUntil(AppRouter.authIntro, (route) => false);
     } on ApiException catch (error) {
       if (!mounted) {
         return;

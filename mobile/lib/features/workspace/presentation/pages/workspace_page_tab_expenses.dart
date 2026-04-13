@@ -41,7 +41,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                   _localizedText(context, en: 'Expenses', lv: 'Izdevumi'),
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w800,
-                    color: isDark ? null : _splytoFg,
+                    color: isDark ? null : AppDesign.lightForeground,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -51,13 +51,13 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                     vertical: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: _splytoPrimary.withValues(alpha: 0.14),
+                    color: AppDesign.lightPrimary.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
                     '${expenses.length}',
                     style: const TextStyle(
-                      color: _splytoPrimary,
+                      color: AppDesign.lightPrimary,
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
                     ),
@@ -124,13 +124,13 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
           child: Card(
-            color: isDark ? colors.surface : _splytoCard,
+            color: isDark ? colors.surface : AppDesign.lightSurface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
               side: BorderSide(
                 color: isDark
                     ? colors.outlineVariant.withValues(alpha: 0.30)
-                    : _splytoStroke,
+                    : AppDesign.lightStroke,
               ),
             ),
             child: Padding(
@@ -158,8 +158,8 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
             .trim();
         final splitMode = expense.splitMode.trim().toLowerCase();
         final splitColor = splitMode == 'equal'
-            ? _splytoSuccess
-            : _splytoAccent;
+            ? AppDesign.lightSuccess
+            : AppDesign.lightAccent;
         final splitIcon = splitMode == 'equal'
             ? Icons.call_split_rounded
             : Icons.tune_rounded;
@@ -175,13 +175,13 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
             child: Card(
-              color: isDark ? colors.surface : _splytoCard,
+              color: isDark ? colors.surface : AppDesign.lightSurface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
                 side: BorderSide(
                   color: isDark
                       ? colors.outlineVariant.withValues(alpha: 0.30)
-                      : _splytoStroke,
+                      : AppDesign.lightStroke,
                 ),
               ),
               child: _SplytoPressScale(
@@ -221,7 +221,9 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                                   style: Theme.of(context).textTheme.titleLarge
                                       ?.copyWith(
                                         fontWeight: FontWeight.w800,
-                                        color: isDark ? null : _splytoFg,
+                                        color: isDark
+                                            ? null
+                                            : AppDesign.lightForeground,
                                       ),
                                 ),
                                 const SizedBox(height: 4),
@@ -233,7 +235,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                                       ?.copyWith(
                                         color: isDark
                                             ? colors.onSurfaceVariant
-                                            : _splytoMuted,
+                                            : AppDesign.lightMuted,
                                         fontWeight: FontWeight.w500,
                                       ),
                                 ),
@@ -253,7 +255,9 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                                 style: Theme.of(context).textTheme.headlineSmall
                                     ?.copyWith(
                                       fontWeight: FontWeight.w800,
-                                      color: isDark ? null : _splytoFg,
+                                      color: isDark
+                                          ? null
+                                          : AppDesign.lightForeground,
                                       letterSpacing: -0.25,
                                     ),
                               ),
@@ -267,7 +271,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                                     ?.copyWith(
                                       color: isDark
                                           ? colors.onSurfaceVariant
-                                          : _splytoMuted,
+                                          : AppDesign.lightMuted,
                                       fontWeight: FontWeight.w500,
                                     ),
                               ),
@@ -283,7 +287,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                                       ?.copyWith(
                                         color: isDark
                                             ? colors.onSurfaceVariant
-                                            : _splytoMuted,
+                                            : AppDesign.lightMuted,
                                       ),
                                 ),
                             ],
@@ -314,7 +318,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                                   fontSize: 14,
                                   color: isDark
                                       ? colors.onSurfaceVariant
-                                      : _splytoMuted,
+                                      : AppDesign.lightMuted,
                                 ),
                           ),
                           const SizedBox(width: 8),
@@ -355,7 +359,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                             size: 22,
                             color: isDark
                                 ? colors.onSurfaceVariant
-                                : _splytoMuted,
+                                : AppDesign.lightMuted,
                           ),
                         ],
                       ),

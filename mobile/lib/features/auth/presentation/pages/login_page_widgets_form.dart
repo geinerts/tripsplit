@@ -1,67 +1,76 @@
 part of 'login_page.dart';
 
 extension _LoginPageWidgetsForm on _LoginPageState {
-  Widget _buildAuthCard(BuildContext context) {
+  Widget _buildAuthCard(
+    BuildContext context, {
+    required bool asStandaloneContent,
+  }) {
     final t = context.l10n;
     final isLogin = _mode == _AuthMode.login;
     final responsive = context.responsive;
     final cardPadding = responsive.pick(compact: 16, medium: 20, expanded: 22);
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(cardPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (!isLogin) ...[
-              ..._buildRegistrationFields(context),
-              const SizedBox(height: 16),
-            ],
-            _buildLabeledTextField(
-              context: context,
-              label: t.emailAddressLabel,
-              hint: t.emailHint,
-              leadingIcon: Icons.mail_outline_rounded,
-              controller: _emailController,
-              validator: _validateEmail,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              autocorrect: false,
-              fieldKey: const ValueKey(AppTestKeys.loginEmailField),
-            ),
+    final content = Padding(
+      padding: EdgeInsets.all(cardPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (!isLogin) ...[
+            ..._buildRegistrationFields(context),
             const SizedBox(height: 16),
-            _buildPasswordField(context, isLogin),
-            if (!isLogin) ...[
-              const SizedBox(height: 10),
-              _buildPasswordStrengthIndicator(context),
-              const SizedBox(height: 16),
-              _buildRepeatPasswordField(context),
-            ],
-            const SizedBox(height: 12),
-            if (isLogin) _buildRememberAndForgotRow(context),
-            if (_errorText != null) ...[
-              const SizedBox(height: 2),
-              Text(
-                _errorText!,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.error,
-                  fontWeight: FontWeight.w700,
-                ),
+          ],
+          _buildLabeledTextField(
+            context: context,
+            label: t.emailAddressLabel,
+            hint: t.emailHint,
+            leadingIcon: Icons.mail_outline_rounded,
+            controller: _emailController,
+            validator: _validateEmail,
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+            autocorrect: false,
+            fieldKey: const ValueKey(AppTestKeys.loginEmailField),
+          ),
+          const SizedBox(height: 16),
+          _buildPasswordField(context, isLogin),
+          if (!isLogin) ...[
+            const SizedBox(height: 10),
+            _buildPasswordStrengthIndicator(context),
+            const SizedBox(height: 16),
+            _buildRepeatPasswordField(context),
+          ],
+          const SizedBox(height: 12),
+          if (isLogin) _buildRememberAndForgotRow(context),
+          if (_errorText != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              _errorText!,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.error,
+                fontWeight: FontWeight.w700,
               ),
-            ],
+            ),
+          ],
+          const SizedBox(height: 12),
+          _buildSubmitButton(context),
+          if (isLogin) ...[
             const SizedBox(height: 12),
-            _buildSubmitButton(context),
-            if (isLogin) ...[
-              const SizedBox(height: 12),
-              _buildSocialButtons(context),
-            ],
+            _buildSocialButtons(context),
+          ],
+          if (!widget.compactSheet) ...[
             const SizedBox(height: 14),
             _buildModeSwitchRow(context),
           ],
-        ),
+        ],
       ),
     );
+
+    if (asStandaloneContent) {
+      return content;
+    }
+
+    return Card(child: content);
   }
 
   List<Widget> _buildRegistrationFields(BuildContext context) {
@@ -316,20 +325,26 @@ extension _LoginPageWidgetsForm on _LoginPageState {
       final veryStrong = value.length >= 14;
       return _PasswordStrength(
         fillFactor: veryStrong ? 1.0 : 0.8,
-        color: veryStrong ? colors.primary : const Color(0xFF3B9A62),
+        color: veryStrong ? colors.primary : AppDesign.successColor(context),
       );
     }
 
     if (requiredChecksMet <= 1) {
       return _PasswordStrength(
         fillFactor: requiredChecksMet == 0 ? 0.0 : 0.25,
-        color: const Color(0xFFE35D50),
+        color: AppDesign.destructiveColor(context),
       );
     }
     if (requiredChecksMet == 2) {
-      return const _PasswordStrength(fillFactor: 0.5, color: Color(0xFFD4A72C));
+      return const _PasswordStrength(
+        fillFactor: 0.5,
+        color: AppDesign.lightAccent,
+      );
     }
-    return const _PasswordStrength(fillFactor: 0.72, color: Color(0xFFD4A72C));
+    return const _PasswordStrength(
+      fillFactor: 0.72,
+      color: AppDesign.lightAccent,
+    );
   }
 
   Widget _buildRememberAndForgotRow(BuildContext context) {
@@ -362,18 +377,12 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     final isLogin = _mode == _AuthMode.login;
     final t = context.l10n;
     final responsive = context.responsive;
-    const gradient = LinearGradient(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      colors: [Color(0xFF9BDFC3), Color(0xFF57B487)],
-    );
-
     return SizedBox(
       width: double.infinity,
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          gradient: gradient,
+          gradient: AppDesign.authButtonGradient,
         ),
         child: ElevatedButton(
           key: const ValueKey(AppTestKeys.authSubmitButton),
@@ -382,7 +391,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
             elevation: 0,
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
-            foregroundColor: Colors.white,
+            foregroundColor: AppDesign.darkForeground,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(18),
@@ -394,7 +403,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
                   height: 18,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.white,
+                    color: AppDesign.darkForeground,
                   ),
                 )
               : Text(

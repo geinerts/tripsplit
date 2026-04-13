@@ -204,357 +204,352 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
     return await showDialog<Set<int>>(
       context: context,
       builder: (dialogContext) {
-          final t = dialogContext.l10n;
+        final t = dialogContext.l10n;
 
-          Future<void> loadFriendQuickPicks(StateSetter setDialogState) async {
-            if (isLoadingFriendQuickPicks) {
-              return;
-            }
-
-            bool canUpdateDialog() {
-              final c = dialogBuildContext;
-              return mounted && c != null && c.mounted;
-            }
-
-            setDialogState(() {
-              isLoadingFriendQuickPicks = true;
-              friendQuickPicksErrorText = null;
-            });
-
-            try {
-              final cached = widget.friendsController.peekSnapshotCache(
-                allowStale: false,
-              );
-              final snapshot =
-                  cached ??
-                  await widget.friendsController.loadSnapshot(
-                    forceRefresh: false,
-                  );
-              if (!canUpdateDialog()) {
-                return;
-              }
-
-              setDialogState(() {
-                friendQuickPicks = snapshot.friends
-                    .where((friend) => !existingMemberIds.contains(friend.id))
-                    .map(
-                      (friend) => TripUser(
-                        id: friend.id,
-                        nickname: friend.nickname,
-                        avatarUrl: friend.avatarUrl,
-                        avatarThumbUrl: friend.avatarThumbUrl,
-                      ),
-                    )
-                    .toList(growable: false);
-              });
-            } catch (_) {
-              if (!canUpdateDialog()) {
-                return;
-              }
-              setDialogState(() {
-                friendQuickPicks = const <TripUser>[];
-                friendQuickPicksErrorText = _plainLocalizedText(
-                  en: 'Failed to load friends.',
-                  lv: 'Neizdevās ielādēt draugus.',
-                );
-              });
-            } finally {
-              if (canUpdateDialog()) {
-                setDialogState(() {
-                  isLoadingFriendQuickPicks = false;
-                });
-              }
-            }
+        Future<void> loadFriendQuickPicks(StateSetter setDialogState) async {
+          if (isLoadingFriendQuickPicks) {
+            return;
           }
 
-          Future<void> loadInviteLink(StateSetter setDialogState) async {
-            if (isInviteLinkLoading) {
+          bool canUpdateDialog() {
+            final c = dialogBuildContext;
+            return mounted && c != null && c.mounted;
+          }
+
+          setDialogState(() {
+            isLoadingFriendQuickPicks = true;
+            friendQuickPicksErrorText = null;
+          });
+
+          try {
+            final cached = widget.friendsController.peekSnapshotCache(
+              allowStale: false,
+            );
+            final snapshot =
+                cached ??
+                await widget.friendsController.loadSnapshot(
+                  forceRefresh: false,
+                );
+            if (!canUpdateDialog()) {
               return;
-            }
-            bool canUpdateDialog() {
-              final c = dialogBuildContext;
-              return mounted && c != null && c.mounted;
             }
 
             setDialogState(() {
-              isInviteLinkLoading = true;
+              friendQuickPicks = snapshot.friends
+                  .where((friend) => !existingMemberIds.contains(friend.id))
+                  .map(
+                    (friend) => TripUser(
+                      id: friend.id,
+                      nickname: friend.nickname,
+                      avatarUrl: friend.avatarUrl,
+                      avatarThumbUrl: friend.avatarThumbUrl,
+                    ),
+                  )
+                  .toList(growable: false);
+            });
+          } catch (_) {
+            if (!canUpdateDialog()) {
+              return;
+            }
+            setDialogState(() {
+              friendQuickPicks = const <TripUser>[];
+              friendQuickPicksErrorText = _plainLocalizedText(
+                en: 'Failed to load friends.',
+                lv: 'Neizdevās ielādēt draugus.',
+              );
+            });
+          } finally {
+            if (canUpdateDialog()) {
+              setDialogState(() {
+                isLoadingFriendQuickPicks = false;
+              });
+            }
+          }
+        }
+
+        Future<void> loadInviteLink(StateSetter setDialogState) async {
+          if (isInviteLinkLoading) {
+            return;
+          }
+          bool canUpdateDialog() {
+            final c = dialogBuildContext;
+            return mounted && c != null && c.mounted;
+          }
+
+          setDialogState(() {
+            isInviteLinkLoading = true;
+            inviteLinkErrorText = null;
+          });
+
+          try {
+            final payload = await widget.tripsController.createTripInviteLink(
+              tripId: widget.trip.id,
+            );
+            if (!canUpdateDialog()) {
+              return;
+            }
+            setDialogState(() {
+              inviteLink = payload.inviteUrl.trim();
+              inviteLinkExpiresAt = payload.expiresAt;
               inviteLinkErrorText = null;
             });
-
-            try {
-              final payload = await widget.tripsController.createTripInviteLink(
-                tripId: widget.trip.id,
+          } on ApiException catch (error) {
+            if (!canUpdateDialog()) {
+              return;
+            }
+            final normalized = error.message.trim();
+            setDialogState(() {
+              inviteLinkErrorText = normalized.isNotEmpty
+                  ? normalized
+                  : _plainLocalizedText(
+                      en: 'Failed to generate invite link.',
+                      lv: 'Neizdevās izveidot ielūguma saiti.',
+                    );
+            });
+          } catch (_) {
+            if (!canUpdateDialog()) {
+              return;
+            }
+            setDialogState(() {
+              inviteLinkErrorText = _plainLocalizedText(
+                en: 'Failed to generate invite link.',
+                lv: 'Neizdevās izveidot ielūguma saiti.',
               );
-              if (!canUpdateDialog()) {
-                return;
-              }
+            });
+          } finally {
+            if (canUpdateDialog()) {
               setDialogState(() {
-                inviteLink = payload.inviteUrl.trim();
-                inviteLinkExpiresAt = payload.expiresAt;
-                inviteLinkErrorText = null;
+                isInviteLinkLoading = false;
               });
-            } on ApiException catch (error) {
-              if (!canUpdateDialog()) {
-                return;
-              }
-              final normalized = error.message.trim();
-              setDialogState(() {
-                inviteLinkErrorText = normalized.isNotEmpty
-                    ? normalized
-                    : _plainLocalizedText(
-                        en: 'Failed to generate invite link.',
-                        lv: 'Neizdevās izveidot ielūguma saiti.',
-                      );
-              });
-            } catch (_) {
-              if (!canUpdateDialog()) {
-                return;
-              }
-              setDialogState(() {
-                inviteLinkErrorText = _plainLocalizedText(
-                  en: 'Failed to generate invite link.',
-                  lv: 'Neizdevās izveidot ielūguma saiti.',
-                );
-              });
-            } finally {
-              if (canUpdateDialog()) {
-                setDialogState(() {
-                  isInviteLinkLoading = false;
-                });
-              }
             }
           }
+        }
 
-          return StatefulBuilder(
-            builder: (context, setDialogState) {
-              dialogBuildContext = context;
-              if (!inviteLinkRequested) {
-                inviteLinkRequested = true;
-                unawaited(loadInviteLink(setDialogState));
-              }
-              if (!friendQuickPicksRequested) {
-                friendQuickPicksRequested = true;
-                unawaited(loadFriendQuickPicks(setDialogState));
-              }
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            dialogBuildContext = context;
+            if (!inviteLinkRequested) {
+              inviteLinkRequested = true;
+              unawaited(loadInviteLink(setDialogState));
+            }
+            if (!friendQuickPicksRequested) {
+              friendQuickPicksRequested = true;
+              unawaited(loadFriendQuickPicks(setDialogState));
+            }
 
-              return AlertDialog(
-                title: Text(t.addTripMembersTitle),
-                content: SizedBox(
-                  width: 430,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _plainLocalizedText(
-                            en: 'Invite link',
-                            lv: 'Ielūguma saite',
-                          ),
-                          style: Theme.of(context).textTheme.bodySmall,
+            return AlertDialog(
+              title: Text(t.addTripMembersTitle),
+              content: SizedBox(
+                width: 430,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _plainLocalizedText(
+                          en: 'Invite link',
+                          lv: 'Ielūguma saite',
                         ),
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHighest
-                                .withValues(alpha: 0.45),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .outlineVariant
-                                  .withValues(alpha: 0.55),
-                            ),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 6),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest
+                              .withValues(alpha: 0.45),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outlineVariant
+                                .withValues(alpha: 0.55),
                           ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: isInviteLinkLoading
-                                    ? Text(
-                                        _plainLocalizedText(
-                                          en: 'Generating invite link...',
-                                          lv: 'Veido ielūguma saiti...',
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                      )
-                                    : Text(
-                                        inviteLink.isEmpty
-                                            ? _plainLocalizedText(
-                                                en: 'Invite link unavailable.',
-                                                lv: 'Ielūguma saite nav pieejama.',
-                                              )
-                                            : inviteLink,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: isInviteLinkLoading
+                                  ? Text(
+                                      _plainLocalizedText(
+                                        en: 'Generating invite link...',
+                                        lv: 'Veido ielūguma saiti...',
                                       ),
-                              ),
-                              IconButton(
-                                tooltip: _plainLocalizedText(
-                                  en: 'Copy invite link',
-                                  lv: 'Kopēt ielūguma saiti',
-                                ),
-                                onPressed:
-                                    isInviteLinkLoading || inviteLink.isEmpty
-                                    ? null
-                                    : () async {
-                                        await Clipboard.setData(
-                                          ClipboardData(text: inviteLink),
-                                        );
-                                        if (!mounted) {
-                                          return;
-                                        }
-                                        _showSnack(
-                                          _plainLocalizedText(
-                                            en: 'Invite link copied.',
-                                            lv: 'Ielūguma saite nokopēta.',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
                                           ),
-                                        );
-                                      },
-                                icon: const Icon(Icons.copy_all_outlined),
+                                    )
+                                  : Text(
+                                      inviteLink.isEmpty
+                                          ? _plainLocalizedText(
+                                              en: 'Invite link unavailable.',
+                                              lv: 'Ielūguma saite nav pieejama.',
+                                            )
+                                          : inviteLink,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                            ),
+                            IconButton(
+                              tooltip: _plainLocalizedText(
+                                en: 'Copy invite link',
+                                lv: 'Kopēt ielūguma saiti',
                               ),
-                            ],
-                          ),
-                        ),
-                        if (inviteLinkErrorText != null) ...[
-                          const SizedBox(height: 6),
-                          Text(
-                            inviteLinkErrorText!,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                              fontWeight: FontWeight.w600,
+                              onPressed:
+                                  isInviteLinkLoading || inviteLink.isEmpty
+                                  ? null
+                                  : () async {
+                                      await Clipboard.setData(
+                                        ClipboardData(text: inviteLink),
+                                      );
+                                      if (!mounted) {
+                                        return;
+                                      }
+                                      _showSnack(
+                                        _plainLocalizedText(
+                                          en: 'Invite link copied.',
+                                          lv: 'Ielūguma saite nokopēta.',
+                                        ),
+                                      );
+                                    },
+                              icon: const Icon(Icons.copy_all_outlined),
                             ),
-                          ),
-                        ],
-                        if (!isInviteLinkLoading &&
-                            inviteLinkErrorText == null &&
-                            inviteLinkExpiresAt != null) ...[
-                          const SizedBox(height: 6),
-                          Text(
-                            _plainLocalizedText(
-                              en: 'Expires: $inviteLinkExpiresAt UTC',
-                              lv: 'Derīga līdz: $inviteLinkExpiresAt UTC',
-                            ),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                        const SizedBox(height: 12),
-                        Text(
-                          t.selectedPeopleLabel,
-                          style: Theme.of(context).textTheme.bodySmall,
+                          ],
                         ),
+                      ),
+                      if (inviteLinkErrorText != null) ...[
                         const SizedBox(height: 6),
-                        if (selectedUsers.isEmpty)
-                          Text(
-                            'No members selected yet.',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          )
-                        else
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              for (final user in selectedUsers.values)
-                                InputChip(
-                                  label: Text(user.nickname),
-                                  selected: true,
-                                  onDeleted: () {
-                                    setDialogState(() {
-                                      selected.remove(user.id);
-                                      selectedUsers.remove(user.id);
-                                    });
-                                  },
-                                ),
-                            ],
+                        Text(
+                          inviteLinkErrorText!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                            fontWeight: FontWeight.w600,
                           ),
-                        const SizedBox(height: 12),
+                        ),
+                      ],
+                      if (!isInviteLinkLoading &&
+                          inviteLinkErrorText == null &&
+                          inviteLinkExpiresAt != null) ...[
+                        const SizedBox(height: 6),
                         Text(
                           _plainLocalizedText(
-                            en: 'Friends',
-                            lv: 'Draugi',
+                            en: 'Expires: $inviteLinkExpiresAt UTC',
+                            lv: 'Derīga līdz: $inviteLinkExpiresAt UTC',
                           ),
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
-                        if (isLoadingFriendQuickPicks) ...[
-                          const SizedBox(height: 10),
-                          const LinearProgressIndicator(minHeight: 2),
-                        ] else ...[
-                          const SizedBox(height: 8),
-                        ],
-                        if (friendQuickPicksErrorText != null)
-                          Text(
-                            friendQuickPicksErrorText!,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )
-                        else if (friendQuickPicks.isEmpty)
-                          Text(
-                            _plainLocalizedText(
-                              en: 'No friends available. Add friends first.',
-                              lv: 'Draugu saraksts ir tukšs. Vispirms pievieno draugus.',
-                            ),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          )
-                        else
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              for (final friend in friendQuickPicks)
-                                FilterChip(
-                                  label: Text(friend.nickname),
-                                  selected: selected.contains(friend.id),
-                                  onSelected: (isSelected) {
-                                    setDialogState(() {
-                                      if (isSelected) {
-                                        selected.add(friend.id);
-                                        selectedUsers[friend.id] = friend;
-                                      } else {
-                                        selected.remove(friend.id);
-                                        selectedUsers.remove(friend.id);
-                                      }
-                                    });
-                                  },
-                                ),
-                            ],
-                          ),
                       ],
-                    ),
+                      const SizedBox(height: 12),
+                      Text(
+                        t.selectedPeopleLabel,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 6),
+                      if (selectedUsers.isEmpty)
+                        Text(
+                          'No members selected yet.',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        )
+                      else
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final user in selectedUsers.values)
+                              InputChip(
+                                label: Text(user.nickname),
+                                selected: true,
+                                onDeleted: () {
+                                  setDialogState(() {
+                                    selected.remove(user.id);
+                                    selectedUsers.remove(user.id);
+                                  });
+                                },
+                              ),
+                          ],
+                        ),
+                      const SizedBox(height: 12),
+                      Text(
+                        _plainLocalizedText(en: 'Friends', lv: 'Draugi'),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      if (isLoadingFriendQuickPicks) ...[
+                        const SizedBox(height: 10),
+                        const LinearProgressIndicator(minHeight: 2),
+                      ] else ...[
+                        const SizedBox(height: 8),
+                      ],
+                      if (friendQuickPicksErrorText != null)
+                        Text(
+                          friendQuickPicksErrorText!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        )
+                      else if (friendQuickPicks.isEmpty)
+                        Text(
+                          _plainLocalizedText(
+                            en: 'No friends available. Add friends first.',
+                            lv: 'Draugu saraksts ir tukšs. Vispirms pievieno draugus.',
+                          ),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        )
+                      else
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final friend in friendQuickPicks)
+                              FilterChip(
+                                label: Text(friend.nickname),
+                                selected: selected.contains(friend.id),
+                                onSelected: (isSelected) {
+                                  setDialogState(() {
+                                    if (isSelected) {
+                                      selected.add(friend.id);
+                                      selectedUsers[friend.id] = friend;
+                                    } else {
+                                      selected.remove(friend.id);
+                                      selectedUsers.remove(friend.id);
+                                    }
+                                  });
+                                },
+                              ),
+                          ],
+                        ),
+                    ],
                   ),
                 ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(t.cancelAction),
-                  ),
-                  ElevatedButton(
-                    onPressed: selected.isEmpty
-                        ? null
-                        : () => Navigator.of(context).pop(selected),
-                    child: Text(t.addAction),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(t.cancelAction),
+                ),
+                ElevatedButton(
+                  onPressed: selected.isEmpty
+                      ? null
+                      : () => Navigator.of(context).pop(selected),
+                  child: Text(t.addAction),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }

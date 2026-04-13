@@ -76,6 +76,9 @@ extension _MainShellPageWidgets on _MainShellPageState {
     final title = _topTitle(context);
     final showLogo =
         !_isWorkspaceOpen && _selectedTabIndex == _MainShellPageState._tabHome;
+    final logoAsset = AppDesign.isDark(context)
+        ? 'assets/branding/logo_full_dark.png'
+        : 'assets/branding/logo_full.png';
     if (!showLogo) {
       return Text(
         title,
@@ -92,7 +95,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
           width: 170,
           height: 46,
           child: Image.asset(
-            'assets/branding/logo_full.png',
+            logoAsset,
             fit: BoxFit.contain,
             alignment: Alignment.centerLeft,
             filterQuality: FilterQuality.high,

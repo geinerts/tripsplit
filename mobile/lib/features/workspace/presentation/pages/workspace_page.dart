@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../app/locale/app_locale_picker.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_design.dart';
+import '../../../../app/theme/app_semantic_colors.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/expenses/expense_category_catalog.dart';
@@ -69,16 +70,6 @@ part 'workspace_page_support_sync.dart';
 part 'workspace_page_support_models.dart';
 part 'workspace_page_support_widgets.dart';
 part 'workspace_page_formatters.dart';
-
-const Color _splytoCreamBg = Color(0xFFF7F5F0);
-const Color _splytoCard = Color(0xFFFFFFFF);
-const Color _splytoPrimary = Color(0xFF2D7A5E);
-const Color _splytoAccent = Color(0xFFD4915C);
-const Color _splytoFg = Color(0xFF2C2418);
-const Color _splytoMuted = Color(0xFF8A8277);
-const Color _splytoSuccess = Color(0xFF3D8B5F);
-const Color _splytoDestructive = Color(0xFFC45C4A);
-const Color _splytoStroke = Color(0xFFE9E4DD);
 
 class WorkspacePage extends StatefulWidget {
   const WorkspacePage({

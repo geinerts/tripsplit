@@ -9,6 +9,7 @@ import 'app_dependencies.dart';
 import 'locale/app_locale_scope.dart';
 import 'router/app_router.dart';
 import 'theme/app_design.dart';
+import 'theme/app_semantic_colors.dart';
 import 'theme/theme_mode_scope.dart';
 
 class TripSplitApp extends StatefulWidget {
@@ -121,6 +122,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
       colorScheme: colorScheme,
       useMaterial3: true,
       textTheme: textTheme,
+      extensions: const <ThemeExtension<dynamic>>[AppSemanticColors.light],
       scaffoldBackgroundColor: AppDesign.lightCanvas,
       appBarTheme: AppBarTheme(
         elevation: 0,
@@ -232,24 +234,25 @@ class _TripSplitAppState extends State<TripSplitApp> {
 
   ThemeData _buildDarkTheme() {
     final baseScheme = ColorScheme.fromSeed(
-      seedColor: AppDesign.brandStart,
+      seedColor: AppDesign.darkPrimary,
       brightness: Brightness.dark,
     );
     final colorScheme = baseScheme.copyWith(
-      primary: const Color(0xFF79A7FF),
-      secondary: const Color(0xFFB28DFF),
+      primary: AppDesign.darkPrimary,
+      secondary: AppDesign.darkAccent,
+      tertiary: AppDesign.darkPrimaryStrong,
       surface: AppDesign.darkSurface,
       surfaceContainerLowest: AppDesign.darkCanvas,
       surfaceContainerLow: AppDesign.darkCanvasSoft,
       surfaceContainer: AppDesign.darkSurface,
       surfaceContainerHigh: AppDesign.darkSurfaceRaised,
-      surfaceContainerHighest: const Color(0xFF1C2B42),
-      outline: const Color(0xFF537099),
-      outlineVariant: AppDesign.darkOutline,
-      onSurface: const Color(0xFFF4F7FD),
-      onSurfaceVariant: const Color(0xFFB7C6DF),
-      primaryContainer: const Color(0xFF18335A),
-      onPrimaryContainer: const Color(0xFFE7F0FF),
+      surfaceContainerHighest: AppDesign.darkSurfaceHighest,
+      outline: AppDesign.darkOutline,
+      outlineVariant: AppDesign.darkOutlineSoft,
+      onSurface: AppDesign.darkForeground,
+      onSurfaceVariant: AppDesign.darkMuted,
+      primaryContainer: AppDesign.darkPrimaryContainer,
+      onPrimaryContainer: AppDesign.darkForeground,
     );
     final textTheme = _buildTextTheme(
       ThemeData(brightness: Brightness.dark, useMaterial3: true).textTheme,
@@ -264,6 +267,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
       colorScheme: colorScheme,
       useMaterial3: true,
       textTheme: textTheme,
+      extensions: const <ThemeExtension<dynamic>>[AppSemanticColors.dark],
       scaffoldBackgroundColor: AppDesign.darkCanvas,
       appBarTheme: AppBarTheme(
         elevation: 0,

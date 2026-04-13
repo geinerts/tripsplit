@@ -207,7 +207,9 @@ class _DayStackedBar extends StatelessWidget {
                   Positioned.fill(
                     child: ColoredBox(
                       color: isDark
-                          ? Colors.white.withValues(alpha: 0.14)
+                          ? colors.surfaceContainerHighest.withValues(
+                              alpha: 0.68,
+                            )
                           : colors.surfaceContainerHighest.withValues(
                               alpha: 0.42,
                             ),
@@ -392,10 +394,10 @@ class _HorizontalMemberBar extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final barColor = isDark
-        ? Color.lerp(color, Colors.white, 0.36) ?? color
+        ? Color.lerp(color, AppDesign.darkForeground, 0.36) ?? color
         : color;
     final trackColor = isDark
-        ? Colors.white.withValues(alpha: 0.14)
+        ? AppDesign.darkForeground.withValues(alpha: 0.14)
         : colors.surfaceContainerHighest.withValues(alpha: 0.46);
 
     return Container(
@@ -490,10 +492,10 @@ class _HorizontalCategoryBar extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final barColor = isDark
-        ? Color.lerp(color, Colors.white, 0.34) ?? color
+        ? Color.lerp(color, AppDesign.darkForeground, 0.34) ?? color
         : color;
     final trackColor = isDark
-        ? Colors.white.withValues(alpha: 0.14)
+        ? AppDesign.darkForeground.withValues(alpha: 0.14)
         : colors.surfaceContainerHighest.withValues(alpha: 0.46);
 
     return Container(
@@ -667,6 +669,8 @@ class _MemberAvatarStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final visibleRows = rows.take(4).toList(growable: false);
     final extraCount = rows.length - visibleRows.length;
     final itemCount = visibleRows.length + (extraCount > 0 ? 1 : 0);
@@ -685,9 +689,9 @@ class _MemberAvatarStack extends StatelessWidget {
                   color: visibleRows[index].color,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.black.withValues(alpha: 0.24)
-                        : Colors.white,
+                    color: isDark
+                        ? colors.surface.withValues(alpha: 0.82)
+                        : AppDesign.lightSurface,
                     width: 2,
                   ),
                 ),
@@ -697,7 +701,7 @@ class _MemberAvatarStack extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: AppDesign.darkForeground,
                   ),
                 ),
               ),
@@ -709,14 +713,14 @@ class _MemberAvatarStack extends StatelessWidget {
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white.withValues(alpha: 0.18)
-                      : const Color(0xFFEDE8DF),
+                  color: isDark
+                      ? colors.surfaceContainerHighest.withValues(alpha: 0.84)
+                      : AppDesign.lightSurfaceMutedAlt,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.black.withValues(alpha: 0.22)
-                        : Colors.white,
+                    color: isDark
+                        ? colors.surface.withValues(alpha: 0.78)
+                        : AppDesign.lightSurface,
                     width: 2,
                   ),
                 ),
@@ -749,6 +753,7 @@ class _MemberAmountChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = Theme.of(context).colorScheme;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -761,15 +766,15 @@ class _MemberAmountChip extends StatelessWidget {
             color: color.withValues(alpha: isDark ? 0.92 : 1),
             border: Border.all(
               color: isDark
-                  ? Colors.white.withValues(alpha: 0.24)
-                  : Colors.white,
+                  ? colors.outlineVariant.withValues(alpha: 0.52)
+                  : AppDesign.lightSurface,
               width: 2,
             ),
           ),
           child: Text(
             initials,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppDesign.darkForeground,
               fontWeight: FontWeight.w800,
               fontSize: 14,
             ),

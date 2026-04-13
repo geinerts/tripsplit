@@ -191,9 +191,8 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
     }
   }
 
-  Future<({Uint8List bytes, String fileName})?> _pickTripImageForUploadFromSource(
-    ImageSource source,
-  ) async {
+  Future<({Uint8List bytes, String fileName})?>
+  _pickTripImageForUploadFromSource(ImageSource source) async {
     try {
       final picker = ImagePicker();
       final picked = await picker.pickImage(
@@ -249,11 +248,14 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
     return trimmed;
   }
 
-  Future<({Uint8List bytes, String fileName})?> _prepareTripImageBytesForUpload({
+  Future<({Uint8List bytes, String fileName})?>
+  _prepareTripImageBytesForUpload({
     required Uint8List rawBytes,
     required String fileName,
   }) async {
-    final originalName = fileName.trim().isEmpty ? 'trip-image' : fileName.trim();
+    final originalName = fileName.trim().isEmpty
+        ? 'trip-image'
+        : fileName.trim();
     final lowered = originalName.toLowerCase();
     final isDirectSupported =
         lowered.endsWith('.jpg') ||

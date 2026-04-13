@@ -52,6 +52,9 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
   }) {
     final t = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.light;
     final coverUrl = (widget.trip.imageThumbUrl ?? widget.trip.imageUrl ?? '')
         .trim();
     final hasCover = coverUrl.isNotEmpty;
@@ -59,13 +62,9 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
         ? t.tripWithId(widget.trip.id)
         : widget.trip.name.trim();
 
-    final glassBgColor = isDark
-        ? Colors.black.withValues(alpha: 0.34)
-        : Colors.white.withValues(alpha: 0.86);
-    final glassBorderColor = isDark
-        ? Colors.white.withValues(alpha: 0.20)
-        : Colors.white.withValues(alpha: 0.74);
-    final glassTitle = isDark ? Colors.white : _splytoFg;
+    final glassBgColor = semantic.heroGlassBackground;
+    final glassBorderColor = semantic.heroGlassBorder;
+    final glassTitle = AppDesign.titleColor(context);
     final statusIcon = snapshot.isArchived
         ? Icons.archive_outlined
         : (snapshot.isSettling
@@ -78,22 +77,20 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
               : (snapshot.allSettled ? t.settledStatus : t.activeStatus));
     final isSettledState = snapshot.isArchived || snapshot.allSettled;
     final statusChipForeground = snapshot.isSettling
-        ? (isDark ? const Color(0xFFFFC278) : const Color(0xFF9A5A16))
+        ? semantic.statusSettlingForeground
         : (isSettledState
-              ? (isDark ? const Color(0xFFE7E2D8) : const Color(0xFF5E5448))
-              : (isDark ? const Color(0xFFA6E7C8) : const Color(0xFF2D7A5E)));
+              ? semantic.statusSettledForeground
+              : semantic.statusActiveForeground);
     final statusChipBackground = snapshot.isSettling
-        ? (isDark ? const Color(0x33D4915C) : const Color(0x22D4915C))
+        ? semantic.statusSettlingBackground
         : (isSettledState
-              ? (isDark
-                    ? Colors.white.withValues(alpha: 0.10)
-                    : Colors.white.withValues(alpha: 0.72))
-              : (isDark ? const Color(0x332D7A5E) : const Color(0x1F2D7A5E)));
+              ? semantic.statusSettledBackground
+              : semantic.statusActiveBackground);
     final statusChipBorder = snapshot.isSettling
-        ? (isDark ? const Color(0x66D4915C) : const Color(0x66D4915C))
+        ? semantic.statusSettlingBorder
         : (isSettledState
-              ? (isDark ? Colors.white.withValues(alpha: 0.24) : _splytoStroke)
-              : (isDark ? const Color(0x6654B77E) : const Color(0x6654B77E)));
+              ? semantic.statusSettledBorder
+              : semantic.statusActiveBorder);
 
     final currentNet = currentBalance?.net ?? 0;
     final showsPositive = currentNet > 0.004;
@@ -126,10 +123,12 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                     ? Icons.arrow_downward_rounded
                     : Icons.check_circle_outline));
     final primaryIconColor = isSettledState
-        ? _splytoPrimary
+        ? AppDesign.lightPrimary
         : (showsNegative
-              ? _splytoDestructive
-              : (showsPositive ? _splytoPrimary : _splytoPrimary));
+              ? AppDesign.lightDestructive
+              : (showsPositive
+                    ? AppDesign.lightPrimary
+                    : AppDesign.lightPrimary));
 
     return Container(
       width: double.infinity,
@@ -142,16 +141,16 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: isDark
-                    ? const [Color(0xFF1A2E2A), Color(0xFF0E1D18)]
-                    : const [Color(0xFF2D7A5E), Color(0xFF215A45)],
+                    ? const [
+                        AppDesign.darkPrimaryContainer,
+                        AppDesign.darkSurface,
+                      ]
+                    : const [
+                        AppDesign.lightPrimary,
+                        AppDesign.lightPrimaryDeep,
+                      ],
               ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x1E000000),
-            blurRadius: 24,
-            offset: Offset(0, 10),
-          ),
-        ],
+        boxShadow: AppDesign.heroShadow(context),
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
@@ -174,8 +173,8 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withValues(alpha: 0.18),
-                              Colors.black.withValues(
+                              AppDesign.darkCanvas.withValues(alpha: 0.18),
+                              AppDesign.darkCanvas.withValues(
                                 alpha: isDark ? 0.52 : 0.40,
                               ),
                             ],
@@ -192,8 +191,14 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: isDark
-                            ? const [Color(0xFF1A2E2A), Color(0xFF0E1D18)]
-                            : const [Color(0xFF2D7A5E), Color(0xFF215A45)],
+                            ? const [
+                                AppDesign.darkPrimaryContainer,
+                                AppDesign.darkSurface,
+                              ]
+                            : const [
+                                AppDesign.lightPrimary,
+                                AppDesign.lightPrimaryDeep,
+                              ],
                       ),
                     ),
                   );
@@ -207,7 +212,9 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
               width: 106,
               height: 106,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.08),
+                color: semantic.heroAvatarOverflowBackground.withValues(
+                  alpha: 0.30,
+                ),
                 shape: BoxShape.circle,
               ),
             ),
@@ -225,7 +232,7 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                         title,
                         style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(
-                              color: Colors.white,
+                              color: semantic.heroAvatarStroke,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0.1,
                             ),
@@ -333,7 +340,7 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                                 totalAmount,
                                 currencyCode: widget.trip.currencyCode,
                               ),
-                              iconColor: _splytoPrimary,
+                              iconColor: AppDesign.lightPrimary,
                               textColor: glassTitle,
                             ),
                           ),
@@ -352,7 +359,7 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                                 yourShare,
                                 currencyCode: widget.trip.currencyCode,
                               ),
-                              iconColor: _splytoAccent,
+                              iconColor: AppDesign.lightAccent,
                               textColor: glassTitle,
                             ),
                           ),
@@ -381,13 +388,13 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
               top: 10,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.22),
+                  color: semantic.heroMenuBackground,
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
                   onPressed: _openTripActionsSheet,
                   icon: const Icon(Icons.more_vert),
-                  color: Colors.white,
+                  color: semantic.heroAvatarStroke,
                   visualDensity: VisualDensity.compact,
                   tooltip: context.l10n.settings,
                 ),
@@ -443,6 +450,9 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
   }
 
   Widget _buildTripHeroMemberStack(List<WorkspaceUser> users) {
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.light;
     if (users.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -470,7 +480,10 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                   height: avatarSize,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: stroke),
+                    border: Border.all(
+                      color: semantic.heroAvatarStroke,
+                      width: stroke,
+                    ),
                   ),
                   child: _largeMemberAvatar(
                     id: visible[i].id,
@@ -491,13 +504,16 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.18),
-                    border: Border.all(color: Colors.white, width: stroke),
+                    color: semantic.heroAvatarOverflowBackground,
+                    border: Border.all(
+                      color: semantic.heroAvatarStroke,
+                      width: stroke,
+                    ),
                   ),
                   child: Text(
                     '+$extraCount',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: semantic.heroAvatarStroke,
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                     ),

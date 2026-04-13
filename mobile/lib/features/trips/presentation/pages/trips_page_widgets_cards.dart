@@ -48,6 +48,9 @@ extension _TripsPageCardWidgets on _TripsPageState {
   }) {
     final t = context.l10n;
     final isDark = AppDesign.isDark(context);
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        (isDark ? AppSemanticColors.dark : AppSemanticColors.light);
     final title = trip.name.isEmpty ? t.tripWithId(trip.id) : trip.name;
     final label = trip.name.trim().isEmpty
         ? 'T'
@@ -68,19 +71,25 @@ extension _TripsPageCardWidgets on _TripsPageState {
               : (trip.allSettled
                     ? t.settledStatus
                     : _statusLabel(context, trip)));
-    final statusChipGradient = _statusPillGradient(
+    final statusChipBackground = _statusPillBackgroundColor(
+      semantic: semantic,
       isSettlingState: isSettlingState,
       isFinishedState: isFinishedState,
     );
     final statusChipBorder = _statusPillBorderColor(
+      semantic: semantic,
       isSettlingState: isSettlingState,
       isFinishedState: isFinishedState,
     );
     final statusChipForeground = _statusPillForegroundColor(
-      context,
+      semantic: semantic,
       isSettlingState: isSettlingState,
       isFinishedState: isFinishedState,
     );
+    final onCoverStrong = semantic.heroAvatarStroke;
+    final onCoverMedium = onCoverStrong.withValues(alpha: 0.94);
+    final onCoverMuted = onCoverStrong.withValues(alpha: 0.84);
+    final onCoverIcon = onCoverStrong.withValues(alpha: 0.92);
 
     return Padding(
       padding: EdgeInsets.only(bottom: withBottomSpacing ? 12 : 0),
@@ -122,7 +131,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.headlineSmall
                                 ?.copyWith(
-                                  color: Colors.white,
+                                  color: onCoverStrong,
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: -0.2,
                                 ),
@@ -138,7 +147,10 @@ extension _TripsPageCardWidgets on _TripsPageState {
                             gradient: LinearGradient(
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
-                              colors: statusChipGradient,
+                              colors: [
+                                statusChipBackground,
+                                statusChipBackground,
+                              ],
                             ),
                             borderRadius: BorderRadius.circular(9),
                             border: Border.all(color: statusChipBorder),
@@ -169,15 +181,9 @@ extension _TripsPageCardWidgets on _TripsPageState {
                     Container(
                       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? Colors.black.withValues(alpha: 0.30)
-                            : Colors.white.withValues(alpha: 0.70),
+                        color: semantic.cardGlassBackground,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isDark
-                              ? Colors.white.withValues(alpha: 0.18)
-                              : Colors.white.withValues(alpha: 0.60),
-                        ),
+                        border: Border.all(color: semantic.cardGlassBorder),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,9 +200,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
                                         Icons.calendar_month_outlined,
                                         size: 15,
                                         color: isDark
-                                            ? Colors.white.withValues(
-                                                alpha: 0.92,
-                                              )
+                                            ? onCoverIcon
                                             : AppDesign.titleColor(context),
                                       ),
                                       const SizedBox(width: 6),
@@ -211,9 +215,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
                                               ?.copyWith(
                                                 fontWeight: FontWeight.w700,
                                                 color: isDark
-                                                    ? Colors.white.withValues(
-                                                        alpha: 0.94,
-                                                      )
+                                                    ? onCoverMedium
                                                     : AppDesign.titleColor(
                                                         context,
                                                       ),
@@ -234,9 +236,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
                                         Icons.group_outlined,
                                         size: 15,
                                         color: isDark
-                                            ? Colors.white.withValues(
-                                                alpha: 0.92,
-                                              )
+                                            ? onCoverIcon
                                             : AppDesign.titleColor(context),
                                       ),
                                       const SizedBox(width: 6),
@@ -250,9 +250,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
                                             ?.copyWith(
                                               fontWeight: FontWeight.w700,
                                               color: isDark
-                                                  ? Colors.white.withValues(
-                                                      alpha: 0.94,
-                                                    )
+                                                  ? onCoverMedium
                                                   : AppDesign.titleColor(
                                                       context,
                                                     ),
@@ -278,9 +276,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
                                           .bodyMedium
                                           ?.copyWith(
                                             color: isDark
-                                                ? Colors.white.withValues(
-                                                    alpha: 0.84,
-                                                  )
+                                                ? onCoverMuted
                                                 : AppDesign.mutedColor(context),
                                           ),
                                     ),
@@ -303,8 +299,10 @@ extension _TripsPageCardWidgets on _TripsPageState {
                                 width: 1,
                                 height: 38,
                                 color: isDark
-                                    ? Colors.white.withValues(alpha: 0.18)
-                                    : Colors.black.withValues(alpha: 0.12),
+                                    ? semantic.cardGlassBorder
+                                    : AppDesign.mutedColor(
+                                        context,
+                                      ).withValues(alpha: 0.24),
                               ),
                               const SizedBox(width: 12),
                               Column(
@@ -317,9 +315,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
                                         .bodyMedium
                                         ?.copyWith(
                                           color: isDark
-                                              ? Colors.white.withValues(
-                                                  alpha: 0.84,
-                                                )
+                                              ? onCoverMuted
                                               : AppDesign.mutedColor(context),
                                         ),
                                   ),
@@ -332,7 +328,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
                                         ?.copyWith(
                                           fontWeight: FontWeight.w700,
                                           color: isDark
-                                              ? Colors.white
+                                              ? onCoverStrong
                                               : AppDesign.titleColor(context),
                                         ),
                                   ),
@@ -359,8 +355,8 @@ extension _TripsPageCardWidgets on _TripsPageState {
       alignment: Alignment.center,
       child: Text(
         label,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: AppDesign.darkForeground,
           fontWeight: FontWeight.w800,
           fontSize: 36,
         ),
@@ -368,41 +364,46 @@ extension _TripsPageCardWidgets on _TripsPageState {
     );
   }
 
-  List<Color> _statusPillGradient({
+  Color _statusPillBackgroundColor({
+    required AppSemanticColors semantic,
     required bool isSettlingState,
     required bool isFinishedState,
   }) {
     if (isSettlingState) {
-      return const [Color(0xD9D3843C), Color(0xD9E19D4E)];
+      return semantic.statusSettlingBackground;
     }
     if (isFinishedState) {
-      return const [Color(0xD95C6470), Color(0xD94B535E)];
+      return semantic.statusSettledBackground;
     }
-    return const [Color(0xFFBFE9D3), Color(0xFF95D7B5)];
+    return semantic.statusActiveBackground;
   }
 
   Color _statusPillBorderColor({
+    required AppSemanticColors semantic,
     required bool isSettlingState,
     required bool isFinishedState,
   }) {
     if (isSettlingState) {
-      return const Color(0x99F4C287);
+      return semantic.statusSettlingBorder;
     }
     if (isFinishedState) {
-      return const Color(0x99D4D9DE);
+      return semantic.statusSettledBorder;
     }
-    return const Color(0xFF84CFA9);
+    return semantic.statusActiveBorder;
   }
 
-  Color _statusPillForegroundColor(
-    BuildContext context, {
+  Color _statusPillForegroundColor({
+    required AppSemanticColors semantic,
     required bool isSettlingState,
     required bool isFinishedState,
   }) {
-    if (isSettlingState || isFinishedState) {
-      return Colors.white;
+    if (isSettlingState) {
+      return semantic.statusSettlingForeground;
     }
-    return Theme.of(context).colorScheme.primary;
+    if (isFinishedState) {
+      return semantic.statusSettledForeground;
+    }
+    return semantic.statusActiveForeground;
   }
 
   IconData _statusIcon(Trip trip) {

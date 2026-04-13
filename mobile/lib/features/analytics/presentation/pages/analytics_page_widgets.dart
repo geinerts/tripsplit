@@ -226,7 +226,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                                   decoration: BoxDecoration(
                                     color: isDark
                                         ? colors.surfaceContainerHighest
-                                        : const Color(0xFFF2EFE8),
+                                        : AppDesign.lightSurfaceMuted,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   alignment: Alignment.center,
@@ -379,7 +379,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
             context,
             icon: Icons.trending_up_rounded,
             title: _txt(en: 'Group daily', lv: 'Grupas dienas'),
-            color: const Color(0xFF5A94E5),
+            color: AppDesign.memberPalette[4],
             points: groupPoints,
           ),
         ),
@@ -432,7 +432,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                     : _analyticsMuted,
                 emptyColor: isDark
                     ? colors.surfaceContainerHighest
-                    : const Color(0xFFE7E2D9),
+                    : AppDesign.lightSurfaceTrackSoft,
               ),
             ),
           ],
@@ -622,7 +622,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                       total: total <= 0 ? 1 : total,
                       backgroundColor: isDark
                           ? colors.surfaceContainerHighest
-                          : const Color(0xFFEDE8DF),
+                          : AppDesign.lightSurfaceMutedAlt,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -811,15 +811,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
               ? colors.outlineVariant.withValues(alpha: 0.28)
               : _analyticsStroke,
         ),
-        boxShadow: isDark
-            ? null
-            : const [
-                BoxShadow(
-                  color: Color(0x12000000),
-                  blurRadius: 16,
-                  offset: Offset(0, 6),
-                ),
-              ],
+        boxShadow: isDark ? null : AppDesign.panelShadow(context),
       ),
       child: child,
     );

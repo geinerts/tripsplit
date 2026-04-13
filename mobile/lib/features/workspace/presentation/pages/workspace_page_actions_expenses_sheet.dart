@@ -41,7 +41,9 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
     );
     final categoryIcon = ExpenseCategoryCatalog.iconFor(expense.category);
     final splitMode = expense.splitMode.trim().toLowerCase();
-    final splitColor = splitMode == 'equal' ? _splytoSuccess : _splytoAccent;
+    final splitColor = splitMode == 'equal'
+        ? AppDesign.lightSuccess
+        : AppDesign.lightAccent;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final canEdit = snapshot.isActive && expense.paidById == _currentUserId;
 
@@ -82,7 +84,7 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                   heightFactor: 0.92,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isDark ? colors.surface : _splytoCard,
+                      color: isDark ? colors.surface : AppDesign.lightSurface,
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(28),
                       ),
@@ -138,7 +140,7 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                 fontWeight: FontWeight.w800,
                                                 color: isDark
                                                     ? null
-                                                    : _splytoFg,
+                                                    : AppDesign.lightForeground,
                                               ),
                                         ),
                                         const SizedBox(height: 6),
@@ -153,7 +155,7 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                               ?.copyWith(
                                                 color: isDark
                                                     ? colors.onSurfaceVariant
-                                                    : _splytoMuted,
+                                                    : AppDesign.lightMuted,
                                                 fontWeight: FontWeight.w500,
                                               ),
                                         ),
@@ -207,7 +209,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                       color: isDark
                                                           ? colors
                                                                 .onSurfaceVariant
-                                                          : _splytoMuted,
+                                                          : AppDesign
+                                                                .lightMuted,
                                                     ),
                                               ),
                                               const SizedBox(height: 4),
@@ -226,7 +229,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                           FontWeight.w800,
                                                       color: isDark
                                                           ? null
-                                                          : _splytoFg,
+                                                          : AppDesign
+                                                                .lightForeground,
                                                     ),
                                               ),
                                               if (expense.expenseCurrencyCode !=
@@ -245,7 +249,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                           color: isDark
                                                               ? colors
                                                                     .onSurfaceVariant
-                                                              : _splytoMuted,
+                                                              : AppDesign
+                                                                    .lightMuted,
                                                         ),
                                                   ),
                                                 ),
@@ -260,7 +265,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                         color: isDark
                                                             ? colors
                                                                   .onSurfaceVariant
-                                                            : _splytoMuted,
+                                                            : AppDesign
+                                                                  .lightMuted,
                                                       ),
                                                 ),
                                             ],
@@ -280,7 +286,7 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                     color: isDark
                                                         ? colors
                                                               .onSurfaceVariant
-                                                        : _splytoMuted,
+                                                        : AppDesign.lightMuted,
                                                   ),
                                             ),
                                             const SizedBox(height: 5),
@@ -368,7 +374,9 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                 style: Theme.of(context).textTheme.titleLarge
                                     ?.copyWith(
                                       fontWeight: FontWeight.w800,
-                                      color: isDark ? null : _splytoFg,
+                                      color: isDark
+                                          ? null
+                                          : AppDesign.lightForeground,
                                     ),
                               ),
                               const SizedBox(height: 10),
@@ -408,13 +416,13 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                       decoration: BoxDecoration(
                                         color: isDark
                                             ? colors.surfaceContainerHighest
-                                            : _splytoCard,
+                                            : AppDesign.lightSurface,
                                         borderRadius: BorderRadius.circular(18),
                                         border: Border.all(
                                           color: isDark
                                               ? colors.outlineVariant
                                                     .withValues(alpha: 0.30)
-                                              : _splytoStroke,
+                                              : AppDesign.lightStroke,
                                         ),
                                       ),
                                       child: Column(
@@ -445,7 +453,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                                 FontWeight.w800,
                                                             color: isDark
                                                                 ? null
-                                                                : _splytoFg,
+                                                                : AppDesign
+                                                                      .lightForeground,
                                                           ),
                                                     ),
                                                     const SizedBox(height: 2),
@@ -458,7 +467,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                             color: isDark
                                                                 ? colors
                                                                       .onSurfaceVariant
-                                                                : _splytoMuted,
+                                                                : AppDesign
+                                                                      .lightMuted,
                                                           ),
                                                     ),
                                                   ],
@@ -480,7 +490,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                           FontWeight.w800,
                                                       color: isDark
                                                           ? null
-                                                          : _splytoFg,
+                                                          : AppDesign
+                                                                .lightForeground,
                                                     ),
                                               ),
                                             ],
@@ -512,8 +523,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                         widthFactor: ratio,
                                                         child: DecoratedBox(
                                                           decoration: BoxDecoration(
-                                                            color:
-                                                                _splytoPrimary,
+                                                            color: AppDesign
+                                                                .lightPrimary,
                                                             borderRadius:
                                                                 BorderRadius.circular(
                                                                   999,
@@ -561,7 +572,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                 );
                                               },
                                         style: FilledButton.styleFrom(
-                                          backgroundColor: _splytoDestructive,
+                                          backgroundColor:
+                                              AppDesign.lightDestructive,
                                         ),
                                         icon: const Icon(Icons.delete_outline),
                                         label: Text(context.l10n.deleteAction),

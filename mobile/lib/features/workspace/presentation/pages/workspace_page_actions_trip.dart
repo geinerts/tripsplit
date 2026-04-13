@@ -87,7 +87,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
             DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                gradient: AppDesign.logoBackgroundGradient,
+                gradient: AppDesign.actionGradient(context),
               ),
               child: ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
@@ -95,7 +95,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                   elevation: 0,
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppDesign.darkForeground,
                 ),
                 child: Text(t.finishTripStartSettlementsAction),
               ),
@@ -650,14 +650,15 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                                                 errorBuilder: (_, _, _) =>
                                                     const Icon(
                                                       Icons.image_outlined,
-                                                      color: Colors.white,
+                                                      color: AppDesign
+                                                          .darkForeground,
                                                       size: 22,
                                                     ),
                                               ),
                                             )
                                           : const Icon(
                                               Icons.image_outlined,
-                                              color: Colors.white,
+                                              color: AppDesign.darkForeground,
                                               size: 22,
                                             ),
                                     ),
@@ -1050,7 +1051,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       }
       Navigator.of(
         context,
-      ).pushNamedAndRemoveUntil(AppRouter.login, (route) => false);
+      ).pushNamedAndRemoveUntil(AppRouter.authIntro, (route) => false);
     } finally {
       if (mounted) {
         _updateState(() {

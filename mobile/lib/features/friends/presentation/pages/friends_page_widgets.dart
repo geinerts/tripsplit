@@ -241,13 +241,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                 ).colorScheme.outlineVariant.withValues(alpha: 0.30)
               : AppDesign.cardStroke(context),
         ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x12000000),
-            blurRadius: 14,
-            offset: Offset(0, 4),
-          ),
-        ],
+        boxShadow: AppDesign.softShadow(context),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

@@ -20,8 +20,8 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       memberId: item.id,
       usersById: usersById,
     );
-    final positiveColor = _splytoSuccess;
-    final negativeColor = _splytoDestructive;
+    final positiveColor = AppDesign.lightSuccess;
+    final negativeColor = AppDesign.lightDestructive;
     final netColor = item.net < 0 ? negativeColor : positiveColor;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final statusText = item.net > 0
@@ -66,7 +66,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                   heightFactor: 0.92,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isDark ? colors.surface : _splytoCard,
+                      color: isDark ? colors.surface : AppDesign.lightSurface,
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(30),
                       ),
@@ -118,7 +118,9 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                       .headlineMedium
                                       ?.copyWith(
                                         fontWeight: FontWeight.w800,
-                                        color: isDark ? null : _splytoFg,
+                                        color: isDark
+                                            ? null
+                                            : AppDesign.lightForeground,
                                       ),
                                 ),
                               ),
@@ -130,7 +132,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                       ?.copyWith(
                                         color: isDark
                                             ? colors.onSurfaceVariant
-                                            : _splytoMuted,
+                                            : AppDesign.lightMuted,
                                         fontWeight: FontWeight.w500,
                                       ),
                                   textAlign: TextAlign.center,
@@ -201,7 +203,9 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                 style: Theme.of(context).textTheme.titleLarge
                                     ?.copyWith(
                                       fontWeight: FontWeight.w800,
-                                      color: isDark ? null : _splytoFg,
+                                      color: isDark
+                                          ? null
+                                          : AppDesign.lightForeground,
                                     ),
                               ),
                               const SizedBox(height: 10),
@@ -245,7 +249,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                           color: isDark
                                               ? colors.outlineVariant
                                                     .withValues(alpha: 0.30)
-                                              : _splytoStroke,
+                                              : AppDesign.lightStroke,
                                         ),
                                       ),
                                       child: Row(
@@ -255,10 +259,9 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                             height: 40,
                                             decoration: BoxDecoration(
                                               color: entry.isPositive
-                                                  ? _splytoSuccess.withValues(
-                                                      alpha: 0.18,
-                                                    )
-                                                  : _splytoDestructive
+                                                  ? AppDesign.lightSuccess
+                                                        .withValues(alpha: 0.18)
+                                                  : AppDesign.lightDestructive
                                                         .withValues(
                                                           alpha: 0.16,
                                                         ),
@@ -269,8 +272,8 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                             child: Icon(
                                               entry.icon,
                                               color: entry.isPositive
-                                                  ? _splytoSuccess
-                                                  : _splytoDestructive,
+                                                  ? AppDesign.lightSuccess
+                                                  : AppDesign.lightDestructive,
                                               size: 20,
                                             ),
                                           ),
@@ -290,7 +293,8 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                                             FontWeight.w800,
                                                         color: isDark
                                                             ? null
-                                                            : _splytoFg,
+                                                            : AppDesign
+                                                                  .lightForeground,
                                                       ),
                                                 ),
                                                 const SizedBox(height: 2),
@@ -303,7 +307,8 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                                         color: isDark
                                                             ? colors
                                                                   .onSurfaceVariant
-                                                            : _splytoMuted,
+                                                            : AppDesign
+                                                                  .lightMuted,
                                                       ),
                                                 ),
                                               ],
@@ -318,8 +323,9 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                                 ?.copyWith(
                                                   fontWeight: FontWeight.w800,
                                                   color: entry.isPositive
-                                                      ? _splytoSuccess
-                                                      : _splytoDestructive,
+                                                      ? AppDesign.lightSuccess
+                                                      : AppDesign
+                                                            .lightDestructive,
                                                 ),
                                           ),
                                         ],
@@ -340,7 +346,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                         en: 'Settlements: ${linkedSettlements.length}',
                                         lv: 'Norēķini: ${linkedSettlements.length}',
                                       ),
-                                      color: _splytoPrimary,
+                                      color: AppDesign.lightPrimary,
                                     ),
                                   ],
                                 ),
@@ -445,7 +451,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
     required Color color,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final fg = isDark ? Colors.white : _splytoFg;
+    final fg = isDark ? Colors.white : AppDesign.lightForeground;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
@@ -462,7 +468,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
               fontWeight: FontWeight.w600,
               color: isDark
                   ? Colors.white.withValues(alpha: 0.86)
-                  : _splytoMuted,
+                  : AppDesign.lightMuted,
             ),
           ),
           const SizedBox(height: 4),

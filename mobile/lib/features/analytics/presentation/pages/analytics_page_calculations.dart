@@ -82,14 +82,7 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
     List<_MemberMeta> members,
     BuildContext context,
   ) {
-    const palette = <Color>[
-      Color(0xFF6BC48E), // green
-      Color(0xFFF48E57), // orange
-      Color(0xFFBE6EAF), // purple/pink
-      Color(0xFF0E8E96), // teal
-      Color(0xFF4E96E8), // blue
-      Color(0xFF77A65A), // olive
-    ];
+    final palette = AppDesign.memberPalette;
     final map = <int, Color>{};
     for (var i = 0; i < members.length; i++) {
       map[members[i].id] = palette[i % palette.length];
@@ -148,16 +141,6 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
     }
 
     final rows = <_CategoryTotalRow>[];
-    const categoryColorMap = <String, Color>{
-      'accommodation': Color(0xFF4FD180),
-      'food': Color(0xFFF7943D),
-      'transport': Color(0xFF5A94E5),
-      'activities': Color(0xFFE372B3),
-      'shopping': Color(0xFF0E8E96),
-      'groceries': Color(0xFF7CC06A),
-      'nightlife': Color(0xFFBE6EAF),
-      'other': Color(0xFF8A8277),
-    };
     for (final entry in totals.entries) {
       final rawCategory = rawByGroupKey[entry.key] ?? 'other';
       rows.add(
@@ -169,10 +152,7 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
           ),
           icon: ExpenseCategoryCatalog.iconFor(rawCategory),
           total: entry.value,
-          color:
-              categoryColorMap[entry.key] ??
-              categoryColorMap['other'] ??
-              const Color(0xFF8A8277),
+          color: AppDesign.analyticsCategoryColor(entry.key),
         ),
       );
     }
@@ -194,7 +174,7 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
           label: _txt(en: 'Other', lv: 'Pārējās'),
           icon: Icons.more_horiz_rounded,
           total: otherTotal,
-          color: categoryColorMap['other'] ?? const Color(0xFF8A8277),
+          color: AppDesign.analyticsCategoryColor('other'),
         ),
       );
     }
