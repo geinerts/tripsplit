@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
 import '../../../../app/router/app_router.dart';
+import '../../../../app/theme/app_design.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/deeplink/invite_deep_link_controller.dart';
 import '../../../../core/errors/api_exception.dart';
@@ -117,6 +118,13 @@ class _MainShellPageState extends State<MainShellPage>
       ),
     );
     _syncNotificationsPollingSchedule();
+    unawaited(() async {
+      try {
+        await widget.authController.loadNotificationPreferences();
+      } catch (_) {
+        // Keep default preferences when endpoint/migration is not yet available.
+      }
+    }());
     unawaited(_refreshGlobalNotifications());
     _startConnectivityQueueSync();
     _bindInviteDeepLinkHandling();

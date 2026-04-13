@@ -26,6 +26,7 @@ import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../domain/entities/auth_user.dart';
+import '../../domain/entities/notification_preferences.dart';
 import '../controllers/auth_controller.dart';
 
 part 'profile_page_actions.dart';
@@ -117,9 +118,11 @@ class _ProfilePageState extends State<ProfilePage> {
   String _draftRepeatPassword = '';
   String _deactivateDraftPassword = '';
   bool _isDeactivateAccountPage = false;
-  bool _pushNotificationsEnabled = true;
   bool _inAppNotificationsEnabled = true;
-  bool _settlementRemindersEnabled = true;
+  bool _pushExpenseUpdatesEnabled = true;
+  bool _pushFriendInvitesEnabled = true;
+  bool _pushTripUpdatesEnabled = true;
+  bool _pushSettlementUpdatesEnabled = true;
   _ProfileEditField? _activeEditField;
   int _editSession = 0;
   int _handledRefreshRequestCount = 0;

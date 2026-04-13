@@ -700,3 +700,51 @@ function unregister_push_token_action(): void
         'removed_count' => $removed,
     ]);
 }
+
+function get_notification_preferences_action(): void
+{
+    $me = get_me();
+    $userId = (int) ($me['id'] ?? 0);
+    if ($userId <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid session user.'], 401);
+    }
+
+    $pdo = db();
+    $prefs = load_user_notification_preferences($pdo, $userId);
+    json_out([
+        'ok' => true,
+        'table_available' => notification_preferences_table_available($pdo),
+        'preferences' => build_notification_preferences_payload($prefs),
+    ]);
+}
+
+function update_notification_preferences_action(): void
+{
+    require_post();
+    $me = get_me();
+    $userId = (int) ($me['id'] ?? 0);
+    if ($userId <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid session user.'], 401);
+    }
+
+    $pdo = db();
+    if (!notification_preferences_table_available($pdo)) {
+        json_out([
+            'ok' => false,
+            'error' => 'Notification settings are not enabled on server yet. Run migration first.',
+        ], 409);
+    }
+
+    $body = read_json();
+    try {
+        $patch = normalize_notification_preferences_patch(is_array($body) ? $body : []);
+    } catch (InvalidArgumentException $error) {
+        json_out(['ok' => false, 'error' => $error->getMessage()], 400);
+    }
+
+    $prefs = upsert_user_notification_preferences($pdo, $userId, $patch);
+    json_out([
+        'ok' => true,
+        'preferences' => build_notification_preferences_payload($prefs),
+    ]);
+}

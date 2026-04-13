@@ -6,6 +6,7 @@ require_once __DIR__ . '/helper_account_lifecycle.php';
 require_once __DIR__ . '/helper_auth_user.php';
 require_once __DIR__ . '/helper_auth_tokens.php';
 require_once __DIR__ . '/helper_push.php';
+require_once __DIR__ . '/helper_notification_preferences.php';
 require_once __DIR__ . '/helper_trip.php';
 require_once __DIR__ . '/helper_currency.php';
 require_once __DIR__ . '/helper_social_auth.php';

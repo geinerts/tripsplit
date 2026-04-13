@@ -195,6 +195,10 @@ function create_user_notification(
         return;
     }
 
+    if (!user_allows_push_notification($pdo, $userId, $normalizedType)) {
+        return;
+    }
+
     try {
         queue_push_notification(
             $pdo,

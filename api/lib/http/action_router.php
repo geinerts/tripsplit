@@ -62,6 +62,8 @@ function api_action_handlers(): array
         'mark_notifications_read_global' => 'mark_notifications_read_global_action',
         'register_push_token' => 'register_push_token_action',
         'unregister_push_token' => 'unregister_push_token_action',
+        'get_notification_preferences' => 'get_notification_preferences_action',
+        'update_notification_preferences' => 'update_notification_preferences_action',
         'create_trip_invite' => 'create_trip_invite_action',
         'preview_trip_invite' => 'preview_trip_invite_action',
         'join_trip_invite' => 'join_trip_invite_action',

@@ -176,10 +176,17 @@ extension _ProfilePageActions on _ProfilePageState {
 
     try {
       final user = await widget.controller.loadCurrentUser();
+      NotificationPreferences prefs = widget.controller.notificationPreferences;
+      try {
+        prefs = await widget.controller.loadNotificationPreferences();
+      } catch (_) {
+        // Keep cached defaults/preferences if endpoint is unavailable.
+      }
       if (!mounted) {
         return;
       }
       _applyUser(user);
+      _applyNotificationPreferences(prefs);
     } on ApiException catch (error) {
       final fallback = widget.controller.currentUser;
       if (!mounted) {
@@ -187,6 +194,9 @@ extension _ProfilePageActions on _ProfilePageState {
       }
       if (fallback != null) {
         _applyUser(fallback);
+        _applyNotificationPreferences(
+          widget.controller.notificationPreferences,
+        );
         _errorText = context.l10n.profileRefreshCachedData;
       } else {
         _errorText = error.message;
@@ -198,6 +208,9 @@ extension _ProfilePageActions on _ProfilePageState {
       }
       if (fallback != null) {
         _applyUser(fallback);
+        _applyNotificationPreferences(
+          widget.controller.notificationPreferences,
+        );
         _errorText = context.l10n.profileRefreshCachedData;
       } else {
         _errorText = context.l10n.unexpectedErrorLoadingProfile;
@@ -247,6 +260,14 @@ extension _ProfilePageActions on _ProfilePageState {
     _isDeactivateAccountPage = false;
     _isChangePasswordPage = false;
     _editErrorText = null;
+  }
+
+  void _applyNotificationPreferences(NotificationPreferences prefs) {
+    _inAppNotificationsEnabled = prefs.inAppBannerEnabled;
+    _pushExpenseUpdatesEnabled = prefs.pushExpenseAddedEnabled;
+    _pushFriendInvitesEnabled = prefs.pushFriendInvitesEnabled;
+    _pushTripUpdatesEnabled = prefs.pushTripUpdatesEnabled;
+    _pushSettlementUpdatesEnabled = prefs.pushSettlementUpdatesEnabled;
   }
 
   String _joinFullName(String? firstName, String? lastName) {
@@ -766,6 +787,123 @@ extension _ProfilePageActions on _ProfilePageState {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(context.l10n.avatarRemovedMessage)));
+  }
+
+  Future<void> _setNotificationPreferences({
+    bool? inAppBannerEnabled,
+    bool? pushExpenseAddedEnabled,
+    bool? pushFriendInvitesEnabled,
+    bool? pushTripUpdatesEnabled,
+    bool? pushSettlementUpdatesEnabled,
+    required VoidCallback applyOptimistic,
+    required VoidCallback rollback,
+  }) async {
+    if (_isLoading || _isSubmitting) {
+      return;
+    }
+
+    _updateState(applyOptimistic);
+    try {
+      final prefs = await widget.controller.updateNotificationPreferences(
+        inAppBannerEnabled: inAppBannerEnabled,
+        pushExpenseAddedEnabled: pushExpenseAddedEnabled,
+        pushFriendInvitesEnabled: pushFriendInvitesEnabled,
+        pushTripUpdatesEnabled: pushTripUpdatesEnabled,
+        pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
+      );
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _applyNotificationPreferences(prefs);
+      });
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(rollback);
+      _showSnack(
+        error.message.trim().isNotEmpty
+            ? error.message
+            : 'Failed to save notification settings.',
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(rollback);
+      _showSnack(
+        _profileText(
+          en: 'Failed to save notification settings.',
+          lv: 'Neizdevās saglabāt paziņojumu iestatījumus.',
+        ),
+      );
+    }
+  }
+
+  Future<void> _setInAppNotificationsEnabled(bool value) async {
+    final previous = _inAppNotificationsEnabled;
+    await _setNotificationPreferences(
+      inAppBannerEnabled: value,
+      applyOptimistic: () {
+        _inAppNotificationsEnabled = value;
+      },
+      rollback: () {
+        _inAppNotificationsEnabled = previous;
+      },
+    );
+  }
+
+  Future<void> _setPushExpenseUpdatesEnabled(bool value) async {
+    final previous = _pushExpenseUpdatesEnabled;
+    await _setNotificationPreferences(
+      pushExpenseAddedEnabled: value,
+      applyOptimistic: () {
+        _pushExpenseUpdatesEnabled = value;
+      },
+      rollback: () {
+        _pushExpenseUpdatesEnabled = previous;
+      },
+    );
+  }
+
+  Future<void> _setPushFriendInvitesEnabled(bool value) async {
+    final previous = _pushFriendInvitesEnabled;
+    await _setNotificationPreferences(
+      pushFriendInvitesEnabled: value,
+      applyOptimistic: () {
+        _pushFriendInvitesEnabled = value;
+      },
+      rollback: () {
+        _pushFriendInvitesEnabled = previous;
+      },
+    );
+  }
+
+  Future<void> _setPushTripUpdatesEnabled(bool value) async {
+    final previous = _pushTripUpdatesEnabled;
+    await _setNotificationPreferences(
+      pushTripUpdatesEnabled: value,
+      applyOptimistic: () {
+        _pushTripUpdatesEnabled = value;
+      },
+      rollback: () {
+        _pushTripUpdatesEnabled = previous;
+      },
+    );
+  }
+
+  Future<void> _setPushSettlementUpdatesEnabled(bool value) async {
+    final previous = _pushSettlementUpdatesEnabled;
+    await _setNotificationPreferences(
+      pushSettlementUpdatesEnabled: value,
+      applyOptimistic: () {
+        _pushSettlementUpdatesEnabled = value;
+      },
+      rollback: () {
+        _pushSettlementUpdatesEnabled = previous;
+      },
+    );
   }
 
   void _showSnack(String message) {

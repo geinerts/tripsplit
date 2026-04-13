@@ -155,50 +155,82 @@ extension _ProfilePageWidgets on _ProfilePageState {
               children: [
                 _buildProfileSwitchTile(
                   context: context,
-                  title: _profileText(en: 'Push', lv: 'Push'),
-                  subtitle: _profileText(
-                    en: 'Device lock screen alerts',
-                    lv: 'Paziņojumi ierīces bloķēšanas ekrānā',
+                  title: _profileText(
+                    en: 'In-app banners',
+                    lv: 'Baneri lietotnē',
                   ),
-                  icon: Icons.notifications_none_rounded,
-                  value: _pushNotificationsEnabled,
-                  onChanged: (value) {
-                    _updateState(() {
-                      _pushNotificationsEnabled = value;
-                    });
-                  },
-                ),
-                _buildProfileSwitchTile(
-                  context: context,
-                  title: _profileText(en: 'In-app', lv: 'Lietotnē'),
                   subtitle: _profileText(
-                    en: 'Banners & badges in app',
-                    lv: 'Baneri un atzīmes lietotnē',
+                    en: 'Show new notification banners inside app',
+                    lv: 'Rādīt jaunus paziņojumu banerus lietotnē',
                   ),
                   icon: Icons.chat_bubble_outline_rounded,
                   value: _inAppNotificationsEnabled,
                   onChanged: (value) {
-                    _updateState(() {
-                      _inAppNotificationsEnabled = value;
-                    });
+                    unawaited(_setInAppNotificationsEnabled(value));
                   },
                 ),
                 _buildProfileSwitchTile(
                   context: context,
                   title: _profileText(
-                    en: 'Settlement reminders',
-                    lv: 'Norēķinu atgādinājumi',
+                    en: 'Push: expense updates',
+                    lv: 'Push: tēriņu atjauninājumi',
                   ),
                   subtitle: _profileText(
-                    en: 'Upcoming payment alerts',
-                    lv: 'Atgādinājumi par gaidāmajiem norēķiniem',
+                    en: 'Expense added notifications to phone',
+                    lv: 'Paziņojumi telefonā par pievienotiem tēriņiem',
                   ),
-                  icon: Icons.event_available_outlined,
-                  value: _settlementRemindersEnabled,
+                  icon: Icons.receipt_long_outlined,
+                  value: _pushExpenseUpdatesEnabled,
                   onChanged: (value) {
-                    _updateState(() {
-                      _settlementRemindersEnabled = value;
-                    });
+                    unawaited(_setPushExpenseUpdatesEnabled(value));
+                  },
+                ),
+                _buildProfileSwitchTile(
+                  context: context,
+                  title: _profileText(
+                    en: 'Push: friend invites',
+                    lv: 'Push: draugu uzaicinājumi',
+                  ),
+                  subtitle: _profileText(
+                    en: 'Friend request and response notifications',
+                    lv: 'Paziņojumi par draugu pieprasījumiem un atbildēm',
+                  ),
+                  icon: Icons.group_add_outlined,
+                  value: _pushFriendInvitesEnabled,
+                  onChanged: (value) {
+                    unawaited(_setPushFriendInvitesEnabled(value));
+                  },
+                ),
+                _buildProfileSwitchTile(
+                  context: context,
+                  title: _profileText(
+                    en: 'Push: trip updates',
+                    lv: 'Push: ceļojumu atjauninājumi',
+                  ),
+                  subtitle: _profileText(
+                    en: 'Trip lifecycle and member status changes',
+                    lv: 'Ceļojuma statusa un dalībnieku izmaiņas',
+                  ),
+                  icon: Icons.flag_outlined,
+                  value: _pushTripUpdatesEnabled,
+                  onChanged: (value) {
+                    unawaited(_setPushTripUpdatesEnabled(value));
+                  },
+                ),
+                _buildProfileSwitchTile(
+                  context: context,
+                  title: _profileText(
+                    en: 'Push: settlement updates',
+                    lv: 'Push: norēķinu atjauninājumi',
+                  ),
+                  subtitle: _profileText(
+                    en: 'Marked sent and confirmed payment updates',
+                    lv: 'Atzīmēts kā nosūtīts un apstiprināts saņemts',
+                  ),
+                  icon: Icons.task_alt_outlined,
+                  value: _pushSettlementUpdatesEnabled,
+                  onChanged: (value) {
+                    unawaited(_setPushSettlementUpdatesEnabled(value));
                   },
                 ),
               ],

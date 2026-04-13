@@ -43,6 +43,7 @@ function table_name(string $key): string
         'refresh_tokens' => DB_TABLE_PREFIX . 'refresh_tokens',
         'push_tokens' => DB_TABLE_PREFIX . 'user_push_tokens',
         'push_queue' => DB_TABLE_PREFIX . 'push_queue',
+        'notification_preferences' => DB_TABLE_PREFIX . 'user_notification_preferences',
         'settlement_reminder_state' => DB_TABLE_PREFIX . 'settlement_reminder_state',
         'mutation_idempotency' => DB_TABLE_PREFIX . 'mutation_idempotency',
         'password_resets'      => DB_TABLE_PREFIX . 'password_resets',

@@ -3,6 +3,7 @@ import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/http_method.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../models/auth_user_model.dart';
+import '../models/notification_preferences_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<AuthUserModel> loginWithEmail({
@@ -54,6 +55,16 @@ abstract class AuthRemoteDataSource {
   Future<void> deactivateAccount({required String password});
 
   Future<void> requestAccountDeletionLink({required String password});
+
+  Future<NotificationPreferencesModel> getNotificationPreferences();
+
+  Future<NotificationPreferencesModel> updateNotificationPreferences({
+    bool? inAppBannerEnabled,
+    bool? pushExpenseAddedEnabled,
+    bool? pushFriendInvitesEnabled,
+    bool? pushTripUpdatesEnabled,
+    bool? pushSettlementUpdatesEnabled,
+  });
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -292,5 +303,52 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       method: HttpMethod.post,
       body: <String, dynamic>{'password': password},
     );
+  }
+
+  @override
+  Future<NotificationPreferencesModel> getNotificationPreferences() async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('get_notification_preferences'),
+      method: HttpMethod.get,
+    );
+    return NotificationPreferencesModel.fromApiMap(response);
+  }
+
+  @override
+  Future<NotificationPreferencesModel> updateNotificationPreferences({
+    bool? inAppBannerEnabled,
+    bool? pushExpenseAddedEnabled,
+    bool? pushFriendInvitesEnabled,
+    bool? pushTripUpdatesEnabled,
+    bool? pushSettlementUpdatesEnabled,
+  }) async {
+    final pushPayload = <String, dynamic>{};
+    if (pushExpenseAddedEnabled != null) {
+      pushPayload['expense_added'] = pushExpenseAddedEnabled;
+    }
+    if (pushFriendInvitesEnabled != null) {
+      pushPayload['friend_invites'] = pushFriendInvitesEnabled;
+    }
+    if (pushTripUpdatesEnabled != null) {
+      pushPayload['trip_updates'] = pushTripUpdatesEnabled;
+    }
+    if (pushSettlementUpdatesEnabled != null) {
+      pushPayload['settlement_updates'] = pushSettlementUpdatesEnabled;
+    }
+
+    final payload = <String, dynamic>{};
+    if (inAppBannerEnabled != null) {
+      payload['in_app_banner_enabled'] = inAppBannerEnabled;
+    }
+    if (pushPayload.isNotEmpty) {
+      payload['push'] = pushPayload;
+    }
+
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('update_notification_preferences'),
+      method: HttpMethod.post,
+      body: payload,
+    );
+    return NotificationPreferencesModel.fromApiMap(response);
   }
 }

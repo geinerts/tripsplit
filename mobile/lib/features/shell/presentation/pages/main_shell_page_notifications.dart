@@ -72,6 +72,10 @@ extension _MainShellPageNotifications on _MainShellPageState {
     required int previousUnread,
     required WorkspaceNotificationsInbox inbox,
   }) {
+    if (!widget.authController.notificationPreferences.inAppBannerEnabled) {
+      return;
+    }
+
     final nextUnread = inbox.unreadCount < 0 ? 0 : inbox.unreadCount;
     if (!_notificationsPrimed) {
       _notificationsPrimed = true;

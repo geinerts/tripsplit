@@ -1,4 +1,5 @@
 import '../entities/auth_user.dart';
+import '../entities/notification_preferences.dart';
 
 abstract class AuthRepository {
   Future<AuthUser> loginWithEmail({
@@ -50,4 +51,14 @@ abstract class AuthRepository {
   Future<void> deactivateAccount({required String password});
 
   Future<void> requestAccountDeletionLink({required String password});
+
+  Future<NotificationPreferences> getNotificationPreferences();
+
+  Future<NotificationPreferences> updateNotificationPreferences({
+    bool? inAppBannerEnabled,
+    bool? pushExpenseAddedEnabled,
+    bool? pushFriendInvitesEnabled,
+    bool? pushTripUpdatesEnabled,
+    bool? pushSettlementUpdatesEnabled,
+  });
 }

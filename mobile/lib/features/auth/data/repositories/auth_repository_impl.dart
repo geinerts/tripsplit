@@ -1,4 +1,5 @@
 import '../../domain/entities/auth_user.dart';
+import '../../domain/entities/notification_preferences.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 
@@ -111,5 +112,27 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> requestAccountDeletionLink({required String password}) {
     return _remote.requestAccountDeletionLink(password: password);
+  }
+
+  @override
+  Future<NotificationPreferences> getNotificationPreferences() {
+    return _remote.getNotificationPreferences();
+  }
+
+  @override
+  Future<NotificationPreferences> updateNotificationPreferences({
+    bool? inAppBannerEnabled,
+    bool? pushExpenseAddedEnabled,
+    bool? pushFriendInvitesEnabled,
+    bool? pushTripUpdatesEnabled,
+    bool? pushSettlementUpdatesEnabled,
+  }) {
+    return _remote.updateNotificationPreferences(
+      inAppBannerEnabled: inAppBannerEnabled,
+      pushExpenseAddedEnabled: pushExpenseAddedEnabled,
+      pushFriendInvitesEnabled: pushFriendInvitesEnabled,
+      pushTripUpdatesEnabled: pushTripUpdatesEnabled,
+      pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
+    );
   }
 }

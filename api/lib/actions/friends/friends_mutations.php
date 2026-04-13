@@ -138,7 +138,13 @@ function send_friend_invite_action(): void
         }
     }
 
-    if (!$autoAccepted && $status === 'pending' && $requestId > 0) {
+    if (
+        !$autoAccepted &&
+        $status === 'pending' &&
+        $requestId > 0 &&
+        push_should_queue_notification_type('friend_invite_received') &&
+        user_allows_push_notification($pdo, $targetUserId, 'friend_invite_received')
+    ) {
         $tripIdForPush = resolve_notification_trip_id($pdo, $targetUserId, $meId);
         $pushTitle = 'Friend invite';
         $pushBody = actor_display_name($me) . ' sent you a friend invite.';
