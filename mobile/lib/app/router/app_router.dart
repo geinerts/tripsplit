@@ -7,6 +7,7 @@ import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/auth_intro_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../theme/auth_flow_theme.dart';
+import '../theme/app_overlay_style.dart';
 import '../../features/shell/presentation/pages/main_shell_page.dart';
 import '../../features/workspace/presentation/pages/workspace_page.dart';
 import '../../features/trips/domain/entities/trip.dart';
@@ -53,38 +54,44 @@ class AppRouter {
             : 0;
         final openCreateTrip = args is Map && args['open_create_trip'] == true;
         final openAddExpense = args is Map && args['open_add_expense'] == true;
-        return MainShellPage(
+        return AppDynamicSystemOverlay(
+          child: MainShellPage(
+            authController: _dependencies.authController,
+            tripsController: _dependencies.tripsController,
+            friendsController: _dependencies.friendsController,
+            workspaceController: _dependencies.workspaceController,
+            inviteDeepLinkController: _dependencies.inviteDeepLinkController,
+            initialTabIndex: initialTab,
+            openCreateTripOnStart: openCreateTrip,
+            openAddExpenseOnStart: openAddExpense,
+          ),
+        );
+      },
+      profile: (_) => AppDynamicSystemOverlay(
+        child: MainShellPage(
           authController: _dependencies.authController,
           tripsController: _dependencies.tripsController,
           friendsController: _dependencies.friendsController,
           workspaceController: _dependencies.workspaceController,
           inviteDeepLinkController: _dependencies.inviteDeepLinkController,
-          initialTabIndex: initialTab,
-          openCreateTripOnStart: openCreateTrip,
-          openAddExpenseOnStart: openAddExpense,
-        );
-      },
-      profile: (_) => MainShellPage(
-        authController: _dependencies.authController,
-        tripsController: _dependencies.tripsController,
-        friendsController: _dependencies.friendsController,
-        workspaceController: _dependencies.workspaceController,
-        inviteDeepLinkController: _dependencies.inviteDeepLinkController,
-        initialTabIndex: 4,
+          initialTabIndex: 4,
+        ),
       ),
       trips: (context) {
         final args = ModalRoute.of(context)?.settings.arguments;
         final openCreateTrip = args is Map && args['open_create_trip'] == true;
         final openAddExpense = args is Map && args['open_add_expense'] == true;
-        return MainShellPage(
-          authController: _dependencies.authController,
-          tripsController: _dependencies.tripsController,
-          friendsController: _dependencies.friendsController,
-          workspaceController: _dependencies.workspaceController,
-          inviteDeepLinkController: _dependencies.inviteDeepLinkController,
-          initialTabIndex: 0,
-          openCreateTripOnStart: openCreateTrip,
-          openAddExpenseOnStart: openAddExpense,
+        return AppDynamicSystemOverlay(
+          child: MainShellPage(
+            authController: _dependencies.authController,
+            tripsController: _dependencies.tripsController,
+            friendsController: _dependencies.friendsController,
+            workspaceController: _dependencies.workspaceController,
+            inviteDeepLinkController: _dependencies.inviteDeepLinkController,
+            initialTabIndex: 0,
+            openCreateTripOnStart: openCreateTrip,
+            openAddExpenseOnStart: openAddExpense,
+          ),
         );
       },
       workspace: (context) {
@@ -98,15 +105,17 @@ class AppRouter {
           openAddExpense = args['open_add_expense'] == true;
         }
         if (trip == null) {
-          return const _WorkspaceRouteError();
+          return const AppDynamicSystemOverlay(child: _WorkspaceRouteError());
         }
-        return WorkspacePage(
-          trip: trip,
-          workspaceController: _dependencies.workspaceController,
-          tripsController: _dependencies.tripsController,
-          friendsController: _dependencies.friendsController,
-          authController: _dependencies.authController,
-          openAddExpenseOnStart: openAddExpense,
+        return AppDynamicSystemOverlay(
+          child: WorkspacePage(
+            trip: trip,
+            workspaceController: _dependencies.workspaceController,
+            tripsController: _dependencies.tripsController,
+            friendsController: _dependencies.friendsController,
+            authController: _dependencies.authController,
+            openAddExpenseOnStart: openAddExpense,
+          ),
         );
       },
     };

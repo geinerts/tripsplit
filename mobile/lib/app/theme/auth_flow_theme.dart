@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_design.dart';
+import 'app_overlay_style.dart';
 import 'app_semantic_colors.dart';
 
 /// Route-level theme wrapper for pre-auth flow.
@@ -14,7 +15,10 @@ class AuthFlowTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(data: buildAuthFlowThemeData(Theme.of(context)), child: child);
+    return Theme(
+      data: buildAuthFlowThemeData(Theme.of(context)),
+      child: AppFixedLightSystemOverlay(child: child),
+    );
   }
 }
 

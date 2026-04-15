@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
 
@@ -9,6 +8,7 @@ import 'app_dependencies.dart';
 import 'locale/app_locale_scope.dart';
 import 'router/app_router.dart';
 import 'theme/app_design.dart';
+import 'theme/app_overlay_style.dart';
 import 'theme/app_semantic_colors.dart';
 import 'theme/theme_mode_scope.dart';
 
@@ -22,8 +22,6 @@ class TripSplitApp extends StatefulWidget {
 }
 
 class _TripSplitAppState extends State<TripSplitApp> {
-  SystemUiOverlayStyle? _lastAppliedOverlayStyle;
-
   @override
   void initState() {
     super.initState();
@@ -65,16 +63,9 @@ class _TripSplitAppState extends State<TripSplitApp> {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              builder: (context, child) {
-                final brightness = Theme.of(context).brightness;
-                final style = _overlayStyleFor(brightness);
-                _applyOverlayStyle(style);
-                return AnnotatedRegion<SystemUiOverlayStyle>(
-                  value: style,
-                  child: child ?? const SizedBox.shrink(),
-                );
-              },
-              home: _AppLaunchGate(dependencies: widget.dependencies),
+              home: AppDynamicSystemOverlay(
+                child: _AppLaunchGate(dependencies: widget.dependencies),
+              ),
               routes: router.routes,
             );
           },
@@ -130,7 +121,6 @@ class _TripSplitAppState extends State<TripSplitApp> {
         backgroundColor: Colors.transparent,
         foregroundColor: colorScheme.onSurface,
         surfaceTintColor: Colors.transparent,
-        systemOverlayStyle: _overlayStyleFor(Brightness.light),
       ),
       cardTheme: CardThemeData(
         color: AppDesign.lightSurface,
@@ -275,7 +265,6 @@ class _TripSplitAppState extends State<TripSplitApp> {
         backgroundColor: Colors.transparent,
         foregroundColor: colorScheme.onSurface,
         surfaceTintColor: Colors.transparent,
-        systemOverlayStyle: _overlayStyleFor(Brightness.dark),
       ),
       cardTheme: CardThemeData(
         color: AppDesign.darkSurfaceRaised,
@@ -447,33 +436,6 @@ class _TripSplitAppState extends State<TripSplitApp> {
         color: mutedColor,
       ),
     );
-  }
-
-  SystemUiOverlayStyle _overlayStyleFor(Brightness brightness) {
-    if (brightness == Brightness.dark) {
-      return const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.light,
-      );
-    }
-    return const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    );
-  }
-
-  void _applyOverlayStyle(SystemUiOverlayStyle style) {
-    if (_lastAppliedOverlayStyle == style) {
-      return;
-    }
-    _lastAppliedOverlayStyle = style;
-    SystemChrome.setSystemUIOverlayStyle(style);
   }
 }
 
