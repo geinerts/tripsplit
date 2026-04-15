@@ -23,6 +23,7 @@ class PushRegistrationService {
   final DeviceTokenStore _deviceTokenStore;
   final PushNativeBridge _nativeBridge;
   final PushRegistrationStore _registrationStore;
+  String? _verifiedTokenInSession;
 
   Future<bool> syncRegistration() async {
     if (!_supportsPushRegistration) {
@@ -35,7 +36,11 @@ class PushRegistrationService {
     }
 
     final previousToken = await _registrationStore.readRegisteredToken();
-    if (previousToken == pushToken) {
+    // Always verify current token with backend at least once per app session.
+    // This recovers from server-side token deactivation (for example after
+    // migrations, manual cleanup, or stale-token invalidation) while still
+    // avoiding repeated register calls in the same app run.
+    if (previousToken == pushToken && _verifiedTokenInSession == pushToken) {
       return true;
     }
 
@@ -55,6 +60,7 @@ class PushRegistrationService {
     );
 
     await _registrationStore.writeRegisteredToken(pushToken);
+    _verifiedTokenInSession = pushToken;
     return true;
   }
 
@@ -79,6 +85,7 @@ class PushRegistrationService {
     } finally {
       // Clear local marker even if request fails; next login will re-register.
       await _registrationStore.writeRegisteredToken(null);
+      _verifiedTokenInSession = null;
     }
   }
 
