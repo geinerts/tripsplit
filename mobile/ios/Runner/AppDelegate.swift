@@ -11,6 +11,12 @@ import UserNotifications
   private var pendingPushTokenResult: FlutterResult?
   private var firebaseConfigured = false
 
+  private enum PushPermissionState {
+    case authorized
+    case notDetermined
+    case denied
+  }
+
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -44,10 +50,6 @@ import UserNotifications
   }
 
   private func requestPushToken(result: @escaping FlutterResult) {
-    if let token = cachedPushToken, !token.isEmpty {
-      result(token)
-      return
-    }
     if !firebaseConfigured {
       firebaseConfigured = configureFirebaseIfNeeded()
     }
@@ -56,22 +58,64 @@ import UserNotifications
       return
     }
 
-    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) {
-      [weak self] granted, _ in
+    resolvePushPermissionState { [weak self] permissionState in
       guard let self else {
         return
       }
-      if !granted {
+
+      switch permissionState {
+      case .authorized:
+        DispatchQueue.main.async {
+          self.finishPushTokenRegistration(result: result)
+        }
+      case .notDetermined:
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) {
+          [weak self] granted, _ in
+          guard let self else {
+            return
+          }
+          if !granted {
+            DispatchQueue.main.async {
+              result(nil)
+            }
+            return
+          }
+          DispatchQueue.main.async {
+            self.finishPushTokenRegistration(result: result)
+          }
+        }
+      case .denied:
         DispatchQueue.main.async {
           result(nil)
         }
-        return
-      }
-      DispatchQueue.main.async {
-        self.pendingPushTokenResult = result
-        UIApplication.shared.registerForRemoteNotifications()
       }
     }
+  }
+
+  private func resolvePushPermissionState(
+    completion: @escaping (PushPermissionState) -> Void
+  ) {
+    UNUserNotificationCenter.current().getNotificationSettings { settings in
+      switch settings.authorizationStatus {
+      case .authorized, .provisional, .ephemeral:
+        completion(.authorized)
+      case .notDetermined:
+        completion(.notDetermined)
+      case .denied:
+        completion(.denied)
+      @unknown default:
+        completion(.denied)
+      }
+    }
+  }
+
+  private func finishPushTokenRegistration(result: @escaping FlutterResult) {
+    if let token = cachedPushToken, !token.isEmpty {
+      result(token)
+      return
+    }
+    pendingPushTokenResult = result
+    UIApplication.shared.registerForRemoteNotifications()
   }
 
   private func configureFirebaseIfNeeded() -> Bool {
