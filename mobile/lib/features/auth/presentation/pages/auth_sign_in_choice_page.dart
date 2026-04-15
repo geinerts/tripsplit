@@ -277,6 +277,7 @@ class _AuthSignInChoicePageState extends State<AuthSignInChoicePage> {
               AppSemanticColors.dark;
           return Scaffold(
             backgroundColor: AppDesign.authCanvas,
+            resizeToAvoidBottomInset: false,
             body: Stack(
               children: [
                 AuthBackgroundLayers(

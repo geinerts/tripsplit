@@ -14,52 +14,57 @@ extension _LoginPageWidgets on _LoginPageState {
       final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
       return Scaffold(
         backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         body: Form(
           key: _formKey,
           child: SafeArea(
             top: false,
             bottom: false,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: AppDesign.authCanvasSoft,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(30),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colorScheme.shadow.withValues(alpha: 0.22),
-                      blurRadius: 20,
-                      offset: const Offset(0, -4),
+            child: AnimatedPadding(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              padding: EdgeInsets.only(bottom: keyboardInset),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: AppDesign.authCanvasSoft,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(30),
                     ),
-                  ],
-                ),
-                child: SingleChildScrollView(
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  padding: EdgeInsets.fromLTRB(
-                    horizontalPadding,
-                    10,
-                    horizontalPadding,
-                    bottomSafe + (keyboardInset > 0 ? 14 : 10),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 42,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: semantic.cardGlassBorder.withValues(
-                            alpha: 0.8,
-                          ),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.shadow.withValues(alpha: 0.22),
+                        blurRadius: 20,
+                        offset: const Offset(0, -4),
                       ),
-                      const SizedBox(height: 12),
-                      _buildAuthCard(context, asStandaloneContent: true),
                     ],
+                  ),
+                  child: SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: EdgeInsets.fromLTRB(
+                      horizontalPadding,
+                      10,
+                      horizontalPadding,
+                      bottomSafe + 10,
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: semantic.cardGlassBorder.withValues(
+                              alpha: 0.8,
+                            ),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildAuthCard(context, asStandaloneContent: true),
+                      ],
+                    ),
                   ),
                 ),
               ),

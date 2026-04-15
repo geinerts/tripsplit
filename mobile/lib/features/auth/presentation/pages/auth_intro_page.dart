@@ -398,6 +398,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       },
       child: Scaffold(
         backgroundColor: AppDesign.authCanvas,
+        resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
             AuthBackgroundLayers(
