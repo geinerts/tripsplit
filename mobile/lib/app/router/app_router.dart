@@ -6,6 +6,7 @@ import '../../features/auth/presentation/pages/credentials_page.dart';
 import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/auth_intro_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../theme/auth_flow_theme.dart';
 import '../../features/shell/presentation/pages/main_shell_page.dart';
 import '../../features/workspace/presentation/pages/workspace_page.dart';
 import '../../features/trips/domain/entities/trip.dart';
@@ -27,16 +28,24 @@ class AppRouter {
 
   Map<String, WidgetBuilder> get routes {
     return <String, WidgetBuilder>{
-      authIntro: (_) => AuthIntroPage(controller: _dependencies.authController),
-      authSignInChoice: (_) => AuthIntroPage(
-        controller: _dependencies.authController,
-        initialStage: AuthIntroStage.choice,
+      authIntro: (_) => AuthFlowTheme(
+        child: AuthIntroPage(controller: _dependencies.authController),
       ),
-      login: (_) => LoginPage(controller: _dependencies.authController),
-      credentials: (_) =>
-          CredentialsPage(controller: _dependencies.authController),
-      forgotPassword: (_) =>
-          ForgotPasswordPage(controller: _dependencies.authController),
+      authSignInChoice: (_) => AuthFlowTheme(
+        child: AuthIntroPage(
+          controller: _dependencies.authController,
+          initialStage: AuthIntroStage.choice,
+        ),
+      ),
+      login: (_) => AuthFlowTheme(
+        child: LoginPage(controller: _dependencies.authController),
+      ),
+      credentials: (_) => AuthFlowTheme(
+        child: CredentialsPage(controller: _dependencies.authController),
+      ),
+      forgotPassword: (_) => AuthFlowTheme(
+        child: ForgotPasswordPage(controller: _dependencies.authController),
+      ),
       shell: (context) {
         final args = ModalRoute.of(context)?.settings.arguments;
         final initialTab = args is Map && args['initial_tab'] is int

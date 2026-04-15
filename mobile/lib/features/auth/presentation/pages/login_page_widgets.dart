@@ -10,7 +10,8 @@ extension _LoginPageWidgets on _LoginPageState {
           Theme.of(context).extension<AppSemanticColors>() ??
           AppSemanticColors.dark;
       final colorScheme = Theme.of(context).colorScheme;
-      final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+      final bottomSafe = MediaQuery.viewPaddingOf(context).bottom;
+      final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
       return Scaffold(
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: true,
@@ -18,49 +19,47 @@ extension _LoginPageWidgets on _LoginPageState {
           key: _formKey,
           child: SafeArea(
             top: false,
-            child: AnimatedPadding(
-              duration: const Duration(milliseconds: 180),
-              curve: Curves.easeOutCubic,
-              padding: EdgeInsets.only(bottom: bottomInset),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: AppDesign.authCanvasSoft,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(30),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.shadow.withValues(alpha: 0.22),
-                        blurRadius: 20,
-                        offset: const Offset(0, -4),
-                      ),
-                    ],
+            bottom: false,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: AppDesign.authCanvasSoft,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(30),
                   ),
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.fromLTRB(
-                      horizontalPadding,
-                      10,
-                      horizontalPadding,
-                      18,
+                  boxShadow: [
+                    BoxShadow(
+                      color: colorScheme.shadow.withValues(alpha: 0.22),
+                      blurRadius: 20,
+                      offset: const Offset(0, -4),
                     ),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 42,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: semantic.cardGlassBorder.withValues(
-                              alpha: 0.8,
-                            ),
-                            borderRadius: BorderRadius.circular(999),
+                  ],
+                ),
+                child: SingleChildScrollView(
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: EdgeInsets.fromLTRB(
+                    horizontalPadding,
+                    10,
+                    horizontalPadding,
+                    bottomSafe + (keyboardInset > 0 ? 14 : 10),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 42,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: semantic.cardGlassBorder.withValues(
+                            alpha: 0.8,
                           ),
+                          borderRadius: BorderRadius.circular(999),
                         ),
-                        const SizedBox(height: 12),
-                        _buildAuthCard(context, asStandaloneContent: true),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildAuthCard(context, asStandaloneContent: true),
+                    ],
                   ),
                 ),
               ),

@@ -10,6 +10,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_design.dart';
 import '../../../../app/theme/app_semantic_colors.dart';
+import '../../../../app/theme/auth_flow_theme.dart';
 import '../../../../core/config/app_env.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../domain/entities/auth_user.dart';
@@ -80,7 +81,7 @@ class _AuthSignInChoicePageState extends State<AuthSignInChoicePage> {
       builder: (_) {
         return SizedBox(
           width: double.infinity,
-          height: viewport.height * 0.82,
+          height: viewport.height * 0.78,
           child: LoginPage(
             controller: widget.controller,
             startInRegister: true,
@@ -268,168 +269,191 @@ class _AuthSignInChoicePageState extends State<AuthSignInChoicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.dark;
-    return Scaffold(
-      backgroundColor: AppDesign.authCanvas,
-      body: Stack(
-        children: [
-          AuthBackgroundLayers(
-            child: SafeArea(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final heroWidth = constraints.maxWidth.clamp(240.0, 318.0);
-                  final heroViewportHeight = (constraints.maxHeight * 0.44)
-                      .clamp(260.0, 340.0);
-                  const titleSize = 36.0;
-                  final titleStyle = Theme.of(context).textTheme.displaySmall
-                      ?.copyWith(
-                        color: AppDesign.darkForeground,
-                        fontWeight: FontWeight.w800,
-                        fontSize: titleSize,
-                        height: 1.05,
-                        letterSpacing: -0.9,
-                      );
-                  final subtitleStyle = Theme.of(context).textTheme.bodyLarge
-                      ?.copyWith(
-                        color: semantic.cardGlassBorder.withValues(alpha: 0.78),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        height: 1.65,
-                      );
-
-                  return Center(
-                    child: Stack(
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 480),
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minHeight: constraints.maxHeight - 34,
+    return AuthFlowTheme(
+      child: Builder(
+        builder: (context) {
+          final semantic =
+              Theme.of(context).extension<AppSemanticColors>() ??
+              AppSemanticColors.dark;
+          return Scaffold(
+            backgroundColor: AppDesign.authCanvas,
+            body: Stack(
+              children: [
+                AuthBackgroundLayers(
+                  child: SafeArea(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final heroWidth = constraints.maxWidth.clamp(
+                          240.0,
+                          318.0,
+                        );
+                        final heroViewportHeight =
+                            (constraints.maxHeight * 0.44).clamp(260.0, 340.0);
+                        const titleSize = 36.0;
+                        final titleStyle = Theme.of(context)
+                            .textTheme
+                            .displaySmall
+                            ?.copyWith(
+                              color: AppDesign.darkForeground,
+                              fontWeight: FontWeight.w800,
+                              fontSize: titleSize,
+                              height: 1.05,
+                              letterSpacing: -0.9,
+                            );
+                        final subtitleStyle = Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(
+                              color: semantic.cardGlassBorder.withValues(
+                                alpha: 0.78,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Center(
-                                    child: SizedBox(
-                                      width: heroWidth,
-                                      height: heroViewportHeight,
-                                      child: Align(
-                                        alignment: Alignment.topCenter,
-                                        child: FittedBox(
-                                          fit: BoxFit.contain,
-                                          alignment: Alignment.topCenter,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              height: 1.65,
+                            );
+
+                        return Center(
+                          child: Stack(
+                            children: [
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 480,
+                                ),
+                                child: SingleChildScrollView(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    24,
+                                    12,
+                                    24,
+                                    24,
+                                  ),
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      minHeight: constraints.maxHeight - 34,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Center(
                                           child: SizedBox(
-                                            width: 318,
-                                            height: 430,
-                                            child: _buildTopHero(),
+                                            width: heroWidth,
+                                            height: heroViewportHeight,
+                                            child: Align(
+                                              alignment: Alignment.topCenter,
+                                              child: FittedBox(
+                                                fit: BoxFit.contain,
+                                                alignment: Alignment.topCenter,
+                                                child: SizedBox(
+                                                  width: 318,
+                                                  height: 430,
+                                                  child: _buildTopHero(),
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    _text(
-                                      context,
-                                      en: 'Create your account.',
-                                      lv: 'Izveido savu kontu.',
-                                    ),
-                                    maxLines: 1,
-                                    softWrap: false,
-                                    overflow: TextOverflow.visible,
-                                    style: titleStyle,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    _text(
-                                      context,
-                                      en: 'Choose how you want to sign up.',
-                                      lv: 'Izvēlies, kā vēlies reģistrēties.',
-                                    ),
-                                    style: subtitleStyle,
-                                  ),
-                                  const SizedBox(height: 32),
-                                  _buildEmailButton(context),
-                                  const SizedBox(height: 24),
-                                  _buildOrRow(context),
-                                  const SizedBox(height: 24),
-                                  _buildSocialButton(
-                                    context,
-                                    label: _text(
-                                      context,
-                                      en: 'Continue with Google',
-                                      lv: 'Turpināt ar Google',
-                                    ),
-                                    icon: SvgPicture.asset(
-                                      'assets/branding/google_g_logo.svg',
-                                      width: 28,
-                                      height: 28,
-                                      fit: BoxFit.contain,
-                                    ),
-                                    onTap: _isSubmitting
-                                        ? null
-                                        : () => _onSocialPressed(
-                                            _ChoiceSocialProvider.google,
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          _text(
+                                            context,
+                                            en: 'Create your account.',
+                                            lv: 'Izveido savu kontu.',
                                           ),
-                                  ),
-                                  if (Platform.isIOS) ...[
-                                    const SizedBox(height: 14),
-                                    _buildSocialButton(
-                                      context,
-                                      label: _text(
-                                        context,
-                                        en: 'Continue with Apple',
-                                        lv: 'Turpināt ar Apple',
-                                      ),
-                                      icon: SvgPicture.asset(
-                                        'assets/branding/apple_logo_white.svg',
-                                        width: 28,
-                                        height: 28,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      onTap: _isSubmitting
-                                          ? null
-                                          : () => _onSocialPressed(
-                                              _ChoiceSocialProvider.apple,
+                                          maxLines: 1,
+                                          softWrap: false,
+                                          overflow: TextOverflow.visible,
+                                          style: titleStyle,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          _text(
+                                            context,
+                                            en: 'Choose how you want to sign up.',
+                                            lv: 'Izvēlies, kā vēlies reģistrēties.',
+                                          ),
+                                          style: subtitleStyle,
+                                        ),
+                                        const SizedBox(height: 32),
+                                        _buildEmailButton(context),
+                                        const SizedBox(height: 24),
+                                        _buildOrRow(context),
+                                        const SizedBox(height: 24),
+                                        _buildSocialButton(
+                                          context,
+                                          label: _text(
+                                            context,
+                                            en: 'Continue with Google',
+                                            lv: 'Turpināt ar Google',
+                                          ),
+                                          icon: SvgPicture.asset(
+                                            'assets/branding/google_g_logo.svg',
+                                            width: 28,
+                                            height: 28,
+                                            fit: BoxFit.contain,
+                                          ),
+                                          onTap: _isSubmitting
+                                              ? null
+                                              : () => _onSocialPressed(
+                                                  _ChoiceSocialProvider.google,
+                                                ),
+                                        ),
+                                        if (Platform.isIOS) ...[
+                                          const SizedBox(height: 14),
+                                          _buildSocialButton(
+                                            context,
+                                            label: _text(
+                                              context,
+                                              en: 'Continue with Apple',
+                                              lv: 'Turpināt ar Apple',
                                             ),
+                                            icon: SvgPicture.asset(
+                                              'assets/branding/apple_logo_white.svg',
+                                              width: 28,
+                                              height: 28,
+                                              fit: BoxFit.contain,
+                                            ),
+                                            onTap: _isSubmitting
+                                                ? null
+                                                : () => _onSocialPressed(
+                                                    _ChoiceSocialProvider.apple,
+                                                  ),
+                                          ),
+                                        ],
+                                      ],
                                     ),
-                                  ],
-                                ],
+                                  ),
+                                ),
                               ),
-                            ),
+                              Positioned(
+                                top: 12,
+                                left: 24,
+                                child: _buildBackButton(context),
+                              ),
+                            ],
                           ),
-                        ),
-                        Positioned(
-                          top: 12,
-                          left: 24,
-                          child: _buildBackButton(context),
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
-          ),
-          if (_isSubmitting)
-            Positioned.fill(
-              child: AbsorbPointer(
-                child: Container(
-                  color: semantic.heroMenuBackground,
-                  alignment: Alignment.center,
-                  child: const SizedBox(
-                    width: 28,
-                    height: 28,
-                    child: CircularProgressIndicator(strokeWidth: 2.4),
                   ),
                 ),
-              ),
+                if (_isSubmitting)
+                  Positioned.fill(
+                    child: AbsorbPointer(
+                      child: Container(
+                        color: semantic.heroMenuBackground,
+                        alignment: Alignment.center,
+                        child: const SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: CircularProgressIndicator(strokeWidth: 2.4),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-        ],
+          );
+        },
       ),
     );
   }

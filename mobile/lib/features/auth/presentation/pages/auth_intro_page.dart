@@ -124,7 +124,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       builder: (_) {
         return SizedBox(
           width: double.infinity,
-          height: viewport.height * 0.56,
+          height: viewport.height * 0.53,
           child: LoginPage(
             controller: widget.controller,
             startInRegister: false,
@@ -150,7 +150,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       builder: (_) {
         return SizedBox(
           width: double.infinity,
-          height: viewport.height * 0.82,
+          height: viewport.height * 0.78,
           child: LoginPage(
             controller: widget.controller,
             startInRegister: true,
@@ -375,6 +375,10 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
 
   @override
   Widget build(BuildContext context) {
+    return _buildAuthIntroScaffold(context);
+  }
+
+  Widget _buildAuthIntroScaffold(BuildContext context) {
     final slides = _slides();
     final colors = Theme.of(context).colorScheme;
     final semantic =
