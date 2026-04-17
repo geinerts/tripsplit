@@ -23,20 +23,6 @@ Future<void> showThemeModePicker(BuildContext context) async {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.brightness_auto_outlined),
-                title: Text(t.themeModeSystem),
-                subtitle: Text(t.themeModeSystemSubtitle),
-                trailing: current == ThemeMode.system
-                    ? const Icon(Icons.check)
-                    : null,
-                onTap: () async {
-                  await controller.setThemeMode(ThemeMode.system);
-                  if (sheetContext.mounted) {
-                    Navigator.of(sheetContext).pop();
-                  }
-                },
-              ),
-              ListTile(
                 leading: const Icon(Icons.light_mode_outlined),
                 title: Text(t.themeModeLight),
                 trailing: current == ThemeMode.light

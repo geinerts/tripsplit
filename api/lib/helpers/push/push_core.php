@@ -101,6 +101,11 @@ function push_tokens_table_available(PDO $pdo): bool
     return push_table_available($pdo, 'push_tokens');
 }
 
+function push_tokens_locale_column_available(PDO $pdo): bool
+{
+    return push_table_column_available($pdo, 'push_tokens', 'locale');
+}
+
 function push_queue_table_available(PDO $pdo): bool
 {
     return push_table_available($pdo, 'push_queue');
@@ -132,6 +137,46 @@ function push_table_available(PDO $pdo, string $tableKey): bool
     }
 
     return $cache[$tableKey];
+}
+
+function push_table_column_available(PDO $pdo, string $tableKey, string $columnName): bool
+{
+    static $cache = [];
+    $cacheKey = $tableKey . '|' . $columnName;
+    if (array_key_exists($cacheKey, $cache)) {
+        return $cache[$cacheKey];
+    }
+
+    try {
+        $rawTable = trim(table_name($tableKey), '`');
+        if ($rawTable === '' || !preg_match('/^[A-Za-z0-9_]+$/', $rawTable)) {
+            $cache[$cacheKey] = false;
+            return false;
+        }
+
+        $column = strtolower(trim($columnName));
+        if ($column === '' || !preg_match('/^[a-z0-9_]+$/', $column)) {
+            $cache[$cacheKey] = false;
+            return false;
+        }
+
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(1)
+             FROM information_schema.columns
+             WHERE table_schema = DATABASE()
+               AND table_name = :table_name
+               AND column_name = :column_name'
+        );
+        $stmt->execute([
+            'table_name' => $rawTable,
+            'column_name' => $column,
+        ]);
+        $cache[$cacheKey] = ((int) ($stmt->fetchColumn() ?: 0)) >= 1;
+    } catch (Throwable $error) {
+        $cache[$cacheKey] = false;
+    }
+
+    return $cache[$cacheKey];
 }
 
 function normalize_push_platform(string $platform): string

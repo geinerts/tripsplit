@@ -55,10 +55,7 @@ extension _TripsPageWidgets on _TripsPageState {
         IconButton(
           onPressed: _isMutating || _isLoading ? null : _onJoinTripPressed,
           icon: const Icon(Icons.link_rounded),
-          tooltip: _pageText(
-            en: 'Join trip via invite',
-            lv: 'Pievienoties ceļojumam ar ielūgumu',
-          ),
+          tooltip: context.l10n.tripsJoinTripViaInvite,
         ),
         IconButton(
           onPressed: _isMutating || _isLoading ? null : _loadTrips,
@@ -103,8 +100,8 @@ extension _TripsPageWidgets on _TripsPageState {
           )
         : 0;
     final t = context.l10n;
-    final totalTripsLabel = _pageText(en: 'Total trips', lv: 'Ceļojumi kopā');
-    final totalSpentLabel = _pageText(en: 'Total spent', lv: 'Kopā iztērēts');
+    final totalTripsLabel = context.l10n.tripsTotalTrips;
+    final totalSpentLabel = context.l10n.tripsTotalSpent;
     final totalSpentValue = totalTrips == 0
         ? AppFormatters.currencyCodeFromCents(
             context,
@@ -125,7 +122,7 @@ extension _TripsPageWidgets on _TripsPageState {
                 ? preferredCurrencyCode
                 : spentCurrencies.first,
           )
-        : _pageText(en: 'Mixed currencies', lv: 'Jauktas valūtas');
+        : context.l10n.tripsMixedCurrencies;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,11 +225,11 @@ extension _TripsPageWidgets on _TripsPageState {
   Widget _buildTripsSectionHeader(BuildContext context) {
     final controlsEnabled = !(_isLoading || _isMutating);
     final title = _showAllTrips
-        ? _pageText(en: 'All trips', lv: 'Visi ceļojumi')
-        : _pageText(en: 'Active trips', lv: 'Aktīvie ceļojumi');
+        ? context.l10n.allTrips
+        : context.l10n.activeTrips;
     final actionLabel = _showAllTrips
-        ? _pageText(en: 'Show active', lv: 'Rādīt aktīvos')
-        : _pageText(en: 'See all', lv: 'Skatīt visus');
+        ? context.l10n.tripsShowActive
+        : context.l10n.tripsSeeAll;
 
     return Row(
       children: [
@@ -280,7 +277,7 @@ extension _TripsPageWidgets on _TripsPageState {
 
   Widget _buildAddTripFloatingButton(BuildContext context) {
     final controlsEnabled = !(_isLoading || _isMutating);
-    final label = _pageText(en: 'Add new trip', lv: 'Pievienot ceļojumu');
+    final label = context.l10n.tripsAddNewTrip;
     final colors = Theme.of(context).colorScheme;
 
     return SafeArea(
@@ -419,7 +416,7 @@ extension _TripsPageWidgets on _TripsPageState {
                 });
               },
               icon: const Icon(Icons.expand_more_rounded),
-              label: Text(_pageText(en: 'Load more', lv: 'Ielādēt vēl')),
+              label: Text(context.l10n.tripsLoadMore),
             ),
           ),
         ],

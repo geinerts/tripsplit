@@ -49,11 +49,7 @@ class _SummaryCard extends StatelessWidget {
         children: [
           _OverviewSectionHeading(
             icon: Icons.account_balance_wallet_outlined,
-            title: _localizedText(
-              context,
-              en: 'Your position',
-              lv: 'Tava pozīcija',
-            ),
+            title: context.l10n.workspaceYourPosition,
           ),
           const SizedBox(height: 8),
           Row(
@@ -126,11 +122,7 @@ class _SummaryCard extends StatelessWidget {
           const SizedBox(height: 12),
           _OverviewSectionHeading(
             icon: Icons.notifications_active_outlined,
-            title: _localizedText(
-              context,
-              en: 'Action needed',
-              lv: 'Nepieciešama darbība',
-            ),
+            title: context.l10n.workspaceActionNeeded,
           ),
           const SizedBox(height: 8),
           Text(
@@ -156,33 +148,19 @@ class _SummaryCard extends StatelessWidget {
           const SizedBox(height: 12),
           _OverviewSectionHeading(
             icon: Icons.history_outlined,
-            title: _localizedText(
-              context,
-              en: 'Recent activity',
-              lv: 'Pēdējās aktivitātes',
-            ),
+            title: context.l10n.workspaceRecentActivity,
           ),
           const SizedBox(height: 8),
           if (recentNotifications.isEmpty)
             Text(
-              _localizedText(
-                context,
-                en: 'No recent activity yet.',
-                lv: 'Pagaidām nav nesenu aktivitāšu.',
-              ),
+              context.l10n.workspaceNoRecentActivityYet,
               style: Theme.of(context).textTheme.bodySmall,
             )
           else
             for (var i = 0; i < recentNotifications.length; i++) ...[
               _OverviewActivityRow(
                 icon: _notificationIcon(recentNotifications[i].type),
-                title: recentNotifications[i].title.trim().isEmpty
-                    ? _localizedText(
-                        context,
-                        en: 'Notification',
-                        lv: 'Paziņojums',
-                      )
-                    : recentNotifications[i].title.trim(),
+                title: _notificationTitle(context, recentNotifications[i]),
                 subtitle: _relativeTime(
                   context,
                   recentNotifications[i].createdAt,
@@ -218,11 +196,11 @@ class _SummaryCard extends StatelessWidget {
         .length;
 
     if (markSentCount + confirmReceivedCount > 0) {
-      final message = _localizedText(
-        context,
-        en: '$markSentCount payment(s) to mark as sent, $confirmReceivedCount to confirm as received.',
-        lv: '$markSentCount maksājums(-i) jāatzīmē kā nosūtīts, $confirmReceivedCount jāapstiprina kā saņemts.',
-      );
+      final message = context.l10n
+          .workspacePaymentSToMarkAsSentToConfirmAsReceived(
+            markSentCount,
+            confirmReceivedCount,
+          );
       return _OverviewActionState(
         message: message,
         ctaLabel: t.openSettlements,
@@ -234,11 +212,8 @@ class _SummaryCard extends StatelessWidget {
     if (snapshot.isActive) {
       if (canEditMembers && snapshot.users.length < 2) {
         return _OverviewActionState(
-          message: _localizedText(
-            context,
-            en: 'Add at least one member to start splitting expenses.',
-            lv: 'Pievieno vismaz vienu dalībnieku, lai sāktu dalīt izdevumus.',
-          ),
+          message:
+              context.l10n.workspaceAddAtLeastOneMemberToStartSplittingExpenses,
           ctaLabel: t.addMembersAction,
           ctaIcon: Icons.group_add_outlined,
           onTap: onOpenAddMembers,
@@ -257,11 +232,9 @@ class _SummaryCard extends StatelessWidget {
 
       if (currentUser != null && !currentUser.isReadyToSettle) {
         return _OverviewActionState(
-          message: _localizedText(
-            context,
-            en: 'Mark yourself ready to settle after adding all your expenses.',
-            lv: 'Atzīmē sevi kā gatavu norēķiniem, kad esi pievienojis visus izdevumus.',
-          ),
+          message: context
+              .l10n
+              .workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses,
         );
       }
 
@@ -271,39 +244,30 @@ class _SummaryCard extends StatelessWidget {
                     snapshot.readyToSettleMembersReady)
                 .clamp(0, snapshot.readyToSettleMembersTotal);
         return _OverviewActionState(
-          message: _localizedText(
-            context,
-            en: 'Waiting for $waitingCount member(s) to mark ready.',
-            lv: '$waitingCount dalībnieks(-i) vēl nav atzīmējuši gatavību.',
+          message: context.l10n.workspaceWaitingForMemberSToMarkReady(
+            waitingCount,
           ),
         );
       }
 
       if (canEditMembers) {
         return _OverviewActionState(
-          message: _localizedText(
-            context,
-            en: 'All members are ready. You can finish the trip and start settlements.',
-            lv: 'Visi dalībnieki ir gatavi. Vari pabeigt ceļojumu un sākt norēķinus.',
-          ),
+          message:
+              context.l10n.workspaceAllMembersAreReadyYouCanFinishTheTripAnd,
         );
       }
 
       return _OverviewActionState(
-        message: _localizedText(
-          context,
-          en: 'All members are ready. Waiting for the trip owner to start settlements.',
-          lv: 'Visi dalībnieki ir gatavi. Gaida, kad ceļojuma veidotājs sāks norēķinus.',
-        ),
+        message:
+            context.l10n.workspaceAllMembersAreReadyWaitingForTheTripOwnerTo,
       );
     }
 
     if (snapshot.isSettling && snapshot.settlementRemaining > 0) {
       return _OverviewActionState(
-        message: _localizedText(
-          context,
-          en: 'Settlement in progress: ${snapshot.settlementConfirmed}/${snapshot.settlementTotal} confirmed.',
-          lv: 'Norēķini procesā: apstiprināti ${snapshot.settlementConfirmed}/${snapshot.settlementTotal}.',
+        message: context.l10n.workspaceSettlementInProgressConfirmed(
+          snapshot.settlementConfirmed,
+          snapshot.settlementTotal,
         ),
         ctaLabel: t.openSettlements,
         ctaIcon: Icons.open_in_new,
@@ -313,20 +277,12 @@ class _SummaryCard extends StatelessWidget {
 
     if (snapshot.isArchived || snapshot.allSettled) {
       return _OverviewActionState(
-        message: _localizedText(
-          context,
-          en: 'No actions pending. This trip is settled.',
-          lv: 'Nav gaidošu darbību. Šis ceļojums ir noslēgts.',
-        ),
+        message: context.l10n.workspaceNoActionsPendingThisTripIsSettled,
       );
     }
 
     return _OverviewActionState(
-      message: _localizedText(
-        context,
-        en: 'No actions needed right now.',
-        lv: 'Pašlaik darbības nav nepieciešamas.',
-      ),
+      message: context.l10n.workspaceNoActionsNeededRightNow,
     );
   }
 
@@ -347,24 +303,12 @@ class _SummaryCard extends StatelessWidget {
       currencyCode: AppCurrencyCatalog.defaultCode,
     );
     if (net > 0.004) {
-      return _localizedText(
-        context,
-        en: 'You should receive $absolute.',
-        lv: 'Tev jāsaņem $absolute.',
-      );
+      return context.l10n.workspaceYouShouldReceive(absolute);
     }
     if (net < -0.004) {
-      return _localizedText(
-        context,
-        en: 'You should pay $absolute.',
-        lv: 'Tev jāsamaksā $absolute.',
-      );
+      return context.l10n.workspaceYouShouldPay(absolute);
     }
-    return _localizedText(
-      context,
-      en: 'You are currently settled in this trip.',
-      lv: 'Šobrīd šajā ceļojumā esi norēķinājies.',
-    );
+    return context.l10n.workspaceYouAreCurrentlySettledInThisTrip;
   }
 
   DateTime _tryParseDate(String? raw) {
@@ -381,34 +325,22 @@ class _SummaryCard extends StatelessWidget {
   String _relativeTime(BuildContext context, String? raw) {
     final moment = _tryParseDate(raw);
     if (moment.millisecondsSinceEpoch == 0) {
-      return _localizedText(context, en: 'Unknown time', lv: 'Nezināms laiks');
+      return context.l10n.workspaceUnknownTime;
     }
 
     final now = DateTime.now();
     final diff = now.difference(moment);
     if (diff.inMinutes < 1) {
-      return _localizedText(context, en: 'Just now', lv: 'Tikko');
+      return context.l10n.workspaceJustNow;
     }
     if (diff.inMinutes < 60) {
-      return _localizedText(
-        context,
-        en: '${diff.inMinutes} min ago',
-        lv: 'Pirms ${diff.inMinutes} min',
-      );
+      return context.l10n.workspaceMinAgo(diff.inMinutes);
     }
     if (diff.inHours < 24) {
-      return _localizedText(
-        context,
-        en: '${diff.inHours} h ago',
-        lv: 'Pirms ${diff.inHours} h',
-      );
+      return context.l10n.workspaceHAgo(diff.inHours);
     }
     if (diff.inDays < 7) {
-      return _localizedText(
-        context,
-        en: '${diff.inDays} d ago',
-        lv: 'Pirms ${diff.inDays} d',
-      );
+      return context.l10n.workspaceDAgo(diff.inDays);
     }
 
     final day = moment.day.toString().padLeft(2, '0');
@@ -435,6 +367,15 @@ class _SummaryCard extends StatelessWidget {
       return Icons.payments_outlined;
     }
     return Icons.notifications_none;
+  }
+
+  String _notificationTitle(
+    BuildContext context,
+    WorkspaceNotification notification,
+  ) {
+    final localized = localizeWorkspaceNotification(context, notification);
+    final title = localized.title.trim();
+    return title.isEmpty ? context.l10n.notificationFallbackTitle : title;
   }
 }
 

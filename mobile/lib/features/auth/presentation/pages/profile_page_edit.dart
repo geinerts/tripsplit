@@ -25,10 +25,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     final email = (_initialEmail ?? '').trim().toLowerCase();
     if (email.isEmpty || !_isValidEmail(email)) {
       _showSnack(
-        _profileText(
-          en: 'Set a valid email in Edit profile before changing password.',
-          lv: 'Pirms paroles maiņas ievadi derīgu e-pastu sadaļā "Edit profile".',
-        ),
+        context.l10n.profileEditSetValidEmailEditProfileChangingPassword,
       );
       return;
     }
@@ -135,10 +132,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         return;
       }
       _showSnack(
-        _profileText(
-          en: 'Account deactivated. Use reactivation link from email to restore access.',
-          lv: 'Konts deaktivēts. Lai atjaunotu piekļuvi, izmanto reaktivācijas saiti e-pastā.',
-        ),
+        context.l10n.profileEditDeactivatedReactivationLinkEmailRestoreAccess,
       );
       Navigator.of(
         context,
@@ -155,10 +149,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         return;
       }
       _updateState(() {
-        _editErrorText = _profileText(
-          en: 'Could not deactivate account. Please try again.',
-          lv: 'Neizdevās deaktivēt kontu. Mēģini vēlreiz.',
-        );
+        _editErrorText = context.l10n.profileEditCouldNotDeactivateTryAgain;
       });
     } finally {
       if (mounted) {
@@ -184,12 +175,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _profileText(
-          en: 'Deletion link sent to your email.',
-          lv: 'Dzēšanas saite nosūtīta uz tavu e-pastu.',
-        ),
-      );
+      _showSnack(context.l10n.profileEditDeletionLinkSentEmail);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -202,10 +188,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         return;
       }
       _updateState(() {
-        _editErrorText = _profileText(
-          en: 'Could not send deletion link. Please try again.',
-          lv: 'Neizdevās nosūtīt dzēšanas saiti. Mēģini vēlreiz.',
-        );
+        _editErrorText =
+            context.l10n.profileEditCouldNotSendDeletionLinkTryAgain;
       });
     } finally {
       if (mounted) {
@@ -318,10 +302,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       final currentPassword = _draftPassword.trim();
       if (currentPassword.isEmpty) {
         _updateState(() {
-          _editErrorText = _profileText(
-            en: 'Enter current password to change email.',
-            lv: 'Lai mainītu e-pastu, ievadi pašreizējo paroli.',
-          );
+          _editErrorText =
+              context.l10n.profileEditEnterCurrentPasswordChangeEmail;
         });
         return;
       }
@@ -346,10 +328,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           _draftRepeatPassword = '';
         });
         _showSnack(
-          _profileText(
-            en: 'Verification was sent to the new email. Security notice was sent to your current email.',
-            lv: 'Verifikācijas saite nosūtīta uz jauno e-pastu. Drošības paziņojums nosūtīts uz pašreizējo e-pastu.',
-          ),
+          context.l10n.profileEditVerificationWasSentNewEmailSecurityNoticeWas,
         );
       } on ApiException catch (error) {
         if (!mounted) {
@@ -363,10 +342,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           return;
         }
         _updateState(() {
-          _editErrorText = _profileText(
-            en: 'Could not start email change right now. Please try again.',
-            lv: 'Neizdevās sākt e-pasta maiņu. Mēģini vēlreiz.',
-          );
+          _editErrorText =
+              context.l10n.profileEditCouldNotStartEmailChangeRightNowTry;
         });
       } finally {
         if (mounted) {
@@ -457,19 +434,16 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           _buildEditableProfileRow(
             context: context,
             field: _ProfileEditField.preferredCurrency,
-            label: _profileText(en: 'Overview currency', lv: 'Pārskata valūta'),
+            label: context.l10n.profileEditOverviewCurrency,
             displayValue: _preferredCurrencyDisplayValue(),
             editor: _buildPreferredCurrencyInlineEditor,
           ),
           const Divider(height: 1),
           _buildProfileSectionTile(
             context: context,
-            title: _profileText(en: 'Payment method', lv: 'Maksājuma metode'),
+            title: context.l10n.profileEditPaymentMethod,
             icon: Icons.account_balance_wallet_outlined,
-            subtitle: _profileText(
-              en: 'Bank transfer, Revolut, PayPal.me',
-              lv: 'Bankas pārskaitījums, Revolut, PayPal.me',
-            ),
+            subtitle: context.l10n.profileEditBankTransferRevolutPaypalMe,
             onTap: _isSubmitting || _isLoading
                 ? null
                 : () => unawaited(_openPaymentInfoPage()),
@@ -501,17 +475,16 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _profileText(en: 'Deactivate account', lv: 'Deaktivēt kontu'),
+            context.l10n.profileDeactivateAccount,
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 8),
           Text(
-            _profileText(
-              en: 'You can deactivate account access or request an email link to permanently delete the account. Password is optional for Google/Apple accounts.',
-              lv: 'Vari deaktivēt konta piekļuvi vai pieprasīt e-pasta saiti neatgriezeniskai konta dzēšanai. Google/Apple kontiem parole nav obligāta.',
-            ),
+            context
+                .l10n
+                .profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -523,11 +496,9 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             textInputAction: TextInputAction.done,
             obscureText: true,
             decoration: InputDecoration(
-              labelText: _profileText(en: 'Password', lv: 'Parole'),
-              hintText: _profileText(
-                en: 'Enter your password (optional for Google/Apple)',
-                lv: 'Ievadi paroli (Google/Apple nav obligāti)',
-              ),
+              labelText: context.l10n.passwordLabel,
+              hintText:
+                  context.l10n.profileEditEnterPasswordOptionalGoogleApple,
             ),
             onChanged: _onDeactivatePasswordChanged,
             onFieldSubmitted: (_) => unawaited(_onDeactivateAccountPressed()),
@@ -552,9 +523,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                 backgroundColor: colorScheme.error,
                 foregroundColor: colorScheme.onError,
               ),
-              label: Text(
-                _profileText(en: 'Deactivate account', lv: 'Deaktivēt kontu'),
-              ),
+              label: Text(context.l10n.profileDeactivateAccount),
             ),
           ),
           const SizedBox(height: 10),
@@ -563,21 +532,14 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             child: OutlinedButton.icon(
               onPressed: _isSubmitting ? null : _onSendDeletionLinkPressed,
               icon: const Icon(Icons.mark_email_read_outlined),
-              label: Text(
-                _profileText(
-                  en: 'Send deletion link to email',
-                  lv: 'Nosūtīt dzēšanas saiti uz e-pastu',
-                ),
-              ),
+              label: Text(context.l10n.profileEditSendDeletionLinkEmail),
             ),
           ),
           const SizedBox(height: 8),
           Center(
             child: TextButton(
               onPressed: _closeEditMode,
-              child: Text(
-                _profileText(en: 'Back to profile', lv: 'Atpakaļ uz profilu'),
-              ),
+              child: Text(context.l10n.profileEditBackProfile),
             ),
           ),
         ],
@@ -593,10 +555,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     final email = (_initialEmail ?? '').trim().toLowerCase();
     if (email.isEmpty || !_isValidEmail(email)) {
       _updateState(() {
-        _editErrorText = _profileText(
-          en: 'Set a valid email in profile before changing password.',
-          lv: 'Pirms paroles maiņas iestati derīgu e-pastu profilā.',
-        );
+        _editErrorText =
+            context.l10n.profileEditSetValidEmailProfileChangingPassword;
       });
       return;
     }
@@ -626,9 +586,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         return;
       }
       _applyUser(updated);
-      _showSnack(
-        _profileText(en: 'Password updated.', lv: 'Parole atjaunināta.'),
-      );
+      _showSnack(context.l10n.profileEditPasswordUpdated);
       _closeEditMode();
     } on ApiException catch (error) {
       if (!mounted) {
@@ -642,10 +600,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         return;
       }
       _updateState(() {
-        _editErrorText = _profileText(
-          en: 'Failed to update password.',
-          lv: 'Neizdevās atjaunināt paroli.',
-        );
+        _editErrorText = context.l10n.profileEditFailedUpdatePassword;
       });
     } finally {
       if (mounted) {
@@ -666,14 +621,14 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _profileText(en: 'Change password', lv: 'Mainīt paroli'),
+            context.l10n.profileChangePassword,
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 8),
           Text(
-            _profileText(en: 'Account: $email', lv: 'Konts: $email'),
+            context.l10n.profileEditEmail(email),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppDesign.mutedColor(context),
             ),
@@ -831,7 +786,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           ),
           const SizedBox(width: 6),
           Text(
-            _profileText(en: 'Primary', lv: 'Primārais'),
+            context.l10n.profileEditPrimary,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: dotColor,
               fontWeight: FontWeight.w700,
@@ -900,10 +855,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                         });
                       },
                       decoration: InputDecoration(
-                        hintText: _profileText(
-                          en: 'Search currency',
-                          lv: 'Meklēt valūtu',
-                        ),
+                        hintText: context.l10n.profileEditSearchCurrency,
                         prefixIcon: const Icon(Icons.search_rounded),
                         isDense: true,
                         contentPadding: const EdgeInsets.symmetric(
@@ -920,10 +872,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                     child: filtered.isEmpty
                         ? Center(
                             child: Text(
-                              _profileText(
-                                en: 'No currencies found',
-                                lv: 'Valūtas netika atrastas',
-                              ),
+                              context.l10n.profileEditNoCurrenciesFound,
                               style: Theme.of(
                                 pickerContext,
                               ).textTheme.bodyMedium,
@@ -1091,10 +1040,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         ),
         const SizedBox(height: 6),
         Text(
-          _profileText(
-            en: 'Overview totals are converted to this currency.',
-            lv: 'Pārskata summas tiks konvertētas uz šo valūtu.',
-          ),
+          context.l10n.profileEditOverviewTotalsConvertedCurrency,
           style: Theme.of(
             context,
           ).textTheme.bodySmall?.copyWith(color: AppDesign.mutedColor(context)),
@@ -1168,12 +1114,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         return;
       }
       _applyUser(updated);
-      _showSnack(
-        _profileText(
-          en: 'Payment info updated.',
-          lv: 'Maksājumu info atjaunināta.',
-        ),
-      );
+      _showSnack(context.l10n.profileEditPaymentInfoUpdated);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -1186,10 +1127,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         return;
       }
       _updateState(() {
-        _editErrorText = _profileText(
-          en: 'Could not save payment info. Please try again.',
-          lv: 'Neizdevās saglabāt maksājumu info. Mēģini vēlreiz.',
-        );
+        _editErrorText =
+            context.l10n.profileEditCouldNotSavePaymentInfoTryAgain;
       });
     } finally {
       if (mounted) {
@@ -1240,10 +1179,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           autofillHints: const [AutofillHints.password],
           decoration: InputDecoration(
             isDense: true,
-            labelText: _profileText(
-              en: 'Current password',
-              lv: 'Pašreizējā parole',
-            ),
+            labelText: context.l10n.profileEditCurrentPassword,
             helperText: t.changeEmailWithPasswordHelper,
           ),
           onChanged: _onDraftPasswordChanged,
@@ -1389,18 +1325,10 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
     return _BankTransferRegion.europe;
   }
 
-  String _txt({required String en, required String lv}) {
-    final code = Localizations.localeOf(context).languageCode.toLowerCase();
-    return code == 'lv' ? lv : en;
-  }
-
   String _methodLabel(_PaymentInfoMethod method) {
     switch (method) {
       case _PaymentInfoMethod.bankTransfer:
-        return _txt(
-          en: 'Bank transfer (IBAN / SWIFT)',
-          lv: 'Bankas pārskaitījums (IBAN / SWIFT)',
-        );
+        return context.l10n.profileEditBankTransferIbanSwift;
       case _PaymentInfoMethod.revolut:
         return 'Revolut';
       case _PaymentInfoMethod.paypal:
@@ -1411,11 +1339,11 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
   String _methodHint(_PaymentInfoMethod method) {
     switch (method) {
       case _PaymentInfoMethod.bankTransfer:
-        return _txt(en: 'IBAN + SWIFT', lv: 'IBAN + SWIFT');
+        return context.l10n.profileEditIbanSwift;
       case _PaymentInfoMethod.revolut:
-        return _txt(en: 'Revtag / revolut.me', lv: 'Revtag / revolut.me');
+        return context.l10n.profileEditRevtagRevolutMe;
       case _PaymentInfoMethod.paypal:
-        return _txt(en: 'paypal.me link', lv: 'paypal.me saite');
+        return context.l10n.profileEditPaypalMeLink;
     }
   }
 
@@ -1449,10 +1377,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
                 child: Text(
-                  _txt(
-                    en: 'Choose payment method',
-                    lv: 'Izvēlies maksājuma metodi',
-                  ),
+                  context.l10n.profileEditChoosePaymentMethod,
                   style: Theme.of(sheetContext).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
@@ -1593,7 +1518,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      _txt(en: 'Tap to change', lv: 'Pieskaries, lai mainītu'),
+                      context.l10n.profileEditTapChange,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppDesign.mutedColor(context),
                       ),
@@ -1636,10 +1561,8 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
         if (normalizedSortCode.length != 6 ||
             normalizedAccountNumber.length != 8) {
           setState(() {
-            _formErrorText = _txt(
-              en: 'For UK transfers, sort code must be 6 digits and account number 8 digits.',
-              lv: 'UK pārskaitījumiem sort code jābūt 6 cipariem un account number 8 cipariem.',
-            );
+            _formErrorText =
+                context.l10n.profileEditUkTransfersSortCode6DigitsNumber8;
           });
           return;
         }
@@ -1677,9 +1600,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_txt(en: 'Payment info', lv: 'Maksājumu info')),
-      ),
+      appBar: AppBar(title: Text(context.l10n.profileEditPaymentInfo)),
       body: AppBackground(
         child: SafeArea(
           child: ListView(
@@ -1696,7 +1617,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _txt(en: 'Payment method', lv: 'Maksājuma metode'),
+                      context.l10n.profileEditPaymentMethod,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
@@ -1732,9 +1653,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
                                 ),
                               )
                             : const Icon(Icons.save_outlined),
-                        label: Text(
-                          _txt(en: 'Save details', lv: 'Saglabāt datus'),
-                        ),
+                        label: Text(context.l10n.profileEditSaveDetails),
                       ),
                     ),
                   ],
@@ -1755,7 +1674,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              _txt(en: 'Bank region', lv: 'Bankas reģions'),
+              context.l10n.profileEditBankRegion,
               style: Theme.of(
                 context,
               ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
@@ -1765,7 +1684,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
               segments: [
                 ButtonSegment<_BankTransferRegion>(
                   value: _BankTransferRegion.europe,
-                  label: Text(_txt(en: 'Europe', lv: 'Eiropa')),
+                  label: Text(context.l10n.profileEditEurope),
                   icon: const Icon(Icons.public_rounded),
                 ),
                 ButtonSegment<_BankTransferRegion>(
@@ -1789,23 +1708,20 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
             if (_bankRegion == _BankTransferRegion.uk) ...[
               _buildTextField(
                 controller: _bankSortCodeController,
-                label: _txt(en: 'Sort code', lv: 'Sort code'),
-                hint: _txt(en: 'Example: 112233', lv: 'Piemērs: 112233'),
+                label: context.l10n.profileEditSortCode,
+                hint: context.l10n.profileEditExample112233,
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 10),
               _buildTextField(
                 controller: _bankAccountNumberController,
-                label: _txt(en: 'Account number', lv: 'Konta numurs'),
-                hint: _txt(en: '8 digits', lv: '8 cipari'),
+                label: context.l10n.profileEditNumber,
+                hint: context.l10n.profileEdit8Digits,
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 8),
               Text(
-                _txt(
-                  en: 'For UK domestic transfers use sort code + account number.',
-                  lv: 'UK iekšzemes pārskaitījumiem izmanto sort code + account number.',
-                ),
+                context.l10n.profileEditUkDomesticTransfersSortCodeNumber,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppDesign.mutedColor(context),
                 ),
@@ -1814,27 +1730,21 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
               _buildTextField(
                 controller: _bankIbanController,
                 label: 'IBAN',
-                hint: _txt(
-                  en: 'Example: LV80BANK0000435195001',
-                  lv: 'Piemērs: LV80BANK0000435195001',
-                ),
+                hint: context.l10n.profileEditExampleLv80bank0000435195001,
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 10),
               _buildTextField(
                 controller: _bankBicController,
                 label: 'BIC / SWIFT',
-                hint: _txt(en: '8 or 11 chars', lv: '8 vai 11 simboli'),
+                hint: context.l10n.profileEdit811Chars,
                 textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  _txt(
-                    en: 'Account holder name is taken from profile full name.',
-                    lv: 'Konta turētāja vārds tiek ņemts no profila pilnā vārda.',
-                  ),
+                  context.l10n.profileEditHolderNameTakenProfileFullName,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppDesign.mutedColor(context),
                   ),
@@ -1850,14 +1760,14 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
             _buildTextField(
               controller: _revolutMeController,
               label: 'Revolut.me',
-              hint: _txt(en: 'revolut.me/username', lv: 'revolut.me/lietotajs'),
+              hint: context.l10n.profileEditRevolutMeUsername,
               textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 10),
             _buildTextField(
               controller: _revolutHandleController,
-              label: _txt(en: 'Revtag', lv: 'Revtag'),
-              hint: _txt(en: '@username', lv: '@lietotajs'),
+              label: context.l10n.profileEditRevtag,
+              hint: context.l10n.profileEditUsername,
               textInputAction: TextInputAction.done,
             ),
           ],
@@ -1869,10 +1779,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
             _buildTextField(
               controller: _paypalMeController,
               label: 'PayPal.me',
-              hint: _txt(
-                en: 'paypal.me/username or username',
-                lv: 'paypal.me/lietotajs vai lietotajs',
-              ),
+              hint: context.l10n.profileEditPaypalMeUsernameUsername,
               textInputAction: TextInputAction.done,
             ),
           ],

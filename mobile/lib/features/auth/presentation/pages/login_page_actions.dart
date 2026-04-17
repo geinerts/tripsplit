@@ -43,7 +43,7 @@ extension _LoginPageActions on _LoginPageState {
         final nameParts = _parseFullName(fullName);
         if (nameParts == null) {
           _updateState(() {
-            _errorText = context.l10n.fullNameValidation;
+            _errorText = context.l10nEn.fullNameValidation;
             _isSubmitting = false;
           });
           return;
@@ -97,7 +97,7 @@ extension _LoginPageActions on _LoginPageState {
         return;
       }
       _updateState(() {
-        _errorText = context.l10n.requestFailedTryAgain;
+        _errorText = context.l10nEn.requestFailedTryAgain;
       });
     } finally {
       if (mounted && !_isNavigatingAway) {
@@ -194,12 +194,7 @@ extension _LoginPageActions on _LoginPageState {
       final auth = await account.authentication;
       final idToken = (auth.idToken ?? '').trim();
       if (idToken.isEmpty) {
-        throw StateError(
-          _authText(
-            en: 'Google sign-in did not return an id token.',
-            lv: 'Google pieslēgšanās neatgrieza id token.',
-          ),
-        );
+        throw StateError(context.l10nEn.authGoogleSignDidNotReturnIdToken);
       }
 
       final fullName = (account.displayName ?? '').trim();
@@ -222,20 +217,10 @@ extension _LoginPageActions on _LoginPageState {
 
   Future<_SocialAuthCredential> _signInWithApple() async {
     if (!Platform.isIOS) {
-      throw StateError(
-        _authText(
-          en: 'Apple sign-in is available on iOS devices.',
-          lv: 'Apple pieslēgšanās ir pieejama iOS ierīcēs.',
-        ),
-      );
+      throw StateError(context.l10nEn.authAppleSignAvailableIosDevices);
     }
     if (!await SignInWithApple.isAvailable()) {
-      throw StateError(
-        _authText(
-          en: 'Apple sign-in is not available on this device.',
-          lv: 'Apple pieslēgšanās šajā ierīcē nav pieejama.',
-        ),
-      );
+      throw StateError(context.l10nEn.authAppleSignNotAvailableDevice);
     }
 
     try {
@@ -248,12 +233,7 @@ extension _LoginPageActions on _LoginPageState {
 
       final idToken = (credential.identityToken ?? '').trim();
       if (idToken.isEmpty) {
-        throw StateError(
-          _authText(
-            en: 'Apple sign-in did not return an identity token.',
-            lv: 'Apple pieslēgšanās neatgrieza identitātes tokenu.',
-          ),
-        );
+        throw StateError(context.l10nEn.authAppleSignDidNotReturnIdentityToken);
       }
 
       final nameParts = [
@@ -278,15 +258,9 @@ extension _LoginPageActions on _LoginPageState {
 
   String _socialAuthFallbackError(_SocialAuthProvider provider) {
     if (provider == _SocialAuthProvider.apple) {
-      return _authText(
-        en: 'Apple sign-in failed. Please try again.',
-        lv: 'Apple pieslēgšanās neizdevās. Mēģini vēlreiz.',
-      );
+      return context.l10nEn.authIntroAppleSignFailedPleaseTryAgain;
     }
-    return _authText(
-      en: 'Google sign-in failed. Please try again.',
-      lv: 'Google pieslēgšanās neizdevās. Mēģini vēlreiz.',
-    );
+    return context.l10nEn.authIntroGoogleSignFailedPleaseTryAgain;
   }
 
   void _goAfterAuth(AuthUser user) {
@@ -357,10 +331,9 @@ extension _LoginPageActions on _LoginPageState {
     final email = rawEmail.trim().toLowerCase();
     if (email.isEmpty) {
       _updateState(() {
-        _errorText = _authText(
-          en: 'Account is deactivated. Enter your email to request a reactivation link.',
-          lv: 'Konts ir deaktivēts. Ievadi e-pastu, lai pieprasītu reaktivācijas saiti.',
-        );
+        _errorText = context
+            .l10n
+            .authAccountDeactivatedEnterEmailRequestReactivationLink;
       });
       return;
     }
@@ -369,23 +342,16 @@ extension _LoginPageActions on _LoginPageState {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(
-            _authText(en: 'Account is deactivated', lv: 'Konts ir deaktivēts'),
-          ),
-          content: Text(
-            _authText(
-              en: 'Send a reactivation link to $email?',
-              lv: 'Nosūtīt reaktivācijas saiti uz $email?',
-            ),
-          ),
+          title: Text(context.l10nEn.authAccountDeactivated),
+          content: Text(context.l10nEn.authSendReactivationLinkEmail(email)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(_authText(en: 'Cancel', lv: 'Atcelt')),
+              child: Text(context.l10nEn.authCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(_authText(en: 'Send link', lv: 'Sūtīt saiti')),
+              child: Text(context.l10nEn.authSendLink),
             ),
           ],
         );
@@ -401,12 +367,7 @@ extension _LoginPageActions on _LoginPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _authText(
-          en: 'Reactivation link sent. Check your email.',
-          lv: 'Reaktivācijas saite nosūtīta. Pārbaudi e-pastu.',
-        ),
-      );
+      _showSnack(context.l10nEn.authReactivationLinkSentCheckEmail);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -419,10 +380,8 @@ extension _LoginPageActions on _LoginPageState {
         return;
       }
       _updateState(() {
-        _errorText = _authText(
-          en: 'Could not send reactivation link. Please try again.',
-          lv: 'Neizdevās nosūtīt reaktivācijas saiti. Mēģini vēlreiz.',
-        );
+        _errorText =
+            context.l10nEn.authCouldNotSendReactivationLinkPleaseTryAgain;
       });
     }
   }
@@ -431,10 +390,9 @@ extension _LoginPageActions on _LoginPageState {
     final email = rawEmail.trim().toLowerCase();
     if (email.isEmpty) {
       _updateState(() {
-        _errorText = _authText(
-          en: 'Email is not verified. Enter your email to request verification link.',
-          lv: 'E-pasts nav verificēts. Ievadi e-pastu, lai pieprasītu verifikācijas saiti.',
-        );
+        _errorText = context
+            .l10nEn
+            .authEmailNotVerifiedEnterEmailRequestVerificationLink;
       });
       return;
     }
@@ -443,23 +401,16 @@ extension _LoginPageActions on _LoginPageState {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(
-            _authText(en: 'Email not verified', lv: 'E-pasts nav verificēts'),
-          ),
-          content: Text(
-            _authText(
-              en: 'Send verification link to $email?',
-              lv: 'Nosūtīt verifikācijas saiti uz $email?',
-            ),
-          ),
+          title: Text(context.l10nEn.authEmailNotVerified),
+          content: Text(context.l10nEn.authSendVerificationLinkEmail(email)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(_authText(en: 'Cancel', lv: 'Atcelt')),
+              child: Text(context.l10nEn.authCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(_authText(en: 'Send link', lv: 'Sūtīt saiti')),
+              child: Text(context.l10nEn.authSendLink),
             ),
           ],
         );
@@ -475,12 +426,7 @@ extension _LoginPageActions on _LoginPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _authText(
-          en: 'Verification link sent. Check your email.',
-          lv: 'Verifikācijas saite nosūtīta. Pārbaudi e-pastu.',
-        ),
-      );
+      _showSnack(context.l10nEn.authVerificationLinkSentCheckEmail);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -493,10 +439,8 @@ extension _LoginPageActions on _LoginPageState {
         return;
       }
       _updateState(() {
-        _errorText = _authText(
-          en: 'Could not send verification link. Please try again.',
-          lv: 'Neizdevās nosūtīt verifikācijas saiti. Mēģini vēlreiz.',
-        );
+        _errorText =
+            context.l10nEn.authCouldNotSendVerificationLinkPleaseTryAgain;
       });
     }
   }
@@ -508,10 +452,9 @@ extension _LoginPageActions on _LoginPageState {
     final email = rawEmail.trim().toLowerCase();
     final message = backendMessage.trim().isNotEmpty
         ? backendMessage.trim()
-        : _authText(
-            en: 'Verification email sent. Please verify your email before logging in.',
-            lv: 'Verifikācijas e-pasts nosūtīts. Pirms ielogošanās verificē e-pastu.',
-          );
+        : context
+              .l10nEn
+              .authVerificationEmailSentPleaseVerifyEmailBeforeLogging;
 
     _updateState(() {
       _mode = _AuthMode.login;
@@ -524,22 +467,20 @@ extension _LoginPageActions on _LoginPageState {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: Text(
-            _authText(en: 'Verify your email', lv: 'Verificē savu e-pastu'),
-          ),
+          title: Text(context.l10nEn.authVerifyEmail),
           content: Text(
             email.isEmpty
                 ? message
-                : '$message\n\n${_authText(en: 'Email:', lv: 'E-pasts:')} $email',
+                : '$message\n\n${context.l10nEn.authEmailLabel} $email',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(_authText(en: 'Close', lv: 'Aizvērt')),
+              child: Text(context.l10nEn.authClose),
             ),
             FilledButton(
               onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(_authText(en: 'Resend link', lv: 'Sūtīt vēlreiz')),
+              child: Text(context.l10nEn.authResendLink),
             ),
           ],
         );
@@ -555,12 +496,7 @@ extension _LoginPageActions on _LoginPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _authText(
-          en: 'Verification link sent. Check your email.',
-          lv: 'Verifikācijas saite nosūtīta. Pārbaudi e-pastu.',
-        ),
-      );
+      _showSnack(context.l10nEn.authVerificationLinkSentCheckEmail);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -573,10 +509,8 @@ extension _LoginPageActions on _LoginPageState {
         return;
       }
       _updateState(() {
-        _errorText = _authText(
-          en: 'Could not send verification link. Please try again.',
-          lv: 'Neizdevās nosūtīt verifikācijas saiti. Mēģini vēlreiz.',
-        );
+        _errorText =
+            context.l10nEn.authCouldNotSendVerificationLinkPleaseTryAgain;
       });
     }
   }

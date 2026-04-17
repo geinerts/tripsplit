@@ -25,18 +25,10 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
     final netColor = item.net < 0 ? negativeColor : positiveColor;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final statusText = item.net > 0
-        ? _localizedText(
-            context,
-            en: 'Gets back from the group',
-            lv: 'Jāsaņem no grupas',
-          )
+        ? context.l10n.workspaceGetsBackFromTheGroup
         : item.net < 0
-        ? _localizedText(context, en: 'Owes to the group', lv: 'Parādā grupai')
-        : _localizedText(
-            context,
-            en: 'Settled with the group',
-            lv: 'Norēķināts ar grupu',
-          );
+        ? context.l10n.workspaceOwesToTheGroup
+        : context.l10n.workspaceSettledWithTheGroup;
 
     await showModalBottomSheet<void>(
       context: context,
@@ -161,11 +153,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                   Expanded(
                                     child: _buildBalanceStatCard(
                                       context,
-                                      label: _localizedText(
-                                        context,
-                                        en: 'Total Paid',
-                                        lv: 'Kopā samaksāts',
-                                      ),
+                                      label: context.l10n.workspaceTotalPaid,
                                       value: _formatMoney(
                                         context,
                                         item.paid,
@@ -178,11 +166,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                   Expanded(
                                     child: _buildBalanceStatCard(
                                       context,
-                                      label: _localizedText(
-                                        context,
-                                        en: 'Total Owes',
-                                        lv: 'Kopā parādā',
-                                      ),
+                                      label: context.l10n.workspaceTotalOwes,
                                       value: _formatMoney(
                                         context,
                                         item.owed,
@@ -195,11 +179,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                _localizedText(
-                                  context,
-                                  en: 'Transaction history',
-                                  lv: 'Transakciju vēsture',
-                                ),
+                                context.l10n.workspaceTransactionHistory,
                                 style: Theme.of(context).textTheme.titleLarge
                                     ?.copyWith(
                                       fontWeight: FontWeight.w800,
@@ -219,11 +199,9 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                     borderRadius: BorderRadius.circular(18),
                                   ),
                                   child: Text(
-                                    _localizedText(
-                                      context,
-                                      en: 'No transactions yet for this member.',
-                                      lv: 'Šim dalībniekam vēl nav transakciju.',
-                                    ),
+                                    context
+                                        .l10n
+                                        .workspaceNoTransactionsYetForThisMember,
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodyMedium,
@@ -341,10 +319,8 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                   children: [
                                     _OverviewMetaPill(
                                       icon: Icons.swap_horiz_rounded,
-                                      label: _localizedText(
-                                        context,
-                                        en: 'Settlements: ${linkedSettlements.length}',
-                                        lv: 'Norēķini: ${linkedSettlements.length}',
+                                      label: context.l10n.workspaceSettlements(
+                                        linkedSettlements.length,
                                       ),
                                       color: AppDesign.lightPrimary,
                                     ),
@@ -386,13 +362,9 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
         transactions.add(
           _MemberTransactionEntry(
             title: title,
-            subtitle: _localizedText(
-              context,
-              en: date.isEmpty ? 'Paid for group' : 'Paid for group • $date',
-              lv: date.isEmpty
-                  ? 'Apmaksāts grupai'
-                  : 'Apmaksāts grupai • $date',
-            ),
+            subtitle: date.isEmpty
+                ? context.l10n.workspacePaidForGroup
+                : context.l10n.workspacePaidForGroupDate(date),
             amount: expense.amount,
             isPositive: true,
             icon: Icons.account_balance_wallet_outlined,
@@ -426,13 +398,9 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
         transactions.add(
           _MemberTransactionEntry(
             title: title,
-            subtitle: _localizedText(
-              context,
-              en: date.isEmpty
-                  ? 'Share of expense'
-                  : 'Share of expense • $date',
-              lv: date.isEmpty ? 'Dalība izdevumā' : 'Dalība izdevumā • $date',
-            ),
+            subtitle: date.isEmpty
+                ? context.l10n.workspaceShareOfExpense
+                : context.l10n.workspaceShareOfExpenseDate(date),
             amount: line.owes,
             isPositive: false,
             icon: Icons.call_received_rounded,

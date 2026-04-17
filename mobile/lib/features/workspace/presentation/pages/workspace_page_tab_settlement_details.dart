@@ -47,85 +47,47 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
 
             final steps = <_SettlementFlowStep>[
               _SettlementFlowStep(
-                title: _localizedText(
-                  sheetContext,
-                  en: 'Trip finished',
-                  lv: 'Trip pabeigts',
-                ),
+                title: sheetContext.l10n.workspaceTripFinished,
                 subtitle: isTripFinished
-                    ? _localizedText(
-                        sheetContext,
-                        en: 'Settlements are unlocked for this trip.',
-                        lv: 'Norēķini šim tripam ir atvērti.',
-                      )
-                    : _localizedText(
-                        sheetContext,
-                        en: 'Finish trip to start settlements.',
-                        lv: 'Pabeidz trip, lai sāktu norēķinus.',
-                      ),
+                    ? sheetContext
+                          .l10n
+                          .workspaceSettlementsAreUnlockedForThisTrip
+                    : sheetContext.l10n.workspaceFinishTripToStartSettlements,
                 icon: Icons.flag_rounded,
                 isDone: isTripFinished,
                 completedAtRaw: isTripFinished ? tripFinishedAt : null,
               ),
               _SettlementFlowStep(
-                title: _localizedText(
-                  sheetContext,
-                  en: 'Paid',
-                  lv: 'Apmaksāts',
-                ),
+                title: sheetContext.l10n.paidLabel,
                 subtitle: isPaid
-                    ? _localizedText(
-                        sheetContext,
-                        en: '$fromName marked transfer as sent.',
-                        lv: '$fromName atzīmēja pārskaitījumu kā nosūtītu.',
-                      )
-                    : _localizedText(
-                        sheetContext,
-                        en: 'Waiting for $fromName to mark as paid.',
-                        lv: 'Gaida, kad $fromName atzīmēs kā apmaksātu.',
+                    ? sheetContext.l10n.workspaceMarkedTransferAsSent(fromName)
+                    : sheetContext.l10n.workspaceWaitingForToMarkAsPaid(
+                        fromName,
                       ),
                 icon: Icons.payments_rounded,
                 isDone: isPaid,
                 completedAtRaw: isPaid ? paidAt : null,
               ),
               _SettlementFlowStep(
-                title: _localizedText(
-                  sheetContext,
-                  en: 'Confirmed',
-                  lv: 'Apstiprināts',
-                ),
+                title: sheetContext.l10n.statusConfirmed,
                 subtitle: isConfirmed
-                    ? _localizedText(
-                        sheetContext,
-                        en: '$toName confirmed receiving the payment.',
-                        lv: '$toName apstiprināja maksājuma saņemšanu.',
+                    ? sheetContext.l10n.workspaceConfirmedReceivingThePayment(
+                        toName,
                       )
-                    : _localizedText(
-                        sheetContext,
-                        en: 'Waiting for $toName to confirm.',
-                        lv: 'Gaida, kad $toName apstiprinās.',
-                      ),
+                    : sheetContext.l10n.workspaceWaitingForToConfirm(toName),
                 icon: Icons.verified_rounded,
                 isDone: isConfirmed,
                 completedAtRaw: isConfirmed ? confirmedAt : null,
               ),
               _SettlementFlowStep(
-                title: _localizedText(
-                  sheetContext,
-                  en: 'Settled',
-                  lv: 'Norēķināts',
-                ),
+                title: sheetContext.l10n.settledStatus,
                 subtitle: isSettled
-                    ? _localizedText(
-                        sheetContext,
-                        en: 'All trip settlements are fully completed.',
-                        lv: 'Visi trip norēķini ir pilnībā pabeigti.',
-                      )
-                    : _localizedText(
-                        sheetContext,
-                        en: 'Final state after all transfers are confirmed.',
-                        lv: 'Gala stāvoklis, kad visi pārskaitījumi apstiprināti.',
-                      ),
+                    ? sheetContext
+                          .l10n
+                          .workspaceAllTripSettlementsAreFullyCompleted
+                    : sheetContext
+                          .l10n
+                          .workspaceFinalStateAfterAllTransfersAreConfirmed,
                 icon: Icons.done_all_rounded,
                 isDone: isSettled,
                 completedAtRaw: isSettled ? settledAt : null,
@@ -187,11 +149,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    _localizedText(
-                                      sheetContext,
-                                      en: 'Settlement flow',
-                                      lv: 'Norēķina plūsma',
-                                    ),
+                                    sheetContext.l10n.workspaceSettlementFlow,
                                     style: Theme.of(sheetContext)
                                         .textTheme
                                         .titleLarge
@@ -220,11 +178,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                       Expanded(
                                         child: _buildSettlementPartyCard(
                                           context: sheetContext,
-                                          label: _localizedText(
-                                            sheetContext,
-                                            en: 'From',
-                                            lv: 'No',
-                                          ),
+                                          label: sheetContext.l10n.tripsFrom,
                                           name: fromName,
                                           icon: Icons.north_east_rounded,
                                         ),
@@ -252,11 +206,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                       Expanded(
                                         child: _buildSettlementPartyCard(
                                           context: sheetContext,
-                                          label: _localizedText(
-                                            sheetContext,
-                                            en: 'To',
-                                            lv: 'Uz',
-                                          ),
+                                          label: sheetContext.l10n.tripsTo,
                                           name: toName,
                                           icon: Icons.south_west_rounded,
                                         ),
@@ -286,11 +236,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          _localizedText(
-                                            sheetContext,
-                                            en: 'Amount',
-                                            lv: 'Summa',
-                                          ),
+                                          sheetContext.l10n.amountLabel,
                                           style: Theme.of(sheetContext)
                                               .textTheme
                                               .bodyMedium
@@ -352,11 +298,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    _localizedText(
-                                      sheetContext,
-                                      en: 'Actions',
-                                      lv: 'Darbības',
-                                    ),
+                                    sheetContext.l10n.workspaceActions,
                                     style: Theme.of(sheetContext)
                                         .textTheme
                                         .titleMedium
@@ -406,16 +348,12 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                   else
                                     Text(
                                       isConfirmed
-                                          ? _localizedText(
-                                              sheetContext,
-                                              en: 'Transfer is confirmed.',
-                                              lv: 'Pārskaitījums ir apstiprināts.',
-                                            )
-                                          : _localizedText(
-                                              sheetContext,
-                                              en: 'Waiting for the other member to complete the next step.',
-                                              lv: 'Gaida, kad otrs dalībnieks pabeigs nākamo soli.',
-                                            ),
+                                          ? sheetContext
+                                                .l10n
+                                                .workspaceTransferIsConfirmed
+                                          : sheetContext
+                                                .l10n
+                                                .workspaceWaitingForTheOtherMemberToCompleteTheNextStep,
                                       style: Theme.of(sheetContext)
                                           .textTheme
                                           .bodyMedium
@@ -445,10 +383,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                         size: 17,
                                       ),
                                       label: Text(
-                                        _plainLocalizedText(
-                                          en: 'Send reminder',
-                                          lv: 'Nosūtīt atgādinājumu',
-                                        ),
+                                        context.l10n.workspaceSendReminder,
                                       ),
                                     ),
                                   ],
@@ -715,10 +650,10 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.light;
     final stateLabel = step.isDone
-        ? _localizedText(context, en: 'Done', lv: 'Pabeigts')
+        ? context.l10n.doneStatus
         : (isCurrent
-              ? _localizedText(context, en: 'In progress', lv: 'Procesā')
-              : _localizedText(context, en: 'Pending', lv: 'Gaida'));
+              ? context.l10n.workspaceInProgress
+              : context.l10n.statusPending);
     final stateColor = step.isDone
         ? semantic.flowStepDone
         : (isCurrent ? semantic.flowStepCurrent : semantic.flowStepPending);
@@ -816,12 +751,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      completedAtLabel ??
-                          _localizedText(
-                            context,
-                            en: 'Time unknown',
-                            lv: 'Laiks nav zināms',
-                          ),
+                      completedAtLabel ?? context.l10n.workspaceTimeUnknown,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontWeight: FontWeight.w600,
@@ -1125,10 +1055,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                                     size: 17,
                                                   ),
                                                   label: Text(
-                                                    _plainLocalizedText(
-                                                      en: 'Remind',
-                                                      lv: 'Atgādināt',
-                                                    ),
+                                                    context
+                                                        .l10n
+                                                        .workspaceRemind,
                                                   ),
                                                 ),
                                               if (item.canMarkSent)

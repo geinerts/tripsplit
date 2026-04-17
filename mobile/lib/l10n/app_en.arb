@@ -1,683 +1,1147 @@
 {
-   "@@locale" : "en",
-   "@addedMembersCount" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@breakdownConfirmedCount" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@breakdownPendingCount" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@breakdownSentCount" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@breakdownSuggestedCount" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@createdByLine" : {
-      "placeholders" : {
-         "creator" : {},
-         "date" : {}
-      }
-   },
-   "@currentEmailLabel" : {
-      "placeholders" : {
-         "email" : {}
-      }
-   },
-   "@directlyExplainedByExpenses" : {
-      "placeholders" : {
-         "amount" : {}
-      }
-   },
-   "@exactAmountWithValue" : {
-      "placeholders" : {
-         "value" : {}
-      }
-   },
-   "@exactSplitMustMatchTotal" : {
-      "placeholders" : {
-         "amount" : {}
-      }
-   },
-   "@expenseIdDate" : {
-      "placeholders" : {
-         "date" : {},
-         "id" : {}
-      }
-   },
-   "@expenseImpactLine" : {
-      "placeholders" : {
-         "date" : {},
-         "owes" : {},
-         "paid" : {}
-      }
-   },
-   "@expenseWithId" : {
-      "placeholders" : {
-         "id" : {}
-      }
-   },
-   "@expensesCount" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@forParticipants" : {
-      "placeholders" : {
-         "participants" : {}
-      }
-   },
-   "@fromDirection" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@fromToLine" : {
-      "placeholders" : {
-         "from" : {},
-         "to" : {}
-      }
-   },
-   "@helloUser" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@memberToPaySummary" : {
-      "placeholders" : {
-         "confirmed" : {},
-         "total" : {},
-         "waiting" : {}
-      }
-   },
-   "@moreCount" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@noExpensesByUserYet" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@noteMustBeMaxChars" : {
-      "placeholders" : {
-         "max" : {}
-      }
-   },
-   "@offlineQueuePendingChanges" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@paidOwesLine" : {
-      "placeholders" : {
-         "owes" : {},
-         "paid" : {}
-      }
-   },
-   "@payerName" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@percentWithValue" : {
-      "placeholders" : {
-         "value" : {}
-      }
-   },
-   "@pickedCycleCompleted" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@pickedUser" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@queueAddExpenseAmount" : {
-      "placeholders" : {
-         "amount" : {}
-      }
-   },
-   "@queueDeleteExpenseWithId" : {
-      "placeholders" : {
-         "id" : {}
-      }
-   },
-   "@queueUpdateExpenseWithId" : {
-      "placeholders" : {
-         "id" : {}
-      }
-   },
-   "@queuedChangesTitle" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@queuedCountLabel" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@randomCycleDrawLeft" : {
-      "placeholders" : {
-         "cycleNo" : {},
-         "drawNo" : {},
-         "remaining" : {}
-      }
-   },
-   "@selectedFileLabel" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@settlementConfirmedProgress" : {
-      "placeholders" : {
-         "confirmed" : {},
-         "total" : {}
-      }
-   },
-   "@settlementCountLabel" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@settlementImpactWithFilter" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@settlementWithId" : {
-      "placeholders" : {
-         "id" : {}
-      }
-   },
-   "@sharesWithValue" : {
-      "placeholders" : {
-         "value" : {}
-      }
-   },
-   "@splitLabelValue" : {
-      "placeholders" : {
-         "value" : {}
-      }
-   },
-   "@splitModeEqual" : {
-      "placeholders" : {
-         "target" : {}
-      }
-   },
-   "@splitModeExact" : {
-      "placeholders" : {
-         "target" : {}
-      }
-   },
-   "@splitModePercent" : {
-      "placeholders" : {
-         "target" : {}
-      }
-   },
-   "@splitModeShares" : {
-      "placeholders" : {
-         "target" : {}
-      }
-   },
-   "@statusWithValue" : {
-      "placeholders" : {
-         "status" : {}
-      }
-   },
-   "@suggestedTransferRows" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@toDirection" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@tripCreated" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@tripStatusWithValue" : {
-      "placeholders" : {
-         "status" : {}
-      }
-   },
-   "@tripWithId" : {
-      "placeholders" : {
-         "id" : {}
-      }
-   },
-   "@unreadUpdates" : {
-      "placeholders" : {
-         "count" : {}
-      }
-   },
-   "@userIdLabel" : {
-      "placeholders" : {
-         "id" : {}
-      }
-   },
-   "@userPaidOwesNetLine" : {
-      "placeholders" : {
-         "net" : {},
-         "owes" : {},
-         "paid" : {}
-      }
-   },
-   "@userWithId" : {
-      "placeholders" : {
-         "id" : {}
-      }
-   },
-   "@whoOwesWhatWithFilter" : {
-      "placeholders" : {
-         "name" : {}
-      }
-   },
-   "@youShouldPay" : {
-      "placeholders" : {
-         "amount" : {}
-      }
-   },
-   "@youShouldReceive" : {
-      "placeholders" : {
-         "amount" : {}
-      }
-   },
-   "accountSectionTitle" : "Account",
-   "activeStatus" : "Active",
-   "activeTripPlural" : "active trips",
-   "activeTripSingle" : "active trip",
-   "activeTrips" : "Active trips",
-   "activitiesComingSoon" : "Activities section coming soon.",
-   "addAction" : "Add",
-   "addExpenseTitle" : "Add expense",
-   "addExpensesAction" : "Add expenses",
-   "addMembersAction" : "Add members",
-   "addTripMembersTitle" : "Add trip members",
-   "addedMembersCount" : "{count, plural, one{{count} member added.} other{{count} members added.}}",
-   "allCaughtUp" : "All caught up",
-   "allFilter" : "All",
-   "allMembersLabel" : "All members",
-   "allPaymentsConfirmed" : "All payments are confirmed.",
-   "allTrips" : "All trips",
-   "amountHint" : "12.50",
-   "amountLabel" : "Amount",
-   "amountMustBeGreaterThanZero" : "Amount must be greater than 0.",
-   "appearance" : "Appearance",
-   "archivedStatus" : "Archived",
-   "authSubtitleLogin" : "Split travel expenses with friends",
-   "authSubtitleRegister" : "Create account and start splitting trips",
-   "breakdownConfirmedCount" : "confirmed: {count}",
-   "breakdownPendingCount" : "pending: {count}",
-   "breakdownSentCount" : "sent: {count}",
-   "breakdownSuggestedCount" : "suggested: {count}",
-   "cancelAction" : "Cancel",
-   "changeEmailWithPasswordHelper" : "Enter your password to change email.",
-   "chooseReceiptFile" : "Choose receipt file",
-   "completeAccountSetupDescription" : "Set your email and password to complete your account.",
-   "completeAccountSetupTitle" : "Complete account setup",
-   "confirmReceivedAction" : "Confirm received",
-   "confirmedAllSettlementsArchived" : "All settlements confirmed. Trip archived.",
-   "confirmedAsReceived" : "Confirmed as received.",
-   "confirmedLabel" : "Confirmed",
-   "couldNotOpenReceiptLink" : "Could not open receipt link.",
-   "createAction" : "Create",
-   "createFirstTripHint" : "Create your first trip to get started.",
-   "createNewTripTitle" : "Create new trip",
-   "createTripAction" : "Create trip",
-   "createTripFirst" : "Create a trip first.",
-   "createdByLine" : "{date}  -  Created by {creator}",
-   "creatorMustFinishTripFirst" : "Trip creator must finish the trip to start settlement confirmation.",
-   "currentEmailLabel" : "Current email: {email}",
-   "currentReceiptAttached" : "Current receipt is attached.",
-   "dateFormatHint" : "YYYY-MM-DD",
-   "dateLabel" : "Date",
-   "dateMustMatchFormat" : "Date must match YYYY-MM-DD.",
-   "dateUnknown" : "Date unknown",
-   "deleteAction" : "Delete",
-   "deleteExpenseConfirmQuestion" : "Delete this expense?",
-   "deleteExpenseTitle" : "Delete expense",
-   "directlyExplainedByExpenses" : "Directly explained by expenses: {amount}",
-   "doneStatus" : "Done",
-   "editAction" : "Edit",
-   "editExpenseTitle" : "Edit expense",
-   "emailAddressLabel" : "Email address",
-   "emailHint" : "you@example.com",
-   "emailLabel" : "Email",
-   "emailRequired" : "Email is required.",
-   "enterValidExactAmounts" : "Enter valid exact amounts for all participants.",
-   "enterValidPercentages" : "Enter valid percentages for all participants.",
-   "equalSplitLabel" : "Equal split",
-   "exactAmountWithValue" : "Exact: {value}",
-   "exactAmountsLabel" : "Exact amounts",
-   "exactSplitMustMatchTotal" : "Exact split must sum to {amount}.",
-   "expenseAdded" : "Expense added.",
-   "expenseBreakdownSubtitle" : "How this member is affected by each expense.",
-   "expenseBreakdownTitle" : "Expense breakdown",
-   "expenseDeleted" : "Expense deleted.",
-   "expenseIdDate" : "Expense #{id}  -  {date}",
-   "expenseImpactLine" : "{date}  -  Paid {paid}  -  Owes {owes}",
-   "expenseUpdated" : "Expense updated.",
-   "expenseWithId" : "Expense #{id}",
-   "expensesCount" : "{count, plural, one{{count} expense} other{{count} expenses}}",
-   "expensesLabel" : "Expenses",
-   "failedToCreateTrip" : "Failed to create trip.",
-   "failedToLoadUsersDirectory" : "Failed to load users directory.",
-   "filterSettlementByMemberSubtitle" : "Filter settlements by member",
-   "finishTripAction" : "Finish trip",
-   "finishTripConfirmationText" : "Finish this trip and start settlements?",
-   "finishTripStartSettlementsAction" : "Finish and start settlements",
-   "finishTripTitle" : "Finish trip",
-   "forParticipants" : "For: {participants}",
-   "forgotPassword" : "Forgot password?",
-   "forgotPasswordSubtitle" : "Enter your email and we will send a password reset link.",
-   "forgotPasswordSuccessMessage" : "If an account with this email exists, we have sent a password reset link.",
-   "forgotPasswordTitle" : "Reset password",
-   "friendsProgressSubtitle" : "Each member and their confirmation state.",
-   "friendsProgressTitle" : "Friends progress",
-   "friendsSectionComingSoon" : "Friends section coming soon.",
-   "fromDirection" : "From {name}",
-   "fromToLine" : "{from} to {to}",
-   "generateTurnAction" : "Generate turn",
-   "hasAccountQuestion" : "Already have an account?",
-   "helloUser" : "Hi, {name}!",
-   "iSentAction" : "I sent",
-   "invalidEmailFormat" : "Invalid email format.",
-   "languageAction" : "Language",
-   "languageEnglish" : "English",
-   "languageLatvian" : "Latviešu",
-   "languageSystem" : "System",
-   "languageSystemSubtitle" : "Use device language",
-   "leaveEmptyKeepPasswordHelper" : "Leave empty to keep current password.",
-   "logInButton" : "Log in",
-   "logOutButton" : "Log out",
-   "logoutFromDeviceQuestion" : "Log out from this device?",
-   "markedAsSent" : "Marked as sent.",
-   "memberSummariesSubtitle" : "Current balance state for both sides.",
-   "memberSummariesTitle" : "Member summaries",
-   "memberToPaySummary" : "To pay {total}  -  confirmed {confirmed}  -  waiting {waiting}",
-   "membersImpactSubtitle" : "Estimated payment impact per member.",
-   "membersImpactTitle" : "Members impact",
-   "membersIncludedInExpense" : "Members included",
-   "membersLabel" : "Members",
-   "moreCount" : "+{count} more",
-   "myFilter" : "My",
-   "myImpactTitle" : "My impact",
-   "firstNameHint" : "Your first name",
-   "firstNameLabel" : "First name",
-   "firstNameLengthValidation" : "First name must be 2-64 characters.",
-   "fullNameHelper" : "Use first and last name in one field.",
-   "fullNameHint" : "e.g. Anna Ozolina",
-   "fullNameLabel" : "Full name",
-   "fullNameValidation" : "Enter first and last name (at least 2 characters each).",
-   "lastNameHint" : "Your last name",
-   "lastNameLabel" : "Last name",
-   "lastNameLengthValidation" : "Last name must be 2-64 characters.",
-   "nameHint" : "Your name",
-   "nameLabel" : "Name",
-   "nameLengthValidation" : "Name must be at least 2 characters.",
-   "navActivities" : "Analytics",
-   "navAddTrip" : "Add trip",
-   "navBalances" : "Balances",
-   "navExpenses" : "Expenses",
-   "navFriends" : "Friends",
-   "navHome" : "Home",
-   "navProfile" : "Profile",
-   "navRandom" : "Random",
-   "netLabel" : "Net",
-   "newPasswordLabel" : "New password",
-   "nicknameHint" : "How friends will see you",
-   "nicknameLabel" : "Nickname",
-   "nicknameLengthValidation" : "Nickname must be at least 2 characters.",
-   "noAccountQuestion" : "No account yet?",
-   "noBalancesYet" : "No balances yet.",
-   "noChangesToSave" : "No changes to save.",
-   "noDirectExpenseLink" : "No direct single-expense link found. This settlement is calculated from full trip balance.",
-   "noExpenseImpactForMember" : "No expense impact for this member.",
-   "noExpensesByUserYet" : "No expenses for {name} yet.",
-   "noExpensesYet" : "No expenses yet.",
-   "noExtraUsersToAdd" : "No extra users to add.",
-   "noInternetDeleteQueued" : "No internet. Delete queued.",
-   "noInternetExpenseQueued" : "No internet. Expense queued.",
-   "noInternetUpdateQueued" : "No internet. Update queued.",
-   "noMatchingRows" : "No matching rows.",
-   "noMembersFound" : "No members found.",
-   "noNewMembersAdded" : "No new members were added.",
-   "noNotePlaceholder" : "No note",
-   "noNotificationsYet" : "No notifications yet.",
-   "noParticipantData" : "No participant data.",
-   "noParticipantsSelected" : "No participants selected.",
-   "noPaymentRowsInTrip" : "No payment rows in this trip.",
-   "noPaymentsNeeded" : "No payments needed.",
-   "noPicksYet" : "No picks yet.",
-   "noSettlementActivityForMember" : "No settlement activity for this member.",
-   "noSettlementRowsYet" : "No settlement rows yet.",
-   "noSettlements" : "No settlements",
-   "noTransferNeededForFilter" : "No transfer needed for selected filter.",
-   "noTransferRowsToShow" : "No transfer rows to show.",
-   "noTripDataLoaded" : "No trip data loaded.",
-   "noTripsYet" : "No trips yet.",
-   "noUsersFoundYet" : "No users found yet.",
-   "notSetValue" : "Not set",
-   "notYetConfirmedTitle" : "Not yet confirmed",
-   "noteHint" : "Dinner, taxi, tickets...",
-   "noteLabel" : "Note",
-   "noteMustBeMaxChars" : "Note must be at most {max} chars.",
-   "notificationFallbackTitle" : "Notification",
-   "notificationsTitle" : "Notifications",
-   "offlineQueuePendingChanges" : "Offline queue: {count, plural, one{{count} pending change} other{{count} pending changes}}",
-   "offlineQueueStatus" : "Offline queue",
-   "offlineStatus" : "Offline",
-   "onlineStatus" : "Online",
-   "onlyCreatorCanFinishTrip" : "Only trip creator can finish the trip.",
-   "openLabel" : "Open",
-   "openReceiptAction" : "Open receipt",
-   "openSettlements" : "Open settlements",
-   "overviewTitle" : "Overview",
-   "owesLabel" : "Owes",
-   "paidByLabel" : "Paid by",
-   "paidLabel" : "Paid",
-   "paidOwesLine" : "Paid {paid}  -  Owes {owes}",
-   "participantsEmptyMeansAll" : "Participants (empty = all members)",
-   "participantsTitle" : "Participants",
-   "passwordLabel" : "Password",
-   "passwordComplexityHelper" : "Use at least 1 uppercase letter, 1 number and 1 symbol.",
-   "passwordComplexityValidation" : "Password must include 1 uppercase letter, 1 number and 1 symbol.",
-   "passwordMinLength" : "Password must be at least 8 characters.",
-   "passwordMinLengthShort" : "Password must be at least 6 characters.",
-   "passwordResetComingSoon" : "Password reset coming soon.",
-   "passwordsDoNotMatch" : "Passwords do not match.",
-   "payerName" : "{name} (payer)",
-   "pendingLabel" : "Pending",
-   "pendingPaymentsSubtitle" : "Payments still waiting for full confirmation.",
-   "percentLabel" : "Percent",
-   "percentSplitMustBe100" : "Percent split must sum to exactly 100%.",
-   "percentWithValue" : "{value}",
-   "percentagesLabel" : "Percentages",
-   "pickAtLeastOneParticipant" : "Pick at least one participant.",
-   "pickMembersGenerateTurn" : "Pick members and generate a turn.",
-   "pickedCycleCompleted" : "{name} picked. Cycle completed.",
-   "pickedUser" : "{name} picked.",
-   "profileRefreshCachedData" : "Could not refresh profile. Showing cached data.",
-   "profileTitle" : "Profile",
-   "profileUpdated" : "Profile updated.",
-   "uploadAvatarAction" : "Upload avatar",
-   "takePhotoAction" : "Take a picture",
-   "chooseFromLibraryAction" : "Choose from Library",
-   "removeAvatarAction" : "Remove avatar",
-   "avatarUpdatedMessage" : "Avatar updated.",
-   "avatarRemovedMessage" : "Avatar removed.",
-   "avatarFileTooLarge" : "Avatar file is too large (max 5 MB).",
-   "avatarPickFailed" : "Could not load avatar image.",
-   "queueAddExpense" : "Add expense",
-   "queueAddExpenseAmount" : "Queued: add expense {amount}",
-   "queueDeleteExpense" : "Delete expense",
-   "queueDeleteExpenseWithId" : "Queued: delete expense #{id}",
-   "queuePendingStatus" : "Queue pending",
-   "queueUpdateExpense" : "Update expense",
-   "queueUpdateExpenseWithId" : "Queued: update expense #{id}",
-   "queuedChange" : "Queued change",
-   "queuedChangesTitle" : "Queued changes ({count})",
-   "queuedCountLabel" : "Queued ({count})",
-   "randomCycleDrawLeft" : "Cycle {cycleNo}, draw {drawNo} - {remaining} left",
-   "receiptFallbackName" : "receipt",
-   "receiptLinkInvalid" : "Receipt link is invalid.",
-   "receiptOptionalLabel" : "Receipt (optional)",
-   "recentPicksTitle" : "Recent picks",
-   "reloadProfile" : "Reload profile",
-   "rememberMe" : "Remember me",
-   "removeCurrentReceipt" : "Remove current receipt",
-   "repeatNewPasswordLabel" : "Repeat new password",
-   "repeatPasswordLabel" : "Repeat password",
-   "requestFailedTryAgain" : "Request failed. Try again.",
-   "retryAction" : "Retry",
-   "rowsLabel" : "Rows",
-   "backToLoginAction" : "Back to login",
-   "saveAction" : "Save",
-   "saveCredentialsButton" : "Save credentials",
-   "saveProfileButton" : "Save profile",
-   "sendResetLinkButton" : "Send reset link",
-   "searchUsersHint" : "Search people by name or email",
-   "selectedPeopleLabel" : "Selected people",
-   "noSearchMatches" : "No matching users found.",
-   "savingButton" : "Saving...",
-   "selectAtLeastTwoMembers" : "Select at least two members.",
-   "selectMembersHint" : "Select members",
-   "selectedFileLabel" : "Selected: {name}",
-   "selectedLabel" : "Selected",
-   "selectedUserFallback" : "Selected user",
-   "settings" : "Settings",
-   "settleUpAction" : "Settle up",
-   "settledLabel" : "Settled",
-   "settledStatus" : "Settled",
-   "settlementActivitySubtitle" : "Transfers linked to this member.",
-   "settlementActivityTitle" : "Settlement activity",
-   "settlementCompletedTitle" : "Settlement completed",
-   "settlementConfirmedProgress" : "{confirmed}/{total} confirmed",
-   "settlementCountLabel" : "{count} settlements",
-   "settlementImpactTitle" : "Settlement impact",
-   "settlementImpactWithFilter" : "Settlement impact: {name}",
-   "settlementInProgress" : "Settlement in progress",
-   "settlementInProgressTitle" : "Settlement in progress",
-   "settlementLabel" : "Settlement",
-   "settlementOverviewArchivedSubtitle" : "Trip archived. All settlements completed.",
-   "settlementOverviewInProgressSubtitle" : "Track settlement confirmations.",
-   "settlementOverviewPreviewSubtitle" : "Preview transfers for when trip finishes.",
-   "settlementPreview" : "Settlement preview",
-   "settlementPreviewTitle" : "Settlement preview",
-   "settlementProgressTripArchived" : "Trip archived",
-   "settlementWithId" : "Settlement #{id}",
-   "settlements" : "Settlements",
-   "settlementsAlreadyCompletedSubtitle" : "Settlements already completed.",
-   "settlementsDone" : "Settlements done",
-   "settlingStatus" : "Settling",
-   "shareUnit" : "share",
-   "sharesLabel" : "Shares",
-   "sharesMustBePositiveIntegers" : "Shares must be positive whole numbers.",
-   "sharesWithValue" : "Shares: {value}",
-   "showActiveTrips" : "Show active trips",
-   "signUpButton" : "Sign up",
-   "splitBreakdownSubtitle" : "How the expense is split",
-   "splitBreakdownTitle" : "Split breakdown",
-   "splitHintEqual" : "Split equally between selected participants.",
-   "splitHintExact" : "Enter exact amount for each participant. Sum must match total.",
-   "splitHintPercent" : "Enter percentage for each participant. Sum must be 100%.",
-   "splitHintShares" : "Enter share units (1, 2, 3...). Cost is split proportionally.",
-   "splitLabel" : "Split",
-   "splitLabelValue" : "Split: {value}",
-   "splitModeEqual" : "Equal split ({target})",
-   "splitModeExact" : "Exact amounts ({target})",
-   "splitModeLabel" : "Split mode",
-   "splitModePercent" : "Percentages ({target})",
-   "splitModeShares" : "Shares ({target})",
-   "statusConfirmed" : "Confirmed",
-   "statusPending" : "Pending",
-   "statusSent" : "Sent",
-   "statusSuggested" : "Suggested",
-   "statusWithValue" : "Status: {status}",
-   "suggestedTransferDirections" : "Suggested transfer directions",
-   "suggestedTransferFromExpense" : "Suggested transfer from expense",
-   "suggestedTransferRows" : "{count, plural, one{{count} suggested transfer row} other{{count} suggested transfer rows}}",
-   "suggestedTransfersSubtitle" : "Expected payer -> receiver rows.",
-   "suggestedTransfersTitle" : "Suggested transfers",
-   "summarySettledUp" : "Settled up",
-   "summaryYouAreOwed" : "They owe you",
-   "summaryYouOwe" : "You owe",
-   "syncAction" : "Sync",
-   "syncNowAction" : "Sync now",
-   "syncingStatus" : "Syncing",
-   "tapToViewDetails" : "Tap to view details",
-   "themeModeDark" : "Dark",
-   "themeModeDarkSubtitle" : "Soft dark (not pure black)",
-   "themeModeLight" : "Light",
-   "themeModeSystem" : "System",
-   "themeModeSystemSubtitle" : "Use device appearance",
-   "toDirection" : "To {name}",
-   "totalLabel" : "Total",
-   "travelerFallbackName" : "Traveler",
-   "tripAlreadyClosed" : "Trip already closed.",
-   "tripArchivedReadOnly" : "Trip is archived. Read-only mode.",
-   "tripClosedExpenseEditingDisabled" : "Trip is closed. Expense editing is disabled.",
-   "tripClosedExpensesReadOnly" : "Trip is closed. Expenses are read-only.",
-   "tripClosedRandomDisabled" : "Trip is closed. Random draw is disabled.",
-   "tripCreated" : "Trip \"{name}\" created.",
-   "tripFinished" : "Trip finished.",
-   "tripFinishedCompleteSettlements" : "Trip is finished. Complete settlements.",
-   "tripFinishedSettlementStarted" : "Trip finished. Settlement started.",
-   "tripFullySettledArchived" : "Trip fully settled and archived.",
-   "tripNameHint" : "Austria ski trip",
-   "tripNameLabel" : "Trip name",
-   "tripNameLengthValidation" : "Trip name must be at least 2 characters.",
-   "tripSnapshotTitle" : "Trip snapshot",
-   "tripTitleShort" : "Trip",
-   "tripStatusWithValue" : "Trip status: {status}",
-   "tripWithId" : "Trip #{id}",
-   "unexpectedErrorLoadingProfile" : "Unexpected error loading profile",
-   "unexpectedErrorLoadingTripData" : "Unexpected error loading trip data",
-   "unexpectedErrorLoadingTrips" : "Unexpected error loading trips",
-   "unexpectedErrorSavingChanges" : "Unexpected error saving changes",
-   "unexpectedErrorSavingCredentials" : "Unexpected error saving credentials",
-   "unexpectedErrorUpdatingProfile" : "Unexpected error updating profile",
-   "unknownError" : "Unknown error",
-   "unknownLabel" : "Unknown",
-   "unreadLabel" : "Unread",
-   "unreadUpdates" : "{count, plural, one{{count} unread update} other{{count} unread updates}}",
-   "missingTripRouteArgument" : "Missing trip route argument.",
-   "userIdLabel" : "User ID: {id}",
-   "userPaidOwesNetLine" : "Paid {paid}  -  Owes {owes}  -  Net {net}",
-   "userWithId" : "User {id}",
-   "valueLabel" : "Value",
-   "viewAllTrips" : "View all trips",
-   "viewByPersonTitle" : "View by person",
-   "whoOwesWhatSubtitle" : "Who paid and who owes.",
-   "whoOwesWhatTitle" : "Who owes what",
-   "whoOwesWhatWithFilter" : "Who owes what: {name}",
-   "whyPaymentExistsSubtitle" : "Expense rows contributing to this transfer.",
-   "whyPaymentExistsTitle" : "Why this payment exists",
-   "youLabel" : "You",
-   "youSettledForExpense" : "You settled for this expense.",
-   "youShouldPay" : "You should pay {amount}",
-   "youShouldReceive" : "You should receive {amount}",
-   "yourShare" : "Your share",
-   "yourTrips" : "Your trips"
+  "@@locale": "en",
+  "@addedMembersCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownConfirmedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSentCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSuggestedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@createdByLine": {
+    "placeholders": {
+      "creator": {},
+      "date": {}
+    }
+  },
+  "@currentEmailLabel": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "@directlyExplainedByExpenses": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@exactAmountWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@exactSplitMustMatchTotal": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@expenseIdDate": {
+    "placeholders": {
+      "date": {},
+      "id": {}
+    }
+  },
+  "@expenseImpactLine": {
+    "placeholders": {
+      "date": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@expenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@expensesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@forParticipants": {
+    "placeholders": {
+      "participants": {}
+    }
+  },
+  "@fromDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@fromToLine": {
+    "placeholders": {
+      "from": {},
+      "to": {}
+    }
+  },
+  "@helloUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@memberToPaySummary": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {},
+      "waiting": {}
+    }
+  },
+  "@moreCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@noExpensesByUserYet": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@noteMustBeMaxChars": {
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "@offlineQueuePendingChanges": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@paidOwesLine": {
+    "placeholders": {
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@payerName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@percentWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@pickedCycleCompleted": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@pickedUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@queueAddExpenseAmount": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@queueDeleteExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queueUpdateExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queuedChangesTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@queuedCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@randomCycleDrawLeft": {
+    "placeholders": {
+      "cycleNo": {},
+      "drawNo": {},
+      "remaining": {}
+    }
+  },
+  "@selectedFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementConfirmedProgress": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {}
+    }
+  },
+  "@settlementCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@settlementImpactWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@sharesWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitLabelValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitModeEqual": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeExact": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModePercent": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeShares": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@statusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@suggestedTransferRows": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@toDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripCreated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripStatusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@tripWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@unreadUpdates": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@userIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@userPaidOwesNetLine": {
+    "placeholders": {
+      "net": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@userWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@whoOwesWhatWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@youShouldPay": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@youShouldReceive": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountSectionTitle": "Account",
+  "activeStatus": "Active",
+  "activeTripPlural": "active trips",
+  "activeTripSingle": "active trip",
+  "activeTrips": "Active trips",
+  "activitiesComingSoon": "Activities section coming soon.",
+  "addAction": "Add",
+  "addExpenseTitle": "Add expense",
+  "addExpensesAction": "Add expenses",
+  "addMembersAction": "Add members",
+  "addTripMembersTitle": "Add trip members",
+  "addedMembersCount": "{count, plural, one{{count} member added.} other{{count} members added.}}",
+  "allCaughtUp": "All caught up",
+  "allFilter": "All",
+  "allMembersLabel": "All members",
+  "allPaymentsConfirmed": "All payments are confirmed.",
+  "allTrips": "All trips",
+  "amountHint": "12.50",
+  "amountLabel": "Amount",
+  "amountMustBeGreaterThanZero": "Amount must be greater than 0.",
+  "appearance": "Appearance",
+  "archivedStatus": "Archived",
+  "authSubtitleLogin": "Split travel expenses with friends",
+  "authSubtitleRegister": "Create account and start splitting trips",
+  "breakdownConfirmedCount": "confirmed: {count}",
+  "breakdownPendingCount": "pending: {count}",
+  "breakdownSentCount": "sent: {count}",
+  "breakdownSuggestedCount": "suggested: {count}",
+  "cancelAction": "Cancel",
+  "changeEmailWithPasswordHelper": "Enter your password to change email.",
+  "chooseReceiptFile": "Choose receipt file",
+  "completeAccountSetupDescription": "Set your email and password to complete your account.",
+  "completeAccountSetupTitle": "Complete account setup",
+  "confirmReceivedAction": "Confirm received",
+  "confirmedAllSettlementsArchived": "All settlements confirmed. Trip archived.",
+  "confirmedAsReceived": "Confirmed as received.",
+  "confirmedLabel": "Confirmed",
+  "couldNotOpenReceiptLink": "Could not open receipt link.",
+  "createAction": "Create",
+  "createFirstTripHint": "Create your first trip to get started.",
+  "createNewTripTitle": "Create new trip",
+  "createTripAction": "Create trip",
+  "createTripFirst": "Create a trip first.",
+  "createdByLine": "{date}  -  Created by {creator}",
+  "creatorMustFinishTripFirst": "Trip creator must finish the trip to start settlement confirmation.",
+  "currentEmailLabel": "Current email: {email}",
+  "currentReceiptAttached": "Current receipt is attached.",
+  "dateFormatHint": "YYYY-MM-DD",
+  "dateLabel": "Date",
+  "dateMustMatchFormat": "Date must match YYYY-MM-DD.",
+  "dateUnknown": "Date unknown",
+  "deleteAction": "Delete",
+  "deleteExpenseConfirmQuestion": "Delete this expense?",
+  "deleteExpenseTitle": "Delete expense",
+  "directlyExplainedByExpenses": "Directly explained by expenses: {amount}",
+  "doneStatus": "Done",
+  "editAction": "Edit",
+  "editExpenseTitle": "Edit expense",
+  "emailAddressLabel": "Email address",
+  "emailHint": "you@example.com",
+  "emailLabel": "Email",
+  "emailRequired": "Email is required.",
+  "enterValidExactAmounts": "Enter valid exact amounts for all participants.",
+  "enterValidPercentages": "Enter valid percentages for all participants.",
+  "equalSplitLabel": "Equal split",
+  "exactAmountWithValue": "Exact: {value}",
+  "exactAmountsLabel": "Exact amounts",
+  "exactSplitMustMatchTotal": "Exact split must sum to {amount}.",
+  "expenseAdded": "Expense added.",
+  "expenseBreakdownSubtitle": "How this member is affected by each expense.",
+  "expenseBreakdownTitle": "Expense breakdown",
+  "expenseDeleted": "Expense deleted.",
+  "expenseIdDate": "Expense #{id}  -  {date}",
+  "expenseImpactLine": "{date}  -  Paid {paid}  -  Owes {owes}",
+  "expenseUpdated": "Expense updated.",
+  "expenseWithId": "Expense #{id}",
+  "expensesCount": "{count, plural, one{{count} expense} other{{count} expenses}}",
+  "expensesLabel": "Expenses",
+  "failedToCreateTrip": "Failed to create trip.",
+  "failedToLoadUsersDirectory": "Failed to load users directory.",
+  "filterSettlementByMemberSubtitle": "Filter settlements by member",
+  "finishTripAction": "Finish trip",
+  "finishTripConfirmationText": "Finish this trip and start settlements?",
+  "finishTripStartSettlementsAction": "Finish and start settlements",
+  "finishTripTitle": "Finish trip",
+  "forParticipants": "For: {participants}",
+  "forgotPassword": "Forgot password?",
+  "forgotPasswordSubtitle": "Enter your email and we will send a password reset link.",
+  "forgotPasswordSuccessMessage": "If an account with this email exists, we have sent a password reset link.",
+  "forgotPasswordTitle": "Reset password",
+  "friendsProgressSubtitle": "Each member and their confirmation state.",
+  "friendsProgressTitle": "Friends progress",
+  "friendsSectionComingSoon": "Friends section coming soon.",
+  "fromDirection": "From {name}",
+  "fromToLine": "{from} to {to}",
+  "generateTurnAction": "Generate turn",
+  "hasAccountQuestion": "Already have an account?",
+  "helloUser": "Hi, {name}!",
+  "iSentAction": "I sent",
+  "invalidEmailFormat": "Invalid email format.",
+  "languageAction": "Language",
+  "languageEnglish": "English",
+  "languageLatvian": "Latviešu",
+  "languageSpanish": "Spanish",
+  "languageSystem": "System",
+  "languageSystemSubtitle": "Use device language",
+  "leaveEmptyKeepPasswordHelper": "Leave empty to keep current password.",
+  "logInButton": "Log in",
+  "logOutButton": "Log out",
+  "logoutFromDeviceQuestion": "Log out from this device?",
+  "markedAsSent": "Marked as sent.",
+  "memberSummariesSubtitle": "Current balance state for both sides.",
+  "memberSummariesTitle": "Member summaries",
+  "memberToPaySummary": "To pay {total}  -  confirmed {confirmed}  -  waiting {waiting}",
+  "membersImpactSubtitle": "Estimated payment impact per member.",
+  "membersImpactTitle": "Members impact",
+  "membersIncludedInExpense": "Members included",
+  "membersLabel": "Members",
+  "moreCount": "+{count} more",
+  "myFilter": "My",
+  "myImpactTitle": "My impact",
+  "firstNameHint": "Your first name",
+  "firstNameLabel": "First name",
+  "firstNameLengthValidation": "First name must be 2-64 characters.",
+  "fullNameHelper": "Use first and last name in one field.",
+  "fullNameHint": "e.g. Anna Ozolina",
+  "fullNameLabel": "Full name",
+  "fullNameValidation": "Enter first and last name (at least 2 characters each).",
+  "lastNameHint": "Your last name",
+  "lastNameLabel": "Last name",
+  "lastNameLengthValidation": "Last name must be 2-64 characters.",
+  "nameHint": "Your name",
+  "nameLabel": "Name",
+  "nameLengthValidation": "Name must be at least 2 characters.",
+  "navActivities": "Analytics",
+  "navAddTrip": "Add trip",
+  "navBalances": "Balances",
+  "navExpenses": "Expenses",
+  "navFriends": "Friends",
+  "navHome": "Home",
+  "navProfile": "Profile",
+  "navRandom": "Random",
+  "netLabel": "Net",
+  "newPasswordLabel": "New password",
+  "nicknameHint": "How friends will see you",
+  "nicknameLabel": "Nickname",
+  "nicknameLengthValidation": "Nickname must be at least 2 characters.",
+  "noAccountQuestion": "No account yet?",
+  "noBalancesYet": "No balances yet.",
+  "noChangesToSave": "No changes to save.",
+  "noDirectExpenseLink": "No direct single-expense link found. This settlement is calculated from full trip balance.",
+  "noExpenseImpactForMember": "No expense impact for this member.",
+  "noExpensesByUserYet": "No expenses for {name} yet.",
+  "noExpensesYet": "No expenses yet.",
+  "noExtraUsersToAdd": "No extra users to add.",
+  "noInternetDeleteQueued": "No internet. Delete queued.",
+  "noInternetExpenseQueued": "No internet. Expense queued.",
+  "noInternetUpdateQueued": "No internet. Update queued.",
+  "noMatchingRows": "No matching rows.",
+  "noMembersFound": "No members found.",
+  "noNewMembersAdded": "No new members were added.",
+  "noNotePlaceholder": "No note",
+  "noNotificationsYet": "No notifications yet.",
+  "noParticipantData": "No participant data.",
+  "noParticipantsSelected": "No participants selected.",
+  "noPaymentRowsInTrip": "No payment rows in this trip.",
+  "noPaymentsNeeded": "No payments needed.",
+  "noPicksYet": "No picks yet.",
+  "noSettlementActivityForMember": "No settlement activity for this member.",
+  "noSettlementRowsYet": "No settlement rows yet.",
+  "noSettlements": "No settlements",
+  "noTransferNeededForFilter": "No transfer needed for selected filter.",
+  "noTransferRowsToShow": "No transfer rows to show.",
+  "noTripDataLoaded": "No trip data loaded.",
+  "noTripsYet": "No trips yet.",
+  "noUsersFoundYet": "No users found yet.",
+  "notSetValue": "Not set",
+  "notYetConfirmedTitle": "Not yet confirmed",
+  "noteHint": "Dinner, taxi, tickets...",
+  "noteLabel": "Note",
+  "noteMustBeMaxChars": "Note must be at most {max} chars.",
+  "notificationFallbackTitle": "Notification",
+  "notificationsTitle": "Notifications",
+  "notificationFriendInviteTitle": "Friend invite",
+  "notificationFriendInviteBody": "{name} sent you a friend invite.",
+  "notificationFriendInviteBodyGeneric": "You received a friend invite.",
+  "notificationFriendInviteAcceptedTitle": "Invite accepted",
+  "notificationFriendInviteAcceptedBody": "{name} accepted your friend invite.",
+  "notificationFriendInviteAcceptedBodyGeneric": "Your friend invite was accepted.",
+  "notificationFriendInviteRejectedTitle": "Invite declined",
+  "notificationFriendInviteRejectedBody": "{name} declined your friend invite.",
+  "notificationFriendInviteRejectedBodyGeneric": "Your friend invite was declined.",
+  "notificationTripAddedTitle": "Added to trip",
+  "notificationTripAddedBody": "{name} added you to trip \"{trip}\".",
+  "notificationTripAddedBodyNoActor": "You were added to trip \"{trip}\".",
+  "notificationTripAddedBodyGeneric": "You were added to a trip.",
+  "notificationExpenseAddedTitle": "New expense added",
+  "notificationExpenseAddedBodyWithTrip": "{name} added an expense of {amount} in \"{trip}\".",
+  "notificationExpenseAddedBodyWithNote": "{name} added an expense of {amount}: {note}",
+  "notificationExpenseAddedBodyGeneric": "A new expense was added.",
+  "notificationTripFinishedTitle": "Trip finished",
+  "notificationTripFinishedBodySettlementsReady": "{name} finished \"{trip}\". Settlements are ready.",
+  "notificationTripFinishedBodyArchived": "{name} finished \"{trip}\". Trip is archived.",
+  "notificationTripFinishedBodyNoActor": "\"{trip}\" was finished.",
+  "notificationTripFinishedBodyGeneric": "Trip status was updated.",
+  "notificationMemberReadyToSettleTitle": "Member marked ready",
+  "notificationMemberReadyToSettleBody": "{name} is ready to settle in \"{trip}\".",
+  "notificationMemberReadyToSettleBodyNoActor": "A member is ready to settle in \"{trip}\".",
+  "notificationMemberReadyToSettleBodyGeneric": "A member is ready to settle.",
+  "notificationTripReadyToSettleTitle": "All members are ready",
+  "notificationTripReadyToSettleBody": "All members marked ready in \"{trip}\". You can start settlements.",
+  "notificationTripReadyToSettleBodyGeneric": "All members are ready. You can start settlements.",
+  "notificationSettlementReminderTitle": "Settlement reminder",
+  "notificationSettlementReminderBodyMarkSent": "{actor} reminded {target} to mark {amount} as sent.",
+  "notificationSettlementReminderBodyConfirm": "{actor} reminded {target} to confirm receiving {amount}.",
+  "notificationSettlementReminderBodyGeneric": "You received a settlement reminder.",
+  "notificationPaymentReminderTitle": "Payment reminder",
+  "notificationPaymentReminderBody": "Reminder: please mark {amount} as sent to {target} in \"{trip}\".",
+  "notificationPaymentReminderBodyGeneric": "Reminder: please mark the payment as sent.",
+  "notificationConfirmationReminderTitle": "Confirmation reminder",
+  "notificationConfirmationReminderBody": "Reminder: please confirm receiving {amount} from {payer} in \"{trip}\".",
+  "notificationConfirmationReminderBodyGeneric": "Reminder: please confirm receiving the payment.",
+  "notificationSettlementSentTitle": "Transfer marked as sent",
+  "notificationSettlementSentBody": "{name} marked {amount} as sent to you.",
+  "notificationSettlementSentBodyGeneric": "A transfer was marked as sent.",
+  "notificationSettlementConfirmedTitle": "Transfer confirmed",
+  "notificationSettlementConfirmedBody": "{name} confirmed receiving {amount} from you.",
+  "notificationSettlementConfirmedBodyGeneric": "A transfer was confirmed.",
+  "offlineQueuePendingChanges": "Offline queue: {count, plural, one{{count} pending change} other{{count} pending changes}}",
+  "offlineQueueStatus": "Offline queue",
+  "offlineStatus": "Offline",
+  "onlineStatus": "Online",
+  "onlyCreatorCanFinishTrip": "Only trip creator can finish the trip.",
+  "openLabel": "Open",
+  "openReceiptAction": "Open receipt",
+  "openSettlements": "Open settlements",
+  "overviewTitle": "Overview",
+  "owesLabel": "Owes",
+  "paidByLabel": "Paid by",
+  "paidLabel": "Paid",
+  "paidOwesLine": "Paid {paid}  -  Owes {owes}",
+  "participantsEmptyMeansAll": "Participants (empty = all members)",
+  "participantsTitle": "Participants",
+  "passwordLabel": "Password",
+  "passwordComplexityHelper": "Use at least 1 uppercase letter, 1 number and 1 symbol.",
+  "passwordComplexityValidation": "Password must include 1 uppercase letter, 1 number and 1 symbol.",
+  "passwordMinLength": "Password must be at least 8 characters.",
+  "passwordMinLengthShort": "Password must be at least 6 characters.",
+  "passwordResetComingSoon": "Password reset coming soon.",
+  "passwordsDoNotMatch": "Passwords do not match.",
+  "payerName": "{name} (payer)",
+  "pendingLabel": "Pending",
+  "pendingPaymentsSubtitle": "Payments still waiting for full confirmation.",
+  "percentLabel": "Percent",
+  "percentSplitMustBe100": "Percent split must sum to exactly 100%.",
+  "percentWithValue": "{value}",
+  "percentagesLabel": "Percentages",
+  "pickAtLeastOneParticipant": "Pick at least one participant.",
+  "pickMembersGenerateTurn": "Pick members and generate a turn.",
+  "pickedCycleCompleted": "{name} picked. Cycle completed.",
+  "pickedUser": "{name} picked.",
+  "profileRefreshCachedData": "Could not refresh profile. Showing cached data.",
+  "profileTitle": "Profile",
+  "profileUpdated": "Profile updated.",
+  "uploadAvatarAction": "Upload avatar",
+  "takePhotoAction": "Take a picture",
+  "chooseFromLibraryAction": "Choose from Library",
+  "removeAvatarAction": "Remove avatar",
+  "avatarUpdatedMessage": "Avatar updated.",
+  "avatarRemovedMessage": "Avatar removed.",
+  "avatarFileTooLarge": "Avatar file is too large (max 5 MB).",
+  "avatarPickFailed": "Could not load avatar image.",
+  "queueAddExpense": "Add expense",
+  "queueAddExpenseAmount": "Queued: add expense {amount}",
+  "queueDeleteExpense": "Delete expense",
+  "queueDeleteExpenseWithId": "Queued: delete expense #{id}",
+  "queuePendingStatus": "Queue pending",
+  "queueUpdateExpense": "Update expense",
+  "queueUpdateExpenseWithId": "Queued: update expense #{id}",
+  "queuedChange": "Queued change",
+  "queuedChangesTitle": "Queued changes ({count})",
+  "queuedCountLabel": "Queued ({count})",
+  "randomCycleDrawLeft": "Cycle {cycleNo}, draw {drawNo} - {remaining} left",
+  "receiptFallbackName": "receipt",
+  "receiptLinkInvalid": "Receipt link is invalid.",
+  "receiptOptionalLabel": "Receipt (optional)",
+  "recentPicksTitle": "Recent picks",
+  "reloadProfile": "Reload profile",
+  "rememberMe": "Remember me",
+  "removeCurrentReceipt": "Remove current receipt",
+  "repeatNewPasswordLabel": "Repeat new password",
+  "repeatPasswordLabel": "Repeat password",
+  "requestFailedTryAgain": "Request failed. Try again.",
+  "retryAction": "Retry",
+  "rowsLabel": "Rows",
+  "backToLoginAction": "Back to login",
+  "saveAction": "Save",
+  "saveCredentialsButton": "Save credentials",
+  "saveProfileButton": "Save profile",
+  "sendResetLinkButton": "Send reset link",
+  "searchUsersHint": "Search people by name or email",
+  "selectedPeopleLabel": "Selected people",
+  "noSearchMatches": "No matching users found.",
+  "savingButton": "Saving...",
+  "selectAtLeastTwoMembers": "Select at least two members.",
+  "selectMembersHint": "Select members",
+  "selectedFileLabel": "Selected: {name}",
+  "selectedLabel": "Selected",
+  "selectedUserFallback": "Selected user",
+  "settings": "Settings",
+  "settleUpAction": "Settle up",
+  "settledLabel": "Settled",
+  "settledStatus": "Settled",
+  "settlementActivitySubtitle": "Transfers linked to this member.",
+  "settlementActivityTitle": "Settlement activity",
+  "settlementCompletedTitle": "Settlement completed",
+  "settlementConfirmedProgress": "{confirmed}/{total} confirmed",
+  "settlementCountLabel": "{count} settlements",
+  "settlementImpactTitle": "Settlement impact",
+  "settlementImpactWithFilter": "Settlement impact: {name}",
+  "settlementInProgress": "Settlement in progress",
+  "settlementInProgressTitle": "Settlement in progress",
+  "settlementLabel": "Settlement",
+  "settlementOverviewArchivedSubtitle": "Trip archived. All settlements completed.",
+  "settlementOverviewInProgressSubtitle": "Track settlement confirmations.",
+  "settlementOverviewPreviewSubtitle": "Preview transfers for when trip finishes.",
+  "settlementPreview": "Settlement preview",
+  "settlementPreviewTitle": "Settlement preview",
+  "settlementProgressTripArchived": "Trip archived",
+  "settlementWithId": "Settlement #{id}",
+  "settlements": "Settlements",
+  "settlementsAlreadyCompletedSubtitle": "Settlements already completed.",
+  "settlementsDone": "Settlements done",
+  "settlingStatus": "Settling",
+  "shareUnit": "share",
+  "sharesLabel": "Shares",
+  "sharesMustBePositiveIntegers": "Shares must be positive whole numbers.",
+  "sharesWithValue": "Shares: {value}",
+  "showActiveTrips": "Show active trips",
+  "signUpButton": "Sign up",
+  "splitBreakdownSubtitle": "How the expense is split",
+  "splitBreakdownTitle": "Split breakdown",
+  "splitHintEqual": "Split equally between selected participants.",
+  "splitHintExact": "Enter exact amount for each participant. Sum must match total.",
+  "splitHintPercent": "Enter percentage for each participant. Sum must be 100%.",
+  "splitHintShares": "Enter share units (1, 2, 3...). Cost is split proportionally.",
+  "splitLabel": "Split",
+  "splitLabelValue": "Split: {value}",
+  "splitModeEqual": "Equal split ({target})",
+  "splitModeExact": "Exact amounts ({target})",
+  "splitModeLabel": "Split mode",
+  "splitModePercent": "Percentages ({target})",
+  "splitModeShares": "Shares ({target})",
+  "statusConfirmed": "Confirmed",
+  "statusPending": "Pending",
+  "statusSent": "Sent",
+  "statusSuggested": "Suggested",
+  "statusWithValue": "Status: {status}",
+  "suggestedTransferDirections": "Suggested transfer directions",
+  "suggestedTransferFromExpense": "Suggested transfer from expense",
+  "suggestedTransferRows": "{count, plural, one{{count} suggested transfer row} other{{count} suggested transfer rows}}",
+  "suggestedTransfersSubtitle": "Expected payer -> receiver rows.",
+  "suggestedTransfersTitle": "Suggested transfers",
+  "summarySettledUp": "Settled up",
+  "summaryYouAreOwed": "They owe you",
+  "summaryYouOwe": "You owe",
+  "syncAction": "Sync",
+  "syncNowAction": "Sync now",
+  "syncingStatus": "Syncing",
+  "tapToViewDetails": "Tap to view details",
+  "themeModeDark": "Dark",
+  "themeModeDarkSubtitle": "Soft dark (not pure black)",
+  "themeModeLight": "Light",
+  "themeModeSystem": "System",
+  "themeModeSystemSubtitle": "Use device appearance",
+  "toDirection": "To {name}",
+  "totalLabel": "Total",
+  "travelerFallbackName": "Traveler",
+  "tripAlreadyClosed": "Trip already closed.",
+  "tripArchivedReadOnly": "Trip is archived. Read-only mode.",
+  "tripClosedExpenseEditingDisabled": "Trip is closed. Expense editing is disabled.",
+  "tripClosedExpensesReadOnly": "Trip is closed. Expenses are read-only.",
+  "tripClosedRandomDisabled": "Trip is closed. Random draw is disabled.",
+  "tripCreated": "Trip \"{name}\" created.",
+  "tripFinished": "Trip finished.",
+  "tripFinishedCompleteSettlements": "Trip is finished. Complete settlements.",
+  "tripFinishedSettlementStarted": "Trip finished. Settlement started.",
+  "tripFullySettledArchived": "Trip fully settled and archived.",
+  "tripNameHint": "Austria ski trip",
+  "tripNameLabel": "Trip name",
+  "tripNameLengthValidation": "Trip name must be at least 2 characters.",
+  "tripSnapshotTitle": "Trip snapshot",
+  "tripTitleShort": "Trip",
+  "tripStatusWithValue": "Trip status: {status}",
+  "tripWithId": "Trip #{id}",
+  "unexpectedErrorLoadingProfile": "Unexpected error loading profile",
+  "unexpectedErrorLoadingTripData": "Unexpected error loading trip data",
+  "unexpectedErrorLoadingTrips": "Unexpected error loading trips",
+  "unexpectedErrorSavingChanges": "Unexpected error saving changes",
+  "unexpectedErrorSavingCredentials": "Unexpected error saving credentials",
+  "unexpectedErrorUpdatingProfile": "Unexpected error updating profile",
+  "unknownError": "Unknown error",
+  "unknownLabel": "Unknown",
+  "unreadLabel": "Unread",
+  "unreadUpdates": "{count, plural, one{{count} unread update} other{{count} unread updates}}",
+  "missingTripRouteArgument": "Missing trip route argument.",
+  "userIdLabel": "User ID: {id}",
+  "userPaidOwesNetLine": "Paid {paid}  -  Owes {owes}  -  Net {net}",
+  "userWithId": "User {id}",
+  "valueLabel": "Value",
+  "viewAllTrips": "View all trips",
+  "viewByPersonTitle": "View by person",
+  "whoOwesWhatSubtitle": "Who paid and who owes.",
+  "whoOwesWhatTitle": "Who owes what",
+  "whoOwesWhatWithFilter": "Who owes what: {name}",
+  "whyPaymentExistsSubtitle": "Expense rows contributing to this transfer.",
+  "whyPaymentExistsTitle": "Why this payment exists",
+  "youLabel": "You",
+  "youSettledForExpense": "You settled for this expense.",
+  "youShouldPay": "You should pay {amount}",
+  "youShouldReceive": "You should receive {amount}",
+  "yourShare": "Your share",
+  "yourTrips": "Your trips",
+  "authIntroSplitSmarter": "Split smarter.",
+  "authIntroTravelFree": "Travel free.",
+  "authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo": "Track shared costs across currencies and settle up instantly - no awkward IOUs.",
+  "authIntroPlanTogether": "Plan together.",
+  "authIntroPayClearly": "Pay clearly.",
+  "authIntroCreateTripsSecondsAddFriendsKeepEveryExpense": "Create trips in seconds, add friends, and keep every expense transparent for everyone.",
+  "authIntroSettleFast": "Settle fast.",
+  "authIntroStayFriends": "Stay friends.",
+  "authIntroFromSharedDinnersFullTripsSplytoKeepsBalances": "From shared dinners to full trips, Splyto keeps balances fair and stress-free.",
+  "authIntroAppleSignFailedPleaseTryAgain": "Apple sign-in failed. Please try again.",
+  "authIntroGoogleSignFailedPleaseTryAgain": "Google sign-in failed. Please try again.",
+  "authIntroCreateAccount": "Create your account.",
+  "authIntroChooseSign": "Choose how you want to sign up.",
+  "authIntroContinueGoogle": "Continue with Google",
+  "authIntroContinueApple": "Continue with Apple",
+  "authIntroBack": "Back",
+  "authIntroSplitSettled": "Split settled",
+  "authIntroParis3Friends": "Paris · 3 friends",
+  "authIntroGetStarted": "Get started",
+  "authIntroAlreadyHaveAccount": "Already have an account? ",
+  "authIntroSignIn": "Sign in",
+  "authIntroSignUpWithEmail": "Sign up with email",
+  "authIntroOr": "OR",
+  "authGoogleSignDidNotReturnIdToken": "Google sign-in did not return an id token.",
+  "authAppleSignAvailableIosDevices": "Apple sign-in is available on iOS devices.",
+  "authAppleSignNotAvailableDevice": "Apple sign-in is not available on this device.",
+  "authAppleSignDidNotReturnIdentityToken": "Apple sign-in did not return an identity token.",
+  "authAccountDeactivatedEnterEmailRequestReactivationLink": "Account is deactivated. Enter your email to request a reactivation link.",
+  "authAccountDeactivated": "Account is deactivated",
+  "authSendReactivationLinkEmail": "Send a reactivation link to {email}?",
+  "authCancel": "Cancel",
+  "authSendLink": "Send link",
+  "authReactivationLinkSentCheckEmail": "Reactivation link sent. Check your email.",
+  "authCouldNotSendReactivationLinkPleaseTryAgain": "Could not send reactivation link. Please try again.",
+  "authEmailNotVerifiedEnterEmailRequestVerificationLink": "Email is not verified. Enter your email to request verification link.",
+  "authEmailNotVerified": "Email not verified",
+  "authSendVerificationLinkEmail": "Send verification link to {email}?",
+  "authVerificationLinkSentCheckEmail": "Verification link sent. Check your email.",
+  "authCouldNotSendVerificationLinkPleaseTryAgain": "Could not send verification link. Please try again.",
+  "authVerificationEmailSentPleaseVerifyEmailBeforeLogging": "Verification email sent. Please verify your email before logging in.",
+  "authVerifyEmail": "Verify your email",
+  "authEmailLabel": "Email:",
+  "authClose": "Close",
+  "authResendLink": "Resend link",
+  "profileAppSettingsSectionTitle": "APP SETTINGS",
+  "profileAppearance": "Appearance",
+  "profileThemeDisplayMode": "Theme & display mode",
+  "profileLanguage": "Language",
+  "profileDisplayLanguage": "Display language",
+  "profileNotificationsSectionHeading": "NOTIFICATIONS",
+  "profileAppBanners": "In-app banners",
+  "profileShowNewNotificationBannersInsideApp": "Show new notification banners inside app",
+  "profilePushNotificationsTitle": "Push notifications",
+  "profilePhoneNotificationsExpensesFriendsTripsSettlements": "Phone notifications for expenses, friends, trips and settlements",
+  "profileSupportSectionHeading": "SUPPORT",
+  "profileContactUs": "Contact us",
+  "profileReportBugSuggestion": "Report bug / Suggestion",
+  "profileRateSplyto": "Rate Splyto",
+  "profileLeaveStoreRating": "Leave a store rating",
+  "profileSecuritySectionHeading": "SECURITY",
+  "profileChangePassword": "Change password",
+  "profileUpdateAccountPassword": "Update account password",
+  "profileDangerZoneSectionHeading": "DANGER ZONE",
+  "profileDeactivateAccount": "Deactivate account",
+  "profileManageAccountAccess": "Manage account access",
+  "profileMadeWithLabel": "Made with",
+  "profileStoreRatingActionWillConnectedNextStep": "Store rating action will be connected in the next step.",
+  "profileFailedSaveNotificationSettings": "Failed to save notification settings.",
+  "profilePushNotificationsSectionTitle": "PUSH NOTIFICATIONS",
+  "profileExpenseUpdates": "Expense updates",
+  "profileExpenseAddedNotificationsPhone": "Expense added notifications to phone",
+  "profileFriendInvites": "Friend invites",
+  "profileFriendRequestResponseNotifications": "Friend request and response notifications",
+  "profileTripUpdates": "Trip updates",
+  "profileTripLifecycleMemberStatusChanges": "Trip lifecycle and member status changes",
+  "profileSettlementUpdates": "Settlement updates",
+  "profileMarkedSentConfirmedPaymentUpdates": "Marked sent and confirmed payment updates",
+  "profileScreenshotSizeMust8Mb": "Screenshot size must be up to 8 MB",
+  "profileFeedbackSendTitle": "Send feedback",
+  "profileFeedbackTypeLabel": "Type",
+  "profileFeedbackTypeBug": "Bug",
+  "profileFeedbackTypeSuggestion": "Suggestion",
+  "profileDescribeIssueSuggestion": "Describe issue or suggestion",
+  "profilePickingImage": "Picking image...",
+  "profileAttachScreenshot": "Attach screenshot",
+  "profileChangeScreenshot": "Change screenshot",
+  "profileRemoveImage": "Remove image",
+  "profileTipAttachScreenshotFasterBugTriage": "Tip: attach screenshot for faster bug triage",
+  "profileAddDetailsAttachScreenshotBeforeSending": "Add details or attach screenshot before sending",
+  "profileSendAction": "Send",
+  "profileThanksFeedbackSent": "Thanks! Feedback sent",
+  "profileFailedSendFeedback": "Failed to send feedback",
+  "profileCouldNotOpenWebsite": "Could not open website.",
+  "profileOpenWebsiteQuestion": "Open website?",
+  "profileOpenPortfolioAction": "Open portfolio.egm.lv",
+  "profileImageFormatNotSupportedDevicePleaseChooseJpg": "This image format is not supported on this device. Please choose JPG or PNG.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "Set a valid email in Edit profile before changing password.",
+  "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Account deactivated. Use reactivation link from email to restore access.",
+  "profileEditCouldNotDeactivateTryAgain": "Could not deactivate account. Please try again.",
+  "profileEditDeletionLinkSentEmail": "Deletion link sent to your email.",
+  "profileEditCouldNotSendDeletionLinkTryAgain": "Could not send deletion link. Please try again.",
+  "profileEditEnterCurrentPasswordChangeEmail": "Enter current password to change email.",
+  "profileEditVerificationWasSentNewEmailSecurityNoticeWas": "Verification was sent to the new email. Security notice was sent to your current email.",
+  "profileEditCouldNotStartEmailChangeRightNowTry": "Could not start email change right now. Please try again.",
+  "profileEditOverviewCurrency": "Overview currency",
+  "profileEditPaymentMethod": "Payment method",
+  "profileEditBankTransferRevolutPaypalMe": "Bank transfer, Revolut, PayPal.me",
+  "profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword": "You can deactivate account access or request an email link to permanently delete the account. Password is optional for Google/Apple accounts.",
+  "profileEditEnterPasswordOptionalGoogleApple": "Enter your password (optional for Google/Apple)",
+  "profileEditSendDeletionLinkEmail": "Send deletion link to email",
+  "profileEditBackProfile": "Back to profile",
+  "profileEditSetValidEmailProfileChangingPassword": "Set a valid email in profile before changing password.",
+  "profileEditPasswordUpdated": "Password updated.",
+  "profileEditFailedUpdatePassword": "Failed to update password.",
+  "profileEditEmail": "Account: {email}",
+  "profileEditPrimary": "Primary",
+  "profileEditSearchCurrency": "Search currency",
+  "profileEditNoCurrenciesFound": "No currencies found",
+  "profileEditOverviewTotalsConvertedCurrency": "Overview totals are converted to this currency.",
+  "profileEditPaymentInfoUpdated": "Payment info updated.",
+  "profileEditCouldNotSavePaymentInfoTryAgain": "Could not save payment info. Please try again.",
+  "profileEditCurrentPassword": "Current password",
+  "profileEditBankTransferIbanSwift": "Bank transfer (IBAN / SWIFT)",
+  "profileEditIbanSwift": "IBAN + SWIFT",
+  "profileEditRevtagRevolutMe": "Revtag / revolut.me",
+  "profileEditPaypalMeLink": "paypal.me link",
+  "profileEditChoosePaymentMethod": "Choose payment method",
+  "profileEditTapChange": "Tap to change",
+  "profileEditUkTransfersSortCode6DigitsNumber8": "For UK transfers, sort code must be 6 digits and account number 8 digits.",
+  "profileEditPaymentInfo": "Payment info",
+  "profileEditSaveDetails": "Save details",
+  "profileEditBankRegion": "Bank region",
+  "profileEditEurope": "Europe",
+  "profileEditSortCode": "Sort code",
+  "profileEditExample112233": "Example: 112233",
+  "profileEditNumber": "Account number",
+  "profileEdit8Digits": "8 digits",
+  "profileEditUkDomesticTransfersSortCodeNumber": "For UK domestic transfers use sort code + account number.",
+  "profileEditExampleLv80bank0000435195001": "Example: LV80BANK0000435195001",
+  "profileEdit811Chars": "8 or 11 chars",
+  "profileEditHolderNameTakenProfileFullName": "Account holder name is taken from profile full name.",
+  "profileEditRevolutMeUsername": "revolut.me/username",
+  "profileEditRevtag": "Revtag",
+  "profileEditUsername": "@username",
+  "profileEditPaypalMeUsernameUsername": "paypal.me/username or username",
+  "shellTripAlreadyInListOpened": "Trip already in your list. Opened it for you.",
+  "shellJoinedTripFromInviteLink": "Joined trip from invite link.",
+  "shellFailedToOpenInviteLink": "Failed to open invite link.",
+  "shellTripInviteTitle": "Trip invite",
+  "shellNoAction": "No",
+  "shellYesAction": "Yes",
+  "shellOnlyTripCreatorCanDelete": "Only trip creator can delete this trip.",
+  "shellOnlyActiveTripsCanDelete": "Only active trips can be deleted.",
+  "shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded": "Delete \"{tripLabel}\"? This is allowed only before any expenses are added.",
+  "shellTripDeleted": "Trip deleted.",
+  "shellFailedToDeleteTrip": "Failed to delete trip.",
+  "shellFailedToLoadNotifications": "Failed to load notifications.",
+  "shellNewNotificationTitle": "New notification: {title}",
+  "shellFailedToUpdateNotifications": "Failed to update notifications.",
+  "shellMarkAllAsReadAction": "Mark all as read",
+  "shellNewSection": "New",
+  "shellEarlierSection": "Earlier",
+  "shellShowMoreEarlierAction": "Show more earlier",
+  "shellLoadingMore": "Loading more...",
+  "shellLoadMoreNotificationsAction": "Load more notifications",
+  "shellTripNoLongerAvailable": "This trip is no longer available.",
+  "shellFailedToOpenTrip": "Failed to open trip.",
+  "shellYesterday": "Yesterday",
+  "shellInviteAlreadyMemberOpenTripNow": "You are already a member of \"{tripName}\". Open this trip now?\n\nInvited by: {inviterName}",
+  "shellInviteJoinTripQuestion": "Do you want to join trip \"{tripName}\"?\n\nInvited by: {inviterName}",
+  "tripsSelectedImage": "Selected image: {arg1}",
+  "tripsTripImageAlreadySet": "Trip image already set.",
+  "tripsTripCreatedButImageUploadFailed": "Trip created, but image upload failed.",
+  "tripsTripCreatedButImageUploadFailedWithReason": "Trip created, but image upload failed: {arg1}",
+  "@tripsTripCreatedButImageUploadFailedWithReason": {
+    "placeholders": {
+      "arg1": {}
+    }
+  },
+  "tripsJoinTripViaInvite": "Join trip via invite",
+  "tripsTotalTrips": "Total trips",
+  "tripsTotalSpent": "Total spent",
+  "tripsMixedCurrencies": "Mixed currencies",
+  "tripsShowActive": "Show active",
+  "tripsSeeAll": "See all",
+  "tripsAddNewTrip": "Add new trip",
+  "tripsLoadMore": "Load more",
+  "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "Delete \"{arg1}\"? This is allowed only before any expenses are added.",
+  "tripsTripDates": "Trip dates",
+  "tripsFrom": "From",
+  "tripsSelectDate": "Select date",
+  "tripsTo": "To",
+  "tripsMainCurrency": "Main currency",
+  "tripsPleaseSelectTripPeriodFromAndToDates": "Please select trip period (from and to dates).",
+  "tripsTripEndDateMustBeOnOrAfterStartDate": "Trip end date must be on or after start date.",
+  "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "Trip period format is invalid. Please pick dates again.",
+  "tripsYouAreAlreadyAMemberOfThisTrip": "You are already a member of this trip.",
+  "tripsJoinedTripSuccessfully": "Joined trip successfully.",
+  "tripsFailedToJoinTripFromInvite": "Failed to join trip from invite.",
+  "tripsJoinTrip": "Join trip",
+  "tripsPasteInviteLinkOrInviteToken": "Paste invite link or invite token.",
+  "tripsHttpsInviteNorthSeaAbc123def4": "https://.../?invite=north-sea-abc123def4",
+  "tripsEnterAValidInviteLinkOrToken": "Enter a valid invite link or token.",
+  "tripsClipboardIsEmpty": "Clipboard is empty.",
+  "tripsPaste": "Paste",
+  "tripsJoin": "Join",
+  "workspaceTripMembers": "Trip members",
+  "workspaceFailedToLoadFriends": "Failed to load friends.",
+  "workspaceFailedToGenerateInviteLink": "Failed to generate invite link.",
+  "workspaceInviteLink": "Invite link",
+  "workspaceGeneratingInviteLink": "Generating invite link...",
+  "workspaceInviteLinkUnavailable": "Invite link unavailable.",
+  "workspaceCopyInviteLink": "Copy invite link",
+  "workspaceInviteLinkCopied": "Invite link copied.",
+  "workspaceExpiresUtc": "Expires: {arg1} UTC",
+  "workspaceNoFriendsAvailableAddFriendsFirst": "No friends available. Add friends first.",
+  "workspaceSettle": "Settle",
+  "workspaceOwesToTheGroup": "Owes to the group",
+  "workspaceGetsBackFromGroup": "Gets back from group",
+  "workspaceShowingTop4ByBalanceDifference": "Showing top 4 by balance difference.",
+  "workspaceOpenFlow": "Open flow",
+  "workspaceFriend": "Friend",
+  "workspaceSettlementTransfer": "Settlement transfer",
+  "workspaceCompleted": "Completed",
+  "workspaceWaitingForConfirmation": "Waiting for confirmation",
+  "workspaceWaitingForPayment": "Waiting for payment",
+  "workspaceActionNeeded": "Action needed",
+  "workspacePaymentSToMarkAsSentToConfirmAsReceived": "{arg1} payment(s) to mark as sent, {arg2} to confirm as received.",
+  "workspaceReadyToSettle": "Ready to settle",
+  "workspaceAllMembersAreReadyYouCanStartSettlements": "All members are ready. You can start settlements.",
+  "workspaceWaitingForEveryoneToMarkReady": "Waiting for everyone to mark ready.",
+  "workspaceIMReady": "I'm ready",
+  "workspaceConfirmThatYouAddedAllYourExpenses": "Confirm that you added all your expenses.",
+  "workspaceFinishButtonUnlocksOnceEveryoneMarksReady": "Finish button unlocks once everyone marks ready.",
+  "workspaceGetsBackFromTheGroup": "Gets back from the group",
+  "workspaceSettledWithTheGroup": "Settled with the group",
+  "workspaceTotalPaid": "Total Paid",
+  "workspaceTotalOwes": "Total Owes",
+  "workspaceTransactionHistory": "Transaction history",
+  "workspaceNoTransactionsYetForThisMember": "No transactions yet for this member.",
+  "workspaceSettlements": "Settlements: {arg1}",
+  "workspaceAllMembersMustMarkReadyBeforeStartingSettlements": "All members must mark ready before starting settlements.",
+  "workspaceYouMarkedYourselfReadyToSettle": "You marked yourself ready to settle.",
+  "workspaceReadyToSettleMarkRemoved": "Ready-to-settle mark removed.",
+  "workspaceReminderSent": "Reminder sent.",
+  "workspaceInviteLinkOrAddFromFriends": "Invite link or add from friends",
+  "workspaceOnlyTripCreatorCanEditThisTrip": "Only trip creator can edit this trip.",
+  "workspaceTripUpdated": "Trip updated.",
+  "workspaceFailedToUpdateTrip": "Failed to update trip.",
+  "workspaceNoMembersSelectedYet": "No members selected yet.",
+  "workspaceNoInternetExpenseSavedWithoutReceiptImage": "No internet. Expense will be saved without receipt image.",
+  "workspaceRandomPicker": "Random picker",
+  "workspaceCurrency": "Currency",
+  "workspaceCategory": "Category",
+  "workspaceCustomCategory": "Custom category",
+  "workspaceCategoryName": "Category name",
+  "workspaceApartmentRentParkingEtc": "Apartment rent, parking, etc.",
+  "workspaceEnterACustomCategory": "Enter a custom category.",
+  "workspacePickAnExpenseCategory": "Pick an expense category.",
+  "workspaceCategoryMustBeAtLeast2Characters": "Category must be at least 2 characters.",
+  "workspaceCategoryMustBeUpTo64Characters": "Category must be up to 64 characters.",
+  "workspacePercentageSplitMustTotal100": "Percentage split must total 100%.",
+  "workspaceSharesMustBeGreaterThan0ForAllParticipants": "Shares must be greater than 0 for all participants.",
+  "workspaceTotalAmount": "Total amount",
+  "workspaceOriginal": "Original",
+  "workspaceTotalCost": "Total cost",
+  "workspaceStarted": "Started {arg1}",
+  "workspaceEnded": "Ended {arg1}",
+  "workspaceArchivedTrip": "Archived trip",
+  "workspaceActiveTrip": "Active trip",
+  "workspaceMemberProfile": "Member profile",
+  "workspaceTripOwner": "Trip owner",
+  "workspaceMember": "Member",
+  "workspaceReadyForSettlement": "Ready for settlement",
+  "workspaceNotReadyForSettlement": "Not ready for settlement",
+  "workspaceBankDetails": "Bank details",
+  "workspaceIbanAndPayoutDetailsWillBeAddedHereInA": "IBAN and payout details will be added here in a next update.",
+  "workspacePaymentDetails": "Payment details",
+  "workspaceThisMemberHasNotAddedPayoutDetailsYet": "This member has not added payout details yet.",
+  "workspaceBankTransfer": "Bank transfer",
+  "workspaceHolder": "Holder",
+  "workspaceCouldNotOpenPaymentLink": "Could not open payment link.",
+  "workspaceTripActivity": "Trip activity",
+  "workspacePaidExpenses": "Paid expenses",
+  "workspacePaidTotal": "Paid total",
+  "workspaceInvolvedIn": "Involved in",
+  "workspaceCurrentTrip": "Current trip",
+  "workspaceCommonTrips": "Common trips",
+  "workspaceLoadingCommonTrips": "Loading common trips...",
+  "workspaceNoCommonTripsFoundYet": "No common trips found yet.",
+  "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "Could not load all common trips. Showing current one.",
+  "workspaceMembers": "members",
+  "workspaceExpense": "Expense",
+  "workspacePaid": "paid",
+  "workspaceLoadingMoreExpenses": "Loading more expenses...",
+  "workspaceScrollDownToLoadMore": "Scroll down to load more",
+  "workspaceTripFinished": "Trip finished",
+  "workspaceSettlementsAreUnlockedForThisTrip": "Settlements are unlocked for this trip.",
+  "workspaceFinishTripToStartSettlements": "Finish trip to start settlements.",
+  "workspaceMarkedTransferAsSent": "{arg1} marked transfer as sent.",
+  "workspaceWaitingForToMarkAsPaid": "Waiting for {arg1} to mark as paid.",
+  "workspaceConfirmedReceivingThePayment": "{arg1} confirmed receiving the payment.",
+  "workspaceWaitingForToConfirm": "Waiting for {arg1} to confirm.",
+  "workspaceAllTripSettlementsAreFullyCompleted": "All trip settlements are fully completed.",
+  "workspaceFinalStateAfterAllTransfersAreConfirmed": "Final state after all transfers are confirmed.",
+  "workspaceSettlementFlow": "Settlement flow",
+  "workspaceActions": "Actions",
+  "workspaceTransferIsConfirmed": "Transfer is confirmed.",
+  "workspaceWaitingForTheOtherMemberToCompleteTheNextStep": "Waiting for the other member to complete the next step.",
+  "workspaceSendReminder": "Send reminder",
+  "workspaceInProgress": "In progress",
+  "workspaceTimeUnknown": "Time unknown",
+  "workspaceRemind": "Remind",
+  "workspaceYourPosition": "Your position",
+  "workspaceRecentActivity": "Recent activity",
+  "workspaceNoRecentActivityYet": "No recent activity yet.",
+  "workspaceAddAtLeastOneMemberToStartSplittingExpenses": "Add at least one member to start splitting expenses.",
+  "workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses": "Mark yourself ready to settle after adding all your expenses.",
+  "workspaceWaitingForMemberSToMarkReady": "Waiting for {arg1} member(s) to mark ready.",
+  "workspaceAllMembersAreReadyYouCanFinishTheTripAnd": "All members are ready. You can finish the trip and start settlements.",
+  "workspaceAllMembersAreReadyWaitingForTheTripOwnerTo": "All members are ready. Waiting for the trip owner to start settlements.",
+  "workspaceSettlementInProgressConfirmed": "Settlement in progress: {arg1}/{arg2} confirmed.",
+  "workspaceNoActionsPendingThisTripIsSettled": "No actions pending. This trip is settled.",
+  "workspaceNoActionsNeededRightNow": "No actions needed right now.",
+  "workspaceYouShouldReceive": "You should receive {arg1}.",
+  "workspaceYouShouldPay": "You should pay {arg1}.",
+  "workspaceYouAreCurrentlySettledInThisTrip": "You are currently settled in this trip.",
+  "workspaceUnknownTime": "Unknown time",
+  "workspaceJustNow": "Just now",
+  "workspaceMinAgo": "{arg1} min ago",
+  "workspaceHAgo": "{arg1} h ago",
+  "workspaceDAgo": "{arg1} d ago",
+  "friendsRemoveFriend": "Remove friend",
+  "friendsRemoveThisFriend": "Remove this friend?",
+  "friendsWillBeRemovedFromYourFriendsListYouCanAdd": "{arg1} will be removed from your friends list. You can add them again later.",
+  "friendsContinue": "Continue",
+  "friendsFriendRemoved": "Friend removed.",
+  "friendsCouldNotRemoveFriend": "Could not remove friend.",
+  "friendsFriendProfile": "Friend profile",
+  "friendsMoreActions": "More actions",
+  "friendsThisFriendHasNotAddedPayoutDetailsYet": "This friend has not added payout details yet.",
+  "friendsCouldNotLoadCommonTripsRightNow": "Could not load common trips right now.",
+  "friendsFinished": "Finished",
+  "friendsTrip": "Trip #{arg1}",
+  "friendsMembers": "{arg1} members",
+  "friendsNoDate": "No date",
+  "friendsIncomingRequests": "INCOMING REQUESTS",
+  "friendsSentInvites": "SENT INVITES",
+  "friendsMyFriends": "MY FRIENDS",
+  "friendsIncoming": "Incoming",
+  "friendsInviteSentTo": "Invite sent to {arg1}.",
+  "friendsNoIncomingRequests": "No incoming requests",
+  "friendsDecline": "Decline",
+  "friendsAccept": "Accept",
+  "friendsNoSentInvites": "No sent invites",
+  "friendsNoFriendsYet": "No friends yet",
+  "friendsScrollDownToLoadMoreFriends": "Scroll down to load more friends.",
+  "friendsUser": "User",
+  "friendsSearchUsers": "Search users",
+  "friendsFindByNameOrEmailAndSendInvite": "Find by name or email and send invite",
+  "friendsScanQr": "Scan QR",
+  "friendsScanAnotherUserToAddFriend": "Scan another user to add friend",
+  "friendsMyQr": "My QR",
+  "friendsShowOrShareYourQrCode": "Show or share your QR code",
+  "friendsScanFriendQrTitle": "Scan Friend QR",
+  "friendsPlaceFriendQrInsideFrame": "Place friend QR code inside the frame",
+  "friendsMyFriendQrTitle": "My Friend QR",
+  "friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode": "Open Friends > Scan QR on another phone and scan this code.",
+  "friendsAddMeOnTripSplitFriends": "Add me on TripSplit friends.",
+  "friendsTripSplitFriendCode": "TripSplit friend code",
+  "shareAction": "Share",
+  "friendsQrCodeIsNotAValidFriendCode": "QR code is not a valid friend code.",
+  "friendsYouCannotAddYourself": "You cannot add yourself.",
+  "friendsThisUserIsAlreadyInYourFriendsList": "This user is already in your friends list.",
+  "friendsInviteToThisUserIsAlreadySent": "Invite to this user is already sent.",
+  "friendsFriendRequestProcessed": "Friend request processed.",
+  "friendsFailedToProcessFriendQr": "Failed to process friend QR.",
+  "friendsCouldNotLoadYourUserProfile": "Could not load your user profile.",
+  "friendsMyProfile": "My profile",
+  "friendsUnexpectedErrorLoadingFriends": "Unexpected error loading friends.",
+  "friendsFriendAdded": "Friend added.",
+  "friendsRequestDeclined": "Request declined.",
+  "friendsFailedToUpdateRequest": "Failed to update request.",
+  "friendsCancelInvite": "Cancel invite",
+  "friendsCancelInviteTo": "Cancel invite to {arg1}?",
+  "friendsKeep": "Keep",
+  "friendsInviteToCancelled": "Invite to {arg1} cancelled.",
+  "friendsFailedToCancelInvite": "Failed to cancel invite.",
+  "analyticsOther": "Other",
+  "analyticsSelectATripForAnalytics": "Select a trip for analytics",
+  "analyticsMembers": "{arg1} • {arg2} members • {arg3} • {arg4}",
+  "analyticsMyDaily": "My daily",
+  "analyticsGroupDaily": "Group daily",
+  "analyticsByMember": "By Member",
+  "analyticsShowLess": "Show less",
+  "analyticsByCategory": "By Category",
+  "analyticsQuickInsights": "Quick insights",
+  "analyticsBiggestExpense": "Biggest expense: {arg1} ({arg2})",
+  "analyticsTopSpender": "Top spender: {arg1} ({arg2})",
+  "analyticsHighestGroupDay": "Highest group day: {arg1} ({arg2})",
+  "analyticsNoDates": "No dates",
+  "friendsSearchFailedTryAgain": "Search failed. Try again.",
+  "friendsFailedToSendInvite": "Failed to send invite.",
+  "friendsAddFriend": "Add friend",
+  "friendsSearchByNameOrEmail": "Search by name or email",
+  "friendsTypeAtLeast2CharactersToSearch": "Type at least 2 characters to search.",
+  "friendsNoUsersFound": "No users found",
+  "friendsInviteAction": "Invite",
+  "workspacePaidForGroup": "Paid for group",
+  "workspacePaidForGroupDate": "Paid for group • {arg1}",
+  "workspaceShareOfExpense": "Share of expense",
+  "workspaceShareOfExpenseDate": "Share of expense • {arg1}",
+  "paymentHolderNameCopied": "Holder name copied.",
+  "paymentIbanCopied": "IBAN copied.",
+  "paymentSwiftCopied": "SWIFT copied.",
+  "paymentRevtagCopied": "Revtag copied.",
+  "paymentCouldNotCopyToClipboard": "Could not copy to clipboard.",
+  "paymentCopied": "Copied."
 }

@@ -5,7 +5,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     BuildContext context, {
     required bool asStandaloneContent,
   }) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     final isLogin = _mode == _AuthMode.login;
     final responsive = context.responsive;
     final cardPadding = responsive.pick(compact: 16, medium: 20, expanded: 22);
@@ -74,7 +74,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   }
 
   List<Widget> _buildRegistrationFields(BuildContext context) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     return [
       _buildLabeledTextField(
         context: context,
@@ -201,7 +201,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   Widget _buildPasswordField(BuildContext context, bool isLogin) {
     return _buildLabeledTextField(
       context: context,
-      label: context.l10n.passwordLabel,
+      label: context.l10nEn.passwordLabel,
       hint: '••••••••',
       leadingIcon: Icons.lock_outline_rounded,
       controller: _passwordController,
@@ -233,7 +233,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   Widget _buildRepeatPasswordField(BuildContext context) {
     return _buildLabeledTextField(
       context: context,
-      label: context.l10n.repeatPasswordLabel,
+      label: context.l10nEn.repeatPasswordLabel,
       hint: '••••••••',
       leadingIcon: Icons.lock_outline_rounded,
       controller: _repeatController,
@@ -348,7 +348,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   }
 
   Widget _buildRememberAndForgotRow(BuildContext context) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     return Row(
       children: [
         Checkbox(
@@ -375,7 +375,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
 
   Widget _buildSubmitButton(BuildContext context) {
     final isLogin = _mode == _AuthMode.login;
-    final t = context.l10n;
+    final t = context.l10nEn;
     final responsive = context.responsive;
     return SizedBox(
       width: double.infinity,
@@ -424,7 +424,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
 
   Widget _buildModeSwitchRow(BuildContext context) {
     final isLogin = _mode == _AuthMode.login;
-    final t = context.l10n;
+    final t = context.l10nEn;
     final colorScheme = Theme.of(context).colorScheme;
     final responsive = context.responsive;
 

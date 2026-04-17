@@ -13,6 +13,7 @@ import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/deeplink/invite_deep_link_controller.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/l10n/notification_localizer.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/test_keys.dart';
@@ -278,14 +279,8 @@ class _MainShellPageState extends State<MainShellPage>
       }
       _showSnack(
         joined.alreadyMember
-            ? _txt(
-                en: 'Trip already in your list. Opened it for you.',
-                lv: 'Ceļojums jau ir tavā sarakstā. Atvēru to tev.',
-              )
-            : _txt(
-                en: 'Joined trip from invite link.',
-                lv: 'Veiksmīgi pievienojies ceļojumam no saites.',
-              ),
+            ? context.l10n.shellTripAlreadyInListOpened
+            : context.l10n.shellJoinedTripFromInviteLink,
         isError: false,
       );
       _openWorkspaceInShell(resolvedTrip);
@@ -295,25 +290,14 @@ class _MainShellPageState extends State<MainShellPage>
       }
       final message = error.message.trim();
       _showSnack(
-        message.isNotEmpty
-            ? message
-            : _txt(
-                en: 'Failed to open invite link.',
-                lv: 'Neizdevās atvērt ielūguma saiti.',
-              ),
+        message.isNotEmpty ? message : context.l10n.shellFailedToOpenInviteLink,
         isError: true,
       );
     } catch (_) {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _txt(
-          en: 'Failed to open invite link.',
-          lv: 'Neizdevās atvērt ielūguma saiti.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellFailedToOpenInviteLink, isError: true);
     } finally {
       _isProcessingInviteDeepLink = false;
       final queued = _queuedInviteDeepLinkCode;
@@ -331,31 +315,31 @@ class _MainShellPageState extends State<MainShellPage>
     final inviterName = preview.inviterName.trim();
     final tripName = preview.tripName.trim().isNotEmpty
         ? preview.tripName.trim()
-        : _txt(en: 'Trip', lv: 'Ceļojums');
+        : context.l10n.tripTitleShort;
+    final inviterLabel = inviterName.isNotEmpty
+        ? inviterName
+        : context.l10n.unknownLabel;
 
     final message = preview.alreadyMember
-        ? _txt(
-            en: 'You are already a member of "$tripName". Open this trip now?\n\nInvited by: ${inviterName.isNotEmpty ? inviterName : _txt(en: 'Unknown', lv: 'Nav zināms')}',
-            lv: 'Tu jau esi ceļojuma "$tripName" dalībnieks. Atvērt šo ceļojumu tagad?\n\nUzaicināja: ${inviterName.isNotEmpty ? inviterName : _txt(en: 'Unknown', lv: 'Nav zināms')}',
+        ? context.l10n.shellInviteAlreadyMemberOpenTripNow(
+            tripName,
+            inviterLabel,
           )
-        : _txt(
-            en: 'Do you want to join trip "$tripName"?\n\nInvited by: ${inviterName.isNotEmpty ? inviterName : _txt(en: 'Unknown', lv: 'Nav zināms')}',
-            lv: 'Vai tiešām pievienoties ceļojumam "$tripName"?\n\nUzaicināja: ${inviterName.isNotEmpty ? inviterName : _txt(en: 'Unknown', lv: 'Nav zināms')}',
-          );
+        : context.l10n.shellInviteJoinTripQuestion(tripName, inviterLabel);
 
     final decision = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(_txt(en: 'Trip invite', lv: 'Ceļojuma ielūgums')),
+        title: Text(context.l10n.shellTripInviteTitle),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(_txt(en: 'No', lv: 'Nē')),
+            child: Text(context.l10n.shellNoAction),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(_txt(en: 'Yes', lv: 'Jā')),
+            child: Text(context.l10n.shellYesAction),
           ),
         ],
       ),

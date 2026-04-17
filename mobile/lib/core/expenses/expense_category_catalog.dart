@@ -6,15 +6,24 @@ class ExpenseCategoryOption {
     required this.icon,
     required this.labelEn,
     required this.labelLv,
+    required this.labelEs,
   });
 
   final String key;
   final IconData icon;
   final String labelEn;
   final String labelLv;
+  final String labelEs;
 
   String labelForLocale(Locale locale) {
-    return locale.languageCode.toLowerCase() == 'lv' ? labelLv : labelEn;
+    final languageCode = locale.languageCode.toLowerCase();
+    if (languageCode == 'lv') {
+      return labelLv;
+    }
+    if (languageCode == 'es') {
+      return labelEs;
+    }
+    return labelEn;
   }
 }
 
@@ -25,66 +34,77 @@ class ExpenseCategoryCatalog {
       icon: Icons.restaurant_outlined,
       labelEn: 'Food',
       labelLv: 'Ēdiens',
+      labelEs: 'Comida',
     ),
     ExpenseCategoryOption(
       key: 'groceries',
       icon: Icons.shopping_cart_outlined,
       labelEn: 'Groceries',
       labelLv: 'Pārtika',
+      labelEs: 'Supermercado',
     ),
     ExpenseCategoryOption(
       key: 'fuel',
       icon: Icons.local_gas_station_outlined,
       labelEn: 'Fuel',
       labelLv: 'Degviela',
+      labelEs: 'Combustible',
     ),
     ExpenseCategoryOption(
       key: 'transport',
       icon: Icons.directions_bus_outlined,
       labelEn: 'Transport',
       labelLv: 'Transports',
+      labelEs: 'Transporte',
     ),
     ExpenseCategoryOption(
       key: 'accommodation',
       icon: Icons.hotel_outlined,
       labelEn: 'Accommodation',
       labelLv: 'Naktsmītne',
+      labelEs: 'Alojamiento',
     ),
     ExpenseCategoryOption(
       key: 'activities',
       icon: Icons.hiking_outlined,
       labelEn: 'Activities',
       labelLv: 'Aktivitātes',
+      labelEs: 'Actividades',
     ),
     ExpenseCategoryOption(
       key: 'tickets',
       icon: Icons.confirmation_number_outlined,
       labelEn: 'Tickets',
       labelLv: 'Biļetes',
+      labelEs: 'Entradas',
     ),
     ExpenseCategoryOption(
       key: 'shopping',
       icon: Icons.shopping_bag_outlined,
       labelEn: 'Shopping',
       labelLv: 'Iepirkšanās',
+      labelEs: 'Compras',
     ),
     ExpenseCategoryOption(
       key: 'party',
       icon: Icons.celebration_outlined,
       labelEn: 'Party',
       labelLv: 'Ballīte',
+      labelEs: 'Fiesta',
     ),
     ExpenseCategoryOption(
       key: 'parking',
       icon: Icons.local_parking_outlined,
       labelEn: 'Parking',
       labelLv: 'Stāvvieta',
+      labelEs: 'Aparcamiento',
     ),
     ExpenseCategoryOption(
       key: 'other',
       icon: Icons.more_horiz,
       labelEn: 'Other',
       labelLv: 'Cits',
+      labelEs: 'Otros',
     ),
   ];
 

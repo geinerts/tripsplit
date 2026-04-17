@@ -1,11 +1,6 @@
 part of 'main_shell_page.dart';
 
 extension _MainShellPageNotifications on _MainShellPageState {
-  String _txt({required String en, required String lv}) {
-    final code = Localizations.localeOf(context).languageCode.toLowerCase();
-    return code == 'lv' ? lv : en;
-  }
-
   bool _isFriendNotificationType(String rawType) {
     final type = rawType.trim().toLowerCase();
     return type == 'friend_invite' ||
@@ -47,22 +42,13 @@ extension _MainShellPageNotifications on _MainShellPageState {
       }
       final message = error.message.trim().isNotEmpty
           ? error.message.trim()
-          : _txt(
-              en: 'Failed to load notifications.',
-              lv: 'Neizdevās ielādēt paziņojumus.',
-            );
+          : context.l10n.shellFailedToLoadNotifications;
       _showSnack(message, isError: true);
     } catch (_) {
       if (!mounted || !showErrorSnack) {
         return;
       }
-      _showSnack(
-        _txt(
-          en: 'Failed to load notifications.',
-          lv: 'Neizdevās ielādēt paziņojumus.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellFailedToLoadNotifications, isError: true);
     } finally {
       _isNotificationsLoading = false;
     }
@@ -102,16 +88,14 @@ extension _MainShellPageNotifications on _MainShellPageState {
       return;
     }
 
-    final title = newestUnread.title.trim();
+    final localized = localizeWorkspaceNotification(context, newestUnread);
+    final title = localized.title.trim();
     if (title.isEmpty) {
       return;
     }
 
     _lastUnreadNotificationHintAt = now;
-    _showSnack(
-      _txt(en: 'New notification: $title', lv: 'Jauns paziņojums: $title'),
-      isError: false,
-    );
+    _showSnack(context.l10n.shellNewNotificationTitle(title), isError: false);
   }
 
   Future<void> _loadMoreGlobalNotifications({
@@ -233,22 +217,13 @@ extension _MainShellPageNotifications on _MainShellPageState {
       }
       final message = error.message.trim().isNotEmpty
           ? error.message.trim()
-          : _txt(
-              en: 'Failed to update notifications.',
-              lv: 'Neizdevās atjaunot paziņojumus.',
-            );
+          : context.l10n.shellFailedToUpdateNotifications;
       _showSnack(message, isError: true);
     } catch (_) {
       if (!mounted || !showErrorSnack) {
         return;
       }
-      _showSnack(
-        _txt(
-          en: 'Failed to update notifications.',
-          lv: 'Neizdevās atjaunot paziņojumus.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellFailedToUpdateNotifications, isError: true);
     }
   }
 
@@ -287,10 +262,11 @@ extension _MainShellPageNotifications on _MainShellPageState {
     WorkspaceNotification notification,
   ) {
     final t = context.l10n;
-    final title = notification.title.trim().isNotEmpty
-        ? notification.title.trim()
+    final localized = localizeWorkspaceNotification(context, notification);
+    final title = localized.title.trim().isNotEmpty
+        ? localized.title.trim()
         : t.notificationFallbackTitle;
-    final body = notification.body.trim();
+    final body = localized.body.trim();
     final tripName = notification.tripName?.trim() ?? '';
     final createdAtLabel = _formatNotificationTime(notification.createdAt);
     final isFriendNotification = _isFriendNotificationType(notification.type);
@@ -460,10 +436,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
                                           setSheetState(() {});
                                         },
                                   child: Text(
-                                    _txt(
-                                      en: 'Mark all as read',
-                                      lv: 'Atzīmēt visu kā lasītu',
-                                    ),
+                                    context.l10n.shellMarkAllAsReadAction,
                                   ),
                                 ),
                               ],
@@ -472,7 +445,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
                           if (newNotifications.isNotEmpty) ...[
                             _buildNotificationSectionHeader(
                               context,
-                              _txt(en: 'New', lv: 'Jaunie'),
+                              context.l10n.shellNewSection,
                             ),
                             ...newNotifications.map(
                               (item) => _buildNotificationTile(
@@ -485,7 +458,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
                           if (earlierNotifications.isNotEmpty) ...[
                             _buildNotificationSectionHeader(
                               context,
-                              _txt(en: 'Earlier', lv: 'Iepriekšējie'),
+                              context.l10n.shellEarlierSection,
                             ),
                             ...visibleEarlier.map(
                               (item) => _buildNotificationTile(
@@ -511,10 +484,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
                                       });
                                     },
                                     child: Text(
-                                      _txt(
-                                        en: 'Show more earlier',
-                                        lv: 'Rādīt vairāk iepriekšējos',
-                                      ),
+                                      context.l10n.shellShowMoreEarlierAction,
                                     ),
                                   ),
                                 ),
@@ -541,14 +511,10 @@ extension _MainShellPageNotifications on _MainShellPageState {
                                       },
                                 child: Text(
                                   _isNotificationsLoadingMore
-                                      ? _txt(
-                                          en: 'Loading more...',
-                                          lv: 'Ielādē vēl...',
-                                        )
-                                      : _txt(
-                                          en: 'Load more notifications',
-                                          lv: 'Ielādēt vēl paziņojumus',
-                                        ),
+                                      ? context.l10n.shellLoadingMore
+                                      : context
+                                            .l10n
+                                            .shellLoadMoreNotificationsAction,
                                 ),
                               ),
                             ),
@@ -604,13 +570,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
         }
       }
       if (target == null) {
-        _showSnack(
-          _txt(
-            en: 'This trip is no longer available.',
-            lv: 'Šis ceļojums vairs nav pieejams.',
-          ),
-          isError: true,
-        );
+        _showSnack(context.l10n.shellTripNoLongerAvailable, isError: true);
         return;
       }
       _openWorkspaceInShell(target);
@@ -620,14 +580,11 @@ extension _MainShellPageNotifications on _MainShellPageState {
       }
       final message = error.message.trim().isNotEmpty
           ? error.message.trim()
-          : _txt(en: 'Failed to open trip.', lv: 'Neizdevās atvērt ceļojumu.');
+          : context.l10n.shellFailedToOpenTrip;
       _showSnack(message, isError: true);
     } catch (_) {
       if (mounted) {
-        _showSnack(
-          _txt(en: 'Failed to open trip.', lv: 'Neizdevās atvērt ceļojumu.'),
-          isError: true,
-        );
+        _showSnack(context.l10n.shellFailedToOpenTrip, isError: true);
       }
     }
   }
@@ -654,7 +611,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
       return '$hh:$mm';
     }
     if (dayDiff == 1) {
-      return _txt(en: 'Yesterday', lv: 'Vakar');
+      return context.l10n.shellYesterday;
     }
 
     final dd = local.day.toString().padLeft(2, '0');

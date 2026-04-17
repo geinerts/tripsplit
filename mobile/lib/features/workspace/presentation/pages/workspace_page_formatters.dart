@@ -1,14 +1,5 @@
 part of 'workspace_page.dart';
 
-String _localizedText(
-  BuildContext context, {
-  required String en,
-  required String lv,
-}) {
-  final languageCode = Localizations.localeOf(context).languageCode;
-  return languageCode.toLowerCase() == 'lv' ? lv : en;
-}
-
 String _tagQueuedNote(String note) {
   final trimmed = note.trim();
   if (trimmed.isEmpty) {

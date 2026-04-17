@@ -39,8 +39,15 @@ header('X-Frame-Options: DENY');
       border: 1px solid #fef3c7;
     }
     .logo {
-      font-size: 24px; font-weight: 800; color: #78350f;
-      margin-bottom: 28px; text-align: center; letter-spacing: -0.5px;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+    .logo img {
+      display: block;
+      margin: 0 auto;
+      width: 188px;
+      max-width: 100%;
+      height: auto;
     }
     h1 { font-size: 20px; color: #111827; margin-bottom: 8px; }
     p  { font-size: 14px; color: #6b7280; margin-bottom: 20px; line-height: 1.5; }
@@ -61,7 +68,7 @@ header('X-Frame-Options: DENY');
 </head>
 <body>
 <div class="card">
-  <div class="logo">SPLYTO</div>
+  <div class="logo"><img src="/mobile/assets/branding/logo_full.png" alt="Splyto"></div>
 
   <?php
   $token = strtolower(trim((string) ($_GET['token'] ?? '')));

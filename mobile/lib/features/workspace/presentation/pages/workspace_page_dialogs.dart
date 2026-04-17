@@ -97,10 +97,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                   });
                                 },
                                 decoration: InputDecoration(
-                                  hintText: _plainLocalizedText(
-                                    en: 'Search currency',
-                                    lv: 'Meklēt valūtu',
-                                  ),
+                                  hintText:
+                                      context.l10n.profileEditSearchCurrency,
                                   prefixIcon: const Icon(Icons.search_rounded),
                                   isDense: true,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -117,10 +115,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                               child: filtered.isEmpty
                                   ? Center(
                                       child: Text(
-                                        _plainLocalizedText(
-                                          en: 'No currencies found',
-                                          lv: 'Valūtas netika atrastas',
-                                        ),
+                                        context
+                                            .l10n
+                                            .profileEditNoCurrenciesFound,
                                         style: Theme.of(
                                           pickerContext,
                                         ).textTheme.bodyMedium,
@@ -313,10 +310,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    _plainLocalizedText(
-                                      en: 'Currency',
-                                      lv: 'Valūta',
-                                    ),
+                                    context.l10n.workspaceCurrency,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge
@@ -429,10 +423,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    _plainLocalizedText(
-                                      en: 'Category',
-                                      lv: 'Kategorija',
-                                    ),
+                                    context.l10n.workspaceCategory,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge
@@ -474,10 +465,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                       ChoiceChip(
                                         avatar: const Icon(Icons.add, size: 16),
                                         label: Text(
-                                          _plainLocalizedText(
-                                            en: 'Custom category',
-                                            lv: 'Sava kategorija',
-                                          ),
+                                          context.l10n.workspaceCustomCategory,
                                         ),
                                         selected: isCustomCategoryMode,
                                         onSelected: (_) {
@@ -494,14 +482,11 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                       controller: customCategoryController,
                                       maxLength: 64,
                                       decoration: InputDecoration(
-                                        labelText: _plainLocalizedText(
-                                          en: 'Category name',
-                                          lv: 'Kategorijas nosaukums',
-                                        ),
-                                        hintText: _plainLocalizedText(
-                                          en: 'Apartment rent, parking, etc.',
-                                          lv: 'Dzīvokļa īre, stāvvieta u.c.',
-                                        ),
+                                        labelText:
+                                            context.l10n.workspaceCategoryName,
+                                        hintText: context
+                                            .l10n
+                                            .workspaceApartmentRentParkingEtc,
                                       ),
                                     ),
                                   ],
@@ -719,14 +704,12 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                       if (rawCategory.isEmpty) {
                                         setDialogState(() {
                                           errorText = isCustomCategoryMode
-                                              ? _plainLocalizedText(
-                                                  en: 'Enter a custom category.',
-                                                  lv: 'Ievadi savu kategoriju.',
-                                                )
-                                              : _plainLocalizedText(
-                                                  en: 'Pick an expense category.',
-                                                  lv: 'Izvēlies izdevuma kategoriju.',
-                                                );
+                                              ? context
+                                                    .l10n
+                                                    .workspaceEnterACustomCategory
+                                              : context
+                                                    .l10n
+                                                    .workspacePickAnExpenseCategory;
                                         });
                                         return;
                                       }
@@ -734,10 +717,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                       if (isCustomCategoryMode &&
                                           rawCategory.length < 2) {
                                         setDialogState(() {
-                                          errorText = _plainLocalizedText(
-                                            en: 'Category must be at least 2 characters.',
-                                            lv: 'Kategorijai jābūt vismaz 2 rakstzīmēm.',
-                                          );
+                                          errorText = context
+                                              .l10n
+                                              .workspaceCategoryMustBeAtLeast2Characters;
                                         });
                                         return;
                                       }
@@ -748,10 +730,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                           );
                                       if (category.length > 64) {
                                         setDialogState(() {
-                                          errorText = _plainLocalizedText(
-                                            en: 'Category must be up to 64 characters.',
-                                            lv: 'Kategorija var būt līdz 64 rakstzīmēm.',
-                                          );
+                                          errorText = context
+                                              .l10n
+                                              .workspaceCategoryMustBeUpTo64Characters;
                                         });
                                         return;
                                       }
@@ -836,10 +817,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                             final value = _parseAmount(raw);
                                             if (raw.isEmpty || value < 0) {
                                               setDialogState(() {
-                                                errorText = _plainLocalizedText(
-                                                  en: 'Enter valid percentages for all participants.',
-                                                  lv: 'Ievadi derīgus procentus visiem dalībniekiem.',
-                                                );
+                                                errorText = context
+                                                    .l10n
+                                                    .enterValidPercentages;
                                               });
                                               return;
                                             }
@@ -855,10 +835,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                           }
                                           if (totalBasisPoints != 10000) {
                                             setDialogState(() {
-                                              errorText = _plainLocalizedText(
-                                                en: 'Percentage split must total 100%.',
-                                                lv: 'Procentu sadalei jāsummējas līdz 100%.',
-                                              );
+                                              errorText = context
+                                                  .l10n
+                                                  .workspacePercentageSplitMustTotal100;
                                             });
                                             return;
                                           }
@@ -873,10 +852,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                             final rounded = value.round();
                                             if (raw.isEmpty || rounded <= 0) {
                                               setDialogState(() {
-                                                errorText = _plainLocalizedText(
-                                                  en: 'Shares must be greater than 0 for all participants.',
-                                                  lv: 'Daļām jābūt lielākām par 0 visiem dalībniekiem.',
-                                                );
+                                                errorText = context
+                                                    .l10n
+                                                    .workspaceSharesMustBeGreaterThan0ForAllParticipants;
                                               });
                                               return;
                                             }

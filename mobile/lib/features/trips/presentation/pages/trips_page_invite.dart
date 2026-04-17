@@ -29,14 +29,8 @@ extension _TripsPageInviteActions on _TripsPageState {
       final trip = _resolveJoinedTrip(joined.trip.id, fallback: joined.trip);
       _showSnack(
         joined.alreadyMember
-            ? _plainLocalizedText(
-                en: 'You are already a member of this trip.',
-                lv: 'Tu jau esi šī ceļojuma dalībnieks.',
-              )
-            : _plainLocalizedText(
-                en: 'Joined trip successfully.',
-                lv: 'Veiksmīgi pievienojies ceļojumam.',
-              ),
+            ? context.l10n.tripsYouAreAlreadyAMemberOfThisTrip
+            : context.l10n.tripsJoinedTripSuccessfully,
       );
       await _openWorkspace(trip);
     } on ApiException catch (error) {
@@ -48,13 +42,7 @@ extension _TripsPageInviteActions on _TripsPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _plainLocalizedText(
-          en: 'Failed to join trip from invite.',
-          lv: 'Neizdevās pievienoties ceļojumam no ielūguma.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.tripsFailedToJoinTripFromInvite, isError: true);
     } finally {
       if (mounted) {
         _updateState(() {
@@ -75,12 +63,7 @@ extension _TripsPageInviteActions on _TripsPageState {
             builder: (context, setDialogState) {
               final t = context.l10n;
               return AlertDialog(
-                title: Text(
-                  _plainLocalizedText(
-                    en: 'Join trip',
-                    lv: 'Pievienoties ceļojumam',
-                  ),
-                ),
+                title: Text(context.l10n.tripsJoinTrip),
                 content: SizedBox(
                   width: 420,
                   child: Column(
@@ -88,10 +71,7 @@ extension _TripsPageInviteActions on _TripsPageState {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _plainLocalizedText(
-                          en: 'Paste invite link or invite token.',
-                          lv: 'Ielīmē ielūguma saiti vai ielūguma tokenu.',
-                        ),
+                        context.l10n.tripsPasteInviteLinkOrInviteToken,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       const SizedBox(height: 10),
@@ -101,10 +81,8 @@ extension _TripsPageInviteActions on _TripsPageState {
                         minLines: 1,
                         maxLines: 3,
                         decoration: InputDecoration(
-                          hintText: _plainLocalizedText(
-                            en: 'https://.../?invite=north-sea-abc123def4',
-                            lv: 'https://.../?invite=north-sea-abc123def4',
-                          ),
+                          hintText:
+                              context.l10n.tripsHttpsInviteNorthSeaAbc123def4,
                           prefixIcon: const Icon(Icons.link_rounded),
                         ),
                         onChanged: (_) {
@@ -121,10 +99,9 @@ extension _TripsPageInviteActions on _TripsPageState {
                           );
                           if (token == null) {
                             setDialogState(() {
-                              errorText = _plainLocalizedText(
-                                en: 'Enter a valid invite link or token.',
-                                lv: 'Ievadi derīgu ielūguma saiti vai tokenu.',
-                              );
+                              errorText = context
+                                  .l10n
+                                  .tripsEnterAValidInviteLinkOrToken;
                             });
                             return;
                           }
@@ -143,10 +120,7 @@ extension _TripsPageInviteActions on _TripsPageState {
                           final value = (clipboard?.text ?? '').trim();
                           if (value.isEmpty) {
                             setDialogState(() {
-                              errorText = _plainLocalizedText(
-                                en: 'Clipboard is empty.',
-                                lv: 'Starpliktuve ir tukša.',
-                              );
+                              errorText = context.l10n.tripsClipboardIsEmpty;
                             });
                             return;
                           }
@@ -156,9 +130,7 @@ extension _TripsPageInviteActions on _TripsPageState {
                           });
                         },
                         icon: const Icon(Icons.content_paste_rounded),
-                        label: Text(
-                          _plainLocalizedText(en: 'Paste', lv: 'Ielīmēt'),
-                        ),
+                        label: Text(context.l10n.tripsPaste),
                       ),
                       if (errorText != null) ...[
                         const SizedBox(height: 10),
@@ -184,18 +156,14 @@ extension _TripsPageInviteActions on _TripsPageState {
                       final token = _extractInviteToken(inputController.text);
                       if (token == null) {
                         setDialogState(() {
-                          errorText = _plainLocalizedText(
-                            en: 'Enter a valid invite link or token.',
-                            lv: 'Ievadi derīgu ielūguma saiti vai tokenu.',
-                          );
+                          errorText =
+                              context.l10n.tripsEnterAValidInviteLinkOrToken;
                         });
                         return;
                       }
                       Navigator.of(context).pop(token);
                     },
-                    child: Text(
-                      _plainLocalizedText(en: 'Join', lv: 'Pievienoties'),
-                    ),
+                    child: Text(context.l10n.tripsJoin),
                   ),
                 ],
               );

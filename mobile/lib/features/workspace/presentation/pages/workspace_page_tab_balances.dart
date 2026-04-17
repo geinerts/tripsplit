@@ -117,16 +117,10 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                                   const SizedBox(height: 4),
                                   Text(
                                     item.net < 0
-                                        ? _localizedText(
-                                            context,
-                                            en: 'Owes to the group',
-                                            lv: 'Parādā grupai',
-                                          )
-                                        : _localizedText(
-                                            context,
-                                            en: 'Gets back from group',
-                                            lv: 'Jāsaņem no grupas',
-                                          ),
+                                        ? context.l10n.workspaceOwesToTheGroup
+                                        : context
+                                              .l10n
+                                              .workspaceGetsBackFromGroup,
                                     style: Theme.of(context)
                                         .textTheme
                                         .titleSmall
@@ -202,11 +196,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              _localizedText(
-                context,
-                en: 'Showing top 4 by balance difference.',
-                lv: 'Parādīti 4 lielākie bilances ieraksti.',
-              ),
+              context.l10n.workspaceShowingTop4ByBalanceDifference,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
@@ -273,7 +263,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         else ...[
           if (pendingSettlements.isNotEmpty) ...[
             _buildSettlementSectionLabel(
-              _localizedText(context, en: 'Pending', lv: 'Gaida'),
+              context.l10n.statusPending,
               color: semantic.statusPendingForeground,
             ),
             const SizedBox(height: 8),
@@ -289,7 +279,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           if (paidSettlements.isNotEmpty) ...[
             if (pendingSettlements.isNotEmpty) const SizedBox(height: 8),
             _buildSettlementSectionLabel(
-              _localizedText(context, en: 'Paid', lv: 'Apmaksāts'),
+              context.l10n.paidLabel,
               color: semantic.statusConfirmedForeground,
             ),
             const SizedBox(height: 8),
@@ -335,11 +325,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     final amountColor = isPositiveForCurrent
         ? AppDesign.successColor(context)
         : AppDesign.titleColor(context);
-    final openFlowLabel = _localizedText(
-      context,
-      en: 'Open flow',
-      lv: 'Atvērt plūsmu',
-    );
+    final openFlowLabel = context.l10n.workspaceOpenFlow;
 
     final normalizedStatus = item.status.trim().toLowerCase();
     final isCompleted = normalizedStatus == 'confirmed';
@@ -361,33 +347,21 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     final statusLabel = isCompleted
         ? context.l10n.settledStatus
         : (normalizedStatus == 'sent'
-              ? _localizedText(context, en: 'Sent', lv: 'Nosūtīts')
-              : _localizedText(context, en: 'Pending', lv: 'Gaida'));
+              ? context.l10n.statusSent
+              : context.l10n.statusPending);
 
     final fromRole = item.fromUserId == _currentUserId
-        ? _localizedText(context, en: 'You', lv: 'Tu')
-        : _localizedText(context, en: 'Friend', lv: 'Draugs');
+        ? context.l10n.youLabel
+        : context.l10n.workspaceFriend;
     final toRole = item.toUserId == _currentUserId
-        ? _localizedText(context, en: 'You', lv: 'Tu')
-        : _localizedText(context, en: 'Friend', lv: 'Draugs');
-    final detailTitle = _localizedText(
-      context,
-      en: 'Settlement transfer',
-      lv: 'Norēķina pārskaitījums',
-    );
+        ? context.l10n.youLabel
+        : context.l10n.workspaceFriend;
+    final detailTitle = context.l10n.workspaceSettlementTransfer;
     final detailSubtitle = isCompleted
-        ? _localizedText(context, en: 'Completed', lv: 'Pabeigts')
+        ? context.l10n.workspaceCompleted
         : (normalizedStatus == 'sent'
-              ? _localizedText(
-                  context,
-                  en: 'Waiting for confirmation',
-                  lv: 'Gaida apstiprinājumu',
-                )
-              : _localizedText(
-                  context,
-                  en: 'Waiting for payment',
-                  lv: 'Gaida maksājumu',
-                ));
+              ? context.l10n.workspaceWaitingForConfirmation
+              : context.l10n.workspaceWaitingForPayment);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -602,14 +576,12 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     required int confirmReceivedCount,
   }) {
     final colors = Theme.of(context).colorScheme;
-    final title = _plainLocalizedText(
-      en: 'Action needed',
-      lv: 'Nepieciešama darbība',
-    );
-    final subtitle = _plainLocalizedText(
-      en: '$markSentCount payment(s) to mark as sent, $confirmReceivedCount to confirm as received.',
-      lv: '$markSentCount maksājums(-i) jāatzīmē kā nosūtīts, $confirmReceivedCount jāapstiprina kā saņemts.',
-    );
+    final title = context.l10n.workspaceActionNeeded;
+    final subtitle = context.l10n
+        .workspacePaymentSToMarkAsSentToConfirmAsReceived(
+          markSentCount,
+          confirmReceivedCount,
+        );
 
     return _WorkspaceSectionCard(
       accent: colors.tertiary,
@@ -666,27 +638,13 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     required String finishLabel,
     required String creatorMustFinishLabel,
   }) {
-    final readyTitle = _plainLocalizedText(
-      en: 'Ready to settle',
-      lv: 'Gatavi norēķiniem',
-    );
+    final readyTitle = context.l10n.workspaceReadyToSettle;
     final readySubtitle = allMembersReady
-        ? _plainLocalizedText(
-            en: 'All members are ready. You can start settlements.',
-            lv: 'Visi dalībnieki gatavi. Var sākt norēķinus.',
-          )
-        : _plainLocalizedText(
-            en: 'Waiting for everyone to mark ready.',
-            lv: 'Gaidām, kamēr visi atzīmē gatavību.',
-          );
-    final markReadyTitle = _plainLocalizedText(
-      en: "I'm ready",
-      lv: 'Esmu gatavs/-a',
-    );
-    final markReadySubtitle = _plainLocalizedText(
-      en: 'Confirm that you added all your expenses.',
-      lv: 'Apstiprini, ka visi tavi izdevumi ir pievienoti.',
-    );
+        ? context.l10n.workspaceAllMembersAreReadyYouCanStartSettlements
+        : context.l10n.workspaceWaitingForEveryoneToMarkReady;
+    final markReadyTitle = context.l10n.workspaceIMReady;
+    final markReadySubtitle =
+        context.l10n.workspaceConfirmThatYouAddedAllYourExpenses;
 
     final readyCard = _WorkspaceSectionCard(
       accent: allMembersReady ? colors.primary : colors.tertiary,
@@ -787,10 +745,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                _plainLocalizedText(
-                  en: 'Finish button unlocks once everyone marks ready.',
-                  lv: 'Poga aktivizēsies, kad visi atzīmēs gatavību.',
-                ),
+                context.l10n.workspaceFinishButtonUnlocksOnceEveryoneMarksReady,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),

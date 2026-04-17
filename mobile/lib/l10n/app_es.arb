@@ -1,0 +1,1147 @@
+{
+  "@@locale": "es",
+  "@addedMembersCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownConfirmedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSentCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSuggestedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@createdByLine": {
+    "placeholders": {
+      "creator": {},
+      "date": {}
+    }
+  },
+  "@currentEmailLabel": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "@directlyExplainedByExpenses": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@exactAmountWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@exactSplitMustMatchTotal": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@expenseIdDate": {
+    "placeholders": {
+      "date": {},
+      "id": {}
+    }
+  },
+  "@expenseImpactLine": {
+    "placeholders": {
+      "date": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@expenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@expensesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@forParticipants": {
+    "placeholders": {
+      "participants": {}
+    }
+  },
+  "@fromDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@fromToLine": {
+    "placeholders": {
+      "from": {},
+      "to": {}
+    }
+  },
+  "@helloUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@memberToPaySummary": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {},
+      "waiting": {}
+    }
+  },
+  "@moreCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@noExpensesByUserYet": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@noteMustBeMaxChars": {
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "@offlineQueuePendingChanges": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@paidOwesLine": {
+    "placeholders": {
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@payerName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@percentWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@pickedCycleCompleted": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@pickedUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@queueAddExpenseAmount": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@queueDeleteExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queueUpdateExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queuedChangesTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@queuedCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@randomCycleDrawLeft": {
+    "placeholders": {
+      "cycleNo": {},
+      "drawNo": {},
+      "remaining": {}
+    }
+  },
+  "@selectedFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementConfirmedProgress": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {}
+    }
+  },
+  "@settlementCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@settlementImpactWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@sharesWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitLabelValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitModeEqual": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeExact": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModePercent": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeShares": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@statusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@suggestedTransferRows": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@toDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripCreated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripStatusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@tripWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@unreadUpdates": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@userIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@userPaidOwesNetLine": {
+    "placeholders": {
+      "net": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@userWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@whoOwesWhatWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@youShouldPay": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@youShouldReceive": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountSectionTitle": "Cuenta",
+  "activeStatus": "Activo",
+  "activeTripPlural": "viajes activos",
+  "activeTripSingle": "viaje activo",
+  "activeTrips": "Viajes activos",
+  "activitiesComingSoon": "Próximamente sección de actividades.",
+  "addAction": "Agregar",
+  "addExpenseTitle": "Agregar gasto",
+  "addExpensesAction": "Agregar gastos",
+  "addMembersAction": "Agregar miembros",
+  "addTripMembersTitle": "Agregar miembros de viaje",
+  "addedMembersCount": "{count, plural, one{{count} miembro agregado.} other{{count} miembros agregados.}}",
+  "allCaughtUp": "todos atrapados",
+  "allFilter": "Todo",
+  "allMembersLabel": "Todos los miembros",
+  "allPaymentsConfirmed": "Todos los pagos están confirmados.",
+  "allTrips": "Todos los viajes",
+  "amountHint": "12.50",
+  "amountLabel": "Cantidad",
+  "amountMustBeGreaterThanZero": "La cantidad debe ser mayor que 0.",
+  "appearance": "Apariencia",
+  "archivedStatus": "Archivado",
+  "authSubtitleLogin": "Dividir los gastos de viaje con amigos.",
+  "authSubtitleRegister": "Crea una cuenta y comienza a dividir viajes",
+  "breakdownConfirmedCount": "confirmado: {count}",
+  "breakdownPendingCount": "pendiente: {count}",
+  "breakdownSentCount": "enviado: {count}",
+  "breakdownSuggestedCount": "sugerido: {count}",
+  "cancelAction": "Cancelar",
+  "changeEmailWithPasswordHelper": "Ingrese su contraseña para cambiar el correo electrónico.",
+  "chooseReceiptFile": "Elija el archivo de recibo",
+  "completeAccountSetupDescription": "Configure su correo electrónico y contraseña para completar su cuenta.",
+  "completeAccountSetupTitle": "Configuración completa de la cuenta",
+  "confirmReceivedAction": "Confirmar recibido",
+  "confirmedAllSettlementsArchived": "Todos los acuerdos confirmados. Viaje archivado.",
+  "confirmedAsReceived": "Confirmado como recibido.",
+  "confirmedLabel": "Confirmado",
+  "couldNotOpenReceiptLink": "No se pudo abrir el enlace del recibo.",
+  "createAction": "Crear",
+  "createFirstTripHint": "Crea tu primer viaje para comenzar.",
+  "createNewTripTitle": "Crear nuevo viaje",
+  "createTripAction": "Crear viaje",
+  "createTripFirst": "Primero crea un viaje.",
+  "createdByLine": "{date} - Creado por {creator}",
+  "creatorMustFinishTripFirst": "El creador del viaje debe finalizarlo para comenzar la confirmación de la liquidación.",
+  "currentEmailLabel": "Correo electrónico actual: {email}",
+  "currentReceiptAttached": "Se adjunta recibo actual.",
+  "dateFormatHint": "AAAA-MM-DD",
+  "dateLabel": "Fecha",
+  "dateMustMatchFormat": "La fecha debe coincidir con AAAA-MM-DD.",
+  "dateUnknown": "Fecha desconocida",
+  "deleteAction": "Borrar",
+  "deleteExpenseConfirmQuestion": "¿Eliminar este gasto?",
+  "deleteExpenseTitle": "Eliminar gasto",
+  "directlyExplainedByExpenses": "Explicado directamente por gastos: {amount}",
+  "doneStatus": "Hecho",
+  "editAction": "Editar",
+  "editExpenseTitle": "Editar gasto",
+  "emailAddressLabel": "Dirección de correo electrónico",
+  "emailHint": "tu@ejemplo.com",
+  "emailLabel": "Correo electrónico",
+  "emailRequired": "Se requiere correo electrónico.",
+  "enterValidExactAmounts": "Ingrese cantidades exactas válidas para todos los participantes.",
+  "enterValidPercentages": "Introduzca porcentajes válidos para todos los participantes.",
+  "equalSplitLabel": "División igual",
+  "exactAmountWithValue": "Exacto: {value}",
+  "exactAmountsLabel": "Cantidades exactas",
+  "exactSplitMustMatchTotal": "La división exacta debe sumar {amount}.",
+  "expenseAdded": "Gasto añadido.",
+  "expenseBreakdownSubtitle": "Cómo este miembro se ve afectado por cada gasto.",
+  "expenseBreakdownTitle": "Desglose de gastos",
+  "expenseDeleted": "Gasto eliminado.",
+  "expenseIdDate": "Gasto #{id} - {date}",
+  "expenseImpactLine": "{date} - Pagado {paid} - Debe {owes}",
+  "expenseUpdated": "Gastos actualizados.",
+  "expenseWithId": "Gasto #{id}",
+  "expensesCount": "{count, plural, one{{count} gasto} other{{count} gastos}}",
+  "expensesLabel": "Gastos",
+  "failedToCreateTrip": "No se pudo crear el viaje.",
+  "failedToLoadUsersDirectory": "No se pudo cargar el directorio de usuarios.",
+  "filterSettlementByMemberSubtitle": "Filtrar liquidaciones por miembro",
+  "finishTripAction": "Terminar viaje",
+  "finishTripConfirmationText": "¿Terminar este viaje y empezar a establecer asentamientos?",
+  "finishTripStartSettlementsAction": "Finalizar e iniciar asentamientos.",
+  "finishTripTitle": "Terminar viaje",
+  "forParticipants": "Para: {participants}",
+  "forgotPassword": "¿Has olvidado tu contraseña?",
+  "forgotPasswordSubtitle": "Ingrese su correo electrónico y le enviaremos un enlace para restablecer su contraseña.",
+  "forgotPasswordSuccessMessage": "Si existe una cuenta con este correo electrónico, le hemos enviado un enlace para restablecer la contraseña.",
+  "forgotPasswordTitle": "Restablecer contraseña",
+  "friendsProgressSubtitle": "Cada miembro y su estado de confirmación.",
+  "friendsProgressTitle": "Progreso de amigos",
+  "friendsSectionComingSoon": "Próximamente sección de amigos.",
+  "fromDirection": "Desde {name}",
+  "fromToLine": "{from} a {to}",
+  "generateTurnAction": "generar turno",
+  "hasAccountQuestion": "¿Ya tienes una cuenta?",
+  "helloUser": "Hola, {name}!",
+  "iSentAction": "yo envié",
+  "invalidEmailFormat": "Formato de correo electrónico no válido.",
+  "languageAction": "Idioma",
+  "languageEnglish": "Inglés",
+  "languageLatvian": "Letón",
+  "languageSpanish": "Español",
+  "languageSystem": "Sistema",
+  "languageSystemSubtitle": "Usar el idioma del dispositivo",
+  "leaveEmptyKeepPasswordHelper": "Déjelo vacío para mantener la contraseña actual.",
+  "logInButton": "Acceso",
+  "logOutButton": "Finalizar la sesión",
+  "logoutFromDeviceQuestion": "¿Cerrar sesión en este dispositivo?",
+  "markedAsSent": "Marcado como enviado.",
+  "memberSummariesSubtitle": "Estado de equilibrio actual para ambas partes.",
+  "memberSummariesTitle": "Resúmenes de miembros",
+  "memberToPaySummary": "Para pagar {total} - confirmado {confirmed} - esperando {waiting}",
+  "membersImpactSubtitle": "Impacto estimado del pago por miembro.",
+  "membersImpactTitle": "Impacto de los miembros",
+  "membersIncludedInExpense": "Miembros incluidos",
+  "membersLabel": "Miembros",
+  "moreCount": "+{count} más",
+  "myFilter": "Mi",
+  "myImpactTitle": "mi impacto",
+  "firstNameHint": "tu nombre",
+  "firstNameLabel": "Nombre de pila",
+  "firstNameLengthValidation": "El nombre debe tener entre 2 y 64 caracteres.",
+  "fullNameHelper": "Utilice nombre y apellido en un campo.",
+  "fullNameHint": "p.ej. Anna Ozolina",
+  "fullNameLabel": "nombre completo",
+  "fullNameValidation": "Ingrese el nombre y apellido (al menos 2 caracteres cada uno).",
+  "lastNameHint": "tu apellido",
+  "lastNameLabel": "Apellido",
+  "lastNameLengthValidation": "El apellido debe tener entre 2 y 64 caracteres.",
+  "nameHint": "Su nombre",
+  "nameLabel": "Nombre",
+  "nameLengthValidation": "El nombre debe tener al menos 2 caracteres.",
+  "navActivities": "Analítica",
+  "navAddTrip": "Añadir viaje",
+  "navBalances": "Saldos",
+  "navExpenses": "Gastos",
+  "navFriends": "Amigos",
+  "navHome": "Hogar",
+  "navProfile": "Perfil",
+  "navRandom": "Aleatorio",
+  "netLabel": "Neto",
+  "newPasswordLabel": "Nueva contraseña",
+  "nicknameHint": "como te veran tus amigos",
+  "nicknameLabel": "Apodo",
+  "nicknameLengthValidation": "El apodo debe tener al menos 2 caracteres.",
+  "noAccountQuestion": "¿Aún no tienes cuenta?",
+  "noBalancesYet": "Aún no hay saldos.",
+  "noChangesToSave": "No hay cambios para guardar.",
+  "noDirectExpenseLink": "No se encontró ningún enlace directo de gasto único. Esta liquidación se calcula a partir del saldo total del viaje.",
+  "noExpenseImpactForMember": "No hay impacto en los gastos para este miembro.",
+  "noExpensesByUserYet": "Aún no hay gastos para {name}.",
+  "noExpensesYet": "Aún no hay gastos.",
+  "noExtraUsersToAdd": "No hay usuarios adicionales para agregar.",
+  "noInternetDeleteQueued": "Sin internet. Eliminar en cola.",
+  "noInternetExpenseQueued": "Sin internet. Gastos en cola.",
+  "noInternetUpdateQueued": "Sin internet. Actualización en cola.",
+  "noMatchingRows": "No hay filas coincidentes.",
+  "noMembersFound": "No se encontraron miembros.",
+  "noNewMembersAdded": "No se agregaron nuevos miembros.",
+  "noNotePlaceholder": "Sin nota",
+  "noNotificationsYet": "Aún no hay notificaciones.",
+  "noParticipantData": "Sin datos de participantes.",
+  "noParticipantsSelected": "No se seleccionó ningún participante.",
+  "noPaymentRowsInTrip": "No hay filas de pago en este viaje.",
+  "noPaymentsNeeded": "No se necesitan pagos.",
+  "noPicksYet": "Aún no hay selecciones.",
+  "noSettlementActivityForMember": "No hay actividad de liquidación para este miembro.",
+  "noSettlementRowsYet": "Aún no hay disputas por acuerdos.",
+  "noSettlements": "Sin asentamientos",
+  "noTransferNeededForFilter": "No se necesita transferencia para el filtro seleccionado.",
+  "noTransferRowsToShow": "No hay filas de transferencia para mostrar.",
+  "noTripDataLoaded": "No se cargaron datos de viaje.",
+  "noTripsYet": "Aún no hay viajes.",
+  "noUsersFoundYet": "Aún no se han encontrado usuarios.",
+  "notSetValue": "No establecido",
+  "notYetConfirmedTitle": "Aún no confirmado",
+  "noteHint": "Cena, taxi, entradas...",
+  "noteLabel": "Nota",
+  "noteMustBeMaxChars": "La nota debe tener como máximo {max} caracteres.",
+  "notificationFallbackTitle": "Notificación",
+  "notificationsTitle": "Notificaciones",
+  "notificationFriendInviteTitle": "Invitación de amistad",
+  "notificationFriendInviteBody": "{name} te envió una invitación de amistad.",
+  "notificationFriendInviteBodyGeneric": "Recibiste una invitación de amistad.",
+  "notificationFriendInviteAcceptedTitle": "Invitación aceptada",
+  "notificationFriendInviteAcceptedBody": "{name} aceptó tu invitación de amistad.",
+  "notificationFriendInviteAcceptedBodyGeneric": "Tu invitación de amistad fue aceptada.",
+  "notificationFriendInviteRejectedTitle": "Invitación rechazada",
+  "notificationFriendInviteRejectedBody": "{name} rechazó tu invitación de amistad.",
+  "notificationFriendInviteRejectedBodyGeneric": "Tu invitación de amistad fue rechazada.",
+  "notificationTripAddedTitle": "Añadido al viaje",
+  "notificationTripAddedBody": "{name} te añadió al viaje \"{trip}\".",
+  "notificationTripAddedBodyNoActor": "Fuiste añadido al viaje \"{trip}\".",
+  "notificationTripAddedBodyGeneric": "Fuiste añadido a un viaje.",
+  "notificationExpenseAddedTitle": "Nuevo gasto añadido",
+  "notificationExpenseAddedBodyWithTrip": "{name} añadió un gasto de {amount} en \"{trip}\".",
+  "notificationExpenseAddedBodyWithNote": "{name} añadió un gasto de {amount}: {note}",
+  "notificationExpenseAddedBodyGeneric": "Se añadió un nuevo gasto.",
+  "notificationTripFinishedTitle": "Viaje finalizado",
+  "notificationTripFinishedBodySettlementsReady": "{name} finalizó \"{trip}\". Las liquidaciones están listas.",
+  "notificationTripFinishedBodyArchived": "{name} finalizó \"{trip}\". El viaje está archivado.",
+  "notificationTripFinishedBodyNoActor": "\"{trip}\" fue finalizado.",
+  "notificationTripFinishedBodyGeneric": "Se actualizó el estado del viaje.",
+  "notificationMemberReadyToSettleTitle": "Miembro marcado como listo",
+  "notificationMemberReadyToSettleBody": "{name} está listo para liquidar en \"{trip}\".",
+  "notificationMemberReadyToSettleBodyNoActor": "Un miembro está listo para liquidar en \"{trip}\".",
+  "notificationMemberReadyToSettleBodyGeneric": "Un miembro está listo para liquidar.",
+  "notificationTripReadyToSettleTitle": "Todos los miembros están listos",
+  "notificationTripReadyToSettleBody": "Todos los miembros se marcaron como listos en \"{trip}\". Puedes iniciar las liquidaciones.",
+  "notificationTripReadyToSettleBodyGeneric": "Todos los miembros están listos. Puedes iniciar las liquidaciones.",
+  "notificationSettlementReminderTitle": "Recordatorio de liquidación",
+  "notificationSettlementReminderBodyMarkSent": "{actor} recordó a {target} marcar {amount} como enviado.",
+  "notificationSettlementReminderBodyConfirm": "{actor} recordó a {target} confirmar la recepción de {amount}.",
+  "notificationSettlementReminderBodyGeneric": "Recibiste un recordatorio de liquidación.",
+  "notificationPaymentReminderTitle": "Recordatorio de pago",
+  "notificationPaymentReminderBody": "Recordatorio: marca {amount} como enviado a {target} en \"{trip}\".",
+  "notificationPaymentReminderBodyGeneric": "Recordatorio: marca el pago como enviado.",
+  "notificationConfirmationReminderTitle": "Recordatorio de confirmación",
+  "notificationConfirmationReminderBody": "Recordatorio: confirma la recepción de {amount} de {payer} en \"{trip}\".",
+  "notificationConfirmationReminderBodyGeneric": "Recordatorio: confirma la recepción del pago.",
+  "notificationSettlementSentTitle": "Transferencia marcada como enviada",
+  "notificationSettlementSentBody": "{name} marcó {amount} como enviado para ti.",
+  "notificationSettlementSentBodyGeneric": "Se marcó una transferencia como enviada.",
+  "notificationSettlementConfirmedTitle": "Transferencia confirmada",
+  "notificationSettlementConfirmedBody": "{name} confirmó haber recibido {amount} de ti.",
+  "notificationSettlementConfirmedBodyGeneric": "Se confirmó una transferencia.",
+  "offlineQueuePendingChanges": "Cola sin conexión: {count, plural, one{{count} cambio pendiente} other{{count} cambios pendientes}}",
+  "offlineQueueStatus": "Cola sin conexión",
+  "offlineStatus": "Desconectado",
+  "onlineStatus": "En línea",
+  "onlyCreatorCanFinishTrip": "Sólo el creador del viaje puede finalizar el viaje.",
+  "openLabel": "Abierto",
+  "openReceiptAction": "recibo abierto",
+  "openSettlements": "Asentamientos abiertos",
+  "overviewTitle": "Descripción general",
+  "owesLabel": "debe",
+  "paidByLabel": "Pagado por",
+  "paidLabel": "Pagado",
+  "paidOwesLine": "Pagado {paid} - Debe {owes}",
+  "participantsEmptyMeansAll": "Participantes (vacío = todos los miembros)",
+  "participantsTitle": "Participantes",
+  "passwordLabel": "Contraseña",
+  "passwordComplexityHelper": "Utilice al menos 1 letra mayúscula, 1 número y 1 símbolo.",
+  "passwordComplexityValidation": "La contraseña debe incluir 1 letra mayúscula, 1 número y 1 símbolo.",
+  "passwordMinLength": "La contraseña debe tener al menos 8 caracteres.",
+  "passwordMinLengthShort": "La contraseña debe tener al menos 6 caracteres.",
+  "passwordResetComingSoon": "Próximamente se restablecerá la contraseña.",
+  "passwordsDoNotMatch": "Las contraseñas no coinciden.",
+  "payerName": "{name} (pagador)",
+  "pendingLabel": "Pendiente",
+  "pendingPaymentsSubtitle": "Los pagos aún esperan confirmación completa.",
+  "percentLabel": "Por ciento",
+  "percentSplitMustBe100": "La división porcentual debe sumar exactamente 100%.",
+  "percentWithValue": "{value}",
+  "percentagesLabel": "Porcentajes",
+  "pickAtLeastOneParticipant": "Elija al menos un participante.",
+  "pickMembersGenerateTurn": "Elige miembros y genera un turno.",
+  "pickedCycleCompleted": "{name} eligió. Ciclo completado.",
+  "pickedUser": "{name} eligió.",
+  "profileRefreshCachedData": "No se pudo actualizar el perfil. Mostrando datos almacenados en caché.",
+  "profileTitle": "Perfil",
+  "profileUpdated": "Perfil actualizado.",
+  "uploadAvatarAction": "Subir avatar",
+  "takePhotoAction": "tomar una foto",
+  "chooseFromLibraryAction": "Elija de la biblioteca",
+  "removeAvatarAction": "Eliminar avatar",
+  "avatarUpdatedMessage": "Avatar actualizado.",
+  "avatarRemovedMessage": "Avatar eliminado.",
+  "avatarFileTooLarge": "El archivo de avatar es demasiado grande (máximo 5 MB).",
+  "avatarPickFailed": "No se pudo cargar la imagen de avatar.",
+  "queueAddExpense": "Agregar gasto",
+  "queueAddExpenseAmount": "En cola: agregar gasto {amount}",
+  "queueDeleteExpense": "Eliminar gasto",
+  "queueDeleteExpenseWithId": "En cola: eliminar gasto #{id}",
+  "queuePendingStatus": "Cola pendiente",
+  "queueUpdateExpense": "Gasto de actualización",
+  "queueUpdateExpenseWithId": "En cola: actualizar gasto #{id}",
+  "queuedChange": "cambio en cola",
+  "queuedChangesTitle": "Cambios en cola ({count})",
+  "queuedCountLabel": "En cola ({count})",
+  "randomCycleDrawLeft": "Ciclo {cycleNo}, dibuja {drawNo} - {remaining} a la izquierda",
+  "receiptFallbackName": "recibo",
+  "receiptLinkInvalid": "El enlace del recibo no es válido.",
+  "receiptOptionalLabel": "Recibo (opcional)",
+  "recentPicksTitle": "Selecciones recientes",
+  "reloadProfile": "Recargar perfil",
+  "rememberMe": "Acuérdate de mí",
+  "removeCurrentReceipt": "Eliminar recibo actual",
+  "repeatNewPasswordLabel": "Repetir nueva contraseña",
+  "repeatPasswordLabel": "Repita la contraseña",
+  "requestFailedTryAgain": "La solicitud falló. Intentar otra vez.",
+  "retryAction": "Rever",
+  "rowsLabel": "Filas",
+  "backToLoginAction": "Volver a iniciar sesión",
+  "saveAction": "Ahorrar",
+  "saveCredentialsButton": "Guardar credenciales",
+  "saveProfileButton": "Guardar perfil",
+  "sendResetLinkButton": "Enviar enlace de reinicio",
+  "searchUsersHint": "Buscar personas por nombre o correo electrónico",
+  "selectedPeopleLabel": "personas seleccionadas",
+  "noSearchMatches": "No se encontraron usuarios coincidentes.",
+  "savingButton": "Ahorro...",
+  "selectAtLeastTwoMembers": "Seleccione al menos dos miembros.",
+  "selectMembersHint": "Seleccionar miembros",
+  "selectedFileLabel": "Seleccionado: {name}",
+  "selectedLabel": "Seleccionado",
+  "selectedUserFallback": "Usuario seleccionado",
+  "settings": "Ajustes",
+  "settleUpAction": "Saldar cuentas",
+  "settledLabel": "Establecido",
+  "settledStatus": "Establecido",
+  "settlementActivitySubtitle": "Transferencias vinculadas a este miembro.",
+  "settlementActivityTitle": "Actividad de liquidación",
+  "settlementCompletedTitle": "Liquidación completada",
+  "settlementConfirmedProgress": "{confirmed}/{total} confirmado",
+  "settlementCountLabel": "{count} asentamientos",
+  "settlementImpactTitle": "Impacto del asentamiento",
+  "settlementImpactWithFilter": "Impacto de la liquidación: {name}",
+  "settlementInProgress": "Liquidación en curso",
+  "settlementInProgressTitle": "Liquidación en curso",
+  "settlementLabel": "Asentamiento",
+  "settlementOverviewArchivedSubtitle": "Viaje archivado. Todos los asentamientos completados.",
+  "settlementOverviewInProgressSubtitle": "Seguimiento de confirmaciones de liquidación.",
+  "settlementOverviewPreviewSubtitle": "Vista previa de traslados para cuando finalice el viaje.",
+  "settlementPreview": "Vista previa de la liquidación",
+  "settlementPreviewTitle": "Vista previa de la liquidación",
+  "settlementProgressTripArchived": "Viaje archivado",
+  "settlementWithId": "Acuerdo #{id}",
+  "settlements": "Asentamientos",
+  "settlementsAlreadyCompletedSubtitle": "Liquidaciones ya completadas.",
+  "settlementsDone": "Liquidaciones realizadas",
+  "settlingStatus": "Asentamiento",
+  "shareUnit": "compartir",
+  "sharesLabel": "Acciones",
+  "sharesMustBePositiveIntegers": "Las acciones deben ser números enteros positivos.",
+  "sharesWithValue": "Comparte: {value}",
+  "showActiveTrips": "Mostrar viajes activos",
+  "signUpButton": "Inscribirse",
+  "splitBreakdownSubtitle": "Cómo se divide el gasto",
+  "splitBreakdownTitle": "Desglose dividido",
+  "splitHintEqual": "Dividir en partes iguales entre los participantes seleccionados.",
+  "splitHintExact": "Ingrese el monto exacto para cada participante. La suma debe coincidir con el total.",
+  "splitHintPercent": "Ingrese el porcentaje para cada participante. La suma debe ser 100%.",
+  "splitHintShares": "Introduzca las unidades de participación (1, 2, 3...). El costo se divide proporcionalmente.",
+  "splitLabel": "Dividir",
+  "splitLabelValue": "Dividir: {value}",
+  "splitModeEqual": "División igual ({target})",
+  "splitModeExact": "Importes exactos ({target})",
+  "splitModeLabel": "Modo dividido",
+  "splitModePercent": "Porcentajes ({target})",
+  "splitModeShares": "Acciones ({target})",
+  "statusConfirmed": "Confirmado",
+  "statusPending": "Pendiente",
+  "statusSent": "Enviado",
+  "statusSuggested": "sugerido",
+  "statusWithValue": "Estado: {status}",
+  "suggestedTransferDirections": "Direcciones de transferencia sugeridas",
+  "suggestedTransferFromExpense": "Transferencia sugerida de gasto",
+  "suggestedTransferRows": "{count, plural, one{{count} fila de transferencia sugerida} other{{count} filas de transferencia sugeridas}}",
+  "suggestedTransfersSubtitle": "Pagador esperado -> filas del receptor.",
+  "suggestedTransfersTitle": "Transferencias sugeridas",
+  "summarySettledUp": "resuelto",
+  "summaryYouAreOwed": "te deben",
+  "summaryYouOwe": "tu debes",
+  "syncAction": "Sincronizar",
+  "syncNowAction": "Sincronizar ahora",
+  "syncingStatus": "Sincronización",
+  "tapToViewDetails": "Toca para ver detalles",
+  "themeModeDark": "Oscuro",
+  "themeModeDarkSubtitle": "Oscuro suave (no negro puro)",
+  "themeModeLight": "Luz",
+  "themeModeSystem": "Sistema",
+  "themeModeSystemSubtitle": "Usar la apariencia del dispositivo",
+  "toDirection": "A {name}",
+  "totalLabel": "Total",
+  "travelerFallbackName": "Viajero",
+  "tripAlreadyClosed": "Viaje ya cerrado.",
+  "tripArchivedReadOnly": "El viaje está archivado. Modo de solo lectura.",
+  "tripClosedExpenseEditingDisabled": "El viaje está cerrado. La edición de gastos está deshabilitada.",
+  "tripClosedExpensesReadOnly": "El viaje está cerrado. Los gastos son de solo lectura.",
+  "tripClosedRandomDisabled": "El viaje está cerrado. El sorteo aleatorio está deshabilitado.",
+  "tripCreated": "Viaje \"{name}\" creado.",
+  "tripFinished": "Viaje terminado.",
+  "tripFinishedCompleteSettlements": "El viaje ha terminado. Liquidaciones completas.",
+  "tripFinishedSettlementStarted": "Viaje terminado. Se inició el asentamiento.",
+  "tripFullySettledArchived": "Viaje totalmente liquidado y archivado.",
+  "tripNameHint": "viaje de esquí a austria",
+  "tripNameLabel": "Nombre del viaje",
+  "tripNameLengthValidation": "El nombre del viaje debe tener al menos 2 caracteres.",
+  "tripSnapshotTitle": "Instantánea del viaje",
+  "tripTitleShort": "Viaje",
+  "tripStatusWithValue": "Estado del viaje: {status}",
+  "tripWithId": "Viaje #{id}",
+  "unexpectedErrorLoadingProfile": "Error inesperado al cargar el perfil",
+  "unexpectedErrorLoadingTripData": "Error inesperado al cargar los datos del viaje",
+  "unexpectedErrorLoadingTrips": "Errores inesperados al cargar viajes",
+  "unexpectedErrorSavingChanges": "Error inesperado al guardar cambios",
+  "unexpectedErrorSavingCredentials": "Error inesperado al guardar credenciales",
+  "unexpectedErrorUpdatingProfile": "Error inesperado al actualizar el perfil",
+  "unknownError": "Error desconocido",
+  "unknownLabel": "Desconocido",
+  "unreadLabel": "No leído",
+  "unreadUpdates": "{count, plural, one{{count} actualización sin leer} other{{count} actualizaciones sin leer}}",
+  "missingTripRouteArgument": "Falta el argumento de la ruta del viaje.",
+  "userIdLabel": "ID de usuario: {id}",
+  "userPaidOwesNetLine": "Pagado {paid} - Debe {owes} - Neto {net}",
+  "userWithId": "Usuario {id}",
+  "valueLabel": "Valor",
+  "viewAllTrips": "Ver todos los viajes",
+  "viewByPersonTitle": "Ver por persona",
+  "whoOwesWhatSubtitle": "Quién pagó y quién debe.",
+  "whoOwesWhatTitle": "quien debe que",
+  "whoOwesWhatWithFilter": "Quién debe qué: {name}",
+  "whyPaymentExistsSubtitle": "Filas de gastos que contribuyen a esta transferencia.",
+  "whyPaymentExistsTitle": "¿Por qué existe este pago?",
+  "youLabel": "Tú",
+  "youSettledForExpense": "Te conformaste con este gasto.",
+  "youShouldPay": "Deberías pagar {amount}",
+  "youShouldReceive": "Deberías recibir {amount}",
+  "yourShare": "tu parte",
+  "yourTrips": "Tus viajes",
+  "authIntroSplitSmarter": "Divida de forma más inteligente.",
+  "authIntroTravelFree": "Viaja gratis.",
+  "authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo": "Realice un seguimiento de los costos compartidos entre monedas y liquide al instante, sin pagarés incómodos.",
+  "authIntroPlanTogether": "Planifiquen juntos.",
+  "authIntroPayClearly": "Pague claramente.",
+  "authIntroCreateTripsSecondsAddFriendsKeepEveryExpense": "Crea viajes en segundos, agrega amigos y mantén todos los gastos transparentes para todos.",
+  "authIntroSettleFast": "Resolver rápido.",
+  "authIntroStayFriends": "Sigan siendo amigos.",
+  "authIntroFromSharedDinnersFullTripsSplytoKeepsBalances": "Desde cenas compartidas hasta viajes completos, Splyto mantiene un saldo justo y libre de estrés.",
+  "authIntroAppleSignFailedPleaseTryAgain": "Error al iniciar sesión en Apple. Por favor inténtalo de nuevo.",
+  "authIntroGoogleSignFailedPleaseTryAgain": "Error al iniciar sesión en Google. Por favor inténtalo de nuevo.",
+  "authIntroCreateAccount": "Crea tu cuenta.",
+  "authIntroChooseSign": "Elige cómo quieres registrarte.",
+  "authIntroContinueGoogle": "Continuar con Google",
+  "authIntroContinueApple": "Continuar con Apple",
+  "authIntroBack": "Atrás",
+  "authIntroSplitSettled": "División resuelta",
+  "authIntroParis3Friends": "París · 3 amigos",
+  "authIntroGetStarted": "empezar",
+  "authIntroAlreadyHaveAccount": "¿Ya tienes una cuenta?",
+  "authIntroSignIn": "Iniciar sesión",
+  "authIntroSignUpWithEmail": "Regístrese con correo electrónico",
+  "authIntroOr": "O",
+  "authGoogleSignDidNotReturnIdToken": "El inicio de sesión de Google no devolvió un token de identificación.",
+  "authAppleSignAvailableIosDevices": "El inicio de sesión de Apple está disponible en dispositivos iOS.",
+  "authAppleSignNotAvailableDevice": "El inicio de sesión de Apple no está disponible en este dispositivo.",
+  "authAppleSignDidNotReturnIdentityToken": "El inicio de sesión de Apple no devolvió un token de identidad.",
+  "authAccountDeactivatedEnterEmailRequestReactivationLink": "La cuenta está desactivada. Ingrese su correo electrónico para solicitar un enlace de reactivación.",
+  "authAccountDeactivated": "La cuenta esta desactivada",
+  "authSendReactivationLinkEmail": "¿Enviar un enlace de reactivación a {email}?",
+  "authCancel": "Cancelar",
+  "authSendLink": "Enviar enlace",
+  "authReactivationLinkSentCheckEmail": "Enlace de reactivación enviado. Revisa tu correo electrónico.",
+  "authCouldNotSendReactivationLinkPleaseTryAgain": "No se pudo enviar el enlace de reactivación. Por favor inténtalo de nuevo.",
+  "authEmailNotVerifiedEnterEmailRequestVerificationLink": "El correo electrónico no está verificado. Ingrese su correo electrónico para solicitar el enlace de verificación.",
+  "authEmailNotVerified": "Correo electrónico no verificado",
+  "authSendVerificationLinkEmail": "¿Enviar enlace de verificación a {email}?",
+  "authVerificationLinkSentCheckEmail": "Enlace de verificación enviado. Revisa tu correo electrónico.",
+  "authCouldNotSendVerificationLinkPleaseTryAgain": "No se pudo enviar el enlace de verificación. Por favor inténtalo de nuevo.",
+  "authVerificationEmailSentPleaseVerifyEmailBeforeLogging": "Correo electrónico de verificación enviado. Por favor verifique su correo electrónico antes de iniciar sesión.",
+  "authVerifyEmail": "Verifica tu correo electrónico",
+  "authEmailLabel": "Correo electrónico:",
+  "authClose": "Cerca",
+  "authResendLink": "Reenviar enlace",
+  "profileAppSettingsSectionTitle": "CONFIGURACIÓN DE LA APLICACIÓN",
+  "profileAppearance": "Apariencia",
+  "profileThemeDisplayMode": "Tema y modo de visualización",
+  "profileLanguage": "Idioma",
+  "profileDisplayLanguage": "Idioma de visualización",
+  "profileNotificationsSectionHeading": "NOTIFICACIONES",
+  "profileAppBanners": "Banners en la aplicación",
+  "profileShowNewNotificationBannersInsideApp": "Mostrar nuevos banners de notificación dentro de la aplicación",
+  "profilePushNotificationsTitle": "Notificaciones push",
+  "profilePhoneNotificationsExpensesFriendsTripsSettlements": "Notificaciones telefónicas de gastos, amigos, viajes y liquidaciones.",
+  "profileSupportSectionHeading": "APOYO",
+  "profileContactUs": "Contáctenos",
+  "profileReportBugSuggestion": "Informar error/sugerencia",
+  "profileRateSplyto": "Califica Splyto",
+  "profileLeaveStoreRating": "Deja una calificación de tienda",
+  "profileSecuritySectionHeading": "SEGURIDAD",
+  "profileChangePassword": "Cambiar la contraseña",
+  "profileUpdateAccountPassword": "Actualizar contraseña de cuenta",
+  "profileDangerZoneSectionHeading": "ZONA DE PELIGRO",
+  "profileDeactivateAccount": "Desactivar cuenta",
+  "profileManageAccountAccess": "Administrar el acceso a la cuenta",
+  "profileMadeWithLabel": "Hecho con",
+  "profileStoreRatingActionWillConnectedNextStep": "La acción de calificación de la tienda se conectará en el siguiente paso.",
+  "profileFailedSaveNotificationSettings": "No se pudo guardar la configuración de notificaciones.",
+  "profilePushNotificationsSectionTitle": "NOTIFICACIONES PUSH",
+  "profileExpenseUpdates": "Actualizaciones de gastos",
+  "profileExpenseAddedNotificationsPhone": "Notificaciones de gastos añadidos al teléfono",
+  "profileFriendInvites": "invitaciones de amigos",
+  "profileFriendRequestResponseNotifications": "Notificaciones de solicitud y respuesta de amistad.",
+  "profileTripUpdates": "Actualizaciones de viaje",
+  "profileTripLifecycleMemberStatusChanges": "Cambios en el ciclo de vida del viaje y el estado de los miembros",
+  "profileSettlementUpdates": "Actualizaciones de liquidación",
+  "profileMarkedSentConfirmedPaymentUpdates": "Actualizaciones de pago marcadas enviadas y confirmadas",
+  "profileScreenshotSizeMust8Mb": "El tamaño de la captura de pantalla debe ser de hasta 8 MB",
+  "profileFeedbackSendTitle": "Enviar comentarios",
+  "profileFeedbackTypeLabel": "Tipo",
+  "profileFeedbackTypeBug": "Bicho",
+  "profileFeedbackTypeSuggestion": "Sugerencia",
+  "profileDescribeIssueSuggestion": "Describir problema o sugerencia",
+  "profilePickingImage": "Eligiendo imagen...",
+  "profileAttachScreenshot": "Adjuntar captura de pantalla",
+  "profileChangeScreenshot": "Cambiar captura de pantalla",
+  "profileRemoveImage": "Quitar imagen",
+  "profileTipAttachScreenshotFasterBugTriage": "Consejo: adjunte una captura de pantalla para una clasificación de errores más rápida",
+  "profileAddDetailsAttachScreenshotBeforeSending": "Agregue detalles o adjunte captura de pantalla antes de enviar",
+  "profileSendAction": "Enviar",
+  "profileThanksFeedbackSent": "¡Gracias! Comentarios enviados",
+  "profileFailedSendFeedback": "No se pudo enviar comentarios",
+  "profileCouldNotOpenWebsite": "No se pudo abrir el sitio web.",
+  "profileOpenWebsiteQuestion": "¿Abrir sitio web?",
+  "profileOpenPortfolioAction": "Abrir portafolio.egm.lv",
+  "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Este formato de imagen no es compatible con este dispositivo. Elija JPG o PNG.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "Establezca un correo electrónico válido en Editar perfil antes de cambiar la contraseña.",
+  "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Cuenta desactivada. Utilice el enlace de reactivación del correo electrónico para restaurar el acceso.",
+  "profileEditCouldNotDeactivateTryAgain": "No se pudo desactivar la cuenta. Por favor inténtalo de nuevo.",
+  "profileEditDeletionLinkSentEmail": "Enlace de eliminación enviado a su correo electrónico.",
+  "profileEditCouldNotSendDeletionLinkTryAgain": "No se pudo enviar el enlace de eliminación. Por favor inténtalo de nuevo.",
+  "profileEditEnterCurrentPasswordChangeEmail": "Ingrese la contraseña actual para cambiar el correo electrónico.",
+  "profileEditVerificationWasSentNewEmailSecurityNoticeWas": "La verificación fue enviada al nuevo correo electrónico. El aviso de seguridad fue enviado a su correo electrónico actual.",
+  "profileEditCouldNotStartEmailChangeRightNowTry": "No se pudo iniciar el cambio de correo electrónico en este momento. Por favor inténtalo de nuevo.",
+  "profileEditOverviewCurrency": "Moneda general",
+  "profileEditPaymentMethod": "Método de pago",
+  "profileEditBankTransferRevolutPaypalMe": "Transferencia bancaria, Revolut, PayPal.me",
+  "profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword": "Puede desactivar el acceso a la cuenta o solicitar un enlace de correo electrónico para eliminar permanentemente la cuenta. La contraseña es opcional para las cuentas de Google/Apple.",
+  "profileEditEnterPasswordOptionalGoogleApple": "Ingrese su contraseña (opcional para Google/Apple)",
+  "profileEditSendDeletionLinkEmail": "Enviar enlace de eliminación al correo electrónico",
+  "profileEditBackProfile": "Volver al perfil",
+  "profileEditSetValidEmailProfileChangingPassword": "Establezca un correo electrónico válido en el perfil antes de cambiar la contraseña.",
+  "profileEditPasswordUpdated": "Contraseña actualizada.",
+  "profileEditFailedUpdatePassword": "No se pudo actualizar la contraseña.",
+  "profileEditEmail": "Cuenta: {email}",
+  "profileEditPrimary": "Primario",
+  "profileEditSearchCurrency": "Buscar moneda",
+  "profileEditNoCurrenciesFound": "No se encontraron monedas",
+  "profileEditOverviewTotalsConvertedCurrency": "Los totales del resumen se convierten a esta moneda.",
+  "profileEditPaymentInfoUpdated": "Información de pago actualizada.",
+  "profileEditCouldNotSavePaymentInfoTryAgain": "No se pudo guardar la información de pago. Por favor inténtalo de nuevo.",
+  "profileEditCurrentPassword": "Contraseña actual",
+  "profileEditBankTransferIbanSwift": "Transferencia bancaria (IBAN/SWIFT)",
+  "profileEditIbanSwift": "IBAN+SWIFT",
+  "profileEditRevtagRevolutMe": "Revtag/revolut.me",
+  "profileEditPaypalMeLink": "enlace paypal.me",
+  "profileEditChoosePaymentMethod": "Elige el método de pago",
+  "profileEditTapChange": "Toca para cambiar",
+  "profileEditUkTransfersSortCode6DigitsNumber8": "Para transferencias al Reino Unido, el código de clasificación debe tener 6 dígitos y el número de cuenta 8 dígitos.",
+  "profileEditPaymentInfo": "Información de pago",
+  "profileEditSaveDetails": "Guardar detalles",
+  "profileEditBankRegion": "Región bancaria",
+  "profileEditEurope": "Europa",
+  "profileEditSortCode": "ordenar código",
+  "profileEditExample112233": "Ejemplo: 112233",
+  "profileEditNumber": "Número de cuenta",
+  "profileEdit8Digits": "8 dígitos",
+  "profileEditUkDomesticTransfersSortCodeNumber": "Para transferencias nacionales en el Reino Unido, utilice el código de clasificación + número de cuenta.",
+  "profileEditExampleLv80bank0000435195001": "Ejemplo: LV80BANK0000435195001",
+  "profileEdit811Chars": "8 u 11 caracteres",
+  "profileEditHolderNameTakenProfileFullName": "El nombre del titular de la cuenta se toma del nombre completo del perfil.",
+  "profileEditRevolutMeUsername": "revolut.me/nombredeusuario",
+  "profileEditRevtag": "etiqueta rev",
+  "profileEditUsername": "@nombre de usuario",
+  "profileEditPaypalMeUsernameUsername": "paypal.me/nombredeusuario o nombre de usuario",
+  "shellTripAlreadyInListOpened": "Viaje ya en tu lista. Lo abrí para ti.",
+  "shellJoinedTripFromInviteLink": "Viaje unido desde el enlace de invitación.",
+  "shellFailedToOpenInviteLink": "No se pudo abrir el enlace de invitación.",
+  "shellTripInviteTitle": "invitación de viaje",
+  "shellNoAction": "No",
+  "shellYesAction": "Sí",
+  "shellOnlyTripCreatorCanDelete": "Sólo el creador del viaje puede eliminar este viaje.",
+  "shellOnlyActiveTripsCanDelete": "Sólo se pueden eliminar los viajes activos.",
+  "shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded": "¿Eliminar \"{tripLabel}\"? Esto se permite sólo antes de que se agreguen los gastos.",
+  "shellTripDeleted": "Viaje eliminado.",
+  "shellFailedToDeleteTrip": "No se pudo eliminar el viaje.",
+  "shellFailedToLoadNotifications": "No se pudieron cargar las notificaciones.",
+  "shellNewNotificationTitle": "Nueva notificación: {title}",
+  "shellFailedToUpdateNotifications": "No se pudieron actualizar las notificaciones.",
+  "shellMarkAllAsReadAction": "Marcar todo como leído",
+  "shellNewSection": "Nuevo",
+  "shellEarlierSection": "Más temprano",
+  "shellShowMoreEarlierAction": "Mostrar más antes",
+  "shellLoadingMore": "Cargando más...",
+  "shellLoadMoreNotificationsAction": "Cargar más notificaciones",
+  "shellTripNoLongerAvailable": "Este viaje ya no está disponible.",
+  "shellFailedToOpenTrip": "No se pudo abrir el viaje.",
+  "shellYesterday": "Ayer",
+  "shellInviteAlreadyMemberOpenTripNow": "Ya eres miembro de \"{tripName}\". ¿Abrir este viaje ahora?\n\nInvitado por: {inviterName}",
+  "shellInviteJoinTripQuestion": "¿Quieres unirte al viaje \"{tripName}\"?\n\nInvitado por: {inviterName}",
+  "tripsSelectedImage": "Imagen seleccionada: {arg1}",
+  "tripsTripImageAlreadySet": "La imagen del viaje ya está establecida.",
+  "tripsTripCreatedButImageUploadFailed": "Viaje creado, pero la carga de la imagen falló.",
+  "tripsTripCreatedButImageUploadFailedWithReason": "Viaje creado, pero la carga de la imagen falló: {arg1}",
+  "@tripsTripCreatedButImageUploadFailedWithReason": {
+    "placeholders": {
+      "arg1": {}
+    }
+  },
+  "tripsJoinTripViaInvite": "Unirse al viaje mediante invitación",
+  "tripsTotalTrips": "Total de viajes",
+  "tripsTotalSpent": "Gasto total",
+  "tripsMixedCurrencies": "Monedas mixtas",
+  "tripsShowActive": "Mostrar activos",
+  "tripsSeeAll": "Ver todo",
+  "tripsAddNewTrip": "Añadir viaje",
+  "tripsLoadMore": "Cargar más",
+  "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "¿Eliminar \"{arg1}\"? Esto solo está permitido antes de añadir cualquier gasto.",
+  "tripsTripDates": "Fechas del viaje",
+  "tripsFrom": "Desde",
+  "tripsSelectDate": "Seleccionar fecha",
+  "tripsTo": "Hasta",
+  "tripsMainCurrency": "Moneda principal",
+  "tripsPleaseSelectTripPeriodFromAndToDates": "Selecciona el período del viaje (fechas de inicio y fin).",
+  "tripsTripEndDateMustBeOnOrAfterStartDate": "La fecha de fin del viaje debe ser igual o posterior a la fecha de inicio.",
+  "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "El formato del período del viaje no es válido. Selecciona las fechas de nuevo.",
+  "tripsYouAreAlreadyAMemberOfThisTrip": "Ya eres miembro de este viaje.",
+  "tripsJoinedTripSuccessfully": "Te uniste al viaje correctamente.",
+  "tripsFailedToJoinTripFromInvite": "No se pudo unir al viaje desde la invitación.",
+  "tripsJoinTrip": "Unirse al viaje",
+  "tripsPasteInviteLinkOrInviteToken": "Pega un enlace de invitación o un token de invitación.",
+  "tripsHttpsInviteNorthSeaAbc123def4": "https://.../?invite=north-sea-abc123def4",
+  "tripsEnterAValidInviteLinkOrToken": "Introduce un enlace o token de invitación válido.",
+  "tripsClipboardIsEmpty": "El portapapeles está vacío.",
+  "tripsPaste": "Pegar",
+  "tripsJoin": "Unirse",
+  "workspaceTripMembers": "Miembros del viaje",
+  "workspaceFailedToLoadFriends": "No se pudieron cargar los amigos.",
+  "workspaceFailedToGenerateInviteLink": "No se pudo generar el enlace de invitación.",
+  "workspaceInviteLink": "Enlace de invitación",
+  "workspaceGeneratingInviteLink": "Generando enlace de invitación...",
+  "workspaceInviteLinkUnavailable": "Enlace de invitación no disponible.",
+  "workspaceCopyInviteLink": "Copiar enlace de invitación",
+  "workspaceInviteLinkCopied": "Enlace de invitación copiado.",
+  "workspaceExpiresUtc": "Caduca: {arg1} UTC",
+  "workspaceNoFriendsAvailableAddFriendsFirst": "No hay amigos disponibles. Añade amigos primero.",
+  "workspaceSettle": "Liquidar",
+  "workspaceOwesToTheGroup": "Debe al grupo",
+  "workspaceGetsBackFromGroup": "Recibe del grupo",
+  "workspaceShowingTop4ByBalanceDifference": "Mostrando los 4 principales por diferencia de saldo.",
+  "workspaceOpenFlow": "Flujo abierto",
+  "workspaceFriend": "Amigo",
+  "workspaceSettlementTransfer": "Transferencia de liquidación",
+  "workspaceCompleted": "Completado",
+  "workspaceWaitingForConfirmation": "Esperando confirmación",
+  "workspaceWaitingForPayment": "Esperando pago",
+  "workspaceActionNeeded": "Acción necesaria",
+  "workspacePaymentSToMarkAsSentToConfirmAsReceived": "{arg1} pago(s) por marcar como enviados, {arg2} por confirmar como recibidos.",
+  "workspaceReadyToSettle": "Listo para liquidar",
+  "workspaceAllMembersAreReadyYouCanStartSettlements": "Todos los miembros están listos. Puedes iniciar las liquidaciones.",
+  "workspaceWaitingForEveryoneToMarkReady": "Esperando a que todos se marquen como listos.",
+  "workspaceIMReady": "Estoy listo",
+  "workspaceConfirmThatYouAddedAllYourExpenses": "Confirma que has añadido todos tus gastos.",
+  "workspaceFinishButtonUnlocksOnceEveryoneMarksReady": "El botón Finalizar se desbloquea cuando todos se marcan como listos.",
+  "workspaceGetsBackFromTheGroup": "Recibe del grupo",
+  "workspaceSettledWithTheGroup": "Liquidado con el grupo",
+  "workspaceTotalPaid": "Total pagado",
+  "workspaceTotalOwes": "Deuda total",
+  "workspaceTransactionHistory": "Historial de transacciones",
+  "workspaceNoTransactionsYetForThisMember": "Aún no hay transacciones para este miembro.",
+  "workspaceSettlements": "Liquidaciones: {arg1}",
+  "workspaceAllMembersMustMarkReadyBeforeStartingSettlements": "Todos los miembros deben marcarse como listos antes de iniciar las liquidaciones.",
+  "workspaceYouMarkedYourselfReadyToSettle": "Te marcaste como listo para liquidar.",
+  "workspaceReadyToSettleMarkRemoved": "Se eliminó la marca de listo para liquidar.",
+  "workspaceReminderSent": "Recordatorio enviado.",
+  "workspaceInviteLinkOrAddFromFriends": "Enlace de invitación o añadir desde amigos",
+  "workspaceOnlyTripCreatorCanEditThisTrip": "Solo el creador del viaje puede editar este viaje.",
+  "workspaceTripUpdated": "Viaje actualizado.",
+  "workspaceFailedToUpdateTrip": "No se pudo actualizar el viaje.",
+  "workspaceNoMembersSelectedYet": "Aún no hay miembros seleccionados.",
+  "workspaceNoInternetExpenseSavedWithoutReceiptImage": "Sin conexión. El gasto se guardará sin imagen del recibo.",
+  "workspaceRandomPicker": "Selector aleatorio",
+  "workspaceCurrency": "Moneda",
+  "workspaceCategory": "Categoría",
+  "workspaceCustomCategory": "Categoría personalizada",
+  "workspaceCategoryName": "Nombre de la categoría",
+  "workspaceApartmentRentParkingEtc": "Alquiler del apartamento, aparcamiento, etc.",
+  "workspaceEnterACustomCategory": "Introduce una categoría personalizada.",
+  "workspacePickAnExpenseCategory": "Elige una categoría de gasto.",
+  "workspaceCategoryMustBeAtLeast2Characters": "La categoría debe tener al menos 2 caracteres.",
+  "workspaceCategoryMustBeUpTo64Characters": "La categoría puede tener hasta 64 caracteres.",
+  "workspacePercentageSplitMustTotal100": "El reparto porcentual debe sumar 100 %.",
+  "workspaceSharesMustBeGreaterThan0ForAllParticipants": "Las participaciones deben ser mayores que 0 para todos los participantes.",
+  "workspaceTotalAmount": "Importe total",
+  "workspaceOriginal": "Original",
+  "workspaceTotalCost": "Costo total",
+  "workspaceStarted": "Iniciado {arg1}",
+  "workspaceEnded": "Finalizado {arg1}",
+  "workspaceArchivedTrip": "Viaje archivado",
+  "workspaceActiveTrip": "Viaje activo",
+  "workspaceMemberProfile": "Perfil del miembro",
+  "workspaceTripOwner": "Propietario del viaje",
+  "workspaceMember": "Miembro",
+  "workspaceReadyForSettlement": "Listo para la liquidación",
+  "workspaceNotReadyForSettlement": "No listo para la liquidación",
+  "workspaceBankDetails": "Datos bancarios",
+  "workspaceIbanAndPayoutDetailsWillBeAddedHereInA": "El IBAN y los datos de cobro se añadirán aquí en una próxima actualización.",
+  "workspacePaymentDetails": "Datos de pago",
+  "workspaceThisMemberHasNotAddedPayoutDetailsYet": "Este miembro aún no ha añadido los datos de cobro.",
+  "workspaceBankTransfer": "Transferencia bancaria",
+  "workspaceHolder": "Titular",
+  "workspaceCouldNotOpenPaymentLink": "No se pudo abrir el enlace de pago.",
+  "workspaceTripActivity": "Actividad del viaje",
+  "workspacePaidExpenses": "Gastos pagados",
+  "workspacePaidTotal": "Total pagado",
+  "workspaceInvolvedIn": "Participa en",
+  "workspaceCurrentTrip": "Viaje actual",
+  "workspaceCommonTrips": "Viajes en común",
+  "workspaceLoadingCommonTrips": "Cargando viajes en común...",
+  "workspaceNoCommonTripsFoundYet": "Aún no se encontraron viajes en común.",
+  "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "No se pudieron cargar todos los viajes en común. Mostrando el actual.",
+  "workspaceMembers": "miembros",
+  "workspaceExpense": "Gasto",
+  "workspacePaid": "pagado",
+  "workspaceLoadingMoreExpenses": "Cargando más gastos...",
+  "workspaceScrollDownToLoadMore": "Desplázate hacia abajo para cargar más",
+  "workspaceTripFinished": "Viaje finalizado",
+  "workspaceSettlementsAreUnlockedForThisTrip": "Las liquidaciones están habilitadas para este viaje.",
+  "workspaceFinishTripToStartSettlements": "Finaliza el viaje para iniciar las liquidaciones.",
+  "workspaceMarkedTransferAsSent": "{arg1} marcó la transferencia como enviada.",
+  "workspaceWaitingForToMarkAsPaid": "Esperando a que {arg1} marque como pagado.",
+  "workspaceConfirmedReceivingThePayment": "{arg1} confirmó la recepción del pago.",
+  "workspaceWaitingForToConfirm": "Esperando a que {arg1} confirme.",
+  "workspaceAllTripSettlementsAreFullyCompleted": "Todas las liquidaciones del viaje están completamente finalizadas.",
+  "workspaceFinalStateAfterAllTransfersAreConfirmed": "Estado final después de confirmar todas las transferencias.",
+  "workspaceSettlementFlow": "Flujo de liquidación",
+  "workspaceActions": "Acciones",
+  "workspaceTransferIsConfirmed": "La transferencia está confirmada.",
+  "workspaceWaitingForTheOtherMemberToCompleteTheNextStep": "Esperando a que el otro miembro complete el siguiente paso.",
+  "workspaceSendReminder": "Enviar recordatorio",
+  "workspaceInProgress": "En curso",
+  "workspaceTimeUnknown": "Hora desconocida",
+  "workspaceRemind": "Recordar",
+  "workspaceYourPosition": "Tu posición",
+  "workspaceRecentActivity": "Actividad reciente",
+  "workspaceNoRecentActivityYet": "Aún no hay actividad reciente.",
+  "workspaceAddAtLeastOneMemberToStartSplittingExpenses": "Añade al menos un miembro para empezar a dividir gastos.",
+  "workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses": "Márcate como listo para liquidar después de añadir todos tus gastos.",
+  "workspaceWaitingForMemberSToMarkReady": "Esperando a que {arg1} miembro(s) se marquen como listos.",
+  "workspaceAllMembersAreReadyYouCanFinishTheTripAnd": "Todos los miembros están listos. Puedes finalizar el viaje e iniciar las liquidaciones.",
+  "workspaceAllMembersAreReadyWaitingForTheTripOwnerTo": "Todos los miembros están listos. Esperando a que el propietario del viaje inicie las liquidaciones.",
+  "workspaceSettlementInProgressConfirmed": "Liquidación en curso: {arg1}/{arg2} confirmadas.",
+  "workspaceNoActionsPendingThisTripIsSettled": "No hay acciones pendientes. Este viaje está liquidado.",
+  "workspaceNoActionsNeededRightNow": "No se requieren acciones en este momento.",
+  "workspaceYouShouldReceive": "Debes recibir {arg1}.",
+  "workspaceYouShouldPay": "Debes pagar {arg1}.",
+  "workspaceYouAreCurrentlySettledInThisTrip": "Actualmente estás liquidado en este viaje.",
+  "workspaceUnknownTime": "Hora desconocida",
+  "workspaceJustNow": "Ahora mismo",
+  "workspaceMinAgo": "hace {arg1} min",
+  "workspaceHAgo": "hace {arg1} h",
+  "workspaceDAgo": "hace {arg1} d",
+  "friendsRemoveFriend": "Eliminar amigo",
+  "friendsRemoveThisFriend": "¿Eliminar a este amigo?",
+  "friendsWillBeRemovedFromYourFriendsListYouCanAdd": "{arg1} será eliminado de tu lista de amigos. Puedes volver a añadirlo más tarde.",
+  "friendsContinue": "Continuar",
+  "friendsFriendRemoved": "Amigo eliminado.",
+  "friendsCouldNotRemoveFriend": "No se pudo eliminar al amigo.",
+  "friendsFriendProfile": "Perfil del amigo",
+  "friendsMoreActions": "Más acciones",
+  "friendsThisFriendHasNotAddedPayoutDetailsYet": "Este amigo aún no ha añadido los datos de cobro.",
+  "friendsCouldNotLoadCommonTripsRightNow": "No se pudieron cargar los viajes en común en este momento.",
+  "friendsFinished": "Finalizado",
+  "friendsTrip": "Viaje #{arg1}",
+  "friendsMembers": "{arg1} miembros",
+  "friendsNoDate": "Sin fecha",
+  "friendsIncomingRequests": "SOLICITUDES ENTRANTES",
+  "friendsSentInvites": "INVITACIONES ENVIADAS",
+  "friendsMyFriends": "MIS AMIGOS",
+  "friendsIncoming": "Entrantes",
+  "friendsInviteSentTo": "Invitación enviada a {arg1}.",
+  "friendsNoIncomingRequests": "No hay solicitudes entrantes",
+  "friendsDecline": "Rechazar",
+  "friendsAccept": "Aceptar",
+  "friendsNoSentInvites": "No hay invitaciones enviadas",
+  "friendsNoFriendsYet": "Aún no tienes amigos",
+  "friendsScrollDownToLoadMoreFriends": "Desplázate hacia abajo para cargar más amigos.",
+  "friendsUser": "Usuario",
+  "friendsSearchUsers": "Buscar usuarios",
+  "friendsFindByNameOrEmailAndSendInvite": "Busca por nombre o correo y envía una invitación",
+  "friendsScanQr": "Escanear QR",
+  "friendsScanAnotherUserToAddFriend": "Escanea a otro usuario para añadirlo como amigo",
+  "friendsMyQr": "Mi QR",
+  "friendsShowOrShareYourQrCode": "Muestra o comparte tu código QR",
+  "friendsScanFriendQrTitle": "Escanear QR de amigo",
+  "friendsPlaceFriendQrInsideFrame": "Coloca el código QR de tu amigo dentro del marco",
+  "friendsMyFriendQrTitle": "Mi QR de amigo",
+  "friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode": "Abre Amigos > Escanear QR en otro teléfono y escanea este código.",
+  "friendsAddMeOnTripSplitFriends": "Añádeme en amigos de TripSplit.",
+  "friendsTripSplitFriendCode": "Código de amigo de TripSplit",
+  "shareAction": "Compartir",
+  "friendsQrCodeIsNotAValidFriendCode": "El código QR no es un código de amigo válido.",
+  "friendsYouCannotAddYourself": "No puedes añadirte a ti mismo.",
+  "friendsThisUserIsAlreadyInYourFriendsList": "Este usuario ya está en tu lista de amigos.",
+  "friendsInviteToThisUserIsAlreadySent": "La invitación a este usuario ya fue enviada.",
+  "friendsFriendRequestProcessed": "Solicitud de amistad procesada.",
+  "friendsFailedToProcessFriendQr": "No se pudo procesar el QR del amigo.",
+  "friendsCouldNotLoadYourUserProfile": "No se pudo cargar tu perfil de usuario.",
+  "friendsMyProfile": "Mi perfil",
+  "friendsUnexpectedErrorLoadingFriends": "Error inesperado al cargar amigos.",
+  "friendsFriendAdded": "Amigo añadido.",
+  "friendsRequestDeclined": "Solicitud rechazada.",
+  "friendsFailedToUpdateRequest": "No se pudo actualizar la solicitud.",
+  "friendsCancelInvite": "Cancelar invitación",
+  "friendsCancelInviteTo": "¿Cancelar invitación a {arg1}?",
+  "friendsKeep": "Mantener",
+  "friendsInviteToCancelled": "Invitación a {arg1} cancelada.",
+  "friendsFailedToCancelInvite": "No se pudo cancelar la invitación.",
+  "analyticsOther": "Otros",
+  "analyticsSelectATripForAnalytics": "Selecciona un viaje para ver analíticas",
+  "analyticsMembers": "{arg1} • {arg2} miembros • {arg3} • {arg4}",
+  "analyticsMyDaily": "Mi gasto diario",
+  "analyticsGroupDaily": "Diario del grupo",
+  "analyticsByMember": "Por miembro",
+  "analyticsShowLess": "Mostrar menos",
+  "analyticsByCategory": "Por categoría",
+  "analyticsQuickInsights": "Resumen rápido",
+  "analyticsBiggestExpense": "Mayor gasto: {arg1} ({arg2})",
+  "analyticsTopSpender": "Mayor gastador: {arg1} ({arg2})",
+  "analyticsHighestGroupDay": "Día de mayor gasto del grupo: {arg1} ({arg2})",
+  "analyticsNoDates": "Sin fechas",
+  "friendsSearchFailedTryAgain": "La búsqueda falló. Inténtalo de nuevo.",
+  "friendsFailedToSendInvite": "No se pudo enviar la invitación.",
+  "friendsAddFriend": "Añadir amigo",
+  "friendsSearchByNameOrEmail": "Buscar por nombre o correo electrónico",
+  "friendsTypeAtLeast2CharactersToSearch": "Escribe al menos 2 caracteres para buscar.",
+  "friendsNoUsersFound": "No se encontraron usuarios",
+  "friendsInviteAction": "Invitar",
+  "workspacePaidForGroup": "Pagado para el grupo",
+  "workspacePaidForGroupDate": "Pagado para el grupo • {arg1}",
+  "workspaceShareOfExpense": "Parte del gasto",
+  "workspaceShareOfExpenseDate": "Parte del gasto • {arg1}",
+  "paymentHolderNameCopied": "Nombre del titular copiado.",
+  "paymentIbanCopied": "IBAN copiado.",
+  "paymentSwiftCopied": "SWIFT copiado.",
+  "paymentRevtagCopied": "Revtag copiado.",
+  "paymentCouldNotCopyToClipboard": "No se pudo copiar al portapapeles.",
+  "paymentCopied": "Copiado."
+}

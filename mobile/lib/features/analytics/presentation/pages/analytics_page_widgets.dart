@@ -133,13 +133,14 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                         const SizedBox(height: 2),
                         Text(
                           selectedTrip == null
-                              ? _txt(
-                                  en: 'Select a trip for analytics',
-                                  lv: 'Izvēlies ceļojumu analītikai',
-                                )
-                              : _txt(
-                                  en: '${_tripStatusLabel(selectedTrip)} • ${selectedTrip.membersCount} members • ${_tripDateLabel(selectedTrip)} • ${_formatMoney(selectedTrip.totalAmountCents / 100)}',
-                                  lv: '${_tripStatusLabel(selectedTrip)} • ${selectedTrip.membersCount} dalībnieki • ${_tripDateLabel(selectedTrip)} • ${_formatMoney(selectedTrip.totalAmountCents / 100)}',
+                              ? context.l10n.analyticsSelectATripForAnalytics
+                              : context.l10n.analyticsMembers(
+                                  _tripStatusLabel(selectedTrip),
+                                  selectedTrip.membersCount,
+                                  _tripDateLabel(selectedTrip),
+                                  _formatMoney(
+                                    selectedTrip.totalAmountCents / 100,
+                                  ),
                                 ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -260,9 +261,13 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
-                                        _txt(
-                                          en: '${_tripStatusLabel(trip)} • ${trip.membersCount} members • ${_tripDateLabel(trip)} • ${_formatMoney(trip.totalAmountCents / 100)}',
-                                          lv: '${_tripStatusLabel(trip)} • ${trip.membersCount} dalībnieki • ${_tripDateLabel(trip)} • ${_formatMoney(trip.totalAmountCents / 100)}',
+                                        context.l10n.analyticsMembers(
+                                          _tripStatusLabel(trip),
+                                          trip.membersCount,
+                                          _tripDateLabel(trip),
+                                          _formatMoney(
+                                            trip.totalAmountCents / 100,
+                                          ),
                                         ),
                                         style: Theme.of(context)
                                             .textTheme
@@ -368,7 +373,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
           child: _buildMiniDailyCard(
             context,
             icon: Icons.person_outline,
-            title: _txt(en: 'My daily', lv: 'Mans dienas'),
+            title: context.l10n.analyticsMyDaily,
             color: _analyticsSuccess,
             points: myPoints,
           ),
@@ -378,7 +383,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
           child: _buildMiniDailyCard(
             context,
             icon: Icons.trending_up_rounded,
-            title: _txt(en: 'Group daily', lv: 'Grupas dienas'),
+            title: context.l10n.analyticsGroupDaily,
             color: AppDesign.memberPalette[4],
             points: groupPoints,
           ),
@@ -488,7 +493,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      _txt(en: 'By Member', lv: 'Pa dalībniekiem'),
+                      context.l10n.analyticsByMember,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
@@ -560,7 +565,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                         child: TextButton.icon(
                           onPressed: onToggle,
                           icon: const Icon(Icons.expand_less_rounded),
-                          label: Text(_txt(en: 'Show less', lv: 'Rādīt mazāk')),
+                          label: Text(context.l10n.analyticsShowLess),
                         ),
                       ),
                     ],
@@ -599,7 +604,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    _txt(en: 'By Category', lv: 'Pa kategorijām'),
+                    context.l10n.analyticsByCategory,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                       color: isDark ? null : _analyticsFg,
@@ -755,7 +760,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
               ),
               const SizedBox(width: 8),
               Text(
-                _txt(en: 'Quick insights', lv: 'Ātrie ieskati'),
+                context.l10n.analyticsQuickInsights,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                   color: isDark ? null : _analyticsFg,
@@ -767,25 +772,25 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
           if (topCategory != null)
             _InsightRow(
               dotColor: _analyticsPrimary,
-              text: _txt(
-                en: 'Biggest expense: ${topCategory.label} (${_formatMoney(topCategory.total)})',
-                lv: 'Lielākā kategorija: ${topCategory.label} (${_formatMoney(topCategory.total)})',
+              text: context.l10n.analyticsBiggestExpense(
+                topCategory.label,
+                _formatMoney(topCategory.total),
               ),
             ),
           if (topMember != null)
             _InsightRow(
               dotColor: _analyticsAccent,
-              text: _txt(
-                en: 'Top spender: ${topMember.name} (${_formatMoney(topMember.total)})',
-                lv: 'Lielākais tērētājs: ${topMember.name} (${_formatMoney(topMember.total)})',
+              text: context.l10n.analyticsTopSpender(
+                topMember.name,
+                _formatMoney(topMember.total),
               ),
             ),
           if (bestDay != null && bestDayValue > 0)
             _InsightRow(
               dotColor: _analyticsSuccess,
-              text: _txt(
-                en: 'Highest group day: ${_dayShortLabel(bestDay)} (${_formatMoney(bestDayValue)})',
-                lv: 'Lielākais grupas tēriņš: ${_dayShortLabel(bestDay)} (${_formatMoney(bestDayValue)})',
+              text: context.l10n.analyticsHighestGroupDay(
+                _dayShortLabel(bestDay),
+                _formatMoney(bestDayValue),
               ),
             ),
           if (topMember == null && topCategory == null)
@@ -819,12 +824,12 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
 
   String _tripStatusLabel(Trip trip) {
     if (trip.isActive) {
-      return _txt(en: 'Active', lv: 'Aktīvs');
+      return context.l10n.activeStatus;
     }
     if (trip.isSettling) {
-      return _txt(en: 'Settling', lv: 'Norēķini');
+      return context.l10n.settlingStatus;
     }
-    return _txt(en: 'Archived', lv: 'Arhīvs');
+    return context.l10n.archivedStatus;
   }
 
   String _tripDateLabel(Trip trip) {
@@ -832,7 +837,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
       context,
       startRaw: trip.dateFrom ?? trip.createdAt,
       endRaw: trip.dateTo ?? trip.endedAt ?? trip.archivedAt,
-      unknownLabel: _txt(en: 'No dates', lv: 'Nav datumu'),
+      unknownLabel: context.l10n.analyticsNoDates,
     );
   }
 

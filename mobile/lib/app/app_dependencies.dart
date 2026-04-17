@@ -89,6 +89,8 @@ class AppDependencies {
     final authSessionStore = AuthSessionStore();
     final currentUserStore = CurrentUserStore();
     final avatarStore = UserAvatarStore();
+    final themeModeController = ThemeModeController();
+    final localeController = AppLocaleController();
     final apiClient = LegacyApiClient(
       baseUrl: env.apiBaseUrl,
       tokenStore: tokenStore,
@@ -121,6 +123,16 @@ class AppDependencies {
       deviceTokenStore: tokenStore,
       nativeBridge: PushNativeBridge(),
       registrationStore: PushRegistrationStore(),
+      localeCodeProvider: () {
+        switch (localeController.mode) {
+          case AppLocaleMode.latvian:
+            return 'lv';
+          case AppLocaleMode.spanish:
+            return 'es';
+          case AppLocaleMode.english:
+            return 'en';
+        }
+      },
     );
     final inviteDeepLinkController = InviteDeepLinkController();
 
@@ -189,8 +201,6 @@ class AppDependencies {
       workspaceLocalStore,
     );
     final workspaceController = WorkspaceController(workspaceRepository);
-    final themeModeController = ThemeModeController();
-    final localeController = AppLocaleController();
 
     return AppDependencies(
       authController: authController,

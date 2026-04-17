@@ -233,28 +233,11 @@ extension _WorkspacePageLayout on _WorkspacePageState {
             padding: const EdgeInsets.all(8),
             child: Row(
               children: [
-                buildTab(
-                  index: 0,
-                  label: _localizedText(
-                    context,
-                    en: 'Expenses',
-                    lv: 'Izdevumi',
-                  ),
-                ),
+                buildTab(index: 0, label: context.l10n.navExpenses),
                 const SizedBox(width: 8),
-                buildTab(
-                  index: 1,
-                  label: _localizedText(
-                    context,
-                    en: 'Balances',
-                    lv: 'Bilances',
-                  ),
-                ),
+                buildTab(index: 1, label: context.l10n.navBalances),
                 const SizedBox(width: 8),
-                buildTab(
-                  index: 2,
-                  label: _localizedText(context, en: 'Settle', lv: 'Norēķini'),
-                ),
+                buildTab(index: 2, label: context.l10n.workspaceSettle),
               ],
             ),
           ),

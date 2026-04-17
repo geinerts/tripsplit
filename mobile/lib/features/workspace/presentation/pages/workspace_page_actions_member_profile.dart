@@ -72,10 +72,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                 } catch (_) {}
               }
 
-              final title = _plainLocalizedText(
-                en: 'Member profile',
-                lv: 'Dalībnieka profils',
-              );
+              final title = context.l10n.workspaceMemberProfile;
               final name = profileUser.preferredName.trim().isEmpty
                   ? profileContext.l10n.userWithId(profileUser.id)
                   : profileUser.preferredName.trim();
@@ -84,17 +81,11 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                   nickname.isNotEmpty &&
                   nickname.toLowerCase() != name.toLowerCase();
               final roleText = isOwner
-                  ? _plainLocalizedText(en: 'Trip owner', lv: 'Trip īpašnieks')
-                  : _plainLocalizedText(en: 'Member', lv: 'Dalībnieks');
+                  ? context.l10n.workspaceTripOwner
+                  : context.l10n.workspaceMember;
               final readyText = profileUser.isReadyToSettle
-                  ? _plainLocalizedText(
-                      en: 'Ready for settlement',
-                      lv: 'Gatavs norēķiniem',
-                    )
-                  : _plainLocalizedText(
-                      en: 'Not ready for settlement',
-                      lv: 'Nav gatavs norēķiniem',
-                    );
+                  ? context.l10n.workspaceReadyForSettlement
+                  : context.l10n.workspaceNotReadyForSettlement;
               final holderName =
                   (profileUser.bankAccountHolder ?? '').trim().isNotEmpty
                   ? (profileUser.bankAccountHolder ?? '').trim()
@@ -106,34 +97,20 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                 avatarUrl: profileUser.avatarThumbUrl ?? profileUser.avatarUrl,
                 badges: [roleText, readyText],
                 enableNameCopy: false,
-                bankTitle: _plainLocalizedText(
-                  en: 'Bank details',
-                  lv: 'Bankas dati',
-                ),
-                bankDescription: _plainLocalizedText(
-                  en: 'IBAN and payout details will be added here in a next update.',
-                  lv: 'IBAN un izmaksu dati šeit tiks pievienoti nākamajā atjauninājumā.',
-                ),
+                bankTitle: context.l10n.workspaceBankDetails,
+                bankDescription: context
+                    .l10n
+                    .workspaceIbanAndPayoutDetailsWillBeAddedHereInA,
                 showBankDetails: false,
                 onRefresh: refreshProfile,
                 sections: [
                   UserProfilePaymentDetailsSection(
-                    sectionTitle: _plainLocalizedText(
-                      en: 'Payment details',
-                      lv: 'Maksājumu dati',
-                    ),
-                    emptyText: _plainLocalizedText(
-                      en: 'This member has not added payout details yet.',
-                      lv: 'Šis dalībnieks vēl nav pievienojis izmaksu datus.',
-                    ),
-                    bankTransferTitle: _plainLocalizedText(
-                      en: 'Bank transfer',
-                      lv: 'Bankas pārskaitījums',
-                    ),
-                    bankHolderLabel: _plainLocalizedText(
-                      en: 'Holder',
-                      lv: 'Turētājs',
-                    ),
+                    sectionTitle: context.l10n.workspacePaymentDetails,
+                    emptyText: context
+                        .l10n
+                        .workspaceThisMemberHasNotAddedPayoutDetailsYet,
+                    bankTransferTitle: context.l10n.workspaceBankTransfer,
+                    bankHolderLabel: context.l10n.workspaceHolder,
                     bankHolderName: holderName,
                     bankIban: profileUser.bankIban,
                     bankBic: profileUser.bankBic,
@@ -142,10 +119,8 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                     revolutMeLink: profileUser.revolutMeLink,
                     paypalTitle: 'PayPal.me',
                     paypalMeLink: profileUser.paypalMeLink,
-                    openLinkFailedText: _plainLocalizedText(
-                      en: 'Could not open payment link.',
-                      lv: 'Neizdevās atvērt maksājuma saiti.',
-                    ),
+                    openLinkFailedText:
+                        context.l10n.workspaceCouldNotOpenPaymentLink,
                     onErrorMessage: (message) =>
                         _showSnack(message, isError: true),
                   ),
@@ -182,7 +157,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            _plainLocalizedText(en: 'Trip activity', lv: 'Trip aktivitāte'),
+            context.l10n.workspaceTripActivity,
             style: Theme.of(
               context,
             ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
@@ -192,20 +167,14 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
             children: [
               Expanded(
                 child: UserProfileMetricTile(
-                  label: _plainLocalizedText(
-                    en: 'Paid expenses',
-                    lv: 'Apmaksāti izdevumi',
-                  ),
+                  label: context.l10n.workspacePaidExpenses,
                   value: '$paidExpensesCount',
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: UserProfileMetricTile(
-                  label: _plainLocalizedText(
-                    en: 'Paid total',
-                    lv: 'Apmaksāts kopā',
-                  ),
+                  label: context.l10n.workspacePaidTotal,
                   value: _formatMoney(
                     context,
                     paidTotal,
@@ -216,10 +185,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
               const SizedBox(width: 8),
               Expanded(
                 child: UserProfileMetricTile(
-                  label: _plainLocalizedText(
-                    en: 'Involved in',
-                    lv: 'Iesaistīts',
-                  ),
+                  label: context.l10n.workspaceInvolvedIn,
                   value: '$involvedExpensesCount',
                 ),
               ),
@@ -234,7 +200,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
     return WorkspaceSharedTrip(
       id: widget.trip.id,
       name: widget.trip.name.trim().isEmpty
-          ? _plainLocalizedText(en: 'Current trip', lv: 'Pašreizējais trips')
+          ? context.l10n.workspaceCurrentTrip
           : widget.trip.name.trim(),
       status: widget.trip.status.trim().toLowerCase(),
       imageUrl: widget.trip.imageUrl,
@@ -251,19 +217,11 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
     required Future<List<WorkspaceSharedTrip>> future,
     required WorkspaceSharedTrip fallbackTrip,
   }) {
-    final title = _plainLocalizedText(en: 'Common trips', lv: 'Kopīgie tripi');
-    final loadingText = _plainLocalizedText(
-      en: 'Loading common trips...',
-      lv: 'Ielādē kopīgos tripus...',
-    );
-    final emptyText = _plainLocalizedText(
-      en: 'No common trips found yet.',
-      lv: 'Kopīgi tripi vēl nav atrasti.',
-    );
-    final errorText = _plainLocalizedText(
-      en: 'Could not load all common trips. Showing current one.',
-      lv: 'Neizdevās ielādēt visus kopīgos tripus. Rādu pašreizējo.',
-    );
+    final title = context.l10n.workspaceCommonTrips;
+    final loadingText = context.l10n.workspaceLoadingCommonTrips;
+    final emptyText = context.l10n.workspaceNoCommonTripsFoundYet;
+    final errorText =
+        context.l10n.workspaceCouldNotLoadAllCommonTripsShowingCurrentOne;
 
     return UserProfileSectionCard(
       child: FutureBuilder<List<WorkspaceSharedTrip>>(
@@ -446,7 +404,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
   }
 
   String _sharedTripSubtitle(BuildContext context, WorkspaceSharedTrip trip) {
-    final membersLabel = _plainLocalizedText(en: 'members', lv: 'dalībnieki');
+    final membersLabel = context.l10n.workspaceMembers;
     final dateLabel = _sharedTripDateLabel(trip);
     if (dateLabel.isEmpty) {
       return '${trip.membersCount} $membersLabel';

@@ -31,10 +31,14 @@ class AppMonitoring {
   static Future<void> bootstrapAndRun({
     required AppDependencies dependencies,
     required Widget Function() appBuilder,
+    Future<void> Function()? beforeRunApp,
   }) async {
     await runZonedGuarded(
       () async {
         WidgetsFlutterBinding.ensureInitialized();
+        if (beforeRunApp != null) {
+          await beforeRunApp();
+        }
         _dependencies = dependencies;
         var appStarted = false;
         void runAppOnce() {
@@ -80,17 +84,14 @@ class AppMonitoring {
         );
         _enabled = true;
         try {
-          await SentryFlutter.init(
-            (options) {
-              options.dsn = dsn;
-              options.environment = _monitoringEnvironment;
-              options.release = _release;
-              options.attachStacktrace = true;
-              options.sendDefaultPii = false;
-              options.tracesSampleRate = tracesSampleRate;
-            },
-            appRunner: runAppOnce,
-          ).timeout(const Duration(seconds: 5));
+          await SentryFlutter.init((options) {
+            options.dsn = dsn;
+            options.environment = _monitoringEnvironment;
+            options.release = _release;
+            options.attachStacktrace = true;
+            options.sendDefaultPii = false;
+            options.tracesSampleRate = tracesSampleRate;
+          }, appRunner: runAppOnce).timeout(const Duration(seconds: 5));
           await _syncScope();
         } on TimeoutException {
           _enabled = false;

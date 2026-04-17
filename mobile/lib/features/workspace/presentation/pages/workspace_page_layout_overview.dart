@@ -96,20 +96,12 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     final showsPositive = currentNet > 0.004;
     final showsNegative = currentNet < -0.004;
     final primaryLabel = isSettledState
-        ? _localizedText(context, en: 'Settled', lv: 'Norēķināts')
+        ? context.l10n.settledStatus
         : (showsNegative
-              ? _localizedText(context, en: 'You owe', lv: 'Tu esi parādā')
+              ? context.l10n.summaryYouOwe
               : (showsPositive
-                    ? _localizedText(
-                        context,
-                        en: 'They owe you',
-                        lv: 'Tev ir parādā',
-                      )
-                    : _localizedText(
-                        context,
-                        en: 'Settled',
-                        lv: 'Norēķināts',
-                      )));
+                    ? context.l10n.summaryYouAreOwed
+                    : context.l10n.settledStatus));
     final primaryValue = _formatMoney(
       context,
       currentNet.abs(),
@@ -330,11 +322,7 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                             child: _buildHeroStatItem(
                               context,
                               icon: Icons.account_balance_wallet_outlined,
-                              label: _localizedText(
-                                context,
-                                en: 'Total cost',
-                                lv: 'Kopējās izmaksas',
-                              ),
+                              label: context.l10n.workspaceTotalCost,
                               value: _formatMoney(
                                 context,
                                 totalAmount,
@@ -349,11 +337,7 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                             child: _buildHeroStatItem(
                               context,
                               icon: Icons.credit_card_outlined,
-                              label: _localizedText(
-                                context,
-                                en: 'Your share',
-                                lv: 'Tava daļa',
-                              ),
+                              label: context.l10n.yourShare,
                               value: _formatMoney(
                                 context,
                                 yourShare,
@@ -537,34 +521,18 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
       return '${_formatHeroDay(created)} - ${_formatHeroDay(ended)}';
     }
     if (created != null) {
-      return _localizedText(
-        context,
-        en: 'Started ${_formatHeroDay(created)}',
-        lv: 'Sākts ${_formatHeroDay(created)}',
-      );
+      return context.l10n.workspaceStarted(_formatHeroDay(created));
     }
     if (ended != null) {
-      return _localizedText(
-        context,
-        en: 'Ended ${_formatHeroDay(ended)}',
-        lv: 'Noslēgts ${_formatHeroDay(ended)}',
-      );
+      return context.l10n.workspaceEnded(_formatHeroDay(ended));
     }
     if (snapshot.isSettling) {
-      return _localizedText(
-        context,
-        en: 'Settlement in progress',
-        lv: 'Norēķini procesā',
-      );
+      return context.l10n.settlementInProgressTitle;
     }
     if (snapshot.isArchived) {
-      return _localizedText(
-        context,
-        en: 'Archived trip',
-        lv: 'Arhivēts ceļojums',
-      );
+      return context.l10n.workspaceArchivedTrip;
     }
-    return _localizedText(context, en: 'Active trip', lv: 'Aktīvs ceļojums');
+    return context.l10n.workspaceActiveTrip;
   }
 
   DateTime? _parseIsoDate(String? value) {

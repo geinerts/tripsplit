@@ -1,11 +1,6 @@
 part of 'workspace_page.dart';
 
 extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
-  String _plainLocalizedText({required String en, required String lv}) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    return languageCode.toLowerCase() == 'lv' ? lv : en;
-  }
-
   String _splitModeHint(String splitMode) {
     final t = context.l10n;
     switch (splitMode) {
@@ -168,7 +163,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
     final pngBytes = await _tryTranscodeReceiptToPng(bytes);
     if (pngBytes == null || pngBytes.isEmpty) {
       _showSnack(
-        'This image format is not supported on this device. Please choose JPG or PNG.',
+        context.l10n.profileImageFormatNotSupportedDevicePleaseChooseJpg,
         isError: true,
       );
       return null;
@@ -269,7 +264,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
     final pngBytes = await _tryTranscodeTripToPng(rawBytes);
     if (pngBytes == null || pngBytes.isEmpty) {
       _showSnack(
-        'This image format is not supported on this device. Please choose JPG or PNG.',
+        context.l10n.profileImageFormatNotSupportedDevicePleaseChooseJpg,
         isError: true,
       );
       return null;

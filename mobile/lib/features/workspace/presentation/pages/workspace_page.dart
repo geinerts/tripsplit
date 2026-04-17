@@ -18,6 +18,7 @@ import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/expenses/expense_category_catalog.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/l10n/notification_localizer.dart';
 import '../../../../core/currency/app_currency.dart';
 import '../../../../core/media/app_image_cropper.dart';
 import '../../../../core/monitoring/app_monitoring.dart';

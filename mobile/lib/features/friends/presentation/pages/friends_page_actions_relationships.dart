@@ -19,8 +19,8 @@ extension _FriendsPageActionsRelationships on _FriendsPageState {
       }
       _showSnack(
         accept
-            ? _txt(en: 'Friend added.', lv: 'Draugs pievienots.')
-            : _txt(en: 'Request declined.', lv: 'Pieprasījums noraidīts.'),
+            ? context.l10n.friendsFriendAdded
+            : context.l10n.friendsRequestDeclined,
       );
       await _loadSnapshot(showLoader: false);
     } on ApiException catch (error) {
@@ -32,13 +32,7 @@ extension _FriendsPageActionsRelationships on _FriendsPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _txt(
-          en: 'Failed to update request.',
-          lv: 'Neizdevās atjaunināt pieprasījumu.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.friendsFailedToUpdateRequest, isError: true);
     } finally {
       if (mounted) {
         _updateState(() {
@@ -52,21 +46,18 @@ extension _FriendsPageActionsRelationships on _FriendsPageState {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(_txt(en: 'Cancel invite', lv: 'Atcelt uzaicinājumu')),
+        title: Text(context.l10n.friendsCancelInvite),
         content: Text(
-          _txt(
-            en: 'Cancel invite to ${request.user.preferredName}?',
-            lv: 'Atcelt uzaicinājumu lietotājam ${request.user.preferredName}?',
-          ),
+          context.l10n.friendsCancelInviteTo(request.user.preferredName),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(_txt(en: 'Keep', lv: 'Atstāt')),
+            child: Text(context.l10n.friendsKeep),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text(_txt(en: 'Cancel invite', lv: 'Atcelt uzaicinājumu')),
+            child: Text(context.l10n.friendsCancelInvite),
           ),
         ],
       ),
@@ -93,10 +84,7 @@ extension _FriendsPageActionsRelationships on _FriendsPageState {
         return;
       }
       _showSnack(
-        _txt(
-          en: 'Invite to ${request.user.preferredName} cancelled.',
-          lv: 'Uzaicinājums lietotājam ${request.user.preferredName} atcelts.',
-        ),
+        context.l10n.friendsInviteToCancelled(request.user.preferredName),
       );
       await _loadSnapshot(showLoader: false);
     } on ApiException catch (error) {
@@ -108,13 +96,7 @@ extension _FriendsPageActionsRelationships on _FriendsPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _txt(
-          en: 'Failed to cancel invite.',
-          lv: 'Neizdevās atcelt uzaicinājumu.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.friendsFailedToCancelInvite, isError: true);
     } finally {
       if (mounted) {
         _updateState(() {

@@ -366,6 +366,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageLatvian => 'Latviešu';
 
   @override
+  String get languageSpanish => 'Spanish';
+
+  @override
   String get languageSystem => 'System';
 
   @override
@@ -609,6 +612,179 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationsTitle => 'Notifications';
+
+  @override
+  String get notificationFriendInviteTitle => 'Friend invite';
+
+  @override
+  String notificationFriendInviteBody(Object name) {
+    return '$name sent you a friend invite.';
+  }
+
+  @override
+  String get notificationFriendInviteBodyGeneric => 'You received a friend invite.';
+
+  @override
+  String get notificationFriendInviteAcceptedTitle => 'Invite accepted';
+
+  @override
+  String notificationFriendInviteAcceptedBody(Object name) {
+    return '$name accepted your friend invite.';
+  }
+
+  @override
+  String get notificationFriendInviteAcceptedBodyGeneric => 'Your friend invite was accepted.';
+
+  @override
+  String get notificationFriendInviteRejectedTitle => 'Invite declined';
+
+  @override
+  String notificationFriendInviteRejectedBody(Object name) {
+    return '$name declined your friend invite.';
+  }
+
+  @override
+  String get notificationFriendInviteRejectedBodyGeneric => 'Your friend invite was declined.';
+
+  @override
+  String get notificationTripAddedTitle => 'Added to trip';
+
+  @override
+  String notificationTripAddedBody(Object name, Object trip) {
+    return '$name added you to trip \"$trip\".';
+  }
+
+  @override
+  String notificationTripAddedBodyNoActor(Object trip) {
+    return 'You were added to trip \"$trip\".';
+  }
+
+  @override
+  String get notificationTripAddedBodyGeneric => 'You were added to a trip.';
+
+  @override
+  String get notificationExpenseAddedTitle => 'New expense added';
+
+  @override
+  String notificationExpenseAddedBodyWithTrip(Object amount, Object name, Object trip) {
+    return '$name added an expense of $amount in \"$trip\".';
+  }
+
+  @override
+  String notificationExpenseAddedBodyWithNote(Object amount, Object name, Object note) {
+    return '$name added an expense of $amount: $note';
+  }
+
+  @override
+  String get notificationExpenseAddedBodyGeneric => 'A new expense was added.';
+
+  @override
+  String get notificationTripFinishedTitle => 'Trip finished';
+
+  @override
+  String notificationTripFinishedBodySettlementsReady(Object name, Object trip) {
+    return '$name finished \"$trip\". Settlements are ready.';
+  }
+
+  @override
+  String notificationTripFinishedBodyArchived(Object name, Object trip) {
+    return '$name finished \"$trip\". Trip is archived.';
+  }
+
+  @override
+  String notificationTripFinishedBodyNoActor(Object trip) {
+    return '\"$trip\" was finished.';
+  }
+
+  @override
+  String get notificationTripFinishedBodyGeneric => 'Trip status was updated.';
+
+  @override
+  String get notificationMemberReadyToSettleTitle => 'Member marked ready';
+
+  @override
+  String notificationMemberReadyToSettleBody(Object name, Object trip) {
+    return '$name is ready to settle in \"$trip\".';
+  }
+
+  @override
+  String notificationMemberReadyToSettleBodyNoActor(Object trip) {
+    return 'A member is ready to settle in \"$trip\".';
+  }
+
+  @override
+  String get notificationMemberReadyToSettleBodyGeneric => 'A member is ready to settle.';
+
+  @override
+  String get notificationTripReadyToSettleTitle => 'All members are ready';
+
+  @override
+  String notificationTripReadyToSettleBody(Object trip) {
+    return 'All members marked ready in \"$trip\". You can start settlements.';
+  }
+
+  @override
+  String get notificationTripReadyToSettleBodyGeneric => 'All members are ready. You can start settlements.';
+
+  @override
+  String get notificationSettlementReminderTitle => 'Settlement reminder';
+
+  @override
+  String notificationSettlementReminderBodyMarkSent(Object actor, Object amount, Object target) {
+    return '$actor reminded $target to mark $amount as sent.';
+  }
+
+  @override
+  String notificationSettlementReminderBodyConfirm(Object actor, Object amount, Object target) {
+    return '$actor reminded $target to confirm receiving $amount.';
+  }
+
+  @override
+  String get notificationSettlementReminderBodyGeneric => 'You received a settlement reminder.';
+
+  @override
+  String get notificationPaymentReminderTitle => 'Payment reminder';
+
+  @override
+  String notificationPaymentReminderBody(Object amount, Object target, Object trip) {
+    return 'Reminder: please mark $amount as sent to $target in \"$trip\".';
+  }
+
+  @override
+  String get notificationPaymentReminderBodyGeneric => 'Reminder: please mark the payment as sent.';
+
+  @override
+  String get notificationConfirmationReminderTitle => 'Confirmation reminder';
+
+  @override
+  String notificationConfirmationReminderBody(Object amount, Object payer, Object trip) {
+    return 'Reminder: please confirm receiving $amount from $payer in \"$trip\".';
+  }
+
+  @override
+  String get notificationConfirmationReminderBodyGeneric => 'Reminder: please confirm receiving the payment.';
+
+  @override
+  String get notificationSettlementSentTitle => 'Transfer marked as sent';
+
+  @override
+  String notificationSettlementSentBody(Object amount, Object name) {
+    return '$name marked $amount as sent to you.';
+  }
+
+  @override
+  String get notificationSettlementSentBodyGeneric => 'A transfer was marked as sent.';
+
+  @override
+  String get notificationSettlementConfirmedTitle => 'Transfer confirmed';
+
+  @override
+  String notificationSettlementConfirmedBody(Object amount, Object name) {
+    return '$name confirmed receiving $amount from you.';
+  }
+
+  @override
+  String get notificationSettlementConfirmedBodyGeneric => 'A transfer was confirmed.';
 
   @override
   String offlineQueuePendingChanges(num count) {
@@ -1284,4 +1460,1319 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yourTrips => 'Your trips';
+
+  @override
+  String get authIntroSplitSmarter => 'Split smarter.';
+
+  @override
+  String get authIntroTravelFree => 'Travel free.';
+
+  @override
+  String get authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo => 'Track shared costs across currencies and settle up instantly - no awkward IOUs.';
+
+  @override
+  String get authIntroPlanTogether => 'Plan together.';
+
+  @override
+  String get authIntroPayClearly => 'Pay clearly.';
+
+  @override
+  String get authIntroCreateTripsSecondsAddFriendsKeepEveryExpense => 'Create trips in seconds, add friends, and keep every expense transparent for everyone.';
+
+  @override
+  String get authIntroSettleFast => 'Settle fast.';
+
+  @override
+  String get authIntroStayFriends => 'Stay friends.';
+
+  @override
+  String get authIntroFromSharedDinnersFullTripsSplytoKeepsBalances => 'From shared dinners to full trips, Splyto keeps balances fair and stress-free.';
+
+  @override
+  String get authIntroAppleSignFailedPleaseTryAgain => 'Apple sign-in failed. Please try again.';
+
+  @override
+  String get authIntroGoogleSignFailedPleaseTryAgain => 'Google sign-in failed. Please try again.';
+
+  @override
+  String get authIntroCreateAccount => 'Create your account.';
+
+  @override
+  String get authIntroChooseSign => 'Choose how you want to sign up.';
+
+  @override
+  String get authIntroContinueGoogle => 'Continue with Google';
+
+  @override
+  String get authIntroContinueApple => 'Continue with Apple';
+
+  @override
+  String get authIntroBack => 'Back';
+
+  @override
+  String get authIntroSplitSettled => 'Split settled';
+
+  @override
+  String get authIntroParis3Friends => 'Paris · 3 friends';
+
+  @override
+  String get authIntroGetStarted => 'Get started';
+
+  @override
+  String get authIntroAlreadyHaveAccount => 'Already have an account? ';
+
+  @override
+  String get authIntroSignIn => 'Sign in';
+
+  @override
+  String get authIntroSignUpWithEmail => 'Sign up with email';
+
+  @override
+  String get authIntroOr => 'OR';
+
+  @override
+  String get authGoogleSignDidNotReturnIdToken => 'Google sign-in did not return an id token.';
+
+  @override
+  String get authAppleSignAvailableIosDevices => 'Apple sign-in is available on iOS devices.';
+
+  @override
+  String get authAppleSignNotAvailableDevice => 'Apple sign-in is not available on this device.';
+
+  @override
+  String get authAppleSignDidNotReturnIdentityToken => 'Apple sign-in did not return an identity token.';
+
+  @override
+  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Account is deactivated. Enter your email to request a reactivation link.';
+
+  @override
+  String get authAccountDeactivated => 'Account is deactivated';
+
+  @override
+  String authSendReactivationLinkEmail(Object email) {
+    return 'Send a reactivation link to $email?';
+  }
+
+  @override
+  String get authCancel => 'Cancel';
+
+  @override
+  String get authSendLink => 'Send link';
+
+  @override
+  String get authReactivationLinkSentCheckEmail => 'Reactivation link sent. Check your email.';
+
+  @override
+  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Could not send reactivation link. Please try again.';
+
+  @override
+  String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'Email is not verified. Enter your email to request verification link.';
+
+  @override
+  String get authEmailNotVerified => 'Email not verified';
+
+  @override
+  String authSendVerificationLinkEmail(Object email) {
+    return 'Send verification link to $email?';
+  }
+
+  @override
+  String get authVerificationLinkSentCheckEmail => 'Verification link sent. Check your email.';
+
+  @override
+  String get authCouldNotSendVerificationLinkPleaseTryAgain => 'Could not send verification link. Please try again.';
+
+  @override
+  String get authVerificationEmailSentPleaseVerifyEmailBeforeLogging => 'Verification email sent. Please verify your email before logging in.';
+
+  @override
+  String get authVerifyEmail => 'Verify your email';
+
+  @override
+  String get authEmailLabel => 'Email:';
+
+  @override
+  String get authClose => 'Close';
+
+  @override
+  String get authResendLink => 'Resend link';
+
+  @override
+  String get profileAppSettingsSectionTitle => 'APP SETTINGS';
+
+  @override
+  String get profileAppearance => 'Appearance';
+
+  @override
+  String get profileThemeDisplayMode => 'Theme & display mode';
+
+  @override
+  String get profileLanguage => 'Language';
+
+  @override
+  String get profileDisplayLanguage => 'Display language';
+
+  @override
+  String get profileNotificationsSectionHeading => 'NOTIFICATIONS';
+
+  @override
+  String get profileAppBanners => 'In-app banners';
+
+  @override
+  String get profileShowNewNotificationBannersInsideApp => 'Show new notification banners inside app';
+
+  @override
+  String get profilePushNotificationsTitle => 'Push notifications';
+
+  @override
+  String get profilePhoneNotificationsExpensesFriendsTripsSettlements => 'Phone notifications for expenses, friends, trips and settlements';
+
+  @override
+  String get profileSupportSectionHeading => 'SUPPORT';
+
+  @override
+  String get profileContactUs => 'Contact us';
+
+  @override
+  String get profileReportBugSuggestion => 'Report bug / Suggestion';
+
+  @override
+  String get profileRateSplyto => 'Rate Splyto';
+
+  @override
+  String get profileLeaveStoreRating => 'Leave a store rating';
+
+  @override
+  String get profileSecuritySectionHeading => 'SECURITY';
+
+  @override
+  String get profileChangePassword => 'Change password';
+
+  @override
+  String get profileUpdateAccountPassword => 'Update account password';
+
+  @override
+  String get profileDangerZoneSectionHeading => 'DANGER ZONE';
+
+  @override
+  String get profileDeactivateAccount => 'Deactivate account';
+
+  @override
+  String get profileManageAccountAccess => 'Manage account access';
+
+  @override
+  String get profileMadeWithLabel => 'Made with';
+
+  @override
+  String get profileStoreRatingActionWillConnectedNextStep => 'Store rating action will be connected in the next step.';
+
+  @override
+  String get profileFailedSaveNotificationSettings => 'Failed to save notification settings.';
+
+  @override
+  String get profilePushNotificationsSectionTitle => 'PUSH NOTIFICATIONS';
+
+  @override
+  String get profileExpenseUpdates => 'Expense updates';
+
+  @override
+  String get profileExpenseAddedNotificationsPhone => 'Expense added notifications to phone';
+
+  @override
+  String get profileFriendInvites => 'Friend invites';
+
+  @override
+  String get profileFriendRequestResponseNotifications => 'Friend request and response notifications';
+
+  @override
+  String get profileTripUpdates => 'Trip updates';
+
+  @override
+  String get profileTripLifecycleMemberStatusChanges => 'Trip lifecycle and member status changes';
+
+  @override
+  String get profileSettlementUpdates => 'Settlement updates';
+
+  @override
+  String get profileMarkedSentConfirmedPaymentUpdates => 'Marked sent and confirmed payment updates';
+
+  @override
+  String get profileScreenshotSizeMust8Mb => 'Screenshot size must be up to 8 MB';
+
+  @override
+  String get profileFeedbackSendTitle => 'Send feedback';
+
+  @override
+  String get profileFeedbackTypeLabel => 'Type';
+
+  @override
+  String get profileFeedbackTypeBug => 'Bug';
+
+  @override
+  String get profileFeedbackTypeSuggestion => 'Suggestion';
+
+  @override
+  String get profileDescribeIssueSuggestion => 'Describe issue or suggestion';
+
+  @override
+  String get profilePickingImage => 'Picking image...';
+
+  @override
+  String get profileAttachScreenshot => 'Attach screenshot';
+
+  @override
+  String get profileChangeScreenshot => 'Change screenshot';
+
+  @override
+  String get profileRemoveImage => 'Remove image';
+
+  @override
+  String get profileTipAttachScreenshotFasterBugTriage => 'Tip: attach screenshot for faster bug triage';
+
+  @override
+  String get profileAddDetailsAttachScreenshotBeforeSending => 'Add details or attach screenshot before sending';
+
+  @override
+  String get profileSendAction => 'Send';
+
+  @override
+  String get profileThanksFeedbackSent => 'Thanks! Feedback sent';
+
+  @override
+  String get profileFailedSendFeedback => 'Failed to send feedback';
+
+  @override
+  String get profileCouldNotOpenWebsite => 'Could not open website.';
+
+  @override
+  String get profileOpenWebsiteQuestion => 'Open website?';
+
+  @override
+  String get profileOpenPortfolioAction => 'Open portfolio.egm.lv';
+
+  @override
+  String get profileImageFormatNotSupportedDevicePleaseChooseJpg => 'This image format is not supported on this device. Please choose JPG or PNG.';
+
+  @override
+  String get profileEditSetValidEmailEditProfileChangingPassword => 'Set a valid email in Edit profile before changing password.';
+
+  @override
+  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Account deactivated. Use reactivation link from email to restore access.';
+
+  @override
+  String get profileEditCouldNotDeactivateTryAgain => 'Could not deactivate account. Please try again.';
+
+  @override
+  String get profileEditDeletionLinkSentEmail => 'Deletion link sent to your email.';
+
+  @override
+  String get profileEditCouldNotSendDeletionLinkTryAgain => 'Could not send deletion link. Please try again.';
+
+  @override
+  String get profileEditEnterCurrentPasswordChangeEmail => 'Enter current password to change email.';
+
+  @override
+  String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Verification was sent to the new email. Security notice was sent to your current email.';
+
+  @override
+  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Could not start email change right now. Please try again.';
+
+  @override
+  String get profileEditOverviewCurrency => 'Overview currency';
+
+  @override
+  String get profileEditPaymentMethod => 'Payment method';
+
+  @override
+  String get profileEditBankTransferRevolutPaypalMe => 'Bank transfer, Revolut, PayPal.me';
+
+  @override
+  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'You can deactivate account access or request an email link to permanently delete the account. Password is optional for Google/Apple accounts.';
+
+  @override
+  String get profileEditEnterPasswordOptionalGoogleApple => 'Enter your password (optional for Google/Apple)';
+
+  @override
+  String get profileEditSendDeletionLinkEmail => 'Send deletion link to email';
+
+  @override
+  String get profileEditBackProfile => 'Back to profile';
+
+  @override
+  String get profileEditSetValidEmailProfileChangingPassword => 'Set a valid email in profile before changing password.';
+
+  @override
+  String get profileEditPasswordUpdated => 'Password updated.';
+
+  @override
+  String get profileEditFailedUpdatePassword => 'Failed to update password.';
+
+  @override
+  String profileEditEmail(Object email) {
+    return 'Account: $email';
+  }
+
+  @override
+  String get profileEditPrimary => 'Primary';
+
+  @override
+  String get profileEditSearchCurrency => 'Search currency';
+
+  @override
+  String get profileEditNoCurrenciesFound => 'No currencies found';
+
+  @override
+  String get profileEditOverviewTotalsConvertedCurrency => 'Overview totals are converted to this currency.';
+
+  @override
+  String get profileEditPaymentInfoUpdated => 'Payment info updated.';
+
+  @override
+  String get profileEditCouldNotSavePaymentInfoTryAgain => 'Could not save payment info. Please try again.';
+
+  @override
+  String get profileEditCurrentPassword => 'Current password';
+
+  @override
+  String get profileEditBankTransferIbanSwift => 'Bank transfer (IBAN / SWIFT)';
+
+  @override
+  String get profileEditIbanSwift => 'IBAN + SWIFT';
+
+  @override
+  String get profileEditRevtagRevolutMe => 'Revtag / revolut.me';
+
+  @override
+  String get profileEditPaypalMeLink => 'paypal.me link';
+
+  @override
+  String get profileEditChoosePaymentMethod => 'Choose payment method';
+
+  @override
+  String get profileEditTapChange => 'Tap to change';
+
+  @override
+  String get profileEditUkTransfersSortCode6DigitsNumber8 => 'For UK transfers, sort code must be 6 digits and account number 8 digits.';
+
+  @override
+  String get profileEditPaymentInfo => 'Payment info';
+
+  @override
+  String get profileEditSaveDetails => 'Save details';
+
+  @override
+  String get profileEditBankRegion => 'Bank region';
+
+  @override
+  String get profileEditEurope => 'Europe';
+
+  @override
+  String get profileEditSortCode => 'Sort code';
+
+  @override
+  String get profileEditExample112233 => 'Example: 112233';
+
+  @override
+  String get profileEditNumber => 'Account number';
+
+  @override
+  String get profileEdit8Digits => '8 digits';
+
+  @override
+  String get profileEditUkDomesticTransfersSortCodeNumber => 'For UK domestic transfers use sort code + account number.';
+
+  @override
+  String get profileEditExampleLv80bank0000435195001 => 'Example: LV80BANK0000435195001';
+
+  @override
+  String get profileEdit811Chars => '8 or 11 chars';
+
+  @override
+  String get profileEditHolderNameTakenProfileFullName => 'Account holder name is taken from profile full name.';
+
+  @override
+  String get profileEditRevolutMeUsername => 'revolut.me/username';
+
+  @override
+  String get profileEditRevtag => 'Revtag';
+
+  @override
+  String get profileEditUsername => '@username';
+
+  @override
+  String get profileEditPaypalMeUsernameUsername => 'paypal.me/username or username';
+
+  @override
+  String get shellTripAlreadyInListOpened => 'Trip already in your list. Opened it for you.';
+
+  @override
+  String get shellJoinedTripFromInviteLink => 'Joined trip from invite link.';
+
+  @override
+  String get shellFailedToOpenInviteLink => 'Failed to open invite link.';
+
+  @override
+  String get shellTripInviteTitle => 'Trip invite';
+
+  @override
+  String get shellNoAction => 'No';
+
+  @override
+  String get shellYesAction => 'Yes';
+
+  @override
+  String get shellOnlyTripCreatorCanDelete => 'Only trip creator can delete this trip.';
+
+  @override
+  String get shellOnlyActiveTripsCanDelete => 'Only active trips can be deleted.';
+
+  @override
+  String shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(Object tripLabel) {
+    return 'Delete \"$tripLabel\"? This is allowed only before any expenses are added.';
+  }
+
+  @override
+  String get shellTripDeleted => 'Trip deleted.';
+
+  @override
+  String get shellFailedToDeleteTrip => 'Failed to delete trip.';
+
+  @override
+  String get shellFailedToLoadNotifications => 'Failed to load notifications.';
+
+  @override
+  String shellNewNotificationTitle(Object title) {
+    return 'New notification: $title';
+  }
+
+  @override
+  String get shellFailedToUpdateNotifications => 'Failed to update notifications.';
+
+  @override
+  String get shellMarkAllAsReadAction => 'Mark all as read';
+
+  @override
+  String get shellNewSection => 'New';
+
+  @override
+  String get shellEarlierSection => 'Earlier';
+
+  @override
+  String get shellShowMoreEarlierAction => 'Show more earlier';
+
+  @override
+  String get shellLoadingMore => 'Loading more...';
+
+  @override
+  String get shellLoadMoreNotificationsAction => 'Load more notifications';
+
+  @override
+  String get shellTripNoLongerAvailable => 'This trip is no longer available.';
+
+  @override
+  String get shellFailedToOpenTrip => 'Failed to open trip.';
+
+  @override
+  String get shellYesterday => 'Yesterday';
+
+  @override
+  String shellInviteAlreadyMemberOpenTripNow(Object inviterName, Object tripName) {
+    return 'You are already a member of \"$tripName\". Open this trip now?\n\nInvited by: $inviterName';
+  }
+
+  @override
+  String shellInviteJoinTripQuestion(Object inviterName, Object tripName) {
+    return 'Do you want to join trip \"$tripName\"?\n\nInvited by: $inviterName';
+  }
+
+  @override
+  String tripsSelectedImage(Object arg1) {
+    return 'Selected image: $arg1';
+  }
+
+  @override
+  String get tripsTripImageAlreadySet => 'Trip image already set.';
+
+  @override
+  String get tripsTripCreatedButImageUploadFailed => 'Trip created, but image upload failed.';
+
+  @override
+  String tripsTripCreatedButImageUploadFailedWithReason(Object arg1) {
+    return 'Trip created, but image upload failed: $arg1';
+  }
+
+  @override
+  String get tripsJoinTripViaInvite => 'Join trip via invite';
+
+  @override
+  String get tripsTotalTrips => 'Total trips';
+
+  @override
+  String get tripsTotalSpent => 'Total spent';
+
+  @override
+  String get tripsMixedCurrencies => 'Mixed currencies';
+
+  @override
+  String get tripsShowActive => 'Show active';
+
+  @override
+  String get tripsSeeAll => 'See all';
+
+  @override
+  String get tripsAddNewTrip => 'Add new trip';
+
+  @override
+  String get tripsLoadMore => 'Load more';
+
+  @override
+  String tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded(Object arg1) {
+    return 'Delete \"$arg1\"? This is allowed only before any expenses are added.';
+  }
+
+  @override
+  String get tripsTripDates => 'Trip dates';
+
+  @override
+  String get tripsFrom => 'From';
+
+  @override
+  String get tripsSelectDate => 'Select date';
+
+  @override
+  String get tripsTo => 'To';
+
+  @override
+  String get tripsMainCurrency => 'Main currency';
+
+  @override
+  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Please select trip period (from and to dates).';
+
+  @override
+  String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Trip end date must be on or after start date.';
+
+  @override
+  String get tripsTripPeriodFormatIsInvalidPleasePickDatesAgain => 'Trip period format is invalid. Please pick dates again.';
+
+  @override
+  String get tripsYouAreAlreadyAMemberOfThisTrip => 'You are already a member of this trip.';
+
+  @override
+  String get tripsJoinedTripSuccessfully => 'Joined trip successfully.';
+
+  @override
+  String get tripsFailedToJoinTripFromInvite => 'Failed to join trip from invite.';
+
+  @override
+  String get tripsJoinTrip => 'Join trip';
+
+  @override
+  String get tripsPasteInviteLinkOrInviteToken => 'Paste invite link or invite token.';
+
+  @override
+  String get tripsHttpsInviteNorthSeaAbc123def4 => 'https://.../?invite=north-sea-abc123def4';
+
+  @override
+  String get tripsEnterAValidInviteLinkOrToken => 'Enter a valid invite link or token.';
+
+  @override
+  String get tripsClipboardIsEmpty => 'Clipboard is empty.';
+
+  @override
+  String get tripsPaste => 'Paste';
+
+  @override
+  String get tripsJoin => 'Join';
+
+  @override
+  String get workspaceTripMembers => 'Trip members';
+
+  @override
+  String get workspaceFailedToLoadFriends => 'Failed to load friends.';
+
+  @override
+  String get workspaceFailedToGenerateInviteLink => 'Failed to generate invite link.';
+
+  @override
+  String get workspaceInviteLink => 'Invite link';
+
+  @override
+  String get workspaceGeneratingInviteLink => 'Generating invite link...';
+
+  @override
+  String get workspaceInviteLinkUnavailable => 'Invite link unavailable.';
+
+  @override
+  String get workspaceCopyInviteLink => 'Copy invite link';
+
+  @override
+  String get workspaceInviteLinkCopied => 'Invite link copied.';
+
+  @override
+  String workspaceExpiresUtc(Object arg1) {
+    return 'Expires: $arg1 UTC';
+  }
+
+  @override
+  String get workspaceNoFriendsAvailableAddFriendsFirst => 'No friends available. Add friends first.';
+
+  @override
+  String get workspaceSettle => 'Settle';
+
+  @override
+  String get workspaceOwesToTheGroup => 'Owes to the group';
+
+  @override
+  String get workspaceGetsBackFromGroup => 'Gets back from group';
+
+  @override
+  String get workspaceShowingTop4ByBalanceDifference => 'Showing top 4 by balance difference.';
+
+  @override
+  String get workspaceOpenFlow => 'Open flow';
+
+  @override
+  String get workspaceFriend => 'Friend';
+
+  @override
+  String get workspaceSettlementTransfer => 'Settlement transfer';
+
+  @override
+  String get workspaceCompleted => 'Completed';
+
+  @override
+  String get workspaceWaitingForConfirmation => 'Waiting for confirmation';
+
+  @override
+  String get workspaceWaitingForPayment => 'Waiting for payment';
+
+  @override
+  String get workspaceActionNeeded => 'Action needed';
+
+  @override
+  String workspacePaymentSToMarkAsSentToConfirmAsReceived(Object arg1, Object arg2) {
+    return '$arg1 payment(s) to mark as sent, $arg2 to confirm as received.';
+  }
+
+  @override
+  String get workspaceReadyToSettle => 'Ready to settle';
+
+  @override
+  String get workspaceAllMembersAreReadyYouCanStartSettlements => 'All members are ready. You can start settlements.';
+
+  @override
+  String get workspaceWaitingForEveryoneToMarkReady => 'Waiting for everyone to mark ready.';
+
+  @override
+  String get workspaceIMReady => 'I\'m ready';
+
+  @override
+  String get workspaceConfirmThatYouAddedAllYourExpenses => 'Confirm that you added all your expenses.';
+
+  @override
+  String get workspaceFinishButtonUnlocksOnceEveryoneMarksReady => 'Finish button unlocks once everyone marks ready.';
+
+  @override
+  String get workspaceGetsBackFromTheGroup => 'Gets back from the group';
+
+  @override
+  String get workspaceSettledWithTheGroup => 'Settled with the group';
+
+  @override
+  String get workspaceTotalPaid => 'Total Paid';
+
+  @override
+  String get workspaceTotalOwes => 'Total Owes';
+
+  @override
+  String get workspaceTransactionHistory => 'Transaction history';
+
+  @override
+  String get workspaceNoTransactionsYetForThisMember => 'No transactions yet for this member.';
+
+  @override
+  String workspaceSettlements(Object arg1) {
+    return 'Settlements: $arg1';
+  }
+
+  @override
+  String get workspaceAllMembersMustMarkReadyBeforeStartingSettlements => 'All members must mark ready before starting settlements.';
+
+  @override
+  String get workspaceYouMarkedYourselfReadyToSettle => 'You marked yourself ready to settle.';
+
+  @override
+  String get workspaceReadyToSettleMarkRemoved => 'Ready-to-settle mark removed.';
+
+  @override
+  String get workspaceReminderSent => 'Reminder sent.';
+
+  @override
+  String get workspaceInviteLinkOrAddFromFriends => 'Invite link or add from friends';
+
+  @override
+  String get workspaceOnlyTripCreatorCanEditThisTrip => 'Only trip creator can edit this trip.';
+
+  @override
+  String get workspaceTripUpdated => 'Trip updated.';
+
+  @override
+  String get workspaceFailedToUpdateTrip => 'Failed to update trip.';
+
+  @override
+  String get workspaceNoMembersSelectedYet => 'No members selected yet.';
+
+  @override
+  String get workspaceNoInternetExpenseSavedWithoutReceiptImage => 'No internet. Expense will be saved without receipt image.';
+
+  @override
+  String get workspaceRandomPicker => 'Random picker';
+
+  @override
+  String get workspaceCurrency => 'Currency';
+
+  @override
+  String get workspaceCategory => 'Category';
+
+  @override
+  String get workspaceCustomCategory => 'Custom category';
+
+  @override
+  String get workspaceCategoryName => 'Category name';
+
+  @override
+  String get workspaceApartmentRentParkingEtc => 'Apartment rent, parking, etc.';
+
+  @override
+  String get workspaceEnterACustomCategory => 'Enter a custom category.';
+
+  @override
+  String get workspacePickAnExpenseCategory => 'Pick an expense category.';
+
+  @override
+  String get workspaceCategoryMustBeAtLeast2Characters => 'Category must be at least 2 characters.';
+
+  @override
+  String get workspaceCategoryMustBeUpTo64Characters => 'Category must be up to 64 characters.';
+
+  @override
+  String get workspacePercentageSplitMustTotal100 => 'Percentage split must total 100%.';
+
+  @override
+  String get workspaceSharesMustBeGreaterThan0ForAllParticipants => 'Shares must be greater than 0 for all participants.';
+
+  @override
+  String get workspaceTotalAmount => 'Total amount';
+
+  @override
+  String get workspaceOriginal => 'Original';
+
+  @override
+  String get workspaceTotalCost => 'Total cost';
+
+  @override
+  String workspaceStarted(Object arg1) {
+    return 'Started $arg1';
+  }
+
+  @override
+  String workspaceEnded(Object arg1) {
+    return 'Ended $arg1';
+  }
+
+  @override
+  String get workspaceArchivedTrip => 'Archived trip';
+
+  @override
+  String get workspaceActiveTrip => 'Active trip';
+
+  @override
+  String get workspaceMemberProfile => 'Member profile';
+
+  @override
+  String get workspaceTripOwner => 'Trip owner';
+
+  @override
+  String get workspaceMember => 'Member';
+
+  @override
+  String get workspaceReadyForSettlement => 'Ready for settlement';
+
+  @override
+  String get workspaceNotReadyForSettlement => 'Not ready for settlement';
+
+  @override
+  String get workspaceBankDetails => 'Bank details';
+
+  @override
+  String get workspaceIbanAndPayoutDetailsWillBeAddedHereInA => 'IBAN and payout details will be added here in a next update.';
+
+  @override
+  String get workspacePaymentDetails => 'Payment details';
+
+  @override
+  String get workspaceThisMemberHasNotAddedPayoutDetailsYet => 'This member has not added payout details yet.';
+
+  @override
+  String get workspaceBankTransfer => 'Bank transfer';
+
+  @override
+  String get workspaceHolder => 'Holder';
+
+  @override
+  String get workspaceCouldNotOpenPaymentLink => 'Could not open payment link.';
+
+  @override
+  String get workspaceTripActivity => 'Trip activity';
+
+  @override
+  String get workspacePaidExpenses => 'Paid expenses';
+
+  @override
+  String get workspacePaidTotal => 'Paid total';
+
+  @override
+  String get workspaceInvolvedIn => 'Involved in';
+
+  @override
+  String get workspaceCurrentTrip => 'Current trip';
+
+  @override
+  String get workspaceCommonTrips => 'Common trips';
+
+  @override
+  String get workspaceLoadingCommonTrips => 'Loading common trips...';
+
+  @override
+  String get workspaceNoCommonTripsFoundYet => 'No common trips found yet.';
+
+  @override
+  String get workspaceCouldNotLoadAllCommonTripsShowingCurrentOne => 'Could not load all common trips. Showing current one.';
+
+  @override
+  String get workspaceMembers => 'members';
+
+  @override
+  String get workspaceExpense => 'Expense';
+
+  @override
+  String get workspacePaid => 'paid';
+
+  @override
+  String get workspaceLoadingMoreExpenses => 'Loading more expenses...';
+
+  @override
+  String get workspaceScrollDownToLoadMore => 'Scroll down to load more';
+
+  @override
+  String get workspaceTripFinished => 'Trip finished';
+
+  @override
+  String get workspaceSettlementsAreUnlockedForThisTrip => 'Settlements are unlocked for this trip.';
+
+  @override
+  String get workspaceFinishTripToStartSettlements => 'Finish trip to start settlements.';
+
+  @override
+  String workspaceMarkedTransferAsSent(Object arg1) {
+    return '$arg1 marked transfer as sent.';
+  }
+
+  @override
+  String workspaceWaitingForToMarkAsPaid(Object arg1) {
+    return 'Waiting for $arg1 to mark as paid.';
+  }
+
+  @override
+  String workspaceConfirmedReceivingThePayment(Object arg1) {
+    return '$arg1 confirmed receiving the payment.';
+  }
+
+  @override
+  String workspaceWaitingForToConfirm(Object arg1) {
+    return 'Waiting for $arg1 to confirm.';
+  }
+
+  @override
+  String get workspaceAllTripSettlementsAreFullyCompleted => 'All trip settlements are fully completed.';
+
+  @override
+  String get workspaceFinalStateAfterAllTransfersAreConfirmed => 'Final state after all transfers are confirmed.';
+
+  @override
+  String get workspaceSettlementFlow => 'Settlement flow';
+
+  @override
+  String get workspaceActions => 'Actions';
+
+  @override
+  String get workspaceTransferIsConfirmed => 'Transfer is confirmed.';
+
+  @override
+  String get workspaceWaitingForTheOtherMemberToCompleteTheNextStep => 'Waiting for the other member to complete the next step.';
+
+  @override
+  String get workspaceSendReminder => 'Send reminder';
+
+  @override
+  String get workspaceInProgress => 'In progress';
+
+  @override
+  String get workspaceTimeUnknown => 'Time unknown';
+
+  @override
+  String get workspaceRemind => 'Remind';
+
+  @override
+  String get workspaceYourPosition => 'Your position';
+
+  @override
+  String get workspaceRecentActivity => 'Recent activity';
+
+  @override
+  String get workspaceNoRecentActivityYet => 'No recent activity yet.';
+
+  @override
+  String get workspaceAddAtLeastOneMemberToStartSplittingExpenses => 'Add at least one member to start splitting expenses.';
+
+  @override
+  String get workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses => 'Mark yourself ready to settle after adding all your expenses.';
+
+  @override
+  String workspaceWaitingForMemberSToMarkReady(Object arg1) {
+    return 'Waiting for $arg1 member(s) to mark ready.';
+  }
+
+  @override
+  String get workspaceAllMembersAreReadyYouCanFinishTheTripAnd => 'All members are ready. You can finish the trip and start settlements.';
+
+  @override
+  String get workspaceAllMembersAreReadyWaitingForTheTripOwnerTo => 'All members are ready. Waiting for the trip owner to start settlements.';
+
+  @override
+  String workspaceSettlementInProgressConfirmed(Object arg1, Object arg2) {
+    return 'Settlement in progress: $arg1/$arg2 confirmed.';
+  }
+
+  @override
+  String get workspaceNoActionsPendingThisTripIsSettled => 'No actions pending. This trip is settled.';
+
+  @override
+  String get workspaceNoActionsNeededRightNow => 'No actions needed right now.';
+
+  @override
+  String workspaceYouShouldReceive(Object arg1) {
+    return 'You should receive $arg1.';
+  }
+
+  @override
+  String workspaceYouShouldPay(Object arg1) {
+    return 'You should pay $arg1.';
+  }
+
+  @override
+  String get workspaceYouAreCurrentlySettledInThisTrip => 'You are currently settled in this trip.';
+
+  @override
+  String get workspaceUnknownTime => 'Unknown time';
+
+  @override
+  String get workspaceJustNow => 'Just now';
+
+  @override
+  String workspaceMinAgo(Object arg1) {
+    return '$arg1 min ago';
+  }
+
+  @override
+  String workspaceHAgo(Object arg1) {
+    return '$arg1 h ago';
+  }
+
+  @override
+  String workspaceDAgo(Object arg1) {
+    return '$arg1 d ago';
+  }
+
+  @override
+  String get friendsRemoveFriend => 'Remove friend';
+
+  @override
+  String get friendsRemoveThisFriend => 'Remove this friend?';
+
+  @override
+  String friendsWillBeRemovedFromYourFriendsListYouCanAdd(Object arg1) {
+    return '$arg1 will be removed from your friends list. You can add them again later.';
+  }
+
+  @override
+  String get friendsContinue => 'Continue';
+
+  @override
+  String get friendsFriendRemoved => 'Friend removed.';
+
+  @override
+  String get friendsCouldNotRemoveFriend => 'Could not remove friend.';
+
+  @override
+  String get friendsFriendProfile => 'Friend profile';
+
+  @override
+  String get friendsMoreActions => 'More actions';
+
+  @override
+  String get friendsThisFriendHasNotAddedPayoutDetailsYet => 'This friend has not added payout details yet.';
+
+  @override
+  String get friendsCouldNotLoadCommonTripsRightNow => 'Could not load common trips right now.';
+
+  @override
+  String get friendsFinished => 'Finished';
+
+  @override
+  String friendsTrip(Object arg1) {
+    return 'Trip #$arg1';
+  }
+
+  @override
+  String friendsMembers(Object arg1) {
+    return '$arg1 members';
+  }
+
+  @override
+  String get friendsNoDate => 'No date';
+
+  @override
+  String get friendsIncomingRequests => 'INCOMING REQUESTS';
+
+  @override
+  String get friendsSentInvites => 'SENT INVITES';
+
+  @override
+  String get friendsMyFriends => 'MY FRIENDS';
+
+  @override
+  String get friendsIncoming => 'Incoming';
+
+  @override
+  String friendsInviteSentTo(Object arg1) {
+    return 'Invite sent to $arg1.';
+  }
+
+  @override
+  String get friendsNoIncomingRequests => 'No incoming requests';
+
+  @override
+  String get friendsDecline => 'Decline';
+
+  @override
+  String get friendsAccept => 'Accept';
+
+  @override
+  String get friendsNoSentInvites => 'No sent invites';
+
+  @override
+  String get friendsNoFriendsYet => 'No friends yet';
+
+  @override
+  String get friendsScrollDownToLoadMoreFriends => 'Scroll down to load more friends.';
+
+  @override
+  String get friendsUser => 'User';
+
+  @override
+  String get friendsSearchUsers => 'Search users';
+
+  @override
+  String get friendsFindByNameOrEmailAndSendInvite => 'Find by name or email and send invite';
+
+  @override
+  String get friendsScanQr => 'Scan QR';
+
+  @override
+  String get friendsScanAnotherUserToAddFriend => 'Scan another user to add friend';
+
+  @override
+  String get friendsMyQr => 'My QR';
+
+  @override
+  String get friendsShowOrShareYourQrCode => 'Show or share your QR code';
+
+  @override
+  String get friendsScanFriendQrTitle => 'Scan Friend QR';
+
+  @override
+  String get friendsPlaceFriendQrInsideFrame => 'Place friend QR code inside the frame';
+
+  @override
+  String get friendsMyFriendQrTitle => 'My Friend QR';
+
+  @override
+  String get friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode => 'Open Friends > Scan QR on another phone and scan this code.';
+
+  @override
+  String get friendsAddMeOnTripSplitFriends => 'Add me on TripSplit friends.';
+
+  @override
+  String get friendsTripSplitFriendCode => 'TripSplit friend code';
+
+  @override
+  String get shareAction => 'Share';
+
+  @override
+  String get friendsQrCodeIsNotAValidFriendCode => 'QR code is not a valid friend code.';
+
+  @override
+  String get friendsYouCannotAddYourself => 'You cannot add yourself.';
+
+  @override
+  String get friendsThisUserIsAlreadyInYourFriendsList => 'This user is already in your friends list.';
+
+  @override
+  String get friendsInviteToThisUserIsAlreadySent => 'Invite to this user is already sent.';
+
+  @override
+  String get friendsFriendRequestProcessed => 'Friend request processed.';
+
+  @override
+  String get friendsFailedToProcessFriendQr => 'Failed to process friend QR.';
+
+  @override
+  String get friendsCouldNotLoadYourUserProfile => 'Could not load your user profile.';
+
+  @override
+  String get friendsMyProfile => 'My profile';
+
+  @override
+  String get friendsUnexpectedErrorLoadingFriends => 'Unexpected error loading friends.';
+
+  @override
+  String get friendsFriendAdded => 'Friend added.';
+
+  @override
+  String get friendsRequestDeclined => 'Request declined.';
+
+  @override
+  String get friendsFailedToUpdateRequest => 'Failed to update request.';
+
+  @override
+  String get friendsCancelInvite => 'Cancel invite';
+
+  @override
+  String friendsCancelInviteTo(Object arg1) {
+    return 'Cancel invite to $arg1?';
+  }
+
+  @override
+  String get friendsKeep => 'Keep';
+
+  @override
+  String friendsInviteToCancelled(Object arg1) {
+    return 'Invite to $arg1 cancelled.';
+  }
+
+  @override
+  String get friendsFailedToCancelInvite => 'Failed to cancel invite.';
+
+  @override
+  String get analyticsOther => 'Other';
+
+  @override
+  String get analyticsSelectATripForAnalytics => 'Select a trip for analytics';
+
+  @override
+  String analyticsMembers(Object arg1, Object arg2, Object arg3, Object arg4) {
+    return '$arg1 • $arg2 members • $arg3 • $arg4';
+  }
+
+  @override
+  String get analyticsMyDaily => 'My daily';
+
+  @override
+  String get analyticsGroupDaily => 'Group daily';
+
+  @override
+  String get analyticsByMember => 'By Member';
+
+  @override
+  String get analyticsShowLess => 'Show less';
+
+  @override
+  String get analyticsByCategory => 'By Category';
+
+  @override
+  String get analyticsQuickInsights => 'Quick insights';
+
+  @override
+  String analyticsBiggestExpense(Object arg1, Object arg2) {
+    return 'Biggest expense: $arg1 ($arg2)';
+  }
+
+  @override
+  String analyticsTopSpender(Object arg1, Object arg2) {
+    return 'Top spender: $arg1 ($arg2)';
+  }
+
+  @override
+  String analyticsHighestGroupDay(Object arg1, Object arg2) {
+    return 'Highest group day: $arg1 ($arg2)';
+  }
+
+  @override
+  String get analyticsNoDates => 'No dates';
+
+  @override
+  String get friendsSearchFailedTryAgain => 'Search failed. Try again.';
+
+  @override
+  String get friendsFailedToSendInvite => 'Failed to send invite.';
+
+  @override
+  String get friendsAddFriend => 'Add friend';
+
+  @override
+  String get friendsSearchByNameOrEmail => 'Search by name or email';
+
+  @override
+  String get friendsTypeAtLeast2CharactersToSearch => 'Type at least 2 characters to search.';
+
+  @override
+  String get friendsNoUsersFound => 'No users found';
+
+  @override
+  String get friendsInviteAction => 'Invite';
+
+  @override
+  String get workspacePaidForGroup => 'Paid for group';
+
+  @override
+  String workspacePaidForGroupDate(Object arg1) {
+    return 'Paid for group • $arg1';
+  }
+
+  @override
+  String get workspaceShareOfExpense => 'Share of expense';
+
+  @override
+  String workspaceShareOfExpenseDate(Object arg1) {
+    return 'Share of expense • $arg1';
+  }
+
+  @override
+  String get paymentHolderNameCopied => 'Holder name copied.';
+
+  @override
+  String get paymentIbanCopied => 'IBAN copied.';
+
+  @override
+  String get paymentSwiftCopied => 'SWIFT copied.';
+
+  @override
+  String get paymentRevtagCopied => 'Revtag copied.';
+
+  @override
+  String get paymentCouldNotCopyToClipboard => 'Could not copy to clipboard.';
+
+  @override
+  String get paymentCopied => 'Copied.';
 }

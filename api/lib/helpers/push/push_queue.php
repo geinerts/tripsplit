@@ -229,15 +229,21 @@ function push_send_to_user_tokens(PDO $pdo, int $userId, array $notification): a
     $permanentErrors = [];
 
     foreach ($tokens as $tokenRow) {
+        $tokenLocale = normalize_push_locale_code((string) ($tokenRow['locale'] ?? ''));
+        $localized = push_localize_notification_for_locale($notification, $tokenLocale);
+        $localizedNotification = $notification;
+        $localizedNotification['title'] = (string) ($localized['title'] ?? ($notification['title'] ?? ''));
+        $localizedNotification['body'] = (string) ($localized['body'] ?? ($notification['body'] ?? ''));
+
         $provider = normalize_push_provider(
             (string) ($tokenRow['provider'] ?? ''),
             normalize_push_platform((string) ($tokenRow['platform'] ?? ''))
         );
         $sendResult = [];
         if ($provider === 'apns') {
-            $sendResult = push_send_apns($tokenRow, $notification);
+            $sendResult = push_send_apns($tokenRow, $localizedNotification);
         } elseif ($provider === 'fcm') {
-            $sendResult = push_send_fcm($tokenRow, $notification);
+            $sendResult = push_send_fcm($tokenRow, $localizedNotification);
         } else {
             $sendResult = [
                 'ok' => false,
@@ -290,8 +296,11 @@ function load_active_push_tokens(PDO $pdo, int $userId): array
 
     $limit = push_max_tokens_per_user();
     $pushTokensTable = table_name('push_tokens');
+    $localeSelect = push_tokens_locale_column_available($pdo)
+        ? 'locale'
+        : '\'en\' AS locale';
     $stmt = $pdo->prepare(
-        'SELECT id, user_id, provider, platform, push_token, device_uid, app_bundle, last_seen_at
+        'SELECT id, user_id, provider, platform, push_token, device_uid, app_bundle, ' . $localeSelect . ', last_seen_at
          FROM ' . $pushTokensTable . '
          WHERE user_id = :user_id
            AND is_active = 1
@@ -317,4 +326,3 @@ function deactivate_push_token_by_id(PDO $pdo, int $tokenId): void
     );
     $stmt->execute(['id' => $tokenId]);
 }
-

@@ -135,7 +135,7 @@ Example:
 
 ```bash
 flutter run \
-  --dart-define=TRIPSPLIT_API_BASE_URL=https://splyto.egm.lv \
+  --dart-define=TRIPSPLIT_API_BASE_URL=https://splyto.eu \
   --dart-define=TRIPSPLIT_GOOGLE_SERVER_CLIENT_ID=<google-server-client-id>
 ```
 
@@ -169,7 +169,7 @@ Required GitHub repository secrets:
 - `VPS_SSH_KNOWN_HOSTS` (pinned host key line, e.g. output from `ssh-keyscan -H <host>`)
 - `VPS_PORT` (optional, default `22`)
 - `VPS_APP_DIR` (optional, default `/var/www/splyto`)
-- `API_BASE_URL` (example: `https://splyto.egm.lv`)
+- `API_BASE_URL` (example: `https://splyto.eu`)
 
 Optional repository variable:
 

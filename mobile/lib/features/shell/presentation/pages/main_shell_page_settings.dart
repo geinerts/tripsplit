@@ -51,12 +51,7 @@ extension _MainShellPageSettings on _MainShellPageState {
               ),
               ListTile(
                 leading: const Icon(Icons.feedback_outlined),
-                title: Text(
-                  _settingsLocalizedText(
-                    en: 'Send feedback',
-                    lv: 'Sūtīt atsauksmi',
-                  ),
-                ),
+                title: Text(context.l10n.profileFeedbackSendTitle),
                 onTap: () => Navigator.of(sheetContext).pop('send_feedback'),
               ),
               ListTile(
@@ -122,23 +117,11 @@ extension _MainShellPageSettings on _MainShellPageState {
     final currentUserId = widget.authController.currentUser?.id ?? 0;
     final isOwner = currentUserId > 0 && (trip.createdBy ?? 0) == currentUserId;
     if (!isOwner) {
-      _showSnack(
-        _settingsLocalizedText(
-          en: 'Only trip creator can delete this trip.',
-          lv: 'Šo ceļojumu drīkst dzēst tikai izveidotājs.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellOnlyTripCreatorCanDelete, isError: true);
       return;
     }
     if (!trip.isActive) {
-      _showSnack(
-        _settingsLocalizedText(
-          en: 'Only active trips can be deleted.',
-          lv: 'Dzēst var tikai aktīvus ceļojumus.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellOnlyActiveTripsCanDelete, isError: true);
       return;
     }
 
@@ -150,9 +133,8 @@ extension _MainShellPageSettings on _MainShellPageState {
         return AlertDialog(
           title: Text('${t.deleteAction} ${t.tripTitleShort}'),
           content: Text(
-            _settingsLocalizedText(
-              en: 'Delete "$tripLabel"? This is allowed only before any expenses are added.',
-              lv: 'Dzēst "$tripLabel"? Tas ir atļauts tikai pirms ceļojumam pievienoti izdevumi.',
+            context.l10n.shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(
+              tripLabel,
             ),
           ),
           actions: [
@@ -184,10 +166,7 @@ extension _MainShellPageSettings on _MainShellPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _settingsLocalizedText(en: 'Trip deleted.', lv: 'Ceļojums izdzēsts.'),
-        isError: false,
-      );
+      _showSnack(context.l10n.shellTripDeleted, isError: false);
       _closeWorkspaceInShell();
     } on ApiException catch (error) {
       if (!mounted) {
@@ -198,13 +177,7 @@ extension _MainShellPageSettings on _MainShellPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _settingsLocalizedText(
-          en: 'Failed to delete trip.',
-          lv: 'Neizdevās izdzēst ceļojumu.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellFailedToDeleteTrip, isError: true);
     } finally {
       if (mounted) {
         _updateState(() {
@@ -212,11 +185,6 @@ extension _MainShellPageSettings on _MainShellPageState {
         });
       }
     }
-  }
-
-  String _settingsLocalizedText({required String en, required String lv}) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    return languageCode.toLowerCase() == 'lv' ? lv : en;
   }
 
   Future<void> _onLogoutPressed() async {
@@ -304,10 +272,7 @@ extension _MainShellPageSettings on _MainShellPageState {
               if (picked.bytes.length > _maxFeedbackScreenshotBytes) {
                 setDialogState(() {
                   isPickingScreenshot = false;
-                  validationError = _settingsLocalizedText(
-                    en: 'Screenshot size must be up to 8 MB',
-                    lv: 'Ekrānattēla izmēram jābūt līdz 8 MB',
-                  );
+                  validationError = context.l10n.profileScreenshotSizeMust8Mb;
                 });
                 return;
               }
@@ -320,12 +285,7 @@ extension _MainShellPageSettings on _MainShellPageState {
             }
 
             return AlertDialog(
-              title: Text(
-                _settingsLocalizedText(
-                  en: 'Send feedback',
-                  lv: 'Sūtīt atsauksmi',
-                ),
-              ),
+              title: Text(context.l10n.profileFeedbackSendTitle),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -347,10 +307,7 @@ extension _MainShellPageSettings on _MainShellPageState {
                             color: colorScheme.primary,
                           ),
                           decoration: InputDecoration(
-                            labelText: _settingsLocalizedText(
-                              en: 'Type',
-                              lv: 'Tips',
-                            ),
+                            labelText: context.l10n.profileFeedbackTypeLabel,
                             prefixIcon: const Icon(Icons.category_outlined),
                             filled: true,
                             fillColor: colorScheme.surfaceContainerLowest
@@ -392,12 +349,7 @@ extension _MainShellPageSettings on _MainShellPageState {
                                     color: colorScheme.primary,
                                   ),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    _settingsLocalizedText(
-                                      en: 'Bug',
-                                      lv: 'Kļūda',
-                                    ),
-                                  ),
+                                  Text(context.l10n.profileFeedbackTypeBug),
                                 ],
                               ),
                             ),
@@ -412,10 +364,7 @@ extension _MainShellPageSettings on _MainShellPageState {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    _settingsLocalizedText(
-                                      en: 'Suggestion',
-                                      lv: 'Ieteikums',
-                                    ),
+                                    context.l10n.profileFeedbackTypeSuggestion,
                                   ),
                                 ],
                               ),
@@ -438,10 +387,7 @@ extension _MainShellPageSettings on _MainShellPageState {
                       maxLines: 8,
                       textInputAction: TextInputAction.newline,
                       decoration: InputDecoration(
-                        hintText: _settingsLocalizedText(
-                          en: 'Describe issue or suggestion',
-                          lv: 'Apraksti problēmu vai ieteikumu',
-                        ),
+                        hintText: context.l10n.profileDescribeIssueSuggestion,
                       ),
                       onChanged: (value) {
                         feedbackNote = value;
@@ -462,19 +408,10 @@ extension _MainShellPageSettings on _MainShellPageState {
                           icon: const Icon(Icons.add_photo_alternate_outlined),
                           label: Text(
                             isPickingScreenshot
-                                ? _settingsLocalizedText(
-                                    en: 'Picking image...',
-                                    lv: 'Tiek izvēlēts attēls...',
-                                  )
+                                ? context.l10n.profilePickingImage
                                 : (screenshotBytes == null
-                                      ? _settingsLocalizedText(
-                                          en: 'Attach screenshot',
-                                          lv: 'Pievienot ekrānattēlu',
-                                        )
-                                      : _settingsLocalizedText(
-                                          en: 'Change screenshot',
-                                          lv: 'Mainīt ekrānattēlu',
-                                        )),
+                                      ? context.l10n.profileAttachScreenshot
+                                      : context.l10n.profileChangeScreenshot),
                           ),
                         ),
                         if (screenshotBytes != null)
@@ -486,12 +423,7 @@ extension _MainShellPageSettings on _MainShellPageState {
                               });
                             },
                             icon: const Icon(Icons.close),
-                            label: Text(
-                              _settingsLocalizedText(
-                                en: 'Remove image',
-                                lv: 'Noņemt attēlu',
-                              ),
-                            ),
+                            label: Text(context.l10n.profileRemoveImage),
                           ),
                       ],
                     ),
@@ -507,10 +439,7 @@ extension _MainShellPageSettings on _MainShellPageState {
                     ],
                     const SizedBox(height: 8),
                     Text(
-                      _settingsLocalizedText(
-                        en: 'Tip: attach screenshot for faster bug triage',
-                        lv: 'Ieteikums: pievieno ekrānattēlu ātrākai kļūdas analīzei',
-                      ),
+                      context.l10n.profileTipAttachScreenshotFasterBugTriage,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     if (validationError != null) ...[
@@ -537,10 +466,9 @@ extension _MainShellPageSettings on _MainShellPageState {
                     final note = feedbackNote.trim();
                     if (note.isEmpty && screenshotBytes == null) {
                       setDialogState(() {
-                        validationError = _settingsLocalizedText(
-                          en: 'Add details or attach screenshot before sending',
-                          lv: 'Pirms sūtīšanas pievieno aprakstu vai ekrānattēlu',
-                        );
+                        validationError = context
+                            .l10n
+                            .profileAddDetailsAttachScreenshotBeforeSending;
                       });
                       return;
                     }
@@ -553,7 +481,7 @@ extension _MainShellPageSettings on _MainShellPageState {
                       ),
                     );
                   },
-                  child: Text(_settingsLocalizedText(en: 'Send', lv: 'Sūtīt')),
+                  child: Text(context.l10n.profileSendAction),
                 ),
               ],
             );
@@ -600,13 +528,7 @@ extension _MainShellPageSettings on _MainShellPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _settingsLocalizedText(
-          en: 'Thanks! Feedback sent',
-          lv: 'Paldies! Atsauksme nosūtīta',
-        ),
-        isError: false,
-      );
+      _showSnack(context.l10n.profileThanksFeedbackSent, isError: false);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -616,13 +538,7 @@ extension _MainShellPageSettings on _MainShellPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _settingsLocalizedText(
-          en: 'Failed to send feedback',
-          lv: 'Neizdevās nosūtīt atsauksmi',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.profileFailedSendFeedback, isError: true);
     } finally {
       if (mounted) {
         _updateState(() {

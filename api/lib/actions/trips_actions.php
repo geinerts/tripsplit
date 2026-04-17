@@ -139,7 +139,7 @@ function build_trip_invite_url(string $inviteCode, string $tripName = ''): strin
 {
     $base = trim((string) PUBLIC_BASE_URL);
     if ($base === '') {
-        $base = 'https://splyto.egm.lv';
+        $base = 'https://splyto.eu';
     }
     $base = rtrim($base, '/');
     $base = preg_replace('#/api$#', '', $base) ?: $base;

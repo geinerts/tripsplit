@@ -8,7 +8,8 @@ function register_user_push_token(
     string $platform,
     string $provider,
     string $deviceUid = '',
-    string $appBundle = ''
+    string $appBundle = '',
+    string $localeCode = 'en'
 ): void {
     if ($userId <= 0) {
         throw new RuntimeException('Invalid push token user.');
@@ -18,28 +19,51 @@ function register_user_push_token(
     }
 
     $pushTokensTable = table_name('push_tokens');
-    $stmt = $pdo->prepare(
-        'INSERT INTO ' . $pushTokensTable . '
-         (user_id, provider, platform, push_token, device_uid, app_bundle, is_active, last_seen_at)
-         VALUES (:user_id, :provider, :platform, :push_token, :device_uid, :app_bundle, 1, CURRENT_TIMESTAMP)
-         ON DUPLICATE KEY UPDATE
-            user_id = VALUES(user_id),
-            provider = VALUES(provider),
-            platform = VALUES(platform),
-            device_uid = CASE WHEN VALUES(device_uid) <> "" THEN VALUES(device_uid) ELSE device_uid END,
-            app_bundle = CASE WHEN VALUES(app_bundle) <> "" THEN VALUES(app_bundle) ELSE app_bundle END,
-            is_active = 1,
-            last_seen_at = CURRENT_TIMESTAMP,
-            updated_at = CURRENT_TIMESTAMP'
-    );
-    $stmt->execute([
+    $params = [
         'user_id' => $userId,
         'provider' => $provider,
         'platform' => $platform,
         'push_token' => $token,
         'device_uid' => $deviceUid,
         'app_bundle' => $appBundle,
-    ]);
+    ];
+    $locale = normalize_push_locale_code($localeCode);
+
+    if (push_tokens_locale_column_available($pdo)) {
+        $stmt = $pdo->prepare(
+            'INSERT INTO ' . $pushTokensTable . '
+             (user_id, provider, platform, push_token, device_uid, app_bundle, locale, is_active, last_seen_at)
+             VALUES (:user_id, :provider, :platform, :push_token, :device_uid, :app_bundle, :locale, 1, CURRENT_TIMESTAMP)
+             ON DUPLICATE KEY UPDATE
+                user_id = VALUES(user_id),
+                provider = VALUES(provider),
+                platform = VALUES(platform),
+                device_uid = CASE WHEN VALUES(device_uid) <> "" THEN VALUES(device_uid) ELSE device_uid END,
+                app_bundle = CASE WHEN VALUES(app_bundle) <> "" THEN VALUES(app_bundle) ELSE app_bundle END,
+                locale = VALUES(locale),
+                is_active = 1,
+                last_seen_at = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP'
+        );
+        $params['locale'] = $locale;
+        $stmt->execute($params);
+    } else {
+        $stmt = $pdo->prepare(
+            'INSERT INTO ' . $pushTokensTable . '
+             (user_id, provider, platform, push_token, device_uid, app_bundle, is_active, last_seen_at)
+             VALUES (:user_id, :provider, :platform, :push_token, :device_uid, :app_bundle, 1, CURRENT_TIMESTAMP)
+             ON DUPLICATE KEY UPDATE
+                user_id = VALUES(user_id),
+                provider = VALUES(provider),
+                platform = VALUES(platform),
+                device_uid = CASE WHEN VALUES(device_uid) <> "" THEN VALUES(device_uid) ELSE device_uid END,
+                app_bundle = CASE WHEN VALUES(app_bundle) <> "" THEN VALUES(app_bundle) ELSE app_bundle END,
+                is_active = 1,
+                last_seen_at = CURRENT_TIMESTAMP,
+                updated_at = CURRENT_TIMESTAMP'
+        );
+        $stmt->execute($params);
+    }
 
     push_trim_user_tokens($pdo, $userId, $token);
 }
@@ -148,4 +172,3 @@ function push_trim_user_tokens(PDO $pdo, int $userId, string $keepToken = ''): v
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
 }
-

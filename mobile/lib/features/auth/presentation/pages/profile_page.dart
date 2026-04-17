@@ -32,6 +32,7 @@ import '../controllers/auth_controller.dart';
 part 'profile_page_actions.dart';
 part 'profile_page_edit.dart';
 part 'profile_page_navigation.dart';
+part 'profile_page_push_notifications.dart';
 part 'profile_page_settings.dart';
 part 'profile_page_widgets.dart';
 
@@ -123,6 +124,11 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _pushFriendInvitesEnabled = true;
   bool _pushTripUpdatesEnabled = true;
   bool _pushSettlementUpdatesEnabled = true;
+  bool get _pushNotificationsEnabled =>
+      _pushExpenseUpdatesEnabled ||
+      _pushFriendInvitesEnabled ||
+      _pushTripUpdatesEnabled ||
+      _pushSettlementUpdatesEnabled;
   _ProfileEditField? _activeEditField;
   int _editSession = 0;
   int _handledRefreshRequestCount = 0;
@@ -134,11 +140,6 @@ class _ProfilePageState extends State<ProfilePage> {
       return;
     }
     setState(update);
-  }
-
-  String _profileText({required String en, required String lv}) {
-    final code = Localizations.localeOf(context).languageCode.toLowerCase();
-    return code == 'lv' ? lv : en;
   }
 
   @override

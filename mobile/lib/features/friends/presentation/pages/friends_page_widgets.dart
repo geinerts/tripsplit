@@ -43,7 +43,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                     if (_errorText != null)
                       _InlineErrorCard(
                         message: _errorText!,
-                        retryLabel: _txt(en: 'Retry', lv: 'Mēģināt vēlreiz'),
+                        retryLabel: context.l10n.retryAction,
                         onRetry: () => _loadSnapshot(showLoader: false),
                       ),
                     if (_errorText != null) const SizedBox(height: 10),
@@ -53,10 +53,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                     const SizedBox(height: 10),
                     if (_sectionTabIndex == _FriendsPageState._tabIncoming) ...[
                       _buildSectionHeadingRow(
-                        title: _txt(
-                          en: 'INCOMING REQUESTS',
-                          lv: 'SAŅEMTIE PIEPRASĪJUMI',
-                        ),
+                        title: context.l10n.friendsIncomingRequests,
                         trailing: _countBadge(_sectionCountIncoming(snapshot)),
                       ),
                       const SizedBox(height: 8),
@@ -65,10 +62,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                     ],
                     if (_sectionTabIndex == _FriendsPageState._tabSent) ...[
                       _buildSectionHeadingRow(
-                        title: _txt(
-                          en: 'SENT INVITES',
-                          lv: 'NOSŪTĪTIE UZAICINĀJUMI',
-                        ),
+                        title: context.l10n.friendsSentInvites,
                         trailing: _countBadge(_sectionCountSent(snapshot)),
                       ),
                       const SizedBox(height: 8),
@@ -77,7 +71,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                     ],
                     if (_sectionTabIndex == _FriendsPageState._tabFriends) ...[
                       _buildSectionHeadingRow(
-                        title: _txt(en: 'MY FRIENDS', lv: 'MANI DRAUGI'),
+                        title: context.l10n.friendsMyFriends,
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -164,7 +158,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
         Expanded(
           child: _buildSummaryMetricCard(
             icon: Icons.people_alt_outlined,
-            label: _txt(en: 'Friends', lv: 'Draugi'),
+            label: context.l10n.navFriends,
             value: friendsCount.toString(),
             iconTint: colors.primary,
             iconBg: colors.primary.withValues(alpha: 0.12),
@@ -174,7 +168,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
         Expanded(
           child: _buildSummaryMetricCard(
             icon: Icons.move_to_inbox_outlined,
-            label: _txt(en: 'Incoming', lv: 'Saņemtie'),
+            label: context.l10n.friendsIncoming,
             value: incomingCount.toString(),
             iconTint: AppDesign.lightAccent,
             iconBg: AppDesign.lightAccent.withValues(alpha: 0.18),
@@ -184,7 +178,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
         Expanded(
           child: _buildSummaryMetricCard(
             icon: Icons.arrow_forward_rounded,
-            label: _txt(en: 'Sent', lv: 'Nosūtītie'),
+            label: context.l10n.statusSent,
             value: sentCount.toString(),
             iconTint: AppDesign.destructiveColor(context),
             iconBg: AppDesign.destructiveColor(context).withValues(alpha: 0.14),
@@ -196,9 +190,9 @@ extension _FriendsPageWidgets on _FriendsPageState {
 
   Widget _buildSectionTabs() {
     final labels = [
-      _txt(en: 'Friends', lv: 'Draugi'),
-      _txt(en: 'Incoming', lv: 'Saņemtie'),
-      _txt(en: 'Sent', lv: 'Nosūtītie'),
+      context.l10n.navFriends,
+      context.l10n.friendsIncoming,
+      context.l10n.statusSent,
     ];
     return AppChipTabs(
       labels: labels,
@@ -350,7 +344,6 @@ extension _FriendsPageWidgets on _FriendsPageState {
       backgroundColor: Colors.transparent,
       builder: (sheetContext) {
         return _AddFriendBottomSheet(
-          txt: _txt,
           showSnack: _showSnack,
           searchUsers: (query) => widget.controller.searchUsers(
             query: query,
@@ -362,12 +355,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
             if (!mounted) {
               return;
             }
-            _showSnack(
-              _txt(
-                en: 'Invite sent to $displayName.',
-                lv: 'Uzaicinājums nosūtīts lietotājam $displayName.',
-              ),
-            );
+            _showSnack(context.l10n.friendsInviteSentTo(displayName));
             await _loadSnapshot(showLoader: false);
           },
           userAvatarBuilder: _userAvatar,
@@ -382,9 +370,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (snapshot.pendingReceived.isEmpty)
-            _buildEmptyMessage(
-              _txt(en: 'No incoming requests', lv: 'Nav saņemtu pieprasījumu'),
-            )
+            _buildEmptyMessage(context.l10n.friendsNoIncomingRequests)
           else
             ...snapshot.pendingReceived.map((request) {
               final busy = _respondLoading.contains(request.requestId);
@@ -426,13 +412,13 @@ extension _FriendsPageWidgets on _FriendsPageState {
                       onPressed: busy
                           ? null
                           : () => _respondInvite(request, false),
-                      child: Text(_txt(en: 'Decline', lv: 'Noraidīt')),
+                      child: Text(context.l10n.friendsDecline),
                     ),
                     FilledButton(
                       onPressed: busy
                           ? null
                           : () => _respondInvite(request, true),
-                      child: Text(_txt(en: 'Accept', lv: 'Apstiprināt')),
+                      child: Text(context.l10n.friendsAccept),
                     ),
                   ],
                 ),
@@ -452,7 +438,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.expand_more),
-                label: Text(_txt(en: 'Load more', lv: 'Ielādēt vēl')),
+                label: Text(context.l10n.tripsLoadMore),
               ),
             ),
         ],
@@ -466,9 +452,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (snapshot.pendingSent.isEmpty)
-            _buildEmptyMessage(
-              _txt(en: 'No sent invites', lv: 'Nav nosūtītu uzaicinājumu'),
-            )
+            _buildEmptyMessage(context.l10n.friendsNoSentInvites)
           else
             ...snapshot.pendingSent.map((request) {
               final busy = _cancelLoading.contains(request.requestId);
@@ -491,7 +475,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                         ).colorScheme.tertiaryContainer.withValues(alpha: 0.6),
                       ),
                       child: Text(
-                        _txt(en: 'Pending', lv: 'Gaida'),
+                        context.l10n.statusPending,
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(fontWeight: FontWeight.w700),
                       ),
@@ -499,7 +483,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                     const SizedBox(width: 8),
                     TextButton(
                       onPressed: busy ? null : () => _cancelInvite(request),
-                      child: Text(_txt(en: 'Cancel', lv: 'Atcelt')),
+                      child: Text(context.l10n.authCancel),
                     ),
                   ],
                 ),
@@ -519,7 +503,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.expand_more),
-                label: Text(_txt(en: 'Load more', lv: 'Ielādēt vēl')),
+                label: Text(context.l10n.tripsLoadMore),
               ),
             ),
         ],
@@ -533,7 +517,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (snapshot.friends.isEmpty)
-            _buildEmptyMessage(_txt(en: 'No friends yet', lv: 'Draugu vēl nav'))
+            _buildEmptyMessage(context.l10n.friendsNoFriendsYet)
           else
             ...snapshot.friends.map(
               (friend) => AppListRow(
@@ -562,10 +546,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
             Padding(
               padding: const EdgeInsets.only(top: 6),
               child: Text(
-                _txt(
-                  en: 'Scroll down to load more friends.',
-                  lv: 'Ritini uz leju, lai ielādētu vēl draugus.',
-                ),
+                context.l10n.friendsScrollDownToLoadMoreFriends,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppDesign.mutedColor(context),
                 ),
@@ -615,18 +596,16 @@ extension _FriendsPageWidgets on _FriendsPageState {
     if (fallback.isNotEmpty) {
       return fallback;
     }
-    return _txt(en: 'User', lv: 'Lietotājs');
+    return context.l10n.friendsUser;
   }
 
   String? _friendSecondaryLabel(FriendUser _) => null;
 }
 
-typedef _FriendsTxt = String Function({required String en, required String lv});
 typedef _FriendsShowSnack = void Function(String message, {bool isError});
 
 class _AddFriendBottomSheet extends StatefulWidget {
   const _AddFriendBottomSheet({
-    required this.txt,
     required this.showSnack,
     required this.searchUsers,
     required this.sendInvite,
@@ -634,7 +613,6 @@ class _AddFriendBottomSheet extends StatefulWidget {
     required this.userAvatarBuilder,
   });
 
-  final _FriendsTxt txt;
   final _FriendsShowSnack showSnack;
   final Future<List<FriendUser>> Function(String query) searchUsers;
   final Future<void> Function(int userId) sendInvite;
@@ -712,13 +690,7 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
           _isSearching = false;
         });
       }
-      widget.showSnack(
-        widget.txt(
-          en: 'Search failed. Try again.',
-          lv: 'Meklēšana neizdevās. Mēģini vēlreiz.',
-        ),
-        isError: true,
-      );
+      widget.showSnack(context.l10n.friendsSearchFailedTryAgain, isError: true);
     }
   }
 
@@ -756,13 +728,7 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
           _inviteLoading.remove(user.id);
         });
       }
-      widget.showSnack(
-        widget.txt(
-          en: 'Failed to send invite.',
-          lv: 'Neizdevās nosūtīt uzaicinājumu.',
-        ),
-        isError: true,
-      );
+      widget.showSnack(context.l10n.friendsFailedToSendInvite, isError: true);
     }
   }
 
@@ -804,10 +770,7 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                         children: [
                           Expanded(
                             child: Text(
-                              widget.txt(
-                                en: 'Add friend',
-                                lv: 'Pievienot draugu',
-                              ),
+                              context.l10n.friendsAddFriend,
                               style: Theme.of(context).textTheme.headlineSmall
                                   ?.copyWith(
                                     fontWeight: FontWeight.w800,
@@ -831,10 +794,7 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                         autofocus: true,
                         onChanged: _onQueryChanged,
                         decoration: InputDecoration(
-                          hintText: widget.txt(
-                            en: 'Search by name or email',
-                            lv: 'Meklēt pēc vārda vai e-pasta',
-                          ),
+                          hintText: context.l10n.friendsSearchByNameOrEmail,
                           prefixIcon: const Icon(Icons.search),
                           suffixIcon: _isSearching
                               ? const Padding(
@@ -868,19 +828,13 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                       const SizedBox(height: 12),
                       if (query.length < 2)
                         Text(
-                          widget.txt(
-                            en: 'Type at least 2 characters to search.',
-                            lv: 'Ievadi vismaz 2 simbolus, lai meklētu.',
-                          ),
+                          context.l10n.friendsTypeAtLeast2CharactersToSearch,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: AppDesign.mutedColor(context)),
                         )
                       else if (!_isSearching && _searchResults.isEmpty)
                         Text(
-                          widget.txt(
-                            en: 'No users found',
-                            lv: 'Lietotāji nav atrasti',
-                          ),
+                          context.l10n.friendsNoUsersFound,
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: AppDesign.mutedColor(context)),
                         )
@@ -909,9 +863,7 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
                                       Icons.person_add_alt_1,
                                       size: 18,
                                     ),
-                              label: Text(
-                                widget.txt(en: 'Invite', lv: 'Uzaicināt'),
-                              ),
+                              label: Text(context.l10n.friendsInviteAction),
                             ),
                           );
                         }),

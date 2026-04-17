@@ -643,6 +643,7 @@ function register_push_token_action(): void
 
     $deviceUid = normalize_push_device_uid((string) ($body['device_uid'] ?? $body['device_id'] ?? ''));
     $appBundle = normalize_push_app_bundle((string) ($body['app_bundle'] ?? ''));
+    $localeCode = normalize_push_locale_code((string) ($body['locale'] ?? ''));
 
     register_user_push_token(
         $pdo,
@@ -651,7 +652,8 @@ function register_push_token_action(): void
         $platform,
         $provider,
         $deviceUid,
-        $appBundle
+        $appBundle,
+        $localeCode
     );
 
     json_out([
@@ -659,6 +661,7 @@ function register_push_token_action(): void
         'registered' => true,
         'platform' => $platform,
         'provider' => $provider,
+        'locale' => $localeCode,
         'push_enabled' => push_notifications_enabled(),
     ]);
 }

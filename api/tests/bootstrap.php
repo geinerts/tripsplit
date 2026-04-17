@@ -41,7 +41,7 @@ if (!defined('DB_TABLE_PREFIX')) {
     define('DB_TABLE_PREFIX', 'trip_');
 }
 if (!defined('APP_BASE_URL')) {
-    define('APP_BASE_URL', 'https://splyto.egm.lv');
+    define('APP_BASE_URL', 'https://splyto.eu');
 }
 if (!defined('ACCOUNT_REACTIVATION_TOKEN_TTL_SEC')) {
     define('ACCOUNT_REACTIVATION_TOKEN_TTL_SEC', 86400);

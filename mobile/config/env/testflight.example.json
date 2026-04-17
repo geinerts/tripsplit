@@ -1,5 +1,5 @@
 {
-  "TRIPSPLIT_API_BASE_URL": "https://egm.lv/projekti/trip",
+  "TRIPSPLIT_API_BASE_URL": "https://splyto.eu",
   "TRIPSPLIT_SENTRY_DSN": "https://<public_key>@<org>.ingest.sentry.io/<project_id>",
   "TRIPSPLIT_MONITORING_ENV": "testflight",
   "TRIPSPLIT_RELEASE_CHANNEL": "testflight",

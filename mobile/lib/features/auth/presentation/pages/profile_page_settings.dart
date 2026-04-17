@@ -138,10 +138,7 @@ extension _ProfilePageSettings on _ProfilePageState {
               if (picked.bytes.length > _maxFeedbackScreenshotBytes) {
                 setSheetState(() {
                   isPickingScreenshot = false;
-                  validationError = _profileText(
-                    en: 'Screenshot size must be up to 8 MB',
-                    lv: 'Ekrānattēla izmēram jābūt līdz 8 MB',
-                  );
+                  validationError = context.l10n.profileScreenshotSizeMust8Mb;
                 });
                 return;
               }
@@ -162,7 +159,7 @@ extension _ProfilePageSettings on _ProfilePageState {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _profileText(en: 'Send feedback', lv: 'Sūtīt atsauksmi'),
+                      context.l10n.profileFeedbackSendTitle,
                       style: Theme.of(stateContext).textTheme.titleLarge
                           ?.copyWith(fontWeight: FontWeight.w800),
                     ),
@@ -178,7 +175,7 @@ extension _ProfilePageSettings on _ProfilePageState {
                         color: colorScheme.primary,
                       ),
                       decoration: InputDecoration(
-                        labelText: _profileText(en: 'Type', lv: 'Tips'),
+                        labelText: context.l10n.profileFeedbackTypeLabel,
                         prefixIcon: const Icon(Icons.category_outlined),
                         filled: true,
                         fillColor: colorScheme.surfaceContainerLowest
@@ -220,7 +217,7 @@ extension _ProfilePageSettings on _ProfilePageState {
                                 color: colorScheme.primary,
                               ),
                               const SizedBox(width: 8),
-                              Text(_profileText(en: 'Bug', lv: 'Kļūda')),
+                              Text(context.l10n.profileFeedbackTypeBug),
                             ],
                           ),
                         ),
@@ -234,9 +231,7 @@ extension _ProfilePageSettings on _ProfilePageState {
                                 color: colorScheme.primary,
                               ),
                               const SizedBox(width: 8),
-                              Text(
-                                _profileText(en: 'Suggestion', lv: 'Ieteikums'),
-                              ),
+                              Text(context.l10n.profileFeedbackTypeSuggestion),
                             ],
                           ),
                         ),
@@ -256,10 +251,7 @@ extension _ProfilePageSettings on _ProfilePageState {
                       maxLines: 8,
                       textInputAction: TextInputAction.newline,
                       decoration: InputDecoration(
-                        hintText: _profileText(
-                          en: 'Describe issue or suggestion',
-                          lv: 'Apraksti problēmu vai ieteikumu',
-                        ),
+                        hintText: context.l10n.profileDescribeIssueSuggestion,
                       ),
                       onChanged: (value) {
                         feedbackNote = value;
@@ -280,19 +272,10 @@ extension _ProfilePageSettings on _ProfilePageState {
                           icon: const Icon(Icons.add_photo_alternate_outlined),
                           label: Text(
                             isPickingScreenshot
-                                ? _profileText(
-                                    en: 'Picking image...',
-                                    lv: 'Tiek izvēlēts attēls...',
-                                  )
+                                ? context.l10n.profilePickingImage
                                 : (screenshotBytes == null
-                                      ? _profileText(
-                                          en: 'Attach screenshot',
-                                          lv: 'Pievienot ekrānattēlu',
-                                        )
-                                      : _profileText(
-                                          en: 'Change screenshot',
-                                          lv: 'Mainīt ekrānattēlu',
-                                        )),
+                                      ? context.l10n.profileAttachScreenshot
+                                      : context.l10n.profileChangeScreenshot),
                           ),
                         ),
                         if (screenshotBytes != null)
@@ -304,12 +287,7 @@ extension _ProfilePageSettings on _ProfilePageState {
                               });
                             },
                             icon: const Icon(Icons.close),
-                            label: Text(
-                              _profileText(
-                                en: 'Remove image',
-                                lv: 'Noņemt attēlu',
-                              ),
-                            ),
+                            label: Text(context.l10n.profileRemoveImage),
                           ),
                       ],
                     ),
@@ -325,10 +303,7 @@ extension _ProfilePageSettings on _ProfilePageState {
                     ],
                     const SizedBox(height: 8),
                     Text(
-                      _profileText(
-                        en: 'Tip: attach screenshot for faster bug triage',
-                        lv: 'Ieteikums: pievieno ekrānattēlu ātrākai kļūdas analīzei',
-                      ),
+                      context.l10n.profileTipAttachScreenshotFasterBugTriage,
                       style: Theme.of(stateContext).textTheme.bodySmall,
                     ),
                     if (validationError != null) ...[
@@ -358,10 +333,9 @@ extension _ProfilePageSettings on _ProfilePageState {
                               final note = feedbackNote.trim();
                               if (note.isEmpty && screenshotBytes == null) {
                                 setSheetState(() {
-                                  validationError = _profileText(
-                                    en: 'Add details or attach screenshot before sending',
-                                    lv: 'Pirms sūtīšanas pievieno aprakstu vai ekrānattēlu',
-                                  );
+                                  validationError = context
+                                      .l10n
+                                      .profileAddDetailsAttachScreenshotBeforeSending;
                                 });
                                 return;
                               }
@@ -374,7 +348,7 @@ extension _ProfilePageSettings on _ProfilePageState {
                                 ),
                               );
                             },
-                            child: Text(_profileText(en: 'Send', lv: 'Sūtīt')),
+                            child: Text(context.l10n.profileSendAction),
                           ),
                         ),
                       ],
@@ -411,12 +385,7 @@ extension _ProfilePageSettings on _ProfilePageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _profileText(
-          en: 'Thanks! Feedback sent',
-          lv: 'Paldies! Atsauksme nosūtīta',
-        ),
-      );
+      _showSnack(context.l10n.profileThanksFeedbackSent);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -426,12 +395,7 @@ extension _ProfilePageSettings on _ProfilePageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _profileText(
-          en: 'Failed to send feedback',
-          lv: 'Neizdevās nosūtīt atsauksmi',
-        ),
-      );
+      _showSnack(context.l10n.profileFailedSendFeedback);
     } finally {
       if (mounted) {
         _updateState(() {

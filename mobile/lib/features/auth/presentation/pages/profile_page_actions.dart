@@ -32,14 +32,7 @@ extension _ProfilePageActions on _ProfilePageState {
     );
     if (!opened && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            _profileText(
-              en: 'Could not open website.',
-              lv: 'Neizdevās atvērt mājaslapu.',
-            ),
-          ),
-        ),
+        SnackBar(content: Text(context.l10n.profileCouldNotOpenWebsite)),
       );
     }
   }
@@ -57,9 +50,7 @@ extension _ProfilePageActions on _ProfilePageState {
         context: context,
         builder: (sheetContext) {
           return CupertinoActionSheet(
-            title: Text(
-              _profileText(en: 'Open website?', lv: 'Atvērt mājaslapu?'),
-            ),
+            title: Text(context.l10n.profileOpenWebsiteQuestion),
             message: Text('portfolio.egm.lv'),
             actions: [
               CupertinoActionSheetAction(
@@ -67,18 +58,13 @@ extension _ProfilePageActions on _ProfilePageState {
                   Navigator.of(sheetContext).pop();
                   unawaited(_openPortfolioUrl());
                 },
-                child: Text(
-                  _profileText(
-                    en: 'Open portfolio.egm.lv',
-                    lv: 'Atvērt portfolio.egm.lv',
-                  ),
-                ),
+                child: Text(context.l10n.profileOpenPortfolioAction),
               ),
             ],
             cancelButton: CupertinoActionSheetAction(
               isDefaultAction: true,
               onPressed: () => Navigator.of(sheetContext).pop(),
-              child: Text(_profileText(en: 'Cancel', lv: 'Atcelt')),
+              child: Text(context.l10n.authCancel),
             ),
           );
         },
@@ -98,7 +84,7 @@ extension _ProfilePageActions on _ProfilePageState {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  _profileText(en: 'Open website?', lv: 'Atvērt mājaslapu?'),
+                  context.l10n.profileOpenWebsiteQuestion,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -111,17 +97,12 @@ extension _ProfilePageActions on _ProfilePageState {
                 const SizedBox(height: 14),
                 FilledButton(
                   onPressed: () => Navigator.of(sheetContext).pop(true),
-                  child: Text(
-                    _profileText(
-                      en: 'Open portfolio.egm.lv',
-                      lv: 'Atvērt portfolio.egm.lv',
-                    ),
-                  ),
+                  child: Text(context.l10n.profileOpenPortfolioAction),
                 ),
                 const SizedBox(height: 8),
                 TextButton(
                   onPressed: () => Navigator.of(sheetContext).pop(false),
-                  child: Text(_profileText(en: 'Cancel', lv: 'Atcelt')),
+                  child: Text(context.l10n.authCancel),
                 ),
               ],
             ),
@@ -738,10 +719,7 @@ extension _ProfilePageActions on _ProfilePageState {
     final pngBytes = await _tryTranscodeToPng(rawBytes);
     if (pngBytes == null || pngBytes.isEmpty) {
       _showSnack(
-        _profileText(
-          en: 'This image format is not supported on this device. Please choose JPG or PNG.',
-          lv: 'Šis attēla formāts šajā ierīcē netiek atbalstīts. Lūdzu, izvēlies JPG vai PNG.',
-        ),
+        context.l10n.profileImageFormatNotSupportedDevicePleaseChooseJpg,
       );
       return null;
     }
@@ -825,19 +803,14 @@ extension _ProfilePageActions on _ProfilePageState {
       _showSnack(
         error.message.trim().isNotEmpty
             ? error.message
-            : 'Failed to save notification settings.',
+            : context.l10n.profileFailedSaveNotificationSettings,
       );
     } catch (_) {
       if (!mounted) {
         return;
       }
       _updateState(rollback);
-      _showSnack(
-        _profileText(
-          en: 'Failed to save notification settings.',
-          lv: 'Neizdevās saglabāt paziņojumu iestatījumus.',
-        ),
-      );
+      _showSnack(context.l10n.profileFailedSaveNotificationSettings);
     }
   }
 
@@ -854,56 +827,47 @@ extension _ProfilePageActions on _ProfilePageState {
     );
   }
 
-  Future<void> _setPushExpenseUpdatesEnabled(bool value) async {
-    final previous = _pushExpenseUpdatesEnabled;
+  Future<void> _setAllPushNotificationsEnabled(bool value) async {
+    final previousExpense = _pushExpenseUpdatesEnabled;
+    final previousFriends = _pushFriendInvitesEnabled;
+    final previousTrip = _pushTripUpdatesEnabled;
+    final previousSettlement = _pushSettlementUpdatesEnabled;
     await _setNotificationPreferences(
       pushExpenseAddedEnabled: value,
-      applyOptimistic: () {
-        _pushExpenseUpdatesEnabled = value;
-      },
-      rollback: () {
-        _pushExpenseUpdatesEnabled = previous;
-      },
-    );
-  }
-
-  Future<void> _setPushFriendInvitesEnabled(bool value) async {
-    final previous = _pushFriendInvitesEnabled;
-    await _setNotificationPreferences(
       pushFriendInvitesEnabled: value,
-      applyOptimistic: () {
-        _pushFriendInvitesEnabled = value;
-      },
-      rollback: () {
-        _pushFriendInvitesEnabled = previous;
-      },
-    );
-  }
-
-  Future<void> _setPushTripUpdatesEnabled(bool value) async {
-    final previous = _pushTripUpdatesEnabled;
-    await _setNotificationPreferences(
       pushTripUpdatesEnabled: value,
-      applyOptimistic: () {
-        _pushTripUpdatesEnabled = value;
-      },
-      rollback: () {
-        _pushTripUpdatesEnabled = previous;
-      },
-    );
-  }
-
-  Future<void> _setPushSettlementUpdatesEnabled(bool value) async {
-    final previous = _pushSettlementUpdatesEnabled;
-    await _setNotificationPreferences(
       pushSettlementUpdatesEnabled: value,
       applyOptimistic: () {
+        _pushExpenseUpdatesEnabled = value;
+        _pushFriendInvitesEnabled = value;
+        _pushTripUpdatesEnabled = value;
         _pushSettlementUpdatesEnabled = value;
       },
       rollback: () {
-        _pushSettlementUpdatesEnabled = previous;
+        _pushExpenseUpdatesEnabled = previousExpense;
+        _pushFriendInvitesEnabled = previousFriends;
+        _pushTripUpdatesEnabled = previousTrip;
+        _pushSettlementUpdatesEnabled = previousSettlement;
       },
     );
+  }
+
+  Future<void> _openPushNotificationSettingsPage() async {
+    if (_isBusy) {
+      return;
+    }
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            _PushNotificationSettingsPage(controller: widget.controller),
+      ),
+    );
+    if (!mounted) {
+      return;
+    }
+    _updateState(() {
+      _applyNotificationPreferences(widget.controller.notificationPreferences);
+    });
   }
 
   void _showSnack(String message) {

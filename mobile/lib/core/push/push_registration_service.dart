@@ -14,15 +14,18 @@ class PushRegistrationService {
     required DeviceTokenStore deviceTokenStore,
     required PushNativeBridge nativeBridge,
     required PushRegistrationStore registrationStore,
+    required String Function() localeCodeProvider,
   }) : _apiClient = apiClient,
        _deviceTokenStore = deviceTokenStore,
        _nativeBridge = nativeBridge,
-       _registrationStore = registrationStore;
+       _registrationStore = registrationStore,
+       _localeCodeProvider = localeCodeProvider;
 
   final ApiClient _apiClient;
   final DeviceTokenStore _deviceTokenStore;
   final PushNativeBridge _nativeBridge;
   final PushRegistrationStore _registrationStore;
+  final String Function() _localeCodeProvider;
   String? _verifiedTokenInSession;
 
   Future<bool> syncRegistration() async {
@@ -46,6 +49,7 @@ class PushRegistrationService {
 
     final deviceUid = await _deviceTokenStore.getOrCreateToken();
     final appBundle = await _loadBundleId();
+    final localeCode = _normalizeLocaleCode(_localeCodeProvider());
 
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('register_push_token'),
@@ -56,6 +60,7 @@ class PushRegistrationService {
         'provider': _providerLabel,
         'device_uid': deviceUid,
         if (appBundle.isNotEmpty) 'app_bundle': appBundle,
+        'locale': localeCode,
       },
     );
 
@@ -115,5 +120,16 @@ class PushRegistrationService {
     } catch (_) {
       return '';
     }
+  }
+
+  String _normalizeLocaleCode(String raw) {
+    final normalized = raw.trim().toLowerCase();
+    if (normalized == 'lv') {
+      return 'lv';
+    }
+    if (normalized == 'es') {
+      return 'es';
+    }
+    return 'en';
   }
 }

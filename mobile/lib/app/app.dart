@@ -8,23 +8,35 @@ import 'app_dependencies.dart';
 import 'locale/app_locale_scope.dart';
 import 'router/app_router.dart';
 import 'theme/app_design.dart';
-import 'theme/app_overlay_style.dart';
 import 'theme/app_semantic_colors.dart';
 import 'theme/theme_mode_scope.dart';
 
 class TripSplitApp extends StatefulWidget {
-  const TripSplitApp({super.key, required this.dependencies});
+  const TripSplitApp({
+    super.key,
+    required this.dependencies,
+    required this.initialRoute,
+  });
 
   final AppDependencies dependencies;
+  final String initialRoute;
 
   @override
   State<TripSplitApp> createState() => _TripSplitAppState();
 }
 
 class _TripSplitAppState extends State<TripSplitApp> {
+  void _handleLocaleChanged() {
+    if (widget.dependencies.authController.currentUser == null) {
+      return;
+    }
+    unawaited(widget.dependencies.authController.syncPushRegistration());
+  }
+
   @override
   void initState() {
     super.initState();
+    widget.dependencies.localeController.addListener(_handleLocaleChanged);
     unawaited(widget.dependencies.themeModeController.load());
     unawaited(widget.dependencies.localeController.load());
     widget.dependencies.inviteDeepLinkController.start();
@@ -32,6 +44,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
 
   @override
   void dispose() {
+    widget.dependencies.localeController.removeListener(_handleLocaleChanged);
     unawaited(widget.dependencies.inviteDeepLinkController.dispose());
     super.dispose();
   }
@@ -63,9 +76,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              home: AppDynamicSystemOverlay(
-                child: _AppLaunchGate(dependencies: widget.dependencies),
-              ),
+              initialRoute: widget.initialRoute,
               routes: router.routes,
             );
           },
@@ -436,76 +447,5 @@ class _TripSplitAppState extends State<TripSplitApp> {
         color: mutedColor,
       ),
     );
-  }
-}
-
-class _AppLaunchGate extends StatefulWidget {
-  const _AppLaunchGate({required this.dependencies});
-
-  final AppDependencies dependencies;
-
-  @override
-  State<_AppLaunchGate> createState() => _AppLaunchGateState();
-}
-
-class _AppLaunchGateState extends State<_AppLaunchGate> {
-  bool _navigated = false;
-
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_resolveAndNavigate());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: const SizedBox.expand(),
-    );
-  }
-
-  Future<void> _resolveAndNavigate() async {
-    String nextRoute = AppRouter.authIntro;
-    try {
-      final hasSession = await widget.dependencies.authController
-          .hasRecoverableSession();
-      if (hasSession) {
-        var user = widget.dependencies.authController.currentUser;
-        if (user == null) {
-          try {
-            user = await widget.dependencies.authController
-                .loadCurrentUser()
-                .timeout(const Duration(seconds: 4));
-          } catch (_) {
-            user = await widget.dependencies.authController
-                .readCachedCurrentUser();
-          }
-        }
-        if (user == null) {
-          nextRoute = AppRouter.authIntro;
-        } else {
-          nextRoute = user.needsCredentials
-              ? AppRouter.credentials
-              : AppRouter.trips;
-        }
-      }
-    } catch (_) {
-      final fallback = await widget.dependencies.authController
-          .readCachedCurrentUser();
-      if (fallback != null) {
-        nextRoute = fallback.needsCredentials
-            ? AppRouter.credentials
-            : AppRouter.trips;
-      } else {
-        nextRoute = AppRouter.authIntro;
-      }
-    }
-
-    if (!mounted || _navigated) {
-      return;
-    }
-    _navigated = true;
-    Navigator.of(context).pushNamedAndRemoveUntil(nextRoute, (route) => false);
   }
 }

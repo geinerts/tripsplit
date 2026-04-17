@@ -63,7 +63,7 @@ function forgot_password_action(): void
     ]);
 
     // Build reset URL
-    $appBaseUrl = rtrim((string) (defined('APP_BASE_URL') ? APP_BASE_URL : 'https://splyto.egm.lv'), '/');
+    $appBaseUrl = rtrim((string) (defined('APP_BASE_URL') ? APP_BASE_URL : 'https://splyto.eu'), '/');
     $resetUrl   = $appBaseUrl . '/reset-password.php?token=' . urlencode($token);
 
     // Send email

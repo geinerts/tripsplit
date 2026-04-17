@@ -12,6 +12,7 @@ import '../../../../app/theme/app_design.dart';
 import '../../../../app/theme/app_semantic_colors.dart';
 import '../../../../core/config/app_env.dart';
 import '../../../../core/errors/api_exception.dart';
+import '../../../../core/l10n/l10n.dart';
 import '../../domain/entities/auth_user.dart';
 import '../controllers/auth_controller.dart';
 import 'auth_background_layers.dart';
@@ -76,36 +77,28 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
     );
   }
 
-  String _text({required String en, required String lv}) {
-    final locale = Localizations.localeOf(context).languageCode.toLowerCase();
-    return locale == 'lv' ? lv : en;
-  }
-
   List<_IntroSlide> _slides() {
     return [
       _IntroSlide(
-        titleTop: _text(en: 'Split smarter.', lv: 'Dali gudrāk.'),
-        titleAccent: _text(en: 'Travel free.', lv: 'Ceļo brīvāk.'),
-        subtitle: _text(
-          en: 'Track shared costs across currencies and settle up instantly - no awkward IOUs.',
-          lv: 'Seko kopīgajiem izdevumiem dažādās valūtās un norēķinies uzreiz - bez neērtiem parādiem.',
-        ),
+        titleTop: context.l10nEn.authIntroSplitSmarter,
+        titleAccent: context.l10nEn.authIntroTravelFree,
+        subtitle: context
+            .l10n
+            .authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo,
       ),
       _IntroSlide(
-        titleTop: _text(en: 'Plan together.', lv: 'Plāno kopā.'),
-        titleAccent: _text(en: 'Pay clearly.', lv: 'Maksā skaidri.'),
-        subtitle: _text(
-          en: 'Create trips in seconds, add friends, and keep every expense transparent for everyone.',
-          lv: 'Izveido ceļojumu sekundēs, pievieno draugus un padari katru izdevumu caurspīdīgu visiem.',
-        ),
+        titleTop: context.l10nEn.authIntroPlanTogether,
+        titleAccent: context.l10nEn.authIntroPayClearly,
+        subtitle: context
+            .l10nEn
+            .authIntroCreateTripsSecondsAddFriendsKeepEveryExpense,
       ),
       _IntroSlide(
-        titleTop: _text(en: 'Settle fast.', lv: 'Norēķinies ātri.'),
-        titleAccent: _text(en: 'Stay friends.', lv: 'Paliec draugos.'),
-        subtitle: _text(
-          en: 'From shared dinners to full trips, Splyto keeps balances fair and stress-free.',
-          lv: 'No kopīgām vakariņām līdz pilniem ceļojumiem - Splyto palīdz saglabāt taisnīgus un vienkāršus norēķinus.',
-        ),
+        titleTop: context.l10nEn.authIntroSettleFast,
+        titleAccent: context.l10nEn.authIntroStayFriends,
+        subtitle: context
+            .l10nEn
+            .authIntroFromSharedDinnersFullTripsSplytoKeepsBalances,
       ),
     ];
   }
@@ -245,8 +238,6 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
   }
 
   Future<_IntroSocialCredential> _signInWithGoogle() async {
-    final isLv =
-        Localizations.localeOf(context).languageCode.toLowerCase() == 'lv';
     final serverClientId = AppEnv.current.googleServerClientId.trim();
     final googleSignIn = GoogleSignIn(
       scopes: const ['email', 'profile'],
@@ -262,11 +253,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       final auth = await account.authentication;
       final idToken = (auth.idToken ?? '').trim();
       if (idToken.isEmpty) {
-        throw StateError(
-          isLv
-              ? 'Google pieslēgšanās neatgrieza id token.'
-              : 'Google sign-in did not return an id token.',
-        );
+        throw StateError(context.l10nEn.authGoogleSignDidNotReturnIdToken);
       }
 
       final fullName = (account.displayName ?? '').trim();
@@ -288,21 +275,11 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
   }
 
   Future<_IntroSocialCredential> _signInWithApple() async {
-    final isLv =
-        Localizations.localeOf(context).languageCode.toLowerCase() == 'lv';
     if (!Platform.isIOS) {
-      throw StateError(
-        isLv
-            ? 'Apple pieslēgšanās ir pieejama iOS ierīcēs.'
-            : 'Apple sign-in is available on iOS devices.',
-      );
+      throw StateError(context.l10nEn.authAppleSignAvailableIosDevices);
     }
     if (!await SignInWithApple.isAvailable()) {
-      throw StateError(
-        isLv
-            ? 'Apple pieslēgšanās šajā ierīcē nav pieejama.'
-            : 'Apple sign-in is not available on this device.',
-      );
+      throw StateError(context.l10nEn.authAppleSignNotAvailableDevice);
     }
 
     try {
@@ -314,11 +291,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       );
       final idToken = (credential.identityToken ?? '').trim();
       if (idToken.isEmpty) {
-        throw StateError(
-          isLv
-              ? 'Apple pieslēgšanās neatgrieza identitātes tokenu.'
-              : 'Apple sign-in did not return an identity token.',
-        );
+        throw StateError(context.l10nEn.authAppleSignDidNotReturnIdentityToken);
       }
 
       final nameParts = [
@@ -342,15 +315,9 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
 
   String _socialAuthFallbackError(_IntroSocialProvider provider) {
     if (provider == _IntroSocialProvider.apple) {
-      return _text(
-        en: 'Apple sign-in failed. Please try again.',
-        lv: 'Apple pieslēgšanās neizdevās. Mēģini vēlreiz.',
-      );
+      return context.l10nEn.authIntroAppleSignFailedPleaseTryAgain;
     }
-    return _text(
-      en: 'Google sign-in failed. Please try again.',
-      lv: 'Google pieslēgšanās neizdevās. Mēģini vēlreiz.',
-    );
+    return context.l10nEn.authIntroGoogleSignFailedPleaseTryAgain;
   }
 
   void _goAfterAuth(AuthUser user) {
@@ -552,7 +519,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              _text(en: 'Create your account.', lv: 'Izveido savu kontu.'),
+              context.l10nEn.authIntroCreateAccount,
               maxLines: 1,
               softWrap: false,
               overflow: TextOverflow.visible,
@@ -566,10 +533,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              _text(
-                en: 'Choose how you want to sign up.',
-                lv: 'Izvēlies, kā vēlies reģistrēties.',
-              ),
+              context.l10nEn.authIntroChooseSign,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: muted,
                 fontSize: 14,
@@ -583,10 +547,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
             _buildOrRow(),
             const SizedBox(height: 18),
             _buildChoiceSocialButton(
-              label: _text(
-                en: 'Continue with Google',
-                lv: 'Turpināt ar Google',
-              ),
+              label: context.l10nEn.authIntroContinueGoogle,
               icon: SvgPicture.asset(
                 'assets/branding/google_g_logo.svg',
                 width: 28,
@@ -600,10 +561,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
             if (Platform.isIOS) ...[
               const SizedBox(height: 12),
               _buildChoiceSocialButton(
-                label: _text(
-                  en: 'Continue with Apple',
-                  lv: 'Turpināt ar Apple',
-                ),
+                label: context.l10nEn.authIntroContinueApple,
                 icon: SvgPicture.asset(
                   'assets/branding/apple_logo_white.svg',
                   width: 28,
@@ -626,7 +584,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
                   visualDensity: VisualDensity.compact,
                 ),
                 child: Text(
-                  _text(en: 'Back', lv: 'Atpakaļ'),
+                  context.l10nEn.authIntroBack,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -717,7 +675,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
           top: 210,
           left: 2,
           child: _buildPill(
-            label: _text(en: 'Split settled', lv: 'Norēķins pabeigts'),
+            label: context.l10nEn.authIntroSplitSettled,
             background: semantic.statusActiveBackground,
             border: semantic.statusActiveBorder,
             textColor: semantic.statusActiveForeground,
@@ -728,7 +686,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
           top: 258,
           right: 2,
           child: _buildPill(
-            label: _text(en: 'Paris · 3 friends', lv: 'Parīze · 3 draugi'),
+            label: context.l10nEn.authIntroParis3Friends,
             background: semantic.cardGlassBackground.withValues(alpha: 0.22),
             border: semantic.cardGlassBorder.withValues(alpha: 0.88),
             textColor: AppDesign.darkForeground.withValues(alpha: 0.40),
@@ -859,7 +817,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
               fontSize: 17,
             ),
           ),
-          child: Text(_text(en: 'Get started', lv: 'Sākt')),
+          child: Text(context.l10nEn.authIntroGetStarted),
         ),
       ),
     );
@@ -871,7 +829,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
           Text(
-            _text(en: 'Already have an account? ', lv: 'Jau ir konts? '),
+            context.l10nEn.authIntroAlreadyHaveAccount,
             style: Theme.of(
               context,
             ).textTheme.bodyLarge?.copyWith(color: muted, fontSize: 15),
@@ -880,7 +838,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
             onPressed: () => _openSignIn(),
             style: TextButton.styleFrom(padding: EdgeInsets.zero),
             child: Text(
-              _text(en: 'Sign in', lv: 'Ienākt'),
+              context.l10nEn.authIntroSignIn,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: AppDesign.darkForeground.withValues(alpha: 0.88),
                 fontSize: 16,
@@ -922,7 +880,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
           color: AppDesign.darkForeground,
         ),
         label: Text(
-          _text(en: 'Sign up with email', lv: 'Reģistrēties ar e-pastu'),
+          context.l10nEn.authIntroSignUpWithEmail,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: AppDesign.darkForeground,
             fontWeight: FontWeight.w700,
@@ -956,7 +914,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
-            _text(en: 'OR', lv: 'VAI'),
+            context.l10nEn.authIntroOr,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
               color: textColor,
               fontWeight: FontWeight.w700,

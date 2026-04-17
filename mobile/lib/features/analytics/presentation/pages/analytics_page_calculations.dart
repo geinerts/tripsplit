@@ -1,11 +1,6 @@
 part of 'analytics_page.dart';
 
 extension _AnalyticsPageCalculations on _AnalyticsPageState {
-  String _txt({required String en, required String lv}) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    return languageCode.toLowerCase() == 'lv' ? lv : en;
-  }
-
   String _formatMoney(double amount) {
     final currencyCode =
         _selectedTrip?.currencyCode ?? AppCurrencyCatalog.defaultCode;
@@ -171,7 +166,7 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
       topRows.add(
         _CategoryTotalRow(
           key: 'other_aggregate',
-          label: _txt(en: 'Other', lv: 'Pārējās'),
+          label: context.l10n.analyticsOther,
           icon: Icons.more_horiz_rounded,
           total: otherTotal,
           color: AppDesign.analyticsCategoryColor('other'),

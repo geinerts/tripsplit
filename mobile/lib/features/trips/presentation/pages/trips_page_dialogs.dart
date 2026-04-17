@@ -127,12 +127,7 @@ extension _TripsPageDialogs on _TripsPageState {
                               onPressed: () => Navigator.of(
                                 cupertinoContext,
                               ).pop(_TripImageSourceOption.remove),
-                              child: Text(
-                                _pageText(
-                                  en: 'Remove image',
-                                  lv: 'Noņemt attēlu',
-                                ),
-                              ),
+                              child: Text(context.l10n.profileRemoveImage),
                             ),
                           CupertinoActionSheetAction(
                             onPressed: () => Navigator.of(
@@ -206,12 +201,7 @@ extension _TripsPageDialogs on _TripsPageState {
                             if (hasImage)
                               ListTile(
                                 leading: const Icon(Icons.delete_outline),
-                                title: Text(
-                                  _pageText(
-                                    en: 'Remove image',
-                                    lv: 'Noņemt attēlu',
-                                  ),
-                                ),
+                                title: Text(context.l10n.profileRemoveImage),
                                 onTap: () => Navigator.of(
                                   bottomSheetContext,
                                 ).pop(_TripImageSourceOption.remove),
@@ -291,10 +281,8 @@ extension _TripsPageDialogs on _TripsPageState {
                                   });
                                 },
                                 decoration: InputDecoration(
-                                  hintText: _pageText(
-                                    en: 'Search currency',
-                                    lv: 'Meklēt valūtu',
-                                  ),
+                                  hintText:
+                                      context.l10n.profileEditSearchCurrency,
                                   prefixIcon: const Icon(Icons.search_rounded),
                                   isDense: true,
                                   contentPadding: const EdgeInsets.symmetric(
@@ -311,10 +299,9 @@ extension _TripsPageDialogs on _TripsPageState {
                               child: filtered.isEmpty
                                   ? Center(
                                       child: Text(
-                                        _pageText(
-                                          en: 'No currencies found',
-                                          lv: 'Valūtas netika atrastas',
-                                        ),
+                                        context
+                                            .l10n
+                                            .profileEditNoCurrenciesFound,
                                         style: Theme.of(
                                           pickerContext,
                                         ).textTheme.bodyMedium,
@@ -614,9 +601,8 @@ extension _TripsPageDialogs on _TripsPageState {
                                     if (selectedImageName != null) ...[
                                       const SizedBox(height: 6),
                                       Text(
-                                        _pageText(
-                                          en: 'Selected image: $selectedImageName',
-                                          lv: 'Izvēlētais attēls: $selectedImageName',
+                                        context.l10n.tripsSelectedImage(
+                                          selectedImageName!,
                                         ),
                                         style: Theme.of(
                                           context,
@@ -625,10 +611,7 @@ extension _TripsPageDialogs on _TripsPageState {
                                     ],
                                     const SizedBox(height: 12),
                                     Text(
-                                      _pageText(
-                                        en: 'Trip dates',
-                                        lv: 'Ceļojuma datumi',
-                                      ),
+                                      context.l10n.tripsTripDates,
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelLarge
@@ -678,10 +661,8 @@ extension _TripsPageDialogs on _TripsPageState {
                                             },
                                             child: InputDecorator(
                                               decoration: InputDecoration(
-                                                labelText: _pageText(
-                                                  en: 'From',
-                                                  lv: 'No',
-                                                ),
+                                                labelText:
+                                                    context.l10n.tripsFrom,
                                                 suffixIcon: const Icon(
                                                   Icons.calendar_today_outlined,
                                                   size: 18,
@@ -689,10 +670,9 @@ extension _TripsPageDialogs on _TripsPageState {
                                               ),
                                               child: Text(
                                                 tripDateFrom == null
-                                                    ? _pageText(
-                                                        en: 'Select date',
-                                                        lv: 'Izvēlies datumu',
-                                                      )
+                                                    ? context
+                                                          .l10n
+                                                          .tripsSelectDate
                                                     : formatTripDate(
                                                         tripDateFrom!,
                                                       ),
@@ -741,10 +721,7 @@ extension _TripsPageDialogs on _TripsPageState {
                                             },
                                             child: InputDecorator(
                                               decoration: InputDecoration(
-                                                labelText: _pageText(
-                                                  en: 'To',
-                                                  lv: 'Līdz',
-                                                ),
+                                                labelText: context.l10n.tripsTo,
                                                 suffixIcon: const Icon(
                                                   Icons.calendar_today_outlined,
                                                   size: 18,
@@ -752,10 +729,9 @@ extension _TripsPageDialogs on _TripsPageState {
                                               ),
                                               child: Text(
                                                 tripDateTo == null
-                                                    ? _pageText(
-                                                        en: 'Select date',
-                                                        lv: 'Izvēlies datumu',
-                                                      )
+                                                    ? context
+                                                          .l10n
+                                                          .tripsSelectDate
                                                     : formatTripDate(
                                                         tripDateTo!,
                                                       ),
@@ -767,10 +743,7 @@ extension _TripsPageDialogs on _TripsPageState {
                                     ),
                                     const SizedBox(height: 12),
                                     Text(
-                                      _pageText(
-                                        en: 'Main currency',
-                                        lv: 'Galvenā valūta',
-                                      ),
+                                      context.l10n.tripsMainCurrency,
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelLarge
@@ -887,7 +860,7 @@ extension _TripsPageDialogs on _TripsPageState {
                                     const SizedBox(height: 6),
                                     if (selectedUsers.isEmpty)
                                       Text(
-                                        'No members selected yet.',
+                                        t.workspaceNoMembersSelectedYet,
                                         style: Theme.of(
                                           context,
                                         ).textTheme.bodySmall,
@@ -999,10 +972,9 @@ extension _TripsPageDialogs on _TripsPageState {
                                         if (tripDateFrom == null ||
                                             tripDateTo == null) {
                                           setDialogState(() {
-                                            errorText = _pageText(
-                                              en: 'Please select trip period (from and to dates).',
-                                              lv: 'Lūdzu, izvēlies ceļojuma periodu (no un līdz).',
-                                            );
+                                            errorText = context
+                                                .l10n
+                                                .tripsPleaseSelectTripPeriodFromAndToDates;
                                           });
                                           return;
                                         }
@@ -1010,10 +982,9 @@ extension _TripsPageDialogs on _TripsPageState {
                                           tripDateFrom!,
                                         )) {
                                           setDialogState(() {
-                                            errorText = _pageText(
-                                              en: 'Trip end date must be on or after start date.',
-                                              lv: 'Ceļojuma beigu datumam jābūt vienādam vai vēlākam par sākuma datumu.',
-                                            );
+                                            errorText = context
+                                                .l10n
+                                                .tripsTripEndDateMustBeOnOrAfterStartDate;
                                           });
                                           return;
                                         }
@@ -1024,10 +995,9 @@ extension _TripsPageDialogs on _TripsPageState {
                                         if (dateFromIso == null ||
                                             dateToIso == null) {
                                           setDialogState(() {
-                                            errorText = _pageText(
-                                              en: 'Trip period format is invalid. Please pick dates again.',
-                                              lv: 'Ceļojuma perioda formāts nav derīgs. Izvēlies datumus vēlreiz.',
-                                            );
+                                            errorText = context
+                                                .l10n
+                                                .tripsTripPeriodFormatIsInvalidPleasePickDatesAgain;
                                           });
                                           return;
                                         }

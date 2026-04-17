@@ -25,11 +25,6 @@ extension _FriendsPageActionsCore on _FriendsPageState {
     unawaited(_loadSnapshot(showLoader: false));
   }
 
-  String _txt({required String en, required String lv}) {
-    final code = Localizations.localeOf(context).languageCode.toLowerCase();
-    return code == 'lv' ? lv : en;
-  }
-
   FriendsSnapshot _buildSnapshot({
     required List<FriendUser> friends,
     required List<FriendRequest> pendingSent,
@@ -285,10 +280,7 @@ extension _FriendsPageActionsCore on _FriendsPageState {
       }
       final message = error.message.trim().isNotEmpty
           ? error.message.trim()
-          : _txt(
-              en: 'Failed to load friends.',
-              lv: 'Neizdevās ielādēt draugus.',
-            );
+          : context.l10n.workspaceFailedToLoadFriends;
       if (_snapshot == null) {
         _updateState(() {
           _errorText = message;
@@ -300,10 +292,7 @@ extension _FriendsPageActionsCore on _FriendsPageState {
       if (!mounted) {
         return;
       }
-      final message = _txt(
-        en: 'Unexpected error loading friends.',
-        lv: 'Negaidīta kļūda ielādējot draugus.',
-      );
+      final message = context.l10n.friendsUnexpectedErrorLoadingFriends;
       if (_snapshot == null) {
         _updateState(() {
           _errorText = message;

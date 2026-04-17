@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASE_URL="${BASE_URL:-https://egm.lv/projekti/trip/api/api.php}"
+BASE_URL="${BASE_URL:-https://splyto.eu/api/api.php}"
 RUN_ID="${RUN_ID:-$(date -u +%Y%m%d%H%M%S)}"
 PASSWORD="${PASSWORD:-Smoke!123A}"
 

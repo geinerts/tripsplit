@@ -61,14 +61,12 @@ extension _FriendsPageProfile on _FriendsPageState {
                           onPressed: () => Navigator.of(
                             sheetContext,
                           ).pop(_FriendProfileAction.removeFriend),
-                          child: Text(
-                            _txt(en: 'Remove friend', lv: 'Noņemt draugu'),
-                          ),
+                          child: Text(context.l10n.friendsRemoveFriend),
                         ),
                       ],
                       cancelButton: CupertinoActionSheetAction(
                         onPressed: () => Navigator.of(sheetContext).pop(),
-                        child: Text(_txt(en: 'Cancel', lv: 'Atcelt')),
+                        child: Text(context.l10n.authCancel),
                       ),
                     ),
                   );
@@ -90,7 +88,7 @@ extension _FriendsPageProfile on _FriendsPageState {
                           color: removeColor,
                         ),
                         title: Text(
-                          _txt(en: 'Remove friend', lv: 'Noņemt draugu'),
+                          context.l10n.friendsRemoveFriend,
                           style: TextStyle(
                             color: removeColor,
                             fontWeight: FontWeight.w700,
@@ -106,14 +104,9 @@ extension _FriendsPageProfile on _FriendsPageState {
               }
 
               Future<bool> confirmRemoveFriend() async {
-                final title = _txt(
-                  en: 'Remove this friend?',
-                  lv: 'Noņemt šo draugu?',
-                );
-                final body = _txt(
-                  en: '$name will be removed from your friends list. You can add them again later.',
-                  lv: '$name tiks noņemts no tavas draugu listes. Vēlāk varēsi viņu pievienot atkal.',
-                );
+                final title = context.l10n.friendsRemoveThisFriend;
+                final body = context.l10n
+                    .friendsWillBeRemovedFromYourFriendsListYouCanAdd(name);
                 final isIOS =
                     Theme.of(profileContext).platform == TargetPlatform.iOS;
                 if (isIOS) {
@@ -126,13 +119,13 @@ extension _FriendsPageProfile on _FriendsPageState {
                         CupertinoDialogAction(
                           onPressed: () =>
                               Navigator.of(dialogContext).pop(false),
-                          child: Text(_txt(en: 'Cancel', lv: 'Atcelt')),
+                          child: Text(context.l10n.authCancel),
                         ),
                         CupertinoDialogAction(
                           isDestructiveAction: true,
                           onPressed: () =>
                               Navigator.of(dialogContext).pop(true),
-                          child: Text(_txt(en: 'Continue', lv: 'Turpināt')),
+                          child: Text(context.l10n.friendsContinue),
                         ),
                       ],
                     ),
@@ -148,11 +141,11 @@ extension _FriendsPageProfile on _FriendsPageState {
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(dialogContext).pop(false),
-                        child: Text(_txt(en: 'Cancel', lv: 'Atcelt')),
+                        child: Text(context.l10n.authCancel),
                       ),
                       FilledButton(
                         onPressed: () => Navigator.of(dialogContext).pop(true),
-                        child: Text(_txt(en: 'Continue', lv: 'Turpināt')),
+                        child: Text(context.l10n.friendsContinue),
                       ),
                     ],
                   ),
@@ -184,9 +177,7 @@ extension _FriendsPageProfile on _FriendsPageState {
                   if (!mounted) {
                     return;
                   }
-                  _showSnack(
-                    _txt(en: 'Friend removed.', lv: 'Draugs noņemts.'),
-                  );
+                  _showSnack(context.l10n.friendsFriendRemoved);
                   await _loadSnapshot(showLoader: false);
                   if (!profileContext.mounted) {
                     return;
@@ -202,10 +193,7 @@ extension _FriendsPageProfile on _FriendsPageState {
                     return;
                   }
                   _showSnack(
-                    _txt(
-                      en: 'Could not remove friend.',
-                      lv: 'Neizdevās noņemt draugu.',
-                    ),
+                    context.l10n.friendsCouldNotRemoveFriend,
                     isError: true,
                   );
                 } finally {
@@ -218,7 +206,7 @@ extension _FriendsPageProfile on _FriendsPageState {
               }
 
               return UserProfilePage(
-                title: _txt(en: 'Friend profile', lv: 'Drauga profils'),
+                title: context.l10n.friendsFriendProfile,
                 name: name,
                 nickname: profileUser.nickname,
                 avatarUrl: profileUser.avatarThumbUrl ?? profileUser.avatarUrl,
@@ -227,7 +215,7 @@ extension _FriendsPageProfile on _FriendsPageState {
                     onPressed: isRemovingFriend
                         ? null
                         : () => unawaited(onOpenProfileActions()),
-                    tooltip: _txt(en: 'More actions', lv: 'Vairāk darbību'),
+                    tooltip: context.l10n.friendsMoreActions,
                     icon: const Icon(Icons.more_horiz_rounded),
                   ),
                 ],
@@ -237,19 +225,12 @@ extension _FriendsPageProfile on _FriendsPageState {
                     future: sharedTripsFuture,
                   ),
                   UserProfilePaymentDetailsSection(
-                    sectionTitle: _txt(
-                      en: 'Payment details',
-                      lv: 'Maksājumu dati',
-                    ),
-                    emptyText: _txt(
-                      en: 'This friend has not added payout details yet.',
-                      lv: 'Šis draugs vēl nav pievienojis izmaksu datus.',
-                    ),
-                    bankTransferTitle: _txt(
-                      en: 'Bank transfer',
-                      lv: 'Bankas pārskaitījums',
-                    ),
-                    bankHolderLabel: _txt(en: 'Holder', lv: 'Turētājs'),
+                    sectionTitle: context.l10n.workspacePaymentDetails,
+                    emptyText: context
+                        .l10n
+                        .friendsThisFriendHasNotAddedPayoutDetailsYet,
+                    bankTransferTitle: context.l10n.workspaceBankTransfer,
+                    bankHolderLabel: context.l10n.workspaceHolder,
                     bankHolderName: holderName,
                     bankIban: profileUser.bankIban,
                     bankBic: profileUser.bankBic,
@@ -258,19 +239,16 @@ extension _FriendsPageProfile on _FriendsPageState {
                     revolutMeLink: profileUser.revolutMeLink,
                     paypalTitle: 'PayPal.me',
                     paypalMeLink: profileUser.paypalMeLink,
-                    openLinkFailedText: _txt(
-                      en: 'Could not open payment link.',
-                      lv: 'Neizdevās atvērt maksājuma saiti.',
-                    ),
+                    openLinkFailedText:
+                        context.l10n.workspaceCouldNotOpenPaymentLink,
                     onErrorMessage: (message) =>
                         _showSnack(message, isError: true),
                   ),
                 ],
-                bankTitle: _txt(en: 'Bank details', lv: 'Bankas dati'),
-                bankDescription: _txt(
-                  en: 'IBAN and payout details will be added here in a next update.',
-                  lv: 'IBAN un izmaksu dati šeit tiks pievienoti nākamajā atjauninājumā.',
-                ),
+                bankTitle: context.l10n.workspaceBankDetails,
+                bankDescription: context
+                    .l10n
+                    .workspaceIbanAndPayoutDetailsWillBeAddedHereInA,
                 showBankDetails: false,
                 onRefresh: refreshProfile,
               );
@@ -297,7 +275,7 @@ extension _FriendsPageProfile on _FriendsPageState {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${_txt(en: 'Common trips', lv: 'Kopīgie tripi')} (${items.length})',
+                '${context.l10n.workspaceCommonTrips} (${items.length})',
                 style: Theme.of(
                   context,
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
@@ -314,10 +292,7 @@ extension _FriendsPageProfile on _FriendsPageState {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        _txt(
-                          en: 'Loading common trips...',
-                          lv: 'Ielādē kopīgos tripus...',
-                        ),
+                        context.l10n.workspaceLoadingCommonTrips,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppDesign.mutedColor(context),
                         ),
@@ -330,10 +305,7 @@ extension _FriendsPageProfile on _FriendsPageState {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Text(
-                      _txt(
-                        en: 'Could not load common trips right now.',
-                        lv: 'Šobrīd neizdevās ielādēt kopīgos tripus.',
-                      ),
+                      context.l10n.friendsCouldNotLoadCommonTripsRightNow,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppDesign.mutedColor(context),
                       ),
@@ -341,10 +313,7 @@ extension _FriendsPageProfile on _FriendsPageState {
                   ),
                 if (items.isEmpty)
                   Text(
-                    _txt(
-                      en: 'No common trips found yet.',
-                      lv: 'Kopīgi tripi vēl nav atrasti.',
-                    ),
+                    context.l10n.workspaceNoCommonTripsFoundYet,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppDesign.mutedColor(context),
                     ),
@@ -370,10 +339,10 @@ extension _FriendsPageProfile on _FriendsPageState {
     final imageUrl = (trip.imageThumbUrl ?? trip.imageUrl ?? '').trim();
     final hasImage = imageUrl.isNotEmpty;
     final statusText = trip.isArchived
-        ? _txt(en: 'Finished', lv: 'Pabeigts')
+        ? context.l10n.friendsFinished
         : (trip.isSettling
-              ? _txt(en: 'Settling', lv: 'Norēķini')
-              : _txt(en: 'Active', lv: 'Aktīvs'));
+              ? context.l10n.settlingStatus
+              : context.l10n.activeStatus);
     final statusColor = trip.isArchived
         ? AppDesign.mutedColor(context)
         : (trip.isSettling
@@ -415,7 +384,7 @@ extension _FriendsPageProfile on _FriendsPageState {
               children: [
                 Text(
                   trip.name.trim().isEmpty
-                      ? _txt(en: 'Trip #${trip.id}', lv: 'Trips #${trip.id}')
+                      ? context.l10n.friendsTrip(trip.id)
                       : trip.name.trim(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -472,17 +441,14 @@ extension _FriendsPageProfile on _FriendsPageState {
 
   String _commonTripSubtitle(BuildContext context, WorkspaceSharedTrip trip) {
     final dateLabel = _commonTripDateLabel(context, trip);
-    final membersText = _txt(
-      en: '${trip.membersCount} members',
-      lv: '${trip.membersCount} dalībnieki',
-    );
+    final membersText = context.l10n.friendsMembers(trip.membersCount);
     return '$dateLabel • $membersText';
   }
 
   String _commonTripDateLabel(BuildContext context, WorkspaceSharedTrip trip) {
     final raw = trip.archivedAt ?? trip.endedAt ?? trip.createdAt;
     if (raw == null || raw.trim().isEmpty) {
-      return _txt(en: 'No date', lv: 'Nav datuma');
+      return context.l10n.friendsNoDate;
     }
     final parsed = DateTime.tryParse(raw);
     if (parsed == null) {

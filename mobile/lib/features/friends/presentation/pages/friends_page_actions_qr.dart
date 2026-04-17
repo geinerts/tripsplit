@@ -12,35 +12,22 @@ extension _FriendsPageActionsQr on _FriendsPageState {
             children: [
               ListTile(
                 leading: const Icon(Icons.person_add_alt_1_rounded),
-                title: Text(_txt(en: 'Search users', lv: 'Meklēt lietotājus')),
+                title: Text(context.l10n.friendsSearchUsers),
                 subtitle: Text(
-                  _txt(
-                    en: 'Find by name or email and send invite',
-                    lv: 'Meklē pēc vārda vai e-pasta un nosūti uzaicinājumu',
-                  ),
+                  context.l10n.friendsFindByNameOrEmailAndSendInvite,
                 ),
                 onTap: () => Navigator.of(sheetContext).pop('search'),
               ),
               ListTile(
                 leading: const Icon(Icons.qr_code_scanner_rounded),
-                title: Text(_txt(en: 'Scan QR', lv: 'Skenēt QR')),
-                subtitle: Text(
-                  _txt(
-                    en: 'Scan another user to add friend',
-                    lv: 'Noskenē cita lietotāja QR, lai pievienotu draugu',
-                  ),
-                ),
+                title: Text(context.l10n.friendsScanQr),
+                subtitle: Text(context.l10n.friendsScanAnotherUserToAddFriend),
                 onTap: () => Navigator.of(sheetContext).pop('scan'),
               ),
               ListTile(
                 leading: const Icon(Icons.qr_code_2_rounded),
-                title: Text(_txt(en: 'My QR', lv: 'Mans QR')),
-                subtitle: Text(
-                  _txt(
-                    en: 'Show or share your QR code',
-                    lv: 'Parādi vai nošēro savu QR kodu',
-                  ),
-                ),
+                title: Text(context.l10n.friendsMyQr),
+                subtitle: Text(context.l10n.friendsShowOrShareYourQrCode),
                 onTap: () => Navigator.of(sheetContext).pop('mine'),
               ),
             ],
@@ -78,10 +65,7 @@ extension _FriendsPageActionsQr on _FriendsPageState {
     final scannedUserId = _parseFriendUserIdFromQr(rawCode);
     if (scannedUserId == null || scannedUserId <= 0) {
       _showSnack(
-        _txt(
-          en: 'QR code is not a valid friend code.',
-          lv: 'QR kods nav derīgs drauga kods.',
-        ),
+        context.l10n.friendsQrCodeIsNotAValidFriendCode,
         isError: true,
       );
       return;
@@ -92,13 +76,7 @@ extension _FriendsPageActionsQr on _FriendsPageState {
       return;
     }
     if (selfUserId > 0 && scannedUserId == selfUserId) {
-      _showSnack(
-        _txt(
-          en: 'You cannot add yourself.',
-          lv: 'Tu nevari pievienot pats sevi.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.friendsYouCannotAddYourself, isError: true);
       return;
     }
 
@@ -108,24 +86,14 @@ extension _FriendsPageActionsQr on _FriendsPageState {
         (f) => f.id == scannedUserId,
       );
       if (isAlreadyFriend) {
-        _showSnack(
-          _txt(
-            en: 'This user is already in your friends list.',
-            lv: 'Šis lietotājs jau ir tavā draugu sarakstā.',
-          ),
-        );
+        _showSnack(context.l10n.friendsThisUserIsAlreadyInYourFriendsList);
         return;
       }
       final isInviteAlreadySent = snapshot.pendingSent.any(
         (request) => request.user.id == scannedUserId,
       );
       if (isInviteAlreadySent) {
-        _showSnack(
-          _txt(
-            en: 'Invite to this user is already sent.',
-            lv: 'Uzaicinājums šim lietotājam jau ir nosūtīts.',
-          ),
-        );
+        _showSnack(context.l10n.friendsInviteToThisUserIsAlreadySent);
         return;
       }
     }
@@ -135,12 +103,7 @@ extension _FriendsPageActionsQr on _FriendsPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _txt(
-          en: 'Friend request processed.',
-          lv: 'Drauga pieprasījums apstrādāts.',
-        ),
-      );
+      _showSnack(context.l10n.friendsFriendRequestProcessed);
       await _loadSnapshot(showLoader: false);
     } on ApiException catch (error) {
       if (!mounted) {
@@ -151,13 +114,7 @@ extension _FriendsPageActionsQr on _FriendsPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _txt(
-          en: 'Failed to process friend QR.',
-          lv: 'Neizdevās apstrādāt drauga QR.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.friendsFailedToProcessFriendQr, isError: true);
     }
   }
 
@@ -168,10 +125,7 @@ extension _FriendsPageActionsQr on _FriendsPageState {
     }
     if (currentUser == null || currentUser.id <= 0) {
       _showSnack(
-        _txt(
-          en: 'Could not load your user profile.',
-          lv: 'Neizdevās ielādēt tavu profilu.',
-        ),
+        context.l10n.friendsCouldNotLoadYourUserProfile,
         isError: true,
       );
       return;
@@ -179,7 +133,7 @@ extension _FriendsPageActionsQr on _FriendsPageState {
 
     final payload = _buildFriendQrPayload(currentUser.id);
     final name = currentUser.nickname.trim().isEmpty
-        ? _txt(en: 'My profile', lv: 'Mans profils')
+        ? context.l10n.friendsMyProfile
         : currentUser.nickname.trim();
 
     await Navigator.of(context).push<void>(
@@ -309,10 +263,9 @@ class _FriendQrScannerPageState extends State<_FriendQrScannerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLv =
-        Localizations.localeOf(context).languageCode.toLowerCase() == 'lv';
+    final t = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(isLv ? 'Skenēt drauga QR' : 'Scan Friend QR')),
+      appBar: AppBar(title: Text(t.friendsScanFriendQrTitle)),
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -348,9 +301,7 @@ class _FriendQrScannerPageState extends State<_FriendQrScannerPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  isLv
-                      ? 'Novieto drauga QR kodu rāmī'
-                      : 'Place friend QR code inside the frame',
+                  t.friendsPlaceFriendQrInsideFrame,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -389,10 +340,9 @@ class _MyFriendQrPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLv =
-        Localizations.localeOf(context).languageCode.toLowerCase() == 'lv';
+    final t = context.l10n;
     return Scaffold(
-      appBar: AppBar(title: Text(isLv ? 'Mans drauga QR' : 'My Friend QR')),
+      appBar: AppBar(title: Text(t.friendsMyFriendQrTitle)),
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -421,9 +371,7 @@ class _MyFriendQrPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        isLv
-                            ? 'Atver Friends > Scan QR otrā telefonā un noskenē šo kodu.'
-                            : 'Open Friends > Scan QR on another phone and scan this code.',
+                        t.friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode,
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppDesign.mutedColor(context),
@@ -465,16 +413,13 @@ class _MyFriendQrPage extends StatelessWidget {
                             child: OutlinedButton.icon(
                               onPressed: () => SharePlus.instance.share(
                                 ShareParams(
-                                  text: isLv
-                                      ? 'Pievieno mani TripSplit draugos.\n$payload'
-                                      : 'Add me on TripSplit friends.\n$payload',
-                                  subject: isLv
-                                      ? 'TripSplit drauga kods'
-                                      : 'TripSplit friend code',
+                                  text:
+                                      '${t.friendsAddMeOnTripSplitFriends}\n$payload',
+                                  subject: t.friendsTripSplitFriendCode,
                                 ),
                               ),
                               icon: const Icon(Icons.share_rounded),
-                              label: Text(isLv ? 'Nošērot' : 'Share'),
+                              label: Text(t.shareAction),
                             ),
                           ),
                         ],

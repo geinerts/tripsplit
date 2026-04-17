@@ -197,11 +197,9 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                _localizedText(
-                                                  context,
-                                                  en: 'Total amount',
-                                                  lv: 'Kopējā summa',
-                                                ),
+                                                context
+                                                    .l10n
+                                                    .workspaceTotalAmount,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .titleMedium
@@ -241,7 +239,7 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                         top: 4,
                                                       ),
                                                   child: Text(
-                                                    '${_localizedText(context, en: 'Original', lv: 'Sākotnēji')}: ${_formatMoney(context, expense.originalAmount, currencyCode: expense.expenseCurrencyCode)}',
+                                                    '${context.l10n.workspaceOriginal}: ${_formatMoney(context, expense.originalAmount, currencyCode: expense.expenseCurrencyCode)}',
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodySmall
@@ -366,11 +364,7 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                               ],
                               const SizedBox(height: 16),
                               Text(
-                                _localizedText(
-                                  context,
-                                  en: 'Split breakdown',
-                                  lv: 'Sadalījums',
-                                ),
+                                context.l10n.splitBreakdownTitle,
                                 style: Theme.of(context).textTheme.titleLarge
                                     ?.copyWith(
                                       fontWeight: FontWeight.w800,

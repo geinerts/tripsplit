@@ -174,7 +174,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${API_BASE_URL:-}" ]; then
-            echo "Missing required secret: API_BASE_URL (example: https://splyto.egm.lv)"
+            echo "Missing required secret: API_BASE_URL (example: https://splyto.eu)"
             exit 1
           fi
 

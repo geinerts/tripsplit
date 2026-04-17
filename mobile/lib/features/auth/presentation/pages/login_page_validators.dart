@@ -2,7 +2,7 @@ part of 'login_page.dart';
 
 extension _LoginPageValidators on _LoginPageState {
   String? _validateFullName(String? value) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     if (_mode != _AuthMode.register) {
       return null;
     }
@@ -37,7 +37,7 @@ extension _LoginPageValidators on _LoginPageState {
   }
 
   String? _validateEmail(String? value) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     final email = (value ?? '').trim();
     if (email.isEmpty) {
       return t.emailRequired;
@@ -50,7 +50,7 @@ extension _LoginPageValidators on _LoginPageState {
   }
 
   String? _validatePassword(String? value) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     final text = value ?? '';
     if (text.length < 8) {
       return t.passwordMinLength;
@@ -67,7 +67,7 @@ extension _LoginPageValidators on _LoginPageState {
   }
 
   String? _validateRepeat(String? value) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     if (_mode != _AuthMode.register) {
       return null;
     }

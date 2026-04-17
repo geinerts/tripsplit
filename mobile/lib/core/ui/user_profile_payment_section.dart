@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../app/theme/app_design.dart';
+import '../l10n/l10n.dart';
 import 'user_profile_page.dart';
 
 class UserProfilePaymentDetailsSection extends StatelessWidget {
@@ -96,31 +97,19 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
                   _PaymentDetailLine(
                     text: '$bankHolderLabel: $holder',
                     copyValue: holder,
-                    copySuccessText: _localizedText(
-                      context,
-                      en: 'Holder name copied.',
-                      lv: 'Turētāja vārds nokopēts.',
-                    ),
+                    copySuccessText: context.l10n.paymentHolderNameCopied,
                   ),
                   if (iban.isNotEmpty)
                     _PaymentDetailLine(
                       text: 'IBAN: $iban',
                       copyValue: iban,
-                      copySuccessText: _localizedText(
-                        context,
-                        en: 'IBAN copied.',
-                        lv: 'IBAN nokopēts.',
-                      ),
+                      copySuccessText: context.l10n.paymentIbanCopied,
                     ),
                   if (bic.isNotEmpty)
                     _PaymentDetailLine(
                       text: 'SWIFT: $bic',
                       copyValue: bic,
-                      copySuccessText: _localizedText(
-                        context,
-                        en: 'SWIFT copied.',
-                        lv: 'SWIFT nokopēts.',
-                      ),
+                      copySuccessText: context.l10n.paymentSwiftCopied,
                     ),
                 ],
                 onCopyLine: (line) => _copyDetailToClipboard(context, line),
@@ -140,11 +129,7 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
                     _PaymentDetailLine(
                       text: revolut,
                       copyValue: revolut,
-                      copySuccessText: _localizedText(
-                        context,
-                        en: 'Revtag copied.',
-                        lv: 'Revtag nokopēts.',
-                      ),
+                      copySuccessText: context.l10n.paymentRevtagCopied,
                     ),
                 ],
                 trailing: revolutMeUri == null
@@ -263,15 +248,6 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
     return uri.toString();
   }
 
-  String _localizedText(
-    BuildContext context, {
-    required String en,
-    required String lv,
-  }) {
-    final lang = Localizations.localeOf(context).languageCode.toLowerCase();
-    return lang == 'lv' ? lv : en;
-  }
-
   Future<void> _copyDetailToClipboard(
     BuildContext context,
     _PaymentDetailLine line,
@@ -286,11 +262,7 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
       if (!context.mounted) {
         return;
       }
-      final message = _localizedText(
-        context,
-        en: 'Could not copy to clipboard.',
-        lv: 'Neizdevās nokopēt starpliktuvē.',
-      );
+      final message = context.l10n.paymentCouldNotCopyToClipboard;
       final onError = onErrorMessage;
       if (onError != null) {
         onError(message);
@@ -309,7 +281,7 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
     }
     final successText = (line.copySuccessText ?? '').trim().isNotEmpty
         ? line.copySuccessText!.trim()
-        : _localizedText(context, en: 'Copied.', lv: 'Nokopēts.');
+        : context.l10n.paymentCopied;
     final messenger = ScaffoldMessenger.maybeOf(context);
     messenger?.hideCurrentSnackBar();
     messenger?.showSnackBar(

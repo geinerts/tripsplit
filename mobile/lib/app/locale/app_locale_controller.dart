@@ -1,19 +1,19 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum AppLocaleMode { system, english, latvian }
+enum AppLocaleMode { english, latvian, spanish }
 
 class AppLocaleController extends ChangeNotifier {
   AppLocaleController();
 
   static const String _prefKey = 'app.locale';
 
-  AppLocaleMode _mode = AppLocaleMode.system;
+  AppLocaleMode _mode = AppLocaleMode.english;
   Locale? _locale;
 
   AppLocaleMode get mode => _mode;
 
-  /// `null` means follow system locale.
+  /// Active locale used by the app.
   Locale? get locale => _locale;
 
   Future<void> load() async {
@@ -37,12 +37,12 @@ class AppLocaleController extends ChangeNotifier {
 
   static String _encodeMode(AppLocaleMode mode) {
     switch (mode) {
-      case AppLocaleMode.system:
-        return 'system';
       case AppLocaleMode.english:
         return 'en';
       case AppLocaleMode.latvian:
         return 'lv';
+      case AppLocaleMode.spanish:
+        return 'es';
     }
   }
 
@@ -54,19 +54,25 @@ class AppLocaleController extends ChangeNotifier {
       case 'lv':
       case 'latvian':
         return AppLocaleMode.latvian;
+      case 'es':
+      case 'spanish':
+      case 'espanol':
+      case 'español':
+        return AppLocaleMode.spanish;
       default:
-        return AppLocaleMode.system;
+        // Legacy "system" falls back to explicit English default.
+        return AppLocaleMode.english;
     }
   }
 
   static Locale? _modeToLocale(AppLocaleMode mode) {
     switch (mode) {
-      case AppLocaleMode.system:
-        return null;
       case AppLocaleMode.english:
         return const Locale('en');
       case AppLocaleMode.latvian:
         return const Locale('lv');
+      case AppLocaleMode.spanish:
+        return const Locale('es');
     }
   }
 }

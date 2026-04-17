@@ -24,20 +24,6 @@ Future<void> showAppLocalePicker(BuildContext context) async {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.language_outlined),
-                title: Text(t.languageSystem),
-                subtitle: Text(t.languageSystemSubtitle),
-                trailing: current == AppLocaleMode.system
-                    ? const Icon(Icons.check)
-                    : null,
-                onTap: () async {
-                  await controller.setMode(AppLocaleMode.system);
-                  if (sheetContext.mounted) {
-                    Navigator.of(sheetContext).pop();
-                  }
-                },
-              ),
-              ListTile(
                 leading: const Icon(Icons.translate_outlined),
                 title: Text(t.languageEnglish),
                 trailing: current == AppLocaleMode.english
@@ -58,6 +44,19 @@ Future<void> showAppLocalePicker(BuildContext context) async {
                     : null,
                 onTap: () async {
                   await controller.setMode(AppLocaleMode.latvian);
+                  if (sheetContext.mounted) {
+                    Navigator.of(sheetContext).pop();
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.translate_rounded),
+                title: Text(t.languageSpanish),
+                trailing: current == AppLocaleMode.spanish
+                    ? const Icon(Icons.check)
+                    : null,
+                onTap: () async {
+                  await controller.setMode(AppLocaleMode.spanish);
                   if (sheetContext.mounted) {
                     Navigator.of(sheetContext).pop();
                   }

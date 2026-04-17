@@ -51,10 +51,26 @@ function send_email_via_resend(string $to, string $subject, string $htmlBody): b
     return true;
 }
 
+function build_email_brand_logo_html(): string
+{
+    $baseUrl = trim(PUBLIC_BASE_URL) !== '' ? PUBLIC_BASE_URL : APP_BASE_URL;
+    if ($baseUrl === '') {
+        $baseUrl = 'https://splyto.eu';
+    }
+    $logoUrl = htmlspecialchars(
+        rtrim($baseUrl, '/') . '/mobile/assets/branding/logo_full.png',
+        ENT_QUOTES,
+        'UTF-8'
+    );
+
+    return '<img src="' . $logoUrl . '" alt="Splyto" width="188" style="display:block;margin:0 auto;border:0;outline:none;text-decoration:none;width:188px;max-width:100%;height:auto;">';
+}
+
 function build_password_reset_email(string $resetUrl, string $firstName): string
 {
     $name = htmlspecialchars($firstName, ENT_QUOTES, 'UTF-8');
     $url  = htmlspecialchars($resetUrl, ENT_QUOTES, 'UTF-8');
+    $logo = build_email_brand_logo_html();
 
     return <<<HTML
     <!DOCTYPE html>
@@ -72,7 +88,7 @@ function build_password_reset_email(string $resetUrl, string $firstName): string
             <!-- Header -->
             <tr>
               <td style="background:linear-gradient(135deg,#BFE9D3,#57B487);padding:32px;text-align:center;">
-                <span style="font-size:28px;font-weight:800;color:#1a3d2b;letter-spacing:-0.5px;">SPLYTO</span>
+                {$logo}
               </td>
             </tr>
 
@@ -108,7 +124,7 @@ function build_password_reset_email(string $resetUrl, string $firstName): string
             <!-- Footer -->
             <tr>
               <td style="padding:20px 36px;border-top:1px solid #f3f4f6;text-align:center;">
-                <p style="margin:0;font-size:12px;color:#9ca3af;">© Splyto · splyto.egm.lv</p>
+                <p style="margin:0;font-size:12px;color:#9ca3af;">© Splyto · splyto.eu</p>
               </td>
             </tr>
 
@@ -125,6 +141,7 @@ function build_email_verification_email(string $verifyUrl, string $firstName, in
     $name = htmlspecialchars($firstName, ENT_QUOTES, 'UTF-8');
     $url  = htmlspecialchars($verifyUrl, ENT_QUOTES, 'UTF-8');
     $days = $graceDays > 0 ? $graceDays : 7;
+    $logo = build_email_brand_logo_html();
 
     return <<<HTML
     <!DOCTYPE html>
@@ -140,7 +157,7 @@ function build_email_verification_email(string $verifyUrl, string $firstName, in
           <table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
             <tr>
               <td style="background:linear-gradient(135deg,#BFE9D3,#57B487);padding:32px;text-align:center;">
-                <span style="font-size:28px;font-weight:800;color:#1a3d2b;letter-spacing:-0.5px;">SPLYTO</span>
+                {$logo}
               </td>
             </tr>
             <tr>
@@ -177,6 +194,7 @@ function build_email_change_verification_email(string $verifyUrl, string $firstN
     $name = htmlspecialchars($firstName, ENT_QUOTES, 'UTF-8');
     $url = htmlspecialchars($verifyUrl, ENT_QUOTES, 'UTF-8');
     $email = htmlspecialchars($newEmail, ENT_QUOTES, 'UTF-8');
+    $logo = build_email_brand_logo_html();
 
     return <<<HTML
     <!DOCTYPE html>
@@ -192,7 +210,7 @@ function build_email_change_verification_email(string $verifyUrl, string $firstN
           <table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
             <tr>
               <td style="background:linear-gradient(135deg,#BFE9D3,#57B487);padding:32px;text-align:center;">
-                <span style="font-size:28px;font-weight:800;color:#1a3d2b;letter-spacing:-0.5px;">SPLYTO</span>
+                {$logo}
               </td>
             </tr>
             <tr>
@@ -229,6 +247,7 @@ function build_email_change_cancel_email(string $cancelUrl, string $firstName, s
     $name = htmlspecialchars($firstName, ENT_QUOTES, 'UTF-8');
     $url = htmlspecialchars($cancelUrl, ENT_QUOTES, 'UTF-8');
     $email = htmlspecialchars($newEmail, ENT_QUOTES, 'UTF-8');
+    $logo = build_email_brand_logo_html();
 
     return <<<HTML
     <!DOCTYPE html>
@@ -244,7 +263,7 @@ function build_email_change_cancel_email(string $cancelUrl, string $firstName, s
           <table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
             <tr>
               <td style="background:linear-gradient(135deg,#ffe6b5,#f59e0b);padding:32px;text-align:center;">
-                <span style="font-size:28px;font-weight:800;color:#78350f;letter-spacing:-0.5px;">SPLYTO</span>
+                {$logo}
               </td>
             </tr>
             <tr>
@@ -281,6 +300,7 @@ function build_account_reactivation_email(string $reactivateUrl, string $firstNa
 {
     $name = htmlspecialchars($firstName, ENT_QUOTES, 'UTF-8');
     $url  = htmlspecialchars($reactivateUrl, ENT_QUOTES, 'UTF-8');
+    $logo = build_email_brand_logo_html();
 
     return <<<HTML
     <!DOCTYPE html>
@@ -296,7 +316,7 @@ function build_account_reactivation_email(string $reactivateUrl, string $firstNa
           <table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
             <tr>
               <td style="background:linear-gradient(135deg,#BFE9D3,#57B487);padding:32px;text-align:center;">
-                <span style="font-size:28px;font-weight:800;color:#1a3d2b;letter-spacing:-0.5px;">SPLYTO</span>
+                {$logo}
               </td>
             </tr>
             <tr>
@@ -332,6 +352,7 @@ function build_account_delete_email(string $deleteUrl, string $firstName): strin
 {
     $name = htmlspecialchars($firstName, ENT_QUOTES, 'UTF-8');
     $url  = htmlspecialchars($deleteUrl, ENT_QUOTES, 'UTF-8');
+    $logo = build_email_brand_logo_html();
 
     return <<<HTML
     <!DOCTYPE html>
@@ -347,7 +368,7 @@ function build_account_delete_email(string $deleteUrl, string $firstName): strin
           <table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
             <tr>
               <td style="background:linear-gradient(135deg,#ffd6d6,#ef4444);padding:32px;text-align:center;">
-                <span style="font-size:28px;font-weight:800;color:#7f1d1d;letter-spacing:-0.5px;">SPLYTO</span>
+                {$logo}
               </td>
             </tr>
             <tr>

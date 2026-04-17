@@ -6,7 +6,7 @@ class ThemeModeController extends ChangeNotifier {
 
   static const String _prefKey = 'app.theme_mode';
 
-  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode _themeMode = ThemeMode.dark;
 
   ThemeMode get themeMode => _themeMode;
 
@@ -17,14 +17,15 @@ class ThemeModeController extends ChangeNotifier {
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
-    if (_themeMode == mode) {
+    final normalized = _normalizeMode(mode);
+    if (_themeMode == normalized) {
       return;
     }
-    _themeMode = mode;
+    _themeMode = normalized;
     notifyListeners();
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_prefKey, _encodeThemeMode(mode));
+    await prefs.setString(_prefKey, _encodeThemeMode(normalized));
   }
 
   static String _encodeThemeMode(ThemeMode mode) {
@@ -34,7 +35,8 @@ class ThemeModeController extends ChangeNotifier {
       case ThemeMode.dark:
         return 'dark';
       case ThemeMode.system:
-        return 'system';
+        // Legacy mode is persisted as dark.
+        return 'dark';
     }
   }
 
@@ -45,7 +47,15 @@ class ThemeModeController extends ChangeNotifier {
       case 'dark':
         return ThemeMode.dark;
       default:
-        return ThemeMode.system;
+        // Legacy "system" falls back to explicit dark default.
+        return ThemeMode.dark;
     }
+  }
+
+  static ThemeMode _normalizeMode(ThemeMode mode) {
+    if (mode == ThemeMode.system) {
+      return ThemeMode.dark;
+    }
+    return mode;
   }
 }

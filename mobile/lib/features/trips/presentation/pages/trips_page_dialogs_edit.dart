@@ -22,42 +22,38 @@ extension _TripsPageEditDialog on _TripsPageState {
       final isIOS = platform == TargetPlatform.iOS;
 
       if (isIOS) {
-        final selectedSource = await showCupertinoModalPopup<_TripImageSourceOption>(
-          context: dialogContext,
-          builder: (cupertinoContext) => CupertinoActionSheet(
-            actions: [
-              if (hasImage)
-                CupertinoActionSheetAction(
-                  isDestructiveAction: true,
-                  onPressed: () => Navigator.of(
-                    cupertinoContext,
-                  ).pop(_TripImageSourceOption.remove),
-                  child: Text(
-                    _pageText(
-                      en: 'Remove image',
-                      lv: 'Noņemt attēlu',
+        final selectedSource =
+            await showCupertinoModalPopup<_TripImageSourceOption>(
+              context: dialogContext,
+              builder: (cupertinoContext) => CupertinoActionSheet(
+                actions: [
+                  if (hasImage)
+                    CupertinoActionSheetAction(
+                      isDestructiveAction: true,
+                      onPressed: () => Navigator.of(
+                        cupertinoContext,
+                      ).pop(_TripImageSourceOption.remove),
+                      child: Text(context.l10n.profileRemoveImage),
                     ),
+                  CupertinoActionSheetAction(
+                    onPressed: () => Navigator.of(
+                      cupertinoContext,
+                    ).pop(_TripImageSourceOption.camera),
+                    child: Text(t.takePhotoAction),
                   ),
+                  CupertinoActionSheetAction(
+                    onPressed: () => Navigator.of(
+                      cupertinoContext,
+                    ).pop(_TripImageSourceOption.library),
+                    child: Text(t.chooseFromLibraryAction),
+                  ),
+                ],
+                cancelButton: CupertinoActionSheetAction(
+                  onPressed: () => Navigator.of(cupertinoContext).pop(),
+                  child: Text(t.cancelAction),
                 ),
-              CupertinoActionSheetAction(
-                onPressed: () => Navigator.of(
-                  cupertinoContext,
-                ).pop(_TripImageSourceOption.camera),
-                child: Text(t.takePhotoAction),
               ),
-              CupertinoActionSheetAction(
-                onPressed: () => Navigator.of(
-                  cupertinoContext,
-                ).pop(_TripImageSourceOption.library),
-                child: Text(t.chooseFromLibraryAction),
-              ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              onPressed: () => Navigator.of(cupertinoContext).pop(),
-              child: Text(t.cancelAction),
-            ),
-          ),
-        );
+            );
 
         if (!mounted || !dialogContext.mounted || selectedSource == null) {
           return;
@@ -112,12 +108,7 @@ extension _TripsPageEditDialog on _TripsPageState {
                 if (hasImage)
                   ListTile(
                     leading: const Icon(Icons.delete_outline),
-                    title: Text(
-                      _pageText(
-                        en: 'Remove image',
-                        lv: 'Noņemt attēlu',
-                      ),
-                    ),
+                    title: Text(context.l10n.profileRemoveImage),
                     onTap: () => Navigator.of(
                       bottomSheetContext,
                     ).pop(_TripImageSourceOption.remove),
@@ -198,15 +189,17 @@ extension _TripsPageEditDialog on _TripsPageState {
                                         border: Border.all(
                                           color: AppDesign.cardStroke(context),
                                         ),
-                                        gradient: selectedImageBytes == null &&
+                                        gradient:
+                                            selectedImageBytes == null &&
                                                 !hasExistingTripImage
                                             ? AppDesign.brandGradient
                                             : null,
-                                        color: selectedImageBytes == null &&
+                                        color:
+                                            selectedImageBytes == null &&
                                                 hasExistingTripImage
                                             ? Theme.of(context)
-                                                .colorScheme
-                                                .surfaceContainerHighest
+                                                  .colorScheme
+                                                  .surfaceContainerHighest
                                             : null,
                                       ),
                                       alignment: Alignment.center,
@@ -253,7 +246,9 @@ extension _TripsPageEditDialog on _TripsPageState {
                                           ).colorScheme.surface,
                                           shape: BoxShape.circle,
                                           border: Border.all(
-                                            color: AppDesign.cardStroke(context),
+                                            color: AppDesign.cardStroke(
+                                              context,
+                                            ),
                                           ),
                                         ),
                                         alignment: Alignment.center,
@@ -290,20 +285,14 @@ extension _TripsPageEditDialog on _TripsPageState {
                         if (selectedImageName != null) ...[
                           const SizedBox(height: 4),
                           Text(
-                            _pageText(
-                              en: 'Selected image: $selectedImageName',
-                              lv: 'Izvēlētais attēls: $selectedImageName',
-                            ),
+                            context.l10n.tripsSelectedImage(selectedImageName!),
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ] else if (existingTripImageUrl.isNotEmpty &&
                             !removeImageRequested) ...[
                           const SizedBox(height: 4),
                           Text(
-                            _pageText(
-                              en: 'Trip image already set.',
-                              lv: 'Tripa attēls jau ir iestatīts.',
-                            ),
+                            context.l10n.tripsTripImageAlreadySet,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],

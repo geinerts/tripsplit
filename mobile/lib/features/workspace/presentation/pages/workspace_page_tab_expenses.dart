@@ -38,7 +38,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
             Row(
               children: [
                 Text(
-                  _localizedText(context, en: 'Expenses', lv: 'Izdevumi'),
+                  context.l10n.navExpenses,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w800,
                     color: isDark ? null : AppDesign.lightForeground,
@@ -168,7 +168,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
             ? categoryLabel
             : expense.note.trim();
         final subtitle = expense.note.trim().isEmpty
-            ? _localizedText(context, en: 'Expense', lv: 'Izdevums')
+            ? context.l10n.workspaceExpense
             : categoryLabel;
 
         children.add(
@@ -307,11 +307,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            _localizedText(
-                              context,
-                              en: 'paid',
-                              lv: 'apmaksāja',
-                            ),
+                            context.l10n.workspacePaid,
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
                                   fontWeight: FontWeight.w500,
@@ -395,16 +391,8 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                   if (_isLoadingMoreExpenses) const SizedBox(width: 8),
                   Text(
                     _isLoadingMoreExpenses
-                        ? _localizedText(
-                            context,
-                            en: 'Loading more expenses...',
-                            lv: 'Ielādē vēl izdevumus...',
-                          )
-                        : _localizedText(
-                            context,
-                            en: 'Scroll down to load more',
-                            lv: 'Ritini uz leju, lai ielādētu vairāk',
-                          ),
+                        ? context.l10n.workspaceLoadingMoreExpenses
+                        : context.l10n.workspaceScrollDownToLoadMore,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],

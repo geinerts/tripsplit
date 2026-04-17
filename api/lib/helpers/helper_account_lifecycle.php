@@ -454,7 +454,7 @@ function app_base_url(): string
     if ($configured !== '') {
         return rtrim($configured, '/');
     }
-    return 'https://splyto.egm.lv';
+    return 'https://splyto.eu';
 }
 
 function revoke_refresh_tokens_for_user(PDO $pdo, int $userId): void

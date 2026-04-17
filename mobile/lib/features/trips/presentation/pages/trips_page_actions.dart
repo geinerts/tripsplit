@@ -122,11 +122,16 @@ extension _TripsPageActions on _TripsPageState {
           );
         } on ApiException catch (error) {
           _showSnack(
-            'Trip created, but image upload failed: ${error.message}',
+            context.l10n.tripsTripCreatedButImageUploadFailedWithReason(
+              error.message,
+            ),
             isError: true,
           );
         } catch (_) {
-          _showSnack('Trip created, but image upload failed.', isError: true);
+          _showSnack(
+            context.l10n.tripsTripCreatedButImageUploadFailed,
+            isError: true,
+          );
         }
       }
       if (!mounted) {
@@ -223,7 +228,10 @@ extension _TripsPageActions on _TripsPageState {
       return;
     }
     if (!_isTripOwner(trip)) {
-      _showSnack('Only trip creator can edit this trip.', isError: true);
+      _showSnack(
+        context.l10n.workspaceOnlyTripCreatorCanEditThisTrip,
+        isError: true,
+      );
       return;
     }
 
@@ -266,7 +274,7 @@ extension _TripsPageActions on _TripsPageState {
       if (!mounted) {
         return;
       }
-      _showSnack('Trip updated.');
+      _showSnack(context.l10n.workspaceTripUpdated);
       await _loadTrips();
     } on ApiException catch (error) {
       if (!mounted) {
@@ -277,7 +285,7 @@ extension _TripsPageActions on _TripsPageState {
       if (!mounted) {
         return;
       }
-      _showSnack('Failed to update trip.', isError: true);
+      _showSnack(context.l10n.workspaceFailedToUpdateTrip, isError: true);
     } finally {
       if (mounted) {
         _updateState(() {
@@ -292,23 +300,11 @@ extension _TripsPageActions on _TripsPageState {
       return;
     }
     if (!_isTripOwner(trip)) {
-      _showSnack(
-        _plainLocalizedText(
-          en: 'Only trip creator can delete this trip.',
-          lv: 'Šo ceļojumu drīkst dzēst tikai izveidotājs.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellOnlyTripCreatorCanDelete, isError: true);
       return;
     }
     if (!trip.isActive) {
-      _showSnack(
-        _plainLocalizedText(
-          en: 'Only active trips can be deleted.',
-          lv: 'Dzēst var tikai aktīvus ceļojumus.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellOnlyActiveTripsCanDelete, isError: true);
       return;
     }
 
@@ -322,9 +318,8 @@ extension _TripsPageActions on _TripsPageState {
         return AlertDialog(
           title: Text('${t.deleteAction} ${t.tripTitleShort}'),
           content: Text(
-            _plainLocalizedText(
-              en: 'Delete "$tripLabel"? This is allowed only before any expenses are added.',
-              lv: 'Dzēst "$tripLabel"? Tas ir atļauts tikai pirms ceļojumam pievienoti izdevumi.',
+            context.l10n.tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded(
+              tripLabel,
             ),
           ),
           actions: [
@@ -357,9 +352,7 @@ extension _TripsPageActions on _TripsPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _plainLocalizedText(en: 'Trip deleted.', lv: 'Ceļojums izdzēsts.'),
-      );
+      _showSnack(context.l10n.shellTripDeleted);
       await _loadTrips();
     } on ApiException catch (error) {
       if (!mounted) {
@@ -370,13 +363,7 @@ extension _TripsPageActions on _TripsPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _plainLocalizedText(
-          en: 'Failed to delete trip.',
-          lv: 'Neizdevās izdzēst ceļojumu.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellFailedToDeleteTrip, isError: true);
     } finally {
       if (mounted) {
         _updateState(() {
@@ -564,15 +551,5 @@ extension _TripsPageActions on _TripsPageState {
         backgroundColor: isError ? Theme.of(context).colorScheme.error : null,
       ),
     );
-  }
-
-  String _plainLocalizedText({required String en, required String lv}) {
-    final languageCode = Localizations.localeOf(
-      context,
-    ).languageCode.toLowerCase();
-    if (languageCode.startsWith('lv')) {
-      return lv;
-    }
-    return en;
   }
 }

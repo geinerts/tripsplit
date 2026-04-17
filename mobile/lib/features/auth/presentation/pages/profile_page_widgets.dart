@@ -111,10 +111,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
             const SizedBox(height: 16),
             _buildProfileSectionHeading(
               context: context,
-              title: _profileText(
-                en: 'APP SETTINGS',
-                lv: 'LIETOTNES IESTATĪJUMI',
-              ),
+              title: context.l10n.profileAppSettingsSectionTitle,
             ),
             const SizedBox(height: 8),
             _buildProfileSectionCard(
@@ -122,24 +119,18 @@ extension _ProfilePageWidgets on _ProfilePageState {
               children: [
                 _buildProfileSectionTile(
                   context: context,
-                  title: _profileText(en: 'Appearance', lv: 'Izskats'),
+                  title: context.l10n.profileAppearance,
                   icon: Icons.palette_outlined,
                   valueText: _currentAppearanceLabel(context),
-                  subtitle: _profileText(
-                    en: 'Theme & display mode',
-                    lv: 'Tēma un attēlošanas režīms',
-                  ),
+                  subtitle: context.l10n.profileThemeDisplayMode,
                   onTap: _isBusy ? null : () => showThemeModePicker(context),
                 ),
                 _buildProfileSectionTile(
                   context: context,
-                  title: _profileText(en: 'Language', lv: 'Valoda'),
+                  title: context.l10n.profileLanguage,
                   icon: Icons.translate_outlined,
                   valueText: _currentLanguageLabel(context),
-                  subtitle: _profileText(
-                    en: 'Display language',
-                    lv: 'Lietotnes valoda',
-                  ),
+                  subtitle: context.l10n.profileDisplayLanguage,
                   onTap: _isBusy ? null : () => showAppLocalePicker(context),
                 ),
               ],
@@ -147,7 +138,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
             const SizedBox(height: 16),
             _buildProfileSectionHeading(
               context: context,
-              title: _profileText(en: 'NOTIFICATIONS', lv: 'PAZIŅOJUMI'),
+              title: context.l10n.profileNotificationsSectionHeading,
             ),
             const SizedBox(height: 8),
             _buildProfileSectionCard(
@@ -155,82 +146,28 @@ extension _ProfilePageWidgets on _ProfilePageState {
               children: [
                 _buildProfileSwitchTile(
                   context: context,
-                  title: _profileText(
-                    en: 'In-app banners',
-                    lv: 'Baneri lietotnē',
-                  ),
-                  subtitle: _profileText(
-                    en: 'Show new notification banners inside app',
-                    lv: 'Rādīt jaunus paziņojumu banerus lietotnē',
-                  ),
+                  title: context.l10n.profileAppBanners,
+                  subtitle:
+                      context.l10n.profileShowNewNotificationBannersInsideApp,
                   icon: Icons.chat_bubble_outline_rounded,
                   value: _inAppNotificationsEnabled,
                   onChanged: (value) {
                     unawaited(_setInAppNotificationsEnabled(value));
                   },
                 ),
-                _buildProfileSwitchTile(
+                _buildProfileSwitchNavigationTile(
                   context: context,
-                  title: _profileText(
-                    en: 'Push: expense updates',
-                    lv: 'Push: tēriņu atjauninājumi',
-                  ),
-                  subtitle: _profileText(
-                    en: 'Expense added notifications to phone',
-                    lv: 'Paziņojumi telefonā par pievienotiem tēriņiem',
-                  ),
-                  icon: Icons.receipt_long_outlined,
-                  value: _pushExpenseUpdatesEnabled,
-                  onChanged: (value) {
-                    unawaited(_setPushExpenseUpdatesEnabled(value));
+                  title: context.l10n.profilePushNotificationsTitle,
+                  subtitle: context
+                      .l10n
+                      .profilePhoneNotificationsExpensesFriendsTripsSettlements,
+                  icon: Icons.notifications_active_outlined,
+                  value: _pushNotificationsEnabled,
+                  onTap: () {
+                    unawaited(_openPushNotificationSettingsPage());
                   },
-                ),
-                _buildProfileSwitchTile(
-                  context: context,
-                  title: _profileText(
-                    en: 'Push: friend invites',
-                    lv: 'Push: draugu uzaicinājumi',
-                  ),
-                  subtitle: _profileText(
-                    en: 'Friend request and response notifications',
-                    lv: 'Paziņojumi par draugu pieprasījumiem un atbildēm',
-                  ),
-                  icon: Icons.group_add_outlined,
-                  value: _pushFriendInvitesEnabled,
                   onChanged: (value) {
-                    unawaited(_setPushFriendInvitesEnabled(value));
-                  },
-                ),
-                _buildProfileSwitchTile(
-                  context: context,
-                  title: _profileText(
-                    en: 'Push: trip updates',
-                    lv: 'Push: ceļojumu atjauninājumi',
-                  ),
-                  subtitle: _profileText(
-                    en: 'Trip lifecycle and member status changes',
-                    lv: 'Ceļojuma statusa un dalībnieku izmaiņas',
-                  ),
-                  icon: Icons.flag_outlined,
-                  value: _pushTripUpdatesEnabled,
-                  onChanged: (value) {
-                    unawaited(_setPushTripUpdatesEnabled(value));
-                  },
-                ),
-                _buildProfileSwitchTile(
-                  context: context,
-                  title: _profileText(
-                    en: 'Push: settlement updates',
-                    lv: 'Push: norēķinu atjauninājumi',
-                  ),
-                  subtitle: _profileText(
-                    en: 'Marked sent and confirmed payment updates',
-                    lv: 'Atzīmēts kā nosūtīts un apstiprināts saņemts',
-                  ),
-                  icon: Icons.task_alt_outlined,
-                  value: _pushSettlementUpdatesEnabled,
-                  onChanged: (value) {
-                    unawaited(_setPushSettlementUpdatesEnabled(value));
+                    unawaited(_setAllPushNotificationsEnabled(value));
                   },
                 ),
               ],
@@ -238,7 +175,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
             const SizedBox(height: 16),
             _buildProfileSectionHeading(
               context: context,
-              title: _profileText(en: 'SUPPORT', lv: 'ATBALSTS'),
+              title: context.l10n.profileSupportSectionHeading,
             ),
             const SizedBox(height: 8),
             _buildProfileSectionCard(
@@ -246,25 +183,16 @@ extension _ProfilePageWidgets on _ProfilePageState {
               children: [
                 _buildProfileSectionTile(
                   context: context,
-                  title: _profileText(
-                    en: 'Contact us',
-                    lv: 'Sazināties ar mums',
-                  ),
+                  title: context.l10n.profileContactUs,
                   icon: Icons.support_agent_outlined,
-                  subtitle: _profileText(
-                    en: 'Report bug / Suggestion',
-                    lv: 'Ziņot par kļūdu / Ieteikums',
-                  ),
+                  subtitle: context.l10n.profileReportBugSuggestion,
                   onTap: _isBusy ? null : _openFeedbackDialog,
                 ),
                 _buildProfileSectionTile(
                   context: context,
-                  title: _profileText(en: 'Rate Splyto', lv: 'Novērtēt Splyto'),
+                  title: context.l10n.profileRateSplyto,
                   icon: Icons.star_outline_rounded,
-                  subtitle: _profileText(
-                    en: 'Leave a store rating',
-                    lv: 'Atstāt vērtējumu veikalā',
-                  ),
+                  subtitle: context.l10n.profileLeaveStoreRating,
                   onTap: _isBusy ? null : _openRateHint,
                 ),
               ],
@@ -272,7 +200,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
             const SizedBox(height: 16),
             _buildProfileSectionHeading(
               context: context,
-              title: _profileText(en: 'SECURITY', lv: 'DROŠĪBA'),
+              title: context.l10n.profileSecuritySectionHeading,
             ),
             const SizedBox(height: 8),
             _buildProfileSectionCard(
@@ -280,15 +208,9 @@ extension _ProfilePageWidgets on _ProfilePageState {
               children: [
                 _buildProfileSectionTile(
                   context: context,
-                  title: _profileText(
-                    en: 'Change password',
-                    lv: 'Mainīt paroli',
-                  ),
+                  title: context.l10n.profileChangePassword,
                   icon: Icons.lock_outline_rounded,
-                  subtitle: _profileText(
-                    en: 'Update account password',
-                    lv: 'Atjaunināt konta paroli',
-                  ),
+                  subtitle: context.l10n.profileUpdateAccountPassword,
                   onTap: _isBusy ? null : _openChangePasswordDialog,
                 ),
               ],
@@ -296,7 +218,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
             const SizedBox(height: 16),
             _buildProfileSectionHeading(
               context: context,
-              title: _profileText(en: 'DANGER ZONE', lv: 'BĪSTAMĀ ZONA'),
+              title: context.l10n.profileDangerZoneSectionHeading,
               isDanger: true,
             ),
             const SizedBox(height: 8),
@@ -305,15 +227,9 @@ extension _ProfilePageWidgets on _ProfilePageState {
               children: [
                 _buildProfileSectionTile(
                   context: context,
-                  title: _profileText(
-                    en: 'Deactivate account',
-                    lv: 'Deaktivēt kontu',
-                  ),
+                  title: context.l10n.profileDeactivateAccount,
                   icon: Icons.warning_amber_rounded,
-                  subtitle: _profileText(
-                    en: 'Manage account access',
-                    lv: 'Pārvaldīt konta piekļuvi',
-                  ),
+                  subtitle: context.l10n.profileManageAccountAccess,
                   onTap: _isBusy ? null : _openDangerZone,
                   isDanger: true,
                 ),
@@ -382,7 +298,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
       child: Column(
         children: [
           Text(
-            _profileText(en: 'Made with', lv: 'Veidots ar'),
+            context.l10n.profileMadeWithLabel,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: muted,
@@ -725,13 +641,71 @@ extension _ProfilePageWidgets on _ProfilePageState {
     );
   }
 
+  Widget _buildProfileSwitchNavigationTile({
+    required BuildContext context,
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required bool value,
+    required VoidCallback onTap,
+    required ValueChanged<bool> onChanged,
+  }) {
+    final muted = AppDesign.mutedColor(context);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: _isBusy ? null : onTap,
+        borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Icon(icon, color: muted),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: AppDesign.titleColor(context),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: muted,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Switch.adaptive(
+                value: value,
+                onChanged: _isBusy ? null : onChanged,
+                activeThumbColor: AppDesign.successColor(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   String _currentAppearanceLabel(BuildContext context) {
     final t = context.l10n;
     final controller = ThemeModeScope.maybeOf(context);
-    final mode = controller?.themeMode ?? ThemeMode.system;
+    final mode = controller?.themeMode ?? ThemeMode.dark;
     if (mode == ThemeMode.light) return t.themeModeLight;
-    if (mode == ThemeMode.dark) return t.themeModeDark;
-    return t.themeModeSystem;
+    return t.themeModeDark;
   }
 
   String _currentLanguageLabel(BuildContext context) {
@@ -740,16 +714,12 @@ extension _ProfilePageWidgets on _ProfilePageState {
     final mode = controller?.mode;
     if (mode == AppLocaleMode.english) return t.languageEnglish;
     if (mode == AppLocaleMode.latvian) return t.languageLatvian;
-    return t.languageSystem;
+    if (mode == AppLocaleMode.spanish) return t.languageSpanish;
+    return t.languageEnglish;
   }
 
   void _openRateHint() {
-    _showSnack(
-      _profileText(
-        en: 'Store rating action will be connected in the next step.',
-        lv: 'Vērtēšanas darbība veikalā tiks pieslēgta nākamajā solī.',
-      ),
-    );
+    _showSnack(context.l10n.profileStoreRatingActionWillConnectedNextStep);
   }
 
   void _openDangerZone() {

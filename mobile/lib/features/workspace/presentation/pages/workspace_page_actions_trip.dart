@@ -63,10 +63,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
     if (!snapshot.allMembersReadyToSettle) {
       _showSnack(
-        _plainLocalizedText(
-          en: 'All members must mark ready before starting settlements.',
-          lv: 'Pirms norēķinu sākšanas visiem dalībniekiem jāatzīmē gatavība.',
-        ),
+        context.l10n.workspaceAllMembersMustMarkReadyBeforeStartingSettlements,
         isError: true,
       );
       return;
@@ -151,14 +148,8 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         }
         _showSnack(
           isReady
-              ? _plainLocalizedText(
-                  en: 'You marked yourself ready to settle.',
-                  lv: 'Tu atzīmēji sevi kā gatavu norēķiniem.',
-                )
-              : _plainLocalizedText(
-                  en: 'Ready-to-settle mark removed.',
-                  lv: 'Gatavības atzīme noņemta.',
-                ),
+              ? context.l10n.workspaceYouMarkedYourselfReadyToSettle
+              : context.l10n.workspaceReadyToSettleMarkRemoved,
         );
       },
     );
@@ -220,12 +211,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
           settlementId: settlementId,
         );
         if (mounted) {
-          _showSnack(
-            _plainLocalizedText(
-              en: 'Reminder sent.',
-              lv: 'Atgādinājums nosūtīts.',
-            ),
-          );
+          _showSnack(context.l10n.workspaceReminderSent);
         }
       },
     );
@@ -283,10 +269,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                   leading: const Icon(Icons.group_add_outlined),
                   title: Text(t.addMembersAction),
                   subtitle: Text(
-                    _plainLocalizedText(
-                      en: 'Invite link or add from friends',
-                      lv: 'Ielūguma saite vai pievienošana no draugiem',
-                    ),
+                    context.l10n.workspaceInviteLinkOrAddFromFriends,
                   ),
                   onTap: () => Navigator.of(sheetContext).pop('members'),
                 ),
@@ -335,10 +318,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
     if (!_isCurrentTripOwner()) {
       _showSnack(
-        _plainLocalizedText(
-          en: 'Only trip creator can edit this trip.',
-          lv: 'Šo ceļojumu drīkst labot tikai izveidotājs.',
-        ),
+        context.l10n.workspaceOnlyTripCreatorCanEditThisTrip,
         isError: true,
       );
       return;
@@ -387,9 +367,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _plainLocalizedText(en: 'Trip updated.', lv: 'Ceļojums atjaunināts.'),
-      );
+      _showSnack(context.l10n.workspaceTripUpdated);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -399,13 +377,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _plainLocalizedText(
-          en: 'Failed to update trip.',
-          lv: 'Neizdevās atjaunināt ceļojumu.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.workspaceFailedToUpdateTrip, isError: true);
     } finally {
       if (mounted) {
         _updateState(() {
@@ -447,12 +419,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                       onPressed: () => Navigator.of(
                         cupertinoContext,
                       ).pop(_TripImageSourceOption.remove),
-                      child: Text(
-                        _plainLocalizedText(
-                          en: 'Remove image',
-                          lv: 'Noņemt attēlu',
-                        ),
-                      ),
+                      child: Text(context.l10n.profileRemoveImage),
                     ),
                   CupertinoActionSheetAction(
                     onPressed: () => Navigator.of(
@@ -527,12 +494,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                 if (hasImage)
                   ListTile(
                     leading: const Icon(Icons.delete_outline),
-                    title: Text(
-                      _plainLocalizedText(
-                        en: 'Remove image',
-                        lv: 'Noņemt attēlu',
-                      ),
-                    ),
+                    title: Text(context.l10n.profileRemoveImage),
                     onTap: () => Navigator.of(
                       bottomSheetContext,
                     ).pop(_TripImageSourceOption.remove),
@@ -713,20 +675,14 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                         if (selectedImageName != null) ...[
                           const SizedBox(height: 4),
                           Text(
-                            _plainLocalizedText(
-                              en: 'Selected image: $selectedImageName',
-                              lv: 'Izvēlētais attēls: $selectedImageName',
-                            ),
+                            context.l10n.tripsSelectedImage(selectedImageName!),
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ] else if (existingTripImageUrl.isNotEmpty &&
                             !removeImageRequested) ...[
                           const SizedBox(height: 4),
                           Text(
-                            _plainLocalizedText(
-                              en: 'Trip image already set.',
-                              lv: 'Tripa attēls jau ir iestatīts.',
-                            ),
+                            context.l10n.tripsTripImageAlreadySet,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
@@ -808,12 +764,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
               ),
               ListTile(
                 leading: const Icon(Icons.casino_outlined),
-                title: Text(
-                  _plainLocalizedText(
-                    en: 'Random picker',
-                    lv: 'Nejaušā izvēle',
-                  ),
-                ),
+                title: Text(context.l10n.workspaceRandomPicker),
                 onTap: () => Navigator.of(sheetContext).pop('random_picker'),
               ),
               ListTile(
@@ -888,10 +839,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    _plainLocalizedText(
-                      en: 'Random picker',
-                      lv: 'Nejaušā izvēle',
-                    ),
+                    context.l10n.workspaceRandomPicker,
                     style: Theme.of(sheetContext).textTheme.titleMedium
                         ?.copyWith(fontWeight: FontWeight.w700),
                   ),
@@ -910,23 +858,11 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
     if (!_canEditMembers) {
-      _showSnack(
-        _plainLocalizedText(
-          en: 'Only trip creator can delete this trip.',
-          lv: 'Šo ceļojumu drīkst dzēst tikai izveidotājs.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellOnlyTripCreatorCanDelete, isError: true);
       return;
     }
     if (!_isTripActive) {
-      _showSnack(
-        _plainLocalizedText(
-          en: 'Only active trips can be deleted.',
-          lv: 'Dzēst var tikai aktīvus ceļojumus.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellOnlyActiveTripsCanDelete, isError: true);
       return;
     }
 
@@ -941,9 +877,8 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         return AlertDialog(
           title: Text('${t.deleteAction} ${t.tripTitleShort}'),
           content: Text(
-            _plainLocalizedText(
-              en: 'Delete "$tripLabel"? This is allowed only before any expenses are added.',
-              lv: 'Dzēst "$tripLabel"? Tas ir atļauts tikai pirms ceļojumam pievienoti izdevumi.',
+            context.l10n.tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded(
+              tripLabel,
             ),
           ),
           actions: [
@@ -976,9 +911,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _plainLocalizedText(en: 'Trip deleted.', lv: 'Ceļojums izdzēsts.'),
-      );
+      _showSnack(context.l10n.shellTripDeleted);
 
       final onExitRequested = widget.onExitRequested;
       if (onExitRequested != null) {
@@ -995,13 +928,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       if (!mounted) {
         return;
       }
-      _showSnack(
-        _plainLocalizedText(
-          en: 'Failed to delete trip.',
-          lv: 'Neizdevās izdzēst ceļojumu.',
-        ),
-        isError: true,
-      );
+      _showSnack(context.l10n.shellFailedToDeleteTrip, isError: true);
     } finally {
       if (mounted) {
         _updateState(() {

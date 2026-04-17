@@ -1,9 +1,8 @@
 part of 'trips_page.dart';
 
 extension _TripsPageDialogHelpers on _TripsPageState {
-  Future<({Uint8List bytes, String fileName})?> _pickTripImageForUploadFromSource(
-    ImageSource source,
-  ) async {
+  Future<({Uint8List bytes, String fileName})?>
+  _pickTripImageForUploadFromSource(ImageSource source) async {
     try {
       final picker = ImagePicker();
       final picked = await picker.pickImage(
@@ -58,11 +57,14 @@ extension _TripsPageDialogHelpers on _TripsPageState {
     return trimmed;
   }
 
-  Future<({Uint8List bytes, String fileName})?> _prepareTripImageBytesForUpload({
+  Future<({Uint8List bytes, String fileName})?>
+  _prepareTripImageBytesForUpload({
     required Uint8List rawBytes,
     required String fileName,
   }) async {
-    final originalName = fileName.trim().isEmpty ? 'trip-image' : fileName.trim();
+    final originalName = fileName.trim().isEmpty
+        ? 'trip-image'
+        : fileName.trim();
     final lowered = originalName.toLowerCase();
     final isDirectSupported =
         lowered.endsWith('.jpg') ||
@@ -76,7 +78,7 @@ extension _TripsPageDialogHelpers on _TripsPageState {
     final pngBytes = await _tryTranscodeToPng(rawBytes);
     if (pngBytes == null || pngBytes.isEmpty) {
       _showSnack(
-        'This image format is not supported on this device. Please choose JPG or PNG.',
+        context.l10n.profileImageFormatNotSupportedDevicePleaseChooseJpg,
         isError: true,
       );
       return null;

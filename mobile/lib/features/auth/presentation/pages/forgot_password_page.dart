@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_background.dart';
@@ -29,7 +30,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   String? _validateEmail(String? value) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     final email = (value ?? '').trim();
     if (email.isEmpty) {
       return t.emailRequired;
@@ -75,7 +76,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         return;
       }
       setState(() {
-        _errorText = context.l10n.requestFailedTryAgain;
+        _errorText = context.l10nEn.requestFailedTryAgain;
       });
     } finally {
       if (mounted) {
@@ -88,7 +89,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     final responsive = context.responsive;
     final horizontalPadding = responsive.pageHorizontalPadding;
 
@@ -125,26 +126,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   Widget _buildRequestForm(BuildContext context) {
-    final t = context.l10n;
+    final t = context.l10nEn;
+    final colorScheme = Theme.of(context).colorScheme;
+    final muted = AppDesign.mutedColor(context).withValues(alpha: 0.72);
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            t.forgotPasswordSubtitle,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
             t.emailAddressLabel,
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
@@ -152,34 +148,41 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             autocorrect: false,
             decoration: InputDecoration(
               hintText: t.emailHint,
-              filled: true,
-              fillColor: Theme.of(
-                context,
-              ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.75),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
+              hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: muted,
+                fontWeight: FontWeight.w500,
+              ),
+              filled: false,
+              isDense: true,
+              prefixIcon: Icon(
+                Icons.mail_outline_rounded,
+                color: muted,
+                size: 22,
+              ),
+              border: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.outlineVariant,
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.8),
+                  width: 1.2,
                 ),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
+              enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.outlineVariant.withValues(alpha: 0.8),
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.8),
+                  width: 1.2,
                 ),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.primary,
-                  width: 1.4,
-                ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: colorScheme.primary, width: 1.6),
+              ),
+              errorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: colorScheme.error, width: 1.4),
+              ),
+              focusedErrorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: colorScheme.error, width: 1.6),
               ),
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 18,
-                vertical: 18,
+                horizontal: 8,
+                vertical: 16,
               ),
             ),
             validator: _validateEmail,
@@ -218,7 +221,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   Widget _buildSuccessBody(BuildContext context) {
-    final t = context.l10n;
+    final t = context.l10nEn;
     final colorScheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

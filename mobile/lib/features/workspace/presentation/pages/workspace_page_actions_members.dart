@@ -14,11 +14,8 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
       isScrollControlled: true,
       builder: (sheetContext) {
         final maxHeight = MediaQuery.sizeOf(sheetContext).height * 0.72;
-        final title = _plainLocalizedText(
-          en: 'Trip members',
-          lv: 'Trip dalībnieki',
-        );
-        final youLabel = _plainLocalizedText(en: 'You', lv: 'Tu');
+        final title = context.l10n.workspaceTripMembers;
+        final youLabel = context.l10n.youLabel;
 
         return ConstrainedBox(
           constraints: BoxConstraints(maxHeight: maxHeight),
@@ -253,10 +250,8 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
             }
             setDialogState(() {
               friendQuickPicks = const <TripUser>[];
-              friendQuickPicksErrorText = _plainLocalizedText(
-                en: 'Failed to load friends.',
-                lv: 'Neizdevās ielādēt draugus.',
-              );
+              friendQuickPicksErrorText =
+                  context.l10n.workspaceFailedToLoadFriends;
             });
           } finally {
             if (canUpdateDialog()) {
@@ -301,20 +296,15 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
             setDialogState(() {
               inviteLinkErrorText = normalized.isNotEmpty
                   ? normalized
-                  : _plainLocalizedText(
-                      en: 'Failed to generate invite link.',
-                      lv: 'Neizdevās izveidot ielūguma saiti.',
-                    );
+                  : context.l10n.workspaceFailedToGenerateInviteLink;
             });
           } catch (_) {
             if (!canUpdateDialog()) {
               return;
             }
             setDialogState(() {
-              inviteLinkErrorText = _plainLocalizedText(
-                en: 'Failed to generate invite link.',
-                lv: 'Neizdevās izveidot ielūguma saiti.',
-              );
+              inviteLinkErrorText =
+                  context.l10n.workspaceFailedToGenerateInviteLink;
             });
           } finally {
             if (canUpdateDialog()) {
@@ -347,10 +337,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _plainLocalizedText(
-                          en: 'Invite link',
-                          lv: 'Ielūguma saite',
-                        ),
+                        context.l10n.workspaceInviteLink,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       const SizedBox(height: 6),
@@ -372,10 +359,9 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                             Expanded(
                               child: isInviteLinkLoading
                                   ? Text(
-                                      _plainLocalizedText(
-                                        en: 'Generating invite link...',
-                                        lv: 'Veido ielūguma saiti...',
-                                      ),
+                                      context
+                                          .l10n
+                                          .workspaceGeneratingInviteLink,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)
@@ -387,10 +373,9 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                                     )
                                   : Text(
                                       inviteLink.isEmpty
-                                          ? _plainLocalizedText(
-                                              en: 'Invite link unavailable.',
-                                              lv: 'Ielūguma saite nav pieejama.',
-                                            )
+                                          ? context
+                                                .l10n
+                                                .workspaceInviteLinkUnavailable
                                           : inviteLink,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -403,10 +388,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                                     ),
                             ),
                             IconButton(
-                              tooltip: _plainLocalizedText(
-                                en: 'Copy invite link',
-                                lv: 'Kopēt ielūguma saiti',
-                              ),
+                              tooltip: context.l10n.workspaceCopyInviteLink,
                               onPressed:
                                   isInviteLinkLoading || inviteLink.isEmpty
                                   ? null
@@ -418,10 +400,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                                         return;
                                       }
                                       _showSnack(
-                                        _plainLocalizedText(
-                                          en: 'Invite link copied.',
-                                          lv: 'Ielūguma saite nokopēta.',
-                                        ),
+                                        context.l10n.workspaceInviteLinkCopied,
                                       );
                                     },
                               icon: const Icon(Icons.copy_all_outlined),
@@ -444,9 +423,8 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                           inviteLinkExpiresAt != null) ...[
                         const SizedBox(height: 6),
                         Text(
-                          _plainLocalizedText(
-                            en: 'Expires: $inviteLinkExpiresAt UTC',
-                            lv: 'Derīga līdz: $inviteLinkExpiresAt UTC',
+                          context.l10n.workspaceExpiresUtc(
+                            inviteLinkExpiresAt!,
                           ),
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
@@ -459,7 +437,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                       const SizedBox(height: 6),
                       if (selectedUsers.isEmpty)
                         Text(
-                          'No members selected yet.',
+                          t.workspaceNoMembersSelectedYet,
                           style: Theme.of(context).textTheme.bodySmall,
                         )
                       else
@@ -482,7 +460,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                         ),
                       const SizedBox(height: 12),
                       Text(
-                        _plainLocalizedText(en: 'Friends', lv: 'Draugi'),
+                        context.l10n.navFriends,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       if (isLoadingFriendQuickPicks) ...[
@@ -501,10 +479,9 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                         )
                       else if (friendQuickPicks.isEmpty)
                         Text(
-                          _plainLocalizedText(
-                            en: 'No friends available. Add friends first.',
-                            lv: 'Draugu saraksts ir tukšs. Vispirms pievieno draugus.',
-                          ),
+                          context
+                              .l10n
+                              .workspaceNoFriendsAvailableAddFriendsFirst,
                           style: Theme.of(context).textTheme.bodySmall,
                         )
                       else

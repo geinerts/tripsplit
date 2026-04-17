@@ -156,12 +156,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
   }
 
   String _receiptSkippedOfflineMessage() {
-    final isLv =
-        Localizations.localeOf(context).languageCode.toLowerCase() == 'lv';
-    if (isLv) {
-      return 'Nav interneta. Izdevums tiks saglabāts bez čeka attēla.';
-    }
-    return 'No internet. Expense will be saved without receipt image.';
+    return context.l10n.workspaceNoInternetExpenseSavedWithoutReceiptImage;
   }
 
   Future<void> _onDeleteExpensePressed(TripExpense expense) async {
