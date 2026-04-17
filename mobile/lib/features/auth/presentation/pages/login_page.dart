@@ -85,7 +85,6 @@ class _LoginPageState extends State<LoginPage> {
   _AuthMode _mode = _AuthMode.login;
   bool _isSubmitting = false;
   bool _isNavigatingAway = false;
-  bool _rememberMe = false;
   bool _obscurePassword = true;
   bool _obscureRepeat = true;
   String? _errorText;

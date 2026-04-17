@@ -41,7 +41,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
             _buildRepeatPasswordField(context),
           ],
           const SizedBox(height: 12),
-          if (isLogin) _buildRememberAndForgotRow(context),
+          if (isLogin) _buildForgotPasswordRow(context),
           if (_errorText != null) ...[
             const SizedBox(height: 2),
             Text(
@@ -55,6 +55,8 @@ extension _LoginPageWidgetsForm on _LoginPageState {
           const SizedBox(height: 12),
           _buildSubmitButton(context),
           if (isLogin) ...[
+            const SizedBox(height: 14),
+            _buildOrRow(context),
             const SizedBox(height: 12),
             _buildSocialButtons(context),
           ],
@@ -96,34 +98,41 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   }
 
   Widget _buildSocialButtons(BuildContext context) {
+    final t = context.l10nEn;
     final showApple = Platform.isIOS;
     if (!showApple) {
-      return Center(
-        child: _buildSocialButton(
-          context: context,
-          semanticLabel: 'Google sign in',
-          icon: _buildGoogleLogo(context),
-          onPressed: _isSubmitting
-              ? null
-              : () => _onSocialPressed(_SocialAuthProvider.google),
-        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSocialButton(
+            context: context,
+            semanticLabel: t.authIntroContinueGoogle,
+            label: t.authIntroContinueGoogle,
+            icon: _buildGoogleLogo(context),
+            onPressed: _isSubmitting
+                ? null
+                : () => _onSocialPressed(_SocialAuthProvider.google),
+          ),
+        ],
       );
     }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildSocialButton(
           context: context,
-          semanticLabel: 'Google sign in',
+          semanticLabel: t.authIntroContinueGoogle,
+          label: t.authIntroContinueGoogle,
           icon: _buildGoogleLogo(context),
           onPressed: _isSubmitting
               ? null
               : () => _onSocialPressed(_SocialAuthProvider.google),
         ),
-        const SizedBox(width: 14),
+        const SizedBox(height: 10),
         _buildSocialButton(
           context: context,
-          semanticLabel: 'Apple sign in',
+          semanticLabel: t.authIntroContinueApple,
+          label: t.authIntroContinueApple,
           icon: _buildAppleLogo(context),
           onPressed: _isSubmitting
               ? null
@@ -136,44 +145,46 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   Widget _buildSocialButton({
     required BuildContext context,
     required String semanticLabel,
+    required String label,
     required Widget icon,
     required VoidCallback? onPressed,
   }) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final borderColor = colorScheme.outlineVariant.withValues(alpha: 0.9);
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.dark;
     return Semantics(
       button: true,
       label: semanticLabel,
-      child: OutlinedButton(
+      child: OutlinedButton.icon(
         onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: colorScheme.onSurface,
-          minimumSize: const Size(56, 56),
-          fixedSize: const Size(56, 56),
-          padding: EdgeInsets.zero,
-          side: BorderSide(color: borderColor, width: 1.4),
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+        icon: icon,
+        label: Text(
+          label,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: semantic.heroAvatarStroke.withValues(alpha: 0.95),
+            fontWeight: FontWeight.w700,
           ),
         ),
-        child: Center(child: icon),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: semantic.heroAvatarStroke.withValues(alpha: 0.95),
+          minimumSize: const Size.fromHeight(56),
+          side: BorderSide(color: semantic.cardGlassBorder, width: 1.2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+        ),
       ),
     );
   }
 
   Widget _buildGoogleLogo(BuildContext context) {
-    const iconSize = 26.0;
-    final isDark = AppDesign.isDark(context);
+    const iconSize = 24.0;
     return SizedBox(
       width: iconSize,
       height: iconSize,
       child: SvgPicture.asset(
-        isDark
-            ? 'assets/branding/google_g_logo_white.svg'
-            : 'assets/branding/google_g_logo_black.svg',
+        'assets/branding/google_g_logo.svg',
         width: iconSize,
         height: iconSize,
         fit: BoxFit.contain,
@@ -182,7 +193,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   }
 
   Widget _buildAppleLogo(BuildContext context) {
-    const iconSize = 26.0;
+    const iconSize = 24.0;
     final isDark = AppDesign.isDark(context);
     return SizedBox(
       width: iconSize,
@@ -347,27 +358,62 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     );
   }
 
-  Widget _buildRememberAndForgotRow(BuildContext context) {
+  Widget _buildForgotPasswordRow(BuildContext context) {
     final t = context.l10nEn;
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: _isSubmitting
+            ? null
+            : () => Navigator.of(context).pushNamed(AppRouter.forgotPassword),
+        child: Text(t.forgotPassword),
+      ),
+    );
+  }
+
+  Widget _buildOrRow(BuildContext context) {
+    final t = context.l10nEn;
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.dark;
+    final lineColor = semantic.cardGlassBorder.withValues(alpha: 0.42);
+    final textColor = semantic.cardGlassBorder.withValues(alpha: 0.62);
     return Row(
       children: [
-        Checkbox(
-          value: _rememberMe,
-          onChanged: _isSubmitting
-              ? null
-              : (value) {
-                  _updateState(() {
-                    _rememberMe = value ?? false;
-                  });
-                },
+        Expanded(
+          child: Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [lineColor, Colors.transparent],
+              ),
+            ),
+          ),
         ),
-        Text(t.rememberMe),
-        const Spacer(),
-        TextButton(
-          onPressed: _isSubmitting
-              ? null
-              : () => Navigator.of(context).pushNamed(AppRouter.forgotPassword),
-          child: Text(t.forgotPassword),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Text(
+            t.authIntroOr,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: textColor,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerRight,
+                end: Alignment.centerLeft,
+                colors: [lineColor, Colors.transparent],
+              ),
+            ),
+          ),
         ),
       ],
     );

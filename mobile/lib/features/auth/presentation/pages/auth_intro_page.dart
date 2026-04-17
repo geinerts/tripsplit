@@ -107,23 +107,18 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
     final semantic =
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.dark;
-    final viewport = MediaQuery.sizeOf(context);
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       barrierColor: semantic.modalBarrier,
-      constraints: BoxConstraints(maxWidth: viewport.width),
+      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width),
       builder: (_) {
-        return SizedBox(
-          width: double.infinity,
-          height: viewport.height * 0.53,
-          child: LoginPage(
-            controller: widget.controller,
-            startInRegister: false,
-            compactSheet: true,
-            showSheetClose: false,
-          ),
+        return LoginPage(
+          controller: widget.controller,
+          startInRegister: false,
+          compactSheet: true,
+          showSheetClose: false,
         );
       },
     );
@@ -133,23 +128,18 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
     final semantic =
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.dark;
-    final viewport = MediaQuery.sizeOf(context);
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       barrierColor: semantic.modalBarrier,
-      constraints: BoxConstraints(maxWidth: viewport.width),
+      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width),
       builder: (_) {
-        return SizedBox(
-          width: double.infinity,
-          height: viewport.height * 0.78,
-          child: LoginPage(
-            controller: widget.controller,
-            startInRegister: true,
-            compactSheet: true,
-            showSheetClose: false,
-          ),
+        return LoginPage(
+          controller: widget.controller,
+          startInRegister: true,
+          compactSheet: true,
+          showSheetClose: false,
         );
       },
     );
@@ -366,104 +356,99 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       child: Scaffold(
         backgroundColor: AppDesign.authCanvas,
         resizeToAvoidBottomInset: false,
-        body: Stack(
-          children: [
-            AuthBackgroundLayers(
-              child: SafeArea(
-                child: Stack(
-                  children: [
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        final heroWidth = constraints.maxWidth.clamp(
-                          242.0,
-                          315.0,
-                        );
-                        final heroViewportHeight =
-                            (constraints.maxHeight * 0.38).clamp(232.0, 300.0);
+        body: MediaQuery.removeViewInsets(
+          context: context,
+          removeBottom: true,
+          child: Stack(
+            children: [
+              AuthBackgroundLayers(
+                child: SafeArea(
+                  maintainBottomViewPadding: true,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final heroWidth = constraints.maxWidth
+                          .clamp(242.0, 315.0)
+                          .toDouble();
+                      // Keep hero scale stable even when keyboard insets
+                      // change available height during bottom-sheet focus.
+                      final heroViewportHeight = (heroWidth * 0.92)
+                          .clamp(232.0, 300.0)
+                          .toDouble();
 
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 12, 24, 22),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                flex: 32,
-                                child: Align(
-                                  alignment: Alignment.topCenter,
-                                  child: Transform.translate(
-                                    offset: const Offset(0, -14),
-                                    child: SizedBox(
-                                      width: heroWidth,
-                                      height: heroViewportHeight,
-                                      child: Align(
-                                        alignment: Alignment.topCenter,
-                                        child: FittedBox(
-                                          fit: BoxFit.contain,
-                                          alignment: Alignment.topCenter,
-                                          child: SizedBox(
-                                            width: 318,
-                                            height: 430,
-                                            child: _buildHero(),
-                                          ),
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 12, 24, 22),
+                        child: Stack(
+                          children: [
+                            IgnorePointer(
+                              child: RepaintBoundary(
+                                child: _AuthIntroStaticHero(
+                                  heroWidth: heroWidth,
+                                  heroViewportHeight: heroViewportHeight,
+                                  splitSettledLabel:
+                                      context.l10nEn.authIntroSplitSettled,
+                                  paris3FriendsLabel:
+                                      context.l10nEn.authIntroParis3Friends,
+                                ),
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: heroViewportHeight + 10),
+                                const SizedBox(height: 1),
+                                Container(
+                                  width: 42,
+                                  height: 1.2,
+                                  color: semantic.cardGlassBorder,
+                                ),
+                                const SizedBox(height: 4),
+                                Expanded(
+                                  child: PageView(
+                                    controller: _panelPageController,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    children: [
+                                      SizedBox.expand(
+                                        child: _buildIntroBottom(
+                                          key: const ValueKey('intro_bottom'),
+                                          slides: slides,
+                                          muted: muted,
                                         ),
                                       ),
-                                    ),
+                                      SizedBox.expand(
+                                        child: _buildChoiceBottom(
+                                          key: const ValueKey('choice_bottom'),
+                                          muted: muted,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 1),
-                              Container(
-                                width: 42,
-                                height: 1.2,
-                                color: semantic.cardGlassBorder,
-                              ),
-                              const SizedBox(height: 4),
-                              Flexible(
-                                flex: 48,
-                                child: PageView(
-                                  controller: _panelPageController,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  children: [
-                                    SizedBox.expand(
-                                      child: _buildIntroBottom(
-                                        key: const ValueKey('intro_bottom'),
-                                        slides: slides,
-                                        muted: muted,
-                                      ),
-                                    ),
-                                    SizedBox.expand(
-                                      child: _buildChoiceBottom(
-                                        key: const ValueKey('choice_bottom'),
-                                        muted: muted,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            if (_isSubmitting)
-              Positioned.fill(
-                child: AbsorbPointer(
-                  child: Container(
-                    color: semantic.heroMenuBackground,
-                    alignment: Alignment.center,
-                    child: const SizedBox(
-                      width: 28,
-                      height: 28,
-                      child: CircularProgressIndicator(strokeWidth: 2.4),
-                    ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
-          ],
+              if (_isSubmitting)
+                Positioned.fill(
+                  child: AbsorbPointer(
+                    child: Container(
+                      color: semantic.heroMenuBackground,
+                      alignment: Alignment.center,
+                      child: const SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: CircularProgressIndicator(strokeWidth: 2.4),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -638,114 +623,6 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
               fontSize: 14,
               height: 1.65,
               fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHero() {
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.dark;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: CustomPaint(
-              size: const Size(300, 300),
-              painter: _IntroGlobePainter(),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 34,
-          right: 0,
-          child: _buildPill(
-            label: 'EUR · USD · GBP · JPY',
-            background: semantic.cardGlassBackground.withValues(alpha: 0.22),
-            border: semantic.cardGlassBorder.withValues(alpha: 0.88),
-            textColor: AppDesign.darkForeground.withValues(alpha: 0.44),
-          ),
-        ),
-        Positioned(
-          top: 210,
-          left: 2,
-          child: _buildPill(
-            label: context.l10nEn.authIntroSplitSettled,
-            background: semantic.statusActiveBackground,
-            border: semantic.statusActiveBorder,
-            textColor: semantic.statusActiveForeground,
-            leadingDot: true,
-          ),
-        ),
-        Positioned(
-          top: 258,
-          right: 2,
-          child: _buildPill(
-            label: context.l10nEn.authIntroParis3Friends,
-            background: semantic.cardGlassBackground.withValues(alpha: 0.22),
-            border: semantic.cardGlassBorder.withValues(alpha: 0.88),
-            textColor: AppDesign.darkForeground.withValues(alpha: 0.40),
-          ),
-        ),
-        Positioned(
-          top: 332,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: Transform.scale(
-              scaleX: 1.30,
-              scaleY: 1.25,
-              child: Image.asset(
-                'assets/branding/logo_full_dark.png',
-                width: 220,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPill({
-    required String label,
-    required Color background,
-    required Color border,
-    required Color textColor,
-    bool leadingDot = false,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: border, width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (leadingDot)
-            Container(
-              width: 9,
-              height: 9,
-              margin: const EdgeInsets.only(right: 10),
-              decoration: const BoxDecoration(
-                color: AppDesign.authAccentSoft,
-                shape: BoxShape.circle,
-              ),
-            ),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: textColor,
-              fontSize: 14.1,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.1,
             ),
           ),
         ],
@@ -992,6 +869,182 @@ class _IntroSlide {
   final String titleTop;
   final String titleAccent;
   final String subtitle;
+}
+
+class _AuthIntroStaticHero extends StatelessWidget {
+  const _AuthIntroStaticHero({
+    required this.heroWidth,
+    required this.heroViewportHeight,
+    required this.splitSettledLabel,
+    required this.paris3FriendsLabel,
+  });
+
+  final double heroWidth;
+  final double heroViewportHeight;
+  final String splitSettledLabel;
+  final String paris3FriendsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: heroViewportHeight + 10,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Transform.translate(
+          offset: const Offset(0, -14),
+          child: SizedBox(
+            width: heroWidth,
+            height: heroViewportHeight,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                  width: 318,
+                  height: 430,
+                  child: _IntroHeroArt(
+                    splitSettledLabel: splitSettledLabel,
+                    paris3FriendsLabel: paris3FriendsLabel,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _IntroHeroArt extends StatelessWidget {
+  const _IntroHeroArt({
+    required this.splitSettledLabel,
+    required this.paris3FriendsLabel,
+  });
+
+  final String splitSettledLabel;
+  final String paris3FriendsLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.dark;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: CustomPaint(
+              size: const Size(300, 300),
+              painter: _IntroGlobePainter(),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 34,
+          right: 0,
+          child: _IntroPill(
+            label: 'EUR · USD · GBP · JPY',
+            background: semantic.cardGlassBackground.withValues(alpha: 0.22),
+            border: semantic.cardGlassBorder.withValues(alpha: 0.88),
+            textColor: AppDesign.darkForeground.withValues(alpha: 0.44),
+          ),
+        ),
+        Positioned(
+          top: 210,
+          left: 2,
+          child: _IntroPill(
+            label: splitSettledLabel,
+            background: semantic.statusActiveBackground,
+            border: semantic.statusActiveBorder,
+            textColor: semantic.statusActiveForeground,
+            leadingDot: true,
+          ),
+        ),
+        Positioned(
+          top: 258,
+          right: 2,
+          child: _IntroPill(
+            label: paris3FriendsLabel,
+            background: semantic.cardGlassBackground.withValues(alpha: 0.22),
+            border: semantic.cardGlassBorder.withValues(alpha: 0.88),
+            textColor: AppDesign.darkForeground.withValues(alpha: 0.40),
+          ),
+        ),
+        Positioned(
+          top: 332,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Transform.scale(
+              scaleX: 1.30,
+              scaleY: 1.25,
+              child: Image.asset(
+                'assets/branding/logo_full_dark.png',
+                width: 220,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _IntroPill extends StatelessWidget {
+  const _IntroPill({
+    required this.label,
+    required this.background,
+    required this.border,
+    required this.textColor,
+    this.leadingDot = false,
+  });
+
+  final String label;
+  final Color background;
+  final Color border;
+  final Color textColor;
+  final bool leadingDot;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: border, width: 1),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (leadingDot)
+            Container(
+              width: 9,
+              height: 9,
+              margin: const EdgeInsets.only(right: 10),
+              decoration: const BoxDecoration(
+                color: AppDesign.authAccentSoft,
+                shape: BoxShape.circle,
+              ),
+            ),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: textColor,
+              fontSize: 14.1,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _IntroGlobePainter extends CustomPainter {
