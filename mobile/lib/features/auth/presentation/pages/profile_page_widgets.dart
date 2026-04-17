@@ -144,15 +144,18 @@ extension _ProfilePageWidgets on _ProfilePageState {
             _buildProfileSectionCard(
               context: context,
               children: [
-                _buildProfileSwitchTile(
+                _buildProfileSwitchNavigationTile(
                   context: context,
                   title: context.l10n.profileAppBanners,
                   subtitle:
                       context.l10n.profileShowNewNotificationBannersInsideApp,
                   icon: Icons.chat_bubble_outline_rounded,
                   value: _inAppNotificationsEnabled,
+                  onTap: () {
+                    unawaited(_openInAppNotificationSettingsPage());
+                  },
                   onChanged: (value) {
-                    unawaited(_setInAppNotificationsEnabled(value));
+                    unawaited(_setAllInAppNotificationsEnabled(value));
                   },
                 ),
                 _buildProfileSwitchNavigationTile(
@@ -587,56 +590,6 @@ extension _ProfilePageWidgets on _ProfilePageState {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildProfileSwitchTile({
-    required BuildContext context,
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: Icon(icon, color: AppDesign.mutedColor(context)),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppDesign.titleColor(context),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppDesign.mutedColor(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Switch.adaptive(
-            value: value,
-            onChanged: _isBusy ? null : onChanged,
-            activeThumbColor: AppDesign.successColor(context),
-          ),
-        ],
       ),
     );
   }

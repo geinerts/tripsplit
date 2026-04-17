@@ -8,6 +8,10 @@ class UpdateNotificationPreferencesUseCase {
 
   Future<NotificationPreferences> call({
     bool? inAppBannerEnabled,
+    bool? inAppExpenseAddedEnabled,
+    bool? inAppFriendInvitesEnabled,
+    bool? inAppTripUpdatesEnabled,
+    bool? inAppSettlementUpdatesEnabled,
     bool? pushExpenseAddedEnabled,
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
@@ -15,6 +19,10 @@ class UpdateNotificationPreferencesUseCase {
   }) {
     return _repository.updateNotificationPreferences(
       inAppBannerEnabled: inAppBannerEnabled,
+      inAppExpenseAddedEnabled: inAppExpenseAddedEnabled,
+      inAppFriendInvitesEnabled: inAppFriendInvitesEnabled,
+      inAppTripUpdatesEnabled: inAppTripUpdatesEnabled,
+      inAppSettlementUpdatesEnabled: inAppSettlementUpdatesEnabled,
       pushExpenseAddedEnabled: pushExpenseAddedEnabled,
       pushFriendInvitesEnabled: pushFriendInvitesEnabled,
       pushTripUpdatesEnabled: pushTripUpdatesEnabled,

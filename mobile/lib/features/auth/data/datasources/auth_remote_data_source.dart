@@ -60,6 +60,10 @@ abstract class AuthRemoteDataSource {
 
   Future<NotificationPreferencesModel> updateNotificationPreferences({
     bool? inAppBannerEnabled,
+    bool? inAppExpenseAddedEnabled,
+    bool? inAppFriendInvitesEnabled,
+    bool? inAppTripUpdatesEnabled,
+    bool? inAppSettlementUpdatesEnabled,
     bool? pushExpenseAddedEnabled,
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
@@ -317,11 +321,29 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<NotificationPreferencesModel> updateNotificationPreferences({
     bool? inAppBannerEnabled,
+    bool? inAppExpenseAddedEnabled,
+    bool? inAppFriendInvitesEnabled,
+    bool? inAppTripUpdatesEnabled,
+    bool? inAppSettlementUpdatesEnabled,
     bool? pushExpenseAddedEnabled,
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
   }) async {
+    final inAppPayload = <String, dynamic>{};
+    if (inAppExpenseAddedEnabled != null) {
+      inAppPayload['expense_added'] = inAppExpenseAddedEnabled;
+    }
+    if (inAppFriendInvitesEnabled != null) {
+      inAppPayload['friend_invites'] = inAppFriendInvitesEnabled;
+    }
+    if (inAppTripUpdatesEnabled != null) {
+      inAppPayload['trip_updates'] = inAppTripUpdatesEnabled;
+    }
+    if (inAppSettlementUpdatesEnabled != null) {
+      inAppPayload['settlement_updates'] = inAppSettlementUpdatesEnabled;
+    }
+
     final pushPayload = <String, dynamic>{};
     if (pushExpenseAddedEnabled != null) {
       pushPayload['expense_added'] = pushExpenseAddedEnabled;
@@ -339,6 +361,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final payload = <String, dynamic>{};
     if (inAppBannerEnabled != null) {
       payload['in_app_banner_enabled'] = inAppBannerEnabled;
+    }
+    if (inAppPayload.isNotEmpty) {
+      payload['in_app'] = inAppPayload;
     }
     if (pushPayload.isNotEmpty) {
       payload['push'] = pushPayload;

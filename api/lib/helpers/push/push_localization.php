@@ -55,8 +55,6 @@ function push_localized_notification_title(string $type, string $rawTitle, strin
             return push_locale_phrase($locale, 'friend_invite_title');
         case 'friend_invite_accepted':
             return push_locale_phrase($locale, 'friend_invite_accepted_title');
-        case 'friend_invite_rejected':
-            return push_locale_phrase($locale, 'friend_invite_rejected_title');
         case 'trip_added':
         case 'trip_member_added':
             return push_locale_phrase($locale, 'trip_added_title');
@@ -108,14 +106,6 @@ function push_localized_notification_body(string $type, string $rawBody, string 
                 );
             }
             return push_locale_phrase($locale, 'friend_invite_accepted_body_generic');
-        case 'friend_invite_rejected':
-            if (preg_match('/^(.+?) declined your friend invite\.$/u', $rawBody, $match) === 1) {
-                return push_locale_format(
-                    push_locale_phrase($locale, 'friend_invite_rejected_body'),
-                    ['name' => trim((string) ($match[1] ?? ''))]
-                );
-            }
-            return push_locale_phrase($locale, 'friend_invite_rejected_body_generic');
         case 'trip_added':
         case 'trip_member_added':
             if (preg_match('/^(.+?) added you to trip "(.+?)"\.$/u', $rawBody, $match) === 1) {
@@ -287,9 +277,6 @@ function push_locale_phrase(string $locale, string $key): string
             'friend_invite_accepted_title' => 'Uzaicinājums apstiprināts',
             'friend_invite_accepted_body' => '{name} apstiprināja tavu drauga uzaicinājumu.',
             'friend_invite_accepted_body_generic' => 'Tavs drauga uzaicinājums tika apstiprināts.',
-            'friend_invite_rejected_title' => 'Uzaicinājums noraidīts',
-            'friend_invite_rejected_body' => '{name} noraidīja tavu drauga uzaicinājumu.',
-            'friend_invite_rejected_body_generic' => 'Tavs drauga uzaicinājums tika noraidīts.',
             'trip_added_title' => 'Pievienots ceļojumam',
             'trip_added_body' => '{name} tevi pievienoja ceļojumam "{trip}".',
             'trip_added_body_generic' => 'Tu tiki pievienots ceļojumam.',
@@ -331,9 +318,6 @@ function push_locale_phrase(string $locale, string $key): string
             'friend_invite_accepted_title' => 'Invitación aceptada',
             'friend_invite_accepted_body' => '{name} aceptó tu invitación de amistad.',
             'friend_invite_accepted_body_generic' => 'Tu invitación de amistad fue aceptada.',
-            'friend_invite_rejected_title' => 'Invitación rechazada',
-            'friend_invite_rejected_body' => '{name} rechazó tu invitación de amistad.',
-            'friend_invite_rejected_body_generic' => 'Tu invitación de amistad fue rechazada.',
             'trip_added_title' => 'Añadido al viaje',
             'trip_added_body' => '{name} te añadió al viaje "{trip}".',
             'trip_added_body_generic' => 'Fuiste añadido a un viaje.',

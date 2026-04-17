@@ -171,8 +171,11 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
             ? context.l10n.workspaceExpense
             : categoryLabel;
 
-        children.add(
-          Padding(
+        final canSwipe = snapshot.isActive &&
+            expense.paidById == _currentUserId &&
+            !_isMutating;
+        Widget buildCard() {
+          return Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
             child: Card(
               color: isDark ? colors.surface : AppDesign.lightSurface,
@@ -364,8 +367,31 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                 ),
               ),
             ),
-          ),
-        );
+          );
+        }
+        if (canSwipe) {
+          children.add(
+            Dismissible(
+              key: ValueKey('expense_swipe_${expense.id}'),
+              direction: DismissDirection.horizontal,
+              background: _buildSwipeEditBg(),
+              secondaryBackground: _buildSwipeDeleteBg(),
+              confirmDismiss: (direction) async {
+                if (direction == DismissDirection.startToEnd) {
+                  Future.delayed(const Duration(milliseconds: 280), () {
+                    if (mounted) unawaited(_onEditExpensePressed(expense));
+                  });
+                  return false;
+                }
+                return _confirmSwipeDelete(expense);
+              },
+              onDismissed: (_) => unawaited(_deleteExpenseAfterSwipe(expense)),
+              child: buildCard(),
+            ),
+          );
+        } else {
+          children.add(buildCard());
+        }
       }
     }
 
@@ -407,5 +433,89 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 18),
       children: children,
     );
+  }
+
+  Widget _buildSwipeEditBg() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppDesign.lightPrimary,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.edit_outlined, color: Colors.white, size: 26),
+            SizedBox(width: 8),
+            Text(
+              'Edit',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSwipeDeleteBg() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppDesign.lightDestructive,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            Text(
+              'Delete',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+              ),
+            ),
+            SizedBox(width: 8),
+            Icon(Icons.delete_outline, color: Colors.white, size: 26),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<bool> _confirmSwipeDelete(TripExpense expense) async {
+    final t = context.l10n;
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(t.deleteExpenseTitle),
+        content: Text(t.deleteExpenseConfirmQuestion),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(t.cancelAction),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: AppDesign.lightDestructive,
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(t.deleteAction),
+          ),
+        ],
+      ),
+    );
+    return result == true;
   }
 }

@@ -76,7 +76,8 @@ function workspace_sync_cursor_for_trip(PDO $pdo, int $tripId, int $userId): int
                 'SELECT MAX(GREATEST(created_at, COALESCE(read_at, created_at)))
                  FROM ' . $notificationsTable . '
                  WHERE trip_id = :trip_id
-                   AND user_id = :user_id',
+                   AND user_id = :user_id
+                   AND type <> "friend_invite_rejected"',
             'params' => [
                 'trip_id' => $tripId,
                 'user_id' => $userId,
@@ -326,6 +327,7 @@ function workspace_load_trip_notifications(
          FROM ' . $notificationsTable . '
          WHERE user_id = :user_id
            AND trip_id = :trip_id
+           AND type <> "friend_invite_rejected"
          ORDER BY id DESC
          LIMIT ' . $limit
     );
@@ -340,6 +342,7 @@ function workspace_load_trip_notifications(
          FROM ' . $notificationsTable . '
          WHERE user_id = :user_id
            AND trip_id = :trip_id
+           AND type <> "friend_invite_rejected"
            AND is_read = 0'
     );
     $unreadStmt->execute([

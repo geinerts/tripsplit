@@ -19,9 +19,6 @@ final RegExp _friendInviteBodyPattern = RegExp(
 final RegExp _friendInviteAcceptedBodyPattern = RegExp(
   r'^(.+?) accepted your friend invite\.$',
 );
-final RegExp _friendInviteRejectedBodyPattern = RegExp(
-  r'^(.+?) declined your friend invite\.$',
-);
 
 final RegExp _tripAddedBodyPattern = RegExp(
   r'^(.+?) added you to trip "(.+?)"\.$',
@@ -109,22 +106,6 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
         return LocalizedWorkspaceNotification(
           title: t.notificationFriendInviteAcceptedTitle,
           body: t.notificationFriendInviteAcceptedBodyGeneric,
-        );
-      }
-    case 'friend_invite_rejected':
-      {
-        final match = _friendInviteRejectedBodyPattern.firstMatch(rawBody);
-        if (match != null) {
-          return LocalizedWorkspaceNotification(
-            title: t.notificationFriendInviteRejectedTitle,
-            body: t.notificationFriendInviteRejectedBody(
-              match.group(1)!.trim(),
-            ),
-          );
-        }
-        return LocalizedWorkspaceNotification(
-          title: t.notificationFriendInviteRejectedTitle,
-          body: t.notificationFriendInviteRejectedBodyGeneric,
         );
       }
     case 'trip_added':

@@ -224,6 +224,10 @@ CREATE TABLE IF NOT EXISTS trip_push_queue (
 CREATE TABLE IF NOT EXISTS trip_user_notification_preferences (
   user_id INT UNSIGNED NOT NULL,
   in_app_banner_enabled TINYINT(1) NOT NULL DEFAULT 1,
+  in_app_expense_added_enabled TINYINT(1) NOT NULL DEFAULT 1,
+  in_app_friend_invites_enabled TINYINT(1) NOT NULL DEFAULT 1,
+  in_app_trip_updates_enabled TINYINT(1) NOT NULL DEFAULT 1,
+  in_app_settlement_updates_enabled TINYINT(1) NOT NULL DEFAULT 1,
   push_expense_added_enabled TINYINT(1) NOT NULL DEFAULT 1,
   push_friend_invites_enabled TINYINT(1) NOT NULL DEFAULT 1,
   push_trip_updates_enabled TINYINT(1) NOT NULL DEFAULT 1,

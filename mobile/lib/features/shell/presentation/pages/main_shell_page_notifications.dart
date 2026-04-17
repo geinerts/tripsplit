@@ -4,8 +4,38 @@ extension _MainShellPageNotifications on _MainShellPageState {
   bool _isFriendNotificationType(String rawType) {
     final type = rawType.trim().toLowerCase();
     return type == 'friend_invite' ||
-        type == 'friend_invite_accepted' ||
-        type == 'friend_invite_rejected';
+        type == 'friend_invite_received' ||
+        type == 'friend_invite_accepted';
+  }
+
+  bool _inAppCategoryEnabledForType(String rawType) {
+    final type = rawType.trim().toLowerCase();
+    final prefs = widget.authController.notificationPreferences;
+    if (!prefs.inAppBannerEnabled) {
+      return false;
+    }
+    if (type == 'expense_added') {
+      return prefs.inAppExpenseAddedEnabled;
+    }
+    if (type == 'friend_invite' ||
+        type == 'friend_invite_received' ||
+        type == 'friend_invite_accepted') {
+      return prefs.inAppFriendInvitesEnabled;
+    }
+    if (type == 'trip_added' ||
+        type == 'trip_member_added' ||
+        type == 'trip_finished' ||
+        type == 'trip_ready_to_settle' ||
+        type == 'member_ready_to_settle') {
+      return prefs.inAppTripUpdatesEnabled;
+    }
+    if (type == 'settlement_sent' ||
+        type == 'settlement_confirmed' ||
+        type == 'settlement_reminder' ||
+        type == 'settlement_auto_reminder') {
+      return prefs.inAppSettlementUpdatesEnabled;
+    }
+    return true;
   }
 
   Future<void> _refreshGlobalNotifications({
@@ -79,7 +109,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
 
     WorkspaceNotification? newestUnread;
     for (final item in _sortNotifications(inbox.notifications)) {
-      if (!item.isRead) {
+      if (!item.isRead && _inAppCategoryEnabledForType(item.type)) {
         newestUnread = item;
         break;
       }
@@ -280,12 +310,11 @@ extension _MainShellPageNotifications on _MainShellPageState {
     final metaText = metaParts.join(' • ');
     final isUnread = !notification.isRead;
     IconData icon = Icons.notifications_none_outlined;
-    if (notification.type == 'friend_invite') {
+    if (notification.type == 'friend_invite' ||
+        notification.type == 'friend_invite_received') {
       icon = Icons.person_add_alt_1_outlined;
     } else if (notification.type == 'friend_invite_accepted') {
       icon = Icons.how_to_reg_outlined;
-    } else if (notification.type == 'friend_invite_rejected') {
-      icon = Icons.person_off_outlined;
     } else if (notification.type == 'expense_added') {
       icon = Icons.receipt_long_outlined;
     } else if (notification.type == 'trip_finished') {

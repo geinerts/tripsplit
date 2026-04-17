@@ -50,6 +50,46 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
     return days;
   }
 
+  List<DateTime> _allTripDays(WorkspaceSnapshot snapshot) {
+    if (snapshot.expenses.isEmpty) {
+      return [];
+    }
+
+    DateTime? minDay;
+    DateTime? maxDay;
+    for (final expense in snapshot.expenses) {
+      final day = _parseExpenseDay(expense.expenseDate);
+      if (day == null) {
+        continue;
+      }
+      if (minDay == null || day.isBefore(minDay)) {
+        minDay = day;
+      }
+      if (maxDay == null || day.isAfter(maxDay)) {
+        maxDay = day;
+      }
+    }
+
+    if (minDay == null || maxDay == null) {
+      return [];
+    }
+
+    // Cap at 90 contiguous days ending on the latest expense date.
+    const maxDays = 90;
+    final span = maxDay.difference(minDay).inDays + 1;
+    final effectiveMin = span > maxDays
+        ? maxDay.subtract(const Duration(days: maxDays - 1))
+        : minDay;
+
+    final days = <DateTime>[];
+    var current = effectiveMin;
+    while (!current.isAfter(maxDay)) {
+      days.add(current);
+      current = current.add(const Duration(days: 1));
+    }
+    return days;
+  }
+
   List<_MemberMeta> _membersForSnapshot(WorkspaceSnapshot snapshot) {
     final byId = <int, _MemberMeta>{
       for (final user in snapshot.users)

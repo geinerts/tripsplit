@@ -31,6 +31,7 @@ import '../controllers/auth_controller.dart';
 
 part 'profile_page_actions.dart';
 part 'profile_page_edit.dart';
+part 'profile_page_in_app_notifications.dart';
 part 'profile_page_navigation.dart';
 part 'profile_page_push_notifications.dart';
 part 'profile_page_settings.dart';
@@ -119,7 +120,15 @@ class _ProfilePageState extends State<ProfilePage> {
   String _draftRepeatPassword = '';
   String _deactivateDraftPassword = '';
   bool _isDeactivateAccountPage = false;
-  bool _inAppNotificationsEnabled = true;
+  bool _inAppExpenseUpdatesEnabled = true;
+  bool _inAppFriendInvitesEnabled = true;
+  bool _inAppTripUpdatesEnabled = true;
+  bool _inAppSettlementUpdatesEnabled = true;
+  bool get _inAppNotificationsEnabled =>
+      _inAppExpenseUpdatesEnabled ||
+      _inAppFriendInvitesEnabled ||
+      _inAppTripUpdatesEnabled ||
+      _inAppSettlementUpdatesEnabled;
   bool _pushExpenseUpdatesEnabled = true;
   bool _pushFriendInvitesEnabled = true;
   bool _pushTripUpdatesEnabled = true;

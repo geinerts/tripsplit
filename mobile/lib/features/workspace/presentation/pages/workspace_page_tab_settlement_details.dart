@@ -556,88 +556,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     required List<_SettlementFlowStep> steps,
     required int highlightIndex,
   }) {
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.light;
-    final inactiveColor = semantic.flowConnectorPending;
-
-    return Column(
-      children: [
-        Row(
-          children: [
-            for (var i = 0; i < steps.length; i++) ...[
-              _buildSettlementFlowDot(
-                context: context,
-                icon: steps[i].icon,
-                isDone: steps[i].isDone,
-                isCurrent: !steps[i].isDone && i == highlightIndex,
-              ),
-              if (i < steps.length - 1)
-                Expanded(
-                  child: Container(
-                    height: 2,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    color: steps[i + 1].isDone
-                        ? semantic.flowConnectorDone
-                        : inactiveColor,
-                  ),
-                ),
-            ],
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            for (var i = 0; i < steps.length; i++)
-              Expanded(
-                child: Text(
-                  steps[i].title,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: steps[i].isDone
-                        ? semantic.flowStepDone
-                        : (!steps[i].isDone && i == highlightIndex
-                              ? semantic.flowStepCurrent
-                              : Theme.of(context).colorScheme.onSurfaceVariant),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSettlementFlowDot({
-    required BuildContext context,
-    required IconData icon,
-    required bool isDone,
-    required bool isCurrent,
-  }) {
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.light;
-    final baseColor = isDone
-        ? semantic.flowStepDone
-        : (isCurrent ? semantic.flowStepCurrent : semantic.flowStepPending);
-    return Container(
-      width: 34,
-      height: 34,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: baseColor.withValues(alpha: isDone || isCurrent ? 0.18 : 0.12),
-        border: Border.all(
-          color: baseColor.withValues(alpha: isDone || isCurrent ? 0.88 : 0.44),
-          width: isCurrent ? 1.8 : 1.2,
-        ),
-      ),
-      alignment: Alignment.center,
-      child: Icon(
-        isDone ? Icons.check_rounded : icon,
-        size: 17,
-        color: baseColor,
-      ),
+    return _AnimatedSettlementTimeline(
+      steps: steps,
+      highlightIndex: highlightIndex,
     );
   }
 
@@ -1195,4 +1116,257 @@ class _SettlementFlowStep {
   final IconData icon;
   final bool isDone;
   final String? completedAtRaw;
+}
+
+// ─── Animated step-by-step timeline ──────────────────────────────────────────
+
+class _AnimatedSettlementTimeline extends StatefulWidget {
+  const _AnimatedSettlementTimeline({
+    required this.steps,
+    required this.highlightIndex,
+  });
+
+  final List<_SettlementFlowStep> steps;
+  final int highlightIndex;
+
+  @override
+  State<_AnimatedSettlementTimeline> createState() =>
+      _AnimatedSettlementTimelineState();
+}
+
+class _AnimatedSettlementTimelineState
+    extends State<_AnimatedSettlementTimeline>
+    with TickerProviderStateMixin {
+  // One scale controller per dot — elasticOut pop-in.
+  late final List<AnimationController> _dotControllers;
+  late final List<Animation<double>> _dotScales;
+  // Separate easeOut curve for label opacity so elastic overshoot doesn't clip.
+  late final List<Animation<double>> _dotFades;
+
+  // One controller per connector segment — easeOut draw-in from left.
+  late final List<AnimationController> _connectorControllers;
+
+  // Looping pulse for the active (current) dot.
+  AnimationController? _pulseController;
+  Animation<double>? _pulseAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    final n = widget.steps.length;
+
+    _dotControllers = List.generate(
+      n,
+      (_) => AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 420),
+      ),
+    );
+    _dotScales = _dotControllers
+        .map((c) => CurvedAnimation(parent: c, curve: Curves.elasticOut))
+        .toList();
+    _dotFades = _dotControllers
+        .map((c) => CurvedAnimation(parent: c, curve: Curves.easeOut))
+        .toList();
+
+    _connectorControllers = List.generate(
+      (n - 1).clamp(0, n),
+      (_) => AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 300),
+      ),
+    );
+
+    // Pulse only when there is an active step that isn't finished yet.
+    final hasActive = widget.steps.any((s) => !s.isDone);
+    if (hasActive) {
+      _pulseController = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 1300),
+      );
+      _pulseAnim = Tween<double>(begin: 1.0, end: 1.14).animate(
+        CurvedAnimation(parent: _pulseController!, curve: Curves.easeInOut),
+      );
+      _pulseController!.repeat(reverse: true);
+    }
+
+    _runEntrance();
+  }
+
+  /// Staggers the dot pop-ins and connector draw-ins.
+  ///   dot[0]       → t = 60 ms
+  ///   connector[0] → t = 130 ms
+  ///   dot[1]       → t = 180 ms
+  ///   connector[1] → t = 250 ms
+  ///   …
+  void _runEntrance() {
+    const initialDelay = 60;
+    const stagger = 120;
+    const connectorOffset = 70;
+
+    for (var i = 0; i < widget.steps.length; i++) {
+      final t = initialDelay + i * stagger;
+      Future<void>.delayed(Duration(milliseconds: t), () {
+        if (mounted) _dotControllers[i].forward();
+      });
+      if (i < _connectorControllers.length) {
+        Future<void>.delayed(
+          Duration(milliseconds: t + connectorOffset),
+          () {
+            if (mounted) _connectorControllers[i].forward();
+          },
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final c in _dotControllers) {
+      c.dispose();
+    }
+    for (final c in _connectorControllers) {
+      c.dispose();
+    }
+    _pulseController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic =
+        Theme.of(context).extension<AppSemanticColors>() ??
+        AppSemanticColors.light;
+    final steps = widget.steps;
+    final n = steps.length;
+    final hi = widget.highlightIndex;
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            for (var i = 0; i < n; i++) ...[
+              ScaleTransition(
+                scale: _dotScales[i],
+                child: _buildDot(context, steps[i], i, hi, semantic),
+              ),
+              if (i < n - 1)
+                Expanded(
+                  child: _buildConnector(
+                    context,
+                    index: i,
+                    nextIsDone: steps[i + 1].isDone,
+                    semantic: semantic,
+                  ),
+                ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            for (var i = 0; i < n; i++)
+              Expanded(
+                child: FadeTransition(
+                  opacity: _dotFades[i],
+                  child: Text(
+                    steps[i].title,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: steps[i].isDone
+                          ? semantic.flowStepDone
+                          : (i == hi
+                              ? semantic.flowStepCurrent
+                              : Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDot(
+    BuildContext context,
+    _SettlementFlowStep step,
+    int index,
+    int highlightIndex,
+    AppSemanticColors semantic,
+  ) {
+    final isDone = step.isDone;
+    final isCurrent = !isDone && index == highlightIndex;
+    final baseColor = isDone
+        ? semantic.flowStepDone
+        : (isCurrent ? semantic.flowStepCurrent : semantic.flowStepPending);
+
+    Widget dot = Container(
+      width: 34,
+      height: 34,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: baseColor.withValues(alpha: isDone || isCurrent ? 0.18 : 0.12),
+        border: Border.all(
+          color: baseColor.withValues(alpha: isDone || isCurrent ? 0.88 : 0.44),
+          width: isCurrent ? 1.8 : 1.2,
+        ),
+      ),
+      alignment: Alignment.center,
+      child: Icon(
+        isDone ? Icons.check_rounded : step.icon,
+        size: 17,
+        color: baseColor,
+      ),
+    );
+
+    // Wrap the current dot in a looping pulse.
+    final pulse = _pulseAnim;
+    if (isCurrent && pulse != null) {
+      dot = AnimatedBuilder(
+        animation: pulse,
+        builder: (_, child) => Transform.scale(scale: pulse.value, child: child),
+        child: dot,
+      );
+    }
+
+    return dot;
+  }
+
+  Widget _buildConnector(
+    BuildContext context, {
+    required int index,
+    required bool nextIsDone,
+    required AppSemanticColors semantic,
+  }) {
+    final color = nextIsDone
+        ? semantic.flowConnectorDone
+        : semantic.flowConnectorPending;
+
+    return Container(
+      height: 2,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return AnimatedBuilder(
+            animation: _connectorControllers[index],
+            builder: (_, child) {
+              final fill = _connectorControllers[index].value;
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: constraints.maxWidth * fill,
+                  height: 2,
+                  child: ColoredBox(color: color),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 }

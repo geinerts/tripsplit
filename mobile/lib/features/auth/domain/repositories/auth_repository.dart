@@ -56,6 +56,10 @@ abstract class AuthRepository {
 
   Future<NotificationPreferences> updateNotificationPreferences({
     bool? inAppBannerEnabled,
+    bool? inAppExpenseAddedEnabled,
+    bool? inAppFriendInvitesEnabled,
+    bool? inAppTripUpdatesEnabled,
+    bool? inAppSettlementUpdatesEnabled,
     bool? pushExpenseAddedEnabled,
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,

@@ -5,6 +5,10 @@ function notification_preferences_defaults(): array
 {
     return [
         'in_app_banner_enabled' => true,
+        'in_app_expense_added_enabled' => true,
+        'in_app_friend_invites_enabled' => true,
+        'in_app_trip_updates_enabled' => true,
+        'in_app_settlement_updates_enabled' => true,
         'push_expense_added_enabled' => true,
         'push_friend_invites_enabled' => true,
         'push_trip_updates_enabled' => true,
@@ -78,6 +82,10 @@ function normalize_notification_preferences_patch(array $input): array
     $patch = [];
     $flatMap = [
         'in_app_banner_enabled' => 'in_app_banner_enabled',
+        'in_app_expense_added_enabled' => 'in_app_expense_added_enabled',
+        'in_app_friend_invites_enabled' => 'in_app_friend_invites_enabled',
+        'in_app_trip_updates_enabled' => 'in_app_trip_updates_enabled',
+        'in_app_settlement_updates_enabled' => 'in_app_settlement_updates_enabled',
         'push_expense_added_enabled' => 'push_expense_added_enabled',
         'push_friend_invites_enabled' => 'push_friend_invites_enabled',
         'push_trip_updates_enabled' => 'push_trip_updates_enabled',
@@ -93,6 +101,27 @@ function normalize_notification_preferences_patch(array $input): array
             throw new InvalidArgumentException('Invalid boolean value for "' . $inputKey . '".');
         }
         $patch[$targetKey] = $value;
+    }
+
+    $inAppPayload = $input['in_app'] ?? null;
+    if (is_array($inAppPayload)) {
+        $nestedMap = [
+            'expense_added' => 'in_app_expense_added_enabled',
+            'friend_invites' => 'in_app_friend_invites_enabled',
+            'trip_updates' => 'in_app_trip_updates_enabled',
+            'settlement_updates' => 'in_app_settlement_updates_enabled',
+        ];
+        foreach ($nestedMap as $inputKey => $targetKey) {
+            if (!array_key_exists($inputKey, $inAppPayload)) {
+                continue;
+            }
+            $isValid = true;
+            $value = normalize_notification_preference_bool($inAppPayload[$inputKey], $isValid);
+            if (!$isValid) {
+                throw new InvalidArgumentException('Invalid boolean value for "in_app.' . $inputKey . '".');
+            }
+            $patch[$targetKey] = $value;
+        }
     }
 
     $pushPayload = $input['push'] ?? null;
@@ -140,6 +169,10 @@ function load_user_notification_preferences(PDO $pdo, int $userId): array
     $stmt = $pdo->prepare(
         'SELECT
             in_app_banner_enabled,
+            in_app_expense_added_enabled,
+            in_app_friend_invites_enabled,
+            in_app_trip_updates_enabled,
+            in_app_settlement_updates_enabled,
             push_expense_added_enabled,
             push_friend_invites_enabled,
             push_trip_updates_enabled,
@@ -157,6 +190,10 @@ function load_user_notification_preferences(PDO $pdo, int $userId): array
 
     $cache[$userId] = [
         'in_app_banner_enabled' => ((int) ($row['in_app_banner_enabled'] ?? 1)) === 1,
+        'in_app_expense_added_enabled' => ((int) ($row['in_app_expense_added_enabled'] ?? 1)) === 1,
+        'in_app_friend_invites_enabled' => ((int) ($row['in_app_friend_invites_enabled'] ?? 1)) === 1,
+        'in_app_trip_updates_enabled' => ((int) ($row['in_app_trip_updates_enabled'] ?? 1)) === 1,
+        'in_app_settlement_updates_enabled' => ((int) ($row['in_app_settlement_updates_enabled'] ?? 1)) === 1,
         'push_expense_added_enabled' => ((int) ($row['push_expense_added_enabled'] ?? 1)) === 1,
         'push_friend_invites_enabled' => ((int) ($row['push_friend_invites_enabled'] ?? 1)) === 1,
         'push_trip_updates_enabled' => ((int) ($row['push_trip_updates_enabled'] ?? 1)) === 1,
@@ -172,6 +209,28 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
     }
 
     $current = load_user_notification_preferences($pdo, $userId);
+    $inAppPrefKeys = [
+        'in_app_expense_added_enabled',
+        'in_app_friend_invites_enabled',
+        'in_app_trip_updates_enabled',
+        'in_app_settlement_updates_enabled',
+    ];
+    $hasAnyInAppCategoryPatch = false;
+    foreach ($inAppPrefKeys as $prefKey) {
+        if (array_key_exists($prefKey, $patch)) {
+            $hasAnyInAppCategoryPatch = true;
+            break;
+        }
+    }
+    if ($hasAnyInAppCategoryPatch && !array_key_exists('in_app_banner_enabled', $patch)) {
+        $patch['in_app_banner_enabled'] = false;
+        foreach ($inAppPrefKeys as $prefKey) {
+            if ((bool) ($patch[$prefKey] ?? $current[$prefKey] ?? true)) {
+                $patch['in_app_banner_enabled'] = true;
+                break;
+            }
+        }
+    }
     if (!$patch) {
         return $current;
     }
@@ -183,6 +242,10 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
          (
             user_id,
             in_app_banner_enabled,
+            in_app_expense_added_enabled,
+            in_app_friend_invites_enabled,
+            in_app_trip_updates_enabled,
+            in_app_settlement_updates_enabled,
             push_expense_added_enabled,
             push_friend_invites_enabled,
             push_trip_updates_enabled,
@@ -192,6 +255,10 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
          (
             :user_id,
             :in_app_banner_enabled,
+            :in_app_expense_added_enabled,
+            :in_app_friend_invites_enabled,
+            :in_app_trip_updates_enabled,
+            :in_app_settlement_updates_enabled,
             :push_expense_added_enabled,
             :push_friend_invites_enabled,
             :push_trip_updates_enabled,
@@ -199,6 +266,10 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
          )
          ON DUPLICATE KEY UPDATE
             in_app_banner_enabled = VALUES(in_app_banner_enabled),
+            in_app_expense_added_enabled = VALUES(in_app_expense_added_enabled),
+            in_app_friend_invites_enabled = VALUES(in_app_friend_invites_enabled),
+            in_app_trip_updates_enabled = VALUES(in_app_trip_updates_enabled),
+            in_app_settlement_updates_enabled = VALUES(in_app_settlement_updates_enabled),
             push_expense_added_enabled = VALUES(push_expense_added_enabled),
             push_friend_invites_enabled = VALUES(push_friend_invites_enabled),
             push_trip_updates_enabled = VALUES(push_trip_updates_enabled),
@@ -208,6 +279,10 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
     $stmt->execute([
         'user_id' => $userId,
         'in_app_banner_enabled' => $next['in_app_banner_enabled'] ? 1 : 0,
+        'in_app_expense_added_enabled' => $next['in_app_expense_added_enabled'] ? 1 : 0,
+        'in_app_friend_invites_enabled' => $next['in_app_friend_invites_enabled'] ? 1 : 0,
+        'in_app_trip_updates_enabled' => $next['in_app_trip_updates_enabled'] ? 1 : 0,
+        'in_app_settlement_updates_enabled' => $next['in_app_settlement_updates_enabled'] ? 1 : 0,
         'push_expense_added_enabled' => $next['push_expense_added_enabled'] ? 1 : 0,
         'push_friend_invites_enabled' => $next['push_friend_invites_enabled'] ? 1 : 0,
         'push_trip_updates_enabled' => $next['push_trip_updates_enabled'] ? 1 : 0,
@@ -223,6 +298,12 @@ function build_notification_preferences_payload(array $prefs): array
 {
     return [
         'in_app_banner_enabled' => (bool) ($prefs['in_app_banner_enabled'] ?? true),
+        'in_app' => [
+            'expense_added' => (bool) ($prefs['in_app_expense_added_enabled'] ?? true),
+            'friend_invites' => (bool) ($prefs['in_app_friend_invites_enabled'] ?? true),
+            'trip_updates' => (bool) ($prefs['in_app_trip_updates_enabled'] ?? true),
+            'settlement_updates' => (bool) ($prefs['in_app_settlement_updates_enabled'] ?? true),
+        ],
         'push' => [
             'expense_added' => (bool) ($prefs['push_expense_added_enabled'] ?? true),
             'friend_invites' => (bool) ($prefs['push_friend_invites_enabled'] ?? true),
@@ -230,6 +311,44 @@ function build_notification_preferences_payload(array $prefs): array
             'settlement_updates' => (bool) ($prefs['push_settlement_updates_enabled'] ?? true),
         ],
     ];
+}
+
+function notification_in_app_pref_key_for_type(string $type): ?string
+{
+    $normalized = strtolower(trim($type));
+    if ($normalized === '') {
+        return null;
+    }
+
+    if ($normalized === 'expense_added') {
+        return 'in_app_expense_added_enabled';
+    }
+
+    if (in_array(
+        $normalized,
+        ['friend_invite', 'friend_invite_received', 'friend_invite_accepted'],
+        true
+    )) {
+        return 'in_app_friend_invites_enabled';
+    }
+
+    if (in_array(
+        $normalized,
+        ['trip_added', 'trip_member_added', 'trip_finished', 'trip_ready_to_settle', 'member_ready_to_settle'],
+        true
+    )) {
+        return 'in_app_trip_updates_enabled';
+    }
+
+    if (in_array(
+        $normalized,
+        ['settlement_sent', 'settlement_confirmed', 'settlement_reminder', 'settlement_auto_reminder'],
+        true
+    )) {
+        return 'in_app_settlement_updates_enabled';
+    }
+
+    return null;
 }
 
 function notification_push_pref_key_for_type(string $type): ?string
@@ -245,7 +364,7 @@ function notification_push_pref_key_for_type(string $type): ?string
 
     if (in_array(
         $normalized,
-        ['friend_invite', 'friend_invite_received', 'friend_invite_accepted', 'friend_invite_rejected'],
+        ['friend_invite', 'friend_invite_received', 'friend_invite_accepted'],
         true
     )) {
         return 'push_friend_invites_enabled';

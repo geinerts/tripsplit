@@ -244,7 +244,14 @@ extension _ProfilePageActions on _ProfilePageState {
   }
 
   void _applyNotificationPreferences(NotificationPreferences prefs) {
-    _inAppNotificationsEnabled = prefs.inAppBannerEnabled;
+    _inAppExpenseUpdatesEnabled =
+        prefs.inAppBannerEnabled && prefs.inAppExpenseAddedEnabled;
+    _inAppFriendInvitesEnabled =
+        prefs.inAppBannerEnabled && prefs.inAppFriendInvitesEnabled;
+    _inAppTripUpdatesEnabled =
+        prefs.inAppBannerEnabled && prefs.inAppTripUpdatesEnabled;
+    _inAppSettlementUpdatesEnabled =
+        prefs.inAppBannerEnabled && prefs.inAppSettlementUpdatesEnabled;
     _pushExpenseUpdatesEnabled = prefs.pushExpenseAddedEnabled;
     _pushFriendInvitesEnabled = prefs.pushFriendInvitesEnabled;
     _pushTripUpdatesEnabled = prefs.pushTripUpdatesEnabled;
@@ -769,6 +776,10 @@ extension _ProfilePageActions on _ProfilePageState {
 
   Future<void> _setNotificationPreferences({
     bool? inAppBannerEnabled,
+    bool? inAppExpenseAddedEnabled,
+    bool? inAppFriendInvitesEnabled,
+    bool? inAppTripUpdatesEnabled,
+    bool? inAppSettlementUpdatesEnabled,
     bool? pushExpenseAddedEnabled,
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
@@ -784,6 +795,10 @@ extension _ProfilePageActions on _ProfilePageState {
     try {
       final prefs = await widget.controller.updateNotificationPreferences(
         inAppBannerEnabled: inAppBannerEnabled,
+        inAppExpenseAddedEnabled: inAppExpenseAddedEnabled,
+        inAppFriendInvitesEnabled: inAppFriendInvitesEnabled,
+        inAppTripUpdatesEnabled: inAppTripUpdatesEnabled,
+        inAppSettlementUpdatesEnabled: inAppSettlementUpdatesEnabled,
         pushExpenseAddedEnabled: pushExpenseAddedEnabled,
         pushFriendInvitesEnabled: pushFriendInvitesEnabled,
         pushTripUpdatesEnabled: pushTripUpdatesEnabled,
@@ -814,15 +829,28 @@ extension _ProfilePageActions on _ProfilePageState {
     }
   }
 
-  Future<void> _setInAppNotificationsEnabled(bool value) async {
-    final previous = _inAppNotificationsEnabled;
+  Future<void> _setAllInAppNotificationsEnabled(bool value) async {
+    final previousExpense = _inAppExpenseUpdatesEnabled;
+    final previousFriends = _inAppFriendInvitesEnabled;
+    final previousTrip = _inAppTripUpdatesEnabled;
+    final previousSettlement = _inAppSettlementUpdatesEnabled;
     await _setNotificationPreferences(
       inAppBannerEnabled: value,
+      inAppExpenseAddedEnabled: value,
+      inAppFriendInvitesEnabled: value,
+      inAppTripUpdatesEnabled: value,
+      inAppSettlementUpdatesEnabled: value,
       applyOptimistic: () {
-        _inAppNotificationsEnabled = value;
+        _inAppExpenseUpdatesEnabled = value;
+        _inAppFriendInvitesEnabled = value;
+        _inAppTripUpdatesEnabled = value;
+        _inAppSettlementUpdatesEnabled = value;
       },
       rollback: () {
-        _inAppNotificationsEnabled = previous;
+        _inAppExpenseUpdatesEnabled = previousExpense;
+        _inAppFriendInvitesEnabled = previousFriends;
+        _inAppTripUpdatesEnabled = previousTrip;
+        _inAppSettlementUpdatesEnabled = previousSettlement;
       },
     );
   }
@@ -860,6 +888,24 @@ extension _ProfilePageActions on _ProfilePageState {
       MaterialPageRoute<void>(
         builder: (_) =>
             _PushNotificationSettingsPage(controller: widget.controller),
+      ),
+    );
+    if (!mounted) {
+      return;
+    }
+    _updateState(() {
+      _applyNotificationPreferences(widget.controller.notificationPreferences);
+    });
+  }
+
+  Future<void> _openInAppNotificationSettingsPage() async {
+    if (_isBusy) {
+      return;
+    }
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            _InAppNotificationSettingsPage(controller: widget.controller),
       ),
     );
     if (!mounted) {

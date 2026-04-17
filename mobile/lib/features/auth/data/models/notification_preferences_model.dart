@@ -3,6 +3,10 @@ import '../../domain/entities/notification_preferences.dart';
 class NotificationPreferencesModel extends NotificationPreferences {
   const NotificationPreferencesModel({
     required super.inAppBannerEnabled,
+    required super.inAppExpenseAddedEnabled,
+    required super.inAppFriendInvitesEnabled,
+    required super.inAppTripUpdatesEnabled,
+    required super.inAppSettlementUpdatesEnabled,
     required super.pushExpenseAddedEnabled,
     required super.pushFriendInvitesEnabled,
     required super.pushTripUpdatesEnabled,
@@ -12,16 +16,37 @@ class NotificationPreferencesModel extends NotificationPreferences {
   factory NotificationPreferencesModel.fromApiMap(Map<String, dynamic> map) {
     final prefsRaw = map['preferences'];
     final payload = prefsRaw is Map<String, dynamic> ? prefsRaw : map;
+    final inAppRaw = payload['in_app'];
+    final inApp = inAppRaw is Map<String, dynamic>
+        ? inAppRaw
+        : <String, dynamic>{};
     final pushRaw = payload['push'];
     final push = pushRaw is Map<String, dynamic>
         ? pushRaw
         : <String, dynamic>{};
+    final inAppBannerEnabled =
+        _readBool(payload['in_app_banner_enabled']) ??
+        _readBool(map['in_app_banner_enabled']) ??
+        true;
 
     return NotificationPreferencesModel(
-      inAppBannerEnabled:
-          _readBool(payload['in_app_banner_enabled']) ??
-          _readBool(map['in_app_banner_enabled']) ??
-          true,
+      inAppBannerEnabled: inAppBannerEnabled,
+      inAppExpenseAddedEnabled:
+          _readBool(inApp['expense_added']) ??
+          _readBool(payload['in_app_expense_added_enabled']) ??
+          inAppBannerEnabled,
+      inAppFriendInvitesEnabled:
+          _readBool(inApp['friend_invites']) ??
+          _readBool(payload['in_app_friend_invites_enabled']) ??
+          inAppBannerEnabled,
+      inAppTripUpdatesEnabled:
+          _readBool(inApp['trip_updates']) ??
+          _readBool(payload['in_app_trip_updates_enabled']) ??
+          inAppBannerEnabled,
+      inAppSettlementUpdatesEnabled:
+          _readBool(inApp['settlement_updates']) ??
+          _readBool(payload['in_app_settlement_updates_enabled']) ??
+          inAppBannerEnabled,
       pushExpenseAddedEnabled:
           _readBool(push['expense_added']) ??
           _readBool(payload['push_expense_added_enabled']) ??

@@ -213,6 +213,10 @@ class AuthController {
 
   Future<NotificationPreferences> updateNotificationPreferences({
     bool? inAppBannerEnabled,
+    bool? inAppExpenseAddedEnabled,
+    bool? inAppFriendInvitesEnabled,
+    bool? inAppTripUpdatesEnabled,
+    bool? inAppSettlementUpdatesEnabled,
     bool? pushExpenseAddedEnabled,
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
@@ -220,6 +224,10 @@ class AuthController {
   }) async {
     final prefs = await _updateNotificationPreferencesUseCase.call(
       inAppBannerEnabled: inAppBannerEnabled,
+      inAppExpenseAddedEnabled: inAppExpenseAddedEnabled,
+      inAppFriendInvitesEnabled: inAppFriendInvitesEnabled,
+      inAppTripUpdatesEnabled: inAppTripUpdatesEnabled,
+      inAppSettlementUpdatesEnabled: inAppSettlementUpdatesEnabled,
       pushExpenseAddedEnabled: pushExpenseAddedEnabled,
       pushFriendInvitesEnabled: pushFriendInvitesEnabled,
       pushTripUpdatesEnabled: pushTripUpdatesEnabled,

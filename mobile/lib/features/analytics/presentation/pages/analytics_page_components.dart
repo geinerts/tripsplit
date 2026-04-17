@@ -174,6 +174,7 @@ class _DayStackedBar extends StatelessWidget {
     required this.maxDayTotal,
     required this.segments,
     required this.onSegmentTap,
+    this.barWidth = 58.0,
   });
 
   final String dayLabel;
@@ -181,6 +182,7 @@ class _DayStackedBar extends StatelessWidget {
   final double maxDayTotal;
   final List<_MemberDaySegment> segments;
   final ValueChanged<_MemberDaySegment> onSegmentTap;
+  final double barWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -191,10 +193,9 @@ class _DayStackedBar extends StatelessWidget {
         .clamp(0.0, 1.0)
         .toDouble();
     final fillHeight = barHeight * fillRatio;
-    const width = 58.0;
 
     return SizedBox(
-      width: width,
+      width: barWidth,
       child: Column(
         children: [
           SizedBox(

@@ -1673,13 +1673,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profilePushNotificationsSectionTitle => 'NOTIFICACIONES PUSH';
 
   @override
+  String get profileInAppBannersSectionTitle => 'BANNERS EN LA APLICACIÓN';
+
+  @override
   String get profileExpenseUpdates => 'Actualizaciones de gastos';
+
+  @override
+  String get profileExpenseAddedBannersInsideApp => 'Banners dentro de la app cuando se añade un gasto';
 
   @override
   String get profileExpenseAddedNotificationsPhone => 'Notificaciones de gastos añadidos al teléfono';
 
   @override
-  String get profileFriendInvites => 'invitaciones de amigos';
+  String get profileFriendInvites => 'Invitaciones de amigos';
+
+  @override
+  String get profileFriendInvitesBannersInsideApp => 'Banners dentro de la app sobre solicitudes y respuestas de amistad';
 
   @override
   String get profileFriendRequestResponseNotifications => 'Notificaciones de solicitud y respuesta de amistad.';
@@ -1688,10 +1697,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileTripUpdates => 'Actualizaciones de viaje';
 
   @override
+  String get profileTripUpdatesBannersInsideApp => 'Banners dentro de la app sobre el estado del viaje y de los miembros';
+
+  @override
   String get profileTripLifecycleMemberStatusChanges => 'Cambios en el ciclo de vida del viaje y el estado de los miembros';
 
   @override
   String get profileSettlementUpdates => 'Actualizaciones de liquidación';
+
+  @override
+  String get profileSettlementUpdatesBannersInsideApp => 'Banners dentro de la app sobre pagos marcados como enviados y confirmados';
 
   @override
   String get profileMarkedSentConfirmedPaymentUpdates => 'Actualizaciones de pago marcadas enviadas y confirmadas';

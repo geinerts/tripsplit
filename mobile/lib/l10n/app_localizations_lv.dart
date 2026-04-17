@@ -1673,7 +1673,13 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profilePushNotificationsSectionTitle => 'PUSH PAZIŅOJUMI';
 
   @override
+  String get profileInAppBannersSectionTitle => 'BANERI LIETOTNĒ';
+
+  @override
   String get profileExpenseUpdates => 'Tēriņu atjauninājumi';
+
+  @override
+  String get profileExpenseAddedBannersInsideApp => 'Baneri lietotnē par pievienotiem tēriņiem';
 
   @override
   String get profileExpenseAddedNotificationsPhone => 'Paziņojumi telefonā par pievienotiem tēriņiem';
@@ -1682,16 +1688,25 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileFriendInvites => 'Draugu uzaicinājumi';
 
   @override
+  String get profileFriendInvitesBannersInsideApp => 'Baneri lietotnē par draugu pieprasījumiem un atbildēm';
+
+  @override
   String get profileFriendRequestResponseNotifications => 'Paziņojumi par draugu pieprasījumiem un atbildēm';
 
   @override
   String get profileTripUpdates => 'Ceļojumu atjauninājumi';
 
   @override
+  String get profileTripUpdatesBannersInsideApp => 'Baneri lietotnē par ceļojuma statusu un dalībnieku izmaiņām';
+
+  @override
   String get profileTripLifecycleMemberStatusChanges => 'Ceļojuma statusa un dalībnieku izmaiņas';
 
   @override
   String get profileSettlementUpdates => 'Norēķinu atjauninājumi';
+
+  @override
+  String get profileSettlementUpdatesBannersInsideApp => 'Baneri lietotnē par atzīmētiem un apstiprinātiem maksājumiem';
 
   @override
   String get profileMarkedSentConfirmedPaymentUpdates => 'Atzīmēts kā nosūtīts un apstiprināts saņemts';

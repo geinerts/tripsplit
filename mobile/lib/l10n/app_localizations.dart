@@ -3049,11 +3049,23 @@ abstract class AppLocalizations {
   /// **'PUSH NOTIFICATIONS'**
   String get profilePushNotificationsSectionTitle;
 
+  /// No description provided for @profileInAppBannersSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'IN-APP BANNERS'**
+  String get profileInAppBannersSectionTitle;
+
   /// No description provided for @profileExpenseUpdates.
   ///
   /// In en, this message translates to:
   /// **'Expense updates'**
   String get profileExpenseUpdates;
+
+  /// No description provided for @profileExpenseAddedBannersInsideApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense added banners inside app'**
+  String get profileExpenseAddedBannersInsideApp;
 
   /// No description provided for @profileExpenseAddedNotificationsPhone.
   ///
@@ -3067,6 +3079,12 @@ abstract class AppLocalizations {
   /// **'Friend invites'**
   String get profileFriendInvites;
 
+  /// No description provided for @profileFriendInvitesBannersInsideApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend request and response banners inside app'**
+  String get profileFriendInvitesBannersInsideApp;
+
   /// No description provided for @profileFriendRequestResponseNotifications.
   ///
   /// In en, this message translates to:
@@ -3079,6 +3097,12 @@ abstract class AppLocalizations {
   /// **'Trip updates'**
   String get profileTripUpdates;
 
+  /// No description provided for @profileTripUpdatesBannersInsideApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip lifecycle and member status banners inside app'**
+  String get profileTripUpdatesBannersInsideApp;
+
   /// No description provided for @profileTripLifecycleMemberStatusChanges.
   ///
   /// In en, this message translates to:
@@ -3090,6 +3114,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settlement updates'**
   String get profileSettlementUpdates;
+
+  /// No description provided for @profileSettlementUpdatesBannersInsideApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked sent and confirmed payment banners inside app'**
+  String get profileSettlementUpdatesBannersInsideApp;
 
   /// No description provided for @profileMarkedSentConfirmedPaymentUpdates.
   ///

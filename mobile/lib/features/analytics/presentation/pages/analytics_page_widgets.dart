@@ -307,12 +307,15 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
   }
 
   List<Widget> _buildCharts(BuildContext context, WorkspaceSnapshot snapshot) {
-    final days = _lastFiveDays(snapshot);
+    final days = _allTripDays(snapshot);
     final members = _membersForSnapshot(snapshot);
     final memberColors = _memberColors(members, context);
     final dailyByMember = _memberSpentByDay(snapshot, days, members);
     final memberTotals = _memberTotals(snapshot);
     final categoryTotals = _categoryTotals(snapshot, context);
+
+    // For quick insights (best day), fall back to last-5-days when no expenses.
+    final insightDays = days.isNotEmpty ? days : _lastFiveDays(snapshot);
 
     final blocks = <Widget>[
       _buildCategoryTotalsChart(context, rows: categoryTotals),
@@ -328,10 +331,16 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
           });
         },
       ),
-      _buildMiniDailyCharts(context, days: days, dailyByMember: dailyByMember),
-      _buildQuickInsightsCard(
+      _buildFullDailyChart(
         context,
         days: days,
+        members: members,
+        memberColors: memberColors,
+        dailyByMember: dailyByMember,
+      ),
+      _buildQuickInsightsCard(
+        context,
+        days: insightDays,
         members: members,
         memberTotals: memberTotals,
         categoryTotals: categoryTotals,
@@ -349,100 +358,167 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
     return widgets;
   }
 
-  Widget _buildMiniDailyCharts(
+  Widget _buildFullDailyChart(
     BuildContext context, {
     required List<DateTime> days,
+    required List<_MemberMeta> members,
+    required Map<int, Color> memberColors,
     required Map<String, Map<int, double>> dailyByMember,
-  }) {
-    final myId = _currentUserId;
-    final myPoints = <_DayPoint>[];
-    final groupPoints = <_DayPoint>[];
-
-    for (final day in days) {
-      final byMember = dailyByMember[_dayKey(day)] ?? const <int, double>{};
-      final mine = (byMember[myId] ?? 0).toDouble();
-      final all = byMember.values.fold<double>(0, (sum, value) => sum + value);
-      final label = _dayShortLabel(day);
-      myPoints.add(_DayPoint(label: label, value: mine));
-      groupPoints.add(_DayPoint(label: label, value: all));
-    }
-
-    return Row(
-      children: [
-        Expanded(
-          child: _buildMiniDailyCard(
-            context,
-            icon: Icons.person_outline,
-            title: context.l10n.analyticsMyDaily,
-            color: _analyticsSuccess,
-            points: myPoints,
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _buildMiniDailyCard(
-            context,
-            icon: Icons.trending_up_rounded,
-            title: context.l10n.analyticsGroupDaily,
-            color: AppDesign.memberPalette[4],
-            points: groupPoints,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMiniDailyCard(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required Color color,
-    required List<_DayPoint> points,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final colors = Theme.of(context).colorScheme;
 
+    if (days.isEmpty) {
+      return _buildAnalyticsCard(
+        context,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.bar_chart_rounded,
+                    size: 18,
+                    color: isDark ? colors.primary : _analyticsPrimary,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    context.l10n.analyticsDailySpending,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? null : _analyticsFg,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                context.l10n.noExpensesYet,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Compute max day total for bar scaling.
+    var maxDayTotal = 0.0;
+    for (final day in days) {
+      final byMember = dailyByMember[_dayKey(day)] ?? const <int, double>{};
+      final total = byMember.values.fold<double>(0, (s, v) => s + v);
+      if (total > maxDayTotal) maxDayTotal = total;
+    }
+    if (maxDayTotal <= 0) maxDayTotal = 1;
+
+    // Adaptive bar width based on number of days.
+    final n = days.length;
+    final barWidth = n <= 7
+        ? 52.0
+        : n <= 14
+        ? 44.0
+        : n <= 31
+        ? 36.0
+        : 28.0;
+    const barGap = 6.0;
+
     return _buildAnalyticsCard(
       context,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(icon, size: 16, color: color),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      color: isDark ? null : _analyticsFg,
-                    ),
+                Icon(
+                  Icons.bar_chart_rounded,
+                  size: 18,
+                  color: isDark ? colors.primary : _analyticsPrimary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  context.l10n.analyticsDailySpending,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? null : _analyticsFg,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 104,
-              child: _AreaSparkline(
-                points: points,
-                color: color,
-                axisColor: isDark
-                    ? colors.onSurfaceVariant.withValues(alpha: 0.55)
-                    : _analyticsMuted,
-                emptyColor: isDark
-                    ? colors.surfaceContainerHighest
-                    : AppDesign.lightSurfaceTrackSoft,
+            const SizedBox(height: 12),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  for (var i = 0; i < days.length; i++) ...[
+                    if (i > 0) const SizedBox(width: barGap),
+                    _buildDayBar(
+                      context,
+                      day: days[i],
+                      members: members,
+                      memberColors: memberColors,
+                      dailyByMember: dailyByMember,
+                      maxDayTotal: maxDayTotal,
+                      barWidth: barWidth,
+                    ),
+                  ],
+                ],
               ),
             ),
+            if (members.length > 1) ...[
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 12,
+                runSpacing: 4,
+                children: [
+                  for (final member in members)
+                    _LegendItem(
+                      color: memberColors[member.id] ?? _analyticsPrimary,
+                      label: member.name,
+                    ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDayBar(
+    BuildContext context, {
+    required DateTime day,
+    required List<_MemberMeta> members,
+    required Map<int, Color> memberColors,
+    required Map<String, Map<int, double>> dailyByMember,
+    required double maxDayTotal,
+    required double barWidth,
+  }) {
+    final byMember = dailyByMember[_dayKey(day)] ?? const <int, double>{};
+    final dayTotal = byMember.values.fold<double>(0, (s, v) => s + v);
+
+    final segments = <_MemberDaySegment>[
+      for (final member in members)
+        if ((byMember[member.id] ?? 0) > 0)
+          _MemberDaySegment(
+            memberId: member.id,
+            memberName: member.name,
+            amount: byMember[member.id]!,
+            color: memberColors[member.id] ?? _analyticsPrimary,
+          ),
+    ];
+
+    return _DayStackedBar(
+      dayLabel: _dayShortLabel(day),
+      dayTotal: dayTotal,
+      maxDayTotal: maxDayTotal,
+      segments: segments,
+      barWidth: barWidth,
+      onSegmentTap: (_) {},
     );
   }
 

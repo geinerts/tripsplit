@@ -153,6 +153,14 @@ import UserNotifications
     }
   }
 
+  private func apnsTokenType() -> MessagingAPNSTokenType {
+    #if DEBUG
+      return .sandbox
+    #else
+      return .prod
+    #endif
+  }
+
   func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
     let token = (fcmToken ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
     if token.isEmpty {
@@ -175,7 +183,7 @@ import UserNotifications
     let pendingResult = pendingPushTokenResult
     pendingPushTokenResult = nil
     if firebaseConfigured {
-      Messaging.messaging().apnsToken = deviceToken
+      Messaging.messaging().setAPNSToken(deviceToken, type: apnsTokenType())
       fetchFcmToken(result: pendingResult)
     } else {
       pendingResult?(nil)

@@ -122,6 +122,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<NotificationPreferences> updateNotificationPreferences({
     bool? inAppBannerEnabled,
+    bool? inAppExpenseAddedEnabled,
+    bool? inAppFriendInvitesEnabled,
+    bool? inAppTripUpdatesEnabled,
+    bool? inAppSettlementUpdatesEnabled,
     bool? pushExpenseAddedEnabled,
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
@@ -129,6 +133,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }) {
     return _remote.updateNotificationPreferences(
       inAppBannerEnabled: inAppBannerEnabled,
+      inAppExpenseAddedEnabled: inAppExpenseAddedEnabled,
+      inAppFriendInvitesEnabled: inAppFriendInvitesEnabled,
+      inAppTripUpdatesEnabled: inAppTripUpdatesEnabled,
+      inAppSettlementUpdatesEnabled: inAppSettlementUpdatesEnabled,
       pushExpenseAddedEnabled: pushExpenseAddedEnabled,
       pushFriendInvitesEnabled: pushFriendInvitesEnabled,
       pushTripUpdatesEnabled: pushTripUpdatesEnabled,

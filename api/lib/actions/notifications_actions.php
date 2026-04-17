@@ -37,7 +37,8 @@ function list_notifications_action(): void
         'SELECT id, trip_id, user_id, type, title, body, payload_json, is_read, read_at, created_at
          FROM ' . $notificationsTable . '
          WHERE user_id = :user_id
-           AND trip_id = :trip_id';
+           AND trip_id = :trip_id
+           AND type <> "friend_invite_rejected"';
     $params = [
         'user_id' => (int) $me['id'],
         'trip_id' => $tripId,
@@ -70,6 +71,7 @@ function list_notifications_action(): void
          FROM ' . $notificationsTable . '
          WHERE user_id = :user_id
            AND trip_id = :trip_id
+           AND type <> "friend_invite_rejected"
            AND is_read = 0'
     );
     $unreadStmt->execute([
@@ -390,7 +392,8 @@ function load_global_notifications_page(
             t.name AS trip_name
          FROM ' . $notificationsTable . ' n
          LEFT JOIN ' . $tripsTable . ' t ON t.id = n.trip_id
-         WHERE n.user_id = :user_id';
+         WHERE n.user_id = :user_id
+           AND n.type <> "friend_invite_rejected"';
     $params = ['user_id' => $userId];
     if ($cursorId !== null && $cursorId > 0) {
         $sql .= '
@@ -444,6 +447,7 @@ function load_global_notifications_page(
         'SELECT COUNT(*)
          FROM ' . $notificationsTable . '
          WHERE user_id = :user_id
+           AND type <> "friend_invite_rejected"
            AND is_read = 0'
     );
     $unreadStmt->execute(['user_id' => $userId]);
@@ -516,6 +520,7 @@ function mark_notifications_read_action(): void
     $countSql = 'SELECT COUNT(*)
                  FROM ' . $notificationsTable . '
                  WHERE user_id = :user_id
+                   AND type <> "friend_invite_rejected"
                    AND is_read = 0';
     $countParams = ['user_id' => (int) $me['id']];
     if ($tripId > 0) {
@@ -578,6 +583,7 @@ function mark_notifications_read_global_action(): void
         'SELECT COUNT(*)
          FROM ' . $notificationsTable . '
          WHERE user_id = :user_id
+           AND type <> "friend_invite_rejected"
            AND is_read = 0'
     );
     $countStmt->execute(['user_id' => $userId]);

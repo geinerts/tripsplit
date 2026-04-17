@@ -261,21 +261,16 @@ function respond_friend_invite_action(): void
         throw $error;
     }
 
-    if ($otherUserId > 0 && $requestId > 0) {
+    if ($accept && $otherUserId > 0 && $requestId > 0) {
         $tripIdForNotification = resolve_notification_trip_id($pdo, $otherUserId, $meId);
         if ($tripIdForNotification > 0) {
-            $type = $accept ? 'friend_invite_accepted' : 'friend_invite_rejected';
-            $title = $accept ? 'Invite accepted' : 'Invite declined';
-            $bodyText = $accept
-                ? actor_display_name($me) . ' accepted your friend invite.'
-                : actor_display_name($me) . ' declined your friend invite.';
             create_user_notification(
                 $pdo,
                 $tripIdForNotification,
                 $otherUserId,
-                $type,
-                $title,
-                $bodyText,
+                'friend_invite_accepted',
+                'Invite accepted',
+                actor_display_name($me) . ' accepted your friend invite.',
                 [
                     'request_id' => $requestId,
                     'from_user_id' => $meId,
