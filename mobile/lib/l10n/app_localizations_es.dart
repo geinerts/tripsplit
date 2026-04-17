@@ -1676,6 +1676,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileInAppBannersSectionTitle => 'BANNERS EN LA APLICACIÓN';
 
   @override
+  String get profileInAppTripMemberAddedTitle => 'Miembro añadido al viaje';
+
+  @override
+  String get profileInAppAutoSettlementReminderTitle => 'Recordatorio automático de liquidación';
+
+  @override
   String get profileExpenseUpdates => 'Actualizaciones de gastos';
 
   @override
@@ -2699,6 +2705,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String analyticsMembers(Object arg1, Object arg2, Object arg3, Object arg4) {
     return '$arg1 • $arg2 miembros • $arg3 • $arg4';
   }
+
+  @override
+  String get analyticsDailySpending => 'Gasto diario';
 
   @override
   String get analyticsMyDaily => 'Mi gasto diario';

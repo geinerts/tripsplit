@@ -62,8 +62,19 @@ abstract class AuthRemoteDataSource {
     bool? inAppBannerEnabled,
     bool? inAppExpenseAddedEnabled,
     bool? inAppFriendInvitesEnabled,
+    bool? inAppFriendInviteReceivedEnabled,
+    bool? inAppFriendInviteAcceptedEnabled,
     bool? inAppTripUpdatesEnabled,
+    bool? inAppTripAddedEnabled,
+    bool? inAppTripMemberAddedEnabled,
+    bool? inAppTripFinishedEnabled,
+    bool? inAppMemberReadyToSettleEnabled,
+    bool? inAppTripReadyToSettleEnabled,
     bool? inAppSettlementUpdatesEnabled,
+    bool? inAppSettlementReminderEnabled,
+    bool? inAppSettlementAutoReminderEnabled,
+    bool? inAppSettlementSentEnabled,
+    bool? inAppSettlementConfirmedEnabled,
     bool? pushExpenseAddedEnabled,
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
@@ -323,8 +334,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     bool? inAppBannerEnabled,
     bool? inAppExpenseAddedEnabled,
     bool? inAppFriendInvitesEnabled,
+    bool? inAppFriendInviteReceivedEnabled,
+    bool? inAppFriendInviteAcceptedEnabled,
     bool? inAppTripUpdatesEnabled,
+    bool? inAppTripAddedEnabled,
+    bool? inAppTripMemberAddedEnabled,
+    bool? inAppTripFinishedEnabled,
+    bool? inAppMemberReadyToSettleEnabled,
+    bool? inAppTripReadyToSettleEnabled,
     bool? inAppSettlementUpdatesEnabled,
+    bool? inAppSettlementReminderEnabled,
+    bool? inAppSettlementAutoReminderEnabled,
+    bool? inAppSettlementSentEnabled,
+    bool? inAppSettlementConfirmedEnabled,
     bool? pushExpenseAddedEnabled,
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
@@ -337,11 +359,45 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     if (inAppFriendInvitesEnabled != null) {
       inAppPayload['friend_invites'] = inAppFriendInvitesEnabled;
     }
+    if (inAppFriendInviteReceivedEnabled != null) {
+      inAppPayload['friend_invite_received'] = inAppFriendInviteReceivedEnabled;
+    }
+    if (inAppFriendInviteAcceptedEnabled != null) {
+      inAppPayload['friend_invite_accepted'] = inAppFriendInviteAcceptedEnabled;
+    }
     if (inAppTripUpdatesEnabled != null) {
       inAppPayload['trip_updates'] = inAppTripUpdatesEnabled;
     }
+    if (inAppTripAddedEnabled != null) {
+      inAppPayload['trip_added'] = inAppTripAddedEnabled;
+    }
+    if (inAppTripMemberAddedEnabled != null) {
+      inAppPayload['trip_member_added'] = inAppTripMemberAddedEnabled;
+    }
+    if (inAppTripFinishedEnabled != null) {
+      inAppPayload['trip_finished'] = inAppTripFinishedEnabled;
+    }
+    if (inAppMemberReadyToSettleEnabled != null) {
+      inAppPayload['member_ready_to_settle'] = inAppMemberReadyToSettleEnabled;
+    }
+    if (inAppTripReadyToSettleEnabled != null) {
+      inAppPayload['trip_ready_to_settle'] = inAppTripReadyToSettleEnabled;
+    }
     if (inAppSettlementUpdatesEnabled != null) {
       inAppPayload['settlement_updates'] = inAppSettlementUpdatesEnabled;
+    }
+    if (inAppSettlementReminderEnabled != null) {
+      inAppPayload['settlement_reminder'] = inAppSettlementReminderEnabled;
+    }
+    if (inAppSettlementAutoReminderEnabled != null) {
+      inAppPayload['settlement_auto_reminder'] =
+          inAppSettlementAutoReminderEnabled;
+    }
+    if (inAppSettlementSentEnabled != null) {
+      inAppPayload['settlement_sent'] = inAppSettlementSentEnabled;
+    }
+    if (inAppSettlementConfirmedEnabled != null) {
+      inAppPayload['settlement_confirmed'] = inAppSettlementConfirmedEnabled;
     }
 
     final pushPayload = <String, dynamic>{};

@@ -3055,6 +3055,18 @@ abstract class AppLocalizations {
   /// **'IN-APP BANNERS'**
   String get profileInAppBannersSectionTitle;
 
+  /// No description provided for @profileInAppTripMemberAddedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Member added to trip'**
+  String get profileInAppTripMemberAddedTitle;
+
+  /// No description provided for @profileInAppAutoSettlementReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic settlement reminder'**
+  String get profileInAppAutoSettlementReminderTitle;
+
   /// No description provided for @profileExpenseUpdates.
   ///
   /// In en, this message translates to:
@@ -4980,6 +4992,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{arg1} • {arg2} members • {arg3} • {arg4}'**
   String analyticsMembers(Object arg1, Object arg2, Object arg3, Object arg4);
+
+  /// No description provided for @analyticsDailySpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily spending'**
+  String get analyticsDailySpending;
 
   /// No description provided for @analyticsMyDaily.
   ///

@@ -1676,6 +1676,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileInAppBannersSectionTitle => 'IN-APP BANNERS';
 
   @override
+  String get profileInAppTripMemberAddedTitle => 'Member added to trip';
+
+  @override
+  String get profileInAppAutoSettlementReminderTitle => 'Automatic settlement reminder';
+
+  @override
   String get profileExpenseUpdates => 'Expense updates';
 
   @override
@@ -2699,6 +2705,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String analyticsMembers(Object arg1, Object arg2, Object arg3, Object arg4) {
     return '$arg1 • $arg2 members • $arg3 • $arg4';
   }
+
+  @override
+  String get analyticsDailySpending => 'Daily spending';
 
   @override
   String get analyticsMyDaily => 'My daily';

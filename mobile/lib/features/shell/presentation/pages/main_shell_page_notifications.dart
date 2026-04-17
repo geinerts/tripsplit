@@ -17,23 +17,38 @@ extension _MainShellPageNotifications on _MainShellPageState {
     if (type == 'expense_added') {
       return prefs.inAppExpenseAddedEnabled;
     }
-    if (type == 'friend_invite' ||
-        type == 'friend_invite_received' ||
-        type == 'friend_invite_accepted') {
-      return prefs.inAppFriendInvitesEnabled;
+    if (type == 'friend_invite' || type == 'friend_invite_received') {
+      return prefs.inAppFriendInviteReceivedEnabled;
     }
-    if (type == 'trip_added' ||
-        type == 'trip_member_added' ||
-        type == 'trip_finished' ||
-        type == 'trip_ready_to_settle' ||
-        type == 'member_ready_to_settle') {
-      return prefs.inAppTripUpdatesEnabled;
+    if (type == 'friend_invite_accepted') {
+      return prefs.inAppFriendInviteAcceptedEnabled;
     }
-    if (type == 'settlement_sent' ||
-        type == 'settlement_confirmed' ||
-        type == 'settlement_reminder' ||
-        type == 'settlement_auto_reminder') {
-      return prefs.inAppSettlementUpdatesEnabled;
+    if (type == 'trip_added') {
+      return prefs.inAppTripAddedEnabled;
+    }
+    if (type == 'trip_member_added') {
+      return prefs.inAppTripMemberAddedEnabled;
+    }
+    if (type == 'trip_finished') {
+      return prefs.inAppTripFinishedEnabled;
+    }
+    if (type == 'member_ready_to_settle') {
+      return prefs.inAppMemberReadyToSettleEnabled;
+    }
+    if (type == 'trip_ready_to_settle') {
+      return prefs.inAppTripReadyToSettleEnabled;
+    }
+    if (type == 'settlement_reminder') {
+      return prefs.inAppSettlementReminderEnabled;
+    }
+    if (type == 'settlement_auto_reminder') {
+      return prefs.inAppSettlementAutoReminderEnabled;
+    }
+    if (type == 'settlement_sent') {
+      return prefs.inAppSettlementSentEnabled;
+    }
+    if (type == 'settlement_confirmed') {
+      return prefs.inAppSettlementConfirmedEnabled;
     }
     return true;
   }

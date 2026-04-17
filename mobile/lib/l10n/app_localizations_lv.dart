@@ -1676,6 +1676,12 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileInAppBannersSectionTitle => 'BANERI LIETOTNĒ';
 
   @override
+  String get profileInAppTripMemberAddedTitle => 'Dalībnieks pievienots ceļojumam';
+
+  @override
+  String get profileInAppAutoSettlementReminderTitle => 'Automātisks norēķina atgādinājums';
+
+  @override
   String get profileExpenseUpdates => 'Tēriņu atjauninājumi';
 
   @override
@@ -2699,6 +2705,9 @@ class AppLocalizationsLv extends AppLocalizations {
   String analyticsMembers(Object arg1, Object arg2, Object arg3, Object arg4) {
     return '$arg1 • $arg2 dalībnieki • $arg3 • $arg4';
   }
+
+  @override
+  String get analyticsDailySpending => 'Dienas tēriņi';
 
   @override
   String get analyticsMyDaily => 'Mans dienas';
