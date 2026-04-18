@@ -28,9 +28,12 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
     $revolutMeLinkSelect = users_revolut_me_link_column_available($pdo)
         ? 'u.revolut_me_link, '
         : 'NULL AS revolut_me_link, ';
+    $wisePayLinkSelect = users_wise_pay_link_column_available($pdo)
+        ? 'u.wise_pay_link, '
+        : 'NULL AS wise_pay_link, ';
     $paymentSelect = users_payment_columns_available($pdo)
-        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, ' . $revolutMeLinkSelect . 'u.paypal_me_link, '
-        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, ';
+        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, ' . $revolutMeLinkSelect . 'u.paypal_me_link, ' . $wisePayLinkSelect
+        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, NULL AS wise_pay_link, ';
     $activeFilter = users_active_filter_sql($pdo, 'u');
 
     $acceptedStmt = $pdo->prepare(
@@ -240,9 +243,12 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
     $revolutMeLinkSelect = users_revolut_me_link_column_available($pdo)
         ? 'u.revolut_me_link, '
         : 'NULL AS revolut_me_link, ';
+    $wisePayLinkSelect = users_wise_pay_link_column_available($pdo)
+        ? 'u.wise_pay_link, '
+        : 'NULL AS wise_pay_link, ';
     $paymentSelect = users_payment_columns_available($pdo)
-        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, ' . $revolutMeLinkSelect . 'u.paypal_me_link, '
-        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, ';
+        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, ' . $revolutMeLinkSelect . 'u.paypal_me_link, ' . $wisePayLinkSelect
+        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, NULL AS wise_pay_link, ';
     $activeFilter = users_active_filter_sql($pdo, 'u');
     $params = [
         'join_me_id' => $meId,

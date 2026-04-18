@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS trip_users (
   revolut_handle VARCHAR(80) NULL,
   revolut_me_link VARCHAR(255) NULL,
   paypal_me_link VARCHAR(255) NULL,
+  wise_pay_link VARCHAR(255) NULL,
   preferred_currency_code CHAR(3) NOT NULL DEFAULT 'EUR',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -247,6 +248,18 @@ CREATE TABLE IF NOT EXISTS trip_user_notification_preferences (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id),
   CONSTRAINT fk_trip_user_notification_preferences_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS trip_schema_migrations (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  migration_name VARCHAR(255) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
+  checksum_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
+  execution_ms INT UNSIGNED NOT NULL DEFAULT 0,
+  executed_by VARCHAR(120) NULL,
+  applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_trip_schema_migrations_name (migration_name),
+  KEY idx_trip_schema_migrations_applied_at (applied_at, id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS trip_settlement_reminder_state (

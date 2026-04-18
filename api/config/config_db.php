@@ -46,6 +46,7 @@ function table_name(string $key): string
         'push_tokens' => DB_TABLE_PREFIX . 'user_push_tokens',
         'push_queue' => DB_TABLE_PREFIX . 'push_queue',
         'notification_preferences' => DB_TABLE_PREFIX . 'user_notification_preferences',
+        'schema_migrations' => DB_TABLE_PREFIX . 'schema_migrations',
         'settlement_reminder_state' => DB_TABLE_PREFIX . 'settlement_reminder_state',
         'mutation_idempotency' => DB_TABLE_PREFIX . 'mutation_idempotency',
         'password_resets'      => DB_TABLE_PREFIX . 'password_resets',

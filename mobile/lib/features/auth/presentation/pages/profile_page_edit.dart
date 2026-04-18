@@ -65,6 +65,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftRevolutHandle = _initialRevolutHandle;
       _draftRevolutMeLink = _initialRevolutMeLink;
       _draftPaypalMeLink = _initialPaypalMeLink;
+      _draftWisePayLink = _initialWisePayLink;
       _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
       _draftPassword = '';
       _draftRepeatPassword = '';
@@ -91,6 +92,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftRevolutHandle = _initialRevolutHandle;
       _draftRevolutMeLink = _initialRevolutMeLink;
       _draftPaypalMeLink = _initialPaypalMeLink;
+      _draftWisePayLink = _initialWisePayLink;
       _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
       _editErrorText = null;
       _draftPassword = '';
@@ -1065,6 +1067,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           initialRevolutHandle: _draftRevolutHandle,
           initialRevolutMeLink: _draftRevolutMeLink,
           initialPaypalMeLink: _draftPaypalMeLink,
+          initialWisePayLink: _draftWisePayLink,
         ),
       ),
     );
@@ -1082,6 +1085,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftRevolutHandle = result.revolutHandle.trim();
       _draftRevolutMeLink = result.revolutMeLink.trim();
       _draftPaypalMeLink = result.paypalMeLink.trim();
+      _draftWisePayLink = result.wisePayLink.trim();
       _activeEditField = null;
       _editErrorText = null;
       _errorText = null;
@@ -1190,7 +1194,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   }
 }
 
-enum _PaymentInfoMethod { bankTransfer, revolut, paypal }
+enum _PaymentInfoMethod { bankTransfer, revolut, paypal, wise }
 
 enum _BankTransferRegion { europe, uk }
 
@@ -1204,6 +1208,7 @@ class _PaymentInfoEditorResult {
     required this.revolutHandle,
     required this.revolutMeLink,
     required this.paypalMeLink,
+    required this.wisePayLink,
   });
 
   final String bankCountryCode;
@@ -1214,6 +1219,7 @@ class _PaymentInfoEditorResult {
   final String revolutHandle;
   final String revolutMeLink;
   final String paypalMeLink;
+  final String wisePayLink;
 }
 
 class _PaymentInfoEditorPage extends StatefulWidget {
@@ -1226,6 +1232,7 @@ class _PaymentInfoEditorPage extends StatefulWidget {
     required this.initialRevolutHandle,
     required this.initialRevolutMeLink,
     required this.initialPaypalMeLink,
+    required this.initialWisePayLink,
   });
 
   final String initialBankCountryCode;
@@ -1236,6 +1243,7 @@ class _PaymentInfoEditorPage extends StatefulWidget {
   final String initialRevolutHandle;
   final String initialRevolutMeLink;
   final String initialPaypalMeLink;
+  final String initialWisePayLink;
 
   @override
   State<_PaymentInfoEditorPage> createState() => _PaymentInfoEditorPageState();
@@ -1249,6 +1257,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
   late final TextEditingController _revolutHandleController;
   late final TextEditingController _revolutMeController;
   late final TextEditingController _paypalMeController;
+  late final TextEditingController _wisePayController;
   late _PaymentInfoMethod _selectedMethod;
   late _BankTransferRegion _bankRegion;
   String? _formErrorText;
@@ -1274,6 +1283,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
     _paypalMeController = TextEditingController(
       text: widget.initialPaypalMeLink,
     );
+    _wisePayController = TextEditingController(text: widget.initialWisePayLink);
     _selectedMethod = _resolveInitialMethod();
     _bankRegion = _resolveInitialBankRegion();
   }
@@ -1287,6 +1297,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
     _revolutHandleController.dispose();
     _revolutMeController.dispose();
     _paypalMeController.dispose();
+    _wisePayController.dispose();
     super.dispose();
   }
 
@@ -1307,6 +1318,9 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
     }
     if (widget.initialPaypalMeLink.trim().isNotEmpty) {
       return _PaymentInfoMethod.paypal;
+    }
+    if (widget.initialWisePayLink.trim().isNotEmpty) {
+      return _PaymentInfoMethod.wise;
     }
     return _PaymentInfoMethod.bankTransfer;
   }
@@ -1333,6 +1347,8 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
         return 'Revolut';
       case _PaymentInfoMethod.paypal:
         return 'PayPal.me';
+      case _PaymentInfoMethod.wise:
+        return 'Wise';
     }
   }
 
@@ -1344,6 +1360,8 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
         return context.l10n.profileEditRevtagRevolutMe;
       case _PaymentInfoMethod.paypal:
         return context.l10n.profileEditPaypalMeLink;
+      case _PaymentInfoMethod.wise:
+        return 'wise.com/pay/me/username';
     }
   }
 
@@ -1355,6 +1373,8 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
         return Icons.bolt_rounded;
       case _PaymentInfoMethod.paypal:
         return Icons.paypal_rounded;
+      case _PaymentInfoMethod.wise:
+        return Icons.currency_exchange_rounded;
     }
   }
 
@@ -1593,6 +1613,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
         revolutHandle: _revolutHandleController.text.trim(),
         revolutMeLink: _revolutMeController.text.trim(),
         paypalMeLink: _paypalMeController.text.trim(),
+        wisePayLink: _wisePayController.text.trim(),
       ),
     );
   }
@@ -1780,6 +1801,18 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
               controller: _paypalMeController,
               label: 'PayPal.me',
               hint: context.l10n.profileEditPaypalMeUsernameUsername,
+              textInputAction: TextInputAction.done,
+            ),
+          ],
+        );
+      case _PaymentInfoMethod.wise:
+        return Column(
+          key: const ValueKey('payment-method-wise'),
+          children: [
+            _buildTextField(
+              controller: _wisePayController,
+              label: 'Wise',
+              hint: 'wise.com/pay/me/username',
               textInputAction: TextInputAction.done,
             ),
           ],

@@ -1,7 +1,7 @@
 part of 'workspace_page.dart';
 
 // Emoji whitelist — must match backend ALLOWED_EXPENSE_REACTIONS.
-// Using Unicode escapes to guarantee correct encoding regardless of file handling.
+// Unicode escapes guarantee correct encoding regardless of file handling.
 final _kSocialEmojis = <String>[
   '\u{1F602}', // 😂
   '\u{1F44D}', // 👍
@@ -21,12 +21,14 @@ class _ExpenseSocialSection extends StatefulWidget {
     required this.tripId,
     required this.currentUserId,
     required this.controller,
+    required this.usersById,
   });
 
   final int expenseId;
   final int tripId;
   final int currentUserId;
   final WorkspaceController controller;
+  final Map<int, WorkspaceUser> usersById;
 
   @override
   State<_ExpenseSocialSection> createState() => _ExpenseSocialSectionState();
@@ -126,7 +128,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
       if (!mounted) return;
       setState(() => _comments = fresh);
     } catch (_) {
-      // could show snackbar
+      // silent
     } finally {
       if (mounted) setState(() => _isSubmittingComment = false);
     }
@@ -203,9 +205,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
     if (reactions != null) {
       for (final r in reactions) {
         counts[r.emoji] = (counts[r.emoji] ?? 0) + 1;
-        if (r.userId == widget.currentUserId) {
-          myEmojis.add(r.emoji);
-        }
+        if (r.userId == widget.currentUserId) myEmojis.add(r.emoji);
       }
     }
 
@@ -232,20 +232,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
             ),
           )
         else
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: _kSocialEmojis.map((emoji) {
-              return _EmojiPill(
-                emoji: emoji,
-                count: counts[emoji] ?? 0,
-                isActive: myEmojis.contains(emoji),
-                isDisabled: _isTogglingReaction,
-                isDark: isDark,
-                onTap: () => _toggleReaction(emoji),
-              );
-            }).toList(growable: false),
-          ),
+          _buildEmojiGrid(counts, myEmojis, isDark, colors),
       ],
     );
   }
@@ -284,14 +271,17 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
             ),
           )
         else
-          ...comments.map(
-            (c) => _CommentTile(
+          ...comments.map((c) {
+            final user = widget.usersById[c.userId];
+            final avatarUrl = user?.avatarThumbUrl ?? user?.avatarUrl;
+            return _CommentTile(
               comment: c,
               isOwn: c.userId == widget.currentUserId,
               isDark: isDark,
+              avatarUrl: avatarUrl,
               onLongPress: () => _confirmDeleteComment(c),
-            ),
-          ),
+            );
+          }),
       ],
     );
   }
@@ -344,6 +334,36 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
       ],
     );
   }
+
+  Widget _buildEmojiGrid(
+    Map<String, int> counts,
+    Set<String> myEmojis,
+    bool isDark,
+    ColorScheme colors,
+  ) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _kSocialEmojis.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        mainAxisSpacing: 6,
+        crossAxisSpacing: 6,
+        mainAxisExtent: 42,
+      ),
+      itemBuilder: (context, index) {
+        final emoji = _kSocialEmojis[index];
+        return _EmojiPill(
+          emoji: emoji,
+          count: counts[emoji] ?? 0,
+          isActive: myEmojis.contains(emoji),
+          isDisabled: _isTogglingReaction,
+          isDark: isDark,
+          onTap: () => _toggleReaction(emoji),
+        );
+      },
+    );
+  }
 }
 
 // ── _EmojiPill ───────────────────────────────────────────────────────────────
@@ -368,51 +388,38 @@ class _EmojiPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final activeBg = isDark
-        ? colors.primaryContainer
-        : AppDesign.lightPrimary.withValues(alpha: 0.12);
-    final activeBorder = isDark
-        ? colors.primary
-        : AppDesign.lightPrimary.withValues(alpha: 0.40);
-    final defaultBg = isDark
-        ? colors.surfaceContainerHighest
-        : AppDesign.lightSurfaceMuted;
-    final defaultBorder = isDark
-        ? colors.outlineVariant.withValues(alpha: 0.30)
-        : AppDesign.lightStroke;
-
-    return GestureDetector(
-      onTap: isDisabled ? null : onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 160),
-        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
-        decoration: BoxDecoration(
-          color: isActive ? activeBg : defaultBg,
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(
-            color: isActive ? activeBorder : defaultBorder,
+    return Opacity(
+      opacity: isDisabled ? 0.55 : 1,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: isDisabled ? null : onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Render emoji without any explicit TextStyle so the platform's
+                // default font + emoji fallback chain is used unmodified.
+                Text(emoji, style: const TextStyle(fontSize: 22)),
+                if (count > 0) ...[
+                  const SizedBox(width: 4),
+                  Text(
+                    '$count',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: isActive
+                          ? (isDark ? colors.primary : AppDesign.lightPrimary)
+                          : (isDark
+                                ? colors.onSurfaceVariant
+                                : AppDesign.lightMuted),
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(emoji, style: const TextStyle(fontSize: 20)),
-            if (count > 0) ...[
-              const SizedBox(width: 5),
-              Text(
-                '$count',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: isActive
-                      ? (isDark ? colors.primary : AppDesign.lightPrimary)
-                      : (isDark
-                            ? colors.onSurfaceVariant
-                            : AppDesign.lightMuted),
-                ),
-              ),
-            ],
-          ],
         ),
       ),
     );
@@ -427,12 +434,14 @@ class _CommentTile extends StatelessWidget {
     required this.isOwn,
     required this.isDark,
     required this.onLongPress,
+    this.avatarUrl,
   });
 
   final ExpenseComment comment;
   final bool isOwn;
   final bool isDark;
   final VoidCallback onLongPress;
+  final String? avatarUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -449,24 +458,7 @@ class _CommentTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: avatarBg,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                initials,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.2,
-                ),
-              ),
-            ),
+            _buildAvatar(avatarBg, initials),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -524,6 +516,42 @@ class _CommentTile extends StatelessWidget {
     );
   }
 
+  Widget _buildAvatar(Color bg, String initials) {
+    final url = (avatarUrl ?? '').trim();
+    if (url.isNotEmpty) {
+      return ClipOval(
+        child: Image.network(
+          url,
+          width: 36,
+          height: 36,
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.low,
+          gaplessPlayback: true,
+          errorBuilder: (_, error, stackTrace) => _fallbackAvatar(bg, initials),
+        ),
+      );
+    }
+    return _fallbackAvatar(bg, initials);
+  }
+
+  Widget _fallbackAvatar(Color bg, String initials) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+      alignment: Alignment.center,
+      child: Text(
+        initials,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 13,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.2,
+        ),
+      ),
+    );
+  }
+
   String _initials(String name) {
     final parts = name
         .trim()
@@ -539,11 +567,20 @@ class _CommentTile extends StatelessWidget {
   }
 
   String _commentRelativeTime(BuildContext context, String raw) {
-    final moment = DateTime.tryParse(raw.trim())?.toLocal();
+    final s = raw.trim();
+    if (s.isEmpty) return '';
+    // MySQL TIMESTAMP is stored/served as UTC but without a 'Z' suffix.
+    // Replace the space separator and append 'Z' so Dart parses it as UTC,
+    // then convert to device local time for display.
+    final iso = s.replaceFirst(' ', 'T');
+    final withTz = (iso.contains('Z') || iso.contains('+')) ? iso : '${iso}Z';
+    final moment = DateTime.tryParse(withTz)?.toLocal();
     if (moment == null) return '';
     final diff = DateTime.now().difference(moment);
     if (diff.inMinutes < 1) return context.l10n.workspaceJustNow;
-    if (diff.inMinutes < 60) return context.l10n.workspaceMinAgo(diff.inMinutes);
+    if (diff.inMinutes < 60) {
+      return context.l10n.workspaceMinAgo(diff.inMinutes);
+    }
     if (diff.inHours < 24) return context.l10n.workspaceHAgo(diff.inHours);
     if (diff.inDays < 7) return context.l10n.workspaceDAgo(diff.inDays);
     final day = moment.day.toString().padLeft(2, '0');

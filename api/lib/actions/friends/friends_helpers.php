@@ -50,6 +50,7 @@ function friend_user_payload_from_row(array $row, bool $includePayment = false):
         'revolut_handle' => normalize_me_profile_text_value($row['revolut_handle'] ?? null),
         'revolut_me_link' => normalize_me_profile_text_value($row['revolut_me_link'] ?? null),
         'paypal_me_link' => normalize_me_profile_text_value($row['paypal_me_link'] ?? null),
+        'wise_pay_link' => normalize_me_profile_text_value($row['wise_pay_link'] ?? null),
     ]);
 }
 

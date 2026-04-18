@@ -104,6 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _initialRevolutHandle = '';
   String _initialRevolutMeLink = '';
   String _initialPaypalMeLink = '';
+  String _initialWisePayLink = '';
   String _initialPreferredCurrencyCode = AppCurrencyCatalog.defaultCode;
   String _draftFullName = '';
   String _draftEmail = '';
@@ -115,6 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _draftRevolutHandle = '';
   String _draftRevolutMeLink = '';
   String _draftPaypalMeLink = '';
+  String _draftWisePayLink = '';
   String _draftPreferredCurrencyCode = AppCurrencyCatalog.defaultCode;
   String _draftPassword = '';
   String _draftRepeatPassword = '';

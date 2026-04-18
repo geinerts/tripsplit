@@ -27,6 +27,19 @@ Mobile-first PWA for one travel group:
 
 If tables already exist, run incremental migrations from [`sql/migrations/`](./sql/migrations) in date order (oldest to newest).
 
+Recommended migration runner (idempotent):
+
+```bash
+php scripts/run_migrations.php --dry-run
+php scripts/run_migrations.php
+```
+
+For existing production DB that already has old migrations applied manually, do one-time baseline:
+
+```bash
+php scripts/run_migrations.php --baseline
+```
+
 ## 2) Backend setup
 
 1. Copy [`.env.example`](./.env.example) to `.env`.

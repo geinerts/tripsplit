@@ -30,6 +30,7 @@ class WorkspaceSnapshotCodec {
               'revolut_handle': user.revolutHandle,
               'revolut_me_link': user.revolutMeLink,
               'paypal_me_link': user.paypalMeLink,
+              'wise_pay_link': user.wisePayLink,
               'is_ready_to_settle': user.isReadyToSettle,
               'ready_to_settle_at': user.readyToSettleAt,
             },
@@ -158,6 +159,7 @@ class WorkspaceSnapshotCodec {
           final revolutHandle = (item['revolut_handle'] as String?)?.trim();
           final revolutMeLink = (item['revolut_me_link'] as String?)?.trim();
           final paypalMeLink = (item['paypal_me_link'] as String?)?.trim();
+          final wisePayLink = (item['wise_pay_link'] as String?)?.trim();
           final readyToSettleAt = (item['ready_to_settle_at'] as String?)
               ?.trim();
           return WorkspaceUser(
@@ -183,6 +185,9 @@ class WorkspaceSnapshotCodec {
             paypalMeLink: paypalMeLink == null || paypalMeLink.isEmpty
                 ? null
                 : paypalMeLink,
+            wisePayLink: wisePayLink == null || wisePayLink.isEmpty
+                ? null
+                : wisePayLink,
             isReadyToSettle:
                 item['is_ready_to_settle'] == true ||
                 (item['is_ready_to_settle'] as num?)?.toInt() == 1 ||

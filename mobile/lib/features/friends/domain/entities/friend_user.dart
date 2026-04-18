@@ -11,6 +11,7 @@ class FriendUser {
     this.revolutHandle,
     this.revolutMeLink,
     this.paypalMeLink,
+    this.wisePayLink,
   });
 
   final int id;
@@ -24,6 +25,7 @@ class FriendUser {
   final String? revolutHandle;
   final String? revolutMeLink;
   final String? paypalMeLink;
+  final String? wisePayLink;
 
   String get preferredName {
     final fullName = (displayName ?? '').trim();
@@ -38,6 +40,7 @@ class FriendUser {
         (bankBic ?? '').trim().isNotEmpty ||
         (revolutHandle ?? '').trim().isNotEmpty ||
         (revolutMeLink ?? '').trim().isNotEmpty ||
-        (paypalMeLink ?? '').trim().isNotEmpty;
+        (paypalMeLink ?? '').trim().isNotEmpty ||
+        (wisePayLink ?? '').trim().isNotEmpty;
   }
 }

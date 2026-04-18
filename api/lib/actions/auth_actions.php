@@ -647,6 +647,34 @@ function normalize_profile_paypal_me_link($value): ?string
     return null;
 }
 
+function normalize_profile_wise_pay_link($value): ?string
+{
+    $normalized = trim((string) ($value ?? ''));
+    if ($normalized === '') {
+        return null;
+    }
+
+    if (str_length($normalized) > 255) {
+        json_out(['ok' => false, 'error' => 'Wise value is too long.'], 400);
+    }
+
+    if (preg_match('/^https?:\/\/(www\.)?wise\.com\/\S+$/i', $normalized)) {
+        return preg_replace('/^http:\/\//i', 'https://', $normalized);
+    }
+    if (preg_match('/^(www\.)?wise\.com\/\S+$/i', $normalized)) {
+        return 'https://' . ltrim($normalized, '/');
+    }
+    if (preg_match('/^pay\/me\/([A-Za-z0-9._-]{2,80})\/?$/i', $normalized, $match)) {
+        return 'https://wise.com/pay/me/' . $match[1];
+    }
+    if (preg_match('/^[A-Za-z0-9._-]{2,80}$/', $normalized)) {
+        return 'https://wise.com/pay/me/' . $normalized;
+    }
+
+    json_out(['ok' => false, 'error' => 'Wise value is invalid.'], 400);
+    return null;
+}
+
 function normalize_profile_preferred_currency_code($value): string
 {
     $code = normalize_currency_code($value);
@@ -671,6 +699,7 @@ function update_profile_action(): void
     $nameColumnsAvailable = users_name_columns_available($pdo);
     $paymentColumnsAvailable = users_payment_columns_available($pdo);
     $revolutMeLinkColumnAvailable = users_revolut_me_link_column_available($pdo);
+    $wisePayLinkColumnAvailable = users_wise_pay_link_column_available($pdo);
     $preferredCurrencyColumnAvailable = users_preferred_currency_column_available($pdo);
 
     $updateParts = [];
@@ -756,6 +785,9 @@ function update_profile_action(): void
     if ($revolutMeLinkColumnAvailable) {
         $paymentFieldNormalizers['revolut_me_link'] = 'normalize_profile_revolut_me_link';
     }
+    if ($wisePayLinkColumnAvailable) {
+        $paymentFieldNormalizers['wise_pay_link'] = 'normalize_profile_wise_pay_link';
+    }
 
     $paymentFieldWasProvided = false;
     foreach ($paymentFieldNormalizers as $field => $_normalizer) {
@@ -775,6 +807,12 @@ function update_profile_action(): void
         json_out([
             'ok' => false,
             'error' => 'Revolut.me profile link is not available yet. Please run latest migration.',
+        ], 503);
+    }
+    if (array_key_exists('wise_pay_link', $body) && !$wisePayLinkColumnAvailable) {
+        json_out([
+            'ok' => false,
+            'error' => 'Wise profile link is not available yet. Please run latest migration.',
         ], 503);
     }
 

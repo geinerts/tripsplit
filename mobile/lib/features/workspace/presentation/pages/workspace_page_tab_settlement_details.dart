@@ -119,6 +119,18 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
             final primaryActionIcon = liveItem.canConfirmReceived
                 ? Icons.verified_rounded
                 : Icons.payments_rounded;
+            final quickRevolutUri = _buildSettlementRevolutQuickPayUri(
+              settlement: liveItem,
+              payee: toUser,
+              currencyCode: widget.trip.currencyCode,
+            );
+            final quickPaypalUri = _buildSettlementPaypalQuickPayUri(
+              settlement: liveItem,
+              payee: toUser,
+              currencyCode: widget.trip.currencyCode,
+            );
+            final hasQuickPayActions =
+                quickRevolutUri != null || quickPaypalUri != null;
 
             return SafeArea(
               child: FractionallySizedBox(
@@ -305,6 +317,64 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                         ?.copyWith(fontWeight: FontWeight.w800),
                                   ),
                                   const SizedBox(height: 8),
+                                  if (hasQuickPayActions) ...[
+                                    Text(
+                                      sheetContext.l10n.workspaceQuickPay,
+                                      style: Theme.of(sheetContext)
+                                          .textTheme
+                                          .labelLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                            color: AppDesign.mutedColor(
+                                              sheetContext,
+                                            ),
+                                          ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      children: [
+                                        if (quickRevolutUri != null)
+                                          OutlinedButton.icon(
+                                            onPressed: _isMutating
+                                                ? null
+                                                : () =>
+                                                      _openSettlementPaymentLink(
+                                                        quickRevolutUri,
+                                                      ),
+                                            icon: const Icon(
+                                              Icons.bolt_rounded,
+                                              size: 17,
+                                            ),
+                                            label: Text(
+                                              sheetContext
+                                                  .l10n
+                                                  .workspacePayWithRevolut,
+                                            ),
+                                          ),
+                                        if (quickPaypalUri != null)
+                                          OutlinedButton.icon(
+                                            onPressed: _isMutating
+                                                ? null
+                                                : () =>
+                                                      _openSettlementPaymentLink(
+                                                        quickPaypalUri,
+                                                      ),
+                                            icon: const Icon(
+                                              Icons.paypal_rounded,
+                                              size: 17,
+                                            ),
+                                            label: Text(
+                                              sheetContext
+                                                  .l10n
+                                                  .workspacePayWithPaypal,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                  ],
                                   if (canPrimaryAction)
                                     SizedBox(
                                       width: double.infinity,
@@ -1100,6 +1170,157 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
       },
     );
   }
+
+  Future<void> _openSettlementPaymentLink(Uri uri) async {
+    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (opened || !mounted) {
+      return;
+    }
+    _showSnack(context.l10n.workspaceCouldNotOpenPaymentLink, isError: true);
+  }
+
+  Uri? _buildSettlementRevolutQuickPayUri({
+    required SettlementItem settlement,
+    required WorkspaceUser? payee,
+    required String currencyCode,
+  }) {
+    if (!settlement.canMarkSent || payee == null) {
+      return null;
+    }
+
+    final revolutMeRaw = (payee.revolutMeLink ?? '').trim();
+    final revolutHandleRaw = (payee.revolutHandle ?? '').trim();
+    final revolutBase =
+        _revolutMeUriOrNull(revolutMeRaw) ??
+        _revolutMeUriFromHandle(revolutHandleRaw);
+    if (revolutBase == null) {
+      return null;
+    }
+
+    final amountPart = _settlementAmountPathSegment(settlement.amount);
+    final query = <String, String>{...revolutBase.queryParameters};
+    final currency = currencyCode.trim().toUpperCase();
+    if (currency.isNotEmpty) {
+      query.putIfAbsent('currency', () => currency);
+    }
+
+    return _withSettlementAmountPath(
+      revolutBase,
+      amountPart,
+      queryParameters: query,
+    );
+  }
+
+  Uri? _buildSettlementPaypalQuickPayUri({
+    required SettlementItem settlement,
+    required WorkspaceUser? payee,
+    required String currencyCode,
+  }) {
+    if (!settlement.canMarkSent || payee == null) {
+      return null;
+    }
+
+    final paypalRaw = (payee.paypalMeLink ?? '').trim();
+    final paypalBase = _paypalMeUriOrNull(paypalRaw);
+    if (paypalBase == null) {
+      return null;
+    }
+
+    final currency = currencyCode.trim().toUpperCase();
+    final amountPart =
+        '${_settlementAmountPathSegment(settlement.amount)}$currency';
+    return _withSettlementAmountPath(paypalBase, amountPart);
+  }
+
+  Uri? _withSettlementAmountPath(
+    Uri base,
+    String amountPathSegment, {
+    Map<String, String>? queryParameters,
+  }) {
+    final segments = base.pathSegments
+        .where((segment) => segment.trim().isNotEmpty)
+        .toList(growable: false);
+    if (segments.isEmpty) {
+      return null;
+    }
+    final account = segments.first;
+    final query = queryParameters ?? base.queryParameters;
+    return base.replace(
+      pathSegments: [account, amountPathSegment],
+      queryParameters: query.isEmpty ? null : query,
+    );
+  }
+
+  Uri? _paypalMeUriOrNull(String rawValue) {
+    final raw = rawValue.trim();
+    if (raw.isEmpty) {
+      return null;
+    }
+
+    if (!raw.contains('.') && !raw.contains('/') && !raw.contains('://')) {
+      return Uri.parse('https://paypal.me/$raw');
+    }
+
+    final candidate = raw.contains('://') ? raw : 'https://$raw';
+    final uri = Uri.tryParse(candidate);
+    if (uri == null) {
+      return null;
+    }
+
+    final scheme = uri.scheme.toLowerCase();
+    if (scheme != 'http' && scheme != 'https') {
+      return null;
+    }
+
+    final host = uri.host.toLowerCase().trim();
+    if (host != 'paypal.me' && host != 'www.paypal.me') {
+      return null;
+    }
+    if (uri.pathSegments.where((s) => s.trim().isNotEmpty).isEmpty) {
+      return null;
+    }
+    return uri;
+  }
+
+  Uri? _revolutMeUriOrNull(String rawValue) {
+    final raw = rawValue.trim();
+    if (raw.isEmpty) {
+      return null;
+    }
+    final candidate = raw.contains('://') ? raw : 'https://$raw';
+    final uri = Uri.tryParse(candidate);
+    if (uri == null) {
+      return null;
+    }
+    final scheme = uri.scheme.toLowerCase();
+    if (scheme != 'http' && scheme != 'https') {
+      return null;
+    }
+    final host = uri.host.toLowerCase().trim();
+    if (host != 'revolut.me' && host != 'www.revolut.me') {
+      return null;
+    }
+    if (uri.pathSegments.where((s) => s.trim().isNotEmpty).isEmpty) {
+      return null;
+    }
+    return uri;
+  }
+
+  Uri? _revolutMeUriFromHandle(String rawHandle) {
+    final normalized = rawHandle.trim().replaceFirst(RegExp(r'^@+'), '');
+    if (normalized.isEmpty) {
+      return null;
+    }
+    if (!RegExp(r'^[A-Za-z0-9._-]+$').hasMatch(normalized)) {
+      return null;
+    }
+    return Uri.parse('https://revolut.me/$normalized');
+  }
+
+  String _settlementAmountPathSegment(double amount) {
+    final fixed = amount.toStringAsFixed(2);
+    return fixed.endsWith('.00') ? fixed.substring(0, fixed.length - 3) : fixed;
+  }
 }
 
 class _SettlementFlowStep {
@@ -1210,12 +1431,9 @@ class _AnimatedSettlementTimelineState
         if (mounted) _dotControllers[i].forward();
       });
       if (i < _connectorControllers.length) {
-        Future<void>.delayed(
-          Duration(milliseconds: t + connectorOffset),
-          () {
-            if (mounted) _connectorControllers[i].forward();
-          },
-        );
+        Future<void>.delayed(Duration(milliseconds: t + connectorOffset), () {
+          if (mounted) _connectorControllers[i].forward();
+        });
       }
     }
   }
@@ -1277,10 +1495,10 @@ class _AnimatedSettlementTimelineState
                       color: steps[i].isDone
                           ? semantic.flowStepDone
                           : (i == hi
-                              ? semantic.flowStepCurrent
-                              : Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant),
+                                ? semantic.flowStepCurrent
+                                : Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant),
                     ),
                   ),
                 ),
@@ -1328,7 +1546,8 @@ class _AnimatedSettlementTimelineState
     if (isCurrent && pulse != null) {
       dot = AnimatedBuilder(
         animation: pulse,
-        builder: (_, child) => Transform.scale(scale: pulse.value, child: child),
+        builder: (_, child) =>
+            Transform.scale(scale: pulse.value, child: child),
         child: dot,
       );
     }

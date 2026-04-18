@@ -22,6 +22,8 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
     this.revolutMeLink,
     required this.paypalTitle,
     this.paypalMeLink,
+    required this.wiseTitle,
+    this.wisePayLink,
     required this.openLinkFailedText,
     this.onErrorMessage,
   });
@@ -38,6 +40,8 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
   final String? revolutMeLink;
   final String paypalTitle;
   final String? paypalMeLink;
+  final String wiseTitle;
+  final String? wisePayLink;
   final String openLinkFailedText;
   final ValueChanged<String>? onErrorMessage;
 
@@ -52,11 +56,15 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
     final paypalRaw = (paypalMeLink ?? '').trim();
     final paypalUri = _paypalUriOrNull(paypalRaw);
     final paypalDisplay = _paypalDisplayLabel(paypalRaw, paypalUri);
+    final wiseRaw = (wisePayLink ?? '').trim();
+    final wiseUri = _wiseUriOrNull(wiseRaw);
+    final wiseDisplay = _wiseDisplayLabel(wiseRaw, wiseUri);
     final holder = bankHolderName.trim();
     final hasBank = iban.isNotEmpty || bic.isNotEmpty;
     final hasRevolut = revolut.isNotEmpty || revolutMeRaw.isNotEmpty;
     final hasPaypal = paypalRaw.isNotEmpty;
-    final hasAny = hasBank || hasRevolut || hasPaypal;
+    final hasWise = wiseRaw.isNotEmpty;
+    final hasAny = hasBank || hasRevolut || hasPaypal || hasWise;
 
     return UserProfileSectionCard(
       child: Column(
@@ -114,7 +122,8 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
                 ],
                 onCopyLine: (line) => _copyDetailToClipboard(context, line),
               ),
-            if (hasBank && (hasRevolut || hasPaypal)) const SizedBox(height: 8),
+            if (hasBank && (hasRevolut || hasPaypal || hasWise))
+              const SizedBox(height: 8),
             if (hasRevolut)
               _PaymentMethodTile(
                 leading: const _PaymentBrandLogo(
@@ -144,7 +153,27 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
                     : () => _openExternalPaymentLink(context, revolutMeUri),
                 onCopyLine: (line) => _copyDetailToClipboard(context, line),
               ),
-            if (hasRevolut && hasPaypal) const SizedBox(height: 8),
+            if (hasRevolut && (hasWise || hasPaypal)) const SizedBox(height: 8),
+            if (hasWise)
+              _PaymentMethodTile(
+                leading: Icon(
+                  Icons.currency_exchange_rounded,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                title: wiseTitle,
+                detailLines: [_PaymentDetailLine(text: wiseDisplay)],
+                trailing: wiseUri == null
+                    ? null
+                    : Icon(
+                        Icons.open_in_new_rounded,
+                        size: 18,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                onTap: wiseUri == null
+                    ? null
+                    : () => _openExternalPaymentLink(context, wiseUri),
+              ),
+            if (hasWise && hasPaypal) const SizedBox(height: 8),
             if (hasPaypal)
               _PaymentMethodTile(
                 leading: const _PaymentBrandLogo(
@@ -214,6 +243,30 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
     return uri;
   }
 
+  Uri? _wiseUriOrNull(String rawValue) {
+    final raw = rawValue.trim();
+    if (raw.isEmpty) {
+      return null;
+    }
+    final candidate = raw.contains('://') ? raw : 'https://$raw';
+    final uri = Uri.tryParse(candidate);
+    if (uri == null) {
+      return null;
+    }
+    final scheme = uri.scheme.toLowerCase();
+    if (scheme != 'http' && scheme != 'https') {
+      return null;
+    }
+    final host = uri.host.toLowerCase().trim();
+    if (host.isEmpty) {
+      return null;
+    }
+    if (host != 'wise.com' && host != 'www.wise.com') {
+      return null;
+    }
+    return uri;
+  }
+
   String _paypalDisplayLabel(String rawValue, Uri? uri) {
     if (uri == null) {
       return rawValue;
@@ -244,6 +297,21 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
         return 'revolut.me';
       }
       return 'revolut.me/${segments.first}';
+    }
+    return uri.toString();
+  }
+
+  String _wiseDisplayLabel(String rawValue, Uri? uri) {
+    if (uri == null) {
+      return rawValue;
+    }
+    final host = uri.host.toLowerCase();
+    if (host == 'wise.com' || host == 'www.wise.com') {
+      final path = uri.path.trim();
+      if (path.isEmpty || path == '/') {
+        return 'wise.com';
+      }
+      return 'wise.com$path';
     }
     return uri.toString();
   }

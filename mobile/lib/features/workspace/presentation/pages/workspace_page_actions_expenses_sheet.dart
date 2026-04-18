@@ -541,6 +541,7 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                 tripId: widget.trip.id,
                                 currentUserId: _currentUserId,
                                 controller: widget.workspaceController,
+                                usersById: usersById,
                               ),
                               if (canEdit) ...[
                                 const SizedBox(height: 4),

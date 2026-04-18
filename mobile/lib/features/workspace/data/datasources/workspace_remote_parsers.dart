@@ -92,6 +92,7 @@ class WorkspaceRemoteParsers {
     final revolutHandle = _toNullableString(item['revolut_handle']);
     final revolutMeLink = _toNullableString(item['revolut_me_link']);
     final paypalMeLink = _toNullableString(item['paypal_me_link']);
+    final wisePayLink = _toNullableString(item['wise_pay_link']);
     return WorkspaceUser(
       id: (item['id'] as num?)?.toInt() ?? 0,
       nickname: item['nickname'] as String? ?? '',
@@ -104,6 +105,7 @@ class WorkspaceRemoteParsers {
       revolutHandle: revolutHandle,
       revolutMeLink: revolutMeLink,
       paypalMeLink: paypalMeLink,
+      wisePayLink: wisePayLink,
       isReadyToSettle: isReadyToSettle,
       readyToSettleAt: readyToSettleAt,
     );

@@ -541,6 +541,42 @@ abstract class AppLocalizations {
   /// **'{date}  -  Paid {paid}  -  Owes {owes}'**
   String expenseImpactLine(Object date, Object owes, Object paid);
 
+  /// No description provided for @expenseReactionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactions'**
+  String get expenseReactionsTitle;
+
+  /// No description provided for @expenseCommentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get expenseCommentsTitle;
+
+  /// No description provided for @expenseNoComments.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet.'**
+  String get expenseNoComments;
+
+  /// No description provided for @expenseAddCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a comment...'**
+  String get expenseAddCommentHint;
+
+  /// No description provided for @expenseCommentSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get expenseCommentSend;
+
+  /// No description provided for @expenseDeleteCommentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete comment?'**
+  String get expenseDeleteCommentTitle;
+
   /// No description provided for @expenseUpdated.
   ///
   /// In en, this message translates to:
@@ -4489,6 +4525,24 @@ abstract class AppLocalizations {
   /// **'Actions'**
   String get workspaceActions;
 
+  /// No description provided for @workspaceQuickPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick pay'**
+  String get workspaceQuickPay;
+
+  /// No description provided for @workspacePayWithRevolut.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with Revolut'**
+  String get workspacePayWithRevolut;
+
+  /// No description provided for @workspacePayWithPaypal.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with PayPal'**
+  String get workspacePayWithPaypal;
+
   /// No description provided for @workspaceTransferIsConfirmed.
   ///
   /// In en, this message translates to:
@@ -5160,42 +5214,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copied.'**
   String get paymentCopied;
-
-  /// No description provided for @expenseReactionsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Reactions'**
-  String get expenseReactionsTitle;
-
-  /// No description provided for @expenseCommentsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Comments'**
-  String get expenseCommentsTitle;
-
-  /// No description provided for @expenseAddCommentHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Add a comment…'**
-  String get expenseAddCommentHint;
-
-  /// No description provided for @expenseCommentSend.
-  ///
-  /// In en, this message translates to:
-  /// **'Send'**
-  String get expenseCommentSend;
-
-  /// No description provided for @expenseNoComments.
-  ///
-  /// In en, this message translates to:
-  /// **'No comments yet'**
-  String get expenseNoComments;
-
-  /// No description provided for @expenseDeleteCommentTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete comment?'**
-  String get expenseDeleteCommentTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

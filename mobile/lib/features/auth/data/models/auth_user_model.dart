@@ -21,6 +21,7 @@ class AuthUserModel extends AuthUser {
     super.revolutHandle,
     super.revolutMeLink,
     super.paypalMeLink,
+    super.wisePayLink,
     super.preferredCurrencyCode,
     super.avatarBase64,
     super.avatarUrl,
@@ -50,6 +51,7 @@ class AuthUserModel extends AuthUser {
     final revolutHandle = (map['revolut_handle'] as String?)?.trim();
     final revolutMeLink = (map['revolut_me_link'] as String?)?.trim();
     final paypalMeLink = (map['paypal_me_link'] as String?)?.trim();
+    final wisePayLink = (map['wise_pay_link'] as String?)?.trim();
     final preferredCurrencyCode = AppCurrencyCatalog.normalizeProfilePreferred(
       (map['preferred_currency_code'] as String?)?.trim(),
     );
@@ -92,6 +94,9 @@ class AuthUserModel extends AuthUser {
       paypalMeLink: (paypalMeLink == null || paypalMeLink.isEmpty)
           ? null
           : paypalMeLink,
+      wisePayLink: (wisePayLink == null || wisePayLink.isEmpty)
+          ? null
+          : wisePayLink,
       preferredCurrencyCode: preferredCurrencyCode,
       avatarBase64: avatar.isEmpty ? null : avatar,
       avatarUrl: avatarUrl,

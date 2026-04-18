@@ -261,6 +261,24 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get expenseReactionsTitle => 'Reactions';
+
+  @override
+  String get expenseCommentsTitle => 'Comments';
+
+  @override
+  String get expenseNoComments => 'No comments yet.';
+
+  @override
+  String get expenseAddCommentHint => 'Add a comment...';
+
+  @override
+  String get expenseCommentSend => 'Send';
+
+  @override
+  String get expenseDeleteCommentTitle => 'Delete comment?';
+
+  @override
   String get expenseUpdated => 'Expense updated.';
 
   @override
@@ -2427,6 +2445,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceActions => 'Actions';
 
   @override
+  String get workspaceQuickPay => 'Quick pay';
+
+  @override
+  String get workspacePayWithRevolut => 'Pay with Revolut';
+
+  @override
+  String get workspacePayWithPaypal => 'Pay with PayPal';
+
+  @override
   String get workspaceTransferIsConfirmed => 'Transfer is confirmed.';
 
   @override
@@ -2799,22 +2826,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentCopied => 'Copied.';
-
-  @override
-  String get expenseReactionsTitle => 'Reactions';
-
-  @override
-  String get expenseCommentsTitle => 'Comments';
-
-  @override
-  String get expenseAddCommentHint => 'Add a comment…';
-
-  @override
-  String get expenseCommentSend => 'Send';
-
-  @override
-  String get expenseNoComments => 'No comments yet';
-
-  @override
-  String get expenseDeleteCommentTitle => 'Delete comment?';
 }

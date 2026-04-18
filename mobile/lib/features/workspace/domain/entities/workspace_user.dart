@@ -11,6 +11,7 @@ class WorkspaceUser {
     this.revolutHandle,
     this.revolutMeLink,
     this.paypalMeLink,
+    this.wisePayLink,
     this.isReadyToSettle = false,
     this.readyToSettleAt,
   });
@@ -26,6 +27,7 @@ class WorkspaceUser {
   final String? revolutHandle;
   final String? revolutMeLink;
   final String? paypalMeLink;
+  final String? wisePayLink;
   final bool isReadyToSettle;
   final String? readyToSettleAt;
 

@@ -239,6 +239,8 @@ extension _FriendsPageProfile on _FriendsPageState {
                     revolutMeLink: profileUser.revolutMeLink,
                     paypalTitle: 'PayPal.me',
                     paypalMeLink: profileUser.paypalMeLink,
+                    wiseTitle: 'Wise',
+                    wisePayLink: profileUser.wisePayLink,
                     openLinkFailedText:
                         context.l10n.workspaceCouldNotOpenPaymentLink,
                     onErrorMessage: (message) =>

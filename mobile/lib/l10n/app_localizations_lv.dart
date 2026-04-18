@@ -261,6 +261,24 @@ class AppLocalizationsLv extends AppLocalizations {
   }
 
   @override
+  String get expenseReactionsTitle => 'Reakcijas';
+
+  @override
+  String get expenseCommentsTitle => 'Komentāri';
+
+  @override
+  String get expenseNoComments => 'Komentāru vēl nav.';
+
+  @override
+  String get expenseAddCommentHint => 'Pievieno komentāru...';
+
+  @override
+  String get expenseCommentSend => 'Nosūtīt';
+
+  @override
+  String get expenseDeleteCommentTitle => 'Dzēst komentāru?';
+
+  @override
   String get expenseUpdated => 'Izdevums atjaunināts.';
 
   @override
@@ -2427,6 +2445,15 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspaceActions => 'Darbības';
 
   @override
+  String get workspaceQuickPay => 'Ātrais maksājums';
+
+  @override
+  String get workspacePayWithRevolut => 'Maksāt ar Revolut';
+
+  @override
+  String get workspacePayWithPaypal => 'Maksāt ar PayPal';
+
+  @override
   String get workspaceTransferIsConfirmed => 'Pārskaitījums ir apstiprināts.';
 
   @override
@@ -2799,22 +2826,4 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get paymentCopied => 'Nokopēts.';
-
-  @override
-  String get expenseReactionsTitle => 'Reakcijas';
-
-  @override
-  String get expenseCommentsTitle => 'Komentāri';
-
-  @override
-  String get expenseAddCommentHint => 'Pievieno komentāru…';
-
-  @override
-  String get expenseCommentSend => 'Sūtīt';
-
-  @override
-  String get expenseNoComments => 'Vēl nav komentāru';
-
-  @override
-  String get expenseDeleteCommentTitle => 'Dzēst komentāru?';
 }

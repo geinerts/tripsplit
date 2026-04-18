@@ -218,6 +218,7 @@ extension _ProfilePageActions on _ProfilePageState {
     _initialRevolutHandle = (user.revolutHandle ?? '').trim();
     _initialRevolutMeLink = (user.revolutMeLink ?? '').trim();
     _initialPaypalMeLink = (user.paypalMeLink ?? '').trim();
+    _initialWisePayLink = (user.wisePayLink ?? '').trim();
     _initialPreferredCurrencyCode =
         AppCurrencyCatalog.normalizeProfilePreferred(
           user.preferredCurrencyCode,
@@ -234,6 +235,7 @@ extension _ProfilePageActions on _ProfilePageState {
     _draftRevolutHandle = _initialRevolutHandle;
     _draftRevolutMeLink = _initialRevolutMeLink;
     _draftPaypalMeLink = _initialPaypalMeLink;
+    _draftWisePayLink = _initialWisePayLink;
     _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
     _draftPassword = '';
     _draftRepeatPassword = '';
@@ -362,6 +364,12 @@ extension _ProfilePageActions on _ProfilePageState {
       key: 'paypal_me_link',
       initial: _initialPaypalMeLink,
       draft: _draftPaypalMeLink,
+      normalize: _normalizeDraftText,
+    );
+    putIfChanged(
+      key: 'wise_pay_link',
+      initial: _initialWisePayLink,
+      draft: _draftWisePayLink,
       normalize: _normalizeDraftText,
     );
 

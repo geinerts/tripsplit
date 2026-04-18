@@ -48,6 +48,7 @@ class CurrentUserStore {
       'revolut_handle': user.revolutHandle,
       'revolut_me_link': user.revolutMeLink,
       'paypal_me_link': user.paypalMeLink,
+      'wise_pay_link': user.wisePayLink,
       'preferred_currency_code': user.preferredCurrencyCode,
       'avatar_base64': user.avatarBase64,
       'avatar_url': user.avatarUrl,
