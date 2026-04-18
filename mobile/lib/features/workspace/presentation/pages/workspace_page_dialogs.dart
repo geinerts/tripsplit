@@ -78,8 +78,12 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                               if (normalizedQuery.isEmpty) {
                                 return true;
                               }
+                              final label = AppCurrencyCatalog.labelForCode(
+                                item.code,
+                                context.l10n,
+                              );
                               final haystack =
-                                  '${item.code} ${item.label} ${item.symbol}'
+                                  '${item.code} $label ${item.symbol}'
                                       .toUpperCase();
                               return haystack.contains(normalizedQuery);
                             })
@@ -216,7 +220,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                   const SizedBox(width: 10),
                                                   Expanded(
                                                     child: Text(
-                                                      '${item.code} - ${item.label}',
+                                                      '${item.code} - ${AppCurrencyCatalog.labelForCode(item.code, context.l10n)}',
                                                       maxLines: 1,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -390,7 +394,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                             const SizedBox(width: 10),
                                             Expanded(
                                               child: Text(
-                                                '${selectedCurrency.code} - ${selectedCurrency.label}',
+                                                '${selectedCurrency.code} - ${AppCurrencyCatalog.labelForCode(selectedCurrency.code, context.l10n)}',
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: Theme.of(context)
@@ -443,7 +447,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                               Icon(option.icon, size: 16),
                                               const SizedBox(width: 6),
                                               Text(
-                                                option.labelForLocale(
+                                                ExpenseCategoryCatalog.labelFor(
+                                                  option.key,
                                                   Localizations.localeOf(
                                                     context,
                                                   ),

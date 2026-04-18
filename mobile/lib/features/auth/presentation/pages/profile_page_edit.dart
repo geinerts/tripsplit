@@ -811,7 +811,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
 
   String _preferredCurrencyDisplayValue() {
     final option = _preferredCurrencyOptionFor(_draftPreferredCurrencyCode);
-    return '${option.symbol} ${option.code} - ${option.label}';
+    return '${option.symbol} ${option.code} - ${AppCurrencyCatalog.labelForCode(option.code, context.l10n)}';
   }
 
   Future<void> _pickPreferredCurrencyCode() async {
@@ -839,7 +839,11 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                     if (normalizedQuery.isEmpty) {
                       return true;
                     }
-                    final haystack = '${item.code} ${item.label} ${item.symbol}'
+                    final label = AppCurrencyCatalog.labelForCode(
+                      item.code,
+                      context.l10n,
+                    );
+                    final haystack = '${item.code} $label ${item.symbol}'
                         .toUpperCase();
                     return haystack.contains(normalizedQuery);
                   })
@@ -953,7 +957,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                                         const SizedBox(width: 10),
                                         Expanded(
                                           child: Text(
-                                            '${item.code} - ${item.label}',
+                                            '${item.code} - ${AppCurrencyCatalog.labelForCode(item.code, context.l10n)}',
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: Theme.of(pickerContext)
@@ -1028,7 +1032,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      '${option.code} - ${option.label}',
+                      '${option.code} - ${AppCurrencyCatalog.labelForCode(option.code, context.l10n)}',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -1344,11 +1348,11 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
       case _PaymentInfoMethod.bankTransfer:
         return context.l10n.profileEditBankTransferIbanSwift;
       case _PaymentInfoMethod.revolut:
-        return 'Revolut';
+        return context.l10n.profileEditRevolut;
       case _PaymentInfoMethod.paypal:
-        return 'PayPal.me';
+        return context.l10n.profileEditPaypalMe;
       case _PaymentInfoMethod.wise:
-        return 'Wise';
+        return context.l10n.profileEditWise;
     }
   }
 
@@ -1361,7 +1365,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
       case _PaymentInfoMethod.paypal:
         return context.l10n.profileEditPaypalMeLink;
       case _PaymentInfoMethod.wise:
-        return 'wise.com/pay/me/username';
+        return context.l10n.profileEditWisePayUsername;
     }
   }
 
@@ -1710,7 +1714,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
                 ),
                 ButtonSegment<_BankTransferRegion>(
                   value: _BankTransferRegion.uk,
-                  label: const Text('UK'),
+                  label: Text(context.l10n.profileEditUk),
                   icon: const Icon(Icons.flag_rounded),
                 ),
               ],
@@ -1750,14 +1754,14 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
             ] else ...[
               _buildTextField(
                 controller: _bankIbanController,
-                label: 'IBAN',
+                label: context.l10n.profileEditIbanLabel,
                 hint: context.l10n.profileEditExampleLv80bank0000435195001,
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 10),
               _buildTextField(
                 controller: _bankBicController,
-                label: 'BIC / SWIFT',
+                label: context.l10n.profileEditBicSwiftLabel,
                 hint: context.l10n.profileEdit811Chars,
                 textInputAction: TextInputAction.done,
               ),
@@ -1780,7 +1784,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
           children: [
             _buildTextField(
               controller: _revolutMeController,
-              label: 'Revolut.me',
+              label: context.l10n.profileEditRevolutMe,
               hint: context.l10n.profileEditRevolutMeUsername,
               textInputAction: TextInputAction.next,
             ),
@@ -1799,7 +1803,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
           children: [
             _buildTextField(
               controller: _paypalMeController,
-              label: 'PayPal.me',
+              label: context.l10n.profileEditPaypalMe,
               hint: context.l10n.profileEditPaypalMeUsernameUsername,
               textInputAction: TextInputAction.done,
             ),
@@ -1811,8 +1815,8 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
           children: [
             _buildTextField(
               controller: _wisePayController,
-              label: 'Wise',
-              hint: 'wise.com/pay/me/username',
+              label: context.l10n.profileEditWise,
+              hint: context.l10n.profileEditWisePayUsername,
               textInputAction: TextInputAction.done,
             ),
           ],

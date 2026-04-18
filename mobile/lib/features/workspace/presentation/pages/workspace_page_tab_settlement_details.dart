@@ -129,8 +129,15 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
               payee: toUser,
               currencyCode: widget.trip.currencyCode,
             );
+            final quickWiseUri = _buildSettlementWiseQuickPayUri(
+              settlement: liveItem,
+              payee: toUser,
+              currencyCode: widget.trip.currencyCode,
+            );
             final hasQuickPayActions =
-                quickRevolutUri != null || quickPaypalUri != null;
+                quickRevolutUri != null ||
+                quickPaypalUri != null ||
+                quickWiseUri != null;
 
             return SafeArea(
               child: FractionallySizedBox(
@@ -369,6 +376,24 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                               sheetContext
                                                   .l10n
                                                   .workspacePayWithPaypal,
+                                            ),
+                                          ),
+                                        if (quickWiseUri != null)
+                                          OutlinedButton.icon(
+                                            onPressed: _isMutating
+                                                ? null
+                                                : () =>
+                                                      _openSettlementPaymentLink(
+                                                        quickWiseUri,
+                                                      ),
+                                            icon: const Icon(
+                                              Icons.currency_exchange_rounded,
+                                              size: 17,
+                                            ),
+                                            label: Text(
+                                              sheetContext
+                                                  .l10n
+                                                  .workspacePayWithWise,
                                             ),
                                           ),
                                       ],
@@ -1232,6 +1257,30 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     return _withSettlementAmountPath(paypalBase, amountPart);
   }
 
+  Uri? _buildSettlementWiseQuickPayUri({
+    required SettlementItem settlement,
+    required WorkspaceUser? payee,
+    required String currencyCode,
+  }) {
+    if (!settlement.canMarkSent || payee == null) {
+      return null;
+    }
+
+    final wiseRaw = (payee.wisePayLink ?? '').trim();
+    final wiseBase = _wisePayUriOrNull(wiseRaw);
+    if (wiseBase == null) {
+      return null;
+    }
+
+    final query = <String, String>{...wiseBase.queryParameters};
+    query['amount'] = _settlementAmountPathSegment(settlement.amount);
+    final currency = currencyCode.trim().toUpperCase();
+    if (currency.isNotEmpty) {
+      query['currency'] = currency;
+    }
+    return wiseBase.replace(queryParameters: query.isEmpty ? null : query);
+  }
+
   Uri? _withSettlementAmountPath(
     Uri base,
     String amountPathSegment, {
@@ -1315,6 +1364,36 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
       return null;
     }
     return Uri.parse('https://revolut.me/$normalized');
+  }
+
+  Uri? _wisePayUriOrNull(String rawValue) {
+    final raw = rawValue.trim();
+    if (raw.isEmpty) {
+      return null;
+    }
+
+    if (!raw.contains('.') && !raw.contains('/') && !raw.contains('://')) {
+      return Uri.parse('https://wise.com/pay/me/$raw');
+    }
+
+    final candidate = raw.contains('://') ? raw : 'https://$raw';
+    final uri = Uri.tryParse(candidate);
+    if (uri == null) {
+      return null;
+    }
+
+    final scheme = uri.scheme.toLowerCase();
+    if (scheme != 'http' && scheme != 'https') {
+      return null;
+    }
+    final host = uri.host.toLowerCase().trim();
+    if (host != 'wise.com' && host != 'www.wise.com') {
+      return null;
+    }
+    if (uri.pathSegments.where((s) => s.trim().isNotEmpty).isEmpty) {
+      return null;
+    }
+    return uri;
   }
 
   String _settlementAmountPathSegment(double amount) {

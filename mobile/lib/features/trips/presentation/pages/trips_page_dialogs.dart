@@ -262,8 +262,12 @@ extension _TripsPageDialogs on _TripsPageState {
                               if (normalizedQuery.isEmpty) {
                                 return true;
                               }
+                              final label = AppCurrencyCatalog.labelForCode(
+                                item.code,
+                                context.l10n,
+                              );
                               final haystack =
-                                  '${item.code} ${item.label} ${item.symbol}'
+                                  '${item.code} $label ${item.symbol}'
                                       .toUpperCase();
                               return haystack.contains(normalizedQuery);
                             })
@@ -400,7 +404,7 @@ extension _TripsPageDialogs on _TripsPageState {
                                                   const SizedBox(width: 10),
                                                   Expanded(
                                                     child: Text(
-                                                      '${item.code} - ${item.label}',
+                                                      '${item.code} - ${AppCurrencyCatalog.labelForCode(item.code, context.l10n)}',
                                                       maxLines: 1,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -825,7 +829,7 @@ extension _TripsPageDialogs on _TripsPageState {
                                               const SizedBox(width: 10),
                                               Expanded(
                                                 child: Text(
-                                                  '${selectedCurrency.code} - ${selectedCurrency.label}',
+                                                  '${selectedCurrency.code} - ${AppCurrencyCatalog.labelForCode(selectedCurrency.code, context.l10n)}',
                                                   maxLines: 1,
                                                   overflow:
                                                       TextOverflow.ellipsis,

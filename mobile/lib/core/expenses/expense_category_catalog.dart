@@ -1,111 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:tripsplit/l10n/app_localizations.dart';
 
 class ExpenseCategoryOption {
-  const ExpenseCategoryOption({
-    required this.key,
-    required this.icon,
-    required this.labelEn,
-    required this.labelLv,
-    required this.labelEs,
-  });
+  const ExpenseCategoryOption({required this.key, required this.icon});
 
   final String key;
   final IconData icon;
-  final String labelEn;
-  final String labelLv;
-  final String labelEs;
 
   String labelForLocale(Locale locale) {
-    final languageCode = locale.languageCode.toLowerCase();
-    if (languageCode == 'lv') {
-      return labelLv;
-    }
-    if (languageCode == 'es') {
-      return labelEs;
-    }
-    return labelEn;
+    return ExpenseCategoryCatalog.labelFor(key, locale);
   }
 }
 
 class ExpenseCategoryCatalog {
   static const List<ExpenseCategoryOption> builtIn = <ExpenseCategoryOption>[
-    ExpenseCategoryOption(
-      key: 'food',
-      icon: Icons.restaurant_outlined,
-      labelEn: 'Food',
-      labelLv: 'Ēdiens',
-      labelEs: 'Comida',
-    ),
-    ExpenseCategoryOption(
-      key: 'groceries',
-      icon: Icons.shopping_cart_outlined,
-      labelEn: 'Groceries',
-      labelLv: 'Pārtika',
-      labelEs: 'Supermercado',
-    ),
-    ExpenseCategoryOption(
-      key: 'fuel',
-      icon: Icons.local_gas_station_outlined,
-      labelEn: 'Fuel',
-      labelLv: 'Degviela',
-      labelEs: 'Combustible',
-    ),
+    ExpenseCategoryOption(key: 'food', icon: Icons.restaurant_outlined),
+    ExpenseCategoryOption(key: 'groceries', icon: Icons.shopping_cart_outlined),
+    ExpenseCategoryOption(key: 'fuel', icon: Icons.local_gas_station_outlined),
     ExpenseCategoryOption(
       key: 'transport',
       icon: Icons.directions_bus_outlined,
-      labelEn: 'Transport',
-      labelLv: 'Transports',
-      labelEs: 'Transporte',
     ),
-    ExpenseCategoryOption(
-      key: 'accommodation',
-      icon: Icons.hotel_outlined,
-      labelEn: 'Accommodation',
-      labelLv: 'Naktsmītne',
-      labelEs: 'Alojamiento',
-    ),
-    ExpenseCategoryOption(
-      key: 'activities',
-      icon: Icons.hiking_outlined,
-      labelEn: 'Activities',
-      labelLv: 'Aktivitātes',
-      labelEs: 'Actividades',
-    ),
+    ExpenseCategoryOption(key: 'accommodation', icon: Icons.hotel_outlined),
+    ExpenseCategoryOption(key: 'activities', icon: Icons.hiking_outlined),
     ExpenseCategoryOption(
       key: 'tickets',
       icon: Icons.confirmation_number_outlined,
-      labelEn: 'Tickets',
-      labelLv: 'Biļetes',
-      labelEs: 'Entradas',
     ),
-    ExpenseCategoryOption(
-      key: 'shopping',
-      icon: Icons.shopping_bag_outlined,
-      labelEn: 'Shopping',
-      labelLv: 'Iepirkšanās',
-      labelEs: 'Compras',
-    ),
-    ExpenseCategoryOption(
-      key: 'party',
-      icon: Icons.celebration_outlined,
-      labelEn: 'Party',
-      labelLv: 'Ballīte',
-      labelEs: 'Fiesta',
-    ),
-    ExpenseCategoryOption(
-      key: 'parking',
-      icon: Icons.local_parking_outlined,
-      labelEn: 'Parking',
-      labelLv: 'Stāvvieta',
-      labelEs: 'Aparcamiento',
-    ),
-    ExpenseCategoryOption(
-      key: 'other',
-      icon: Icons.more_horiz,
-      labelEn: 'Other',
-      labelLv: 'Cits',
-      labelEs: 'Otros',
-    ),
+    ExpenseCategoryOption(key: 'shopping', icon: Icons.shopping_bag_outlined),
+    ExpenseCategoryOption(key: 'party', icon: Icons.celebration_outlined),
+    ExpenseCategoryOption(key: 'parking', icon: Icons.local_parking_outlined),
+    ExpenseCategoryOption(key: 'other', icon: Icons.more_horiz),
   ];
 
   static final Map<String, ExpenseCategoryOption> _byKey =
@@ -146,7 +71,8 @@ class ExpenseCategoryCatalog {
     final normalized = normalizeStored(raw);
     final option = _byKey[normalized.toLowerCase()];
     if (option != null) {
-      return option.labelForLocale(locale);
+      final l10n = lookupAppLocalizations(locale);
+      return _labelForBuiltInKey(option.key, l10n);
     }
     return normalized;
   }
@@ -162,5 +88,34 @@ class ExpenseCategoryCatalog {
       return lower;
     }
     return 'custom:$lower';
+  }
+
+  static String _labelForBuiltInKey(String key, AppLocalizations l10n) {
+    switch (key) {
+      case 'food':
+        return l10n.expenseCategoryFood;
+      case 'groceries':
+        return l10n.expenseCategoryGroceries;
+      case 'fuel':
+        return l10n.expenseCategoryFuel;
+      case 'transport':
+        return l10n.expenseCategoryTransport;
+      case 'accommodation':
+        return l10n.expenseCategoryAccommodation;
+      case 'activities':
+        return l10n.expenseCategoryActivities;
+      case 'tickets':
+        return l10n.expenseCategoryTickets;
+      case 'shopping':
+        return l10n.expenseCategoryShopping;
+      case 'party':
+        return l10n.expenseCategoryParty;
+      case 'parking':
+        return l10n.expenseCategoryParking;
+      case 'other':
+        return l10n.expenseCategoryOther;
+      default:
+        return key;
+    }
   }
 }

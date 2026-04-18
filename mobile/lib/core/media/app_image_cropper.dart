@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../l10n/l10n.dart';
+
 class AppImageCropper {
   AppImageCropper._();
 
@@ -16,7 +18,7 @@ class AppImageCropper {
       source: source,
       ratioX: 1,
       ratioY: 1,
-      title: 'Adjust avatar',
+      title: context.l10n.imageCropperAdjustAvatar,
     );
   }
 
@@ -29,7 +31,7 @@ class AppImageCropper {
       source: source,
       ratioX: 16,
       ratioY: 9,
-      title: 'Adjust trip image',
+      title: context.l10n.imageCropperAdjustTripImage,
     );
   }
 
@@ -61,8 +63,8 @@ class AppImageCropper {
           // Keep iOS crop UI clean: one title area (no duplicate heading),
           // while preserving pinch-to-zoom and pan behavior.
           title: '',
-          doneButtonTitle: 'Save',
-          cancelButtonTitle: 'Cancel',
+          doneButtonTitle: context.l10n.saveAction,
+          cancelButtonTitle: context.l10n.cancelAction,
           embedInNavigationController: false,
           hidesNavigationBar: true,
           rotateButtonsHidden: true,

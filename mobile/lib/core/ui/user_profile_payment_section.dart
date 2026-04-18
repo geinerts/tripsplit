@@ -501,7 +501,7 @@ class _PaymentLineRow extends StatelessWidget {
             padding: EdgeInsets.zero,
             splashRadius: 18,
             visualDensity: VisualDensity.compact,
-            tooltip: 'Copy',
+            tooltip: context.l10n.copyAction,
           ),
       ],
     );

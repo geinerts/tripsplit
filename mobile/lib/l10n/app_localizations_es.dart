@@ -1942,6 +1942,150 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileEditPaypalMeUsernameUsername => 'paypal.me/nombredeusuario o nombre de usuario';
 
   @override
+  String get profileEditRevolut => 'Revolut';
+
+  @override
+  String get profileEditPaypalMe => 'PayPal.me';
+
+  @override
+  String get profileEditWise => 'Wise';
+
+  @override
+  String get profileEditWisePayUsername => 'wise.com/pay/me/username';
+
+  @override
+  String get profileEditUk => 'UK';
+
+  @override
+  String get profileEditIbanLabel => 'IBAN';
+
+  @override
+  String get profileEditBicSwiftLabel => 'BIC / SWIFT';
+
+  @override
+  String get profileEditRevolutMe => 'Revolut.me';
+
+  @override
+  String get imageCropperAdjustAvatar => 'Ajustar avatar';
+
+  @override
+  String get imageCropperAdjustTripImage => 'Ajustar imagen del viaje';
+
+  @override
+  String get copyAction => 'Copiar';
+
+  @override
+  String get currencyNameEur => 'Euro';
+
+  @override
+  String get currencyNameGbp => 'Libra esterlina';
+
+  @override
+  String get currencyNameChf => 'Franco suizo';
+
+  @override
+  String get currencyNameNok => 'Corona noruega';
+
+  @override
+  String get currencyNameSek => 'Corona sueca';
+
+  @override
+  String get currencyNameDkk => 'Corona danesa';
+
+  @override
+  String get currencyNamePln => 'Zloty polaco';
+
+  @override
+  String get currencyNameCzk => 'Corona checa';
+
+  @override
+  String get currencyNameHuf => 'Forinto húngaro';
+
+  @override
+  String get currencyNameRon => 'Leu rumano';
+
+  @override
+  String get currencyNameBgn => 'Lev búlgaro';
+
+  @override
+  String get currencyNameIsk => 'Corona islandesa';
+
+  @override
+  String get currencyNameAll => 'Lek albanés';
+
+  @override
+  String get currencyNameBam => 'Marco convertible de Bosnia y Herzegovina';
+
+  @override
+  String get currencyNameByn => 'Rublo bielorruso';
+
+  @override
+  String get currencyNameMdl => 'Leu moldavo';
+
+  @override
+  String get currencyNameMkd => 'Denar macedonio';
+
+  @override
+  String get currencyNameRsd => 'Dinar serbio';
+
+  @override
+  String get currencyNameUah => 'Grivna ucraniana';
+
+  @override
+  String get currencyNameGel => 'Lari georgiano';
+
+  @override
+  String get currencyNameTry => 'Lira turca';
+
+  @override
+  String get currencyNameUsd => 'Dólar estadounidense';
+
+  @override
+  String get currencyNameJpy => 'Yen japonés';
+
+  @override
+  String get currencyNameCny => 'Yuan chino';
+
+  @override
+  String get currencyNameCad => 'Dólar canadiense';
+
+  @override
+  String get currencyNameAud => 'Dólar australiano';
+
+  @override
+  String get expenseCategoryFood => 'Comida';
+
+  @override
+  String get expenseCategoryGroceries => 'Supermercado';
+
+  @override
+  String get expenseCategoryFuel => 'Combustible';
+
+  @override
+  String get expenseCategoryTransport => 'Transporte';
+
+  @override
+  String get expenseCategoryAccommodation => 'Alojamiento';
+
+  @override
+  String get expenseCategoryActivities => 'Actividades';
+
+  @override
+  String get expenseCategoryTickets => 'Entradas';
+
+  @override
+  String get expenseCategoryShopping => 'Compras';
+
+  @override
+  String get expenseCategoryParty => 'Fiesta';
+
+  @override
+  String get expenseCategoryParking => 'Aparcamiento';
+
+  @override
+  String get expenseCategoryOther => 'Otros';
+
+  @override
   String get shellTripAlreadyInListOpened => 'Viaje ya en tu lista. Lo abrí para ti.';
 
   @override
@@ -2452,6 +2596,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get workspacePayWithPaypal => 'Pagar con PayPal';
+
+  @override
+  String get workspacePayWithWise => 'Pagar con Wise';
 
   @override
   String get workspaceTransferIsConfirmed => 'La transferencia está confirmada.';

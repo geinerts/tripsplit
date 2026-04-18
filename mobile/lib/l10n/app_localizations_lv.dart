@@ -1942,6 +1942,150 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileEditPaypalMeUsernameUsername => 'paypal.me/lietotajs vai lietotajs';
 
   @override
+  String get profileEditRevolut => 'Revolut';
+
+  @override
+  String get profileEditPaypalMe => 'PayPal.me';
+
+  @override
+  String get profileEditWise => 'Wise';
+
+  @override
+  String get profileEditWisePayUsername => 'wise.com/pay/me/username';
+
+  @override
+  String get profileEditUk => 'UK';
+
+  @override
+  String get profileEditIbanLabel => 'IBAN';
+
+  @override
+  String get profileEditBicSwiftLabel => 'BIC / SWIFT';
+
+  @override
+  String get profileEditRevolutMe => 'Revolut.me';
+
+  @override
+  String get imageCropperAdjustAvatar => 'Pielāgot avataru';
+
+  @override
+  String get imageCropperAdjustTripImage => 'Pielāgot ceļojuma attēlu';
+
+  @override
+  String get copyAction => 'Kopēt';
+
+  @override
+  String get currencyNameEur => 'Eiro';
+
+  @override
+  String get currencyNameGbp => 'Britu mārciņa';
+
+  @override
+  String get currencyNameChf => 'Šveices franks';
+
+  @override
+  String get currencyNameNok => 'Norvēģijas krona';
+
+  @override
+  String get currencyNameSek => 'Zviedrijas krona';
+
+  @override
+  String get currencyNameDkk => 'Dānijas krona';
+
+  @override
+  String get currencyNamePln => 'Polijas zlots';
+
+  @override
+  String get currencyNameCzk => 'Čehijas krona';
+
+  @override
+  String get currencyNameHuf => 'Ungārijas forints';
+
+  @override
+  String get currencyNameRon => 'Rumānijas leja';
+
+  @override
+  String get currencyNameBgn => 'Bulgārijas levs';
+
+  @override
+  String get currencyNameIsk => 'Islandes krona';
+
+  @override
+  String get currencyNameAll => 'Albānijas leks';
+
+  @override
+  String get currencyNameBam => 'Bosnijas un Hercegovinas marka';
+
+  @override
+  String get currencyNameByn => 'Baltkrievijas rublis';
+
+  @override
+  String get currencyNameMdl => 'Moldovas leja';
+
+  @override
+  String get currencyNameMkd => 'Ziemeļmaķedonijas denārs';
+
+  @override
+  String get currencyNameRsd => 'Serbijas dinārs';
+
+  @override
+  String get currencyNameUah => 'Ukrainas grivna';
+
+  @override
+  String get currencyNameGel => 'Gruzijas lari';
+
+  @override
+  String get currencyNameTry => 'Turcijas lira';
+
+  @override
+  String get currencyNameUsd => 'ASV dolārs';
+
+  @override
+  String get currencyNameJpy => 'Japānas jena';
+
+  @override
+  String get currencyNameCny => 'Ķīnas juaņa';
+
+  @override
+  String get currencyNameCad => 'Kanādas dolārs';
+
+  @override
+  String get currencyNameAud => 'Austrālijas dolārs';
+
+  @override
+  String get expenseCategoryFood => 'Ēdiens';
+
+  @override
+  String get expenseCategoryGroceries => 'Pārtika';
+
+  @override
+  String get expenseCategoryFuel => 'Degviela';
+
+  @override
+  String get expenseCategoryTransport => 'Transports';
+
+  @override
+  String get expenseCategoryAccommodation => 'Naktsmītne';
+
+  @override
+  String get expenseCategoryActivities => 'Aktivitātes';
+
+  @override
+  String get expenseCategoryTickets => 'Biļetes';
+
+  @override
+  String get expenseCategoryShopping => 'Iepirkšanās';
+
+  @override
+  String get expenseCategoryParty => 'Ballīte';
+
+  @override
+  String get expenseCategoryParking => 'Stāvvieta';
+
+  @override
+  String get expenseCategoryOther => 'Cits';
+
+  @override
   String get shellTripAlreadyInListOpened => 'Ceļojums jau ir tavā sarakstā. Atvēru to tev.';
 
   @override
@@ -2452,6 +2596,9 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get workspacePayWithPaypal => 'Maksāt ar PayPal';
+
+  @override
+  String get workspacePayWithWise => 'Maksāt ar Wise';
 
   @override
   String get workspaceTransferIsConfirmed => 'Pārskaitījums ir apstiprināts.';

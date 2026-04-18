@@ -3583,6 +3583,294 @@ abstract class AppLocalizations {
   /// **'paypal.me/username or username'**
   String get profileEditPaypalMeUsernameUsername;
 
+  /// No description provided for @profileEditRevolut.
+  ///
+  /// In en, this message translates to:
+  /// **'Revolut'**
+  String get profileEditRevolut;
+
+  /// No description provided for @profileEditPaypalMe.
+  ///
+  /// In en, this message translates to:
+  /// **'PayPal.me'**
+  String get profileEditPaypalMe;
+
+  /// No description provided for @profileEditWise.
+  ///
+  /// In en, this message translates to:
+  /// **'Wise'**
+  String get profileEditWise;
+
+  /// No description provided for @profileEditWisePayUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'wise.com/pay/me/username'**
+  String get profileEditWisePayUsername;
+
+  /// No description provided for @profileEditUk.
+  ///
+  /// In en, this message translates to:
+  /// **'UK'**
+  String get profileEditUk;
+
+  /// No description provided for @profileEditIbanLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'IBAN'**
+  String get profileEditIbanLabel;
+
+  /// No description provided for @profileEditBicSwiftLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'BIC / SWIFT'**
+  String get profileEditBicSwiftLabel;
+
+  /// No description provided for @profileEditRevolutMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Revolut.me'**
+  String get profileEditRevolutMe;
+
+  /// No description provided for @imageCropperAdjustAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust avatar'**
+  String get imageCropperAdjustAvatar;
+
+  /// No description provided for @imageCropperAdjustTripImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust trip image'**
+  String get imageCropperAdjustTripImage;
+
+  /// No description provided for @copyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copyAction;
+
+  /// No description provided for @currencyNameEur.
+  ///
+  /// In en, this message translates to:
+  /// **'Euro'**
+  String get currencyNameEur;
+
+  /// No description provided for @currencyNameGbp.
+  ///
+  /// In en, this message translates to:
+  /// **'British Pound'**
+  String get currencyNameGbp;
+
+  /// No description provided for @currencyNameChf.
+  ///
+  /// In en, this message translates to:
+  /// **'Swiss Franc'**
+  String get currencyNameChf;
+
+  /// No description provided for @currencyNameNok.
+  ///
+  /// In en, this message translates to:
+  /// **'Norwegian Krone'**
+  String get currencyNameNok;
+
+  /// No description provided for @currencyNameSek.
+  ///
+  /// In en, this message translates to:
+  /// **'Swedish Krona'**
+  String get currencyNameSek;
+
+  /// No description provided for @currencyNameDkk.
+  ///
+  /// In en, this message translates to:
+  /// **'Danish Krone'**
+  String get currencyNameDkk;
+
+  /// No description provided for @currencyNamePln.
+  ///
+  /// In en, this message translates to:
+  /// **'Polish Zloty'**
+  String get currencyNamePln;
+
+  /// No description provided for @currencyNameCzk.
+  ///
+  /// In en, this message translates to:
+  /// **'Czech Koruna'**
+  String get currencyNameCzk;
+
+  /// No description provided for @currencyNameHuf.
+  ///
+  /// In en, this message translates to:
+  /// **'Hungarian Forint'**
+  String get currencyNameHuf;
+
+  /// No description provided for @currencyNameRon.
+  ///
+  /// In en, this message translates to:
+  /// **'Romanian Leu'**
+  String get currencyNameRon;
+
+  /// No description provided for @currencyNameBgn.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulgarian Lev'**
+  String get currencyNameBgn;
+
+  /// No description provided for @currencyNameIsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Icelandic Krona'**
+  String get currencyNameIsk;
+
+  /// No description provided for @currencyNameAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Albanian Lek'**
+  String get currencyNameAll;
+
+  /// No description provided for @currencyNameBam.
+  ///
+  /// In en, this message translates to:
+  /// **'Bosnia and Herzegovina Mark'**
+  String get currencyNameBam;
+
+  /// No description provided for @currencyNameByn.
+  ///
+  /// In en, this message translates to:
+  /// **'Belarusian Ruble'**
+  String get currencyNameByn;
+
+  /// No description provided for @currencyNameMdl.
+  ///
+  /// In en, this message translates to:
+  /// **'Moldovan Leu'**
+  String get currencyNameMdl;
+
+  /// No description provided for @currencyNameMkd.
+  ///
+  /// In en, this message translates to:
+  /// **'Macedonian Denar'**
+  String get currencyNameMkd;
+
+  /// No description provided for @currencyNameRsd.
+  ///
+  /// In en, this message translates to:
+  /// **'Serbian Dinar'**
+  String get currencyNameRsd;
+
+  /// No description provided for @currencyNameUah.
+  ///
+  /// In en, this message translates to:
+  /// **'Ukrainian Hryvnia'**
+  String get currencyNameUah;
+
+  /// No description provided for @currencyNameGel.
+  ///
+  /// In en, this message translates to:
+  /// **'Georgian Lari'**
+  String get currencyNameGel;
+
+  /// No description provided for @currencyNameTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Turkish Lira'**
+  String get currencyNameTry;
+
+  /// No description provided for @currencyNameUsd.
+  ///
+  /// In en, this message translates to:
+  /// **'US Dollar'**
+  String get currencyNameUsd;
+
+  /// No description provided for @currencyNameJpy.
+  ///
+  /// In en, this message translates to:
+  /// **'Japanese Yen'**
+  String get currencyNameJpy;
+
+  /// No description provided for @currencyNameCny.
+  ///
+  /// In en, this message translates to:
+  /// **'Chinese Yuan'**
+  String get currencyNameCny;
+
+  /// No description provided for @currencyNameCad.
+  ///
+  /// In en, this message translates to:
+  /// **'Canadian Dollar'**
+  String get currencyNameCad;
+
+  /// No description provided for @currencyNameAud.
+  ///
+  /// In en, this message translates to:
+  /// **'Australian Dollar'**
+  String get currencyNameAud;
+
+  /// No description provided for @expenseCategoryFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get expenseCategoryFood;
+
+  /// No description provided for @expenseCategoryGroceries.
+  ///
+  /// In en, this message translates to:
+  /// **'Groceries'**
+  String get expenseCategoryGroceries;
+
+  /// No description provided for @expenseCategoryFuel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel'**
+  String get expenseCategoryFuel;
+
+  /// No description provided for @expenseCategoryTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transport'**
+  String get expenseCategoryTransport;
+
+  /// No description provided for @expenseCategoryAccommodation.
+  ///
+  /// In en, this message translates to:
+  /// **'Accommodation'**
+  String get expenseCategoryAccommodation;
+
+  /// No description provided for @expenseCategoryActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Activities'**
+  String get expenseCategoryActivities;
+
+  /// No description provided for @expenseCategoryTickets.
+  ///
+  /// In en, this message translates to:
+  /// **'Tickets'**
+  String get expenseCategoryTickets;
+
+  /// No description provided for @expenseCategoryShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get expenseCategoryShopping;
+
+  /// No description provided for @expenseCategoryParty.
+  ///
+  /// In en, this message translates to:
+  /// **'Party'**
+  String get expenseCategoryParty;
+
+  /// No description provided for @expenseCategoryParking.
+  ///
+  /// In en, this message translates to:
+  /// **'Parking'**
+  String get expenseCategoryParking;
+
+  /// No description provided for @expenseCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get expenseCategoryOther;
+
   /// No description provided for @shellTripAlreadyInListOpened.
   ///
   /// In en, this message translates to:
@@ -4542,6 +4830,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pay with PayPal'**
   String get workspacePayWithPaypal;
+
+  /// No description provided for @workspacePayWithWise.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with Wise'**
+  String get workspacePayWithWise;
 
   /// No description provided for @workspaceTransferIsConfirmed.
   ///
