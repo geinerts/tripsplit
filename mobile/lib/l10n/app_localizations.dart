@@ -5160,6 +5160,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copied.'**
   String get paymentCopied;
+
+  /// No description provided for @expenseReactionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reactions'**
+  String get expenseReactionsTitle;
+
+  /// No description provided for @expenseCommentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get expenseCommentsTitle;
+
+  /// No description provided for @expenseAddCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a comment…'**
+  String get expenseAddCommentHint;
+
+  /// No description provided for @expenseCommentSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get expenseCommentSend;
+
+  /// No description provided for @expenseNoComments.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet'**
+  String get expenseNoComments;
+
+  /// No description provided for @expenseDeleteCommentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete comment?'**
+  String get expenseDeleteCommentTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

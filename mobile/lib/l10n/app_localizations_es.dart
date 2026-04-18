@@ -2799,4 +2799,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get paymentCopied => 'Copiado.';
+
+  @override
+  String get expenseReactionsTitle => 'Reacciones';
+
+  @override
+  String get expenseCommentsTitle => 'Comentarios';
+
+  @override
+  String get expenseAddCommentHint => 'Añadir un comentario…';
+
+  @override
+  String get expenseCommentSend => 'Enviar';
+
+  @override
+  String get expenseNoComments => 'Aún no hay comentarios';
+
+  @override
+  String get expenseDeleteCommentTitle => '¿Eliminar comentario?';
 }

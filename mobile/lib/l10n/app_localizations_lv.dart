@@ -2799,4 +2799,22 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get paymentCopied => 'Nokopēts.';
+
+  @override
+  String get expenseReactionsTitle => 'Reakcijas';
+
+  @override
+  String get expenseCommentsTitle => 'Komentāri';
+
+  @override
+  String get expenseAddCommentHint => 'Pievieno komentāru…';
+
+  @override
+  String get expenseCommentSend => 'Sūtīt';
+
+  @override
+  String get expenseNoComments => 'Vēl nav komentāru';
+
+  @override
+  String get expenseDeleteCommentTitle => 'Dzēst komentāru?';
 }

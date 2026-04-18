@@ -3,6 +3,8 @@ import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/http_method.dart';
 import '../../../../core/network/legacy_receipt_uploader.dart';
 import '../../../../core/errors/api_exception.dart';
+import '../../domain/entities/expense_comment.dart';
+import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/random_draw_result.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
@@ -239,6 +241,102 @@ class WorkspaceRemoteMutationApi {
       cycleNo: (response['cycle_no'] as num?)?.toInt() ?? 1,
       drawNo: (response['draw_no'] as num?)?.toInt() ?? 1,
       cycleCompleted: response['cycle_completed'] == true,
+    );
+  }
+
+  // ── Expense social ────────────────────────────────────────────────────────
+
+  Future<List<ExpenseReaction>> listExpenseReactions({
+    required int expenseId,
+    required int tripId,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('list_expense_reactions'),
+      method: HttpMethod.get,
+      headers: _tripHeaders(tripId),
+      query: <String, dynamic>{'expense_id': '$expenseId'},
+    );
+    final raw = response['reactions'];
+    if (raw is! List) return const [];
+    return raw.map((item) {
+      final m = item as Map<String, dynamic>;
+      return ExpenseReaction(
+        emoji: m['emoji'] as String? ?? '',
+        userId: (m['user_id'] as num?)?.toInt() ?? 0,
+        userNickname: m['nickname'] as String? ?? '',
+        createdAt: m['created_at'] as String? ?? '',
+      );
+    }).toList(growable: false);
+  }
+
+  Future<void> toggleExpenseReaction({
+    required int expenseId,
+    required int tripId,
+    required String emoji,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('toggle_expense_reaction'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'expense_id': expenseId, 'emoji': emoji},
+    );
+  }
+
+  Future<List<ExpenseComment>> listExpenseComments({
+    required int expenseId,
+    required int tripId,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('list_expense_comments'),
+      method: HttpMethod.get,
+      headers: _tripHeaders(tripId),
+      query: <String, dynamic>{'expense_id': '$expenseId'},
+    );
+    final raw = response['comments'];
+    if (raw is! List) return const [];
+    return raw.map((item) {
+      final m = item as Map<String, dynamic>;
+      return ExpenseComment(
+        id: (m['id'] as num?)?.toInt() ?? 0,
+        userId: (m['user_id'] as num?)?.toInt() ?? 0,
+        userNickname: m['nickname'] as String? ?? '',
+        body: m['body'] as String? ?? '',
+        createdAt: m['created_at'] as String? ?? '',
+      );
+    }).toList(growable: false);
+  }
+
+  Future<ExpenseComment> addExpenseComment({
+    required int expenseId,
+    required int tripId,
+    required String body,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('add_expense_comment'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'expense_id': expenseId, 'body': body},
+    );
+    final m = response['comment'] as Map<String, dynamic>;
+    return ExpenseComment(
+      id: (m['id'] as num?)?.toInt() ?? 0,
+      userId: (m['user_id'] as num?)?.toInt() ?? 0,
+      userNickname: m['nickname'] as String? ?? '',
+      body: m['body'] as String? ?? '',
+      createdAt: m['created_at'] as String? ?? '',
+    );
+  }
+
+  Future<void> deleteExpenseComment({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('delete_expense_comment'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'comment_id': commentId, 'expense_id': expenseId},
     );
   }
 

@@ -536,6 +536,12 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                     ),
                                   );
                                 }),
+                              _ExpenseSocialSection(
+                                expenseId: expense.id,
+                                tripId: widget.trip.id,
+                                currentUserId: _currentUserId,
+                                controller: widget.workspaceController,
+                              ),
                               if (canEdit) ...[
                                 const SizedBox(height: 4),
                                 Row(

@@ -1,4 +1,6 @@
 import '../../../../core/errors/api_exception.dart';
+import '../../domain/entities/expense_comment.dart';
+import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/mutation_result.dart';
 import '../../domain/entities/queued_mutation.dart';
@@ -358,5 +360,60 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     final now = DateTime.now().microsecondsSinceEpoch;
     final seed = _mutationSeed.toString().padLeft(4, '0');
     return 'm_${type}_${tripId}_${now}_$seed';
+  }
+
+  @override
+  Future<List<ExpenseReaction>> listExpenseReactions({
+    required int expenseId,
+    required int tripId,
+  }) {
+    return _remote.listExpenseReactions(expenseId: expenseId, tripId: tripId);
+  }
+
+  @override
+  Future<void> toggleExpenseReaction({
+    required int expenseId,
+    required int tripId,
+    required String emoji,
+  }) {
+    return _remote.toggleExpenseReaction(
+      expenseId: expenseId,
+      tripId: tripId,
+      emoji: emoji,
+    );
+  }
+
+  @override
+  Future<List<ExpenseComment>> listExpenseComments({
+    required int expenseId,
+    required int tripId,
+  }) {
+    return _remote.listExpenseComments(expenseId: expenseId, tripId: tripId);
+  }
+
+  @override
+  Future<ExpenseComment> addExpenseComment({
+    required int expenseId,
+    required int tripId,
+    required String body,
+  }) {
+    return _remote.addExpenseComment(
+      expenseId: expenseId,
+      tripId: tripId,
+      body: body,
+    );
+  }
+
+  @override
+  Future<void> deleteExpenseComment({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+  }) {
+    return _remote.deleteExpenseComment(
+      commentId: commentId,
+      expenseId: expenseId,
+      tripId: tripId,
+    );
   }
 }

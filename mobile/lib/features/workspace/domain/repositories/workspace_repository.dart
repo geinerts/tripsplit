@@ -1,3 +1,5 @@
+import '../entities/expense_comment.dart';
+import '../entities/expense_reaction.dart';
 import '../entities/mutation_result.dart';
 import '../entities/queued_mutation.dart';
 import '../entities/random_draw_result.dart';
@@ -95,5 +97,33 @@ abstract class WorkspaceRepository {
   Future<RandomDrawResult> generateOrder({
     required int tripId,
     required List<int> members,
+  });
+
+  Future<List<ExpenseReaction>> listExpenseReactions({
+    required int expenseId,
+    required int tripId,
+  });
+
+  Future<void> toggleExpenseReaction({
+    required int expenseId,
+    required int tripId,
+    required String emoji,
+  });
+
+  Future<List<ExpenseComment>> listExpenseComments({
+    required int expenseId,
+    required int tripId,
+  });
+
+  Future<ExpenseComment> addExpenseComment({
+    required int expenseId,
+    required int tripId,
+    required String body,
+  });
+
+  Future<void> deleteExpenseComment({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
   });
 }

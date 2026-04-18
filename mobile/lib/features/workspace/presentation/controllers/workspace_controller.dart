@@ -1,3 +1,5 @@
+import '../../domain/entities/expense_comment.dart';
+import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/mutation_result.dart';
 import '../../domain/entities/queued_mutation.dart';
 import '../../domain/entities/random_draw_result.dart';
@@ -202,5 +204,61 @@ class WorkspaceController {
     required List<int> members,
   }) {
     return _repository.generateOrder(tripId: tripId, members: members);
+  }
+
+  Future<List<ExpenseReaction>> listExpenseReactions({
+    required int expenseId,
+    required int tripId,
+  }) {
+    return _repository.listExpenseReactions(
+      expenseId: expenseId,
+      tripId: tripId,
+    );
+  }
+
+  Future<void> toggleExpenseReaction({
+    required int expenseId,
+    required int tripId,
+    required String emoji,
+  }) {
+    return _repository.toggleExpenseReaction(
+      expenseId: expenseId,
+      tripId: tripId,
+      emoji: emoji,
+    );
+  }
+
+  Future<List<ExpenseComment>> listExpenseComments({
+    required int expenseId,
+    required int tripId,
+  }) {
+    return _repository.listExpenseComments(
+      expenseId: expenseId,
+      tripId: tripId,
+    );
+  }
+
+  Future<ExpenseComment> addExpenseComment({
+    required int expenseId,
+    required int tripId,
+    required String body,
+  }) {
+    return _repository.addExpenseComment(
+      expenseId: expenseId,
+      tripId: tripId,
+      body: body,
+    );
+  }
+
+  Future<void> deleteExpenseComment({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+  }) {
+    return _repository.deleteExpenseComment(
+      commentId: commentId,
+      expenseId: expenseId,
+      tripId: tripId,
+    );
   }
 }

@@ -14,6 +14,7 @@ require_once __DIR__ . '/actions/friends_actions.php';
 require_once __DIR__ . '/actions/trips_actions.php';
 require_once __DIR__ . '/actions/uploads_actions.php';
 require_once __DIR__ . '/actions/expenses_actions.php';
+require_once __DIR__ . '/actions/expense_social_actions.php';
 require_once __DIR__ . '/actions/settlements_actions.php';
 require_once __DIR__ . '/actions/notifications_actions.php';
 require_once __DIR__ . '/actions/feedback_actions.php';
