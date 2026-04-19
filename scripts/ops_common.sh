@@ -38,6 +38,7 @@ json_escape() {
 send_alert_now() {
   local message="$1"
   local env_file="$2"
+  local escaped
   local webhook_url
   local tg_token
   local tg_chat_id
@@ -46,21 +47,23 @@ send_alert_now() {
   tg_token="$(env_value "$env_file" "TRIP_ALERT_TELEGRAM_BOT_TOKEN")"
   tg_chat_id="$(env_value "$env_file" "TRIP_ALERT_TELEGRAM_CHAT_ID")"
 
-  if [[ -n "$webhook_url" ]]; then
-    local escaped
-    escaped="$(json_escape "$message")"
-    curl -fsS --max-time 12 \
-      -H "Content-Type: application/json" \
-      -d "{\"text\":\"$escaped\",\"content\":\"$escaped\"}" \
-      "$webhook_url" >/dev/null || true
-  fi
-
+  # Telegram-first mode: if Telegram is configured, send only to Telegram.
   if [[ -n "$tg_token" && -n "$tg_chat_id" ]]; then
     curl -fsS --max-time 12 \
       -X POST \
       "https://api.telegram.org/bot${tg_token}/sendMessage" \
       --data-urlencode "chat_id=${tg_chat_id}" \
       --data-urlencode "text=${message}" >/dev/null || true
+    return 0
+  fi
+
+  # Fallback for legacy setup (webhook).
+  if [[ -n "$webhook_url" ]]; then
+    escaped="$(json_escape "$message")"
+    curl -fsS --max-time 12 \
+      -H "Content-Type: application/json" \
+      -d "{\"text\":\"$escaped\",\"content\":\"$escaped\"}" \
+      "$webhook_url" >/dev/null || true
   fi
 }
 
@@ -86,4 +89,3 @@ send_alert_with_cooldown() {
   printf '%s' "$now" > "$state_file"
   send_alert_now "$message" "$env_file"
 }
-

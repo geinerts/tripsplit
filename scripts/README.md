@@ -18,6 +18,11 @@ Available:
 - `monitor_push_queue.sh` checks push queue backlog/failures against alert thresholds.
 - `backup_vps.sh` creates DB + app state backups with retention cleanup.
 
+Alert routing:
+- Preferred: set `TRIP_ALERT_TELEGRAM_BOT_TOKEN` + `TRIP_ALERT_TELEGRAM_CHAT_ID` in `.env`.
+- If Telegram is configured, alerts are sent only to Telegram.
+- `TRIP_ALERT_WEBHOOK_URL` is kept as legacy fallback when Telegram is not configured.
+
 Usage:
 - Dry run: `php scripts/backfill_legacy_expense_owed_cents.php --dry-run`
 - Apply all trips: `php scripts/backfill_legacy_expense_owed_cents.php`
