@@ -14,6 +14,9 @@ Available:
 - `run_push_delivery.php` processes queued push deliveries to APNs/FCM.
 - `run_migrations.php` runs SQL migrations from `sql/migrations` and tracks applied files in `trip_schema_migrations`.
 - `vps_run_migrations.sh` runs `run_migrations.php` remotely on VPS over SSH.
+- `monitor_api_health.sh` verifies API health endpoints and sends alerts (webhook/Telegram), optional healthcheck ping.
+- `monitor_push_queue.sh` checks push queue backlog/failures against alert thresholds.
+- `backup_vps.sh` creates DB + app state backups with retention cleanup.
 
 Usage:
 - Dry run: `php scripts/backfill_legacy_expense_owed_cents.php --dry-run`
@@ -23,6 +26,9 @@ Usage:
 - Run reminders: `php scripts/run_settlement_reminders.php --limit=120`
 - Dry run push: `php scripts/run_push_delivery.php --dry-run`
 - Run push worker: `php scripts/run_push_delivery.php --limit=100`
+- Check API health: `scripts/monitor_api_health.sh`
+- Check push queue health: `scripts/monitor_push_queue.sh`
+- Run backup: `scripts/backup_vps.sh`
 - Show pending DB migrations: `php scripts/run_migrations.php --dry-run`
 - One-time baseline on already migrated DB: `php scripts/run_migrations.php --baseline`
 - Apply pending DB migrations: `php scripts/run_migrations.php`
