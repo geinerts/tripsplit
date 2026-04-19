@@ -8,14 +8,14 @@ Usage:
 
 Environment variables:
   VPS_HOST      required (example: 204.168.239.179)
-  VPS_USER      optional, default: root
+  VPS_USER      optional, default: splytoadmin
   VPS_PORT      optional, default: 22
   VPS_APP_DIR   optional, default: /var/www/splyto
 
 Examples:
-  VPS_HOST=204.168.239.179 VPS_USER=root scripts/vps_run_migrations.sh dry-run
-  VPS_HOST=204.168.239.179 VPS_USER=root scripts/vps_run_migrations.sh baseline
-  VPS_HOST=204.168.239.179 VPS_USER=root scripts/vps_run_migrations.sh apply --limit=1
+  VPS_HOST=204.168.239.179 VPS_USER=splytoadmin scripts/vps_run_migrations.sh dry-run
+  VPS_HOST=204.168.239.179 VPS_USER=splytoadmin scripts/vps_run_migrations.sh baseline
+  VPS_HOST=204.168.239.179 VPS_USER=splytoadmin scripts/vps_run_migrations.sh apply --limit=1
 EOF
 }
 
@@ -48,7 +48,7 @@ if [[ "${VPS_HOST:-}" == "" ]]; then
   exit 1
 fi
 
-VPS_USER="${VPS_USER:-root}"
+VPS_USER="${VPS_USER:-splytoadmin}"
 VPS_PORT="${VPS_PORT:-22}"
 VPS_APP_DIR="${VPS_APP_DIR:-/var/www/splyto}"
 
@@ -60,6 +60,12 @@ ssh \
   "$VPS_USER@$VPS_HOST" \
   "APP_DIR=$(printf '%q' "$VPS_APP_DIR") MODE=$(printf '%q' "$MODE") LIMIT_FLAG=$(printf '%q' "$LIMIT_FLAG") bash -s" <<'EOF'
 set -euo pipefail
+if [[ "$(id -u)" -ne 0 ]]; then
+  SUDO="sudo"
+else
+  SUDO=""
+fi
+$SUDO mkdir -p "$APP_DIR"
 cd "$APP_DIR"
 
 CMD=(php scripts/run_migrations.php)
@@ -75,5 +81,9 @@ if [[ -n "$LIMIT_FLAG" ]]; then
 fi
 
 echo "Command: ${CMD[*]}"
-"${CMD[@]}"
+if [[ -n "$SUDO" ]]; then
+  $SUDO "${CMD[@]}"
+else
+  "${CMD[@]}"
+fi
 EOF

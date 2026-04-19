@@ -16,6 +16,7 @@ Available:
 - `vps_run_migrations.sh` runs `run_migrations.php` remotely on VPS over SSH.
 - `monitor_api_health.sh` verifies API health endpoints and sends alerts (webhook/Telegram), optional healthcheck ping.
 - `monitor_push_queue.sh` checks push queue backlog/failures against alert thresholds.
+- `monitor_system_updates.sh` checks pending package updates, reboot-required flag, and core service health.
 - `backup_vps.sh` creates DB + app state backups with retention cleanup.
 
 Alert routing:
@@ -33,10 +34,11 @@ Usage:
 - Run push worker: `php scripts/run_push_delivery.php --limit=100`
 - Check API health: `scripts/monitor_api_health.sh`
 - Check push queue health: `scripts/monitor_push_queue.sh`
+- Check system updates/reboot/services: `scripts/monitor_system_updates.sh`
 - Run backup: `scripts/backup_vps.sh`
 - Show pending DB migrations: `php scripts/run_migrations.php --dry-run`
 - One-time baseline on already migrated DB: `php scripts/run_migrations.php --baseline`
 - Apply pending DB migrations: `php scripts/run_migrations.php`
-- Remote dry run on VPS: `VPS_HOST=204.168.239.179 VPS_USER=root scripts/vps_run_migrations.sh dry-run`
-- Remote baseline on VPS (one-time): `VPS_HOST=204.168.239.179 VPS_USER=root scripts/vps_run_migrations.sh baseline`
-- Remote apply on VPS: `VPS_HOST=204.168.239.179 VPS_USER=root scripts/vps_run_migrations.sh apply`
+- Remote dry run on VPS: `VPS_HOST=204.168.239.179 VPS_USER=splytoadmin scripts/vps_run_migrations.sh dry-run`
+- Remote baseline on VPS (one-time): `VPS_HOST=204.168.239.179 VPS_USER=splytoadmin scripts/vps_run_migrations.sh baseline`
+- Remote apply on VPS: `VPS_HOST=204.168.239.179 VPS_USER=splytoadmin scripts/vps_run_migrations.sh apply`
