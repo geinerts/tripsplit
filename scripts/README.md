@@ -18,6 +18,8 @@ Available:
 - `monitor_push_queue.sh` checks push queue backlog/failures against alert thresholds.
 - `monitor_system_updates.sh` checks pending package updates, reboot-required flag, and core service health.
 - `backup_vps.sh` creates DB + app state backups with retention cleanup.
+- `backup_restore_check.sh` performs restore smoke-test from latest DB backup into temp DB.
+- `weekly_maintenance.sh` runs weekly apt maintenance (upgrade/autoremove/autoclean) with alerts.
 
 Alert routing:
 - Preferred: set `TRIP_ALERT_TELEGRAM_BOT_TOKEN` + `TRIP_ALERT_TELEGRAM_CHAT_ID` in `.env`.
@@ -36,6 +38,9 @@ Usage:
 - Check push queue health: `scripts/monitor_push_queue.sh`
 - Check system updates/reboot/services: `scripts/monitor_system_updates.sh`
 - Run backup: `scripts/backup_vps.sh`
+- Run backup restore smoke test: `scripts/backup_restore_check.sh`
+- Run weekly maintenance dry run: `scripts/weekly_maintenance.sh --dry-run`
+- Run weekly maintenance apply: `scripts/weekly_maintenance.sh`
 - Show pending DB migrations: `php scripts/run_migrations.php --dry-run`
 - One-time baseline on already migrated DB: `php scripts/run_migrations.php --baseline`
 - Apply pending DB migrations: `php scripts/run_migrations.php`
