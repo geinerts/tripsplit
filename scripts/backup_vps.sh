@@ -56,6 +56,7 @@ trap 'on_error $LINENO' ERR
 mysqldump "${MYSQL_AUTH[@]}" \
   --single-transaction \
   --quick \
+  --no-tablespaces \
   --routines \
   --triggers \
   "$DB_NAME" | gzip -c > "$DB_FILE"
@@ -84,4 +85,3 @@ find "$APP_DIR" -type f -name "*.tar.gz" -mtime +"$RETENTION_DAYS" -delete
 find "$META_DIR" -type f -name "*.sha256" -mtime +"$RETENTION_DAYS" -delete
 
 echo "[SPLYTO][BACKUP][OK] db=${DB_FILE} app=${APP_FILE} retention_days=${RETENTION_DAYS}"
-
