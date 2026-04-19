@@ -1,6 +1,6 @@
 # Splyto Mobile Professionalization Plan
 
-Last updated: 2026-04-17
+Last updated: 2026-04-19
 Scope: Flutter mobile app (`mobile/`) + release process
 
 ## Goal
@@ -93,3 +93,26 @@ Track every week in PR summary or release notes:
 2. Add PR checklist markdown file.
 3. Add CI check job for analyze/tests.
 4. Start hardcoded text scanner script.
+
+## Server-side next steps (VPS backlog)
+Context: security/ops baseline is already in place (SSH hardening, UFW/fail2ban, backups, restore smoke-test, cron monitors, weekly maintenance).
+
+### Performance and reliability (next phase)
+- [ ] Enable MySQL slow query log and run weekly index/query audit.
+- [ ] Tune PHP-FPM + OPcache based on real memory/traffic profile.
+- [ ] Tune Nginx worker/timeout/buffer settings for current traffic pattern.
+- [ ] Add Nginx API rate limiting (`limit_req`) and connection limiting (`limit_conn`) for abuse spikes.
+- [ ] Add Cloudflare WAF + rate-limit rules for critical endpoints (auth, register, invite, write actions).
+- [ ] Add CPU/RAM/disk/load alert thresholds (Telegram) with clear severity.
+- [ ] Add API latency monitor (p50/p95/p99) for core endpoints.
+
+### Operational maturity
+- [ ] Add monthly disaster-recovery drill (restore to clean target and verify API).
+- [ ] Add quarterly dependency review window (Nginx/PHP/MySQL/runtime packages).
+- [ ] Add maintenance runbook with rollback playbooks for failed updates.
+
+### Admin backoffice (future)
+- [ ] Build separate web admin panel (not inside mobile app).
+- [ ] Add strict admin auth: RBAC roles, 2FA, session controls, audit logs.
+- [ ] Add support tools: user lookup, account status actions, notification/email delivery logs.
+- [ ] Add ops tools: queue health, cron status, incident notes, safe retry actions.
