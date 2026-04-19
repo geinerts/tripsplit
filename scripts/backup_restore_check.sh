@@ -39,11 +39,20 @@ if [[ -n "$DB_PASS" ]]; then
   MYSQL_AUTH+=(-p"$DB_PASS")
 fi
 
+MYSQL_RESTORE_AUTH=("${MYSQL_AUTH[@]}")
+if [[ "$(id -u)" -eq 0 ]]; then
+  MYSQL_RESTORE_AUTH=(-u root)
+fi
+
+if ! mysql "${MYSQL_RESTORE_AUTH[@]}" -e "SELECT 1;" >/dev/null 2>&1; then
+  MYSQL_RESTORE_AUTH=("${MYSQL_AUTH[@]}")
+fi
+
 TS="$(date -u +%Y%m%d_%H%M%S)"
 RESTORE_DB="${DB_NAME}_restore_smoke_${TS}"
 
 cleanup() {
-  mysql "${MYSQL_AUTH[@]}" -e "DROP DATABASE IF EXISTS \`${RESTORE_DB}\`;" >/dev/null 2>&1 || true
+  mysql "${MYSQL_RESTORE_AUTH[@]}" -e "DROP DATABASE IF EXISTS \`${RESTORE_DB}\`;" >/dev/null 2>&1 || true
 }
 
 on_error() {
@@ -56,10 +65,10 @@ trap 'cleanup' EXIT
 trap 'on_error $LINENO' ERR
 
 gzip -t "$LATEST_DB_BACKUP"
-mysql "${MYSQL_AUTH[@]}" -e "CREATE DATABASE \`${RESTORE_DB}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-gunzip -c "$LATEST_DB_BACKUP" | mysql "${MYSQL_AUTH[@]}" "$RESTORE_DB"
+mysql "${MYSQL_RESTORE_AUTH[@]}" -e "CREATE DATABASE \`${RESTORE_DB}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+gunzip -c "$LATEST_DB_BACKUP" | mysql "${MYSQL_RESTORE_AUTH[@]}" "$RESTORE_DB"
 
-TABLE_COUNT="$(mysql "${MYSQL_AUTH[@]}" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${RESTORE_DB}' AND table_name LIKE '${DB_TABLE_PREFIX}%';")"
+TABLE_COUNT="$(mysql "${MYSQL_RESTORE_AUTH[@]}" -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${RESTORE_DB}' AND table_name LIKE '${DB_TABLE_PREFIX}%';")"
 if [[ -z "$TABLE_COUNT" || "$TABLE_COUNT" -lt 5 ]]; then
   echo "backup_restore_check: restored table count too low (${TABLE_COUNT})" >&2
   exit 1
