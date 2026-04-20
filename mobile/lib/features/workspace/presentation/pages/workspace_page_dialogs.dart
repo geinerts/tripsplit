@@ -19,11 +19,34 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
     final customCategoryController = TextEditingController(
       text: isCustomCategoryMode ? initialCategory : '',
     );
-    final dateController = TextEditingController(
-      text: existing?.expenseDate.isNotEmpty == true
-          ? existing!.expenseDate
-          : _todayIsoDate(),
-    );
+    DateTime? parseExpenseDate(String? raw) {
+      final trimmed = raw?.trim() ?? '';
+      if (trimmed.isEmpty) {
+        return null;
+      }
+      final parsed =
+          DateTime.tryParse(trimmed) ??
+          DateTime.tryParse(trimmed.split(' ').first);
+      if (parsed == null) {
+        return null;
+      }
+      return DateTime(parsed.year, parsed.month, parsed.day);
+    }
+
+    String? toIsoDate(DateTime? value) {
+      if (value == null) {
+        return null;
+      }
+      final normalized = DateTime(value.year, value.month, value.day);
+      final month = normalized.month.toString().padLeft(2, '0');
+      final day = normalized.day.toString().padLeft(2, '0');
+      return '${normalized.year}-$month-$day';
+    }
+
+    final now = DateTime.now();
+    DateTime selectedExpenseDate =
+        parseExpenseDate(existing?.expenseDate) ??
+        DateTime(now.year, now.month, now.day);
     var selectedCurrencyCode = AppCurrencyCatalog.normalize(
       existing?.expenseCurrencyCode ?? widget.trip.currencyCode,
     );
@@ -55,6 +78,12 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
           builder: (sheetContext) {
             final t = sheetContext.l10n;
             String? errorText;
+            String formatExpenseDate(DateTime value) {
+              final dd = value.day.toString().padLeft(2, '0');
+              final mm = value.month.toString().padLeft(2, '0');
+              final yyyy = value.year.toString().padLeft(4, '0');
+              return '$dd.$mm.$yyyy';
+            }
 
             Future<String?> pickCurrencyCode(
               BuildContext dialogContext,
@@ -418,11 +447,38 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                     ),
                                   ),
                                   const SizedBox(height: 12),
-                                  TextField(
-                                    controller: dateController,
-                                    decoration: InputDecoration(
-                                      labelText: t.dateLabel,
-                                      hintText: t.dateFormatHint,
+                                  InkWell(
+                                    borderRadius: BorderRadius.circular(14),
+                                    onTap: () async {
+                                      final picked = await showDatePicker(
+                                        context: sheetContext,
+                                        initialDate: selectedExpenseDate,
+                                        firstDate: DateTime(2020, 1, 1),
+                                        lastDate: DateTime(2100, 12, 31),
+                                      );
+                                      if (!mounted || picked == null) {
+                                        return;
+                                      }
+                                      setDialogState(() {
+                                        selectedExpenseDate = DateTime(
+                                          picked.year,
+                                          picked.month,
+                                          picked.day,
+                                        );
+                                        errorText = null;
+                                      });
+                                    },
+                                    child: InputDecorator(
+                                      decoration: InputDecoration(
+                                        labelText: t.dateLabel,
+                                        suffixIcon: const Icon(
+                                          Icons.calendar_today_outlined,
+                                          size: 18,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        formatExpenseDate(selectedExpenseDate),
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(height: 12),
@@ -683,7 +739,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                       final amount = _parseAmount(
                                         amountController.text,
                                       );
-                                      final date = dateController.text.trim();
+                                      final date = toIsoDate(
+                                        selectedExpenseDate,
+                                      );
                                       final note = noteController.text.trim();
                                       final rawCategory = isCustomCategoryMode
                                           ? customCategoryController.text.trim()
@@ -697,9 +755,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                         return;
                                       }
 
-                                      if (!RegExp(
-                                        r'^\d{4}-\d{2}-\d{2}$',
-                                      ).hasMatch(date)) {
+                                      if (date == null || date.isEmpty) {
                                         setDialogState(() {
                                           errorText = t.dateMustMatchFormat;
                                         });
@@ -915,7 +971,6 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         amountController.dispose();
         noteController.dispose();
         customCategoryController.dispose();
-        dateController.dispose();
         for (final controller in splitControllers.values) {
           controller.dispose();
         }

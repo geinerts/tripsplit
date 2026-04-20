@@ -94,6 +94,21 @@ Track every week in PR summary or release notes:
 3. Add CI check job for analyze/tests.
 4. Start hardcoded text scanner script.
 
+## Core business logic hardening
+
+### P0 (must-have for production reliability)
+- [ ] Move to ledger-first accounting model (immutable money events, balance derived from ledger).
+- [ ] Enforce strict money math: integer cents only, deterministic rounding rules, FX snapshot per transaction.
+- [ ] Implement settlement state machine (`draft -> sent -> confirmed/cancelled`) with explicit transition rules.
+- [ ] Add idempotency keys for mutation endpoints (expense/settle/invite critical writes).
+- [ ] Introduce trip-level RBAC matrix (owner/admin/member permissions per action).
+
+### P1 (stability and scale)
+- [ ] Build notification orchestration from one event source (in-app/push/email dedupe + localization-ready templates).
+- [ ] Standardize error/retry policy (timeouts, backoff, safe retry without duplicate side effects).
+- [ ] Add audit trail for critical actions (expense edits, settlement changes, payment method updates).
+- [ ] Define data lifecycle policy (soft delete, restore flow, GDPR export/delete, retention windows).
+
 ## Server-side next steps (VPS backlog)
 Context: security/ops baseline is already in place (SSH hardening, UFW/fail2ban, backups, restore smoke-test, cron monitors, weekly maintenance).
 
