@@ -810,7 +810,7 @@ function admin_panel_audit_log_action(): void
 {
     $sess         = require_admin_role(...admin_roles_ops());
     $pdo          = db();
-    $actionFilter = trim((string) ($_GET['action']  ?? ''));
+    $actionFilter = trim((string) ($_GET['action_filter'] ?? ''));
     $targetFilter = trim((string) ($_GET['target']  ?? ''));
     $limit        = max(1, min(200, (int) ($_GET['limit']  ?? 50)));
     $offset       = max(0,          (int) ($_GET['offset'] ?? 0));

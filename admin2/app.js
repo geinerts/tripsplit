@@ -798,7 +798,7 @@ async function loadAuditLog(offset = 0) {
   const target = document.getElementById('audit-target-filter').value;
   document.getElementById('audit-results').innerHTML = '<div class="loading-state"><span class="spinner"></span></div>';
 
-  const res = await get('admin_panel_audit_log', { action, target, limit: 50, offset });
+  const res = await get('admin_panel_audit_log', { action_filter: action, target, limit: 50, offset });
   if (!res.ok) { document.getElementById('audit-results').innerHTML = `<div class="empty-state">Error: ${esc(res.error)}</div>`; return; }
 
   if (!res.log.length) {
