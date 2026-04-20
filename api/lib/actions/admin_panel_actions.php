@@ -143,7 +143,6 @@ function admin_panel_logout_action(): void
 
 function admin_panel_session_check_action(): void
 {
-    require_get();
     $token = admin_session_token_from_cookie();
     $sess  = admin_resolve_session(db(), $token);
 
@@ -174,7 +173,6 @@ function admin_panel_session_check_action(): void
 
 function admin_panel_setup_totp_action(): void
 {
-    require_get();
     $sess      = require_admin_session();
     $secret    = admin_totp_generate_secret();
     $uri       = admin_totp_uri($secret, (string) $sess['username']);
@@ -240,7 +238,6 @@ function admin_panel_disable_totp_action(): void
 
 function admin_panel_active_sessions_action(): void
 {
-    require_get();
     $sess      = require_admin_session();
     $pdo       = db();
     $sessTable = table_name('admin_sessions');
@@ -324,7 +321,6 @@ function admin_panel_revoke_session_action(): void
 
 function admin_panel_dashboard_action(): void
 {
-    require_get();
     $sess = require_admin_role(...admin_roles_all());
     $pdo  = db();
 
@@ -386,7 +382,6 @@ function admin_panel_dashboard_action(): void
 
 function admin_panel_user_search_action(): void
 {
-    require_get();
     $sess = require_admin_role(...admin_roles_support());
     $pdo  = db();
 
@@ -436,7 +431,6 @@ function admin_panel_user_search_action(): void
 
 function admin_panel_user_detail_action(): void
 {
-    require_get();
     $sess   = require_admin_role(...admin_roles_support());
     $pdo    = db();
     $userId = (int) ($_GET['user_id'] ?? 0);
@@ -629,7 +623,6 @@ function admin_panel_clear_push_tokens_action(): void
 
 function admin_panel_push_queue_action(): void
 {
-    require_get();
     $sess   = require_admin_role(...admin_roles_ops());
     $pdo    = db();
     $status = trim((string) ($_GET['status'] ?? 'all'));
@@ -696,7 +689,6 @@ function admin_panel_push_retry_action(): void
 
 function admin_panel_incidents_action(): void
 {
-    require_get();
     $sess   = require_admin_role(...admin_roles_all());
     $pdo    = db();
     $status = trim((string) ($_GET['status'] ?? 'all'));
@@ -814,7 +806,6 @@ function admin_panel_update_incident_action(): void
 
 function admin_panel_audit_log_action(): void
 {
-    require_get();
     $sess         = require_admin_role(...admin_roles_ops());
     $pdo          = db();
     $actionFilter = trim((string) ($_GET['action']  ?? ''));
@@ -869,7 +860,6 @@ function admin_panel_audit_log_action(): void
 
 function admin_panel_admin_users_action(): void
 {
-    require_get();
     $sess      = require_admin_role('superadmin');
     $pdo       = db();
     $userTable = table_name('admin_users');
@@ -1024,7 +1014,6 @@ function admin_panel_delete_admin_user_action(): void
 
 function admin_panel_feedback_action(): void
 {
-    require_get();
     require_admin_role(...admin_roles_support());
     // Delegate to the existing feedback feed action but with new auth already validated
     admin_feedback_feed_action_inner();
