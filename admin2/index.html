@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Splyto Admin</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="stylesheet" href="app.css"/>
+</head>
+<body>
+
+<!-- ── Auth screen ─────────────────────────────────────────────────────────── -->
+<div id="auth-screen">
+  <!-- Login form -->
+  <div class="auth-card" id="login-card">
+    <h2>Admin login</h2>
+    <p class="auth-subtitle">Splyto operations panel</p>
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label" for="inp-username">Username</label>
+        <input class="form-input" id="inp-username" type="text" autocomplete="username" placeholder="admin" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inp-password">Password</label>
+        <input class="form-input" id="inp-password" type="password" autocomplete="current-password" placeholder="••••••••••••" required/>
+      </div>
+      <p id="login-error" style="color:var(--red);font-size:13px;margin-bottom:12px;display:none;"></p>
+      <button class="btn btn-primary btn-full" type="submit" id="login-btn">Sign in</button>
+    </form>
+  </div>
+
+  <!-- 2FA form -->
+  <div class="auth-card" id="totp-card" style="display:none;">
+    <h2>Two-factor auth</h2>
+    <p class="auth-subtitle">Enter the 6-digit code from your authenticator app</p>
+    <form id="totp-form">
+      <div class="form-group">
+        <label class="form-label" for="inp-totp">Authenticator code</label>
+        <input class="form-input" id="inp-totp" type="text" inputmode="numeric" pattern="[0-9]{6}"
+               maxlength="6" placeholder="000000" autocomplete="one-time-code" required/>
+      </div>
+      <p id="totp-error" style="color:var(--red);font-size:13px;margin-bottom:12px;display:none;"></p>
+      <button class="btn btn-primary btn-full" type="submit" id="totp-btn">Verify</button>
+      <button class="btn btn-ghost btn-full" type="button" id="back-to-login-btn" style="margin-top:8px;">← Back to login</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── Main app ─────────────────────────────────────────────────────────────── -->
+<div id="app" style="display:none;">
+
+  <!-- Sidebar -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <span class="sidebar-logo-text">Splyto</span>
+      <span class="sidebar-logo-badge">Admin</span>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Overview</div>
+      <div class="nav-item" data-view="dashboard"><span class="nav-icon">📊</span> Dashboard</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Support</div>
+      <div class="nav-item" data-view="users"><span class="nav-icon">👤</span> Users</div>
+      <div class="nav-item" data-view="feedback"><span class="nav-icon">💬</span> Feedback</div>
+      <div class="nav-item" data-view="push-queue"><span class="nav-icon">🔔</span> Push Queue</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Operations</div>
+      <div class="nav-item" data-view="incidents" id="nav-incidents"><span class="nav-icon">🚨</span> Incidents</div>
+      <div class="nav-item" data-view="audit-log"><span class="nav-icon">📋</span> Audit Log</div>
+    </div>
+
+    <div class="sidebar-section" id="admin-users-section" style="display:none;">
+      <div class="sidebar-section-label">Admin</div>
+      <div class="nav-item" data-view="admin-users"><span class="nav-icon">🔑</span> Admin Users</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Account</div>
+      <div class="nav-item" data-view="my-account"><span class="nav-icon">⚙️</span> My Account</div>
+      <div class="nav-item" data-view="sessions"><span class="nav-icon">💻</span> Sessions</div>
+    </div>
+
+    <div class="sidebar-user" id="sidebar-user">
+      <div class="sidebar-user-avatar" id="sidebar-avatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-username">—</div>
+        <div class="sidebar-user-role" id="sidebar-role">—</div>
+      </div>
+      <button class="sidebar-logout-btn" id="logout-btn" title="Sign out">⏏</button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div id="main">
+    <div id="topbar">
+      <h1 id="page-title">Dashboard</h1>
+      <div id="topbar-actions"></div>
+    </div>
+    <div id="page-content">
+      <div class="loading-state"><span class="spinner"></span> Loading…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal (shared) ───────────────────────────────────────────────────────── -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" id="modal">
+    <div class="modal-title" id="modal-title">—</div>
+    <div id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<!-- ── Toast container ──────────────────────────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

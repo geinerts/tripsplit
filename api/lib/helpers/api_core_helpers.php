@@ -16,3 +16,4 @@ require_once __DIR__ . '/helper_mutation_idempotency.php';
 require_once __DIR__ . '/helper_ids.php';
 require_once __DIR__ . '/helper_pagination.php';
 require_once __DIR__ . '/helper_feedback_history.php';
+require_once __DIR__ . '/helper_admin_auth.php';

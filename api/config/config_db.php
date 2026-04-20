@@ -56,6 +56,11 @@ function table_name(string $key): string
         'user_identities' => DB_TABLE_PREFIX . 'user_identities',
         'trip_invites'         => DB_TABLE_PREFIX . 'trip_invites',
         'trip_invite_preview_tokens' => DB_TABLE_PREFIX . 'trip_invite_preview_tokens',
+        // Admin panel v2
+        'admin_users'     => DB_TABLE_PREFIX . 'admin_users',
+        'admin_sessions'  => DB_TABLE_PREFIX . 'admin_sessions',
+        'admin_audit_log' => DB_TABLE_PREFIX . 'admin_audit_log',
+        'admin_incidents' => DB_TABLE_PREFIX . 'admin_incidents',
     ];
 
     $raw = $map[$key] ?? '';

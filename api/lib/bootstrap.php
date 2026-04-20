@@ -21,5 +21,6 @@ require_once __DIR__ . '/actions/feedback_actions.php';
 require_once __DIR__ . '/actions/orders_actions.php';
 require_once __DIR__ . '/actions/workspace_actions.php';
 require_once __DIR__ . '/actions/admin_actions.php';
+require_once __DIR__ . '/actions/admin_panel_actions.php';
 
 require_once __DIR__ . '/http/action_router.php';
