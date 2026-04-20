@@ -114,7 +114,7 @@ function relTime(raw) {
 
 function statusBadge(status) {
   const map = {
-    active: 'badge-green', suspended: 'badge-red', deleted: 'badge-gray',
+    active: 'badge-green', deactivated: 'badge-red', suspended: 'badge-red', deleted: 'badge-gray',
     open: 'badge-red', investigating: 'badge-amber', resolved: 'badge-green',
     pending: 'badge-amber', sent: 'badge-green', failed: 'badge-red', dead: 'badge-gray',
   };
@@ -364,7 +364,7 @@ registerView('users', {
         <select class="form-input" id="user-status-filter" style="width:auto;">
           <option value="all">All statuses</option>
           <option value="active">Active</option>
-          <option value="suspended">Suspended</option>
+          <option value="deactivated">Deactivated/Suspended</option>
           <option value="deleted">Deleted</option>
         </select>
         <button class="btn btn-ghost btn-sm" id="user-search-btn">Search</button>
@@ -405,7 +405,7 @@ async function userSearch(offset = 0) {
         <button class="btn btn-ghost btn-sm" onclick="openUserDetail(${u.id})">View</button>
         ${u.account_status === 'active' && can('superadmin','admin','support') ?
           `<button class="btn btn-amber btn-sm" onclick="suspendUser(${u.id},'${esc(u.nickname)}')">Suspend</button>` : ''}
-        ${u.account_status === 'suspended' && can('superadmin','admin','support') ?
+        ${u.account_status === 'deactivated' && can('superadmin','admin','support') ?
           `<button class="btn btn-ghost btn-sm" onclick="reactivateUser(${u.id},'${esc(u.nickname)}')">Reactivate</button>` : ''}
       </td>
     </tr>
@@ -445,7 +445,7 @@ async function openUserDetail(userId) {
   const actions = [];
   if (u.account_status === 'active' && can('superadmin','admin','support'))
     actions.push(`<button class="btn btn-amber btn-sm" onclick="modal.close();suspendUser(${u.id},'${esc(u.nickname)}')">Suspend</button>`);
-  if (u.account_status === 'suspended' && can('superadmin','admin','support'))
+  if (u.account_status === 'deactivated' && can('superadmin','admin','support'))
     actions.push(`<button class="btn btn-ghost btn-sm" onclick="modal.close();reactivateUser(${u.id},'${esc(u.nickname)}')">Reactivate</button>`);
   if (can('superadmin','admin','support'))
     actions.push(`<button class="btn btn-ghost btn-sm" onclick="modal.close();clearPushTokens(${u.id})">Clear push tokens</button>`);
@@ -620,7 +620,7 @@ registerView('push-queue', {
     const rows = res.rows.map(r => `
       <tr>
         <td>${r.id}</td>
-        <td>${esc(r.platform ?? '—')}</td>
+        <td>${esc(r.type ?? '—')}</td>
         <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(r.title ?? '—')}</td>
         <td>${statusBadge(r.status)}</td>
         <td>${r.attempts}</td>
@@ -639,7 +639,7 @@ registerView('push-queue', {
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>ID</th><th>Platform</th><th>Title</th><th>Status</th><th>Attempts</th><th>Last error</th><th>Created</th><th></th></tr></thead>
+          <thead><tr><th>ID</th><th>Type</th><th>Title</th><th>Status</th><th>Attempts</th><th>Last error</th><th>Created</th><th></th></tr></thead>
           <tbody>${rows || '<tr><td colspan="8" style="text-align:center;color:var(--fg-muted);padding:20px">Queue is empty</td></tr>'}</tbody>
         </table>
       </div>

@@ -402,7 +402,7 @@ function admin_panel_user_search_action(): void
         $params[] = $like;
     }
 
-    if ($status !== 'all' && in_array($status, ['active', 'suspended', 'deleted'], true)) {
+    if ($status !== 'all' && in_array($status, ['active', 'deactivated', 'deleted'], true)) {
         $conditions[] = 'account_status = ?';
         $params[]     = $status;
     }
@@ -410,7 +410,7 @@ function admin_panel_user_search_action(): void
     $where = $conditions ? ('WHERE ' . implode(' AND ', $conditions)) : '';
 
     $stmt = $pdo->prepare("
-        SELECT id, nickname, email, account_status, created_at, last_active_at
+        SELECT id, nickname, email, account_status, created_at
         FROM {$userTable}
         {$where}
         ORDER BY created_at DESC
@@ -457,7 +457,7 @@ function admin_panel_user_detail_action(): void
 
     // Recent trips
     $stmt = $pdo->prepare("
-        SELECT t.id, t.name, t.status, t.base_currency, t.created_at, tm.role AS member_role
+        SELECT t.id, t.name, t.status, t.created_at
         FROM {$tripsTable} t
         JOIN {$membTable} tm ON tm.trip_id = t.id AND tm.user_id = ?
         ORDER BY t.created_at DESC LIMIT 10
@@ -467,9 +467,9 @@ function admin_panel_user_detail_action(): void
 
     // Recent expenses
     $stmt = $pdo->prepare("
-        SELECT id, trip_id, description, amount_cents, currency, created_at
+        SELECT id, trip_id, note AS description, amount, currency_code, created_at
         FROM {$expTable}
-        WHERE paid_by_user_id = ?
+        WHERE paid_by = ?
         ORDER BY created_at DESC LIMIT 10
     ");
     $stmt->execute([$userId]);
@@ -477,9 +477,11 @@ function admin_panel_user_detail_action(): void
 
     // Push tokens
     $stmt = $pdo->prepare("
-        SELECT platform, token_preview, created_at, last_used_at
+        SELECT platform, provider, app_bundle, is_active,
+               LEFT(push_token, 20) AS token_preview, last_seen_at
         FROM {$pushTable}
         WHERE user_id = ?
+        ORDER BY last_seen_at DESC
     ");
     $stmt->execute([$userId]);
     $pushTokens = $stmt->fetchAll();
@@ -519,11 +521,11 @@ function admin_panel_user_suspend_action(): void
     if (!is_array($user)) {
         json_out(['ok' => false, 'error' => 'User not found.'], 404);
     }
-    if ($user['account_status'] === 'suspended') {
-        json_out(['ok' => false, 'error' => 'User is already suspended.'], 409);
+    if ($user['account_status'] === 'deactivated') {
+        json_out(['ok' => false, 'error' => 'User is already deactivated/suspended.'], 409);
     }
 
-    $pdo->prepare("UPDATE {$userTable} SET account_status = 'suspended' WHERE id = ?")->execute([$userId]);
+    $pdo->prepare("UPDATE {$userTable} SET account_status = 'deactivated' WHERE id = ?")->execute([$userId]);
     admin_audit($pdo, $sess, 'user.suspend', 'user', $userId, [
         'nickname' => $user['nickname'],
         'reason'   => $reason,
@@ -642,7 +644,7 @@ function admin_panel_push_queue_action(): void
     $where  = ($status !== 'all') ? 'WHERE status = ?' : '';
     $params = ($status !== 'all') ? [$status, $limit, $offset] : [$limit, $offset];
     $stmt   = $pdo->prepare("
-        SELECT id, user_id, platform, title, body, status, attempts, last_error, created_at, sent_at
+        SELECT id, user_id, type, title, body, status, attempts, last_error, created_at, sent_at
         FROM {$queueTable}
         {$where}
         ORDER BY created_at DESC
