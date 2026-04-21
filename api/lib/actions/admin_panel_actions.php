@@ -15,8 +15,27 @@ function admin_panel_login_action(): void
     $pdo  = db();
     $body = read_json();
 
+    $clientIp = client_ip_address();
     $username = trim((string) ($body['username'] ?? ''));
     $password = (string) ($body['password'] ?? '');
+    $usernameForRateLimit = strtolower($username);
+
+    enforce_rate_limit(
+        $pdo,
+        'admin_panel_login_ip',
+        $clientIp,
+        max(1, RATE_LIMIT_ADMIN_PANEL_LOGIN_IP_MAX),
+        max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC)
+    );
+    if ($usernameForRateLimit !== '') {
+        enforce_rate_limit(
+            $pdo,
+            'admin_panel_login_username',
+            $usernameForRateLimit,
+            max(1, RATE_LIMIT_ADMIN_PANEL_LOGIN_USERNAME_MAX),
+            max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC)
+        );
+    }
 
     if ($username === '' || $password === '') {
         json_out(['ok' => false, 'error' => 'Username and password are required.'], 400);
@@ -32,6 +51,18 @@ function admin_panel_login_action(): void
         $lockedUntil = strtotime($user['locked_until'] . ' UTC');
         if ($lockedUntil > time()) {
             $remaining = ceil(($lockedUntil - time()) / 60);
+            admin_audit_event(
+                $pdo,
+                (int) $user['id'],
+                (string) $user['username'],
+                'admin.auth.login_blocked_locked',
+                'admin_user',
+                (int) $user['id'],
+                [
+                    'ip' => $clientIp,
+                    'remaining_minutes' => $remaining,
+                ]
+            );
             json_out(['ok' => false, 'error' => "Account locked. Try again in {$remaining} minute(s)."], 429);
         }
         // Lock expired — reset counter
@@ -49,6 +80,7 @@ function admin_panel_login_action(): void
     if (!$validUser || !$passwordValid) {
         if ($validUser) {
             $fails = (int) $user['failed_login_count'] + 1;
+            $lockUntil = null;
             if ($fails >= ADMIN_LOCK_THRESHOLD) {
                 $lockUntil = date('Y-m-d H:i:s', time() + ADMIN_LOCK_MINUTES * 60);
                 $pdo->prepare("UPDATE {$userTable} SET failed_login_count = ?, locked_until = ? WHERE id = ?")
@@ -57,6 +89,30 @@ function admin_panel_login_action(): void
                 $pdo->prepare("UPDATE {$userTable} SET failed_login_count = ? WHERE id = ?")
                     ->execute([$fails, $user['id']]);
             }
+
+            admin_audit_event(
+                $pdo,
+                (int) $user['id'],
+                (string) $user['username'],
+                'admin.auth.login_failed',
+                'admin_user',
+                (int) $user['id'],
+                [
+                    'ip' => $clientIp,
+                    'failed_login_count' => $fails,
+                    'locked_until_utc' => $lockUntil,
+                ]
+            );
+        } else {
+            admin_audit_event(
+                $pdo,
+                null,
+                $username !== '' ? $username : 'unknown',
+                'admin.auth.login_failed_unknown_user',
+                null,
+                null,
+                ['ip' => $clientIp]
+            );
         }
         json_out(['ok' => false, 'error' => 'Invalid username or password.'], 401);
     }
@@ -68,6 +124,18 @@ function admin_panel_login_action(): void
     $needs2fa    = (int) $user['totp_enabled'] === 1;
     $sessionToken = admin_create_session($pdo, (int) $user['id'], !$needs2fa);
     admin_set_session_cookie($sessionToken);
+    admin_audit_event(
+        $pdo,
+        (int) $user['id'],
+        (string) $user['username'],
+        'admin.auth.login_success',
+        'admin_user',
+        (int) $user['id'],
+        [
+            'ip' => $clientIp,
+            'requires_2fa' => $needs2fa,
+        ]
+    );
 
     json_out([
         'ok'          => true,
@@ -87,12 +155,29 @@ function admin_panel_verify_2fa_action(): void
     $pdo  = db();
     $body = read_json();
     $code = trim((string) ($body['code'] ?? ''));
+    $clientIp = client_ip_address();
 
     // Accept a partial session (not yet 2FA-verified)
     $token = admin_session_token_from_cookie();
     if ($token === '') {
         json_out(['ok' => false, 'error' => 'Not authenticated.'], 401);
     }
+
+    enforce_rate_limit(
+        $pdo,
+        'admin_panel_2fa_ip',
+        $clientIp,
+        max(1, RATE_LIMIT_ADMIN_PANEL_2FA_IP_MAX),
+        max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC)
+    );
+    enforce_rate_limit(
+        $pdo,
+        'admin_panel_2fa_token',
+        $token,
+        max(1, RATE_LIMIT_ADMIN_PANEL_2FA_TOKEN_MAX),
+        max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC)
+    );
+
     $sessTable = table_name('admin_sessions');
     $userTable = table_name('admin_users');
 
@@ -113,11 +198,29 @@ function admin_panel_verify_2fa_action(): void
         json_out(['ok' => false, 'error' => '2FA is not enabled on this account.'], 400);
     }
     if (!admin_totp_verify((string) $sess['totp_secret'], $code)) {
+        admin_audit_event(
+            $pdo,
+            (int) $sess['admin_user_id'],
+            (string) $sess['username'],
+            'admin.auth.2fa_failed',
+            'admin_user',
+            (int) $sess['admin_user_id'],
+            ['ip' => $clientIp]
+        );
         json_out(['ok' => false, 'error' => 'Invalid or expired 2FA code.'], 401);
     }
 
     $pdo->prepare("UPDATE {$sessTable} SET is_2fa_verified = 1 WHERE token = ?")
         ->execute([$token]);
+    admin_audit_event(
+        $pdo,
+        (int) $sess['admin_user_id'],
+        (string) $sess['username'],
+        'admin.auth.2fa_success',
+        'admin_user',
+        (int) $sess['admin_user_id'],
+        ['ip' => $clientIp]
+    );
 
     json_out([
         'ok'   => true,
@@ -132,10 +235,16 @@ function admin_panel_verify_2fa_action(): void
 function admin_panel_logout_action(): void
 {
     require_post();
+    $pdo = db();
     $token = admin_session_token_from_cookie();
+    $sess = null;
     if ($token !== '') {
         $sessTable = table_name('admin_sessions');
-        db()->prepare("DELETE FROM {$sessTable} WHERE token = ?")->execute([$token]);
+        $sess = admin_resolve_session($pdo, $token);
+        $pdo->prepare("DELETE FROM {$sessTable} WHERE token = ?")->execute([$token]);
+    }
+    if (is_array($sess)) {
+        admin_audit($pdo, $sess, 'admin.auth.logout');
     }
     admin_clear_session_cookie();
     json_out(['ok' => true]);

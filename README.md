@@ -48,6 +48,12 @@ php scripts/run_migrations.php --baseline
    - `TRIP_DB_USER`
    - `TRIP_DB_PASS`
    - `TRIP_ADMIN_KEY` (strong random secret for admin panel)
+   - optional admin-panel hardening:
+     - `TRIP_ADMIN_PANEL_SESSION_TTL_SEC` (default `7200`, recommended `3600-7200`)
+     - `TRIP_RATE_LIMIT_ADMIN_PANEL_LOGIN_IP_MAX` (default `20` per `TRIP_RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC`)
+     - `TRIP_RATE_LIMIT_ADMIN_PANEL_LOGIN_USERNAME_MAX` (default `10` per window)
+     - `TRIP_RATE_LIMIT_ADMIN_PANEL_2FA_IP_MAX` and `TRIP_RATE_LIMIT_ADMIN_PANEL_2FA_TOKEN_MAX`
+     - `TRIP_RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC` (default `900`)
    - if using email verification on signup (recommended):
      - `TRIP_EMAIL_VERIFICATION_REQUIRED=true`
      - `TRIP_EMAIL_VERIFICATION_TOKEN_TTL_SEC` (default 86400, 24h link)

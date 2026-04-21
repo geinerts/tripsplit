@@ -4,7 +4,10 @@ declare(strict_types=1);
 // ── Config constants ───────────────────────────────────────────────────────────
 
 define('ADMIN_SESSION_COOKIE',   'splyto_admin_sess');
-define('ADMIN_SESSION_TTL',      28800);  // 8 h sliding
+define(
+    'ADMIN_SESSION_TTL',
+    defined('ADMIN_PANEL_SESSION_TTL_SEC') ? (int) ADMIN_PANEL_SESSION_TTL_SEC : 7200
+); // 2 h sliding by default (configurable via TRIP_ADMIN_PANEL_SESSION_TTL_SEC)
 define('ADMIN_MAX_SESSIONS',     5);      // concurrent sessions per admin user
 define('ADMIN_LOCK_THRESHOLD',   5);      // failed logins before lock
 define('ADMIN_LOCK_MINUTES',     15);     // lock duration
@@ -176,18 +179,42 @@ function admin_audit(
     ?int    $targetId   = null,
     ?array  $details    = null
 ): void {
+    admin_audit_event(
+        $pdo,
+        isset($sess['admin_user_id']) ? (int) $sess['admin_user_id'] : null,
+        (string) ($sess['username'] ?? ''),
+        $action,
+        $targetType,
+        $targetId,
+        $details
+    );
+}
+
+function admin_audit_event(
+    PDO    $pdo,
+    ?int   $adminUserId,
+    string $adminUsername,
+    string $action,
+    ?string $targetType = null,
+    ?int    $targetId   = null,
+    ?array  $details    = null
+): void {
     try {
         $tbl     = table_name('admin_audit_log');
         $details = $details !== null
             ? json_encode($details, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             : null;
+        $username = trim($adminUsername);
+        if ($username === '') {
+            $username = 'unknown';
+        }
         $pdo->prepare("
             INSERT INTO {$tbl}
                 (admin_user_id, admin_username, action, target_type, target_id, details, ip_address)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ")->execute([
-            (int)    $sess['admin_user_id'],
-            (string) $sess['username'],
+            $adminUserId,
+            $username,
             $action,
             $targetType,
             $targetId,

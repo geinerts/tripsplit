@@ -1,11 +1,7 @@
 <?php
 declare(strict_types=1);
 
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-header('Pragma: no-cache');
-header('Referrer-Policy: no-referrer');
-header('X-Content-Type-Options: nosniff');
-header('X-Frame-Options: DENY');
+require_once __DIR__ . '/web_security_headers.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `trip_admin_users` (
   UNIQUE KEY `uq_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Admin sessions (8-hour sliding window, max 5 concurrent per user)
+-- Admin sessions (configurable sliding window, default 2 hours, max 5 concurrent per user)
 CREATE TABLE IF NOT EXISTS `trip_admin_sessions` (
   `token`            CHAR(64)     NOT NULL,
   `admin_user_id`    INT UNSIGNED NOT NULL,
