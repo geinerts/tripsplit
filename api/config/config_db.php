@@ -31,6 +31,7 @@ function table_name(string $key): string
         'expenses' => DB_TABLE_PREFIX . 'expenses',
         'expense_participants' => DB_TABLE_PREFIX . 'expense_participants',
         'expense_reactions'    => DB_TABLE_PREFIX . 'expense_reactions',
+        'expense_comment_reactions' => DB_TABLE_PREFIX . 'expense_comment_reactions',
         'expense_comments'     => DB_TABLE_PREFIX . 'expense_comments',
         'settlements' => DB_TABLE_PREFIX . 'settlements',
         'notifications' => DB_TABLE_PREFIX . 'notifications',

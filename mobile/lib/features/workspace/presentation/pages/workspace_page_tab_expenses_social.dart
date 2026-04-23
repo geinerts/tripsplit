@@ -13,6 +13,681 @@ final _kSocialEmojis = <String>[
   '\u{2764}\u{FE0F}', // ❤️
 ];
 
+const _kExpenseSocialMaxConcurrentLoads = 4;
+const _kInlinePopularEmojiLimit = 3;
+
+class _InlineEmojiCount {
+  const _InlineEmojiCount({
+    required this.emoji,
+    required this.count,
+    required this.isMine,
+  });
+
+  final String emoji;
+  final int count;
+  final bool isMine;
+}
+
+enum _CommentQuickActionType { react, reply, edit, delete }
+
+class _CommentQuickActionResult {
+  const _CommentQuickActionResult._({required this.type, this.emoji});
+
+  const _CommentQuickActionResult.react(String emoji)
+    : this._(type: _CommentQuickActionType.react, emoji: emoji);
+
+  const _CommentQuickActionResult.reply()
+    : this._(type: _CommentQuickActionType.reply);
+
+  const _CommentQuickActionResult.edit()
+    : this._(type: _CommentQuickActionType.edit);
+
+  const _CommentQuickActionResult.delete()
+    : this._(type: _CommentQuickActionType.delete);
+
+  final _CommentQuickActionType type;
+  final String? emoji;
+}
+
+extension _WorkspacePageExpenseSocialInline on _WorkspacePageState {
+  void _reconcileExpenseSocialPreviewState(List<TripExpense> expenses) {
+    final expenseIds = expenses.map((expense) => expense.id).toSet();
+
+    _expenseReactionsByExpenseId.removeWhere(
+      (expenseId, _) => !expenseIds.contains(expenseId),
+    );
+    _expenseCommentsCountByExpenseId.removeWhere(
+      (expenseId, _) => !expenseIds.contains(expenseId),
+    );
+    _expenseSocialLoadingIds.removeWhere(
+      (expenseId) => !expenseIds.contains(expenseId),
+    );
+    _expenseSocialQueuedIds.removeWhere(
+      (expenseId) => !expenseIds.contains(expenseId),
+    );
+    _expenseSocialTogglingIds.removeWhere(
+      (expenseId) => !expenseIds.contains(expenseId),
+    );
+    _expenseSocialLoadQueue.removeWhere(
+      (expenseId) => !expenseIds.contains(expenseId),
+    );
+
+    for (final expense in expenses) {
+      if (expense.id <= 0) {
+        continue;
+      }
+      final hasReactions = _expenseReactionsByExpenseId.containsKey(expense.id);
+      final hasCommentsCount = _expenseCommentsCountByExpenseId.containsKey(
+        expense.id,
+      );
+      if (hasReactions && hasCommentsCount) {
+        continue;
+      }
+      if (_expenseSocialLoadingIds.contains(expense.id) ||
+          _expenseSocialQueuedIds.contains(expense.id)) {
+        continue;
+      }
+      _expenseSocialQueuedIds.add(expense.id);
+      _expenseSocialLoadQueue.add(expense.id);
+    }
+    _drainExpenseSocialLoadQueue();
+  }
+
+  void _drainExpenseSocialLoadQueue() {
+    if (!mounted) {
+      return;
+    }
+    while (_expenseSocialLoadInFlight < _kExpenseSocialMaxConcurrentLoads &&
+        _expenseSocialLoadQueue.isNotEmpty) {
+      final expenseId = _expenseSocialLoadQueue.removeFirst();
+      _expenseSocialQueuedIds.remove(expenseId);
+      if (_expenseSocialLoadingIds.contains(expenseId)) {
+        continue;
+      }
+      final hasReactions = _expenseReactionsByExpenseId.containsKey(expenseId);
+      final hasComments = _expenseCommentsCountByExpenseId.containsKey(
+        expenseId,
+      );
+      if (hasReactions && hasComments) {
+        continue;
+      }
+      _expenseSocialLoadingIds.add(expenseId);
+      _expenseSocialLoadInFlight += 1;
+      unawaited(
+        _fetchExpenseSocialPreview(expenseId).whenComplete(() {
+          _expenseSocialLoadingIds.remove(expenseId);
+          _expenseSocialLoadInFlight = math.max(
+            0,
+            _expenseSocialLoadInFlight - 1,
+          );
+          if (mounted) {
+            _updateState(() {});
+          }
+          _drainExpenseSocialLoadQueue();
+        }),
+      );
+    }
+  }
+
+  Future<void> _fetchExpenseSocialPreview(
+    int expenseId, {
+    bool force = false,
+  }) async {
+    try {
+      final results = await Future.wait<dynamic>([
+        widget.workspaceController.listExpenseReactions(
+          expenseId: expenseId,
+          tripId: widget.trip.id,
+        ),
+        widget.workspaceController.listExpenseComments(
+          expenseId: expenseId,
+          tripId: widget.trip.id,
+        ),
+      ]);
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _expenseReactionsByExpenseId[expenseId] = (results[0] as List)
+            .cast<ExpenseReaction>();
+        _expenseCommentsCountByExpenseId[expenseId] = (results[1] as List)
+            .cast<ExpenseComment>()
+            .length;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        if (force || !_expenseReactionsByExpenseId.containsKey(expenseId)) {
+          _expenseReactionsByExpenseId[expenseId] = const <ExpenseReaction>[];
+        }
+        if (force || !_expenseCommentsCountByExpenseId.containsKey(expenseId)) {
+          _expenseCommentsCountByExpenseId[expenseId] = 0;
+        }
+      });
+    }
+  }
+
+  Future<void> _refreshExpenseSocialPreview(int expenseId) async {
+    if (expenseId <= 0 || _expenseSocialLoadingIds.contains(expenseId)) {
+      return;
+    }
+    _expenseSocialQueuedIds.remove(expenseId);
+    _expenseSocialLoadQueue.remove(expenseId);
+    _updateState(() {
+      _expenseSocialLoadingIds.add(expenseId);
+    });
+    try {
+      await _fetchExpenseSocialPreview(expenseId, force: true);
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _expenseSocialLoadingIds.remove(expenseId);
+        });
+      }
+    }
+  }
+
+  Future<void> _toggleExpenseReactionInline({
+    required int expenseId,
+    required String emoji,
+  }) async {
+    if (expenseId <= 0 ||
+        emoji.trim().isEmpty ||
+        _expenseSocialTogglingIds.contains(expenseId)) {
+      return;
+    }
+    _updateState(() {
+      _expenseSocialTogglingIds.add(expenseId);
+    });
+    try {
+      await widget.workspaceController.toggleExpenseReaction(
+        expenseId: expenseId,
+        tripId: widget.trip.id,
+        emoji: emoji,
+      );
+      final fresh = await widget.workspaceController.listExpenseReactions(
+        expenseId: expenseId,
+        tripId: widget.trip.id,
+      );
+      if (!mounted) {
+        return;
+      }
+      _updateState(() {
+        _expenseReactionsByExpenseId[expenseId] = fresh;
+      });
+      if (!_expenseCommentsCountByExpenseId.containsKey(expenseId) &&
+          !_expenseSocialLoadingIds.contains(expenseId) &&
+          !_expenseSocialQueuedIds.contains(expenseId)) {
+        _expenseSocialQueuedIds.add(expenseId);
+        _expenseSocialLoadQueue.add(expenseId);
+        _drainExpenseSocialLoadQueue();
+      }
+    } catch (_) {
+      // Reactions are non-critical, fail silently.
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _expenseSocialTogglingIds.remove(expenseId);
+        });
+      }
+    }
+  }
+
+  List<_InlineEmojiCount> _topExpenseReactions(List<ExpenseReaction>? raw) {
+    if (raw == null || raw.isEmpty) {
+      return const <_InlineEmojiCount>[];
+    }
+
+    final whitelistRank = <String, int>{
+      for (var i = 0; i < _kSocialEmojis.length; i++) _kSocialEmojis[i]: i,
+    };
+    final counts = <String, int>{};
+    final mine = <String>{};
+
+    for (final reaction in raw) {
+      if (!whitelistRank.containsKey(reaction.emoji)) {
+        continue;
+      }
+      counts[reaction.emoji] = (counts[reaction.emoji] ?? 0) + 1;
+      if (reaction.userId == _currentUserId) {
+        mine.add(reaction.emoji);
+      }
+    }
+    if (counts.isEmpty) {
+      return const <_InlineEmojiCount>[];
+    }
+
+    final rows = counts.entries
+        .map(
+          (entry) => _InlineEmojiCount(
+            emoji: entry.key,
+            count: entry.value,
+            isMine: mine.contains(entry.key),
+          ),
+        )
+        .toList(growable: false);
+    rows.sort((a, b) {
+      final byCount = b.count.compareTo(a.count);
+      if (byCount != 0) {
+        return byCount;
+      }
+      return (whitelistRank[a.emoji] ?? 999).compareTo(
+        whitelistRank[b.emoji] ?? 999,
+      );
+    });
+
+    return rows.take(_kInlinePopularEmojiLimit).toList(growable: false);
+  }
+
+  Future<void> _showExpenseInlineEmojiPicker({required int expenseId}) async {
+    if (expenseId <= 0 || _expenseSocialTogglingIds.contains(expenseId)) {
+      return;
+    }
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: false,
+      builder: (context) {
+        final colors = Theme.of(context).colorScheme;
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            child: Container(
+              decoration: BoxDecoration(
+                color: isDark ? colors.surface : AppDesign.lightSurface,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: isDark
+                      ? colors.outlineVariant.withValues(alpha: 0.32)
+                      : AppDesign.lightStroke,
+                ),
+              ),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 42,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? colors.onSurface.withValues(alpha: 0.20)
+                            : AppDesign.lightMuted.withValues(alpha: 0.22),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final emoji in _kSocialEmojis)
+                        _InlineEmojiPickerButton(
+                          emoji: emoji,
+                          isDark: isDark,
+                          onTap: () => Navigator.of(context).pop(emoji),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    if (!mounted || picked == null || picked.trim().isEmpty) {
+      return;
+    }
+    await _toggleExpenseReactionInline(expenseId: expenseId, emoji: picked);
+  }
+}
+
+class _ExpenseInlineSocialBar extends StatelessWidget {
+  const _ExpenseInlineSocialBar({
+    required this.popularReactions,
+    required this.commentCount,
+    required this.isLoading,
+    required this.isBusy,
+    required this.isDark,
+    required this.onPickReactionTap,
+    required this.onCommentsTap,
+    required this.onQuickReactionTap,
+  });
+
+  final List<_InlineEmojiCount> popularReactions;
+  final int? commentCount;
+  final bool isLoading;
+  final bool isBusy;
+  final bool isDark;
+  final VoidCallback onPickReactionTap;
+  final VoidCallback onCommentsTap;
+  final ValueChanged<String> onQuickReactionTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      alignment: WrapAlignment.end,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        for (final row in popularReactions)
+          _ExpenseInlineReactionChip(
+            emoji: row.emoji,
+            count: row.count,
+            isMine: row.isMine,
+            isDark: isDark,
+            isDisabled: isBusy,
+            onTap: () => onQuickReactionTap(row.emoji),
+          ),
+        _ExpenseInlineAddReactionChip(
+          isDark: isDark,
+          isDisabled: isBusy,
+          isLoading: isLoading,
+          onTap: onPickReactionTap,
+        ),
+        _ExpenseInlineCommentsChip(
+          isDark: isDark,
+          count: commentCount ?? 0,
+          isLoading: isLoading && commentCount == null,
+          onTap: onCommentsTap,
+        ),
+      ],
+    );
+  }
+}
+
+class _ExpenseInlineReactionChip extends StatelessWidget {
+  const _ExpenseInlineReactionChip({
+    required this.emoji,
+    required this.count,
+    required this.isMine,
+    required this.isDark,
+    required this.isDisabled,
+    required this.onTap,
+  });
+
+  final String emoji;
+  final int count;
+  final bool isMine;
+  final bool isDark;
+  final bool isDisabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final bgColor = isMine
+        ? (isDark
+              ? colors.primary.withValues(alpha: 0.18)
+              : AppDesign.lightPrimary.withValues(alpha: 0.12))
+        : (isDark
+              ? colors.surfaceContainerHighest
+              : AppDesign.lightSurfaceMuted.withValues(alpha: 0.92));
+    final borderColor = isMine
+        ? (isDark
+              ? colors.primary.withValues(alpha: 0.46)
+              : AppDesign.lightPrimary.withValues(alpha: 0.34))
+        : (isDark
+              ? colors.outlineVariant.withValues(alpha: 0.26)
+              : AppDesign.lightStroke);
+
+    return Opacity(
+      opacity: isDisabled ? 0.62 : 1,
+      child: GestureDetector(
+        onTap: isDisabled ? null : onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: borderColor),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(emoji, style: const TextStyle(fontSize: 15)),
+              if (count > 0) ...[
+                const SizedBox(width: 4),
+                Text(
+                  '$count',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: isMine
+                        ? (isDark ? colors.primary : AppDesign.lightPrimary)
+                        : (isDark
+                              ? colors.onSurfaceVariant
+                              : AppDesign.lightMuted),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExpenseInlineAddReactionChip extends StatelessWidget {
+  const _ExpenseInlineAddReactionChip({
+    required this.isDark,
+    required this.isDisabled,
+    required this.isLoading,
+    required this.onTap,
+  });
+
+  final bool isDark;
+  final bool isDisabled;
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Opacity(
+      opacity: isDisabled ? 0.62 : 1,
+      child: GestureDetector(
+        onTap: isDisabled ? null : onTap,
+        child: Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: isDark
+                ? colors.surfaceContainerHighest
+                : AppDesign.lightSurfaceMuted.withValues(alpha: 0.92),
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: isDark
+                  ? colors.outlineVariant.withValues(alpha: 0.26)
+                  : AppDesign.lightStroke,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: isLoading
+              ? SizedBox(
+                  width: 13,
+                  height: 13,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1.8,
+                    color: isDark ? colors.primary : AppDesign.lightPrimary,
+                  ),
+                )
+              : Icon(
+                  Icons.add_rounded,
+                  size: 17,
+                  color: isDark
+                      ? colors.onSurfaceVariant
+                      : AppDesign.lightMuted,
+                ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExpenseInlineCommentsChip extends StatelessWidget {
+  const _ExpenseInlineCommentsChip({
+    required this.isDark,
+    required this.count,
+    required this.isLoading,
+    required this.onTap,
+  });
+
+  final bool isDark;
+  final int count;
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isDark
+              ? colors.surfaceContainerHighest
+              : AppDesign.lightSurfaceMuted.withValues(alpha: 0.92),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: isDark
+                ? colors.outlineVariant.withValues(alpha: 0.26)
+                : AppDesign.lightStroke,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.mode_comment_outlined,
+              size: 13,
+              color: isDark ? colors.onSurfaceVariant : AppDesign.lightMuted,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              isLoading ? '…' : '$count',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: isDark ? colors.onSurfaceVariant : AppDesign.lightMuted,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _InlineEmojiPickerButton extends StatelessWidget {
+  const _InlineEmojiPickerButton({
+    required this.emoji,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  final String emoji;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 52,
+        height: 44,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isDark
+              ? colors.surfaceContainerHighest
+              : AppDesign.lightSurfaceMuted.withValues(alpha: 0.95),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isDark
+                ? colors.outlineVariant.withValues(alpha: 0.26)
+                : AppDesign.lightStroke,
+          ),
+        ),
+        child: Text(emoji, style: const TextStyle(fontSize: 24)),
+      ),
+    );
+  }
+}
+
+class _CommentActionRow extends StatelessWidget {
+  const _CommentActionRow({
+    required this.label,
+    required this.icon,
+    required this.isDark,
+    required this.onTap,
+    this.isDestructive = false,
+    this.showDivider = false,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool isDark;
+  final bool isDestructive;
+  final bool showDivider;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final textColor = isDestructive
+        ? AppDesign.lightDestructive
+        : (isDark ? colors.onSurface : AppDesign.lightForeground);
+    final iconColor = isDestructive
+        ? AppDesign.lightDestructive
+        : (isDark ? colors.onSurfaceVariant : AppDesign.lightMuted);
+
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          border: showDivider
+              ? Border(
+                  bottom: BorderSide(
+                    color: isDark
+                        ? colors.outlineVariant.withValues(alpha: 0.20)
+                        : AppDesign.lightStroke,
+                  ),
+                )
+              : null,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
+              ),
+            ),
+            Icon(icon, size: 20, color: iconColor),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ── _ExpenseSocialSection ────────────────────────────────────────────────────
 
 class _ExpenseSocialSection extends StatefulWidget {
@@ -35,10 +710,11 @@ class _ExpenseSocialSection extends StatefulWidget {
 }
 
 class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
-  List<ExpenseReaction>? _reactions;
+  List<ExpenseCommentReaction>? _commentReactions;
   List<ExpenseComment>? _comments;
-  bool _isTogglingReaction = false;
+  ExpenseComment? _replyTarget;
   bool _isSubmittingComment = false;
+  final Set<int> _commentReactionBusyIds = <int>{};
   final _commentController = TextEditingController();
   final _commentFocus = FocusNode();
 
@@ -60,7 +736,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
   Future<void> _load() async {
     try {
       final results = await Future.wait<dynamic>([
-        widget.controller.listExpenseReactions(
+        widget.controller.listExpenseCommentReactions(
           expenseId: widget.expenseId,
           tripId: widget.tripId,
         ),
@@ -71,13 +747,13 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
       ]);
       if (!mounted) return;
       setState(() {
-        _reactions = (results[0] as List).cast<ExpenseReaction>();
+        _commentReactions = (results[0] as List).cast<ExpenseCommentReaction>();
         _comments = (results[1] as List).cast<ExpenseComment>();
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _reactions = const [];
+        _commentReactions = const [];
         _comments = const [];
       });
     }
@@ -85,38 +761,315 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
 
   // ── Actions ─────────────────────────────────────────────────────────────────
 
-  Future<void> _toggleReaction(String emoji) async {
-    if (_isTogglingReaction) return;
-    setState(() => _isTogglingReaction = true);
+  Map<int, List<_InlineEmojiCount>> _commentReactionRowsByCommentId(
+    List<ExpenseCommentReaction>? raw,
+  ) {
+    if (raw == null || raw.isEmpty) {
+      return const <int, List<_InlineEmojiCount>>{};
+    }
+
+    final whitelistRank = <String, int>{
+      for (var i = 0; i < _kSocialEmojis.length; i++) _kSocialEmojis[i]: i,
+    };
+    final countsByComment = <int, Map<String, int>>{};
+    final mineByComment = <int, Set<String>>{};
+
+    for (final reaction in raw) {
+      final commentId = reaction.commentId;
+      final emoji = reaction.emoji;
+      if (commentId <= 0 || !whitelistRank.containsKey(emoji)) {
+        continue;
+      }
+      final counts = countsByComment.putIfAbsent(
+        commentId,
+        () => <String, int>{},
+      );
+      counts[emoji] = (counts[emoji] ?? 0) + 1;
+      if (reaction.userId == widget.currentUserId) {
+        mineByComment.putIfAbsent(commentId, () => <String>{}).add(emoji);
+      }
+    }
+
+    final rowsByComment = <int, List<_InlineEmojiCount>>{};
+    countsByComment.forEach((commentId, counts) {
+      final mine = mineByComment[commentId] ?? const <String>{};
+      final rows = counts.entries
+          .map(
+            (entry) => _InlineEmojiCount(
+              emoji: entry.key,
+              count: entry.value,
+              isMine: mine.contains(entry.key),
+            ),
+          )
+          .toList(growable: false);
+      rows.sort((a, b) {
+        final byCount = b.count.compareTo(a.count);
+        if (byCount != 0) {
+          return byCount;
+        }
+        return (whitelistRank[a.emoji] ?? 999).compareTo(
+          whitelistRank[b.emoji] ?? 999,
+        );
+      });
+      rowsByComment[commentId] = rows;
+    });
+
+    return rowsByComment;
+  }
+
+  Future<void> _toggleCommentReaction({
+    required int commentId,
+    required String emoji,
+  }) async {
+    if (commentId <= 0 ||
+        emoji.trim().isEmpty ||
+        _commentReactionBusyIds.contains(commentId)) {
+      return;
+    }
+    setState(() {
+      _commentReactionBusyIds.add(commentId);
+    });
     try {
-      await widget.controller.toggleExpenseReaction(
+      await widget.controller.toggleExpenseCommentReaction(
+        commentId: commentId,
         expenseId: widget.expenseId,
         tripId: widget.tripId,
         emoji: emoji,
       );
       if (!mounted) return;
-      final fresh = await widget.controller.listExpenseReactions(
+      final fresh = await widget.controller.listExpenseCommentReactions(
         expenseId: widget.expenseId,
         tripId: widget.tripId,
       );
       if (!mounted) return;
-      setState(() => _reactions = fresh);
+      setState(() {
+        _commentReactions = fresh;
+      });
     } catch (_) {
-      // reactions are non-critical, fail silently
+      // Reactions are non-critical, fail silently.
     } finally {
-      if (mounted) setState(() => _isTogglingReaction = false);
+      if (mounted) {
+        setState(() {
+          _commentReactionBusyIds.remove(commentId);
+        });
+      }
+    }
+  }
+
+  Future<void> _showCommentActionsSheet(ExpenseComment comment) async {
+    if (comment.id <= 0 || _commentReactionBusyIds.contains(comment.id)) {
+      return;
+    }
+    final isOwn = comment.userId == widget.currentUserId;
+    final picked = await showModalBottomSheet<_CommentQuickActionResult>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: false,
+      builder: (context) {
+        final colors = Theme.of(context).colorScheme;
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: isDark ? colors.surface : AppDesign.lightSurface,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: isDark
+                          ? colors.outlineVariant.withValues(alpha: 0.32)
+                          : AppDesign.lightStroke,
+                    ),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final emoji in _kSocialEmojis)
+                        _InlineEmojiPickerButton(
+                          emoji: emoji,
+                          isDark: isDark,
+                          onTap: () {
+                            Navigator.of(
+                              context,
+                            ).pop(_CommentQuickActionResult.react(emoji));
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: isDark ? colors.surface : AppDesign.lightSurface,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isDark
+                          ? colors.outlineVariant.withValues(alpha: 0.32)
+                          : AppDesign.lightStroke,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      _CommentActionRow(
+                        label: 'Reply',
+                        icon: Icons.reply_rounded,
+                        isDark: isDark,
+                        showDivider: isOwn,
+                        onTap: () {
+                          Navigator.of(
+                            context,
+                          ).pop(const _CommentQuickActionResult.reply());
+                        },
+                      ),
+                      if (isOwn)
+                        _CommentActionRow(
+                          label: 'Edit',
+                          icon: Icons.edit_outlined,
+                          isDark: isDark,
+                          showDivider: true,
+                          onTap: () {
+                            Navigator.of(
+                              context,
+                            ).pop(const _CommentQuickActionResult.edit());
+                          },
+                        ),
+                      if (isOwn)
+                        _CommentActionRow(
+                          label: context.l10n.deleteAction,
+                          icon: Icons.delete_outline_rounded,
+                          isDark: isDark,
+                          isDestructive: true,
+                          onTap: () {
+                            Navigator.of(
+                              context,
+                            ).pop(const _CommentQuickActionResult.delete());
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (!mounted || picked == null) {
+      return;
+    }
+    switch (picked.type) {
+      case _CommentQuickActionType.react:
+        final emoji = (picked.emoji ?? '').trim();
+        if (emoji.isEmpty) {
+          return;
+        }
+        await _toggleCommentReaction(commentId: comment.id, emoji: emoji);
+        return;
+      case _CommentQuickActionType.reply:
+        _startReplyTo(comment);
+        return;
+      case _CommentQuickActionType.edit:
+        if (!isOwn) {
+          return;
+        }
+        await _showEditCommentDialog(comment);
+        return;
+      case _CommentQuickActionType.delete:
+        if (!isOwn) {
+          return;
+        }
+        await _confirmDeleteComment(comment);
+        return;
+    }
+  }
+
+  Future<void> _showEditCommentDialog(ExpenseComment comment) async {
+    final initial = comment.body.trim();
+    final textController = TextEditingController(text: initial);
+    String? edited;
+    try {
+      edited = await showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Edit comment'),
+          content: TextField(
+            controller: textController,
+            autofocus: true,
+            maxLength: 280,
+            minLines: 1,
+            maxLines: 6,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: const InputDecoration(hintText: 'Write a comment...'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(context.l10n.cancelAction),
+            ),
+            FilledButton(
+              onPressed: () =>
+                  Navigator.of(ctx).pop(textController.text.trim()),
+              child: const Text('Save'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      textController.dispose();
+    }
+    final next = (edited ?? '').trim();
+    if (next.isEmpty || next == initial || !mounted) {
+      return;
+    }
+    try {
+      await widget.controller.updateExpenseComment(
+        commentId: comment.id,
+        expenseId: widget.expenseId,
+        tripId: widget.tripId,
+        body: next,
+      );
+      if (!mounted) return;
+      final fresh = await widget.controller.listExpenseComments(
+        expenseId: widget.expenseId,
+        tripId: widget.tripId,
+      );
+      if (!mounted) return;
+      setState(() {
+        _comments = fresh;
+        if (_replyTarget?.id == comment.id) {
+          ExpenseComment? refreshed;
+          for (final item in fresh) {
+            if (item.id == comment.id) {
+              refreshed = item;
+              break;
+            }
+          }
+          _replyTarget = refreshed;
+        }
+      });
+    } catch (_) {
+      // silent
     }
   }
 
   Future<void> _sendComment() async {
     final body = _commentController.text.trim();
     if (body.isEmpty || _isSubmittingComment) return;
+    final replyTarget = _replyTarget;
     setState(() => _isSubmittingComment = true);
     try {
       await widget.controller.addExpenseComment(
         expenseId: widget.expenseId,
         tripId: widget.tripId,
         body: body,
+        parentCommentId: replyTarget?.id,
       );
       if (!mounted) return;
       _commentController.clear();
@@ -126,12 +1079,35 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
         tripId: widget.tripId,
       );
       if (!mounted) return;
-      setState(() => _comments = fresh);
+      setState(() {
+        _comments = fresh;
+        _replyTarget = null;
+      });
     } catch (_) {
       // silent
     } finally {
       if (mounted) setState(() => _isSubmittingComment = false);
     }
+  }
+
+  void _startReplyTo(ExpenseComment comment) {
+    final body = comment.body.trim();
+    if (body.isEmpty) {
+      return;
+    }
+    setState(() {
+      _replyTarget = comment;
+    });
+    _commentFocus.requestFocus();
+  }
+
+  void _clearReplyTarget() {
+    if (_replyTarget == null) {
+      return;
+    }
+    setState(() {
+      _replyTarget = null;
+    });
   }
 
   Future<void> _confirmDeleteComment(ExpenseComment comment) async {
@@ -167,8 +1143,24 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
         tripId: widget.tripId,
       );
       if (!mounted) return;
+      final results = await Future.wait<dynamic>([
+        widget.controller.listExpenseComments(
+          expenseId: widget.expenseId,
+          tripId: widget.tripId,
+        ),
+        widget.controller.listExpenseCommentReactions(
+          expenseId: widget.expenseId,
+          tripId: widget.tripId,
+        ),
+      ]);
+      if (!mounted) return;
       setState(() {
-        _comments = _comments?.where((c) => c.id != comment.id).toList();
+        _comments = (results[0] as List).cast<ExpenseComment>();
+        _commentReactions = (results[1] as List).cast<ExpenseCommentReaction>();
+        _commentReactionBusyIds.remove(comment.id);
+        if (_replyTarget?.id == comment.id) {
+          _replyTarget = null;
+        }
       });
     } catch (_) {
       // silent
@@ -186,53 +1178,14 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Divider(height: 28),
-        _buildReactionsSection(isDark, colors),
-        const SizedBox(height: 18),
         _buildCommentsSection(isDark, colors),
         const SizedBox(height: 10),
+        if (_replyTarget != null) ...[
+          _buildReplyTargetHeader(isDark, colors),
+          const SizedBox(height: 8),
+        ],
         _buildCommentInput(isDark, colors),
         const SizedBox(height: 4),
-      ],
-    );
-  }
-
-  Widget _buildReactionsSection(bool isDark, ColorScheme colors) {
-    final reactions = _reactions;
-
-    // Aggregate counts and find current user's choice
-    final counts = <String, int>{};
-    final myEmojis = <String>{};
-    if (reactions != null) {
-      for (final r in reactions) {
-        counts[r.emoji] = (counts[r.emoji] ?? 0) + 1;
-        if (r.userId == widget.currentUserId) myEmojis.add(r.emoji);
-      }
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.l10n.expenseReactionsTitle,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: isDark ? null : AppDesign.lightForeground,
-          ),
-        ),
-        const SizedBox(height: 10),
-        if (reactions == null)
-          const SizedBox(
-            height: 40,
-            child: Center(
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
-          )
-        else
-          _buildEmojiGrid(counts, myEmojis, isDark, colors),
       ],
     );
   }
@@ -240,6 +1193,13 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
   Widget _buildCommentsSection(bool isDark, ColorScheme colors) {
     final comments = _comments;
     final count = comments?.length ?? 0;
+    final reactionRowsByCommentId = _commentReactionRowsByCommentId(
+      _commentReactions,
+    );
+    final commentsById = <int, ExpenseComment>{
+      for (final comment in comments ?? const <ExpenseComment>[])
+        comment.id: comment,
+    };
     final sectionLabel = count > 0
         ? '${context.l10n.expenseCommentsTitle} ($count)'
         : context.l10n.expenseCommentsTitle;
@@ -274,15 +1234,106 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
           ...comments.map((c) {
             final user = widget.usersById[c.userId];
             final avatarUrl = user?.avatarThumbUrl ?? user?.avatarUrl;
+            final parentComment = c.parentCommentId == null
+                ? null
+                : commentsById[c.parentCommentId!];
+            final replyToNickname =
+                (c.parentUserNickname ?? parentComment?.userNickname)?.trim();
+            final replyToBody = (c.parentBody ?? parentComment?.body)?.trim();
+            final reactionRows =
+                reactionRowsByCommentId[c.id] ?? const <_InlineEmojiCount>[];
             return _CommentTile(
               comment: c,
-              isOwn: c.userId == widget.currentUserId,
               isDark: isDark,
               avatarUrl: avatarUrl,
-              onLongPress: () => _confirmDeleteComment(c),
+              onLongPress: () => _showCommentActionsSheet(c),
+              onQuickReactionTap: (emoji) =>
+                  _toggleCommentReaction(commentId: c.id, emoji: emoji),
+              reactionRows: reactionRows,
+              isReactionBusy: _commentReactionBusyIds.contains(c.id),
+              replyToNickname: (replyToNickname?.isNotEmpty ?? false)
+                  ? replyToNickname
+                  : null,
+              replyToBody: (replyToBody?.isNotEmpty ?? false)
+                  ? replyToBody
+                  : null,
             );
           }),
       ],
+    );
+  }
+
+  Widget _buildReplyTargetHeader(bool isDark, ColorScheme colors) {
+    final target = _replyTarget;
+    if (target == null) {
+      return const SizedBox.shrink();
+    }
+    final nickname = target.userNickname.trim().isEmpty
+        ? context.l10n.userWithId(target.userId)
+        : target.userNickname.trim();
+    final preview = target.body.trim().replaceAll(RegExp(r'\s+'), ' ');
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+      decoration: BoxDecoration(
+        color: isDark
+            ? colors.surfaceContainerHighest.withValues(alpha: 0.55)
+            : AppDesign.lightSurfaceMuted.withValues(alpha: 0.72),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isDark
+              ? colors.outlineVariant.withValues(alpha: 0.34)
+              : AppDesign.lightStroke,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.reply_rounded,
+            size: 16,
+            color: isDark ? colors.primary : AppDesign.lightPrimary,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Replying to $nickname',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? colors.primary : AppDesign.lightPrimary,
+                  ),
+                ),
+                if (preview.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    preview,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: isDark
+                          ? colors.onSurfaceVariant
+                          : AppDesign.lightMuted,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: _clearReplyTarget,
+            icon: const Icon(Icons.close_rounded, size: 16),
+            visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
+            splashRadius: 16,
+            tooltip: context.l10n.cancelAction,
+          ),
+        ],
+      ),
     );
   }
 
@@ -300,7 +1351,9 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
             enabled: !_isSubmittingComment,
             textCapitalization: TextCapitalization.sentences,
             decoration: InputDecoration(
-              hintText: context.l10n.expenseAddCommentHint,
+              hintText: _replyTarget == null
+                  ? context.l10n.expenseAddCommentHint
+                  : 'Write a reply...',
               counterText: '',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -334,96 +1387,6 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
       ],
     );
   }
-
-  Widget _buildEmojiGrid(
-    Map<String, int> counts,
-    Set<String> myEmojis,
-    bool isDark,
-    ColorScheme colors,
-  ) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _kSocialEmojis.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        mainAxisSpacing: 6,
-        crossAxisSpacing: 6,
-        mainAxisExtent: 42,
-      ),
-      itemBuilder: (context, index) {
-        final emoji = _kSocialEmojis[index];
-        return _EmojiPill(
-          emoji: emoji,
-          count: counts[emoji] ?? 0,
-          isActive: myEmojis.contains(emoji),
-          isDisabled: _isTogglingReaction,
-          isDark: isDark,
-          onTap: () => _toggleReaction(emoji),
-        );
-      },
-    );
-  }
-}
-
-// ── _EmojiPill ───────────────────────────────────────────────────────────────
-
-class _EmojiPill extends StatelessWidget {
-  const _EmojiPill({
-    required this.emoji,
-    required this.count,
-    required this.isActive,
-    required this.isDisabled,
-    required this.isDark,
-    required this.onTap,
-  });
-
-  final String emoji;
-  final int count;
-  final bool isActive;
-  final bool isDisabled;
-  final bool isDark;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Opacity(
-      opacity: isDisabled ? 0.55 : 1,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: isDisabled ? null : onTap,
-          borderRadius: BorderRadius.circular(10),
-          child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Render emoji without any explicit TextStyle so the platform's
-                // default font + emoji fallback chain is used unmodified.
-                Text(emoji, style: const TextStyle(fontSize: 22)),
-                if (count > 0) ...[
-                  const SizedBox(width: 4),
-                  Text(
-                    '$count',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: isActive
-                          ? (isDark ? colors.primary : AppDesign.lightPrimary)
-                          : (isDark
-                                ? colors.onSurfaceVariant
-                                : AppDesign.lightMuted),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 // ── _CommentTile ─────────────────────────────────────────────────────────────
@@ -431,16 +1394,24 @@ class _EmojiPill extends StatelessWidget {
 class _CommentTile extends StatelessWidget {
   const _CommentTile({
     required this.comment,
-    required this.isOwn,
     required this.isDark,
     required this.onLongPress,
+    required this.onQuickReactionTap,
+    required this.reactionRows,
+    required this.isReactionBusy,
+    this.replyToNickname,
+    this.replyToBody,
     this.avatarUrl,
   });
 
   final ExpenseComment comment;
-  final bool isOwn;
   final bool isDark;
   final VoidCallback onLongPress;
+  final ValueChanged<String> onQuickReactionTap;
+  final List<_InlineEmojiCount> reactionRows;
+  final bool isReactionBusy;
+  final String? replyToNickname;
+  final String? replyToBody;
   final String? avatarUrl;
 
   @override
@@ -452,7 +1423,7 @@ class _CommentTile extends StatelessWidget {
     final timeStr = _commentRelativeTime(context, comment.createdAt);
 
     return GestureDetector(
-      onLongPress: isOwn ? onLongPress : null,
+      onLongPress: onLongPress,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: Row(
@@ -488,25 +1459,86 @@ class _CommentTile extends StatelessWidget {
                               : AppDesign.lightMuted,
                         ),
                       ),
-                      if (isOwn) ...[
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.more_horiz_rounded,
-                          size: 14,
-                          color: isDark
-                              ? colors.onSurfaceVariant
-                              : AppDesign.lightMuted,
-                        ),
-                      ],
                     ],
                   ),
-                  const SizedBox(height: 3),
+                  if ((replyToNickname ?? '').trim().isNotEmpty ||
+                      (replyToBody ?? '').trim().isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? colors.surfaceContainerHighest.withValues(
+                                alpha: 0.55,
+                              )
+                            : AppDesign.lightSurfaceMuted.withValues(
+                                alpha: 0.72,
+                              ),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: isDark
+                              ? colors.outlineVariant.withValues(alpha: 0.30)
+                              : AppDesign.lightStroke,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if ((replyToNickname ?? '').trim().isNotEmpty)
+                            Text(
+                              'Reply to ${(replyToNickname ?? '').trim()}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: isDark
+                                        ? colors.primary
+                                        : AppDesign.lightPrimary,
+                                  ),
+                            ),
+                          if ((replyToBody ?? '').trim().isNotEmpty)
+                            Text(
+                              (replyToBody ?? '').trim(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color: isDark
+                                        ? colors.onSurfaceVariant
+                                        : AppDesign.lightMuted,
+                                  ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 4),
                   Text(
                     comment.body,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: isDark ? null : AppDesign.lightForeground,
                     ),
                   ),
+                  if (reactionRows.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        for (final reaction in reactionRows)
+                          _ExpenseInlineReactionChip(
+                            emoji: reaction.emoji,
+                            count: reaction.count,
+                            isMine: reaction.isMine,
+                            isDark: isDark,
+                            isDisabled: isReactionBusy,
+                            onTap: () => onQuickReactionTap(reaction.emoji),
+                          ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -596,5 +596,9 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
         );
       },
     );
+
+    if (mounted) {
+      unawaited(_refreshExpenseSocialPreview(expense.id));
+    }
   }
 }

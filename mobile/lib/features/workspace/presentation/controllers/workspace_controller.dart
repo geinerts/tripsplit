@@ -1,4 +1,5 @@
 import '../../domain/entities/expense_comment.dart';
+import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/mutation_result.dart';
 import '../../domain/entities/queued_mutation.dart';
@@ -228,6 +229,30 @@ class WorkspaceController {
     );
   }
 
+  Future<List<ExpenseCommentReaction>> listExpenseCommentReactions({
+    required int expenseId,
+    required int tripId,
+  }) {
+    return _repository.listExpenseCommentReactions(
+      expenseId: expenseId,
+      tripId: tripId,
+    );
+  }
+
+  Future<void> toggleExpenseCommentReaction({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+    required String emoji,
+  }) {
+    return _repository.toggleExpenseCommentReaction(
+      commentId: commentId,
+      expenseId: expenseId,
+      tripId: tripId,
+      emoji: emoji,
+    );
+  }
+
   Future<List<ExpenseComment>> listExpenseComments({
     required int expenseId,
     required int tripId,
@@ -242,8 +267,24 @@ class WorkspaceController {
     required int expenseId,
     required int tripId,
     required String body,
+    int? parentCommentId,
   }) {
     return _repository.addExpenseComment(
+      expenseId: expenseId,
+      tripId: tripId,
+      body: body,
+      parentCommentId: parentCommentId,
+    );
+  }
+
+  Future<ExpenseComment> updateExpenseComment({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+    required String body,
+  }) {
+    return _repository.updateExpenseComment(
+      commentId: commentId,
       expenseId: expenseId,
       tripId: tripId,
       body: body,

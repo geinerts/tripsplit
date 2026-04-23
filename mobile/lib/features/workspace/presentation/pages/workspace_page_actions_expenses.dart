@@ -159,32 +159,6 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
     return context.l10n.workspaceNoInternetExpenseSavedWithoutReceiptImage;
   }
 
-  Future<void> _deleteExpenseAfterSwipe(TripExpense expense) async {
-    if (!mounted || _isMutating) {
-      return;
-    }
-    await _runMutation(
-      action: () async {
-        final mutation = await widget.workspaceController.deleteExpense(
-          tripId: widget.trip.id,
-          expenseId: expense.id,
-        );
-        if (mutation.queued) {
-          _applyQueuedDelete(expense.id);
-          await _refreshQueueState();
-          if (mounted) {
-            _showSnack(context.l10n.noInternetDeleteQueued);
-          }
-        } else {
-          await _loadData(showLoader: false);
-          if (mounted) {
-            _showSnack(context.l10n.expenseDeleted);
-          }
-        }
-      },
-    );
-  }
-
   Future<void> _onDeleteExpensePressed(TripExpense expense) async {
     if (_isMutating) {
       return;

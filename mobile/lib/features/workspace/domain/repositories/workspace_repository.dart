@@ -1,4 +1,5 @@
 import '../entities/expense_comment.dart';
+import '../entities/expense_comment_reaction.dart';
 import '../entities/expense_reaction.dart';
 import '../entities/mutation_result.dart';
 import '../entities/queued_mutation.dart';
@@ -110,12 +111,32 @@ abstract class WorkspaceRepository {
     required String emoji,
   });
 
+  Future<List<ExpenseCommentReaction>> listExpenseCommentReactions({
+    required int expenseId,
+    required int tripId,
+  });
+
+  Future<void> toggleExpenseCommentReaction({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+    required String emoji,
+  });
+
   Future<List<ExpenseComment>> listExpenseComments({
     required int expenseId,
     required int tripId,
   });
 
   Future<ExpenseComment> addExpenseComment({
+    required int expenseId,
+    required int tripId,
+    required String body,
+    int? parentCommentId,
+  });
+
+  Future<ExpenseComment> updateExpenseComment({
+    required int commentId,
     required int expenseId,
     required int tripId,
     required String body,

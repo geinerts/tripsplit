@@ -1,5 +1,23 @@
 part of 'workspace_page.dart';
 
+enum _ExpenseCardQuickActionType { react, edit, delete }
+
+class _ExpenseCardQuickActionResult {
+  const _ExpenseCardQuickActionResult._({required this.type, this.emoji});
+
+  const _ExpenseCardQuickActionResult.react(String emoji)
+    : this._(type: _ExpenseCardQuickActionType.react, emoji: emoji);
+
+  const _ExpenseCardQuickActionResult.edit()
+    : this._(type: _ExpenseCardQuickActionType.edit);
+
+  const _ExpenseCardQuickActionResult.delete()
+    : this._(type: _ExpenseCardQuickActionType.delete);
+
+  final _ExpenseCardQuickActionType type;
+  final String? emoji;
+}
+
 extension _WorkspacePageExpensesTab on _WorkspacePageState {
   Widget _buildExpensesTab(WorkspaceSnapshot snapshot) {
     final t = context.l10n;
@@ -170,10 +188,16 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
         final subtitle = expense.note.trim().isEmpty
             ? context.l10n.workspaceExpense
             : categoryLabel;
+        final inlineReactions = _expenseReactionsByExpenseId[expense.id];
+        final inlineTopReactions = _topExpenseReactions(inlineReactions);
+        final inlineCommentCount = _expenseCommentsCountByExpenseId[expense.id];
+        final isInlineSocialLoading = _expenseSocialLoadingIds.contains(
+          expense.id,
+        );
+        final isInlineSocialBusy = _expenseSocialTogglingIds.contains(
+          expense.id,
+        );
 
-        final canSwipe = snapshot.isActive &&
-            expense.paidById == _currentUserId &&
-            !_isMutating;
         Widget buildCard() {
           return Padding(
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
@@ -191,6 +215,14 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                 borderRadius: BorderRadius.circular(24),
                 onTap: () =>
                     _openExpenseDetails(snapshot: snapshot, expense: expense),
+                onLongPress: () {
+                  unawaited(
+                    _showExpenseQuickActions(
+                      snapshot: snapshot,
+                      expense: expense,
+                    ),
+                  );
+                },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
                   child: Column(
@@ -352,7 +384,51 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                               ],
                             ),
                           ),
-                          const Spacer(),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: _ExpenseInlineSocialBar(
+                                popularReactions: inlineTopReactions,
+                                commentCount: inlineCommentCount,
+                                isLoading:
+                                    expense.id > 0 && isInlineSocialLoading,
+                                isBusy:
+                                    expense.id <= 0 ||
+                                    isInlineSocialBusy ||
+                                    _isMutating,
+                                isDark: isDark,
+                                onQuickReactionTap: (emoji) {
+                                  unawaited(
+                                    _toggleExpenseReactionInline(
+                                      expenseId: expense.id,
+                                      emoji: emoji,
+                                    ),
+                                  );
+                                },
+                                onPickReactionTap: () {
+                                  unawaited(
+                                    _showExpenseInlineEmojiPicker(
+                                      expenseId: expense.id,
+                                    ),
+                                  );
+                                },
+                                onCommentsTap: () {
+                                  unawaited(
+                                    _openExpenseDetails(
+                                      snapshot: snapshot,
+                                      expense: expense,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
                           Icon(
                             Icons.chevron_right_rounded,
                             size: 22,
@@ -369,29 +445,8 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
             ),
           );
         }
-        if (canSwipe) {
-          children.add(
-            Dismissible(
-              key: ValueKey('expense_swipe_${expense.id}'),
-              direction: DismissDirection.horizontal,
-              background: _buildSwipeEditBg(),
-              secondaryBackground: _buildSwipeDeleteBg(),
-              confirmDismiss: (direction) async {
-                if (direction == DismissDirection.startToEnd) {
-                  Future.delayed(const Duration(milliseconds: 280), () {
-                    if (mounted) unawaited(_onEditExpensePressed(expense));
-                  });
-                  return false;
-                }
-                return _confirmSwipeDelete(expense);
-              },
-              onDismissed: (_) => unawaited(_deleteExpenseAfterSwipe(expense)),
-              child: buildCard(),
-            ),
-          );
-        } else {
-          children.add(buildCard());
-        }
+
+        children.add(buildCard());
       }
     }
 
@@ -435,87 +490,127 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     );
   }
 
-  Widget _buildSwipeEditBg() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppDesign.lightPrimary,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 20),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.edit_outlined, color: Colors.white, size: 26),
-            SizedBox(width: 8),
-            Text(
-              'Edit',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 15,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSwipeDeleteBg() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppDesign.lightDestructive,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: const [
-            Text(
-              'Delete',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 15,
-              ),
-            ),
-            SizedBox(width: 8),
-            Icon(Icons.delete_outline, color: Colors.white, size: 26),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<bool> _confirmSwipeDelete(TripExpense expense) async {
-    final t = context.l10n;
-    final result = await showDialog<bool>(
+  Future<void> _showExpenseQuickActions({
+    required WorkspaceSnapshot snapshot,
+    required TripExpense expense,
+  }) async {
+    if (expense.id <= 0 || _isMutating) {
+      return;
+    }
+    final canManage =
+        snapshot.isActive && expense.paidById == _currentUserId && !_isMutating;
+    final picked = await showModalBottomSheet<_ExpenseCardQuickActionResult>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(t.deleteExpenseTitle),
-        content: Text(t.deleteExpenseConfirmQuestion),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.cancelAction),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: AppDesign.lightDestructive,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: false,
+      builder: (context) {
+        final colors = Theme.of(context).colorScheme;
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: isDark ? colors.surface : AppDesign.lightSurface,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: isDark
+                          ? colors.outlineVariant.withValues(alpha: 0.32)
+                          : AppDesign.lightStroke,
+                    ),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final emoji in _kSocialEmojis)
+                        _InlineEmojiPickerButton(
+                          emoji: emoji,
+                          isDark: isDark,
+                          onTap: () {
+                            Navigator.of(
+                              context,
+                            ).pop(_ExpenseCardQuickActionResult.react(emoji));
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+                if (canManage) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: isDark ? colors.surface : AppDesign.lightSurface,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isDark
+                            ? colors.outlineVariant.withValues(alpha: 0.32)
+                            : AppDesign.lightStroke,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        _CommentActionRow(
+                          label: context.l10n.editAction,
+                          icon: Icons.edit_outlined,
+                          isDark: isDark,
+                          showDivider: true,
+                          onTap: () {
+                            Navigator.of(
+                              context,
+                            ).pop(const _ExpenseCardQuickActionResult.edit());
+                          },
+                        ),
+                        _CommentActionRow(
+                          label: context.l10n.deleteAction,
+                          icon: Icons.delete_outline_rounded,
+                          isDark: isDark,
+                          isDestructive: true,
+                          onTap: () {
+                            Navigator.of(
+                              context,
+                            ).pop(const _ExpenseCardQuickActionResult.delete());
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
             ),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(t.deleteAction),
           ),
-        ],
-      ),
+        );
+      },
     );
-    return result == true;
+    if (!mounted || picked == null) {
+      return;
+    }
+    switch (picked.type) {
+      case _ExpenseCardQuickActionType.react:
+        final emoji = (picked.emoji ?? '').trim();
+        if (emoji.isEmpty) {
+          return;
+        }
+        await _toggleExpenseReactionInline(expenseId: expense.id, emoji: emoji);
+        return;
+      case _ExpenseCardQuickActionType.edit:
+        if (!canManage) {
+          return;
+        }
+        await _onEditExpensePressed(expense);
+        return;
+      case _ExpenseCardQuickActionType.delete:
+        if (!canManage) {
+          return;
+        }
+        await _onDeleteExpensePressed(expense);
+        return;
+    }
   }
 }

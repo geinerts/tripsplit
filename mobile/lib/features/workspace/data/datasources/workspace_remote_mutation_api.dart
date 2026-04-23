@@ -4,6 +4,7 @@ import '../../../../core/network/http_method.dart';
 import '../../../../core/network/legacy_receipt_uploader.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../domain/entities/expense_comment.dart';
+import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/random_draw_result.dart';
@@ -258,15 +259,17 @@ class WorkspaceRemoteMutationApi {
     );
     final raw = response['reactions'];
     if (raw is! List) return const [];
-    return raw.map((item) {
-      final m = item as Map<String, dynamic>;
-      return ExpenseReaction(
-        emoji: m['emoji'] as String? ?? '',
-        userId: (m['user_id'] as num?)?.toInt() ?? 0,
-        userNickname: m['nickname'] as String? ?? '',
-        createdAt: m['created_at'] as String? ?? '',
-      );
-    }).toList(growable: false);
+    return raw
+        .map((item) {
+          final m = item as Map<String, dynamic>;
+          return ExpenseReaction(
+            emoji: m['emoji'] as String? ?? '',
+            userId: (m['user_id'] as num?)?.toInt() ?? 0,
+            userNickname: m['nickname'] as String? ?? '',
+            createdAt: m['created_at'] as String? ?? '',
+          );
+        })
+        .toList(growable: false);
   }
 
   Future<void> toggleExpenseReaction({
@@ -282,6 +285,50 @@ class WorkspaceRemoteMutationApi {
     );
   }
 
+  Future<List<ExpenseCommentReaction>> listExpenseCommentReactions({
+    required int expenseId,
+    required int tripId,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('list_expense_comment_reactions'),
+      method: HttpMethod.get,
+      headers: _tripHeaders(tripId),
+      query: <String, dynamic>{'expense_id': '$expenseId'},
+    );
+    final raw = response['reactions'];
+    if (raw is! List) return const [];
+    return raw
+        .map((item) {
+          final m = item as Map<String, dynamic>;
+          return ExpenseCommentReaction(
+            commentId: (m['comment_id'] as num?)?.toInt() ?? 0,
+            emoji: m['emoji'] as String? ?? '',
+            userId: (m['user_id'] as num?)?.toInt() ?? 0,
+            userNickname: m['nickname'] as String? ?? '',
+            createdAt: m['created_at'] as String? ?? '',
+          );
+        })
+        .toList(growable: false);
+  }
+
+  Future<void> toggleExpenseCommentReaction({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+    required String emoji,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('toggle_expense_comment_reaction'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{
+        'comment_id': commentId,
+        'expense_id': expenseId,
+        'emoji': emoji,
+      },
+    );
+  }
+
   Future<List<ExpenseComment>> listExpenseComments({
     required int expenseId,
     required int tripId,
@@ -294,28 +341,38 @@ class WorkspaceRemoteMutationApi {
     );
     final raw = response['comments'];
     if (raw is! List) return const [];
-    return raw.map((item) {
-      final m = item as Map<String, dynamic>;
-      return ExpenseComment(
-        id: (m['id'] as num?)?.toInt() ?? 0,
-        userId: (m['user_id'] as num?)?.toInt() ?? 0,
-        userNickname: m['nickname'] as String? ?? '',
-        body: m['body'] as String? ?? '',
-        createdAt: m['created_at'] as String? ?? '',
-      );
-    }).toList(growable: false);
+    return raw
+        .map((item) {
+          final m = item as Map<String, dynamic>;
+          return ExpenseComment(
+            id: (m['id'] as num?)?.toInt() ?? 0,
+            userId: (m['user_id'] as num?)?.toInt() ?? 0,
+            userNickname: m['nickname'] as String? ?? '',
+            body: m['body'] as String? ?? '',
+            createdAt: m['created_at'] as String? ?? '',
+            parentCommentId: (m['parent_comment_id'] as num?)?.toInt(),
+            parentUserNickname: m['reply_to_nickname'] as String?,
+            parentBody: m['reply_to_body'] as String?,
+          );
+        })
+        .toList(growable: false);
   }
 
   Future<ExpenseComment> addExpenseComment({
     required int expenseId,
     required int tripId,
     required String body,
+    int? parentCommentId,
   }) async {
+    final payload = <String, dynamic>{'expense_id': expenseId, 'body': body};
+    if ((parentCommentId ?? 0) > 0) {
+      payload['parent_comment_id'] = parentCommentId;
+    }
     final response = await _apiClient.request(
       path: ApiEndpoints.legacyAction('add_expense_comment'),
       method: HttpMethod.post,
       headers: _tripHeaders(tripId),
-      body: <String, dynamic>{'expense_id': expenseId, 'body': body},
+      body: payload,
     );
     final m = response['comment'] as Map<String, dynamic>;
     return ExpenseComment(
@@ -324,6 +381,38 @@ class WorkspaceRemoteMutationApi {
       userNickname: m['nickname'] as String? ?? '',
       body: m['body'] as String? ?? '',
       createdAt: m['created_at'] as String? ?? '',
+      parentCommentId: (m['parent_comment_id'] as num?)?.toInt(),
+      parentUserNickname: m['reply_to_nickname'] as String?,
+      parentBody: m['reply_to_body'] as String?,
+    );
+  }
+
+  Future<ExpenseComment> updateExpenseComment({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+    required String body,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('update_expense_comment'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{
+        'comment_id': commentId,
+        'expense_id': expenseId,
+        'body': body,
+      },
+    );
+    final m = response['comment'] as Map<String, dynamic>;
+    return ExpenseComment(
+      id: (m['id'] as num?)?.toInt() ?? 0,
+      userId: (m['user_id'] as num?)?.toInt() ?? 0,
+      userNickname: m['nickname'] as String? ?? '',
+      body: m['body'] as String? ?? '',
+      createdAt: m['created_at'] as String? ?? '',
+      parentCommentId: (m['parent_comment_id'] as num?)?.toInt(),
+      parentUserNickname: m['reply_to_nickname'] as String?,
+      parentBody: m['reply_to_body'] as String?,
     );
   }
 

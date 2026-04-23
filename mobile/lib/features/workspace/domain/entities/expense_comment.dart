@@ -5,6 +5,9 @@ class ExpenseComment {
     required this.userNickname,
     required this.body,
     required this.createdAt,
+    this.parentCommentId,
+    this.parentUserNickname,
+    this.parentBody,
   });
 
   final int id;
@@ -12,4 +15,7 @@ class ExpenseComment {
   final String userNickname;
   final String body;
   final String createdAt;
+  final int? parentCommentId;
+  final String? parentUserNickname;
+  final String? parentBody;
 }

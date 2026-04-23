@@ -56,11 +56,14 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
       receiptThumbUrl: uploadedReceipt?.thumbUrl,
       participants: participantModels,
     );
+    final nextSnapshotExpenses = [queuedExpense, ...snapshot.expenses];
+    final visibleExpenses = _expensesFeed.isNotEmpty
+        ? _expensesFeed
+        : nextSnapshotExpenses;
 
     _updateState(() {
-      _snapshot = snapshot.copyWith(
-        expenses: [queuedExpense, ...snapshot.expenses],
-      );
+      _reconcileExpenseSocialPreviewState(visibleExpenses);
+      _snapshot = snapshot.copyWith(expenses: nextSnapshotExpenses);
     });
   }
 
@@ -129,8 +132,12 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
           );
         })
         .toList(growable: false);
+    final visibleExpenses = _expensesFeed.isNotEmpty
+        ? _expensesFeed
+        : nextExpenses;
 
     _updateState(() {
+      _reconcileExpenseSocialPreviewState(visibleExpenses);
       _snapshot = snapshot.copyWith(expenses: nextExpenses);
     });
   }
@@ -142,11 +149,14 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
     }
 
     _updateState(() {
-      _snapshot = snapshot.copyWith(
-        expenses: snapshot.expenses
-            .where((expense) => expense.id != expenseId)
-            .toList(growable: false),
-      );
+      final nextExpenses = snapshot.expenses
+          .where((expense) => expense.id != expenseId)
+          .toList(growable: false);
+      final visibleExpenses = _expensesFeed.isNotEmpty
+          ? _expensesFeed
+          : nextExpenses;
+      _reconcileExpenseSocialPreviewState(visibleExpenses);
+      _snapshot = snapshot.copyWith(expenses: nextExpenses);
     });
   }
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui';
@@ -36,6 +37,7 @@ import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../utils/expense_math.dart';
 import '../../domain/entities/balance_item.dart';
 import '../../domain/entities/expense_comment.dart';
+import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_participant.dart';
 import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_split_value.dart';
@@ -147,6 +149,14 @@ class _WorkspacePageState extends State<WorkspacePage> {
   Set<int> _randomSelection = <int>{};
   RandomDrawResult? _lastDraw;
   _SyncState _syncState = _SyncState.online;
+  final Map<int, List<ExpenseReaction>> _expenseReactionsByExpenseId =
+      <int, List<ExpenseReaction>>{};
+  final Map<int, int> _expenseCommentsCountByExpenseId = <int, int>{};
+  final Set<int> _expenseSocialLoadingIds = <int>{};
+  final Set<int> _expenseSocialQueuedIds = <int>{};
+  final Set<int> _expenseSocialTogglingIds = <int>{};
+  final ListQueue<int> _expenseSocialLoadQueue = ListQueue<int>();
+  int _expenseSocialLoadInFlight = 0;
 
   bool get _isTripActive => _snapshot?.isActive ?? widget.trip.isActive;
   bool get _isTripSettling => _snapshot?.isSettling ?? widget.trip.isSettling;
@@ -269,12 +279,14 @@ class _SplytoPressScale extends StatefulWidget {
   const _SplytoPressScale({
     required this.child,
     required this.onTap,
+    this.onLongPress,
     this.borderRadius = const BorderRadius.all(Radius.circular(20)),
     this.enabled = true,
   });
 
   final Widget child;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
   final BorderRadius borderRadius;
   final bool enabled;
 
@@ -305,6 +317,12 @@ class _SplytoPressScaleState extends State<_SplytoPressScale> {
       onTapUp: (_) => _setPressed(false),
       onTapCancel: () => _setPressed(false),
       onTap: widget.enabled ? widget.onTap : null,
+      onLongPress: widget.enabled && widget.onLongPress != null
+          ? () {
+              _setPressed(false);
+              widget.onLongPress?.call();
+            }
+          : null,
       child: AnimatedScale(
         duration: const Duration(milliseconds: 130),
         curve: Curves.easeOutCubic,

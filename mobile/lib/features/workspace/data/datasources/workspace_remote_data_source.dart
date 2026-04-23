@@ -1,6 +1,7 @@
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/legacy_receipt_uploader.dart';
 import '../../domain/entities/expense_comment.dart';
+import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/random_draw_result.dart';
@@ -111,12 +112,32 @@ abstract class WorkspaceRemoteDataSource {
     required String emoji,
   });
 
+  Future<List<ExpenseCommentReaction>> listExpenseCommentReactions({
+    required int expenseId,
+    required int tripId,
+  });
+
+  Future<void> toggleExpenseCommentReaction({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+    required String emoji,
+  });
+
   Future<List<ExpenseComment>> listExpenseComments({
     required int expenseId,
     required int tripId,
   });
 
   Future<ExpenseComment> addExpenseComment({
+    required int expenseId,
+    required int tripId,
+    required String body,
+    int? parentCommentId,
+  });
+
+  Future<ExpenseComment> updateExpenseComment({
+    required int commentId,
     required int expenseId,
     required int tripId,
     required String body,
@@ -366,6 +387,32 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   }
 
   @override
+  Future<List<ExpenseCommentReaction>> listExpenseCommentReactions({
+    required int expenseId,
+    required int tripId,
+  }) {
+    return _mutationApi.listExpenseCommentReactions(
+      expenseId: expenseId,
+      tripId: tripId,
+    );
+  }
+
+  @override
+  Future<void> toggleExpenseCommentReaction({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+    required String emoji,
+  }) {
+    return _mutationApi.toggleExpenseCommentReaction(
+      commentId: commentId,
+      expenseId: expenseId,
+      tripId: tripId,
+      emoji: emoji,
+    );
+  }
+
+  @override
   Future<List<ExpenseComment>> listExpenseComments({
     required int expenseId,
     required int tripId,
@@ -381,8 +428,25 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required int expenseId,
     required int tripId,
     required String body,
+    int? parentCommentId,
   }) {
     return _mutationApi.addExpenseComment(
+      expenseId: expenseId,
+      tripId: tripId,
+      body: body,
+      parentCommentId: parentCommentId,
+    );
+  }
+
+  @override
+  Future<ExpenseComment> updateExpenseComment({
+    required int commentId,
+    required int expenseId,
+    required int tripId,
+    required String body,
+  }) {
+    return _mutationApi.updateExpenseComment(
+      commentId: commentId,
       expenseId: expenseId,
       tripId: tripId,
       body: body,

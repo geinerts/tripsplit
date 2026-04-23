@@ -47,3 +47,5 @@ Usage:
 - Remote dry run on VPS: `VPS_HOST=204.168.239.179 VPS_USER=splytoadmin scripts/vps_run_migrations.sh dry-run`
 - Remote baseline on VPS (one-time): `VPS_HOST=204.168.239.179 VPS_USER=splytoadmin scripts/vps_run_migrations.sh baseline`
 - Remote apply on VPS: `VPS_HOST=204.168.239.179 VPS_USER=splytoadmin scripts/vps_run_migrations.sh apply`
+- Direct SSH to VPS: `ssh -p 22 splytoadmin@204.168.239.179`
+- Check deployed commit on VPS: `ssh -p 22 splytoadmin@204.168.239.179 "cd /var/www/splyto && git rev-parse --short HEAD && git status --short --branch"`

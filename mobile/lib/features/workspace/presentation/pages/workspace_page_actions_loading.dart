@@ -49,6 +49,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
             _expenseFilterUserId = nextExpenseFilter;
             _snapshot = cachedSnapshot;
             _expensesFeed = cachedSnapshot.expenses;
+            _reconcileExpenseSocialPreviewState(cachedSnapshot.expenses);
             _expensesHasMore = false;
             _isLoadingMoreExpenses = false;
             _expensesNextCursor = null;
@@ -105,6 +106,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
         _expenseFilterUserId = nextExpenseFilter;
         _snapshot = snapshot;
         _expensesFeed = snapshot.expenses;
+        _reconcileExpenseSocialPreviewState(snapshot.expenses);
         _expensesHasMore = false;
         _isLoadingMoreExpenses = false;
         _expensesNextCursor = null;
@@ -190,6 +192,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
       }
       _updateState(() {
         _expensesFeed = page.items;
+        _reconcileExpenseSocialPreviewState(page.items);
         _expensesHasMore = page.hasMore;
         _expensesNextCursor = page.nextCursor;
         _expensesNextOffset = page.nextOffset;
@@ -225,6 +228,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
       }
       _updateState(() {
         _expensesFeed = merged;
+        _reconcileExpenseSocialPreviewState(merged);
         _expensesHasMore = page.hasMore;
         _expensesNextCursor = page.nextCursor;
         _expensesNextOffset = page.nextOffset;
