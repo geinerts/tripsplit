@@ -5,9 +5,17 @@ SET @trip_expense_comments_exists := (
     AND table_name = 'trip_expense_comments'
 );
 
+SET @trip_expense_comments_parent_column_exists := (
+  SELECT COUNT(*)
+  FROM information_schema.columns
+  WHERE table_schema = DATABASE()
+    AND table_name = 'trip_expense_comments'
+    AND column_name = 'parent_comment_id'
+);
+
 SET @trip_expense_comments_add_parent_column_sql := IF(
-  @trip_expense_comments_exists = 1,
-  'ALTER TABLE trip_expense_comments ADD COLUMN IF NOT EXISTS parent_comment_id BIGINT UNSIGNED NULL AFTER user_id',
+  @trip_expense_comments_exists = 1 AND @trip_expense_comments_parent_column_exists = 0,
+  'ALTER TABLE trip_expense_comments ADD COLUMN parent_comment_id BIGINT UNSIGNED NULL AFTER user_id',
   'SELECT 1'
 );
 
