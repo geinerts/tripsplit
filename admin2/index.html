@@ -57,6 +57,7 @@
   <!-- Sidebar -->
   <nav id="sidebar">
     <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">✦</div>
       <span class="sidebar-logo-text">Splyto</span>
       <span class="sidebar-logo-badge">Admin</span>
     </div>
@@ -66,6 +67,8 @@
       <div class="nav-item" data-view="dashboard"><span class="nav-icon">📊</span> Dashboard</div>
     </div>
 
+    <div class="sidebar-divider"></div>
+
     <div class="sidebar-section">
       <div class="sidebar-section-label">Support</div>
       <div class="nav-item" data-view="users"><span class="nav-icon">👤</span> Users</div>
@@ -73,15 +76,20 @@
       <div class="nav-item" data-view="push-queue"><span class="nav-icon">🔔</span> Push Queue</div>
     </div>
 
+    <div class="sidebar-divider"></div>
+
     <div class="sidebar-section">
       <div class="sidebar-section-label">Operations</div>
       <div class="nav-item" data-view="incidents" id="nav-incidents"><span class="nav-icon">🚨</span> Incidents</div>
       <div class="nav-item" data-view="audit-log"><span class="nav-icon">📋</span> Audit Log</div>
     </div>
 
+    <div class="sidebar-divider"></div>
+
     <div class="sidebar-section" id="admin-users-section" style="display:none;">
       <div class="sidebar-section-label">Admin</div>
       <div class="nav-item" data-view="admin-users"><span class="nav-icon">🔑</span> Admin Users</div>
+      <div class="sidebar-divider"></div>
     </div>
 
     <div class="sidebar-section">
@@ -103,8 +111,17 @@
   <!-- Main content -->
   <div id="main">
     <div id="topbar">
-      <h1 id="page-title">Dashboard</h1>
+      <div class="topbar-breadcrumb">
+        <span class="topbar-root">Splyto</span>
+        <span class="topbar-sep">/</span>
+        <h1 id="page-title">Dashboard</h1>
+      </div>
       <div id="topbar-actions"></div>
+      <div class="topbar-pill" id="topbar-status">
+        <div class="topbar-pill-dot"></div>
+        All systems operational
+      </div>
+      <div class="topbar-time" id="topbar-time"></div>
     </div>
     <div id="page-content">
       <div class="loading-state"><span class="spinner"></span> Loading…</div>

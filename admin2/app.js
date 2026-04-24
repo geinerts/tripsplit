@@ -32,6 +32,19 @@ const state = {
   openIncidentCount: 0,
 };
 
+// ── Topbar clock ──────────────────────────────────────────────────────────────
+
+function updateClock() {
+  const el = document.getElementById('topbar-time');
+  if (!el) return;
+  const now = new Date();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  el.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} · ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+}
+updateClock();
+setInterval(updateClock, 30_000);
+
 // ── Toast ─────────────────────────────────────────────────────────────────────
 
 function toast(msg, type = 'info', durationMs = 3500) {
@@ -287,45 +300,75 @@ async function pollIncidents() {
 registerView('dashboard', {
   title: 'Dashboard',
   async render() {
-    const res = await get('admin_panel_dashboard');
-    if (!res.ok) return `<div class="empty-state">Failed to load stats.</div>`;
-    const s = res.stats;
+    const [dashRes, auditRes] = await Promise.all([
+      get('admin_panel_dashboard'),
+      get('admin_panel_audit_log', { limit: 6, offset: 0 }),
+    ]);
+    if (!dashRes.ok) return `<div class="empty-state">Failed to load stats.</div>`;
+    const s  = dashRes.stats;
     const pq = s.push_queue || {};
 
-    const incidents = (s.recent_incidents || []).map(inc => `
+    const incidentRows = (s.recent_incidents || []).map(inc => `
       <tr>
         <td><span class="inc-dot ${esc(inc.severity)}"></span>${esc(inc.title)}</td>
         <td>${sevBadge(inc.severity)}</td>
         <td>${statusBadge(inc.status)}</td>
-        <td>${esc(inc.admin_username)}</td>
-        <td>${relTime(inc.created_at)}</td>
+        <td style="color:var(--fg-muted)">${esc(inc.admin_username)}</td>
+        <td style="color:var(--fg-muted);font-size:12px">${relTime(inc.created_at)}</td>
         <td><button class="btn btn-ghost btn-sm" onclick="navigate('incidents')">View</button></td>
       </tr>
     `).join('');
 
+    // Push health mini cards
+    const pushSent    = pq.sent    ? pq.sent.count    : 0;
+    const pushPending = pq.pending ? pq.pending.count  : 0;
+    const pushFailed  = pq.failed  ? pq.failed.count   : 0;
+    const pushDead    = pq.dead    ? pq.dead.count     : 0;
+
+    // Audit activity feed
+    const auditItems = (auditRes.ok ? (auditRes.log || []) : []).map(entry => {
+      const actionColor = entry.action.includes('delete') ? 'var(--red)'
+        : entry.action.includes('suspend') || entry.action.includes('disable') ? 'var(--amber)'
+        : 'var(--green)';
+      return `
+        <div class="activity-item">
+          <div class="activity-dot" style="background:${actionColor};${actionColor === 'var(--red)' ? 'box-shadow:0 0 5px var(--red)' : ''}"></div>
+          <div style="flex:1;min-width:0">
+            <div class="activity-text">
+              <strong>${esc(entry.admin_username)}</strong> — <span style="font-family:monospace;font-size:11.5px;color:var(--fg-dim)">${esc(entry.action)}</span>
+              ${entry.target_id ? `<span style="color:var(--fg-muted)"> #${entry.target_id}</span>` : ''}
+            </div>
+            <div class="activity-time">${relTime(entry.created_at)}</div>
+          </div>
+        </div>
+      `;
+    }).join('') || '<div style="padding:20px 18px;color:var(--fg-muted);font-size:13px">No recent activity</div>';
+
     return `
+      <!-- Stats -->
       <div class="stats-grid">
         <div class="stat-card green">
           <div class="stat-label">Total users</div>
-          <div class="stat-value">${s.total_users ?? 0}</div>
+          <div class="stat-value">${(s.total_users ?? 0).toLocaleString()}</div>
           <div class="stat-sub">+${s.new_users_7d ?? 0} this week</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Active users</div>
-          <div class="stat-value">${s.active_users ?? 0}</div>
+          <div class="stat-value">${(s.active_users ?? 0).toLocaleString()}</div>
+          <div class="stat-sub">${s.total_users ? Math.round((s.active_users/s.total_users)*100) : 0}% of total</div>
         </div>
         <div class="stat-card blue">
           <div class="stat-label">Total trips</div>
-          <div class="stat-value">${s.total_trips ?? 0}</div>
+          <div class="stat-value">${(s.total_trips ?? 0).toLocaleString()}</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Total expenses</div>
-          <div class="stat-value">${s.total_expenses ?? 0}</div>
+          <div class="stat-label">Expenses</div>
+          <div class="stat-value">${(s.total_expenses ?? 0).toLocaleString()}</div>
         </div>
-        <div class="stat-card ${(pq.failed ?? 0) + (pq.dead ?? 0) > 0 ? 'amber' : ''}">
-          <div class="stat-label">Push queue</div>
-          <div class="stat-value">${pq.pending ?? 0}</div>
-          <div class="stat-sub">${pq.failed ?? 0} failed · ${pq.dead ?? 0} dead</div>
+        <div class="stat-card ${pushFailed + pushDead > 0 ? 'amber' : ''}">
+          <div class="stat-label">Push pending</div>
+          <div class="stat-value">${pushPending}</div>
+          <div class="stat-sub" style="${pushFailed > 0 ? 'color:var(--red)' : ''}">${pushFailed} failed · ${pushDead} dead</div>
         </div>
         <div class="stat-card ${(s.open_incidents ?? 0) > 0 ? 'red' : ''}">
           <div class="stat-label">Open incidents</div>
@@ -333,20 +376,75 @@ registerView('dashboard', {
         </div>
       </div>
 
-      ${incidents ? `
-      <div class="section-header">
-        <div class="section-title">Open incidents</div>
-        <button class="btn btn-ghost btn-sm" onclick="navigate('incidents')">View all →</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>Title</th><th>Severity</th><th>Status</th>
-            <th>Reporter</th><th>Created</th><th></th>
-          </tr></thead>
-          <tbody>${incidents}</tbody>
-        </table>
-      </div>` : ''}
+      <!-- Two-col grid -->
+      <div class="dashboard-grid">
+
+        <!-- Left: incidents + audit log -->
+        <div>
+          <div class="table-card">
+            <div class="table-card-header">
+              <div class="table-card-title">🚨 Open Incidents</div>
+              <span class="table-card-link" onclick="navigate('incidents')">View all →</span>
+            </div>
+            ${incidentRows ? `
+            <table>
+              <thead><tr><th>Title</th><th>Severity</th><th>Status</th><th>Reporter</th><th>Created</th><th></th></tr></thead>
+              <tbody>${incidentRows}</tbody>
+            </table>` : '<div class="empty-state" style="padding:24px">No open incidents — all clear ✓</div>'}
+          </div>
+
+          <div class="table-card">
+            <div class="table-card-header">
+              <div class="table-card-title">📋 Recent Audit</div>
+              <span class="table-card-link" onclick="navigate('audit-log')">View all →</span>
+            </div>
+            ${auditRes.ok && auditRes.log.length ? `
+            <table>
+              <thead><tr><th>Action</th><th>Admin</th><th>Target</th><th>Time</th></tr></thead>
+              <tbody>
+                ${auditRes.log.map(e => `
+                  <tr>
+                    <td style="font-family:monospace;font-size:12px;color:${e.action.includes('delete')?'var(--red)':e.action.includes('suspend')||e.action.includes('disable')?'var(--amber)':'var(--green-soft)'}">${esc(e.action)}</td>
+                    <td style="color:var(--fg-muted)">${esc(e.admin_username)}</td>
+                    <td style="color:var(--fg-muted)">${esc(e.target_type ?? '')}${e.target_id ? ` #${e.target_id}` : ''}</td>
+                    <td style="color:var(--fg-muted);font-size:12px">${relTime(e.created_at)}</td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>` : '<div class="empty-state" style="padding:24px">No audit entries yet</div>'}
+          </div>
+        </div>
+
+        <!-- Right: push health + activity -->
+        <div>
+          <div class="push-health-card">
+            <div class="push-health-header">🔔 Push Queue Health</div>
+            <div class="push-mini-grid">
+              <div class="push-mini">
+                <div class="push-mini-label">Pending</div>
+                <div class="push-mini-val" style="color:${pushPending>0?'var(--amber)':'var(--fg-dim)'}">${pushPending}</div>
+              </div>
+              <div class="push-mini">
+                <div class="push-mini-label">Sent</div>
+                <div class="push-mini-val" style="color:var(--green-soft)">${pushSent.toLocaleString()}</div>
+              </div>
+              <div class="push-mini">
+                <div class="push-mini-label">Failed</div>
+                <div class="push-mini-val" style="color:${pushFailed>0?'var(--red)':'var(--fg-muted)'}">${pushFailed}</div>
+              </div>
+              <div class="push-mini">
+                <div class="push-mini-label">Dead</div>
+                <div class="push-mini-val" style="color:${pushDead>0?'var(--red)':'var(--fg-muted)'}">${pushDead}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-card">
+            <div class="activity-header">⚡ Recent Activity</div>
+            ${auditItems}
+          </div>
+        </div>
+
+      </div><!-- /dashboard-grid -->
     `;
   },
 });
