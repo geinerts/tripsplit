@@ -305,7 +305,7 @@ registerView('dashboard', {
       get('admin_panel_audit_log', { limit: 6, offset: 0 }),
     ]);
     if (!dashRes.ok) return `<div class="empty-state">Failed to load stats.</div>`;
-    const s  = dashRes.stats;
+    const s  = dashRes.stats || {};
     const pq = s.push_queue || {};
 
     const incidentRows = (s.recent_incidents || []).map(inc => `
@@ -349,21 +349,21 @@ registerView('dashboard', {
       <div class="stats-grid">
         <div class="stat-card green">
           <div class="stat-label">Total users</div>
-          <div class="stat-value">${(s.total_users ?? 0).toLocaleString()}</div>
+          <div class="stat-value">${(s.total_users ?? 0)}</div>
           <div class="stat-sub">+${s.new_users_7d ?? 0} this week</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Active users</div>
-          <div class="stat-value">${(s.active_users ?? 0).toLocaleString()}</div>
+          <div class="stat-value">${(s.active_users ?? 0)}</div>
           <div class="stat-sub">${s.total_users ? Math.round((s.active_users/s.total_users)*100) : 0}% of total</div>
         </div>
         <div class="stat-card blue">
           <div class="stat-label">Total trips</div>
-          <div class="stat-value">${(s.total_trips ?? 0).toLocaleString()}</div>
+          <div class="stat-value">${(s.total_trips ?? 0)}</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Expenses</div>
-          <div class="stat-value">${(s.total_expenses ?? 0).toLocaleString()}</div>
+          <div class="stat-value">${(s.total_expenses ?? 0)}</div>
         </div>
         <div class="stat-card ${pushFailed + pushDead > 0 ? 'amber' : ''}">
           <div class="stat-label">Push pending</div>
@@ -425,7 +425,7 @@ registerView('dashboard', {
               </div>
               <div class="push-mini">
                 <div class="push-mini-label">Sent</div>
-                <div class="push-mini-val" style="color:var(--green-soft)">${pushSent.toLocaleString()}</div>
+                <div class="push-mini-val" style="color:var(--green-soft)">${pushSent}</div>
               </div>
               <div class="push-mini">
                 <div class="push-mini-label">Failed</div>
