@@ -467,6 +467,9 @@ extension _TripsPageDialogs on _TripsPageState {
                 }
 
                 return Scaffold(
+                  backgroundColor: AppDesign.isDark(context)
+                      ? AppDesign.darkCanvas
+                      : AppDesign.lightCanvas,
                   body: SafeArea(
                     child: AnimatedPadding(
                       duration: const Duration(milliseconds: 150),

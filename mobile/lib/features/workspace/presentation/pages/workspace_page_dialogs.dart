@@ -304,6 +304,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                 final maxSheetHeight = MediaQuery.sizeOf(context).height;
 
                 return Scaffold(
+                  backgroundColor: AppDesign.isDark(context)
+                      ? AppDesign.darkCanvas
+                      : AppDesign.lightCanvas,
                   body: SafeArea(
                     child: ConstrainedBox(
                       constraints: BoxConstraints(maxHeight: maxSheetHeight),

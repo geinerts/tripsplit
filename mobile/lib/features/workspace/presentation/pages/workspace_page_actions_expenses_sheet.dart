@@ -45,7 +45,6 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
         ? AppDesign.lightSuccess
         : AppDesign.lightAccent;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final canEdit = snapshot.isActive && expense.paidById == _currentUserId;
 
     final title = expense.note.trim().isEmpty
         ? categoryLabel
@@ -543,46 +542,6 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                 controller: widget.workspaceController,
                                 usersById: usersById,
                               ),
-                              if (canEdit) ...[
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: OutlinedButton.icon(
-                                        onPressed: _isMutating
-                                            ? null
-                                            : () async {
-                                                Navigator.of(context).pop();
-                                                await _onEditExpensePressed(
-                                                  expense,
-                                                );
-                                              },
-                                        icon: const Icon(Icons.edit_outlined),
-                                        label: Text(context.l10n.editAction),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: FilledButton.icon(
-                                        onPressed: _isMutating
-                                            ? null
-                                            : () async {
-                                                Navigator.of(context).pop();
-                                                await _onDeleteExpensePressed(
-                                                  expense,
-                                                );
-                                              },
-                                        style: FilledButton.styleFrom(
-                                          backgroundColor:
-                                              AppDesign.lightDestructive,
-                                        ),
-                                        icon: const Icon(Icons.delete_outline),
-                                        label: Text(context.l10n.deleteAction),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
                             ],
                           ),
                         ),

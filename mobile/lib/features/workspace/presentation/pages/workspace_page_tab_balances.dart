@@ -21,6 +21,8 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     );
 
     return ListView(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
       children: [
         if (visibleBalances.isEmpty)
@@ -237,6 +239,8 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         .toList(growable: false);
 
     return ListView(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 22),
       children: [
         if (snapshot.isActive) ...[

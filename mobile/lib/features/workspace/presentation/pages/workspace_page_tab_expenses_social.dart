@@ -16,6 +16,18 @@ final _kSocialEmojis = <String>[
 const _kExpenseSocialMaxConcurrentLoads = 4;
 const _kInlinePopularEmojiLimit = 3;
 
+TextStyle _emojiTextStyle(double size) => TextStyle(
+  fontSize: size,
+  height: 1.0,
+  letterSpacing: 0,
+  fontFamilyFallback: const <String>[
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Noto Color Emoji',
+    'Noto Emoji',
+  ],
+);
+
 class _InlineEmojiCount {
   const _InlineEmojiCount({
     required this.emoji,
@@ -247,12 +259,13 @@ extension _WorkspacePageExpenseSocialInline on _WorkspacePageState {
     final mine = <String>{};
 
     for (final reaction in raw) {
-      if (!whitelistRank.containsKey(reaction.emoji)) {
+      final emoji = reaction.emoji.trim();
+      if (emoji.isEmpty || !whitelistRank.containsKey(emoji)) {
         continue;
       }
-      counts[reaction.emoji] = (counts[reaction.emoji] ?? 0) + 1;
+      counts[emoji] = (counts[emoji] ?? 0) + 1;
       if (reaction.userId == _currentUserId) {
-        mine.add(reaction.emoji);
+        mine.add(emoji);
       }
     }
     if (counts.isEmpty) {
@@ -280,74 +293,6 @@ extension _WorkspacePageExpenseSocialInline on _WorkspacePageState {
 
     return rows.take(_kInlinePopularEmojiLimit).toList(growable: false);
   }
-
-  Future<void> _showExpenseInlineEmojiPicker({required int expenseId}) async {
-    if (expenseId <= 0 || _expenseSocialTogglingIds.contains(expenseId)) {
-      return;
-    }
-    final picked = await showModalBottomSheet<String>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: false,
-      builder: (context) {
-        final colors = Theme.of(context).colorScheme;
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-            child: Container(
-              decoration: BoxDecoration(
-                color: isDark ? colors.surface : AppDesign.lightSurface,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: isDark
-                      ? colors.outlineVariant.withValues(alpha: 0.32)
-                      : AppDesign.lightStroke,
-                ),
-              ),
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 42,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? colors.onSurface.withValues(alpha: 0.20)
-                            : AppDesign.lightMuted.withValues(alpha: 0.22),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final emoji in _kSocialEmojis)
-                        _InlineEmojiPickerButton(
-                          emoji: emoji,
-                          isDark: isDark,
-                          onTap: () => Navigator.of(context).pop(emoji),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-
-    if (!mounted || picked == null || picked.trim().isEmpty) {
-      return;
-    }
-    await _toggleExpenseReactionInline(expenseId: expenseId, emoji: picked);
-  }
 }
 
 class _ExpenseInlineSocialBar extends StatelessWidget {
@@ -357,7 +302,6 @@ class _ExpenseInlineSocialBar extends StatelessWidget {
     required this.isLoading,
     required this.isBusy,
     required this.isDark,
-    required this.onPickReactionTap,
     required this.onCommentsTap,
     required this.onQuickReactionTap,
   });
@@ -367,19 +311,16 @@ class _ExpenseInlineSocialBar extends StatelessWidget {
   final bool isLoading;
   final bool isBusy;
   final bool isDark;
-  final VoidCallback onPickReactionTap;
   final VoidCallback onCommentsTap;
   final ValueChanged<String> onQuickReactionTap;
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      alignment: WrapAlignment.end,
-      crossAxisAlignment: WrapCrossAlignment.center,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        for (final row in popularReactions)
+        for (final row in popularReactions) ...[
           _ExpenseInlineReactionChip(
             emoji: row.emoji,
             count: row.count,
@@ -388,12 +329,8 @@ class _ExpenseInlineSocialBar extends StatelessWidget {
             isDisabled: isBusy,
             onTap: () => onQuickReactionTap(row.emoji),
           ),
-        _ExpenseInlineAddReactionChip(
-          isDark: isDark,
-          isDisabled: isBusy,
-          isLoading: isLoading,
-          onTap: onPickReactionTap,
-        ),
+          const SizedBox(width: 2),
+        ],
         _ExpenseInlineCommentsChip(
           isDark: isDark,
           count: commentCount ?? 0,
@@ -425,38 +362,21 @@ class _ExpenseInlineReactionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final bgColor = isMine
-        ? (isDark
-              ? colors.primary.withValues(alpha: 0.18)
-              : AppDesign.lightPrimary.withValues(alpha: 0.12))
-        : (isDark
-              ? colors.surfaceContainerHighest
-              : AppDesign.lightSurfaceMuted.withValues(alpha: 0.92));
-    final borderColor = isMine
-        ? (isDark
-              ? colors.primary.withValues(alpha: 0.46)
-              : AppDesign.lightPrimary.withValues(alpha: 0.34))
-        : (isDark
-              ? colors.outlineVariant.withValues(alpha: 0.26)
-              : AppDesign.lightStroke);
-
+    final displayEmoji = emoji.trim();
+    if (displayEmoji.isEmpty) {
+      return const SizedBox.shrink();
+    }
     return Opacity(
       opacity: isDisabled ? 0.62 : 1,
       child: GestureDetector(
         onTap: isDisabled ? null : onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: borderColor),
-          ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(emoji, style: const TextStyle(fontSize: 15)),
+              Text(displayEmoji, style: _emojiTextStyle(16)),
               if (count > 0) ...[
-                const SizedBox(width: 4),
                 Text(
                   '$count',
                   style: TextStyle(
@@ -472,63 +392,6 @@ class _ExpenseInlineReactionChip extends StatelessWidget {
               ],
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ExpenseInlineAddReactionChip extends StatelessWidget {
-  const _ExpenseInlineAddReactionChip({
-    required this.isDark,
-    required this.isDisabled,
-    required this.isLoading,
-    required this.onTap,
-  });
-
-  final bool isDark;
-  final bool isDisabled;
-  final bool isLoading;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Opacity(
-      opacity: isDisabled ? 0.62 : 1,
-      child: GestureDetector(
-        onTap: isDisabled ? null : onTap,
-        child: Container(
-          width: 28,
-          height: 28,
-          decoration: BoxDecoration(
-            color: isDark
-                ? colors.surfaceContainerHighest
-                : AppDesign.lightSurfaceMuted.withValues(alpha: 0.92),
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: isDark
-                  ? colors.outlineVariant.withValues(alpha: 0.26)
-                  : AppDesign.lightStroke,
-            ),
-          ),
-          alignment: Alignment.center,
-          child: isLoading
-              ? SizedBox(
-                  width: 13,
-                  height: 13,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 1.8,
-                    color: isDark ? colors.primary : AppDesign.lightPrimary,
-                  ),
-                )
-              : Icon(
-                  Icons.add_rounded,
-                  size: 17,
-                  color: isDark
-                      ? colors.onSurfaceVariant
-                      : AppDesign.lightMuted,
-                ),
         ),
       ),
     );
@@ -553,19 +416,8 @@ class _ExpenseInlineCommentsChip extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: isDark
-              ? colors.surfaceContainerHighest
-              : AppDesign.lightSurfaceMuted.withValues(alpha: 0.92),
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(
-            color: isDark
-                ? colors.outlineVariant.withValues(alpha: 0.26)
-                : AppDesign.lightStroke,
-          ),
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -574,7 +426,7 @@ class _ExpenseInlineCommentsChip extends StatelessWidget {
               size: 13,
               color: isDark ? colors.onSurfaceVariant : AppDesign.lightMuted,
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: 1),
             Text(
               isLoading ? '…' : '$count',
               style: TextStyle(
@@ -591,38 +443,56 @@ class _ExpenseInlineCommentsChip extends StatelessWidget {
 }
 
 class _InlineEmojiPickerButton extends StatelessWidget {
-  const _InlineEmojiPickerButton({
-    required this.emoji,
-    required this.isDark,
-    required this.onTap,
-  });
+  const _InlineEmojiPickerButton({required this.emoji, required this.onTap});
 
   final String emoji;
-  final bool isDark;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return GestureDetector(
+    final displayEmoji = emoji.trim();
+    if (displayEmoji.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return InkWell(
       onTap: onTap,
-      child: Container(
-        width: 52,
-        height: 44,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: isDark
-              ? colors.surfaceContainerHighest
-              : AppDesign.lightSurfaceMuted.withValues(alpha: 0.95),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isDark
-                ? colors.outlineVariant.withValues(alpha: 0.26)
-                : AppDesign.lightStroke,
-          ),
-        ),
-        child: Text(emoji, style: const TextStyle(fontSize: 24)),
+      borderRadius: BorderRadius.circular(999),
+      child: SizedBox.square(
+        dimension: 40,
+        child: Center(child: Text(displayEmoji, style: _emojiTextStyle(28))),
       ),
+    );
+  }
+}
+
+class _EmojiPickerRow extends StatelessWidget {
+  const _EmojiPickerRow({required this.emojis, required this.onSelect});
+
+  final List<String> emojis;
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final normalized = <String>[
+      for (final raw in emojis)
+        if (raw.trim().isNotEmpty) raw.trim(),
+    ];
+    if (normalized.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      children: [
+        for (final emoji in normalized)
+          Expanded(
+            child: Center(
+              child: _InlineEmojiPickerButton(
+                emoji: emoji,
+                onTap: () => onSelect(emoji),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -776,8 +646,10 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
 
     for (final reaction in raw) {
       final commentId = reaction.commentId;
-      final emoji = reaction.emoji;
-      if (commentId <= 0 || !whitelistRank.containsKey(emoji)) {
+      final emoji = reaction.emoji.trim();
+      if (commentId <= 0 ||
+          emoji.isEmpty ||
+          !whitelistRank.containsKey(emoji)) {
         continue;
       }
       final counts = countsByComment.putIfAbsent(
@@ -886,21 +758,13 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
                     ),
                   ),
                   padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final emoji in _kSocialEmojis)
-                        _InlineEmojiPickerButton(
-                          emoji: emoji,
-                          isDark: isDark,
-                          onTap: () {
-                            Navigator.of(
-                              context,
-                            ).pop(_CommentQuickActionResult.react(emoji));
-                          },
-                        ),
-                    ],
+                  child: _EmojiPickerRow(
+                    emojis: _kSocialEmojis,
+                    onSelect: (emoji) {
+                      Navigator.of(
+                        context,
+                      ).pop(_CommentQuickActionResult.react(emoji));
+                    },
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -1423,6 +1287,7 @@ class _CommentTile extends StatelessWidget {
     final timeStr = _commentRelativeTime(context, comment.createdAt);
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onLongPress: onLongPress,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12),
@@ -1524,7 +1389,7 @@ class _CommentTile extends StatelessWidget {
                   if (reactionRows.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Wrap(
-                      spacing: 6,
+                      spacing: 1,
                       runSpacing: 6,
                       children: [
                         for (final reaction in reactionRows)

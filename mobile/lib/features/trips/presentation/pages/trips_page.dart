@@ -95,6 +95,7 @@ class _TripsPageState extends State<TripsPage> {
   int _activeTripsPageIndex = 0;
   int _allTripsVisibleCount = _allTripsInitialCount;
   bool _openCreateAfterLoad = false;
+  bool _isCreateTripDialogOpen = false;
   int _handledCreateTripRequestCount = 0;
   int _handledRefreshRequestCount = 0;
   String? _errorText;

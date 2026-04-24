@@ -9,7 +9,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
   }
 
   Future<void> _onAddExpensePressed() async {
-    if (_snapshot == null || _isMutating) {
+    if (_snapshot == null || _isMutating || _isAddExpenseDialogOpen) {
       return;
     }
     if (!_snapshot!.isActive) {
@@ -17,8 +17,15 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
       return;
     }
 
-    final result = await _showExpenseDialog(users: _snapshot!.users);
-    if (result == null || !mounted) {
+    _isAddExpenseDialogOpen = true;
+    _ExpenseFormResult? result;
+    try {
+      result = await _showExpenseDialog(users: _snapshot!.users);
+    } finally {
+      _isAddExpenseDialogOpen = false;
+    }
+    final form = result;
+    if (form == null || !mounted) {
       return;
     }
     // Avoid mutating parent state while dialog route is still deactivating.
@@ -30,25 +37,25 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
     await _runMutation(
       action: () async {
         final receipt = await _uploadReceiptBestEffort(
-          fileName: result.receiptFileName,
-          bytes: result.receiptFileBytes,
+          fileName: form.receiptFileName,
+          bytes: form.receiptFileBytes,
         );
 
         final mutation = await widget.workspaceController.addExpense(
           tripId: widget.trip.id,
-          amount: result.amount,
-          currencyCode: result.currencyCode,
-          category: result.category,
-          note: result.note,
-          date: result.date,
-          participants: result.participants,
-          splitMode: result.splitMode,
-          splitValues: result.splitValues,
+          amount: form.amount,
+          currencyCode: form.currencyCode,
+          category: form.category,
+          note: form.note,
+          date: form.date,
+          participants: form.participants,
+          splitMode: form.splitMode,
+          splitValues: form.splitValues,
           receiptPath: receipt?.path,
         );
 
         if (mutation.queued) {
-          _applyQueuedAdd(form: result, uploadedReceipt: receipt);
+          _applyQueuedAdd(form: form, uploadedReceipt: receipt);
           await _refreshQueueState();
           if (mounted) {
             _showSnack(context.l10n.noInternetExpenseQueued);

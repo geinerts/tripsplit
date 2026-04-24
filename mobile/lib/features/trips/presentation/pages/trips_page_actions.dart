@@ -83,78 +83,83 @@ extension _TripsPageActions on _TripsPageState {
   }
 
   Future<void> _openCreateTripDialog() async {
-    if (_isMutating) {
+    if (_isMutating || _isCreateTripDialogOpen) {
       return;
     }
 
-    final result = await _showCreateTripDialog();
-    if (result == null || !mounted) {
-      return;
-    }
-
-    _updateState(() {
-      _isMutating = true;
-    });
-
+    _isCreateTripDialogOpen = true;
     try {
-      var createdTrip = await widget.controller.createTrip(
-        name: result.name,
-        currencyCode: result.currencyCode,
-        memberIds: result.memberIds,
-        dateFrom: result.dateFrom,
-        dateTo: result.dateTo,
-      );
-      final imageBytes = result.imageBytes;
-      final imageFileName = result.imageFileName?.trim() ?? '';
-      if (imageBytes != null &&
-          imageBytes.isNotEmpty &&
-          imageFileName.isNotEmpty) {
-        try {
-          final uploaded = await widget.controller.uploadTripImage(
-            tripId: createdTrip.id,
-            fileName: imageFileName,
-            bytes: imageBytes,
-          );
-          createdTrip = await widget.controller.updateTrip(
-            tripId: createdTrip.id,
-            name: createdTrip.name,
-            imagePath: uploaded.path,
-          );
-        } on ApiException catch (error) {
-          _showSnack(
-            context.l10n.tripsTripCreatedButImageUploadFailedWithReason(
-              error.message,
-            ),
-            isError: true,
-          );
-        } catch (_) {
-          _showSnack(
-            context.l10n.tripsTripCreatedButImageUploadFailed,
-            isError: true,
-          );
+      final result = await _showCreateTripDialog();
+      if (result == null || !mounted) {
+        return;
+      }
+
+      _updateState(() {
+        _isMutating = true;
+      });
+
+      try {
+        var createdTrip = await widget.controller.createTrip(
+          name: result.name,
+          currencyCode: result.currencyCode,
+          memberIds: result.memberIds,
+          dateFrom: result.dateFrom,
+          dateTo: result.dateTo,
+        );
+        final imageBytes = result.imageBytes;
+        final imageFileName = result.imageFileName?.trim() ?? '';
+        if (imageBytes != null &&
+            imageBytes.isNotEmpty &&
+            imageFileName.isNotEmpty) {
+          try {
+            final uploaded = await widget.controller.uploadTripImage(
+              tripId: createdTrip.id,
+              fileName: imageFileName,
+              bytes: imageBytes,
+            );
+            createdTrip = await widget.controller.updateTrip(
+              tripId: createdTrip.id,
+              name: createdTrip.name,
+              imagePath: uploaded.path,
+            );
+          } on ApiException catch (error) {
+            _showSnack(
+              context.l10n.tripsTripCreatedButImageUploadFailedWithReason(
+                error.message,
+              ),
+              isError: true,
+            );
+          } catch (_) {
+            _showSnack(
+              context.l10n.tripsTripCreatedButImageUploadFailed,
+              isError: true,
+            );
+          }
+        }
+        if (!mounted) {
+          return;
+        }
+        _showSnack(context.l10n.tripCreated(createdTrip.name));
+        await _loadTrips();
+      } on ApiException catch (error) {
+        if (!mounted) {
+          return;
+        }
+        _showSnack(error.message, isError: true);
+      } catch (_) {
+        if (!mounted) {
+          return;
+        }
+        _showSnack(context.l10n.failedToCreateTrip, isError: true);
+      } finally {
+        if (mounted) {
+          _updateState(() {
+            _isMutating = false;
+          });
         }
       }
-      if (!mounted) {
-        return;
-      }
-      _showSnack(context.l10n.tripCreated(createdTrip.name));
-      await _loadTrips();
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _showSnack(error.message, isError: true);
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _showSnack(context.l10n.failedToCreateTrip, isError: true);
     } finally {
-      if (mounted) {
-        _updateState(() {
-          _isMutating = false;
-        });
-      }
+      _isCreateTripDialogOpen = false;
     }
   }
 

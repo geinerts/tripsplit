@@ -332,109 +332,112 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          _balanceAvatar(
-                            name: payerName.isEmpty
-                                ? expense.paidByNickname
-                                : payerName,
-                            avatarUrl:
-                                payer?.avatarThumbUrl ?? payer?.avatarUrl,
-                            size: 31,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            context.l10n.workspacePaid,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                  color: isDark
-                                      ? colors.onSurfaceVariant
-                                      : AppDesign.lightMuted,
-                                ),
-                          ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 9,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: splitColor.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(999),
-                              border: Border.all(
-                                color: splitColor.withValues(alpha: 0.24),
-                              ),
-                            ),
+                          Expanded(
                             child: Row(
-                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(splitIcon, size: 12, color: splitColor),
-                                const SizedBox(width: 5),
-                                Text(
-                                  _splitModeShortLabel(
-                                    context,
-                                    expense.splitMode,
+                                _balanceAvatar(
+                                  name: payerName.isEmpty
+                                      ? expense.paidByNickname
+                                      : payerName,
+                                  avatarUrl:
+                                      payer?.avatarThumbUrl ?? payer?.avatarUrl,
+                                  size: 31,
+                                ),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  child: Text(
+                                    context.l10n.workspacePaid,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                          color: isDark
+                                              ? colors.onSurfaceVariant
+                                              : AppDesign.lightMuted,
+                                        ),
                                   ),
-                                  style: TextStyle(
-                                    color: splitColor,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 11,
+                                ),
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerLeft,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 9,
+                                        vertical: 5,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: splitColor.withValues(
+                                          alpha: 0.12,
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          999,
+                                        ),
+                                        border: Border.all(
+                                          color: splitColor.withValues(
+                                            alpha: 0.24,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            splitIcon,
+                                            size: 12,
+                                            color: splitColor,
+                                          ),
+                                          const SizedBox(width: 5),
+                                          Text(
+                                            _splitModeShortLabel(
+                                              context,
+                                              expense.splitMode,
+                                            ),
+                                            style: TextStyle(
+                                              color: splitColor,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 11,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: _ExpenseInlineSocialBar(
-                                popularReactions: inlineTopReactions,
-                                commentCount: inlineCommentCount,
-                                isLoading:
-                                    expense.id > 0 && isInlineSocialLoading,
-                                isBusy:
-                                    expense.id <= 0 ||
-                                    isInlineSocialBusy ||
-                                    _isMutating,
-                                isDark: isDark,
-                                onQuickReactionTap: (emoji) {
-                                  unawaited(
-                                    _toggleExpenseReactionInline(
-                                      expenseId: expense.id,
-                                      emoji: emoji,
-                                    ),
-                                  );
-                                },
-                                onPickReactionTap: () {
-                                  unawaited(
-                                    _showExpenseInlineEmojiPicker(
-                                      expenseId: expense.id,
-                                    ),
-                                  );
-                                },
-                                onCommentsTap: () {
-                                  unawaited(
-                                    _openExpenseDetails(
-                                      snapshot: snapshot,
-                                      expense: expense,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            size: 22,
-                            color: isDark
-                                ? colors.onSurfaceVariant
-                                : AppDesign.lightMuted,
+                          const SizedBox(width: 8),
+                          _ExpenseInlineSocialBar(
+                            popularReactions: inlineTopReactions,
+                            commentCount: inlineCommentCount,
+                            isLoading: expense.id > 0 && isInlineSocialLoading,
+                            isBusy:
+                                expense.id <= 0 ||
+                                isInlineSocialBusy ||
+                                _isMutating,
+                            isDark: isDark,
+                            onQuickReactionTap: (emoji) {
+                              unawaited(
+                                _toggleExpenseReactionInline(
+                                  expenseId: expense.id,
+                                  emoji: emoji,
+                                ),
+                              );
+                            },
+                            onCommentsTap: () {
+                              unawaited(
+                                _openExpenseDetails(
+                                  snapshot: snapshot,
+                                  expense: expense,
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -485,6 +488,8 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     }
 
     return ListView(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 18),
       children: children,
     );
@@ -524,21 +529,13 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                     ),
                   ),
                   padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final emoji in _kSocialEmojis)
-                        _InlineEmojiPickerButton(
-                          emoji: emoji,
-                          isDark: isDark,
-                          onTap: () {
-                            Navigator.of(
-                              context,
-                            ).pop(_ExpenseCardQuickActionResult.react(emoji));
-                          },
-                        ),
-                    ],
+                  child: _EmojiPickerRow(
+                    emojis: _kSocialEmojis,
+                    onSelect: (emoji) {
+                      Navigator.of(
+                        context,
+                      ).pop(_ExpenseCardQuickActionResult.react(emoji));
+                    },
                   ),
                 ),
                 if (canManage) ...[

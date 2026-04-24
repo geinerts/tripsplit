@@ -11,6 +11,7 @@ import '../../../../core/currency/app_currency.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_formatters.dart';
+import '../../../../core/ui/app_skeleton.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../trips/domain/entities/trip.dart';

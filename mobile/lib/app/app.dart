@@ -10,6 +10,7 @@ import 'router/app_router.dart';
 import 'theme/app_design.dart';
 import 'theme/app_semantic_colors.dart';
 import 'theme/theme_mode_scope.dart';
+import '../core/ui/app_background.dart';
 
 class TripSplitApp extends StatefulWidget {
   const TripSplitApp({
@@ -69,6 +70,12 @@ class _TripSplitAppState extends State<TripSplitApp> {
               darkTheme: _buildDarkTheme(),
               themeMode: themeController.themeMode,
               locale: localeController.locale,
+              builder: (context, child) {
+                if (child == null) {
+                  return const SizedBox.shrink();
+                }
+                return AppBackground(child: child);
+              },
               supportedLocales: AppLocalizations.supportedLocales,
               localizationsDelegates: const [
                 AppLocalizations.delegate,
@@ -125,7 +132,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
       useMaterial3: true,
       textTheme: textTheme,
       extensions: const <ThemeExtension<dynamic>>[AppSemanticColors.light],
-      scaffoldBackgroundColor: AppDesign.lightCanvas,
+      scaffoldBackgroundColor: Colors.transparent,
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -269,7 +276,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
       useMaterial3: true,
       textTheme: textTheme,
       extensions: const <ThemeExtension<dynamic>>[AppSemanticColors.dark],
-      scaffoldBackgroundColor: AppDesign.darkCanvas,
+      scaffoldBackgroundColor: Colors.transparent,
       appBarTheme: AppBarTheme(
         elevation: 0,
         scrolledUnderElevation: 0,

@@ -4,15 +4,13 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
   Widget _buildAnalyticsScaffold(BuildContext context) {
     final responsive = context.responsive;
     if (_isLoadingTrips && _trips.isEmpty) {
-      return const AppBackground(
-        child: Center(child: CircularProgressIndicator()),
-      );
+      return _buildAnalyticsLoadingSurface(context);
     }
 
     return AppBackground(
       child: ColoredBox(
         color: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).scaffoldBackgroundColor
+            ? AppDesign.darkCanvas
             : _analyticsBg,
         child: RefreshIndicator(
           onRefresh: () => _loadTrips(forceReload: true),
@@ -44,13 +42,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                       _buildTripSelector(context),
                       const SizedBox(height: 12),
                       if (_isLoadingSnapshot && _selectedSnapshot == null)
-                        _buildAnalyticsCard(
-                          context,
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 26),
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
-                        )
+                        ..._buildAnalyticsChartsSkeleton(context)
                       else if (_snapshotError != null &&
                           _selectedSnapshot == null)
                         _InlineErrorCard(
@@ -66,6 +58,179 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsLoadingSurface(BuildContext context) {
+    final responsive = context.responsive;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return AppBackground(
+      child: ColoredBox(
+        color: isDark ? AppDesign.darkCanvas : _analyticsBg,
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: responsive.pageMaxWidth,
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    padding: EdgeInsets.fromLTRB(
+                      responsive.pageHorizontalPadding,
+                      12,
+                      responsive.pageHorizontalPadding,
+                      18,
+                    ),
+                    children: [
+                      _buildAnalyticsTripSelectorSkeleton(context),
+                      const SizedBox(height: 12),
+                      ..._buildAnalyticsChartsSkeleton(context),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildAnalyticsChartsSkeleton(BuildContext context) {
+    return <Widget>[
+      _buildAnalyticsCategorySkeleton(context),
+      const SizedBox(height: 12),
+      _buildAnalyticsMemberSkeleton(context),
+      const SizedBox(height: 12),
+      _buildAnalyticsDailySkeleton(context),
+      const SizedBox(height: 12),
+      _buildAnalyticsInsightsSkeleton(context),
+    ];
+  }
+
+  Widget _buildAnalyticsTripSelectorSkeleton(BuildContext context) {
+    return _buildAnalyticsCard(
+      context,
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(14, 12, 14, 12),
+        child: Row(
+          children: [
+            AppSkeletonBlock(width: 42, height: 42, radius: 14),
+            SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppSkeletonBlock(width: 156, height: 18, radius: 8),
+                  SizedBox(height: 8),
+                  AppSkeletonBlock(height: 14, radius: 8),
+                ],
+              ),
+            ),
+            SizedBox(width: 10),
+            AppSkeletonBlock(width: 20, height: 20, radius: 10),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsCategorySkeleton(BuildContext context) {
+    return _buildAnalyticsCard(
+      context,
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(14, 12, 14, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSkeletonBlock(width: 156, height: 24, radius: 10),
+            SizedBox(height: 12),
+            Row(
+              children: [
+                AppSkeletonBlock(width: 132, height: 132, radius: 66),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    children: [
+                      AppSkeletonBlock(height: 18, radius: 8),
+                      SizedBox(height: 8),
+                      AppSkeletonBlock(height: 18, radius: 8),
+                      SizedBox(height: 8),
+                      AppSkeletonBlock(height: 18, radius: 8),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsMemberSkeleton(BuildContext context) {
+    return _buildAnalyticsCard(
+      context,
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(14, 12, 14, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSkeletonBlock(width: 140, height: 24, radius: 10),
+            SizedBox(height: 12),
+            AppSkeletonBlock(height: 16, radius: 8),
+            SizedBox(height: 10),
+            AppSkeletonBlock(height: 16, radius: 8),
+            SizedBox(height: 10),
+            AppSkeletonBlock(height: 16, radius: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsDailySkeleton(BuildContext context) {
+    return _buildAnalyticsCard(
+      context,
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(14, 12, 14, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSkeletonBlock(width: 170, height: 24, radius: 10),
+            SizedBox(height: 12),
+            AppSkeletonBlock(height: 132, radius: 12),
+            SizedBox(height: 10),
+            AppSkeletonBlock(width: 210, height: 14, radius: 7),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsInsightsSkeleton(BuildContext context) {
+    return _buildAnalyticsCard(
+      context,
+      child: const Padding(
+        padding: EdgeInsets.fromLTRB(14, 14, 14, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppSkeletonBlock(width: 150, height: 22, radius: 10),
+            SizedBox(height: 10),
+            AppSkeletonBlock(height: 14, radius: 7),
+            SizedBox(height: 8),
+            AppSkeletonBlock(height: 14, radius: 7),
+            SizedBox(height: 8),
+            AppSkeletonBlock(height: 14, radius: 7),
+          ],
         ),
       ),
     );

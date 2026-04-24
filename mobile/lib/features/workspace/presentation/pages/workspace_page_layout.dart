@@ -89,10 +89,9 @@ extension _WorkspacePageLayout on _WorkspacePageState {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBackground(
       child: ColoredBox(
-        color: isDark
-            ? Theme.of(context).scaffoldBackgroundColor
-            : AppDesign.lightCanvas,
+        color: isDark ? AppDesign.darkCanvas : AppDesign.lightCanvas,
         child: RefreshIndicator(
+          triggerMode: RefreshIndicatorTriggerMode.anywhere,
           onRefresh: () {
             if (_isMutating) {
               return Future<void>.value();
@@ -100,31 +99,29 @@ extension _WorkspacePageLayout on _WorkspacePageState {
             return _loadData(showLoader: false);
           },
           notificationPredicate: (notification) {
-            return notification.metrics.axis == Axis.vertical;
+            return notification.metrics.axis == Axis.vertical &&
+                notification.depth == 0;
           },
-          child: NestedScrollView(
-            physics: const AlwaysScrollableScrollPhysics(
-              parent: BouncingScrollPhysics(),
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
             ),
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return <Widget>[
-                SliverToBoxAdapter(
-                  child: _buildOverviewPanel(context, snapshot),
-                ),
-                SliverAppBar(
-                  pinned: true,
-                  automaticallyImplyLeading: false,
-                  primary: false,
-                  toolbarHeight: 84,
-                  collapsedHeight: 84,
-                  backgroundColor: Colors.transparent,
-                  surfaceTintColor: Colors.transparent,
-                  elevation: 0,
-                  flexibleSpace: _buildWorkspaceStickyHeader(context),
-                ),
-              ];
-            },
-            body: _buildWorkspaceTab(snapshot, tabIndex),
+            slivers: [
+              SliverToBoxAdapter(child: _buildOverviewPanel(context, snapshot)),
+              SliverAppBar(
+                pinned: true,
+                automaticallyImplyLeading: false,
+                primary: false,
+                toolbarHeight: 84,
+                collapsedHeight: 84,
+                expandedHeight: 84,
+                backgroundColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                elevation: 0,
+                flexibleSpace: _buildWorkspaceStickyHeader(context),
+              ),
+              SliverToBoxAdapter(child: _buildWorkspaceTab(snapshot, tabIndex)),
+            ],
           ),
         ),
       ),
@@ -252,7 +249,7 @@ extension _WorkspacePageLayout on _WorkspacePageState {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: isDark
-            ? Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.94)
+            ? AppDesign.darkCanvas.withValues(alpha: 0.94)
             : AppDesign.lightCanvas,
         border: Border(
           bottom: BorderSide(
@@ -273,10 +270,125 @@ extension _WorkspacePageLayout on _WorkspacePageState {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBackground(
       child: ColoredBox(
-        color: isDark
-            ? Theme.of(context).scaffoldBackgroundColor
-            : AppDesign.lightCanvas,
-        child: const Center(child: CircularProgressIndicator()),
+        color: isDark ? AppDesign.darkCanvas : AppDesign.lightCanvas,
+        child: SafeArea(
+          top: !widget.showAppBar,
+          bottom: !widget.showBottomNav,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 18),
+            children: [
+              _buildWorkspaceLoadingOverviewSkeleton(context),
+              const SizedBox(height: 10),
+              _buildWorkspaceLoadingTabSwitcherSkeleton(context),
+              const SizedBox(height: 12),
+              _buildWorkspaceLoadingSectionSkeleton(context),
+              const SizedBox(height: 12),
+              _buildWorkspaceLoadingExpenseCardSkeleton(context),
+              const SizedBox(height: 10),
+              _buildWorkspaceLoadingExpenseCardSkeleton(context),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWorkspaceLoadingOverviewSkeleton(BuildContext context) {
+    return Container(
+      height: 210,
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppDesign.cardStroke(context)),
+        color: AppDesign.cardSurface(context).withValues(alpha: 0.88),
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppSkeletonBlock(width: 170, height: 36, radius: 12),
+          SizedBox(height: 12),
+          AppSkeletonBlock(width: 84, height: 84, radius: 42),
+          Spacer(),
+          AppSkeletonBlock(height: 14, radius: 8),
+          SizedBox(height: 8),
+          AppSkeletonBlock(height: 14, radius: 8),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWorkspaceLoadingTabSwitcherSkeleton(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppDesign.cardStroke(context)),
+        color: AppDesign.cardSurface(context).withValues(alpha: 0.88),
+      ),
+      child: const Row(
+        children: [
+          Expanded(child: AppSkeletonBlock(height: 44, radius: 18)),
+          SizedBox(width: 8),
+          Expanded(child: AppSkeletonBlock(height: 44, radius: 18)),
+          SizedBox(width: 8),
+          Expanded(child: AppSkeletonBlock(height: 44, radius: 18)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWorkspaceLoadingSectionSkeleton(BuildContext context) {
+    return const Row(
+      children: [
+        AppSkeletonBlock(width: 132, height: 30, radius: 10),
+        SizedBox(width: 10),
+        AppSkeletonBlock(width: 30, height: 30, radius: 15),
+      ],
+    );
+  }
+
+  Widget _buildWorkspaceLoadingExpenseCardSkeleton(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppDesign.cardStroke(context)),
+        color: AppDesign.cardSurface(context).withValues(alpha: 0.88),
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppSkeletonBlock(width: 64, height: 64, radius: 18),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppSkeletonBlock(width: 140, height: 24, radius: 10),
+                    SizedBox(height: 8),
+                    AppSkeletonBlock(width: 110, height: 18, radius: 8),
+                  ],
+                ),
+              ),
+              SizedBox(width: 8),
+              AppSkeletonBlock(width: 92, height: 24, radius: 10),
+            ],
+          ),
+          SizedBox(height: 12),
+          Row(
+            children: [
+              AppSkeletonBlock(width: 31, height: 31, radius: 16),
+              SizedBox(width: 8),
+              AppSkeletonBlock(width: 120, height: 16, radius: 8),
+            ],
+          ),
+        ],
       ),
     );
   }
