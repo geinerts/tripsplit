@@ -319,11 +319,11 @@ registerView('dashboard', {
       </tr>
     `).join('');
 
-    // Push health mini cards
-    const pushSent    = pq.sent    ? pq.sent.count    : 0;
-    const pushPending = pq.pending ? pq.pending.count  : 0;
-    const pushFailed  = pq.failed  ? pq.failed.count   : 0;
-    const pushDead    = pq.dead    ? pq.dead.count     : 0;
+    // Push health mini cards (dashboard returns plain numbers per status)
+    const pushSent    = (pq.sent    ?? 0);
+    const pushPending = (pq.pending ?? 0);
+    const pushFailed  = (pq.failed  ?? 0);
+    const pushDead    = (pq.dead    ?? 0);
 
     // Audit activity feed
     const auditItems = (auditRes.ok ? (auditRes.log || []) : []).map(entry => {
