@@ -433,7 +433,7 @@ registerView('dashboard', {
       <!-- Two-col grid -->
       <div class="dashboard-grid">
 
-        <!-- Left: incidents + audit log -->
+        <!-- Left: incidents + activity -->
         <div>
           <div class="table-card">
             <div class="table-card-header">
@@ -445,26 +445,26 @@ registerView('dashboard', {
 
           <div class="table-card dashboard-audit-table">
             <div class="table-card-header">
-              <div class="table-card-title">📋 Recent Audit</div>
-              <span class="table-card-link" onclick="navigate('audit-log')">View all →</span>
+              <div class="table-card-title">⚡ Recent Activity</div>
+              <span class="table-card-link" onclick="navigate('app-events')">View all →</span>
             </div>
-            ${auditRes.ok && auditRes.log.length ? `
+            ${appEventsRes.ok && appEventsRes.events.length ? `
             <table>
-              <thead><tr><th>Action</th><th>Admin</th><th>Target</th><th>Time</th></tr></thead>
+              <thead><tr><th>Event</th><th>User</th><th>Entity</th><th>Time</th></tr></thead>
               <tbody>
-                ${auditRes.log.map(e => `
+                ${appEventsRes.events.map(e => `
                   <tr>
-                    <td style="font-family:monospace;font-size:12px;color:${e.action.includes('delete')?'var(--red)':e.action.includes('suspend')||e.action.includes('disable')?'var(--amber)':'var(--green-soft)'}">${esc(e.action)}</td>
-                    <td style="color:var(--fg-muted)">${esc(e.admin_username)}</td>
-                    <td style="color:var(--fg-muted)">${esc(e.target_type ?? '')}${e.target_id ? ` #${e.target_id}` : ''}</td>
+                    <td style="font-family:monospace;font-size:12px;color:${e.event_type.includes('delete')?'var(--red)':e.event_type.startsWith('user.')?'var(--green-soft)':e.event_type.startsWith('trip.')?'var(--blue)':e.event_type.startsWith('expense.')?'var(--amber)':'var(--fg-dim)'}">${esc(e.event_type)}</td>
+                    <td style="color:var(--fg-muted)">${esc(e.username || '—')}</td>
+                    <td style="color:var(--fg-muted)">${esc(e.entity_type ?? '')}${e.entity_id ? ` #${e.entity_id}` : ''}</td>
                     <td style="color:var(--fg-muted);font-size:12px">${relTime(e.created_at)}</td>
                   </tr>`).join('')}
               </tbody>
-            </table>` : '<div class="empty-state" style="padding:24px">No audit entries yet</div>'}
+            </table>` : '<div class="empty-state" style="padding:24px">No recent activity yet</div>'}
           </div>
         </div>
 
-        <!-- Right: push health + activity -->
+        <!-- Right: push health + audit -->
         <div>
           <div class="push-health-card">
             <div class="push-health-header">🔔 Push Queue Health</div>
@@ -490,10 +490,26 @@ registerView('dashboard', {
 
           <div class="activity-card">
             <div class="activity-header" style="display:flex;justify-content:space-between;align-items:center">
-              <span>⚡ Recent Activity</span>
-              <span class="table-card-link" onclick="navigate('app-events')">View all →</span>
+              <span>📋 Recent Audit</span>
+              <span class="table-card-link" onclick="navigate('audit-log')">View all →</span>
             </div>
-            ${appItems}
+            ${(auditRes.ok ? (auditRes.log || []) : []).map(entry => {
+              const color = entry.action.includes('delete') ? 'var(--red)'
+                : entry.action.includes('suspend') || entry.action.includes('disable') ? 'var(--amber)'
+                : 'var(--green)';
+              return `
+                <div class="activity-item">
+                  <div class="activity-dot" style="background:${color}"></div>
+                  <div style="flex:1;min-width:0">
+                    <div class="activity-text">
+                      <strong>${esc(entry.admin_username)}</strong> — <span style="font-family:monospace;font-size:11.5px;color:var(--fg-dim)">${esc(entry.action)}</span>
+                      ${entry.target_id ? `<span style="color:var(--fg-muted)"> #${entry.target_id}</span>` : ''}
+                    </div>
+                    <div class="activity-time">${relTime(entry.created_at)}</div>
+                  </div>
+                </div>
+              `;
+            }).join('') || '<div style="padding:20px 18px;color:var(--fg-muted);font-size:13px">No recent audit</div>'}
           </div>
         </div>
 
