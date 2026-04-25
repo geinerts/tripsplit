@@ -913,8 +913,8 @@ function delete_expense_action(): void
     $expenseCurrencyColumnsAvailable = expenses_currency_columns_available($pdo);
     $tripCurrencyCode = trip_currency_code_from_trip($trip);
     $currencySelect = $expenseCurrencyColumnsAvailable
-        ? 'currency_code, source_amount, '
-        : '\'' . $tripCurrencyCode . '\' AS currency_code, amount AS source_amount, ';
+        ? 'currency_code, source_amount'
+        : '\'' . $tripCurrencyCode . '\' AS currency_code, amount AS source_amount';
 
     $ownerStmt = $pdo->prepare(
         'SELECT id, trip_id, paid_by, amount, category, split_mode, receipt_path, ' . $currencySelect . '
