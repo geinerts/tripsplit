@@ -85,44 +85,40 @@ extension _WorkspacePageLayout on _WorkspacePageState {
       return Center(child: Text(context.l10n.noTripDataLoaded));
     }
 
-    final tabIndex = _workspaceTabIndex.clamp(0, 2);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final tabIndex = _workspaceTabIndex.clamp(0, 3);
     return AppBackground(
-      child: ColoredBox(
-        color: isDark ? AppDesign.darkCanvas : AppDesign.lightCanvas,
-        child: RefreshIndicator(
-          triggerMode: RefreshIndicatorTriggerMode.anywhere,
-          onRefresh: () {
-            if (_isMutating) {
-              return Future<void>.value();
-            }
-            return _loadData(showLoader: false);
-          },
-          notificationPredicate: (notification) {
-            return notification.metrics.axis == Axis.vertical &&
-                notification.depth == 0;
-          },
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
-            slivers: [
-              SliverToBoxAdapter(child: _buildOverviewPanel(context, snapshot)),
-              SliverAppBar(
-                pinned: true,
-                automaticallyImplyLeading: false,
-                primary: false,
-                toolbarHeight: 84,
-                collapsedHeight: 84,
-                expandedHeight: 84,
-                backgroundColor: Colors.transparent,
-                surfaceTintColor: Colors.transparent,
-                elevation: 0,
-                flexibleSpace: _buildWorkspaceStickyHeader(context),
-              ),
-              SliverToBoxAdapter(child: _buildWorkspaceTab(snapshot, tabIndex)),
-            ],
+      child: RefreshIndicator(
+        triggerMode: RefreshIndicatorTriggerMode.anywhere,
+        onRefresh: () {
+          if (_isMutating) {
+            return Future<void>.value();
+          }
+          return _loadData(showLoader: false);
+        },
+        notificationPredicate: (notification) {
+          return notification.metrics.axis == Axis.vertical &&
+              notification.depth == 0;
+        },
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
           ),
+          slivers: [
+            SliverToBoxAdapter(child: _buildOverviewPanel(context, snapshot)),
+            SliverAppBar(
+              pinned: true,
+              automaticallyImplyLeading: false,
+              primary: false,
+              toolbarHeight: 84,
+              collapsedHeight: 84,
+              expandedHeight: 84,
+              backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              elevation: 0,
+              flexibleSpace: _buildWorkspaceStickyHeader(context),
+            ),
+            SliverToBoxAdapter(child: _buildWorkspaceTab(snapshot, tabIndex)),
+          ],
         ),
       ),
     );
@@ -136,6 +132,8 @@ extension _WorkspacePageLayout on _WorkspacePageState {
         return _buildBalancesTab(snapshot);
       case 2:
         return _buildSettleTab(snapshot);
+      case 3:
+        return _buildActivityTab();
       default:
         return _buildExpensesTab(snapshot);
     }
@@ -152,7 +150,7 @@ extension _WorkspacePageLayout on _WorkspacePageState {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final selectedTab = _workspaceTabIndex.clamp(0, 2);
+        final selectedTab = _workspaceTabIndex.clamp(0, 3);
 
         Widget buildTab({required int index, required String label}) {
           final selected = selectedTab == index;
@@ -189,6 +187,9 @@ extension _WorkspacePageLayout on _WorkspacePageState {
                     _updateState(() {
                       _workspaceTabIndex = index;
                     });
+                    if (index == 3 && !_activityLoaded) {
+                      unawaited(_loadTripActivity(reset: true));
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -203,6 +204,7 @@ extension _WorkspacePageLayout on _WorkspacePageState {
                       textAlign: TextAlign.center,
                       style: labelStyle?.copyWith(
                         color: foreground,
+                        fontSize: index == 3 ? 13.5 : 15,
                         fontWeight: selected
                             ? FontWeight.w800
                             : FontWeight.w700,
@@ -235,6 +237,8 @@ extension _WorkspacePageLayout on _WorkspacePageState {
                 buildTab(index: 1, label: context.l10n.navBalances),
                 const SizedBox(width: 8),
                 buildTab(index: 2, label: context.l10n.workspaceSettle),
+                const SizedBox(width: 8),
+                buildTab(index: 3, label: context.l10n.workspaceTripActivity),
               ],
             ),
           ),
@@ -244,20 +248,10 @@ extension _WorkspacePageLayout on _WorkspacePageState {
   }
 
   Widget _buildWorkspaceStickyHeader(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: isDark
-            ? AppDesign.darkCanvas.withValues(alpha: 0.94)
-            : AppDesign.lightCanvas,
-        border: Border(
-          bottom: BorderSide(
-            color: isDark
-                ? colors.outlineVariant.withValues(alpha: 0.2)
-                : AppDesign.lightStroke,
-          ),
-        ),
+        color: Colors.transparent,
+        border: Border(bottom: BorderSide(color: Colors.transparent)),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
@@ -267,30 +261,26 @@ extension _WorkspacePageLayout on _WorkspacePageState {
   }
 
   Widget _buildWorkspaceLoadingSurface(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBackground(
-      child: ColoredBox(
-        color: isDark ? AppDesign.darkCanvas : AppDesign.lightCanvas,
-        child: SafeArea(
-          top: !widget.showAppBar,
-          bottom: !widget.showBottomNav,
-          child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(
-              parent: BouncingScrollPhysics(),
-            ),
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 18),
-            children: [
-              _buildWorkspaceLoadingOverviewSkeleton(context),
-              const SizedBox(height: 10),
-              _buildWorkspaceLoadingTabSwitcherSkeleton(context),
-              const SizedBox(height: 12),
-              _buildWorkspaceLoadingSectionSkeleton(context),
-              const SizedBox(height: 12),
-              _buildWorkspaceLoadingExpenseCardSkeleton(context),
-              const SizedBox(height: 10),
-              _buildWorkspaceLoadingExpenseCardSkeleton(context),
-            ],
+      child: SafeArea(
+        top: !widget.showAppBar,
+        bottom: !widget.showBottomNav,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
           ),
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 18),
+          children: [
+            _buildWorkspaceLoadingOverviewSkeleton(context),
+            const SizedBox(height: 10),
+            _buildWorkspaceLoadingTabSwitcherSkeleton(context),
+            const SizedBox(height: 12),
+            _buildWorkspaceLoadingSectionSkeleton(context),
+            const SizedBox(height: 12),
+            _buildWorkspaceLoadingExpenseCardSkeleton(context),
+            const SizedBox(height: 10),
+            _buildWorkspaceLoadingExpenseCardSkeleton(context),
+          ],
         ),
       ),
     );

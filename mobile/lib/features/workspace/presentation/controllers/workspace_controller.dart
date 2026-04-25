@@ -8,6 +8,7 @@ import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/trip_expenses_page.dart';
 import '../../domain/entities/uploaded_receipt.dart';
+import '../../domain/entities/workspace_activity_event.dart';
 import '../../domain/entities/workspace_notifications_inbox.dart';
 import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
@@ -38,6 +39,18 @@ class WorkspaceController {
     );
   }
 
+  Future<WorkspaceActivityPage> loadTripActivity({
+    required int tripId,
+    int limit = 50,
+    int? offset,
+  }) {
+    return _repository.loadTripActivity(
+      tripId: tripId,
+      limit: limit,
+      offset: offset,
+    );
+  }
+
   Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
     required int userId,
     int limit = 20,
@@ -64,6 +77,26 @@ class WorkspaceController {
     required int settlementId,
   }) {
     return _repository.markSettlementSent(
+      tripId: tripId,
+      settlementId: settlementId,
+    );
+  }
+
+  Future<void> cancelSettlementSent({
+    required int tripId,
+    required int settlementId,
+  }) {
+    return _repository.cancelSettlementSent(
+      tripId: tripId,
+      settlementId: settlementId,
+    );
+  }
+
+  Future<void> reportSettlementNotReceived({
+    required int tripId,
+    required int settlementId,
+  }) {
+    return _repository.reportSettlementNotReceived(
       tripId: tripId,
       settlementId: settlementId,
     );

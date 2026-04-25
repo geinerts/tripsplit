@@ -113,6 +113,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
             final canPrimaryAction =
                 canMutateSettlement &&
                 (liveItem.canMarkSent || liveItem.canConfirmReceived);
+            final canCancelSent = canMutateSettlement && liveItem.canCancelSent;
+            final canReportNotReceived =
+                canMutateSettlement && liveItem.canReportNotReceived;
             final primaryActionLabel = liveItem.canConfirmReceived
                 ? t.confirmReceivedAction
                 : t.iSentAction;
@@ -138,357 +141,430 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                 quickRevolutUri != null ||
                 quickPaypalUri != null ||
                 quickWiseUri != null;
+            final bottomSafePadding = MediaQuery.paddingOf(sheetContext).bottom;
 
             return SafeArea(
-              child: FractionallySizedBox(
-                heightFactor: 0.9,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: semantic.sheetSurface,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(30),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      Container(
-                        width: 46,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: semantic.sheetHandle,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
+              top: false,
+              bottom: false,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: FractionallySizedBox(
+                  widthFactor: 1,
+                  heightFactor: 0.9,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: semantic.sheetSurface,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(30),
                       ),
-                      Expanded(
-                        child: ListView(
-                          padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    sheetContext.l10n.workspaceSettlementFlow,
-                                    style: Theme.of(sheetContext)
-                                        .textTheme
-                                        .titleLarge
-                                        ?.copyWith(fontWeight: FontWeight.w800),
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () =>
-                                      Navigator.of(sheetContext).pop(),
-                                  icon: const Icon(Icons.close_rounded),
-                                ),
-                              ],
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        Container(
+                          width: 46,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color: semantic.sheetHandle,
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView(
+                            padding: EdgeInsets.fromLTRB(
+                              16,
+                              10,
+                              16,
+                              20 + bottomSafePadding,
                             ),
-                            const SizedBox(height: 8),
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: semantic.sheetPanelSurfaceMuted,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: semantic.sheetBorder),
-                              ),
-                              child: Column(
+                            children: [
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: _buildSettlementPartyCard(
-                                          context: sheetContext,
-                                          label: sheetContext.l10n.tripsFrom,
-                                          name: fromName,
-                                          icon: Icons.north_east_rounded,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                        ),
-                                        child: Container(
-                                          width: 30,
-                                          height: 30,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: semantic.flowStepCurrent
-                                                .withValues(alpha: 0.20),
+                                  Expanded(
+                                    child: Text(
+                                      sheetContext.l10n.workspaceSettlementFlow,
+                                      style: Theme.of(sheetContext)
+                                          .textTheme
+                                          .titleLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w800,
                                           ),
-                                          alignment: Alignment.center,
-                                          child: Icon(
-                                            Icons.arrow_forward_rounded,
-                                            size: 18,
-                                            color: semantic.flowStepCurrent,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: _buildSettlementPartyCard(
-                                          context: sheetContext,
-                                          label: sheetContext.l10n.tripsTo,
-                                          name: toName,
-                                          icon: Icons.south_west_rounded,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: semantic.sheetPanelSurface,
-                                      borderRadius: BorderRadius.circular(14),
-                                      border: Border.all(
-                                        color: semantic.sheetBorder,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.payments_outlined,
-                                          size: 18,
-                                          color: semantic.flowStepCurrent,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          sheetContext.l10n.amountLabel,
-                                          style: Theme.of(sheetContext)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.w700,
-                                                color: AppDesign.mutedColor(
-                                                  sheetContext,
-                                                ),
-                                              ),
-                                        ),
-                                        const Spacer(),
-                                        Text(
-                                          _formatMoney(
-                                            sheetContext,
-                                            liveItem.amount,
-                                            currencyCode:
-                                                widget.trip.currencyCode,
-                                          ),
-                                          style: Theme.of(sheetContext)
-                                              .textTheme
-                                              .titleMedium
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.w800,
-                                                color: semantic.flowStepCurrent,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
+                                  IconButton(
+                                    onPressed: () =>
+                                        Navigator.of(sheetContext).pop(),
+                                    icon: const Icon(Icons.close_rounded),
                                   ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            _buildSettlementFlowSteps(
-                              context: sheetContext,
-                              steps: steps,
-                              highlightIndex: highlightIndex,
-                            ),
-                            const SizedBox(height: 16),
-                            for (var i = 0; i < steps.length; i++) ...[
-                              _buildSettlementFlowEventTile(
-                                context: sheetContext,
-                                step: steps[i],
-                                isCurrent:
-                                    !steps[i].isDone && i == highlightIndex,
-                              ),
-                              if (i < steps.length - 1)
-                                const SizedBox(height: 10),
-                            ],
-                            const SizedBox(height: 14),
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: semantic.sheetPanelSurfaceMuted,
-                                borderRadius: BorderRadius.circular(18),
-                                border: Border.all(color: semantic.sheetBorder),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    sheetContext.l10n.workspaceActions,
-                                    style: Theme.of(sheetContext)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.w800),
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: semantic.sheetPanelSurfaceMuted,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: semantic.sheetBorder,
                                   ),
-                                  const SizedBox(height: 8),
-                                  if (hasQuickPayActions) ...[
-                                    Text(
-                                      sheetContext.l10n.workspaceQuickPay,
-                                      style: Theme.of(sheetContext)
-                                          .textTheme
-                                          .labelLarge
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w700,
-                                            color: AppDesign.mutedColor(
-                                              sheetContext,
-                                            ),
-                                          ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Wrap(
-                                      spacing: 8,
-                                      runSpacing: 8,
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
                                       children: [
-                                        if (quickRevolutUri != null)
-                                          OutlinedButton.icon(
-                                            onPressed: _isMutating
-                                                ? null
-                                                : () =>
-                                                      _openSettlementPaymentLink(
-                                                        quickRevolutUri,
-                                                      ),
-                                            icon: const Icon(
-                                              Icons.bolt_rounded,
-                                              size: 17,
+                                        Expanded(
+                                          child: _buildSettlementPartyCard(
+                                            context: sheetContext,
+                                            label: sheetContext.l10n.tripsFrom,
+                                            name: fromName,
+                                            icon: Icons.north_east_rounded,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                          child: Container(
+                                            width: 30,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: semantic.flowStepCurrent
+                                                  .withValues(alpha: 0.20),
                                             ),
-                                            label: Text(
-                                              sheetContext
-                                                  .l10n
-                                                  .workspacePayWithRevolut,
+                                            alignment: Alignment.center,
+                                            child: Icon(
+                                              Icons.arrow_forward_rounded,
+                                              size: 18,
+                                              color: semantic.flowStepCurrent,
                                             ),
                                           ),
-                                        if (quickPaypalUri != null)
-                                          OutlinedButton.icon(
-                                            onPressed: _isMutating
-                                                ? null
-                                                : () =>
-                                                      _openSettlementPaymentLink(
-                                                        quickPaypalUri,
-                                                      ),
-                                            icon: const Icon(
-                                              Icons.paypal_rounded,
-                                              size: 17,
-                                            ),
-                                            label: Text(
-                                              sheetContext
-                                                  .l10n
-                                                  .workspacePayWithPaypal,
-                                            ),
+                                        ),
+                                        Expanded(
+                                          child: _buildSettlementPartyCard(
+                                            context: sheetContext,
+                                            label: sheetContext.l10n.tripsTo,
+                                            name: toName,
+                                            icon: Icons.south_west_rounded,
                                           ),
-                                        if (quickWiseUri != null)
-                                          OutlinedButton.icon(
-                                            onPressed: _isMutating
-                                                ? null
-                                                : () =>
-                                                      _openSettlementPaymentLink(
-                                                        quickWiseUri,
-                                                      ),
-                                            icon: const Icon(
-                                              Icons.currency_exchange_rounded,
-                                              size: 17,
-                                            ),
-                                            label: Text(
-                                              sheetContext
-                                                  .l10n
-                                                  .workspacePayWithWise,
-                                            ),
-                                          ),
+                                        ),
                                       ],
                                     ),
                                     const SizedBox(height: 10),
-                                  ],
-                                  if (canPrimaryAction)
-                                    SizedBox(
+                                    Container(
                                       width: double.infinity,
-                                      child: FilledButton.icon(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: semantic.sheetPanelSurface,
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(
+                                          color: semantic.sheetBorder,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.payments_outlined,
+                                            size: 18,
+                                            color: semantic.flowStepCurrent,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            sheetContext.l10n.amountLabel,
+                                            style: Theme.of(sheetContext)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w700,
+                                                  color: AppDesign.mutedColor(
+                                                    sheetContext,
+                                                  ),
+                                                ),
+                                          ),
+                                          const Spacer(),
+                                          Text(
+                                            _formatMoney(
+                                              sheetContext,
+                                              liveItem.amount,
+                                              currencyCode:
+                                                  widget.trip.currencyCode,
+                                            ),
+                                            style: Theme.of(sheetContext)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w800,
+                                                  color:
+                                                      semantic.flowStepCurrent,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              _buildSettlementFlowSteps(
+                                context: sheetContext,
+                                steps: steps,
+                                highlightIndex: highlightIndex,
+                              ),
+                              const SizedBox(height: 16),
+                              for (var i = 0; i < steps.length; i++) ...[
+                                _buildSettlementFlowEventTile(
+                                  context: sheetContext,
+                                  step: steps[i],
+                                  isCurrent:
+                                      !steps[i].isDone && i == highlightIndex,
+                                ),
+                                if (i < steps.length - 1)
+                                  const SizedBox(height: 10),
+                              ],
+                              const SizedBox(height: 14),
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: semantic.sheetPanelSurfaceMuted,
+                                  borderRadius: BorderRadius.circular(18),
+                                  border: Border.all(
+                                    color: semantic.sheetBorder,
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      sheetContext.l10n.workspaceActions,
+                                      style: Theme.of(sheetContext)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    if (hasQuickPayActions) ...[
+                                      Text(
+                                        sheetContext.l10n.workspaceQuickPay,
+                                        style: Theme.of(sheetContext)
+                                            .textTheme
+                                            .labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: AppDesign.mutedColor(
+                                                sheetContext,
+                                              ),
+                                            ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: [
+                                          if (quickRevolutUri != null)
+                                            OutlinedButton.icon(
+                                              onPressed: _isMutating
+                                                  ? null
+                                                  : () =>
+                                                        _openSettlementPaymentLink(
+                                                          quickRevolutUri,
+                                                        ),
+                                              icon: const Icon(
+                                                Icons.bolt_rounded,
+                                                size: 17,
+                                              ),
+                                              label: Text(
+                                                sheetContext
+                                                    .l10n
+                                                    .workspacePayWithRevolut,
+                                              ),
+                                            ),
+                                          if (quickPaypalUri != null)
+                                            OutlinedButton.icon(
+                                              onPressed: _isMutating
+                                                  ? null
+                                                  : () =>
+                                                        _openSettlementPaymentLink(
+                                                          quickPaypalUri,
+                                                        ),
+                                              icon: const Icon(
+                                                Icons.paypal_rounded,
+                                                size: 17,
+                                              ),
+                                              label: Text(
+                                                sheetContext
+                                                    .l10n
+                                                    .workspacePayWithPaypal,
+                                              ),
+                                            ),
+                                          if (quickWiseUri != null)
+                                            OutlinedButton.icon(
+                                              onPressed: _isMutating
+                                                  ? null
+                                                  : () =>
+                                                        _openSettlementPaymentLink(
+                                                          quickWiseUri,
+                                                        ),
+                                              icon: const Icon(
+                                                Icons.currency_exchange_rounded,
+                                                size: 17,
+                                              ),
+                                              label: Text(
+                                                sheetContext
+                                                    .l10n
+                                                    .workspacePayWithWise,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10),
+                                    ],
+                                    if (canPrimaryAction)
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: FilledButton.icon(
+                                          onPressed: _isMutating
+                                              ? null
+                                              : () async {
+                                                  if (liveItem
+                                                      .canConfirmReceived) {
+                                                    await _onSettlementConfirmReceived(
+                                                      liveItem,
+                                                    );
+                                                  } else if (liveItem
+                                                      .canMarkSent) {
+                                                    await _onSettlementMarkSent(
+                                                      liveItem,
+                                                    );
+                                                  }
+                                                  if (!mounted ||
+                                                      !sheetContext.mounted) {
+                                                    return;
+                                                  }
+                                                  setSheetState(() {});
+                                                },
+                                          icon: Icon(primaryActionIcon),
+                                          label: Text(primaryActionLabel),
+                                          style: FilledButton.styleFrom(
+                                            backgroundColor:
+                                                semantic.flowStepCurrent,
+                                            foregroundColor:
+                                                AppDesign.darkForeground,
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 12,
+                                            ),
+                                            textStyle: const TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    else
+                                      Text(
+                                        isConfirmed
+                                            ? sheetContext
+                                                  .l10n
+                                                  .workspaceTransferIsConfirmed
+                                            : sheetContext
+                                                  .l10n
+                                                  .workspaceWaitingForTheOtherMemberToCompleteTheNextStep,
+                                        style: Theme.of(sheetContext)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: AppDesign.mutedColor(
+                                                sheetContext,
+                                              ),
+                                            ),
+                                      ),
+                                    if (canRemind) ...[
+                                      const SizedBox(height: 8),
+                                      TextButton.icon(
                                         onPressed: _isMutating
                                             ? null
                                             : () async {
-                                                if (liveItem
-                                                    .canConfirmReceived) {
-                                                  await _onSettlementConfirmReceived(
-                                                    liveItem,
-                                                  );
-                                                } else if (liveItem
-                                                    .canMarkSent) {
-                                                  await _onSettlementMarkSent(
-                                                    liveItem,
-                                                  );
-                                                }
+                                                await _onSettlementRemind(
+                                                  liveItem,
+                                                );
                                                 if (!mounted ||
                                                     !sheetContext.mounted) {
                                                   return;
                                                 }
                                                 setSheetState(() {});
                                               },
-                                        icon: Icon(primaryActionIcon),
-                                        label: Text(primaryActionLabel),
-                                        style: FilledButton.styleFrom(
-                                          backgroundColor:
-                                              semantic.flowStepCurrent,
-                                          foregroundColor:
-                                              AppDesign.darkForeground,
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                          ),
-                                          textStyle: const TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                        icon: const Icon(
+                                          Icons.notifications_active_outlined,
+                                          size: 17,
+                                        ),
+                                        label: Text(
+                                          context.l10n.workspaceSendReminder,
                                         ),
                                       ),
-                                    )
-                                  else
-                                    Text(
-                                      isConfirmed
-                                          ? sheetContext
-                                                .l10n
-                                                .workspaceTransferIsConfirmed
-                                          : sheetContext
-                                                .l10n
-                                                .workspaceWaitingForTheOtherMemberToCompleteTheNextStep,
-                                      style: Theme.of(sheetContext)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: AppDesign.mutedColor(
-                                              sheetContext,
-                                            ),
-                                          ),
-                                    ),
-                                  if (canRemind) ...[
-                                    const SizedBox(height: 8),
-                                    TextButton.icon(
-                                      onPressed: _isMutating
-                                          ? null
-                                          : () async {
-                                              await _onSettlementRemind(
-                                                liveItem,
-                                              );
-                                              if (!mounted ||
-                                                  !sheetContext.mounted) {
-                                                return;
-                                              }
-                                              setSheetState(() {});
-                                            },
-                                      icon: const Icon(
-                                        Icons.notifications_active_outlined,
-                                        size: 17,
+                                    ],
+                                    if (canCancelSent) ...[
+                                      const SizedBox(height: 8),
+                                      TextButton.icon(
+                                        onPressed: _isMutating
+                                            ? null
+                                            : () async {
+                                                await _onSettlementCancelSent(
+                                                  liveItem,
+                                                );
+                                                if (!mounted ||
+                                                    !sheetContext.mounted) {
+                                                  return;
+                                                }
+                                                setSheetState(() {});
+                                              },
+                                        icon: const Icon(
+                                          Icons.undo_rounded,
+                                          size: 17,
+                                        ),
+                                        label: Text(
+                                          context
+                                              .l10n
+                                              .settlementCancelSentAction,
+                                        ),
                                       ),
-                                      label: Text(
-                                        context.l10n.workspaceSendReminder,
+                                    ],
+                                    if (canReportNotReceived) ...[
+                                      const SizedBox(height: 8),
+                                      TextButton.icon(
+                                        onPressed: _isMutating
+                                            ? null
+                                            : () async {
+                                                await _onSettlementReportNotReceived(
+                                                  liveItem,
+                                                );
+                                                if (!mounted ||
+                                                    !sheetContext.mounted) {
+                                                  return;
+                                                }
+                                                setSheetState(() {});
+                                              },
+                                        icon: const Icon(
+                                          Icons.report_problem_outlined,
+                                          size: 17,
+                                        ),
+                                        label: Text(
+                                          context
+                                              .l10n
+                                              .settlementNotReceivedAction,
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ],
-                                ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -1005,7 +1081,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                             ],
                                           ),
                                           const SizedBox(height: 8),
-                                          Row(
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Container(
                                                 padding:
@@ -1048,77 +1126,157 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                                                   ),
                                                 ),
                                               ),
-                                              const Spacer(),
-                                              if (canRemind)
-                                                TextButton.icon(
-                                                  onPressed: _isMutating
-                                                      ? null
-                                                      : () async {
-                                                          await _onSettlementRemind(
-                                                            item,
-                                                          );
-                                                          if (!mounted ||
-                                                              !context
-                                                                  .mounted) {
-                                                            return;
-                                                          }
-                                                          setSheetState(() {});
-                                                        },
-                                                  icon: const Icon(
-                                                    Icons
-                                                        .notifications_active_outlined,
-                                                    size: 17,
-                                                  ),
-                                                  label: Text(
-                                                    context
-                                                        .l10n
-                                                        .workspaceRemind,
+                                              if (canRemind ||
+                                                  item.canMarkSent ||
+                                                  item.canConfirmReceived ||
+                                                  item.canCancelSent ||
+                                                  item.canReportNotReceived) ...[
+                                                const SizedBox(height: 6),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: Wrap(
+                                                    alignment:
+                                                        WrapAlignment.end,
+                                                    spacing: 6,
+                                                    runSpacing: 2,
+                                                    children: [
+                                                      if (canRemind)
+                                                        TextButton.icon(
+                                                          onPressed: _isMutating
+                                                              ? null
+                                                              : () async {
+                                                                  await _onSettlementRemind(
+                                                                    item,
+                                                                  );
+                                                                  if (!mounted ||
+                                                                      !context
+                                                                          .mounted) {
+                                                                    return;
+                                                                  }
+                                                                  setSheetState(
+                                                                    () {},
+                                                                  );
+                                                                },
+                                                          icon: const Icon(
+                                                            Icons
+                                                                .notifications_active_outlined,
+                                                            size: 17,
+                                                          ),
+                                                          label: Text(
+                                                            context
+                                                                .l10n
+                                                                .workspaceRemind,
+                                                          ),
+                                                        ),
+                                                      if (item.canMarkSent)
+                                                        TextButton.icon(
+                                                          onPressed: _isMutating
+                                                              ? null
+                                                              : () async {
+                                                                  await _onSettlementMarkSent(
+                                                                    item,
+                                                                  );
+                                                                  if (!mounted ||
+                                                                      !context
+                                                                          .mounted) {
+                                                                    return;
+                                                                  }
+                                                                  setSheetState(
+                                                                    () {},
+                                                                  );
+                                                                },
+                                                          icon: const Icon(
+                                                            Icons.send_outlined,
+                                                            size: 17,
+                                                          ),
+                                                          label: Text(
+                                                            t.iSentAction,
+                                                          ),
+                                                        ),
+                                                      if (item
+                                                          .canConfirmReceived)
+                                                        TextButton.icon(
+                                                          onPressed: _isMutating
+                                                              ? null
+                                                              : () async {
+                                                                  await _onSettlementConfirmReceived(
+                                                                    item,
+                                                                  );
+                                                                  if (!mounted ||
+                                                                      !context
+                                                                          .mounted) {
+                                                                    return;
+                                                                  }
+                                                                  setSheetState(
+                                                                    () {},
+                                                                  );
+                                                                },
+                                                          icon: const Icon(
+                                                            Icons
+                                                                .check_circle_outline,
+                                                            size: 17,
+                                                          ),
+                                                          label: Text(
+                                                            t.confirmReceivedAction,
+                                                          ),
+                                                        ),
+                                                      if (item.canCancelSent)
+                                                        TextButton.icon(
+                                                          onPressed: _isMutating
+                                                              ? null
+                                                              : () async {
+                                                                  await _onSettlementCancelSent(
+                                                                    item,
+                                                                  );
+                                                                  if (!mounted ||
+                                                                      !context
+                                                                          .mounted) {
+                                                                    return;
+                                                                  }
+                                                                  setSheetState(
+                                                                    () {},
+                                                                  );
+                                                                },
+                                                          icon: const Icon(
+                                                            Icons.undo_rounded,
+                                                            size: 17,
+                                                          ),
+                                                          label: Text(
+                                                            t.settlementCancelSentAction,
+                                                          ),
+                                                        ),
+                                                      if (item
+                                                          .canReportNotReceived)
+                                                        TextButton.icon(
+                                                          onPressed: _isMutating
+                                                              ? null
+                                                              : () async {
+                                                                  await _onSettlementReportNotReceived(
+                                                                    item,
+                                                                  );
+                                                                  if (!mounted ||
+                                                                      !context
+                                                                          .mounted) {
+                                                                    return;
+                                                                  }
+                                                                  setSheetState(
+                                                                    () {},
+                                                                  );
+                                                                },
+                                                          icon: const Icon(
+                                                            Icons
+                                                                .report_problem_outlined,
+                                                            size: 17,
+                                                          ),
+                                                          label: Text(
+                                                            t.settlementNotReceivedAction,
+                                                          ),
+                                                        ),
+                                                    ],
                                                   ),
                                                 ),
-                                              if (item.canMarkSent)
-                                                TextButton.icon(
-                                                  onPressed: _isMutating
-                                                      ? null
-                                                      : () async {
-                                                          await _onSettlementMarkSent(
-                                                            item,
-                                                          );
-                                                          if (!mounted ||
-                                                              !context
-                                                                  .mounted) {
-                                                            return;
-                                                          }
-                                                          setSheetState(() {});
-                                                        },
-                                                  icon: const Icon(
-                                                    Icons.send_outlined,
-                                                    size: 17,
-                                                  ),
-                                                  label: Text(t.iSentAction),
-                                                ),
-                                              if (item.canConfirmReceived)
-                                                TextButton.icon(
-                                                  onPressed: _isMutating
-                                                      ? null
-                                                      : () async {
-                                                          await _onSettlementConfirmReceived(
-                                                            item,
-                                                          );
-                                                          if (!mounted ||
-                                                              !context
-                                                                  .mounted) {
-                                                            return;
-                                                          }
-                                                          setSheetState(() {});
-                                                        },
-                                                  icon: const Icon(
-                                                    Icons.check_circle_outline,
-                                                    size: 17,
-                                                  ),
-                                                  label: Text(
-                                                    t.confirmReceivedAction,
-                                                  ),
-                                                ),
+                                              ],
                                             ],
                                           ),
                                         ],

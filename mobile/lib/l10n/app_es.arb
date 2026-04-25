@@ -122,6 +122,11 @@
       "count": {}
     }
   },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "@paidOwesLine": {
     "placeholders": {
       "owes": {},
@@ -357,6 +362,8 @@
   "deleteAction": "Borrar",
   "deleteExpenseConfirmQuestion": "¿Eliminar este gasto?",
   "deleteExpenseTitle": "Eliminar gasto",
+  "editExpenseConfirmTitle": "¿Guardar cambios del gasto?",
+  "editExpenseConfirmText": "Esto actualizará los balances para todos en el viaje.",
   "directlyExplainedByExpenses": "Explicado directamente por gastos: {amount}",
   "doneStatus": "Hecho",
   "editAction": "Editar",
@@ -420,6 +427,18 @@
   "logOutButton": "Finalizar la sesión",
   "logoutFromDeviceQuestion": "¿Cerrar sesión en este dispositivo?",
   "markedAsSent": "Marcado como enviado.",
+  "markSettlementSentConfirmTitle": "¿Marcar transferencia como enviada?",
+  "markSettlementSentConfirmText": "Úsalo solo después de haber enviado realmente el pago. El receptor deberá confirmarlo.",
+  "settlementCancelSentAction": "Marcar como no enviado",
+  "settlementCancelSentConfirmTitle": "¿Cancelar estado enviado?",
+  "settlementCancelSentConfirmText": "La transferencia volverá a pendiente y se notificará al receptor.",
+  "settlementSentCancelled": "Transferencia devuelta a pendiente.",
+  "settlementNotReceivedAction": "No lo recibí",
+  "settlementNotReceivedConfirmTitle": "¿Reportar como no recibido?",
+  "settlementNotReceivedConfirmText": "La transferencia volverá a pendiente y se notificará al pagador.",
+  "settlementMarkedNotReceived": "Marcado como no recibido.",
+  "confirmSettlementReceivedConfirmTitle": "¿Confirmar recibido?",
+  "confirmSettlementReceivedConfirmText": "Confirma solo cuando el dinero sea visible en tu cuenta. Esta acción puede completar la liquidación.",
   "memberSummariesSubtitle": "Estado de equilibrio actual para ambas partes.",
   "memberSummariesTitle": "Resúmenes de miembros",
   "memberToPaySummary": "Para pagar {total} - confirmado {confirmed} - esperando {waiting}",
@@ -538,6 +557,9 @@
   "notificationSettlementConfirmedBody": "{name} confirmó haber recibido {amount} de ti.",
   "notificationSettlementConfirmedBodyGeneric": "Se confirmó una transferencia.",
   "offlineQueuePendingChanges": "Cola sin conexión: {count, plural, one{{count} cambio pendiente} other{{count} cambios pendientes}}",
+  "syncAllSynced": "Todo sincronizado",
+  "syncChangesWaiting": "{count} esperando sincronización",
+  "syncFailedTapToRetry": "Error de sincronización, toca para reintentar",
   "offlineQueueStatus": "Cola sin conexión",
   "offlineStatus": "Desconectado",
   "onlineStatus": "En línea",
@@ -972,6 +994,8 @@
   "tripsMixedCurrencies": "Monedas mixtas",
   "tripsShowActive": "Mostrar activos",
   "tripsSeeAll": "Ver todo",
+  "tripsGridView": "Vista de cuadrícula",
+  "tripsListView": "Vista de lista",
   "tripsAddNewTrip": "Añadir viaje",
   "tripsLoadMore": "Cargar más",
   "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "¿Eliminar \"{arg1}\"? Esto solo está permitido antes de añadir cualquier gasto.",

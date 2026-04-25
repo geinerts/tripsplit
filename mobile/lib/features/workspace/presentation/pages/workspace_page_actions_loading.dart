@@ -114,6 +114,9 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
         _randomSelection = nextSelection;
       });
       unawaited(_primeExpensesFeed());
+      if (_activityLoaded || _workspaceTabIndex == 3) {
+        unawaited(_loadTripActivity(reset: true));
+      }
 
       if (_openAddExpenseAfterLoad && !openedAddExpenseDuringLoad) {
         _openAddExpenseAfterLoad = false;
@@ -237,6 +240,65 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
       if (mounted) {
         _updateState(() {
           _isLoadingMoreExpenses = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadTripActivity({required bool reset}) async {
+    if (_isLoadingActivity) {
+      return;
+    }
+    final offset = reset ? 0 : (_activityNextOffset ?? _activityEvents.length);
+    _updateState(() {
+      _isLoadingActivity = true;
+      if (reset) {
+        _activityHasMore = false;
+        _activityNextOffset = null;
+      }
+    });
+
+    try {
+      final page = await widget.workspaceController.loadTripActivity(
+        tripId: widget.trip.id,
+        limit: 50,
+        offset: offset,
+      );
+      if (!mounted) {
+        return;
+      }
+
+      final merged = reset
+          ? <WorkspaceActivityEvent>[]
+          : <WorkspaceActivityEvent>[..._activityEvents];
+      final existingIds = merged.map((item) => item.id).toSet();
+      for (final item in page.items) {
+        if (existingIds.add(item.id)) {
+          merged.add(item);
+        }
+      }
+
+      _updateState(() {
+        _activityEvents = merged;
+        _activityLoaded = true;
+        _activityHasMore = page.hasMore;
+        _activityNextOffset = page.nextOffset;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      if (reset && !_activityLoaded) {
+        _updateState(() {
+          _activityEvents = const <WorkspaceActivityEvent>[];
+          _activityHasMore = false;
+          _activityNextOffset = null;
+        });
+      }
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isLoadingActivity = false;
         });
       }
     }

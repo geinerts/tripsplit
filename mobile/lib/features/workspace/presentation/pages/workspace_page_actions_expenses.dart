@@ -92,6 +92,34 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
       return;
     }
 
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        final t = context.l10n;
+        return AlertDialog(
+          title: Text(t.editExpenseConfirmTitle),
+          content: Text(t.editExpenseConfirmText),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(t.cancelAction),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(t.saveAction),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+    await _waitForDialogCloseTransition();
+    if (!mounted) {
+      return;
+    }
+
     await _runMutation(
       action: () async {
         final receipt = await _uploadReceiptBestEffort(

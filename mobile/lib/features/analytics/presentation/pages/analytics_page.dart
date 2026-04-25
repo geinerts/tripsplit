@@ -24,7 +24,6 @@ part 'analytics_page_calculations.dart';
 part 'analytics_page_widgets.dart';
 part 'analytics_page_components.dart';
 
-const Color _analyticsBg = AppDesign.lightCanvas;
 const Color _analyticsCard = AppDesign.lightSurface;
 const Color _analyticsPrimary = AppDesign.lightPrimary;
 const Color _analyticsAccent = AppDesign.lightAccent;

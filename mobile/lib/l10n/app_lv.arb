@@ -122,6 +122,11 @@
       "count": {}
     }
   },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "@paidOwesLine": {
     "placeholders": {
       "owes": {},
@@ -357,6 +362,8 @@
   "deleteAction": "Dzēst",
   "deleteExpenseConfirmQuestion": "Vai dzēst šo izdevumu?",
   "deleteExpenseTitle": "Dzēst izdevumu",
+  "editExpenseConfirmTitle": "Saglabāt izdevuma izmaiņas?",
+  "editExpenseConfirmText": "Tas atjauninās bilances visiem šī ceļojuma dalībniekiem.",
   "directlyExplainedByExpenses": "Tieši izskaidrots ar izdevumiem: {amount}",
   "doneStatus": "Pabeigts",
   "editAction": "Rediģēt",
@@ -420,6 +427,18 @@
   "logOutButton": "Iziet",
   "logoutFromDeviceQuestion": "Iziet no šīs ierīces?",
   "markedAsSent": "Atzīmēts kā nosūtīts.",
+  "markSettlementSentConfirmTitle": "Atzīmēt pārskaitījumu kā nosūtītu?",
+  "markSettlementSentConfirmText": "Izmanto tikai tad, ja maksājums tiešām ir nosūtīts. Saņēmējam būs jāapstiprina saņemšana.",
+  "settlementCancelSentAction": "Atzīmēt kā nenosūtītu",
+  "settlementCancelSentConfirmTitle": "Atcelt nosūtīšanas statusu?",
+  "settlementCancelSentConfirmText": "Pārskaitījums atgriezīsies gaidīšanas statusā, un saņēmējs saņems paziņojumu.",
+  "settlementSentCancelled": "Pārskaitījums atgriezts gaidīšanas statusā.",
+  "settlementNotReceivedAction": "Es to nesaņēmu",
+  "settlementNotReceivedConfirmTitle": "Ziņot, ka nav saņemts?",
+  "settlementNotReceivedConfirmText": "Pārskaitījums atgriezīsies gaidīšanas statusā, un maksātājs saņems paziņojumu.",
+  "settlementMarkedNotReceived": "Atzīmēts kā nesaņemts.",
+  "confirmSettlementReceivedConfirmTitle": "Apstiprināt saņemšanu?",
+  "confirmSettlementReceivedConfirmText": "Apstiprini tikai tad, ja nauda ir redzama tavā kontā. Šī darbība var pabeigt norēķinu.",
   "memberSummariesSubtitle": "Pašreizējais bilances stāvoklis abām pusēm.",
   "memberSummariesTitle": "Dalībnieku kopsavilkumi",
   "memberToPaySummary": "Jāmaksā {total} - apstiprināts {confirmed} - gaida {waiting}",
@@ -539,6 +558,9 @@
   "notificationSettlementConfirmedBody": "{name} apstiprināja, ka saņēma {amount} no tevis.",
   "notificationSettlementConfirmedBodyGeneric": "Pārskaitījums tika apstiprināts.",
   "offlineQueuePendingChanges": "Bezsaistes rinda: {count, plural, one{{count} neapstrādāta izmaiņa} other{{count} neapstrādātas izmaiņas}}",
+  "syncAllSynced": "Viss sinhronizēts",
+  "syncChangesWaiting": "{count} gaida sinhronizāciju",
+  "syncFailedTapToRetry": "Sinhronizācija neizdevās, pieskaries lai mēģinātu vēlreiz",
   "offlineQueueStatus": "Bezsaistes rinda",
   "offlineStatus": "Bezsaistē",
   "onlineStatus": "Tiešsaistē",
@@ -972,6 +994,8 @@
   "tripsMixedCurrencies": "Jauktas valūtas",
   "tripsShowActive": "Rādīt aktīvos",
   "tripsSeeAll": "Skatīt visus",
+  "tripsGridView": "Režģa skats",
+  "tripsListView": "Saraksta skats",
   "tripsAddNewTrip": "Pievienot ceļojumu",
   "tripsLoadMore": "Ielādēt vēl",
   "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "Dzēst \"{arg1}\"? Tas ir atļauts tikai pirms ceļojumam pievienoti izdevumi.",

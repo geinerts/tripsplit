@@ -63,7 +63,8 @@ import 'app_localizations_lv.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,7 +72,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -83,18 +85,19 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('es'),
-    Locale('lv')
+    Locale('lv'),
   ];
 
   /// No description provided for @accountSectionTitle.
@@ -420,6 +423,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete expense'**
   String get deleteExpenseTitle;
+
+  /// No description provided for @editExpenseConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save expense changes?'**
+  String get editExpenseConfirmTitle;
+
+  /// No description provided for @editExpenseConfirmText.
+  ///
+  /// In en, this message translates to:
+  /// **'This will update balances for everyone in the trip.'**
+  String get editExpenseConfirmText;
 
   /// No description provided for @directlyExplainedByExpenses.
   ///
@@ -798,6 +813,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Marked as sent.'**
   String get markedAsSent;
+
+  /// No description provided for @markSettlementSentConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark transfer as sent?'**
+  String get markSettlementSentConfirmTitle;
+
+  /// No description provided for @markSettlementSentConfirmText.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this only after you have actually sent the payment. The receiver will be asked to confirm.'**
+  String get markSettlementSentConfirmText;
+
+  /// No description provided for @settlementCancelSentAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as not sent'**
+  String get settlementCancelSentAction;
+
+  /// No description provided for @settlementCancelSentConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel sent status?'**
+  String get settlementCancelSentConfirmTitle;
+
+  /// No description provided for @settlementCancelSentConfirmText.
+  ///
+  /// In en, this message translates to:
+  /// **'This will move the transfer back to pending and notify the receiver.'**
+  String get settlementCancelSentConfirmText;
+
+  /// No description provided for @settlementSentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer moved back to pending.'**
+  String get settlementSentCancelled;
+
+  /// No description provided for @settlementNotReceivedAction.
+  ///
+  /// In en, this message translates to:
+  /// **'I didn’t receive this'**
+  String get settlementNotReceivedAction;
+
+  /// No description provided for @settlementNotReceivedConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report not received?'**
+  String get settlementNotReceivedConfirmTitle;
+
+  /// No description provided for @settlementNotReceivedConfirmText.
+  ///
+  /// In en, this message translates to:
+  /// **'This will move the transfer back to pending and notify the payer.'**
+  String get settlementNotReceivedConfirmText;
+
+  /// No description provided for @settlementMarkedNotReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as not received.'**
+  String get settlementMarkedNotReceived;
+
+  /// No description provided for @confirmSettlementReceivedConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm received?'**
+  String get confirmSettlementReceivedConfirmTitle;
+
+  /// No description provided for @confirmSettlementReceivedConfirmText.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm only after the money is visible in your account. This action may complete the settlement.'**
+  String get confirmSettlementReceivedConfirmText;
 
   /// No description provided for @memberSummariesSubtitle.
   ///
@@ -1319,13 +1406,21 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{name} added an expense of {amount} in \"{trip}\".'**
-  String notificationExpenseAddedBodyWithTrip(Object amount, Object name, Object trip);
+  String notificationExpenseAddedBodyWithTrip(
+    Object amount,
+    Object name,
+    Object trip,
+  );
 
   /// No description provided for @notificationExpenseAddedBodyWithNote.
   ///
   /// In en, this message translates to:
   /// **'{name} added an expense of {amount}: {note}'**
-  String notificationExpenseAddedBodyWithNote(Object amount, Object name, Object note);
+  String notificationExpenseAddedBodyWithNote(
+    Object amount,
+    Object name,
+    Object note,
+  );
 
   /// No description provided for @notificationExpenseAddedBodyGeneric.
   ///
@@ -1415,13 +1510,21 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{actor} reminded {target} to mark {amount} as sent.'**
-  String notificationSettlementReminderBodyMarkSent(Object actor, Object amount, Object target);
+  String notificationSettlementReminderBodyMarkSent(
+    Object actor,
+    Object amount,
+    Object target,
+  );
 
   /// No description provided for @notificationSettlementReminderBodyConfirm.
   ///
   /// In en, this message translates to:
   /// **'{actor} reminded {target} to confirm receiving {amount}.'**
-  String notificationSettlementReminderBodyConfirm(Object actor, Object amount, Object target);
+  String notificationSettlementReminderBodyConfirm(
+    Object actor,
+    Object amount,
+    Object target,
+  );
 
   /// No description provided for @notificationSettlementReminderBodyGeneric.
   ///
@@ -1439,7 +1542,11 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Reminder: please mark {amount} as sent to {target} in \"{trip}\".'**
-  String notificationPaymentReminderBody(Object amount, Object target, Object trip);
+  String notificationPaymentReminderBody(
+    Object amount,
+    Object target,
+    Object trip,
+  );
 
   /// No description provided for @notificationPaymentReminderBodyGeneric.
   ///
@@ -1457,7 +1564,11 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Reminder: please confirm receiving {amount} from {payer} in \"{trip}\".'**
-  String notificationConfirmationReminderBody(Object amount, Object payer, Object trip);
+  String notificationConfirmationReminderBody(
+    Object amount,
+    Object payer,
+    Object trip,
+  );
 
   /// No description provided for @notificationConfirmationReminderBodyGeneric.
   ///
@@ -1506,6 +1617,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offline queue: {count, plural, one{{count} pending change} other{{count} pending changes}}'**
   String offlineQueuePendingChanges(num count);
+
+  /// No description provided for @syncAllSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'All synced'**
+  String get syncAllSynced;
+
+  /// No description provided for @syncChangesWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} waiting to sync'**
+  String syncChangesWaiting(Object count);
+
+  /// No description provided for @syncFailedTapToRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed, tap to retry'**
+  String get syncFailedTapToRetry;
 
   /// No description provided for @offlineQueueStatus.
   ///
@@ -3359,7 +3488,8 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'You can deactivate account access or request an email link to permanently delete the account. Password is optional for Google/Apple accounts.'**
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword;
+  String
+  get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword;
 
   /// No description provided for @profileEditEnterPasswordOptionalGoogleApple.
   ///
@@ -3923,7 +4053,9 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Delete \"{tripLabel}\"? This is allowed only before any expenses are added.'**
-  String shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(Object tripLabel);
+  String shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(
+    Object tripLabel,
+  );
 
   /// No description provided for @shellTripDeleted.
   ///
@@ -4013,7 +4145,10 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'You are already a member of \"{tripName}\". Open this trip now?\n\nInvited by: {inviterName}'**
-  String shellInviteAlreadyMemberOpenTripNow(Object inviterName, Object tripName);
+  String shellInviteAlreadyMemberOpenTripNow(
+    Object inviterName,
+    Object tripName,
+  );
 
   /// No description provided for @shellInviteJoinTripQuestion.
   ///
@@ -4080,6 +4215,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See all'**
   String get tripsSeeAll;
+
+  /// No description provided for @tripsGridView.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid view'**
+  String get tripsGridView;
+
+  /// No description provided for @tripsListView.
+  ///
+  /// In en, this message translates to:
+  /// **'List view'**
+  String get tripsListView;
 
   /// No description provided for @tripsAddNewTrip.
   ///
@@ -4337,7 +4484,10 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{arg1} payment(s) to mark as sent, {arg2} to confirm as received.'**
-  String workspacePaymentSToMarkAsSentToConfirmAsReceived(Object arg1, Object arg2);
+  String workspacePaymentSToMarkAsSentToConfirmAsReceived(
+    Object arg1,
+    Object arg2,
+  );
 
   /// No description provided for @workspaceReadyToSettle.
   ///
@@ -5510,7 +5660,8 @@ abstract class AppLocalizations {
   String get paymentCopied;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -5519,26 +5670,28 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'es', 'lv'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'es', 'lv'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'es': return AppLocalizationsEs();
-    case 'lv': return AppLocalizationsLv();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'lv':
+      return AppLocalizationsLv();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

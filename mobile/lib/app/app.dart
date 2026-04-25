@@ -9,6 +9,7 @@ import 'locale/app_locale_scope.dart';
 import 'router/app_router.dart';
 import 'theme/app_design.dart';
 import 'theme/app_overlay_style.dart';
+import 'theme/app_page_transitions.dart';
 import 'theme/app_semantic_colors.dart';
 import 'theme/theme_mode_scope.dart';
 import '../core/ui/app_background.dart';
@@ -229,6 +230,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
           borderRadius: BorderRadius.circular(AppDesign.radiusSm),
         ),
       ),
+      pageTransitionsTheme: appPageTransitionsTheme,
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colorScheme.surface,
         modalBackgroundColor: colorScheme.surface,
@@ -382,6 +384,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
           borderRadius: BorderRadius.circular(AppDesign.radiusSm),
         ),
       ),
+      pageTransitionsTheme: appPageTransitionsTheme,
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colorScheme.surface,
         modalBackgroundColor: colorScheme.surface,

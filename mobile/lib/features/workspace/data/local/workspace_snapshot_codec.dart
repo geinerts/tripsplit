@@ -62,6 +62,8 @@ class WorkspaceSnapshotCodec {
               'confirmed_at': item.confirmedAt,
               'can_mark_sent': item.canMarkSent,
               'can_confirm_received': item.canConfirmReceived,
+              'can_cancel_sent': item.canCancelSent,
+              'can_report_not_received': item.canReportNotReceived,
               'is_confirmed': item.isConfirmed,
             },
           )
@@ -233,6 +235,8 @@ class WorkspaceSnapshotCodec {
             confirmedAt: item['confirmed_at'] as String?,
             canMarkSent: item['can_mark_sent'] == true,
             canConfirmReceived: item['can_confirm_received'] == true,
+            canCancelSent: item['can_cancel_sent'] == true,
+            canReportNotReceived: item['can_report_not_received'] == true,
             isConfirmed:
                 item['is_confirmed'] == true ||
                 (item['status'] as String? ?? '').trim().toLowerCase() ==

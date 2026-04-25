@@ -53,6 +53,9 @@ class AppBottomSheetSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomSafePadding = useSafeArea
+        ? MediaQuery.paddingOf(context).bottom
+        : 0.0;
     final radius = BorderRadius.vertical(
       top: Radius.circular(AppDesign.radiusLg),
     );
@@ -93,14 +96,12 @@ class AppBottomSheetSurface extends StatelessWidget {
                 ),
               ),
             child,
+            if (bottomSafePadding > 0) SizedBox(height: bottomSafePadding),
           ],
         ),
       ),
     );
 
-    if (!useSafeArea) {
-      return surface;
-    }
-    return SafeArea(top: false, left: false, right: false, child: surface);
+    return surface;
   }
 }

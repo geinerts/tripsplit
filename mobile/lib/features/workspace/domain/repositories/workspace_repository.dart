@@ -8,6 +8,7 @@ import '../entities/expense_split_value.dart';
 import '../entities/receipt_upload_payload.dart';
 import '../entities/trip_expenses_page.dart';
 import '../entities/uploaded_receipt.dart';
+import '../entities/workspace_activity_event.dart';
 import '../entities/workspace_notifications_inbox.dart';
 import '../entities/workspace_shared_trip.dart';
 import '../entities/workspace_snapshot.dart';
@@ -28,6 +29,11 @@ abstract class WorkspaceRepository {
     String? cursor,
     int? offset,
   });
+  Future<WorkspaceActivityPage> loadTripActivity({
+    required int tripId,
+    int limit,
+    int? offset,
+  });
   Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
     required int userId,
     int limit,
@@ -43,6 +49,14 @@ abstract class WorkspaceRepository {
   Future<void> endTrip({required int tripId});
   Future<void> setReadyToSettle({required int tripId, required bool isReady});
   Future<void> markSettlementSent({
+    required int tripId,
+    required int settlementId,
+  });
+  Future<void> cancelSettlementSent({
+    required int tripId,
+    required int settlementId,
+  });
+  Future<void> reportSettlementNotReceived({
     required int tripId,
     required int settlementId,
   });

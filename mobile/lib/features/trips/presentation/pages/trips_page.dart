@@ -88,11 +88,13 @@ class TripsPage extends StatefulWidget {
 
 class _TripsPageState extends State<TripsPage> {
   static const int _allTripsInitialCount = 3;
+  static const int _allTripsGridInitialCount = 4;
   static const int _allTripsLoadMoreStep = 2;
 
   bool _isLoading = true;
   bool _isMutating = false;
   bool _showAllTrips = false;
+  bool _showAllTripsGrid = false;
   int _activeTripsPageIndex = 0;
   int _allTripsVisibleCount = _allTripsInitialCount;
   bool _openCreateAfterLoad = false;

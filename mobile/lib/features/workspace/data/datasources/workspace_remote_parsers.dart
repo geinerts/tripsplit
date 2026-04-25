@@ -4,6 +4,7 @@ import '../../domain/entities/random_order.dart';
 import '../../domain/entities/random_order_member.dart';
 import '../../domain/entities/settlement_item.dart';
 import '../../domain/entities/trip_expense.dart';
+import '../../domain/entities/workspace_activity_event.dart';
 import '../../domain/entities/workspace_notification.dart';
 import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_user.dart';
@@ -136,6 +137,8 @@ class WorkspaceRemoteParsers {
       confirmedAt: _toNullableString(item['confirmed_at']),
       canMarkSent: item['can_mark_sent'] == true,
       canConfirmReceived: item['can_confirm_received'] == true,
+      canCancelSent: item['can_cancel_sent'] == true,
+      canReportNotReceived: item['can_report_not_received'] == true,
       isConfirmed: item['is_confirmed'] == true || status == 'confirmed',
     );
   }
@@ -219,6 +222,32 @@ class WorkspaceRemoteParsers {
       title: _toString(item['title']).trim(),
       body: _toString(item['body']).trim(),
       isRead: _toBool(item['is_read']),
+      createdAt: _toNullableString(item['created_at']),
+    );
+  }
+
+  static WorkspaceActivityEvent parseActivityEvent(Map<String, dynamic> item) {
+    final rawPayload = item['payload'];
+    final payload = rawPayload is Map<String, dynamic>
+        ? Map<String, dynamic>.unmodifiable(rawPayload)
+        : const <String, dynamic>{};
+    return WorkspaceActivityEvent(
+      id: _toInt(item['id']),
+      tripId: _toInt(item['trip_id']),
+      actorUserId: item['actor_user_id'] == null
+          ? null
+          : _toInt(item['actor_user_id']),
+      actorName: _toString(item['actor_name'], fallback: 'Trip member').trim(),
+      actorAvatarUrl: MediaUrlResolver.normalize(
+        item['actor_avatar_url'] as String?,
+      ),
+      actorAvatarThumbUrl: MediaUrlResolver.normalize(
+        item['actor_avatar_thumb_url'] as String?,
+      ),
+      eventType: _toString(item['event_type']).trim(),
+      entityType: _toNullableString(item['entity_type']),
+      entityId: item['entity_id'] == null ? null : _toInt(item['entity_id']),
+      payload: payload,
       createdAt: _toNullableString(item['created_at']),
     );
   }

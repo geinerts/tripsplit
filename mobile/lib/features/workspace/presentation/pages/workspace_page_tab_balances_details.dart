@@ -37,7 +37,10 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       builder: (context) {
         final colors = Theme.of(context).colorScheme;
         final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+        final bottomSafePadding = MediaQuery.paddingOf(context).bottom;
         return SafeArea(
+          top: false,
+          bottom: false,
           child: Stack(
             children: [
               Positioned.fill(
@@ -52,62 +55,148 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(bottom: bottomInset),
-                child: FractionallySizedBox(
-                  heightFactor: 0.92,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? colors.surface : AppDesign.lightSurface,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(30),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        Container(
-                          width: 48,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: isDark
-                                ? Colors.white.withValues(alpha: 0.24)
-                                : const Color(0xFFD8D2C8),
-                            borderRadius: BorderRadius.circular(999),
-                          ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: bottomInset),
+                  child: FractionallySizedBox(
+                    widthFactor: 1,
+                    heightFactor: 0.92,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? colors.surface : AppDesign.lightSurface,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(30),
                         ),
-                        Expanded(
-                          child: ListView(
-                            padding: const EdgeInsets.fromLTRB(18, 10, 18, 20),
-                            children: [
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: IconButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  tooltip: MaterialLocalizations.of(
-                                    context,
-                                  ).closeButtonTooltip,
-                                  icon: const Icon(Icons.close_rounded),
-                                ),
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          Container(
+                            width: 48,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? Colors.white.withValues(alpha: 0.24)
+                                  : const Color(0xFFD8D2C8),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView(
+                              padding: EdgeInsets.fromLTRB(
+                                18,
+                                10,
+                                18,
+                                20 + bottomSafePadding,
                               ),
-                              const SizedBox(height: 4),
-                              Center(
-                                child: _largeMemberAvatar(
-                                  id: item.id,
-                                  name: memberName,
-                                  avatarUrl:
-                                      member?.avatarThumbUrl ??
-                                      member?.avatarUrl,
-                                  size: 96,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    tooltip: MaterialLocalizations.of(
+                                      context,
+                                    ).closeButtonTooltip,
+                                    icon: const Icon(Icons.close_rounded),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              Center(
-                                child: Text(
-                                  memberName,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium
+                                const SizedBox(height: 4),
+                                Center(
+                                  child: _largeMemberAvatar(
+                                    id: item.id,
+                                    name: memberName,
+                                    avatarUrl:
+                                        member?.avatarThumbUrl ??
+                                        member?.avatarUrl,
+                                    size: 96,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Center(
+                                  child: Text(
+                                    memberName,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w800,
+                                          color: isDark
+                                              ? null
+                                              : AppDesign.lightForeground,
+                                        ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Center(
+                                  child: Text(
+                                    statusText,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          color: isDark
+                                              ? colors.onSurfaceVariant
+                                              : AppDesign.lightMuted,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Center(
+                                  child: Text(
+                                    _signedMoney(
+                                      context,
+                                      item.net,
+                                      currencyCode: widget.trip.currencyCode,
+                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayMedium
+                                        ?.copyWith(
+                                          color: netColor,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                  ),
+                                ),
+                                const SizedBox(height: 14),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: _buildBalanceStatCard(
+                                        context,
+                                        label: context.l10n.workspaceTotalPaid,
+                                        value: _formatMoney(
+                                          context,
+                                          item.paid,
+                                          currencyCode:
+                                              widget.trip.currencyCode,
+                                        ),
+                                        color: positiveColor,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: _buildBalanceStatCard(
+                                        context,
+                                        label: context.l10n.workspaceTotalOwes,
+                                        value: _formatMoney(
+                                          context,
+                                          item.owed,
+                                          currencyCode:
+                                              widget.trip.currencyCode,
+                                        ),
+                                        color: negativeColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  context.l10n.workspaceTransactionHistory,
+                                  style: Theme.of(context).textTheme.titleLarge
                                       ?.copyWith(
                                         fontWeight: FontWeight.w800,
                                         color: isDark
@@ -115,222 +204,158 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                                             : AppDesign.lightForeground,
                                       ),
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Center(
-                                child: Text(
-                                  statusText,
-                                  style: Theme.of(context).textTheme.titleMedium
-                                      ?.copyWith(
-                                        color: isDark
-                                            ? colors.onSurfaceVariant
-                                            : AppDesign.lightMuted,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Center(
-                                child: Text(
-                                  _signedMoney(
-                                    context,
-                                    item.net,
-                                    currencyCode: widget.trip.currencyCode,
-                                  ),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayMedium
-                                      ?.copyWith(
-                                        color: netColor,
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                ),
-                              ),
-                              const SizedBox(height: 14),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: _buildBalanceStatCard(
-                                      context,
-                                      label: context.l10n.workspaceTotalPaid,
-                                      value: _formatMoney(
-                                        context,
-                                        item.paid,
-                                        currencyCode: widget.trip.currencyCode,
-                                      ),
-                                      color: positiveColor,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: _buildBalanceStatCard(
-                                      context,
-                                      label: context.l10n.workspaceTotalOwes,
-                                      value: _formatMoney(
-                                        context,
-                                        item.owed,
-                                        currencyCode: widget.trip.currencyCode,
-                                      ),
-                                      color: negativeColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                context.l10n.workspaceTransactionHistory,
-                                style: Theme.of(context).textTheme.titleLarge
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w800,
+                                const SizedBox(height: 10),
+                                if (transactions.isEmpty)
+                                  Container(
+                                    padding: const EdgeInsets.all(14),
+                                    decoration: BoxDecoration(
                                       color: isDark
-                                          ? null
-                                          : AppDesign.lightForeground,
+                                          ? colors.surfaceContainerHighest
+                                          : const Color(0xFFF2EFE8),
+                                      borderRadius: BorderRadius.circular(18),
                                     ),
-                              ),
-                              const SizedBox(height: 10),
-                              if (transactions.isEmpty)
-                                Container(
-                                  padding: const EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                    color: isDark
-                                        ? colors.surfaceContainerHighest
-                                        : const Color(0xFFF2EFE8),
-                                    borderRadius: BorderRadius.circular(18),
-                                  ),
-                                  child: Text(
-                                    context
-                                        .l10n
-                                        .workspaceNoTransactionsYetForThisMember,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
-                                  ),
-                                )
-                              else
-                                ...transactions.map((entry) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: Container(
-                                      padding: const EdgeInsets.fromLTRB(
-                                        12,
-                                        12,
-                                        12,
-                                        12,
+                                    child: Text(
+                                      context
+                                          .l10n
+                                          .workspaceNoTransactionsYetForThisMember,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium,
+                                    ),
+                                  )
+                                else
+                                  ...transactions.map((entry) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 10,
                                       ),
-                                      decoration: BoxDecoration(
-                                        color: isDark
-                                            ? colors.surfaceContainerHighest
-                                            : const Color(0xFFF6F3ED),
-                                        borderRadius: BorderRadius.circular(18),
-                                        border: Border.all(
+                                      child: Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                          12,
+                                          12,
+                                          12,
+                                          12,
+                                        ),
+                                        decoration: BoxDecoration(
                                           color: isDark
-                                              ? colors.outlineVariant
-                                                    .withValues(alpha: 0.30)
-                                              : AppDesign.lightStroke,
+                                              ? colors.surfaceContainerHighest
+                                              : const Color(0xFFF6F3ED),
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
+                                          border: Border.all(
+                                            color: isDark
+                                                ? colors.outlineVariant
+                                                      .withValues(alpha: 0.30)
+                                                : AppDesign.lightStroke,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                color: entry.isPositive
+                                                    ? AppDesign.lightSuccess
+                                                          .withValues(
+                                                            alpha: 0.18,
+                                                          )
+                                                    : AppDesign.lightDestructive
+                                                          .withValues(
+                                                            alpha: 0.16,
+                                                          ),
+                                                borderRadius:
+                                                    BorderRadius.circular(999),
+                                              ),
+                                              alignment: Alignment.center,
+                                              child: Icon(
+                                                entry.icon,
+                                                color: entry.isPositive
+                                                    ? AppDesign.lightSuccess
+                                                    : AppDesign
+                                                          .lightDestructive,
+                                                size: 20,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    entry.title,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleMedium
+                                                        ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          color: isDark
+                                                              ? null
+                                                              : AppDesign
+                                                                    .lightForeground,
+                                                        ),
+                                                  ),
+                                                  const SizedBox(height: 2),
+                                                  Text(
+                                                    entry.subtitle,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium
+                                                        ?.copyWith(
+                                                          color: isDark
+                                                              ? colors
+                                                                    .onSurfaceVariant
+                                                              : AppDesign
+                                                                    .lightMuted,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              '${entry.isPositive ? '+' : '-'}${_formatMoney(context, entry.amount, currencyCode: widget.trip.currencyCode)}',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleLarge
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.w800,
+                                                    color: entry.isPositive
+                                                        ? AppDesign.lightSuccess
+                                                        : AppDesign
+                                                              .lightDestructive,
+                                                  ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: entry.isPositive
-                                                  ? AppDesign.lightSuccess
-                                                        .withValues(alpha: 0.18)
-                                                  : AppDesign.lightDestructive
-                                                        .withValues(
-                                                          alpha: 0.16,
-                                                        ),
-                                              borderRadius:
-                                                  BorderRadius.circular(999),
+                                    );
+                                  }),
+                                if (linkedSettlements.isNotEmpty) ...[
+                                  const SizedBox(height: 6),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: [
+                                      _OverviewMetaPill(
+                                        icon: Icons.swap_horiz_rounded,
+                                        label: context.l10n
+                                            .workspaceSettlements(
+                                              linkedSettlements.length,
                                             ),
-                                            alignment: Alignment.center,
-                                            child: Icon(
-                                              entry.icon,
-                                              color: entry.isPositive
-                                                  ? AppDesign.lightSuccess
-                                                  : AppDesign.lightDestructive,
-                                              size: 20,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  entry.title,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleMedium
-                                                      ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w800,
-                                                        color: isDark
-                                                            ? null
-                                                            : AppDesign
-                                                                  .lightForeground,
-                                                      ),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                Text(
-                                                  entry.subtitle,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium
-                                                      ?.copyWith(
-                                                        color: isDark
-                                                            ? colors
-                                                                  .onSurfaceVariant
-                                                            : AppDesign
-                                                                  .lightMuted,
-                                                      ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            '${entry.isPositive ? '+' : '-'}${_formatMoney(context, entry.amount, currencyCode: widget.trip.currencyCode)}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.w800,
-                                                  color: entry.isPositive
-                                                      ? AppDesign.lightSuccess
-                                                      : AppDesign
-                                                            .lightDestructive,
-                                                ),
-                                          ),
-                                        ],
+                                        color: AppDesign.lightPrimary,
                                       ),
-                                    ),
-                                  );
-                                }),
-                              if (linkedSettlements.isNotEmpty) ...[
-                                const SizedBox(height: 6),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: [
-                                    _OverviewMetaPill(
-                                      icon: Icons.swap_horiz_rounded,
-                                      label: context.l10n.workspaceSettlements(
-                                        linkedSettlements.length,
-                                      ),
-                                      color: AppDesign.lightPrimary,
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                ],
                               ],
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

@@ -8,6 +8,7 @@ import '../../domain/entities/random_draw_result.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/trip_expenses_page.dart';
 import '../../domain/entities/uploaded_receipt.dart';
+import '../../domain/entities/workspace_activity_event.dart';
 import '../../domain/entities/workspace_notifications_inbox.dart';
 import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
@@ -29,6 +30,11 @@ abstract class WorkspaceRemoteDataSource {
     String? cursor,
     int? offset,
   });
+  Future<WorkspaceActivityPage> loadTripActivity({
+    required int tripId,
+    int limit,
+    int? offset,
+  });
   Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
     required int userId,
     int limit,
@@ -37,6 +43,14 @@ abstract class WorkspaceRemoteDataSource {
   Future<void> endTrip({required int tripId});
   Future<void> setReadyToSettle({required int tripId, required bool isReady});
   Future<void> markSettlementSent({
+    required int tripId,
+    required int settlementId,
+  });
+  Future<void> cancelSettlementSent({
+    required int tripId,
+    required int settlementId,
+  });
+  Future<void> reportSettlementNotReceived({
     required int tripId,
     required int settlementId,
   });
@@ -199,6 +213,19 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   }
 
   @override
+  Future<WorkspaceActivityPage> loadTripActivity({
+    required int tripId,
+    int limit = 50,
+    int? offset,
+  }) {
+    return _snapshotLoader.loadTripActivity(
+      tripId: tripId,
+      limit: limit,
+      offset: offset,
+    );
+  }
+
+  @override
   Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
     required int userId,
     int limit = 20,
@@ -225,6 +252,28 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required int settlementId,
   }) {
     return _mutationApi.markSettlementSent(
+      tripId: tripId,
+      settlementId: settlementId,
+    );
+  }
+
+  @override
+  Future<void> cancelSettlementSent({
+    required int tripId,
+    required int settlementId,
+  }) {
+    return _mutationApi.cancelSettlementSent(
+      tripId: tripId,
+      settlementId: settlementId,
+    );
+  }
+
+  @override
+  Future<void> reportSettlementNotReceived({
+    required int tripId,
+    required int settlementId,
+  }) {
+    return _mutationApi.reportSettlementNotReceived(
       tripId: tripId,
       settlementId: settlementId,
     );

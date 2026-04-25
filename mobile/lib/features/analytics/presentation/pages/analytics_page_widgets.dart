@@ -8,56 +8,51 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
     }
 
     return AppBackground(
-      child: ColoredBox(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? AppDesign.darkCanvas
-            : _analyticsBg,
-        child: RefreshIndicator(
-          onRefresh: () => _loadTrips(forceReload: true),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: responsive.pageMaxWidth,
-                    minHeight: constraints.maxHeight,
-                  ),
-                  child: ListView(
-                    physics: const AlwaysScrollableScrollPhysics(
-                      parent: BouncingScrollPhysics(),
-                    ),
-                    padding: EdgeInsets.fromLTRB(
-                      responsive.pageHorizontalPadding,
-                      12,
-                      responsive.pageHorizontalPadding,
-                      18,
-                    ),
-                    children: [
-                      if (_tripsError != null)
-                        _InlineErrorCard(
-                          message: _tripsError!,
-                          onRetry: () => _loadTrips(forceReload: true),
-                        ),
-                      if (_tripsError != null) const SizedBox(height: 10),
-                      _buildTripSelector(context),
-                      const SizedBox(height: 12),
-                      if (_isLoadingSnapshot && _selectedSnapshot == null)
-                        ..._buildAnalyticsChartsSkeleton(context)
-                      else if (_snapshotError != null &&
-                          _selectedSnapshot == null)
-                        _InlineErrorCard(
-                          message: _snapshotError!,
-                          onRetry: () =>
-                              _loadSelectedTripSnapshot(forceReload: true),
-                        )
-                      else if (_selectedSnapshot != null)
-                        ..._buildCharts(context, _selectedSnapshot!),
-                    ],
-                  ),
+      child: RefreshIndicator(
+        onRefresh: () => _loadTrips(forceReload: true),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: responsive.pageMaxWidth,
+                  minHeight: constraints.maxHeight,
                 ),
-              );
-            },
-          ),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.fromLTRB(
+                    responsive.pageHorizontalPadding,
+                    12,
+                    responsive.pageHorizontalPadding,
+                    18,
+                  ),
+                  children: [
+                    if (_tripsError != null)
+                      _InlineErrorCard(
+                        message: _tripsError!,
+                        onRetry: () => _loadTrips(forceReload: true),
+                      ),
+                    if (_tripsError != null) const SizedBox(height: 10),
+                    _buildTripSelector(context),
+                    const SizedBox(height: 12),
+                    if (_isLoadingSnapshot && _selectedSnapshot == null)
+                      ..._buildAnalyticsChartsSkeleton(context)
+                    else if (_snapshotError != null &&
+                        _selectedSnapshot == null)
+                      _InlineErrorCard(
+                        message: _snapshotError!,
+                        onRetry: () =>
+                            _loadSelectedTripSnapshot(forceReload: true),
+                      )
+                    else if (_selectedSnapshot != null)
+                      ..._buildCharts(context, _selectedSnapshot!),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -65,39 +60,35 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
 
   Widget _buildAnalyticsLoadingSurface(BuildContext context) {
     final responsive = context.responsive;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBackground(
-      child: ColoredBox(
-        color: isDark ? AppDesign.darkCanvas : _analyticsBg,
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: responsive.pageMaxWidth,
-                    minHeight: constraints.maxHeight,
-                  ),
-                  child: ListView(
-                    physics: const AlwaysScrollableScrollPhysics(
-                      parent: BouncingScrollPhysics(),
-                    ),
-                    padding: EdgeInsets.fromLTRB(
-                      responsive.pageHorizontalPadding,
-                      12,
-                      responsive.pageHorizontalPadding,
-                      18,
-                    ),
-                    children: [
-                      _buildAnalyticsTripSelectorSkeleton(context),
-                      const SizedBox(height: 12),
-                      ..._buildAnalyticsChartsSkeleton(context),
-                    ],
-                  ),
+      child: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: responsive.pageMaxWidth,
+                  minHeight: constraints.maxHeight,
                 ),
-              );
-            },
-          ),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: EdgeInsets.fromLTRB(
+                    responsive.pageHorizontalPadding,
+                    12,
+                    responsive.pageHorizontalPadding,
+                    18,
+                  ),
+                  children: [
+                    _buildAnalyticsTripSelectorSkeleton(context),
+                    const SizedBox(height: 12),
+                    ..._buildAnalyticsChartsSkeleton(context),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

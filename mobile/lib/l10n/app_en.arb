@@ -122,6 +122,11 @@
       "count": {}
     }
   },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
   "@paidOwesLine": {
     "placeholders": {
       "owes": {},
@@ -357,6 +362,8 @@
   "deleteAction": "Delete",
   "deleteExpenseConfirmQuestion": "Delete this expense?",
   "deleteExpenseTitle": "Delete expense",
+  "editExpenseConfirmTitle": "Save expense changes?",
+  "editExpenseConfirmText": "This will update balances for everyone in the trip.",
   "directlyExplainedByExpenses": "Directly explained by expenses: {amount}",
   "doneStatus": "Done",
   "editAction": "Edit",
@@ -420,6 +427,18 @@
   "logOutButton": "Log out",
   "logoutFromDeviceQuestion": "Log out from this device?",
   "markedAsSent": "Marked as sent.",
+  "markSettlementSentConfirmTitle": "Mark transfer as sent?",
+  "markSettlementSentConfirmText": "Use this only after you have actually sent the payment. The receiver will be asked to confirm.",
+  "settlementCancelSentAction": "Mark as not sent",
+  "settlementCancelSentConfirmTitle": "Cancel sent status?",
+  "settlementCancelSentConfirmText": "This will move the transfer back to pending and notify the receiver.",
+  "settlementSentCancelled": "Transfer moved back to pending.",
+  "settlementNotReceivedAction": "I didn’t receive this",
+  "settlementNotReceivedConfirmTitle": "Report not received?",
+  "settlementNotReceivedConfirmText": "This will move the transfer back to pending and notify the payer.",
+  "settlementMarkedNotReceived": "Marked as not received.",
+  "confirmSettlementReceivedConfirmTitle": "Confirm received?",
+  "confirmSettlementReceivedConfirmText": "Confirm only after the money is visible in your account. This action may complete the settlement.",
   "memberSummariesSubtitle": "Current balance state for both sides.",
   "memberSummariesTitle": "Member summaries",
   "memberToPaySummary": "To pay {total}  -  confirmed {confirmed}  -  waiting {waiting}",
@@ -538,6 +557,9 @@
   "notificationSettlementConfirmedBody": "{name} confirmed receiving {amount} from you.",
   "notificationSettlementConfirmedBodyGeneric": "A transfer was confirmed.",
   "offlineQueuePendingChanges": "Offline queue: {count, plural, one{{count} pending change} other{{count} pending changes}}",
+  "syncAllSynced": "All synced",
+  "syncChangesWaiting": "{count} waiting to sync",
+  "syncFailedTapToRetry": "Sync failed, tap to retry",
   "offlineQueueStatus": "Offline queue",
   "offlineStatus": "Offline",
   "onlineStatus": "Online",
@@ -972,6 +994,8 @@
   "tripsMixedCurrencies": "Mixed currencies",
   "tripsShowActive": "Show active",
   "tripsSeeAll": "See all",
+  "tripsGridView": "Grid view",
+  "tripsListView": "List view",
   "tripsAddNewTrip": "Add new trip",
   "tripsLoadMore": "Load more",
   "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "Delete \"{arg1}\"? This is allowed only before any expenses are added.",

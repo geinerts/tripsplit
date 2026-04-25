@@ -247,6 +247,42 @@ extension _TripsPageWidgets on _TripsPageState {
             ),
           ),
         ),
+        if (_showAllTrips)
+          IconButton(
+            onPressed: controlsEnabled
+                ? () {
+                    _updateState(() {
+                      final nextGridMode = !_showAllTripsGrid;
+                      _showAllTripsGrid = nextGridMode;
+                      if (nextGridMode &&
+                          _allTripsVisibleCount <
+                              _TripsPageState._allTripsGridInitialCount) {
+                        _allTripsVisibleCount =
+                            _TripsPageState._allTripsGridInitialCount;
+                      }
+                    });
+                  }
+                : null,
+            tooltip: _showAllTripsGrid
+                ? context.l10n.tripsListView
+                : context.l10n.tripsGridView,
+            icon: Icon(
+              _showAllTripsGrid
+                  ? Icons.view_agenda_outlined
+                  : Icons.grid_view_rounded,
+              size: 20,
+            ),
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.all(6),
+            constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+            style: IconButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.10),
+            ),
+          ),
+        if (_showAllTrips) const SizedBox(width: 4),
         TextButton(
           onPressed: controlsEnabled
               ? () {
@@ -254,8 +290,9 @@ extension _TripsPageWidgets on _TripsPageState {
                     final nextShowAllTrips = !_showAllTrips;
                     _showAllTrips = nextShowAllTrips;
                     if (nextShowAllTrips) {
-                      _allTripsVisibleCount =
-                          _TripsPageState._allTripsInitialCount;
+                      _allTripsVisibleCount = _showAllTripsGrid
+                          ? _TripsPageState._allTripsGridInitialCount
+                          : _TripsPageState._allTripsInitialCount;
                     }
                   });
                 }
@@ -363,7 +400,7 @@ extension _TripsPageWidgets on _TripsPageState {
 
     final responsive = context.responsive;
     late final Widget listContent;
-    if (responsive.isCompact) {
+    if (!_showAllTripsGrid) {
       listContent = Column(
         children: [for (final trip in trips) _buildTripCard(context, trip)],
       );
@@ -371,10 +408,12 @@ extension _TripsPageWidgets on _TripsPageState {
       listContent = LayoutBuilder(
         builder: (context, constraints) {
           var columns = responsive.isExpanded ? 3 : 2;
-          if (columns == 3 && constraints.maxWidth < 860) {
+          if (constraints.maxWidth < 330) {
+            columns = 1;
+          } else if (columns == 3 && constraints.maxWidth < 760) {
             columns = 2;
           }
-          const spacing = 12.0;
+          const spacing = 10.0;
           final itemWidth =
               (constraints.maxWidth - ((columns - 1) * spacing)) / columns;
 
@@ -385,7 +424,7 @@ extension _TripsPageWidgets on _TripsPageState {
               for (final trip in trips)
                 SizedBox(
                   width: itemWidth,
-                  child: _buildTripCard(
+                  child: _buildTripGridTile(
                     context,
                     trip,
                     withBottomSpacing: false,

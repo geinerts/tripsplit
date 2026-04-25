@@ -86,7 +86,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authSubtitleLogin => 'Dividir los gastos de viaje con amigos.';
 
   @override
-  String get authSubtitleRegister => 'Crea una cuenta y comienza a dividir viajes';
+  String get authSubtitleRegister =>
+      'Crea una cuenta y comienza a dividir viajes';
 
   @override
   String breakdownConfirmedCount(Object count) {
@@ -112,13 +113,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get cancelAction => 'Cancelar';
 
   @override
-  String get changeEmailWithPasswordHelper => 'Ingrese su contraseña para cambiar el correo electrónico.';
+  String get changeEmailWithPasswordHelper =>
+      'Ingrese su contraseña para cambiar el correo electrónico.';
 
   @override
   String get chooseReceiptFile => 'Elija el archivo de recibo';
 
   @override
-  String get completeAccountSetupDescription => 'Configure su correo electrónico y contraseña para completar su cuenta.';
+  String get completeAccountSetupDescription =>
+      'Configure su correo electrónico y contraseña para completar su cuenta.';
 
   @override
   String get completeAccountSetupTitle => 'Configuración completa de la cuenta';
@@ -127,7 +130,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get confirmReceivedAction => 'Confirmar recibido';
 
   @override
-  String get confirmedAllSettlementsArchived => 'Todos los acuerdos confirmados. Viaje archivado.';
+  String get confirmedAllSettlementsArchived =>
+      'Todos los acuerdos confirmados. Viaje archivado.';
 
   @override
   String get confirmedAsReceived => 'Confirmado como recibido.';
@@ -136,7 +140,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get confirmedLabel => 'Confirmado';
 
   @override
-  String get couldNotOpenReceiptLink => 'No se pudo abrir el enlace del recibo.';
+  String get couldNotOpenReceiptLink =>
+      'No se pudo abrir el enlace del recibo.';
 
   @override
   String get createAction => 'Crear';
@@ -159,7 +164,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get creatorMustFinishTripFirst => 'El creador del viaje debe finalizarlo para comenzar la confirmación de la liquidación.';
+  String get creatorMustFinishTripFirst =>
+      'El creador del viaje debe finalizarlo para comenzar la confirmación de la liquidación.';
 
   @override
   String currentEmailLabel(Object email) {
@@ -191,6 +197,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deleteExpenseTitle => 'Eliminar gasto';
 
   @override
+  String get editExpenseConfirmTitle => '¿Guardar cambios del gasto?';
+
+  @override
+  String get editExpenseConfirmText =>
+      'Esto actualizará los balances para todos en el viaje.';
+
+  @override
   String directlyExplainedByExpenses(Object amount) {
     return 'Explicado directamente por gastos: $amount';
   }
@@ -217,10 +230,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get emailRequired => 'Se requiere correo electrónico.';
 
   @override
-  String get enterValidExactAmounts => 'Ingrese cantidades exactas válidas para todos los participantes.';
+  String get enterValidExactAmounts =>
+      'Ingrese cantidades exactas válidas para todos los participantes.';
 
   @override
-  String get enterValidPercentages => 'Introduzca porcentajes válidos para todos los participantes.';
+  String get enterValidPercentages =>
+      'Introduzca porcentajes válidos para todos los participantes.';
 
   @override
   String get equalSplitLabel => 'División igual';
@@ -242,7 +257,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get expenseAdded => 'Gasto añadido.';
 
   @override
-  String get expenseBreakdownSubtitle => 'Cómo este miembro se ve afectado por cada gasto.';
+  String get expenseBreakdownSubtitle =>
+      'Cómo este miembro se ve afectado por cada gasto.';
 
   @override
   String get expenseBreakdownTitle => 'Desglose de gastos';
@@ -304,19 +320,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get failedToCreateTrip => 'No se pudo crear el viaje.';
 
   @override
-  String get failedToLoadUsersDirectory => 'No se pudo cargar el directorio de usuarios.';
+  String get failedToLoadUsersDirectory =>
+      'No se pudo cargar el directorio de usuarios.';
 
   @override
-  String get filterSettlementByMemberSubtitle => 'Filtrar liquidaciones por miembro';
+  String get filterSettlementByMemberSubtitle =>
+      'Filtrar liquidaciones por miembro';
 
   @override
   String get finishTripAction => 'Terminar viaje';
 
   @override
-  String get finishTripConfirmationText => '¿Terminar este viaje y empezar a establecer asentamientos?';
+  String get finishTripConfirmationText =>
+      '¿Terminar este viaje y empezar a establecer asentamientos?';
 
   @override
-  String get finishTripStartSettlementsAction => 'Finalizar e iniciar asentamientos.';
+  String get finishTripStartSettlementsAction =>
+      'Finalizar e iniciar asentamientos.';
 
   @override
   String get finishTripTitle => 'Terminar viaje';
@@ -330,16 +350,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get forgotPassword => '¿Has olvidado tu contraseña?';
 
   @override
-  String get forgotPasswordSubtitle => 'Ingrese su correo electrónico y le enviaremos un enlace para restablecer su contraseña.';
+  String get forgotPasswordSubtitle =>
+      'Ingrese su correo electrónico y le enviaremos un enlace para restablecer su contraseña.';
 
   @override
-  String get forgotPasswordSuccessMessage => 'Si existe una cuenta con este correo electrónico, le hemos enviado un enlace para restablecer la contraseña.';
+  String get forgotPasswordSuccessMessage =>
+      'Si existe una cuenta con este correo electrónico, le hemos enviado un enlace para restablecer la contraseña.';
 
   @override
   String get forgotPasswordTitle => 'Restablecer contraseña';
 
   @override
-  String get friendsProgressSubtitle => 'Cada miembro y su estado de confirmación.';
+  String get friendsProgressSubtitle =>
+      'Cada miembro y su estado de confirmación.';
 
   @override
   String get friendsProgressTitle => 'Progreso de amigos';
@@ -393,7 +416,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get languageSystemSubtitle => 'Usar el idioma del dispositivo';
 
   @override
-  String get leaveEmptyKeepPasswordHelper => 'Déjelo vacío para mantener la contraseña actual.';
+  String get leaveEmptyKeepPasswordHelper =>
+      'Déjelo vacío para mantener la contraseña actual.';
 
   @override
   String get logInButton => 'Acceso';
@@ -408,7 +432,49 @@ class AppLocalizationsEs extends AppLocalizations {
   String get markedAsSent => 'Marcado como enviado.';
 
   @override
-  String get memberSummariesSubtitle => 'Estado de equilibrio actual para ambas partes.';
+  String get markSettlementSentConfirmTitle =>
+      '¿Marcar transferencia como enviada?';
+
+  @override
+  String get markSettlementSentConfirmText =>
+      'Úsalo solo después de haber enviado realmente el pago. El receptor deberá confirmarlo.';
+
+  @override
+  String get settlementCancelSentAction => 'Marcar como no enviado';
+
+  @override
+  String get settlementCancelSentConfirmTitle => '¿Cancelar estado enviado?';
+
+  @override
+  String get settlementCancelSentConfirmText =>
+      'La transferencia volverá a pendiente y se notificará al receptor.';
+
+  @override
+  String get settlementSentCancelled => 'Transferencia devuelta a pendiente.';
+
+  @override
+  String get settlementNotReceivedAction => 'No lo recibí';
+
+  @override
+  String get settlementNotReceivedConfirmTitle => '¿Reportar como no recibido?';
+
+  @override
+  String get settlementNotReceivedConfirmText =>
+      'La transferencia volverá a pendiente y se notificará al pagador.';
+
+  @override
+  String get settlementMarkedNotReceived => 'Marcado como no recibido.';
+
+  @override
+  String get confirmSettlementReceivedConfirmTitle => '¿Confirmar recibido?';
+
+  @override
+  String get confirmSettlementReceivedConfirmText =>
+      'Confirma solo cuando el dinero sea visible en tu cuenta. Esta acción puede completar la liquidación.';
+
+  @override
+  String get memberSummariesSubtitle =>
+      'Estado de equilibrio actual para ambas partes.';
 
   @override
   String get memberSummariesTitle => 'Resúmenes de miembros';
@@ -448,7 +514,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get firstNameLabel => 'Nombre de pila';
 
   @override
-  String get firstNameLengthValidation => 'El nombre debe tener entre 2 y 64 caracteres.';
+  String get firstNameLengthValidation =>
+      'El nombre debe tener entre 2 y 64 caracteres.';
 
   @override
   String get fullNameHelper => 'Utilice nombre y apellido en un campo.';
@@ -460,7 +527,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get fullNameLabel => 'nombre completo';
 
   @override
-  String get fullNameValidation => 'Ingrese el nombre y apellido (al menos 2 caracteres cada uno).';
+  String get fullNameValidation =>
+      'Ingrese el nombre y apellido (al menos 2 caracteres cada uno).';
 
   @override
   String get lastNameHint => 'tu apellido';
@@ -469,7 +537,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get lastNameLabel => 'Apellido';
 
   @override
-  String get lastNameLengthValidation => 'El apellido debe tener entre 2 y 64 caracteres.';
+  String get lastNameLengthValidation =>
+      'El apellido debe tener entre 2 y 64 caracteres.';
 
   @override
   String get nameHint => 'Su nombre';
@@ -478,7 +547,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nameLabel => 'Nombre';
 
   @override
-  String get nameLengthValidation => 'El nombre debe tener al menos 2 caracteres.';
+  String get nameLengthValidation =>
+      'El nombre debe tener al menos 2 caracteres.';
 
   @override
   String get navActivities => 'Analítica';
@@ -517,7 +587,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nicknameLabel => 'Apodo';
 
   @override
-  String get nicknameLengthValidation => 'El apodo debe tener al menos 2 caracteres.';
+  String get nicknameLengthValidation =>
+      'El apodo debe tener al menos 2 caracteres.';
 
   @override
   String get noAccountQuestion => '¿Aún no tienes cuenta?';
@@ -529,10 +600,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noChangesToSave => 'No hay cambios para guardar.';
 
   @override
-  String get noDirectExpenseLink => 'No se encontró ningún enlace directo de gasto único. Esta liquidación se calcula a partir del saldo total del viaje.';
+  String get noDirectExpenseLink =>
+      'No se encontró ningún enlace directo de gasto único. Esta liquidación se calcula a partir del saldo total del viaje.';
 
   @override
-  String get noExpenseImpactForMember => 'No hay impacto en los gastos para este miembro.';
+  String get noExpenseImpactForMember =>
+      'No hay impacto en los gastos para este miembro.';
 
   @override
   String noExpensesByUserYet(Object name) {
@@ -585,7 +658,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noPicksYet => 'Aún no hay selecciones.';
 
   @override
-  String get noSettlementActivityForMember => 'No hay actividad de liquidación para este miembro.';
+  String get noSettlementActivityForMember =>
+      'No hay actividad de liquidación para este miembro.';
 
   @override
   String get noSettlementRowsYet => 'Aún no hay disputas por acuerdos.';
@@ -594,10 +668,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noSettlements => 'Sin asentamientos';
 
   @override
-  String get noTransferNeededForFilter => 'No se necesita transferencia para el filtro seleccionado.';
+  String get noTransferNeededForFilter =>
+      'No se necesita transferencia para el filtro seleccionado.';
 
   @override
-  String get noTransferRowsToShow => 'No hay filas de transferencia para mostrar.';
+  String get noTransferRowsToShow =>
+      'No hay filas de transferencia para mostrar.';
 
   @override
   String get noTripDataLoaded => 'No se cargaron datos de viaje.';
@@ -640,7 +716,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get notificationFriendInviteBodyGeneric => 'Recibiste una invitación de amistad.';
+  String get notificationFriendInviteBodyGeneric =>
+      'Recibiste una invitación de amistad.';
 
   @override
   String get notificationFriendInviteAcceptedTitle => 'Invitación aceptada';
@@ -651,7 +728,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get notificationFriendInviteAcceptedBodyGeneric => 'Tu invitación de amistad fue aceptada.';
+  String get notificationFriendInviteAcceptedBodyGeneric =>
+      'Tu invitación de amistad fue aceptada.';
 
   @override
   String get notificationFriendInviteRejectedTitle => 'Invitación rechazada';
@@ -662,7 +740,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get notificationFriendInviteRejectedBodyGeneric => 'Tu invitación de amistad fue rechazada.';
+  String get notificationFriendInviteRejectedBodyGeneric =>
+      'Tu invitación de amistad fue rechazada.';
 
   @override
   String get notificationTripAddedTitle => 'Añadido al viaje';
@@ -684,12 +763,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notificationExpenseAddedTitle => 'Nuevo gasto añadido';
 
   @override
-  String notificationExpenseAddedBodyWithTrip(Object amount, Object name, Object trip) {
+  String notificationExpenseAddedBodyWithTrip(
+    Object amount,
+    Object name,
+    Object trip,
+  ) {
     return '$name añadió un gasto de $amount en \"$trip\".';
   }
 
   @override
-  String notificationExpenseAddedBodyWithNote(Object amount, Object name, Object note) {
+  String notificationExpenseAddedBodyWithNote(
+    Object amount,
+    Object name,
+    Object note,
+  ) {
     return '$name añadió un gasto de $amount: $note';
   }
 
@@ -700,7 +787,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notificationTripFinishedTitle => 'Viaje finalizado';
 
   @override
-  String notificationTripFinishedBodySettlementsReady(Object name, Object trip) {
+  String notificationTripFinishedBodySettlementsReady(
+    Object name,
+    Object trip,
+  ) {
     return '$name finalizó \"$trip\". Las liquidaciones están listas.';
   }
 
@@ -715,10 +805,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get notificationTripFinishedBodyGeneric => 'Se actualizó el estado del viaje.';
+  String get notificationTripFinishedBodyGeneric =>
+      'Se actualizó el estado del viaje.';
 
   @override
-  String get notificationMemberReadyToSettleTitle => 'Miembro marcado como listo';
+  String get notificationMemberReadyToSettleTitle =>
+      'Miembro marcado como listo';
 
   @override
   String notificationMemberReadyToSettleBody(Object name, Object trip) {
@@ -731,10 +823,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get notificationMemberReadyToSettleBodyGeneric => 'Un miembro está listo para liquidar.';
+  String get notificationMemberReadyToSettleBodyGeneric =>
+      'Un miembro está listo para liquidar.';
 
   @override
-  String get notificationTripReadyToSettleTitle => 'Todos los miembros están listos';
+  String get notificationTripReadyToSettleTitle =>
+      'Todos los miembros están listos';
 
   @override
   String notificationTripReadyToSettleBody(Object trip) {
@@ -742,48 +836,71 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get notificationTripReadyToSettleBodyGeneric => 'Todos los miembros están listos. Puedes iniciar las liquidaciones.';
+  String get notificationTripReadyToSettleBodyGeneric =>
+      'Todos los miembros están listos. Puedes iniciar las liquidaciones.';
 
   @override
-  String get notificationSettlementReminderTitle => 'Recordatorio de liquidación';
+  String get notificationSettlementReminderTitle =>
+      'Recordatorio de liquidación';
 
   @override
-  String notificationSettlementReminderBodyMarkSent(Object actor, Object amount, Object target) {
+  String notificationSettlementReminderBodyMarkSent(
+    Object actor,
+    Object amount,
+    Object target,
+  ) {
     return '$actor recordó a $target marcar $amount como enviado.';
   }
 
   @override
-  String notificationSettlementReminderBodyConfirm(Object actor, Object amount, Object target) {
+  String notificationSettlementReminderBodyConfirm(
+    Object actor,
+    Object amount,
+    Object target,
+  ) {
     return '$actor recordó a $target confirmar la recepción de $amount.';
   }
 
   @override
-  String get notificationSettlementReminderBodyGeneric => 'Recibiste un recordatorio de liquidación.';
+  String get notificationSettlementReminderBodyGeneric =>
+      'Recibiste un recordatorio de liquidación.';
 
   @override
   String get notificationPaymentReminderTitle => 'Recordatorio de pago';
 
   @override
-  String notificationPaymentReminderBody(Object amount, Object target, Object trip) {
+  String notificationPaymentReminderBody(
+    Object amount,
+    Object target,
+    Object trip,
+  ) {
     return 'Recordatorio: marca $amount como enviado a $target en \"$trip\".';
   }
 
   @override
-  String get notificationPaymentReminderBodyGeneric => 'Recordatorio: marca el pago como enviado.';
+  String get notificationPaymentReminderBodyGeneric =>
+      'Recordatorio: marca el pago como enviado.';
 
   @override
-  String get notificationConfirmationReminderTitle => 'Recordatorio de confirmación';
+  String get notificationConfirmationReminderTitle =>
+      'Recordatorio de confirmación';
 
   @override
-  String notificationConfirmationReminderBody(Object amount, Object payer, Object trip) {
+  String notificationConfirmationReminderBody(
+    Object amount,
+    Object payer,
+    Object trip,
+  ) {
     return 'Recordatorio: confirma la recepción de $amount de $payer en \"$trip\".';
   }
 
   @override
-  String get notificationConfirmationReminderBodyGeneric => 'Recordatorio: confirma la recepción del pago.';
+  String get notificationConfirmationReminderBodyGeneric =>
+      'Recordatorio: confirma la recepción del pago.';
 
   @override
-  String get notificationSettlementSentTitle => 'Transferencia marcada como enviada';
+  String get notificationSettlementSentTitle =>
+      'Transferencia marcada como enviada';
 
   @override
   String notificationSettlementSentBody(Object amount, Object name) {
@@ -791,7 +908,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get notificationSettlementSentBodyGeneric => 'Se marcó una transferencia como enviada.';
+  String get notificationSettlementSentBodyGeneric =>
+      'Se marcó una transferencia como enviada.';
 
   @override
   String get notificationSettlementConfirmedTitle => 'Transferencia confirmada';
@@ -802,7 +920,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get notificationSettlementConfirmedBodyGeneric => 'Se confirmó una transferencia.';
+  String get notificationSettlementConfirmedBodyGeneric =>
+      'Se confirmó una transferencia.';
 
   @override
   String offlineQueuePendingChanges(num count) {
@@ -816,6 +935,18 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get syncAllSynced => 'Todo sincronizado';
+
+  @override
+  String syncChangesWaiting(Object count) {
+    return '$count esperando sincronización';
+  }
+
+  @override
+  String get syncFailedTapToRetry =>
+      'Error de sincronización, toca para reintentar';
+
+  @override
   String get offlineQueueStatus => 'Cola sin conexión';
 
   @override
@@ -825,7 +956,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get onlineStatus => 'En línea';
 
   @override
-  String get onlyCreatorCanFinishTrip => 'Sólo el creador del viaje puede finalizar el viaje.';
+  String get onlyCreatorCanFinishTrip =>
+      'Sólo el creador del viaje puede finalizar el viaje.';
 
   @override
   String get openLabel => 'Abierto';
@@ -854,7 +986,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get participantsEmptyMeansAll => 'Participantes (vacío = todos los miembros)';
+  String get participantsEmptyMeansAll =>
+      'Participantes (vacío = todos los miembros)';
 
   @override
   String get participantsTitle => 'Participantes';
@@ -863,19 +996,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get passwordLabel => 'Contraseña';
 
   @override
-  String get passwordComplexityHelper => 'Utilice al menos 1 letra mayúscula, 1 número y 1 símbolo.';
+  String get passwordComplexityHelper =>
+      'Utilice al menos 1 letra mayúscula, 1 número y 1 símbolo.';
 
   @override
-  String get passwordComplexityValidation => 'La contraseña debe incluir 1 letra mayúscula, 1 número y 1 símbolo.';
+  String get passwordComplexityValidation =>
+      'La contraseña debe incluir 1 letra mayúscula, 1 número y 1 símbolo.';
 
   @override
-  String get passwordMinLength => 'La contraseña debe tener al menos 8 caracteres.';
+  String get passwordMinLength =>
+      'La contraseña debe tener al menos 8 caracteres.';
 
   @override
-  String get passwordMinLengthShort => 'La contraseña debe tener al menos 6 caracteres.';
+  String get passwordMinLengthShort =>
+      'La contraseña debe tener al menos 6 caracteres.';
 
   @override
-  String get passwordResetComingSoon => 'Próximamente se restablecerá la contraseña.';
+  String get passwordResetComingSoon =>
+      'Próximamente se restablecerá la contraseña.';
 
   @override
   String get passwordsDoNotMatch => 'Las contraseñas no coinciden.';
@@ -889,13 +1027,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get pendingLabel => 'Pendiente';
 
   @override
-  String get pendingPaymentsSubtitle => 'Los pagos aún esperan confirmación completa.';
+  String get pendingPaymentsSubtitle =>
+      'Los pagos aún esperan confirmación completa.';
 
   @override
   String get percentLabel => 'Por ciento';
 
   @override
-  String get percentSplitMustBe100 => 'La división porcentual debe sumar exactamente 100%.';
+  String get percentSplitMustBe100 =>
+      'La división porcentual debe sumar exactamente 100%.';
 
   @override
   String percentWithValue(Object value) {
@@ -922,7 +1062,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get profileRefreshCachedData => 'No se pudo actualizar el perfil. Mostrando datos almacenados en caché.';
+  String get profileRefreshCachedData =>
+      'No se pudo actualizar el perfil. Mostrando datos almacenados en caché.';
 
   @override
   String get profileTitle => 'Perfil';
@@ -949,7 +1090,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get avatarRemovedMessage => 'Avatar eliminado.';
 
   @override
-  String get avatarFileTooLarge => 'El archivo de avatar es demasiado grande (máximo 5 MB).';
+  String get avatarFileTooLarge =>
+      'El archivo de avatar es demasiado grande (máximo 5 MB).';
 
   @override
   String get avatarPickFailed => 'No se pudo cargar la imagen de avatar.';
@@ -1051,7 +1193,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sendResetLinkButton => 'Enviar enlace de reinicio';
 
   @override
-  String get searchUsersHint => 'Buscar personas por nombre o correo electrónico';
+  String get searchUsersHint =>
+      'Buscar personas por nombre o correo electrónico';
 
   @override
   String get selectedPeopleLabel => 'personas seleccionadas';
@@ -1092,7 +1235,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settledStatus => 'Establecido';
 
   @override
-  String get settlementActivitySubtitle => 'Transferencias vinculadas a este miembro.';
+  String get settlementActivitySubtitle =>
+      'Transferencias vinculadas a este miembro.';
 
   @override
   String get settlementActivityTitle => 'Actividad de liquidación';
@@ -1128,13 +1272,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settlementLabel => 'Asentamiento';
 
   @override
-  String get settlementOverviewArchivedSubtitle => 'Viaje archivado. Todos los asentamientos completados.';
+  String get settlementOverviewArchivedSubtitle =>
+      'Viaje archivado. Todos los asentamientos completados.';
 
   @override
-  String get settlementOverviewInProgressSubtitle => 'Seguimiento de confirmaciones de liquidación.';
+  String get settlementOverviewInProgressSubtitle =>
+      'Seguimiento de confirmaciones de liquidación.';
 
   @override
-  String get settlementOverviewPreviewSubtitle => 'Vista previa de traslados para cuando finalice el viaje.';
+  String get settlementOverviewPreviewSubtitle =>
+      'Vista previa de traslados para cuando finalice el viaje.';
 
   @override
   String get settlementPreview => 'Vista previa de la liquidación';
@@ -1154,7 +1301,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settlements => 'Asentamientos';
 
   @override
-  String get settlementsAlreadyCompletedSubtitle => 'Liquidaciones ya completadas.';
+  String get settlementsAlreadyCompletedSubtitle =>
+      'Liquidaciones ya completadas.';
 
   @override
   String get settlementsDone => 'Liquidaciones realizadas';
@@ -1169,7 +1317,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sharesLabel => 'Acciones';
 
   @override
-  String get sharesMustBePositiveIntegers => 'Las acciones deben ser números enteros positivos.';
+  String get sharesMustBePositiveIntegers =>
+      'Las acciones deben ser números enteros positivos.';
 
   @override
   String sharesWithValue(Object value) {
@@ -1189,16 +1338,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get splitBreakdownTitle => 'Desglose dividido';
 
   @override
-  String get splitHintEqual => 'Dividir en partes iguales entre los participantes seleccionados.';
+  String get splitHintEqual =>
+      'Dividir en partes iguales entre los participantes seleccionados.';
 
   @override
-  String get splitHintExact => 'Ingrese el monto exacto para cada participante. La suma debe coincidir con el total.';
+  String get splitHintExact =>
+      'Ingrese el monto exacto para cada participante. La suma debe coincidir con el total.';
 
   @override
-  String get splitHintPercent => 'Ingrese el porcentaje para cada participante. La suma debe ser 100%.';
+  String get splitHintPercent =>
+      'Ingrese el porcentaje para cada participante. La suma debe ser 100%.';
 
   @override
-  String get splitHintShares => 'Introduzca las unidades de participación (1, 2, 3...). El costo se divide proporcionalmente.';
+  String get splitHintShares =>
+      'Introduzca las unidades de participación (1, 2, 3...). El costo se divide proporcionalmente.';
 
   @override
   String get splitLabel => 'Dividir';
@@ -1249,7 +1402,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get suggestedTransferDirections => 'Direcciones de transferencia sugeridas';
+  String get suggestedTransferDirections =>
+      'Direcciones de transferencia sugeridas';
 
   @override
   String get suggestedTransferFromExpense => 'Transferencia sugerida de gasto';
@@ -1266,7 +1420,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get suggestedTransfersSubtitle => 'Pagador esperado -> filas del receptor.';
+  String get suggestedTransfersSubtitle =>
+      'Pagador esperado -> filas del receptor.';
 
   @override
   String get suggestedTransfersTitle => 'Transferencias sugeridas';
@@ -1322,16 +1477,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tripAlreadyClosed => 'Viaje ya cerrado.';
 
   @override
-  String get tripArchivedReadOnly => 'El viaje está archivado. Modo de solo lectura.';
+  String get tripArchivedReadOnly =>
+      'El viaje está archivado. Modo de solo lectura.';
 
   @override
-  String get tripClosedExpenseEditingDisabled => 'El viaje está cerrado. La edición de gastos está deshabilitada.';
+  String get tripClosedExpenseEditingDisabled =>
+      'El viaje está cerrado. La edición de gastos está deshabilitada.';
 
   @override
-  String get tripClosedExpensesReadOnly => 'El viaje está cerrado. Los gastos son de solo lectura.';
+  String get tripClosedExpensesReadOnly =>
+      'El viaje está cerrado. Los gastos son de solo lectura.';
 
   @override
-  String get tripClosedRandomDisabled => 'El viaje está cerrado. El sorteo aleatorio está deshabilitado.';
+  String get tripClosedRandomDisabled =>
+      'El viaje está cerrado. El sorteo aleatorio está deshabilitado.';
 
   @override
   String tripCreated(Object name) {
@@ -1342,13 +1501,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tripFinished => 'Viaje terminado.';
 
   @override
-  String get tripFinishedCompleteSettlements => 'El viaje ha terminado. Liquidaciones completas.';
+  String get tripFinishedCompleteSettlements =>
+      'El viaje ha terminado. Liquidaciones completas.';
 
   @override
-  String get tripFinishedSettlementStarted => 'Viaje terminado. Se inició el asentamiento.';
+  String get tripFinishedSettlementStarted =>
+      'Viaje terminado. Se inició el asentamiento.';
 
   @override
-  String get tripFullySettledArchived => 'Viaje totalmente liquidado y archivado.';
+  String get tripFullySettledArchived =>
+      'Viaje totalmente liquidado y archivado.';
 
   @override
   String get tripNameHint => 'viaje de esquí a austria';
@@ -1357,7 +1519,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tripNameLabel => 'Nombre del viaje';
 
   @override
-  String get tripNameLengthValidation => 'El nombre del viaje debe tener al menos 2 caracteres.';
+  String get tripNameLengthValidation =>
+      'El nombre del viaje debe tener al menos 2 caracteres.';
 
   @override
   String get tripSnapshotTitle => 'Instantánea del viaje';
@@ -1376,22 +1539,28 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get unexpectedErrorLoadingProfile => 'Error inesperado al cargar el perfil';
+  String get unexpectedErrorLoadingProfile =>
+      'Error inesperado al cargar el perfil';
 
   @override
-  String get unexpectedErrorLoadingTripData => 'Error inesperado al cargar los datos del viaje';
+  String get unexpectedErrorLoadingTripData =>
+      'Error inesperado al cargar los datos del viaje';
 
   @override
-  String get unexpectedErrorLoadingTrips => 'Errores inesperados al cargar viajes';
+  String get unexpectedErrorLoadingTrips =>
+      'Errores inesperados al cargar viajes';
 
   @override
-  String get unexpectedErrorSavingChanges => 'Error inesperado al guardar cambios';
+  String get unexpectedErrorSavingChanges =>
+      'Error inesperado al guardar cambios';
 
   @override
-  String get unexpectedErrorSavingCredentials => 'Error inesperado al guardar credenciales';
+  String get unexpectedErrorSavingCredentials =>
+      'Error inesperado al guardar credenciales';
 
   @override
-  String get unexpectedErrorUpdatingProfile => 'Error inesperado al actualizar el perfil';
+  String get unexpectedErrorUpdatingProfile =>
+      'Error inesperado al actualizar el perfil';
 
   @override
   String get unknownError => 'Error desconocido';
@@ -1414,7 +1583,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get missingTripRouteArgument => 'Falta el argumento de la ruta del viaje.';
+  String get missingTripRouteArgument =>
+      'Falta el argumento de la ruta del viaje.';
 
   @override
   String userIdLabel(Object id) {
@@ -1452,7 +1622,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get whyPaymentExistsSubtitle => 'Filas de gastos que contribuyen a esta transferencia.';
+  String get whyPaymentExistsSubtitle =>
+      'Filas de gastos que contribuyen a esta transferencia.';
 
   @override
   String get whyPaymentExistsTitle => '¿Por qué existe este pago?';
@@ -1486,7 +1657,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authIntroTravelFree => 'Viaja gratis.';
 
   @override
-  String get authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo => 'Realice un seguimiento de los costos compartidos entre monedas y liquide al instante, sin pagarés incómodos.';
+  String get authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo =>
+      'Realice un seguimiento de los costos compartidos entre monedas y liquide al instante, sin pagarés incómodos.';
 
   @override
   String get authIntroPlanTogether => 'Planifiquen juntos.';
@@ -1495,7 +1667,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authIntroPayClearly => 'Pague claramente.';
 
   @override
-  String get authIntroCreateTripsSecondsAddFriendsKeepEveryExpense => 'Crea viajes en segundos, agrega amigos y mantén todos los gastos transparentes para todos.';
+  String get authIntroCreateTripsSecondsAddFriendsKeepEveryExpense =>
+      'Crea viajes en segundos, agrega amigos y mantén todos los gastos transparentes para todos.';
 
   @override
   String get authIntroSettleFast => 'Resolver rápido.';
@@ -1504,13 +1677,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authIntroStayFriends => 'Sigan siendo amigos.';
 
   @override
-  String get authIntroFromSharedDinnersFullTripsSplytoKeepsBalances => 'Desde cenas compartidas hasta viajes completos, Splyto mantiene un saldo justo y libre de estrés.';
+  String get authIntroFromSharedDinnersFullTripsSplytoKeepsBalances =>
+      'Desde cenas compartidas hasta viajes completos, Splyto mantiene un saldo justo y libre de estrés.';
 
   @override
-  String get authIntroAppleSignFailedPleaseTryAgain => 'Error al iniciar sesión en Apple. Por favor inténtalo de nuevo.';
+  String get authIntroAppleSignFailedPleaseTryAgain =>
+      'Error al iniciar sesión en Apple. Por favor inténtalo de nuevo.';
 
   @override
-  String get authIntroGoogleSignFailedPleaseTryAgain => 'Error al iniciar sesión en Google. Por favor inténtalo de nuevo.';
+  String get authIntroGoogleSignFailedPleaseTryAgain =>
+      'Error al iniciar sesión en Google. Por favor inténtalo de nuevo.';
 
   @override
   String get authIntroCreateAccount => 'Crea tu cuenta.';
@@ -1549,19 +1725,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authIntroOr => 'O';
 
   @override
-  String get authGoogleSignDidNotReturnIdToken => 'El inicio de sesión de Google no devolvió un token de identificación.';
+  String get authGoogleSignDidNotReturnIdToken =>
+      'El inicio de sesión de Google no devolvió un token de identificación.';
 
   @override
-  String get authAppleSignAvailableIosDevices => 'El inicio de sesión de Apple está disponible en dispositivos iOS.';
+  String get authAppleSignAvailableIosDevices =>
+      'El inicio de sesión de Apple está disponible en dispositivos iOS.';
 
   @override
-  String get authAppleSignNotAvailableDevice => 'El inicio de sesión de Apple no está disponible en este dispositivo.';
+  String get authAppleSignNotAvailableDevice =>
+      'El inicio de sesión de Apple no está disponible en este dispositivo.';
 
   @override
-  String get authAppleSignDidNotReturnIdentityToken => 'El inicio de sesión de Apple no devolvió un token de identidad.';
+  String get authAppleSignDidNotReturnIdentityToken =>
+      'El inicio de sesión de Apple no devolvió un token de identidad.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'La cuenta está desactivada. Ingrese su correo electrónico para solicitar un enlace de reactivación.';
+  String get authAccountDeactivatedEnterEmailRequestReactivationLink =>
+      'La cuenta está desactivada. Ingrese su correo electrónico para solicitar un enlace de reactivación.';
 
   @override
   String get authAccountDeactivated => 'La cuenta esta desactivada';
@@ -1578,13 +1759,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get authSendLink => 'Enviar enlace';
 
   @override
-  String get authReactivationLinkSentCheckEmail => 'Enlace de reactivación enviado. Revisa tu correo electrónico.';
+  String get authReactivationLinkSentCheckEmail =>
+      'Enlace de reactivación enviado. Revisa tu correo electrónico.';
 
   @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'No se pudo enviar el enlace de reactivación. Por favor inténtalo de nuevo.';
+  String get authCouldNotSendReactivationLinkPleaseTryAgain =>
+      'No se pudo enviar el enlace de reactivación. Por favor inténtalo de nuevo.';
 
   @override
-  String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'El correo electrónico no está verificado. Ingrese su correo electrónico para solicitar el enlace de verificación.';
+  String get authEmailNotVerifiedEnterEmailRequestVerificationLink =>
+      'El correo electrónico no está verificado. Ingrese su correo electrónico para solicitar el enlace de verificación.';
 
   @override
   String get authEmailNotVerified => 'Correo electrónico no verificado';
@@ -1595,13 +1779,16 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get authVerificationLinkSentCheckEmail => 'Enlace de verificación enviado. Revisa tu correo electrónico.';
+  String get authVerificationLinkSentCheckEmail =>
+      'Enlace de verificación enviado. Revisa tu correo electrónico.';
 
   @override
-  String get authCouldNotSendVerificationLinkPleaseTryAgain => 'No se pudo enviar el enlace de verificación. Por favor inténtalo de nuevo.';
+  String get authCouldNotSendVerificationLinkPleaseTryAgain =>
+      'No se pudo enviar el enlace de verificación. Por favor inténtalo de nuevo.';
 
   @override
-  String get authVerificationEmailSentPleaseVerifyEmailBeforeLogging => 'Correo electrónico de verificación enviado. Por favor verifique su correo electrónico antes de iniciar sesión.';
+  String get authVerificationEmailSentPleaseVerifyEmailBeforeLogging =>
+      'Correo electrónico de verificación enviado. Por favor verifique su correo electrónico antes de iniciar sesión.';
 
   @override
   String get authVerifyEmail => 'Verifica tu correo electrónico';
@@ -1637,13 +1824,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileAppBanners => 'Banners en la aplicación';
 
   @override
-  String get profileShowNewNotificationBannersInsideApp => 'Mostrar nuevos banners de notificación dentro de la aplicación';
+  String get profileShowNewNotificationBannersInsideApp =>
+      'Mostrar nuevos banners de notificación dentro de la aplicación';
 
   @override
   String get profilePushNotificationsTitle => 'Notificaciones push';
 
   @override
-  String get profilePhoneNotificationsExpensesFriendsTripsSettlements => 'Notificaciones telefónicas de gastos, amigos, viajes y liquidaciones.';
+  String get profilePhoneNotificationsExpensesFriendsTripsSettlements =>
+      'Notificaciones telefónicas de gastos, amigos, viajes y liquidaciones.';
 
   @override
   String get profileSupportSectionHeading => 'APOYO';
@@ -1682,10 +1871,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileMadeWithLabel => 'Hecho con';
 
   @override
-  String get profileStoreRatingActionWillConnectedNextStep => 'La acción de calificación de la tienda se conectará en el siguiente paso.';
+  String get profileStoreRatingActionWillConnectedNextStep =>
+      'La acción de calificación de la tienda se conectará en el siguiente paso.';
 
   @override
-  String get profileFailedSaveNotificationSettings => 'No se pudo guardar la configuración de notificaciones.';
+  String get profileFailedSaveNotificationSettings =>
+      'No se pudo guardar la configuración de notificaciones.';
 
   @override
   String get profilePushNotificationsSectionTitle => 'NOTIFICACIONES PUSH';
@@ -1697,46 +1888,56 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileInAppTripMemberAddedTitle => 'Miembro añadido al viaje';
 
   @override
-  String get profileInAppAutoSettlementReminderTitle => 'Recordatorio automático de liquidación';
+  String get profileInAppAutoSettlementReminderTitle =>
+      'Recordatorio automático de liquidación';
 
   @override
   String get profileExpenseUpdates => 'Actualizaciones de gastos';
 
   @override
-  String get profileExpenseAddedBannersInsideApp => 'Banners dentro de la app cuando se añade un gasto';
+  String get profileExpenseAddedBannersInsideApp =>
+      'Banners dentro de la app cuando se añade un gasto';
 
   @override
-  String get profileExpenseAddedNotificationsPhone => 'Notificaciones de gastos añadidos al teléfono';
+  String get profileExpenseAddedNotificationsPhone =>
+      'Notificaciones de gastos añadidos al teléfono';
 
   @override
   String get profileFriendInvites => 'Invitaciones de amigos';
 
   @override
-  String get profileFriendInvitesBannersInsideApp => 'Banners dentro de la app sobre solicitudes y respuestas de amistad';
+  String get profileFriendInvitesBannersInsideApp =>
+      'Banners dentro de la app sobre solicitudes y respuestas de amistad';
 
   @override
-  String get profileFriendRequestResponseNotifications => 'Notificaciones de solicitud y respuesta de amistad.';
+  String get profileFriendRequestResponseNotifications =>
+      'Notificaciones de solicitud y respuesta de amistad.';
 
   @override
   String get profileTripUpdates => 'Actualizaciones de viaje';
 
   @override
-  String get profileTripUpdatesBannersInsideApp => 'Banners dentro de la app sobre el estado del viaje y de los miembros';
+  String get profileTripUpdatesBannersInsideApp =>
+      'Banners dentro de la app sobre el estado del viaje y de los miembros';
 
   @override
-  String get profileTripLifecycleMemberStatusChanges => 'Cambios en el ciclo de vida del viaje y el estado de los miembros';
+  String get profileTripLifecycleMemberStatusChanges =>
+      'Cambios en el ciclo de vida del viaje y el estado de los miembros';
 
   @override
   String get profileSettlementUpdates => 'Actualizaciones de liquidación';
 
   @override
-  String get profileSettlementUpdatesBannersInsideApp => 'Banners dentro de la app sobre pagos marcados como enviados y confirmados';
+  String get profileSettlementUpdatesBannersInsideApp =>
+      'Banners dentro de la app sobre pagos marcados como enviados y confirmados';
 
   @override
-  String get profileMarkedSentConfirmedPaymentUpdates => 'Actualizaciones de pago marcadas enviadas y confirmadas';
+  String get profileMarkedSentConfirmedPaymentUpdates =>
+      'Actualizaciones de pago marcadas enviadas y confirmadas';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'El tamaño de la captura de pantalla debe ser de hasta 8 MB';
+  String get profileScreenshotSizeMust8Mb =>
+      'El tamaño de la captura de pantalla debe ser de hasta 8 MB';
 
   @override
   String get profileFeedbackSendTitle => 'Enviar comentarios';
@@ -1751,7 +1952,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileFeedbackTypeSuggestion => 'Sugerencia';
 
   @override
-  String get profileDescribeIssueSuggestion => 'Describir problema o sugerencia';
+  String get profileDescribeIssueSuggestion =>
+      'Describir problema o sugerencia';
 
   @override
   String get profilePickingImage => 'Eligiendo imagen...';
@@ -1766,10 +1968,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileRemoveImage => 'Quitar imagen';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Consejo: adjunte una captura de pantalla para una clasificación de errores más rápida';
+  String get profileTipAttachScreenshotFasterBugTriage =>
+      'Consejo: adjunte una captura de pantalla para una clasificación de errores más rápida';
 
   @override
-  String get profileAddDetailsAttachScreenshotBeforeSending => 'Agregue detalles o adjunte captura de pantalla antes de enviar';
+  String get profileAddDetailsAttachScreenshotBeforeSending =>
+      'Agregue detalles o adjunte captura de pantalla antes de enviar';
 
   @override
   String get profileSendAction => 'Enviar';
@@ -1790,31 +1994,40 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileOpenPortfolioAction => 'Abrir portafolio.egm.lv';
 
   @override
-  String get profileImageFormatNotSupportedDevicePleaseChooseJpg => 'Este formato de imagen no es compatible con este dispositivo. Elija JPG o PNG.';
+  String get profileImageFormatNotSupportedDevicePleaseChooseJpg =>
+      'Este formato de imagen no es compatible con este dispositivo. Elija JPG o PNG.';
 
   @override
-  String get profileEditSetValidEmailEditProfileChangingPassword => 'Establezca un correo electrónico válido en Editar perfil antes de cambiar la contraseña.';
+  String get profileEditSetValidEmailEditProfileChangingPassword =>
+      'Establezca un correo electrónico válido en Editar perfil antes de cambiar la contraseña.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Cuenta desactivada. Utilice el enlace de reactivación del correo electrónico para restaurar el acceso.';
+  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess =>
+      'Cuenta desactivada. Utilice el enlace de reactivación del correo electrónico para restaurar el acceso.';
 
   @override
-  String get profileEditCouldNotDeactivateTryAgain => 'No se pudo desactivar la cuenta. Por favor inténtalo de nuevo.';
+  String get profileEditCouldNotDeactivateTryAgain =>
+      'No se pudo desactivar la cuenta. Por favor inténtalo de nuevo.';
 
   @override
-  String get profileEditDeletionLinkSentEmail => 'Enlace de eliminación enviado a su correo electrónico.';
+  String get profileEditDeletionLinkSentEmail =>
+      'Enlace de eliminación enviado a su correo electrónico.';
 
   @override
-  String get profileEditCouldNotSendDeletionLinkTryAgain => 'No se pudo enviar el enlace de eliminación. Por favor inténtalo de nuevo.';
+  String get profileEditCouldNotSendDeletionLinkTryAgain =>
+      'No se pudo enviar el enlace de eliminación. Por favor inténtalo de nuevo.';
 
   @override
-  String get profileEditEnterCurrentPasswordChangeEmail => 'Ingrese la contraseña actual para cambiar el correo electrónico.';
+  String get profileEditEnterCurrentPasswordChangeEmail =>
+      'Ingrese la contraseña actual para cambiar el correo electrónico.';
 
   @override
-  String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'La verificación fue enviada al nuevo correo electrónico. El aviso de seguridad fue enviado a su correo electrónico actual.';
+  String get profileEditVerificationWasSentNewEmailSecurityNoticeWas =>
+      'La verificación fue enviada al nuevo correo electrónico. El aviso de seguridad fue enviado a su correo electrónico actual.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'No se pudo iniciar el cambio de correo electrónico en este momento. Por favor inténtalo de nuevo.';
+  String get profileEditCouldNotStartEmailChangeRightNowTry =>
+      'No se pudo iniciar el cambio de correo electrónico en este momento. Por favor inténtalo de nuevo.';
 
   @override
   String get profileEditOverviewCurrency => 'Moneda general';
@@ -1823,28 +2036,35 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileEditPaymentMethod => 'Método de pago';
 
   @override
-  String get profileEditBankTransferRevolutPaypalMe => 'Transferencia bancaria, Revolut, PayPal.me';
+  String get profileEditBankTransferRevolutPaypalMe =>
+      'Transferencia bancaria, Revolut, PayPal.me';
 
   @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'Puede desactivar el acceso a la cuenta o solicitar un enlace de correo electrónico para eliminar permanentemente la cuenta. La contraseña es opcional para las cuentas de Google/Apple.';
+  String
+  get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword =>
+      'Puede desactivar el acceso a la cuenta o solicitar un enlace de correo electrónico para eliminar permanentemente la cuenta. La contraseña es opcional para las cuentas de Google/Apple.';
 
   @override
-  String get profileEditEnterPasswordOptionalGoogleApple => 'Ingrese su contraseña (opcional para Google/Apple)';
+  String get profileEditEnterPasswordOptionalGoogleApple =>
+      'Ingrese su contraseña (opcional para Google/Apple)';
 
   @override
-  String get profileEditSendDeletionLinkEmail => 'Enviar enlace de eliminación al correo electrónico';
+  String get profileEditSendDeletionLinkEmail =>
+      'Enviar enlace de eliminación al correo electrónico';
 
   @override
   String get profileEditBackProfile => 'Volver al perfil';
 
   @override
-  String get profileEditSetValidEmailProfileChangingPassword => 'Establezca un correo electrónico válido en el perfil antes de cambiar la contraseña.';
+  String get profileEditSetValidEmailProfileChangingPassword =>
+      'Establezca un correo electrónico válido en el perfil antes de cambiar la contraseña.';
 
   @override
   String get profileEditPasswordUpdated => 'Contraseña actualizada.';
 
   @override
-  String get profileEditFailedUpdatePassword => 'No se pudo actualizar la contraseña.';
+  String get profileEditFailedUpdatePassword =>
+      'No se pudo actualizar la contraseña.';
 
   @override
   String profileEditEmail(Object email) {
@@ -1861,19 +2081,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'No se encontraron monedas';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency => 'Los totales del resumen se convierten a esta moneda.';
+  String get profileEditOverviewTotalsConvertedCurrency =>
+      'Los totales del resumen se convierten a esta moneda.';
 
   @override
-  String get profileEditPaymentInfoUpdated => 'Información de pago actualizada.';
+  String get profileEditPaymentInfoUpdated =>
+      'Información de pago actualizada.';
 
   @override
-  String get profileEditCouldNotSavePaymentInfoTryAgain => 'No se pudo guardar la información de pago. Por favor inténtalo de nuevo.';
+  String get profileEditCouldNotSavePaymentInfoTryAgain =>
+      'No se pudo guardar la información de pago. Por favor inténtalo de nuevo.';
 
   @override
   String get profileEditCurrentPassword => 'Contraseña actual';
 
   @override
-  String get profileEditBankTransferIbanSwift => 'Transferencia bancaria (IBAN/SWIFT)';
+  String get profileEditBankTransferIbanSwift =>
+      'Transferencia bancaria (IBAN/SWIFT)';
 
   @override
   String get profileEditIbanSwift => 'IBAN+SWIFT';
@@ -1891,7 +2115,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileEditTapChange => 'Toca para cambiar';
 
   @override
-  String get profileEditUkTransfersSortCode6DigitsNumber8 => 'Para transferencias al Reino Unido, el código de clasificación debe tener 6 dígitos y el número de cuenta 8 dígitos.';
+  String get profileEditUkTransfersSortCode6DigitsNumber8 =>
+      'Para transferencias al Reino Unido, el código de clasificación debe tener 6 dígitos y el número de cuenta 8 dígitos.';
 
   @override
   String get profileEditPaymentInfo => 'Información de pago';
@@ -1918,16 +2143,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileEdit8Digits => '8 dígitos';
 
   @override
-  String get profileEditUkDomesticTransfersSortCodeNumber => 'Para transferencias nacionales en el Reino Unido, utilice el código de clasificación + número de cuenta.';
+  String get profileEditUkDomesticTransfersSortCodeNumber =>
+      'Para transferencias nacionales en el Reino Unido, utilice el código de clasificación + número de cuenta.';
 
   @override
-  String get profileEditExampleLv80bank0000435195001 => 'Ejemplo: LV80BANK0000435195001';
+  String get profileEditExampleLv80bank0000435195001 =>
+      'Ejemplo: LV80BANK0000435195001';
 
   @override
   String get profileEdit811Chars => '8 u 11 caracteres';
 
   @override
-  String get profileEditHolderNameTakenProfileFullName => 'El nombre del titular de la cuenta se toma del nombre completo del perfil.';
+  String get profileEditHolderNameTakenProfileFullName =>
+      'El nombre del titular de la cuenta se toma del nombre completo del perfil.';
 
   @override
   String get profileEditRevolutMeUsername => 'revolut.me/nombredeusuario';
@@ -1939,7 +2167,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileEditUsername => '@nombre de usuario';
 
   @override
-  String get profileEditPaypalMeUsernameUsername => 'paypal.me/nombredeusuario o nombre de usuario';
+  String get profileEditPaypalMeUsernameUsername =>
+      'paypal.me/nombredeusuario o nombre de usuario';
 
   @override
   String get profileEditRevolut => 'Revolut';
@@ -2086,13 +2315,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get expenseCategoryOther => 'Otros';
 
   @override
-  String get shellTripAlreadyInListOpened => 'Viaje ya en tu lista. Lo abrí para ti.';
+  String get shellTripAlreadyInListOpened =>
+      'Viaje ya en tu lista. Lo abrí para ti.';
 
   @override
-  String get shellJoinedTripFromInviteLink => 'Viaje unido desde el enlace de invitación.';
+  String get shellJoinedTripFromInviteLink =>
+      'Viaje unido desde el enlace de invitación.';
 
   @override
-  String get shellFailedToOpenInviteLink => 'No se pudo abrir el enlace de invitación.';
+  String get shellFailedToOpenInviteLink =>
+      'No se pudo abrir el enlace de invitación.';
 
   @override
   String get shellTripInviteTitle => 'invitación de viaje';
@@ -2104,13 +2336,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shellYesAction => 'Sí';
 
   @override
-  String get shellOnlyTripCreatorCanDelete => 'Sólo el creador del viaje puede eliminar este viaje.';
+  String get shellOnlyTripCreatorCanDelete =>
+      'Sólo el creador del viaje puede eliminar este viaje.';
 
   @override
-  String get shellOnlyActiveTripsCanDelete => 'Sólo se pueden eliminar los viajes activos.';
+  String get shellOnlyActiveTripsCanDelete =>
+      'Sólo se pueden eliminar los viajes activos.';
 
   @override
-  String shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(Object tripLabel) {
+  String shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(
+    Object tripLabel,
+  ) {
     return '¿Eliminar \"$tripLabel\"? Esto se permite sólo antes de que se agreguen los gastos.';
   }
 
@@ -2121,7 +2357,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shellFailedToDeleteTrip => 'No se pudo eliminar el viaje.';
 
   @override
-  String get shellFailedToLoadNotifications => 'No se pudieron cargar las notificaciones.';
+  String get shellFailedToLoadNotifications =>
+      'No se pudieron cargar las notificaciones.';
 
   @override
   String shellNewNotificationTitle(Object title) {
@@ -2129,7 +2366,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get shellFailedToUpdateNotifications => 'No se pudieron actualizar las notificaciones.';
+  String get shellFailedToUpdateNotifications =>
+      'No se pudieron actualizar las notificaciones.';
 
   @override
   String get shellMarkAllAsReadAction => 'Marcar todo como leído';
@@ -2159,7 +2397,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shellYesterday => 'Ayer';
 
   @override
-  String shellInviteAlreadyMemberOpenTripNow(Object inviterName, Object tripName) {
+  String shellInviteAlreadyMemberOpenTripNow(
+    Object inviterName,
+    Object tripName,
+  ) {
     return 'Ya eres miembro de \"$tripName\". ¿Abrir este viaje ahora?\n\nInvitado por: $inviterName';
   }
 
@@ -2174,10 +2415,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get tripsTripImageAlreadySet => 'La imagen del viaje ya está establecida.';
+  String get tripsTripImageAlreadySet =>
+      'La imagen del viaje ya está establecida.';
 
   @override
-  String get tripsTripCreatedButImageUploadFailed => 'Viaje creado, pero la carga de la imagen falló.';
+  String get tripsTripCreatedButImageUploadFailed =>
+      'Viaje creado, pero la carga de la imagen falló.';
 
   @override
   String tripsTripCreatedButImageUploadFailedWithReason(Object arg1) {
@@ -2201,6 +2444,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tripsSeeAll => 'Ver todo';
+
+  @override
+  String get tripsGridView => 'Vista de cuadrícula';
+
+  @override
+  String get tripsListView => 'Vista de lista';
 
   @override
   String get tripsAddNewTrip => 'Añadir viaje';
@@ -2229,34 +2478,42 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tripsMainCurrency => 'Moneda principal';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Selecciona el período del viaje (fechas de inicio y fin).';
+  String get tripsPleaseSelectTripPeriodFromAndToDates =>
+      'Selecciona el período del viaje (fechas de inicio y fin).';
 
   @override
-  String get tripsTripEndDateMustBeOnOrAfterStartDate => 'La fecha de fin del viaje debe ser igual o posterior a la fecha de inicio.';
+  String get tripsTripEndDateMustBeOnOrAfterStartDate =>
+      'La fecha de fin del viaje debe ser igual o posterior a la fecha de inicio.';
 
   @override
-  String get tripsTripPeriodFormatIsInvalidPleasePickDatesAgain => 'El formato del período del viaje no es válido. Selecciona las fechas de nuevo.';
+  String get tripsTripPeriodFormatIsInvalidPleasePickDatesAgain =>
+      'El formato del período del viaje no es válido. Selecciona las fechas de nuevo.';
 
   @override
-  String get tripsYouAreAlreadyAMemberOfThisTrip => 'Ya eres miembro de este viaje.';
+  String get tripsYouAreAlreadyAMemberOfThisTrip =>
+      'Ya eres miembro de este viaje.';
 
   @override
   String get tripsJoinedTripSuccessfully => 'Te uniste al viaje correctamente.';
 
   @override
-  String get tripsFailedToJoinTripFromInvite => 'No se pudo unir al viaje desde la invitación.';
+  String get tripsFailedToJoinTripFromInvite =>
+      'No se pudo unir al viaje desde la invitación.';
 
   @override
   String get tripsJoinTrip => 'Unirse al viaje';
 
   @override
-  String get tripsPasteInviteLinkOrInviteToken => 'Pega un enlace de invitación o un token de invitación.';
+  String get tripsPasteInviteLinkOrInviteToken =>
+      'Pega un enlace de invitación o un token de invitación.';
 
   @override
-  String get tripsHttpsInviteNorthSeaAbc123def4 => 'https://.../?invite=north-sea-abc123def4';
+  String get tripsHttpsInviteNorthSeaAbc123def4 =>
+      'https://.../?invite=north-sea-abc123def4';
 
   @override
-  String get tripsEnterAValidInviteLinkOrToken => 'Introduce un enlace o token de invitación válido.';
+  String get tripsEnterAValidInviteLinkOrToken =>
+      'Introduce un enlace o token de invitación válido.';
 
   @override
   String get tripsClipboardIsEmpty => 'El portapapeles está vacío.';
@@ -2271,19 +2528,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceTripMembers => 'Miembros del viaje';
 
   @override
-  String get workspaceFailedToLoadFriends => 'No se pudieron cargar los amigos.';
+  String get workspaceFailedToLoadFriends =>
+      'No se pudieron cargar los amigos.';
 
   @override
-  String get workspaceFailedToGenerateInviteLink => 'No se pudo generar el enlace de invitación.';
+  String get workspaceFailedToGenerateInviteLink =>
+      'No se pudo generar el enlace de invitación.';
 
   @override
   String get workspaceInviteLink => 'Enlace de invitación';
 
   @override
-  String get workspaceGeneratingInviteLink => 'Generando enlace de invitación...';
+  String get workspaceGeneratingInviteLink =>
+      'Generando enlace de invitación...';
 
   @override
-  String get workspaceInviteLinkUnavailable => 'Enlace de invitación no disponible.';
+  String get workspaceInviteLinkUnavailable =>
+      'Enlace de invitación no disponible.';
 
   @override
   String get workspaceCopyInviteLink => 'Copiar enlace de invitación';
@@ -2297,7 +2558,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get workspaceNoFriendsAvailableAddFriendsFirst => 'No hay amigos disponibles. Añade amigos primero.';
+  String get workspaceNoFriendsAvailableAddFriendsFirst =>
+      'No hay amigos disponibles. Añade amigos primero.';
 
   @override
   String get workspaceSettle => 'Liquidar';
@@ -2309,7 +2571,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceGetsBackFromGroup => 'Recibe del grupo';
 
   @override
-  String get workspaceShowingTop4ByBalanceDifference => 'Mostrando los 4 principales por diferencia de saldo.';
+  String get workspaceShowingTop4ByBalanceDifference =>
+      'Mostrando los 4 principales por diferencia de saldo.';
 
   @override
   String get workspaceOpenFlow => 'Flujo abierto';
@@ -2333,7 +2596,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceActionNeeded => 'Acción necesaria';
 
   @override
-  String workspacePaymentSToMarkAsSentToConfirmAsReceived(Object arg1, Object arg2) {
+  String workspacePaymentSToMarkAsSentToConfirmAsReceived(
+    Object arg1,
+    Object arg2,
+  ) {
     return '$arg1 pago(s) por marcar como enviados, $arg2 por confirmar como recibidos.';
   }
 
@@ -2341,19 +2607,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceReadyToSettle => 'Listo para liquidar';
 
   @override
-  String get workspaceAllMembersAreReadyYouCanStartSettlements => 'Todos los miembros están listos. Puedes iniciar las liquidaciones.';
+  String get workspaceAllMembersAreReadyYouCanStartSettlements =>
+      'Todos los miembros están listos. Puedes iniciar las liquidaciones.';
 
   @override
-  String get workspaceWaitingForEveryoneToMarkReady => 'Esperando a que todos se marquen como listos.';
+  String get workspaceWaitingForEveryoneToMarkReady =>
+      'Esperando a que todos se marquen como listos.';
 
   @override
   String get workspaceIMReady => 'Estoy listo';
 
   @override
-  String get workspaceConfirmThatYouAddedAllYourExpenses => 'Confirma que has añadido todos tus gastos.';
+  String get workspaceConfirmThatYouAddedAllYourExpenses =>
+      'Confirma que has añadido todos tus gastos.';
 
   @override
-  String get workspaceFinishButtonUnlocksOnceEveryoneMarksReady => 'El botón Finalizar se desbloquea cuando todos se marcan como listos.';
+  String get workspaceFinishButtonUnlocksOnceEveryoneMarksReady =>
+      'El botón Finalizar se desbloquea cuando todos se marcan como listos.';
 
   @override
   String get workspaceGetsBackFromTheGroup => 'Recibe del grupo';
@@ -2371,7 +2641,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceTransactionHistory => 'Historial de transacciones';
 
   @override
-  String get workspaceNoTransactionsYetForThisMember => 'Aún no hay transacciones para este miembro.';
+  String get workspaceNoTransactionsYetForThisMember =>
+      'Aún no hay transacciones para este miembro.';
 
   @override
   String workspaceSettlements(Object arg1) {
@@ -2379,22 +2650,27 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get workspaceAllMembersMustMarkReadyBeforeStartingSettlements => 'Todos los miembros deben marcarse como listos antes de iniciar las liquidaciones.';
+  String get workspaceAllMembersMustMarkReadyBeforeStartingSettlements =>
+      'Todos los miembros deben marcarse como listos antes de iniciar las liquidaciones.';
 
   @override
-  String get workspaceYouMarkedYourselfReadyToSettle => 'Te marcaste como listo para liquidar.';
+  String get workspaceYouMarkedYourselfReadyToSettle =>
+      'Te marcaste como listo para liquidar.';
 
   @override
-  String get workspaceReadyToSettleMarkRemoved => 'Se eliminó la marca de listo para liquidar.';
+  String get workspaceReadyToSettleMarkRemoved =>
+      'Se eliminó la marca de listo para liquidar.';
 
   @override
   String get workspaceReminderSent => 'Recordatorio enviado.';
 
   @override
-  String get workspaceInviteLinkOrAddFromFriends => 'Enlace de invitación o añadir desde amigos';
+  String get workspaceInviteLinkOrAddFromFriends =>
+      'Enlace de invitación o añadir desde amigos';
 
   @override
-  String get workspaceOnlyTripCreatorCanEditThisTrip => 'Solo el creador del viaje puede editar este viaje.';
+  String get workspaceOnlyTripCreatorCanEditThisTrip =>
+      'Solo el creador del viaje puede editar este viaje.';
 
   @override
   String get workspaceTripUpdated => 'Viaje actualizado.';
@@ -2403,10 +2679,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceFailedToUpdateTrip => 'No se pudo actualizar el viaje.';
 
   @override
-  String get workspaceNoMembersSelectedYet => 'Aún no hay miembros seleccionados.';
+  String get workspaceNoMembersSelectedYet =>
+      'Aún no hay miembros seleccionados.';
 
   @override
-  String get workspaceNoInternetExpenseSavedWithoutReceiptImage => 'Sin conexión. El gasto se guardará sin imagen del recibo.';
+  String get workspaceNoInternetExpenseSavedWithoutReceiptImage =>
+      'Sin conexión. El gasto se guardará sin imagen del recibo.';
 
   @override
   String get workspaceRandomPicker => 'Selector aleatorio';
@@ -2424,25 +2702,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceCategoryName => 'Nombre de la categoría';
 
   @override
-  String get workspaceApartmentRentParkingEtc => 'Alquiler del apartamento, aparcamiento, etc.';
+  String get workspaceApartmentRentParkingEtc =>
+      'Alquiler del apartamento, aparcamiento, etc.';
 
   @override
-  String get workspaceEnterACustomCategory => 'Introduce una categoría personalizada.';
+  String get workspaceEnterACustomCategory =>
+      'Introduce una categoría personalizada.';
 
   @override
   String get workspacePickAnExpenseCategory => 'Elige una categoría de gasto.';
 
   @override
-  String get workspaceCategoryMustBeAtLeast2Characters => 'La categoría debe tener al menos 2 caracteres.';
+  String get workspaceCategoryMustBeAtLeast2Characters =>
+      'La categoría debe tener al menos 2 caracteres.';
 
   @override
-  String get workspaceCategoryMustBeUpTo64Characters => 'La categoría puede tener hasta 64 caracteres.';
+  String get workspaceCategoryMustBeUpTo64Characters =>
+      'La categoría puede tener hasta 64 caracteres.';
 
   @override
-  String get workspacePercentageSplitMustTotal100 => 'El reparto porcentual debe sumar 100 %.';
+  String get workspacePercentageSplitMustTotal100 =>
+      'El reparto porcentual debe sumar 100 %.';
 
   @override
-  String get workspaceSharesMustBeGreaterThan0ForAllParticipants => 'Las participaciones deben ser mayores que 0 para todos los participantes.';
+  String get workspaceSharesMustBeGreaterThan0ForAllParticipants =>
+      'Las participaciones deben ser mayores que 0 para todos los participantes.';
 
   @override
   String get workspaceTotalAmount => 'Importe total';
@@ -2488,13 +2772,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceBankDetails => 'Datos bancarios';
 
   @override
-  String get workspaceIbanAndPayoutDetailsWillBeAddedHereInA => 'El IBAN y los datos de cobro se añadirán aquí en una próxima actualización.';
+  String get workspaceIbanAndPayoutDetailsWillBeAddedHereInA =>
+      'El IBAN y los datos de cobro se añadirán aquí en una próxima actualización.';
 
   @override
   String get workspacePaymentDetails => 'Datos de pago';
 
   @override
-  String get workspaceThisMemberHasNotAddedPayoutDetailsYet => 'Este miembro aún no ha añadido los datos de cobro.';
+  String get workspaceThisMemberHasNotAddedPayoutDetailsYet =>
+      'Este miembro aún no ha añadido los datos de cobro.';
 
   @override
   String get workspaceBankTransfer => 'Transferencia bancaria';
@@ -2503,7 +2789,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceHolder => 'Titular';
 
   @override
-  String get workspaceCouldNotOpenPaymentLink => 'No se pudo abrir el enlace de pago.';
+  String get workspaceCouldNotOpenPaymentLink =>
+      'No se pudo abrir el enlace de pago.';
 
   @override
   String get workspaceTripActivity => 'Actividad del viaje';
@@ -2527,10 +2814,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceLoadingCommonTrips => 'Cargando viajes en común...';
 
   @override
-  String get workspaceNoCommonTripsFoundYet => 'Aún no se encontraron viajes en común.';
+  String get workspaceNoCommonTripsFoundYet =>
+      'Aún no se encontraron viajes en común.';
 
   @override
-  String get workspaceCouldNotLoadAllCommonTripsShowingCurrentOne => 'No se pudieron cargar todos los viajes en común. Mostrando el actual.';
+  String get workspaceCouldNotLoadAllCommonTripsShowingCurrentOne =>
+      'No se pudieron cargar todos los viajes en común. Mostrando el actual.';
 
   @override
   String get workspaceMembers => 'miembros';
@@ -2545,16 +2834,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceLoadingMoreExpenses => 'Cargando más gastos...';
 
   @override
-  String get workspaceScrollDownToLoadMore => 'Desplázate hacia abajo para cargar más';
+  String get workspaceScrollDownToLoadMore =>
+      'Desplázate hacia abajo para cargar más';
 
   @override
   String get workspaceTripFinished => 'Viaje finalizado';
 
   @override
-  String get workspaceSettlementsAreUnlockedForThisTrip => 'Las liquidaciones están habilitadas para este viaje.';
+  String get workspaceSettlementsAreUnlockedForThisTrip =>
+      'Las liquidaciones están habilitadas para este viaje.';
 
   @override
-  String get workspaceFinishTripToStartSettlements => 'Finaliza el viaje para iniciar las liquidaciones.';
+  String get workspaceFinishTripToStartSettlements =>
+      'Finaliza el viaje para iniciar las liquidaciones.';
 
   @override
   String workspaceMarkedTransferAsSent(Object arg1) {
@@ -2577,10 +2869,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get workspaceAllTripSettlementsAreFullyCompleted => 'Todas las liquidaciones del viaje están completamente finalizadas.';
+  String get workspaceAllTripSettlementsAreFullyCompleted =>
+      'Todas las liquidaciones del viaje están completamente finalizadas.';
 
   @override
-  String get workspaceFinalStateAfterAllTransfersAreConfirmed => 'Estado final después de confirmar todas las transferencias.';
+  String get workspaceFinalStateAfterAllTransfersAreConfirmed =>
+      'Estado final después de confirmar todas las transferencias.';
 
   @override
   String get workspaceSettlementFlow => 'Flujo de liquidación';
@@ -2601,10 +2895,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspacePayWithWise => 'Pagar con Wise';
 
   @override
-  String get workspaceTransferIsConfirmed => 'La transferencia está confirmada.';
+  String get workspaceTransferIsConfirmed =>
+      'La transferencia está confirmada.';
 
   @override
-  String get workspaceWaitingForTheOtherMemberToCompleteTheNextStep => 'Esperando a que el otro miembro complete el siguiente paso.';
+  String get workspaceWaitingForTheOtherMemberToCompleteTheNextStep =>
+      'Esperando a que el otro miembro complete el siguiente paso.';
 
   @override
   String get workspaceSendReminder => 'Enviar recordatorio';
@@ -2628,10 +2924,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceNoRecentActivityYet => 'Aún no hay actividad reciente.';
 
   @override
-  String get workspaceAddAtLeastOneMemberToStartSplittingExpenses => 'Añade al menos un miembro para empezar a dividir gastos.';
+  String get workspaceAddAtLeastOneMemberToStartSplittingExpenses =>
+      'Añade al menos un miembro para empezar a dividir gastos.';
 
   @override
-  String get workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses => 'Márcate como listo para liquidar después de añadir todos tus gastos.';
+  String get workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses =>
+      'Márcate como listo para liquidar después de añadir todos tus gastos.';
 
   @override
   String workspaceWaitingForMemberSToMarkReady(Object arg1) {
@@ -2639,10 +2937,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get workspaceAllMembersAreReadyYouCanFinishTheTripAnd => 'Todos los miembros están listos. Puedes finalizar el viaje e iniciar las liquidaciones.';
+  String get workspaceAllMembersAreReadyYouCanFinishTheTripAnd =>
+      'Todos los miembros están listos. Puedes finalizar el viaje e iniciar las liquidaciones.';
 
   @override
-  String get workspaceAllMembersAreReadyWaitingForTheTripOwnerTo => 'Todos los miembros están listos. Esperando a que el propietario del viaje inicie las liquidaciones.';
+  String get workspaceAllMembersAreReadyWaitingForTheTripOwnerTo =>
+      'Todos los miembros están listos. Esperando a que el propietario del viaje inicie las liquidaciones.';
 
   @override
   String workspaceSettlementInProgressConfirmed(Object arg1, Object arg2) {
@@ -2650,10 +2950,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get workspaceNoActionsPendingThisTripIsSettled => 'No hay acciones pendientes. Este viaje está liquidado.';
+  String get workspaceNoActionsPendingThisTripIsSettled =>
+      'No hay acciones pendientes. Este viaje está liquidado.';
 
   @override
-  String get workspaceNoActionsNeededRightNow => 'No se requieren acciones en este momento.';
+  String get workspaceNoActionsNeededRightNow =>
+      'No se requieren acciones en este momento.';
 
   @override
   String workspaceYouShouldReceive(Object arg1) {
@@ -2666,7 +2968,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get workspaceYouAreCurrentlySettledInThisTrip => 'Actualmente estás liquidado en este viaje.';
+  String get workspaceYouAreCurrentlySettledInThisTrip =>
+      'Actualmente estás liquidado en este viaje.';
 
   @override
   String get workspaceUnknownTime => 'Hora desconocida';
@@ -2716,10 +3019,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get friendsMoreActions => 'Más acciones';
 
   @override
-  String get friendsThisFriendHasNotAddedPayoutDetailsYet => 'Este amigo aún no ha añadido los datos de cobro.';
+  String get friendsThisFriendHasNotAddedPayoutDetailsYet =>
+      'Este amigo aún no ha añadido los datos de cobro.';
 
   @override
-  String get friendsCouldNotLoadCommonTripsRightNow => 'No se pudieron cargar los viajes en común en este momento.';
+  String get friendsCouldNotLoadCommonTripsRightNow =>
+      'No se pudieron cargar los viajes en común en este momento.';
 
   @override
   String get friendsFinished => 'Finalizado';
@@ -2770,7 +3075,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get friendsNoFriendsYet => 'Aún no tienes amigos';
 
   @override
-  String get friendsScrollDownToLoadMoreFriends => 'Desplázate hacia abajo para cargar más amigos.';
+  String get friendsScrollDownToLoadMoreFriends =>
+      'Desplázate hacia abajo para cargar más amigos.';
 
   @override
   String get friendsUser => 'Usuario';
@@ -2779,13 +3085,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get friendsSearchUsers => 'Buscar usuarios';
 
   @override
-  String get friendsFindByNameOrEmailAndSendInvite => 'Busca por nombre o correo y envía una invitación';
+  String get friendsFindByNameOrEmailAndSendInvite =>
+      'Busca por nombre o correo y envía una invitación';
 
   @override
   String get friendsScanQr => 'Escanear QR';
 
   @override
-  String get friendsScanAnotherUserToAddFriend => 'Escanea a otro usuario para añadirlo como amigo';
+  String get friendsScanAnotherUserToAddFriend =>
+      'Escanea a otro usuario para añadirlo como amigo';
 
   @override
   String get friendsMyQr => 'Mi QR';
@@ -2797,16 +3105,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get friendsScanFriendQrTitle => 'Escanear QR de amigo';
 
   @override
-  String get friendsPlaceFriendQrInsideFrame => 'Coloca el código QR de tu amigo dentro del marco';
+  String get friendsPlaceFriendQrInsideFrame =>
+      'Coloca el código QR de tu amigo dentro del marco';
 
   @override
   String get friendsMyFriendQrTitle => 'Mi QR de amigo';
 
   @override
-  String get friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode => 'Abre Amigos > Escanear QR en otro teléfono y escanea este código.';
+  String get friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode =>
+      'Abre Amigos > Escanear QR en otro teléfono y escanea este código.';
 
   @override
-  String get friendsAddMeOnTripSplitFriends => 'Añádeme en amigos de TripSplit.';
+  String get friendsAddMeOnTripSplitFriends =>
+      'Añádeme en amigos de TripSplit.';
 
   @override
   String get friendsTripSplitFriendCode => 'Código de amigo de TripSplit';
@@ -2815,31 +3126,37 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shareAction => 'Compartir';
 
   @override
-  String get friendsQrCodeIsNotAValidFriendCode => 'El código QR no es un código de amigo válido.';
+  String get friendsQrCodeIsNotAValidFriendCode =>
+      'El código QR no es un código de amigo válido.';
 
   @override
   String get friendsYouCannotAddYourself => 'No puedes añadirte a ti mismo.';
 
   @override
-  String get friendsThisUserIsAlreadyInYourFriendsList => 'Este usuario ya está en tu lista de amigos.';
+  String get friendsThisUserIsAlreadyInYourFriendsList =>
+      'Este usuario ya está en tu lista de amigos.';
 
   @override
-  String get friendsInviteToThisUserIsAlreadySent => 'La invitación a este usuario ya fue enviada.';
+  String get friendsInviteToThisUserIsAlreadySent =>
+      'La invitación a este usuario ya fue enviada.';
 
   @override
   String get friendsFriendRequestProcessed => 'Solicitud de amistad procesada.';
 
   @override
-  String get friendsFailedToProcessFriendQr => 'No se pudo procesar el QR del amigo.';
+  String get friendsFailedToProcessFriendQr =>
+      'No se pudo procesar el QR del amigo.';
 
   @override
-  String get friendsCouldNotLoadYourUserProfile => 'No se pudo cargar tu perfil de usuario.';
+  String get friendsCouldNotLoadYourUserProfile =>
+      'No se pudo cargar tu perfil de usuario.';
 
   @override
   String get friendsMyProfile => 'Mi perfil';
 
   @override
-  String get friendsUnexpectedErrorLoadingFriends => 'Error inesperado al cargar amigos.';
+  String get friendsUnexpectedErrorLoadingFriends =>
+      'Error inesperado al cargar amigos.';
 
   @override
   String get friendsFriendAdded => 'Amigo añadido.';
@@ -2848,7 +3165,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get friendsRequestDeclined => 'Solicitud rechazada.';
 
   @override
-  String get friendsFailedToUpdateRequest => 'No se pudo actualizar la solicitud.';
+  String get friendsFailedToUpdateRequest =>
+      'No se pudo actualizar la solicitud.';
 
   @override
   String get friendsCancelInvite => 'Cancelar invitación';
@@ -2867,13 +3185,15 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get friendsFailedToCancelInvite => 'No se pudo cancelar la invitación.';
+  String get friendsFailedToCancelInvite =>
+      'No se pudo cancelar la invitación.';
 
   @override
   String get analyticsOther => 'Otros';
 
   @override
-  String get analyticsSelectATripForAnalytics => 'Selecciona un viaje para ver analíticas';
+  String get analyticsSelectATripForAnalytics =>
+      'Selecciona un viaje para ver analíticas';
 
   @override
   String analyticsMembers(Object arg1, Object arg2, Object arg3, Object arg4) {
@@ -2920,7 +3240,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get analyticsNoDates => 'Sin fechas';
 
   @override
-  String get friendsSearchFailedTryAgain => 'La búsqueda falló. Inténtalo de nuevo.';
+  String get friendsSearchFailedTryAgain =>
+      'La búsqueda falló. Inténtalo de nuevo.';
 
   @override
   String get friendsFailedToSendInvite => 'No se pudo enviar la invitación.';
@@ -2929,10 +3250,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get friendsAddFriend => 'Añadir amigo';
 
   @override
-  String get friendsSearchByNameOrEmail => 'Buscar por nombre o correo electrónico';
+  String get friendsSearchByNameOrEmail =>
+      'Buscar por nombre o correo electrónico';
 
   @override
-  String get friendsTypeAtLeast2CharactersToSearch => 'Escribe al menos 2 caracteres para buscar.';
+  String get friendsTypeAtLeast2CharactersToSearch =>
+      'Escribe al menos 2 caracteres para buscar.';
 
   @override
   String get friendsNoUsersFound => 'No se encontraron usuarios';
@@ -2969,7 +3292,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get paymentRevtagCopied => 'Revtag copiado.';
 
   @override
-  String get paymentCouldNotCopyToClipboard => 'No se pudo copiar al portapapeles.';
+  String get paymentCouldNotCopyToClipboard =>
+      'No se pudo copiar al portapapeles.';
 
   @override
   String get paymentCopied => 'Copiado.';

@@ -26,13 +26,11 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             yourShare: yourShare,
             currentBalance: currentBalance,
           ),
+          const SizedBox(height: 8),
+          _buildSyncStatusBanner(context, padding: EdgeInsets.zero),
           if (!snapshot.isActive) ...[
             const SizedBox(height: 8),
             _buildClosedTripBanner(context, snapshot, padding: EdgeInsets.zero),
-          ],
-          if (_pendingQueueCount > 0) ...[
-            const SizedBox(height: 8),
-            _buildOfflineQueueBanner(context, padding: EdgeInsets.zero),
           ],
           if (_queuedMutations.isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -577,27 +575,72 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     );
   }
 
-  Widget _buildOfflineQueueBanner(
+  Widget _buildSyncStatusBanner(
     BuildContext context, {
     EdgeInsetsGeometry padding = const EdgeInsets.fromLTRB(12, 0, 12, 8),
   }) {
+    final visual = _syncVisual(context, _syncState);
+    final label = _syncStatusLabel(context);
     return Padding(
       padding: padding,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: Theme.of(
-            context,
-          ).colorScheme.tertiaryContainer.withValues(alpha: 0.4),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          context.l10n.offlineQueuePendingChanges(_pendingQueueCount),
-          style: Theme.of(context).textTheme.bodySmall,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: _isMutating ? null : _onRefreshPressed,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: visual.background,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: visual.border),
+            ),
+            child: Row(
+              children: [
+                Icon(visual.icon, size: 17, color: visual.foreground),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: visual.foreground,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.refresh_rounded,
+                  size: 17,
+                  color: visual.foreground.withValues(alpha: 0.80),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  String _syncStatusLabel(BuildContext context) {
+    if (_pendingQueueCount > 0) {
+      return context.l10n.syncChangesWaiting(_pendingQueueCount);
+    }
+    switch (_syncState) {
+      case _SyncState.syncing:
+        return context.l10n.syncingStatus;
+      case _SyncState.online:
+        return context.l10n.syncAllSynced;
+      case _SyncState.onlineQueue:
+        return context.l10n.syncAllSynced;
+      case _SyncState.offline:
+        return context.l10n.syncFailedTapToRetry;
+      case _SyncState.offlineQueue:
+        return context.l10n.syncFailedTapToRetry;
+    }
   }
 
   Widget _buildQueuedChangesCard(

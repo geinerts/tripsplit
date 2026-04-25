@@ -160,6 +160,14 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     if (settlementId == null || settlementId <= 0) {
       return;
     }
+    final confirmed = await _confirmSettlementCriticalAction(
+      title: context.l10n.markSettlementSentConfirmTitle,
+      message: context.l10n.markSettlementSentConfirmText,
+      confirmLabel: context.l10n.iSentAction,
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
     await _runMutation(
       action: () async {
         await widget.workspaceController.markSettlementSent(
@@ -174,9 +182,73 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     );
   }
 
+  Future<void> _onSettlementCancelSent(SettlementItem settlement) async {
+    final settlementId = settlement.id;
+    if (settlementId == null || settlementId <= 0) {
+      return;
+    }
+    final confirmed = await _confirmSettlementCriticalAction(
+      title: context.l10n.settlementCancelSentConfirmTitle,
+      message: context.l10n.settlementCancelSentConfirmText,
+      confirmLabel: context.l10n.settlementCancelSentAction,
+      isDestructive: true,
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.cancelSettlementSent(
+          tripId: widget.trip.id,
+          settlementId: settlementId,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack(context.l10n.settlementSentCancelled);
+        }
+      },
+    );
+  }
+
+  Future<void> _onSettlementReportNotReceived(SettlementItem settlement) async {
+    final settlementId = settlement.id;
+    if (settlementId == null || settlementId <= 0) {
+      return;
+    }
+    final confirmed = await _confirmSettlementCriticalAction(
+      title: context.l10n.settlementNotReceivedConfirmTitle,
+      message: context.l10n.settlementNotReceivedConfirmText,
+      confirmLabel: context.l10n.settlementNotReceivedAction,
+      isDestructive: true,
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.reportSettlementNotReceived(
+          tripId: widget.trip.id,
+          settlementId: settlementId,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack(context.l10n.settlementMarkedNotReceived);
+        }
+      },
+    );
+  }
+
   Future<void> _onSettlementConfirmReceived(SettlementItem settlement) async {
     final settlementId = settlement.id;
     if (settlementId == null || settlementId <= 0) {
+      return;
+    }
+    final confirmed = await _confirmSettlementCriticalAction(
+      title: context.l10n.confirmSettlementReceivedConfirmTitle,
+      message: context.l10n.confirmSettlementReceivedConfirmText,
+      confirmLabel: context.l10n.confirmReceivedAction,
+    );
+    if (confirmed != true || !mounted) {
       return;
     }
     await _runMutation(
@@ -195,6 +267,39 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         } else {
           _showSnack(context.l10n.confirmedAsReceived);
         }
+      },
+    );
+  }
+
+  Future<bool?> _confirmSettlementCriticalAction({
+    required String title,
+    required String message,
+    required String confirmLabel,
+    bool isDestructive = false,
+  }) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(context.l10n.cancelAction),
+            ),
+            FilledButton(
+              style: isDestructive
+                  ? FilledButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                      foregroundColor: Theme.of(context).colorScheme.onError,
+                    )
+                  : null,
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(confirmLabel),
+            ),
+          ],
+        );
       },
     );
   }

@@ -3,6 +3,7 @@ import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/http_method.dart';
 import '../../domain/entities/workspace_notifications_inbox.dart';
+import '../../domain/entities/workspace_activity_event.dart';
 import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
 import '../../domain/entities/trip_expenses_page.dart';
@@ -298,6 +299,50 @@ class WorkspaceRemoteSnapshotLoader {
     );
   }
 
+  Future<WorkspaceActivityPage> loadTripActivity({
+    required int tripId,
+    int limit = 50,
+    int? offset,
+  }) async {
+    final normalizedLimit = limit.clamp(1, 100);
+    final normalizedOffset = offset != null && offset > 0 ? offset : 0;
+    final queryParts = <String>[
+      'limit=$normalizedLimit',
+      'offset=$normalizedOffset',
+    ];
+
+    Map<String, dynamic> response;
+    try {
+      response = await _apiClient.request(
+        path:
+            '${ApiEndpoints.legacyAction('list_trip_activity')}&${queryParts.join('&')}',
+        method: HttpMethod.get,
+        headers: _tripHeaders(tripId),
+      );
+    } on ApiException catch (error) {
+      if (_isMissingTripActivityAction(error)) {
+        return const WorkspaceActivityPage(
+          items: [],
+          hasMore: false,
+          nextOffset: null,
+        );
+      }
+      rethrow;
+    }
+
+    final events = (response['events'] as List<dynamic>? ?? const <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map(WorkspaceRemoteParsers.parseActivityEvent)
+        .where((item) => item.id > 0)
+        .toList(growable: false);
+    final pagination = response['pagination'] as Map<String, dynamic>?;
+    return WorkspaceActivityPage(
+      items: events,
+      hasMore: pagination?['has_more'] == true,
+      nextOffset: (pagination?['next_offset'] as num?)?.toInt(),
+    );
+  }
+
   Future<List<WorkspaceSharedTrip>> loadSharedTripsWithUser({
     required int userId,
     int limit = 20,
@@ -329,6 +374,15 @@ class WorkspaceRemoteSnapshotLoader {
   }
 
   bool _isMissingGlobalNotificationsAction(ApiException error) {
+    final normalized = error.message.toLowerCase();
+    final statusCode = error.statusCode ?? 0;
+    if (statusCode != 404 && statusCode != 400) {
+      return false;
+    }
+    return normalized.contains('unknown action');
+  }
+
+  bool _isMissingTripActivityAction(ApiException error) {
     final normalized = error.message.toLowerCase();
     final statusCode = error.statusCode ?? 0;
     if (statusCode != 404 && statusCode != 400) {

@@ -735,142 +735,158 @@ class _AddFriendBottomSheetState extends State<_AddFriendBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final query = _searchController.text.trim();
+    final bottomSafePadding = MediaQuery.paddingOf(context).bottom;
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Padding(
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: FractionallySizedBox(
-          heightFactor: 0.84,
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppDesign.cardSurface(context),
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(28),
-              ),
-            ),
-            child: Column(
-              children: [
-                const SizedBox(height: 10),
-                Container(
-                  width: 46,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: AppDesign.mutedColor(
-                      context,
-                    ).withValues(alpha: 0.35),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: FractionallySizedBox(
+            widthFactor: 1,
+            heightFactor: 0.84,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppDesign.cardSurface(context),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(28),
                 ),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 22),
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              context.l10n.friendsAddFriend,
-                              style: Theme.of(context).textTheme.headlineSmall
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: -0.2,
-                                  ),
-                            ),
-                          ),
-                          IconButton(
-                            tooltip: MaterialLocalizations.of(
-                              context,
-                            ).closeButtonTooltip,
-                            onPressed: () => Navigator.of(context).pop(),
-                            icon: const Icon(Icons.close_rounded),
-                          ),
-                        ],
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  Container(
+                    width: 46,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: AppDesign.mutedColor(
+                        context,
+                      ).withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.fromLTRB(
+                        16,
+                        12,
+                        16,
+                        22 + bottomSafePadding,
                       ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _searchController,
-                        textInputAction: TextInputAction.search,
-                        autofocus: true,
-                        onChanged: _onQueryChanged,
-                        decoration: InputDecoration(
-                          hintText: context.l10n.friendsSearchByNameOrEmail,
-                          prefixIcon: const Icon(Icons.search),
-                          suffixIcon: _isSearching
-                              ? const Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                context.l10n.friendsAddFriend,
+                                style: Theme.of(context).textTheme.headlineSmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -0.2,
                                     ),
-                                  ),
-                                )
-                              : (query.isNotEmpty
-                                    ? IconButton(
-                                        onPressed: () {
-                                          _searchDebounce?.cancel();
-                                          _searchController.clear();
-                                          if (mounted) {
-                                            setState(() {
-                                              _isSearching = false;
-                                              _searchResults =
-                                                  const <FriendUser>[];
-                                            });
-                                          }
-                                        },
-                                        icon: const Icon(Icons.close),
-                                      )
-                                    : null),
+                              ),
+                            ),
+                            IconButton(
+                              tooltip: MaterialLocalizations.of(
+                                context,
+                              ).closeButtonTooltip,
+                              onPressed: () => Navigator.of(context).pop(),
+                              icon: const Icon(Icons.close_rounded),
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      if (query.length < 2)
-                        Text(
-                          context.l10n.friendsTypeAtLeast2CharactersToSearch,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppDesign.mutedColor(context)),
-                        )
-                      else if (!_isSearching && _searchResults.isEmpty)
-                        Text(
-                          context.l10n.friendsNoUsersFound,
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppDesign.mutedColor(context)),
-                        )
-                      else
-                        ..._searchResults.map((user) {
-                          final busy = _inviteLoading.contains(user.id);
-                          return AppListRow(
-                            leading: widget.userAvatarBuilder(user),
-                            title: user.preferredName.trim().isNotEmpty
-                                ? user.preferredName.trim()
-                                : user.nickname,
-                            subtitle: null,
-                            trailing: OutlinedButton.icon(
-                              onPressed: busy
-                                  ? null
-                                  : () => unawaited(_invite(user)),
-                              icon: busy
-                                  ? const SizedBox(
-                                      width: 16,
-                                      height: 16,
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: _searchController,
+                          textInputAction: TextInputAction.search,
+                          autofocus: true,
+                          onChanged: _onQueryChanged,
+                          decoration: InputDecoration(
+                            hintText: context.l10n.friendsSearchByNameOrEmail,
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: _isSearching
+                                ? const Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: SizedBox(
+                                      width: 18,
+                                      height: 18,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
                                       ),
-                                    )
-                                  : const Icon(
-                                      Icons.person_add_alt_1,
-                                      size: 18,
                                     ),
-                              label: Text(context.l10n.friendsInviteAction),
-                            ),
-                          );
-                        }),
-                    ],
+                                  )
+                                : (query.isNotEmpty
+                                      ? IconButton(
+                                          onPressed: () {
+                                            _searchDebounce?.cancel();
+                                            _searchController.clear();
+                                            if (mounted) {
+                                              setState(() {
+                                                _isSearching = false;
+                                                _searchResults =
+                                                    const <FriendUser>[];
+                                              });
+                                            }
+                                          },
+                                          icon: const Icon(Icons.close),
+                                        )
+                                      : null),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        if (query.length < 2)
+                          Text(
+                            context.l10n.friendsTypeAtLeast2CharactersToSearch,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: AppDesign.mutedColor(context),
+                                ),
+                          )
+                        else if (!_isSearching && _searchResults.isEmpty)
+                          Text(
+                            context.l10n.friendsNoUsersFound,
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: AppDesign.mutedColor(context),
+                                ),
+                          )
+                        else
+                          ..._searchResults.map((user) {
+                            final busy = _inviteLoading.contains(user.id);
+                            return AppListRow(
+                              leading: widget.userAvatarBuilder(user),
+                              title: user.preferredName.trim().isNotEmpty
+                                  ? user.preferredName.trim()
+                                  : user.nickname,
+                              subtitle: null,
+                              trailing: OutlinedButton.icon(
+                                onPressed: busy
+                                    ? null
+                                    : () => unawaited(_invite(user)),
+                                icon: busy
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Icon(
+                                        Icons.person_add_alt_1,
+                                        size: 18,
+                                      ),
+                                label: Text(context.l10n.friendsInviteAction),
+                              ),
+                            );
+                          }),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

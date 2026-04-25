@@ -67,14 +67,9 @@ class _CredentialsPageState extends State<CredentialsPage> {
         return;
       }
       _isNavigatingAway = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) {
-          return;
-        }
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil(AppRouter.trips, (route) => false);
-      });
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(AppRouter.trips, (route) => false);
     } on ApiException catch (error) {
       if (!mounted) {
         return;

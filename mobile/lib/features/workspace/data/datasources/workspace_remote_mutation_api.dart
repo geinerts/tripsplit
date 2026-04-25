@@ -50,6 +50,30 @@ class WorkspaceRemoteMutationApi {
     );
   }
 
+  Future<void> cancelSettlementSent({
+    required int tripId,
+    required int settlementId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('cancel_settlement_sent'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'settlement_id': settlementId},
+    );
+  }
+
+  Future<void> reportSettlementNotReceived({
+    required int tripId,
+    required int settlementId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('report_settlement_not_received'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'settlement_id': settlementId},
+    );
+  }
+
   Future<void> confirmSettlementReceived({
     required int tripId,
     required int settlementId,

@@ -12,6 +12,8 @@ class SettlementItem {
     required this.confirmedAt,
     required this.canMarkSent,
     required this.canConfirmReceived,
+    required this.canCancelSent,
+    required this.canReportNotReceived,
     required this.isConfirmed,
   });
 
@@ -27,6 +29,8 @@ class SettlementItem {
   final String? confirmedAt;
   final bool canMarkSent;
   final bool canConfirmReceived;
+  final bool canCancelSent;
+  final bool canReportNotReceived;
   final bool isConfirmed;
 
   bool get isSuggested => status == 'suggested';

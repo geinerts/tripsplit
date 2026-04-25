@@ -271,14 +271,7 @@ extension _LoginPageActions on _LoginPageState {
     final nextRoute = user.needsCredentials
         ? AppRouter.credentials
         : AppRouter.trips;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      Navigator.of(
-        context,
-      ).pushNamedAndRemoveUntil(nextRoute, (route) => false);
-    });
+    Navigator.of(context).pushNamedAndRemoveUntil(nextRoute, (route) => false);
   }
 
   void _onModeChanged(_AuthMode mode) {
