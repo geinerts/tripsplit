@@ -616,7 +616,7 @@ function add_expense_action(): void
             $clientMutationId,
             $responsePayload
         );
-        app_event($pdo, $userId, 'expense.created', 'expense', $expenseId);
+        app_event($pdo, (int) ($me['id'] ?? 0), 'expense.created', 'expense', $expenseId);
         json_out($responsePayload);
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
