@@ -4,6 +4,15 @@ This checklist tracks critical stability checks before wider TestFlight/Android 
 
 ## Automated checks
 
+0. Critical trust flows covered in code/tests
+   - Status: UPDATED LOCALLY (2026-04-25)
+   - Covers:
+     - trip Activity/audit feed for expense create/edit/delete, trip/member changes, settlement sent/confirmed/dispute actions
+     - safe confirmation before expense edit, expense delete, settlement sent, and settlement confirmation
+     - settlement dispute recovery: cancel sent status and report not received
+     - visible trip sync status: all synced / syncing / waiting to sync / retry
+     - API smoke script extended for create trip, add/edit/delete expense, finish trip, mark sent, cancel sent, report not received, confirm received, activity feed, notifications feed
+
 1. Release build (Android)
    - Command:
      - `/Users/matissgeinerts/Developer/flutter/bin/flutter build apk --release`

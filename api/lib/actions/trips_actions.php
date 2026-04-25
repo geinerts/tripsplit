@@ -618,7 +618,10 @@ function create_trip_action(): void
         throw $error;
     }
 
-    app_event($pdo, $meId, 'trip.created', 'trip', $tripId);
+    app_event($pdo, $meId, 'trip.created', 'trip', $tripId, $tripId, [
+        'members_count' => count($memberIds),
+        'currency_code' => $currencyCode,
+    ]);
     json_out([
         'ok' => true,
         'trip' => [
@@ -789,6 +792,13 @@ function update_trip_action(): void
     );
     $countStmt->execute(['trip_id' => $tripId]);
     $membersCount = (int) ($countStmt->fetchColumn() ?: 0);
+
+    app_event($pdo, (int) $me['id'], 'trip.updated', 'trip', $tripId, $tripId, [
+        'name_changed' => $hasName && $nextName !== (string) ($trip['name'] ?? ''),
+        'currency_changed' => $hasCurrencyCode
+            && $nextCurrencyCode !== normalize_currency_code($trip['currency_code'] ?? default_trip_currency_code()),
+        'image_changed' => ($hasImagePath || $removeImage) && $oldImagePath !== $nextImagePath,
+    ]);
 
     json_out([
         'ok' => true,
@@ -1019,6 +1029,12 @@ function add_trip_members_action(): void
     );
     $countStmt->execute(['trip_id' => $tripId]);
     $membersCount = (int) ($countStmt->fetchColumn() ?: 0);
+
+    if ($addedCount > 0) {
+        app_event($pdo, $actorId, 'trip.members_added', 'trip', $tripId, $tripId, [
+            'members_added_count' => $addedCount,
+        ]);
+    }
 
     json_out([
         'ok' => true,

@@ -31,6 +31,8 @@ function settlement_row_to_payload(array $row, int $currentUserId, array $stats 
         'confirmed_at' => $row['confirmed_at'] ?? null,
         'can_mark_sent' => $status === 'pending' && $currentUserId > 0 && $currentUserId === $fromUserId,
         'can_confirm_received' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $toUserId,
+        'can_cancel_sent' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $fromUserId,
+        'can_report_not_received' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $toUserId,
         'is_confirmed' => $status === 'confirmed',
     ];
 }

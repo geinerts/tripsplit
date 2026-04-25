@@ -384,6 +384,115 @@ function workspace_load_trip_notifications(
     ];
 }
 
+function list_trip_activity_action(): void
+{
+    $me = get_me();
+    $pdo = db();
+    $trip = get_current_trip($pdo, $me, true);
+    $tripId = (int) ($trip['id'] ?? 0);
+    if ($tripId <= 0) {
+        json_out(['ok' => false, 'error' => 'Trip is required.'], 400);
+    }
+
+    $limit = pagination_limit($_GET['limit'] ?? 50, 50, 100);
+    $offset = max(0, (int) ($_GET['offset'] ?? 0));
+
+    if (!app_events_trip_activity_available($pdo)) {
+        json_out([
+            'ok' => true,
+            'schema_ready' => false,
+            'events' => [],
+            'pagination' => [
+                'limit' => $limit,
+                'offset' => $offset,
+                'has_more' => false,
+                'next_offset' => null,
+            ],
+        ]);
+    }
+
+    $eventsTable = table_name('app_events');
+    $usersTable = table_name('users');
+    $nameSelect = users_name_columns_available($pdo)
+        ? 'u.first_name, u.last_name, '
+        : 'NULL AS first_name, NULL AS last_name, ';
+    $rowLimit = $limit + 1;
+
+    $stmt = $pdo->prepare(
+        'SELECT
+            e.id,
+            e.trip_id,
+            e.user_id,
+            e.event_type,
+            e.entity_type,
+            e.entity_id,
+            e.payload_json,
+            e.created_at,
+            ' . $nameSelect . '
+            u.nickname,
+            u.avatar_path
+         FROM ' . $eventsTable . ' e
+         LEFT JOIN ' . $usersTable . ' u ON u.id = e.user_id
+         WHERE e.trip_id = :trip_id
+         ORDER BY e.id DESC
+         LIMIT ' . $rowLimit . ' OFFSET ' . $offset
+    );
+    $stmt->execute(['trip_id' => $tripId]);
+    $rows = $stmt->fetchAll();
+    $hasMore = count($rows) > $limit;
+    if ($hasMore) {
+        $rows = array_slice($rows, 0, $limit);
+    }
+
+    $events = [];
+    foreach ($rows as $row) {
+        $payload = [];
+        $rawPayload = trim((string) ($row['payload_json'] ?? ''));
+        if ($rawPayload !== '') {
+            $decoded = json_decode($rawPayload, true);
+            if (is_array($decoded)) {
+                $payload = $decoded;
+            }
+        }
+
+        $firstName = normalize_me_name_value($row['first_name'] ?? null);
+        $lastName = normalize_me_name_value($row['last_name'] ?? null);
+        $displayName = combine_full_name($firstName, $lastName);
+        $nickname = trim((string) ($row['nickname'] ?? ''));
+        $actorName = $displayName !== null ? $displayName : $nickname;
+        if ($actorName === '') {
+            $actorName = 'Trip member';
+        }
+        $avatarPath = trim((string) ($row['avatar_path'] ?? ''));
+
+        $events[] = [
+            'id' => (int) ($row['id'] ?? 0),
+            'trip_id' => (int) ($row['trip_id'] ?? 0),
+            'actor_user_id' => $row['user_id'] !== null ? (int) $row['user_id'] : null,
+            'actor_name' => $actorName,
+            'actor_avatar_url' => $avatarPath !== '' ? avatar_public_url($avatarPath) : null,
+            'actor_avatar_thumb_url' => $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null,
+            'event_type' => (string) ($row['event_type'] ?? ''),
+            'entity_type' => $row['entity_type'] !== null ? (string) $row['entity_type'] : null,
+            'entity_id' => $row['entity_id'] !== null ? (int) $row['entity_id'] : null,
+            'payload' => $payload,
+            'created_at' => $row['created_at'] ?? null,
+        ];
+    }
+
+    json_out([
+        'ok' => true,
+        'schema_ready' => true,
+        'events' => $events,
+        'pagination' => [
+            'limit' => $limit,
+            'offset' => $offset,
+            'has_more' => $hasMore,
+            'next_offset' => $hasMore ? ($offset + count($events)) : null,
+        ],
+    ]);
+}
+
 function shared_trips_with_user_action(): void
 {
     $me = get_me();

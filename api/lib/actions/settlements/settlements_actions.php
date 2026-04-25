@@ -223,6 +223,10 @@ function end_trip_action(): void
     }
 
     $stored = load_trip_settlement_payload($pdo, $tripId, (int) $me['id'], $computed['stats']);
+    app_event($pdo, (int) $me['id'], 'trip.finished', 'trip', $tripId, $tripId, [
+        'status' => $nextStatus,
+        'settlements_count' => count($recommended),
+    ]);
     json_out([
         'ok' => true,
         'trip' => build_trip_payload($trip),
@@ -273,6 +277,8 @@ function set_ready_to_settle_action(): void
     $tripsTable = table_name('trips');
     $actorId = (int) ($me['id'] ?? 0);
     $readyToSettleAfter = [];
+    $stateChanged = false;
+    $becameAllReady = false;
 
     $pdo->beginTransaction();
     try {
@@ -385,6 +391,16 @@ function set_ready_to_settle_action(): void
             $pdo->rollBack();
         }
         throw $error;
+    }
+
+    if ($stateChanged) {
+        app_event($pdo, $actorId, $isReady ? 'trip.member_ready' : 'trip.member_not_ready', 'trip_member', $actorId, $tripId, [
+            'is_ready' => $isReady,
+            'all_ready' => ($readyToSettleAfter['all_ready'] ?? false) === true,
+        ]);
+        if ($becameAllReady) {
+            app_event($pdo, $actorId, 'trip.all_members_ready', 'trip', $tripId, $tripId);
+        }
     }
 
     json_out([
@@ -573,6 +589,14 @@ function remind_settlement_action(): void
         throw $error;
     }
 
+    app_event($pdo, (int) ($me['id'] ?? 0), 'settlement.reminder_sent', 'settlement', $settlementId, $tripId, [
+        'from_user_id' => $fromUserId,
+        'to_user_id' => $toUserId,
+        'target_user_id' => $targetUserId,
+        'amount_cents' => (int) ($row['amount_cents'] ?? 0),
+        'status' => $status,
+    ]);
+
     json_out([
         'ok' => true,
         'settlement_id' => $settlementId,
@@ -691,7 +715,265 @@ function mark_settlement_sent_action(): void
     $computed = compute_trip_balance_data($pdo, $tripId);
     $stored = load_trip_settlement_payload($pdo, $tripId, (int) $me['id'], $computed['stats']);
 
-    app_event($pdo, (int) $me['id'], 'settlement.marked_sent', 'settlement', $settlementId);
+    app_event($pdo, (int) $me['id'], 'settlement.marked_sent', 'settlement', $settlementId, $tripId, [
+        'from_user_id' => (int) ($row['from_user_id'] ?? 0),
+        'to_user_id' => (int) ($row['to_user_id'] ?? 0),
+        'amount_cents' => (int) ($row['amount_cents'] ?? 0),
+    ]);
+    json_out([
+        'ok' => true,
+        'trip' => build_trip_payload($trip),
+        'settlements' => $stored['settlements'],
+        'settlement_progress' => $stored['progress'],
+        'updated_settlement_id' => $settlementId,
+    ]);
+}
+
+function cancel_settlement_sent_action(): void
+{
+    require_post();
+    $me = get_me();
+    $body = read_json();
+    $settlementId = (int) ($body['settlement_id'] ?? 0);
+    if ($settlementId <= 0) {
+        json_out(['ok' => false, 'error' => 'settlement_id is required.'], 400);
+    }
+
+    $pdo = db();
+    $trip = get_current_trip($pdo, $me, true);
+    $tripId = (int) $trip['id'];
+    if (normalize_trip_status($trip['status'] ?? 'active') !== 'settling') {
+        json_out(['ok' => false, 'error' => 'Trip is not in settling mode.'], 409);
+    }
+
+    $settlementsTable = table_name('settlements');
+    $usersTable = table_name('users');
+    $changedNow = false;
+    $row = null;
+
+    $pdo->beginTransaction();
+    try {
+        $rowStmt = $pdo->prepare(
+            'SELECT
+                s.id,
+                s.trip_id,
+                s.from_user_id,
+                s.to_user_id,
+                s.amount_cents,
+                s.status,
+                uf.nickname AS from_nickname,
+                ut.nickname AS to_nickname
+             FROM ' . $settlementsTable . ' s
+             JOIN ' . $usersTable . ' uf ON uf.id = s.from_user_id
+             JOIN ' . $usersTable . ' ut ON ut.id = s.to_user_id
+             WHERE s.id = :id AND s.trip_id = :trip_id
+             LIMIT 1
+             FOR UPDATE'
+        );
+        $rowStmt->execute([
+            'id' => $settlementId,
+            'trip_id' => $tripId,
+        ]);
+        $row = $rowStmt->fetch();
+        if (!$row) {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Settlement not found.'], 404);
+        }
+
+        if ((int) ($row['from_user_id'] ?? 0) !== (int) $me['id']) {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Only payer can cancel sent status.'], 403);
+        }
+
+        $status = normalize_settlement_status($row['status'] ?? 'pending');
+        if ($status === 'confirmed') {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Confirmed settlement cannot be changed.'], 409);
+        }
+
+        if ($status === 'sent') {
+            $update = $pdo->prepare(
+                'UPDATE ' . $settlementsTable . '
+                 SET status = "pending",
+                     marked_sent_by = NULL,
+                     marked_sent_at = NULL
+                 WHERE id = :id'
+            );
+            $update->execute(['id' => $settlementId]);
+            $changedNow = true;
+        }
+
+        if ($changedNow) {
+            $fromName = trim((string) ($row['from_nickname'] ?? ''));
+            if ($fromName === '') {
+                $fromName = 'Trip member';
+            }
+            $amount = format_cents_with_currency(
+                (int) ($row['amount_cents'] ?? 0),
+                trip_currency_code_from_trip($trip)
+            );
+            create_user_notification(
+                $pdo,
+                $tripId,
+                (int) ($row['to_user_id'] ?? 0),
+                'settlement_sent_cancelled',
+                'Transfer marked as not sent',
+                $fromName . ' marked ' . $amount . ' as not sent yet.',
+                [
+                    'settlement_id' => $settlementId,
+                    'from_user_id' => (int) ($row['from_user_id'] ?? 0),
+                    'to_user_id' => (int) ($row['to_user_id'] ?? 0),
+                    'amount_cents' => (int) ($row['amount_cents'] ?? 0),
+                ]
+            );
+        }
+
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $error;
+    }
+
+    $computed = compute_trip_balance_data($pdo, $tripId);
+    $stored = load_trip_settlement_payload($pdo, $tripId, (int) $me['id'], $computed['stats']);
+
+    if (is_array($row) && $changedNow) {
+        app_event($pdo, (int) $me['id'], 'settlement.sent_cancelled', 'settlement', $settlementId, $tripId, [
+            'from_user_id' => (int) ($row['from_user_id'] ?? 0),
+            'to_user_id' => (int) ($row['to_user_id'] ?? 0),
+            'amount_cents' => (int) ($row['amount_cents'] ?? 0),
+        ]);
+    }
+
+    json_out([
+        'ok' => true,
+        'trip' => build_trip_payload($trip),
+        'settlements' => $stored['settlements'],
+        'settlement_progress' => $stored['progress'],
+        'updated_settlement_id' => $settlementId,
+    ]);
+}
+
+function report_settlement_not_received_action(): void
+{
+    require_post();
+    $me = get_me();
+    $body = read_json();
+    $settlementId = (int) ($body['settlement_id'] ?? 0);
+    if ($settlementId <= 0) {
+        json_out(['ok' => false, 'error' => 'settlement_id is required.'], 400);
+    }
+
+    $pdo = db();
+    $trip = get_current_trip($pdo, $me, true);
+    $tripId = (int) $trip['id'];
+    if (normalize_trip_status($trip['status'] ?? 'active') !== 'settling') {
+        json_out(['ok' => false, 'error' => 'Trip is not in settling mode.'], 409);
+    }
+
+    $settlementsTable = table_name('settlements');
+    $usersTable = table_name('users');
+    $changedNow = false;
+    $row = null;
+
+    $pdo->beginTransaction();
+    try {
+        $rowStmt = $pdo->prepare(
+            'SELECT
+                s.id,
+                s.trip_id,
+                s.from_user_id,
+                s.to_user_id,
+                s.amount_cents,
+                s.status,
+                uf.nickname AS from_nickname,
+                ut.nickname AS to_nickname
+             FROM ' . $settlementsTable . ' s
+             JOIN ' . $usersTable . ' uf ON uf.id = s.from_user_id
+             JOIN ' . $usersTable . ' ut ON ut.id = s.to_user_id
+             WHERE s.id = :id AND s.trip_id = :trip_id
+             LIMIT 1
+             FOR UPDATE'
+        );
+        $rowStmt->execute([
+            'id' => $settlementId,
+            'trip_id' => $tripId,
+        ]);
+        $row = $rowStmt->fetch();
+        if (!$row) {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Settlement not found.'], 404);
+        }
+
+        if ((int) ($row['to_user_id'] ?? 0) !== (int) $me['id']) {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Only receiver can report not received.'], 403);
+        }
+
+        $status = normalize_settlement_status($row['status'] ?? 'pending');
+        if ($status === 'confirmed') {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Confirmed settlement cannot be changed.'], 409);
+        }
+
+        if ($status === 'sent') {
+            $update = $pdo->prepare(
+                'UPDATE ' . $settlementsTable . '
+                 SET status = "pending",
+                     marked_sent_by = NULL,
+                     marked_sent_at = NULL
+                 WHERE id = :id'
+            );
+            $update->execute(['id' => $settlementId]);
+            $changedNow = true;
+        }
+
+        if ($changedNow) {
+            $toName = trim((string) ($row['to_nickname'] ?? ''));
+            if ($toName === '') {
+                $toName = 'Trip member';
+            }
+            $amount = format_cents_with_currency(
+                (int) ($row['amount_cents'] ?? 0),
+                trip_currency_code_from_trip($trip)
+            );
+            create_user_notification(
+                $pdo,
+                $tripId,
+                (int) ($row['from_user_id'] ?? 0),
+                'settlement_not_received',
+                'Transfer not received',
+                $toName . ' reported that ' . $amount . ' was not received yet.',
+                [
+                    'settlement_id' => $settlementId,
+                    'from_user_id' => (int) ($row['from_user_id'] ?? 0),
+                    'to_user_id' => (int) ($row['to_user_id'] ?? 0),
+                    'amount_cents' => (int) ($row['amount_cents'] ?? 0),
+                ]
+            );
+        }
+
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $error;
+    }
+
+    $computed = compute_trip_balance_data($pdo, $tripId);
+    $stored = load_trip_settlement_payload($pdo, $tripId, (int) $me['id'], $computed['stats']);
+
+    if (is_array($row) && $changedNow) {
+        app_event($pdo, (int) $me['id'], 'settlement.not_received', 'settlement', $settlementId, $tripId, [
+            'from_user_id' => (int) ($row['from_user_id'] ?? 0),
+            'to_user_id' => (int) ($row['to_user_id'] ?? 0),
+            'amount_cents' => (int) ($row['amount_cents'] ?? 0),
+        ]);
+    }
+
     json_out([
         'ok' => true,
         'trip' => build_trip_payload($trip),
@@ -837,7 +1119,12 @@ function confirm_settlement_received_action(): void
     $computed = compute_trip_balance_data($pdo, $tripId);
     $stored = load_trip_settlement_payload($pdo, $tripId, (int) $me['id'], $computed['stats']);
 
-    app_event($pdo, (int) $me['id'], 'settlement.confirmed', 'settlement', $settlementId);
+    app_event($pdo, (int) $me['id'], 'settlement.confirmed', 'settlement', $settlementId, $tripId, [
+        'from_user_id' => (int) ($row['from_user_id'] ?? 0),
+        'to_user_id' => (int) ($row['to_user_id'] ?? 0),
+        'amount_cents' => (int) ($row['amount_cents'] ?? 0),
+        'all_settled' => ($stored['progress']['all_settled'] ?? false) === true,
+    ]);
     json_out([
         'ok' => true,
         'trip' => build_trip_payload($trip),

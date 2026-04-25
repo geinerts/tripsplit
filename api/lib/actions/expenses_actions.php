@@ -616,7 +616,15 @@ function add_expense_action(): void
             $clientMutationId,
             $responsePayload
         );
-        app_event($pdo, (int) ($me['id'] ?? 0), 'expense.created', 'expense', $expenseId);
+        app_event($pdo, $userId, 'expense.created', 'expense', $expenseId, $tripId, [
+            'amount_cents' => $amountCents,
+            'trip_currency_code' => $tripCurrencyCode,
+            'expense_currency_code' => $sourceCurrencyCode,
+            'source_amount_cents' => $sourceAmountCents,
+            'category' => $category,
+            'split_mode' => $splitMode,
+            'participants_count' => count($participantRows),
+        ]);
         json_out($responsePayload);
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
@@ -842,6 +850,16 @@ function update_expense_action(): void
             $clientMutationId,
             $responsePayload
         );
+        app_event($pdo, $userId, 'expense.updated', 'expense', $expenseId, $tripId, [
+            'amount_cents' => $amountCents,
+            'trip_currency_code' => $tripCurrencyCode,
+            'expense_currency_code' => $sourceCurrencyCode,
+            'source_amount_cents' => $sourceAmountCents,
+            'category' => $category,
+            'split_mode' => $splitMode,
+            'participants_count' => count($participantRows),
+            'receipt_changed' => $oldReceiptPath !== $nextReceiptPath,
+        ]);
         json_out($responsePayload);
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
@@ -892,8 +910,14 @@ function delete_expense_action(): void
         json_out(['ok' => false, 'error' => 'Expense id is required.'], 400);
     }
 
+    $expenseCurrencyColumnsAvailable = expenses_currency_columns_available($pdo);
+    $tripCurrencyCode = trip_currency_code_from_trip($trip);
+    $currencySelect = $expenseCurrencyColumnsAvailable
+        ? 'currency_code, source_amount, '
+        : '\'' . $tripCurrencyCode . '\' AS currency_code, amount AS source_amount, ';
+
     $ownerStmt = $pdo->prepare(
-        'SELECT id, trip_id, paid_by, receipt_path
+        'SELECT id, trip_id, paid_by, amount, category, split_mode, receipt_path, ' . $currencySelect . '
          FROM ' . $expensesTable . '
          WHERE id = :id
          LIMIT 1'
@@ -926,7 +950,16 @@ function delete_expense_action(): void
         $clientMutationId,
         $responsePayload
     );
-    app_event($pdo, $userId, 'expense.deleted', 'expense', $expenseId);
+    app_event($pdo, $userId, 'expense.deleted', 'expense', $expenseId, $tripId, [
+        'amount_cents' => decimal_to_cents($expense['amount'] ?? 0),
+        'trip_currency_code' => $tripCurrencyCode,
+        'expense_currency_code' => normalize_currency_code(
+            $expense['currency_code'] ?? $tripCurrencyCode
+        ),
+        'source_amount_cents' => decimal_to_cents($expense['source_amount'] ?? 0),
+        'category' => trim((string) ($expense['category'] ?? '')),
+        'split_mode' => trim((string) ($expense['split_mode'] ?? '')),
+    ]);
     json_out($responsePayload);
 }
 

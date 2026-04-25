@@ -24,6 +24,8 @@ REFRESH_B=""
 TRIP_PRIVATE_ID=""
 TRIP_SHARED_ID=""
 SETTLEMENT_ID=""
+EXPENSE_ID=""
+TEMP_EXPENSE_ID=""
 
 LAST_STATUS=""
 LAST_HEADERS=""
@@ -210,6 +212,38 @@ main() {
     '{amount:$amount,category:"food",note:$note,date:$date,participants:[$user_a,$user_b],split_mode:"equal"}')"
   api_request "POST" "add_expense" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$add_expense_body"
   assert_status "200"
+  EXPENSE_ID="$(json_get '.expense_id')"
+
+  log "Happy path: A edits shared expense"
+  local update_expense_body
+  update_expense_body="$(jq -nc \
+    --argjson id "$EXPENSE_ID" \
+    --arg amount "44.00" \
+    --arg note "Smoke expense edited ${RUN_ID}" \
+    --arg date "$(date +%F)" \
+    --argjson user_a "$USER_A_ID" \
+    --argjson user_b "$USER_B_ID" \
+    '{id:$id,amount:$amount,category:"food",note:$note,date:$date,participants:[$user_a,$user_b],split_mode:"equal"}')"
+  api_request "POST" "update_expense" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$update_expense_body"
+  assert_status "200"
+
+  log "Happy path: A adds and deletes a temporary expense"
+  local temp_expense_body
+  temp_expense_body="$(jq -nc \
+    --arg amount "1.00" \
+    --arg note "Smoke temp delete ${RUN_ID}" \
+    --arg date "$(date +%F)" \
+    --argjson user_a "$USER_A_ID" \
+    --argjson user_b "$USER_B_ID" \
+    '{amount:$amount,category:"other",note:$note,date:$date,participants:[$user_a,$user_b],split_mode:"equal"}')"
+  api_request "POST" "add_expense" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$temp_expense_body"
+  assert_status "200"
+  TEMP_EXPENSE_ID="$(json_get '.expense_id')"
+
+  local delete_expense_body
+  delete_expense_body="$(jq -nc --argjson id "$TEMP_EXPENSE_ID" '{id:$id}')"
+  api_request "POST" "delete_expense" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$delete_expense_body"
+  assert_status "200"
 
   log "Happy path: B can see shared expense"
   api_request "GET" "list_expenses" "$DEVICE_B" "$ACCESS_B" "$TRIP_SHARED_ID" ""
@@ -234,6 +268,20 @@ main() {
     api_request "POST" "mark_settlement_sent" "$DEVICE_B" "$ACCESS_B" "$TRIP_SHARED_ID" "$sent_body"
     assert_status "200"
 
+    log "Dispute flow: B can cancel sent status"
+    api_request "POST" "cancel_settlement_sent" "$DEVICE_B" "$ACCESS_B" "$TRIP_SHARED_ID" "$sent_body"
+    assert_status "200"
+
+    log "Dispute flow: A can report transfer not received"
+    api_request "POST" "mark_settlement_sent" "$DEVICE_B" "$ACCESS_B" "$TRIP_SHARED_ID" "$sent_body"
+    assert_status "200"
+    api_request "POST" "report_settlement_not_received" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$sent_body"
+    assert_status "200"
+
+    log "Happy path: B marks settlement as sent again"
+    api_request "POST" "mark_settlement_sent" "$DEVICE_B" "$ACCESS_B" "$TRIP_SHARED_ID" "$sent_body"
+    assert_status "200"
+
     log "Happy path: A confirms settlement received"
     local confirm_body
     confirm_body="$(jq -nc --argjson settlement_id "$SETTLEMENT_ID" '{settlement_id:$settlement_id}')"
@@ -242,6 +290,17 @@ main() {
   else
     log "No settlements generated (trip may already be balanced)."
   fi
+
+  log "Audit history: trip activity contains critical events"
+  api_request "GET" "list_trip_activity" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" ""
+  assert_status "200"
+  local activity_count
+  activity_count="$(jq -r '.events | length' "$LAST_BODY")"
+  [[ "$activity_count" -ge 5 ]] || fail "Expected critical trip activity events, got $activity_count"
+
+  log "Notifications: A can open trip notifications feed"
+  api_request "GET" "list_notifications" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" ""
+  assert_status "200"
 
   log "Token stability: valid refresh rotates tokens"
   local refresh_body
