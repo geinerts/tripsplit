@@ -528,20 +528,24 @@ async function userSearch(offset = 0) {
     return;
   }
 
-  const rows = res.users.map(u => `
-    <tr>
-      <td data-label="Name">${esc(u.nickname)}</td>
-      <td data-label="Email" style="color:var(--fg-muted)">${esc(u.email)}</td>
-      <td data-label="Status">${statusBadge(u.account_status)}</td>
-      <td class="hide-mobile" style="color:var(--fg-muted)">${relTime(u.created_at)}</td>
-      <td class="td-actions">
+  const cards = res.users.map(u => `
+    <div class="cl-item">
+      <div class="cl-row" style="margin-bottom:6px">
+        <div style="flex:1;min-width:0">
+          <div class="cl-title">${esc(u.nickname)}</div>
+          <div class="cl-sub">${esc(u.email)}</div>
+        </div>
+        ${statusBadge(u.account_status)}
+      </div>
+      <div class="cl-actions">
         <button class="btn btn-ghost btn-sm" onclick="openUserDetail(${u.id})">View</button>
         ${u.account_status === 'active' && can('superadmin','admin','support') ?
           `<button class="btn btn-amber btn-sm" onclick="suspendUser(${u.id},'${esc(u.nickname)}')">Suspend</button>` : ''}
         ${u.account_status === 'deactivated' && can('superadmin','admin','support') ?
           `<button class="btn btn-ghost btn-sm" onclick="reactivateUser(${u.id},'${esc(u.nickname)}')">Reactivate</button>` : ''}
-      </td>
-    </tr>
+        <span style="margin-left:auto;font-size:11px;color:var(--fg-muted);align-self:center">${relTime(u.created_at)}</span>
+      </div>
+    </div>
   `).join('');
 
   const prevBtn = offset > 0
@@ -552,11 +556,8 @@ async function userSearch(offset = 0) {
     : '';
 
   document.getElementById('user-results').innerHTML = `
-    <div class="mobile-cards table-wrap">
-      <table>
-        <thead><tr><th>Name</th><th>Email</th><th>Status</th><th class="hide-mobile">Joined</th><th>Actions</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+    <div class="table-card" style="padding:0">
+      ${cards}
     </div>
     <div class="pagination">
       Showing ${offset + 1}–${Math.min(offset + 40, res.total)} of ${res.total}
@@ -686,20 +687,22 @@ async function loadFeedback(offset = 0) {
     return;
   }
 
-  const rows = res.feedback.map(f => `
-    <tr>
-      <td data-label="Type"><span class="badge ${f.type === 'bug' ? 'badge-red' : 'badge-blue'}">${esc(f.type)}</span></td>
-      <td data-label="Message" style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(f.message)}</td>
-      <td data-label="Status">${statusBadge(f.status)}</td>
-      <td class="hide-mobile" style="color:var(--fg-muted)">${esc(f.user_nickname ?? '—')}</td>
-      <td class="hide-mobile" style="color:var(--fg-muted)">${relTime(f.created_at)}</td>
-      <td class="td-actions">
+  const cards = res.feedback.map(f => `
+    <div class="cl-item">
+      <div class="cl-row" style="margin-bottom:7px">
+        <span class="badge ${f.type === 'bug' ? 'badge-red' : 'badge-blue'}">${esc(f.type)}</span>
+        ${statusBadge(f.status)}
+        <span style="margin-left:auto;font-size:11px;color:var(--fg-muted)">${relTime(f.created_at)}</span>
+      </div>
+      <div style="font-size:13px;color:var(--fg);line-height:1.45;margin-bottom:6px">${esc(f.message)}</div>
+      ${f.user_nickname ? `<div class="cl-meta">by ${esc(f.user_nickname)}</div>` : ''}
+      <div class="cl-actions">
         ${f.status === 'open' && can('superadmin','admin','support')
           ? `<button class="btn btn-ghost btn-sm" onclick="archiveFeedback(${f.id})">Archive</button>` : ''}
         ${can('superadmin','admin')
           ? `<button class="btn btn-danger btn-sm" onclick="deleteFeedback(${f.id})">Delete</button>` : ''}
-      </td>
-    </tr>
+      </div>
+    </div>
   `).join('');
 
   const nextBtn = (offset + 40) < res.total
@@ -708,11 +711,8 @@ async function loadFeedback(offset = 0) {
     ? `<button class="btn btn-ghost btn-sm" onclick="loadFeedback(${offset - 40})">← Prev</button>` : '';
 
   document.getElementById('fb-results').innerHTML = `
-    <div class="mobile-cards table-wrap">
-      <table>
-        <thead><tr><th>Type</th><th>Message</th><th>Status</th><th class="hide-mobile">User</th><th class="hide-mobile">Date</th><th></th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+    <div class="table-card" style="padding:0">
+      ${cards}
     </div>
     <div class="pagination">${offset + 1}–${Math.min(offset + 40, res.total)} of ${res.total} ${prevBtn} ${nextBtn}</div>
   `;
@@ -750,31 +750,29 @@ registerView('push-queue', {
       </div>
     `).join('');
 
-    const rows = res.rows.map(r => `
-      <tr>
-        <td data-label="Type">${esc(r.type ?? '—')}</td>
-        <td data-label="Title" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(r.title ?? '—')}</td>
-        <td data-label="Status">${statusBadge(r.status)}</td>
-        <td data-label="Error" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--red)">${esc(r.last_error ?? '—')}</td>
-        <td class="hide-mobile" style="color:var(--fg-muted)">#${r.id}</td>
-        <td class="hide-mobile">${r.attempts}</td>
-        <td class="hide-mobile" style="color:var(--fg-muted)">${relTime(r.created_at)}</td>
-        <td class="td-actions">
+    const cards = res.rows.map(r => `
+      <div class="cl-item">
+        <div class="cl-row" style="margin-bottom:6px">
+          <span style="font-family:monospace;font-size:11.5px;color:var(--fg-dim);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.type ?? '—')}</span>
+          ${statusBadge(r.status)}
+          <span style="font-size:11px;color:var(--fg-muted)">#${r.id}</span>
+        </div>
+        <div style="font-weight:600;font-size:13.5px;color:var(--fg);margin-bottom:5px">${esc(r.title ?? '—')}</div>
+        ${r.last_error ? `<div style="font-size:12px;color:var(--red);margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.last_error)}</div>` : ''}
+        <div class="cl-row">
+          <span class="cl-meta">${r.attempts} attempt${r.attempts !== 1 ? 's' : ''} · ${relTime(r.created_at)}</span>
           ${r.status !== 'sent' && can('superadmin','admin','ops')
-            ? `<button class="btn btn-ghost btn-sm" onclick="retryPush(${r.id})">Retry</button>` : ''}
-        </td>
-      </tr>
+            ? `<button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="retryPush(${r.id})">Retry</button>` : ''}
+        </div>
+      </div>
     `).join('');
 
     return `
       <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:20px;">
         ${healthCards || '<div class="empty-state">No queue data</div>'}
       </div>
-      <div class="mobile-cards table-wrap">
-        <table>
-          <thead><tr><th>Type</th><th>Title</th><th>Status</th><th>Error</th><th class="hide-mobile">ID</th><th class="hide-mobile">Attempts</th><th class="hide-mobile">Created</th><th></th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="8" style="text-align:center;color:var(--fg-muted);padding:20px">Queue is empty</td></tr>'}</tbody>
-        </table>
+      <div class="table-card" style="padding:0">
+        ${cards || '<div class="empty-state" style="padding:32px">Queue is empty</div>'}
       </div>
     `;
   },
@@ -938,19 +936,23 @@ async function loadAuditLog(offset = 0) {
     return;
   }
 
-  const rows = res.log.map(entry => {
+  const cards = res.log.map(entry => {
     const actionColor = entry.action.includes('delete') ? 'var(--red)'
       : entry.action.includes('suspend') || entry.action.includes('disable') ? 'var(--amber)'
       : 'var(--green-soft)';
     return `
-      <tr>
-        <td data-label="Action" style="font-family:monospace;font-size:12px;color:${actionColor}">${esc(entry.action)}</td>
-        <td data-label="Admin">${esc(entry.admin_username)}</td>
-        <td data-label="Target">${esc(entry.target_type ?? '')}${entry.target_id ? ` #${entry.target_id}` : ''}</td>
-        <td data-label="Time" style="color:var(--fg-muted)">${relTime(entry.created_at)}</td>
-        <td class="hide-mobile" style="color:var(--fg-muted);font-size:11px">${esc(entry.ip_address)}</td>
-        <td class="hide-mobile" style="font-size:11px;color:var(--fg-muted)">${entry.details ? esc(JSON.stringify(entry.details).slice(0,60)) : ''}</td>
-      </tr>
+      <div class="cl-item">
+        <div class="cl-row" style="margin-bottom:5px">
+          <span style="font-family:monospace;font-size:12px;color:${actionColor};flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(entry.action)}</span>
+          <span style="font-size:11px;color:var(--fg-muted);flex-shrink:0">${relTime(entry.created_at)}</span>
+        </div>
+        <div class="cl-meta">
+          ${esc(entry.admin_username)}
+          ${entry.target_type ? ` → ${esc(entry.target_type)}${entry.target_id ? ` #${entry.target_id}` : ''}` : ''}
+          ${entry.ip_address ? ` · ${esc(entry.ip_address)}` : ''}
+        </div>
+        ${entry.details ? `<div style="font-size:11px;color:var(--fg-muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(JSON.stringify(entry.details).slice(0,80))}</div>` : ''}
+      </div>
     `;
   }).join('');
 
@@ -960,11 +962,8 @@ async function loadAuditLog(offset = 0) {
     ? `<button class="btn btn-ghost btn-sm" onclick="loadAuditLog(${offset + 50})">Next →</button>` : '';
 
   document.getElementById('audit-results').innerHTML = `
-    <div class="mobile-cards table-wrap">
-      <table>
-        <thead><tr><th>Action</th><th>Admin</th><th>Target</th><th>Time</th><th class="hide-mobile">IP</th><th class="hide-mobile">Details</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+    <div class="table-card" style="padding:0">
+      ${cards}
     </div>
     <div class="pagination">${offset + 1}–${Math.min(offset + 50, res.total)} of ${res.total} ${prevBtn} ${nextBtn}</div>
   `;
@@ -980,20 +979,25 @@ registerView('admin-users', {
     const res = await get('admin_panel_admin_users');
     if (!res.ok) return `<div class="empty-state">Access denied or error: ${esc(res.error)}</div>`;
 
-    const rows = res.users.map(u => `
-      <tr>
-        <td data-label="User">${esc(u.username)}</td>
-        <td data-label="Role">${roleBadge(u.role)}</td>
-        <td data-label="Status">${u.is_active ? '<span class="badge badge-green">active</span>' : '<span class="badge badge-red">inactive</span>'}</td>
-        <td class="hide-mobile" style="color:var(--fg-muted)">${esc(u.email)}</td>
-        <td class="hide-mobile">${u.totp_enabled ? '<span class="badge badge-green">✓</span>' : '<span class="badge badge-gray">—</span>'}</td>
-        <td class="hide-mobile" style="color:var(--fg-muted)">${relTime(u.last_login_at)}</td>
-        <td class="td-actions">
+    const cards = res.users.map(u => `
+      <div class="cl-item">
+        <div class="cl-row" style="margin-bottom:6px">
+          <div style="flex:1;min-width:0">
+            <div class="cl-title">${esc(u.username)}</div>
+            <div class="cl-sub">${esc(u.email)}</div>
+          </div>
+          ${roleBadge(u.role)}
+          ${u.is_active ? '<span class="badge badge-green">active</span>' : '<span class="badge badge-red">inactive</span>'}
+        </div>
+        <div class="cl-row">
+          <span class="cl-meta">2FA: ${u.totp_enabled ? '✓' : '—'} · Last login: ${relTime(u.last_login_at)} · ${u.active_sessions} session${u.active_sessions !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="cl-actions">
           <button class="btn btn-ghost btn-sm" onclick="editAdminUser(${u.id},'${esc(u.username)}','${esc(u.role)}',${u.is_active})">Edit</button>
           ${u.id !== state.user?.id
             ? `<button class="btn btn-danger btn-sm" onclick="deleteAdminUser(${u.id},'${esc(u.username)}')">Delete</button>` : ''}
-        </td>
-      </tr>
+        </div>
+      </div>
     `).join('');
 
     return `
@@ -1001,11 +1005,8 @@ registerView('admin-users', {
         <div class="section-title">Admin accounts</div>
         <button class="btn btn-primary btn-sm" onclick="showCreateAdminModal()">+ Add admin</button>
       </div>
-      <div class="mobile-cards table-wrap">
-        <table>
-          <thead><tr><th>User</th><th>Role</th><th>Status</th><th class="hide-mobile">Email</th><th class="hide-mobile">2FA</th><th class="hide-mobile">Last login</th><th></th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
+      <div class="table-card" style="padding:0">
+        ${cards}
       </div>
     `;
   },

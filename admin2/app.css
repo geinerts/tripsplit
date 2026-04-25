@@ -1023,9 +1023,7 @@ tbody td:first-child { color: var(--fg); }
   .sidebar-logout-btn { width: 36px; height: 36px; font-size: 18px; }
 }
 
-/* ── Mobile card-transform tables ──────────────────────────────────────────── */
-
-/* Table wrap: horizontal scroll fallback (non-mobile-cards tables) */
+/* ── Table wrap ────────────────────────────────────────────────────────────── */
 .table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -1034,48 +1032,49 @@ tbody td:first-child { color: var(--fg); }
 /* Dashboard audit table: hidden on mobile (activity feed covers it) */
 @media (max-width: 768px) {
   .dashboard-audit-table { display: none; }
-  .hide-mobile { display: none; }
+}
 
-  /* Card-transform for .mobile-cards tables */
-  .mobile-cards table,
-  .mobile-cards tbody { display: block; }
-  .mobile-cards thead { display: none; }
+/* ── Card list (replaces tables on all views) ──────────────────────────────── */
+.cl-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background 0.1s;
+}
+.cl-item:last-child { border-bottom: none; }
+.cl-item:hover { background: var(--bg-hover); }
 
-  .mobile-cards tr {
-    display: block;
-    padding: 13px 16px;
-    border-bottom: 1px solid var(--border);
-  }
-  .mobile-cards tr:last-child { border-bottom: none; }
-
-  .mobile-cards td {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 3px 0;
-    border: none;
-    font-size: 13px;
-    gap: 10px;
-    min-height: 0;
-  }
-  .mobile-cards td[data-label]::before {
-    content: attr(data-label);
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--fg-muted);
-    flex-shrink: 0;
-    min-width: 72px;
-    padding-top: 2px;
-  }
-  .mobile-cards td:first-child { color: var(--fg); }
-  .mobile-cards td.td-actions {
-    justify-content: flex-end;
-    padding-top: 8px;
-    flex-wrap: wrap;
-  }
-  .mobile-cards td.td-actions::before { display: none; }
+.cl-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cl-sub {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cl-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cl-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.cl-meta {
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  margin-top: 4px;
 }
 
 /* ── Dashboard incident card list ──────────────────────────────────────────── */
