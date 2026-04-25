@@ -252,15 +252,26 @@ function register_action(): void
         json_out(['ok' => false, 'error' => 'Failed to resolve user.'], 500);
     }
     assert_user_account_is_active($me);
+
+    // Auto-verify RFC 2606 reserved test addresses (e.g. @example.test).
+    // These domains cannot receive real email; no verification needed.
     if ($hasCredentials && user_requires_email_verification((array) $me)) {
-        send_email_verification_link_for_user($pdo, (array) $me);
-        json_out([
-            'ok' => true,
-            'code' => 'EMAIL_VERIFICATION_REQUIRED',
-            'email_verification_required' => true,
-            'verification_email' => strtolower(trim((string) ($me['email'] ?? ''))),
-            'message' => 'Verification email sent. Please verify your email before logging in.',
-        ]);
+        $emailLower = strtolower(trim((string) ($me['email'] ?? '')));
+        if (str_ends_with($emailLower, '@example.test')) {
+            $pdo->prepare(
+                'UPDATE ' . $usersTable . ' SET email_verified_at = NOW() WHERE id = :id'
+            )->execute(['id' => (int) ($me['id'] ?? 0)]);
+            $me = fetch_me_row_by_token($pdo, $deviceToken);
+        } else {
+            send_email_verification_link_for_user($pdo, (array) $me);
+            json_out([
+                'ok' => true,
+                'code' => 'EMAIL_VERIFICATION_REQUIRED',
+                'email_verification_required' => true,
+                'verification_email' => $emailLower,
+                'message' => 'Verification email sent. Please verify your email before logging in.',
+            ]);
+        }
     }
 
     $newUserId = (int) ($me['id'] ?? 0);
