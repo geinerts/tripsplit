@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `trip_app_events` (
   `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id`     BIGINT UNSIGNED NULL,
+  `user_id`     INT UNSIGNED NULL,
   `event_type`  VARCHAR(64)     NOT NULL,
   `entity_type` VARCHAR(32)     NULL,
   `entity_id`   BIGINT UNSIGNED NULL,
