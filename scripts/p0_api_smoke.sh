@@ -252,6 +252,12 @@ main() {
   expense_count="$(jq -r '.expenses | length' "$LAST_BODY")"
   [[ "$expense_count" -ge 1 ]] || fail "No expenses visible for user B in shared trip"
 
+  log "Happy path: A and B mark ready to settle"
+  api_request "POST" "set_ready_to_settle" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" '{"ready":true}'
+  assert_status "200"
+  api_request "POST" "set_ready_to_settle" "$DEVICE_B" "$ACCESS_B" "$TRIP_SHARED_ID" '{"ready":true}'
+  assert_status "200"
+
   log "Happy path: A ends trip (settling flow starts)"
   api_request "POST" "end_trip" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "{}"
   assert_status "200"
