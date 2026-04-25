@@ -10,7 +10,7 @@
     http-equiv="Content-Security-Policy"
     content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; connect-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:"
   />
-  <link rel="stylesheet" href="app.css?v=3"/>
+  <link rel="stylesheet" href="app.css?v=4"/>
 </head>
 <body>
 
@@ -53,6 +53,9 @@
 
 <!-- ── Main app ─────────────────────────────────────────────────────────────── -->
 <div id="app" style="display:none;">
+
+  <!-- Mobile sidebar overlay -->
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
   <!-- Sidebar -->
   <nav id="sidebar">
@@ -111,6 +114,7 @@
   <!-- Main content -->
   <div id="main">
     <div id="topbar">
+      <button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Open menu">☰</button>
       <div class="topbar-breadcrumb">
         <span class="topbar-root">Splyto</span>
         <span class="topbar-sep">/</span>
@@ -141,6 +145,6 @@
 <!-- ── Toast container ──────────────────────────────────────────────────────── -->
 <div id="toast-container"></div>
 
-<script src="app.js?v=3"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

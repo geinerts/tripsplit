@@ -81,9 +81,43 @@ function registerView(name, { title, render, init }) {
   views[name] = { title, render, init };
 }
 
+// ── Sidebar toggle (mobile) ────────────────────────────────────────────────────
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebar-overlay').classList.add('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+document.getElementById('sidebar-toggle').addEventListener('click', () => {
+  const isOpen = document.getElementById('sidebar').classList.contains('open');
+  isOpen ? closeSidebar() : openSidebar();
+});
+
+document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
+
+// Close on swipe-left (mobile)
+(function() {
+  let startX = 0;
+  const sidebar = document.getElementById('sidebar');
+  sidebar.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  sidebar.addEventListener('touchend', e => {
+    if (startX - e.changedTouches[0].clientX > 60) closeSidebar();
+  }, { passive: true });
+})();
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 function navigate(name, data = {}) {
   state.view     = name;
   state.viewData = data;
+
+  // Close sidebar on mobile when navigating
+  closeSidebar();
 
   // Sidebar active state
   document.querySelectorAll('.nav-item').forEach(el => {
