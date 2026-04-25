@@ -77,8 +77,8 @@
     /* ── Globe ────────────────────────────────────────────────────── */
     .globe-wrap {
       position: relative;
-      width: 300px;
-      height: 300px;
+      width: 200px;
+      height: 200px;
       flex-shrink: 0;
     }
 
@@ -104,8 +104,8 @@
     }
 
     .pill-currencies {
-      top: 24px;
-      right: -20px;
+      top: 10px;
+      right: -24px;
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.16);
       color: rgba(255, 255, 255, 0.40);
@@ -113,7 +113,7 @@
     }
 
     .pill-settled {
-      top: 190px;
+      top: 126px;
       left: -20px;
       background: rgba(46, 175, 110, 0.16);
       border: 1px solid rgba(46, 175, 110, 0.38);
@@ -134,7 +134,7 @@
     }
 
     .pill-paris {
-      top: 238px;
+      top: 158px;
       right: -8px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.13);
@@ -151,7 +151,7 @@
     }
 
     .logo-svg {
-      width: 152px;
+      width: 304px;
       height: auto;
     }
 
@@ -341,11 +341,12 @@
 
     /* ── Responsive ───────────────────────────────────────────────── */
     @media (max-width: 380px) {
-      .globe-wrap { width: 252px; height: 252px; }
+      .globe-wrap { width: 168px; height: 168px; }
+      .logo-svg   { width: 260px; }
       .pill { font-size: 11.5px; padding: 8px 12px; }
-      .pill-currencies { right: -10px; }
-      .pill-settled   { left: -10px; }
-      .pill-paris     { right: 0; }
+      .pill-currencies { top: 6px;   right: -10px; }
+      .pill-settled    { top: 106px; left: -10px; }
+      .pill-paris      { top: 132px; right: 0; }
     }
   </style>
 </head>
