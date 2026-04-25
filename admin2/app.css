@@ -1022,3 +1022,91 @@ tbody td:first-child { color: var(--fg); }
   .sidebar-user { padding: 14px; }
   .sidebar-logout-btn { width: 36px; height: 36px; font-size: 18px; }
 }
+
+/* ── Mobile card-transform tables ──────────────────────────────────────────── */
+
+/* Table wrap: horizontal scroll fallback (non-mobile-cards tables) */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Dashboard audit table: hidden on mobile (activity feed covers it) */
+@media (max-width: 768px) {
+  .dashboard-audit-table { display: none; }
+  .hide-mobile { display: none; }
+
+  /* Card-transform for .mobile-cards tables */
+  .mobile-cards table,
+  .mobile-cards tbody { display: block; }
+  .mobile-cards thead { display: none; }
+
+  .mobile-cards tr {
+    display: block;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-cards tr:last-child { border-bottom: none; }
+
+  .mobile-cards td {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 3px 0;
+    border: none;
+    font-size: 13px;
+    gap: 10px;
+    min-height: 0;
+  }
+  .mobile-cards td[data-label]::before {
+    content: attr(data-label);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--fg-muted);
+    flex-shrink: 0;
+    min-width: 72px;
+    padding-top: 2px;
+  }
+  .mobile-cards td:first-child { color: var(--fg); }
+  .mobile-cards td.td-actions {
+    justify-content: flex-end;
+    padding-top: 8px;
+    flex-wrap: wrap;
+  }
+  .mobile-cards td.td-actions::before { display: none; }
+}
+
+/* ── Dashboard incident card list ──────────────────────────────────────────── */
+.data-row {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background 0.1s;
+}
+.data-row:last-child { border-bottom: none; }
+.data-row:hover { background: var(--bg-hover); }
+
+.data-row-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.data-row-title {
+  font-weight: 600;
+  font-size: 13px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.data-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 15px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
