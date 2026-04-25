@@ -24,12 +24,12 @@
 
     Colour palette
     ──────────────
-    --green-primary   : #2EAF6E   (departure dot, settled badge)
-    --green-glow      : #4ECD8C   (grid lines, settled badge label & dot)
-    --magenta-primary : #D44FA8   (arrival dot)
-    --white-16        : rgba(255,255,255,0.16)
-    --white-40        : rgba(255,255,255,0.40)  (currencies label)
-    --white-36        : rgba(255,255,255,0.36)  (location label)
+    green-primary   #2EAF6E   (departure dot, settled badge)
+    green-glow      #4ECD8C   (grid lines, settled badge label and dot)
+    magenta-primary #D44FA8   (arrival dot)
+    white-16        rgba(255,255,255,0.16)
+    white-40        rgba(255,255,255,0.40)  (currencies label)
+    white-36        rgba(255,255,255,0.36)  (location label)
   -->
 
   <defs>
