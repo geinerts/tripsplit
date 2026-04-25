@@ -678,8 +678,8 @@ function update_expense_action(): void
     }
 
     $currencySelect = $expenseCurrencyColumnsAvailable
-        ? 'currency_code, source_amount, fx_rate_to_trip, '
-        : '\'' . default_trip_currency_code() . '\' AS currency_code, amount AS source_amount, 1.00000000 AS fx_rate_to_trip, ';
+        ? 'currency_code, source_amount, fx_rate_to_trip'
+        : '\'' . default_trip_currency_code() . '\' AS currency_code, amount AS source_amount, 1.00000000 AS fx_rate_to_trip';
     $ownerStmt = $pdo->prepare(
         'SELECT id, trip_id, paid_by, category, receipt_path, ' . $currencySelect . '
          FROM ' . $expensesTable . '
