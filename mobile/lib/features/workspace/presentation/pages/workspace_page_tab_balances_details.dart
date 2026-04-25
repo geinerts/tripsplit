@@ -30,10 +30,10 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
         ? context.l10n.workspaceOwesToTheGroup
         : context.l10n.workspaceSettledWithTheGroup;
 
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      wrapWithSurface: false,
       builder: (context) {
         final colors = Theme.of(context).colorScheme;
         final bottomInset = MediaQuery.of(context).viewInsets.bottom;

@@ -169,256 +169,240 @@ class _InAppNotificationSettingsPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AppPageScaffold(
       appBar: AppBar(title: Text(context.l10n.profileAppBanners)),
-      body: AppBackground(
-        child: SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: context.responsive.pageMaxWidth,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: context.responsive.pageMaxWidth,
+            ),
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(
+                context.responsive.pageHorizontalPadding,
+                12,
+                context.responsive.pageHorizontalPadding,
+                20,
               ),
-              child: ListView(
-                padding: EdgeInsets.fromLTRB(
-                  context.responsive.pageHorizontalPadding,
-                  12,
-                  context.responsive.pageHorizontalPadding,
-                  20,
+              children: [
+                _buildSectionHeading(
+                  context,
+                  context.l10n.profileInAppBannersSectionTitle,
                 ),
-                children: [
-                  _buildSectionHeading(
-                    context,
-                    context.l10n.profileInAppBannersSectionTitle,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildProfileSectionCard(
-                    context: context,
-                    children: [
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.notificationExpenseAddedTitle,
-                        subtitle:
-                            context.l10n.notificationExpenseAddedBodyGeneric,
-                        icon: Icons.receipt_long_outlined,
-                        value: _prefs.inAppExpenseAddedEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(inAppExpenseAddedEnabled: value),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSectionHeading(
-                    context,
-                    context.l10n.profileFriendInvites,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildProfileSectionCard(
-                    context: context,
-                    children: [
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.notificationFriendInviteTitle,
-                        subtitle:
-                            context.l10n.notificationFriendInviteBodyGeneric,
-                        icon: Icons.person_add_alt_1_outlined,
-                        value: _prefs.inAppFriendInviteReceivedEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(
-                              inAppFriendInviteReceivedEnabled: value,
-                            ),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title:
-                            context.l10n.notificationFriendInviteAcceptedTitle,
-                        subtitle: context
-                            .l10n
-                            .notificationFriendInviteAcceptedBodyGeneric,
-                        icon: Icons.how_to_reg_outlined,
-                        value: _prefs.inAppFriendInviteAcceptedEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(
-                              inAppFriendInviteAcceptedEnabled: value,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSectionHeading(
-                    context,
-                    context.l10n.profileTripUpdates,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildProfileSectionCard(
-                    context: context,
-                    children: [
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.notificationTripAddedTitle,
-                        subtitle: context.l10n.notificationTripAddedBodyGeneric,
-                        icon: Icons.group_add_outlined,
-                        value: _prefs.inAppTripAddedEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(inAppTripAddedEnabled: value),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.profileInAppTripMemberAddedTitle,
-                        subtitle: context.l10n.notificationTripAddedBodyGeneric,
-                        icon: Icons.group_add_outlined,
-                        value: _prefs.inAppTripMemberAddedEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(inAppTripMemberAddedEnabled: value),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.notificationTripFinishedTitle,
-                        subtitle:
-                            context.l10n.notificationTripFinishedBodyGeneric,
-                        icon: Icons.flag_outlined,
-                        value: _prefs.inAppTripFinishedEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(inAppTripFinishedEnabled: value),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title:
-                            context.l10n.notificationMemberReadyToSettleTitle,
-                        subtitle: context
-                            .l10n
-                            .notificationMemberReadyToSettleBodyGeneric,
-                        icon: Icons.person_pin_circle_outlined,
-                        value: _prefs.inAppMemberReadyToSettleEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(
-                              inAppMemberReadyToSettleEnabled: value,
-                            ),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.notificationTripReadyToSettleTitle,
-                        subtitle: context
-                            .l10n
-                            .notificationTripReadyToSettleBodyGeneric,
-                        icon: Icons.task_alt_outlined,
-                        value: _prefs.inAppTripReadyToSettleEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(
-                              inAppTripReadyToSettleEnabled: value,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSectionHeading(
-                    context,
-                    context.l10n.profileSettlementUpdates,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildProfileSectionCard(
-                    context: context,
-                    children: [
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.notificationSettlementReminderTitle,
-                        subtitle: context
-                            .l10n
-                            .notificationSettlementReminderBodyGeneric,
-                        icon: Icons.notifications_active_outlined,
-                        value: _prefs.inAppSettlementReminderEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(
-                              inAppSettlementReminderEnabled: value,
-                            ),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context
-                            .l10n
-                            .profileInAppAutoSettlementReminderTitle,
-                        subtitle:
-                            context.l10n.notificationPaymentReminderBodyGeneric,
-                        icon: Icons.alarm_on_outlined,
-                        value: _prefs.inAppSettlementAutoReminderEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(
-                              inAppSettlementAutoReminderEnabled: value,
-                            ),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.notificationSettlementSentTitle,
-                        subtitle:
-                            context.l10n.notificationSettlementSentBodyGeneric,
-                        icon: Icons.send_outlined,
-                        value: _prefs.inAppSettlementSentEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(inAppSettlementSentEnabled: value),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title:
-                            context.l10n.notificationSettlementConfirmedTitle,
-                        subtitle: context
-                            .l10n
-                            .notificationSettlementConfirmedBodyGeneric,
-                        icon: Icons.verified_outlined,
-                        value: _prefs.inAppSettlementConfirmedEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(
-                              inAppSettlementConfirmedEnabled: value,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  if (_isSaving) ...[
-                    const SizedBox(height: 14),
-                    const Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
+                const SizedBox(height: 8),
+                _buildProfileSectionCard(
+                  context: context,
+                  children: [
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationExpenseAddedTitle,
+                      subtitle:
+                          context.l10n.notificationExpenseAddedBodyGeneric,
+                      icon: Icons.receipt_long_outlined,
+                      value: _prefs.inAppExpenseAddedEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(inAppExpenseAddedEnabled: value),
+                        );
+                      },
                     ),
                   ],
+                ),
+                const SizedBox(height: 12),
+                _buildSectionHeading(
+                  context,
+                  context.l10n.profileFriendInvites,
+                ),
+                const SizedBox(height: 8),
+                _buildProfileSectionCard(
+                  context: context,
+                  children: [
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationFriendInviteTitle,
+                      subtitle:
+                          context.l10n.notificationFriendInviteBodyGeneric,
+                      icon: Icons.person_add_alt_1_outlined,
+                      value: _prefs.inAppFriendInviteReceivedEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(
+                            inAppFriendInviteReceivedEnabled: value,
+                          ),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationFriendInviteAcceptedTitle,
+                      subtitle: context
+                          .l10n
+                          .notificationFriendInviteAcceptedBodyGeneric,
+                      icon: Icons.how_to_reg_outlined,
+                      value: _prefs.inAppFriendInviteAcceptedEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(
+                            inAppFriendInviteAcceptedEnabled: value,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _buildSectionHeading(context, context.l10n.profileTripUpdates),
+                const SizedBox(height: 8),
+                _buildProfileSectionCard(
+                  context: context,
+                  children: [
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationTripAddedTitle,
+                      subtitle: context.l10n.notificationTripAddedBodyGeneric,
+                      icon: Icons.group_add_outlined,
+                      value: _prefs.inAppTripAddedEnabled,
+                      onChanged: (value) {
+                        unawaited(_setPreference(inAppTripAddedEnabled: value));
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profileInAppTripMemberAddedTitle,
+                      subtitle: context.l10n.notificationTripAddedBodyGeneric,
+                      icon: Icons.group_add_outlined,
+                      value: _prefs.inAppTripMemberAddedEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(inAppTripMemberAddedEnabled: value),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationTripFinishedTitle,
+                      subtitle:
+                          context.l10n.notificationTripFinishedBodyGeneric,
+                      icon: Icons.flag_outlined,
+                      value: _prefs.inAppTripFinishedEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(inAppTripFinishedEnabled: value),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationMemberReadyToSettleTitle,
+                      subtitle: context
+                          .l10n
+                          .notificationMemberReadyToSettleBodyGeneric,
+                      icon: Icons.person_pin_circle_outlined,
+                      value: _prefs.inAppMemberReadyToSettleEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(
+                            inAppMemberReadyToSettleEnabled: value,
+                          ),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationTripReadyToSettleTitle,
+                      subtitle:
+                          context.l10n.notificationTripReadyToSettleBodyGeneric,
+                      icon: Icons.task_alt_outlined,
+                      value: _prefs.inAppTripReadyToSettleEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(inAppTripReadyToSettleEnabled: value),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _buildSectionHeading(
+                  context,
+                  context.l10n.profileSettlementUpdates,
+                ),
+                const SizedBox(height: 8),
+                _buildProfileSectionCard(
+                  context: context,
+                  children: [
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationSettlementReminderTitle,
+                      subtitle: context
+                          .l10n
+                          .notificationSettlementReminderBodyGeneric,
+                      icon: Icons.notifications_active_outlined,
+                      value: _prefs.inAppSettlementReminderEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(inAppSettlementReminderEnabled: value),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title:
+                          context.l10n.profileInAppAutoSettlementReminderTitle,
+                      subtitle:
+                          context.l10n.notificationPaymentReminderBodyGeneric,
+                      icon: Icons.alarm_on_outlined,
+                      value: _prefs.inAppSettlementAutoReminderEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(
+                            inAppSettlementAutoReminderEnabled: value,
+                          ),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationSettlementSentTitle,
+                      subtitle:
+                          context.l10n.notificationSettlementSentBodyGeneric,
+                      icon: Icons.send_outlined,
+                      value: _prefs.inAppSettlementSentEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(inAppSettlementSentEnabled: value),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.notificationSettlementConfirmedTitle,
+                      subtitle: context
+                          .l10n
+                          .notificationSettlementConfirmedBodyGeneric,
+                      icon: Icons.verified_outlined,
+                      value: _prefs.inAppSettlementConfirmedEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(
+                            inAppSettlementConfirmedEnabled: value,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                if (_isSaving) ...[
+                  const SizedBox(height: 14),
+                  const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),

@@ -74,7 +74,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
     bool removeExistingReceipt = false;
     try {
       return await Navigator.of(context).push<_ExpenseFormResult>(
-        MaterialPageRoute<_ExpenseFormResult>(
+        AppFormPageRoute<_ExpenseFormResult>(
           builder: (sheetContext) {
             final t = sheetContext.l10n;
             String? errorText;
@@ -90,10 +90,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
               String currentCode,
             ) async {
               var query = '';
-              return showModalBottomSheet<String>(
+              return showAppBottomSheet<String>(
                 context: dialogContext,
-                showDragHandle: true,
-                useSafeArea: true,
                 builder: (pickerContext) {
                   final maxHeight =
                       MediaQuery.sizeOf(pickerContext).height * 0.62;
@@ -301,666 +299,636 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                     break;
                   }
                 }
-                final maxSheetHeight = MediaQuery.sizeOf(context).height;
-
-                return Scaffold(
-                  backgroundColor: AppDesign.isDark(context)
-                      ? AppDesign.darkCanvas
-                      : AppDesign.lightCanvas,
-                  body: SafeArea(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: maxSheetHeight),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                existing == null
-                                    ? t.addExpenseTitle
-                                    : t.editExpenseTitle,
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(fontWeight: FontWeight.w700),
-                              ),
+                return AppFormScaffold(
+                  child: SizedBox.expand(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              existing == null
+                                  ? t.addExpenseTitle
+                                  : t.editExpenseTitle,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w700),
                             ),
                           ),
-                          Flexible(
-                            child: SingleChildScrollView(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextField(
-                                    controller: amountController,
-                                    keyboardType:
-                                        const TextInputType.numberWithOptions(
-                                          decimal: true,
-                                        ),
-                                    decoration: InputDecoration(
-                                      labelText: t.amountLabel,
-                                      hintText: t.amountHint,
-                                    ),
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextField(
+                                  controller: amountController,
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                        decimal: true,
+                                      ),
+                                  decoration: InputDecoration(
+                                    labelText: t.amountLabel,
+                                    hintText: t.amountHint,
                                   ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    context.l10n.workspaceCurrency,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge
-                                        ?.copyWith(fontWeight: FontWeight.w700),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(18),
-                                      onTap: () async {
-                                        final picked = await pickCurrencyCode(
-                                          sheetContext,
-                                          selectedCurrencyCode,
-                                        );
-                                        if (!mounted ||
-                                            !context.mounted ||
-                                            picked == null) {
-                                          return;
-                                        }
-                                        setDialogState(() {
-                                          selectedCurrencyCode =
-                                              AppCurrencyCatalog.normalize(
-                                                picked,
-                                              );
-                                        });
-                                      },
-                                      child: Ink(
-                                        padding: const EdgeInsets.fromLTRB(
-                                          12,
-                                          12,
-                                          12,
-                                          12,
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  context.l10n.workspaceCurrency,
+                                  style: Theme.of(context).textTheme.labelLarge
+                                      ?.copyWith(fontWeight: FontWeight.w700),
+                                ),
+                                const SizedBox(height: 8),
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(18),
+                                    onTap: () async {
+                                      final picked = await pickCurrencyCode(
+                                        sheetContext,
+                                        selectedCurrencyCode,
+                                      );
+                                      if (!mounted ||
+                                          !context.mounted ||
+                                          picked == null) {
+                                        return;
+                                      }
+                                      setDialogState(() {
+                                        selectedCurrencyCode =
+                                            AppCurrencyCatalog.normalize(
+                                              picked,
+                                            );
+                                      });
+                                    },
+                                    child: Ink(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        12,
+                                        12,
+                                        12,
+                                        12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(18),
+                                        border: Border.all(
+                                          color: AppDesign.cardStroke(context),
                                         ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            18,
-                                          ),
-                                          border: Border.all(
-                                            color: AppDesign.cardStroke(
-                                              context,
-                                            ),
-                                          ),
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .surfaceContainerHighest
-                                              .withValues(alpha: 0.35),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 34,
-                                              height: 34,
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.surface,
-                                                border: Border.all(
-                                                  color: AppDesign.cardStroke(
-                                                    context,
-                                                  ),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                selectedCurrency.symbol,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium
-                                                    ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w800,
-                                                    ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: Text(
-                                                '${selectedCurrency.code} - ${AppCurrencyCatalog.labelForCode(selectedCurrency.code, context.l10n)}',
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium
-                                                    ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                    ),
-                                              ),
-                                            ),
-                                            Icon(
-                                              Icons.keyboard_arrow_down_rounded,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surfaceContainerHighest
+                                            .withValues(alpha: 0.35),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 34,
+                                            height: 34,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
                                               color: Theme.of(
                                                 context,
-                                              ).colorScheme.onSurfaceVariant,
+                                              ).colorScheme.surface,
+                                              border: Border.all(
+                                                color: AppDesign.cardStroke(
+                                                  context,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              selectedCurrency.symbol,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.w800,
+                                                  ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Text(
+                                              '${selectedCurrency.code} - ${AppCurrencyCatalog.labelForCode(selectedCurrency.code, context.l10n)}',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                InkWell(
+                                  borderRadius: BorderRadius.circular(14),
+                                  onTap: () async {
+                                    final picked = await showDatePicker(
+                                      context: sheetContext,
+                                      initialDate: selectedExpenseDate,
+                                      firstDate: DateTime(2020, 1, 1),
+                                      lastDate: DateTime(2100, 12, 31),
+                                    );
+                                    if (!mounted || picked == null) {
+                                      return;
+                                    }
+                                    setDialogState(() {
+                                      selectedExpenseDate = DateTime(
+                                        picked.year,
+                                        picked.month,
+                                        picked.day,
+                                      );
+                                      errorText = null;
+                                    });
+                                  },
+                                  child: InputDecorator(
+                                    decoration: InputDecoration(
+                                      labelText: t.dateLabel,
+                                      suffixIcon: const Icon(
+                                        Icons.calendar_today_outlined,
+                                        size: 18,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      formatExpenseDate(selectedExpenseDate),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  context.l10n.workspaceCategory,
+                                  style: Theme.of(context).textTheme.labelLarge
+                                      ?.copyWith(fontWeight: FontWeight.w700),
+                                ),
+                                const SizedBox(height: 8),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    for (final option
+                                        in ExpenseCategoryCatalog.builtIn)
+                                      ChoiceChip(
+                                        label: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(option.icon, size: 16),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              ExpenseCategoryCatalog.labelFor(
+                                                option.key,
+                                                Localizations.localeOf(context),
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  InkWell(
-                                    borderRadius: BorderRadius.circular(14),
-                                    onTap: () async {
-                                      final picked = await showDatePicker(
-                                        context: sheetContext,
-                                        initialDate: selectedExpenseDate,
-                                        firstDate: DateTime(2020, 1, 1),
-                                        lastDate: DateTime(2100, 12, 31),
-                                      );
-                                      if (!mounted || picked == null) {
-                                        return;
-                                      }
-                                      setDialogState(() {
-                                        selectedExpenseDate = DateTime(
-                                          picked.year,
-                                          picked.month,
-                                          picked.day,
-                                        );
-                                        errorText = null;
-                                      });
-                                    },
-                                    child: InputDecorator(
-                                      decoration: InputDecoration(
-                                        labelText: t.dateLabel,
-                                        suffixIcon: const Icon(
-                                          Icons.calendar_today_outlined,
-                                          size: 18,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        formatExpenseDate(selectedExpenseDate),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    context.l10n.workspaceCategory,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelLarge
-                                        ?.copyWith(fontWeight: FontWeight.w700),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: [
-                                      for (final option
-                                          in ExpenseCategoryCatalog.builtIn)
-                                        ChoiceChip(
-                                          label: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(option.icon, size: 16),
-                                              const SizedBox(width: 6),
-                                              Text(
-                                                ExpenseCategoryCatalog.labelFor(
-                                                  option.key,
-                                                  Localizations.localeOf(
-                                                    context,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          selected:
-                                              !isCustomCategoryMode &&
-                                              selectedCategory.toLowerCase() ==
-                                                  option.key,
-                                          onSelected: (_) {
-                                            setDialogState(() {
-                                              isCustomCategoryMode = false;
-                                              selectedCategory = option.key;
-                                            });
-                                          },
-                                        ),
-                                      ChoiceChip(
-                                        avatar: const Icon(Icons.add, size: 16),
-                                        label: Text(
-                                          context.l10n.workspaceCustomCategory,
-                                        ),
-                                        selected: isCustomCategoryMode,
+                                        selected:
+                                            !isCustomCategoryMode &&
+                                            selectedCategory.toLowerCase() ==
+                                                option.key,
                                         onSelected: (_) {
                                           setDialogState(() {
-                                            isCustomCategoryMode = true;
+                                            isCustomCategoryMode = false;
+                                            selectedCategory = option.key;
                                           });
                                         },
                                       ),
-                                    ],
-                                  ),
-                                  if (isCustomCategoryMode) ...[
-                                    const SizedBox(height: 8),
-                                    TextField(
-                                      controller: customCategoryController,
-                                      maxLength: 64,
-                                      decoration: InputDecoration(
-                                        labelText:
-                                            context.l10n.workspaceCategoryName,
-                                        hintText: context
-                                            .l10n
-                                            .workspaceApartmentRentParkingEtc,
+                                    ChoiceChip(
+                                      avatar: const Icon(Icons.add, size: 16),
+                                      label: Text(
+                                        context.l10n.workspaceCustomCategory,
                                       ),
-                                    ),
-                                  ],
-                                  const SizedBox(height: 12),
-                                  TextField(
-                                    controller: noteController,
-                                    maxLines: 2,
-                                    decoration: InputDecoration(
-                                      labelText: t.noteLabel,
-                                      hintText: t.noteHint,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    t.participantsEmptyMeansAll,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: [
-                                      for (final user in users)
-                                        FilterChip(
-                                          label: Text(user.nickname),
-                                          selected: selected.contains(user.id),
-                                          onSelected: (value) {
-                                            setDialogState(() {
-                                              if (value) {
-                                                selected.add(user.id);
-                                              } else {
-                                                selected.remove(user.id);
-                                              }
-                                            });
-                                          },
-                                        ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 12),
-                                  DropdownButtonFormField<String>(
-                                    initialValue: splitMode,
-                                    decoration: InputDecoration(
-                                      labelText: t.splitModeLabel,
-                                    ),
-                                    items: [
-                                      DropdownMenuItem(
-                                        value: 'equal',
-                                        child: Text(t.equalSplitLabel),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 'exact',
-                                        child: Text(t.exactAmountsLabel),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 'percent',
-                                        child: Text(t.percentagesLabel),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 'shares',
-                                        child: Text(t.sharesLabel),
-                                      ),
-                                    ],
-                                    onChanged: (value) {
-                                      if (value == null) {
-                                        return;
-                                      }
-                                      setDialogState(() {
-                                        splitMode = value;
-                                      });
-                                    },
-                                  ),
-                                  if (splitMode != 'equal') ...[
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      _splitModeHint(splitMode),
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    ..._buildSplitInputFields(
-                                      users: users,
-                                      selected: selected,
-                                      splitMode: splitMode,
-                                      splitControllers: splitControllers,
-                                    ),
-                                  ],
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    t.receiptOptionalLabel,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  if (existing != null &&
-                                      existing.receiptUrl != null)
-                                    CheckboxListTile(
-                                      contentPadding: EdgeInsets.zero,
-                                      dense: true,
-                                      title: Text(t.removeCurrentReceipt),
-                                      value: removeExistingReceipt,
-                                      onChanged: (value) {
+                                      selected: isCustomCategoryMode,
+                                      onSelected: (_) {
                                         setDialogState(() {
-                                          removeExistingReceipt = value == true;
-                                          if (removeExistingReceipt) {
-                                            selectedReceiptBytes = null;
-                                            selectedReceiptName = null;
-                                          }
+                                          isCustomCategoryMode = true;
                                         });
                                       },
                                     ),
-                                  OutlinedButton.icon(
-                                    onPressed: removeExistingReceipt
-                                        ? null
-                                        : () async {
-                                            final picked =
-                                                await _pickReceiptFile();
-                                            if (!mounted || !context.mounted) {
-                                              return;
-                                            }
-                                            if (picked == null) {
-                                              return;
-                                            }
-                                            setDialogState(() {
-                                              selectedReceiptBytes =
-                                                  picked.bytes;
-                                              selectedReceiptName =
-                                                  picked.fileName;
-                                              removeExistingReceipt = false;
-                                            });
-                                          },
-                                    icon: const Icon(Icons.attach_file),
-                                    label: Text(t.chooseReceiptFile),
+                                  ],
+                                ),
+                                if (isCustomCategoryMode) ...[
+                                  const SizedBox(height: 8),
+                                  TextField(
+                                    controller: customCategoryController,
+                                    maxLength: 64,
+                                    decoration: InputDecoration(
+                                      labelText:
+                                          context.l10n.workspaceCategoryName,
+                                      hintText: context
+                                          .l10n
+                                          .workspaceApartmentRentParkingEtc,
+                                    ),
                                   ),
-                                  if (selectedReceiptName != null) ...[
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      t.selectedFileLabel(selectedReceiptName!),
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall,
-                                    ),
-                                  ] else if (existing != null &&
-                                      existing.receiptUrl != null &&
-                                      !removeExistingReceipt) ...[
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      t.currentReceiptAttached,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall,
-                                    ),
-                                  ],
-                                  if (errorText != null) ...[
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      errorText!,
-                                      style: TextStyle(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
                                 ],
-                              ),
-                            ),
-                          ),
-                          const Divider(height: 1),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(sheetContext).pop(),
-                                    child: Text(t.cancelAction),
+                                const SizedBox(height: 12),
+                                TextField(
+                                  controller: noteController,
+                                  maxLines: 2,
+                                  decoration: InputDecoration(
+                                    labelText: t.noteLabel,
+                                    hintText: t.noteHint,
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      final amount = _parseAmount(
-                                        amountController.text,
-                                      );
-                                      final date = toIsoDate(
-                                        selectedExpenseDate,
-                                      );
-                                      final note = noteController.text.trim();
-                                      final rawCategory = isCustomCategoryMode
-                                          ? customCategoryController.text.trim()
-                                          : selectedCategory.trim();
-
-                                      if (amount <= 0) {
-                                        setDialogState(() {
-                                          errorText =
-                                              t.amountMustBeGreaterThanZero;
-                                        });
-                                        return;
-                                      }
-
-                                      if (date == null || date.isEmpty) {
-                                        setDialogState(() {
-                                          errorText = t.dateMustMatchFormat;
-                                        });
-                                        return;
-                                      }
-
-                                      if (rawCategory.isEmpty) {
-                                        setDialogState(() {
-                                          errorText = isCustomCategoryMode
-                                              ? context
-                                                    .l10n
-                                                    .workspaceEnterACustomCategory
-                                              : context
-                                                    .l10n
-                                                    .workspacePickAnExpenseCategory;
-                                        });
-                                        return;
-                                      }
-
-                                      if (isCustomCategoryMode &&
-                                          rawCategory.length < 2) {
-                                        setDialogState(() {
-                                          errorText = context
-                                              .l10n
-                                              .workspaceCategoryMustBeAtLeast2Characters;
-                                        });
-                                        return;
-                                      }
-
-                                      final category =
-                                          ExpenseCategoryCatalog.normalizeStored(
-                                            rawCategory,
-                                          );
-                                      if (category.length > 64) {
-                                        setDialogState(() {
-                                          errorText = context
-                                              .l10n
-                                              .workspaceCategoryMustBeUpTo64Characters;
-                                        });
-                                        return;
-                                      }
-
-                                      if (note.length > 255) {
-                                        setDialogState(() {
-                                          errorText = t.noteMustBeMaxChars(255);
-                                        });
-                                        return;
-                                      }
-
-                                      final participants = selected.toList(
-                                        growable: false,
-                                      )..sort();
-                                      final resolvedParticipants =
-                                          participants.isNotEmpty
-                                                ? participants
-                                                : users
-                                                      .map((user) => user.id)
-                                                      .where((id) => id > 0)
-                                                      .toList(growable: false)
-                                            ..sort();
-                                      final amountCents = (amount * 100)
-                                          .round();
-                                      final splitValues = <ExpenseSplitValue>[];
-
-                                      if (splitMode != 'equal') {
-                                        if (resolvedParticipants.isEmpty) {
+                                const SizedBox(height: 12),
+                                Text(
+                                  t.participantsEmptyMeansAll,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                const SizedBox(height: 6),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    for (final user in users)
+                                      FilterChip(
+                                        label: Text(user.nickname),
+                                        selected: selected.contains(user.id),
+                                        onSelected: (value) {
                                           setDialogState(() {
-                                            errorText =
-                                                t.pickAtLeastOneParticipant;
+                                            if (value) {
+                                              selected.add(user.id);
+                                            } else {
+                                              selected.remove(user.id);
+                                            }
                                           });
-                                          return;
+                                        },
+                                      ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                DropdownButtonFormField<String>(
+                                  initialValue: splitMode,
+                                  decoration: InputDecoration(
+                                    labelText: t.splitModeLabel,
+                                  ),
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: 'equal',
+                                      child: Text(t.equalSplitLabel),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'exact',
+                                      child: Text(t.exactAmountsLabel),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'percent',
+                                      child: Text(t.percentagesLabel),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'shares',
+                                      child: Text(t.sharesLabel),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    if (value == null) {
+                                      return;
+                                    }
+                                    setDialogState(() {
+                                      splitMode = value;
+                                    });
+                                  },
+                                ),
+                                if (splitMode != 'equal') ...[
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    _splitModeHint(splitMode),
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ..._buildSplitInputFields(
+                                    users: users,
+                                    selected: selected,
+                                    splitMode: splitMode,
+                                    splitControllers: splitControllers,
+                                  ),
+                                ],
+                                const SizedBox(height: 12),
+                                Text(
+                                  t.receiptOptionalLabel,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                const SizedBox(height: 6),
+                                if (existing != null &&
+                                    existing.receiptUrl != null)
+                                  CheckboxListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    dense: true,
+                                    title: Text(t.removeCurrentReceipt),
+                                    value: removeExistingReceipt,
+                                    onChanged: (value) {
+                                      setDialogState(() {
+                                        removeExistingReceipt = value == true;
+                                        if (removeExistingReceipt) {
+                                          selectedReceiptBytes = null;
+                                          selectedReceiptName = null;
                                         }
-
-                                        if (splitMode == 'exact') {
-                                          var totalCents = 0;
-                                          for (final userId
-                                              in resolvedParticipants) {
-                                            final controller =
-                                                splitControllers[userId];
-                                            final raw =
-                                                controller?.text.trim() ?? '';
-                                            final value = _parseAmount(raw);
-                                            if (raw.isEmpty || value < 0) {
-                                              setDialogState(() {
-                                                errorText =
-                                                    t.enterValidExactAmounts;
-                                              });
-                                              return;
-                                            }
-                                            totalCents += (value * 100).round();
-                                            splitValues.add(
-                                              ExpenseSplitValue(
-                                                userId: userId,
-                                                value: value,
-                                              ),
-                                            );
-                                          }
-                                          if (totalCents != amountCents) {
-                                            setDialogState(() {
-                                              errorText = t
-                                                  .exactSplitMustMatchTotal(
-                                                    _formatMoney(
-                                                      context,
-                                                      amount,
-                                                      currencyCode:
-                                                          selectedCurrencyCode,
-                                                    ),
-                                                  );
-                                            });
-                                            return;
-                                          }
-                                        } else if (splitMode == 'percent') {
-                                          var totalBasisPoints = 0;
-                                          for (final userId
-                                              in resolvedParticipants) {
-                                            final controller =
-                                                splitControllers[userId];
-                                            final raw =
-                                                controller?.text.trim() ?? '';
-                                            final value = _parseAmount(raw);
-                                            if (raw.isEmpty || value < 0) {
-                                              setDialogState(() {
-                                                errorText = context
-                                                    .l10n
-                                                    .enterValidPercentages;
-                                              });
-                                              return;
-                                            }
-                                            final basisPoints = (value * 100)
-                                                .round();
-                                            totalBasisPoints += basisPoints;
-                                            splitValues.add(
-                                              ExpenseSplitValue(
-                                                userId: userId,
-                                                value: basisPoints / 100,
-                                              ),
-                                            );
-                                          }
-                                          if (totalBasisPoints != 10000) {
-                                            setDialogState(() {
-                                              errorText = context
-                                                  .l10n
-                                                  .workspacePercentageSplitMustTotal100;
-                                            });
-                                            return;
-                                          }
-                                        } else if (splitMode == 'shares') {
-                                          for (final userId
-                                              in resolvedParticipants) {
-                                            final controller =
-                                                splitControllers[userId];
-                                            final raw =
-                                                controller?.text.trim() ?? '';
-                                            final value = _parseAmount(raw);
-                                            final rounded = value.round();
-                                            if (raw.isEmpty || rounded <= 0) {
-                                              setDialogState(() {
-                                                errorText = context
-                                                    .l10n
-                                                    .workspaceSharesMustBeGreaterThan0ForAllParticipants;
-                                              });
-                                              return;
-                                            }
-                                            splitValues.add(
-                                              ExpenseSplitValue(
-                                                userId: userId,
-                                                value: rounded.toDouble(),
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      }
-
-                                      Navigator.of(sheetContext).pop(
-                                        _ExpenseFormResult(
-                                          amount: amount,
-                                          currencyCode: selectedCurrencyCode,
-                                          date: date,
-                                          category: category,
-                                          note: note,
-                                          participants: participants,
-                                          splitMode: splitMode,
-                                          splitValues: splitValues,
-                                          receiptFileBytes:
-                                              selectedReceiptBytes,
-                                          receiptFileName: selectedReceiptName,
-                                          removeReceipt: removeExistingReceipt,
-                                        ),
-                                      );
+                                      });
                                     },
-                                    child: Text(
-                                      existing == null
-                                          ? t.addAction
-                                          : t.saveAction,
+                                  ),
+                                OutlinedButton.icon(
+                                  onPressed: removeExistingReceipt
+                                      ? null
+                                      : () async {
+                                          final picked =
+                                              await _pickReceiptFile();
+                                          if (!mounted || !context.mounted) {
+                                            return;
+                                          }
+                                          if (picked == null) {
+                                            return;
+                                          }
+                                          setDialogState(() {
+                                            selectedReceiptBytes = picked.bytes;
+                                            selectedReceiptName =
+                                                picked.fileName;
+                                            removeExistingReceipt = false;
+                                          });
+                                        },
+                                  icon: const Icon(Icons.attach_file),
+                                  label: Text(t.chooseReceiptFile),
+                                ),
+                                if (selectedReceiptName != null) ...[
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    t.selectedFileLabel(selectedReceiptName!),
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                ] else if (existing != null &&
+                                    existing.receiptUrl != null &&
+                                    !removeExistingReceipt) ...[
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    t.currentReceiptAttached,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                ],
+                                if (errorText != null) ...[
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    errorText!,
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                ),
+                                ],
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                        const Divider(height: 1),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(sheetContext).pop(),
+                                  child: Text(t.cancelAction),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    final amount = _parseAmount(
+                                      amountController.text,
+                                    );
+                                    final date = toIsoDate(selectedExpenseDate);
+                                    final note = noteController.text.trim();
+                                    final rawCategory = isCustomCategoryMode
+                                        ? customCategoryController.text.trim()
+                                        : selectedCategory.trim();
+
+                                    if (amount <= 0) {
+                                      setDialogState(() {
+                                        errorText =
+                                            t.amountMustBeGreaterThanZero;
+                                      });
+                                      return;
+                                    }
+
+                                    if (date == null || date.isEmpty) {
+                                      setDialogState(() {
+                                        errorText = t.dateMustMatchFormat;
+                                      });
+                                      return;
+                                    }
+
+                                    if (rawCategory.isEmpty) {
+                                      setDialogState(() {
+                                        errorText = isCustomCategoryMode
+                                            ? context
+                                                  .l10n
+                                                  .workspaceEnterACustomCategory
+                                            : context
+                                                  .l10n
+                                                  .workspacePickAnExpenseCategory;
+                                      });
+                                      return;
+                                    }
+
+                                    if (isCustomCategoryMode &&
+                                        rawCategory.length < 2) {
+                                      setDialogState(() {
+                                        errorText = context
+                                            .l10n
+                                            .workspaceCategoryMustBeAtLeast2Characters;
+                                      });
+                                      return;
+                                    }
+
+                                    final category =
+                                        ExpenseCategoryCatalog.normalizeStored(
+                                          rawCategory,
+                                        );
+                                    if (category.length > 64) {
+                                      setDialogState(() {
+                                        errorText = context
+                                            .l10n
+                                            .workspaceCategoryMustBeUpTo64Characters;
+                                      });
+                                      return;
+                                    }
+
+                                    if (note.length > 255) {
+                                      setDialogState(() {
+                                        errorText = t.noteMustBeMaxChars(255);
+                                      });
+                                      return;
+                                    }
+
+                                    final participants = selected.toList(
+                                      growable: false,
+                                    )..sort();
+                                    final resolvedParticipants =
+                                        participants.isNotEmpty
+                                              ? participants
+                                              : users
+                                                    .map((user) => user.id)
+                                                    .where((id) => id > 0)
+                                                    .toList(growable: false)
+                                          ..sort();
+                                    final amountCents = (amount * 100).round();
+                                    final splitValues = <ExpenseSplitValue>[];
+
+                                    if (splitMode != 'equal') {
+                                      if (resolvedParticipants.isEmpty) {
+                                        setDialogState(() {
+                                          errorText =
+                                              t.pickAtLeastOneParticipant;
+                                        });
+                                        return;
+                                      }
+
+                                      if (splitMode == 'exact') {
+                                        var totalCents = 0;
+                                        for (final userId
+                                            in resolvedParticipants) {
+                                          final controller =
+                                              splitControllers[userId];
+                                          final raw =
+                                              controller?.text.trim() ?? '';
+                                          final value = _parseAmount(raw);
+                                          if (raw.isEmpty || value < 0) {
+                                            setDialogState(() {
+                                              errorText =
+                                                  t.enterValidExactAmounts;
+                                            });
+                                            return;
+                                          }
+                                          totalCents += (value * 100).round();
+                                          splitValues.add(
+                                            ExpenseSplitValue(
+                                              userId: userId,
+                                              value: value,
+                                            ),
+                                          );
+                                        }
+                                        if (totalCents != amountCents) {
+                                          setDialogState(() {
+                                            errorText = t
+                                                .exactSplitMustMatchTotal(
+                                                  _formatMoney(
+                                                    context,
+                                                    amount,
+                                                    currencyCode:
+                                                        selectedCurrencyCode,
+                                                  ),
+                                                );
+                                          });
+                                          return;
+                                        }
+                                      } else if (splitMode == 'percent') {
+                                        var totalBasisPoints = 0;
+                                        for (final userId
+                                            in resolvedParticipants) {
+                                          final controller =
+                                              splitControllers[userId];
+                                          final raw =
+                                              controller?.text.trim() ?? '';
+                                          final value = _parseAmount(raw);
+                                          if (raw.isEmpty || value < 0) {
+                                            setDialogState(() {
+                                              errorText = context
+                                                  .l10n
+                                                  .enterValidPercentages;
+                                            });
+                                            return;
+                                          }
+                                          final basisPoints = (value * 100)
+                                              .round();
+                                          totalBasisPoints += basisPoints;
+                                          splitValues.add(
+                                            ExpenseSplitValue(
+                                              userId: userId,
+                                              value: basisPoints / 100,
+                                            ),
+                                          );
+                                        }
+                                        if (totalBasisPoints != 10000) {
+                                          setDialogState(() {
+                                            errorText = context
+                                                .l10n
+                                                .workspacePercentageSplitMustTotal100;
+                                          });
+                                          return;
+                                        }
+                                      } else if (splitMode == 'shares') {
+                                        for (final userId
+                                            in resolvedParticipants) {
+                                          final controller =
+                                              splitControllers[userId];
+                                          final raw =
+                                              controller?.text.trim() ?? '';
+                                          final value = _parseAmount(raw);
+                                          final rounded = value.round();
+                                          if (raw.isEmpty || rounded <= 0) {
+                                            setDialogState(() {
+                                              errorText = context
+                                                  .l10n
+                                                  .workspaceSharesMustBeGreaterThan0ForAllParticipants;
+                                            });
+                                            return;
+                                          }
+                                          splitValues.add(
+                                            ExpenseSplitValue(
+                                              userId: userId,
+                                              value: rounded.toDouble(),
+                                            ),
+                                          );
+                                        }
+                                      }
+                                    }
+
+                                    Navigator.of(sheetContext).pop(
+                                      _ExpenseFormResult(
+                                        amount: amount,
+                                        currencyCode: selectedCurrencyCode,
+                                        date: date,
+                                        category: category,
+                                        note: note,
+                                        participants: participants,
+                                        splitMode: splitMode,
+                                        splitValues: splitValues,
+                                        receiptFileBytes: selectedReceiptBytes,
+                                        receiptFileName: selectedReceiptName,
+                                        removeReceipt: removeExistingReceipt,
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    existing == null
+                                        ? t.addAction
+                                        : t.saveAction,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );

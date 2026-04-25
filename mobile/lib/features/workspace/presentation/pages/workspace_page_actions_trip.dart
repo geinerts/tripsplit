@@ -250,46 +250,43 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
 
-    final choice = await showModalBottomSheet<String>(
+    final choice = await showAppBottomSheet<String>(
       context: context,
-      showDragHandle: true,
       builder: (sheetContext) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (canEdit)
-                ListTile(
-                  leading: const Icon(Icons.edit_outlined),
-                  title: Text('${t.editAction} ${t.tripTitleShort}'),
-                  onTap: () => Navigator.of(sheetContext).pop('edit'),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (canEdit)
+              ListTile(
+                leading: const Icon(Icons.edit_outlined),
+                title: Text('${t.editAction} ${t.tripTitleShort}'),
+                onTap: () => Navigator.of(sheetContext).pop('edit'),
+              ),
+            if (canManageMembers)
+              ListTile(
+                leading: const Icon(Icons.group_add_outlined),
+                title: Text(t.addMembersAction),
+                subtitle: Text(
+                  context.l10n.workspaceInviteLinkOrAddFromFriends,
                 ),
-              if (canManageMembers)
-                ListTile(
-                  leading: const Icon(Icons.group_add_outlined),
-                  title: Text(t.addMembersAction),
-                  subtitle: Text(
-                    context.l10n.workspaceInviteLinkOrAddFromFriends,
-                  ),
-                  onTap: () => Navigator.of(sheetContext).pop('members'),
+                onTap: () => Navigator.of(sheetContext).pop('members'),
+              ),
+            if (canDelete)
+              ListTile(
+                leading: Icon(
+                  Icons.delete_outline,
+                  color: Theme.of(sheetContext).colorScheme.error,
                 ),
-              if (canDelete)
-                ListTile(
-                  leading: Icon(
-                    Icons.delete_outline,
+                title: Text(
+                  '${t.deleteAction} ${t.tripTitleShort}',
+                  style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(sheetContext).colorScheme.error,
+                    fontWeight: FontWeight.w600,
                   ),
-                  title: Text(
-                    '${t.deleteAction} ${t.tripTitleShort}',
-                    style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(sheetContext).colorScheme.error,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onTap: () => Navigator.of(sheetContext).pop('delete'),
                 ),
-            ],
-          ),
+                onTap: () => Navigator.of(sheetContext).pop('delete'),
+              ),
+          ],
         );
       },
     );
@@ -469,43 +466,40 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         return;
       }
 
-      final selectedSource = await showModalBottomSheet<_TripImageSourceOption>(
+      final selectedSource = await showAppBottomSheet<_TripImageSourceOption>(
         context: dialogContext,
-        showDragHandle: true,
         builder: (bottomSheetContext) {
-          return SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_camera_outlined),
+                title: Text(t.takePhotoAction),
+                onTap: () => Navigator.of(
+                  bottomSheetContext,
+                ).pop(_TripImageSourceOption.camera),
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library_outlined),
+                title: Text(t.chooseFromLibraryAction),
+                onTap: () => Navigator.of(
+                  bottomSheetContext,
+                ).pop(_TripImageSourceOption.library),
+              ),
+              if (hasImage)
                 ListTile(
-                  leading: const Icon(Icons.photo_camera_outlined),
-                  title: Text(t.takePhotoAction),
+                  leading: const Icon(Icons.delete_outline),
+                  title: Text(context.l10n.profileRemoveImage),
                   onTap: () => Navigator.of(
                     bottomSheetContext,
-                  ).pop(_TripImageSourceOption.camera),
+                  ).pop(_TripImageSourceOption.remove),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.photo_library_outlined),
-                  title: Text(t.chooseFromLibraryAction),
-                  onTap: () => Navigator.of(
-                    bottomSheetContext,
-                  ).pop(_TripImageSourceOption.library),
-                ),
-                if (hasImage)
-                  ListTile(
-                    leading: const Icon(Icons.delete_outline),
-                    title: Text(context.l10n.profileRemoveImage),
-                    onTap: () => Navigator.of(
-                      bottomSheetContext,
-                    ).pop(_TripImageSourceOption.remove),
-                  ),
-                ListTile(
-                  leading: const Icon(Icons.close),
-                  title: Text(t.cancelAction),
-                  onTap: () => Navigator.of(bottomSheetContext).pop(),
-                ),
-              ],
-            ),
+              ListTile(
+                leading: const Icon(Icons.close),
+                title: Text(t.cancelAction),
+                onTap: () => Navigator.of(bottomSheetContext).pop(),
+              ),
+            ],
           );
         },
       );
@@ -743,51 +737,48 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
 
     final canDeleteTrip = _canEditMembers && _isTripActive;
-    final choice = await showModalBottomSheet<String>(
+    final choice = await showAppBottomSheet<String>(
       context: context,
-      showDragHandle: true,
       builder: (sheetContext) {
         final t = sheetContext.l10n;
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.brightness_6_outlined),
+              title: Text(t.appearance),
+              onTap: () => Navigator.of(sheetContext).pop('appearance'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.translate_outlined),
+              title: Text(t.languageAction),
+              onTap: () => Navigator.of(sheetContext).pop('language'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.casino_outlined),
+              title: Text(context.l10n.workspaceRandomPicker),
+              onTap: () => Navigator.of(sheetContext).pop('random_picker'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: Text(t.logOutButton),
+              onTap: () => Navigator.of(sheetContext).pop('logout'),
+            ),
+            if (canDeleteTrip)
               ListTile(
-                leading: const Icon(Icons.brightness_6_outlined),
-                title: Text(t.appearance),
-                onTap: () => Navigator.of(sheetContext).pop('appearance'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.translate_outlined),
-                title: Text(t.languageAction),
-                onTap: () => Navigator.of(sheetContext).pop('language'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.casino_outlined),
-                title: Text(context.l10n.workspaceRandomPicker),
-                onTap: () => Navigator.of(sheetContext).pop('random_picker'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: Text(t.logOutButton),
-                onTap: () => Navigator.of(sheetContext).pop('logout'),
-              ),
-              if (canDeleteTrip)
-                ListTile(
-                  leading: Icon(
-                    Icons.delete_outline,
+                leading: Icon(
+                  Icons.delete_outline,
+                  color: Theme.of(sheetContext).colorScheme.error,
+                ),
+                title: Text(
+                  '${t.deleteAction} ${t.tripTitleShort}',
+                  style: TextStyle(
                     color: Theme.of(sheetContext).colorScheme.error,
                   ),
-                  title: Text(
-                    '${t.deleteAction} ${t.tripTitleShort}',
-                    style: TextStyle(
-                      color: Theme.of(sheetContext).colorScheme.error,
-                    ),
-                  ),
-                  onTap: () => Navigator.of(sheetContext).pop('delete_trip'),
                 ),
-            ],
-          ),
+                onTap: () => Navigator.of(sheetContext).pop('delete_trip'),
+              ),
+          ],
         );
       },
     );
@@ -822,11 +813,9 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     if (snapshot == null || !mounted) {
       return;
     }
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
-      showDragHandle: true,
       isScrollControlled: true,
-      useSafeArea: true,
       builder: (sheetContext) {
         final maxHeight = MediaQuery.sizeOf(sheetContext).height * 0.88;
         return ConstrainedBox(

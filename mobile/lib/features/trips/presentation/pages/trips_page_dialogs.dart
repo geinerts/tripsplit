@@ -17,7 +17,7 @@ extension _TripsPageDialogs on _TripsPageState {
 
     try {
       return await Navigator.of(context).push<_CreateTripResult>(
-        MaterialPageRoute<_CreateTripResult>(
+        AppFormPageRoute<_CreateTripResult>(
           builder: (sheetContext) {
             final t = sheetContext.l10n;
             String? errorText;
@@ -176,44 +176,40 @@ extension _TripsPageDialogs on _TripsPageState {
               }
 
               final selectedSource =
-                  await showModalBottomSheet<_TripImageSourceOption>(
+                  await showAppBottomSheet<_TripImageSourceOption>(
                     context: context,
-                    showDragHandle: true,
                     builder: (bottomSheetContext) {
-                      return SafeArea(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.photo_camera_outlined),
+                            title: Text(t.takePhotoAction),
+                            onTap: () => Navigator.of(
+                              bottomSheetContext,
+                            ).pop(_TripImageSourceOption.camera),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.photo_library_outlined),
+                            title: Text(t.chooseFromLibraryAction),
+                            onTap: () => Navigator.of(
+                              bottomSheetContext,
+                            ).pop(_TripImageSourceOption.library),
+                          ),
+                          if (hasImage)
                             ListTile(
-                              leading: const Icon(Icons.photo_camera_outlined),
-                              title: Text(t.takePhotoAction),
+                              leading: const Icon(Icons.delete_outline),
+                              title: Text(context.l10n.profileRemoveImage),
                               onTap: () => Navigator.of(
                                 bottomSheetContext,
-                              ).pop(_TripImageSourceOption.camera),
+                              ).pop(_TripImageSourceOption.remove),
                             ),
-                            ListTile(
-                              leading: const Icon(Icons.photo_library_outlined),
-                              title: Text(t.chooseFromLibraryAction),
-                              onTap: () => Navigator.of(
-                                bottomSheetContext,
-                              ).pop(_TripImageSourceOption.library),
-                            ),
-                            if (hasImage)
-                              ListTile(
-                                leading: const Icon(Icons.delete_outline),
-                                title: Text(context.l10n.profileRemoveImage),
-                                onTap: () => Navigator.of(
-                                  bottomSheetContext,
-                                ).pop(_TripImageSourceOption.remove),
-                              ),
-                            ListTile(
-                              leading: const Icon(Icons.close),
-                              title: Text(t.cancelAction),
-                              onTap: () =>
-                                  Navigator.of(bottomSheetContext).pop(),
-                            ),
-                          ],
-                        ),
+                          ListTile(
+                            leading: const Icon(Icons.close),
+                            title: Text(t.cancelAction),
+                            onTap: () => Navigator.of(bottomSheetContext).pop(),
+                          ),
+                        ],
                       );
                     },
                   );
@@ -245,10 +241,8 @@ extension _TripsPageDialogs on _TripsPageState {
               String currentCode,
             ) async {
               var query = '';
-              return showModalBottomSheet<String>(
+              return showAppBottomSheet<String>(
                 context: dialogContext,
-                showDragHandle: true,
-                useSafeArea: true,
                 builder: (pickerContext) {
                   final maxHeight =
                       MediaQuery.sizeOf(pickerContext).height * 0.62;
@@ -460,68 +454,94 @@ extension _TripsPageDialogs on _TripsPageState {
                 final viewInsetsBottom = MediaQuery.of(
                   context,
                 ).viewInsets.bottom;
-                final maxSheetHeight = MediaQuery.sizeOf(context).height;
                 if (!friendQuickPicksRequested) {
                   friendQuickPicksRequested = true;
                   unawaited(loadFriendQuickPicks(setDialogState));
                 }
 
-                return Scaffold(
-                  backgroundColor: AppDesign.isDark(context)
-                      ? AppDesign.darkCanvas
-                      : AppDesign.lightCanvas,
-                  body: SafeArea(
-                    child: AnimatedPadding(
-                      duration: const Duration(milliseconds: 150),
-                      curve: Curves.easeOut,
-                      padding: EdgeInsets.only(bottom: viewInsetsBottom),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxHeight: maxSheetHeight),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  t.createNewTripTitle,
-                                  style: Theme.of(context).textTheme.titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.w700),
-                                ),
+                return AppFormScaffold(
+                  child: AnimatedPadding(
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
+                    padding: EdgeInsets.only(bottom: viewInsetsBottom),
+                    child: SizedBox.expand(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                t.createNewTripTitle,
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w700),
                               ),
                             ),
-                            Flexible(
-                              child: SingleChildScrollView(
-                                padding: const EdgeInsets.fromLTRB(
-                                  16,
-                                  0,
-                                  16,
-                                  12,
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () => unawaited(
-                                            onPickTripImage(setDialogState),
-                                          ),
-                                          behavior: HitTestBehavior.opaque,
-                                          child: SizedBox(
-                                            width: 62,
-                                            height: 62,
-                                            child: Stack(
-                                              clipBehavior: Clip.none,
-                                              children: [
-                                                Container(
-                                                  width: 56,
-                                                  height: 56,
+                          ),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () => unawaited(
+                                          onPickTripImage(setDialogState),
+                                        ),
+                                        behavior: HitTestBehavior.opaque,
+                                        child: SizedBox(
+                                          width: 62,
+                                          height: 62,
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              Container(
+                                                width: 56,
+                                                height: 56,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: AppDesign.cardStroke(
+                                                      context,
+                                                    ),
+                                                  ),
+                                                  gradient:
+                                                      selectedImageBytes == null
+                                                      ? AppDesign.brandGradient
+                                                      : null,
+                                                ),
+                                                alignment: Alignment.center,
+                                                child:
+                                                    selectedImageBytes == null
+                                                    ? const Icon(
+                                                        Icons.image_outlined,
+                                                        color: Colors.white,
+                                                        size: 22,
+                                                      )
+                                                    : ClipOval(
+                                                        child: Image.memory(
+                                                          selectedImageBytes!,
+                                                          width: 56,
+                                                          height: 56,
+                                                          fit: BoxFit.cover,
+                                                          gaplessPlayback: true,
+                                                        ),
+                                                      ),
+                                              ),
+                                              Positioned(
+                                                right: 0,
+                                                bottom: 0,
+                                                child: Container(
+                                                  width: 24,
+                                                  height: 24,
                                                   decoration: BoxDecoration(
+                                                    color: Theme.of(
+                                                      context,
+                                                    ).colorScheme.surface,
                                                     shape: BoxShape.circle,
                                                     border: Border.all(
                                                       color:
@@ -529,509 +549,433 @@ extension _TripsPageDialogs on _TripsPageState {
                                                             context,
                                                           ),
                                                     ),
-                                                    gradient:
-                                                        selectedImageBytes ==
-                                                            null
-                                                        ? AppDesign
-                                                              .brandGradient
-                                                        : null,
                                                   ),
                                                   alignment: Alignment.center,
-                                                  child:
-                                                      selectedImageBytes == null
-                                                      ? const Icon(
-                                                          Icons.image_outlined,
-                                                          color: Colors.white,
-                                                          size: 22,
-                                                        )
-                                                      : ClipOval(
-                                                          child: Image.memory(
-                                                            selectedImageBytes!,
-                                                            width: 56,
-                                                            height: 56,
-                                                            fit: BoxFit.cover,
-                                                            gaplessPlayback:
-                                                                true,
-                                                          ),
-                                                        ),
-                                                ),
-                                                Positioned(
-                                                  right: 0,
-                                                  bottom: 0,
-                                                  child: Container(
-                                                    width: 24,
-                                                    height: 24,
-                                                    decoration: BoxDecoration(
-                                                      color: Theme.of(
-                                                        context,
-                                                      ).colorScheme.surface,
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                        color:
-                                                            AppDesign.cardStroke(
-                                                              context,
-                                                            ),
-                                                      ),
-                                                    ),
-                                                    alignment: Alignment.center,
-                                                    child: Icon(
-                                                      Icons
-                                                          .photo_camera_rounded,
-                                                      size: 14,
-                                                      color: Theme.of(
-                                                        context,
-                                                      ).colorScheme.onSurface,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: TextField(
-                                            controller: nameController,
-                                            decoration: InputDecoration(
-                                              labelText: t.tripNameLabel,
-                                              hintText: t.tripNameHint,
-                                            ),
-                                            onChanged: (_) {
-                                              setDialogState(() {
-                                                errorText = null;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    if (selectedImageName != null) ...[
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        context.l10n.tripsSelectedImage(
-                                          selectedImageName!,
-                                        ),
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodySmall,
-                                      ),
-                                    ],
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      context.l10n.tripsTripDates,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: InkWell(
-                                            borderRadius: BorderRadius.circular(
-                                              14,
-                                            ),
-                                            onTap: () async {
-                                              final now = DateTime.now();
-                                              final picked = await pickTripDate(
-                                                initialDate:
-                                                    tripDateFrom ??
-                                                    tripDateTo ??
-                                                    DateTime(
-                                                      now.year,
-                                                      now.month,
-                                                      now.day,
-                                                    ),
-                                                firstDate: DateTime(2020, 1, 1),
-                                                lastDate: DateTime(
-                                                  2100,
-                                                  12,
-                                                  31,
-                                                ),
-                                              );
-                                              if (!mounted || picked == null) {
-                                                return;
-                                              }
-                                              setDialogState(() {
-                                                tripDateFrom = picked;
-                                                if (tripDateTo != null &&
-                                                    tripDateTo!.isBefore(
-                                                      picked,
-                                                    )) {
-                                                  tripDateTo = picked;
-                                                }
-                                                errorText = null;
-                                              });
-                                            },
-                                            child: InputDecorator(
-                                              decoration: InputDecoration(
-                                                labelText:
-                                                    context.l10n.tripsFrom,
-                                                suffixIcon: const Icon(
-                                                  Icons.calendar_today_outlined,
-                                                  size: 18,
-                                                ),
-                                              ),
-                                              child: Text(
-                                                tripDateFrom == null
-                                                    ? context
-                                                          .l10n
-                                                          .tripsSelectDate
-                                                    : formatTripDate(
-                                                        tripDateFrom!,
-                                                      ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: InkWell(
-                                            borderRadius: BorderRadius.circular(
-                                              14,
-                                            ),
-                                            onTap: () async {
-                                              final now = DateTime.now();
-                                              final firstDate =
-                                                  tripDateFrom ??
-                                                  DateTime(2020, 1, 1);
-                                              final initial =
-                                                  tripDateTo ??
-                                                  tripDateFrom ??
-                                                  DateTime(
-                                                    now.year,
-                                                    now.month,
-                                                    now.day,
-                                                  );
-                                              final picked = await pickTripDate(
-                                                initialDate:
-                                                    initial.isBefore(firstDate)
-                                                    ? firstDate
-                                                    : initial,
-                                                firstDate: firstDate,
-                                                lastDate: DateTime(
-                                                  2100,
-                                                  12,
-                                                  31,
-                                                ),
-                                              );
-                                              if (!mounted || picked == null) {
-                                                return;
-                                              }
-                                              setDialogState(() {
-                                                tripDateTo = picked;
-                                                errorText = null;
-                                              });
-                                            },
-                                            child: InputDecorator(
-                                              decoration: InputDecoration(
-                                                labelText: context.l10n.tripsTo,
-                                                suffixIcon: const Icon(
-                                                  Icons.calendar_today_outlined,
-                                                  size: 18,
-                                                ),
-                                              ),
-                                              child: Text(
-                                                tripDateTo == null
-                                                    ? context
-                                                          .l10n
-                                                          .tripsSelectDate
-                                                    : formatTripDate(
-                                                        tripDateTo!,
-                                                      ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      context.l10n.tripsMainCurrency,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        borderRadius: BorderRadius.circular(18),
-                                        onTap: () async {
-                                          final picked = await pickCurrencyCode(
-                                            sheetContext,
-                                            selectedCurrencyCode,
-                                          );
-                                          if (!mounted ||
-                                              !context.mounted ||
-                                              picked == null) {
-                                            return;
-                                          }
-                                          setDialogState(() {
-                                            selectedCurrencyCode =
-                                                AppCurrencyCatalog.normalize(
-                                                  picked,
-                                                );
-                                          });
-                                        },
-                                        child: Ink(
-                                          padding: const EdgeInsets.fromLTRB(
-                                            12,
-                                            12,
-                                            12,
-                                            12,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              18,
-                                            ),
-                                            border: Border.all(
-                                              color: AppDesign.cardStroke(
-                                                context,
-                                              ),
-                                            ),
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .surfaceContainerHighest
-                                                .withValues(alpha: 0.35),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                width: 34,
-                                                height: 34,
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Theme.of(
-                                                    context,
-                                                  ).colorScheme.surface,
-                                                  border: Border.all(
-                                                    color: AppDesign.cardStroke(
+                                                  child: Icon(
+                                                    Icons.photo_camera_rounded,
+                                                    size: 14,
+                                                    color: Theme.of(
                                                       context,
-                                                    ),
+                                                    ).colorScheme.onSurface,
                                                   ),
                                                 ),
-                                                child: Text(
-                                                  selectedCurrency.symbol,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleMedium
-                                                      ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w800,
-                                                      ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 10),
-                                              Expanded(
-                                                child: Text(
-                                                  '${selectedCurrency.code} - ${AppCurrencyCatalog.labelForCode(selectedCurrency.code, context.l10n)}',
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleMedium
-                                                      ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
-                                                ),
-                                              ),
-                                              Icon(
-                                                Icons
-                                                    .keyboard_arrow_down_rounded,
-                                                color: Theme.of(
-                                                  context,
-                                                ).colorScheme.onSurfaceVariant,
                                               ),
                                             ],
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 12),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: nameController,
+                                          decoration: InputDecoration(
+                                            labelText: t.tripNameLabel,
+                                            hintText: t.tripNameHint,
+                                          ),
+                                          onChanged: (_) {
+                                            setDialogState(() {
+                                              errorText = null;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (selectedImageName != null) ...[
+                                    const SizedBox(height: 6),
                                     Text(
-                                      t.selectedPeopleLabel,
+                                      context.l10n.tripsSelectedImage(
+                                        selectedImageName!,
+                                      ),
                                       style: Theme.of(
                                         context,
                                       ).textTheme.bodySmall,
                                     ),
-                                    const SizedBox(height: 6),
-                                    if (selectedUsers.isEmpty)
-                                      Text(
-                                        t.workspaceNoMembersSelectedYet,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodySmall,
-                                      )
-                                    else
-                                      Wrap(
-                                        spacing: 8,
-                                        runSpacing: 8,
-                                        children: [
-                                          for (final user
-                                              in selectedUsers.values)
-                                            InputChip(
-                                              label: Text(user.nickname),
-                                              selected: true,
-                                              onDeleted: () {
-                                                setDialogState(() {
-                                                  selected.remove(user.id);
-                                                  selectedUsers.remove(user.id);
-                                                });
-                                              },
-                                            ),
-                                        ],
-                                      ),
-                                    if (isLoadingFriendQuickPicks) ...[
-                                      const SizedBox(height: 10),
-                                      const LinearProgressIndicator(
-                                        minHeight: 2,
-                                      ),
-                                    ],
-                                    if (friendQuickPicks.isNotEmpty) ...[
-                                      const SizedBox(height: 10),
-                                      Wrap(
-                                        spacing: 8,
-                                        runSpacing: 8,
-                                        children: [
-                                          for (final friend in friendQuickPicks)
-                                            FilterChip(
-                                              label: Text(friend.nickname),
-                                              selected: selected.contains(
-                                                friend.id,
+                                  ],
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    context.l10n.tripsTripDates,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.w700),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
+                                          onTap: () async {
+                                            final now = DateTime.now();
+                                            final picked = await pickTripDate(
+                                              initialDate:
+                                                  tripDateFrom ??
+                                                  tripDateTo ??
+                                                  DateTime(
+                                                    now.year,
+                                                    now.month,
+                                                    now.day,
+                                                  ),
+                                              firstDate: DateTime(2020, 1, 1),
+                                              lastDate: DateTime(2100, 12, 31),
+                                            );
+                                            if (!mounted || picked == null) {
+                                              return;
+                                            }
+                                            setDialogState(() {
+                                              tripDateFrom = picked;
+                                              if (tripDateTo != null &&
+                                                  tripDateTo!.isBefore(
+                                                    picked,
+                                                  )) {
+                                                tripDateTo = picked;
+                                              }
+                                              errorText = null;
+                                            });
+                                          },
+                                          child: InputDecorator(
+                                            decoration: InputDecoration(
+                                              labelText: context.l10n.tripsFrom,
+                                              suffixIcon: const Icon(
+                                                Icons.calendar_today_outlined,
+                                                size: 18,
                                               ),
-                                              onSelected: (isSelected) {
-                                                setDialogState(() {
-                                                  if (isSelected) {
-                                                    selected.add(friend.id);
-                                                    selectedUsers[friend.id] =
-                                                        friend;
-                                                  } else {
-                                                    selected.remove(friend.id);
-                                                    selectedUsers.remove(
-                                                      friend.id,
-                                                    );
-                                                  }
-                                                });
-                                              },
                                             ),
-                                        ],
+                                            child: Text(
+                                              tripDateFrom == null
+                                                  ? context.l10n.tripsSelectDate
+                                                  : formatTripDate(
+                                                      tripDateFrom!,
+                                                    ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: InkWell(
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
+                                          onTap: () async {
+                                            final now = DateTime.now();
+                                            final firstDate =
+                                                tripDateFrom ??
+                                                DateTime(2020, 1, 1);
+                                            final initial =
+                                                tripDateTo ??
+                                                tripDateFrom ??
+                                                DateTime(
+                                                  now.year,
+                                                  now.month,
+                                                  now.day,
+                                                );
+                                            final picked = await pickTripDate(
+                                              initialDate:
+                                                  initial.isBefore(firstDate)
+                                                  ? firstDate
+                                                  : initial,
+                                              firstDate: firstDate,
+                                              lastDate: DateTime(2100, 12, 31),
+                                            );
+                                            if (!mounted || picked == null) {
+                                              return;
+                                            }
+                                            setDialogState(() {
+                                              tripDateTo = picked;
+                                              errorText = null;
+                                            });
+                                          },
+                                          child: InputDecorator(
+                                            decoration: InputDecoration(
+                                              labelText: context.l10n.tripsTo,
+                                              suffixIcon: const Icon(
+                                                Icons.calendar_today_outlined,
+                                                size: 18,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              tripDateTo == null
+                                                  ? context.l10n.tripsSelectDate
+                                                  : formatTripDate(tripDateTo!),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ],
-                                    if (errorText != null) ...[
-                                      const SizedBox(height: 12),
-                                      Text(
-                                        errorText!,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    context.l10n.tripsMainCurrency,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(fontWeight: FontWeight.w700),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(18),
+                                      onTap: () async {
+                                        final picked = await pickCurrencyCode(
+                                          sheetContext,
+                                          selectedCurrencyCode,
+                                        );
+                                        if (!mounted ||
+                                            !context.mounted ||
+                                            picked == null) {
+                                          return;
+                                        }
+                                        setDialogState(() {
+                                          selectedCurrencyCode =
+                                              AppCurrencyCatalog.normalize(
+                                                picked,
+                                              );
+                                        });
+                                      },
+                                      child: Ink(
+                                        padding: const EdgeInsets.fromLTRB(
+                                          12,
+                                          12,
+                                          12,
+                                          12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
+                                          border: Border.all(
+                                            color: AppDesign.cardStroke(
+                                              context,
+                                            ),
+                                          ),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceContainerHighest
+                                              .withValues(alpha: 0.35),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: 34,
+                                              height: 34,
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.surface,
+                                                border: Border.all(
+                                                  color: AppDesign.cardStroke(
+                                                    context,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                selectedCurrency.symbol,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                    ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Text(
+                                                '${selectedCurrency.code} - ${AppCurrencyCatalog.labelForCode(selectedCurrency.code, context.l10n)}',
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.keyboard_arrow_down_rounded,
                                               color: Theme.of(
                                                 context,
-                                              ).colorScheme.error,
-                                              fontWeight: FontWeight.w600,
+                                              ).colorScheme.onSurfaceVariant,
                                             ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const Divider(height: 1),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                12,
-                                10,
-                                12,
-                                12,
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(sheetContext).pop(),
-                                      child: Text(t.cancelAction),
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        final name = nameController.text.trim();
-                                        if (name.length < 2 ||
-                                            name.length > 120) {
-                                          setDialogState(() {
-                                            errorText =
-                                                t.tripNameLengthValidation;
-                                          });
-                                          return;
-                                        }
-                                        if (tripDateFrom == null ||
-                                            tripDateTo == null) {
-                                          setDialogState(() {
-                                            errorText = context
-                                                .l10n
-                                                .tripsPleaseSelectTripPeriodFromAndToDates;
-                                          });
-                                          return;
-                                        }
-                                        if (tripDateTo!.isBefore(
-                                          tripDateFrom!,
-                                        )) {
-                                          setDialogState(() {
-                                            errorText = context
-                                                .l10n
-                                                .tripsTripEndDateMustBeOnOrAfterStartDate;
-                                          });
-                                          return;
-                                        }
-                                        final dateFromIso = toIsoDate(
-                                          tripDateFrom,
-                                        );
-                                        final dateToIso = toIsoDate(tripDateTo);
-                                        if (dateFromIso == null ||
-                                            dateToIso == null) {
-                                          setDialogState(() {
-                                            errorText = context
-                                                .l10n
-                                                .tripsTripPeriodFormatIsInvalidPleasePickDatesAgain;
-                                          });
-                                          return;
-                                        }
-
-                                        final memberIds = selected.toList(
-                                          growable: false,
-                                        )..sort();
-                                        Navigator.of(sheetContext).pop(
-                                          _CreateTripResult(
-                                            name: name,
-                                            currencyCode: selectedCurrencyCode,
-                                            memberIds: memberIds,
-                                            dateFrom: dateFromIso,
-                                            dateTo: dateToIso,
-                                            imageFileName: selectedImageName,
-                                            imageBytes: selectedImageBytes,
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    t.selectedPeopleLabel,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  if (selectedUsers.isEmpty)
+                                    Text(
+                                      t.workspaceNoMembersSelectedYet,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
+                                    )
+                                  else
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      children: [
+                                        for (final user in selectedUsers.values)
+                                          InputChip(
+                                            label: Text(user.nickname),
+                                            selected: true,
+                                            onDeleted: () {
+                                              setDialogState(() {
+                                                selected.remove(user.id);
+                                                selectedUsers.remove(user.id);
+                                              });
+                                            },
                                           ),
-                                        );
-                                      },
-                                      child: Text(t.createAction),
+                                      ],
                                     ),
-                                  ),
+                                  if (isLoadingFriendQuickPicks) ...[
+                                    const SizedBox(height: 10),
+                                    const LinearProgressIndicator(minHeight: 2),
+                                  ],
+                                  if (friendQuickPicks.isNotEmpty) ...[
+                                    const SizedBox(height: 10),
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      children: [
+                                        for (final friend in friendQuickPicks)
+                                          FilterChip(
+                                            label: Text(friend.nickname),
+                                            selected: selected.contains(
+                                              friend.id,
+                                            ),
+                                            onSelected: (isSelected) {
+                                              setDialogState(() {
+                                                if (isSelected) {
+                                                  selected.add(friend.id);
+                                                  selectedUsers[friend.id] =
+                                                      friend;
+                                                } else {
+                                                  selected.remove(friend.id);
+                                                  selectedUsers.remove(
+                                                    friend.id,
+                                                  );
+                                                }
+                                              });
+                                            },
+                                          ),
+                                      ],
+                                    ),
+                                  ],
+                                  if (errorText != null) ...[
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      errorText!,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.error,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          const Divider(height: 1),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(sheetContext).pop(),
+                                    child: Text(t.cancelAction),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      final name = nameController.text.trim();
+                                      if (name.length < 2 ||
+                                          name.length > 120) {
+                                        setDialogState(() {
+                                          errorText =
+                                              t.tripNameLengthValidation;
+                                        });
+                                        return;
+                                      }
+                                      if (tripDateFrom == null ||
+                                          tripDateTo == null) {
+                                        setDialogState(() {
+                                          errorText = context
+                                              .l10n
+                                              .tripsPleaseSelectTripPeriodFromAndToDates;
+                                        });
+                                        return;
+                                      }
+                                      if (tripDateTo!.isBefore(tripDateFrom!)) {
+                                        setDialogState(() {
+                                          errorText = context
+                                              .l10n
+                                              .tripsTripEndDateMustBeOnOrAfterStartDate;
+                                        });
+                                        return;
+                                      }
+                                      final dateFromIso = toIsoDate(
+                                        tripDateFrom,
+                                      );
+                                      final dateToIso = toIsoDate(tripDateTo);
+                                      if (dateFromIso == null ||
+                                          dateToIso == null) {
+                                        setDialogState(() {
+                                          errorText = context
+                                              .l10n
+                                              .tripsTripPeriodFormatIsInvalidPleasePickDatesAgain;
+                                        });
+                                        return;
+                                      }
+
+                                      final memberIds = selected.toList(
+                                        growable: false,
+                                      )..sort();
+                                      Navigator.of(sheetContext).pop(
+                                        _CreateTripResult(
+                                          name: name,
+                                          currencyCode: selectedCurrencyCode,
+                                          memberIds: memberIds,
+                                          dateFrom: dateFromIso,
+                                          dateTo: dateToIso,
+                                          imageFileName: selectedImageName,
+                                          imageBytes: selectedImageBytes,
+                                        ),
+                                      );
+                                    },
+                                    child: Text(t.createAction),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

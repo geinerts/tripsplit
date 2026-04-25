@@ -16,6 +16,8 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/l10n/notification_localizer.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
+import '../../../../core/ui/app_scaffold.dart';
+import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/test_keys.dart';
 import '../../../analytics/presentation/pages/analytics_page.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';

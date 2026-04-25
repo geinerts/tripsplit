@@ -7,10 +7,8 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
     }
     final members = users.toList(growable: false);
 
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
-      showDragHandle: true,
-      useSafeArea: true,
       isScrollControlled: true,
       builder: (sheetContext) {
         final maxHeight = MediaQuery.sizeOf(sheetContext).height * 0.72;

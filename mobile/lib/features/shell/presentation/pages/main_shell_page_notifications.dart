@@ -414,12 +414,15 @@ extension _MainShellPageNotifications on _MainShellPageState {
     var earlierVisibleCount = initialEarlierVisibleCount;
     var isSheetActive = true;
 
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
-      showDragHandle: true,
+      useSafeArea: false,
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (context, setSheetState) {
+            final maxSheetHeight = MediaQuery.sizeOf(context).height * 0.82;
+            final listBottomPadding =
+                MediaQuery.viewPaddingOf(context).bottom > 0 ? 12.0 : 8.0;
             final sorted = _sortNotifications(_globalNotifications);
             final newNotifications = sorted
                 .where((item) => !item.isRead)
@@ -438,115 +441,39 @@ extension _MainShellPageNotifications on _MainShellPageState {
                 earlierNotifications.length > visibleEarlier.length;
             final canMarkAllRead = newNotifications.any((item) => item.id > 0);
 
-            return SafeArea(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 620),
-                child: sorted.isEmpty
-                    ? Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Text(t.noNotificationsYet),
-                        ),
-                      )
-                    : ListView(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    t.notificationsTitle,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.w700),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed:
-                                      (!canMarkAllRead ||
-                                          _isNotificationsLoading)
-                                      ? null
-                                      : () async {
-                                          await _markGlobalNotificationsRead(
-                                            markAll: true,
-                                            showErrorSnack: true,
-                                          );
-                                          if (!mounted || !isSheetActive) {
-                                            return;
-                                          }
-                                          setSheetState(() {});
-                                        },
-                                  child: Text(
-                                    context.l10n.shellMarkAllAsReadAction,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (newNotifications.isNotEmpty) ...[
-                            _buildNotificationSectionHeader(
-                              context,
-                              context.l10n.shellNewSection,
-                            ),
-                            ...newNotifications.map(
-                              (item) => _buildNotificationTile(
-                                context,
-                                sheetContext,
-                                item,
-                              ),
-                            ),
-                          ],
-                          if (earlierNotifications.isNotEmpty) ...[
-                            _buildNotificationSectionHeader(
-                              context,
-                              context.l10n.shellEarlierSection,
-                            ),
-                            ...visibleEarlier.map(
-                              (item) => _buildNotificationTile(
-                                context,
-                                sheetContext,
-                                item,
-                              ),
-                            ),
-                            if (hasMoreEarlierHidden)
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                  16,
-                                  6,
-                                  16,
-                                  0,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: TextButton(
-                                    onPressed: () {
-                                      setSheetState(() {
-                                        earlierVisibleCount += 10;
-                                      });
-                                    },
-                                    child: Text(
-                                      context.l10n.shellShowMoreEarlierAction,
-                                    ),
-                                  ),
+            return ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: maxSheetHeight),
+              child: sorted.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(t.noNotificationsYet),
+                      ),
+                    )
+                  : ListView(
+                      shrinkWrap: true,
+                      primary: false,
+                      padding: EdgeInsets.only(bottom: listBottomPadding),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  t.notificationsTitle,
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.w700),
                                 ),
                               ),
-                          ],
-                          if (_globalNotificationsHasMore)
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
-                              child: OutlinedButton(
-                                onPressed: _isNotificationsLoadingMore
+                              TextButton(
+                                onPressed:
+                                    (!canMarkAllRead || _isNotificationsLoading)
                                     ? null
                                     : () async {
-                                        await _loadMoreGlobalNotifications(
-                                          onUpdated: () {
-                                            if (isSheetActive) {
-                                              setSheetState(() {});
-                                            }
-                                          },
+                                        await _markGlobalNotificationsRead(
+                                          markAll: true,
+                                          showErrorSnack: true,
                                         );
                                         if (!mounted || !isSheetActive) {
                                           return;
@@ -554,17 +481,85 @@ extension _MainShellPageNotifications on _MainShellPageState {
                                         setSheetState(() {});
                                       },
                                 child: Text(
-                                  _isNotificationsLoadingMore
-                                      ? context.l10n.shellLoadingMore
-                                      : context
-                                            .l10n
-                                            .shellLoadMoreNotificationsAction,
+                                  context.l10n.shellMarkAllAsReadAction,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (newNotifications.isNotEmpty) ...[
+                          _buildNotificationSectionHeader(
+                            context,
+                            context.l10n.shellNewSection,
+                          ),
+                          ...newNotifications.map(
+                            (item) => _buildNotificationTile(
+                              context,
+                              sheetContext,
+                              item,
+                            ),
+                          ),
+                        ],
+                        if (earlierNotifications.isNotEmpty) ...[
+                          _buildNotificationSectionHeader(
+                            context,
+                            context.l10n.shellEarlierSection,
+                          ),
+                          ...visibleEarlier.map(
+                            (item) => _buildNotificationTile(
+                              context,
+                              sheetContext,
+                              item,
+                            ),
+                          ),
+                          if (hasMoreEarlierHidden)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: TextButton(
+                                  onPressed: () {
+                                    setSheetState(() {
+                                      earlierVisibleCount += 10;
+                                    });
+                                  },
+                                  child: Text(
+                                    context.l10n.shellShowMoreEarlierAction,
+                                  ),
                                 ),
                               ),
                             ),
                         ],
-                      ),
-              ),
+                        if (_globalNotificationsHasMore)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+                            child: OutlinedButton(
+                              onPressed: _isNotificationsLoadingMore
+                                  ? null
+                                  : () async {
+                                      await _loadMoreGlobalNotifications(
+                                        onUpdated: () {
+                                          if (isSheetActive) {
+                                            setSheetState(() {});
+                                          }
+                                        },
+                                      );
+                                      if (!mounted || !isSheetActive) {
+                                        return;
+                                      }
+                                      setSheetState(() {});
+                                    },
+                              child: Text(
+                                _isNotificationsLoadingMore
+                                    ? context.l10n.shellLoadingMore
+                                    : context
+                                          .l10n
+                                          .shellLoadMoreNotificationsAction,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
             );
           },
         );

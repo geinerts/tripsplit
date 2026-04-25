@@ -8,6 +8,7 @@ import 'app_dependencies.dart';
 import 'locale/app_locale_scope.dart';
 import 'router/app_router.dart';
 import 'theme/app_design.dart';
+import 'theme/app_overlay_style.dart';
 import 'theme/app_semantic_colors.dart';
 import 'theme/theme_mode_scope.dart';
 import '../core/ui/app_background.dart';
@@ -139,6 +140,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
         backgroundColor: Colors.transparent,
         foregroundColor: colorScheme.onSurface,
         surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: AppSystemOverlayStyles.darkContent,
       ),
       cardTheme: CardThemeData(
         color: AppDesign.lightSurface,
@@ -227,6 +229,18 @@ class _TripSplitAppState extends State<TripSplitApp> {
           borderRadius: BorderRadius.circular(AppDesign.radiusSm),
         ),
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: colorScheme.surface,
+        modalBackgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppDesign.radiusLg),
+          ),
+        ),
+        dragHandleColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.36),
+      ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 0,
         type: BottomNavigationBarType.fixed,
@@ -283,6 +297,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
         backgroundColor: Colors.transparent,
         foregroundColor: colorScheme.onSurface,
         surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: AppSystemOverlayStyles.lightContent,
       ),
       cardTheme: CardThemeData(
         color: AppDesign.darkSurfaceRaised,
@@ -366,6 +381,18 @@ class _TripSplitAppState extends State<TripSplitApp> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDesign.radiusSm),
         ),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: colorScheme.surface,
+        modalBackgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        clipBehavior: Clip.antiAlias,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppDesign.radiusLg),
+          ),
+        ),
+        dragHandleColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.36),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 0,

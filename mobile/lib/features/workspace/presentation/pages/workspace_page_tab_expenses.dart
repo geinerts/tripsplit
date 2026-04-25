@@ -504,83 +504,81 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     }
     final canManage =
         snapshot.isActive && expense.paidById == _currentUserId && !_isMutating;
-    final picked = await showModalBottomSheet<_ExpenseCardQuickActionResult>(
+    final picked = await showAppBottomSheet<_ExpenseCardQuickActionResult>(
       context: context,
-      backgroundColor: Colors.transparent,
       isScrollControlled: false,
+      showDragHandle: false,
       builder: (context) {
         final colors = Theme.of(context).colorScheme;
         final isDark = Theme.of(context).brightness == Brightness.dark;
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: isDark ? colors.surface : AppDesign.lightSurface,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: isDark
+                        ? colors.outlineVariant.withValues(alpha: 0.32)
+                        : AppDesign.lightStroke,
+                  ),
+                ),
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                child: _EmojiPickerRow(
+                  emojis: _kSocialEmojis,
+                  onSelect: (emoji) {
+                    Navigator.of(
+                      context,
+                    ).pop(_ExpenseCardQuickActionResult.react(emoji));
+                  },
+                ),
+              ),
+              if (canManage) ...[
+                const SizedBox(height: 8),
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: isDark ? colors.surface : AppDesign.lightSurface,
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isDark
                           ? colors.outlineVariant.withValues(alpha: 0.32)
                           : AppDesign.lightStroke,
                     ),
                   ),
-                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                  child: _EmojiPickerRow(
-                    emojis: _kSocialEmojis,
-                    onSelect: (emoji) {
-                      Navigator.of(
-                        context,
-                      ).pop(_ExpenseCardQuickActionResult.react(emoji));
-                    },
+                  child: Column(
+                    children: [
+                      _CommentActionRow(
+                        label: context.l10n.editAction,
+                        icon: Icons.edit_outlined,
+                        isDark: isDark,
+                        showDivider: true,
+                        onTap: () {
+                          Navigator.of(
+                            context,
+                          ).pop(const _ExpenseCardQuickActionResult.edit());
+                        },
+                      ),
+                      _CommentActionRow(
+                        label: context.l10n.deleteAction,
+                        icon: Icons.delete_outline_rounded,
+                        isDark: isDark,
+                        isDestructive: true,
+                        onTap: () {
+                          Navigator.of(
+                            context,
+                          ).pop(const _ExpenseCardQuickActionResult.delete());
+                        },
+                      ),
+                    ],
                   ),
                 ),
-                if (canManage) ...[
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: isDark ? colors.surface : AppDesign.lightSurface,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isDark
-                            ? colors.outlineVariant.withValues(alpha: 0.32)
-                            : AppDesign.lightStroke,
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        _CommentActionRow(
-                          label: context.l10n.editAction,
-                          icon: Icons.edit_outlined,
-                          isDark: isDark,
-                          showDivider: true,
-                          onTap: () {
-                            Navigator.of(
-                              context,
-                            ).pop(const _ExpenseCardQuickActionResult.edit());
-                          },
-                        ),
-                        _CommentActionRow(
-                          label: context.l10n.deleteAction,
-                          icon: Icons.delete_outline_rounded,
-                          isDark: isDark,
-                          isDestructive: true,
-                          onTap: () {
-                            Navigator.of(
-                              context,
-                            ).pop(const _ExpenseCardQuickActionResult.delete());
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ],
-            ),
+            ],
           ),
         );
       },

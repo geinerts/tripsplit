@@ -6,7 +6,7 @@ import '../../../../app/theme/app_design.dart';
 import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_background.dart';
+import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/responsive.dart';
 import '../controllers/auth_controller.dart';
 
@@ -138,164 +138,161 @@ class _CredentialsPageState extends State<CredentialsPage> {
     final heroSize = responsive.pick(compact: 72, medium: 80, expanded: 88);
     final iconSize = responsive.pick(compact: 34, medium: 38, expanded: 42);
 
-    return Scaffold(
-      body: AppBackground(
-        child: SafeArea(
-          child: Form(
-            key: _formKey,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: responsive.pageMaxWidth,
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: ListView(
-                      padding: EdgeInsets.fromLTRB(
-                        horizontalPadding,
-                        12,
-                        horizontalPadding,
-                        24,
-                      ),
-                      children: [
-                        Row(
-                          children: [
-                            const Spacer(),
-                            IconButton(
-                              tooltip: t.languageAction,
-                              onPressed: _isSubmitting
-                                  ? null
-                                  : () => showAppLocalePicker(context),
-                              icon: const Icon(Icons.translate_outlined),
-                            ),
-                            IconButton(
-                              tooltip: t.appearance,
-                              onPressed: _isSubmitting
-                                  ? null
-                                  : () => showThemeModePicker(context),
-                              icon: const Icon(Icons.brightness_6_outlined),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        Center(
-                          child: Container(
-                            width: heroSize,
-                            height: heroSize,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(24),
-                              gradient: AppDesign.brandGradient,
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color(0x335D6DFF),
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              Icons.verified_user_outlined,
-                              color: Colors.white,
-                              size: iconSize,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        Text(
-                          t.completeAccountSetupTitle,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: -0.3,
-                              ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          t.completeAccountSetupDescription,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(color: colorScheme.outline),
-                        ),
-                        const SizedBox(height: 20),
-                        Card(
-                          child: Padding(
-                            padding: EdgeInsets.all(cardPadding),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextFormField(
-                                  controller: _emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: t.emailLabel,
-                                  ),
-                                  validator: _validateEmail,
-                                ),
-                                const SizedBox(height: 12),
-                                TextFormField(
-                                  controller: _passwordController,
-                                  obscureText: true,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    labelText: t.passwordLabel,
-                                  ),
-                                  validator: _validatePassword,
-                                ),
-                                const SizedBox(height: 12),
-                                TextFormField(
-                                  controller: _repeatController,
-                                  obscureText: true,
-                                  textInputAction: TextInputAction.done,
-                                  decoration: InputDecoration(
-                                    labelText: t.repeatPasswordLabel,
-                                  ),
-                                  validator: _validateRepeat,
-                                  onFieldSubmitted: (_) => _onSavePressed(),
-                                ),
-                                const SizedBox(height: 16),
-                                if (_errorText != null) ...[
-                                  Text(
-                                    _errorText!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: colorScheme.error,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                ],
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: FilledButton(
-                                    onPressed: _isSubmitting
-                                        ? null
-                                        : _onSavePressed,
-                                    child: _isSubmitting
-                                        ? const SizedBox(
-                                            width: 18,
-                                            height: 18,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                            ),
-                                          )
-                                        : Text(t.saveCredentialsButton),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+    return AppPageScaffold(
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: responsive.pageMaxWidth,
+                    minHeight: constraints.maxHeight,
                   ),
-                );
-              },
-            ),
+                  child: ListView(
+                    padding: EdgeInsets.fromLTRB(
+                      horizontalPadding,
+                      12,
+                      horizontalPadding,
+                      24,
+                    ),
+                    children: [
+                      Row(
+                        children: [
+                          const Spacer(),
+                          IconButton(
+                            tooltip: t.languageAction,
+                            onPressed: _isSubmitting
+                                ? null
+                                : () => showAppLocalePicker(context),
+                            icon: const Icon(Icons.translate_outlined),
+                          ),
+                          IconButton(
+                            tooltip: t.appearance,
+                            onPressed: _isSubmitting
+                                ? null
+                                : () => showThemeModePicker(context),
+                            icon: const Icon(Icons.brightness_6_outlined),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Center(
+                        child: Container(
+                          width: heroSize,
+                          height: heroSize,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            gradient: AppDesign.brandGradient,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x335D6DFF),
+                                blurRadius: 20,
+                                offset: Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.verified_user_outlined,
+                            color: Colors.white,
+                            size: iconSize,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Text(
+                        t.completeAccountSetupTitle,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.3,
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        t.completeAccountSetupDescription,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: colorScheme.outline,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(cardPadding),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextFormField(
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                  labelText: t.emailLabel,
+                                ),
+                                validator: _validateEmail,
+                              ),
+                              const SizedBox(height: 12),
+                              TextFormField(
+                                controller: _passwordController,
+                                obscureText: true,
+                                textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                  labelText: t.passwordLabel,
+                                ),
+                                validator: _validatePassword,
+                              ),
+                              const SizedBox(height: 12),
+                              TextFormField(
+                                controller: _repeatController,
+                                obscureText: true,
+                                textInputAction: TextInputAction.done,
+                                decoration: InputDecoration(
+                                  labelText: t.repeatPasswordLabel,
+                                ),
+                                validator: _validateRepeat,
+                                onFieldSubmitted: (_) => _onSavePressed(),
+                              ),
+                              const SizedBox(height: 16),
+                              if (_errorText != null) ...[
+                                Text(
+                                  _errorText!,
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: colorScheme.error,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                                const SizedBox(height: 12),
+                              ],
+                              SizedBox(
+                                width: double.infinity,
+                                child: FilledButton(
+                                  onPressed: _isSubmitting
+                                      ? null
+                                      : _onSavePressed,
+                                  child: _isSubmitting
+                                      ? const SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : Text(t.saveCredentialsButton),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

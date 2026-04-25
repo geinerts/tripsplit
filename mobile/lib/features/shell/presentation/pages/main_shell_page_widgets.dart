@@ -6,7 +6,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
       fontWeight: FontWeight.w800,
       letterSpacing: 0.1,
     );
-    return Scaffold(
+    return AppPageScaffold(
       appBar: AppBar(
         centerTitle: false,
         leading: _showTopBackButton

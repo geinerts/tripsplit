@@ -338,10 +338,10 @@ extension _FriendsPageWidgets on _FriendsPageState {
   }
 
   Future<void> _openAddFriendSheet(FriendsSnapshot snapshot) async {
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      wrapWithSurface: false,
       builder: (sheetContext) {
         return _AddFriendBottomSheet(
           showSnack: _showSnack,

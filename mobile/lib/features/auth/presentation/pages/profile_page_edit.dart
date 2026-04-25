@@ -823,10 +823,8 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     final currentCode = AppCurrencyCatalog.normalizeProfilePreferred(
       _draftPreferredCurrencyCode,
     );
-    final picked = await showModalBottomSheet<String>(
+    final picked = await showAppBottomSheet<String>(
       context: context,
-      showDragHandle: true,
-      useSafeArea: true,
       builder: (pickerContext) {
         final maxHeight = MediaQuery.sizeOf(pickerContext).height * 0.62;
         return SizedBox(
@@ -1060,8 +1058,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       return;
     }
     final result = await Navigator.of(context).push<_PaymentInfoEditorResult>(
-      MaterialPageRoute<_PaymentInfoEditorResult>(
-        fullscreenDialog: true,
+      AppFormPageRoute<_PaymentInfoEditorResult>(
         builder: (pageContext) => _PaymentInfoEditorPage(
           initialBankCountryCode: _draftBankCountryCode,
           initialBankAccountNumber: _draftBankAccountNumber,
@@ -1387,10 +1384,8 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
       return;
     }
 
-    final picked = await showModalBottomSheet<_PaymentInfoMethod>(
+    final picked = await showAppBottomSheet<_PaymentInfoMethod>(
       context: context,
-      showDragHandle: true,
-      useSafeArea: true,
       builder: (sheetContext) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
@@ -1624,69 +1619,63 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AppFormScaffold(
       appBar: AppBar(title: Text(context.l10n.profileEditPaymentInfo)),
-      body: AppBackground(
-        child: SafeArea(
-          child: ListView(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              14,
-              16,
-              16 + MediaQuery.viewInsetsOf(context).bottom,
-            ),
-            children: [
-              AppSurfaceCard(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.profileEditPaymentMethod,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    _buildPaymentMethodField(context),
-                    const SizedBox(height: 12),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 170),
-                      child: _buildMethodForm(context),
-                    ),
-                    if (_formErrorText != null) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        _formErrorText!,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.error,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton.icon(
-                        onPressed: _isSaving ? null : _saveAndClose,
-                        icon: _isSaving
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Icon(Icons.save_outlined),
-                        label: Text(context.l10n.profileEditSaveDetails),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+      child: ListView(
+        padding: EdgeInsets.fromLTRB(
+          16,
+          14,
+          16,
+          16 + MediaQuery.viewInsetsOf(context).bottom,
         ),
+        children: [
+          AppSurfaceCard(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.l10n.profileEditPaymentMethod,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _buildPaymentMethodField(context),
+                const SizedBox(height: 12),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 170),
+                  child: _buildMethodForm(context),
+                ),
+                if (_formErrorText != null) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    _formErrorText!,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: _isSaving ? null : _saveAndClose,
+                    icon: _isSaving
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.save_outlined),
+                    label: Text(context.l10n.profileEditSaveDetails),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

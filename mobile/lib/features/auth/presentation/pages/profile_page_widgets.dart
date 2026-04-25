@@ -27,34 +27,32 @@ extension _ProfilePageWidgets on _ProfilePageState {
     final avatarLetter = displayName.substring(0, 1).toUpperCase();
     final avatarUrl = widget.controller.avatarUrlFor(_user);
 
-    return Scaffold(
+    return AppPageScaffold(
       appBar: widget.showAppBar
           ? AppBar(title: Text(context.l10n.profileTitle))
           : null,
-      body: AppBackground(
-        child: SafeArea(
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Center(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: responsive.pageMaxWidth,
-                          minHeight: constraints.maxHeight,
-                        ),
-                        child: _buildProfileScrollableContent(
-                          context: context,
-                          horizontalPadding: horizontalPadding,
-                          displayName: displayName,
-                          avatarLetter: avatarLetter,
-                          avatarUrl: avatarUrl,
-                        ),
+      body: SafeArea(
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  return Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: responsive.pageMaxWidth,
+                        minHeight: constraints.maxHeight,
                       ),
-                    );
-                  },
-                ),
-        ),
+                      child: _buildProfileScrollableContent(
+                        context: context,
+                        horizontalPadding: horizontalPadding,
+                        displayName: displayName,
+                        avatarLetter: avatarLetter,
+                        avatarUrl: avatarUrl,
+                      ),
+                    ),
+                  );
+                },
+              ),
       ),
       bottomNavigationBar: widget.showBottomNav
           ? _buildBottomNav(context)

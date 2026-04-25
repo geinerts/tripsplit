@@ -96,100 +96,96 @@ class _PushNotificationSettingsPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AppPageScaffold(
       appBar: AppBar(title: Text(context.l10n.profilePushNotificationsTitle)),
-      body: AppBackground(
-        child: SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: context.responsive.pageMaxWidth,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: context.responsive.pageMaxWidth,
+            ),
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(
+                context.responsive.pageHorizontalPadding,
+                12,
+                context.responsive.pageHorizontalPadding,
+                20,
               ),
-              child: ListView(
-                padding: EdgeInsets.fromLTRB(
-                  context.responsive.pageHorizontalPadding,
-                  12,
-                  context.responsive.pageHorizontalPadding,
-                  20,
+              children: [
+                _buildSectionHeading(
+                  context,
+                  context.l10n.profilePushNotificationsSectionTitle,
                 ),
-                children: [
-                  _buildSectionHeading(
-                    context,
-                    context.l10n.profilePushNotificationsSectionTitle,
-                  ),
-                  const SizedBox(height: 8),
-                  _buildProfileSectionCard(
-                    context: context,
-                    children: [
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.profileExpenseUpdates,
-                        subtitle:
-                            context.l10n.profileExpenseAddedNotificationsPhone,
-                        icon: Icons.receipt_long_outlined,
-                        value: _prefs.pushExpenseAddedEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(pushExpenseAddedEnabled: value),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.profileFriendInvites,
-                        subtitle: context
-                            .l10n
-                            .profileFriendRequestResponseNotifications,
-                        icon: Icons.group_add_outlined,
-                        value: _prefs.pushFriendInvitesEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(pushFriendInvitesEnabled: value),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.profileTripUpdates,
-                        subtitle: context
-                            .l10n
-                            .profileTripLifecycleMemberStatusChanges,
-                        icon: Icons.flag_outlined,
-                        value: _prefs.pushTripUpdatesEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(pushTripUpdatesEnabled: value),
-                          );
-                        },
-                      ),
-                      _buildProfileSwitchTile(
-                        context: context,
-                        title: context.l10n.profileSettlementUpdates,
-                        subtitle: context
-                            .l10n
-                            .profileMarkedSentConfirmedPaymentUpdates,
-                        icon: Icons.task_alt_outlined,
-                        value: _prefs.pushSettlementUpdatesEnabled,
-                        onChanged: (value) {
-                          unawaited(
-                            _setPreference(pushSettlementUpdatesEnabled: value),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  if (_isSaving) ...[
-                    const SizedBox(height: 14),
-                    const Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
+                const SizedBox(height: 8),
+                _buildProfileSectionCard(
+                  context: context,
+                  children: [
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profileExpenseUpdates,
+                      subtitle:
+                          context.l10n.profileExpenseAddedNotificationsPhone,
+                      icon: Icons.receipt_long_outlined,
+                      value: _prefs.pushExpenseAddedEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(pushExpenseAddedEnabled: value),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profileFriendInvites,
+                      subtitle: context
+                          .l10n
+                          .profileFriendRequestResponseNotifications,
+                      icon: Icons.group_add_outlined,
+                      value: _prefs.pushFriendInvitesEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(pushFriendInvitesEnabled: value),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profileTripUpdates,
+                      subtitle:
+                          context.l10n.profileTripLifecycleMemberStatusChanges,
+                      icon: Icons.flag_outlined,
+                      value: _prefs.pushTripUpdatesEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(pushTripUpdatesEnabled: value),
+                        );
+                      },
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profileSettlementUpdates,
+                      subtitle:
+                          context.l10n.profileMarkedSentConfirmedPaymentUpdates,
+                      icon: Icons.task_alt_outlined,
+                      value: _prefs.pushSettlementUpdatesEnabled,
+                      onChanged: (value) {
+                        unawaited(
+                          _setPreference(pushSettlementUpdatesEnabled: value),
+                        );
+                      },
                     ),
                   ],
+                ),
+                if (_isSaving) ...[
+                  const SizedBox(height: 14),
+                  const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),

@@ -2,36 +2,33 @@ part of 'friends_page.dart';
 
 extension _FriendsPageActionsQr on _FriendsPageState {
   Future<void> _openAddFriendActions(FriendsSnapshot snapshot) async {
-    final choice = await showModalBottomSheet<String>(
+    final choice = await showAppBottomSheet<String>(
       context: context,
-      showDragHandle: true,
       builder: (sheetContext) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.person_add_alt_1_rounded),
-                title: Text(context.l10n.friendsSearchUsers),
-                subtitle: Text(
-                  context.l10n.friendsFindByNameOrEmailAndSendInvite,
-                ),
-                onTap: () => Navigator.of(sheetContext).pop('search'),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.person_add_alt_1_rounded),
+              title: Text(context.l10n.friendsSearchUsers),
+              subtitle: Text(
+                context.l10n.friendsFindByNameOrEmailAndSendInvite,
               ),
-              ListTile(
-                leading: const Icon(Icons.qr_code_scanner_rounded),
-                title: Text(context.l10n.friendsScanQr),
-                subtitle: Text(context.l10n.friendsScanAnotherUserToAddFriend),
-                onTap: () => Navigator.of(sheetContext).pop('scan'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.qr_code_2_rounded),
-                title: Text(context.l10n.friendsMyQr),
-                subtitle: Text(context.l10n.friendsShowOrShareYourQrCode),
-                onTap: () => Navigator.of(sheetContext).pop('mine'),
-              ),
-            ],
-          ),
+              onTap: () => Navigator.of(sheetContext).pop('search'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.qr_code_scanner_rounded),
+              title: Text(context.l10n.friendsScanQr),
+              subtitle: Text(context.l10n.friendsScanAnotherUserToAddFriend),
+              onTap: () => Navigator.of(sheetContext).pop('scan'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.qr_code_2_rounded),
+              title: Text(context.l10n.friendsMyQr),
+              subtitle: Text(context.l10n.friendsShowOrShareYourQrCode),
+              onTap: () => Navigator.of(sheetContext).pop('mine'),
+            ),
+          ],
         );
       },
     );
@@ -54,9 +51,7 @@ extension _FriendsPageActionsQr on _FriendsPageState {
 
   Future<void> _openScanFriendQr() async {
     final rawCode = await Navigator.of(context).push<String>(
-      MaterialPageRoute<String>(
-        builder: (context) => const _FriendQrScannerPage(),
-      ),
+      AppPageRoute<String>(builder: (context) => const _FriendQrScannerPage()),
     );
     if (rawCode == null || !mounted) {
       return;
@@ -137,7 +132,7 @@ extension _FriendsPageActionsQr on _FriendsPageState {
         : currentUser.nickname.trim();
 
     await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
+      AppPageRoute<void>(
         builder: (context) => _MyFriendQrPage(nickname: name, payload: payload),
       ),
     );
@@ -264,7 +259,7 @@ class _FriendQrScannerPageState extends State<_FriendQrScannerPage> {
   @override
   Widget build(BuildContext context) {
     final t = context.l10n;
-    return Scaffold(
+    return AppPageScaffold(
       appBar: AppBar(title: Text(t.friendsScanFriendQrTitle)),
       body: Stack(
         fit: StackFit.expand,
@@ -341,7 +336,7 @@ class _MyFriendQrPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.l10n;
-    return Scaffold(
+    return AppPageScaffold(
       appBar: AppBar(title: Text(t.friendsMyFriendQrTitle)),
       body: SafeArea(
         child: Center(

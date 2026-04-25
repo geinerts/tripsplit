@@ -30,52 +30,49 @@ extension _MainShellPageSettings on _MainShellPageState {
         currentUserId > 0 &&
         (openedTrip.createdBy ?? 0) == currentUserId;
 
-    final choice = await showModalBottomSheet<String>(
+    final choice = await showAppBottomSheet<String>(
       context: context,
-      showDragHandle: true,
       builder: (sheetContext) {
         final t = sheetContext.l10n;
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.brightness_6_outlined),
+              title: Text(t.appearance),
+              onTap: () => Navigator.of(sheetContext).pop('appearance'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.translate_outlined),
+              title: Text(t.languageAction),
+              onTap: () => Navigator.of(sheetContext).pop('language'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.feedback_outlined),
+              title: Text(context.l10n.profileFeedbackSendTitle),
+              onTap: () => Navigator.of(sheetContext).pop('send_feedback'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: Text(t.logOutButton),
+              onTap: () => Navigator.of(sheetContext).pop('logout'),
+            ),
+            if (canDeleteOpenedTrip)
               ListTile(
-                leading: const Icon(Icons.brightness_6_outlined),
-                title: Text(t.appearance),
-                onTap: () => Navigator.of(sheetContext).pop('appearance'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.translate_outlined),
-                title: Text(t.languageAction),
-                onTap: () => Navigator.of(sheetContext).pop('language'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.feedback_outlined),
-                title: Text(context.l10n.profileFeedbackSendTitle),
-                onTap: () => Navigator.of(sheetContext).pop('send_feedback'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: Text(t.logOutButton),
-                onTap: () => Navigator.of(sheetContext).pop('logout'),
-              ),
-              if (canDeleteOpenedTrip)
-                ListTile(
-                  leading: Icon(
-                    Icons.delete_outline,
-                    color: Theme.of(sheetContext).colorScheme.error,
-                  ),
-                  title: Text(
-                    '${t.deleteAction} ${t.tripTitleShort}',
-                    style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(sheetContext).colorScheme.error,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onTap: () => Navigator.of(sheetContext).pop('delete_trip'),
+                leading: Icon(
+                  Icons.delete_outline,
+                  color: Theme.of(sheetContext).colorScheme.error,
                 ),
-            ],
-          ),
+                title: Text(
+                  '${t.deleteAction} ${t.tripTitleShort}',
+                  style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(sheetContext).colorScheme.error,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                onTap: () => Navigator.of(sheetContext).pop('delete_trip'),
+              ),
+          ],
         );
       },
     );

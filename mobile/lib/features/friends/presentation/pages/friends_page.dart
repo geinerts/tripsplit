@@ -13,6 +13,8 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_components.dart';
+import '../../../../core/ui/app_scaffold.dart';
+import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../../../core/ui/user_profile_payment_section.dart';
 import '../../../../core/ui/user_profile_page.dart';

@@ -174,42 +174,39 @@ extension _TripsPageActions on _TripsPageState {
   Future<void> _openTripActions(Trip trip) async {
     final t = context.l10n;
     final canEdit = _isTripOwner(trip);
-    final choice = await showModalBottomSheet<String>(
+    final choice = await showAppBottomSheet<String>(
       context: context,
-      showDragHandle: true,
       builder: (sheetContext) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.open_in_new),
+              title: Text(t.openLabel),
+              onTap: () => Navigator.of(sheetContext).pop('open'),
+            ),
+            if (canEdit)
               ListTile(
-                leading: const Icon(Icons.open_in_new),
-                title: Text(t.openLabel),
-                onTap: () => Navigator.of(sheetContext).pop('open'),
+                leading: const Icon(Icons.edit_outlined),
+                title: Text('${t.editAction} ${t.tripTitleShort}'),
+                onTap: () => Navigator.of(sheetContext).pop('edit'),
               ),
-              if (canEdit)
-                ListTile(
-                  leading: const Icon(Icons.edit_outlined),
-                  title: Text('${t.editAction} ${t.tripTitleShort}'),
-                  onTap: () => Navigator.of(sheetContext).pop('edit'),
+            if (canEdit)
+              ListTile(
+                leading: Icon(
+                  Icons.delete_outline,
+                  color: Theme.of(sheetContext).colorScheme.error,
                 ),
-              if (canEdit)
-                ListTile(
-                  leading: Icon(
-                    Icons.delete_outline,
+                title: Text(
+                  '${t.deleteAction} ${t.tripTitleShort}',
+                  style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(sheetContext).colorScheme.error,
+                    fontWeight: FontWeight.w600,
                   ),
-                  title: Text(
-                    '${t.deleteAction} ${t.tripTitleShort}',
-                    style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(sheetContext).colorScheme.error,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onTap: () => Navigator.of(sheetContext).pop('delete'),
                 ),
-            ],
-          ),
+                onTap: () => Navigator.of(sheetContext).pop('delete'),
+              ),
+          ],
         );
       },
     );
@@ -402,32 +399,29 @@ extension _TripsPageActions on _TripsPageState {
       return;
     }
 
-    final choice = await showModalBottomSheet<String>(
+    final choice = await showAppBottomSheet<String>(
       context: context,
-      showDragHandle: true,
       builder: (sheetContext) {
         final t = sheetContext.l10n;
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.brightness_6_outlined),
-                title: Text(t.appearance),
-                onTap: () => Navigator.of(sheetContext).pop('appearance'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.translate_outlined),
-                title: Text(t.languageAction),
-                onTap: () => Navigator.of(sheetContext).pop('language'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: Text(t.logOutButton),
-                onTap: () => Navigator.of(sheetContext).pop('logout'),
-              ),
-            ],
-          ),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.brightness_6_outlined),
+              title: Text(t.appearance),
+              onTap: () => Navigator.of(sheetContext).pop('appearance'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.translate_outlined),
+              title: Text(t.languageAction),
+              onTap: () => Navigator.of(sheetContext).pop('language'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: Text(t.logOutButton),
+              onTap: () => Navigator.of(sheetContext).pop('logout'),
+            ),
+          ],
         );
       },
     );

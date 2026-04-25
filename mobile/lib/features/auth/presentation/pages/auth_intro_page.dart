@@ -13,6 +13,7 @@ import '../../../../app/theme/app_semantic_colors.dart';
 import '../../../../core/config/app_env.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_sheet.dart';
 import '../../domain/entities/auth_user.dart';
 import '../controllers/auth_controller.dart';
 import 'auth_background_layers.dart';
@@ -107,10 +108,10 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
     final semantic =
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.dark;
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      wrapWithSurface: false,
       barrierColor: semantic.modalBarrier,
       constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width),
       builder: (_) {
@@ -128,10 +129,10 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
     final semantic =
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.dark;
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      wrapWithSurface: false,
       barrierColor: semantic.modalBarrier,
       constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width),
       builder: (_) {
@@ -229,6 +230,8 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
 
   Future<_IntroSocialCredential> _signInWithGoogle() async {
     final serverClientId = AppEnv.current.googleServerClientId.trim();
+    final missingIdTokenMessage =
+        context.l10nEn.authGoogleSignDidNotReturnIdToken;
     final googleSignIn = GoogleSignIn(
       scopes: const ['email', 'profile'],
       serverClientId: serverClientId.isNotEmpty ? serverClientId : null,
@@ -243,7 +246,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       final auth = await account.authentication;
       final idToken = (auth.idToken ?? '').trim();
       if (idToken.isEmpty) {
-        throw StateError(context.l10nEn.authGoogleSignDidNotReturnIdToken);
+        throw StateError(missingIdTokenMessage);
       }
 
       final fullName = (account.displayName ?? '').trim();
@@ -265,11 +268,15 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
   }
 
   Future<_IntroSocialCredential> _signInWithApple() async {
+    final iosOnlyMessage = context.l10nEn.authAppleSignAvailableIosDevices;
+    final unavailableMessage = context.l10nEn.authAppleSignNotAvailableDevice;
+    final missingIdTokenMessage =
+        context.l10nEn.authAppleSignDidNotReturnIdentityToken;
     if (!Platform.isIOS) {
-      throw StateError(context.l10nEn.authAppleSignAvailableIosDevices);
+      throw StateError(iosOnlyMessage);
     }
     if (!await SignInWithApple.isAvailable()) {
-      throw StateError(context.l10nEn.authAppleSignNotAvailableDevice);
+      throw StateError(unavailableMessage);
     }
 
     try {
@@ -281,7 +288,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       );
       final idToken = (credential.identityToken ?? '').trim();
       if (idToken.isEmpty) {
-        throw StateError(context.l10nEn.authAppleSignDidNotReturnIdentityToken);
+        throw StateError(missingIdTokenMessage);
       }
 
       final nameParts = [

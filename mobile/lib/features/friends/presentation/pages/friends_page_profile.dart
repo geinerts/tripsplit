@@ -9,7 +9,7 @@ extension _FriendsPageProfile on _FriendsPageState {
         .loadSharedTripsWithUser(userId: user.id, limit: 20);
 
     await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
+      AppPageRoute<void>(
         builder: (pageContext) {
           return StatefulBuilder(
             builder: (profileContext, setProfileState) {
@@ -72,32 +72,29 @@ extension _FriendsPageProfile on _FriendsPageState {
                   );
                 }
 
-                return showModalBottomSheet<_FriendProfileAction>(
+                return showAppBottomSheet<_FriendProfileAction>(
                   context: profileContext,
-                  showDragHandle: true,
                   builder: (sheetContext) {
                     final isDark =
                         Theme.of(sheetContext).brightness == Brightness.dark;
                     final removeColor = isDark
                         ? Colors.red.shade200
                         : Colors.red.shade700;
-                    return SafeArea(
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.person_remove_alt_1_rounded,
-                          color: removeColor,
-                        ),
-                        title: Text(
-                          context.l10n.friendsRemoveFriend,
-                          style: TextStyle(
-                            color: removeColor,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        onTap: () => Navigator.of(
-                          sheetContext,
-                        ).pop(_FriendProfileAction.removeFriend),
+                    return ListTile(
+                      leading: Icon(
+                        Icons.person_remove_alt_1_rounded,
+                        color: removeColor,
                       ),
+                      title: Text(
+                        context.l10n.friendsRemoveFriend,
+                        style: TextStyle(
+                          color: removeColor,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      onTap: () => Navigator.of(
+                        sheetContext,
+                      ).pop(_FriendProfileAction.removeFriend),
                     );
                   },
                 );

@@ -72,40 +72,37 @@ extension _ProfilePageActions on _ProfilePageState {
       return;
     }
 
-    final shouldOpen = await showModalBottomSheet<bool>(
+    final shouldOpen = await showAppBottomSheet<bool>(
       context: context,
-      showDragHandle: true,
       builder: (sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  context.l10n.profileOpenWebsiteQuestion,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'https://portfolio.egm.lv',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 14),
-                FilledButton(
-                  onPressed: () => Navigator.of(sheetContext).pop(true),
-                  child: Text(context.l10n.profileOpenPortfolioAction),
-                ),
-                const SizedBox(height: 8),
-                TextButton(
-                  onPressed: () => Navigator.of(sheetContext).pop(false),
-                  child: Text(context.l10n.authCancel),
-                ),
-              ],
-            ),
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                context.l10n.profileOpenWebsiteQuestion,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'https://portfolio.egm.lv',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 14),
+              FilledButton(
+                onPressed: () => Navigator.of(sheetContext).pop(true),
+                child: Text(context.l10n.profileOpenPortfolioAction),
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => Navigator.of(sheetContext).pop(false),
+                child: Text(context.l10n.authCancel),
+              ),
+            ],
           ),
         );
       },
@@ -567,43 +564,40 @@ extension _ProfilePageActions on _ProfilePageState {
       );
     }
 
-    return showModalBottomSheet<_AvatarSourceOption>(
+    return showAppBottomSheet<_AvatarSourceOption>(
       context: context,
-      showDragHandle: true,
       builder: (bottomSheetContext) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: Text(t.takePhotoAction),
+              onTap: () => Navigator.of(
+                bottomSheetContext,
+              ).pop(_AvatarSourceOption.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: Text(t.chooseFromLibraryAction),
+              onTap: () => Navigator.of(
+                bottomSheetContext,
+              ).pop(_AvatarSourceOption.library),
+            ),
+            if (hasAvatar)
               ListTile(
-                leading: const Icon(Icons.photo_camera_outlined),
-                title: Text(t.takePhotoAction),
+                leading: const Icon(Icons.delete_outline),
+                title: Text(t.removeAvatarAction),
                 onTap: () => Navigator.of(
                   bottomSheetContext,
-                ).pop(_AvatarSourceOption.camera),
+                ).pop(_AvatarSourceOption.remove),
               ),
-              ListTile(
-                leading: const Icon(Icons.photo_library_outlined),
-                title: Text(t.chooseFromLibraryAction),
-                onTap: () => Navigator.of(
-                  bottomSheetContext,
-                ).pop(_AvatarSourceOption.library),
-              ),
-              if (hasAvatar)
-                ListTile(
-                  leading: const Icon(Icons.delete_outline),
-                  title: Text(t.removeAvatarAction),
-                  onTap: () => Navigator.of(
-                    bottomSheetContext,
-                  ).pop(_AvatarSourceOption.remove),
-                ),
-              ListTile(
-                leading: const Icon(Icons.close),
-                title: Text(t.cancelAction),
-                onTap: () => Navigator.of(bottomSheetContext).pop(),
-              ),
-            ],
-          ),
+            ListTile(
+              leading: const Icon(Icons.close),
+              title: Text(t.cancelAction),
+              onTap: () => Navigator.of(bottomSheetContext).pop(),
+            ),
+          ],
         );
       },
     );
@@ -926,7 +920,7 @@ extension _ProfilePageActions on _ProfilePageState {
       return;
     }
     await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
+      AppPageRoute<void>(
         builder: (_) =>
             _PushNotificationSettingsPage(controller: widget.controller),
       ),
@@ -944,7 +938,7 @@ extension _ProfilePageActions on _ProfilePageState {
       return;
     }
     await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
+      AppPageRoute<void>(
         builder: (_) =>
             _InAppNotificationSettingsPage(controller: widget.controller),
       ),

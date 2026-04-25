@@ -6,10 +6,10 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     required SettlementItem item,
     required Map<int, WorkspaceUser> usersById,
   }) async {
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      wrapWithSurface: false,
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (sheetContext, setSheetState) {
@@ -792,10 +792,9 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
         ? _currentUserId
         : 0;
 
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      showDragHandle: true,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setSheetState) {

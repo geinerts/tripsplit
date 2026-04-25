@@ -27,6 +27,8 @@ import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_formatters.dart';
+import '../../../../core/ui/app_scaffold.dart';
+import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/app_skeleton.dart';
 import '../../../../core/ui/user_profile_payment_section.dart';
 import '../../../../core/ui/user_profile_page.dart';
@@ -161,7 +163,6 @@ class _WorkspacePageState extends State<WorkspacePage> {
   int _expenseSocialLoadInFlight = 0;
 
   bool get _isTripActive => _snapshot?.isActive ?? widget.trip.isActive;
-  bool get _isTripSettling => _snapshot?.isSettling ?? widget.trip.isSettling;
 
   bool get _canEditMembers {
     if (!_isTripActive) {
@@ -267,7 +268,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
     if (!widget.showAppBar && !widget.showBottomNav) {
       return content;
     }
-    return Scaffold(
+    return AppPageScaffold(
       appBar: widget.showAppBar ? _buildAppBar(context) : null,
       body: content,
       bottomNavigationBar: widget.showBottomNav

@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import '../../app/theme/app_design.dart';
 
 class AppBackground extends StatelessWidget {
-  const AppBackground({super.key, required this.child});
+  const AppBackground({super.key, required this.child, this.force = false});
 
   final Widget child;
+  final bool force;
 
   @override
   Widget build(BuildContext context) {
     // Prevent stacking multiple identical full-screen backgrounds when
     // pages are wrapped locally and globally.
-    if (_AppBackgroundScope.isActive(context)) {
+    if (!force && _AppBackgroundScope.isActive(context)) {
       return child;
     }
     final colors = Theme.of(context).colorScheme;

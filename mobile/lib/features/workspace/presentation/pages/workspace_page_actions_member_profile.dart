@@ -34,7 +34,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
     recomputeActivity(snapshot, profileUser.id);
 
     await Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
+      AppPageRoute<void>(
         builder: (pageContext) {
           return StatefulBuilder(
             builder: (profileContext, setProfileState) {

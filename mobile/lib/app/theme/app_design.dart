@@ -88,6 +88,13 @@ class AppDesign {
   static const double radiusMd = 20;
   static const double radiusLg = 24;
 
+  // Spacing scale.
+  static const double spaceXs = 4;
+  static const double spaceSm = 8;
+  static const double spaceMd = 12;
+  static const double spaceLg = 16;
+  static const double spaceXl = 24;
+
   static const BorderRadius cardRadius = BorderRadius.all(
     Radius.circular(radiusLg),
   );
@@ -140,6 +147,15 @@ class AppDesign {
   static Color pageSurface(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return isDark(context) ? colors.surface : lightCanvas;
+  }
+
+  static Color pageBaseColor(BuildContext context) {
+    return isDark(context) ? darkCanvas : lightCanvas;
+  }
+
+  static Color modalSurface(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return isDark(context) ? colors.surface : lightSurface;
   }
 
   static LinearGradient actionGradient(BuildContext context) {

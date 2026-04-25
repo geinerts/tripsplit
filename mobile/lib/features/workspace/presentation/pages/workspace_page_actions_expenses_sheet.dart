@@ -50,10 +50,10 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
         ? categoryLabel
         : expense.note.trim();
 
-    await showModalBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      wrapWithSurface: false,
       builder: (context) {
         final colors = Theme.of(context).colorScheme;
         final bottomInset = MediaQuery.of(context).viewInsets.bottom;

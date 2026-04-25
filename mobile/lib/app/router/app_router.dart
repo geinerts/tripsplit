@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_dependencies.dart';
 import '../../core/l10n/l10n.dart';
+import '../../core/ui/app_scaffold.dart';
 import '../../features/auth/presentation/pages/credentials_page.dart';
 import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/auth_intro_page.dart';
@@ -128,7 +129,7 @@ class _WorkspaceRouteError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.l10n;
-    return Scaffold(
+    return AppPageScaffold(
       appBar: AppBar(title: Text(t.tripTitleShort)),
       body: Center(child: Text(t.missingTripRouteArgument)),
     );

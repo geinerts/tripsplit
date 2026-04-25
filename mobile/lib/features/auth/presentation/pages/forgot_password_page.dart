@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
-import '../../../../core/ui/app_background.dart';
+import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/responsive.dart';
 import '../controllers/auth_controller.dart';
 
@@ -93,31 +93,29 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final responsive = context.responsive;
     final horizontalPadding = responsive.pageHorizontalPadding;
 
-    return Scaffold(
+    return AppPageScaffold(
       appBar: AppBar(title: Text(t.forgotPasswordTitle)),
-      body: AppBackground(
-        child: SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: responsive.pageMaxWidth),
-              child: ListView(
-                padding: EdgeInsets.fromLTRB(
-                  horizontalPadding,
-                  18,
-                  horizontalPadding,
-                  24,
-                ),
-                children: [
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: _isSubmitted
-                          ? _buildSuccessBody(context)
-                          : _buildRequestForm(context),
-                    ),
-                  ),
-                ],
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: responsive.pageMaxWidth),
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(
+                horizontalPadding,
+                18,
+                horizontalPadding,
+                24,
               ),
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(18),
+                    child: _isSubmitted
+                        ? _buildSuccessBody(context)
+                        : _buildRequestForm(context),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

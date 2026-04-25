@@ -733,94 +733,92 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
       return;
     }
     final isOwn = comment.userId == widget.currentUserId;
-    final picked = await showModalBottomSheet<_CommentQuickActionResult>(
+    final picked = await showAppBottomSheet<_CommentQuickActionResult>(
       context: context,
-      backgroundColor: Colors.transparent,
       isScrollControlled: false,
+      showDragHandle: false,
       builder: (context) {
         final colors = Theme.of(context).colorScheme;
         final isDark = Theme.of(context).brightness == Brightness.dark;
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: isDark ? colors.surface : AppDesign.lightSurface,
-                    borderRadius: BorderRadius.circular(24),
-                    border: Border.all(
-                      color: isDark
-                          ? colors.outlineVariant.withValues(alpha: 0.32)
-                          : AppDesign.lightStroke,
-                    ),
-                  ),
-                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                  child: _EmojiPickerRow(
-                    emojis: _kSocialEmojis,
-                    onSelect: (emoji) {
-                      Navigator.of(
-                        context,
-                      ).pop(_CommentQuickActionResult.react(emoji));
-                    },
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: isDark ? colors.surface : AppDesign.lightSurface,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: isDark
+                        ? colors.outlineVariant.withValues(alpha: 0.32)
+                        : AppDesign.lightStroke,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: isDark ? colors.surface : AppDesign.lightSurface,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: isDark
-                          ? colors.outlineVariant.withValues(alpha: 0.32)
-                          : AppDesign.lightStroke,
-                    ),
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                child: _EmojiPickerRow(
+                  emojis: _kSocialEmojis,
+                  onSelect: (emoji) {
+                    Navigator.of(
+                      context,
+                    ).pop(_CommentQuickActionResult.react(emoji));
+                  },
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: isDark ? colors.surface : AppDesign.lightSurface,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isDark
+                        ? colors.outlineVariant.withValues(alpha: 0.32)
+                        : AppDesign.lightStroke,
                   ),
-                  child: Column(
-                    children: [
+                ),
+                child: Column(
+                  children: [
+                    _CommentActionRow(
+                      label: 'Reply',
+                      icon: Icons.reply_rounded,
+                      isDark: isDark,
+                      showDivider: isOwn,
+                      onTap: () {
+                        Navigator.of(
+                          context,
+                        ).pop(const _CommentQuickActionResult.reply());
+                      },
+                    ),
+                    if (isOwn)
                       _CommentActionRow(
-                        label: 'Reply',
-                        icon: Icons.reply_rounded,
+                        label: 'Edit',
+                        icon: Icons.edit_outlined,
                         isDark: isDark,
-                        showDivider: isOwn,
+                        showDivider: true,
                         onTap: () {
                           Navigator.of(
                             context,
-                          ).pop(const _CommentQuickActionResult.reply());
+                          ).pop(const _CommentQuickActionResult.edit());
                         },
                       ),
-                      if (isOwn)
-                        _CommentActionRow(
-                          label: 'Edit',
-                          icon: Icons.edit_outlined,
-                          isDark: isDark,
-                          showDivider: true,
-                          onTap: () {
-                            Navigator.of(
-                              context,
-                            ).pop(const _CommentQuickActionResult.edit());
-                          },
-                        ),
-                      if (isOwn)
-                        _CommentActionRow(
-                          label: context.l10n.deleteAction,
-                          icon: Icons.delete_outline_rounded,
-                          isDark: isDark,
-                          isDestructive: true,
-                          onTap: () {
-                            Navigator.of(
-                              context,
-                            ).pop(const _CommentQuickActionResult.delete());
-                          },
-                        ),
-                    ],
-                  ),
+                    if (isOwn)
+                      _CommentActionRow(
+                        label: context.l10n.deleteAction,
+                        icon: Icons.delete_outline_rounded,
+                        isDark: isDark,
+                        isDestructive: true,
+                        onTap: () {
+                          Navigator.of(
+                            context,
+                          ).pop(const _CommentQuickActionResult.delete());
+                        },
+                      ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

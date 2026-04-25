@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../app/theme/app_design.dart';
-import 'app_background.dart';
+import 'app_scaffold.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({
@@ -47,70 +47,68 @@ class UserProfilePage extends StatelessWidget {
       nickname: nickname?.trim() ?? '',
     );
 
-    return Scaffold(
+    return AppPageScaffold(
       appBar: AppBar(
         title: Text(title),
         actions: appBarActions.isEmpty ? null : appBarActions,
       ),
-      body: AppBackground(
-        child: RefreshIndicator(
-          onRefresh: onRefresh ?? () async {},
-          notificationPredicate: (_) => onRefresh != null,
-          child: ListView(
-            physics: onRefresh == null
-                ? null
-                : const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
-                  ),
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
-            children: [
-              _UserProfileHeroCard(
-                name: name,
-                nickname: visibleNickname,
-                avatarUrl: avatarUrl,
-                badges: badges,
-                enableNameCopy: enableNameCopy,
-                copyNameTooltip: copyNameTooltip,
-                copyNameSuccessText: copyNameSuccessText,
-                copyNameFailureText: copyNameFailureText,
-              ),
-              for (final section in sections) ...[
-                const SizedBox(height: 12),
-                section,
-              ],
-              if (showBankDetails) ...[
-                const SizedBox(height: 12),
-                UserProfileSectionCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.account_balance_outlined,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            bankTitle,
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(fontWeight: FontWeight.w800),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        bankDescription,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppDesign.mutedColor(context),
-                        ),
-                      ),
-                    ],
-                  ),
+      body: RefreshIndicator(
+        onRefresh: onRefresh ?? () async {},
+        notificationPredicate: (_) => onRefresh != null,
+        child: ListView(
+          physics: onRefresh == null
+              ? null
+              : const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
                 ),
-              ],
+          padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
+          children: [
+            _UserProfileHeroCard(
+              name: name,
+              nickname: visibleNickname,
+              avatarUrl: avatarUrl,
+              badges: badges,
+              enableNameCopy: enableNameCopy,
+              copyNameTooltip: copyNameTooltip,
+              copyNameSuccessText: copyNameSuccessText,
+              copyNameFailureText: copyNameFailureText,
+            ),
+            for (final section in sections) ...[
+              const SizedBox(height: 12),
+              section,
             ],
-          ),
+            if (showBankDetails) ...[
+              const SizedBox(height: 12),
+              UserProfileSectionCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.account_balance_outlined,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          bankTitle,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      bankDescription,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppDesign.mutedColor(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );

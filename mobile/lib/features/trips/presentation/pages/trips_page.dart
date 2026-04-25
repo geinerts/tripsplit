@@ -17,10 +17,11 @@ import '../../../../core/currency/app_currency.dart';
 import '../../../../core/deeplink/invite_deep_link_controller.dart';
 import '../../../../core/media/app_image_cropper.dart';
 import '../../../../core/perf/perf_monitor.dart';
-import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/app_formatters.dart';
+import '../../../../core/ui/app_scaffold.dart';
+import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../friends/presentation/controllers/friends_controller.dart';
@@ -183,65 +184,63 @@ class _TripsPageState extends State<TripsPage> {
     final hasMoreAllTrips =
         _showAllTrips && normalizedAllTripsVisibleCount < _trips.length;
 
-    return Scaffold(
-      body: AppBackground(
-        child: SafeArea(
-          child: Builder(
-            builder: (context) {
-              if (_isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+    return AppPageScaffold(
+      body: SafeArea(
+        child: Builder(
+          builder: (context) {
+            if (_isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              if (_errorText != null) {
-                return _buildErrorState(context);
-              }
+            if (_errorText != null) {
+              return _buildErrorState(context);
+            }
 
-              return RefreshIndicator(
-                onRefresh: _loadTrips,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Center(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: responsive.pageMaxWidth,
-                          minHeight: constraints.maxHeight,
-                        ),
-                        child: ListView(
-                          physics: const AlwaysScrollableScrollPhysics(
-                            parent: BouncingScrollPhysics(),
-                          ),
-                          padding: EdgeInsets.fromLTRB(
-                            responsive.pageHorizontalPadding,
-                            12,
-                            responsive.pageHorizontalPadding,
-                            widget.showBottomNav ? 104 : 24,
-                          ),
-                          children: [
-                            if (widget.showInlineHeader) ...[
-                              _buildTopHeader(context),
-                              const SizedBox(height: 12),
-                            ],
-                            _buildSummaryCard(context, allTrips: _trips),
-                            const SizedBox(height: 18),
-                            _buildTripsSectionHeader(context),
-                            const SizedBox(height: 10),
-                            if (visibleTrips.isEmpty)
-                              _buildEmptyTripsState(context)
-                            else
-                              _buildTripsCollection(
-                                context,
-                                visibleTrips,
-                                hasMoreAllTrips: hasMoreAllTrips,
-                              ),
-                          ],
-                        ),
+            return RefreshIndicator(
+              onRefresh: _loadTrips,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: responsive.pageMaxWidth,
+                        minHeight: constraints.maxHeight,
                       ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        padding: EdgeInsets.fromLTRB(
+                          responsive.pageHorizontalPadding,
+                          12,
+                          responsive.pageHorizontalPadding,
+                          widget.showBottomNav ? 104 : 24,
+                        ),
+                        children: [
+                          if (widget.showInlineHeader) ...[
+                            _buildTopHeader(context),
+                            const SizedBox(height: 12),
+                          ],
+                          _buildSummaryCard(context, allTrips: _trips),
+                          const SizedBox(height: 18),
+                          _buildTripsSectionHeader(context),
+                          const SizedBox(height: 10),
+                          if (visibleTrips.isEmpty)
+                            _buildEmptyTripsState(context)
+                          else
+                            _buildTripsCollection(
+                              context,
+                              visibleTrips,
+                              hasMoreAllTrips: hasMoreAllTrips,
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
         ),
       ),
       bottomNavigationBar: widget.showBottomNav

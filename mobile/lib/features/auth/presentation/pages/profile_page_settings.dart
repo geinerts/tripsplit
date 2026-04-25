@@ -99,11 +99,9 @@ extension _ProfilePageSettings on _ProfilePageState {
       return;
     }
 
-    final result = await showModalBottomSheet<_ProfileFeedbackDialogResult>(
+    final result = await showAppBottomSheet<_ProfileFeedbackDialogResult>(
       context: context,
       isScrollControlled: true,
-      useSafeArea: true,
-      showDragHandle: true,
       builder: (sheetContext) {
         String feedbackType = 'bug';
         String feedbackNote = '';
