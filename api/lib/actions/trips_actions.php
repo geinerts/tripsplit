@@ -618,6 +618,7 @@ function create_trip_action(): void
         throw $error;
     }
 
+    app_event($pdo, $meId, 'trip.created', 'trip', $tripId);
     json_out([
         'ok' => true,
         'trip' => [
@@ -896,6 +897,7 @@ function delete_trip_action(): void
         delete_trip_image_file($imagePath);
     }
 
+    app_event($pdo, $actorId, 'trip.deleted', 'trip', $tripId);
     json_out([
         'ok' => true,
         'deleted' => true,

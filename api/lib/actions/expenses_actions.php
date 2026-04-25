@@ -616,6 +616,7 @@ function add_expense_action(): void
             $clientMutationId,
             $responsePayload
         );
+        app_event($pdo, $userId, 'expense.created', 'expense', $expenseId);
         json_out($responsePayload);
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
@@ -925,6 +926,7 @@ function delete_expense_action(): void
         $clientMutationId,
         $responsePayload
     );
+    app_event($pdo, $userId, 'expense.deleted', 'expense', $expenseId);
     json_out($responsePayload);
 }
 

@@ -113,6 +113,7 @@ function api_action_handlers(): array
         'admin_panel_create_incident'   => 'admin_panel_create_incident_action',
         'admin_panel_update_incident'   => 'admin_panel_update_incident_action',
         'admin_panel_audit_log'         => 'admin_panel_audit_log_action',
+        'admin_panel_app_events'        => 'admin_panel_app_events_action',
         'admin_panel_admin_users'       => 'admin_panel_admin_users_action',
         'admin_panel_create_admin_user' => 'admin_panel_create_admin_user_action',
         'admin_panel_update_admin_user' => 'admin_panel_update_admin_user_action',

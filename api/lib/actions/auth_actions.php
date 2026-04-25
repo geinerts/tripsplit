@@ -263,10 +263,12 @@ function register_action(): void
         ]);
     }
 
+    $newUserId = (int) ($me['id'] ?? 0);
+    app_event($pdo, $newUserId, 'user.registered', 'user', $newUserId);
     json_out([
         'ok' => true,
         'me' => build_me_payload($me),
-        'auth' => issue_auth_payload($pdo, (int) ($me['id'] ?? 0)),
+        'auth' => issue_auth_payload($pdo, $newUserId),
     ]);
 }
 
@@ -388,10 +390,12 @@ function login_action(): void
         json_out(['ok' => false, 'error' => 'Failed to resolve user.'], 500);
     }
 
+    $loggedInUserId = (int) ($me['id'] ?? 0);
+    app_event($pdo, $loggedInUserId, 'user.login', 'user', $loggedInUserId);
     json_out([
         'ok' => true,
         'me' => build_me_payload($me),
-        'auth' => issue_auth_payload($pdo, (int) ($me['id'] ?? 0)),
+        'auth' => issue_auth_payload($pdo, $loggedInUserId),
     ]);
 }
 

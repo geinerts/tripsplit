@@ -967,6 +967,49 @@ function admin_panel_audit_log_action(): void
     json_out(['ok' => true, 'log' => $rows, 'total' => $total, 'limit' => $limit, 'offset' => $offset]);
 }
 
+// ── App events feed ───────────────────────────────────────────────────────────
+
+function admin_panel_app_events_action(): void
+{
+    require_admin_role(...admin_roles_ops());
+    $pdo        = db();
+    $typeFilter = trim((string) ($_GET['event_type'] ?? ''));
+    $limit      = max(1, min(200, (int) ($_GET['limit']  ?? 50)));
+    $offset     = max(0,          (int) ($_GET['offset'] ?? 0));
+
+    $eventsTable = table_name('app_events');
+    $usersTable  = table_name('users');
+
+    $conditions = [];
+    $params     = [];
+
+    if ($typeFilter !== '') {
+        $conditions[] = 'e.event_type LIKE ?';
+        $params[]     = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $typeFilter) . '%';
+    }
+
+    $where = $conditions ? 'WHERE ' . implode(' AND ', $conditions) : '';
+
+    $stmt = $pdo->prepare("
+        SELECT e.id, e.user_id, u.nickname AS username, e.event_type, e.entity_type, e.entity_id, e.created_at
+        FROM {$eventsTable} e
+        LEFT JOIN {$usersTable} u ON u.id = e.user_id
+        {$where}
+        ORDER BY e.created_at DESC
+        LIMIT ? OFFSET ?
+    ");
+    $params[] = $limit;
+    $params[] = $offset;
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll();
+
+    $cntStmt = $pdo->prepare("SELECT COUNT(*) FROM {$eventsTable} e {$where}");
+    $cntStmt->execute(array_slice($params, 0, count($params) - 2));
+    $total = (int) $cntStmt->fetchColumn();
+
+    json_out(['ok' => true, 'events' => $rows, 'total' => $total, 'limit' => $limit, 'offset' => $offset]);
+}
+
 // ── Admin user management (superadmin only) ───────────────────────────────────
 
 function admin_panel_admin_users_action(): void

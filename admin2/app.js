@@ -334,9 +334,10 @@ async function pollIncidents() {
 registerView('dashboard', {
   title: 'Dashboard',
   async render() {
-    const [dashRes, auditRes] = await Promise.all([
+    const [dashRes, auditRes, appEventsRes] = await Promise.all([
       get('admin_panel_dashboard'),
       get('admin_panel_audit_log', { limit: 6, offset: 0 }),
+      get('admin_panel_app_events', { limit: 8, offset: 0 }),
     ]);
     if (!dashRes.ok) return `<div class="empty-state">Failed to load stats.</div>`;
     const s  = dashRes.stats || {};
@@ -364,18 +365,32 @@ registerView('dashboard', {
     const pushFailed  = (pq.failed  ?? 0);
     const pushDead    = (pq.dead    ?? 0);
 
-    // Audit activity feed
-    const auditItems = (auditRes.ok ? (auditRes.log || []) : []).map(entry => {
-      const actionColor = entry.action.includes('delete') ? 'var(--red)'
-        : entry.action.includes('suspend') || entry.action.includes('disable') ? 'var(--amber)'
-        : 'var(--green)';
+    // App events activity feed
+    const appEventColor = type => type.includes('delete') || type.includes('deleted') ? 'var(--red)'
+      : type.startsWith('user.login') || type.startsWith('user.register') ? 'var(--green)'
+      : type.startsWith('trip.') ? 'var(--blue)'
+      : type.startsWith('expense.') ? 'var(--amber)'
+      : type.startsWith('settlement.') ? 'var(--purple, #a78bfa)'
+      : 'var(--fg-muted)';
+
+    const appEventIcon = type => type.startsWith('user.login') ? '🔐'
+      : type.startsWith('user.register') ? '🆕'
+      : type.startsWith('trip.') ? '✈️'
+      : type.startsWith('expense.') ? '💸'
+      : type.startsWith('settlement.') ? '💰'
+      : type.startsWith('friend.') ? '🤝'
+      : '⚡';
+
+    const appItems = (appEventsRes.ok ? (appEventsRes.events || []) : []).map(entry => {
+      const color = appEventColor(entry.event_type);
       return `
         <div class="activity-item">
-          <div class="activity-dot" style="background:${actionColor};${actionColor === 'var(--red)' ? 'box-shadow:0 0 5px var(--red)' : ''}"></div>
+          <div class="activity-dot" style="background:${color}"></div>
           <div style="flex:1;min-width:0">
             <div class="activity-text">
-              <strong>${esc(entry.admin_username)}</strong> — <span style="font-family:monospace;font-size:11.5px;color:var(--fg-dim)">${esc(entry.action)}</span>
-              ${entry.target_id ? `<span style="color:var(--fg-muted)"> #${entry.target_id}</span>` : ''}
+              <span style="margin-right:4px">${appEventIcon(entry.event_type)}</span>
+              <strong>${esc(entry.username || '—')}</strong> — <span style="font-family:monospace;font-size:11.5px;color:var(--fg-dim)">${esc(entry.event_type)}</span>
+              ${entry.entity_id ? `<span style="color:var(--fg-muted)"> #${entry.entity_id}</span>` : ''}
             </div>
             <div class="activity-time">${relTime(entry.created_at)}</div>
           </div>
@@ -474,8 +489,11 @@ registerView('dashboard', {
           </div>
 
           <div class="activity-card">
-            <div class="activity-header">⚡ Recent Activity</div>
-            ${auditItems}
+            <div class="activity-header" style="display:flex;justify-content:space-between;align-items:center">
+              <span>⚡ Recent Activity</span>
+              <span class="table-card-link" onclick="navigate('app-events')">View all →</span>
+            </div>
+            ${appItems}
           </div>
         </div>
 
@@ -970,6 +988,75 @@ async function loadAuditLog(offset = 0) {
 }
 
 window.loadAuditLog = loadAuditLog;
+
+// ── View: App Events ──────────────────────────────────────────────────────────
+
+registerView('app-events', {
+  title: 'App Events',
+  async render() {
+    return `
+      <div class="toolbar">
+        <div class="toolbar-search">
+          <input type="search" id="app-event-filter" placeholder="Filter by event type (e.g. trip.created)…"/>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="app-events-search-btn">Filter</button>
+      </div>
+      <div id="app-events-results"><div class="loading-state"><span class="spinner"></span></div></div>
+    `;
+  },
+  init() {
+    loadAppEvents(0);
+    document.getElementById('app-events-search-btn').addEventListener('click', () => loadAppEvents(0));
+  },
+});
+
+const _appEventColor = type => type.includes('delete') || type.includes('deleted') ? 'var(--red)'
+  : type.startsWith('user.login') || type.startsWith('user.register') ? 'var(--green-soft)'
+  : type.startsWith('trip.') ? 'var(--blue)'
+  : type.startsWith('expense.') ? 'var(--amber)'
+  : type.startsWith('settlement.') ? '#a78bfa'
+  : type.startsWith('friend.') ? 'var(--green-soft)'
+  : 'var(--fg-muted)';
+
+async function loadAppEvents(offset = 0) {
+  const typeFilter = document.getElementById('app-event-filter').value.trim();
+  document.getElementById('app-events-results').innerHTML = '<div class="loading-state"><span class="spinner"></span></div>';
+
+  const res = await get('admin_panel_app_events', { event_type: typeFilter, limit: 50, offset });
+  if (!res.ok) { document.getElementById('app-events-results').innerHTML = `<div class="empty-state">Error: ${esc(res.error)}</div>`; return; }
+
+  if (!res.events.length) {
+    document.getElementById('app-events-results').innerHTML = '<div class="empty-state">No events found.</div>';
+    return;
+  }
+
+  const cards = res.events.map(entry => `
+    <div class="cl-item">
+      <div class="cl-row" style="margin-bottom:5px">
+        <span style="font-family:monospace;font-size:12px;color:${_appEventColor(entry.event_type)};flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(entry.event_type)}</span>
+        <span style="font-size:11px;color:var(--fg-muted);flex-shrink:0">${relTime(entry.created_at)}</span>
+      </div>
+      <div class="cl-meta">
+        ${esc(entry.username || 'deleted user')}
+        ${entry.entity_type ? ` → ${esc(entry.entity_type)}${entry.entity_id ? ` #${entry.entity_id}` : ''}` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  const prevBtn = offset > 0
+    ? `<button class="btn btn-ghost btn-sm" onclick="loadAppEvents(${offset - 50})">← Prev</button>` : '';
+  const nextBtn = (offset + 50) < res.total
+    ? `<button class="btn btn-ghost btn-sm" onclick="loadAppEvents(${offset + 50})">Next →</button>` : '';
+
+  document.getElementById('app-events-results').innerHTML = `
+    <div class="table-card" style="padding:0">
+      ${cards}
+    </div>
+    <div class="pagination">${offset + 1}–${Math.min(offset + 50, res.total)} of ${res.total} ${prevBtn} ${nextBtn}</div>
+  `;
+}
+
+window.loadAppEvents = loadAppEvents;
 
 // ── View: Admin Users ─────────────────────────────────────────────────────────
 

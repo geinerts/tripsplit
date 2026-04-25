@@ -691,6 +691,7 @@ function mark_settlement_sent_action(): void
     $computed = compute_trip_balance_data($pdo, $tripId);
     $stored = load_trip_settlement_payload($pdo, $tripId, (int) $me['id'], $computed['stats']);
 
+    app_event($pdo, (int) $me['id'], 'settlement.marked_sent', 'settlement', $settlementId);
     json_out([
         'ok' => true,
         'trip' => build_trip_payload($trip),
@@ -836,6 +837,7 @@ function confirm_settlement_received_action(): void
     $computed = compute_trip_balance_data($pdo, $tripId);
     $stored = load_trip_settlement_payload($pdo, $tripId, (int) $me['id'], $computed['stats']);
 
+    app_event($pdo, (int) $me['id'], 'settlement.confirmed', 'settlement', $settlementId);
     json_out([
         'ok' => true,
         'trip' => build_trip_payload($trip),

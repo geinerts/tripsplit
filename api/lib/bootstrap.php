@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/helpers/api_core_helpers.php';
 require_once __DIR__ . '/helpers/helper_email.php';
+require_once __DIR__ . '/helpers/helper_app_events.php';
 
 require_once __DIR__ . '/actions/auth_actions.php';
 require_once __DIR__ . '/actions/auth_social_actions.php';

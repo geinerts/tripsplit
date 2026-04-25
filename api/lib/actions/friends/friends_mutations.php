@@ -280,6 +280,9 @@ function respond_friend_invite_action(): void
         }
     }
 
+    if ($accept) {
+        app_event($pdo, $meId, 'friend.accepted', 'friends', $requestId);
+    }
     $otherUser = find_public_user_by_id($pdo, $otherUserId);
     json_out([
         'ok' => true,
