@@ -1138,11 +1138,12 @@ function trip_member_financial_footprint(PDO $pdo, int $tripId, int $userId): ar
         'SELECT COUNT(*)
          FROM ' . $settlementsTable . '
          WHERE trip_id = :trip_id
-           AND (from_user_id = :user_id OR to_user_id = :user_id)'
+           AND (from_user_id = :from_user_id OR to_user_id = :to_user_id)'
     );
     $settlementStmt->execute([
         'trip_id' => $tripId,
-        'user_id' => $userId,
+        'from_user_id' => $userId,
+        'to_user_id' => $userId,
     ]);
     $settlementsCount = (int) ($settlementStmt->fetchColumn() ?: 0);
 
