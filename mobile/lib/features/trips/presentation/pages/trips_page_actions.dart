@@ -168,12 +168,23 @@ extension _TripsPageActions on _TripsPageState {
     if (userId <= 0) {
       return false;
     }
+    if (trip.canCurrentUserDeleteTrip) {
+      return true;
+    }
     return (trip.createdBy ?? 0) == userId;
+  }
+
+  bool _canManageTrip(Trip trip) {
+    if (trip.canCurrentUserManageTrip) {
+      return true;
+    }
+    return _isTripOwner(trip);
   }
 
   Future<void> _openTripActions(Trip trip) async {
     final t = context.l10n;
-    final canEdit = _isTripOwner(trip);
+    final canEdit = trip.isActive && _canManageTrip(trip);
+    final canDelete = trip.isActive && _isTripOwner(trip);
     final choice = await showAppBottomSheet<String>(
       context: context,
       builder: (sheetContext) {
@@ -191,7 +202,7 @@ extension _TripsPageActions on _TripsPageState {
                 title: Text('${t.editAction} ${t.tripTitleShort}'),
                 onTap: () => Navigator.of(sheetContext).pop('edit'),
               ),
-            if (canEdit)
+            if (canDelete)
               ListTile(
                 leading: Icon(
                   Icons.delete_outline,
@@ -229,7 +240,7 @@ extension _TripsPageActions on _TripsPageState {
     if (_isMutating) {
       return;
     }
-    if (!_isTripOwner(trip)) {
+    if (!_canManageTrip(trip)) {
       _showSnack(
         context.l10n.workspaceOnlyTripCreatorCanEditThisTrip,
         isError: true,

@@ -297,6 +297,36 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         return en(
           count > 0 ? '$actor added $count member(s)' : '$actor added members',
         );
+      case 'trip.member_removed':
+        final name = _payloadString(event, 'removed_user_name') ?? '';
+        if (language == 'lv') {
+          return '$actor noņēma ${name.isEmpty ? 'dalībnieku' : name} no tripa';
+        }
+        if (language == 'es') {
+          return '$actor quitó a ${name.isEmpty ? 'un miembro' : name} del viaje';
+        }
+        return en('$actor removed ${name.isEmpty ? 'a member' : name}');
+      case 'trip.member_left':
+        final name = _payloadString(event, 'left_user_name') ?? '';
+        if (language == 'lv') {
+          return '${name.isEmpty ? actor : name} pameta tripu';
+        }
+        if (language == 'es') {
+          return '${name.isEmpty ? actor : name} salió del viaje';
+        }
+        return en('${name.isEmpty ? actor : name} left the trip');
+      case 'trip.member_role_updated':
+        final name = _payloadString(event, 'target_user_name') ?? '';
+        final role = _payloadString(event, 'role') ?? 'member';
+        if (language == 'lv') {
+          return '$actor nomainīja ${name.isEmpty ? 'dalībnieka' : name} lomu uz $role';
+        }
+        if (language == 'es') {
+          return '$actor cambió el rol de ${name.isEmpty ? 'un miembro' : name} a $role';
+        }
+        return en(
+          '$actor changed ${name.isEmpty ? 'a member' : name} to $role',
+        );
       case 'trip.member_ready':
         if (language == 'lv') {
           return '$actor atzīmēja gatavību norēķiniem';

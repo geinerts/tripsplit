@@ -9,6 +9,7 @@ class Trip {
     required this.membersCount,
     required this.createdAt,
     required this.createdBy,
+    required this.currentUserRole,
     required this.dateFrom,
     required this.dateTo,
     required this.endedAt,
@@ -35,6 +36,7 @@ class Trip {
   final int membersCount;
   final String? createdAt;
   final int? createdBy;
+  final String currentUserRole;
   final String? dateFrom;
   final String? dateTo;
   final String? endedAt;
@@ -54,4 +56,8 @@ class Trip {
   bool get isActive => status == 'active';
   bool get isSettling => status == 'settling';
   bool get isArchived => status == 'archived';
+  bool get isCurrentUserOwner => currentUserRole == 'owner';
+  bool get isCurrentUserAdmin => currentUserRole == 'admin';
+  bool get canCurrentUserManageTrip => isCurrentUserOwner || isCurrentUserAdmin;
+  bool get canCurrentUserDeleteTrip => isCurrentUserOwner;
 }

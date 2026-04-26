@@ -2,6 +2,7 @@ class WorkspaceUser {
   const WorkspaceUser({
     required this.id,
     required this.nickname,
+    this.role = 'member',
     this.displayName,
     this.avatarUrl,
     this.avatarThumbUrl,
@@ -18,6 +19,7 @@ class WorkspaceUser {
 
   final int id;
   final String nickname;
+  final String role;
   final String? displayName;
   final String? avatarUrl;
   final String? avatarThumbUrl;
@@ -38,4 +40,8 @@ class WorkspaceUser {
     }
     return nickname;
   }
+
+  bool get isOwner => role == 'owner';
+  bool get isAdmin => role == 'admin';
+  bool get canManageTrip => isOwner || isAdmin;
 }

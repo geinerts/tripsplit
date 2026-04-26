@@ -36,10 +36,12 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
 
     await _runMutation(
       action: () async {
-        final receipt = await _uploadReceiptBestEffort(
-          fileName: form.receiptFileName,
-          bytes: form.receiptFileBytes,
-        );
+        final receipt =
+            form.preuploadedReceipt ??
+            await _uploadReceiptBestEffort(
+              fileName: form.receiptFileName,
+              bytes: form.receiptFileBytes,
+            );
 
         final mutation = await widget.workspaceController.addExpense(
           tripId: widget.trip.id,
@@ -122,10 +124,12 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
 
     await _runMutation(
       action: () async {
-        final receipt = await _uploadReceiptBestEffort(
-          fileName: result.receiptFileName,
-          bytes: result.receiptFileBytes,
-        );
+        final receipt =
+            result.preuploadedReceipt ??
+            await _uploadReceiptBestEffort(
+              fileName: result.receiptFileName,
+              bytes: result.receiptFileBytes,
+            );
 
         final mutation = await widget.workspaceController.updateExpense(
           tripId: widget.trip.id,

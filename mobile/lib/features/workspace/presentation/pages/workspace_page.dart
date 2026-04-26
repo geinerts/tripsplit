@@ -139,6 +139,9 @@ class _WorkspacePageState extends State<WorkspacePage> {
   int _currentUserId = 0;
   int _pendingQueueCount = 0;
   int _expenseFilterUserId = 0;
+  final TextEditingController _expenseSearchController =
+      TextEditingController();
+  String _expenseSearchQuery = '';
   int _workspaceTabIndex = 0;
   final bool _showAllBalances = false;
   int _handledRefreshRequestCount = 0;
@@ -175,6 +178,9 @@ class _WorkspacePageState extends State<WorkspacePage> {
   bool get _canEditMembers {
     if (!_isTripActive) {
       return false;
+    }
+    if (widget.trip.canCurrentUserManageTrip) {
+      return true;
     }
     final creatorId = widget.trip.createdBy;
     if (creatorId == null || creatorId <= 0) {
@@ -227,6 +233,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
       ),
     );
     _unbindCommandController(widget.commandController);
+    _expenseSearchController.dispose();
     super.dispose();
   }
 

@@ -102,6 +102,30 @@ class TripsRepositoryImpl implements TripsRepository {
   }
 
   @override
+  Future<void> removeTripMember({
+    required int tripId,
+    required int userId,
+  }) async {
+    await _remote.removeTripMember(tripId: tripId, userId: userId);
+  }
+
+  @override
+  Future<void> leaveTrip({required int tripId}) async {
+    await _remote.leaveTrip(tripId: tripId);
+    if (tripId <= 0) {
+      return;
+    }
+    final cached = await _localStore.readTrips();
+    if (cached.isEmpty) {
+      return;
+    }
+    final next = cached
+        .where((trip) => trip.id != tripId)
+        .toList(growable: false);
+    await _localStore.writeTrips(next);
+  }
+
+  @override
   Future<void> deleteTrip({required int tripId}) async {
     await _remote.deleteTrip(tripId: tripId);
     if (tripId <= 0) {

@@ -101,6 +101,7 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
 {
     $usersTable = table_name('users');
     $tripMembersTable = table_name('trip_members');
+    $tripsTable = table_name('trips');
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
@@ -116,10 +117,14 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
     $readySelect = trip_members_ready_columns_available($pdo)
         ? 'tm.ready_to_settle, tm.ready_to_settle_at, '
         : '1 AS ready_to_settle, NULL AS ready_to_settle_at, ';
+    $roleSelect = trip_members_role_column_available($pdo)
+        ? 'tm.role, '
+        : 'CASE WHEN t.created_by = tm.user_id THEN "owner" ELSE "member" END AS role, ';
 
     $stmt = $pdo->prepare(
-        'SELECT u.id, ' . $nameSelect . $paymentSelect . $readySelect . 'u.nickname, u.avatar_path
+        'SELECT u.id, ' . $nameSelect . $paymentSelect . $roleSelect . $readySelect . 'u.nickname, u.avatar_path
          FROM ' . $tripMembersTable . ' tm
+         JOIN ' . $tripsTable . ' t ON t.id = tm.trip_id
          JOIN ' . $usersTable . ' u ON u.id = tm.user_id
          WHERE tm.trip_id = :trip_id
          ORDER BY tm.joined_at ASC, u.created_at ASC, u.id ASC'
@@ -136,6 +141,7 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
         $row['display_name'] = $displayName !== null
             ? $displayName
             : trim((string) ($row['nickname'] ?? ''));
+        $row['role'] = normalize_trip_member_role($row['role'] ?? 'member');
         $bankAccountHolder = normalize_me_profile_text_value($row['bank_account_holder'] ?? null);
         if ($bankAccountHolder === null) {
             $bankAccountHolder = $displayName;

@@ -343,14 +343,17 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     if (userId <= 0) {
       return false;
     }
+    if (widget.trip.canCurrentUserDeleteTrip) {
+      return true;
+    }
     return (widget.trip.createdBy ?? 0) == userId;
   }
 
   Future<void> _openTripActionsSheet() async {
     final t = context.l10n;
-    final canEdit = _isCurrentTripOwner();
+    final canEdit = _isTripActive && widget.trip.canCurrentUserManageTrip;
     final canManageMembers = _canEditMembers;
-    final canDelete = _canEditMembers;
+    final canDelete = _isTripActive && _isCurrentTripOwner();
     if (!canEdit && !canDelete && !canManageMembers) {
       return;
     }
@@ -841,7 +844,8 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
 
-    final canDeleteTrip = _canEditMembers && _isTripActive;
+    final canDeleteTrip = _isTripActive && _isCurrentTripOwner();
+    final canLeaveTrip = _isTripActive && !_isCurrentTripOwner();
     final choice = await showAppBottomSheet<String>(
       context: context,
       builder: (sheetContext) {
@@ -869,6 +873,20 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
               title: Text(t.logOutButton),
               onTap: () => Navigator.of(sheetContext).pop('logout'),
             ),
+            if (canLeaveTrip)
+              ListTile(
+                leading: Icon(
+                  Icons.exit_to_app_rounded,
+                  color: Theme.of(sheetContext).colorScheme.error,
+                ),
+                title: Text(
+                  'Leave trip',
+                  style: TextStyle(
+                    color: Theme.of(sheetContext).colorScheme.error,
+                  ),
+                ),
+                onTap: () => Navigator.of(sheetContext).pop('leave_trip'),
+              ),
             if (canDeleteTrip)
               ListTile(
                 leading: Icon(
@@ -905,11 +923,88 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       case 'logout':
         await _onLogoutPressed();
         return;
+      case 'leave_trip':
+        await _onLeaveCurrentTripPressed();
+        return;
       case 'delete_trip':
         await _onDeleteCurrentTripPressed();
         return;
       default:
         return;
+    }
+  }
+
+  Future<void> _onLeaveCurrentTripPressed() async {
+    if (_isMutating || _isLoading || _isCurrentTripOwner()) {
+      return;
+    }
+
+    final tripName = widget.trip.name.trim();
+    final tripLabel = tripName.isNotEmpty
+        ? tripName
+        : context.l10n.tripWithId(widget.trip.id);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Leave trip?'),
+          content: Text(
+            'Leave "$tripLabel"? This is only possible if you have no expenses, settlements, or balances in this trip.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(context.l10n.cancelAction),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(dialogContext).colorScheme.error,
+                foregroundColor: Theme.of(dialogContext).colorScheme.onError,
+              ),
+              child: const Text('Leave'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    _updateState(() {
+      _isMutating = true;
+    });
+    try {
+      await widget.tripsController.leaveTrip(tripId: widget.trip.id);
+      if (!mounted) {
+        return;
+      }
+      _showSnack('You left the trip.');
+
+      final onExitRequested = widget.onExitRequested;
+      if (onExitRequested != null) {
+        onExitRequested();
+      } else {
+        Navigator.of(context).maybePop();
+      }
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(error.message, isError: true);
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(context.l10n.unexpectedErrorSavingChanges, isError: true);
+    } finally {
+      if (mounted) {
+        _updateState(() {
+          _isMutating = false;
+        });
+      }
     }
   }
 
@@ -951,7 +1046,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     if (_isMutating || _isLoading) {
       return;
     }
-    if (!_canEditMembers) {
+    if (!_isCurrentTripOwner()) {
       _showSnack(context.l10n.shellOnlyTripCreatorCanDelete, isError: true);
       return;
     }

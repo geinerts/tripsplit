@@ -54,6 +54,7 @@ class TripsLocalStore {
       'members_count': trip.membersCount,
       'created_at': trip.createdAt,
       'created_by': trip.createdBy,
+      'current_user_role': trip.currentUserRole,
       'date_from': trip.dateFrom,
       'date_to': trip.dateTo,
       'ended_at': trip.endedAt,

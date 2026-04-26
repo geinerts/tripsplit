@@ -12,11 +12,17 @@ class UploadedReceipt {
     required this.receiptPath,
     this.receiptUrl,
     this.receiptThumbUrl,
+    this.ocrAmount,
+    this.ocrDate,
+    this.ocrMerchant,
   });
 
   final String receiptPath;
   final String? receiptUrl;
   final String? receiptThumbUrl;
+  final double? ocrAmount;
+  final String? ocrDate;
+  final String? ocrMerchant;
 }
 
 class LegacyReceiptUploader {
@@ -99,10 +105,22 @@ class LegacyReceiptUploader {
       );
     }
 
+    final ocr = payload['ocr'] is Map<String, dynamic>
+        ? payload['ocr'] as Map<String, dynamic>
+        : const <String, dynamic>{};
+    final ocrAmount = (ocr['amount'] as num?)?.toDouble();
+    final ocrDate = (ocr['date'] as String?)?.trim();
+    final ocrMerchant = (ocr['merchant'] as String?)?.trim();
+
     return UploadedReceipt(
       receiptPath: receiptPath,
       receiptUrl: payload['receipt_url'] as String?,
       receiptThumbUrl: payload['receipt_thumb_url'] as String?,
+      ocrAmount: ocrAmount != null && ocrAmount > 0 ? ocrAmount : null,
+      ocrDate: ocrDate != null && ocrDate.isNotEmpty ? ocrDate : null,
+      ocrMerchant: ocrMerchant != null && ocrMerchant.isNotEmpty
+          ? ocrMerchant
+          : null,
     );
   }
 

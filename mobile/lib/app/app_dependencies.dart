@@ -50,8 +50,10 @@ import '../features/trips/domain/usecases/create_trip_use_case.dart';
 import '../features/trips/domain/usecases/delete_trip_use_case.dart';
 import '../features/trips/domain/usecases/list_directory_users_use_case.dart';
 import '../features/trips/domain/usecases/join_trip_invite_use_case.dart';
+import '../features/trips/domain/usecases/leave_trip_use_case.dart';
 import '../features/trips/domain/usecases/list_trips_use_case.dart';
 import '../features/trips/domain/usecases/preview_trip_invite_use_case.dart';
+import '../features/trips/domain/usecases/remove_trip_member_use_case.dart';
 import '../features/trips/domain/usecases/update_trip_use_case.dart';
 import '../features/trips/domain/usecases/upload_trip_image_use_case.dart';
 import '../features/trips/presentation/controllers/trips_controller.dart';
@@ -170,6 +172,8 @@ class AppDependencies {
       ListDirectoryUsersUseCase(tripsRepository),
       CreateTripUseCase(tripsRepository),
       AddTripMembersUseCase(tripsRepository),
+      RemoveTripMemberUseCase(tripsRepository),
+      LeaveTripUseCase(tripsRepository),
       DeleteTripUseCase(tripsRepository),
       CreateTripInviteLinkUseCase(tripsRepository),
       PreviewTripInviteUseCase(tripsRepository),

@@ -12,6 +12,7 @@ class _ExpenseFormResult {
     required this.splitValues,
     required this.receiptFileBytes,
     required this.receiptFileName,
+    required this.preuploadedReceipt,
     required this.removeReceipt,
   });
 
@@ -25,6 +26,7 @@ class _ExpenseFormResult {
   final List<ExpenseSplitValue> splitValues;
   final Uint8List? receiptFileBytes;
   final String? receiptFileName;
+  final UploadedReceiptData? preuploadedReceipt;
   final bool removeReceipt;
 }
 

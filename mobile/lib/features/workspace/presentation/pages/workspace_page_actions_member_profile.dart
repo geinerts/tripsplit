@@ -7,7 +7,6 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
     var paidExpensesCount = 0;
     var involvedExpensesCount = 0;
     var paidTotal = 0.0;
-    final isOwner = (widget.trip.createdBy ?? 0) == profileUser.id;
     Future<List<WorkspaceSharedTrip>> sharedTripsFuture = widget
         .workspaceController
         .loadSharedTripsWithUser(userId: user.id, limit: 20);
@@ -80,8 +79,10 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
               final hasDifferentNickname =
                   nickname.isNotEmpty &&
                   nickname.toLowerCase() != name.toLowerCase();
-              final roleText = isOwner
+              final roleText = profileUser.isOwner
                   ? context.l10n.workspaceTripOwner
+                  : profileUser.isAdmin
+                  ? 'Admin'
                   : context.l10n.workspaceMember;
               final readyText = profileUser.isReadyToSettle
                   ? context.l10n.workspaceReadyForSettlement

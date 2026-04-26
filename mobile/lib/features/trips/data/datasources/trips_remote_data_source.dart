@@ -40,6 +40,8 @@ abstract class TripsRemoteDataSource {
     required int tripId,
     required List<int> memberIds,
   });
+  Future<void> removeTripMember({required int tripId, required int userId});
+  Future<void> leaveTrip({required int tripId});
   Future<void> deleteTrip({required int tripId});
   Future<TripInviteLink> createTripInviteLink({required int tripId});
   Future<TripInvitePreview> previewTripInvite({required String inviteToken});
@@ -188,6 +190,28 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
       body: <String, dynamic>{'member_ids': memberIds},
     );
     return (response['added_count'] as num?)?.toInt() ?? 0;
+  }
+
+  @override
+  Future<void> removeTripMember({
+    required int tripId,
+    required int userId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('remove_trip_member'),
+      method: HttpMethod.post,
+      headers: <String, String>{'X-Trip-Id': '$tripId'},
+      body: <String, dynamic>{'user_id': userId},
+    );
+  }
+
+  @override
+  Future<void> leaveTrip({required int tripId}) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('leave_trip'),
+      method: HttpMethod.post,
+      headers: <String, String>{'X-Trip-Id': '$tripId'},
+    );
   }
 
   @override

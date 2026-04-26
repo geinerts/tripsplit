@@ -91,6 +91,109 @@ function trip_members_ready_columns_available(PDO $pdo): bool
     return $cached;
 }
 
+function trip_members_role_column_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if (is_bool($cached)) {
+        return $cached;
+    }
+
+    $tripMembersTable = DB_TABLE_PREFIX . 'trip_members';
+    if (!preg_match('/^[A-Za-z0-9_]+$/', $tripMembersTable)) {
+        $cached = false;
+        return $cached;
+    }
+
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(1)
+             FROM information_schema.columns
+             WHERE table_schema = DATABASE()
+               AND table_name = :table_name
+               AND column_name = \'role\''
+        );
+        $stmt->execute(['table_name' => $tripMembersTable]);
+        $cached = ((int) ($stmt->fetchColumn() ?: 0)) >= 1;
+    } catch (Throwable $error) {
+        $cached = false;
+    }
+
+    return $cached;
+}
+
+function normalize_trip_member_role($value): string
+{
+    $role = strtolower(trim((string) $value));
+    if ($role === 'owner' || $role === 'admin') {
+        return $role;
+    }
+    return 'member';
+}
+
+function trip_member_role_for_user(PDO $pdo, int $tripId, int $userId, array $trip = []): string
+{
+    if ($tripId <= 0 || $userId <= 0) {
+        return 'member';
+    }
+
+    if (trip_members_role_column_available($pdo)) {
+        $tripMembersTable = table_name('trip_members');
+        $stmt = $pdo->prepare(
+            'SELECT role
+             FROM ' . $tripMembersTable . '
+             WHERE trip_id = :trip_id
+               AND user_id = :user_id
+             LIMIT 1'
+        );
+        $stmt->execute([
+            'trip_id' => $tripId,
+            'user_id' => $userId,
+        ]);
+        $role = $stmt->fetchColumn();
+        if ($role !== false) {
+            return normalize_trip_member_role($role);
+        }
+    }
+
+    return ((int) ($trip['created_by'] ?? 0)) === $userId ? 'owner' : 'member';
+}
+
+function trip_role_allows(string $role, string $permission): bool
+{
+    $role = normalize_trip_member_role($role);
+    $permission = strtolower(trim($permission));
+    $allowed = [
+        'update_details' => ['owner', 'admin'],
+        'manage_members' => ['owner', 'admin'],
+        'create_invite' => ['owner', 'admin'],
+        'finish_trip' => ['owner', 'admin'],
+        'delete_trip' => ['owner'],
+    ];
+
+    return in_array($role, $allowed[$permission] ?? [], true);
+}
+
+function require_trip_permission(
+    PDO $pdo,
+    array $trip,
+    int $actorId,
+    string $permission,
+    string $message = 'You do not have permission to do this.'
+): string {
+    $tripId = (int) ($trip['id'] ?? 0);
+    $role = trip_member_role_for_user($pdo, $tripId, $actorId, $trip);
+    if (!trip_role_allows($role, $permission)) {
+        json_out([
+            'ok' => false,
+            'error' => $message,
+            'required_permission' => $permission,
+            'current_role' => $role,
+        ], 403);
+    }
+
+    return $role;
+}
+
 function normalize_trip_status($value): string
 {
     $raw = strtolower(trim((string) $value));

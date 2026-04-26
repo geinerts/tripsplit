@@ -13,6 +13,7 @@ class TripModel extends Trip {
     required super.membersCount,
     required super.createdAt,
     required super.createdBy,
+    required super.currentUserRole,
     required super.dateFrom,
     required super.dateTo,
     required super.endedAt,
@@ -59,6 +60,7 @@ class TripModel extends Trip {
     final readyToSettle =
         map['ready_to_settle'] == true ||
         (status == 'settling' && settlementsPending > 0);
+    final currentUserRole = _normalizeTripRole(map['current_user_role']);
 
     return TripModel(
       id: (map['id'] as num?)?.toInt() ?? 0,
@@ -72,6 +74,7 @@ class TripModel extends Trip {
       membersCount: (map['members_count'] as num?)?.toInt() ?? 0,
       createdAt: map['created_at'] as String?,
       createdBy: (map['created_by'] as num?)?.toInt(),
+      currentUserRole: currentUserRole,
       dateFrom: (map['date_from'] as String?)?.trim().isNotEmpty == true
           ? (map['date_from'] as String).trim()
           : null,
@@ -97,5 +100,13 @@ class TripModel extends Trip {
       myOwedCents: (map['my_owed_cents'] as num?)?.toInt() ?? 0,
       myBalanceCents: (map['my_balance_cents'] as num?)?.toInt() ?? 0,
     );
+  }
+
+  static String _normalizeTripRole(Object? value) {
+    final role = (value?.toString() ?? '').trim().toLowerCase();
+    if (role == 'owner' || role == 'admin') {
+      return role;
+    }
+    return 'member';
   }
 }

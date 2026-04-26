@@ -261,6 +261,9 @@ function trips_action(): void
     $tripDateToSelect = trips_date_range_columns_available($pdo)
         ? 't.date_to'
         : 'NULL AS date_to';
+    $tripRoleSelect = trip_members_role_column_available($pdo)
+        ? 'tm.role AS current_user_role,'
+        : 'CASE WHEN t.created_by = tm.user_id THEN "owner" ELSE "member" END AS current_user_role,';
     $tripImageGroupBy = trips_image_column_available($pdo)
         ? ', t.image_path'
         : '';
@@ -270,6 +273,9 @@ function trips_action(): void
     $tripDateGroupBy = trips_date_range_columns_available($pdo)
         ? ', t.date_from, t.date_to'
         : '';
+    $tripRoleGroupBy = trip_members_role_column_available($pdo)
+        ? ', tm.role'
+        : '';
 
     $stmt = $pdo->prepare(
         'SELECT
@@ -278,6 +284,7 @@ function trips_action(): void
             ' . $tripCurrencySelect . ',
             t.status,
             t.created_by,
+            ' . $tripRoleSelect . '
             ' . $tripImageSelect . ',
             t.created_at,
             ' . $tripDateFromSelect . ',
@@ -329,7 +336,7 @@ function trips_action(): void
             t.created_by,
             t.created_at,
             t.ended_at,
-            t.archived_at' . $tripImageGroupBy . $tripCurrencyGroupBy . $tripDateGroupBy . '
+            t.archived_at' . $tripImageGroupBy . $tripCurrencyGroupBy . $tripDateGroupBy . $tripRoleGroupBy . '
          ORDER BY t.created_at DESC, t.id DESC'
     );
     $stmt->execute(['user_id' => $currentUserId]);
@@ -343,6 +350,7 @@ function trips_action(): void
         );
         $row['status'] = normalize_trip_status($row['status'] ?? 'active');
         $row['created_by'] = $row['created_by'] !== null ? (int) $row['created_by'] : null;
+        $row['current_user_role'] = normalize_trip_member_role($row['current_user_role'] ?? 'member');
         $imagePath = trim((string) ($row['image_path'] ?? ''));
         $row['image_url'] = $imagePath !== '' ? trip_image_public_url($imagePath) : null;
         $row['image_thumb_url'] = $imagePath !== '' ? trip_image_thumb_public_url($imagePath) : null;
@@ -419,12 +427,17 @@ function all_users_action(): void
 
     $usersTable = table_name('users');
     $tripMembersTable = table_name('trip_members');
+    $tripsTable = table_name('trips');
     $readySelect = trip_members_ready_columns_available($pdo)
         ? 'tm.ready_to_settle, tm.ready_to_settle_at, '
         : '1 AS ready_to_settle, NULL AS ready_to_settle_at, ';
+    $roleSelect = trip_members_role_column_available($pdo)
+        ? 'tm.role, '
+        : 'CASE WHEN t.created_by = tm.user_id THEN "owner" ELSE "member" END AS role, ';
     $stmt = $pdo->prepare(
-        'SELECT u.id, ' . $readySelect . 'u.nickname, u.avatar_path
+        'SELECT u.id, ' . $roleSelect . $readySelect . 'u.nickname, u.avatar_path
          FROM ' . $tripMembersTable . ' tm
+         JOIN ' . $tripsTable . ' t ON t.id = tm.trip_id
          JOIN ' . $usersTable . ' u ON u.id = tm.user_id
          WHERE tm.trip_id = :trip_id
          ORDER BY tm.joined_at ASC, u.created_at ASC, u.id ASC'
@@ -433,6 +446,7 @@ function all_users_action(): void
     $rows = $stmt->fetchAll();
     foreach ($rows as &$row) {
         $row['id'] = (int) $row['id'];
+        $row['role'] = normalize_trip_member_role($row['role'] ?? 'member');
         $row['is_ready_to_settle'] = ((int) ($row['ready_to_settle'] ?? 0)) === 1;
         $row['ready_to_settle_at'] = $row['ready_to_settle_at'] ?: null;
         $avatarPath = trim((string) ($row['avatar_path'] ?? ''));
@@ -580,16 +594,26 @@ function create_trip_action(): void
         }
         $tripId = (int) $pdo->lastInsertId();
 
-        $insertMember = $pdo->prepare(
-            'INSERT INTO ' . $tripMembersTable . ' (trip_id, user_id)
-             VALUES (:trip_id, :user_id)'
-        );
+        $memberRoleColumnAvailable = trip_members_role_column_available($pdo);
+        $insertMember = $memberRoleColumnAvailable
+            ? $pdo->prepare(
+                'INSERT INTO ' . $tripMembersTable . ' (trip_id, user_id, role)
+                 VALUES (:trip_id, :user_id, :role)'
+            )
+            : $pdo->prepare(
+                'INSERT INTO ' . $tripMembersTable . ' (trip_id, user_id)
+                 VALUES (:trip_id, :user_id)'
+            );
         $notifyUserIds = [];
         foreach ($memberIds as $userId) {
-            $insertMember->execute([
+            $memberParams = [
                 'trip_id' => $tripId,
                 'user_id' => (int) $userId,
-            ]);
+            ];
+            if ($memberRoleColumnAvailable) {
+                $memberParams['role'] = (int) $userId === $creatorId ? 'owner' : 'member';
+            }
+            $insertMember->execute($memberParams);
             if ((int) $userId !== $creatorId) {
                 $notifyUserIds[] = (int) $userId;
             }
@@ -630,6 +654,7 @@ function create_trip_action(): void
             'currency_code' => $currencyCode,
             'status' => 'active',
             'created_by' => $meId,
+            'current_user_role' => 'owner',
             'date_from' => $dateFrom,
             'date_to' => $dateTo,
             'ended_at' => null,
@@ -663,10 +688,13 @@ function update_trip_action(): void
     }
     $trip = normalize_trip_row($trip);
 
-    $creatorId = (int) ($trip['created_by'] ?? 0);
-    if ($creatorId <= 0 || $creatorId !== (int) $me['id']) {
-        json_out(['ok' => false, 'error' => 'Only trip creator can edit this trip.'], 403);
-    }
+    require_trip_permission(
+        $pdo,
+        $trip,
+        (int) $me['id'],
+        'update_details',
+        'Only trip owner or admin can edit this trip.'
+    );
 
     $hasName = array_key_exists('name', $body);
     $hasCurrencyCode = array_key_exists('currency_code', $body);
@@ -812,6 +840,7 @@ function update_trip_action(): void
             'created_by' => array_key_exists('created_by', $fresh) && $fresh['created_by'] !== null
                 ? (int) $fresh['created_by']
                 : null,
+            'current_user_role' => trip_member_role_for_user($pdo, $tripId, (int) $me['id'], $fresh),
             'date_from' => array_key_exists('date_from', $fresh) ? ($fresh['date_from'] ?: null) : null,
             'date_to' => array_key_exists('date_to', $fresh) ? ($fresh['date_to'] ?: null) : null,
             'ended_at' => array_key_exists('ended_at', $fresh) ? ($fresh['ended_at'] ?: null) : null,
@@ -851,10 +880,13 @@ function delete_trip_action(): void
     }
     $trip = normalize_trip_row($trip);
 
-    $creatorId = (int) ($trip['created_by'] ?? 0);
-    if ($creatorId <= 0 || $creatorId !== $actorId) {
-        json_out(['ok' => false, 'error' => 'Only trip creator can delete this trip.'], 403);
-    }
+    require_trip_permission(
+        $pdo,
+        $trip,
+        $actorId,
+        'delete_trip',
+        'Only trip owner can delete this trip.'
+    );
 
     if (normalize_trip_status($trip['status'] ?? 'active') !== 'active') {
         json_out([
@@ -948,9 +980,13 @@ function add_trip_members_action(): void
     assert_trip_is_active($tripMeta);
 
     $creatorId = (int) ($tripMeta['created_by'] ?? 0);
-    if ($creatorId <= 0 || $creatorId !== (int) $me['id']) {
-        json_out(['ok' => false, 'error' => 'Only trip creator can edit members.'], 403);
-    }
+    require_trip_permission(
+        $pdo,
+        $tripMeta,
+        (int) $me['id'],
+        'manage_members',
+        'Only trip owner or admin can edit members.'
+    );
 
     enforce_rate_limit(
         $pdo,
@@ -982,10 +1018,16 @@ function add_trip_members_action(): void
     $pdo->beginTransaction();
     $addedCount = 0;
     try {
-        $insert = $pdo->prepare(
-            'INSERT IGNORE INTO ' . $tripMembersTable . ' (trip_id, user_id)
-             VALUES (:trip_id, :user_id)'
-        );
+        $memberRoleColumnAvailable = trip_members_role_column_available($pdo);
+        $insert = $memberRoleColumnAvailable
+            ? $pdo->prepare(
+                'INSERT IGNORE INTO ' . $tripMembersTable . ' (trip_id, user_id, role)
+                 VALUES (:trip_id, :user_id, "member")'
+            )
+            : $pdo->prepare(
+                'INSERT IGNORE INTO ' . $tripMembersTable . ' (trip_id, user_id)
+                 VALUES (:trip_id, :user_id)'
+            );
         $addedUserIds = [];
         foreach ($memberIds as $userId) {
             $insert->execute([
@@ -1046,6 +1088,7 @@ function add_trip_members_action(): void
             ),
             'status' => (string) ($tripMeta['status'] ?? 'active'),
             'created_by' => $creatorId,
+            'current_user_role' => trip_member_role_for_user($pdo, $tripId, $actorId, $tripMeta),
             'ended_at' => $tripMeta['ended_at'] ?: null,
             'archived_at' => $tripMeta['archived_at'] ?: null,
             'image_url' => trim((string) ($tripMeta['image_path'] ?? '')) !== ''
@@ -1057,6 +1100,337 @@ function add_trip_members_action(): void
             'members_count' => $membersCount,
         ],
         'added_count' => $addedCount,
+    ]);
+}
+
+function trip_member_financial_footprint(PDO $pdo, int $tripId, int $userId): array
+{
+    $expensesTable = table_name('expenses');
+    $participantsTable = table_name('expense_participants');
+    $settlementsTable = table_name('settlements');
+
+    $paidStmt = $pdo->prepare(
+        'SELECT COUNT(*)
+         FROM ' . $expensesTable . '
+         WHERE trip_id = :trip_id
+           AND paid_by = :user_id'
+    );
+    $paidStmt->execute([
+        'trip_id' => $tripId,
+        'user_id' => $userId,
+    ]);
+    $paidExpensesCount = (int) ($paidStmt->fetchColumn() ?: 0);
+
+    $participantStmt = $pdo->prepare(
+        'SELECT COUNT(*)
+         FROM ' . $participantsTable . ' ep
+         JOIN ' . $expensesTable . ' e ON e.id = ep.expense_id
+         WHERE e.trip_id = :trip_id
+           AND ep.user_id = :user_id'
+    );
+    $participantStmt->execute([
+        'trip_id' => $tripId,
+        'user_id' => $userId,
+    ]);
+    $participantExpensesCount = (int) ($participantStmt->fetchColumn() ?: 0);
+
+    $settlementStmt = $pdo->prepare(
+        'SELECT COUNT(*)
+         FROM ' . $settlementsTable . '
+         WHERE trip_id = :trip_id
+           AND (from_user_id = :user_id OR to_user_id = :user_id)'
+    );
+    $settlementStmt->execute([
+        'trip_id' => $tripId,
+        'user_id' => $userId,
+    ]);
+    $settlementsCount = (int) ($settlementStmt->fetchColumn() ?: 0);
+
+    $computed = compute_trip_balance_data($pdo, $tripId);
+    $stats = is_array($computed['stats'] ?? null) ? $computed['stats'] : [];
+    $memberStats = is_array($stats[$userId] ?? null) ? $stats[$userId] : [];
+    $paidCents = (int) ($memberStats['paid_cents'] ?? 0);
+    $owedCents = (int) ($memberStats['owed_cents'] ?? 0);
+    $netCents = $owedCents - $paidCents;
+
+    return [
+        'paid_expenses_count' => $paidExpensesCount,
+        'participant_expenses_count' => $participantExpensesCount,
+        'settlements_count' => $settlementsCount,
+        'paid_cents' => $paidCents,
+        'owed_cents' => $owedCents,
+        'net_cents' => $netCents,
+        'has_financial_activity' => $paidExpensesCount > 0
+            || $participantExpensesCount > 0
+            || $settlementsCount > 0
+            || abs($netCents) > 0,
+    ];
+}
+
+function trip_member_label(PDO $pdo, int $userId): string
+{
+    $usersTable = table_name('users');
+    $nameSelect = users_name_columns_available($pdo)
+        ? 'first_name, last_name, '
+        : 'NULL AS first_name, NULL AS last_name, ';
+    $stmt = $pdo->prepare(
+        'SELECT ' . $nameSelect . 'nickname
+         FROM ' . $usersTable . '
+         WHERE id = :id
+         LIMIT 1'
+    );
+    $stmt->execute(['id' => $userId]);
+    $row = $stmt->fetch();
+    if (!is_array($row)) {
+        return 'Trip member';
+    }
+
+    $firstName = normalize_me_name_value($row['first_name'] ?? null);
+    $lastName = normalize_me_name_value($row['last_name'] ?? null);
+    $displayName = combine_full_name($firstName, $lastName);
+    $nickname = trim((string) ($row['nickname'] ?? ''));
+    return $displayName ?? ($nickname !== '' ? $nickname : 'Trip member');
+}
+
+function remove_trip_member_action(): void
+{
+    require_post();
+    $me = get_me();
+    $body = read_json();
+    $pdo = db();
+    $trip = get_current_trip($pdo, $me, true);
+    $tripId = (int) ($trip['id'] ?? 0);
+    $actorId = (int) ($me['id'] ?? 0);
+    $targetUserId = (int) ($body['user_id'] ?? 0);
+    if ($targetUserId <= 0) {
+        json_out(['ok' => false, 'error' => 'Member user_id is required.'], 400);
+    }
+    if ($targetUserId === $actorId) {
+        json_out(['ok' => false, 'error' => 'Use leave_trip to leave this trip.'], 400);
+    }
+
+    assert_trip_is_active($trip);
+    require_trip_permission(
+        $pdo,
+        $trip,
+        $actorId,
+        'manage_members',
+        'Only trip owner or admin can remove members.'
+    );
+
+    $tripMembersTable = table_name('trip_members');
+    $memberStmt = $pdo->prepare(
+        'SELECT user_id
+         FROM ' . $tripMembersTable . '
+         WHERE trip_id = :trip_id
+           AND user_id = :user_id
+         LIMIT 1'
+    );
+    $memberStmt->execute([
+        'trip_id' => $tripId,
+        'user_id' => $targetUserId,
+    ]);
+    if (!$memberStmt->fetch()) {
+        json_out(['ok' => false, 'error' => 'Member is not in this trip.'], 404);
+    }
+
+    $targetRole = trip_member_role_for_user($pdo, $tripId, $targetUserId, $trip);
+    if ($targetRole === 'owner') {
+        json_out(['ok' => false, 'error' => 'Trip owner cannot be removed.'], 409);
+    }
+
+    $footprint = trip_member_financial_footprint($pdo, $tripId, $targetUserId);
+    if (($footprint['has_financial_activity'] ?? false) === true) {
+        json_out([
+            'ok' => false,
+            'error' => 'Member cannot be removed because they already have expenses, settlements, or balances in this trip.',
+            'financial_footprint' => $footprint,
+        ], 409);
+    }
+
+    $countStmt = $pdo->prepare(
+        'SELECT COUNT(*)
+         FROM ' . $tripMembersTable . '
+         WHERE trip_id = :trip_id'
+    );
+    $countStmt->execute(['trip_id' => $tripId]);
+    if ((int) ($countStmt->fetchColumn() ?: 0) <= 1) {
+        json_out(['ok' => false, 'error' => 'Trip must keep at least one member.'], 409);
+    }
+
+    $delete = $pdo->prepare(
+        'DELETE FROM ' . $tripMembersTable . '
+         WHERE trip_id = :trip_id
+           AND user_id = :user_id'
+    );
+    $delete->execute([
+        'trip_id' => $tripId,
+        'user_id' => $targetUserId,
+    ]);
+
+    $targetName = trip_member_label($pdo, $targetUserId);
+    app_event($pdo, $actorId, 'trip.member_removed', 'trip', $tripId, $tripId, [
+        'removed_user_id' => $targetUserId,
+        'removed_user_name' => $targetName,
+    ]);
+    create_user_notification(
+        $pdo,
+        $tripId,
+        $targetUserId,
+        'trip_member_removed',
+        'Removed from trip',
+        'You were removed from "' . (string) ($trip['name'] ?? 'this trip') . '".',
+        [
+            'trip_id' => $tripId,
+            'removed_by_user_id' => $actorId,
+        ]
+    );
+
+    json_out([
+        'ok' => true,
+        'removed' => true,
+        'trip_id' => $tripId,
+        'user_id' => $targetUserId,
+    ]);
+}
+
+function leave_trip_action(): void
+{
+    require_post();
+    $me = get_me();
+    $pdo = db();
+    $trip = get_current_trip($pdo, $me, true);
+    $tripId = (int) ($trip['id'] ?? 0);
+    $actorId = (int) ($me['id'] ?? 0);
+    assert_trip_is_active($trip);
+
+    $role = trip_member_role_for_user($pdo, $tripId, $actorId, $trip);
+    if ($role === 'owner') {
+        json_out([
+            'ok' => false,
+            'error' => 'Trip owner cannot leave the trip. Delete the trip or transfer ownership first.',
+        ], 409);
+    }
+
+    $tripMembersTable = table_name('trip_members');
+    $countStmt = $pdo->prepare(
+        'SELECT COUNT(*)
+         FROM ' . $tripMembersTable . '
+         WHERE trip_id = :trip_id'
+    );
+    $countStmt->execute(['trip_id' => $tripId]);
+    if ((int) ($countStmt->fetchColumn() ?: 0) <= 1) {
+        json_out(['ok' => false, 'error' => 'Trip must keep at least one member.'], 409);
+    }
+
+    $footprint = trip_member_financial_footprint($pdo, $tripId, $actorId);
+    if (($footprint['has_financial_activity'] ?? false) === true) {
+        json_out([
+            'ok' => false,
+            'error' => 'You cannot leave because you already have expenses, settlements, or balances in this trip.',
+            'financial_footprint' => $footprint,
+        ], 409);
+    }
+
+    $delete = $pdo->prepare(
+        'DELETE FROM ' . $tripMembersTable . '
+         WHERE trip_id = :trip_id
+           AND user_id = :user_id'
+    );
+    $delete->execute([
+        'trip_id' => $tripId,
+        'user_id' => $actorId,
+    ]);
+
+    $actorName = trip_member_label($pdo, $actorId);
+    app_event($pdo, $actorId, 'trip.member_left', 'trip', $tripId, $tripId, [
+        'left_user_id' => $actorId,
+        'left_user_name' => $actorName,
+    ]);
+
+    json_out([
+        'ok' => true,
+        'left' => true,
+        'trip_id' => $tripId,
+    ]);
+}
+
+function update_trip_member_role_action(): void
+{
+    require_post();
+    $me = get_me();
+    $body = read_json();
+    $pdo = db();
+    $trip = get_current_trip($pdo, $me, true);
+    $tripId = (int) ($trip['id'] ?? 0);
+    $actorId = (int) ($me['id'] ?? 0);
+    $targetUserId = (int) ($body['user_id'] ?? 0);
+    $nextRole = normalize_trip_member_role($body['role'] ?? 'member');
+    if ($targetUserId <= 0) {
+        json_out(['ok' => false, 'error' => 'Member user_id is required.'], 400);
+    }
+    if ($nextRole === 'owner') {
+        json_out(['ok' => false, 'error' => 'Ownership transfer is not available yet.'], 400);
+    }
+    if (!trip_members_role_column_available($pdo)) {
+        json_out(['ok' => false, 'error' => 'Trip member roles are not enabled on server yet. Run migration first.'], 409);
+    }
+
+    assert_trip_is_active($trip);
+    require_trip_permission(
+        $pdo,
+        $trip,
+        $actorId,
+        'delete_trip',
+        'Only trip owner can change member roles.'
+    );
+
+    $tripMembersTable = table_name('trip_members');
+    $memberStmt = $pdo->prepare(
+        'SELECT user_id
+         FROM ' . $tripMembersTable . '
+         WHERE trip_id = :trip_id
+           AND user_id = :user_id
+         LIMIT 1'
+    );
+    $memberStmt->execute([
+        'trip_id' => $tripId,
+        'user_id' => $targetUserId,
+    ]);
+    if (!$memberStmt->fetch()) {
+        json_out(['ok' => false, 'error' => 'Member is not in this trip.'], 404);
+    }
+
+    $targetRole = trip_member_role_for_user($pdo, $tripId, $targetUserId, $trip);
+    if ($targetRole === 'owner') {
+        json_out(['ok' => false, 'error' => 'Trip owner role cannot be changed.'], 409);
+    }
+
+    $update = $pdo->prepare(
+        'UPDATE ' . $tripMembersTable . '
+         SET role = :role
+         WHERE trip_id = :trip_id
+           AND user_id = :user_id
+         LIMIT 1'
+    );
+    $update->execute([
+        'role' => $nextRole,
+        'trip_id' => $tripId,
+        'user_id' => $targetUserId,
+    ]);
+
+    $targetName = trip_member_label($pdo, $targetUserId);
+    app_event($pdo, $actorId, 'trip.member_role_updated', 'trip', $tripId, $tripId, [
+        'target_user_id' => $targetUserId,
+        'target_user_name' => $targetName,
+        'role' => $nextRole,
+    ]);
+
+    json_out([
+        'ok' => true,
+        'trip_id' => $tripId,
+        'user_id' => $targetUserId,
+        'role' => $nextRole,
     ]);
 }
 
@@ -1076,11 +1450,14 @@ function create_trip_invite_action(): void
         json_out(['ok' => false, 'error' => 'Invite links are available only for active trips.'], 409);
     }
 
-    $creatorId = (int) ($trip['created_by'] ?? 0);
     $actorId = (int) ($me['id'] ?? 0);
-    if ($creatorId <= 0 || $creatorId !== $actorId) {
-        json_out(['ok' => false, 'error' => 'Only trip creator can generate invite links.'], 403);
-    }
+    require_trip_permission(
+        $pdo,
+        $trip,
+        $actorId,
+        'create_invite',
+        'Only trip owner or admin can generate invite links.'
+    );
 
     enforce_rate_limit(
         $pdo,
@@ -1458,10 +1835,15 @@ function join_trip_invite_action(): void
         $alreadyMember = (bool) $memberStmt->fetch();
 
         if (!$alreadyMember) {
-            $insertMember = $pdo->prepare(
-                'INSERT INTO ' . $tripMembersTable . ' (trip_id, user_id)
-                 VALUES (:trip_id, :user_id)'
-            );
+            $insertMember = trip_members_role_column_available($pdo)
+                ? $pdo->prepare(
+                    'INSERT INTO ' . $tripMembersTable . ' (trip_id, user_id, role)
+                     VALUES (:trip_id, :user_id, "member")'
+                )
+                : $pdo->prepare(
+                    'INSERT INTO ' . $tripMembersTable . ' (trip_id, user_id)
+                     VALUES (:trip_id, :user_id)'
+                );
             $insertMember->execute([
                 'trip_id' => $tripId,
                 'user_id' => $actorId,
@@ -1504,16 +1886,21 @@ function users_action(): void
     $trip = get_current_trip($pdo, $me, true);
     $usersTable = table_name('users');
     $tripMembersTable = table_name('trip_members');
+    $tripsTable = table_name('trips');
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
     $readySelect = trip_members_ready_columns_available($pdo)
         ? 'tm.ready_to_settle, tm.ready_to_settle_at, '
         : '1 AS ready_to_settle, NULL AS ready_to_settle_at, ';
+    $roleSelect = trip_members_role_column_available($pdo)
+        ? 'tm.role, '
+        : 'CASE WHEN t.created_by = tm.user_id THEN "owner" ELSE "member" END AS role, ';
 
     $stmt = $pdo->prepare(
-        'SELECT u.id, ' . $nameSelect . $readySelect . 'u.nickname, u.avatar_path
+        'SELECT u.id, ' . $nameSelect . $roleSelect . $readySelect . 'u.nickname, u.avatar_path
          FROM ' . $tripMembersTable . ' tm
+         JOIN ' . $tripsTable . ' t ON t.id = tm.trip_id
          JOIN ' . $usersTable . ' u ON u.id = tm.user_id
          WHERE tm.trip_id = :trip_id
          ORDER BY tm.joined_at ASC, u.created_at ASC, u.id ASC'
@@ -1530,6 +1917,7 @@ function users_action(): void
         $row['display_name'] = $displayName !== null
             ? $displayName
             : trim((string) ($row['nickname'] ?? ''));
+        $row['role'] = normalize_trip_member_role($row['role'] ?? 'member');
         $row['is_ready_to_settle'] = ((int) ($row['ready_to_settle'] ?? 0)) === 1;
         $row['ready_to_settle_at'] = $row['ready_to_settle_at'] ?: null;
         $avatarPath = trim((string) ($row['avatar_path'] ?? ''));

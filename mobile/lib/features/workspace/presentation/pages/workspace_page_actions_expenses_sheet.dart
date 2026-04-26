@@ -270,7 +270,10 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                                         .expenseCurrencyCode !=
                                                     expense.tripCurrencyCode)
                                                   Text(
-                                                    '1 ${expense.expenseCurrencyCode} ≈ ${_formatMoney(context, expense.fxRateToTrip, currencyCode: expense.tripCurrencyCode)}',
+                                                    _formatFxRateSummary(
+                                                      context,
+                                                      expense,
+                                                    ),
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodySmall

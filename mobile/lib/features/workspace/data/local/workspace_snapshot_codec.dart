@@ -21,6 +21,7 @@ class WorkspaceSnapshotCodec {
             (user) => <String, dynamic>{
               'id': user.id,
               'nickname': user.nickname,
+              'role': user.role,
               'display_name': user.displayName,
               'avatar_url': user.avatarUrl,
               'avatar_thumb_url': user.avatarThumbUrl,
@@ -167,6 +168,7 @@ class WorkspaceSnapshotCodec {
           return WorkspaceUser(
             id: (item['id'] as num?)?.toInt() ?? 0,
             nickname: item['nickname'] as String? ?? '',
+            role: _normalizeTripRole(item['role']),
             displayName: (displayName == null || displayName.isEmpty)
                 ? null
                 : displayName,
@@ -368,5 +370,13 @@ class WorkspaceSnapshotCodec {
       return value;
     }
     return 'equal';
+  }
+
+  static String _normalizeTripRole(Object? value) {
+    final role = (value?.toString() ?? '').trim().toLowerCase();
+    if (role == 'owner' || role == 'admin') {
+      return role;
+    }
+    return 'member';
   }
 }

@@ -26,11 +26,26 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     final sourceExpenses = _expensesFeed.isNotEmpty
         ? _expensesFeed
         : snapshot.expenses;
-    final expenses = _expenseFilterUserId > 0
+    final usersById = <int, WorkspaceUser>{
+      for (final user in snapshot.users) user.id: user,
+    };
+    final payerFilteredExpenses = _expenseFilterUserId > 0
         ? sourceExpenses
               .where((expense) => expense.paidById == _expenseFilterUserId)
               .toList(growable: false)
         : sourceExpenses;
+    final searchQuery = _expenseSearchQuery.trim().toLowerCase();
+    final expenses = searchQuery.isEmpty
+        ? payerFilteredExpenses
+        : payerFilteredExpenses
+              .where(
+                (expense) => _expenseMatchesSearch(
+                  expense,
+                  usersById[expense.paidById],
+                  searchQuery,
+                ),
+              )
+              .toList(growable: false);
 
     WorkspaceUser? selectedUser;
     for (final user in snapshot.users) {
@@ -40,9 +55,6 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
       }
     }
 
-    final usersById = <int, WorkspaceUser>{
-      for (final user in snapshot.users) user.id: user,
-    };
     final filterUsers = snapshot.users
         .where((user) => user.id != _currentUserId)
         .toList(growable: false);
@@ -82,6 +94,34 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _expenseSearchController,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search_rounded),
+                hintText: 'Search by name, category, date, payer, amount',
+                suffixIcon: searchQuery.isEmpty
+                    ? null
+                    : IconButton(
+                        tooltip: MaterialLocalizations.of(
+                          context,
+                        ).deleteButtonTooltip,
+                        onPressed: () {
+                          _expenseSearchController.clear();
+                          _updateState(() {
+                            _expenseSearchQuery = '';
+                          });
+                        },
+                        icon: const Icon(Icons.close_rounded),
+                      ),
+              ),
+              onChanged: (value) {
+                _updateState(() {
+                  _expenseSearchQuery = value;
+                });
+              },
             ),
             const SizedBox(height: 10),
             SingleChildScrollView(
@@ -323,6 +363,21 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                                         color: isDark
                                             ? colors.onSurfaceVariant
                                             : AppDesign.lightMuted,
+                                      ),
+                                ),
+                              if (expense.expenseCurrencyCode !=
+                                  expense.tripCurrencyCode)
+                                Text(
+                                  _formatFxRateSummary(context, expense),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.end,
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: isDark
+                                            ? colors.onSurfaceVariant
+                                            : AppDesign.lightMuted,
+                                        fontSize: 11,
                                       ),
                                 ),
                             ],
@@ -607,5 +662,45 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
         await _onDeleteExpensePressed(expense);
         return;
     }
+  }
+
+  bool _expenseMatchesSearch(
+    TripExpense expense,
+    WorkspaceUser? payer,
+    String query,
+  ) {
+    if (query.trim().isEmpty) {
+      return true;
+    }
+    final locale = Localizations.localeOf(context);
+    final categoryLabel = ExpenseCategoryCatalog.labelFor(
+      expense.category,
+      locale,
+    );
+    final payerName = (payer?.preferredName ?? expense.paidByNickname).trim();
+    final values = <String>[
+      expense.note,
+      expense.category,
+      categoryLabel,
+      expense.expenseDate,
+      _formatDisplayDate(context, expense.expenseDate),
+      payerName,
+      expense.amount.toStringAsFixed(2),
+      expense.originalAmount.toStringAsFixed(2),
+      expense.tripCurrencyCode,
+      expense.expenseCurrencyCode,
+      _formatMoney(
+        context,
+        expense.amount,
+        currencyCode: expense.tripCurrencyCode,
+      ),
+      _formatMoney(
+        context,
+        expense.originalAmount,
+        currencyCode: expense.expenseCurrencyCode,
+      ),
+    ];
+
+    return values.any((value) => value.toLowerCase().contains(query));
   }
 }

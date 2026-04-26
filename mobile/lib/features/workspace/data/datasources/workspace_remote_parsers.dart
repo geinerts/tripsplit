@@ -94,9 +94,11 @@ class WorkspaceRemoteParsers {
     final revolutMeLink = _toNullableString(item['revolut_me_link']);
     final paypalMeLink = _toNullableString(item['paypal_me_link']);
     final wisePayLink = _toNullableString(item['wise_pay_link']);
+    final role = _normalizeTripRole(item['role']);
     return WorkspaceUser(
       id: (item['id'] as num?)?.toInt() ?? 0,
       nickname: item['nickname'] as String? ?? '',
+      role: role,
       displayName: displayName.isEmpty ? null : displayName,
       avatarUrl: avatarUrl,
       avatarThumbUrl: avatarThumbUrl,
@@ -110,6 +112,14 @@ class WorkspaceRemoteParsers {
       isReadyToSettle: isReadyToSettle,
       readyToSettleAt: readyToSettleAt,
     );
+  }
+
+  static String _normalizeTripRole(Object? value) {
+    final role = (value?.toString() ?? '').trim().toLowerCase();
+    if (role == 'owner' || role == 'admin') {
+      return role;
+    }
+    return 'member';
   }
 
   static BalanceItem parseBalance(Map<String, dynamic> item) {

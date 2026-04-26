@@ -91,10 +91,13 @@ function end_trip_action(): void
         ], 409);
     }
 
-    $creatorId = (int) ($trip['created_by'] ?? 0);
-    if ($creatorId <= 0 || $creatorId !== (int) $me['id']) {
-        json_out(['ok' => false, 'error' => 'Only trip creator can close the trip.'], 403);
-    }
+    require_trip_permission(
+        $pdo,
+        $trip,
+        (int) $me['id'],
+        'finish_trip',
+        'Only trip owner or admin can close the trip.'
+    );
 
     $readyToSettle = load_trip_ready_to_settle_state($pdo, $tripId, (int) ($me['id'] ?? 0));
     if (

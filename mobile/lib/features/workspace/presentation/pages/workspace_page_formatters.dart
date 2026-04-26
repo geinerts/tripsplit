@@ -83,3 +83,15 @@ String _formatCompactNumber(double value) {
   }
   return rounded.toStringAsFixed(2);
 }
+
+String _formatFxRateSummary(BuildContext context, TripExpense expense) {
+  if (expense.expenseCurrencyCode == expense.tripCurrencyCode) {
+    return '';
+  }
+  final rate = _formatMoney(
+    context,
+    expense.fxRateToTrip,
+    currencyCode: expense.tripCurrencyCode,
+  );
+  return 'Converted to ${expense.tripCurrencyCode} • 1 ${expense.expenseCurrencyCode} ≈ $rate';
+}

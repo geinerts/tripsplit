@@ -71,6 +71,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
     }
     Uint8List? selectedReceiptBytes;
     String? selectedReceiptName;
+    UploadedReceiptData? preuploadedReceipt;
+    bool isReceiptScanning = false;
+    String? receiptOcrHint;
     bool removeExistingReceipt = false;
     try {
       return await Navigator.of(context).push<_ExpenseFormResult>(
@@ -635,6 +638,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                         if (removeExistingReceipt) {
                                           selectedReceiptBytes = null;
                                           selectedReceiptName = null;
+                                          preuploadedReceipt = null;
+                                          receiptOcrHint = null;
                                         }
                                       });
                                     },
@@ -655,12 +660,104 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                             selectedReceiptBytes = picked.bytes;
                                             selectedReceiptName =
                                                 picked.fileName;
+                                            preuploadedReceipt = null;
+                                            receiptOcrHint = null;
+                                            isReceiptScanning = true;
                                             removeExistingReceipt = false;
                                           });
+                                          try {
+                                            final uploaded = await widget
+                                                .workspaceController
+                                                .uploadReceipt(
+                                                  payload: ReceiptUploadPayload(
+                                                    fileName: picked.fileName,
+                                                    bytes: picked.bytes,
+                                                    tripId: widget.trip.id,
+                                                  ),
+                                                );
+                                            if (!mounted || !context.mounted) {
+                                              return;
+                                            }
+                                            final ocrAmount =
+                                                uploaded.ocrAmount;
+                                            final ocrDate = uploaded.ocrDate;
+                                            final ocrMerchant =
+                                                uploaded.ocrMerchant;
+                                            setDialogState(() {
+                                              preuploadedReceipt = uploaded;
+                                              selectedReceiptBytes = null;
+                                              if (ocrAmount != null &&
+                                                  ocrAmount > 0 &&
+                                                  _parseAmount(
+                                                        amountController.text,
+                                                      ) <=
+                                                      0) {
+                                                amountController.text =
+                                                    _formatNumericInput(
+                                                      ocrAmount,
+                                                    );
+                                              }
+                                              final parsedOcrDate =
+                                                  parseExpenseDate(ocrDate);
+                                              if (parsedOcrDate != null &&
+                                                  existing == null) {
+                                                selectedExpenseDate =
+                                                    parsedOcrDate;
+                                              }
+                                              if ((noteController.text)
+                                                      .trim()
+                                                      .isEmpty &&
+                                                  ocrMerchant != null &&
+                                                  ocrMerchant.isNotEmpty) {
+                                                noteController.text =
+                                                    ocrMerchant;
+                                              }
+                                              receiptOcrHint =
+                                                  ocrAmount != null ||
+                                                      ocrDate != null ||
+                                                      ocrMerchant != null
+                                                  ? 'Receipt read and form updated.'
+                                                  : 'Receipt attached. OCR found no clear amount/date/merchant.';
+                                              isReceiptScanning = false;
+                                            });
+                                          } on ApiException catch (error) {
+                                            if (!mounted || !context.mounted) {
+                                              return;
+                                            }
+                                            setDialogState(() {
+                                              isReceiptScanning = false;
+                                              preuploadedReceipt = null;
+                                              receiptOcrHint =
+                                                  error.isNetworkError
+                                                  ? 'Receipt will upload when you save. OCR needs internet/server access.'
+                                                  : error.message;
+                                            });
+                                          } catch (_) {
+                                            if (!mounted || !context.mounted) {
+                                              return;
+                                            }
+                                            setDialogState(() {
+                                              isReceiptScanning = false;
+                                              preuploadedReceipt = null;
+                                              receiptOcrHint =
+                                                  'Receipt selected. OCR could not read this image.';
+                                            });
+                                          }
                                         },
                                   icon: const Icon(Icons.attach_file),
                                   label: Text(t.chooseReceiptFile),
                                 ),
+                                if (isReceiptScanning) ...[
+                                  const SizedBox(height: 8),
+                                  const LinearProgressIndicator(minHeight: 2),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Reading receipt...',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                ],
                                 if (selectedReceiptName != null) ...[
                                   const SizedBox(height: 4),
                                   Text(
@@ -678,6 +775,23 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodySmall,
+                                  ),
+                                ],
+                                if (receiptOcrHint != null) ...[
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    receiptOcrHint!,
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: preuploadedReceipt != null
+                                              ? Theme.of(
+                                                  context,
+                                                ).colorScheme.primary
+                                              : Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurfaceVariant,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                   ),
                                 ],
                                 if (errorText != null) ...[
@@ -914,6 +1028,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                         splitValues: splitValues,
                                         receiptFileBytes: selectedReceiptBytes,
                                         receiptFileName: selectedReceiptName,
+                                        preuploadedReceipt: preuploadedReceipt,
                                         removeReceipt: removeExistingReceipt,
                                       ),
                                     );

@@ -15,8 +15,10 @@ import '../../domain/usecases/create_trip_use_case.dart';
 import '../../domain/usecases/create_trip_invite_link_use_case.dart';
 import '../../domain/usecases/list_directory_users_use_case.dart';
 import '../../domain/usecases/join_trip_invite_use_case.dart';
+import '../../domain/usecases/leave_trip_use_case.dart';
 import '../../domain/usecases/list_trips_use_case.dart';
 import '../../domain/usecases/preview_trip_invite_use_case.dart';
+import '../../domain/usecases/remove_trip_member_use_case.dart';
 import '../../domain/usecases/update_trip_use_case.dart';
 import '../../domain/usecases/upload_trip_image_use_case.dart';
 
@@ -26,6 +28,8 @@ class TripsController {
     this._listDirectoryUsersUseCase,
     this._createTripUseCase,
     this._addTripMembersUseCase,
+    this._removeTripMemberUseCase,
+    this._leaveTripUseCase,
     this._deleteTripUseCase,
     this._createTripInviteLinkUseCase,
     this._previewTripInviteUseCase,
@@ -39,6 +43,8 @@ class TripsController {
   final ListDirectoryUsersUseCase _listDirectoryUsersUseCase;
   final CreateTripUseCase _createTripUseCase;
   final AddTripMembersUseCase _addTripMembersUseCase;
+  final RemoveTripMemberUseCase _removeTripMemberUseCase;
+  final LeaveTripUseCase _leaveTripUseCase;
   final DeleteTripUseCase _deleteTripUseCase;
   final CreateTripInviteLinkUseCase _createTripInviteLinkUseCase;
   final PreviewTripInviteUseCase _previewTripInviteUseCase;
@@ -152,6 +158,16 @@ class TripsController {
 
   Future<int> addMembers({required int tripId, required List<int> memberIds}) {
     return _addTripMembersUseCase.call(tripId: tripId, memberIds: memberIds);
+  }
+
+  Future<void> removeMember({required int tripId, required int userId}) async {
+    await _removeTripMemberUseCase.call(tripId: tripId, userId: userId);
+    clearTripsCache();
+  }
+
+  Future<void> leaveTrip({required int tripId}) async {
+    await _leaveTripUseCase.call(tripId: tripId);
+    clearTripsCache();
   }
 
   Future<void> deleteTrip({required int tripId}) async {

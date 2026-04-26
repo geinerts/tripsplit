@@ -50,6 +50,8 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                   itemBuilder: (context, index) {
                     final user = members[index];
                     final isCurrent = user.id == _currentUserId;
+                    final canRemoveMember =
+                        _canEditMembers && !isCurrent && !user.isOwner;
                     final name = user.preferredName.trim().isEmpty
                         ? context.l10n.userWithId(user.id)
                         : user.preferredName.trim();
@@ -133,6 +135,27 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                                         ),
                                   ),
                                 ),
+                              if (canRemoveMember)
+                                IconButton(
+                                  tooltip: 'Remove from trip',
+                                  onPressed: _isMutating
+                                      ? null
+                                      : () async {
+                                          Navigator.of(sheetContext).pop();
+                                          await Future<void>.delayed(
+                                            const Duration(milliseconds: 120),
+                                          );
+                                          if (!mounted) {
+                                            return;
+                                          }
+                                          await _onRemoveTripMemberPressed(
+                                            user,
+                                          );
+                                        },
+                                  icon: const Icon(
+                                    Icons.person_remove_alt_1_outlined,
+                                  ),
+                                ),
                             ],
                           ),
                         ),
@@ -144,6 +167,53 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
             ],
           ),
         );
+      },
+    );
+  }
+
+  Future<void> _onRemoveTripMemberPressed(WorkspaceUser user) async {
+    if (!_canEditMembers || _isMutating || user.isOwner) {
+      return;
+    }
+    final name = user.preferredName.trim().isEmpty
+        ? context.l10n.userWithId(user.id)
+        : user.preferredName.trim();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Remove member?'),
+          content: Text(
+            'Remove $name from this trip? This is only possible if they have no expenses, settlements, or balances.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(context.l10n.cancelAction),
+            ),
+            FilledButton.tonalIcon(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              icon: const Icon(Icons.person_remove_alt_1_outlined),
+              label: const Text('Remove'),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    await _runMutation(
+      action: () async {
+        await widget.tripsController.removeMember(
+          tripId: widget.trip.id,
+          userId: user.id,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack('$name removed from trip.');
+        }
       },
     );
   }
@@ -391,15 +461,16 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                                   isInviteLinkLoading || inviteLink.isEmpty
                                   ? null
                                   : () async {
+                                      final copiedMessage = context
+                                          .l10n
+                                          .workspaceInviteLinkCopied;
                                       await Clipboard.setData(
                                         ClipboardData(text: inviteLink),
                                       );
                                       if (!mounted) {
                                         return;
                                       }
-                                      _showSnack(
-                                        context.l10n.workspaceInviteLinkCopied,
-                                      );
+                                      _showSnack(copiedMessage);
                                     },
                               icon: const Icon(Icons.copy_all_outlined),
                             ),
