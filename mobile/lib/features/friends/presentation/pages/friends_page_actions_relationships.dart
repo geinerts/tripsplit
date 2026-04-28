@@ -43,26 +43,16 @@ extension _FriendsPageActionsRelationships on _FriendsPageState {
   }
 
   Future<bool> _confirmCancelInvite(FriendRequest request) async {
-    final confirmed = await showDialog<bool>(
+    final t = context.l10n;
+    return showAppConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(context.l10n.friendsCancelInvite),
-        content: Text(
-          context.l10n.friendsCancelInviteTo(request.user.preferredName),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.l10n.friendsKeep),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.l10n.friendsCancelInvite),
-          ),
-        ],
-      ),
+      title: t.friendsCancelInvite,
+      message: t.friendsCancelInviteTo(request.user.preferredName),
+      confirmLabel: t.friendsCancelInvite,
+      cancelLabel: t.friendsKeep,
+      icon: Icons.person_remove_alt_1_outlined,
+      destructive: true,
     );
-    return confirmed == true;
   }
 
   Future<void> _cancelInvite(FriendRequest request) async {

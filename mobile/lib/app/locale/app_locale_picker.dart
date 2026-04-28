@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/l10n/l10n.dart';
+import '../../core/ui/app_components.dart';
 import '../../core/ui/app_sheet.dart';
 import 'app_locale_controller.dart';
 import 'app_locale_scope.dart';
@@ -22,11 +23,11 @@ Future<void> showAppLocalePicker(BuildContext context) async {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.translate_outlined),
-              title: Text(t.languageEnglish),
+            AppActionSheetTile(
+              icon: Icons.translate_outlined,
+              title: t.languageEnglish,
               trailing: current == AppLocaleMode.english
-                  ? const Icon(Icons.check)
+                  ? const Icon(Icons.check_rounded)
                   : null,
               onTap: () async {
                 await controller.setMode(AppLocaleMode.english);
@@ -35,11 +36,11 @@ Future<void> showAppLocalePicker(BuildContext context) async {
                 }
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.translate),
-              title: Text(t.languageLatvian),
+            AppActionSheetTile(
+              icon: Icons.translate,
+              title: t.languageLatvian,
               trailing: current == AppLocaleMode.latvian
-                  ? const Icon(Icons.check)
+                  ? const Icon(Icons.check_rounded)
                   : null,
               onTap: () async {
                 await controller.setMode(AppLocaleMode.latvian);
@@ -48,11 +49,11 @@ Future<void> showAppLocalePicker(BuildContext context) async {
                 }
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.translate_rounded),
-              title: Text(t.languageSpanish),
+            AppActionSheetTile(
+              icon: Icons.translate_rounded,
+              title: t.languageSpanish,
               trailing: current == AppLocaleMode.spanish
-                  ? const Icon(Icons.check)
+                  ? const Icon(Icons.check_rounded)
                   : null,
               onTap: () async {
                 await controller.setMode(AppLocaleMode.spanish);

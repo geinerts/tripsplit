@@ -154,6 +154,25 @@ class _TripSplitAppState extends State<TripSplitApp> {
           ),
         ),
       ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDesign.radiusLg),
+          side: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.55),
+          ),
+        ),
+        titleTextStyle: textTheme.titleLarge?.copyWith(
+          color: colorScheme.onSurface,
+          fontWeight: FontWeight.w800,
+        ),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.60),
@@ -311,6 +330,25 @@ class _TripSplitAppState extends State<TripSplitApp> {
             color: colorScheme.outlineVariant.withValues(alpha: 0.52),
           ),
         ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppDesign.darkSurfaceRaised,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDesign.radiusLg),
+          side: BorderSide(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.52),
+          ),
+        ),
+        titleTextStyle: textTheme.titleLarge?.copyWith(
+          color: colorScheme.onSurface,
+          fontWeight: FontWeight.w800,
+        ),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+        actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

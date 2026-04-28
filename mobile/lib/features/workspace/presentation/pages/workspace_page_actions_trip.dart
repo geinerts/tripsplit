@@ -69,40 +69,16 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (context) {
-        final t = context.l10n;
-        return AlertDialog(
-          title: Text(t.finishTripTitle),
-          content: Text(t.finishTripConfirmationText),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.cancelAction),
-            ),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: AppDesign.actionGradient(context),
-              ),
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  foregroundColor: AppDesign.darkForeground,
-                ),
-                child: Text(t.finishTripStartSettlementsAction),
-              ),
-            ),
-          ],
-        );
-      },
+      title: context.l10n.finishTripTitle,
+      message: context.l10n.finishTripConfirmationText,
+      confirmLabel: context.l10n.finishTripStartSettlementsAction,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.flag_circle_outlined,
     );
 
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
 
@@ -277,30 +253,16 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     required String confirmLabel,
     bool isDestructive = false,
   }) {
-    return showDialog<bool>(
+    return showAppConfirmationDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(context.l10n.cancelAction),
-            ),
-            FilledButton(
-              style: isDestructive
-                  ? FilledButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                      foregroundColor: Theme.of(context).colorScheme.onError,
-                    )
-                  : null,
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(confirmLabel),
-            ),
-          ],
-        );
-      },
+      title: title,
+      message: message,
+      confirmLabel: confirmLabel,
+      cancelLabel: context.l10n.cancelAction,
+      icon: isDestructive
+          ? Icons.report_problem_outlined
+          : Icons.payments_outlined,
+      destructive: isDestructive,
     );
   }
 
@@ -365,33 +327,23 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (canEdit)
-              ListTile(
-                leading: const Icon(Icons.edit_outlined),
-                title: Text('${t.editAction} ${t.tripTitleShort}'),
+              AppActionSheetTile(
+                icon: Icons.edit_outlined,
+                title: '${t.editAction} ${t.tripTitleShort}',
                 onTap: () => Navigator.of(sheetContext).pop('edit'),
               ),
             if (canManageMembers)
-              ListTile(
-                leading: const Icon(Icons.group_add_outlined),
-                title: Text(t.addMembersAction),
-                subtitle: Text(
-                  context.l10n.workspaceInviteLinkOrAddFromFriends,
-                ),
+              AppActionSheetTile(
+                icon: Icons.group_add_outlined,
+                title: t.addMembersAction,
+                subtitle: context.l10n.workspaceInviteLinkOrAddFromFriends,
                 onTap: () => Navigator.of(sheetContext).pop('members'),
               ),
             if (canDelete)
-              ListTile(
-                leading: Icon(
-                  Icons.delete_outline,
-                  color: Theme.of(sheetContext).colorScheme.error,
-                ),
-                title: Text(
-                  '${t.deleteAction} ${t.tripTitleShort}',
-                  style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(sheetContext).colorScheme.error,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              AppActionSheetTile(
+                icon: Icons.delete_outline,
+                title: '${t.deleteAction} ${t.tripTitleShort}',
+                destructive: true,
                 onTap: () => Navigator.of(sheetContext).pop('delete'),
               ),
           ],
@@ -509,70 +461,6 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       final hasExistingTripImage =
           !removeImageRequested && existingTripImageUrl.isNotEmpty;
       final hasImage = selectedImageBytes != null || hasExistingTripImage;
-      final platform = Theme.of(dialogContext).platform;
-      final isIOS = platform == TargetPlatform.iOS;
-
-      if (isIOS) {
-        final selectedSource =
-            await showCupertinoModalPopup<_TripImageSourceOption>(
-              context: dialogContext,
-              builder: (cupertinoContext) => CupertinoActionSheet(
-                actions: [
-                  if (hasImage)
-                    CupertinoActionSheetAction(
-                      isDestructiveAction: true,
-                      onPressed: () => Navigator.of(
-                        cupertinoContext,
-                      ).pop(_TripImageSourceOption.remove),
-                      child: Text(context.l10n.profileRemoveImage),
-                    ),
-                  CupertinoActionSheetAction(
-                    onPressed: () => Navigator.of(
-                      cupertinoContext,
-                    ).pop(_TripImageSourceOption.camera),
-                    child: Text(t.takePhotoAction),
-                  ),
-                  CupertinoActionSheetAction(
-                    onPressed: () => Navigator.of(
-                      cupertinoContext,
-                    ).pop(_TripImageSourceOption.library),
-                    child: Text(t.chooseFromLibraryAction),
-                  ),
-                ],
-                cancelButton: CupertinoActionSheetAction(
-                  onPressed: () => Navigator.of(cupertinoContext).pop(),
-                  child: Text(t.cancelAction),
-                ),
-              ),
-            );
-
-        if (!mounted || !dialogContext.mounted || selectedSource == null) {
-          return;
-        }
-
-        if (selectedSource == _TripImageSourceOption.remove) {
-          setDialogState(() {
-            selectedImageBytes = null;
-            selectedImageName = null;
-            removeImageRequested = true;
-          });
-          return;
-        }
-
-        final source = selectedSource == _TripImageSourceOption.camera
-            ? ImageSource.camera
-            : ImageSource.gallery;
-        final picked = await _pickTripImageForUploadFromSource(source);
-        if (!mounted || !dialogContext.mounted || picked == null) {
-          return;
-        }
-        setDialogState(() {
-          selectedImageBytes = picked.bytes;
-          selectedImageName = picked.fileName;
-          removeImageRequested = false;
-        });
-        return;
-      }
 
       final selectedSource = await showAppBottomSheet<_TripImageSourceOption>(
         context: dialogContext,
@@ -580,33 +468,29 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                leading: const Icon(Icons.photo_camera_outlined),
-                title: Text(t.takePhotoAction),
+              AppActionSheetTile(
+                icon: Icons.photo_camera_outlined,
+                title: t.takePhotoAction,
                 onTap: () => Navigator.of(
                   bottomSheetContext,
                 ).pop(_TripImageSourceOption.camera),
               ),
-              ListTile(
-                leading: const Icon(Icons.photo_library_outlined),
-                title: Text(t.chooseFromLibraryAction),
+              AppActionSheetTile(
+                icon: Icons.photo_library_outlined,
+                title: t.chooseFromLibraryAction,
                 onTap: () => Navigator.of(
                   bottomSheetContext,
                 ).pop(_TripImageSourceOption.library),
               ),
               if (hasImage)
-                ListTile(
-                  leading: const Icon(Icons.delete_outline),
-                  title: Text(context.l10n.profileRemoveImage),
+                AppActionSheetTile(
+                  icon: Icons.delete_outline,
+                  title: context.l10n.profileRemoveImage,
+                  destructive: true,
                   onTap: () => Navigator.of(
                     bottomSheetContext,
                   ).pop(_TripImageSourceOption.remove),
                 ),
-              ListTile(
-                leading: const Icon(Icons.close),
-                title: Text(t.cancelAction),
-                onTap: () => Navigator.of(bottomSheetContext).pop(),
-              ),
             ],
           );
         },
@@ -853,52 +737,38 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.brightness_6_outlined),
-              title: Text(t.appearance),
+            AppActionSheetTile(
+              icon: Icons.brightness_6_outlined,
+              title: t.appearance,
               onTap: () => Navigator.of(sheetContext).pop('appearance'),
             ),
-            ListTile(
-              leading: const Icon(Icons.translate_outlined),
-              title: Text(t.languageAction),
+            AppActionSheetTile(
+              icon: Icons.translate_outlined,
+              title: t.languageAction,
               onTap: () => Navigator.of(sheetContext).pop('language'),
             ),
-            ListTile(
-              leading: const Icon(Icons.casino_outlined),
-              title: Text(context.l10n.workspaceRandomPicker),
+            AppActionSheetTile(
+              icon: Icons.casino_outlined,
+              title: context.l10n.workspaceRandomPicker,
               onTap: () => Navigator.of(sheetContext).pop('random_picker'),
             ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: Text(t.logOutButton),
+            AppActionSheetTile(
+              icon: Icons.logout,
+              title: t.logOutButton,
               onTap: () => Navigator.of(sheetContext).pop('logout'),
             ),
             if (canLeaveTrip)
-              ListTile(
-                leading: Icon(
-                  Icons.exit_to_app_rounded,
-                  color: Theme.of(sheetContext).colorScheme.error,
-                ),
-                title: Text(
-                  'Leave trip',
-                  style: TextStyle(
-                    color: Theme.of(sheetContext).colorScheme.error,
-                  ),
-                ),
+              AppActionSheetTile(
+                icon: Icons.exit_to_app_rounded,
+                title: 'Leave trip',
+                destructive: true,
                 onTap: () => Navigator.of(sheetContext).pop('leave_trip'),
               ),
             if (canDeleteTrip)
-              ListTile(
-                leading: Icon(
-                  Icons.delete_outline,
-                  color: Theme.of(sheetContext).colorScheme.error,
-                ),
-                title: Text(
-                  '${t.deleteAction} ${t.tripTitleShort}',
-                  style: TextStyle(
-                    color: Theme.of(sheetContext).colorScheme.error,
-                  ),
-                ),
+              AppActionSheetTile(
+                icon: Icons.delete_outline,
+                title: '${t.deleteAction} ${t.tripTitleShort}',
+                destructive: true,
                 onTap: () => Navigator.of(sheetContext).pop('delete_trip'),
               ),
           ],
@@ -943,33 +813,18 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     final tripLabel = tripName.isNotEmpty
         ? tripName
         : context.l10n.tripWithId(widget.trip.id);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Leave trip?'),
-          content: Text(
-            'Leave "$tripLabel"? This is only possible if you have no expenses, settlements, or balances in this trip.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(context.l10n.cancelAction),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(dialogContext).colorScheme.error,
-                foregroundColor: Theme.of(dialogContext).colorScheme.onError,
-              ),
-              child: const Text('Leave'),
-            ),
-          ],
-        );
-      },
+      title: 'Leave trip?',
+      message:
+          'Leave "$tripLabel"? This is only possible if you have no expenses, settlements, or balances in this trip.',
+      confirmLabel: 'Leave',
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.logout_rounded,
+      destructive: true,
     );
 
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
 
@@ -1060,35 +915,18 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     final tripLabel = tripName.isNotEmpty
         ? tripName
         : t.tripWithId(widget.trip.id);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text('${t.deleteAction} ${t.tripTitleShort}'),
-          content: Text(
-            context.l10n.tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded(
-              tripLabel,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(t.cancelAction),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(dialogContext).colorScheme.error,
-                foregroundColor: Theme.of(dialogContext).colorScheme.onError,
-              ),
-              child: Text(t.deleteAction),
-            ),
-          ],
-        );
-      },
+      title: '${t.deleteAction} ${t.tripTitleShort}',
+      message: context.l10n
+          .tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded(tripLabel),
+      confirmLabel: t.deleteAction,
+      cancelLabel: t.cancelAction,
+      icon: Icons.delete_outline,
+      destructive: true,
     );
 
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
 
@@ -1132,28 +970,17 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (context) {
-        final t = context.l10n;
-        return AlertDialog(
-          title: Text(t.logOutButton),
-          content: Text(t.logoutFromDeviceQuestion),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.cancelAction),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(t.logOutButton),
-            ),
-          ],
-        );
-      },
+      title: context.l10n.logOutButton,
+      message: context.l10n.logoutFromDeviceQuestion,
+      confirmLabel: context.l10n.logOutButton,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.logout_rounded,
+      destructive: true,
     );
 
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
 

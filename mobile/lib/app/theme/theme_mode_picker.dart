@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/l10n/l10n.dart';
+import '../../core/ui/app_components.dart';
 import '../../core/ui/app_sheet.dart';
 import 'theme_mode_scope.dart';
 
@@ -21,11 +22,11 @@ Future<void> showThemeModePicker(BuildContext context) async {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.light_mode_outlined),
-              title: Text(t.themeModeLight),
+            AppActionSheetTile(
+              icon: Icons.light_mode_outlined,
+              title: t.themeModeLight,
               trailing: current == ThemeMode.light
-                  ? const Icon(Icons.check)
+                  ? const Icon(Icons.check_rounded)
                   : null,
               onTap: () async {
                 await controller.setThemeMode(ThemeMode.light);
@@ -34,12 +35,12 @@ Future<void> showThemeModePicker(BuildContext context) async {
                 }
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.dark_mode_outlined),
-              title: Text(t.themeModeDark),
-              subtitle: Text(t.themeModeDarkSubtitle),
+            AppActionSheetTile(
+              icon: Icons.dark_mode_outlined,
+              title: t.themeModeDark,
+              subtitle: t.themeModeDarkSubtitle,
               trailing: current == ThemeMode.dark
-                  ? const Icon(Icons.check)
+                  ? const Icon(Icons.check_rounded)
                   : null,
               onTap: () async {
                 await controller.setThemeMode(ThemeMode.dark);

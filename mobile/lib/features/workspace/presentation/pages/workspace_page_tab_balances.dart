@@ -26,11 +26,13 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
       children: [
         if (visibleBalances.isEmpty)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(t.noBalancesYet),
-            ),
+          AppEmptyState(
+            icon: Icons.balance_outlined,
+            title: t.noBalancesYet,
+            message:
+                'Balances appear after the first expense. Add one shared cost to see who owes what.',
+            actionLabel: snapshot.isActive ? 'Add first expense' : null,
+            onAction: snapshot.isActive ? _onAddExpensePressed : null,
           )
         else
           ...visibleBalances.map((item) {
@@ -257,12 +259,28 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           ),
           const SizedBox(height: 12),
         ],
+        if (!snapshot.isActive && settlements.isNotEmpty) ...[
+          _buildSettlementProgressOverview(
+            snapshot: snapshot,
+            settlements: settlements,
+            usersById: usersById,
+            semantic: semantic,
+          ),
+          const SizedBox(height: 12),
+        ],
         if (settlements.isEmpty)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(context.l10n.noSettlements),
-            ),
+          AppEmptyState(
+            icon: Icons.payments_outlined,
+            title: context.l10n.noSettlements,
+            message: snapshot.isActive
+                ? 'Mark everyone ready, then the trip owner can start settlements.'
+                : 'There are no payments needed for this trip.',
+            actionLabel: snapshot.isActive && canToggleReady
+                ? (isCurrentUserReady ? 'You are ready' : 'Mark me ready')
+                : null,
+            onAction: snapshot.isActive && canToggleReady && !isCurrentUserReady
+                ? () => _onReadyToSettleChanged(true)
+                : null,
           )
         else ...[
           if (pendingSettlements.isNotEmpty) ...[
@@ -314,6 +332,120 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         ),
       ),
     );
+  }
+
+  Widget _buildSettlementProgressOverview({
+    required WorkspaceSnapshot snapshot,
+    required List<SettlementItem> settlements,
+    required Map<int, WorkspaceUser> usersById,
+    required AppSemanticColors semantic,
+  }) {
+    final total = snapshot.settlementTotal > 0
+        ? snapshot.settlementTotal
+        : settlements.length;
+    final confirmed = snapshot.settlementConfirmed.clamp(0, total).toInt();
+    final ratio = total <= 0 ? 0.0 : confirmed / total;
+    final waitingLabel = _settlementWaitingLabel(
+      settlements: settlements,
+      usersById: usersById,
+    );
+    final colors = Theme.of(context).colorScheme;
+
+    return _WorkspaceSectionCard(
+      accent: confirmed >= total ? colors.primary : colors.tertiary,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: semantic.statusActiveBackground,
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Icon(
+                  confirmed >= total
+                      ? Icons.check_circle_outline_rounded
+                      : Icons.timeline_rounded,
+                  color: semantic.flowStepCurrent,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$confirmed of $total payments confirmed',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: AppDesign.titleColor(context),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      waitingLabel,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppDesign.mutedColor(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              value: ratio,
+              minHeight: 8,
+              backgroundColor: colors.surfaceContainerHighest.withValues(
+                alpha: 0.45,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _settlementWaitingLabel({
+    required List<SettlementItem> settlements,
+    required Map<int, WorkspaceUser> usersById,
+  }) {
+    for (final item in settlements) {
+      if (item.canConfirmReceived) {
+        return 'You need to confirm receiving ${_formatMoney(context, item.amount, currencyCode: widget.trip.currencyCode)} from ${item.from}.';
+      }
+      if (item.canMarkSent) {
+        return 'You need to mark payment sent to ${item.to}.';
+      }
+    }
+
+    final waitingNames = <String>{};
+    for (final item in settlements) {
+      if (item.isConfirmed) {
+        continue;
+      }
+      final waitingUserId = item.isSent ? item.toUserId : item.fromUserId;
+      final user = usersById[waitingUserId];
+      final name = (user?.preferredName ?? user?.nickname ?? '').trim();
+      waitingNames.add(name.isEmpty ? item.to : name);
+      if (waitingNames.length >= 2) {
+        break;
+      }
+    }
+
+    if (waitingNames.isEmpty) {
+      return 'All payments are confirmed.';
+    }
+    if (waitingNames.length == 1) {
+      return 'Waiting for ${waitingNames.first}.';
+    }
+    return 'Waiting for ${waitingNames.join(', ')}.';
   }
 
   Widget _buildSettlementFlowCard({

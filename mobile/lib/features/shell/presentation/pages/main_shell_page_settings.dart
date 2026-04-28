@@ -37,39 +37,31 @@ extension _MainShellPageSettings on _MainShellPageState {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.brightness_6_outlined),
-              title: Text(t.appearance),
+            AppActionSheetTile(
+              icon: Icons.brightness_6_outlined,
+              title: t.appearance,
               onTap: () => Navigator.of(sheetContext).pop('appearance'),
             ),
-            ListTile(
-              leading: const Icon(Icons.translate_outlined),
-              title: Text(t.languageAction),
+            AppActionSheetTile(
+              icon: Icons.translate_outlined,
+              title: t.languageAction,
               onTap: () => Navigator.of(sheetContext).pop('language'),
             ),
-            ListTile(
-              leading: const Icon(Icons.feedback_outlined),
-              title: Text(context.l10n.profileFeedbackSendTitle),
+            AppActionSheetTile(
+              icon: Icons.feedback_outlined,
+              title: context.l10n.profileFeedbackSendTitle,
               onTap: () => Navigator.of(sheetContext).pop('send_feedback'),
             ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: Text(t.logOutButton),
+            AppActionSheetTile(
+              icon: Icons.logout,
+              title: t.logOutButton,
               onTap: () => Navigator.of(sheetContext).pop('logout'),
             ),
             if (canDeleteOpenedTrip)
-              ListTile(
-                leading: Icon(
-                  Icons.delete_outline,
-                  color: Theme.of(sheetContext).colorScheme.error,
-                ),
-                title: Text(
-                  '${t.deleteAction} ${t.tripTitleShort}',
-                  style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(sheetContext).colorScheme.error,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              AppActionSheetTile(
+                icon: Icons.delete_outline,
+                title: '${t.deleteAction} ${t.tripTitleShort}',
+                destructive: true,
                 onTap: () => Navigator.of(sheetContext).pop('delete_trip'),
               ),
           ],
@@ -124,34 +116,17 @@ extension _MainShellPageSettings on _MainShellPageState {
 
     final t = context.l10n;
     final tripLabel = _tripDisplayName(context, trip);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text('${t.deleteAction} ${t.tripTitleShort}'),
-          content: Text(
-            context.l10n.shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(
-              tripLabel,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(t.cancelAction),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(dialogContext).colorScheme.error,
-                foregroundColor: Theme.of(dialogContext).colorScheme.onError,
-              ),
-              child: Text(t.deleteAction),
-            ),
-          ],
-        );
-      },
+      title: '${t.deleteAction} ${t.tripTitleShort}',
+      message: context.l10n
+          .shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(tripLabel),
+      confirmLabel: t.deleteAction,
+      cancelLabel: t.cancelAction,
+      icon: Icons.delete_outline,
+      destructive: true,
     );
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
 
@@ -189,26 +164,15 @@ extension _MainShellPageSettings on _MainShellPageState {
       return;
     }
     final t = context.l10n;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(t.logOutButton),
-          content: Text(t.logoutFromDeviceQuestion),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.cancelAction),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(t.logOutButton),
-            ),
-          ],
-        );
-      },
+      title: t.logOutButton,
+      message: t.logoutFromDeviceQuestion,
+      confirmLabel: t.logOutButton,
+      cancelLabel: t.cancelAction,
+      icon: Icons.logout_rounded,
     );
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
 

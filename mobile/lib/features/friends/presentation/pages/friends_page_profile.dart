@@ -49,49 +49,13 @@ extension _FriendsPageProfile on _FriendsPageState {
               }
 
               Future<_FriendProfileAction?> showProfileActionsSheet() async {
-                final isIOS =
-                    Theme.of(profileContext).platform == TargetPlatform.iOS;
-                if (isIOS) {
-                  return showCupertinoModalPopup<_FriendProfileAction>(
-                    context: profileContext,
-                    builder: (sheetContext) => CupertinoActionSheet(
-                      actions: [
-                        CupertinoActionSheetAction(
-                          isDestructiveAction: true,
-                          onPressed: () => Navigator.of(
-                            sheetContext,
-                          ).pop(_FriendProfileAction.removeFriend),
-                          child: Text(context.l10n.friendsRemoveFriend),
-                        ),
-                      ],
-                      cancelButton: CupertinoActionSheetAction(
-                        onPressed: () => Navigator.of(sheetContext).pop(),
-                        child: Text(context.l10n.authCancel),
-                      ),
-                    ),
-                  );
-                }
-
                 return showAppBottomSheet<_FriendProfileAction>(
                   context: profileContext,
                   builder: (sheetContext) {
-                    final isDark =
-                        Theme.of(sheetContext).brightness == Brightness.dark;
-                    final removeColor = isDark
-                        ? Colors.red.shade200
-                        : Colors.red.shade700;
-                    return ListTile(
-                      leading: Icon(
-                        Icons.person_remove_alt_1_rounded,
-                        color: removeColor,
-                      ),
-                      title: Text(
-                        context.l10n.friendsRemoveFriend,
-                        style: TextStyle(
-                          color: removeColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                    return AppActionSheetTile(
+                      icon: Icons.person_remove_alt_1_rounded,
+                      title: context.l10n.friendsRemoveFriend,
+                      destructive: true,
                       onTap: () => Navigator.of(
                         sheetContext,
                       ).pop(_FriendProfileAction.removeFriend),
@@ -104,50 +68,15 @@ extension _FriendsPageProfile on _FriendsPageState {
                 final title = context.l10n.friendsRemoveThisFriend;
                 final body = context.l10n
                     .friendsWillBeRemovedFromYourFriendsListYouCanAdd(name);
-                final isIOS =
-                    Theme.of(profileContext).platform == TargetPlatform.iOS;
-                if (isIOS) {
-                  final result = await showCupertinoDialog<bool>(
-                    context: profileContext,
-                    builder: (dialogContext) => CupertinoAlertDialog(
-                      title: Text(title),
-                      content: Text(body),
-                      actions: [
-                        CupertinoDialogAction(
-                          onPressed: () =>
-                              Navigator.of(dialogContext).pop(false),
-                          child: Text(context.l10n.authCancel),
-                        ),
-                        CupertinoDialogAction(
-                          isDestructiveAction: true,
-                          onPressed: () =>
-                              Navigator.of(dialogContext).pop(true),
-                          child: Text(context.l10n.friendsContinue),
-                        ),
-                      ],
-                    ),
-                  );
-                  return result == true;
-                }
-
-                final result = await showDialog<bool>(
+                return showAppConfirmationDialog(
                   context: profileContext,
-                  builder: (dialogContext) => AlertDialog(
-                    title: Text(title),
-                    content: Text(body),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(dialogContext).pop(false),
-                        child: Text(context.l10n.authCancel),
-                      ),
-                      FilledButton(
-                        onPressed: () => Navigator.of(dialogContext).pop(true),
-                        child: Text(context.l10n.friendsContinue),
-                      ),
-                    ],
-                  ),
+                  title: title,
+                  message: body,
+                  confirmLabel: context.l10n.friendsContinue,
+                  cancelLabel: context.l10n.authCancel,
+                  icon: Icons.person_remove_alt_1_rounded,
+                  destructive: true,
                 );
-                return result == true;
               }
 
               Future<void> onOpenProfileActions() async {

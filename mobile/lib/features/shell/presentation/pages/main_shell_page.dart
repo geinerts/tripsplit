@@ -16,6 +16,7 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/l10n/notification_localizer.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
+import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/test_keys.dart';
@@ -329,25 +330,16 @@ class _MainShellPageState extends State<MainShellPage>
           )
         : context.l10n.shellInviteJoinTripQuestion(tripName, inviterLabel);
 
-    final decision = await showDialog<bool>(
+    final decision = await showAppConfirmationDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(context.l10n.shellTripInviteTitle),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(context.l10n.shellNoAction),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(context.l10n.shellYesAction),
-          ),
-        ],
-      ),
+      title: context.l10n.shellTripInviteTitle,
+      message: message,
+      confirmLabel: context.l10n.shellYesAction,
+      cancelLabel: context.l10n.shellNoAction,
+      icon: Icons.group_add_outlined,
     );
 
-    return decision == true;
+    return decision;
   }
 
   bool _hasOnlineConnectivity(List<ConnectivityResult> results) {

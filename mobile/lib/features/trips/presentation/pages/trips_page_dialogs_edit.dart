@@ -18,70 +18,6 @@ extension _TripsPageEditDialog on _TripsPageState {
       final hasExistingTripImage =
           !removeImageRequested && existingTripImageUrl.isNotEmpty;
       final hasImage = selectedImageBytes != null || hasExistingTripImage;
-      final platform = Theme.of(dialogContext).platform;
-      final isIOS = platform == TargetPlatform.iOS;
-
-      if (isIOS) {
-        final selectedSource =
-            await showCupertinoModalPopup<_TripImageSourceOption>(
-              context: dialogContext,
-              builder: (cupertinoContext) => CupertinoActionSheet(
-                actions: [
-                  if (hasImage)
-                    CupertinoActionSheetAction(
-                      isDestructiveAction: true,
-                      onPressed: () => Navigator.of(
-                        cupertinoContext,
-                      ).pop(_TripImageSourceOption.remove),
-                      child: Text(context.l10n.profileRemoveImage),
-                    ),
-                  CupertinoActionSheetAction(
-                    onPressed: () => Navigator.of(
-                      cupertinoContext,
-                    ).pop(_TripImageSourceOption.camera),
-                    child: Text(t.takePhotoAction),
-                  ),
-                  CupertinoActionSheetAction(
-                    onPressed: () => Navigator.of(
-                      cupertinoContext,
-                    ).pop(_TripImageSourceOption.library),
-                    child: Text(t.chooseFromLibraryAction),
-                  ),
-                ],
-                cancelButton: CupertinoActionSheetAction(
-                  onPressed: () => Navigator.of(cupertinoContext).pop(),
-                  child: Text(t.cancelAction),
-                ),
-              ),
-            );
-
-        if (!mounted || !dialogContext.mounted || selectedSource == null) {
-          return;
-        }
-
-        if (selectedSource == _TripImageSourceOption.remove) {
-          setDialogState(() {
-            selectedImageBytes = null;
-            selectedImageName = null;
-            removeImageRequested = true;
-          });
-          return;
-        }
-
-        final source = selectedSource == _TripImageSourceOption.camera
-            ? ImageSource.camera
-            : ImageSource.gallery;
-        final picked = await _pickTripImageForUploadFromSource(source);
-        if (!mounted || !dialogContext.mounted || picked == null) {
-          return;
-        }
-        setDialogState(() {
-          selectedImageBytes = picked.bytes;
-          selectedImageName = picked.fileName;
-          removeImageRequested = false;
-        });
-        return;
-      }
 
       final selectedSource = await showAppBottomSheet<_TripImageSourceOption>(
         context: dialogContext,
@@ -89,33 +25,29 @@ extension _TripsPageEditDialog on _TripsPageState {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                leading: const Icon(Icons.photo_camera_outlined),
-                title: Text(t.takePhotoAction),
+              AppActionSheetTile(
+                icon: Icons.photo_camera_outlined,
+                title: t.takePhotoAction,
                 onTap: () => Navigator.of(
                   bottomSheetContext,
                 ).pop(_TripImageSourceOption.camera),
               ),
-              ListTile(
-                leading: const Icon(Icons.photo_library_outlined),
-                title: Text(t.chooseFromLibraryAction),
+              AppActionSheetTile(
+                icon: Icons.photo_library_outlined,
+                title: t.chooseFromLibraryAction,
                 onTap: () => Navigator.of(
                   bottomSheetContext,
                 ).pop(_TripImageSourceOption.library),
               ),
               if (hasImage)
-                ListTile(
-                  leading: const Icon(Icons.delete_outline),
-                  title: Text(context.l10n.profileRemoveImage),
+                AppActionSheetTile(
+                  icon: Icons.delete_outline,
+                  title: context.l10n.profileRemoveImage,
+                  destructive: true,
                   onTap: () => Navigator.of(
                     bottomSheetContext,
                   ).pop(_TripImageSourceOption.remove),
                 ),
-              ListTile(
-                leading: const Icon(Icons.close),
-                title: Text(t.cancelAction),
-                onTap: () => Navigator.of(bottomSheetContext).pop(),
-              ),
             ],
           );
         },

@@ -973,31 +973,18 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
   }
 
   Future<void> _confirmDeleteComment(ExpenseComment comment) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(context.l10n.expenseDeleteCommentTitle),
-        content: Text(
-          comment.body,
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(context.l10n.cancelAction),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppDesign.lightDestructive,
-            ),
-            child: Text(context.l10n.deleteAction),
-          ),
-        ],
-      ),
+      title: context.l10n.expenseDeleteCommentTitle,
+      message: comment.body.trim().isEmpty
+          ? 'Delete this comment?'
+          : comment.body,
+      confirmLabel: context.l10n.deleteAction,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.delete_outline_rounded,
+      destructive: true,
     );
-    if (confirmed != true || !mounted) return;
+    if (!confirmed || !mounted) return;
     try {
       await widget.controller.deleteExpenseComment(
         commentId: comment.id,

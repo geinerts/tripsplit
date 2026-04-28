@@ -331,27 +331,16 @@ extension _LoginPageActions on _LoginPageState {
       return;
     }
 
-    final shouldSend = await showDialog<bool>(
+    final shouldSend = await showAppConfirmationDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(context.l10nEn.authAccountDeactivated),
-          content: Text(context.l10nEn.authSendReactivationLinkEmail(email)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(context.l10nEn.authCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(context.l10nEn.authSendLink),
-            ),
-          ],
-        );
-      },
+      title: context.l10nEn.authAccountDeactivated,
+      message: context.l10nEn.authSendReactivationLinkEmail(email),
+      confirmLabel: context.l10nEn.authSendLink,
+      cancelLabel: context.l10nEn.authCancel,
+      icon: Icons.mark_email_read_outlined,
     );
 
-    if (!mounted || shouldSend != true) {
+    if (!mounted || !shouldSend) {
       return;
     }
 
@@ -390,27 +379,16 @@ extension _LoginPageActions on _LoginPageState {
       return;
     }
 
-    final shouldSend = await showDialog<bool>(
+    final shouldSend = await showAppConfirmationDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(context.l10nEn.authEmailNotVerified),
-          content: Text(context.l10nEn.authSendVerificationLinkEmail(email)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(context.l10nEn.authCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(context.l10nEn.authSendLink),
-            ),
-          ],
-        );
-      },
+      title: context.l10nEn.authEmailNotVerified,
+      message: context.l10nEn.authSendVerificationLinkEmail(email),
+      confirmLabel: context.l10nEn.authSendLink,
+      cancelLabel: context.l10nEn.authCancel,
+      icon: Icons.verified_user_outlined,
     );
 
-    if (!mounted || shouldSend != true) {
+    if (!mounted || !shouldSend) {
       return;
     }
 
@@ -456,31 +434,18 @@ extension _LoginPageActions on _LoginPageState {
       _errorText = null;
     });
 
-    final shouldResend = await showDialog<bool>(
+    final shouldResend = await showAppConfirmationDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(context.l10nEn.authVerifyEmail),
-          content: Text(
-            email.isEmpty
-                ? message
-                : '$message\n\n${context.l10nEn.authEmailLabel} $email',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(context.l10nEn.authClose),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(context.l10nEn.authResendLink),
-            ),
-          ],
-        );
-      },
+      title: context.l10nEn.authVerifyEmail,
+      message: email.isEmpty
+          ? message
+          : '$message\n\n${context.l10nEn.authEmailLabel} $email',
+      confirmLabel: context.l10nEn.authResendLink,
+      cancelLabel: context.l10nEn.authClose,
+      icon: Icons.outgoing_mail,
     );
 
-    if (!mounted || shouldResend != true || email.isEmpty) {
+    if (!mounted || !shouldResend || email.isEmpty) {
       return;
     }
 

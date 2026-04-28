@@ -353,40 +353,86 @@ extension _TripsPageWidgets on _TripsPageState {
 
   Widget _buildEmptyTripsState(BuildContext context) {
     final t = context.l10n;
-    return AppSurfaceCard(
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        children: [
-          Icon(
-            Icons.luggage_outlined,
-            size: 32,
-            color: AppDesign.mutedColor(context),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            t.noTripsYet,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: AppDesign.titleColor(context),
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            t.createFirstTripHint,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppDesign.mutedColor(context),
-            ),
-          ),
-          const SizedBox(height: 12),
-          ElevatedButton.icon(
-            onPressed: _isMutating ? null : _openCreateTripDialog,
-            icon: const Icon(Icons.add),
-            label: Text(t.createTripAction),
-          ),
-        ],
-      ),
+    if (_trips.isNotEmpty) {
+      return AppEmptyState(
+        icon: Icons.archive_outlined,
+        title: 'No active trips right now',
+        message:
+            'Your finished trips are still saved. Switch to all trips or start a new one when the next plan appears.',
+        actionLabel: t.tripsSeeAll,
+        onAction: () {
+          _updateState(() {
+            _showAllTrips = true;
+            _allTripsVisibleCount = _showAllTripsGrid
+                ? _TripsPageState._allTripsGridInitialCount
+                : _TripsPageState._allTripsInitialCount;
+          });
+        },
+        secondaryActionLabel: t.createTripAction,
+        onSecondaryAction: _isMutating ? null : _openCreateTripDialog,
+      );
+    }
+
+    return AppOnboardingChecklist(
+      title: 'Split your first trip in 3 steps',
+      subtitle:
+          'Splyto works best when you create the trip, invite the people, then add the first expense together.',
+      primaryActionLabel: t.createTripAction,
+      onPrimaryAction: _isMutating ? null : _openCreateTripDialog,
+      secondaryActionLabel: t.tripsJoinTripViaInvite,
+      onSecondaryAction: _isMutating ? null : _onJoinTripPressed,
+      steps: const [
+        AppOnboardingStep(
+          icon: Icons.luggage_outlined,
+          title: 'Create trip',
+          message: 'Name the trip, choose dates and set the main currency.',
+        ),
+        AppOnboardingStep(
+          icon: Icons.group_add_outlined,
+          title: 'Invite friends',
+          message: 'Add friends now or share an invite link after creating.',
+        ),
+        AppOnboardingStep(
+          icon: Icons.receipt_long_outlined,
+          title: 'Add first expense',
+          message: 'Add a receipt, choose who joined, and Splyto tracks it.',
+        ),
+      ],
     );
+  }
+
+  Widget _buildTripNextStepCard(BuildContext context, Trip trip) {
+    final isSettling =
+        trip.readyToSettle && trip.settlementsPending > 0 && !trip.isArchived;
+    if (isSettling) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: AppEmptyState(
+          icon: Icons.payments_outlined,
+          title: 'Settlements are waiting',
+          message:
+              '${trip.settlementsConfirmed} of ${trip.settlementsTotal} payments confirmed. Open the trip to finish the money flow.',
+          actionLabel: context.l10n.openSettlements,
+          onAction: () => _openWorkspace(trip),
+        ),
+      );
+    }
+
+    if (trip.isActive && trip.totalAmountCents <= 0) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: AppEmptyState(
+          icon: Icons.receipt_long_outlined,
+          title: 'No expenses yet',
+          message:
+              'Start by adding the first shared cost. You can still invite more people later.',
+          actionLabel: context.l10n.addExpenseTitle,
+          onAction: () => _openWorkspace(trip, openAddExpense: true),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 
   Widget _buildTripsCollection(
@@ -468,7 +514,13 @@ extension _TripsPageWidgets on _TripsPageState {
       return const SizedBox.shrink();
     }
     if (trips.length == 1) {
-      return _buildTripCard(context, trips.first);
+      final trip = trips.first;
+      return Column(
+        children: [
+          _buildTripNextStepCard(context, trip),
+          _buildTripCard(context, trip),
+        ],
+      );
     }
 
     const carouselHeight = 220.0;
@@ -480,6 +532,7 @@ extension _TripsPageWidgets on _TripsPageState {
 
     return Column(
       children: [
+        _buildTripNextStepCard(context, trips[indicatorIndex]),
         SizedBox(
           height: carouselHeight,
           child: PageView.builder(

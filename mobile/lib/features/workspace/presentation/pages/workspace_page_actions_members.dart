@@ -178,29 +178,17 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
     final name = user.preferredName.trim().isEmpty
         ? context.l10n.userWithId(user.id)
         : user.preferredName.trim();
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Remove member?'),
-          content: Text(
-            'Remove $name from this trip? This is only possible if they have no expenses, settlements, or balances.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(context.l10n.cancelAction),
-            ),
-            FilledButton.tonalIcon(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              icon: const Icon(Icons.person_remove_alt_1_outlined),
-              label: const Text('Remove'),
-            ),
-          ],
-        );
-      },
+      title: 'Remove member?',
+      message:
+          'Remove $name from this trip? This is only possible if they have no expenses, settlements, or balances.',
+      confirmLabel: 'Remove',
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.person_remove_alt_1_outlined,
+      destructive: true,
     );
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
 

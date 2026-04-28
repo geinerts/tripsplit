@@ -74,39 +74,39 @@ extension _MainShellPageNavigation on _MainShellPageState {
       return activeTrips.first;
     }
 
-    return showDialog<Trip>(
+    return showAppBottomSheet<Trip>(
       context: context,
-      builder: (context) {
+      builder: (sheetContext) {
         final t = context.l10n;
-        return AlertDialog(
-          title: Text(t.addExpensesAction),
-          content: SizedBox(
-            width: 420,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 360),
-              child: ListView.separated(
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 4, 18, 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  t.addExpensesAction,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: activeTrips.length,
-                separatorBuilder: (context, index) => const Divider(height: 1),
                 itemBuilder: (context, index) {
                   final trip = activeTrips[index];
-                  return ListTile(
-                    title: Text(
-                      _tripDisplayName(context, trip),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.of(context).pop(trip),
+                  return AppActionSheetTile(
+                    icon: Icons.card_travel_outlined,
+                    title: _tripDisplayName(context, trip),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => Navigator.of(sheetContext).pop(trip),
                   );
                 },
               ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(t.cancelAction),
             ),
           ],
         );

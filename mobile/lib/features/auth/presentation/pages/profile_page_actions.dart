@@ -45,65 +45,31 @@ extension _ProfilePageActions on _ProfilePageState {
     if (!mounted) {
       return;
     }
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      await showCupertinoModalPopup<void>(
-        context: context,
-        builder: (sheetContext) {
-          return CupertinoActionSheet(
-            title: Text(context.l10n.profileOpenWebsiteQuestion),
-            message: Text('portfolio.egm.lv'),
-            actions: [
-              CupertinoActionSheetAction(
-                onPressed: () {
-                  Navigator.of(sheetContext).pop();
-                  unawaited(_openPortfolioUrl());
-                },
-                child: Text(context.l10n.profileOpenPortfolioAction),
-              ),
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              isDefaultAction: true,
-              onPressed: () => Navigator.of(sheetContext).pop(),
-              child: Text(context.l10n.authCancel),
-            ),
-          );
-        },
-      );
-      return;
-    }
-
     final shouldOpen = await showAppBottomSheet<bool>(
       context: context,
       builder: (sheetContext) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                context.l10n.profileOpenWebsiteQuestion,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 4, 18, 8),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  context.l10n.profileOpenWebsiteQuestion,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'https://portfolio.egm.lv',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 14),
-              FilledButton(
-                onPressed: () => Navigator.of(sheetContext).pop(true),
-                child: Text(context.l10n.profileOpenPortfolioAction),
-              ),
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => Navigator.of(sheetContext).pop(false),
-                child: Text(context.l10n.authCancel),
-              ),
-            ],
-          ),
+            ),
+            AppActionSheetTile(
+              icon: Icons.open_in_new_rounded,
+              title: context.l10n.profileOpenPortfolioAction,
+              subtitle: 'portfolio.egm.lv',
+              onTap: () => Navigator.of(sheetContext).pop(true),
+            ),
+          ],
         );
       },
     );
@@ -528,41 +494,6 @@ extension _ProfilePageActions on _ProfilePageState {
   Future<_AvatarSourceOption?> _showAvatarActionSheet() async {
     final t = context.l10n;
     final hasAvatar = _hasAvatarImage();
-    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
-
-    if (isIOS) {
-      return showCupertinoModalPopup<_AvatarSourceOption>(
-        context: context,
-        builder: (cupertinoContext) => CupertinoActionSheet(
-          actions: [
-            if (hasAvatar)
-              CupertinoActionSheetAction(
-                isDestructiveAction: true,
-                onPressed: () => Navigator.of(
-                  cupertinoContext,
-                ).pop(_AvatarSourceOption.remove),
-                child: Text(t.removeAvatarAction),
-              ),
-            CupertinoActionSheetAction(
-              onPressed: () => Navigator.of(
-                cupertinoContext,
-              ).pop(_AvatarSourceOption.camera),
-              child: Text(t.takePhotoAction),
-            ),
-            CupertinoActionSheetAction(
-              onPressed: () => Navigator.of(
-                cupertinoContext,
-              ).pop(_AvatarSourceOption.library),
-              child: Text(t.chooseFromLibraryAction),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(cupertinoContext).pop(),
-            child: Text(t.cancelAction),
-          ),
-        ),
-      );
-    }
 
     return showAppBottomSheet<_AvatarSourceOption>(
       context: context,
@@ -570,33 +501,29 @@ extension _ProfilePageActions on _ProfilePageState {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.photo_camera_outlined),
-              title: Text(t.takePhotoAction),
+            AppActionSheetTile(
+              icon: Icons.photo_camera_outlined,
+              title: t.takePhotoAction,
               onTap: () => Navigator.of(
                 bottomSheetContext,
               ).pop(_AvatarSourceOption.camera),
             ),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: Text(t.chooseFromLibraryAction),
+            AppActionSheetTile(
+              icon: Icons.photo_library_outlined,
+              title: t.chooseFromLibraryAction,
               onTap: () => Navigator.of(
                 bottomSheetContext,
               ).pop(_AvatarSourceOption.library),
             ),
             if (hasAvatar)
-              ListTile(
-                leading: const Icon(Icons.delete_outline),
-                title: Text(t.removeAvatarAction),
+              AppActionSheetTile(
+                icon: Icons.delete_outline,
+                title: t.removeAvatarAction,
+                destructive: true,
                 onTap: () => Navigator.of(
                   bottomSheetContext,
                 ).pop(_AvatarSourceOption.remove),
               ),
-            ListTile(
-              leading: const Icon(Icons.close),
-              title: Text(t.cancelAction),
-              onTap: () => Navigator.of(bottomSheetContext).pop(),
-            ),
           ],
         );
       },

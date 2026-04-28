@@ -20,7 +20,10 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
     _isAddExpenseDialogOpen = true;
     _ExpenseFormResult? result;
     try {
-      result = await _showExpenseDialog(users: _snapshot!.users);
+      result = await _showExpenseDialog(
+        users: _snapshot!.users,
+        recentExpenses: _snapshot!.expenses,
+      );
     } finally {
       _isAddExpenseDialogOpen = false;
     }
@@ -84,6 +87,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
     final result = await _showExpenseDialog(
       users: _snapshot!.users,
       existing: expense,
+      recentExpenses: _snapshot!.expenses,
     );
     if (result == null || !mounted) {
       return;
@@ -94,27 +98,16 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
       return;
     }
 
-    final confirmed = await showDialog<bool>(
+    final t = context.l10n;
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (context) {
-        final t = context.l10n;
-        return AlertDialog(
-          title: Text(t.editExpenseConfirmTitle),
-          content: Text(t.editExpenseConfirmText),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.cancelAction),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(t.saveAction),
-            ),
-          ],
-        );
-      },
+      title: t.editExpenseConfirmTitle,
+      message: t.editExpenseConfirmText,
+      confirmLabel: t.saveAction,
+      cancelLabel: t.cancelAction,
+      icon: Icons.edit_rounded,
     );
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
     await _waitForDialogCloseTransition();
@@ -207,28 +200,18 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
       return;
     }
 
-    final confirmed = await showDialog<bool>(
+    final t = context.l10n;
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (context) {
-        final t = context.l10n;
-        return AlertDialog(
-          title: Text(t.deleteExpenseTitle),
-          content: Text(t.deleteExpenseConfirmQuestion),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.cancelAction),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(t.deleteAction),
-            ),
-          ],
-        );
-      },
+      title: t.deleteExpenseTitle,
+      message: t.deleteExpenseConfirmQuestion,
+      confirmLabel: t.deleteAction,
+      cancelLabel: t.cancelAction,
+      icon: Icons.delete_outline_rounded,
+      destructive: true,
     );
 
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
     // Avoid mutating parent state while dialog route is still deactivating.

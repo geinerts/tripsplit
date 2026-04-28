@@ -26,6 +26,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     final sourceExpenses = _expensesFeed.isNotEmpty
         ? _expensesFeed
         : snapshot.expenses;
+    final hasAnyExpenses = sourceExpenses.isNotEmpty;
     final usersById = <int, WorkspaceUser>{
       for (final user in snapshot.users) user.id: user,
     };
@@ -46,14 +47,6 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                 ),
               )
               .toList(growable: false);
-
-    WorkspaceUser? selectedUser;
-    for (final user in snapshot.users) {
-      if (user.id == _expenseFilterUserId) {
-        selectedUser = user;
-        break;
-      }
-    }
 
     final filterUsers = snapshot.users
         .where((user) => user.id != _currentUserId)
@@ -178,29 +171,35 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     ];
 
     if (expenses.isEmpty) {
+      final hasActiveFilters =
+          _expenseFilterUserId > 0 || searchQuery.isNotEmpty;
+      final emptyTitle = hasAnyExpenses
+          ? 'No expenses match this view'
+          : 'No expenses yet';
+      final emptyMessage = hasAnyExpenses
+          ? 'Try clearing search or payer filters to see all trip expenses.'
+          : 'Add the first shared cost so balances and settlements can start working.';
       children.add(
         Padding(
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-          child: Card(
-            color: isDark ? colors.surface : AppDesign.lightSurface,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-              side: BorderSide(
-                color: isDark
-                    ? colors.outlineVariant.withValues(alpha: 0.30)
-                    : AppDesign.lightStroke,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                _expenseFilterUserId > 0
-                    ? t.noExpensesByUserYet(
-                        selectedUser?.nickname ?? t.selectedUserFallback,
-                      )
-                    : t.noExpensesYet,
-              ),
-            ),
+          child: AppEmptyState(
+            icon: hasAnyExpenses
+                ? Icons.filter_alt_off_outlined
+                : Icons.receipt_long_outlined,
+            title: emptyTitle,
+            message: emptyMessage,
+            actionLabel: hasActiveFilters
+                ? 'Clear filters'
+                : (snapshot.isActive ? 'Add first expense' : null),
+            onAction: hasActiveFilters
+                ? () {
+                    _expenseSearchController.clear();
+                    _updateState(() {
+                      _expenseSearchQuery = '';
+                      _expenseFilterUserId = 0;
+                    });
+                  }
+                : (snapshot.isActive ? _onAddExpensePressed : null),
           ),
         ),
       );

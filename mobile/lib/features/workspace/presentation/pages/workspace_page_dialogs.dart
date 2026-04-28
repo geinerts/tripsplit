@@ -4,13 +4,22 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
   Future<_ExpenseFormResult?> _showExpenseDialog({
     required List<WorkspaceUser> users,
     TripExpense? existing,
+    List<TripExpense> recentExpenses = const <TripExpense>[],
   }) async {
+    TripExpense? lastExpense;
+    if (existing == null) {
+      for (final expense in recentExpenses) {
+        lastExpense = expense;
+        break;
+      }
+    }
+    final templateExpense = existing ?? lastExpense;
     final amountController = TextEditingController(
       text: existing != null ? existing.originalAmount.toStringAsFixed(2) : '',
     );
     final noteController = TextEditingController(text: existing?.note ?? '');
-    final initialCategory = existing != null
-        ? ExpenseCategoryCatalog.normalizeStored(existing.category)
+    final initialCategory = templateExpense != null
+        ? ExpenseCategoryCatalog.normalizeStored(templateExpense.category)
         : '';
     var isCustomCategoryMode =
         initialCategory.isNotEmpty &&
@@ -48,20 +57,40 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         parseExpenseDate(existing?.expenseDate) ??
         DateTime(now.year, now.month, now.day);
     var selectedCurrencyCode = AppCurrencyCatalog.normalize(
-      existing?.expenseCurrencyCode ?? widget.trip.currencyCode,
+      existing?.expenseCurrencyCode ??
+          lastExpense?.expenseCurrencyCode ??
+          widget.trip.currencyCode,
     );
 
-    final selected = existing == null
+    final selected = templateExpense == null
         ? <int>{}
-        : existing.participants.map((p) => p.id).toSet();
-    final rawSplitMode = (existing?.splitMode ?? 'equal').trim().toLowerCase();
+        : templateExpense.participants.map((p) => p.id).toSet();
+    final rawSplitMode = (templateExpense?.splitMode ?? 'equal')
+        .trim()
+        .toLowerCase();
     final supportedSplitModes = <String>{'equal', 'exact', 'percent', 'shares'};
     final isLegacySplitMode = !supportedSplitModes.contains(rawSplitMode);
     var splitMode = isLegacySplitMode ? 'exact' : rawSplitMode;
     final splitControllers = <int, TextEditingController>{};
-    if (existing != null && splitMode != 'equal') {
-      for (final participant in existing.participants) {
-        final seedValue = isLegacySplitMode
+    void seedSplitControllersFrom(
+      TripExpense? expense,
+      String mode, {
+      bool disposeExisting = false,
+    }) {
+      if (disposeExisting) {
+        for (final controller in splitControllers.values) {
+          controller.dispose();
+        }
+      }
+      splitControllers.clear();
+      if (expense == null || mode == 'equal') {
+        return;
+      }
+      final legacyMode = !supportedSplitModes.contains(
+        expense.splitMode.trim().toLowerCase(),
+      );
+      for (final participant in expense.participants) {
+        final seedValue = legacyMode
             ? participant.owedAmount
             : (participant.splitValue ?? participant.owedAmount);
         splitControllers[participant.id] = TextEditingController(
@@ -69,6 +98,44 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         );
       }
     }
+
+    seedSplitControllersFrom(templateExpense, splitMode);
+
+    List<String> recentCategoryKeys() {
+      final keys = <String>[];
+      for (final expense in recentExpenses) {
+        final key = ExpenseCategoryCatalog.normalizeStored(expense.category);
+        if (key.isEmpty || keys.contains(key)) {
+          continue;
+        }
+        keys.add(key);
+        if (keys.length >= 4) {
+          break;
+        }
+      }
+      return keys;
+    }
+
+    void applyExpenseTemplate(TripExpense source) {
+      amountController.text = _formatNumericInput(source.originalAmount);
+      noteController.text = source.note;
+      final category = ExpenseCategoryCatalog.normalizeStored(source.category);
+      isCustomCategoryMode = !ExpenseCategoryCatalog.isBuiltInKey(category);
+      selectedCategory = isCustomCategoryMode ? '' : category;
+      customCategoryController.text = isCustomCategoryMode ? category : '';
+      selectedCurrencyCode = AppCurrencyCatalog.normalize(
+        source.expenseCurrencyCode,
+      );
+      final nextSplitMode = source.splitMode.trim().toLowerCase();
+      splitMode = supportedSplitModes.contains(nextSplitMode)
+          ? nextSplitMode
+          : 'exact';
+      selected
+        ..clear()
+        ..addAll(source.participants.map((p) => p.id).where((id) => id > 0));
+      seedSplitControllersFrom(source, splitMode, disposeExisting: true);
+    }
+
     Uint8List? selectedReceiptBytes;
     String? selectedReceiptName;
     UploadedReceiptData? preuploadedReceipt;
@@ -326,6 +393,82 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                if (existing == null && lastExpense != null)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 12),
+                                    child: AppSurfaceCard(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        12,
+                                        10,
+                                        12,
+                                        10,
+                                      ),
+                                      radius: 18,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 38,
+                                            height: 38,
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                                  .withValues(alpha: 0.12),
+                                              borderRadius:
+                                                  BorderRadius.circular(13),
+                                            ),
+                                            child: const Icon(
+                                              Icons.replay_rounded,
+                                              size: 21,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Repeat last expense',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleSmall
+                                                      ?.copyWith(
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                      ),
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Text(
+                                                  'Prefill amount, category, currency, split and participants.',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall
+                                                      ?.copyWith(
+                                                        color:
+                                                            AppDesign.mutedColor(
+                                                              context,
+                                                            ),
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              setDialogState(() {
+                                                applyExpenseTemplate(
+                                                  lastExpense!,
+                                                );
+                                                errorText = null;
+                                              });
+                                            },
+                                            child: const Text('Use'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 TextField(
                                   controller: amountController,
                                   keyboardType:
@@ -476,6 +619,58 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                       ?.copyWith(fontWeight: FontWeight.w700),
                                 ),
                                 const SizedBox(height: 8),
+                                if (recentCategoryKeys().isNotEmpty) ...[
+                                  Text(
+                                    'Quick categories',
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: AppDesign.mutedColor(context),
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: [
+                                      for (final categoryKey
+                                          in recentCategoryKeys())
+                                        ChoiceChip(
+                                          label: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                ExpenseCategoryCatalog.iconFor(
+                                                  categoryKey,
+                                                ),
+                                                size: 16,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Text(
+                                                ExpenseCategoryCatalog.labelFor(
+                                                  categoryKey,
+                                                  Localizations.localeOf(
+                                                    context,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          selected:
+                                              !isCustomCategoryMode &&
+                                              selectedCategory.toLowerCase() ==
+                                                  categoryKey.toLowerCase(),
+                                          onSelected: (_) {
+                                            setDialogState(() {
+                                              isCustomCategoryMode = false;
+                                              selectedCategory = categoryKey;
+                                            });
+                                          },
+                                        ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                ],
                                 Wrap(
                                   spacing: 8,
                                   runSpacing: 8,

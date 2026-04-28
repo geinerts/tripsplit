@@ -191,30 +191,22 @@ extension _TripsPageActions on _TripsPageState {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.open_in_new),
-              title: Text(t.openLabel),
+            AppActionSheetTile(
+              icon: Icons.open_in_new,
+              title: t.openLabel,
               onTap: () => Navigator.of(sheetContext).pop('open'),
             ),
             if (canEdit)
-              ListTile(
-                leading: const Icon(Icons.edit_outlined),
-                title: Text('${t.editAction} ${t.tripTitleShort}'),
+              AppActionSheetTile(
+                icon: Icons.edit_outlined,
+                title: '${t.editAction} ${t.tripTitleShort}',
                 onTap: () => Navigator.of(sheetContext).pop('edit'),
               ),
             if (canDelete)
-              ListTile(
-                leading: Icon(
-                  Icons.delete_outline,
-                  color: Theme.of(sheetContext).colorScheme.error,
-                ),
-                title: Text(
-                  '${t.deleteAction} ${t.tripTitleShort}',
-                  style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(sheetContext).colorScheme.error,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+              AppActionSheetTile(
+                icon: Icons.delete_outline,
+                title: '${t.deleteAction} ${t.tripTitleShort}',
+                destructive: true,
                 onTap: () => Navigator.of(sheetContext).pop('delete'),
               ),
           ],
@@ -325,35 +317,18 @@ extension _TripsPageActions on _TripsPageState {
     final tripLabel = trip.name.trim().isEmpty
         ? t.tripWithId(trip.id)
         : trip.name;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text('${t.deleteAction} ${t.tripTitleShort}'),
-          content: Text(
-            context.l10n.tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded(
-              tripLabel,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(t.cancelAction),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(dialogContext).colorScheme.error,
-                foregroundColor: Theme.of(dialogContext).colorScheme.onError,
-              ),
-              child: Text(t.deleteAction),
-            ),
-          ],
-        );
-      },
+      title: '${t.deleteAction} ${t.tripTitleShort}',
+      message: context.l10n
+          .tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded(tripLabel),
+      confirmLabel: t.deleteAction,
+      cancelLabel: t.cancelAction,
+      icon: Icons.delete_outline,
+      destructive: true,
     );
 
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
 
@@ -417,19 +392,19 @@ extension _TripsPageActions on _TripsPageState {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.brightness_6_outlined),
-              title: Text(t.appearance),
+            AppActionSheetTile(
+              icon: Icons.brightness_6_outlined,
+              title: t.appearance,
               onTap: () => Navigator.of(sheetContext).pop('appearance'),
             ),
-            ListTile(
-              leading: const Icon(Icons.translate_outlined),
-              title: Text(t.languageAction),
+            AppActionSheetTile(
+              icon: Icons.translate_outlined,
+              title: t.languageAction,
               onTap: () => Navigator.of(sheetContext).pop('language'),
             ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: Text(t.logOutButton),
+            AppActionSheetTile(
+              icon: Icons.logout,
+              title: t.logOutButton,
               onTap: () => Navigator.of(sheetContext).pop('logout'),
             ),
           ],
@@ -504,28 +479,17 @@ extension _TripsPageActions on _TripsPageState {
       return;
     }
 
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmationDialog(
       context: context,
-      builder: (context) {
-        final t = context.l10n;
-        return AlertDialog(
-          title: Text(t.logOutButton),
-          content: Text(t.logoutFromDeviceQuestion),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text(t.cancelAction),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(t.logOutButton),
-            ),
-          ],
-        );
-      },
+      title: context.l10n.logOutButton,
+      message: context.l10n.logoutFromDeviceQuestion,
+      confirmLabel: context.l10n.logOutButton,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.logout_rounded,
+      destructive: true,
     );
 
-    if (confirmed != true || !mounted) {
+    if (!confirmed || !mounted) {
       return;
     }
 

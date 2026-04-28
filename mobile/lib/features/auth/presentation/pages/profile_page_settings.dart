@@ -23,50 +23,17 @@ extension _ProfilePageSettings on _ProfilePageState {
     }
 
     final t = context.l10n;
-    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
-    bool? confirmed;
-    if (isIOS) {
-      confirmed = await showCupertinoModalPopup<bool>(
-        context: context,
-        builder: (sheetContext) => CupertinoActionSheet(
-          title: Text(t.logOutButton),
-          message: Text(t.logoutFromDeviceQuestion),
-          actions: [
-            CupertinoActionSheetAction(
-              isDestructiveAction: true,
-              onPressed: () => Navigator.of(sheetContext).pop(true),
-              child: Text(t.logOutButton),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(sheetContext).pop(false),
-            child: Text(t.cancelAction),
-          ),
-        ),
-      );
-    } else {
-      confirmed = await showDialog<bool>(
-        context: context,
-        builder: (dialogContext) {
-          return AlertDialog(
-            title: Text(t.logOutButton),
-            content: Text(t.logoutFromDeviceQuestion),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(false),
-                child: Text(t.cancelAction),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.of(dialogContext).pop(true),
-                child: Text(t.logOutButton),
-              ),
-            ],
-          );
-        },
-      );
-    }
+    final confirmed = await showAppConfirmationDialog(
+      context: context,
+      title: t.logOutButton,
+      message: t.logoutFromDeviceQuestion,
+      confirmLabel: t.logOutButton,
+      cancelLabel: t.cancelAction,
+      icon: Icons.logout_rounded,
+      destructive: true,
+    );
 
-    if (!mounted || confirmed != true) {
+    if (!mounted || !confirmed) {
       return;
     }
 

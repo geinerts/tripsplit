@@ -590,50 +590,66 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
   }
 
   Widget _buildTextSlide(_IntroSlide slide, {required Color muted}) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: '${slide.titleTop}\n',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: AppDesign.darkForeground,
-                    fontSize: 36,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.9,
-                    height: 1.05,
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompactHeight =
+            constraints.maxHeight.isFinite && constraints.maxHeight < 132;
+        final titleSize = isCompactHeight ? 30.0 : 36.0;
+        final titleHeight = isCompactHeight ? 1.02 : 1.05;
+        final subtitleSize = isCompactHeight ? 13.0 : 14.0;
+        final subtitleHeight = isCompactHeight ? 1.35 : 1.65;
+        final gap = isCompactHeight ? 8.0 : 16.0;
+
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '${slide.titleTop}\n',
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: AppDesign.darkForeground,
+                            fontSize: titleSize,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.9,
+                            height: titleHeight,
+                          ),
+                    ),
+                    TextSpan(
+                      text: slide.titleAccent,
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: AppDesign.authAccent,
+                            fontSize: titleSize,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.9,
+                            height: titleHeight,
+                          ),
+                    ),
+                  ],
                 ),
-                TextSpan(
-                  text: slide.titleAccent,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: AppDesign.authAccent,
-                    fontSize: 36,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.9,
-                    height: 1.05,
-                  ),
+              ),
+              SizedBox(height: gap),
+              Text(
+                slide.subtitle,
+                maxLines: isCompactHeight ? 2 : null,
+                overflow: isCompactHeight ? TextOverflow.ellipsis : null,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: muted,
+                  fontSize: subtitleSize,
+                  height: subtitleHeight,
+                  fontWeight: FontWeight.w500,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            slide.subtitle,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: muted,
-              fontSize: 14,
-              height: 1.65,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
