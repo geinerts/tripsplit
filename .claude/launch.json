@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "admin-mockup",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "5555", "admin2"],
+      "port": 5555
+    },
+    {
+      "name": "landing",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "5556", "."],
+      "port": 5556
+    }
+  ]
+}
