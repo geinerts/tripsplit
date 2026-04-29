@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home / Trips — 3 Designs</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0a;
+    display: flex; justify-content: center; align-items: flex-start;
+    gap: 32px; padding: 40px 24px;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    flex-wrap: wrap;
+  }
+
+  .column { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .label {
+    color: rgba(255,255,255,0.4);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .label-desc {
+    color: rgba(255,255,255,0.25);
+    font-size: 10px;
+    max-width: 290px; text-align: center; line-height: 1.4;
+  }
+
+  .phone {
+    width: 320px;
+    background: #0a0a0a;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .screen {
+    border-radius: 34px;
+    overflow: hidden;
+    background: #050505;
+    position: relative;
+    height: 640px;
+  }
+
+  /* Top bar with SPLYTO logo */
+  .topbar {
+    padding: 14px 16px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .splyto-logo {
+    display: flex; align-items: center;
+    font-size: 17px; font-weight: 800; letter-spacing: -0.5px;
+    color: #fff;
+  }
+  .splyto-logo .accent {
+    color: transparent;
+    background: linear-gradient(135deg, #4ECD8C, #D44FA8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-style: italic;
+  }
+  .topbar-bell { color: rgba(255,255,255,0.7); font-size: 18px; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: #050505;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 10px 8px 22px;
+    display: flex; justify-content: space-around; align-items: flex-end;
+    gap: 4px;
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 4px 0;
+  }
+  .nav-icon { font-size: 18px; color: rgba(255,255,255,0.55); }
+  .nav-icon-photo {
+    width: 22px; height: 22px; border-radius: 11px;
+    background: linear-gradient(135deg,#3a6644,#2a4d35);
+    display: flex; align-items: center; justify-content: center; font-size: 12px;
+  }
+  .nav-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.55); }
+  .nav-add {
+    width: 44px; height: 28px; border-radius: 14px;
+    border: 1.5px solid rgba(78,205,140,0.35);
+    background: rgba(46,175,110,0.08);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px;
+  }
+  .nav-item.active .nav-icon, .nav-item.active .nav-label { color: #4ECD8C; }
+
+  /* ══════════════════════════════════════════
+     OPTION R — Compact rows
+     Net balance hero · slim trip rows · 4-5 visible
+  ══════════════════════════════════════════ */
+  .r-screen { background: #050505; }
+
+  /* Net balance hero */
+  .r-hero {
+    margin: 4px 14px 12px;
+    background: linear-gradient(140deg, rgba(46,175,110,0.16), rgba(46,175,110,0.04));
+    border: 1px solid rgba(78,205,140,0.22);
+    border-radius: 18px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .r-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(78,205,140,0.2) 0%, transparent 70%);
+  }
+  .r-hero-row1 {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .r-hero-lbl {
+    font-size: 10px; font-weight: 700;
+    color: rgba(78,205,140,0.85);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .r-hero-trips {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+  }
+  .r-hero-trips strong { color: #fff; font-weight: 700; }
+  .r-hero-amount {
+    font-size: 32px; font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    line-height: 1;
+    position: relative;
+  }
+  .r-hero-amount .cur { color: rgba(78,205,140,0.85); font-size: 20px; vertical-align: top; line-height: 1.15; margin-right: 2px; font-weight: 600; }
+  .r-hero-split {
+    margin-top: 12px;
+    display: flex; gap: 14px;
+    position: relative;
+  }
+  .r-hero-split-cell {
+    flex: 1;
+    border-left: 2px solid rgba(78,205,140,0.4);
+    padding-left: 8px;
+  }
+  .r-hero-split-cell.dim {
+    border-left-color: rgba(245,166,35,0.5);
+  }
+  .r-hs-lbl {
+    font-size: 9px; font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .r-hs-val { font-size: 14px; font-weight: 700; color: #fff; margin-top: 2px; }
+  .r-hs-val.amber { color: #F5A623; }
+  .r-hs-val.green { color: #4ECD8C; }
+
+  /* Filter chips */
+  .r-chips {
+    margin: 0 14px 10px;
+    display: flex; gap: 6px;
+  }
+  .r-chip {
+    padding: 6px 11px;
+    border-radius: 12px;
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .r-chip.active {
+    background: rgba(46,175,110,0.18);
+    color: #4ECD8C;
+    border-color: rgba(78,205,140,0.3);
+  }
+  .r-chip-count {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.55);
+    border-radius: 6px;
+    padding: 0 5px;
+    font-size: 9px; font-weight: 700;
+  }
+  .r-chip.active .r-chip-count { background: rgba(46,175,110,0.3); color: #4ECD8C; }
+
+  /* Compact trip rows */
+  .r-trips {
+    padding: 0 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .r-trip {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 11px 13px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .r-trip.active {
+    background: linear-gradient(140deg, rgba(46,175,110,0.08), rgba(46,175,110,0.02));
+    border-color: rgba(78,205,140,0.25);
+  }
+  .r-trip-icon {
+    width: 40px; height: 40px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #2a4d35, #1a3320);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .r-trip-icon.archived { opacity: 0.55; filter: grayscale(0.6); }
+  .r-trip-icon-dot {
+    position: absolute;
+    top: -2px; right: -2px;
+    width: 10px; height: 10px;
+    border-radius: 5px;
+    background: #4ECD8C;
+    border: 2px solid #050505;
+  }
+  .r-trip-info { flex: 1; min-width: 0; }
+  .r-trip-name {
+    font-size: 14px; font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .r-trip-meta {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; color: rgba(255,255,255,0.45);
+    margin-top: 3px;
+  }
+  .r-trip-meta .dot { width: 2px; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.3); }
+  .r-trip-right { text-align: right; flex-shrink: 0; }
+  .r-trip-balance { font-size: 13px; font-weight: 800; line-height: 1; }
+  .r-trip-balance.green { color: #4ECD8C; }
+  .r-trip-balance.amber { color: #F5A623; }
+  .r-trip-balance.dim { color: rgba(255,255,255,0.4); }
+  .r-trip-status {
+    font-size: 9px; font-weight: 700;
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .r-trip-status.green { color: rgba(78,205,140,0.7); }
+  .r-trip-status.amber { color: rgba(245,166,35,0.7); }
+  .r-trip-status.dim { color: rgba(255,255,255,0.35); }
+
+  .r-fab {
+    position: absolute;
+    bottom: 90px; right: 16px;
+    background: linear-gradient(135deg, #2EAF6E, #4ECD8C);
+    color: #062612;
+    padding: 12px 16px;
+    border-radius: 26px;
+    box-shadow: 0 8px 24px rgba(46,175,110,0.4);
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700;
+  }
+
+  /* ══════════════════════════════════════════
+     OPTION S — Featured + grid
+     Active trip large card · others as compact cards
+  ══════════════════════════════════════════ */
+  .s-screen { background: #050505; }
+
+  .s-balance-strip {
+    margin: 4px 14px 12px;
+    display: flex;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 10px 14px;
+    align-items: center; justify-content: space-between;
+  }
+  .s-bs-l { display: flex; align-items: center; gap: 10px; }
+  .s-bs-icon {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    background: rgba(46,175,110,0.18);
+    display: flex; align-items: center; justify-content: center;
+    color: #4ECD8C;
+    font-size: 14px;
+  }
+  .s-bs-text {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.3;
+  }
+  .s-bs-text strong.green { color: #4ECD8C; font-weight: 700; }
+  .s-bs-text strong.amber { color: #F5A623; font-weight: 700; }
+  .s-bs-net {
+    font-size: 16px; font-weight: 800;
+    color: #4ECD8C;
+    letter-spacing: -0.3px;
+  }
+
+  .s-section {
+    padding: 0 16px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .s-section-title {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .s-section-action {
+    font-size: 11px; color: rgba(78,205,140,0.7); font-weight: 600;
+  }
+
+  /* Featured active trip */
+  .s-featured {
+    margin: 0 14px 14px;
+    background: linear-gradient(135deg, rgba(46,175,110,0.16), rgba(46,175,110,0.05) 60%);
+    border: 1px solid rgba(78,205,140,0.3);
+    border-radius: 18px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .s-featured::before {
+    content: '';
+    position: absolute;
+    bottom: -50px; left: -30px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(78,205,140,0.25) 0%, transparent 65%);
+  }
+  .s-feat-row1 {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .s-feat-name { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.4px; }
+  .s-feat-pill {
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(46,175,110,0.25);
+    border: 1px solid rgba(78,205,140,0.4);
+    border-radius: 12px;
+    padding: 3px 9px;
+    font-size: 10px; font-weight: 700;
+    color: #4ECD8C;
+  }
+  .s-feat-pill .dot { width: 5px; height: 5px; border-radius: 3px; background: #4ECD8C; box-shadow: 0 0 6px #4ECD8C; }
+  .s-feat-meta {
+    display: flex; gap: 10px;
+    font-size: 11px; color: rgba(255,255,255,0.6);
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .s-feat-meta-item { display: flex; align-items: center; gap: 4px; }
+  .s-feat-stats {
+    display: flex; gap: 16px;
+    position: relative;
+  }
+  .s-feat-stat { flex: 1; }
+  .s-feat-stat-lbl {
+    font-size: 9px; font-weight: 700;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.05em; text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .s-feat-stat-val { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+  .s-feat-stat-val.green { color: #4ECD8C; }
+  .s-feat-divider { width: 1px; background: rgba(255,255,255,0.08); }
+
+  /* Compact archived list */
+  .s-archived-list {
+    padding: 0 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .s-arc-row {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+    opacity: 0.85;
+  }
+  .s-arc-icon {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.05);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .s-arc-info { flex: 1; min-width: 0; }
+  .s-arc-name { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); }
+  .s-arc-meta { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+  .s-arc-balance { font-size: 13px; font-weight: 700; }
+  .s-arc-balance.amber { color: #F5A623; }
+  .s-arc-balance.green { color: #4ECD8C; }
+  .s-arc-balance.dim { color: rgba(255,255,255,0.4); }
+
+  .s-fab {
+    position: absolute;
+    bottom: 90px; right: 16px;
+    background: linear-gradient(135deg, #2EAF6E, #4ECD8C);
+    color: #062612;
+    padding: 12px 16px;
+    border-radius: 26px;
+    box-shadow: 0 8px 24px rgba(46,175,110,0.4);
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700;
+  }
+
+  /* ══════════════════════════════════════════
+     OPTION T — Bento balance + grid
+     Big balance hero · 2-col trip grid below
+  ══════════════════════════════════════════ */
+  .t-screen { background: #050505; }
+
+  .t-hero {
+    margin: 4px 14px 14px;
+    padding: 18px 18px 16px;
+    background:
+      radial-gradient(ellipse at 100% 0%, rgba(78,205,140,0.18) 0%, transparent 60%),
+      linear-gradient(160deg, rgba(46,175,110,0.12), rgba(46,175,110,0.02) 80%);
+    border: 1px solid rgba(78,205,140,0.22);
+    border-radius: 22px;
+    position: relative;
+  }
+  .t-hero-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .t-hero-tag {
+    display: flex; align-items: center; gap: 5px;
+    background: rgba(46,175,110,0.18);
+    border: 1px solid rgba(78,205,140,0.3);
+    border-radius: 12px;
+    padding: 3px 8px;
+    font-size: 10px; font-weight: 700;
+    color: #4ECD8C;
+  }
+  .t-hero-tag .dot { width: 5px; height: 5px; border-radius: 3px; background: #4ECD8C; }
+  .t-hero-trips-count { font-size: 11px; color: rgba(255,255,255,0.5); }
+  .t-hero-amount {
+    font-size: 38px; font-weight: 800;
+    color: #fff;
+    letter-spacing: -1.2px;
+    line-height: 1;
+  }
+  .t-hero-amount .sign { color: #4ECD8C; }
+  .t-hero-amount .cur { color: rgba(78,205,140,0.85); font-size: 24px; font-weight: 600; vertical-align: top; line-height: 1.15; margin-right: 1px; }
+  .t-hero-amount .frac { color: rgba(255,255,255,0.45); font-size: 20px; font-weight: 600; }
+
+  .t-hero-sub {
+    margin-top: 4px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+  }
+  .t-hero-sub strong { color: rgba(255,255,255,0.85); font-weight: 700; }
+
+  /* Visual progress bar */
+  .t-bar {
+    margin-top: 14px;
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.06);
+  }
+  .t-bar-green { width: 65%; background: linear-gradient(90deg, #2EAF6E, #4ECD8C); }
+  .t-bar-amber { width: 25%; background: rgba(245,166,35,0.6); }
+  .t-bar-meta {
+    margin-top: 6px;
+    display: flex; justify-content: space-between;
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+  }
+  .t-bar-meta strong.green { color: #4ECD8C; font-weight: 700; }
+  .t-bar-meta strong.amber { color: #F5A623; font-weight: 700; }
+
+  .t-section {
+    padding: 0 16px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .t-section-l { display: flex; align-items: center; gap: 6px; }
+  .t-section-title {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .t-section-count {
+    background: rgba(78,205,140,0.18);
+    color: #4ECD8C;
+    border-radius: 7px;
+    padding: 1px 6px;
+    font-size: 10px; font-weight: 700;
+  }
+  .t-section-filter {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600;
+  }
+
+  /* 2-col grid */
+  .t-grid {
+    padding: 0 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .t-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 12px;
+    aspect-ratio: 1.05;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .t-card.active {
+    background: linear-gradient(140deg, rgba(46,175,110,0.12), rgba(46,175,110,0.02));
+    border-color: rgba(78,205,140,0.3);
+  }
+  .t-card-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .t-card-icon {
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .t-card.active .t-card-icon {
+    background: linear-gradient(135deg, rgba(46,175,110,0.3), rgba(46,175,110,0.1));
+    border: 1px solid rgba(78,205,140,0.3);
+  }
+  .t-card-status {
+    width: 8px; height: 8px;
+    border-radius: 4px;
+    background: #4ECD8C;
+    box-shadow: 0 0 6px #4ECD8C;
+  }
+  .t-card-status.archived {
+    background: rgba(255,255,255,0.2);
+    box-shadow: none;
+  }
+  .t-card-name {
+    font-size: 16px; font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.3px;
+    line-height: 1.1;
+    margin-top: 8px;
+  }
+  .t-card-dates {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 3px;
+  }
+  .t-card-bottom {
+    margin-top: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .t-card-amt {
+    font-size: 14px; font-weight: 800;
+  }
+  .t-card-amt.green { color: #4ECD8C; }
+  .t-card-amt.amber { color: #F5A623; }
+  .t-card-amt.dim { color: rgba(255,255,255,0.4); font-weight: 600; }
+  .t-card-amt-lbl {
+    font-size: 9px; color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 1px;
+  }
+  .t-card-members {
+    font-size: 10px; color: rgba(255,255,255,0.5);
+    display: flex; align-items: center; gap: 3px;
+  }
+
+  .t-fab {
+    position: absolute;
+    bottom: 90px; right: 16px;
+    background: linear-gradient(135deg, #2EAF6E, #4ECD8C);
+    color: #062612;
+    padding: 12px 16px;
+    border-radius: 26px;
+    box-shadow: 0 8px 24px rgba(46,175,110,0.4);
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     OPTION R — Compact rows
+═══════════════════════════════════════════ -->
+<div class="column">
+  <div class="label">Option R — Compact rows</div>
+  <div class="phone">
+    <div class="screen r-screen">
+      <div class="topbar">
+        <div class="splyto-logo">SPL<span class="accent">↗</span>TO</div>
+        <div class="topbar-bell">🔔</div>
+      </div>
+
+      <!-- Net balance hero (replaces 'Total trips/spent') -->
+      <div class="r-hero">
+        <div class="r-hero-row1">
+          <div class="r-hero-lbl">↓ Net balance</div>
+          <div class="r-hero-trips">Across <strong>5</strong> trips</div>
+        </div>
+        <div class="r-hero-amount"><span class="cur">€</span>29.12</div>
+        <div class="r-hero-split">
+          <div class="r-hero-split-cell">
+            <div class="r-hs-lbl">↓ Owed to you</div>
+            <div class="r-hs-val green">€40.00</div>
+          </div>
+          <div class="r-hero-split-cell dim">
+            <div class="r-hs-lbl">↑ You owe</div>
+            <div class="r-hs-val amber">€10.88</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter chips (replaces 'Show active') -->
+      <div class="r-chips">
+        <div class="r-chip active">All <span class="r-chip-count">5</span></div>
+        <div class="r-chip">Active <span class="r-chip-count">2</span></div>
+        <div class="r-chip">Archived <span class="r-chip-count">3</span></div>
+      </div>
+
+      <!-- Compact trip rows -->
+      <div class="r-trips">
+        <div class="r-trip active">
+          <div class="r-trip-icon">
+            🏛
+            <div class="r-trip-icon-dot"></div>
+          </div>
+          <div class="r-trip-info">
+            <div class="r-trip-name">London</div>
+            <div class="r-trip-meta">
+              <span>10–18 Apr</span>
+              <span class="dot"></span>
+              <span>2 members</span>
+              <span class="dot"></span>
+              <span>€111.75</span>
+            </div>
+          </div>
+          <div class="r-trip-right">
+            <div class="r-trip-balance amber">−€10.88</div>
+            <div class="r-trip-status amber">You owe</div>
+          </div>
+        </div>
+
+        <div class="r-trip">
+          <div class="r-trip-icon archived">🌅</div>
+          <div class="r-trip-info">
+            <div class="r-trip-name">Spain</div>
+            <div class="r-trip-meta">
+              <span>9–10 Apr</span>
+              <span class="dot"></span>
+              <span>2 members</span>
+              <span class="dot"></span>
+              <span>€40.00</span>
+            </div>
+          </div>
+          <div class="r-trip-right">
+            <div class="r-trip-balance green">+€20.00</div>
+            <div class="r-trip-status green">Owed to you</div>
+          </div>
+        </div>
+
+        <div class="r-trip">
+          <div class="r-trip-icon archived">🍷</div>
+          <div class="r-trip-info">
+            <div class="r-trip-name">Wine weekend</div>
+            <div class="r-trip-meta">
+              <span>22 Feb</span>
+              <span class="dot"></span>
+              <span>3 members</span>
+              <span class="dot"></span>
+              <span>€85.00</span>
+            </div>
+          </div>
+          <div class="r-trip-right">
+            <div class="r-trip-balance dim">€0</div>
+            <div class="r-trip-status dim">Settled</div>
+          </div>
+        </div>
+
+        <div class="r-trip">
+          <div class="r-trip-icon archived">🏔</div>
+          <div class="r-trip-info">
+            <div class="r-trip-name">Tallinn 2025</div>
+            <div class="r-trip-meta">
+              <span>15 Mar</span>
+              <span class="dot"></span>
+              <span>4 members</span>
+              <span class="dot"></span>
+              <span>€35.31</span>
+            </div>
+          </div>
+          <div class="r-trip-right">
+            <div class="r-trip-balance dim">€0</div>
+            <div class="r-trip-status dim">Settled</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r-fab">+ New trip</div>
+
+      <div class="bottom-nav">
+        <div class="nav-item active"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+        <div class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></div>
+        <div class="nav-item">
+          <span class="nav-add">+</span>
+          <span class="nav-label">Expenses</span>
+        </div>
+        <div class="nav-item"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></div>
+        <div class="nav-item"><div class="nav-icon-photo">🧑</div><span class="nav-label">Profile</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Net balance hero replaces useless stats · 4 trips visible · clear active/archived dot · status text per row · filter chips with counts</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OPTION S — Featured + archived list
+═══════════════════════════════════════════ -->
+<div class="column">
+  <div class="label">Option S — Featured + list</div>
+  <div class="phone">
+    <div class="screen s-screen">
+      <div class="topbar">
+        <div class="splyto-logo">SPL<span class="accent">↗</span>TO</div>
+        <div class="topbar-bell">🔔</div>
+      </div>
+
+      <!-- Slim balance strip -->
+      <div class="s-balance-strip">
+        <div class="s-bs-l">
+          <div class="s-bs-icon">⚖</div>
+          <div class="s-bs-text">
+            <strong class="green">€40 owed</strong> · <strong class="amber">€10.88 you owe</strong>
+          </div>
+        </div>
+        <div class="s-bs-net">+€29.12</div>
+      </div>
+
+      <!-- Featured active trip (large) -->
+      <div class="s-section">
+        <div class="s-section-title">Active <span style="background:rgba(78,205,140,0.18);color:#4ECD8C;border-radius:7px;padding:1px 6px;font-size:10px">2</span></div>
+        <div class="s-section-action">View all ›</div>
+      </div>
+      <div class="s-featured">
+        <div class="s-feat-row1">
+          <div class="s-feat-name">London</div>
+          <div class="s-feat-pill">
+            <div class="dot"></div>
+            Active
+          </div>
+        </div>
+        <div class="s-feat-meta">
+          <div class="s-feat-meta-item">📅 10–18 Apr</div>
+          <div class="s-feat-meta-item">👥 2 members</div>
+        </div>
+        <div class="s-feat-stats">
+          <div class="s-feat-stat">
+            <div class="s-feat-stat-lbl">↑ You owe</div>
+            <div class="s-feat-stat-val" style="color:#F5A623">€10.88</div>
+          </div>
+          <div class="s-feat-divider"></div>
+          <div class="s-feat-stat">
+            <div class="s-feat-stat-lbl">Total spent</div>
+            <div class="s-feat-stat-val">€111.75</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Archived (compact) -->
+      <div class="s-section">
+        <div class="s-section-title">Archived <span style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border-radius:7px;padding:1px 6px;font-size:10px">3</span></div>
+      </div>
+      <div class="s-archived-list">
+        <div class="s-arc-row">
+          <div class="s-arc-icon">🌅</div>
+          <div class="s-arc-info">
+            <div class="s-arc-name">Spain</div>
+            <div class="s-arc-meta">9–10 Apr · 2 members · €40 spent</div>
+          </div>
+          <div class="s-arc-balance green">+€20</div>
+        </div>
+        <div class="s-arc-row">
+          <div class="s-arc-icon">🍷</div>
+          <div class="s-arc-info">
+            <div class="s-arc-name">Wine weekend</div>
+            <div class="s-arc-meta">22 Feb · 3 members · €85 spent</div>
+          </div>
+          <div class="s-arc-balance dim">Settled</div>
+        </div>
+        <div class="s-arc-row">
+          <div class="s-arc-icon">🏔</div>
+          <div class="s-arc-info">
+            <div class="s-arc-name">Tallinn 2025</div>
+            <div class="s-arc-meta">15 Mar · 4 members · €35 spent</div>
+          </div>
+          <div class="s-arc-balance dim">Settled</div>
+        </div>
+      </div>
+
+      <div class="s-fab">+ New trip</div>
+
+      <div class="bottom-nav">
+        <div class="nav-item active"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+        <div class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></div>
+        <div class="nav-item">
+          <span class="nav-add">+</span>
+          <span class="nav-label">Expenses</span>
+        </div>
+        <div class="nav-item"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></div>
+        <div class="nav-item"><div class="nav-icon-photo">🧑</div><span class="nav-label">Profile</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Slim balance line · Active trip as featured big card · Archived as quiet compact list · clear hierarchy</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OPTION T — Bento grid
+═══════════════════════════════════════════ -->
+<div class="column">
+  <div class="label">Option T — Bento grid</div>
+  <div class="phone">
+    <div class="screen t-screen">
+      <div class="topbar">
+        <div class="splyto-logo">SPL<span class="accent">↗</span>TO</div>
+        <div class="topbar-bell">🔔</div>
+      </div>
+
+      <!-- Big balance hero with visual bar -->
+      <div class="t-hero">
+        <div class="t-hero-top">
+          <div class="t-hero-tag">
+            <div class="dot"></div>
+            In your favor
+          </div>
+          <div class="t-hero-trips-count">5 trips</div>
+        </div>
+        <div class="t-hero-amount">
+          <span class="sign">+</span><span class="cur">€</span>29<span class="frac">.12</span>
+        </div>
+        <div class="t-hero-sub">across <strong>2 active</strong> · <strong>3 settled</strong></div>
+
+        <div class="t-bar">
+          <div class="t-bar-green"></div>
+          <div class="t-bar-amber"></div>
+        </div>
+        <div class="t-bar-meta">
+          <span>Owed <strong class="green">€40.00</strong></span>
+          <span><strong class="amber">€10.88</strong> you owe</span>
+        </div>
+      </div>
+
+      <!-- Section + filter -->
+      <div class="t-section">
+        <div class="t-section-l">
+          <div class="t-section-title">All trips</div>
+          <div class="t-section-count">5</div>
+        </div>
+        <div class="t-section-filter">Active ▾</div>
+      </div>
+
+      <!-- 2-column grid -->
+      <div class="t-grid">
+        <div class="t-card active">
+          <div class="t-card-top">
+            <div class="t-card-icon">🏛</div>
+            <div class="t-card-status"></div>
+          </div>
+          <div>
+            <div class="t-card-name">London</div>
+            <div class="t-card-dates">10–18 Apr</div>
+          </div>
+          <div class="t-card-bottom">
+            <div>
+              <div class="t-card-amt amber">−€10.88</div>
+              <div class="t-card-amt-lbl">You owe</div>
+            </div>
+            <div class="t-card-members">👥 2</div>
+          </div>
+        </div>
+
+        <div class="t-card">
+          <div class="t-card-top">
+            <div class="t-card-icon">🌅</div>
+            <div class="t-card-status archived"></div>
+          </div>
+          <div>
+            <div class="t-card-name">Spain</div>
+            <div class="t-card-dates">9–10 Apr</div>
+          </div>
+          <div class="t-card-bottom">
+            <div>
+              <div class="t-card-amt green">+€20.00</div>
+              <div class="t-card-amt-lbl">Owed</div>
+            </div>
+            <div class="t-card-members">👥 2</div>
+          </div>
+        </div>
+
+        <div class="t-card">
+          <div class="t-card-top">
+            <div class="t-card-icon">🍷</div>
+            <div class="t-card-status archived"></div>
+          </div>
+          <div>
+            <div class="t-card-name">Wine</div>
+            <div class="t-card-dates">22 Feb</div>
+          </div>
+          <div class="t-card-bottom">
+            <div>
+              <div class="t-card-amt dim">Settled</div>
+              <div class="t-card-amt-lbl">€0</div>
+            </div>
+            <div class="t-card-members">👥 3</div>
+          </div>
+        </div>
+
+        <div class="t-card">
+          <div class="t-card-top">
+            <div class="t-card-icon">🏔</div>
+            <div class="t-card-status archived"></div>
+          </div>
+          <div>
+            <div class="t-card-name">Tallinn</div>
+            <div class="t-card-dates">15 Mar</div>
+          </div>
+          <div class="t-card-bottom">
+            <div>
+              <div class="t-card-amt dim">Settled</div>
+              <div class="t-card-amt-lbl">€0</div>
+            </div>
+            <div class="t-card-members">👥 4</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-fab">+ New trip</div>
+
+      <div class="bottom-nav">
+        <div class="nav-item active"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+        <div class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></div>
+        <div class="nav-item">
+          <span class="nav-add">+</span>
+          <span class="nav-label">Expenses</span>
+        </div>
+        <div class="nav-item"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></div>
+        <div class="nav-item"><div class="nav-icon-photo">🧑</div><span class="nav-label">Profile</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Big balance hero with visual bar (owed vs you owe) · 2-col grid shows 4 trips at once · status as small dot · cleaner than huge cards</div>
+</div>
+
+</body>
+</html>

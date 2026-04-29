@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trip Card Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 32px;
+    padding: 40px 24px;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    flex-wrap: wrap;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .label {
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── Phone shell ── */
+  .phone {
+    width: 320px;
+    background: #0f0f0f;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .screen {
+    border-radius: 34px;
+    overflow: hidden;
+    background: #121212;
+    position: relative;
+  }
+
+  /* ══════════════════════════════════════════
+     CURRENT — reference
+  ══════════════════════════════════════════ */
+  .current-screen {
+    background: #0d1a12;
+  }
+  .current-header {
+    padding: 20px 20px 16px;
+  }
+  .current-header h1 {
+    font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 10px;
+  }
+  .current-avatars { display: flex; gap: -6px; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 18px;
+    border: 2px solid #0d1a12;
+    background: #2EAF6E;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+    margin-right: -8px;
+    position: relative;
+  }
+  .avatar.photo { background: #555; overflow: hidden; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .current-card {
+    margin: 0 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .current-card-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .started-label { font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 500; }
+  .started-label span { color: rgba(255,255,255,0.85); }
+  .badge-active {
+    background: transparent;
+    border: 1.5px solid #2EAF6E;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 12px; font-weight: 600; color: #2EAF6E;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .divider { height: 1px; background: rgba(255,255,255,0.07); margin-bottom: 12px; }
+  .stats-row { display: flex; gap: 0; }
+  .stat {
+    flex: 1;
+  }
+  .stat-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.4); margin-bottom: 3px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .stat-value { font-size: 18px; font-weight: 700; color: #fff; }
+
+  .synced-bar {
+    margin: 10px 16px 0;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .synced-text { font-size: 13px; font-weight: 600; color: #2EAF6E; display: flex; align-items: center; gap: 6px; }
+
+  .tab-bar-old {
+    display: flex;
+    margin: 10px 16px 16px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 4px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .tab-old {
+    flex: 1; text-align: center; padding: 8px 4px;
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.35);
+    border-radius: 9px;
+  }
+  .tab-old.active { background: rgba(255,255,255,0.08); color: #fff; }
+
+  /* ══════════════════════════════════════════
+     OPTION A — Hero gradient header
+  ══════════════════════════════════════════ */
+  .hero-header {
+    position: relative;
+    height: 180px;
+    background: linear-gradient(160deg, #1a3d26 0%, #0d2118 60%, #0a1a10 100%);
+    overflow: hidden;
+    padding: 20px 20px 0;
+  }
+  .hero-bg-blobs {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+  }
+  .blob-1 { width: 160px; height: 160px; background: rgba(46,175,110,0.25); top: -40px; right: -30px; }
+  .blob-2 { width: 100px; height: 100px; background: rgba(78,205,140,0.12); bottom: 0; left: 40px; }
+
+  .hero-top {
+    position: relative;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .hero-title { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .hero-badge {
+    background: rgba(46,175,110,0.2);
+    border: 1px solid rgba(46,175,110,0.5);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px; font-weight: 700; color: #4ECD8C;
+    margin-top: 4px;
+  }
+  .hero-meta {
+    position: relative;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatars-stack { display: flex; }
+  .meta-text { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; }
+  .meta-text strong { color: rgba(255,255,255,0.8); }
+
+  /* Stats floating card */
+  .stats-card {
+    margin: -28px 16px 0;
+    position: relative;
+    z-index: 2;
+    background: #1a2d20;
+    border-radius: 20px;
+    padding: 18px 18px 14px;
+    border: 1px solid rgba(46,175,110,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    gap: 0;
+    margin-bottom: 14px;
+  }
+  .stats-divider { background: rgba(255,255,255,0.08); }
+  .stat-a { padding: 0 12px; text-align: center; }
+  .stat-a:first-child { padding-left: 0; text-align: left; }
+  .stat-a:last-child { padding-right: 0; text-align: right; }
+  .stat-a-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.07em;
+    color: rgba(255,255,255,0.38); text-transform: uppercase;
+    margin-bottom: 4px; display: flex; align-items: center; gap: 3px;
+  }
+  .stat-a:first-child .stat-a-label { justify-content: flex-start; }
+  .stat-a:last-child .stat-a-label { justify-content: flex-end; }
+  .stat-a-value { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .stat-a-value.green { color: #4ECD8C; }
+  .stat-a-value.amber { color: #F5A623; }
+
+  .synced-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .synced-pill {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 600; color: #4ECD8C;
+  }
+  .sync-dot { width: 6px; height: 6px; border-radius: 3px; background: #4ECD8C; }
+  .last-synced { font-size: 11px; color: rgba(255,255,255,0.28); }
+
+  /* Tab bar A */
+  .tab-bar-a {
+    display: flex;
+    margin: 14px 16px 16px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 4px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .tab-a {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 8px 4px 7px;
+    border-radius: 10px;
+    gap: 3px;
+  }
+  .tab-a.active { background: rgba(46,175,110,0.15); }
+  .tab-icon { font-size: 16px; }
+  .tab-text {
+    font-size: 10px; font-weight: 600;
+    color: rgba(255,255,255,0.32);
+    letter-spacing: 0.02em;
+  }
+  .tab-a.active .tab-text { color: #4ECD8C; }
+
+  /* ══════════════════════════════════════════
+     OPTION B — Minimal / clean
+  ══════════════════════════════════════════ */
+  .b-screen { background: #0e0e0e; }
+
+  .b-header {
+    padding: 22px 20px 18px;
+    background: linear-gradient(180deg, #141414 0%, #0e0e0e 100%);
+  }
+  .b-row1 {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .b-title { font-size: 26px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .b-active-dot {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5);
+  }
+  .pulse-dot {
+    width: 8px; height: 8px; border-radius: 4px; background: #2EAF6E;
+    box-shadow: 0 0 0 3px rgba(46,175,110,0.25);
+  }
+
+  .b-members {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 18px;
+  }
+  .b-member-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 4px 10px 4px 4px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .b-member-chip .avatar { width: 22px; height: 22px; border-radius: 11px; font-size: 8px; border: none; margin: 0; }
+  .b-member-name { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.6); }
+  .b-started { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+  /* Three big stat boxes */
+  .b-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin: 0 16px;
+  }
+  .b-stat-box {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 12px 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+  }
+  .b-stat-box.highlight {
+    background: rgba(46,175,110,0.1);
+    border-color: rgba(46,175,110,0.25);
+  }
+  .b-stat-icon { font-size: 14px; margin-bottom: 4px; }
+  .b-stat-val { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.3px; margin-bottom: 2px; }
+  .b-stat-val.green { color: #4ECD8C; }
+  .b-stat-lbl { font-size: 9px; font-weight: 600; letter-spacing: 0.05em; color: rgba(255,255,255,0.35); text-transform: uppercase; }
+
+  .b-bottom {
+    margin: 12px 16px 0;
+    background: rgba(255,255,255,0.03);
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+    overflow: hidden;
+  }
+  .b-synced {
+    padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* Tab bar B — segmented */
+  .tab-bar-b {
+    display: flex;
+  }
+  .tab-b {
+    flex: 1; text-align: center;
+    padding: 11px 4px;
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    border-right: 1px solid rgba(255,255,255,0.05);
+  }
+  .tab-b:last-child { border-right: none; }
+  .tab-b.active { color: #4ECD8C; background: rgba(46,175,110,0.08); }
+</style>
+</head>
+<body>
+
+<!-- ── CURRENT ── -->
+<div class="column">
+  <div class="label">Current</div>
+  <div class="phone">
+    <div class="screen current-screen" style="padding-bottom:8px">
+      <div class="current-header">
+        <h1>Austris</h1>
+        <div class="current-avatars">
+          <div class="avatar">AV</div>
+          <div class="avatar photo" style="background:#3a6644; display:flex;align-items:center;justify-content:center;font-size:18px;">🧑</div>
+        </div>
+      </div>
+
+      <div class="current-card">
+        <div class="current-card-top">
+          <div class="started-label">📅 Started <span>07.04</span></div>
+          <div class="badge-active">▷ Active</div>
+        </div>
+        <div class="divider"></div>
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-label">🗂 Total cost</div>
+            <div class="stat-value">€44.00</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">💳 Your share</div>
+            <div class="stat-value">€22.00</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">↓ They owe …</div>
+            <div class="stat-value">€22.00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="synced-bar">
+        <div class="synced-text">☁ All synced</div>
+        <span style="color:rgba(255,255,255,0.3);font-size:16px">↺</span>
+      </div>
+
+      <div class="tab-bar-old">
+        <div class="tab-old active">Expe…</div>
+        <div class="tab-old">Bala…</div>
+        <div class="tab-old">Settle</div>
+        <div class="tab-old">Trip a…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── OPTION A — Hero header ── -->
+<div class="column">
+  <div class="label">Option A — Hero header</div>
+  <div class="phone">
+    <div class="screen">
+
+      <!-- Hero -->
+      <div class="hero-header">
+        <div class="hero-bg-blobs">
+          <div class="blob blob-1"></div>
+          <div class="blob blob-2"></div>
+        </div>
+        <div class="hero-top">
+          <div class="hero-title">Austris</div>
+          <div class="hero-badge">● Active</div>
+        </div>
+        <div class="hero-meta">
+          <div class="avatars-stack">
+            <div class="avatar" style="width:28px;height:28px;font-size:10px;border-color:#1a3d26">AV</div>
+            <div class="avatar" style="width:28px;height:28px;font-size:18px;background:#3a6644;border-color:#1a3d26">🧑</div>
+          </div>
+          <div class="meta-text"><strong>2 members</strong> · Started 07.04</div>
+        </div>
+      </div>
+
+      <!-- Floating stats card -->
+      <div class="stats-card">
+        <div class="stats-grid">
+          <div class="stat-a">
+            <div class="stat-a-label">🗂 Total</div>
+            <div class="stat-a-value">€44</div>
+          </div>
+          <div class="stats-divider"></div>
+          <div class="stat-a">
+            <div class="stat-a-label" style="justify-content:center">💳 Your share</div>
+            <div class="stat-a-value" style="text-align:center">€22</div>
+          </div>
+          <div class="stats-divider"></div>
+          <div class="stat-a">
+            <div class="stat-a-label">↓ Owed</div>
+            <div class="stat-a-value amber" style="text-align:right">€22</div>
+          </div>
+        </div>
+        <div class="synced-row">
+          <div class="synced-pill">
+            <div class="sync-dot"></div>
+            All synced
+          </div>
+          <div class="last-synced">just now ↺</div>
+        </div>
+      </div>
+
+      <!-- Tab bar with icons -->
+      <div class="tab-bar-a">
+        <div class="tab-a active">
+          <div class="tab-icon">🧾</div>
+          <div class="tab-text">Expenses</div>
+        </div>
+        <div class="tab-a">
+          <div class="tab-icon">⚖️</div>
+          <div class="tab-text">Balances</div>
+        </div>
+        <div class="tab-a">
+          <div class="tab-icon">💸</div>
+          <div class="tab-text">Settle</div>
+        </div>
+        <div class="tab-a">
+          <div class="tab-icon">📋</div>
+          <div class="tab-text">Activity</div>
+        </div>
+      </div>
+
+      <div style="height:8px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── OPTION B — Minimal chips ── -->
+<div class="column">
+  <div class="label">Option B — Minimal</div>
+  <div class="phone">
+    <div class="screen b-screen" style="padding-bottom:8px">
+
+      <div class="b-header">
+        <div class="b-row1">
+          <div class="b-title">Austris</div>
+          <div class="b-active-dot">
+            <div class="pulse-dot"></div>
+            Active
+          </div>
+        </div>
+
+        <!-- Member chips -->
+        <div class="b-members">
+          <div class="b-member-chip">
+            <div class="avatar" style="width:22px;height:22px;font-size:8px;border:none;">AV</div>
+            <div class="b-member-name">Artis</div>
+          </div>
+          <div class="b-member-chip">
+            <div class="avatar" style="width:22px;height:22px;font-size:14px;background:#3a6644;border:none;">🧑</div>
+            <div class="b-member-name">You</div>
+          </div>
+          <div class="b-started">· 07.04</div>
+        </div>
+      </div>
+
+      <!-- 3 stat boxes -->
+      <div class="b-stats">
+        <div class="b-stat-box">
+          <div class="b-stat-icon">🗂</div>
+          <div class="b-stat-val">€44</div>
+          <div class="b-stat-lbl">Total</div>
+        </div>
+        <div class="b-stat-box">
+          <div class="b-stat-icon">💳</div>
+          <div class="b-stat-val">€22</div>
+          <div class="b-stat-lbl">Your share</div>
+        </div>
+        <div class="b-stat-box highlight">
+          <div class="b-stat-icon">↓</div>
+          <div class="b-stat-val green">€22</div>
+          <div class="b-stat-lbl">Owed to you</div>
+        </div>
+      </div>
+
+      <!-- Bottom panel -->
+      <div class="b-bottom">
+        <div class="b-synced">
+          <div class="synced-pill">
+            <div class="sync-dot"></div>
+            All synced
+          </div>
+          <span style="color:rgba(255,255,255,0.25);font-size:14px">↺</span>
+        </div>
+        <div class="tab-bar-b">
+          <div class="tab-b active">Expenses</div>
+          <div class="tab-b">Balances</div>
+          <div class="tab-b">Settle</div>
+          <div class="tab-b">Activity</div>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

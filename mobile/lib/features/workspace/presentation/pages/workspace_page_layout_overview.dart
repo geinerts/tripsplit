@@ -26,8 +26,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             yourShare: yourShare,
             currentBalance: currentBalance,
           ),
-          const SizedBox(height: 8),
-          _buildSyncStatusBanner(context, padding: EdgeInsets.zero),
           if (!snapshot.isActive) ...[
             const SizedBox(height: 8),
             _buildClosedTripBanner(context, snapshot, padding: EdgeInsets.zero),
@@ -53,21 +51,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     final semantic =
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.light;
-    final coverUrl = (widget.trip.imageThumbUrl ?? widget.trip.imageUrl ?? '')
-        .trim();
-    final hasCover = coverUrl.isNotEmpty;
-    final title = widget.trip.name.trim().isEmpty
-        ? t.tripWithId(widget.trip.id)
-        : widget.trip.name.trim();
-
-    final glassBgColor = semantic.heroGlassBackground;
-    final glassBorderColor = semantic.heroGlassBorder;
-    final glassTitle = AppDesign.titleColor(context);
-    final statusIcon = snapshot.isArchived
-        ? Icons.archive_outlined
-        : (snapshot.isSettling
-              ? Icons.payments_outlined
-              : Icons.play_circle_outline);
     final statusText = snapshot.isArchived
         ? t.archivedStatus
         : (snapshot.isSettling
@@ -79,306 +62,244 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
         : (isSettledState
               ? semantic.statusSettledForeground
               : semantic.statusActiveForeground);
-    final statusChipBackground = snapshot.isSettling
-        ? semantic.statusSettlingBackground
-        : (isSettledState
-              ? semantic.statusSettledBackground
-              : semantic.statusActiveBackground);
-    final statusChipBorder = snapshot.isSettling
-        ? semantic.statusSettlingBorder
-        : (isSettledState
-              ? semantic.statusSettledBorder
-              : semantic.statusActiveBorder);
 
     final currentNet = currentBalance?.net ?? 0;
-    final showsPositive = currentNet > 0.004;
     final showsNegative = currentNet < -0.004;
-    final primaryLabel = isSettledState
-        ? context.l10n.settledStatus
-        : (showsNegative
-              ? context.l10n.summaryYouOwe
-              : (showsPositive
-                    ? context.l10n.summaryYouAreOwed
-                    : context.l10n.settledStatus));
-    final primaryValue = _formatMoney(
+    final netValue = _formatMoney(
       context,
       currentNet.abs(),
       currencyCode: widget.trip.currencyCode,
     );
-    final primaryIcon = isSettledState
-        ? Icons.check_circle_outline
-        : (showsNegative
-              ? Icons.arrow_upward_rounded
-              : (showsPositive
-                    ? Icons.arrow_downward_rounded
-                    : Icons.check_circle_outline));
-    final primaryIconColor = isSettledState
-        ? AppDesign.lightPrimary
-        : (showsNegative
-              ? AppDesign.lightDestructive
-              : (showsPositive
-                    ? AppDesign.lightPrimary
-                    : AppDesign.lightPrimary));
+    final netAccent = showsNegative
+        ? AppDesign.lightDestructive
+        : statusChipForeground;
+    final shareRatio = totalAmount <= 0
+        ? 0.0
+        : (yourShare / totalAmount).clamp(0.0, 1.0).toDouble();
 
     return Container(
       width: double.infinity,
-      height: 244,
+      height: 250,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: hasCover
-            ? null
-            : LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isDark
-                    ? const [
-                        AppDesign.darkPrimaryContainer,
-                        AppDesign.darkSurface,
-                      ]
-                    : const [
-                        AppDesign.lightPrimary,
-                        AppDesign.lightPrimaryDeep,
-                      ],
-              ),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: semantic.heroGlassBorder.withValues(
+            alpha: isDark ? 0.48 : 0.58,
+          ),
+          width: 1.2,
+        ),
+        color: AppDesign.darkCanvas.withValues(alpha: isDark ? 0.30 : 0.42),
         boxShadow: AppDesign.heroShadow(context),
       ),
       clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
-          if (hasCover)
-            Positioned.fill(
-              child: Image.network(
-                coverUrl,
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.low,
-                gaplessPlayback: true,
-                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                  return Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      child,
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              AppDesign.darkCanvas.withValues(alpha: 0.18),
-                              AppDesign.darkCanvas.withValues(
-                                alpha: isDark ? 0.52 : 0.40,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: isDark
-                            ? const [
-                                AppDesign.darkPrimaryContainer,
-                                AppDesign.darkSurface,
-                              ]
-                            : const [
-                                AppDesign.lightPrimary,
-                                AppDesign.lightPrimaryDeep,
-                              ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: const SizedBox.expand(),
             ),
-          Positioned(
-            right: -26,
-            top: -24,
-            child: Container(
-              width: 106,
-              height: 106,
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
               decoration: BoxDecoration(
-                color: semantic.heroAvatarOverflowBackground.withValues(
-                  alpha: 0.30,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withValues(alpha: isDark ? 0.045 : 0.12),
+                    AppDesign.darkPrimary.withValues(
+                      alpha: isDark ? 0.055 : 0.08,
+                    ),
+                    Colors.black.withValues(alpha: isDark ? 0.10 : 0.16),
+                  ],
+                  stops: const [0, 0.45, 1],
                 ),
-                shape: BoxShape.circle,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: Text(
-                        title,
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(
-                              color: semantic.heroAvatarStroke,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.1,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      child: _buildHeroStatusPill(
+                        context,
+                        statusText: statusText,
+                        statusColor: statusChipForeground,
+                      ),
+                    ),
+                    const SizedBox(width: 28),
+                    _buildTripHeroMemberStack(snapshot.users),
+                  ],
+                ),
+                const SizedBox(height: 22),
+                Text(
+                  'NET BALANCE',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: semantic.heroAvatarStroke.withValues(alpha: 0.66),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                _buildHeroNetBalanceAmount(
+                  context,
+                  value: netValue,
+                  accentColor: netAccent,
+                ),
+                const SizedBox(height: 22),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: LinearProgressIndicator(
+                    value: shareRatio,
+                    minHeight: 8,
+                    backgroundColor: Colors.white.withValues(alpha: 0.11),
+                    valueColor: AlwaysStoppedAnimation<Color>(netAccent),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildHeroFooterAmount(
+                        context,
+                        label: context.l10n.yourShare,
+                        value: _formatMoney(
+                          context,
+                          yourShare,
+                          currencyCode: widget.trip.currencyCode,
+                        ),
+                        alignEnd: false,
+                      ),
+                    ),
+                    Expanded(
+                      child: _buildHeroFooterAmount(
+                        context,
+                        label: context.l10n.workspaceTotalCost,
+                        value: _formatMoney(
+                          context,
+                          totalAmount,
+                          currencyCode: widget.trip.currencyCode,
+                        ),
+                        alignEnd: true,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: _buildTripHeroMemberStack(snapshot.users),
-                ),
-                const SizedBox(height: 8),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                  decoration: BoxDecoration(
-                    color: glassBgColor,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: glassBorderColor),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_month_outlined,
-                            size: 15,
-                            color: glassTitle.withValues(alpha: 0.90),
-                          ),
-                          const SizedBox(width: 6),
-                          Expanded(
-                            child: Text(
-                              _heroDateLabel(context, snapshot),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.labelLarge
-                                  ?.copyWith(
-                                    color: glassTitle,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 148),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 5,
-                              ),
-                              decoration: BoxDecoration(
-                                color: statusChipBackground,
-                                borderRadius: BorderRadius.circular(9),
-                                border: Border.all(color: statusChipBorder),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    statusIcon,
-                                    size: 13,
-                                    color: statusChipForeground,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Flexible(
-                                    child: Text(
-                                      statusText,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall
-                                          ?.copyWith(
-                                            color: statusChipForeground,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Divider(height: 1, color: glassBorderColor),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildHeroStatItem(
-                              context,
-                              icon: Icons.account_balance_wallet_outlined,
-                              label: context.l10n.workspaceTotalCost,
-                              value: _formatMoney(
-                                context,
-                                totalAmount,
-                                currencyCode: widget.trip.currencyCode,
-                              ),
-                              iconColor: AppDesign.lightPrimary,
-                              textColor: glassTitle,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: _buildHeroStatItem(
-                              context,
-                              icon: Icons.credit_card_outlined,
-                              label: context.l10n.yourShare,
-                              value: _formatMoney(
-                                context,
-                                yourShare,
-                                currencyCode: widget.trip.currencyCode,
-                              ),
-                              iconColor: AppDesign.lightAccent,
-                              textColor: glassTitle,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: _buildHeroStatItem(
-                              context,
-                              icon: primaryIcon,
-                              label: primaryLabel,
-                              value: primaryValue,
-                              iconColor: primaryIconColor,
-                              textColor: glassTitle,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
-          if (_isCurrentTripOwner())
-            Positioned(
-              right: 12,
-              top: 10,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: semantic.heroMenuBackground,
-                  shape: BoxShape.circle,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeroStatusPill(
+    BuildContext context, {
+    required String statusText,
+    required Color statusColor,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: statusColor.withValues(alpha: 0.92),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: statusColor.withValues(alpha: 0.72),
+                blurRadius: 18,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+          child: const SizedBox(width: 9, height: 9),
+        ),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            statusText.toUpperCase(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: statusColor,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.35,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHeroNetBalanceAmount(
+    BuildContext context, {
+    required String value,
+    required Color accentColor,
+  }) {
+    final match = RegExp(r'^([^\d\-+]*)([\d\s,.]+)(.*)$').firstMatch(value);
+    final symbol = (match?.group(1) ?? '').trim();
+    final amount = (match?.group(2) ?? value).trim();
+    final suffix = (match?.group(3) ?? '').trim();
+    final amountParts = amount.split(RegExp(r'(?=[,.])'));
+    final mainAmount = amountParts.isEmpty ? amount : amountParts.first;
+    final cents = amountParts.length > 1 ? amountParts.sublist(1).join() : '';
+    const mainFontSize = 56.0;
+    const sideFontSize = 32.0;
+    const sideLineHeight = 1.0;
+    const mainLineHeight = 1.0;
+    const symbolTopOffset = mainFontSize * 0.10;
+    const centsTopOffset = mainFontSize - sideFontSize;
+
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (symbol.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: symbolTopOffset),
+              child: Text(
+                symbol,
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                  color: accentColor,
+                  fontSize: sideFontSize,
+                  fontWeight: FontWeight.w900,
+                  height: sideLineHeight,
+                  letterSpacing: -1.5,
                 ),
-                child: IconButton(
-                  onPressed: _openTripActionsSheet,
-                  icon: const Icon(Icons.more_vert),
-                  color: semantic.heroAvatarStroke,
-                  visualDensity: VisualDensity.compact,
-                  tooltip: context.l10n.settings,
+              ),
+            ),
+          Text(
+            mainAmount,
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+              color: AppDesign.darkForeground,
+              fontSize: mainFontSize,
+              fontWeight: FontWeight.w900,
+              height: mainLineHeight,
+              letterSpacing: -3.4,
+            ),
+          ),
+          if (cents.isNotEmpty || suffix.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: centsTopOffset),
+              child: Text(
+                '$cents$suffix',
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                  color: AppDesign.darkMuted,
+                  fontSize: sideFontSize,
+                  fontWeight: FontWeight.w900,
+                  height: sideLineHeight,
+                  letterSpacing: -1.5,
                 ),
               ),
             ),
@@ -387,47 +308,33 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     );
   }
 
-  Widget _buildHeroStatItem(
+  Widget _buildHeroFooterAmount(
     BuildContext context, {
-    required IconData icon,
     required String label,
     required String value,
-    required Color iconColor,
-    required Color textColor,
+    required bool alignEnd,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 14, color: iconColor),
-            const SizedBox(width: 4),
-            Expanded(
-              child: Text(
-                label.toUpperCase(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: textColor.withValues(alpha: 0.82),
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.25,
-                ),
-              ),
+    final textAlign = alignEnd ? TextAlign.right : TextAlign.left;
+    return RichText(
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      textAlign: textAlign,
+      text: TextSpan(
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+          color: AppDesign.darkMuted,
+          fontWeight: FontWeight.w500,
+        ),
+        children: [
+          TextSpan(text: '$label '),
+          TextSpan(
+            text: value,
+            style: const TextStyle(
+              color: AppDesign.darkForeground,
+              fontWeight: FontWeight.w700,
             ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: textColor,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.15,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -508,46 +415,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     );
   }
 
-  String _heroDateLabel(BuildContext context, WorkspaceSnapshot snapshot) {
-    final created = _parseIsoDate(
-      widget.trip.dateFrom ?? widget.trip.createdAt,
-    );
-    final ended = _parseIsoDate(
-      widget.trip.dateTo ?? widget.trip.endedAt ?? snapshot.tripEndedAt,
-    );
-    if (created != null && ended != null) {
-      return '${_formatHeroDay(created)} - ${_formatHeroDay(ended)}';
-    }
-    if (created != null) {
-      return context.l10n.workspaceStarted(_formatHeroDay(created));
-    }
-    if (ended != null) {
-      return context.l10n.workspaceEnded(_formatHeroDay(ended));
-    }
-    if (snapshot.isSettling) {
-      return context.l10n.settlementInProgressTitle;
-    }
-    if (snapshot.isArchived) {
-      return context.l10n.workspaceArchivedTrip;
-    }
-    return context.l10n.workspaceActiveTrip;
-  }
-
-  DateTime? _parseIsoDate(String? value) {
-    final raw = (value ?? '').trim();
-    if (raw.isEmpty) {
-      return null;
-    }
-    final parsed = DateTime.tryParse(raw);
-    return parsed?.toLocal();
-  }
-
-  String _formatHeroDay(DateTime date) {
-    final dd = date.day.toString().padLeft(2, '0');
-    final mm = date.month.toString().padLeft(2, '0');
-    return '$dd.$mm';
-  }
-
   Widget _buildClosedTripBanner(
     BuildContext context,
     WorkspaceSnapshot snapshot, {
@@ -575,50 +442,49 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     );
   }
 
-  Widget _buildSyncStatusBanner(
-    BuildContext context, {
-    EdgeInsetsGeometry padding = const EdgeInsets.fromLTRB(12, 0, 12, 8),
-  }) {
+  Widget _buildSyncStatusBadge(BuildContext context) {
     final visual = _syncVisual(context, _syncState);
     final label = _syncStatusLabel(context);
-    return Padding(
-      padding: padding,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(14),
-          onTap: _isMutating ? null : _onRefreshPressed,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: visual.background,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: visual.border),
-            ),
-            child: Row(
-              children: [
-                Icon(visual.icon, size: 17, color: visual.foreground),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: visual.foreground,
-                      fontWeight: FontWeight.w800,
-                    ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(999),
+        onTap: _isMutating ? null : _onRefreshPressed,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 178),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          decoration: BoxDecoration(
+            color: visual.background,
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: visual.border),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(visual.icon, size: 14, color: visual.foreground),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: visual.foreground,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
-                const SizedBox(width: 8),
-                Icon(
-                  Icons.refresh_rounded,
-                  size: 17,
-                  color: visual.foreground.withValues(alpha: 0.80),
+              ),
+              if (_syncState != _SyncState.online || _pendingQueueCount > 0)
+                Padding(
+                  padding: const EdgeInsets.only(left: 6),
+                  child: Icon(
+                    Icons.refresh_rounded,
+                    size: 14,
+                    color: visual.foreground.withValues(alpha: 0.80),
+                  ),
                 ),
-              ],
-            ),
+            ],
           ),
         ),
       ),

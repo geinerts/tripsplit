@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trip Card Mockup — Round 2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 32px;
+    padding: 40px 24px;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    flex-wrap: wrap;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .label {
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .label-desc {
+    color: rgba(255,255,255,0.25);
+    font-size: 10px;
+    max-width: 290px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .phone {
+    width: 320px;
+    background: #0a0a0a;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .screen {
+    border-radius: 34px;
+    overflow: hidden;
+    background: #0c0c0c;
+    position: relative;
+    height: 540px;
+  }
+
+  .avatar {
+    width: 28px; height: 28px; border-radius: 14px;
+    background: #2EAF6E;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .avatar.green-light { background: #4ECD8C; }
+  .avatar.user { background: #3a6644; font-size: 14px; }
+
+  .tab-text { font-size: 11px; font-weight: 600; }
+
+  /* ══════════════════════════════════════════
+     OPTION C — Postcard / Destination
+     Photo cover, postcard date stamp aesthetic
+  ══════════════════════════════════════════ */
+  .c-screen { background: #080808; }
+  .c-cover {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, rgba(8,8,8,0) 40%, rgba(8,8,8,0.95) 100%),
+      linear-gradient(135deg, #2a4d35 0%, #1a3320 50%, #0d1f14 100%);
+  }
+  .c-cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(78,205,140,0.3) 0%, transparent 35%),
+      radial-gradient(circle at 80% 70%, rgba(46,175,110,0.25) 0%, transparent 40%),
+      radial-gradient(circle at 50% 100%, rgba(212,79,168,0.15) 0%, transparent 50%);
+  }
+  .c-cover::after {
+    /* Subtle grain texture using SVG */
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='3'/></filter><rect width='100' height='100' filter='url(%23n)' opacity='0.4'/></svg>");
+    mix-blend-mode: overlay;
+    opacity: 0.15;
+  }
+
+  /* Mountain silhouette */
+  .c-mountains {
+    position: absolute;
+    bottom: 30px;
+    left: 0; right: 0;
+    height: 80px;
+    z-index: 1;
+  }
+
+  .c-stamp {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 3;
+    border: 1.5px dashed rgba(255,255,255,0.45);
+    border-radius: 8px;
+    padding: 5px 10px;
+    transform: rotate(4deg);
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(8px);
+  }
+  .c-stamp-day { font-size: 22px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -0.5px; }
+  .c-stamp-month {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.7); text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .c-active {
+    position: absolute;
+    top: 18px; left: 16px;
+    z-index: 3;
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(46,175,110,0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(78,205,140,0.4);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px; font-weight: 700; color: #4ECD8C;
+  }
+  .c-active::before {
+    content: ''; width: 6px; height: 6px; border-radius: 3px; background: #4ECD8C;
+    box-shadow: 0 0 6px #4ECD8C;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.4; } }
+
+  .c-title-block {
+    position: absolute;
+    bottom: 14px; left: 18px; right: 18px;
+    z-index: 3;
+  }
+  .c-title { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -0.6px; line-height: 1; }
+  .c-subtitle {
+    margin-top: 8px;
+    display: flex; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+  }
+  .c-avatars-row { display: flex; }
+  .c-avatars-row .avatar { width: 22px; height: 22px; border: 2px solid #0d1f14; margin-right: -6px; font-size: 9px; }
+
+  /* Body section */
+  .c-body { padding: 18px 16px 0; }
+  .c-balance-card {
+    background: linear-gradient(135deg, rgba(46,175,110,0.12) 0%, rgba(46,175,110,0.04) 100%);
+    border: 1px solid rgba(46,175,110,0.2);
+    border-radius: 18px;
+    padding: 16px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .c-balance-left { }
+  .c-balance-label {
+    font-size: 10px; font-weight: 700;
+    color: rgba(78,205,140,0.7); letter-spacing: 0.06em;
+    text-transform: uppercase; margin-bottom: 3px;
+  }
+  .c-balance-amount { font-size: 26px; font-weight: 800; color: #4ECD8C; letter-spacing: -0.5px; }
+  .c-balance-cta {
+    background: #2EAF6E; color: #062612;
+    border-radius: 14px; padding: 10px 14px;
+    font-size: 12px; font-weight: 700;
+    box-shadow: 0 4px 16px rgba(46,175,110,0.3);
+  }
+
+  .c-mini-stats {
+    display: flex; gap: 8px;
+  }
+  .c-mini {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+  .c-mini-label {
+    font-size: 9px; font-weight: 600;
+    color: rgba(255,255,255,0.4); letter-spacing: 0.04em;
+    text-transform: uppercase; margin-bottom: 3px;
+  }
+  .c-mini-val { font-size: 14px; font-weight: 700; color: #fff; }
+
+  .c-tabs {
+    position: absolute;
+    bottom: 12px; left: 12px; right: 12px;
+    display: flex;
+    background: rgba(15,15,15,0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 4px;
+  }
+  .c-tab {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    border-radius: 12px;
+    font-size: 10px; font-weight: 600;
+    color: rgba(255,255,255,0.32);
+  }
+  .c-tab.active {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+  }
+
+  /* ══════════════════════════════════════════
+     OPTION D — Banking app / Financial-first
+     Big balance hero, trip details secondary
+  ══════════════════════════════════════════ */
+  .d-screen { background: #0c0c0c; }
+
+  .d-top {
+    padding: 22px 20px 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .d-back { color: rgba(255,255,255,0.5); font-size: 14px; }
+  .d-trip-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 5px 10px 5px 5px;
+  }
+  .d-trip-icon {
+    width: 18px; height: 18px; border-radius: 9px;
+    background: linear-gradient(135deg, #2EAF6E, #4ECD8C);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+  }
+  .d-trip-name { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); }
+  .d-more { color: rgba(255,255,255,0.5); font-size: 18px; padding: 4px 8px; }
+
+  .d-balance-block {
+    padding: 12px 24px 20px;
+    text-align: center;
+  }
+  .d-balance-label {
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .d-balance-big {
+    font-size: 56px; font-weight: 800;
+    color: #4ECD8C;
+    letter-spacing: -2px;
+    line-height: 1;
+    text-shadow: 0 0 32px rgba(78,205,140,0.2);
+  }
+  .d-balance-cur { font-size: 32px; font-weight: 600; color: rgba(78,205,140,0.6); margin-right: 2px; vertical-align: top; line-height: 1.1; }
+  .d-balance-sub {
+    margin-top: 8px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+  .d-balance-sub strong { color: rgba(255,255,255,0.85); }
+
+  .d-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 16px 20px;
+  }
+  .d-action-btn {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .d-action-btn.primary {
+    background: linear-gradient(135deg, #2EAF6E, #4ECD8C);
+    border: none;
+  }
+  .d-action-icon { font-size: 16px; margin-bottom: 4px; }
+  .d-action-label {
+    font-size: 10px; font-weight: 700;
+    color: rgba(255,255,255,0.7);
+  }
+  .d-action-btn.primary .d-action-label { color: #062612; }
+
+  .d-overview {
+    margin: 0 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .d-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .d-row:last-child { border: none; }
+  .d-row-left { display: flex; align-items: center; gap: 10px; }
+  .d-row-icon {
+    width: 28px; height: 28px; border-radius: 9px;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .d-row-icon.green { background: rgba(46,175,110,0.15); }
+  .d-row-icon.amber { background: rgba(245,166,35,0.15); }
+  .d-row-label { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.85); }
+  .d-row-sub { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .d-row-val { font-size: 14px; font-weight: 700; color: #fff; }
+  .d-row-arrow { color: rgba(255,255,255,0.3); margin-left: 6px; font-size: 14px; }
+
+  .d-tabs {
+    position: absolute;
+    bottom: 12px; left: 12px; right: 12px;
+    display: flex;
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 4px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .d-tab {
+    flex: 1; padding: 8px 4px; text-align: center;
+    font-size: 10px; font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    border-radius: 12px;
+  }
+  .d-tab.active { background: rgba(46,175,110,0.18); color: #4ECD8C; }
+
+  /* ══════════════════════════════════════════
+     OPTION E — Compact / multi-trip list view
+     Multiple trips visible, denser data
+  ══════════════════════════════════════════ */
+  .e-screen { background: #0a0a0a; }
+  .e-header {
+    padding: 22px 20px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .e-h-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+  .e-h-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  .e-summary {
+    margin: 0 16px 14px;
+    display: flex;
+    background: linear-gradient(135deg, rgba(46,175,110,0.12), rgba(46,175,110,0.04));
+    border: 1px solid rgba(46,175,110,0.2);
+    border-radius: 16px;
+    padding: 12px 14px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .e-summary-l { }
+  .e-s-lbl {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.07em;
+    color: rgba(78,205,140,0.7); text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .e-s-val { font-size: 22px; font-weight: 800; color: #4ECD8C; letter-spacing: -0.4px; }
+  .e-s-arrow {
+    width: 36px; height: 36px; border-radius: 12px;
+    background: rgba(46,175,110,0.2);
+    display: flex; align-items: center; justify-content: center;
+    color: #4ECD8C; font-size: 16px;
+  }
+
+  .e-section-title {
+    padding: 4px 20px 6px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .e-st-l { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; }
+  .e-st-r { font-size: 10px; color: rgba(78,205,140,0.7); font-weight: 600; }
+
+  .e-trip-list { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; }
+  .e-trip {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .e-trip.active {
+    background: linear-gradient(135deg, rgba(46,175,110,0.08), rgba(46,175,110,0.02));
+    border: 1.5px solid rgba(46,175,110,0.35);
+  }
+  .e-trip-thumb {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2a4d35, #1a3320);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .e-trip-thumb.tropical { background: linear-gradient(135deg, #2a4d3a, #0f3d2a); }
+  .e-trip-thumb.purple { background: linear-gradient(135deg, #4d2a4a, #2a1f3d); }
+  .e-trip-thumb-dot {
+    position: absolute; top: -2px; right: -2px;
+    width: 10px; height: 10px; border-radius: 5px;
+    background: #4ECD8C;
+    border: 2px solid #0a0a0a;
+  }
+  .e-trip-info { flex: 1; min-width: 0; }
+  .e-trip-name {
+    font-size: 14px; font-weight: 700; color: #fff;
+    margin-bottom: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .e-trip-meta {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; color: rgba(255,255,255,0.45);
+  }
+  .e-trip-meta .dot { width: 2px; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.3); }
+  .e-trip-right { text-align: right; flex-shrink: 0; }
+  .e-trip-amount {
+    font-size: 14px; font-weight: 800; color: #fff; letter-spacing: -0.3px;
+  }
+  .e-trip-amount.green { color: #4ECD8C; }
+  .e-trip-amount.amber { color: #F5A623; }
+  .e-trip-status {
+    font-size: 9px; font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+
+  .e-fab {
+    position: absolute;
+    bottom: 80px; right: 16px;
+    width: 52px; height: 52px;
+    border-radius: 26px;
+    background: linear-gradient(135deg, #2EAF6E, #4ECD8C);
+    box-shadow: 0 8px 24px rgba(46,175,110,0.4);
+    display: flex; align-items: center; justify-content: center;
+    color: #062612;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .e-bottom-nav {
+    position: absolute;
+    bottom: 12px; left: 12px; right: 12px;
+    display: flex;
+    background: rgba(15,15,15,0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 18px;
+    padding: 6px;
+  }
+  .e-nav-item {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .e-nav-icon { font-size: 16px; opacity: 0.4; }
+  .e-nav-label { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.4); }
+  .e-nav-item.active .e-nav-icon { opacity: 1; }
+  .e-nav-item.active .e-nav-label { color: #4ECD8C; }
+</style>
+</head>
+<body>
+
+<!-- ── OPTION C — Postcard ── -->
+<div class="column">
+  <div class="label">Option C — Destination</div>
+  <div class="phone">
+    <div class="screen c-screen">
+      <div class="c-cover">
+        <div class="c-active">Active</div>
+        <div class="c-stamp">
+          <div class="c-stamp-day">07</div>
+          <div class="c-stamp-month">Apr</div>
+        </div>
+        <!-- Mountain silhouette -->
+        <svg class="c-mountains" viewBox="0 0 320 80" preserveAspectRatio="none">
+          <path d="M 0 80 L 0 50 L 30 30 L 60 45 L 90 25 L 130 50 L 170 20 L 210 40 L 250 30 L 290 45 L 320 25 L 320 80 Z"
+                fill="rgba(0,0,0,0.45)"/>
+          <path d="M 0 80 L 0 60 L 40 40 L 80 55 L 130 35 L 180 55 L 230 40 L 270 55 L 320 35 L 320 80 Z"
+                fill="rgba(0,0,0,0.6)"/>
+        </svg>
+        <div class="c-title-block">
+          <div class="c-title">Austris</div>
+          <div class="c-subtitle">
+            <div class="c-avatars-row">
+              <div class="avatar">AV</div>
+              <div class="avatar user">🧑</div>
+            </div>
+            <span>2 travelers · €44 spent</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="c-body">
+        <div class="c-balance-card">
+          <div>
+            <div class="c-balance-label">↓ They owe you</div>
+            <div class="c-balance-amount">€22.00</div>
+          </div>
+          <div class="c-balance-cta">Settle up →</div>
+        </div>
+        <div class="c-mini-stats">
+          <div class="c-mini">
+            <div class="c-mini-label">Total cost</div>
+            <div class="c-mini-val">€44.00</div>
+          </div>
+          <div class="c-mini">
+            <div class="c-mini-label">Your share</div>
+            <div class="c-mini-val">€22.00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="c-tabs">
+        <div class="c-tab active">Expenses</div>
+        <div class="c-tab">Balances</div>
+        <div class="c-tab">Settle</div>
+        <div class="c-tab">Activity</div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Postcard cover with date stamp · settlement prominent · mountain silhouette gradient</div>
+</div>
+
+<!-- ── OPTION D — Banking ── -->
+<div class="column">
+  <div class="label">Option D — Banking</div>
+  <div class="phone">
+    <div class="screen d-screen">
+
+      <div class="d-top">
+        <div class="d-back">‹ Trips</div>
+        <div class="d-trip-pill">
+          <div class="d-trip-icon">A</div>
+          <div class="d-trip-name">Austris</div>
+        </div>
+        <div class="d-more">⋯</div>
+      </div>
+
+      <div class="d-balance-block">
+        <div class="d-balance-label">Net balance</div>
+        <div class="d-balance-big"><span class="d-balance-cur">€</span>22<span style="font-size:24px;color:rgba(78,205,140,0.6);font-weight:600">.00</span></div>
+        <div class="d-balance-sub">in your favor · 2 members owe you</div>
+      </div>
+
+      <div class="d-actions">
+        <div class="d-action-btn primary">
+          <div class="d-action-icon">💸</div>
+          <div class="d-action-label">Settle</div>
+        </div>
+        <div class="d-action-btn">
+          <div class="d-action-icon" style="color:#fff">+</div>
+          <div class="d-action-label">Add</div>
+        </div>
+        <div class="d-action-btn">
+          <div class="d-action-icon">👥</div>
+          <div class="d-action-label">Invite</div>
+        </div>
+      </div>
+
+      <div class="d-overview">
+        <div class="d-row">
+          <div class="d-row-left">
+            <div class="d-row-icon">🗂</div>
+            <div>
+              <div class="d-row-label">Total spent</div>
+              <div class="d-row-sub">3 expenses · 07.04 → today</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center">
+            <div class="d-row-val">€44.00</div>
+            <div class="d-row-arrow">›</div>
+          </div>
+        </div>
+        <div class="d-row">
+          <div class="d-row-left">
+            <div class="d-row-icon green">●</div>
+            <div>
+              <div class="d-row-label">Status</div>
+              <div class="d-row-sub">All synced · just now</div>
+            </div>
+          </div>
+          <div class="d-row-val" style="color:#4ECD8C;font-size:11px;font-weight:700">ACTIVE</div>
+        </div>
+        <div class="d-row">
+          <div class="d-row-left">
+            <div class="d-row-icon">👥</div>
+            <div>
+              <div class="d-row-label">Members</div>
+              <div class="d-row-sub">Artis Vilks · You</div>
+            </div>
+          </div>
+          <div class="d-row-val">2</div>
+        </div>
+      </div>
+
+      <div class="d-tabs">
+        <div class="d-tab active">Expenses</div>
+        <div class="d-tab">Balances</div>
+        <div class="d-tab">Settle</div>
+        <div class="d-tab">Activity</div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Big balance hero · banking app feel · primary action front and center · summary list below</div>
+</div>
+
+<!-- ── OPTION E — Multi-trip list ── -->
+<div class="column">
+  <div class="label">Option E — Trip list</div>
+  <div class="phone">
+    <div class="screen e-screen">
+
+      <div class="e-header">
+        <div>
+          <div class="e-h-title">My trips</div>
+          <div class="e-h-sub">3 active · 1 settled</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <div style="width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:14px">🔍</div>
+          <div style="width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:14px">⚡</div>
+        </div>
+      </div>
+
+      <div class="e-summary">
+        <div class="e-summary-l">
+          <div class="e-s-lbl">↓ Owed to you · all trips</div>
+          <div class="e-s-val">€22.00</div>
+        </div>
+        <div class="e-s-arrow">→</div>
+      </div>
+
+      <div class="e-section-title">
+        <div class="e-st-l">Active</div>
+        <div class="e-st-r">3 trips</div>
+      </div>
+
+      <div class="e-trip-list">
+        <div class="e-trip active">
+          <div class="e-trip-thumb">
+            🏔
+            <div class="e-trip-thumb-dot"></div>
+          </div>
+          <div class="e-trip-info">
+            <div class="e-trip-name">Austris</div>
+            <div class="e-trip-meta">
+              <span>2 members</span>
+              <div class="dot"></div>
+              <span>07.04</span>
+              <div class="dot"></div>
+              <span>3 expenses</span>
+            </div>
+          </div>
+          <div class="e-trip-right">
+            <div class="e-trip-amount green">+€22</div>
+            <div class="e-trip-status" style="color:#4ECD8C">Owed to you</div>
+          </div>
+        </div>
+
+        <div class="e-trip">
+          <div class="e-trip-thumb tropical">🌴</div>
+          <div class="e-trip-info">
+            <div class="e-trip-name">Bali getaway</div>
+            <div class="e-trip-meta">
+              <span>4 members</span>
+              <div class="dot"></div>
+              <span>15.03</span>
+              <div class="dot"></div>
+              <span>12 expenses</span>
+            </div>
+          </div>
+          <div class="e-trip-right">
+            <div class="e-trip-amount amber">−€87</div>
+            <div class="e-trip-status">You owe</div>
+          </div>
+        </div>
+
+        <div class="e-trip">
+          <div class="e-trip-thumb purple">🍷</div>
+          <div class="e-trip-info">
+            <div class="e-trip-name">Wine weekend</div>
+            <div class="e-trip-meta">
+              <span>3 members</span>
+              <div class="dot"></div>
+              <span>22.02</span>
+              <div class="dot"></div>
+              <span>8 expenses</span>
+            </div>
+          </div>
+          <div class="e-trip-right">
+            <div class="e-trip-amount" style="color:rgba(255,255,255,0.5)">€0</div>
+            <div class="e-trip-status">Settled</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="e-fab">+</div>
+
+      <div class="e-bottom-nav">
+        <div class="e-nav-item active">
+          <div class="e-nav-icon">🧳</div>
+          <div class="e-nav-label">Trips</div>
+        </div>
+        <div class="e-nav-item">
+          <div class="e-nav-icon">👥</div>
+          <div class="e-nav-label">Friends</div>
+        </div>
+        <div class="e-nav-item">
+          <div class="e-nav-icon">📊</div>
+          <div class="e-nav-label">Stats</div>
+        </div>
+        <div class="e-nav-item">
+          <div class="e-nav-icon">👤</div>
+          <div class="e-nav-label">Profile</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">List view — multiple trips at once · global balance summary · cleaner navigation</div>
+</div>
+
+</body>
+</html>

@@ -563,9 +563,9 @@ function add_expense_action(): void
 
         $notifyUserIds = [];
         foreach ($participantRows as $participantRow) {
-            $userId = (int) ($participantRow['user_id'] ?? 0);
-            if ($userId > 0 && $userId !== $payerId) {
-                $notifyUserIds[$userId] = true;
+            $participantUserId = (int) ($participantRow['user_id'] ?? 0);
+            if ($participantUserId > 0 && $participantUserId !== $payerId) {
+                $notifyUserIds[$participantUserId] = true;
             }
         }
         $notifyTripName = $tripName !== '' ? $tripName : ('Trip #' . $tripId);
@@ -574,11 +574,11 @@ function add_expense_action(): void
         if ($note !== '') {
             $expenseBody = $payerName . ' added an expense of ' . $amountText . ': ' . $note;
         }
-        foreach (array_keys($notifyUserIds) as $userId) {
+        foreach (array_keys($notifyUserIds) as $notifyUserId) {
             create_user_notification(
                 $pdo,
                 $tripId,
-                (int) $userId,
+                (int) $notifyUserId,
                 'expense_added',
                 'New expense added',
                 $expenseBody,

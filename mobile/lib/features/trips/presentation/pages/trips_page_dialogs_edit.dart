@@ -19,39 +19,30 @@ extension _TripsPageEditDialog on _TripsPageState {
           !removeImageRequested && existingTripImageUrl.isNotEmpty;
       final hasImage = selectedImageBytes != null || hasExistingTripImage;
 
-      final selectedSource = await showAppBottomSheet<_TripImageSourceOption>(
-        context: dialogContext,
-        builder: (bottomSheetContext) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AppActionSheetTile(
+      final selectedSource =
+          await showAppPlatformActionSheet<_TripImageSourceOption>(
+            context: dialogContext,
+            cancelLabel: t.cancelAction,
+            actions: [
+              AppPlatformAction(
+                value: _TripImageSourceOption.camera,
                 icon: Icons.photo_camera_outlined,
                 title: t.takePhotoAction,
-                onTap: () => Navigator.of(
-                  bottomSheetContext,
-                ).pop(_TripImageSourceOption.camera),
               ),
-              AppActionSheetTile(
+              AppPlatformAction(
+                value: _TripImageSourceOption.library,
                 icon: Icons.photo_library_outlined,
                 title: t.chooseFromLibraryAction,
-                onTap: () => Navigator.of(
-                  bottomSheetContext,
-                ).pop(_TripImageSourceOption.library),
               ),
               if (hasImage)
-                AppActionSheetTile(
+                AppPlatformAction(
+                  value: _TripImageSourceOption.remove,
                   icon: Icons.delete_outline,
                   title: context.l10n.profileRemoveImage,
                   destructive: true,
-                  onTap: () => Navigator.of(
-                    bottomSheetContext,
-                  ).pop(_TripImageSourceOption.remove),
                 ),
             ],
           );
-        },
-      );
       if (!mounted || !dialogContext.mounted || selectedSource == null) {
         return;
       }

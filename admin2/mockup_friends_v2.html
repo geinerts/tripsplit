@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friends Page — Simpler</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 32px;
+    padding: 40px 24px;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    flex-wrap: wrap;
+  }
+
+  .column { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .label {
+    color: rgba(255,255,255,0.4);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .label-desc {
+    color: rgba(255,255,255,0.25);
+    font-size: 10px;
+    max-width: 290px; text-align: center; line-height: 1.4;
+  }
+
+  .phone {
+    width: 320px;
+    background: #0a0a0a;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .screen {
+    border-radius: 34px;
+    overflow: hidden;
+    background: #050505;
+    position: relative;
+    height: 640px;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    padding: 14px 16px 8px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .topbar-back { color: rgba(255,255,255,0.85); font-size: 18px; width: 28px; }
+  .topbar-title { flex: 1; font-size: 17px; font-weight: 700; color: #fff; }
+  .topbar-bell { color: rgba(255,255,255,0.7); font-size: 18px; width: 28px; text-align: right; }
+  .topbar-icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+  }
+
+  /* Avatars */
+  .avatar {
+    width: 40px; height: 40px;
+    border-radius: 20px;
+    background: #2EAF6E;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .avatar.user-photo { background: linear-gradient(135deg, #5d8a6c, #3a6644); font-size: 18px; }
+  .avatar.purple { background: linear-gradient(135deg, #6e5dab, #443370); }
+  .avatar.amber { background: linear-gradient(135deg, #c8842b, #8a5a1d); }
+  .avatar.cyan { background: linear-gradient(135deg, #2bbcc8, #1d6f8a); }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: #050505;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 10px 8px 22px;
+    display: flex; justify-content: space-around; align-items: flex-end;
+    gap: 4px;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 4px 0;
+  }
+  .nav-icon { font-size: 18px; color: rgba(255,255,255,0.55); }
+  .nav-icon-photo {
+    width: 22px; height: 22px; border-radius: 11px;
+    background: linear-gradient(135deg,#3a6644,#2a4d35);
+    display: flex; align-items: center; justify-content: center; font-size: 12px;
+  }
+  .nav-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.55); }
+  .nav-add {
+    width: 44px; height: 28px; border-radius: 14px;
+    border: 1.5px solid rgba(78,205,140,0.35);
+    background: rgba(46,175,110,0.08);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px;
+  }
+  .nav-item.active .nav-icon, .nav-item.active .nav-label { color: #4ECD8C; }
+
+  /* ══════════════════════════════════════════
+     OPTION O — Pure list
+     Just friends. Search top. + button. Done.
+  ══════════════════════════════════════════ */
+  .o-screen { background: #050505; }
+
+  .o-search {
+    margin: 4px 14px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 11px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .o-search-icon { color: rgba(255,255,255,0.4); font-size: 14px; }
+  .o-search-text { font-size: 13px; color: rgba(255,255,255,0.4); flex: 1; }
+
+  .o-pending-strip {
+    margin: 0 14px 12px;
+    background: rgba(46,175,110,0.1);
+    border: 1px solid rgba(78,205,140,0.25);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .o-pending-text {
+    font-size: 12px;
+    color: #fff;
+  }
+  .o-pending-text strong { font-weight: 700; color: #4ECD8C; }
+  .o-pending-arrow { color: #4ECD8C; font-size: 14px; }
+
+  .o-list {
+    padding: 0 8px;
+  }
+  .o-row {
+    padding: 10px 8px;
+    display: flex; align-items: center; gap: 12px;
+    border-radius: 12px;
+  }
+  .o-row + .o-row {
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+  .o-row-info { flex: 1; }
+  .o-row-name {
+    font-size: 15px; font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .o-row-meta {
+    font-size: 11px; color: rgba(255,255,255,0.4);
+    margin-top: 2px;
+  }
+  .o-row-balance {
+    font-size: 13px; font-weight: 700;
+    text-align: right;
+  }
+  .o-row-balance.green { color: #4ECD8C; }
+  .o-row-balance.amber { color: #F5A623; }
+
+  .o-fab {
+    position: absolute;
+    right: 16px;
+    bottom: 90px;
+    width: 52px; height: 52px;
+    border-radius: 26px;
+    background: linear-gradient(135deg, #2EAF6E, #4ECD8C);
+    box-shadow: 0 8px 20px rgba(46,175,110,0.4);
+    display: flex; align-items: center; justify-content: center;
+    color: #062612;
+    font-size: 22px; font-weight: 600;
+  }
+
+  /* ══════════════════════════════════════════
+     OPTION P — Simple sections
+     Section labels guide the eye, no tabs
+  ══════════════════════════════════════════ */
+  .p-screen { background: #050505; }
+
+  .p-search {
+    margin: 4px 14px 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 11px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .p-search-icon { color: rgba(255,255,255,0.4); font-size: 14px; }
+  .p-search-text { font-size: 13px; color: rgba(255,255,255,0.4); flex: 1; }
+
+  .p-section {
+    padding: 0 14px 6px;
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 4px;
+  }
+  .p-section-count {
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.5);
+    border-radius: 8px;
+    padding: 1px 6px;
+    font-size: 10px;
+    margin-left: 6px;
+    font-weight: 700;
+  }
+
+  /* Pending request card */
+  .p-pending {
+    margin: 0 14px 8px;
+    background: rgba(46,175,110,0.08);
+    border: 1px solid rgba(78,205,140,0.22);
+    border-radius: 14px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .p-pending-info { flex: 1; }
+  .p-pending-name { font-size: 13px; font-weight: 700; color: #fff; }
+  .p-pending-meta { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .p-pending-actions { display: flex; gap: 5px; }
+  .p-pending-btn {
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .p-pending-btn.accept { background: #2EAF6E; color: #062612; }
+  .p-pending-btn.decline {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .p-friend-list {
+    padding: 0 14px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .p-row {
+    background: rgba(255,255,255,0.03);
+    border-radius: 14px;
+    padding: 11px 12px;
+    display: flex; align-items: center; gap: 11px;
+  }
+  .p-row-info { flex: 1; }
+  .p-row-name {
+    font-size: 14px; font-weight: 600;
+    color: #fff;
+  }
+  .p-row-meta {
+    font-size: 11px; color: rgba(255,255,255,0.45);
+    margin-top: 2px;
+  }
+  .p-row-balance {
+    font-size: 13px; font-weight: 700;
+  }
+  .p-row-balance.green { color: #4ECD8C; }
+  .p-row-balance.amber { color: #F5A623; }
+  .p-row-balance.dim { color: rgba(255,255,255,0.3); }
+
+  /* ══════════════════════════════════════════
+     OPTION Q — Cleanest
+     Just essential, single list with subtle dividers
+  ══════════════════════════════════════════ */
+  .q-screen { background: #050505; }
+
+  /* Inline pending banner — only if exists */
+  .q-pending-banner {
+    margin: 4px 14px 12px;
+    padding: 11px 14px;
+    background: rgba(46,175,110,0.1);
+    border: 1px solid rgba(78,205,140,0.22);
+    border-radius: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .q-pb-dot {
+    width: 8px; height: 8px;
+    border-radius: 4px;
+    background: #4ECD8C;
+    box-shadow: 0 0 8px #4ECD8C;
+    flex-shrink: 0;
+  }
+  .q-pb-text { flex: 1; font-size: 12px; color: #fff; }
+  .q-pb-text strong { color: #4ECD8C; }
+  .q-pb-action {
+    font-size: 11px; font-weight: 700;
+    color: #4ECD8C;
+  }
+
+  .q-list {
+    padding: 0 16px;
+  }
+  .q-row {
+    padding: 12px 0;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .q-row:last-child { border-bottom: none; }
+  .q-row-info { flex: 1; }
+  .q-row-name {
+    font-size: 15px; font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .q-row-meta {
+    font-size: 11px; color: rgba(255,255,255,0.4);
+    margin-top: 3px;
+  }
+  .q-row-right { text-align: right; }
+  .q-row-balance { font-size: 14px; font-weight: 700; }
+  .q-row-balance.green { color: #4ECD8C; }
+  .q-row-balance.amber { color: #F5A623; }
+  .q-row-balance.dim { color: rgba(255,255,255,0.35); font-size: 12px; font-weight: 500; }
+  .q-row-sub {
+    font-size: 9px; color: rgba(255,255,255,0.35);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  /* Header inline action button */
+  .q-add-btn {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2EAF6E, #4ECD8C);
+    color: #062612;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(46,175,110,0.25);
+  }
+
+  .q-empty-hint {
+    margin-top: 18px;
+    padding: 0 32px;
+    text-align: center;
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     OPTION O — Pure list
+═══════════════════════════════════════════ -->
+<div class="column">
+  <div class="label">Option O — Pure list</div>
+  <div class="phone">
+    <div class="screen o-screen">
+      <div class="topbar">
+        <div class="topbar-back">‹</div>
+        <div class="topbar-title">Friends</div>
+        <div class="topbar-bell">🔔</div>
+      </div>
+
+      <div class="o-search">
+        <div class="o-search-icon">⌕</div>
+        <div class="o-search-text">Search friends</div>
+      </div>
+
+      <!-- One-line pending hint, only if exists -->
+      <div class="o-pending-strip">
+        <div class="o-pending-text"><strong>1 friend request</strong> waiting</div>
+        <div class="o-pending-arrow">›</div>
+      </div>
+
+      <div class="o-list">
+        <div class="o-row">
+          <div class="avatar user-photo">🧑</div>
+          <div class="o-row-info">
+            <div class="o-row-name">Matīss Geinerts</div>
+            <div class="o-row-meta">2 trips together</div>
+          </div>
+          <div class="o-row-balance green">+€22</div>
+        </div>
+
+        <div class="o-row">
+          <div class="avatar purple">JK</div>
+          <div class="o-row-info">
+            <div class="o-row-name">Jānis Kalniņš</div>
+            <div class="o-row-meta">5 trips · all settled</div>
+          </div>
+          <div class="o-row-balance amber">−€48</div>
+        </div>
+
+        <div class="o-row">
+          <div class="avatar amber">AB</div>
+          <div class="o-row-info">
+            <div class="o-row-name">Anna Bērziņa</div>
+            <div class="o-row-meta">No shared trips</div>
+          </div>
+          <div class="o-row-balance" style="color:rgba(255,255,255,0.3)">€0</div>
+        </div>
+      </div>
+
+      <!-- Floating add button -->
+      <div class="o-fab">+</div>
+
+      <div class="bottom-nav">
+        <div class="nav-item"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+        <div class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></div>
+        <div class="nav-item">
+          <span class="nav-add">+</span>
+          <span class="nav-label">Expenses</span>
+        </div>
+        <div class="nav-item active"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></div>
+        <div class="nav-item"><div class="nav-icon-photo">🧑</div><span class="nav-label">Profile</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Just a list · search top · 1 line for pending · floating "+" to add · no tabs, no stats, no clutter</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OPTION P — Simple sections
+═══════════════════════════════════════════ -->
+<div class="column">
+  <div class="label">Option P — Simple sections</div>
+  <div class="phone">
+    <div class="screen p-screen">
+      <div class="topbar">
+        <div class="topbar-back">‹</div>
+        <div class="topbar-title">Friends</div>
+        <div class="topbar-icon-btn">+</div>
+      </div>
+
+      <div class="p-search">
+        <div class="p-search-icon">⌕</div>
+        <div class="p-search-text">Search or add by name</div>
+      </div>
+
+      <!-- Pending requests section (only shown when needed) -->
+      <div class="p-section">
+        <span>Pending</span>
+        <span class="p-section-count">1</span>
+      </div>
+      <div class="p-pending">
+        <div class="avatar cyan">KO</div>
+        <div class="p-pending-info">
+          <div class="p-pending-name">Kristers Ozols</div>
+          <div class="p-pending-meta">From Tallinn 2025</div>
+        </div>
+        <div class="p-pending-actions">
+          <div class="p-pending-btn accept">✓</div>
+          <div class="p-pending-btn decline">✕</div>
+        </div>
+      </div>
+
+      <!-- Friends section -->
+      <div class="p-section">
+        <span>Friends <span class="p-section-count">3</span></span>
+      </div>
+      <div class="p-friend-list">
+        <div class="p-row">
+          <div class="avatar user-photo">🧑</div>
+          <div class="p-row-info">
+            <div class="p-row-name">Matīss Geinerts</div>
+            <div class="p-row-meta">2 trips</div>
+          </div>
+          <div class="p-row-balance green">+€22</div>
+        </div>
+        <div class="p-row">
+          <div class="avatar purple">JK</div>
+          <div class="p-row-info">
+            <div class="p-row-name">Jānis Kalniņš</div>
+            <div class="p-row-meta">5 trips</div>
+          </div>
+          <div class="p-row-balance amber">−€48</div>
+        </div>
+        <div class="p-row">
+          <div class="avatar amber">AB</div>
+          <div class="p-row-info">
+            <div class="p-row-name">Anna Bērziņa</div>
+            <div class="p-row-meta">No trips yet</div>
+          </div>
+          <div class="p-row-balance dim">—</div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+        <div class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></div>
+        <div class="nav-item">
+          <span class="nav-add">+</span>
+          <span class="nav-label">Expenses</span>
+        </div>
+        <div class="nav-item active"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></div>
+        <div class="nav-item"><div class="nav-icon-photo">🧑</div><span class="nav-label">Profile</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Section labels separate pending from friends · "+" in header · accept/decline as small icons inline · no tabs needed</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OPTION Q — Cleanest
+═══════════════════════════════════════════ -->
+<div class="column">
+  <div class="label">Option Q — Cleanest</div>
+  <div class="phone">
+    <div class="screen q-screen">
+      <div class="topbar">
+        <div class="topbar-back">‹</div>
+        <div class="topbar-title">Friends</div>
+        <div class="q-add-btn">+</div>
+      </div>
+
+      <!-- Subtle pending banner -->
+      <div class="q-pending-banner">
+        <div class="q-pb-dot"></div>
+        <div class="q-pb-text"><strong>1</strong> friend request</div>
+        <div class="q-pb-action">View ›</div>
+      </div>
+
+      <!-- Pure list with thin dividers -->
+      <div class="q-list">
+        <div class="q-row">
+          <div class="avatar user-photo">🧑</div>
+          <div class="q-row-info">
+            <div class="q-row-name">Matīss Geinerts</div>
+            <div class="q-row-meta">2 trips together</div>
+          </div>
+          <div class="q-row-right">
+            <div class="q-row-balance green">+€22.00</div>
+            <div class="q-row-sub">owes you</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="avatar purple">JK</div>
+          <div class="q-row-info">
+            <div class="q-row-name">Jānis Kalniņš</div>
+            <div class="q-row-meta">5 trips · last in Tallinn</div>
+          </div>
+          <div class="q-row-right">
+            <div class="q-row-balance amber">−€48.00</div>
+            <div class="q-row-sub">you owe</div>
+          </div>
+        </div>
+
+        <div class="q-row">
+          <div class="avatar amber">AB</div>
+          <div class="q-row-info">
+            <div class="q-row-name">Anna Bērziņa</div>
+            <div class="q-row-meta">No shared trips</div>
+          </div>
+          <div class="q-row-right">
+            <div class="q-row-balance dim">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+        <div class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></div>
+        <div class="nav-item">
+          <span class="nav-add">+</span>
+          <span class="nav-label">Expenses</span>
+        </div>
+        <div class="nav-item active"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></div>
+        <div class="nav-item"><div class="nav-icon-photo">🧑</div><span class="nav-label">Profile</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Single list with thin dividers · "+" green button inline in header · 1-line pending banner · no cards, no tabs, no search visible until you tap</div>
+</div>
+
+</body>
+</html>

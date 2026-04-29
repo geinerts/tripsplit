@@ -495,38 +495,28 @@ extension _ProfilePageActions on _ProfilePageState {
     final t = context.l10n;
     final hasAvatar = _hasAvatarImage();
 
-    return showAppBottomSheet<_AvatarSourceOption>(
+    return showAppPlatformActionSheet<_AvatarSourceOption>(
       context: context,
-      builder: (bottomSheetContext) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppActionSheetTile(
-              icon: Icons.photo_camera_outlined,
-              title: t.takePhotoAction,
-              onTap: () => Navigator.of(
-                bottomSheetContext,
-              ).pop(_AvatarSourceOption.camera),
-            ),
-            AppActionSheetTile(
-              icon: Icons.photo_library_outlined,
-              title: t.chooseFromLibraryAction,
-              onTap: () => Navigator.of(
-                bottomSheetContext,
-              ).pop(_AvatarSourceOption.library),
-            ),
-            if (hasAvatar)
-              AppActionSheetTile(
-                icon: Icons.delete_outline,
-                title: t.removeAvatarAction,
-                destructive: true,
-                onTap: () => Navigator.of(
-                  bottomSheetContext,
-                ).pop(_AvatarSourceOption.remove),
-              ),
-          ],
-        );
-      },
+      cancelLabel: t.cancelAction,
+      actions: [
+        AppPlatformAction(
+          value: _AvatarSourceOption.camera,
+          icon: Icons.photo_camera_outlined,
+          title: t.takePhotoAction,
+        ),
+        AppPlatformAction(
+          value: _AvatarSourceOption.library,
+          icon: Icons.photo_library_outlined,
+          title: t.chooseFromLibraryAction,
+        ),
+        if (hasAvatar)
+          AppPlatformAction(
+            value: _AvatarSourceOption.remove,
+            icon: Icons.delete_outline,
+            title: t.removeAvatarAction,
+            destructive: true,
+          ),
+      ],
     );
   }
 

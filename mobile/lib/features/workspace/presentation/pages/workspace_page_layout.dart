@@ -27,6 +27,12 @@ extension _WorkspacePageLayout on _WorkspacePageState {
         style: titleStyle,
       ),
       actions: [
+        if (_isCurrentTripOwner())
+          IconButton(
+            onPressed: _openTripActionsSheet,
+            icon: const Icon(Icons.more_vert),
+            tooltip: t.settings,
+          ),
         IconButton(
           onPressed: _onRefreshPressed,
           icon: const Icon(Icons.refresh),
@@ -109,9 +115,9 @@ extension _WorkspacePageLayout on _WorkspacePageState {
               pinned: true,
               automaticallyImplyLeading: false,
               primary: false,
-              toolbarHeight: 84,
-              collapsedHeight: 84,
-              expandedHeight: 84,
+              toolbarHeight: 60,
+              collapsedHeight: 60,
+              expandedHeight: 60,
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
               elevation: 0,
@@ -142,121 +148,111 @@ extension _WorkspacePageLayout on _WorkspacePageState {
   Widget _buildWorkspaceTabSwitcher(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final labelStyle = Theme.of(context).textTheme.labelMedium?.copyWith(
-      fontWeight: FontWeight.w700,
+    final selectedTab = _workspaceTabIndex.clamp(0, 3);
+    final activeColor = isDark ? AppDesign.darkAccent : AppDesign.lightPrimary;
+    final dividerColor = isDark
+        ? colors.outlineVariant.withValues(alpha: 0.28)
+        : AppDesign.lightStroke.withValues(alpha: 0.95);
+    final labelStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
       fontSize: 15,
       height: 1.0,
+      letterSpacing: 0.1,
     );
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final selectedTab = _workspaceTabIndex.clamp(0, 3);
+    Widget buildTab({required int index, required String label}) {
+      final selected = selectedTab == index;
+      final foreground = selected
+          ? (isDark ? AppDesign.darkForeground : AppDesign.lightForeground)
+          : (isDark
+                ? colors.onSurfaceVariant.withValues(alpha: 0.64)
+                : AppDesign.lightMuted.withValues(alpha: 0.86));
 
-        Widget buildTab({required int index, required String label}) {
-          final selected = selectedTab == index;
-          final foreground = selected
-              ? (isDark ? colors.onSurface : AppDesign.lightForeground)
-              : (isDark ? colors.onSurfaceVariant : AppDesign.lightMuted);
-          return Expanded(
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeOutCubic,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                color: selected
-                    ? (isDark ? colors.surface : AppDesign.lightSurface)
-                    : Colors.transparent,
-                boxShadow: selected
-                    ? [
-                        BoxShadow(
-                          color: AppDesign.selectedTabShadow(context),
-                          blurRadius: 14,
-                          offset: const Offset(0, 5),
+      return Expanded(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () {
+              if (index == _workspaceTabIndex) {
+                return;
+              }
+              _updateState(() {
+                _workspaceTabIndex = index;
+              });
+              if (index == 3 && !_activityLoaded) {
+                unawaited(_loadTripActivity(reset: true));
+              }
+            },
+            child: SizedBox(
+              height: 48,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: labelStyle?.copyWith(
+                          color: foreground,
+                          fontWeight: selected
+                              ? FontWeight.w800
+                              : FontWeight.w700,
                         ),
-                      ]
-                    : null,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(22),
-                  onTap: () {
-                    if (index == _workspaceTabIndex) {
-                      return;
-                    }
-                    _updateState(() {
-                      _workspaceTabIndex = index;
-                    });
-                    if (index == 3 && !_activityLoaded) {
-                      unawaited(_loadTripActivity(reset: true));
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 14,
-                    ),
-                    child: Text(
-                      label,
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: labelStyle?.copyWith(
-                        color: foreground,
-                        fontSize: index == 3 ? 13.5 : 15,
-                        fontWeight: selected
-                            ? FontWeight.w800
-                            : FontWeight.w700,
                       ),
                     ),
                   ),
-                ),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 220),
+                        curve: Curves.easeOutCubic,
+                        width: selected
+                            ? math.min(constraints.maxWidth * 0.70, 84)
+                            : 0,
+                        height: 3,
+                        decoration: BoxDecoration(
+                          color: activeColor,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-          );
-        }
+          ),
+        ),
+      );
+    }
 
-        return DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            color: isDark ? colors.surfaceContainer : AppDesign.lightSurfaceTab,
-            border: Border.all(
-              color: isDark
-                  ? colors.outlineVariant.withValues(alpha: 0.35)
-                  : AppDesign.lightStroke,
-            ),
-            boxShadow: AppDesign.softShadow(context),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: dividerColor)),
+      ),
+      child: Row(
+        children: [
+          buildTab(index: 0, label: context.l10n.navExpenses),
+          buildTab(index: 1, label: context.l10n.navBalances),
+          buildTab(index: 2, label: context.l10n.workspaceSettle),
+          buildTab(
+            index: 3,
+            label: Localizations.localeOf(context).languageCode == 'lv'
+                ? 'Aktivitāte'
+                : 'Activity',
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                buildTab(index: 0, label: context.l10n.navExpenses),
-                const SizedBox(width: 8),
-                buildTab(index: 1, label: context.l10n.navBalances),
-                const SizedBox(width: 8),
-                buildTab(index: 2, label: context.l10n.workspaceSettle),
-                const SizedBox(width: 8),
-                buildTab(index: 3, label: context.l10n.workspaceTripActivity),
-              ],
-            ),
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 
   Widget _buildWorkspaceStickyHeader(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border(bottom: BorderSide(color: Colors.transparent)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-        child: _buildWorkspaceTabSwitcher(context),
-      ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(18, 4, 18, 8),
+      child: _buildWorkspaceTabSwitcher(context),
     );
   }
 

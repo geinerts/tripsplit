@@ -30,15 +30,10 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     final usersById = <int, WorkspaceUser>{
       for (final user in snapshot.users) user.id: user,
     };
-    final payerFilteredExpenses = _expenseFilterUserId > 0
-        ? sourceExpenses
-              .where((expense) => expense.paidById == _expenseFilterUserId)
-              .toList(growable: false)
-        : sourceExpenses;
     final searchQuery = _expenseSearchQuery.trim().toLowerCase();
     final expenses = searchQuery.isEmpty
-        ? payerFilteredExpenses
-        : payerFilteredExpenses
+        ? sourceExpenses
+        : sourceExpenses
               .where(
                 (expense) => _expenseMatchesSearch(
                   expense,
@@ -47,10 +42,6 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                 ),
               )
               .toList(growable: false);
-
-    final filterUsers = snapshot.users
-        .where((user) => user.id != _currentUserId)
-        .toList(growable: false);
 
     final children = <Widget>[
       Padding(
@@ -86,6 +77,13 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                     ),
                   ),
                 ),
+                const Spacer(),
+                Flexible(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: _buildSyncStatusBadge(context),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 10),
@@ -116,48 +114,6 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                 });
               },
             ),
-            const SizedBox(height: 10),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  FilterChip(
-                    label: Text(t.allFilter),
-                    selected: _expenseFilterUserId == 0,
-                    onSelected: (_) {
-                      _updateState(() {
-                        _expenseFilterUserId = 0;
-                      });
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  FilterChip(
-                    label: Text(t.myFilter),
-                    selected: _expenseFilterUserId == _currentUserId,
-                    onSelected: (_) {
-                      _updateState(() {
-                        _expenseFilterUserId = _currentUserId > 0
-                            ? _currentUserId
-                            : 0;
-                      });
-                    },
-                  ),
-                  const SizedBox(width: 8),
-                  for (final user in filterUsers) ...[
-                    FilterChip(
-                      label: Text(user.nickname),
-                      selected: _expenseFilterUserId == user.id,
-                      onSelected: (_) {
-                        _updateState(() {
-                          _expenseFilterUserId = user.id;
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                ],
-              ),
-            ),
             if (!snapshot.isActive) ...[
               const SizedBox(height: 8),
               Text(
@@ -171,13 +127,12 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     ];
 
     if (expenses.isEmpty) {
-      final hasActiveFilters =
-          _expenseFilterUserId > 0 || searchQuery.isNotEmpty;
+      final hasActiveFilters = searchQuery.isNotEmpty;
       final emptyTitle = hasAnyExpenses
           ? 'No expenses match this view'
           : 'No expenses yet';
       final emptyMessage = hasAnyExpenses
-          ? 'Try clearing search or payer filters to see all trip expenses.'
+          ? 'Try clearing search to see all trip expenses.'
           : 'Add the first shared cost so balances and settlements can start working.';
       children.add(
         Padding(
@@ -189,14 +144,13 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
             title: emptyTitle,
             message: emptyMessage,
             actionLabel: hasActiveFilters
-                ? 'Clear filters'
+                ? 'Clear search'
                 : (snapshot.isActive ? 'Add first expense' : null),
             onAction: hasActiveFilters
                 ? () {
                     _expenseSearchController.clear();
                     _updateState(() {
                       _expenseSearchQuery = '';
-                      _expenseFilterUserId = 0;
                     });
                   }
                 : (snapshot.isActive ? _onAddExpensePressed : null),

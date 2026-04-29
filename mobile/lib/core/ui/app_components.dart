@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../app/theme/app_design.dart';
+import 'app_sheet.dart';
 
 class AppSurfaceCard extends StatelessWidget {
   const AppSurfaceCard({
@@ -278,6 +281,79 @@ class AppActionSheetTile extends StatelessWidget {
       ),
     );
   }
+}
+
+class AppPlatformAction<T> {
+  const AppPlatformAction({
+    required this.value,
+    required this.title,
+    required this.icon,
+    this.subtitle,
+    this.destructive = false,
+  });
+
+  final T value;
+  final String title;
+  final IconData icon;
+  final String? subtitle;
+  final bool destructive;
+}
+
+Future<T?> showAppPlatformActionSheet<T>({
+  required BuildContext context,
+  required List<AppPlatformAction<T>> actions,
+  String? title,
+  String? message,
+  String? cancelLabel,
+  bool useRootNavigator = false,
+}) {
+  if (defaultTargetPlatform == TargetPlatform.iOS) {
+    final resolvedCancelLabel =
+        cancelLabel ?? MaterialLocalizations.of(context).cancelButtonLabel;
+    return showCupertinoModalPopup<T>(
+      context: context,
+      useRootNavigator: useRootNavigator,
+      builder: (popupContext) {
+        return CupertinoActionSheet(
+          title: title == null ? null : Text(title),
+          message: message == null ? null : Text(message),
+          actions: [
+            for (final action in actions)
+              CupertinoActionSheetAction(
+                isDestructiveAction: action.destructive,
+                onPressed: () => Navigator.of(popupContext).pop(action.value),
+                child: Text(action.title),
+              ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            isDefaultAction: true,
+            onPressed: () => Navigator.of(popupContext).pop(),
+            child: Text(resolvedCancelLabel),
+          ),
+        );
+      },
+    );
+  }
+
+  return showAppBottomSheet<T>(
+    context: context,
+    useRootNavigator: useRootNavigator,
+    builder: (sheetContext) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final action in actions)
+            AppActionSheetTile(
+              icon: action.icon,
+              title: action.title,
+              subtitle: action.subtitle,
+              destructive: action.destructive,
+              onTap: () => Navigator.of(sheetContext).pop(action.value),
+            ),
+        ],
+      );
+    },
+  );
 }
 
 Future<bool> showAppConfirmationDialog({

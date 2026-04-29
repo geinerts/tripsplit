@@ -113,38 +113,28 @@ extension _TripsPageDialogs on _TripsPageState {
             Future<void> onPickTripImage(StateSetter setDialogState) async {
               final hasImage = selectedImageBytes != null;
               final selectedSource =
-                  await showAppBottomSheet<_TripImageSourceOption>(
+                  await showAppPlatformActionSheet<_TripImageSourceOption>(
                     context: context,
-                    builder: (bottomSheetContext) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AppActionSheetTile(
-                            icon: Icons.photo_camera_outlined,
-                            title: t.takePhotoAction,
-                            onTap: () => Navigator.of(
-                              bottomSheetContext,
-                            ).pop(_TripImageSourceOption.camera),
-                          ),
-                          AppActionSheetTile(
-                            icon: Icons.photo_library_outlined,
-                            title: t.chooseFromLibraryAction,
-                            onTap: () => Navigator.of(
-                              bottomSheetContext,
-                            ).pop(_TripImageSourceOption.library),
-                          ),
-                          if (hasImage)
-                            AppActionSheetTile(
-                              icon: Icons.delete_outline,
-                              title: context.l10n.profileRemoveImage,
-                              destructive: true,
-                              onTap: () => Navigator.of(
-                                bottomSheetContext,
-                              ).pop(_TripImageSourceOption.remove),
-                            ),
-                        ],
-                      );
-                    },
+                    cancelLabel: t.cancelAction,
+                    actions: [
+                      AppPlatformAction(
+                        value: _TripImageSourceOption.camera,
+                        icon: Icons.photo_camera_outlined,
+                        title: t.takePhotoAction,
+                      ),
+                      AppPlatformAction(
+                        value: _TripImageSourceOption.library,
+                        icon: Icons.photo_library_outlined,
+                        title: t.chooseFromLibraryAction,
+                      ),
+                      if (hasImage)
+                        AppPlatformAction(
+                          value: _TripImageSourceOption.remove,
+                          icon: Icons.delete_outline,
+                          title: context.l10n.profileRemoveImage,
+                          destructive: true,
+                        ),
+                    ],
                   );
               if (!mounted || !context.mounted || selectedSource == null) {
                 return;

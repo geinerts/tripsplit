@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friends Page Mockups</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 32px;
+    padding: 40px 24px;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    flex-wrap: wrap;
+  }
+
+  .column {
+    display: flex; flex-direction: column;
+    gap: 12px; align-items: center;
+  }
+  .label {
+    color: rgba(255,255,255,0.4);
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .label-desc {
+    color: rgba(255,255,255,0.25);
+    font-size: 10px;
+    max-width: 290px; text-align: center; line-height: 1.4;
+  }
+
+  .phone {
+    width: 320px;
+    background: #0a0a0a;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .screen {
+    border-radius: 34px;
+    overflow: hidden;
+    background: #050505;
+    position: relative;
+    height: 640px;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    padding: 14px 16px 8px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .topbar-back {
+    color: rgba(255,255,255,0.85); font-size: 18px; width: 28px;
+  }
+  .topbar-title {
+    flex: 1; font-size: 17px; font-weight: 700; color: #fff;
+  }
+  .topbar-bell {
+    color: rgba(255,255,255,0.7); font-size: 18px;
+    width: 28px; text-align: right;
+  }
+  .topbar-actions {
+    display: flex; gap: 6px;
+  }
+  .topbar-icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+  }
+
+  /* Avatars */
+  .avatar {
+    width: 40px; height: 40px;
+    border-radius: 20px;
+    background: #2EAF6E;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .avatar.photo { background: linear-gradient(135deg, #888, #555); }
+  .avatar.user-photo { background: linear-gradient(135deg, #5d8a6c, #3a6644); font-size: 18px; }
+  .avatar.purple { background: linear-gradient(135deg, #6e5dab, #443370); }
+  .avatar.amber { background: linear-gradient(135deg, #c8842b, #8a5a1d); }
+  .avatar.cyan { background: linear-gradient(135deg, #2bbcc8, #1d6f8a); }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: #050505;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 10px 8px 22px;
+    display: flex; justify-content: space-around; align-items: flex-end;
+    gap: 4px;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 4px 0;
+  }
+  .nav-icon { font-size: 18px; color: rgba(255,255,255,0.55); }
+  .nav-icon-photo {
+    width: 22px; height: 22px; border-radius: 11px;
+    background: linear-gradient(135deg,#3a6644,#2a4d35);
+    display: flex; align-items: center; justify-content: center; font-size: 12px;
+  }
+  .nav-label { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.55); }
+  .nav-add {
+    width: 44px; height: 28px; border-radius: 14px;
+    border: 1.5px solid rgba(78,205,140,0.35);
+    background: rgba(46,175,110,0.08);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px;
+  }
+  .nav-item.active .nav-icon,
+  .nav-item.active .nav-label { color: #4ECD8C; }
+
+  /* ══════════════════════════════════════════
+     OPTION L — Smart friend cards with context
+     Shows mutual trips, shared balance per friend
+  ══════════════════════════════════════════ */
+  .l-screen { background: #050505; }
+
+  .l-search {
+    margin: 4px 14px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .l-search-icon { color: rgba(255,255,255,0.4); font-size: 14px; }
+  .l-search-text { font-size: 13px; color: rgba(255,255,255,0.4); flex: 1; }
+  .l-search-action { color: rgba(78,205,140,0.7); font-size: 14px; }
+
+  .l-pending-card {
+    margin: 0 14px 14px;
+    background: linear-gradient(140deg, rgba(245,166,35,0.18), rgba(245,166,35,0.06));
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 18px;
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .l-pending-badge {
+    width: 32px; height: 32px;
+    border-radius: 10px;
+    background: rgba(245,166,35,0.25);
+    display: flex; align-items: center; justify-content: center;
+    color: #F5A623;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .l-pending-text { flex: 1; }
+  .l-pending-title { font-size: 12px; font-weight: 700; color: #fff; }
+  .l-pending-sub { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .l-pending-arrow { color: rgba(245,166,35,0.7); font-size: 14px; }
+
+  .l-section-title {
+    padding: 0 16px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .l-st-l { display: flex; align-items: center; gap: 8px; }
+  .l-st-text {
+    font-size: 10px; font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .l-st-count {
+    background: rgba(46,175,110,0.18);
+    color: #4ECD8C;
+    border-radius: 8px;
+    padding: 1px 6px;
+    font-size: 10px; font-weight: 700;
+  }
+  .l-st-r {
+    display: flex; gap: 6px;
+  }
+  .l-st-icon-btn {
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: rgba(46,175,110,0.12);
+    border: 1px solid rgba(78,205,140,0.25);
+    display: flex; align-items: center; justify-content: center;
+    color: #4ECD8C;
+    font-size: 11px;
+  }
+
+  .l-friend-list {
+    padding: 0 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .l-friend-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .l-friend-info { flex: 1; min-width: 0; }
+  .l-friend-name {
+    font-size: 14px; font-weight: 700;
+    color: #fff; line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .l-friend-meta {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+  }
+  .l-friend-meta .dot { width: 2px; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.3); }
+  .l-friend-meta .trip-pill {
+    background: rgba(46,175,110,0.12);
+    color: rgba(78,205,140,0.85);
+    padding: 1px 6px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  .l-friend-right { text-align: right; flex-shrink: 0; }
+  .l-friend-balance {
+    font-size: 13px; font-weight: 800;
+    line-height: 1;
+  }
+  .l-friend-balance.green { color: #4ECD8C; }
+  .l-friend-balance.amber { color: #F5A623; }
+  .l-friend-balance.dim { color: rgba(255,255,255,0.4); }
+  .l-friend-status {
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 2px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .l-friend-arrow {
+    color: rgba(255,255,255,0.3);
+    font-size: 14px;
+    margin-left: 4px;
+  }
+
+  /* ══════════════════════════════════════════
+     OPTION M — Action-focused with priority requests
+     Pending up top with inline actions
+  ══════════════════════════════════════════ */
+  .m-screen { background: #050505; }
+
+  .m-tabs {
+    margin: 4px 14px 12px;
+    display: flex;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 4px;
+  }
+  .m-tab {
+    flex: 1;
+    padding: 8px 4px;
+    text-align: center;
+    border-radius: 11px;
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .m-tab.active {
+    background: rgba(46,175,110,0.18);
+    color: #4ECD8C;
+    border: 1px solid rgba(78,205,140,0.25);
+  }
+  .m-tab-badge {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.7);
+    border-radius: 6px;
+    padding: 0 5px;
+    font-size: 9px; font-weight: 700;
+  }
+  .m-tab.active .m-tab-badge { background: rgba(46,175,110,0.3); color: #4ECD8C; }
+  .m-tab-badge.alert { background: #F5A623; color: #2a1a05; }
+
+  .m-section-title {
+    padding: 4px 16px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .m-st-text {
+    font-size: 10px; font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .m-st-action {
+    font-size: 11px; color: rgba(78,205,140,0.7); font-weight: 600;
+  }
+
+  /* Incoming pending — action card */
+  .m-request-card {
+    margin: 0 14px 8px;
+    background: linear-gradient(140deg, rgba(46,175,110,0.14), rgba(46,175,110,0.04));
+    border: 1px solid rgba(78,205,140,0.3);
+    border-radius: 16px;
+    padding: 12px 14px;
+  }
+  .m-req-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .m-req-info { flex: 1; }
+  .m-req-name { font-size: 14px; font-weight: 700; color: #fff; }
+  .m-req-meta { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .m-req-meta strong { color: rgba(78,205,140,0.85); font-weight: 600; }
+  .m-req-actions {
+    display: flex; gap: 6px;
+  }
+  .m-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 12px; font-weight: 700;
+    text-align: center;
+  }
+  .m-btn.accept {
+    background: #2EAF6E;
+    color: #062612;
+    box-shadow: 0 4px 12px rgba(46,175,110,0.3);
+  }
+  .m-btn.decline {
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* Sent — quiet card */
+  .m-sent-card {
+    margin: 0 14px 8px;
+    background: rgba(255,255,255,0.02);
+    border: 1px dashed rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .m-sent-card .avatar { width: 32px; height: 32px; font-size: 11px; opacity: 0.7; }
+  .m-sent-info { flex: 1; }
+  .m-sent-name { font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 600; }
+  .m-sent-meta { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .m-sent-cancel {
+    font-size: 10px; color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 5px 9px;
+    font-weight: 600;
+  }
+
+  .m-friend-list {
+    padding: 0 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .m-friend-row {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .m-fr-info { flex: 1; min-width: 0; }
+  .m-fr-name { font-size: 13px; font-weight: 700; color: #fff; }
+  .m-fr-meta { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .m-fr-balance {
+    font-size: 12px; font-weight: 800;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .m-fr-balance.green { color: #4ECD8C; }
+  .m-fr-balance.dim { color: rgba(255,255,255,0.5); }
+
+  /* Suggested */
+  .m-suggested {
+    margin: 0 14px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .m-sugg-card {
+    flex-shrink: 0;
+    width: 110px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .m-sugg-card .avatar {
+    margin: 0 auto 8px;
+    width: 44px; height: 44px;
+    font-size: 14px;
+  }
+  .m-sugg-name {
+    font-size: 11px; font-weight: 700;
+    color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .m-sugg-mutual { font-size: 9px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .m-sugg-add {
+    margin-top: 8px;
+    background: rgba(46,175,110,0.18);
+    color: #4ECD8C;
+    border: 1px solid rgba(78,205,140,0.3);
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 10px; font-weight: 700;
+  }
+
+  /* ══════════════════════════════════════════
+     OPTION N — Unified list with status badges
+     One list with smart filter chips
+  ══════════════════════════════════════════ */
+  .n-screen { background: #050505; }
+
+  .n-search-row {
+    margin: 4px 14px 10px;
+    display: flex; gap: 8px;
+  }
+  .n-search {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .n-search-icon { color: rgba(255,255,255,0.4); font-size: 13px; }
+  .n-search-text { font-size: 13px; color: rgba(255,255,255,0.4); }
+  .n-add-btn {
+    width: 40px; height: 40px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2EAF6E, #4ECD8C);
+    display: flex; align-items: center; justify-content: center;
+    color: #062612;
+    font-size: 18px;
+    box-shadow: 0 4px 14px rgba(46,175,110,0.3);
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  .n-chips {
+    margin: 0 14px 10px;
+    display: flex; gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .n-chip {
+    padding: 6px 11px;
+    border-radius: 12px;
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .n-chip.active {
+    background: rgba(46,175,110,0.18);
+    color: #4ECD8C;
+    border-color: rgba(78,205,140,0.3);
+  }
+  .n-chip-count {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    border-radius: 6px;
+    padding: 0 5px;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .n-chip.active .n-chip-count { background: rgba(46,175,110,0.3); color: #4ECD8C; }
+  .n-chip.alert .n-chip-count { background: #F5A623; color: #2a1a05; }
+
+  .n-quick-actions {
+    margin: 0 14px 12px;
+    display: flex; gap: 8px;
+  }
+  .n-q-btn {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .n-q-icon {
+    width: 24px; height: 24px;
+    border-radius: 7px;
+    background: rgba(46,175,110,0.15);
+    display: flex; align-items: center; justify-content: center;
+    color: #4ECD8C;
+    font-size: 11px;
+  }
+  .n-q-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.85); }
+
+  .n-list {
+    padding: 0 14px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .n-row {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 11px 12px;
+    display: flex; align-items: center; gap: 11px;
+    position: relative;
+  }
+  .n-row.pending {
+    border-color: rgba(78,205,140,0.3);
+    background: linear-gradient(140deg, rgba(46,175,110,0.1), rgba(46,175,110,0.02));
+  }
+  .n-row-info { flex: 1; min-width: 0; }
+  .n-row-top { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  .n-row-name {
+    font-size: 13px; font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .n-row-badge {
+    font-size: 9px; font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .n-row-badge.friend { background: rgba(46,175,110,0.18); color: #4ECD8C; }
+  .n-row-badge.pending { background: rgba(245,166,35,0.18); color: #F5A623; }
+  .n-row-badge.sent { background: rgba(150,150,150,0.15); color: rgba(255,255,255,0.5); }
+  .n-row-meta {
+    font-size: 10px; color: rgba(255,255,255,0.5);
+    line-height: 1.3;
+  }
+  .n-row-meta strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+  .n-row-right { display: flex; align-items: center; gap: 4px; }
+  .n-row-balance {
+    font-size: 12px; font-weight: 800;
+    text-align: right;
+  }
+  .n-row-balance.green { color: #4ECD8C; }
+  .n-row-balance.amber { color: #F5A623; }
+  .n-row-actions {
+    display: flex; gap: 4px;
+  }
+  .n-row-act {
+    width: 28px; height: 28px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .n-row-act.accept { background: #2EAF6E; color: #062612; }
+  .n-row-act.decline { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.08); }
+  .n-row-act.cancel { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); }
+  .n-row-arrow { color: rgba(255,255,255,0.3); font-size: 13px; margin-left: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     OPTION L — Smart cards
+═══════════════════════════════════════════ -->
+<div class="column">
+  <div class="label">Option L — Smart cards</div>
+  <div class="phone">
+    <div class="screen l-screen">
+      <div class="topbar">
+        <div class="topbar-back">‹</div>
+        <div class="topbar-title">Friends</div>
+        <div class="topbar-actions">
+          <div class="topbar-icon-btn">⌕</div>
+          <div class="topbar-bell">🔔</div>
+        </div>
+      </div>
+
+      <!-- Inline pending banner (only if there are pending) -->
+      <div class="l-pending-card">
+        <div class="l-pending-badge">📨</div>
+        <div class="l-pending-text">
+          <div class="l-pending-title">1 pending request sent</div>
+          <div class="l-pending-sub">Anna Bērziņa — sent 2 days ago</div>
+        </div>
+        <div class="l-pending-arrow">›</div>
+      </div>
+
+      <!-- Friends section -->
+      <div class="l-section-title">
+        <div class="l-st-l">
+          <div class="l-st-text">My friends</div>
+          <div class="l-st-count">1</div>
+        </div>
+        <div class="l-st-r">
+          <div class="l-st-icon-btn">⌖</div>
+          <div class="l-st-icon-btn">+</div>
+        </div>
+      </div>
+
+      <div class="l-friend-list">
+        <!-- Friend with balance -->
+        <div class="l-friend-card">
+          <div class="avatar user-photo">🧑</div>
+          <div class="l-friend-info">
+            <div class="l-friend-name">Matīss Geinerts</div>
+            <div class="l-friend-meta">
+              <span class="trip-pill">2 trips</span>
+              <span class="dot"></span>
+              <span>Last: Austris</span>
+            </div>
+          </div>
+          <div class="l-friend-right">
+            <div class="l-friend-balance green">+€22</div>
+            <div class="l-friend-status">owes you</div>
+          </div>
+          <div class="l-friend-arrow">›</div>
+        </div>
+
+        <!-- Demo: friend with no balance -->
+        <div class="l-friend-card" style="opacity:0.7">
+          <div class="avatar amber">AB</div>
+          <div class="l-friend-info">
+            <div class="l-friend-name">Anna Bērziņa</div>
+            <div class="l-friend-meta">
+              <span>No shared trips</span>
+              <span class="dot"></span>
+              <span>Joined Apr</span>
+            </div>
+          </div>
+          <div class="l-friend-right">
+            <div class="l-friend-balance dim">€0</div>
+            <div class="l-friend-status">all even</div>
+          </div>
+          <div class="l-friend-arrow">›</div>
+        </div>
+
+        <!-- Demo: friend you owe -->
+        <div class="l-friend-card">
+          <div class="avatar purple">JK</div>
+          <div class="l-friend-info">
+            <div class="l-friend-name">Jānis Kalniņš</div>
+            <div class="l-friend-meta">
+              <span class="trip-pill">5 trips</span>
+              <span class="dot"></span>
+              <span>Last: Tallinn 2025</span>
+            </div>
+          </div>
+          <div class="l-friend-right">
+            <div class="l-friend-balance amber">−€48</div>
+            <div class="l-friend-status">you owe</div>
+          </div>
+          <div class="l-friend-arrow">›</div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+        <div class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></div>
+        <div class="nav-item">
+          <span class="nav-add">+</span>
+          <span class="nav-label">Expenses</span>
+        </div>
+        <div class="nav-item active"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></div>
+        <div class="nav-item"><div class="nav-icon-photo">🧑</div><span class="nav-label">Profile</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Removes redundant stats cards · each friend shows mutual trips & balance · pending requests as inline alert · search + QR + add as small icons</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OPTION M — Action-focused
+═══════════════════════════════════════════ -->
+<div class="column">
+  <div class="label">Option M — Action-focused</div>
+  <div class="phone">
+    <div class="screen m-screen">
+      <div class="topbar">
+        <div class="topbar-back">‹</div>
+        <div class="topbar-title">Friends</div>
+        <div class="topbar-actions">
+          <div class="topbar-icon-btn">⌖</div>
+          <div class="topbar-icon-btn">+</div>
+        </div>
+      </div>
+
+      <!-- Tabs as segmented with badges -->
+      <div class="m-tabs">
+        <div class="m-tab active">All <span class="m-tab-badge">3</span></div>
+        <div class="m-tab">Requests <span class="m-tab-badge alert">2</span></div>
+        <div class="m-tab">Sent <span class="m-tab-badge">1</span></div>
+      </div>
+
+      <!-- Pending requests (priority) -->
+      <div class="m-section-title">
+        <div class="m-st-text">⚠ Incoming requests</div>
+        <div class="m-st-action">Decline all</div>
+      </div>
+      <div class="m-request-card">
+        <div class="m-req-row">
+          <div class="avatar cyan">KO</div>
+          <div class="m-req-info">
+            <div class="m-req-name">Kristers Ozols</div>
+            <div class="m-req-meta">From <strong>Tallinn 2025</strong> · 3 mutual</div>
+          </div>
+        </div>
+        <div class="m-req-actions">
+          <div class="m-btn accept">✓ Accept</div>
+          <div class="m-btn decline">Decline</div>
+        </div>
+      </div>
+
+      <!-- Sent requests (quiet) -->
+      <div class="m-section-title" style="margin-top:4px">
+        <div class="m-st-text">⏱ Pending sent</div>
+      </div>
+      <div class="m-sent-card">
+        <div class="avatar amber">AB</div>
+        <div class="m-sent-info">
+          <div class="m-sent-name">Anna Bērziņa</div>
+          <div class="m-sent-meta">Sent 2 days ago</div>
+        </div>
+        <div class="m-sent-cancel">Cancel</div>
+      </div>
+
+      <!-- Friends list (compact) -->
+      <div class="m-section-title">
+        <div class="m-st-text">My friends · 1</div>
+        <div class="m-st-action">View all</div>
+      </div>
+      <div class="m-friend-list">
+        <div class="m-friend-row">
+          <div class="avatar user-photo">🧑</div>
+          <div class="m-fr-info">
+            <div class="m-fr-name">Matīss Geinerts</div>
+            <div class="m-fr-meta">2 trips · Austris</div>
+          </div>
+          <div class="m-fr-balance green">+€22</div>
+        </div>
+      </div>
+
+      <!-- Suggested -->
+      <div class="m-section-title" style="margin-top:8px">
+        <div class="m-st-text">Suggested · from your trips</div>
+      </div>
+      <div class="m-suggested">
+        <div class="m-sugg-card">
+          <div class="avatar purple">JK</div>
+          <div class="m-sugg-name">Jānis K.</div>
+          <div class="m-sugg-mutual">2 mutual trips</div>
+          <div class="m-sugg-add">+ Add</div>
+        </div>
+        <div class="m-sugg-card">
+          <div class="avatar amber">LP</div>
+          <div class="m-sugg-name">Laura P.</div>
+          <div class="m-sugg-mutual">1 mutual trip</div>
+          <div class="m-sugg-add">+ Add</div>
+        </div>
+        <div class="m-sugg-card">
+          <div class="avatar cyan">RV</div>
+          <div class="m-sugg-name">Reinis V.</div>
+          <div class="m-sugg-mutual">From contacts</div>
+          <div class="m-sugg-add">+ Add</div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+        <div class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></div>
+        <div class="nav-item">
+          <span class="nav-add">+</span>
+          <span class="nav-label">Expenses</span>
+        </div>
+        <div class="nav-item active"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></div>
+        <div class="nav-item"><div class="nav-icon-photo">🧑</div><span class="nav-label">Profile</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Pending requests as priority · accept/decline inline · sent as quiet dashed cards · suggested friends carousel from mutual trips · solves empty page</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OPTION N — Unified list with chips
+═══════════════════════════════════════════ -->
+<div class="column">
+  <div class="label">Option N — Unified list</div>
+  <div class="phone">
+    <div class="screen n-screen">
+      <div class="topbar">
+        <div class="topbar-back">‹</div>
+        <div class="topbar-title">Friends</div>
+        <div class="topbar-bell">🔔</div>
+      </div>
+
+      <div class="n-search-row">
+        <div class="n-search">
+          <div class="n-search-icon">⌕</div>
+          <div class="n-search-text">Find friends or invite by email</div>
+        </div>
+        <div class="n-add-btn">+</div>
+      </div>
+
+      <!-- Filter chips -->
+      <div class="n-chips">
+        <div class="n-chip active">All <span class="n-chip-count">4</span></div>
+        <div class="n-chip alert">Requests <span class="n-chip-count">1</span></div>
+        <div class="n-chip">Friends <span class="n-chip-count">1</span></div>
+        <div class="n-chip">Sent <span class="n-chip-count">1</span></div>
+        <div class="n-chip">Suggested <span class="n-chip-count">3</span></div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="n-quick-actions">
+        <div class="n-q-btn">
+          <div class="n-q-icon">⌖</div>
+          <div class="n-q-text">QR scan</div>
+        </div>
+        <div class="n-q-btn">
+          <div class="n-q-icon">📨</div>
+          <div class="n-q-text">Invite link</div>
+        </div>
+        <div class="n-q-btn">
+          <div class="n-q-icon">📒</div>
+          <div class="n-q-text">Contacts</div>
+        </div>
+      </div>
+
+      <!-- Unified list -->
+      <div class="n-list">
+        <!-- Pending request (highlighted) -->
+        <div class="n-row pending">
+          <div class="avatar cyan" style="width:40px;height:40px;font-size:13px">KO</div>
+          <div class="n-row-info">
+            <div class="n-row-top">
+              <div class="n-row-name">Kristers Ozols</div>
+              <div class="n-row-badge pending">Wants to connect</div>
+            </div>
+            <div class="n-row-meta">From <strong>Tallinn 2025</strong> · 3 mutual</div>
+          </div>
+          <div class="n-row-actions">
+            <div class="n-row-act accept">✓</div>
+            <div class="n-row-act decline">✕</div>
+          </div>
+        </div>
+
+        <!-- Friend with balance -->
+        <div class="n-row">
+          <div class="avatar user-photo" style="width:40px;height:40px;font-size:18px">🧑</div>
+          <div class="n-row-info">
+            <div class="n-row-top">
+              <div class="n-row-name">Matīss Geinerts</div>
+              <div class="n-row-badge friend">Friend</div>
+            </div>
+            <div class="n-row-meta"><strong>2</strong> trips · Austris, Riga 2024</div>
+          </div>
+          <div class="n-row-right">
+            <div class="n-row-balance green">+€22</div>
+            <div class="n-row-arrow">›</div>
+          </div>
+        </div>
+
+        <!-- Sent (dim) -->
+        <div class="n-row" style="opacity:0.7">
+          <div class="avatar amber" style="width:40px;height:40px;font-size:13px">AB</div>
+          <div class="n-row-info">
+            <div class="n-row-top">
+              <div class="n-row-name">Anna Bērziņa</div>
+              <div class="n-row-badge sent">Sent</div>
+            </div>
+            <div class="n-row-meta">2 days ago · awaiting response</div>
+          </div>
+          <div class="n-row-actions">
+            <div class="n-row-act cancel">✕</div>
+          </div>
+        </div>
+
+        <!-- Friend (negative balance) -->
+        <div class="n-row">
+          <div class="avatar purple" style="width:40px;height:40px;font-size:13px">JK</div>
+          <div class="n-row-info">
+            <div class="n-row-top">
+              <div class="n-row-name">Jānis Kalniņš</div>
+              <div class="n-row-badge friend">Friend</div>
+            </div>
+            <div class="n-row-meta"><strong>5</strong> trips · all settled</div>
+          </div>
+          <div class="n-row-right">
+            <div class="n-row-balance amber">−€48</div>
+            <div class="n-row-arrow">›</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <div class="nav-item"><span class="nav-icon">⌂</span><span class="nav-label">Home</span></div>
+        <div class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">Analytics</span></div>
+        <div class="nav-item">
+          <span class="nav-add">+</span>
+          <span class="nav-label">Expenses</span>
+        </div>
+        <div class="nav-item active"><span class="nav-icon">👥</span><span class="nav-label">Friends</span></div>
+        <div class="nav-item"><div class="nav-icon-photo">🧑</div><span class="nav-label">Profile</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="label-desc">Single mixed list with badges (Friend/Wants/Sent) · filter chips with counts · 3 quick add methods (QR/link/contacts) · everyone in one place</div>
+</div>
+
+</body>
+</html>

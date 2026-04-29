@@ -4,7 +4,9 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
   Widget _buildActivityTab() {
     final colors = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final events = _activityEvents;
+    final events = _activityEvents
+        .where(_isVisibleTripActivityEvent)
+        .toList(growable: false);
 
     return ListView(
       physics: const NeverScrollableScrollPhysics(),
@@ -73,7 +75,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         else
           for (final event in events)
             Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(bottom: 14),
               child: _buildActivityEventCard(event),
             ),
         if (_activityHasMore) ...[
@@ -106,243 +108,191 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     final actorName = event.actorName.trim().isEmpty
         ? 'Trip member'
         : event.actorName.trim();
+    final actionText = _activityActionText(context, event);
     final meta = _activityMeta(context, event);
 
-    return Card(
-      color: isDark ? colors.surface : AppDesign.lightSurface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: BorderSide(
-          color: isDark
-              ? colors.outlineVariant.withValues(alpha: 0.30)
-              : AppDesign.lightStroke,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _largeMemberAvatar(
-              id: event.actorUserId ?? event.id,
-              name: actorName,
-              avatarUrl: event.actorAvatarThumbUrl ?? event.actorAvatarUrl,
-              size: 42,
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          _activityTitle(context, event),
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(
-                                fontSize: 15.5,
-                                fontWeight: FontWeight.w800,
-                                color: isDark
-                                    ? null
-                                    : AppDesign.lightForeground,
-                              ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        width: 30,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: accent.withValues(alpha: 0.16),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Icon(
-                          _activityIcon(event.eventType),
-                          size: 16,
-                          color: accent,
-                        ),
-                      ),
-                    ],
+    final mutedColor = isDark ? colors.onSurfaceVariant : AppDesign.lightMuted;
+    final isDestructive = _isDestructiveActivity(event.eventType);
+    final metaColor = isDestructive
+        ? AppDesign.lightDestructive.withValues(alpha: 0.92)
+        : mutedColor;
+    final metaLine = meta.join(' • ');
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _largeMemberAvatar(
+            id: event.actorUserId ?? event.id,
+            name: actorName,
+            avatarUrl: event.actorAvatarThumbUrl ?? event.actorAvatarUrl,
+            size: 42,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  actorName,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w500,
+                    height: 1.18,
+                    color: isDark ? null : AppDesign.lightForeground,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _activityRelativeTime(context, event.createdAt),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: isDark
-                          ? colors.onSurfaceVariant
-                          : AppDesign.lightMuted,
-                    ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  actionText,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontSize: 15.2,
+                    fontWeight: FontWeight.w400,
+                    height: 1.22,
+                    color: isDark
+                        ? colors.onSurface.withValues(alpha: 0.92)
+                        : AppDesign.lightForeground,
                   ),
-                  if (meta.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: [
-                        for (final item in meta)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 9,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: accent.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(999),
-                              border: Border.all(
-                                color: accent.withValues(alpha: 0.20),
-                              ),
-                            ),
-                            child: Text(
-                              item,
-                              style: TextStyle(
-                                color: accent,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ],
-                ],
-              ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  metaLine.isEmpty
+                      ? _activityRelativeTime(context, event.createdAt)
+                      : '$metaLine • ${_activityRelativeTime(context, event.createdAt)}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: metaColor,
+                    fontWeight: FontWeight.w500,
+                    height: 1.28,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 8),
+          Icon(_activityIcon(event.eventType), size: 18, color: accent),
+        ],
       ),
     );
   }
 
-  String _activityTitle(BuildContext context, WorkspaceActivityEvent event) {
-    final actor = event.actorName.trim().isEmpty
-        ? 'Trip member'
-        : event.actorName.trim();
+  bool _isVisibleTripActivityEvent(WorkspaceActivityEvent event) {
+    switch (event.eventType.trim().toLowerCase()) {
+      case 'trip.all_members_ready':
+      case 'settlement.reminder_sent':
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  String _activityActionText(
+    BuildContext context,
+    WorkspaceActivityEvent event,
+  ) {
     final language = Localizations.localeOf(context).languageCode;
-    final amount = _activityAmount(context, event);
-    final hasAmount = amount.isNotEmpty;
 
     String en(String fallback) => fallback;
 
     switch (event.eventType.trim().toLowerCase()) {
       case 'expense.created':
         if (language == 'lv') {
-          return hasAmount
-              ? '$actor pievienoja izdevumu $amount'
-              : '$actor pievienoja izdevumu';
+          return 'pievienoja izdevumu';
         }
         if (language == 'es') {
-          return hasAmount
-              ? '$actor añadió un gasto de $amount'
-              : '$actor añadió un gasto';
+          return 'añadió un gasto';
         }
-        return en(
-          hasAmount
-              ? '$actor added an expense of $amount'
-              : '$actor added an expense',
-        );
+        return en('added an expense');
       case 'expense.updated':
         if (language == 'lv') {
-          return hasAmount
-              ? '$actor atjaunoja izdevumu $amount'
-              : '$actor atjaunoja izdevumu';
+          return 'atjaunoja izdevumu';
         }
         if (language == 'es') {
-          return hasAmount
-              ? '$actor actualizó un gasto de $amount'
-              : '$actor actualizó un gasto';
+          return 'actualizó un gasto';
         }
-        return en(
-          hasAmount
-              ? '$actor updated an expense of $amount'
-              : '$actor updated an expense',
-        );
+        return en('updated an expense');
       case 'expense.deleted':
         if (language == 'lv') {
-          return '$actor izdzēsa izdevumu';
+          return 'izdzēsa izdevumu';
         }
         if (language == 'es') {
-          return '$actor eliminó un gasto';
+          return 'eliminó un gasto';
         }
-        return en('$actor deleted an expense');
+        return en('deleted an expense');
       case 'trip.created':
         if (language == 'lv') {
-          return '$actor izveidoja tripu';
+          return 'izveidoja tripu';
         }
         if (language == 'es') {
-          return '$actor creó el viaje';
+          return 'creó el viaje';
         }
-        return en('$actor created the trip');
+        return en('created the trip');
       case 'trip.updated':
         if (language == 'lv') {
-          return '$actor atjaunoja tripa detaļas';
+          return 'atjaunoja tripa detaļas';
         }
         if (language == 'es') {
-          return '$actor actualizó el viaje';
+          return 'actualizó el viaje';
         }
-        return en('$actor updated trip details');
+        return en('updated trip details');
       case 'trip.members_added':
         final count = _payloadInt(event, 'members_added_count');
         if (language == 'lv') {
           return count > 0
-              ? '$actor pievienoja $count dalībnieku(s)'
-              : '$actor pievienoja dalībniekus';
+              ? 'pievienoja $count dalībnieku(s)'
+              : 'pievienoja dalībniekus';
         }
         if (language == 'es') {
-          return count > 0
-              ? '$actor añadió $count miembro(s)'
-              : '$actor añadió miembros';
+          return count > 0 ? 'añadió $count miembro(s)' : 'añadió miembros';
         }
-        return en(
-          count > 0 ? '$actor added $count member(s)' : '$actor added members',
-        );
+        return en(count > 0 ? 'added $count member(s)' : 'added members');
       case 'trip.member_removed':
         final name = _payloadString(event, 'removed_user_name') ?? '';
         if (language == 'lv') {
-          return '$actor noņēma ${name.isEmpty ? 'dalībnieku' : name} no tripa';
+          return 'noņēma ${name.isEmpty ? 'dalībnieku' : name} no tripa';
         }
         if (language == 'es') {
-          return '$actor quitó a ${name.isEmpty ? 'un miembro' : name} del viaje';
+          return 'quitó a ${name.isEmpty ? 'un miembro' : name} del viaje';
         }
-        return en('$actor removed ${name.isEmpty ? 'a member' : name}');
+        return en('removed ${name.isEmpty ? 'a member' : name}');
       case 'trip.member_left':
-        final name = _payloadString(event, 'left_user_name') ?? '';
         if (language == 'lv') {
-          return '${name.isEmpty ? actor : name} pameta tripu';
+          return 'pameta tripu';
         }
         if (language == 'es') {
-          return '${name.isEmpty ? actor : name} salió del viaje';
+          return 'salió del viaje';
         }
-        return en('${name.isEmpty ? actor : name} left the trip');
+        return en('left the trip');
       case 'trip.member_role_updated':
         final name = _payloadString(event, 'target_user_name') ?? '';
         final role = _payloadString(event, 'role') ?? 'member';
         if (language == 'lv') {
-          return '$actor nomainīja ${name.isEmpty ? 'dalībnieka' : name} lomu uz $role';
+          return 'nomainīja ${name.isEmpty ? 'dalībnieka' : name} lomu uz $role';
         }
         if (language == 'es') {
-          return '$actor cambió el rol de ${name.isEmpty ? 'un miembro' : name} a $role';
+          return 'cambió el rol de ${name.isEmpty ? 'un miembro' : name} a $role';
         }
-        return en(
-          '$actor changed ${name.isEmpty ? 'a member' : name} to $role',
-        );
+        return en('changed ${name.isEmpty ? 'a member' : name} to $role');
       case 'trip.member_ready':
         if (language == 'lv') {
-          return '$actor atzīmēja gatavību norēķiniem';
+          return 'atzīmēja gatavību norēķiniem';
         }
         if (language == 'es') {
-          return '$actor marcó que está listo para liquidar';
+          return 'marcó que está listo para liquidar';
         }
-        return en('$actor marked ready to settle');
+        return en('marked ready to settle');
       case 'trip.member_not_ready':
         if (language == 'lv') {
-          return '$actor noņēma gatavību norēķiniem';
+          return 'noņēma gatavību norēķiniem';
         }
         if (language == 'es') {
-          return '$actor quitó su estado listo';
+          return 'quitó su estado listo';
         }
-        return en('$actor marked not ready');
+        return en('marked not ready');
       case 'trip.all_members_ready':
         if (language == 'lv') {
           return 'Visi dalībnieki ir gatavi norēķiniem';
@@ -353,92 +303,60 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         return en('All members are ready to settle');
       case 'trip.finished':
         if (language == 'lv') {
-          return '$actor pabeidza tripu';
+          return 'pabeidza tripu';
         }
         if (language == 'es') {
-          return '$actor finalizó el viaje';
+          return 'finalizó el viaje';
         }
-        return en('$actor finished the trip');
+        return en('finished the trip');
       case 'settlement.marked_sent':
         if (language == 'lv') {
-          return hasAmount
-              ? '$actor atzīmēja $amount kā nosūtītu'
-              : '$actor atzīmēja pārskaitījumu kā nosūtītu';
+          return 'atzīmēja pārskaitījumu kā nosūtītu';
         }
         if (language == 'es') {
-          return hasAmount
-              ? '$actor marcó $amount como enviado'
-              : '$actor marcó la transferencia como enviada';
+          return 'marcó la transferencia como enviada';
         }
-        return en(
-          hasAmount
-              ? '$actor marked $amount as sent'
-              : '$actor marked a transfer as sent',
-        );
+        return en('marked a transfer as sent');
       case 'settlement.confirmed':
         if (language == 'lv') {
-          return hasAmount
-              ? '$actor apstiprināja $amount saņemšanu'
-              : '$actor apstiprināja pārskaitījumu';
+          return 'apstiprināja pārskaitījumu';
         }
         if (language == 'es') {
-          return hasAmount
-              ? '$actor confirmó haber recibido $amount'
-              : '$actor confirmó la transferencia';
+          return 'confirmó la transferencia';
         }
-        return en(
-          hasAmount
-              ? '$actor confirmed receiving $amount'
-              : '$actor confirmed a transfer',
-        );
+        return en('confirmed a transfer');
       case 'settlement.sent_cancelled':
         if (language == 'lv') {
-          return hasAmount
-              ? '$actor atcēla $amount nosūtīšanas statusu'
-              : '$actor atcēla nosūtīšanas statusu';
+          return 'atcēla nosūtīšanas statusu';
         }
         if (language == 'es') {
-          return hasAmount
-              ? '$actor canceló el estado enviado de $amount'
-              : '$actor canceló el estado enviado';
+          return 'canceló el estado enviado';
         }
-        return en(
-          hasAmount
-              ? '$actor cancelled sent status for $amount'
-              : '$actor cancelled sent status',
-        );
+        return en('cancelled sent status');
       case 'settlement.not_received':
         if (language == 'lv') {
-          return hasAmount
-              ? '$actor atzīmēja, ka $amount nav saņemts'
-              : '$actor atzīmēja, ka pārskaitījums nav saņemts';
+          return 'atzīmēja, ka pārskaitījums nav saņemts';
         }
         if (language == 'es') {
-          return hasAmount
-              ? '$actor marcó $amount como no recibido'
-              : '$actor marcó la transferencia como no recibida';
+          return 'marcó la transferencia como no recibida';
         }
-        return en(
-          hasAmount
-              ? '$actor marked $amount as not received'
-              : '$actor marked a transfer as not received',
-        );
+        return en('marked a transfer as not received');
       case 'settlement.reminder_sent':
         if (language == 'lv') {
-          return '$actor nosūtīja norēķina atgādinājumu';
+          return 'nosūtīja norēķina atgādinājumu';
         }
         if (language == 'es') {
-          return '$actor envió un recordatorio';
+          return 'envió un recordatorio';
         }
-        return en('$actor sent a settlement reminder');
+        return en('sent a settlement reminder');
       default:
         if (language == 'lv') {
-          return '$actor veica izmaiņas';
+          return 'veica izmaiņas';
         }
         if (language == 'es') {
-          return '$actor hizo un cambio';
+          return 'hizo un cambio';
         }
-        return en('$actor made a change');
+        return en('made a change');
     }
   }
 
@@ -506,11 +424,22 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     if (value.isEmpty) {
       return DateTime.fromMillisecondsSinceEpoch(0);
     }
-    final parsed = DateTime.tryParse(value);
-    if (parsed == null) {
-      return DateTime.fromMillisecondsSinceEpoch(0);
+
+    final mysqlUtc = RegExp(
+      r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$',
+    ).hasMatch(value);
+    if (mysqlUtc) {
+      final parsedUtc = DateTime.tryParse('${value.replaceFirst(' ', 'T')}Z');
+      if (parsedUtc != null) {
+        return parsedUtc.toLocal();
+      }
     }
-    return parsed.toLocal();
+
+    final parsed = DateTime.tryParse(value);
+    if (parsed != null) {
+      return parsed.toLocal();
+    }
+    return DateTime.fromMillisecondsSinceEpoch(0);
   }
 
   String _activityRelativeTime(BuildContext context, String? raw) {
@@ -557,6 +486,11 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
       return Icons.flag_rounded;
     }
     return Icons.history_rounded;
+  }
+
+  bool _isDestructiveActivity(String type) {
+    final normalized = type.trim().toLowerCase();
+    return normalized.contains('deleted');
   }
 
   Color _activityColor(String type) {

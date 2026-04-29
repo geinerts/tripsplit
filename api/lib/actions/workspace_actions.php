@@ -419,6 +419,7 @@ function list_trip_activity_action(): void
 
     $eventsTable = table_name('app_events');
     $usersTable = table_name('users');
+    $expensesTable = table_name('expenses');
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
@@ -428,7 +429,7 @@ function list_trip_activity_action(): void
         'SELECT
             e.id,
             e.trip_id,
-            e.user_id,
+            COALESCE(ex.paid_by, e.user_id) AS actor_user_id,
             e.event_type,
             e.entity_type,
             e.entity_id,
@@ -438,8 +439,16 @@ function list_trip_activity_action(): void
             u.nickname,
             u.avatar_path
          FROM ' . $eventsTable . ' e
-         LEFT JOIN ' . $usersTable . ' u ON u.id = e.user_id
+         LEFT JOIN ' . $expensesTable . ' ex
+           ON ex.id = e.entity_id
+          AND e.entity_type = \'expense\'
+          AND e.event_type IN (\'expense.created\', \'expense.updated\')
+         LEFT JOIN ' . $usersTable . ' u ON u.id = COALESCE(ex.paid_by, e.user_id)
          WHERE e.trip_id = :trip_id
+           AND e.event_type NOT IN (
+               \'trip.all_members_ready\',
+               \'settlement.reminder_sent\'
+           )
          ORDER BY e.id DESC
          LIMIT ' . $rowLimit . ' OFFSET ' . $offset
     );
@@ -474,7 +483,7 @@ function list_trip_activity_action(): void
         $events[] = [
             'id' => (int) ($row['id'] ?? 0),
             'trip_id' => (int) ($row['trip_id'] ?? 0),
-            'actor_user_id' => $row['user_id'] !== null ? (int) $row['user_id'] : null,
+            'actor_user_id' => $row['actor_user_id'] !== null ? (int) $row['actor_user_id'] : null,
             'actor_name' => $actorName,
             'actor_avatar_url' => $avatarPath !== '' ? avatar_public_url($avatarPath) : null,
             'actor_avatar_thumb_url' => $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null,
