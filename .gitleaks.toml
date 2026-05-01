@@ -1,0 +1,11 @@
+title = "Splyto Gitleaks Configuration"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Dependency lockfile checksums that look like tokens but are not secrets."
+paths = [
+  '''mobile/ios/Podfile\.lock$''',
+  '''mobile/pubspec\.lock$''',
+]
