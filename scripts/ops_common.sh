@@ -35,6 +35,41 @@ json_escape() {
   printf '%s' "$input"
 }
 
+format_duration() {
+  local total_seconds="${1:-0}"
+  local days hours minutes seconds
+
+  if ! [[ "$total_seconds" =~ ^[0-9]+$ ]]; then
+    total_seconds=0
+  fi
+
+  days=$((total_seconds / 86400))
+  hours=$(((total_seconds % 86400) / 3600))
+  minutes=$(((total_seconds % 3600) / 60))
+  seconds=$((total_seconds % 60))
+
+  if (( days > 0 )); then
+    printf '%sd %sh %sm' "$days" "$hours" "$minutes"
+  elif (( hours > 0 )); then
+    printf '%sh %sm' "$hours" "$minutes"
+  elif (( minutes > 0 )); then
+    printf '%sm %ss' "$minutes" "$seconds"
+  else
+    printf '%ss' "$seconds"
+  fi
+}
+
+int_or_default() {
+  local value="${1:-}"
+  local fallback="${2:-0}"
+
+  if [[ "$value" =~ ^[0-9]+$ ]]; then
+    printf '%s' "$value"
+  else
+    printf '%s' "$fallback"
+  fi
+}
+
 send_alert_now() {
   local message="$1"
   local env_file="$2"
@@ -87,5 +122,45 @@ send_alert_with_cooldown() {
   fi
 
   printf '%s' "$now" > "$state_file"
+  send_alert_now "$message" "$env_file"
+}
+
+alert_health_state_file() {
+  local key="$1"
+  printf '/tmp/splyto_alert_%s.unhealthy' "$key"
+}
+
+mark_alert_unhealthy() {
+  local key="$1"
+  local state_file
+  state_file="$(alert_health_state_file "$key")"
+
+  if [[ ! -f "$state_file" ]]; then
+    date +%s > "$state_file"
+  fi
+}
+
+send_recovery_alert_if_needed() {
+  local key="$1"
+  local message="$2"
+  local env_file="$3"
+  local state_file first_seen now duration pretty_duration
+
+  state_file="$(alert_health_state_file "$key")"
+  if [[ ! -f "$state_file" ]]; then
+    return 0
+  fi
+
+  first_seen="$(cat "$state_file" 2>/dev/null || printf '0')"
+  rm -f "$state_file"
+
+  if [[ "$first_seen" =~ ^[0-9]+$ && "$first_seen" -gt 0 ]]; then
+    now="$(date +%s)"
+    duration=$((now - first_seen))
+    pretty_duration="$(format_duration "$duration")"
+    message="${message}
+- Incident duration: ${pretty_duration}"
+  fi
+
   send_alert_now "$message" "$env_file"
 }

@@ -38,6 +38,7 @@ check_status() {
   echo "OK   $url status=$got"
 }
 
+HOSTNAME_SHORT="$(hostname -s 2>/dev/null || hostname)"
 failures=()
 if ! out="$(check_status "$BASE_URL/api/api.php?action=unknown" "404")"; then
   failures+=("$out")
@@ -51,8 +52,21 @@ else
 fi
 
 if (( ${#failures[@]} > 0 )); then
-  msg="[SPLYTO][HEALTH][FAIL] ${BASE_URL} :: ${failures[*]}"
+  msg="SPLYTO API ALERT
+Host: ${HOSTNAME_SHORT}
+
+Summary:
+- Status: FAIL
+- Base URL: ${BASE_URL}
+- Failed checks: ${#failures[@]}
+
+Checks:"
+  for failure in "${failures[@]}"; do
+    msg="${msg}
+- ${failure}"
+  done
   echo "$msg" >&2
+  mark_alert_unhealthy "health_api"
   send_alert_with_cooldown "health_api" "$msg" "$ENV_FILE" "$ALERT_COOLDOWN_SEC"
   if [[ -n "$HC_PING_FAIL_URL" ]]; then
     curl -fsS --max-time 10 "$HC_PING_FAIL_URL" >/dev/null || true
@@ -63,5 +77,11 @@ fi
 if [[ -n "$HC_PING_URL" ]]; then
   curl -fsS --max-time 10 "$HC_PING_URL" >/dev/null || true
 fi
-echo "[SPLYTO][HEALTH][OK] ${BASE_URL}"
+send_recovery_alert_if_needed "health_api" "SPLYTO API RECOVERED
+Host: ${HOSTNAME_SHORT}
 
+Summary:
+- Status: OK
+- Base URL: ${BASE_URL}
+- Checks passed: 2" "$ENV_FILE"
+echo "[SPLYTO][HEALTH][OK] ${BASE_URL}"

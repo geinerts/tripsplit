@@ -27,11 +27,11 @@ STALE_WARN_MIN="$(env_value "$ENV_FILE" "TRIP_PUSH_MONITOR_STALE_MIN")"
 FAILED_WINDOW_MIN="$(env_value "$ENV_FILE" "TRIP_PUSH_MONITOR_FAILED_WINDOW_MIN")"
 ALERT_COOLDOWN_SEC="$(env_value "$ENV_FILE" "TRIP_PUSH_MONITOR_ALERT_COOLDOWN_SEC")"
 
-if [[ -z "$PENDING_WARN" ]]; then PENDING_WARN=20; fi
-if [[ -z "$FAILED_WARN" ]]; then FAILED_WARN=5; fi
-if [[ -z "$STALE_WARN_MIN" ]]; then STALE_WARN_MIN=10; fi
-if [[ -z "$FAILED_WINDOW_MIN" ]]; then FAILED_WINDOW_MIN=30; fi
-if [[ -z "$ALERT_COOLDOWN_SEC" ]]; then ALERT_COOLDOWN_SEC=900; fi
+PENDING_WARN="$(int_or_default "$PENDING_WARN" 20)"
+FAILED_WARN="$(int_or_default "$FAILED_WARN" 5)"
+STALE_WARN_MIN="$(int_or_default "$STALE_WARN_MIN" 10)"
+FAILED_WINDOW_MIN="$(int_or_default "$FAILED_WINDOW_MIN" 30)"
+ALERT_COOLDOWN_SEC="$(int_or_default "$ALERT_COOLDOWN_SEC" 900)"
 
 MYSQL_AUTH=(-h"$DB_HOST" -u"$DB_USER")
 if [[ -n "$DB_PASS" ]]; then
@@ -46,12 +46,13 @@ SELECT
 FROM trip_push_queue;
 ")"
 
-pending_count="${pending_count:-0}"
-failed_recent_count="${failed_recent_count:-0}"
-oldest_pending_min="${oldest_pending_min:-0}"
+pending_count="$(int_or_default "$pending_count" 0)"
+failed_recent_count="$(int_or_default "$failed_recent_count" 0)"
+oldest_pending_min="$(int_or_default "$oldest_pending_min" 0)"
 
 echo "[SPLYTO][PUSH_QUEUE] pending=${pending_count} failed_recent_${FAILED_WINDOW_MIN}m=${failed_recent_count} oldest_pending_min=${oldest_pending_min}"
 
+HOSTNAME_SHORT="$(hostname -s 2>/dev/null || hostname)"
 problems=()
 if (( pending_count >= PENDING_WARN )); then
   problems+=("pending=${pending_count}>=${PENDING_WARN}")
@@ -64,11 +65,33 @@ if (( oldest_pending_min >= STALE_WARN_MIN )); then
 fi
 
 if (( ${#problems[@]} > 0 )); then
-  msg="[SPLYTO][PUSH_QUEUE][WARN] ${problems[*]}"
+  msg="SPLYTO PUSH QUEUE ALERT
+Host: ${HOSTNAME_SHORT}
+
+Summary:
+- Status: WARN
+- Pending: ${pending_count} (warn >= ${PENDING_WARN})
+- Failed last ${FAILED_WINDOW_MIN}m: ${failed_recent_count} (warn >= ${FAILED_WARN})
+- Oldest pending: ${oldest_pending_min} min (warn >= ${STALE_WARN_MIN})
+
+Problems:"
+  for problem in "${problems[@]}"; do
+    msg="${msg}
+- ${problem}"
+  done
   echo "$msg" >&2
+  mark_alert_unhealthy "push_queue"
   send_alert_with_cooldown "push_queue" "$msg" "$ENV_FILE" "$ALERT_COOLDOWN_SEC"
   exit 2
 fi
 
-exit 0
+send_recovery_alert_if_needed "push_queue" "SPLYTO PUSH QUEUE RECOVERED
+Host: ${HOSTNAME_SHORT}
 
+Summary:
+- Status: OK
+- Pending: ${pending_count}
+- Failed last ${FAILED_WINDOW_MIN}m: ${failed_recent_count}
+- Oldest pending: ${oldest_pending_min} min" "$ENV_FILE"
+
+exit 0

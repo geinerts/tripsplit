@@ -17,6 +17,7 @@ Available:
 - `monitor_api_health.sh` verifies API health endpoints and sends alerts (webhook/Telegram), optional healthcheck ping.
 - `monitor_push_queue.sh` checks push queue backlog/failures against alert thresholds.
 - `monitor_system_updates.sh` checks pending package updates, reboot-required flag, and core service health, then includes package names/version changes in Telegram alerts.
+- `send_daily_ops_digest.sh` sends a read-only daily Telegram summary for API, push queue, services, updates, reboot, disk, and backups.
 - `backup_vps.sh` creates DB + app state backups with retention cleanup.
 - `backup_restore_check.sh` performs restore smoke-test from latest DB backup into temp DB.
 - `weekly_maintenance.sh` runs weekly apt maintenance (upgrade/autoremove/autoclean) with alerts.
@@ -38,6 +39,7 @@ Usage:
 - Check API health: `scripts/monitor_api_health.sh`
 - Check push queue health: `scripts/monitor_push_queue.sh`
 - Check system updates/reboot/services: `scripts/monitor_system_updates.sh`
+- Send daily ops digest: `scripts/send_daily_ops_digest.sh`
 - Run backup: `scripts/backup_vps.sh`
 - Run backup restore smoke test: `scripts/backup_restore_check.sh`
 - Run weekly maintenance dry run: `scripts/weekly_maintenance.sh --dry-run`
