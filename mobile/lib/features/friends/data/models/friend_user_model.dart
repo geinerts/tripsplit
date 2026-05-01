@@ -15,6 +15,7 @@ class FriendUserModel extends FriendUser {
     super.revolutMeLink,
     super.paypalMeLink,
     super.wisePayLink,
+    super.commonTripsCount,
   });
 
   factory FriendUserModel.fromLegacyMap(Map<String, dynamic> map) {
@@ -37,6 +38,7 @@ class FriendUserModel extends FriendUser {
       revolutMeLink: (map['revolut_me_link'] as String?)?.trim(),
       paypalMeLink: (map['paypal_me_link'] as String?)?.trim(),
       wisePayLink: (map['wise_pay_link'] as String?)?.trim(),
+      commonTripsCount: (map['common_trips_count'] as num?)?.toInt() ?? 0,
     );
   }
 }

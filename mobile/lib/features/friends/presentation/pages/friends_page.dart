@@ -68,32 +68,30 @@ class _FriendsPageState extends State<FriendsPage> {
   static const String _sectionFriends = 'friends';
   static const String _sectionPendingSent = 'pending_sent';
   static const String _sectionPendingReceived = 'pending_received';
-  static const int _tabFriends = 0;
-  static const int _tabIncoming = 1;
-  static const int _tabSent = 2;
 
   bool _isLoading = true;
   bool _isLoadingMoreFriends = false;
-  bool _isLoadingMorePendingSent = false;
   bool _isLoadingMorePendingReceived = false;
-  int _sectionTabIndex = _tabFriends;
   String? _errorText;
   FriendsSnapshot? _snapshot;
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  String _friendSearchQuery = '';
+  Timer? _friendSearchDebounce;
+  bool _isSearchingUsers = false;
+  String? _friendSearchError;
+  List<FriendUser> _friendSearchResults = const <FriendUser>[];
+  final Set<int> _inlineInviteLoading = <int>{};
   int _friendsTotalCount = 0;
-  int _pendingSentTotalCount = 0;
   int _pendingReceivedTotalCount = 0;
   bool _friendsHasMore = false;
   String? _friendsNextCursor;
   int? _friendsNextOffset;
-  bool _pendingSentHasMore = false;
-  String? _pendingSentNextCursor;
-  int? _pendingSentNextOffset;
   bool _pendingReceivedHasMore = false;
   String? _pendingReceivedNextCursor;
   int? _pendingReceivedNextOffset;
   final ScrollController _scrollController = ScrollController();
   final Set<int> _respondLoading = <int>{};
-  final Set<int> _cancelLoading = <int>{};
   int _handledRefreshRequestCount = 0;
 
   @override
@@ -117,6 +115,9 @@ class _FriendsPageState extends State<FriendsPage> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _friendSearchDebounce?.cancel();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     _unbindCommandController(widget.commandController);
     super.dispose();
   }

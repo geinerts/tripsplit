@@ -106,6 +106,7 @@ class FriendsController {
             displayName: null,
             avatarUrl: user.avatarUrl,
             avatarThumbUrl: user.avatarThumbUrl,
+            commonTripsCount: 0,
           ),
         )
         .toList(growable: false);

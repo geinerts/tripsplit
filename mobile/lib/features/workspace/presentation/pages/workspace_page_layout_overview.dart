@@ -62,6 +62,9 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
         : (isSettledState
               ? semantic.statusSettledForeground
               : semantic.statusActiveForeground);
+    final coverUrl = (widget.trip.imageThumbUrl ?? widget.trip.imageUrl ?? '')
+        .trim();
+    final hasCoverImage = coverUrl.isNotEmpty;
 
     final currentNet = currentBalance?.net ?? 0;
     final showsNegative = currentNet < -0.004;
@@ -94,30 +97,65 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
       clipBehavior: Clip.antiAlias,
       child: Stack(
         children: [
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-              child: const SizedBox.expand(),
+          if (hasCoverImage)
+            Positioned.fill(
+              child: Image.network(
+                coverUrl,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.low,
+                gaplessPlayback: true,
+                errorBuilder: (context, error, stackTrace) =>
+                    const SizedBox.expand(),
+              ),
+            )
+          else
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                child: const SizedBox.expand(),
+              ),
             ),
-          ),
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withValues(alpha: isDark ? 0.045 : 0.12),
-                    AppDesign.darkPrimary.withValues(
-                      alpha: isDark ? 0.055 : 0.08,
-                    ),
-                    Colors.black.withValues(alpha: isDark ? 0.10 : 0.16),
-                  ],
-                  stops: const [0, 0.45, 1],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: hasCoverImage
+                      ? [
+                          Colors.black.withValues(alpha: 0.72),
+                          AppDesign.darkPrimary.withValues(alpha: 0.46),
+                          Colors.black.withValues(alpha: 0.18),
+                        ]
+                      : [
+                          Colors.white.withValues(alpha: isDark ? 0.045 : 0.12),
+                          AppDesign.darkPrimary.withValues(
+                            alpha: isDark ? 0.055 : 0.08,
+                          ),
+                          Colors.black.withValues(alpha: isDark ? 0.10 : 0.16),
+                        ],
+                  stops: const [0, 0.52, 1],
                 ),
               ),
             ),
           ),
+          if (hasCoverImage)
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: 0.26),
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.50),
+                    ],
+                    stops: const [0, 0.48, 1],
+                  ),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
             child: Column(

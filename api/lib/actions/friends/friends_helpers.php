@@ -32,6 +32,7 @@ function friend_user_payload_from_row(array $row, bool $includePayment = false):
         'display_name' => $displayName !== null ? $displayName : $nickname,
         'avatar_url' => $avatarPath !== '' ? avatar_public_url($avatarPath) : null,
         'avatar_thumb_url' => $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null,
+        'common_trips_count' => max(0, (int) ($row['common_trips_count'] ?? 0)),
     ];
 
     if (!$includePayment) {

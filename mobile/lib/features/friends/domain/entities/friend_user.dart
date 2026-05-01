@@ -12,6 +12,7 @@ class FriendUser {
     this.revolutMeLink,
     this.paypalMeLink,
     this.wisePayLink,
+    this.commonTripsCount = 0,
   });
 
   final int id;
@@ -26,6 +27,7 @@ class FriendUser {
   final String? revolutMeLink;
   final String? paypalMeLink;
   final String? wisePayLink;
+  final int commonTripsCount;
 
   String get preferredName {
     final fullName = (displayName ?? '').trim();

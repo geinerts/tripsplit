@@ -9,12 +9,6 @@ extension _FriendsPageActionsQr on _FriendsPageState {
           mainAxisSize: MainAxisSize.min,
           children: [
             AppActionSheetTile(
-              icon: Icons.person_add_alt_1_rounded,
-              title: context.l10n.friendsSearchUsers,
-              subtitle: context.l10n.friendsFindByNameOrEmailAndSendInvite,
-              onTap: () => Navigator.of(sheetContext).pop('search'),
-            ),
-            AppActionSheetTile(
               icon: Icons.qr_code_scanner_rounded,
               title: context.l10n.friendsScanQr,
               subtitle: context.l10n.friendsScanAnotherUserToAddFriend,
@@ -35,9 +29,6 @@ extension _FriendsPageActionsQr on _FriendsPageState {
       return;
     }
     switch (choice) {
-      case 'search':
-        await _openAddFriendSheet(snapshot);
-        break;
       case 'scan':
         await _openScanFriendQr();
         break;

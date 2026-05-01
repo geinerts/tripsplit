@@ -22,6 +22,8 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
 {
     $friendsTable = table_name('friends');
     $usersTable = table_name('users');
+    $tripMembersTable = table_name('trip_members');
+    $tripMembersTable = table_name('trip_members');
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
@@ -43,6 +45,14 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
             f.created_at,
             f.updated_at,
             ' . $nameSelect . $paymentSelect . '
+            (
+                SELECT COUNT(DISTINCT tm_me.trip_id)
+                FROM ' . $tripMembersTable . ' tm_me
+                JOIN ' . $tripMembersTable . ' tm_friend
+                  ON tm_friend.trip_id = tm_me.trip_id
+                 AND tm_friend.user_id = u.id
+                WHERE tm_me.user_id = :common_trips_me_id
+            ) AS common_trips_count,
             u.id AS user_id,
             u.nickname,
             u.avatar_path
@@ -56,6 +66,7 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
     );
     $acceptedStmt->execute([
         'join_me_id' => $meId,
+        'common_trips_me_id' => $meId,
         'where_me_a' => $meId,
         'where_me_b' => $meId,
     ]);
@@ -250,11 +261,24 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
         ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, ' . $revolutMeLinkSelect . 'u.paypal_me_link, ' . $wisePayLinkSelect
         : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, NULL AS wise_pay_link, ';
     $activeFilter = users_active_filter_sql($pdo, 'u');
+    $commonTripsSelect = $section === 'friends'
+        ? '(
+                SELECT COUNT(DISTINCT tm_me.trip_id)
+                FROM ' . $tripMembersTable . ' tm_me
+                JOIN ' . $tripMembersTable . ' tm_friend
+                  ON tm_friend.trip_id = tm_me.trip_id
+                 AND tm_friend.user_id = u.id
+                WHERE tm_me.user_id = :common_trips_me_id
+            ) AS common_trips_count, '
+        : '0 AS common_trips_count, ';
     $params = [
         'join_me_id' => $meId,
         'where_me_a' => $meId,
         'where_me_b' => $meId,
     ];
+    if ($section === 'friends') {
+        $params['common_trips_me_id'] = $meId;
+    }
     $where =
         'WHERE (f.user_a_id = :where_me_a OR f.user_b_id = :where_me_b)';
     $where .= $activeFilter;
@@ -312,6 +336,7 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
             f.created_at,
             f.updated_at,
             ' . $nameSelect . $paymentSelect . '
+            ' . $commonTripsSelect . '
             u.id AS user_id,
             u.nickname,
             u.avatar_path

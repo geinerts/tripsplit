@@ -81,7 +81,6 @@ extension _FriendsPageActionsCore on _FriendsPageState {
 
       _updateState(() {
         _friendsTotalCount = page.friendsCount;
-        _pendingSentTotalCount = page.pendingSentCount;
         _pendingReceivedTotalCount = page.pendingReceivedCount;
         _friendsHasMore = page.hasMore;
         _friendsNextCursor = page.nextCursor;
@@ -98,61 +97,6 @@ extension _FriendsPageActionsCore on _FriendsPageState {
       if (mounted) {
         _updateState(() {
           _isLoadingMoreFriends = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _loadMorePendingSent() async {
-    if (_isLoadingMorePendingSent || !_pendingSentHasMore) {
-      return;
-    }
-    final snapshot = _snapshot;
-    if (snapshot == null) {
-      return;
-    }
-
-    _updateState(() {
-      _isLoadingMorePendingSent = true;
-    });
-    try {
-      final page = await widget.controller.loadSectionPage(
-        section: _FriendsPageState._sectionPendingSent,
-        limit: _FriendsPageState._pageLimit,
-        cursor: _pendingSentNextCursor,
-        offset: _pendingSentNextCursor == null ? _pendingSentNextOffset : null,
-      );
-      if (!mounted) {
-        return;
-      }
-
-      final existing = snapshot.pendingSent
-          .map((item) => item.requestId)
-          .toSet();
-      final merged = <FriendRequest>[...snapshot.pendingSent];
-      for (final req in page.requests) {
-        if (existing.add(req.requestId)) {
-          merged.add(req);
-        }
-      }
-
-      _updateState(() {
-        _friendsTotalCount = page.friendsCount;
-        _pendingSentTotalCount = page.pendingSentCount;
-        _pendingReceivedTotalCount = page.pendingReceivedCount;
-        _pendingSentHasMore = page.hasMore;
-        _pendingSentNextCursor = page.nextCursor;
-        _pendingSentNextOffset = page.nextOffset;
-        _snapshot = _buildSnapshot(
-          friends: snapshot.friends,
-          pendingSent: merged,
-          pendingReceived: snapshot.pendingReceived,
-        );
-      });
-    } finally {
-      if (mounted) {
-        _updateState(() {
-          _isLoadingMorePendingSent = false;
         });
       }
     }
@@ -195,7 +139,6 @@ extension _FriendsPageActionsCore on _FriendsPageState {
 
       _updateState(() {
         _friendsTotalCount = page.friendsCount;
-        _pendingSentTotalCount = page.pendingSentCount;
         _pendingReceivedTotalCount = page.pendingReceivedCount;
         _pendingReceivedHasMore = page.hasMore;
         _pendingReceivedNextCursor = page.nextCursor;
@@ -260,14 +203,10 @@ extension _FriendsPageActionsCore on _FriendsPageState {
 
       _updateState(() {
         _friendsTotalCount = friendsPage.friendsCount;
-        _pendingSentTotalCount = friendsPage.pendingSentCount;
         _pendingReceivedTotalCount = friendsPage.pendingReceivedCount;
         _friendsHasMore = friendsPage.hasMore;
         _friendsNextCursor = friendsPage.nextCursor;
         _friendsNextOffset = friendsPage.nextOffset;
-        _pendingSentHasMore = sentPage.hasMore;
-        _pendingSentNextCursor = sentPage.nextCursor;
-        _pendingSentNextOffset = sentPage.nextOffset;
         _pendingReceivedHasMore = receivedPage.hasMore;
         _pendingReceivedNextCursor = receivedPage.nextCursor;
         _pendingReceivedNextOffset = receivedPage.nextOffset;
@@ -306,7 +245,6 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         _updateState(() {
           _isLoading = false;
           _isLoadingMoreFriends = false;
-          _isLoadingMorePendingSent = false;
           _isLoadingMorePendingReceived = false;
         });
       }

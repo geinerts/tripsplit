@@ -16,7 +16,7 @@ Available:
 - `vps_run_migrations.sh` runs `run_migrations.php` remotely on VPS over SSH.
 - `monitor_api_health.sh` verifies API health endpoints and sends alerts (webhook/Telegram), optional healthcheck ping.
 - `monitor_push_queue.sh` checks push queue backlog/failures against alert thresholds.
-- `monitor_system_updates.sh` checks pending package updates, reboot-required flag, and core service health.
+- `monitor_system_updates.sh` checks pending package updates, reboot-required flag, and core service health, then includes package names/version changes in Telegram alerts.
 - `backup_vps.sh` creates DB + app state backups with retention cleanup.
 - `backup_restore_check.sh` performs restore smoke-test from latest DB backup into temp DB.
 - `weekly_maintenance.sh` runs weekly apt maintenance (upgrade/autoremove/autoclean) with alerts.
@@ -25,6 +25,7 @@ Alert routing:
 - Preferred: set `TRIP_ALERT_TELEGRAM_BOT_TOKEN` + `TRIP_ALERT_TELEGRAM_CHAT_ID` in `.env`.
 - If Telegram is configured, alerts are sent only to Telegram.
 - `TRIP_ALERT_WEBHOOK_URL` is kept as legacy fallback when Telegram is not configured.
+- `TRIP_SYSTEM_MONITOR_MAX_UPDATE_LINES` limits how many package names are shown per update group in one Telegram alert.
 
 Usage:
 - Dry run: `php scripts/backfill_legacy_expense_owed_cents.php --dry-run`
