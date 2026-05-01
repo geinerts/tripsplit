@@ -23,7 +23,6 @@ function friends_list_legacy_action(PDO $pdo, int $meId): void
     $friendsTable = table_name('friends');
     $usersTable = table_name('users');
     $tripMembersTable = table_name('trip_members');
-    $tripMembersTable = table_name('trip_members');
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
@@ -248,6 +247,7 @@ function friends_list_paged_action(PDO $pdo, int $meId, string $section): void
 
     $friendsTable = table_name('friends');
     $usersTable = table_name('users');
+    $tripMembersTable = table_name('trip_members');
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
