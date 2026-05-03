@@ -18,7 +18,19 @@ function push_apns_enabled(): bool
 
 function push_apns_private_key_abs(): string
 {
-    $relative = trim(str_replace('\\', '/', (string) PUSH_APNS_PRIVATE_KEY_REL_PATH));
+    $rawPath = trim(str_replace('\\', '/', (string) PUSH_APNS_PRIVATE_KEY_REL_PATH));
+    if ($rawPath === '') {
+        return '';
+    }
+    if (strpos($rawPath, '..') !== false) {
+        return '';
+    }
+    if (strpos($rawPath, '/') === 0) {
+        $absolute = realpath($rawPath);
+        return is_string($absolute) && $absolute !== '' ? $absolute : $rawPath;
+    }
+
+    $relative = $rawPath;
     $relative = ltrim($relative, '/');
     if ($relative === '') {
         return '';

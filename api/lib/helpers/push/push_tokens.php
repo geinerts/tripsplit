@@ -65,7 +65,52 @@ function register_user_push_token(
         $stmt->execute($params);
     }
 
+    push_deactivate_superseded_device_tokens($pdo, $userId, $token, $platform, $deviceUid);
     push_trim_user_tokens($pdo, $userId, $token);
+}
+
+function push_deactivate_superseded_device_tokens(
+    PDO $pdo,
+    int $userId,
+    string $keepToken,
+    string $platform,
+    string $deviceUid = ''
+): void {
+    if ($userId <= 0 || $keepToken === '' || !push_tokens_table_available($pdo)) {
+        return;
+    }
+
+    $platform = normalize_push_platform($platform);
+    if ($platform === '') {
+        return;
+    }
+
+    $deviceUid = trim($deviceUid);
+    if ($deviceUid === '') {
+        return;
+    }
+
+    $where = [
+        'user_id = :user_id',
+        'platform = :platform',
+        'push_token <> :keep_token',
+        'is_active = 1',
+    ];
+    $params = [
+        'user_id' => $userId,
+        'platform' => $platform,
+        'keep_token' => $keepToken,
+        'device_uid' => $deviceUid,
+    ];
+    $where[] = 'device_uid = :device_uid';
+
+    $stmt = $pdo->prepare(
+        'UPDATE ' . table_name('push_tokens') . '
+         SET is_active = 0,
+             updated_at = CURRENT_TIMESTAMP
+         WHERE ' . implode(' AND ', $where)
+    );
+    $stmt->execute($params);
 }
 
 function unregister_user_push_token(PDO $pdo, int $userId, string $token): int

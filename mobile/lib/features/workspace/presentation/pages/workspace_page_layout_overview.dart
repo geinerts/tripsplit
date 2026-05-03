@@ -86,12 +86,14 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
-          color: semantic.heroGlassBorder.withValues(
-            alpha: isDark ? 0.48 : 0.58,
-          ),
+          color: hasCoverImage
+              ? semantic.heroGlassBorder.withValues(alpha: isDark ? 0.48 : 0.58)
+              : Colors.white.withValues(alpha: isDark ? 0.16 : 0.28),
           width: 1.2,
         ),
-        color: AppDesign.darkCanvas.withValues(alpha: isDark ? 0.30 : 0.42),
+        color: hasCoverImage
+            ? AppDesign.darkCanvas.withValues(alpha: isDark ? 0.30 : 0.42)
+            : AppDesign.darkCanvas,
         boxShadow: AppDesign.heroShadow(context),
       ),
       clipBehavior: Clip.antiAlias,
@@ -110,9 +112,23 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             )
           else
             Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                child: const SizedBox.expand(),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppDesign.darkSurfaceHighest.withValues(
+                        alpha: isDark ? 0.92 : 0.88,
+                      ),
+                      AppDesign.darkCanvasSoft.withValues(
+                        alpha: isDark ? 0.98 : 0.95,
+                      ),
+                      AppDesign.darkCanvas.withValues(alpha: 0.98),
+                    ],
+                    stops: const [0, 0.54, 1],
+                  ),
+                ),
               ),
             ),
           Positioned.fill(
@@ -128,17 +144,55 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                           Colors.black.withValues(alpha: 0.18),
                         ]
                       : [
-                          Colors.white.withValues(alpha: isDark ? 0.045 : 0.12),
+                          AppDesign.darkPrimary.withValues(
+                            alpha: isDark ? 0.16 : 0.22,
+                          ),
                           AppDesign.darkPrimary.withValues(
                             alpha: isDark ? 0.055 : 0.08,
                           ),
-                          Colors.black.withValues(alpha: isDark ? 0.10 : 0.16),
+                          Colors.white.withValues(alpha: isDark ? 0.025 : 0.04),
                         ],
                   stops: const [0, 0.52, 1],
                 ),
               ),
             ),
           ),
+          if (!hasCoverImage) ...[
+            Positioned(
+              right: -58,
+              top: -64,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      Colors.white.withValues(alpha: isDark ? 0.12 : 0.16),
+                      Colors.white.withValues(alpha: 0),
+                    ],
+                  ),
+                ),
+                child: const SizedBox(width: 190, height: 190),
+              ),
+            ),
+            Positioned(
+              left: -70,
+              bottom: -96,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppDesign.darkPrimary.withValues(
+                        alpha: isDark ? 0.18 : 0.22,
+                      ),
+                      AppDesign.darkPrimary.withValues(alpha: 0),
+                    ],
+                  ),
+                ),
+                child: const SizedBox(width: 210, height: 210),
+              ),
+            ),
+          ],
           if (hasCoverImage)
             Positioned.fill(
               child: DecoratedBox(
@@ -189,6 +243,7 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                 _buildHeroNetBalanceAmount(
                   context,
                   value: netValue,
+                  isNegative: showsNegative,
                   accentColor: netAccent,
                 ),
                 const SizedBox(height: 22),
@@ -281,67 +336,93 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
   Widget _buildHeroNetBalanceAmount(
     BuildContext context, {
     required String value,
+    required bool isNegative,
     required Color accentColor,
   }) {
-    final match = RegExp(r'^([^\d\-+]*)([\d\s,.]+)(.*)$').firstMatch(value);
-    final symbol = (match?.group(1) ?? '').trim();
-    final amount = (match?.group(2) ?? value).trim();
-    final suffix = (match?.group(3) ?? '').trim();
-    final amountParts = amount.split(RegExp(r'(?=[,.])'));
-    final mainAmount = amountParts.isEmpty ? amount : amountParts.first;
-    final cents = amountParts.length > 1 ? amountParts.sublist(1).join() : '';
+    final parts = _HeroMoneyParts.parse(value);
     const mainFontSize = 56.0;
-    const sideFontSize = 32.0;
-    const sideLineHeight = 1.0;
-    const mainLineHeight = 1.0;
-    const symbolTopOffset = mainFontSize * 0.10;
-    const centsTopOffset = mainFontSize - sideFontSize;
+    const sideFontSize = 28.0;
+    final baseTextStyle = Theme.of(context).textTheme.displayLarge;
+    final sign = isNegative ? '-' : '';
+    final leadingSymbol = parts.leadingSymbol;
+    final trailing = parts.trailingSymbol;
+    final sideStyle = TextStyle(
+      color: accentColor,
+      fontSize: sideFontSize,
+      fontWeight: FontWeight.w900,
+      height: 1,
+      letterSpacing: -1.2,
+      fontFeatures: const [FontFeature.tabularFigures()],
+    );
 
     return FittedBox(
       fit: BoxFit.scaleDown,
       alignment: Alignment.centerLeft,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (symbol.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: symbolTopOffset),
-              child: Text(
-                symbol,
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  color: accentColor,
-                  fontSize: sideFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: sideLineHeight,
-                  letterSpacing: -1.5,
+      child: RichText(
+        maxLines: 1,
+        overflow: TextOverflow.visible,
+        textHeightBehavior: const TextHeightBehavior(
+          applyHeightToFirstAscent: false,
+          applyHeightToLastDescent: false,
+        ),
+        strutStyle: const StrutStyle(
+          fontSize: mainFontSize,
+          height: 1,
+          forceStrutHeight: true,
+        ),
+        text: TextSpan(
+          style: baseTextStyle?.copyWith(
+            height: 1,
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+          children: [
+            if (sign.isNotEmpty)
+              WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: SizedBox(
+                  width: 17,
+                  height: mainFontSize,
+                  child: Center(
+                    child: Text(
+                      sign,
+                      textHeightBehavior: const TextHeightBehavior(
+                        applyHeightToFirstAscent: false,
+                        applyHeightToLastDescent: false,
+                      ),
+                      style: sideStyle.copyWith(fontSize: 30),
+                    ),
+                  ),
                 ),
               ),
+            if (leadingSymbol.isNotEmpty)
+              TextSpan(text: leadingSymbol, style: sideStyle),
+            TextSpan(
+              text: parts.wholeAmount,
+              style: const TextStyle(
+                color: AppDesign.darkForeground,
+                fontSize: mainFontSize,
+                fontWeight: FontWeight.w900,
+                height: 1,
+                letterSpacing: -3.4,
+                fontFeatures: [FontFeature.tabularFigures()],
+              ),
             ),
-          Text(
-            mainAmount,
-            style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              color: AppDesign.darkForeground,
-              fontSize: mainFontSize,
-              fontWeight: FontWeight.w900,
-              height: mainLineHeight,
-              letterSpacing: -3.4,
-            ),
-          ),
-          if (cents.isNotEmpty || suffix.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: centsTopOffset),
-              child: Text(
-                '$cents$suffix',
-                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+            if (parts.fraction.isNotEmpty)
+              TextSpan(
+                text: parts.fraction,
+                style: const TextStyle(
                   color: AppDesign.darkMuted,
                   fontSize: sideFontSize,
                   fontWeight: FontWeight.w900,
-                  height: sideLineHeight,
-                  letterSpacing: -1.5,
+                  height: 1,
+                  letterSpacing: -1.2,
+                  fontFeatures: [FontFeature.tabularFigures()],
                 ),
               ),
-            ),
-        ],
+            if (trailing.isNotEmpty)
+              TextSpan(text: ' $trailing', style: sideStyle),
+          ],
+        ),
       ),
     );
   }
@@ -591,6 +672,50 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _HeroMoneyParts {
+  const _HeroMoneyParts({
+    required this.leadingSymbol,
+    required this.wholeAmount,
+    required this.fraction,
+    required this.trailingSymbol,
+  });
+
+  final String leadingSymbol;
+  final String wholeAmount;
+  final String fraction;
+  final String trailingSymbol;
+
+  static final RegExp _valuePattern = RegExp(
+    r"^([^\d]*)([\d\s\u00A0.,'’]+)([^\d]*)$",
+  );
+  static final RegExp _decimalPattern = RegExp(r'^(.*)([,.]\d{2})$');
+
+  static _HeroMoneyParts parse(String value) {
+    final trimmed = value.trim();
+    final match = _valuePattern.firstMatch(trimmed);
+    if (match == null) {
+      return _HeroMoneyParts(
+        leadingSymbol: '',
+        wholeAmount: trimmed,
+        fraction: '',
+        trailingSymbol: '',
+      );
+    }
+
+    final amount = (match.group(2) ?? '').trim();
+    final amountMatch = _decimalPattern.firstMatch(amount);
+    final whole = (amountMatch?.group(1) ?? amount).trim();
+    final fraction = (amountMatch?.group(2) ?? '').trim();
+
+    return _HeroMoneyParts(
+      leadingSymbol: (match.group(1) ?? '').trim(),
+      wholeAmount: whole.isEmpty ? '0' : whole,
+      fraction: fraction,
+      trailingSymbol: (match.group(3) ?? '').trim(),
     );
   }
 }

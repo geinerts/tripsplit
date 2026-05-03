@@ -67,11 +67,18 @@ php scripts/run_migrations.php --baseline
      - `TRIP_SOCIAL_AUTH_TIMEOUT_SEC=8` (provider JWKS fetch timeout)
    - if using push:
      - `TRIP_PUSH_ENABLED=true`
-     - FCM for Android + iOS + Web (recommended HTTP v1):
+     - FCM for Android + Web (recommended HTTP v1):
        - `TRIP_PUSH_FCM_PROJECT_ID` (optional if present in service account JSON)
        - `TRIP_PUSH_FCM_SERVICE_ACCOUNT_REL_PATH` (e.g. `keys/firebase-service-account.json`)
      - FCM legacy (optional fallback only):
        - `TRIP_PUSH_FCM_SERVER_KEY`
+     - APNs for iOS:
+       - `TRIP_PUSH_APNS_ENABLED=true`
+       - `TRIP_PUSH_APNS_TEAM_ID=<Apple Developer Team ID>`
+       - `TRIP_PUSH_APNS_KEY_ID=<Apple APNs Auth Key ID>`
+       - `TRIP_PUSH_APNS_BUNDLE_ID=com.tripsplit.app.tripsplit`
+       - `TRIP_PUSH_APNS_PRIVATE_KEY_REL_PATH=/etc/splyto/keys/AuthKey_<KEY_ID>.p8`
+       - `TRIP_PUSH_APNS_USE_SANDBOX=false` for TestFlight/App Store production backend
      - `TRIP_PUSH_CRITICAL_TYPES` (comma-separated push allowlist; in-app notifications are still saved for all types)
    - if using auto settlement reminders:
      - `TRIP_SETTLEMENT_REMINDER_ENABLED=true`
@@ -128,15 +135,31 @@ Notes:
 - Without this file, Android app works, but push token registration returns empty and background push is unavailable.
 - If Firebase legacy API is disabled, backend must use HTTP v1 service account mode.
 
-### iOS (FCM + APNs key in Firebase)
+### iOS (native APNs)
 
-1. In Firebase Console, add iOS app with bundle id:
+1. In Apple Developer, enable Push Notifications for bundle id:
    - `com.tripsplit.app.tripsplit`
-2. Download `GoogleService-Info.plist`.
-3. Place file at:
-   - `mobile/ios/Runner/GoogleService-Info.plist`
-4. In Firebase Console -> Cloud Messaging, upload APNs auth key (`.p8`) for development and production.
+2. Create an APNs Auth Key (`.p8`) and note:
+   - Team ID
+   - Key ID
+   - Bundle ID
+3. Upload the `.p8` key to the server outside the public web root:
+   - `/etc/splyto/keys/AuthKey_<KEY_ID>.p8`
+   - recommended ownership/mode: `root:www-data`, file `0640`, directory `0750`
+4. Configure server `.env`:
+   - `TRIP_PUSH_ENABLED=true`
+   - `TRIP_PUSH_APNS_ENABLED=true`
+   - `TRIP_PUSH_APNS_TEAM_ID=<Apple Developer Team ID>`
+   - `TRIP_PUSH_APNS_KEY_ID=<Apple APNs Auth Key ID>`
+   - `TRIP_PUSH_APNS_BUNDLE_ID=com.tripsplit.app.tripsplit`
+   - `TRIP_PUSH_APNS_PRIVATE_KEY_REL_PATH=/etc/splyto/keys/AuthKey_<KEY_ID>.p8`
+   - `TRIP_PUSH_APNS_USE_SANDBOX=false`
 5. Rebuild iOS app (Xcode/TestFlight build).
+
+Notes:
+- iOS push uses Apple APNs directly; Firebase Apple SDK is not required for iOS notifications.
+- `TRIP_PUSH_APNS_USE_SANDBOX=false` is correct for TestFlight and App Store builds. Use `true` only on a separate development backend for debug/device development tokens.
+- iOS Google Sign-In uses `GIDClientID` and URL schemes in `mobile/ios/Runner/Info.plist`; `GoogleService-Info.plist` is not required for iOS push.
 
 ## 4.1) Mobile social login setup (Google + Apple)
 

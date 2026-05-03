@@ -284,11 +284,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           )
         else ...[
           if (pendingSettlements.isNotEmpty) ...[
-            _buildSettlementSectionLabel(
-              context.l10n.statusPending,
-              color: semantic.statusPendingForeground,
-            ),
-            const SizedBox(height: 8),
             ...pendingSettlements.map(
               (item) => _buildSettlementFlowCard(
                 snapshot: snapshot,
@@ -300,11 +295,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           ],
           if (paidSettlements.isNotEmpty) ...[
             if (pendingSettlements.isNotEmpty) const SizedBox(height: 8),
-            _buildSettlementSectionLabel(
-              context.l10n.paidLabel,
-              color: semantic.statusConfirmedForeground,
-            ),
-            const SizedBox(height: 8),
             ...paidSettlements.map(
               (item) => _buildSettlementFlowCard(
                 snapshot: snapshot,
@@ -316,21 +306,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           ],
         ],
       ],
-    );
-  }
-
-  Widget _buildSettlementSectionLabel(String label, {Color? color}) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 2, 4, 4),
-      child: Text(
-        label.toUpperCase(),
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-          fontWeight: FontWeight.w800,
-          letterSpacing: 1.1,
-          color: color ?? AppDesign.mutedColor(context),
-        ),
-      ),
     );
   }
 
@@ -486,19 +461,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
               ? context.l10n.statusSent
               : context.l10n.statusPending);
 
-    final fromRole = item.fromUserId == _currentUserId
-        ? context.l10n.youLabel
-        : context.l10n.workspaceFriend;
-    final toRole = item.toUserId == _currentUserId
-        ? context.l10n.youLabel
-        : context.l10n.workspaceFriend;
-    final detailTitle = context.l10n.workspaceSettlementTransfer;
-    final detailSubtitle = isCompleted
-        ? context.l10n.workspaceCompleted
-        : (normalizedStatus == 'sent'
-              ? context.l10n.workspaceWaitingForConfirmation
-              : context.l10n.workspaceWaitingForPayment);
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Card(
@@ -526,19 +488,18 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                       child: _buildSettlementPersonColumn(
                         userId: item.fromUserId,
                         name: item.from,
-                        role: fromRole,
                         avatarUrl:
                             fromUser?.avatarThumbUrl ?? fromUser?.avatarUrl,
                         alignEnd: false,
                       ),
                     ),
                     SizedBox(
-                      width: 98,
+                      width: 78,
                       child: Column(
                         children: [
                           Container(
-                            width: 48,
-                            height: 48,
+                            width: 44,
+                            height: 44,
                             decoration: BoxDecoration(
                               color: semantic.statusActiveBackground,
                               shape: BoxShape.circle,
@@ -550,7 +511,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                               size: 28,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 7),
                           Text(
                             _formatMoney(
                               context,
@@ -559,10 +520,10 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                             ),
                             style: Theme.of(context).textTheme.titleLarge
                                 ?.copyWith(
-                                  fontSize: 18,
+                                  fontSize: 17,
                                   fontWeight: FontWeight.w800,
                                   color: amountColor,
-                                  letterSpacing: -0.2,
+                                  letterSpacing: -0.35,
                                 ),
                           ),
                         ],
@@ -572,7 +533,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                       child: _buildSettlementPersonColumn(
                         userId: item.toUserId,
                         name: item.to,
-                        role: toRole,
                         avatarUrl: toUser?.avatarThumbUrl ?? toUser?.avatarUrl,
                         alignEnd: true,
                       ),
@@ -581,54 +541,25 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 ),
                 const SizedBox(height: 12),
                 Divider(height: 1, color: AppDesign.cardStroke(context)),
-                const SizedBox(height: 10),
+                const SizedBox(height: 52),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            detailTitle,
-                            style: Theme.of(context).textTheme.titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: semantic.flowStepCurrent,
-                                ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            detailSubtitle,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: AppDesign.mutedColor(context),
-                                ),
-                          ),
-                        ],
-                      ),
+                    _buildSettlementStatusPill(
+                      label: statusLabel,
+                      foreground: statusForeground,
+                      background: statusBackground,
+                      border: statusBorder,
                     ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        _buildSettlementStatusPill(
-                          label: statusLabel,
-                          foreground: statusForeground,
-                          background: statusBackground,
-                          border: statusBorder,
-                        ),
-                        const SizedBox(height: 8),
-                        TextButton.icon(
-                          onPressed: () => _openSettlementFlowTimelineSheet(
-                            snapshot: snapshot,
-                            item: item,
-                            usersById: usersById,
-                          ),
-                          icon: const Icon(Icons.timeline_rounded, size: 16),
-                          label: Text(openFlowLabel),
-                        ),
-                      ],
+                    const Spacer(),
+                    TextButton.icon(
+                      onPressed: () => _openSettlementFlowTimelineSheet(
+                        snapshot: snapshot,
+                        item: item,
+                        usersById: usersById,
+                      ),
+                      icon: const Icon(Icons.timeline_rounded, size: 16),
+                      label: Text(openFlowLabel),
                     ),
                   ],
                 ),
@@ -643,7 +574,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
   Widget _buildSettlementPersonColumn({
     required int userId,
     required String name,
-    required String role,
     required String? avatarUrl,
     required bool alignEnd,
   }) {
@@ -661,21 +591,14 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         const SizedBox(height: 8),
         Text(
           name,
-          maxLines: 1,
+          maxLines: 2,
           overflow: TextOverflow.ellipsis,
           textAlign: alignEnd ? TextAlign.end : TextAlign.start,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w800,
             fontSize: 16,
+            height: 1.04,
             color: AppDesign.titleColor(context),
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          role,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
-            color: AppDesign.mutedColor(context),
           ),
         ),
       ],
@@ -702,63 +625,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           color: foreground,
           fontSize: 12,
         ),
-      ),
-    );
-  }
-
-  Widget _buildSettlementActionNeededCard({
-    required WorkspaceSnapshot snapshot,
-    required int markSentCount,
-    required int confirmReceivedCount,
-  }) {
-    final colors = Theme.of(context).colorScheme;
-    final title = context.l10n.workspaceActionNeeded;
-    final subtitle = context.l10n
-        .workspacePaymentSToMarkAsSentToConfirmAsReceived(
-          markSentCount,
-          confirmReceivedCount,
-        );
-
-    return _WorkspaceSectionCard(
-      accent: colors.tertiary,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: colors.tertiary.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: Icon(
-              Icons.notifications_active_outlined,
-              color: colors.tertiary,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 2),
-                Text(subtitle, style: Theme.of(context).textTheme.bodySmall),
-                const SizedBox(height: 8),
-                FilledButton.tonalIcon(
-                  onPressed: () => _openSettlementProgressDetails(snapshot),
-                  icon: const Icon(Icons.open_in_new),
-                  label: Text(context.l10n.openSettlements),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -1026,134 +892,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     final palette = AppDesign.memberPalette;
     final safeId = id < 0 ? -id : id;
     return palette[safeId % palette.length];
-  }
-
-  Widget _buildSettlementsOverviewCard(WorkspaceSnapshot snapshot) {
-    final t = context.l10n;
-    final colors = Theme.of(context).colorScheme;
-    final settlements = snapshot.settlements;
-    final confirmedCount = settlements
-        .where((item) => item.status.trim().toLowerCase() == 'confirmed')
-        .length;
-    final openCount = settlements.length - confirmedCount;
-    final subtitle = snapshot.isActive
-        ? t.settlementOverviewPreviewSubtitle
-        : (snapshot.isArchived
-              ? t.settlementOverviewArchivedSubtitle
-              : t.settlementOverviewInProgressSubtitle);
-    final canOpen = settlements.isNotEmpty;
-    final title = snapshot.isArchived
-        ? t.settlementsDone
-        : (snapshot.isActive ? t.settlementPreview : t.settlementInProgress);
-    final accentColor = snapshot.isArchived
-        ? colors.secondary
-        : (snapshot.isActive ? colors.primary : colors.tertiary);
-
-    return Card(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: canOpen ? () => _openSettlementProgressDetails(snapshot) : null,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: accentColor.withValues(alpha: 0.14),
-                      borderRadius: BorderRadius.circular(11),
-                    ),
-                    child: Icon(
-                      snapshot.isArchived
-                          ? Icons.check_circle_outline
-                          : (snapshot.isActive
-                                ? Icons.preview_outlined
-                                : Icons.payments_outlined),
-                      color: accentColor,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w700),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          subtitle,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: accentColor.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      '${settlements.length}',
-                      style: TextStyle(
-                        color: accentColor,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                  if (canOpen) ...[
-                    const SizedBox(width: 4),
-                    const Icon(Icons.chevron_right, size: 18),
-                  ],
-                ],
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  _OverviewMetaPill(
-                    icon: Icons.swap_horiz,
-                    label: '${t.rowsLabel}: ${settlements.length}',
-                    color: colors.secondary,
-                  ),
-                  _OverviewMetaPill(
-                    icon: Icons.hourglass_bottom,
-                    label: '${t.openLabel}: $openCount',
-                    color: colors.tertiary,
-                  ),
-                  _OverviewMetaPill(
-                    icon: Icons.check_circle_outline,
-                    label: '${t.confirmedLabel}: $confirmedCount',
-                    color: colors.primary,
-                  ),
-                  if (!canOpen)
-                    _OverviewMetaPill(
-                      icon: Icons.info_outline,
-                      label: t.noSettlements,
-                      color: colors.onSurfaceVariant,
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   Color _settlementStatusColor(BuildContext context, String status) {

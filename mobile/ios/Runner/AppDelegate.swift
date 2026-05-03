@@ -1,15 +1,12 @@
 import Flutter
-import FirebaseCore
-import FirebaseMessaging
 import UIKit
 import UserNotifications
 
 @main
-@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate, MessagingDelegate {
+@objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   private let pushChannelName = "app.splyto/push"
   private var cachedPushToken: String?
   private var pendingPushTokenResult: FlutterResult?
-  private var firebaseConfigured = false
 
   private enum PushPermissionState {
     case authorized
@@ -22,10 +19,6 @@ import UserNotifications
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     UNUserNotificationCenter.current().delegate = self
-    firebaseConfigured = configureFirebaseIfNeeded()
-    if firebaseConfigured {
-      Messaging.messaging().delegate = self
-    }
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
@@ -50,11 +43,8 @@ import UserNotifications
   }
 
   private func requestPushToken(result: @escaping FlutterResult) {
-    if !firebaseConfigured {
-      firebaseConfigured = configureFirebaseIfNeeded()
-    }
-    if !firebaseConfigured {
-      result(nil)
+    if let token = cachedPushToken, !token.isEmpty {
+      result(token)
       return
     }
 
@@ -118,76 +108,19 @@ import UserNotifications
     UIApplication.shared.registerForRemoteNotifications()
   }
 
-  private func configureFirebaseIfNeeded() -> Bool {
-    if FirebaseApp.app() != nil {
-      return true
-    }
-    guard
-      let plistPath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
-      let options = FirebaseOptions(contentsOfFile: plistPath)
-    else {
-      return false
-    }
-    FirebaseApp.configure(options: options)
-    return FirebaseApp.app() != nil
-  }
-
-  private func fetchFcmToken(result: FlutterResult? = nil) {
-    if !firebaseConfigured {
-      result?(nil)
-      return
-    }
-    Messaging.messaging().token { [weak self] token, _ in
-      guard let self else {
-        return
-      }
-      let value = (token ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-      DispatchQueue.main.async {
-        if value.isEmpty {
-          result?(nil)
-          return
-        }
-        self.cachedPushToken = value
-        result?(value)
-      }
-    }
-  }
-
-  private func apnsTokenType() -> MessagingAPNSTokenType {
-    #if DEBUG
-      return .sandbox
-    #else
-      return .prod
-    #endif
-  }
-
-  func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-    let token = (fcmToken ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-    if token.isEmpty {
-      return
-    }
-    cachedPushToken = token
-    if let pendingResult = pendingPushTokenResult {
-      pendingPushTokenResult = nil
-      pendingResult(token)
-    }
+  private func hexDeviceToken(_ deviceToken: Data) -> String {
+    deviceToken.map { String(format: "%02x", $0) }.joined()
   }
 
   override func application(
     _ application: UIApplication,
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
-    if !firebaseConfigured {
-      firebaseConfigured = configureFirebaseIfNeeded()
-    }
+    let token = hexDeviceToken(deviceToken).trimmingCharacters(in: .whitespacesAndNewlines)
     let pendingResult = pendingPushTokenResult
     pendingPushTokenResult = nil
-    if firebaseConfigured {
-      Messaging.messaging().setAPNSToken(deviceToken, type: apnsTokenType())
-      fetchFcmToken(result: pendingResult)
-    } else {
-      pendingResult?(nil)
-    }
+    cachedPushToken = token.isEmpty ? nil : token
+    pendingResult?(cachedPushToken)
 
     super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
   }

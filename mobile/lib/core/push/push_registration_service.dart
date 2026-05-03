@@ -110,6 +110,9 @@ class PushRegistrationService {
   }
 
   String get _providerLabel {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return 'apns';
+    }
     return 'fcm';
   }
 
