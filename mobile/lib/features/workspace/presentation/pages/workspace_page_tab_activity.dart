@@ -117,6 +117,13 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         ? AppDesign.lightDestructive.withValues(alpha: 0.92)
         : mutedColor;
     final metaLine = meta.join(' • ');
+    final textDecoration = isDestructive
+        ? TextDecoration.lineThrough
+        : TextDecoration.none;
+    final decorationColor = isDestructive
+        ? AppDesign.lightDestructive.withValues(alpha: 0.86)
+        : null;
+    final decorationThickness = isDestructive ? 1.7 : null;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
@@ -141,6 +148,9 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
                     fontWeight: FontWeight.w500,
                     height: 1.18,
                     color: isDark ? null : AppDesign.lightForeground,
+                    decoration: textDecoration,
+                    decorationColor: decorationColor,
+                    decorationThickness: decorationThickness,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -155,6 +165,9 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
                     color: isDark
                         ? colors.onSurface.withValues(alpha: 0.92)
                         : AppDesign.lightForeground,
+                    decoration: textDecoration,
+                    decorationColor: decorationColor,
+                    decorationThickness: decorationThickness,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -168,6 +181,9 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
                     color: metaColor,
                     fontWeight: FontWeight.w500,
                     height: 1.28,
+                    decoration: textDecoration,
+                    decorationColor: decorationColor,
+                    decorationThickness: decorationThickness,
                   ),
                 ),
               ],
