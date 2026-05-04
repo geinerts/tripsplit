@@ -23,6 +23,8 @@ import '../../../../core/ui/test_keys.dart';
 import '../../../analytics/presentation/pages/analytics_page.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../auth/presentation/pages/profile_page.dart';
+import '../../../friends/domain/entities/friend_request.dart';
+import '../../../friends/domain/entities/friends_snapshot.dart';
 import '../../../friends/presentation/controllers/friends_controller.dart';
 import '../../../friends/presentation/pages/friends_page.dart';
 import '../../../trips/domain/entities/trip.dart';
@@ -99,11 +101,16 @@ class _MainShellPageState extends State<MainShellPage>
   bool _isAppInForeground = true;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   StreamSubscription<String>? _inviteCodeSubscription;
+  StreamSubscription<FriendDeepLinkTarget>? _friendTargetSubscription;
   bool _isFlushingWorkspaceQueue = false;
   bool _isProcessingInviteDeepLink = false;
   String? _queuedInviteDeepLinkCode;
   String? _lastProcessedInviteDeepLinkCode;
   DateTime? _lastProcessedInviteDeepLinkAt;
+  bool _isProcessingFriendDeepLink = false;
+  FriendDeepLinkTarget? _queuedFriendDeepLinkTarget;
+  int? _lastProcessedFriendDeepLinkUserId;
+  DateTime? _lastProcessedFriendDeepLinkAt;
 
   @override
   void initState() {
@@ -156,6 +163,7 @@ class _MainShellPageState extends State<MainShellPage>
     _notificationsPollTimer?.cancel();
     _connectivitySubscription?.cancel();
     _inviteCodeSubscription?.cancel();
+    _friendTargetSubscription?.cancel();
     unawaited(
       AppMonitoring.updateRuntimeContext(
         userId: widget.authController.currentUser?.id,
@@ -209,9 +217,20 @@ class _MainShellPageState extends State<MainShellPage>
     if (pending != null && pending.trim().isNotEmpty) {
       unawaited(_handleInviteDeepLinkCode(pending));
     }
+    final pendingFriendTarget = widget.inviteDeepLinkController
+        .consumePendingFriendTarget();
+    if (pendingFriendTarget != null && pendingFriendTarget.userId > 0) {
+      unawaited(_handleFriendDeepLinkTarget(pendingFriendTarget));
+    }
     _inviteCodeSubscription = widget.inviteDeepLinkController.inviteCodeStream
         .listen((inviteCode) {
           unawaited(_handleInviteDeepLinkCode(inviteCode));
+        });
+    _friendTargetSubscription = widget
+        .inviteDeepLinkController
+        .friendTargetStream
+        .listen((target) {
+          unawaited(_handleFriendDeepLinkTarget(target));
         });
   }
 
@@ -312,6 +331,188 @@ class _MainShellPageState extends State<MainShellPage>
         unawaited(_handleInviteDeepLinkCode(queued));
       }
     }
+  }
+
+  Future<void> _handleFriendDeepLinkTarget(FriendDeepLinkTarget target) async {
+    final userId = target.userId;
+    if (userId <= 0 || _isLoggingOut) {
+      return;
+    }
+
+    if (_isProcessingFriendDeepLink) {
+      _queuedFriendDeepLinkTarget = target;
+      return;
+    }
+
+    final now = DateTime.now();
+    final lastUserId = _lastProcessedFriendDeepLinkUserId;
+    final lastAt = _lastProcessedFriendDeepLinkAt;
+    if (lastUserId == userId &&
+        lastAt != null &&
+        now.difference(lastAt) < const Duration(seconds: 3)) {
+      return;
+    }
+    _lastProcessedFriendDeepLinkUserId = userId;
+    _lastProcessedFriendDeepLinkAt = now;
+    _isProcessingFriendDeepLink = true;
+
+    try {
+      final currentUser =
+          widget.authController.currentUser ??
+          await widget.authController.readCachedCurrentUser();
+      if (!mounted) {
+        return;
+      }
+      if (currentUser != null && currentUser.id == userId) {
+        _showSnack(context.l10n.friendsYouCannotAddYourself, isError: true);
+        return;
+      }
+
+      final snapshot = await widget.friendsController.loadSnapshot(
+        forceRefresh: true,
+      );
+      if (!mounted) {
+        return;
+      }
+
+      if (snapshot.friends.any((friend) => friend.id == userId)) {
+        _showSnack(
+          context.l10n.friendsThisUserIsAlreadyInYourFriendsList,
+          isError: false,
+        );
+        _openFriendsTabAfterFriendLink();
+        return;
+      }
+
+      for (final request in snapshot.pendingReceived) {
+        if (request.user.id != userId) {
+          continue;
+        }
+        final confirmed = await _showFriendLinkConfirmDialog(
+          displayName: request.user.preferredName,
+          isAcceptingIncomingRequest: true,
+        );
+        if (!mounted || !confirmed) {
+          return;
+        }
+        await widget.friendsController.respondInvite(
+          requestId: request.requestId,
+          accept: true,
+        );
+        if (!mounted) {
+          return;
+        }
+        _showSnack(context.l10n.friendsFriendAdded, isError: false);
+        widget.friendsController.clearSnapshotCache();
+        _openFriendsTabAfterFriendLink();
+        return;
+      }
+
+      if (snapshot.pendingSent.any((request) => request.user.id == userId)) {
+        _showSnack(
+          context.l10n.friendsInviteToThisUserIsAlreadySent,
+          isError: false,
+        );
+        _openFriendsTabAfterFriendLink();
+        return;
+      }
+
+      final confirmed = await _showFriendLinkConfirmDialog(
+        displayName:
+            _knownFriendLinkDisplayName(snapshot, userId) ?? target.displayName,
+        isAcceptingIncomingRequest: false,
+      );
+      if (!mounted || !confirmed) {
+        return;
+      }
+
+      await widget.friendsController.sendInvite(userId: userId);
+      if (!mounted) {
+        return;
+      }
+      _showSnack(context.l10n.friendsFriendRequestProcessed, isError: false);
+      widget.friendsController.clearSnapshotCache();
+      _openFriendsTabAfterFriendLink();
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      final message = error.message.trim();
+      _showSnack(
+        message.isNotEmpty ? message : context.l10n.shellFailedToOpenFriendLink,
+        isError: true,
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(context.l10n.shellFailedToOpenFriendLink, isError: true);
+    } finally {
+      _isProcessingFriendDeepLink = false;
+      final queued = _queuedFriendDeepLinkTarget;
+      _queuedFriendDeepLinkTarget = null;
+      if (queued != null &&
+          queued.userId > 0 &&
+          queued.userId != userId &&
+          mounted) {
+        unawaited(_handleFriendDeepLinkTarget(queued));
+      }
+    }
+  }
+
+  void _openFriendsTabAfterFriendLink() {
+    if (!mounted) {
+      return;
+    }
+    _friendsCommandController.requestRefresh();
+    if (_selectedTabIndex == _tabFriends && !_isWorkspaceOpen) {
+      return;
+    }
+    _updateState(() {
+      _selectedTabIndex = _tabFriends;
+      _openedTrip = null;
+      _openAddExpenseOnWorkspaceStart = false;
+    });
+  }
+
+  String? _knownFriendLinkDisplayName(FriendsSnapshot snapshot, int userId) {
+    for (final friend in snapshot.friends) {
+      if (friend.id == userId) {
+        final name = friend.preferredName.trim();
+        return name.isEmpty ? null : name;
+      }
+    }
+    for (final request in <FriendRequest>[
+      ...snapshot.pendingReceived,
+      ...snapshot.pendingSent,
+    ]) {
+      if (request.user.id == userId) {
+        final name = request.user.preferredName.trim();
+        return name.isEmpty ? null : name;
+      }
+    }
+    return null;
+  }
+
+  Future<bool> _showFriendLinkConfirmDialog({
+    required String? displayName,
+    required bool isAcceptingIncomingRequest,
+  }) {
+    final name = (displayName ?? '').trim().isEmpty
+        ? context.l10n.friendsUser
+        : displayName!.trim();
+    return showAppConfirmationDialog(
+      context: context,
+      title: context.l10n.friendsConfirmAddFriendTitle(name),
+      message: isAcceptingIncomingRequest
+          ? context.l10n.friendsConfirmAcceptFriendRequestText(name)
+          : context.l10n.friendsConfirmSendFriendInviteText(name),
+      confirmLabel: isAcceptingIncomingRequest
+          ? context.l10n.friendsAccept
+          : context.l10n.friendsInviteAction,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.person_add_alt_1_rounded,
+    );
   }
 
   Future<bool> _showInviteJoinConfirmDialog(TripInvitePreview preview) async {

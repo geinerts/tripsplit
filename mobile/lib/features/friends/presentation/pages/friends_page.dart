@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../app/theme/app_design.dart';
+import '../../../../core/deeplink/invite_deep_link_controller.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/perf/perf_monitor.dart';
@@ -72,6 +76,7 @@ class _FriendsPageState extends State<FriendsPage> {
   bool _isLoading = true;
   bool _isLoadingMoreFriends = false;
   bool _isLoadingMorePendingReceived = false;
+  bool _isLoadingMorePendingSent = false;
   String? _errorText;
   FriendsSnapshot? _snapshot;
   final TextEditingController _searchController = TextEditingController();
@@ -84,12 +89,16 @@ class _FriendsPageState extends State<FriendsPage> {
   final Set<int> _inlineInviteLoading = <int>{};
   int _friendsTotalCount = 0;
   int _pendingReceivedTotalCount = 0;
+  int _pendingSentTotalCount = 0;
   bool _friendsHasMore = false;
   String? _friendsNextCursor;
   int? _friendsNextOffset;
   bool _pendingReceivedHasMore = false;
   String? _pendingReceivedNextCursor;
   int? _pendingReceivedNextOffset;
+  bool _pendingSentHasMore = false;
+  String? _pendingSentNextCursor;
+  int? _pendingSentNextOffset;
   final ScrollController _scrollController = ScrollController();
   final Set<int> _respondLoading = <int>{};
   int _handledRefreshRequestCount = 0;

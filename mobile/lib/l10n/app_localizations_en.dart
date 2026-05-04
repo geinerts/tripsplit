@@ -112,15 +112,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelAction => 'Cancel';
 
   @override
-  String get changeEmailWithPasswordHelper =>
-      'Enter your password to change email.';
+  String get changeEmailWithPasswordHelper => 'Enter your password to change email.';
 
   @override
   String get chooseReceiptFile => 'Choose receipt file';
 
   @override
-  String get completeAccountSetupDescription =>
-      'Set your email and password to complete your account.';
+  String get completeAccountSetupDescription => 'Set your email and password to complete your account.';
 
   @override
   String get completeAccountSetupTitle => 'Complete account setup';
@@ -129,8 +127,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmReceivedAction => 'Confirm received';
 
   @override
-  String get confirmedAllSettlementsArchived =>
-      'All settlements confirmed. Trip archived.';
+  String get confirmedAllSettlementsArchived => 'All settlements confirmed. Trip archived.';
 
   @override
   String get confirmedAsReceived => 'Confirmed as received.';
@@ -162,8 +159,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get creatorMustFinishTripFirst =>
-      'Trip creator must finish the trip to start settlement confirmation.';
+  String get creatorMustFinishTripFirst => 'Trip creator must finish the trip to start settlement confirmation.';
 
   @override
   String currentEmailLabel(Object email) {
@@ -198,8 +194,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editExpenseConfirmTitle => 'Save expense changes?';
 
   @override
-  String get editExpenseConfirmText =>
-      'This will update balances for everyone in the trip.';
+  String get editExpenseConfirmText => 'This will update balances for everyone in the trip.';
 
   @override
   String directlyExplainedByExpenses(Object amount) {
@@ -228,12 +223,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailRequired => 'Email is required.';
 
   @override
-  String get enterValidExactAmounts =>
-      'Enter valid exact amounts for all participants.';
+  String get enterValidExactAmounts => 'Enter valid exact amounts for all participants.';
 
   @override
-  String get enterValidPercentages =>
-      'Enter valid percentages for all participants.';
+  String get enterValidPercentages => 'Enter valid percentages for all participants.';
 
   @override
   String get equalSplitLabel => 'Equal split';
@@ -255,8 +248,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expenseAdded => 'Expense added.';
 
   @override
-  String get expenseBreakdownSubtitle =>
-      'How this member is affected by each expense.';
+  String get expenseBreakdownSubtitle => 'How this member is affected by each expense.';
 
   @override
   String get expenseBreakdownTitle => 'Expense breakdown';
@@ -327,8 +319,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get finishTripAction => 'Finish trip';
 
   @override
-  String get finishTripConfirmationText =>
-      'Finish this trip and start settlements?';
+  String get finishTripConfirmationText => 'Finish this trip and start settlements?';
 
   @override
   String get finishTripStartSettlementsAction => 'Finish and start settlements';
@@ -345,19 +336,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPassword => 'Forgot password?';
 
   @override
-  String get forgotPasswordSubtitle =>
-      'Enter your email and we will send a password reset link.';
+  String get forgotPasswordSubtitle => 'Enter your email and we will send a password reset link.';
 
   @override
-  String get forgotPasswordSuccessMessage =>
-      'If an account with this email exists, we have sent a password reset link.';
+  String get forgotPasswordSuccessMessage => 'If an account with this email exists, we have sent a password reset link.';
 
   @override
   String get forgotPasswordTitle => 'Reset password';
 
   @override
-  String get friendsProgressSubtitle =>
-      'Each member and their confirmation state.';
+  String get friendsProgressSubtitle => 'Each member and their confirmation state.';
 
   @override
   String get friendsProgressTitle => 'Friends progress';
@@ -411,8 +399,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageSystemSubtitle => 'Use device language';
 
   @override
-  String get leaveEmptyKeepPasswordHelper =>
-      'Leave empty to keep current password.';
+  String get leaveEmptyKeepPasswordHelper => 'Leave empty to keep current password.';
 
   @override
   String get logInButton => 'Log in';
@@ -430,8 +417,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get markSettlementSentConfirmTitle => 'Mark transfer as sent?';
 
   @override
-  String get markSettlementSentConfirmText =>
-      'Use this only after you have actually sent the payment. The receiver will be asked to confirm.';
+  String get markSettlementSentConfirmText => 'Use this only after you have actually sent the payment. The receiver will be asked to confirm.';
 
   @override
   String get settlementCancelSentAction => 'Mark as not sent';
@@ -440,8 +426,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settlementCancelSentConfirmTitle => 'Cancel sent status?';
 
   @override
-  String get settlementCancelSentConfirmText =>
-      'This will move the transfer back to pending and notify the receiver.';
+  String get settlementCancelSentConfirmText => 'This will move the transfer back to pending and notify the receiver.';
 
   @override
   String get settlementSentCancelled => 'Transfer moved back to pending.';
@@ -453,8 +438,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settlementNotReceivedConfirmTitle => 'Report not received?';
 
   @override
-  String get settlementNotReceivedConfirmText =>
-      'This will move the transfer back to pending and notify the payer.';
+  String get settlementNotReceivedConfirmText => 'This will move the transfer back to pending and notify the payer.';
 
   @override
   String get settlementMarkedNotReceived => 'Marked as not received.';
@@ -463,8 +447,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmSettlementReceivedConfirmTitle => 'Confirm received?';
 
   @override
-  String get confirmSettlementReceivedConfirmText =>
-      'Confirm only after the money is visible in your account. This action may complete the settlement.';
+  String get confirmSettlementReceivedConfirmText => 'Confirm only after the money is visible in your account. This action may complete the settlement.';
 
   @override
   String get memberSummariesSubtitle => 'Current balance state for both sides.';
@@ -519,8 +502,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fullNameLabel => 'Full name';
 
   @override
-  String get fullNameValidation =>
-      'Enter first and last name (at least 2 characters each).';
+  String get fullNameValidation => 'Enter first and last name (at least 2 characters each).';
 
   @override
   String get lastNameHint => 'Your last name';
@@ -577,8 +559,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nicknameLabel => 'Nickname';
 
   @override
-  String get nicknameLengthValidation =>
-      'Nickname must be at least 2 characters.';
+  String get nicknameLengthValidation => 'Nickname must be at least 2 characters.';
 
   @override
   String get noAccountQuestion => 'No account yet?';
@@ -590,8 +571,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noChangesToSave => 'No changes to save.';
 
   @override
-  String get noDirectExpenseLink =>
-      'No direct single-expense link found. This settlement is calculated from full trip balance.';
+  String get noDirectExpenseLink => 'No direct single-expense link found. This settlement is calculated from full trip balance.';
 
   @override
   String get noExpenseImpactForMember => 'No expense impact for this member.';
@@ -647,8 +627,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPicksYet => 'No picks yet.';
 
   @override
-  String get noSettlementActivityForMember =>
-      'No settlement activity for this member.';
+  String get noSettlementActivityForMember => 'No settlement activity for this member.';
 
   @override
   String get noSettlementRowsYet => 'No settlement rows yet.';
@@ -657,8 +636,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSettlements => 'No settlements';
 
   @override
-  String get noTransferNeededForFilter =>
-      'No transfer needed for selected filter.';
+  String get noTransferNeededForFilter => 'No transfer needed for selected filter.';
 
   @override
   String get noTransferRowsToShow => 'No transfer rows to show.';
@@ -704,8 +682,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notificationFriendInviteBodyGeneric =>
-      'You received a friend invite.';
+  String get notificationFriendInviteBodyGeneric => 'You received a friend invite.';
 
   @override
   String get notificationFriendInviteAcceptedTitle => 'Invite accepted';
@@ -716,8 +693,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notificationFriendInviteAcceptedBodyGeneric =>
-      'Your friend invite was accepted.';
+  String get notificationFriendInviteAcceptedBodyGeneric => 'Your friend invite was accepted.';
 
   @override
   String get notificationFriendInviteRejectedTitle => 'Invite declined';
@@ -728,8 +704,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notificationFriendInviteRejectedBodyGeneric =>
-      'Your friend invite was declined.';
+  String get notificationFriendInviteRejectedBodyGeneric => 'Your friend invite was declined.';
 
   @override
   String get notificationTripAddedTitle => 'Added to trip';
@@ -751,20 +726,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationExpenseAddedTitle => 'New expense added';
 
   @override
-  String notificationExpenseAddedBodyWithTrip(
-    Object amount,
-    Object name,
-    Object trip,
-  ) {
+  String notificationExpenseAddedBodyWithTrip(Object amount, Object name, Object trip) {
     return '$name added an expense of $amount in \"$trip\".';
   }
 
   @override
-  String notificationExpenseAddedBodyWithNote(
-    Object amount,
-    Object name,
-    Object note,
-  ) {
+  String notificationExpenseAddedBodyWithNote(Object amount, Object name, Object note) {
     return '$name added an expense of $amount: $note';
   }
 
@@ -775,10 +742,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationTripFinishedTitle => 'Trip finished';
 
   @override
-  String notificationTripFinishedBodySettlementsReady(
-    Object name,
-    Object trip,
-  ) {
+  String notificationTripFinishedBodySettlementsReady(Object name, Object trip) {
     return '$name finished \"$trip\". Settlements are ready.';
   }
 
@@ -809,8 +773,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notificationMemberReadyToSettleBodyGeneric =>
-      'A member is ready to settle.';
+  String get notificationMemberReadyToSettleBodyGeneric => 'A member is ready to settle.';
 
   @override
   String get notificationTripReadyToSettleTitle => 'All members are ready';
@@ -821,65 +784,45 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notificationTripReadyToSettleBodyGeneric =>
-      'All members are ready. You can start settlements.';
+  String get notificationTripReadyToSettleBodyGeneric => 'All members are ready. You can start settlements.';
 
   @override
   String get notificationSettlementReminderTitle => 'Settlement reminder';
 
   @override
-  String notificationSettlementReminderBodyMarkSent(
-    Object actor,
-    Object amount,
-    Object target,
-  ) {
+  String notificationSettlementReminderBodyMarkSent(Object actor, Object amount, Object target) {
     return '$actor reminded $target to mark $amount as sent.';
   }
 
   @override
-  String notificationSettlementReminderBodyConfirm(
-    Object actor,
-    Object amount,
-    Object target,
-  ) {
+  String notificationSettlementReminderBodyConfirm(Object actor, Object amount, Object target) {
     return '$actor reminded $target to confirm receiving $amount.';
   }
 
   @override
-  String get notificationSettlementReminderBodyGeneric =>
-      'You received a settlement reminder.';
+  String get notificationSettlementReminderBodyGeneric => 'You received a settlement reminder.';
 
   @override
   String get notificationPaymentReminderTitle => 'Payment reminder';
 
   @override
-  String notificationPaymentReminderBody(
-    Object amount,
-    Object target,
-    Object trip,
-  ) {
+  String notificationPaymentReminderBody(Object amount, Object target, Object trip) {
     return 'Reminder: please mark $amount as sent to $target in \"$trip\".';
   }
 
   @override
-  String get notificationPaymentReminderBodyGeneric =>
-      'Reminder: please mark the payment as sent.';
+  String get notificationPaymentReminderBodyGeneric => 'Reminder: please mark the payment as sent.';
 
   @override
   String get notificationConfirmationReminderTitle => 'Confirmation reminder';
 
   @override
-  String notificationConfirmationReminderBody(
-    Object amount,
-    Object payer,
-    Object trip,
-  ) {
+  String notificationConfirmationReminderBody(Object amount, Object payer, Object trip) {
     return 'Reminder: please confirm receiving $amount from $payer in \"$trip\".';
   }
 
   @override
-  String get notificationConfirmationReminderBodyGeneric =>
-      'Reminder: please confirm receiving the payment.';
+  String get notificationConfirmationReminderBodyGeneric => 'Reminder: please confirm receiving the payment.';
 
   @override
   String get notificationSettlementSentTitle => 'Transfer marked as sent';
@@ -890,8 +833,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notificationSettlementSentBodyGeneric =>
-      'A transfer was marked as sent.';
+  String get notificationSettlementSentBodyGeneric => 'A transfer was marked as sent.';
 
   @override
   String get notificationSettlementConfirmedTitle => 'Transfer confirmed';
@@ -902,8 +844,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get notificationSettlementConfirmedBodyGeneric =>
-      'A transfer was confirmed.';
+  String get notificationSettlementConfirmedBodyGeneric => 'A transfer was confirmed.';
 
   @override
   String offlineQueuePendingChanges(num count) {
@@ -937,8 +878,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onlineStatus => 'Online';
 
   @override
-  String get onlyCreatorCanFinishTrip =>
-      'Only trip creator can finish the trip.';
+  String get onlyCreatorCanFinishTrip => 'Only trip creator can finish the trip.';
 
   @override
   String get openLabel => 'Open';
@@ -976,19 +916,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordLabel => 'Password';
 
   @override
-  String get passwordComplexityHelper =>
-      'Use at least 1 uppercase letter, 1 number and 1 symbol.';
+  String get passwordComplexityHelper => 'Use at least 1 uppercase letter, 1 number and 1 symbol.';
 
   @override
-  String get passwordComplexityValidation =>
-      'Password must include 1 uppercase letter, 1 number and 1 symbol.';
+  String get passwordComplexityValidation => 'Password must include 1 uppercase letter, 1 number and 1 symbol.';
 
   @override
   String get passwordMinLength => 'Password must be at least 8 characters.';
 
   @override
-  String get passwordMinLengthShort =>
-      'Password must be at least 6 characters.';
+  String get passwordMinLengthShort => 'Password must be at least 6 characters.';
 
   @override
   String get passwordResetComingSoon => 'Password reset coming soon.';
@@ -1005,8 +942,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pendingLabel => 'Pending';
 
   @override
-  String get pendingPaymentsSubtitle =>
-      'Payments still waiting for full confirmation.';
+  String get pendingPaymentsSubtitle => 'Payments still waiting for full confirmation.';
 
   @override
   String get percentLabel => 'Percent';
@@ -1039,8 +975,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get profileRefreshCachedData =>
-      'Could not refresh profile. Showing cached data.';
+  String get profileRefreshCachedData => 'Could not refresh profile. Showing cached data.';
 
   @override
   String get profileTitle => 'Profile';
@@ -1246,16 +1181,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settlementLabel => 'Settlement';
 
   @override
-  String get settlementOverviewArchivedSubtitle =>
-      'Trip archived. All settlements completed.';
+  String get settlementOverviewArchivedSubtitle => 'Trip archived. All settlements completed.';
 
   @override
-  String get settlementOverviewInProgressSubtitle =>
-      'Track settlement confirmations.';
+  String get settlementOverviewInProgressSubtitle => 'Track settlement confirmations.';
 
   @override
-  String get settlementOverviewPreviewSubtitle =>
-      'Preview transfers for when trip finishes.';
+  String get settlementOverviewPreviewSubtitle => 'Preview transfers for when trip finishes.';
 
   @override
   String get settlementPreview => 'Settlement preview';
@@ -1275,8 +1207,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settlements => 'Settlements';
 
   @override
-  String get settlementsAlreadyCompletedSubtitle =>
-      'Settlements already completed.';
+  String get settlementsAlreadyCompletedSubtitle => 'Settlements already completed.';
 
   @override
   String get settlementsDone => 'Settlements done';
@@ -1291,8 +1222,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sharesLabel => 'Shares';
 
   @override
-  String get sharesMustBePositiveIntegers =>
-      'Shares must be positive whole numbers.';
+  String get sharesMustBePositiveIntegers => 'Shares must be positive whole numbers.';
 
   @override
   String sharesWithValue(Object value) {
@@ -1315,16 +1245,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get splitHintEqual => 'Split equally between selected participants.';
 
   @override
-  String get splitHintExact =>
-      'Enter exact amount for each participant. Sum must match total.';
+  String get splitHintExact => 'Enter exact amount for each participant. Sum must match total.';
 
   @override
-  String get splitHintPercent =>
-      'Enter percentage for each participant. Sum must be 100%.';
+  String get splitHintPercent => 'Enter percentage for each participant. Sum must be 100%.';
 
   @override
-  String get splitHintShares =>
-      'Enter share units (1, 2, 3...). Cost is split proportionally.';
+  String get splitHintShares => 'Enter share units (1, 2, 3...). Cost is split proportionally.';
 
   @override
   String get splitLabel => 'Split';
@@ -1451,16 +1378,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tripArchivedReadOnly => 'Trip is archived. Read-only mode.';
 
   @override
-  String get tripClosedExpenseEditingDisabled =>
-      'Trip is closed. Expense editing is disabled.';
+  String get tripClosedExpenseEditingDisabled => 'Trip is closed. Expense editing is disabled.';
 
   @override
-  String get tripClosedExpensesReadOnly =>
-      'Trip is closed. Expenses are read-only.';
+  String get tripClosedExpensesReadOnly => 'Trip is closed. Expenses are read-only.';
 
   @override
-  String get tripClosedRandomDisabled =>
-      'Trip is closed. Random draw is disabled.';
+  String get tripClosedRandomDisabled => 'Trip is closed. Random draw is disabled.';
 
   @override
   String tripCreated(Object name) {
@@ -1471,12 +1395,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tripFinished => 'Trip finished.';
 
   @override
-  String get tripFinishedCompleteSettlements =>
-      'Trip is finished. Complete settlements.';
+  String get tripFinishedCompleteSettlements => 'Trip is finished. Complete settlements.';
 
   @override
-  String get tripFinishedSettlementStarted =>
-      'Trip finished. Settlement started.';
+  String get tripFinishedSettlementStarted => 'Trip finished. Settlement started.';
 
   @override
   String get tripFullySettledArchived => 'Trip fully settled and archived.';
@@ -1488,8 +1410,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tripNameLabel => 'Trip name';
 
   @override
-  String get tripNameLengthValidation =>
-      'Trip name must be at least 2 characters.';
+  String get tripNameLengthValidation => 'Trip name must be at least 2 characters.';
 
   @override
   String get tripSnapshotTitle => 'Trip snapshot';
@@ -1508,12 +1429,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get unexpectedErrorLoadingProfile =>
-      'Unexpected error loading profile';
+  String get unexpectedErrorLoadingProfile => 'Unexpected error loading profile';
 
   @override
-  String get unexpectedErrorLoadingTripData =>
-      'Unexpected error loading trip data';
+  String get unexpectedErrorLoadingTripData => 'Unexpected error loading trip data';
 
   @override
   String get unexpectedErrorLoadingTrips => 'Unexpected error loading trips';
@@ -1522,12 +1441,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unexpectedErrorSavingChanges => 'Unexpected error saving changes';
 
   @override
-  String get unexpectedErrorSavingCredentials =>
-      'Unexpected error saving credentials';
+  String get unexpectedErrorSavingCredentials => 'Unexpected error saving credentials';
 
   @override
-  String get unexpectedErrorUpdatingProfile =>
-      'Unexpected error updating profile';
+  String get unexpectedErrorUpdatingProfile => 'Unexpected error updating profile';
 
   @override
   String get unknownError => 'Unknown error';
@@ -1588,8 +1505,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get whyPaymentExistsSubtitle =>
-      'Expense rows contributing to this transfer.';
+  String get whyPaymentExistsSubtitle => 'Expense rows contributing to this transfer.';
 
   @override
   String get whyPaymentExistsTitle => 'Why this payment exists';
@@ -1623,8 +1539,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authIntroTravelFree => 'Travel free.';
 
   @override
-  String get authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo =>
-      'Track shared costs across currencies and settle up instantly - no awkward IOUs.';
+  String get authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo => 'Track shared costs across currencies and settle up instantly - no awkward IOUs.';
 
   @override
   String get authIntroPlanTogether => 'Plan together.';
@@ -1633,8 +1548,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authIntroPayClearly => 'Pay clearly.';
 
   @override
-  String get authIntroCreateTripsSecondsAddFriendsKeepEveryExpense =>
-      'Create trips in seconds, add friends, and keep every expense transparent for everyone.';
+  String get authIntroCreateTripsSecondsAddFriendsKeepEveryExpense => 'Create trips in seconds, add friends, and keep every expense transparent for everyone.';
 
   @override
   String get authIntroSettleFast => 'Settle fast.';
@@ -1643,16 +1557,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authIntroStayFriends => 'Stay friends.';
 
   @override
-  String get authIntroFromSharedDinnersFullTripsSplytoKeepsBalances =>
-      'From shared dinners to full trips, Splyto keeps balances fair and stress-free.';
+  String get authIntroFromSharedDinnersFullTripsSplytoKeepsBalances => 'From shared dinners to full trips, Splyto keeps balances fair and stress-free.';
 
   @override
-  String get authIntroAppleSignFailedPleaseTryAgain =>
-      'Apple sign-in failed. Please try again.';
+  String get authIntroAppleSignFailedPleaseTryAgain => 'Apple sign-in failed. Please try again.';
 
   @override
-  String get authIntroGoogleSignFailedPleaseTryAgain =>
-      'Google sign-in failed. Please try again.';
+  String get authIntroGoogleSignFailedPleaseTryAgain => 'Google sign-in failed. Please try again.';
 
   @override
   String get authIntroCreateAccount => 'Create your account.';
@@ -1691,24 +1602,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authIntroOr => 'OR';
 
   @override
-  String get authGoogleSignDidNotReturnIdToken =>
-      'Google sign-in did not return an id token.';
+  String get authGoogleSignDidNotReturnIdToken => 'Google sign-in did not return an id token.';
 
   @override
-  String get authAppleSignAvailableIosDevices =>
-      'Apple sign-in is available on iOS devices.';
+  String get authAppleSignAvailableIosDevices => 'Apple sign-in is available on iOS devices.';
 
   @override
-  String get authAppleSignNotAvailableDevice =>
-      'Apple sign-in is not available on this device.';
+  String get authAppleSignNotAvailableDevice => 'Apple sign-in is not available on this device.';
 
   @override
-  String get authAppleSignDidNotReturnIdentityToken =>
-      'Apple sign-in did not return an identity token.';
+  String get authAppleSignDidNotReturnIdentityToken => 'Apple sign-in did not return an identity token.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink =>
-      'Account is deactivated. Enter your email to request a reactivation link.';
+  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Account is deactivated. Enter your email to request a reactivation link.';
 
   @override
   String get authAccountDeactivated => 'Account is deactivated';
@@ -1725,16 +1631,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authSendLink => 'Send link';
 
   @override
-  String get authReactivationLinkSentCheckEmail =>
-      'Reactivation link sent. Check your email.';
+  String get authReactivationLinkSentCheckEmail => 'Reactivation link sent. Check your email.';
 
   @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain =>
-      'Could not send reactivation link. Please try again.';
+  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Could not send reactivation link. Please try again.';
 
   @override
-  String get authEmailNotVerifiedEnterEmailRequestVerificationLink =>
-      'Email is not verified. Enter your email to request verification link.';
+  String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'Email is not verified. Enter your email to request verification link.';
 
   @override
   String get authEmailNotVerified => 'Email not verified';
@@ -1745,16 +1648,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get authVerificationLinkSentCheckEmail =>
-      'Verification link sent. Check your email.';
+  String get authVerificationLinkSentCheckEmail => 'Verification link sent. Check your email.';
 
   @override
-  String get authCouldNotSendVerificationLinkPleaseTryAgain =>
-      'Could not send verification link. Please try again.';
+  String get authCouldNotSendVerificationLinkPleaseTryAgain => 'Could not send verification link. Please try again.';
 
   @override
-  String get authVerificationEmailSentPleaseVerifyEmailBeforeLogging =>
-      'Verification email sent. Please verify your email before logging in.';
+  String get authVerificationEmailSentPleaseVerifyEmailBeforeLogging => 'Verification email sent. Please verify your email before logging in.';
 
   @override
   String get authVerifyEmail => 'Verify your email';
@@ -1790,15 +1690,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileAppBanners => 'In-app banners';
 
   @override
-  String get profileShowNewNotificationBannersInsideApp =>
-      'Show new notification banners inside app';
+  String get profileShowNewNotificationBannersInsideApp => 'Show new notification banners inside app';
 
   @override
   String get profilePushNotificationsTitle => 'Push notifications';
 
   @override
-  String get profilePhoneNotificationsExpensesFriendsTripsSettlements =>
-      'Phone notifications for expenses, friends, trips and settlements';
+  String get profilePhoneNotificationsExpensesFriendsTripsSettlements => 'Phone notifications for expenses, friends, trips and settlements';
 
   @override
   String get profileSupportSectionHeading => 'SUPPORT';
@@ -1837,12 +1735,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileMadeWithLabel => 'Made with';
 
   @override
-  String get profileStoreRatingActionWillConnectedNextStep =>
-      'Store rating action will be connected in the next step.';
+  String get profileStoreRatingActionWillConnectedNextStep => 'Store rating action will be connected in the next step.';
 
   @override
-  String get profileFailedSaveNotificationSettings =>
-      'Failed to save notification settings.';
+  String get profileFailedSaveNotificationSettings => 'Failed to save notification settings.';
 
   @override
   String get profilePushNotificationsSectionTitle => 'PUSH NOTIFICATIONS';
@@ -1854,56 +1750,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileInAppTripMemberAddedTitle => 'Member added to trip';
 
   @override
-  String get profileInAppAutoSettlementReminderTitle =>
-      'Automatic settlement reminder';
+  String get profileInAppAutoSettlementReminderTitle => 'Automatic settlement reminder';
 
   @override
   String get profileExpenseUpdates => 'Expense updates';
 
   @override
-  String get profileExpenseAddedBannersInsideApp =>
-      'Expense added banners inside app';
+  String get profileExpenseAddedBannersInsideApp => 'Expense added banners inside app';
 
   @override
-  String get profileExpenseAddedNotificationsPhone =>
-      'Expense added notifications to phone';
+  String get profileExpenseAddedNotificationsPhone => 'Expense added notifications to phone';
 
   @override
   String get profileFriendInvites => 'Friend invites';
 
   @override
-  String get profileFriendInvitesBannersInsideApp =>
-      'Friend request and response banners inside app';
+  String get profileFriendInvitesBannersInsideApp => 'Friend request and response banners inside app';
 
   @override
-  String get profileFriendRequestResponseNotifications =>
-      'Friend request and response notifications';
+  String get profileFriendRequestResponseNotifications => 'Friend request and response notifications';
 
   @override
   String get profileTripUpdates => 'Trip updates';
 
   @override
-  String get profileTripUpdatesBannersInsideApp =>
-      'Trip lifecycle and member status banners inside app';
+  String get profileTripUpdatesBannersInsideApp => 'Trip lifecycle and member status banners inside app';
 
   @override
-  String get profileTripLifecycleMemberStatusChanges =>
-      'Trip lifecycle and member status changes';
+  String get profileTripLifecycleMemberStatusChanges => 'Trip lifecycle and member status changes';
 
   @override
   String get profileSettlementUpdates => 'Settlement updates';
 
   @override
-  String get profileSettlementUpdatesBannersInsideApp =>
-      'Marked sent and confirmed payment banners inside app';
+  String get profileSettlementUpdatesBannersInsideApp => 'Marked sent and confirmed payment banners inside app';
 
   @override
-  String get profileMarkedSentConfirmedPaymentUpdates =>
-      'Marked sent and confirmed payment updates';
+  String get profileMarkedSentConfirmedPaymentUpdates => 'Marked sent and confirmed payment updates';
 
   @override
-  String get profileScreenshotSizeMust8Mb =>
-      'Screenshot size must be up to 8 MB';
+  String get profileScreenshotSizeMust8Mb => 'Screenshot size must be up to 8 MB';
 
   @override
   String get profileFeedbackSendTitle => 'Send feedback';
@@ -1933,12 +1819,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileRemoveImage => 'Remove image';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage =>
-      'Tip: attach screenshot for faster bug triage';
+  String get profileTipAttachScreenshotFasterBugTriage => 'Tip: attach screenshot for faster bug triage';
 
   @override
-  String get profileAddDetailsAttachScreenshotBeforeSending =>
-      'Add details or attach screenshot before sending';
+  String get profileAddDetailsAttachScreenshotBeforeSending => 'Add details or attach screenshot before sending';
 
   @override
   String get profileSendAction => 'Send';
@@ -1959,40 +1843,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileOpenPortfolioAction => 'Open portfolio.egm.lv';
 
   @override
-  String get profileImageFormatNotSupportedDevicePleaseChooseJpg =>
-      'This image format is not supported on this device. Please choose JPG or PNG.';
+  String get profileImageFormatNotSupportedDevicePleaseChooseJpg => 'This image format is not supported on this device. Please choose JPG or PNG.';
 
   @override
-  String get profileEditSetValidEmailEditProfileChangingPassword =>
-      'Set a valid email in Edit profile before changing password.';
+  String get profileEditSetValidEmailEditProfileChangingPassword => 'Set a valid email in Edit profile before changing password.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess =>
-      'Account deactivated. Use reactivation link from email to restore access.';
+  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Account deactivated. Use reactivation link from email to restore access.';
 
   @override
-  String get profileEditCouldNotDeactivateTryAgain =>
-      'Could not deactivate account. Please try again.';
+  String get profileEditCouldNotDeactivateTryAgain => 'Could not deactivate account. Please try again.';
 
   @override
-  String get profileEditDeletionLinkSentEmail =>
-      'Deletion link sent to your email.';
+  String get profileEditDeletionLinkSentEmail => 'Deletion link sent to your email.';
 
   @override
-  String get profileEditCouldNotSendDeletionLinkTryAgain =>
-      'Could not send deletion link. Please try again.';
+  String get profileEditCouldNotSendDeletionLinkTryAgain => 'Could not send deletion link. Please try again.';
 
   @override
-  String get profileEditEnterCurrentPasswordChangeEmail =>
-      'Enter current password to change email.';
+  String get profileEditEnterCurrentPasswordChangeEmail => 'Enter current password to change email.';
 
   @override
-  String get profileEditVerificationWasSentNewEmailSecurityNoticeWas =>
-      'Verification was sent to the new email. Security notice was sent to your current email.';
+  String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Verification was sent to the new email. Security notice was sent to your current email.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry =>
-      'Could not start email change right now. Please try again.';
+  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Could not start email change right now. Please try again.';
 
   @override
   String get profileEditOverviewCurrency => 'Overview currency';
@@ -2001,17 +1876,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEditPaymentMethod => 'Payment method';
 
   @override
-  String get profileEditBankTransferRevolutPaypalMe =>
-      'Bank transfer, Revolut, PayPal.me';
+  String get profileEditBankTransferRevolutPaypalMe => 'Bank transfer, Revolut, PayPal.me';
 
   @override
-  String
-  get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword =>
-      'You can deactivate account access or request an email link to permanently delete the account. Password is optional for Google/Apple accounts.';
+  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'You can deactivate account access or request an email link to permanently delete the account. Password is optional for Google/Apple accounts.';
 
   @override
-  String get profileEditEnterPasswordOptionalGoogleApple =>
-      'Enter your password (optional for Google/Apple)';
+  String get profileEditEnterPasswordOptionalGoogleApple => 'Enter your password (optional for Google/Apple)';
 
   @override
   String get profileEditSendDeletionLinkEmail => 'Send deletion link to email';
@@ -2020,8 +1891,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEditBackProfile => 'Back to profile';
 
   @override
-  String get profileEditSetValidEmailProfileChangingPassword =>
-      'Set a valid email in profile before changing password.';
+  String get profileEditSetValidEmailProfileChangingPassword => 'Set a valid email in profile before changing password.';
 
   @override
   String get profileEditPasswordUpdated => 'Password updated.';
@@ -2044,15 +1914,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEditNoCurrenciesFound => 'No currencies found';
 
   @override
-  String get profileEditOverviewTotalsConvertedCurrency =>
-      'Overview totals are converted to this currency.';
+  String get profileEditOverviewTotalsConvertedCurrency => 'Overview totals are converted to this currency.';
 
   @override
   String get profileEditPaymentInfoUpdated => 'Payment info updated.';
 
   @override
-  String get profileEditCouldNotSavePaymentInfoTryAgain =>
-      'Could not save payment info. Please try again.';
+  String get profileEditCouldNotSavePaymentInfoTryAgain => 'Could not save payment info. Please try again.';
 
   @override
   String get profileEditCurrentPassword => 'Current password';
@@ -2076,8 +1944,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEditTapChange => 'Tap to change';
 
   @override
-  String get profileEditUkTransfersSortCode6DigitsNumber8 =>
-      'For UK transfers, sort code must be 6 digits and account number 8 digits.';
+  String get profileEditUkTransfersSortCode6DigitsNumber8 => 'For UK transfers, sort code must be 6 digits and account number 8 digits.';
 
   @override
   String get profileEditPaymentInfo => 'Payment info';
@@ -2104,19 +1971,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEdit8Digits => '8 digits';
 
   @override
-  String get profileEditUkDomesticTransfersSortCodeNumber =>
-      'For UK domestic transfers use sort code + account number.';
+  String get profileEditUkDomesticTransfersSortCodeNumber => 'For UK domestic transfers use sort code + account number.';
 
   @override
-  String get profileEditExampleLv80bank0000435195001 =>
-      'Example: LV80BANK0000435195001';
+  String get profileEditExampleLv80bank0000435195001 => 'Example: LV80BANK0000435195001';
 
   @override
   String get profileEdit811Chars => '8 or 11 chars';
 
   @override
-  String get profileEditHolderNameTakenProfileFullName =>
-      'Account holder name is taken from profile full name.';
+  String get profileEditHolderNameTakenProfileFullName => 'Account holder name is taken from profile full name.';
 
   @override
   String get profileEditRevolutMeUsername => 'revolut.me/username';
@@ -2128,8 +1992,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEditUsername => '@username';
 
   @override
-  String get profileEditPaypalMeUsernameUsername =>
-      'paypal.me/username or username';
+  String get profileEditPaypalMeUsernameUsername => 'paypal.me/username or username';
 
   @override
   String get profileEditRevolut => 'Revolut';
@@ -2276,14 +2139,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expenseCategoryOther => 'Other';
 
   @override
-  String get shellTripAlreadyInListOpened =>
-      'Trip already in your list. Opened it for you.';
+  String get shellTripAlreadyInListOpened => 'Trip already in your list. Opened it for you.';
 
   @override
   String get shellJoinedTripFromInviteLink => 'Joined trip from invite link.';
 
   @override
   String get shellFailedToOpenInviteLink => 'Failed to open invite link.';
+
+  @override
+  String get shellFailedToOpenFriendLink => 'Failed to open friend link.';
 
   @override
   String get shellTripInviteTitle => 'Trip invite';
@@ -2295,17 +2160,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellYesAction => 'Yes';
 
   @override
-  String get shellOnlyTripCreatorCanDelete =>
-      'Only trip creator can delete this trip.';
+  String get shellOnlyTripCreatorCanDelete => 'Only trip creator can delete this trip.';
 
   @override
-  String get shellOnlyActiveTripsCanDelete =>
-      'Only active trips can be deleted.';
+  String get shellOnlyActiveTripsCanDelete => 'Only active trips can be deleted.';
 
   @override
-  String shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(
-    Object tripLabel,
-  ) {
+  String shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(Object tripLabel) {
     return 'Delete \"$tripLabel\"? This is allowed only before any expenses are added.';
   }
 
@@ -2324,8 +2185,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get shellFailedToUpdateNotifications =>
-      'Failed to update notifications.';
+  String get shellFailedToUpdateNotifications => 'Failed to update notifications.';
 
   @override
   String get shellMarkAllAsReadAction => 'Mark all as read';
@@ -2355,10 +2215,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellYesterday => 'Yesterday';
 
   @override
-  String shellInviteAlreadyMemberOpenTripNow(
-    Object inviterName,
-    Object tripName,
-  ) {
+  String shellInviteAlreadyMemberOpenTripNow(Object inviterName, Object tripName) {
     return 'You are already a member of \"$tripName\". Open this trip now?\n\nInvited by: $inviterName';
   }
 
@@ -2376,8 +2233,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tripsTripImageAlreadySet => 'Trip image already set.';
 
   @override
-  String get tripsTripCreatedButImageUploadFailed =>
-      'Trip created, but image upload failed.';
+  String get tripsTripCreatedButImageUploadFailed => 'Trip created, but image upload failed.';
 
   @override
   String tripsTripCreatedButImageUploadFailedWithReason(Object arg1) {
@@ -2435,42 +2291,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tripsMainCurrency => 'Main currency';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates =>
-      'Please select trip period (from and to dates).';
+  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Please select trip period (from and to dates).';
 
   @override
-  String get tripsTripEndDateMustBeOnOrAfterStartDate =>
-      'Trip end date must be on or after start date.';
+  String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Trip end date must be on or after start date.';
 
   @override
-  String get tripsTripPeriodFormatIsInvalidPleasePickDatesAgain =>
-      'Trip period format is invalid. Please pick dates again.';
+  String get tripsTripPeriodFormatIsInvalidPleasePickDatesAgain => 'Trip period format is invalid. Please pick dates again.';
 
   @override
-  String get tripsYouAreAlreadyAMemberOfThisTrip =>
-      'You are already a member of this trip.';
+  String get tripsYouAreAlreadyAMemberOfThisTrip => 'You are already a member of this trip.';
 
   @override
   String get tripsJoinedTripSuccessfully => 'Joined trip successfully.';
 
   @override
-  String get tripsFailedToJoinTripFromInvite =>
-      'Failed to join trip from invite.';
+  String get tripsFailedToJoinTripFromInvite => 'Failed to join trip from invite.';
 
   @override
   String get tripsJoinTrip => 'Join trip';
 
   @override
-  String get tripsPasteInviteLinkOrInviteToken =>
-      'Paste invite link or invite token.';
+  String get tripsPasteInviteLinkOrInviteToken => 'Paste invite link or invite token.';
 
   @override
-  String get tripsHttpsInviteNorthSeaAbc123def4 =>
-      'https://.../?invite=north-sea-abc123def4';
+  String get tripsHttpsInviteNorthSeaAbc123def4 => 'https://.../?invite=north-sea-abc123def4';
 
   @override
-  String get tripsEnterAValidInviteLinkOrToken =>
-      'Enter a valid invite link or token.';
+  String get tripsEnterAValidInviteLinkOrToken => 'Enter a valid invite link or token.';
 
   @override
   String get tripsClipboardIsEmpty => 'Clipboard is empty.';
@@ -2488,8 +2336,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceFailedToLoadFriends => 'Failed to load friends.';
 
   @override
-  String get workspaceFailedToGenerateInviteLink =>
-      'Failed to generate invite link.';
+  String get workspaceFailedToGenerateInviteLink => 'Failed to generate invite link.';
 
   @override
   String get workspaceInviteLink => 'Invite link';
@@ -2512,8 +2359,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get workspaceNoFriendsAvailableAddFriendsFirst =>
-      'No friends available. Add friends first.';
+  String get workspaceNoFriendsAvailableAddFriendsFirst => 'No friends available. Add friends first.';
 
   @override
   String get workspaceSettle => 'Settle';
@@ -2525,8 +2371,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceGetsBackFromGroup => 'Gets back from group';
 
   @override
-  String get workspaceShowingTop4ByBalanceDifference =>
-      'Showing top 4 by balance difference.';
+  String get workspaceShowingTop4ByBalanceDifference => 'Showing top 4 by balance difference.';
 
   @override
   String get workspaceOpenFlow => 'Open flow';
@@ -2550,10 +2395,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceActionNeeded => 'Action needed';
 
   @override
-  String workspacePaymentSToMarkAsSentToConfirmAsReceived(
-    Object arg1,
-    Object arg2,
-  ) {
+  String workspacePaymentSToMarkAsSentToConfirmAsReceived(Object arg1, Object arg2) {
     return '$arg1 payment(s) to mark as sent, $arg2 to confirm as received.';
   }
 
@@ -2561,23 +2403,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceReadyToSettle => 'Ready to settle';
 
   @override
-  String get workspaceAllMembersAreReadyYouCanStartSettlements =>
-      'All members are ready. You can start settlements.';
+  String get workspaceAllMembersAreReadyYouCanStartSettlements => 'All members are ready. You can start settlements.';
 
   @override
-  String get workspaceWaitingForEveryoneToMarkReady =>
-      'Waiting for everyone to mark ready.';
+  String get workspaceWaitingForEveryoneToMarkReady => 'Waiting for everyone to mark ready.';
 
   @override
   String get workspaceIMReady => 'I\'m ready';
 
   @override
-  String get workspaceConfirmThatYouAddedAllYourExpenses =>
-      'Confirm that you added all your expenses.';
+  String get workspaceConfirmThatYouAddedAllYourExpenses => 'Confirm that you added all your expenses.';
 
   @override
-  String get workspaceFinishButtonUnlocksOnceEveryoneMarksReady =>
-      'Finish button unlocks once everyone marks ready.';
+  String get workspaceFinishButtonUnlocksOnceEveryoneMarksReady => 'Finish button unlocks once everyone marks ready.';
 
   @override
   String get workspaceGetsBackFromTheGroup => 'Gets back from the group';
@@ -2595,8 +2433,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceTransactionHistory => 'Transaction history';
 
   @override
-  String get workspaceNoTransactionsYetForThisMember =>
-      'No transactions yet for this member.';
+  String get workspaceNoTransactionsYetForThisMember => 'No transactions yet for this member.';
 
   @override
   String workspaceSettlements(Object arg1) {
@@ -2604,27 +2441,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get workspaceAllMembersMustMarkReadyBeforeStartingSettlements =>
-      'All members must mark ready before starting settlements.';
+  String get workspaceAllMembersMustMarkReadyBeforeStartingSettlements => 'All members must mark ready before starting settlements.';
 
   @override
-  String get workspaceYouMarkedYourselfReadyToSettle =>
-      'You marked yourself ready to settle.';
+  String get workspaceYouMarkedYourselfReadyToSettle => 'You marked yourself ready to settle.';
 
   @override
-  String get workspaceReadyToSettleMarkRemoved =>
-      'Ready-to-settle mark removed.';
+  String get workspaceReadyToSettleMarkRemoved => 'Ready-to-settle mark removed.';
 
   @override
   String get workspaceReminderSent => 'Reminder sent.';
 
   @override
-  String get workspaceInviteLinkOrAddFromFriends =>
-      'Invite link or add from friends';
+  String get workspaceInviteLinkOrAddFromFriends => 'Invite link or add from friends';
 
   @override
-  String get workspaceOnlyTripCreatorCanEditThisTrip =>
-      'Only trip creator can edit this trip.';
+  String get workspaceOnlyTripCreatorCanEditThisTrip => 'Only trip creator can edit this trip.';
 
   @override
   String get workspaceTripUpdated => 'Trip updated.';
@@ -2636,8 +2468,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceNoMembersSelectedYet => 'No members selected yet.';
 
   @override
-  String get workspaceNoInternetExpenseSavedWithoutReceiptImage =>
-      'No internet. Expense will be saved without receipt image.';
+  String get workspaceNoInternetExpenseSavedWithoutReceiptImage => 'No internet. Expense will be saved without receipt image.';
 
   @override
   String get workspaceRandomPicker => 'Random picker';
@@ -2655,8 +2486,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceCategoryName => 'Category name';
 
   @override
-  String get workspaceApartmentRentParkingEtc =>
-      'Apartment rent, parking, etc.';
+  String get workspaceApartmentRentParkingEtc => 'Apartment rent, parking, etc.';
 
   @override
   String get workspaceEnterACustomCategory => 'Enter a custom category.';
@@ -2665,20 +2495,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspacePickAnExpenseCategory => 'Pick an expense category.';
 
   @override
-  String get workspaceCategoryMustBeAtLeast2Characters =>
-      'Category must be at least 2 characters.';
+  String get workspaceCategoryMustBeAtLeast2Characters => 'Category must be at least 2 characters.';
 
   @override
-  String get workspaceCategoryMustBeUpTo64Characters =>
-      'Category must be up to 64 characters.';
+  String get workspaceCategoryMustBeUpTo64Characters => 'Category must be up to 64 characters.';
 
   @override
-  String get workspacePercentageSplitMustTotal100 =>
-      'Percentage split must total 100%.';
+  String get workspacePercentageSplitMustTotal100 => 'Percentage split must total 100%.';
 
   @override
-  String get workspaceSharesMustBeGreaterThan0ForAllParticipants =>
-      'Shares must be greater than 0 for all participants.';
+  String get workspaceSharesMustBeGreaterThan0ForAllParticipants => 'Shares must be greater than 0 for all participants.';
 
   @override
   String get workspaceTotalAmount => 'Total amount';
@@ -2724,15 +2550,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceBankDetails => 'Bank details';
 
   @override
-  String get workspaceIbanAndPayoutDetailsWillBeAddedHereInA =>
-      'IBAN and payout details will be added here in a next update.';
+  String get workspaceIbanAndPayoutDetailsWillBeAddedHereInA => 'IBAN and payout details will be added here in a next update.';
 
   @override
   String get workspacePaymentDetails => 'Payment details';
 
   @override
-  String get workspaceThisMemberHasNotAddedPayoutDetailsYet =>
-      'This member has not added payout details yet.';
+  String get workspaceThisMemberHasNotAddedPayoutDetailsYet => 'This member has not added payout details yet.';
 
   @override
   String get workspaceBankTransfer => 'Bank transfer';
@@ -2768,8 +2592,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceNoCommonTripsFoundYet => 'No common trips found yet.';
 
   @override
-  String get workspaceCouldNotLoadAllCommonTripsShowingCurrentOne =>
-      'Could not load all common trips. Showing current one.';
+  String get workspaceCouldNotLoadAllCommonTripsShowingCurrentOne => 'Could not load all common trips. Showing current one.';
 
   @override
   String get workspaceMembers => 'members';
@@ -2790,12 +2613,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceTripFinished => 'Trip finished';
 
   @override
-  String get workspaceSettlementsAreUnlockedForThisTrip =>
-      'Settlements are unlocked for this trip.';
+  String get workspaceSettlementsAreUnlockedForThisTrip => 'Settlements are unlocked for this trip.';
 
   @override
-  String get workspaceFinishTripToStartSettlements =>
-      'Finish trip to start settlements.';
+  String get workspaceFinishTripToStartSettlements => 'Finish trip to start settlements.';
 
   @override
   String workspaceMarkedTransferAsSent(Object arg1) {
@@ -2818,12 +2639,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get workspaceAllTripSettlementsAreFullyCompleted =>
-      'All trip settlements are fully completed.';
+  String get workspaceAllTripSettlementsAreFullyCompleted => 'All trip settlements are fully completed.';
 
   @override
-  String get workspaceFinalStateAfterAllTransfersAreConfirmed =>
-      'Final state after all transfers are confirmed.';
+  String get workspaceFinalStateAfterAllTransfersAreConfirmed => 'Final state after all transfers are confirmed.';
 
   @override
   String get workspaceSettlementFlow => 'Settlement flow';
@@ -2847,8 +2666,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceTransferIsConfirmed => 'Transfer is confirmed.';
 
   @override
-  String get workspaceWaitingForTheOtherMemberToCompleteTheNextStep =>
-      'Waiting for the other member to complete the next step.';
+  String get workspaceWaitingForTheOtherMemberToCompleteTheNextStep => 'Waiting for the other member to complete the next step.';
 
   @override
   String get workspaceSendReminder => 'Send reminder';
@@ -2872,12 +2690,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceNoRecentActivityYet => 'No recent activity yet.';
 
   @override
-  String get workspaceAddAtLeastOneMemberToStartSplittingExpenses =>
-      'Add at least one member to start splitting expenses.';
+  String get workspaceAddAtLeastOneMemberToStartSplittingExpenses => 'Add at least one member to start splitting expenses.';
 
   @override
-  String get workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses =>
-      'Mark yourself ready to settle after adding all your expenses.';
+  String get workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses => 'Mark yourself ready to settle after adding all your expenses.';
 
   @override
   String workspaceWaitingForMemberSToMarkReady(Object arg1) {
@@ -2885,12 +2701,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get workspaceAllMembersAreReadyYouCanFinishTheTripAnd =>
-      'All members are ready. You can finish the trip and start settlements.';
+  String get workspaceAllMembersAreReadyYouCanFinishTheTripAnd => 'All members are ready. You can finish the trip and start settlements.';
 
   @override
-  String get workspaceAllMembersAreReadyWaitingForTheTripOwnerTo =>
-      'All members are ready. Waiting for the trip owner to start settlements.';
+  String get workspaceAllMembersAreReadyWaitingForTheTripOwnerTo => 'All members are ready. Waiting for the trip owner to start settlements.';
 
   @override
   String workspaceSettlementInProgressConfirmed(Object arg1, Object arg2) {
@@ -2898,8 +2712,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get workspaceNoActionsPendingThisTripIsSettled =>
-      'No actions pending. This trip is settled.';
+  String get workspaceNoActionsPendingThisTripIsSettled => 'No actions pending. This trip is settled.';
 
   @override
   String get workspaceNoActionsNeededRightNow => 'No actions needed right now.';
@@ -2915,8 +2728,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get workspaceYouAreCurrentlySettledInThisTrip =>
-      'You are currently settled in this trip.';
+  String get workspaceYouAreCurrentlySettledInThisTrip => 'You are currently settled in this trip.';
 
   @override
   String get workspaceUnknownTime => 'Unknown time';
@@ -2966,12 +2778,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsMoreActions => 'More actions';
 
   @override
-  String get friendsThisFriendHasNotAddedPayoutDetailsYet =>
-      'This friend has not added payout details yet.';
+  String get friendsThisFriendHasNotAddedPayoutDetailsYet => 'This friend has not added payout details yet.';
 
   @override
-  String get friendsCouldNotLoadCommonTripsRightNow =>
-      'Could not load common trips right now.';
+  String get friendsCouldNotLoadCommonTripsRightNow => 'Could not load common trips right now.';
 
   @override
   String get friendsFinished => 'Finished';
@@ -2999,7 +2809,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsMyFriends => 'MY FRIENDS';
 
   @override
+  String get friendsRequests => 'Requests';
+
+  @override
   String get friendsIncoming => 'Incoming';
+
+  @override
+  String get friendsIncomingRequestSubtitle => 'wants to be friends';
+
+  @override
+  String get friendsOutgoingInviteSubtitle => 'Invite sent';
+
+  @override
+  String get friendsNoPendingActivity => 'No friend requests';
 
   @override
   String friendsInviteSentTo(Object arg1) {
@@ -3022,8 +2844,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsNoFriendsYet => 'No friends yet';
 
   @override
-  String get friendsScrollDownToLoadMoreFriends =>
-      'Scroll down to load more friends.';
+  String get friendsScrollDownToLoadMoreFriends => 'Scroll down to load more friends.';
 
   @override
   String get friendsUser => 'User';
@@ -3032,15 +2853,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsSearchUsers => 'Search users';
 
   @override
-  String get friendsFindByNameOrEmailAndSendInvite =>
-      'Find by name or email and send invite';
+  String get friendsFindByNameOrEmailAndSendInvite => 'Find by name or email and send invite';
 
   @override
   String get friendsScanQr => 'Scan QR';
 
   @override
-  String get friendsScanAnotherUserToAddFriend =>
-      'Scan another user to add friend';
+  String get friendsScanAnotherUserToAddFriend => 'Scan another user to add friend';
 
   @override
   String get friendsMyQr => 'My QR';
@@ -3052,39 +2871,52 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsScanFriendQrTitle => 'Scan Friend QR';
 
   @override
-  String get friendsPlaceFriendQrInsideFrame =>
-      'Place friend QR code inside the frame';
+  String get friendsPlaceFriendQrInsideFrame => 'Place friend QR code inside the frame';
+
+  @override
+  String get friendsHoldFriendQrInsideFrame => 'Hold QR inside the frame';
+
+  @override
+  String friendsConfirmAddFriendTitle(Object arg1) {
+    return 'Add $arg1 as friend?';
+  }
+
+  @override
+  String friendsConfirmSendFriendInviteText(Object arg1) {
+    return '$arg1 will receive your friend request.';
+  }
+
+  @override
+  String friendsConfirmAcceptFriendRequestText(Object arg1) {
+    return 'Accept $arg1\'s friend request?';
+  }
 
   @override
   String get friendsMyFriendQrTitle => 'My Friend QR';
 
   @override
-  String get friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode =>
-      'Open Friends > Scan QR on another phone and scan this code.';
+  String get friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode => 'Scan this QR or share the link to add me on Splyto.';
 
   @override
-  String get friendsAddMeOnTripSplitFriends => 'Add me on TripSplit friends.';
+  String get friendsAddMeOnTripSplitFriends => 'Add me on Splyto.';
 
   @override
-  String get friendsTripSplitFriendCode => 'TripSplit friend code';
+  String get friendsTripSplitFriendCode => 'Splyto friend link';
 
   @override
   String get shareAction => 'Share';
 
   @override
-  String get friendsQrCodeIsNotAValidFriendCode =>
-      'QR code is not a valid friend code.';
+  String get friendsQrCodeIsNotAValidFriendCode => 'QR code is not a valid friend code.';
 
   @override
   String get friendsYouCannotAddYourself => 'You cannot add yourself.';
 
   @override
-  String get friendsThisUserIsAlreadyInYourFriendsList =>
-      'This user is already in your friends list.';
+  String get friendsThisUserIsAlreadyInYourFriendsList => 'This user is already in your friends list.';
 
   @override
-  String get friendsInviteToThisUserIsAlreadySent =>
-      'Invite to this user is already sent.';
+  String get friendsInviteToThisUserIsAlreadySent => 'Invite to this user is already sent.';
 
   @override
   String get friendsFriendRequestProcessed => 'Friend request processed.';
@@ -3093,15 +2925,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsFailedToProcessFriendQr => 'Failed to process friend QR.';
 
   @override
-  String get friendsCouldNotLoadYourUserProfile =>
-      'Could not load your user profile.';
+  String get friendsCouldNotLoadYourUserProfile => 'Could not load your user profile.';
 
   @override
   String get friendsMyProfile => 'My profile';
 
   @override
-  String get friendsUnexpectedErrorLoadingFriends =>
-      'Unexpected error loading friends.';
+  String get friendsUnexpectedErrorLoadingFriends => 'Unexpected error loading friends.';
 
   @override
   String get friendsFriendAdded => 'Friend added.';
@@ -3194,8 +3024,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get friendsSearchByNameOrEmail => 'Search by name or email';
 
   @override
-  String get friendsTypeAtLeast2CharactersToSearch =>
-      'Type at least 2 characters to search.';
+  String get friendsTypeAtLeast2CharactersToSearch => 'Type at least 2 characters to search.';
 
   @override
   String get friendsNoUsersFound => 'No users found';

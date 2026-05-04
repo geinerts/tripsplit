@@ -1,5 +1,7 @@
 part of 'friends_page.dart';
 
+enum _FriendRequestFeedType { incoming, outgoing }
+
 extension _FriendsPageWidgets on _FriendsPageState {
   Widget _buildFriendsScaffold(BuildContext context) {
     final responsive = context.responsive;
@@ -51,15 +53,12 @@ extension _FriendsPageWidgets on _FriendsPageState {
                     _buildInlineSearchResults(snapshot),
                     const SizedBox(height: 22),
                     _buildSectionHeadingRow(
-                      title: context.l10n.statusPending.toUpperCase(),
-                      trailing: _countBadge(_sectionCountIncoming(snapshot)),
+                      title: context.l10n.friendsRequests.toUpperCase(),
+                      trailing: _countBadge(_sectionCountRequests(snapshot)),
                     ),
                     const SizedBox(height: 10),
-                    _buildPendingRequestsList(
-                      snapshot,
-                      requests: snapshot.pendingReceived,
-                    ),
-                    const SizedBox(height: 18),
+                    _buildFriendRequestsFeed(snapshot),
+                    const SizedBox(height: 24),
                     _buildSectionHeadingRow(
                       title: context.l10n.navFriends.toUpperCase(),
                       trailing: _countBadge(_sectionCountFriends(snapshot)),
@@ -274,153 +273,205 @@ extension _FriendsPageWidgets on _FriendsPageState {
     );
   }
 
-  Widget _buildPendingRequestsList(
-    FriendsSnapshot snapshot, {
-    required List<FriendRequest> requests,
-  }) {
-    if (snapshot.pendingReceived.isEmpty) {
-      return _buildEmptyPanel(
-        icon: Icons.mark_email_unread_outlined,
-        message: context.l10n.friendsNoIncomingRequests,
-      );
-    }
-    if (requests.isEmpty) {
-      return _buildEmptyPanel(
-        icon: Icons.search_off_rounded,
-        message: context.l10n.friendsNoUsersFound,
+  Widget _buildFriendRequestsFeed(FriendsSnapshot snapshot) {
+    final rows = <({FriendRequest request, _FriendRequestFeedType type})>[
+      for (final request in snapshot.pendingReceived)
+        (request: request, type: _FriendRequestFeedType.incoming),
+      for (final request in snapshot.pendingSent)
+        (request: request, type: _FriendRequestFeedType.outgoing),
+    ];
+
+    if (rows.isEmpty) {
+      return _buildEmptyFeedRow(
+        icon: Icons.person_add_alt_1_rounded,
+        message: context.l10n.friendsNoPendingActivity,
       );
     }
 
     return Column(
       children: [
-        for (var i = 0; i < requests.length; i++) ...[
-          _buildPendingRequestCard(requests[i]),
-          if (i < requests.length - 1) const SizedBox(height: 10),
+        for (var i = 0; i < rows.length; i++) ...[
+          _buildFriendRequestFeedRow(rows[i].request, type: rows[i].type),
+          if (i < rows.length - 1) const SizedBox(height: 16),
         ],
-        if (_pendingReceivedHasMore) ...[
-          const SizedBox(height: 10),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: _isLoadingMorePendingReceived
-                  ? null
-                  : () => unawaited(_loadMorePendingReceived()),
-              icon: _isLoadingMorePendingReceived
-                  ? const SizedBox(
-                      width: 14,
-                      height: 14,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.expand_more_rounded),
-              label: Text(context.l10n.tripsLoadMore),
-            ),
+        if (_pendingReceivedHasMore || _pendingSentHasMore) ...[
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              if (_pendingReceivedHasMore)
+                _buildLoadMoreTextButton(
+                  loading: _isLoadingMorePendingReceived,
+                  onPressed: () => unawaited(_loadMorePendingReceived()),
+                ),
+              if (_pendingReceivedHasMore && _pendingSentHasMore)
+                const SizedBox(width: 8),
+              if (_pendingSentHasMore)
+                _buildLoadMoreTextButton(
+                  loading: _isLoadingMorePendingSent,
+                  onPressed: () => unawaited(_loadMorePendingSent()),
+                ),
+            ],
           ),
         ],
       ],
     );
   }
 
-  Widget _buildPendingRequestCard(FriendRequest request) {
+  Widget _buildFriendRequestFeedRow(
+    FriendRequest request, {
+    required _FriendRequestFeedType type,
+  }) {
     final busy = _respondLoading.contains(request.requestId);
-    final primary = Theme.of(context).colorScheme.primary;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-      decoration: BoxDecoration(
-        color: primary.withValues(
-          alpha: AppDesign.isDark(context) ? 0.08 : 0.06,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: primary.withValues(alpha: 0.45), width: 1.2),
-      ),
+    final isIncoming = type == _FriendRequestFeedType.incoming;
+    final subtitle = isIncoming
+        ? context.l10n.friendsIncomingRequestSubtitle
+        : context.l10n.friendsOutgoingInviteSubtitle;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _userAvatar(request.user, size: 58),
-          const SizedBox(width: 14),
+          _userAvatar(request.user, size: 48),
+          const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _friendPrimaryName(request.user),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppDesign.titleColor(context),
-                    fontWeight: FontWeight.w800,
-                    height: 1.05,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  context.l10n.friendsIncoming,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppDesign.mutedColor(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
+            child: _buildFeedTextBlock(
+              title: _friendPrimaryName(request.user),
+              subtitle: subtitle,
             ),
           ),
-          const SizedBox(width: 10),
-          _buildRequestActionButton(
-            icon: Icons.check_rounded,
-            busy: busy,
-            foreground: AppDesign.darkForeground,
-            background: primary,
-            borderColor: primary,
-            onPressed: () => _respondInvite(request, true),
-          ),
           const SizedBox(width: 8),
-          _buildRequestActionButton(
-            icon: Icons.close_rounded,
-            busy: false,
-            foreground: AppDesign.mutedColor(context),
-            background: Colors.transparent,
-            borderColor: AppDesign.cardStroke(context),
-            onPressed: busy ? null : () => _respondInvite(request, false),
-          ),
+          if (isIncoming)
+            _buildIncomingRequestActions(request, busy: busy)
+          else
+            _buildFeedButton(
+              label: context.l10n.cancelAction,
+              busy: busy,
+              onPressed: () => unawaited(_cancelInvite(request)),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildRequestActionButton({
-    required IconData icon,
+  Widget _buildIncomingRequestActions(
+    FriendRequest request, {
     required bool busy,
-    required Color foreground,
-    required Color background,
-    required Color borderColor,
-    required VoidCallback? onPressed,
   }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: busy ? null : onPressed,
-        child: Ink(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: borderColor),
-          ),
-          child: Center(
-            child: busy
-                ? SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(foreground),
-                    ),
-                  )
-                : Icon(icon, color: foreground, size: 24),
+    return Wrap(
+      spacing: 6,
+      children: [
+        _buildFeedButton(
+          label: context.l10n.friendsAccept,
+          primary: true,
+          busy: busy,
+          onPressed: () => unawaited(_respondInvite(request, true)),
+        ),
+        _buildFeedButton(
+          label: context.l10n.deleteAction,
+          busy: false,
+          onPressed: busy
+              ? null
+              : () => unawaited(_respondInvite(request, false)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFeedTextBlock({
+    required String title,
+    required String subtitle,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          softWrap: true,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: AppDesign.titleColor(context),
+            fontWeight: FontWeight.w800,
+            height: 1.06,
           ),
         ),
+        const SizedBox(height: 4),
+        Text(
+          subtitle,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppDesign.mutedColor(context),
+            fontWeight: FontWeight.w500,
+            height: 1.16,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFeedButton({
+    required String label,
+    required bool busy,
+    required VoidCallback? onPressed,
+    bool primary = false,
+  }) {
+    final colors = Theme.of(context).colorScheme;
+    final background = primary
+        ? colors.primary
+        : colors.onSurface.withValues(
+            alpha: AppDesign.isDark(context) ? 0.10 : 0.08,
+          );
+    final foreground = primary
+        ? AppDesign.darkForeground
+        : AppDesign.titleColor(context);
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 64, minHeight: 30),
+      child: TextButton(
+        onPressed: busy ? null : onPressed,
+        style: TextButton.styleFrom(
+          backgroundColor: background,
+          foregroundColor: foreground,
+          disabledForegroundColor: foreground.withValues(alpha: 0.55),
+          minimumSize: Size.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+          textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+            fontSize: 13.5,
+            fontWeight: FontWeight.w800,
+            height: 1,
+          ),
+        ),
+        child: busy
+            ? SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(foreground),
+                ),
+              )
+            : Text(label),
       ),
+    );
+  }
+
+  Widget _buildLoadMoreTextButton({
+    required bool loading,
+    required VoidCallback onPressed,
+  }) {
+    return TextButton.icon(
+      onPressed: loading ? null : onPressed,
+      icon: loading
+          ? const SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const Icon(Icons.expand_more_rounded),
+      label: Text(context.l10n.tripsLoadMore),
     );
   }
 
@@ -444,8 +495,8 @@ extension _FriendsPageWidgets on _FriendsPageState {
     return Column(
       children: [
         for (var i = 0; i < friends.length; i++) ...[
-          _buildFriendListCard(friends[i]),
-          if (i < friends.length - 1) const SizedBox(height: 10),
+          _buildFriendListRow(friends[i]),
+          if (i < friends.length - 1) const SizedBox(height: 14),
         ],
         if (_isLoadingMoreFriends)
           const Padding(
@@ -475,61 +526,57 @@ extension _FriendsPageWidgets on _FriendsPageState {
     );
   }
 
-  Widget _buildFriendListCard(FriendUser friend) {
-    return AppSurfaceCard(
-      radius: 22,
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-      onTap: () => unawaited(_openFriendProfile(friend)),
-      borderColor: AppDesign.cardStroke(context).withValues(alpha: 0.45),
-      child: Row(
-        children: [
-          _userAvatar(friend, size: 58),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _friendPrimaryName(friend),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppDesign.titleColor(context),
-                    fontWeight: FontWeight.w800,
-                    height: 1.05,
-                  ),
+  Widget _buildFriendListRow(FriendUser friend) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: () => unawaited(_openFriendProfile(friend)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          child: Row(
+            children: [
+              _userAvatar(friend, size: 50),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildFeedTextBlock(
+                  title: _friendPrimaryName(friend),
+                  subtitle: _friendTripsLabel(friend),
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  _friendTripsLabel(friend),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppDesign.mutedColor(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: AppDesign.mutedColor(context).withValues(alpha: 0.72),
+              ),
+            ],
           ),
-          const SizedBox(width: 10),
-          Icon(
-            Icons.chevron_right_rounded,
-            color: AppDesign.mutedColor(context).withValues(alpha: 0.72),
-          ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildEmptyPanel({required IconData icon, required String message}) {
-    return AppSurfaceCard(
-      radius: 22,
-      padding: const EdgeInsets.fromLTRB(16, 18, 16, 18),
+    return _buildEmptyFeedRow(icon: icon, message: message);
+  }
+
+  Widget _buildEmptyFeedRow({required IconData icon, required String message}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
       child: Row(
         children: [
-          Icon(icon, color: AppDesign.mutedColor(context), size: 22),
-          const SizedBox(width: 10),
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppDesign.cardSurface(context).withValues(alpha: 0.72),
+              ),
+              child: Icon(icon, color: AppDesign.mutedColor(context), size: 22),
+            ),
+          ),
+          const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
@@ -662,10 +709,14 @@ extension _FriendsPageWidgets on _FriendsPageState {
     });
   }
 
-  int _sectionCountIncoming(FriendsSnapshot snapshot) {
-    return _pendingReceivedTotalCount > 0
+  int _sectionCountRequests(FriendsSnapshot snapshot) {
+    final received = _pendingReceivedTotalCount > 0
         ? _pendingReceivedTotalCount
         : snapshot.pendingReceived.length;
+    final sent = _pendingSentTotalCount > 0
+        ? _pendingSentTotalCount
+        : snapshot.pendingSent.length;
+    return received + sent;
   }
 
   int _sectionCountFriends(FriendsSnapshot snapshot) {
