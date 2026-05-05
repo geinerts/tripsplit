@@ -94,41 +94,44 @@
   <main class="card">
     <h1>Opening Splyto...</h1>
     <p>Accept or send a friend request in the app.</p>
-    <div class="code" id="friendCode">Friend link missing</div>
+    <div class="code" id="friendCode">Friend link ready</div>
     <button id="openAppBtn" type="button" class="primary">Open in app</button>
     <div class="hint">Friend links work when you are logged in.</div>
   </main>
   <script>
     (function () {
       var params = new URLSearchParams(window.location.search);
-      var uid = (params.get('uid') || params.get('user_id') || params.get('friend') || '').trim();
+      var code = (params.get('code') || params.get('friend_code') || '').trim();
+      var legacyUid = (params.get('uid') || params.get('user_id') || params.get('friend') || '').trim();
       var codeEl = document.getElementById('friendCode');
       var openBtn = document.getElementById('openAppBtn');
       var ua = navigator.userAgent.toLowerCase();
       var isAndroid = ua.indexOf('android') >= 0;
+      var appQuery = code
+        ? ('code=' + encodeURIComponent(code))
+        : (legacyUid ? ('uid=' + encodeURIComponent(legacyUid)) : '');
 
-      codeEl.textContent = uid ? ('Friend ID: ' + uid) : 'Friend id missing in URL';
+      codeEl.textContent = appQuery ? 'Private friend link ready' : 'Friend link missing';
 
       function openApp() {
-        if (!uid) return;
-        var encoded = encodeURIComponent(uid);
+        if (!appQuery) return;
         if (isAndroid) {
           window.location.href =
-            'intent://friend?uid=' + encoded +
+            'intent://friend?' + appQuery +
             '#Intent;scheme=splyto;package=com.tripsplit.app.tripsplit;end';
           window.setTimeout(function () {
-            window.location.href = 'splyto://friend?uid=' + encoded;
+            window.location.href = 'splyto://friend?' + appQuery;
           }, 650);
           return;
         }
-        window.location.href = 'splyto://friend?uid=' + encoded;
+        window.location.href = 'splyto://friend?' + appQuery;
         window.setTimeout(function () {
-          window.location.href = 'tripsplit://friend?uid=' + encoded;
+          window.location.href = 'tripsplit://friend?' + appQuery;
         }, 650);
       }
 
       openBtn.addEventListener('click', openApp);
-      if (uid) {
+      if (appQuery) {
         window.setTimeout(openApp, 220);
       }
     })();

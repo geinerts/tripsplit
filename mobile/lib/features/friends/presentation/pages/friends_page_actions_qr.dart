@@ -165,7 +165,7 @@ extension _FriendsPageActionsQr on _FriendsPageState {
               ? context.l10n.friendsMyProfile
               : currentUser.nickname.trim()
         : currentUser.displayName.trim();
-    final payload = _buildFriendQrPayload(currentUser.id, displayName: name);
+    final payload = _buildFriendQrPayload(currentUser.id);
 
     await Navigator.of(context).push<void>(
       AppPageRoute<void>(
@@ -245,11 +245,9 @@ extension _FriendsPageActionsQr on _FriendsPageState {
     return nickname.trim();
   }
 
-  String _buildFriendQrPayload(int userId, {required String displayName}) {
-    final name = displayName.trim();
+  String _buildFriendQrPayload(int userId) {
     return Uri.https('splyto.eu', '/friend', <String, String>{
-      'uid': '$userId',
-      if (name.isNotEmpty) 'name': name,
+      'code': FriendLinkCodec.encode(userId),
     }).toString();
   }
 
@@ -297,6 +295,13 @@ extension _FriendsPageActionsQr on _FriendsPageState {
         final decoded = jsonDecode(raw);
         if (decoded is Map<String, dynamic>) {
           final candidate = decoded['uid'] ?? decoded['user_id'];
+          final code = (decoded['code'] ?? decoded['friend_code'])
+              ?.toString()
+              .trim();
+          final codeUserId = FriendLinkCodec.decode(code ?? '');
+          if (codeUserId != null) {
+            return FriendDeepLinkTarget(userId: codeUserId);
+          }
           final name = (decoded['name'] ?? decoded['display_name'])
               ?.toString()
               .trim();

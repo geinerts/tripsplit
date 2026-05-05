@@ -89,6 +89,10 @@ class InviteDeepLinkParser {
           ? null
           : FriendDeepLinkTarget(userId: userId);
     }
+    final fromOpaqueCode = FriendLinkCodec.decode(raw);
+    if (fromOpaqueCode != null) {
+      return FriendDeepLinkTarget(userId: fromOpaqueCode);
+    }
 
     final uri = Uri.tryParse(raw);
     if (uri != null) {
@@ -148,6 +152,7 @@ class InviteDeepLinkParser {
         break;
       }
     }
+    userId ??= _extractFriendUserIdFromOpaqueCode(uri);
 
     if (userId == null) {
       final numericSegment = isCustomFriendHost
@@ -166,6 +171,35 @@ class InviteDeepLinkParser {
       userId: userId,
       displayName: _extractFriendDisplayName(uri),
     );
+  }
+
+  static int? _extractFriendUserIdFromOpaqueCode(Uri uri) {
+    for (final key in const <String>['code', 'friend_code']) {
+      final candidate = (uri.queryParameters[key] ?? '').trim();
+      final userId = FriendLinkCodec.decode(candidate);
+      if (userId != null) {
+        return userId;
+      }
+    }
+
+    final pathSegments = uri.pathSegments
+        .map((segment) => segment.trim())
+        .where((segment) => segment.isNotEmpty)
+        .toList(growable: false);
+    for (final segment in pathSegments) {
+      final normalized = segment.toLowerCase();
+      if (normalized == 'friend' ||
+          normalized == 'friends' ||
+          normalized == 'add-friend') {
+        continue;
+      }
+      final userId = FriendLinkCodec.decode(segment);
+      if (userId != null) {
+        return userId;
+      }
+    }
+
+    return null;
   }
 
   static String? _extractInviteCode(String value) {
@@ -203,6 +237,80 @@ class InviteDeepLinkParser {
       }
     }
     return null;
+  }
+}
+
+class FriendLinkCodec {
+  const FriendLinkCodec._();
+
+  static const String _alphabet = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+  static const int _mask31 = 0x7fffffff;
+  static const int _salt = 0x5a17c9e3;
+  static const int _offset = 0x13579bdf;
+
+  static String encode(int userId) {
+    if (userId <= 0) {
+      return '';
+    }
+    final mixed = (((userId ^ _salt) + _offset) & _mask31);
+    final body = _encodeBase32(mixed).padLeft(7, _alphabet[0]);
+    final checksum = _encodeBase32(_checksum(mixed)).padLeft(2, _alphabet[0]);
+    return '$body$checksum';
+  }
+
+  static int? decode(String rawCode) {
+    final code = rawCode.trim().toUpperCase().replaceAll(
+      RegExp(r'[^A-Z0-9]'),
+      '',
+    );
+    if (code.length != 9) {
+      return null;
+    }
+
+    final body = code.substring(0, 7);
+    final checksum = code.substring(7);
+    final mixed = _decodeBase32(body);
+    if (mixed < 0) {
+      return null;
+    }
+    final expectedChecksum = _encodeBase32(
+      _checksum(mixed),
+    ).padLeft(2, _alphabet[0]);
+    if (checksum != expectedChecksum) {
+      return null;
+    }
+
+    final userId = (((mixed - _offset) & _mask31) ^ _salt);
+    return userId > 0 ? userId : null;
+  }
+
+  static String _encodeBase32(int value) {
+    if (value <= 0) {
+      return _alphabet[0];
+    }
+    var next = value;
+    final chars = <String>[];
+    while (next > 0) {
+      chars.add(_alphabet[next & 31]);
+      next = next >> 5;
+    }
+    return chars.reversed.join();
+  }
+
+  static int _decodeBase32(String value) {
+    var result = 0;
+    for (final unit in value.codeUnits) {
+      final index = _alphabet.indexOf(String.fromCharCode(unit));
+      if (index < 0) {
+        return -1;
+      }
+      result = (result << 5) | index;
+    }
+    return result;
+  }
+
+  static int _checksum(int mixed) {
+    return (mixed ^ (mixed >> 7) ^ (mixed >> 17) ^ 0x2d4b) & 0x3ff;
   }
 }
 
