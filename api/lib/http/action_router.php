@@ -33,6 +33,8 @@ function api_action_handlers(): array
         'all_users' => 'all_users_action',
         'search_users' => 'search_users_action',
         'friends_list' => 'friends_list_action',
+        'get_friend_link' => 'get_friend_link_action',
+        'resolve_friend_link' => 'resolve_friend_link_action',
         'send_friend_invite' => 'send_friend_invite_action',
         'respond_friend_invite' => 'respond_friend_invite_action',
         'cancel_friend_invite' => 'cancel_friend_invite_action',

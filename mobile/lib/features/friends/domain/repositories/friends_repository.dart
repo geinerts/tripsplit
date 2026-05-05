@@ -1,4 +1,5 @@
 import '../entities/friends_section_page.dart';
+import '../entities/friend_link.dart';
 import '../entities/friends_snapshot.dart';
 
 abstract class FriendsRepository {
@@ -11,6 +12,10 @@ abstract class FriendsRepository {
   });
 
   Future<void> sendInvite({required int userId});
+
+  Future<FriendLink> getFriendLink();
+
+  Future<ResolvedFriendLink> resolveFriendLink({required String token});
 
   Future<void> respondInvite({required int requestId, required bool accept});
 

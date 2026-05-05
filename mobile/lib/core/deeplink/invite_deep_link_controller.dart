@@ -121,6 +121,73 @@ class InviteDeepLinkParser {
     return extractFriendTargetFromUri(uri)?.userId;
   }
 
+  static String? extractFriendLinkTokenFromRaw(String rawInput) {
+    final raw = rawInput.trim();
+    if (raw.isEmpty) {
+      return null;
+    }
+
+    final uri = Uri.tryParse(raw);
+    if (uri != null) {
+      final fromUri = extractFriendLinkTokenFromUri(uri);
+      if (fromUri != null) {
+        return fromUri;
+      }
+    }
+
+    return _normalizeFriendLinkToken(raw);
+  }
+
+  static String? extractFriendLinkTokenFromUri(Uri uri) {
+    final scheme = uri.scheme.trim().toLowerCase();
+    final host = uri.host.trim().toLowerCase();
+    final rawPathSegments = uri.pathSegments
+        .map((segment) => segment.trim())
+        .where((segment) => segment.isNotEmpty)
+        .toList(growable: false);
+    final pathSegments = rawPathSegments
+        .map((segment) => segment.toLowerCase())
+        .toList(growable: false);
+    final isCustomFriendHost =
+        (scheme == 'splyto' || scheme == 'tripsplit') &&
+        (host == 'friend' || host == 'friends' || host == 'add-friend');
+    final isFriendPath =
+        pathSegments.isNotEmpty &&
+        (pathSegments.first == 'friend' ||
+            pathSegments.first == 'friends' ||
+            pathSegments.first == 'add-friend');
+    final hasTokenQuery =
+        uri.queryParameters.containsKey('code') ||
+        uri.queryParameters.containsKey('friend_token') ||
+        uri.queryParameters.containsKey('friend_code');
+
+    if (!isCustomFriendHost && !isFriendPath && !hasTokenQuery) {
+      return null;
+    }
+
+    for (final key in const <String>['code', 'friend_token', 'friend_code']) {
+      final token = _normalizeFriendLinkToken(uri.queryParameters[key] ?? '');
+      if (token != null) {
+        return token;
+      }
+    }
+
+    for (final segment in rawPathSegments) {
+      final normalized = segment.toLowerCase();
+      if (normalized == 'friend' ||
+          normalized == 'friends' ||
+          normalized == 'add-friend') {
+        continue;
+      }
+      final token = _normalizeFriendLinkToken(segment);
+      if (token != null) {
+        return token;
+      }
+    }
+
+    return null;
+  }
+
   static FriendDeepLinkTarget? extractFriendTargetFromUri(Uri uri) {
     final scheme = uri.scheme.trim().toLowerCase();
     final host = uri.host.trim().toLowerCase();
@@ -238,6 +305,14 @@ class InviteDeepLinkParser {
     }
     return null;
   }
+
+  static String? _normalizeFriendLinkToken(String raw) {
+    final token = raw.trim().toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), '');
+    if (RegExp(r'^[A-Z0-9]{16,64}$').hasMatch(token)) {
+      return token;
+    }
+    return null;
+  }
 }
 
 class FriendLinkCodec {
@@ -330,14 +405,18 @@ class InviteDeepLinkController {
       StreamController<String>.broadcast();
   final StreamController<FriendDeepLinkTarget> _friendTargetController =
       StreamController<FriendDeepLinkTarget>.broadcast();
+  final StreamController<String> _friendLinkTokenController =
+      StreamController<String>.broadcast();
   StreamSubscription<Uri>? _uriSubscription;
   bool _started = false;
   String? _pendingInviteCode;
   FriendDeepLinkTarget? _pendingFriendTarget;
+  String? _pendingFriendLinkToken;
 
   Stream<String> get inviteCodeStream => _inviteCodeController.stream;
   Stream<FriendDeepLinkTarget> get friendTargetStream =>
       _friendTargetController.stream;
+  Stream<String> get friendLinkTokenStream => _friendLinkTokenController.stream;
   Stream<int> get friendUserIdStream =>
       _friendTargetController.stream.map((target) => target.userId);
 
@@ -354,6 +433,12 @@ class InviteDeepLinkController {
   FriendDeepLinkTarget? consumePendingFriendTarget() {
     final value = _pendingFriendTarget;
     _pendingFriendTarget = null;
+    return value;
+  }
+
+  String? consumePendingFriendLinkToken() {
+    final value = _pendingFriendLinkToken;
+    _pendingFriendLinkToken = null;
     return value;
   }
 
@@ -388,6 +473,13 @@ class InviteDeepLinkController {
     if (friendTarget != null && friendTarget.userId > 0) {
       _pendingFriendTarget = friendTarget;
       _friendTargetController.add(friendTarget);
+      return;
+    }
+
+    final friendToken = InviteDeepLinkParser.extractFriendLinkTokenFromUri(uri);
+    if (friendToken != null && friendToken.isNotEmpty) {
+      _pendingFriendLinkToken = friendToken;
+      _friendLinkTokenController.add(friendToken);
     }
   }
 
@@ -395,5 +487,6 @@ class InviteDeepLinkController {
     await _uriSubscription?.cancel();
     await _inviteCodeController.close();
     await _friendTargetController.close();
+    await _friendLinkTokenController.close();
   }
 }

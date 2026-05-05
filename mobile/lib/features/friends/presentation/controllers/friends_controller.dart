@@ -1,11 +1,14 @@
 import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../domain/entities/friends_section_page.dart';
+import '../../domain/entities/friend_link.dart';
 import '../../domain/entities/friend_user.dart';
 import '../../domain/entities/friends_snapshot.dart';
 import '../../domain/usecases/cancel_friend_invite_use_case.dart';
+import '../../domain/usecases/get_friend_link_use_case.dart';
 import '../../domain/usecases/load_friends_section_page_use_case.dart';
 import '../../domain/usecases/load_friends_snapshot_use_case.dart';
 import '../../domain/usecases/remove_friend_use_case.dart';
+import '../../domain/usecases/resolve_friend_link_use_case.dart';
 import '../../domain/usecases/respond_friend_invite_use_case.dart';
 import '../../domain/usecases/send_friend_invite_use_case.dart';
 
@@ -14,6 +17,8 @@ class FriendsController {
     this._loadSnapshotUseCase,
     this._loadSectionPageUseCase,
     this._sendInviteUseCase,
+    this._getFriendLinkUseCase,
+    this._resolveFriendLinkUseCase,
     this._respondInviteUseCase,
     this._cancelInviteUseCase,
     this._removeFriendUseCase,
@@ -23,6 +28,8 @@ class FriendsController {
   final LoadFriendsSnapshotUseCase _loadSnapshotUseCase;
   final LoadFriendsSectionPageUseCase _loadSectionPageUseCase;
   final SendFriendInviteUseCase _sendInviteUseCase;
+  final GetFriendLinkUseCase _getFriendLinkUseCase;
+  final ResolveFriendLinkUseCase _resolveFriendLinkUseCase;
   final RespondFriendInviteUseCase _respondInviteUseCase;
   final CancelFriendInviteUseCase _cancelInviteUseCase;
   final RemoveFriendUseCase _removeFriendUseCase;
@@ -74,6 +81,14 @@ class FriendsController {
 
   Future<void> sendInvite({required int userId}) {
     return _sendInviteUseCase.call(userId: userId);
+  }
+
+  Future<FriendLink> getFriendLink() {
+    return _getFriendLinkUseCase.call();
+  }
+
+  Future<ResolvedFriendLink> resolveFriendLink({required String token}) {
+    return _resolveFriendLinkUseCase.call(token: token);
   }
 
   Future<void> respondInvite({required int requestId, required bool accept}) {

@@ -1,6 +1,7 @@
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/http_method.dart';
+import '../models/friend_link_model.dart';
 import '../models/friends_section_page_model.dart';
 import '../models/friends_snapshot_model.dart';
 
@@ -14,6 +15,10 @@ abstract class FriendsRemoteDataSource {
   });
 
   Future<void> sendInvite({required int userId});
+
+  Future<FriendLinkModel> getFriendLink();
+
+  Future<ResolvedFriendLinkModel> resolveFriendLink({required String token});
 
   Future<void> respondInvite({required int requestId, required bool accept});
 
@@ -56,7 +61,8 @@ class FriendsRemoteDataSourceImpl implements FriendsRemoteDataSource {
     }
 
     final response = await _apiClient.request(
-      path: '${ApiEndpoints.legacyAction('friends_list')}&${queryParts.join('&')}',
+      path:
+          '${ApiEndpoints.legacyAction('friends_list')}&${queryParts.join('&')}',
       method: HttpMethod.get,
     );
     return FriendsSectionPageModel.fromLegacyMap(
@@ -75,6 +81,28 @@ class FriendsRemoteDataSourceImpl implements FriendsRemoteDataSource {
   }
 
   @override
+  Future<FriendLinkModel> getFriendLink() async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('get_friend_link'),
+      method: HttpMethod.post,
+      body: const <String, dynamic>{},
+    );
+    return FriendLinkModel.fromLegacyMap(response);
+  }
+
+  @override
+  Future<ResolvedFriendLinkModel> resolveFriendLink({
+    required String token,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('resolve_friend_link'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'friend_token': token},
+    );
+    return ResolvedFriendLinkModel.fromLegacyMap(response);
+  }
+
+  @override
   Future<void> respondInvite({
     required int requestId,
     required bool accept,
@@ -82,10 +110,7 @@ class FriendsRemoteDataSourceImpl implements FriendsRemoteDataSource {
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('respond_friend_invite'),
       method: HttpMethod.post,
-      body: <String, dynamic>{
-        'request_id': requestId,
-        'accept': accept,
-      },
+      body: <String, dynamic>{'request_id': requestId, 'accept': accept},
     );
   }
 

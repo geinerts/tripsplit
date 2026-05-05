@@ -102,6 +102,7 @@ class _MainShellPageState extends State<MainShellPage>
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   StreamSubscription<String>? _inviteCodeSubscription;
   StreamSubscription<FriendDeepLinkTarget>? _friendTargetSubscription;
+  StreamSubscription<String>? _friendLinkTokenSubscription;
   bool _isFlushingWorkspaceQueue = false;
   bool _isProcessingInviteDeepLink = false;
   String? _queuedInviteDeepLinkCode;
@@ -109,7 +110,9 @@ class _MainShellPageState extends State<MainShellPage>
   DateTime? _lastProcessedInviteDeepLinkAt;
   bool _isProcessingFriendDeepLink = false;
   FriendDeepLinkTarget? _queuedFriendDeepLinkTarget;
+  String? _queuedFriendDeepLinkToken;
   int? _lastProcessedFriendDeepLinkUserId;
+  String? _lastProcessedFriendDeepLinkToken;
   DateTime? _lastProcessedFriendDeepLinkAt;
 
   @override
@@ -164,6 +167,7 @@ class _MainShellPageState extends State<MainShellPage>
     _connectivitySubscription?.cancel();
     _inviteCodeSubscription?.cancel();
     _friendTargetSubscription?.cancel();
+    _friendLinkTokenSubscription?.cancel();
     unawaited(
       AppMonitoring.updateRuntimeContext(
         userId: widget.authController.currentUser?.id,
@@ -222,6 +226,11 @@ class _MainShellPageState extends State<MainShellPage>
     if (pendingFriendTarget != null && pendingFriendTarget.userId > 0) {
       unawaited(_handleFriendDeepLinkTarget(pendingFriendTarget));
     }
+    final pendingFriendToken = widget.inviteDeepLinkController
+        .consumePendingFriendLinkToken();
+    if (pendingFriendToken != null && pendingFriendToken.trim().isNotEmpty) {
+      unawaited(_handleFriendDeepLinkToken(pendingFriendToken));
+    }
     _inviteCodeSubscription = widget.inviteDeepLinkController.inviteCodeStream
         .listen((inviteCode) {
           unawaited(_handleInviteDeepLinkCode(inviteCode));
@@ -232,6 +241,61 @@ class _MainShellPageState extends State<MainShellPage>
         .listen((target) {
           unawaited(_handleFriendDeepLinkTarget(target));
         });
+    _friendLinkTokenSubscription = widget
+        .inviteDeepLinkController
+        .friendLinkTokenStream
+        .listen((token) {
+          unawaited(_handleFriendDeepLinkToken(token));
+        });
+  }
+
+  Future<void> _handleFriendDeepLinkToken(String rawToken) async {
+    final token = rawToken.trim().toUpperCase();
+    if (token.isEmpty || _isLoggingOut) {
+      return;
+    }
+
+    if (_isProcessingFriendDeepLink) {
+      _queuedFriendDeepLinkToken = token;
+      return;
+    }
+
+    final now = DateTime.now();
+    final lastToken = _lastProcessedFriendDeepLinkToken;
+    final lastAt = _lastProcessedFriendDeepLinkAt;
+    if (lastToken == token &&
+        lastAt != null &&
+        now.difference(lastAt) < const Duration(seconds: 3)) {
+      return;
+    }
+    _lastProcessedFriendDeepLinkToken = token;
+
+    try {
+      final resolved = await widget.friendsController.resolveFriendLink(
+        token: token,
+      );
+      final user = resolved.user;
+      if (user.id <= 0 || !mounted) {
+        return;
+      }
+      await _handleFriendDeepLinkTarget(
+        FriendDeepLinkTarget(userId: user.id, displayName: user.preferredName),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      final message = error.message.trim();
+      _showSnack(
+        message.isNotEmpty ? message : context.l10n.shellFailedToOpenFriendLink,
+        isError: true,
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(context.l10n.shellFailedToOpenFriendLink, isError: true);
+    }
   }
 
   Future<void> _handleInviteDeepLinkCode(String rawInviteCode) async {
@@ -451,11 +515,18 @@ class _MainShellPageState extends State<MainShellPage>
       _isProcessingFriendDeepLink = false;
       final queued = _queuedFriendDeepLinkTarget;
       _queuedFriendDeepLinkTarget = null;
+      final queuedToken = _queuedFriendDeepLinkToken;
+      _queuedFriendDeepLinkToken = null;
       if (queued != null &&
           queued.userId > 0 &&
           queued.userId != userId &&
           mounted) {
         unawaited(_handleFriendDeepLinkTarget(queued));
+      } else if (queuedToken != null &&
+          queuedToken.isNotEmpty &&
+          queuedToken != _lastProcessedFriendDeepLinkToken &&
+          mounted) {
+        unawaited(_handleFriendDeepLinkToken(queuedToken));
       }
     }
   }

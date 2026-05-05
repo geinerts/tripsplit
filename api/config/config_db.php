@@ -41,6 +41,7 @@ function table_name(string $key): string
         'random_order_members' => DB_TABLE_PREFIX . 'random_order_members',
         'random_draw_state' => DB_TABLE_PREFIX . 'random_draw_state',
         'friends' => DB_TABLE_PREFIX . 'friends',
+        'friend_link_tokens' => DB_TABLE_PREFIX . 'friend_link_tokens',
         'request_limits' => DB_TABLE_PREFIX . 'request_limits',
         'upload_daily_usage' => DB_TABLE_PREFIX . 'upload_daily_usage',
         'refresh_tokens' => DB_TABLE_PREFIX . 'refresh_tokens',

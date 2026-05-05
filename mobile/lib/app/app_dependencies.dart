@@ -35,9 +35,11 @@ import '../features/auth/presentation/controllers/auth_controller.dart';
 import '../features/friends/data/datasources/friends_remote_data_source.dart';
 import '../features/friends/data/repositories/friends_repository_impl.dart';
 import '../features/friends/domain/usecases/cancel_friend_invite_use_case.dart';
+import '../features/friends/domain/usecases/get_friend_link_use_case.dart';
 import '../features/friends/domain/usecases/load_friends_section_page_use_case.dart';
 import '../features/friends/domain/usecases/load_friends_snapshot_use_case.dart';
 import '../features/friends/domain/usecases/remove_friend_use_case.dart';
+import '../features/friends/domain/usecases/resolve_friend_link_use_case.dart';
 import '../features/friends/domain/usecases/respond_friend_invite_use_case.dart';
 import '../features/friends/domain/usecases/send_friend_invite_use_case.dart';
 import '../features/friends/presentation/controllers/friends_controller.dart';
@@ -189,6 +191,8 @@ class AppDependencies {
       LoadFriendsSnapshotUseCase(friendsRepository),
       LoadFriendsSectionPageUseCase(friendsRepository),
       SendFriendInviteUseCase(friendsRepository),
+      GetFriendLinkUseCase(friendsRepository),
+      ResolveFriendLinkUseCase(friendsRepository),
       RespondFriendInviteUseCase(friendsRepository),
       CancelFriendInviteUseCase(friendsRepository),
       RemoveFriendUseCase(friendsRepository),

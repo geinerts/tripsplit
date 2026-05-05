@@ -51,7 +51,28 @@ extension _FriendsPageActionsQr on _FriendsPageState {
       return;
     }
 
-    final target = _parseFriendInviteTargetFromQr(rawCode);
+    FriendDeepLinkTarget? target;
+    try {
+      target = await _resolveFriendInviteTargetFromQr(rawCode);
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(error.message, isError: true);
+      return;
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(
+        context.l10n.friendsQrCodeIsNotAValidFriendCode,
+        isError: true,
+      );
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
     final scannedUserId = target?.userId;
     if (target == null || scannedUserId == null || scannedUserId <= 0) {
       _showSnack(
@@ -165,7 +186,30 @@ extension _FriendsPageActionsQr on _FriendsPageState {
               ? context.l10n.friendsMyProfile
               : currentUser.nickname.trim()
         : currentUser.displayName.trim();
-    final payload = _buildFriendQrPayload(currentUser.id);
+    final String payload;
+    try {
+      final friendLink = await widget.controller.getFriendLink();
+      payload = friendLink.url.trim();
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(error.message, isError: true);
+      return;
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      _showSnack(context.l10n.friendsFailedToProcessFriendQr, isError: true);
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
+    if (payload.isEmpty) {
+      _showSnack(context.l10n.friendsFailedToProcessFriendQr, isError: true);
+      return;
+    }
 
     await Navigator.of(context).push<void>(
       AppPageRoute<void>(
@@ -245,18 +289,26 @@ extension _FriendsPageActionsQr on _FriendsPageState {
     return nickname.trim();
   }
 
-  String _buildFriendQrPayload(int userId) {
-    return Uri.https('splyto.eu', '/friend', <String, String>{
-      'code': FriendLinkCodec.encode(userId),
-    }).toString();
-  }
-
-  FriendDeepLinkTarget? _parseFriendInviteTargetFromQr(String rawValue) {
+  Future<FriendDeepLinkTarget?> _resolveFriendInviteTargetFromQr(
+    String rawValue,
+  ) async {
     final fromDeepLinkParser = InviteDeepLinkParser.extractFriendTargetFromRaw(
       rawValue,
     );
     if (fromDeepLinkParser != null && fromDeepLinkParser.userId > 0) {
       return fromDeepLinkParser;
+    }
+
+    final token = InviteDeepLinkParser.extractFriendLinkTokenFromRaw(rawValue);
+    if (token != null && token.isNotEmpty) {
+      final resolved = await widget.controller.resolveFriendLink(token: token);
+      final user = resolved.user;
+      return user.id <= 0
+          ? null
+          : FriendDeepLinkTarget(
+              userId: user.id,
+              displayName: user.preferredName,
+            );
     }
 
     final raw = rawValue.trim();
@@ -295,12 +347,23 @@ extension _FriendsPageActionsQr on _FriendsPageState {
         final decoded = jsonDecode(raw);
         if (decoded is Map<String, dynamic>) {
           final candidate = decoded['uid'] ?? decoded['user_id'];
-          final code = (decoded['code'] ?? decoded['friend_code'])
-              ?.toString()
-              .trim();
-          final codeUserId = FriendLinkCodec.decode(code ?? '');
-          if (codeUserId != null) {
-            return FriendDeepLinkTarget(userId: codeUserId);
+          final code =
+              (decoded['code'] ??
+                      decoded['friend_token'] ??
+                      decoded['friend_code'])
+                  ?.toString()
+                  .trim();
+          if (code != null && code.isNotEmpty) {
+            final resolved = await widget.controller.resolveFriendLink(
+              token: code,
+            );
+            final user = resolved.user;
+            return user.id <= 0
+                ? null
+                : FriendDeepLinkTarget(
+                    userId: user.id,
+                    displayName: user.preferredName,
+                  );
           }
           final name = (decoded['name'] ?? decoded['display_name'])
               ?.toString()
