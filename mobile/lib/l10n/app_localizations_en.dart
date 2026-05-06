@@ -387,7 +387,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageEnglish => 'English';
 
   @override
-  String get languageLatvian => 'Latviešu';
+  String get languageLatvian => 'Latvian';
 
   @override
   String get languageSpanish => 'Spanish';

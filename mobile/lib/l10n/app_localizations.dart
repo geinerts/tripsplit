@@ -760,7 +760,7 @@ abstract class AppLocalizations {
   /// No description provided for @languageLatvian.
   ///
   /// In en, this message translates to:
-  /// **'Latviešu'**
+  /// **'Latvian'**
   String get languageLatvian;
 
   /// No description provided for @languageSpanish.

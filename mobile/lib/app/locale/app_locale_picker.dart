@@ -26,6 +26,7 @@ Future<void> showAppLocalePicker(BuildContext context) async {
             AppActionSheetTile(
               icon: Icons.translate_outlined,
               title: t.languageEnglish,
+              subtitle: _nativeLanguageName(AppLocaleMode.english),
               trailing: current == AppLocaleMode.english
                   ? const Icon(Icons.check_rounded)
                   : null,
@@ -39,6 +40,7 @@ Future<void> showAppLocalePicker(BuildContext context) async {
             AppActionSheetTile(
               icon: Icons.translate,
               title: t.languageLatvian,
+              subtitle: _nativeLanguageName(AppLocaleMode.latvian),
               trailing: current == AppLocaleMode.latvian
                   ? const Icon(Icons.check_rounded)
                   : null,
@@ -52,6 +54,7 @@ Future<void> showAppLocalePicker(BuildContext context) async {
             AppActionSheetTile(
               icon: Icons.translate_rounded,
               title: t.languageSpanish,
+              subtitle: _nativeLanguageName(AppLocaleMode.spanish),
               trailing: current == AppLocaleMode.spanish
                   ? const Icon(Icons.check_rounded)
                   : null,
@@ -67,4 +70,15 @@ Future<void> showAppLocalePicker(BuildContext context) async {
       );
     },
   );
+}
+
+String _nativeLanguageName(AppLocaleMode mode) {
+  switch (mode) {
+    case AppLocaleMode.english:
+      return 'English';
+    case AppLocaleMode.latvian:
+      return 'Latviešu';
+    case AppLocaleMode.spanish:
+      return 'Español';
+  }
 }
