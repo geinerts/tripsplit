@@ -329,6 +329,287 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
               );
             }
 
+            String splitModeLabel(String mode) {
+              switch (mode) {
+                case 'exact':
+                  return t.exactAmountsLabel;
+                case 'percent':
+                  return t.percentagesLabel;
+                case 'shares':
+                  return t.sharesLabel;
+                default:
+                  return t.equalSplitLabel;
+              }
+            }
+
+            IconData splitModeIcon(String mode) {
+              switch (mode) {
+                case 'exact':
+                  return Icons.payments_outlined;
+                case 'percent':
+                  return Icons.percent_rounded;
+                case 'shares':
+                  return Icons.pie_chart_outline_rounded;
+                default:
+                  return Icons.balance_rounded;
+              }
+            }
+
+            Future<String?> pickCategoryValue(
+              BuildContext dialogContext,
+              String? currentValue,
+            ) {
+              final current = (currentValue ?? '').trim();
+              final options = [
+                ...ExpenseCategoryCatalog.builtIn.map(
+                  (option) => (
+                    value: option.key,
+                    label: ExpenseCategoryCatalog.labelFor(
+                      option.key,
+                      Localizations.localeOf(dialogContext),
+                    ),
+                    icon: option.icon,
+                  ),
+                ),
+                (
+                  value: customCategoryDropdownValue,
+                  label: context.l10n.workspaceCustomCategory,
+                  icon: Icons.add_rounded,
+                ),
+              ];
+
+              return showAppBottomSheet<String>(
+                context: dialogContext,
+                builder: (pickerContext) {
+                  final maxHeight =
+                      MediaQuery.sizeOf(pickerContext).height * 0.56;
+                  return SizedBox(
+                    height: maxHeight,
+                    child: ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+                      itemCount: options.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 6),
+                      itemBuilder: (context, index) {
+                        final option = options[index];
+                        final selected = option.value == current;
+                        return Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(14),
+                            onTap: () =>
+                                Navigator.of(pickerContext).pop(option.value),
+                            child: Ink(
+                              padding: const EdgeInsets.fromLTRB(
+                                12,
+                                10,
+                                12,
+                                10,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: selected
+                                    ? Theme.of(pickerContext)
+                                          .colorScheme
+                                          .primary
+                                          .withValues(alpha: 0.10)
+                                    : Theme.of(pickerContext)
+                                          .colorScheme
+                                          .surfaceContainerHighest
+                                          .withValues(alpha: 0.45),
+                                border: Border.all(
+                                  color: selected
+                                      ? Theme.of(
+                                          pickerContext,
+                                        ).colorScheme.primary
+                                      : AppDesign.cardStroke(pickerContext),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 34,
+                                    height: 34,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(
+                                        pickerContext,
+                                      ).colorScheme.surface,
+                                      border: Border.all(
+                                        color: AppDesign.cardStroke(
+                                          pickerContext,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Icon(option.icon, size: 19),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      option.label,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(pickerContext)
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                  ),
+                                  if (selected)
+                                    Icon(
+                                      Icons.check_circle_rounded,
+                                      color: Theme.of(
+                                        pickerContext,
+                                      ).colorScheme.primary,
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              );
+            }
+
+            Future<String?> pickSplitMode(
+              BuildContext dialogContext,
+              String currentMode,
+            ) {
+              const modes = <String>['equal', 'exact', 'percent', 'shares'];
+              return showAppBottomSheet<String>(
+                context: dialogContext,
+                builder: (pickerContext) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (var index = 0; index < modes.length; index++) ...[
+                          Builder(
+                            builder: (context) {
+                              final mode = modes[index];
+                              final selected = mode == currentMode;
+                              return Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(14),
+                                  onTap: () =>
+                                      Navigator.of(pickerContext).pop(mode),
+                                  child: Ink(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      12,
+                                      10,
+                                      12,
+                                      10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: selected
+                                          ? Theme.of(pickerContext)
+                                                .colorScheme
+                                                .primary
+                                                .withValues(alpha: 0.10)
+                                          : Theme.of(pickerContext)
+                                                .colorScheme
+                                                .surfaceContainerHighest
+                                                .withValues(alpha: 0.45),
+                                      border: Border.all(
+                                        color: selected
+                                            ? Theme.of(
+                                                pickerContext,
+                                              ).colorScheme.primary
+                                            : AppDesign.cardStroke(
+                                                pickerContext,
+                                              ),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 34,
+                                          height: 34,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Theme.of(
+                                              pickerContext,
+                                            ).colorScheme.surface,
+                                            border: Border.all(
+                                              color: AppDesign.cardStroke(
+                                                pickerContext,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            splitModeIcon(mode),
+                                            size: 19,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                splitModeLabel(mode),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(pickerContext)
+                                                    .textTheme
+                                                    .titleSmall
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Text(
+                                                _splitModeHint(mode),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(pickerContext)
+                                                    .textTheme
+                                                    .bodySmall
+                                                    ?.copyWith(
+                                                      color:
+                                                          AppDesign.mutedColor(
+                                                            pickerContext,
+                                                          ),
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        if (selected)
+                                          Icon(
+                                            Icons.check_circle_rounded,
+                                            color: Theme.of(
+                                              pickerContext,
+                                            ).colorScheme.primary,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          if (index < modes.length - 1)
+                            const SizedBox(height: 6),
+                        ],
+                      ],
+                    ),
+                  );
+                },
+              );
+            }
+
             return StatefulBuilder(
               builder: (context, setDialogState) {
                 AppCurrencyOption selectedCurrency =
@@ -350,6 +631,20 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                 )) {
                   categoryDropdownValue = normalizedSelectedCategory;
                 }
+                final selectedCategoryValue =
+                    categoryDropdownValue ??
+                    ExpenseCategoryCatalog.builtIn.last.key;
+                final selectedCategoryLabel = isCustomCategoryMode
+                    ? (customCategoryController.text.trim().isEmpty
+                          ? context.l10n.workspaceCustomCategory
+                          : customCategoryController.text.trim())
+                    : ExpenseCategoryCatalog.labelFor(
+                        selectedCategoryValue,
+                        Localizations.localeOf(context),
+                      );
+                final selectedCategoryIcon = isCustomCategoryMode
+                    ? Icons.add_rounded
+                    : ExpenseCategoryCatalog.iconFor(selectedCategoryValue);
                 return AppFormScaffold(
                   child: SizedBox.expand(
                     child: Column(
@@ -518,12 +813,6 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                Text(
-                                  context.l10n.workspaceCategory,
-                                  style: Theme.of(context).textTheme.labelLarge
-                                      ?.copyWith(fontWeight: FontWeight.w700),
-                                ),
-                                const SizedBox(height: 8),
                                 if (quickCategoryKeys.isNotEmpty) ...[
                                   Text(
                                     'Quick categories',
@@ -601,78 +890,96 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                   ),
                                   const SizedBox(height: 8),
                                 ],
-                                DropdownButtonFormField<String>(
-                                  key: ValueKey<String>(
-                                    categoryDropdownValue ?? 'category-empty',
-                                  ),
-                                  initialValue: categoryDropdownValue,
-                                  isExpanded: true,
-                                  decoration: InputDecoration(
-                                    labelText: context.l10n.workspaceCategory,
-                                    hintText: context
-                                        .l10n
-                                        .workspacePickAnExpenseCategory,
-                                  ),
-                                  items: [
-                                    for (final option
-                                        in ExpenseCategoryCatalog.builtIn)
-                                      DropdownMenuItem<String>(
-                                        value: option.key,
-                                        child: Row(
-                                          children: [
-                                            Icon(option.icon, size: 18),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              child: Text(
-                                                ExpenseCategoryCatalog.labelFor(
-                                                  option.key,
-                                                  Localizations.localeOf(
-                                                    context,
-                                                  ),
-                                                ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(18),
+                                    onTap: () async {
+                                      final value = await pickCategoryValue(
+                                        sheetContext,
+                                        categoryDropdownValue,
+                                      );
+                                      if (!mounted ||
+                                          !context.mounted ||
+                                          value == null) {
+                                        return;
+                                      }
+                                      setDialogState(() {
+                                        if (value ==
+                                            customCategoryDropdownValue) {
+                                          isCustomCategoryMode = true;
+                                          selectedCategory = '';
+                                        } else {
+                                          isCustomCategoryMode = false;
+                                          selectedCategory = value;
+                                          customCategoryController.clear();
+                                        }
+                                        errorText = null;
+                                      });
+                                    },
+                                    child: Ink(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        12,
+                                        12,
+                                        12,
+                                        12,
                                       ),
-                                    DropdownMenuItem<String>(
-                                      value: customCategoryDropdownValue,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(18),
+                                        border: Border.all(
+                                          color: AppDesign.cardStroke(context),
+                                        ),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surfaceContainerHighest
+                                            .withValues(alpha: 0.35),
+                                      ),
                                       child: Row(
                                         children: [
-                                          const Icon(Icons.add, size: 18),
-                                          const SizedBox(width: 8),
+                                          Container(
+                                            width: 34,
+                                            height: 34,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.surface,
+                                              border: Border.all(
+                                                color: AppDesign.cardStroke(
+                                                  context,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Icon(
+                                              selectedCategoryIcon,
+                                              size: 19,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
                                           Expanded(
                                             child: Text(
-                                              context
-                                                  .l10n
-                                                  .workspaceCustomCategory,
+                                              selectedCategoryLabel,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
                                             ),
+                                          ),
+                                          Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ],
-                                  onChanged: (value) {
-                                    if (value == null) {
-                                      return;
-                                    }
-                                    setDialogState(() {
-                                      if (value ==
-                                          customCategoryDropdownValue) {
-                                        isCustomCategoryMode = true;
-                                        selectedCategory = '';
-                                      } else {
-                                        isCustomCategoryMode = false;
-                                        selectedCategory = value;
-                                        customCategoryController.clear();
-                                      }
-                                      errorText = null;
-                                    });
-                                  },
+                                  ),
                                 ),
                                 if (isCustomCategoryMode) ...[
                                   const SizedBox(height: 8),
@@ -724,37 +1031,92 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                   ],
                                 ),
                                 const SizedBox(height: 12),
-                                DropdownButtonFormField<String>(
-                                  initialValue: splitMode,
-                                  decoration: InputDecoration(
-                                    labelText: t.splitModeLabel,
+                                Text(
+                                  t.splitModeLabel,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                const SizedBox(height: 6),
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(18),
+                                    onTap: () async {
+                                      final value = await pickSplitMode(
+                                        sheetContext,
+                                        splitMode,
+                                      );
+                                      if (!mounted ||
+                                          !context.mounted ||
+                                          value == null) {
+                                        return;
+                                      }
+                                      setDialogState(() {
+                                        splitMode = value;
+                                      });
+                                    },
+                                    child: Ink(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        12,
+                                        12,
+                                        12,
+                                        12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(18),
+                                        border: Border.all(
+                                          color: AppDesign.cardStroke(context),
+                                        ),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surfaceContainerHighest
+                                            .withValues(alpha: 0.35),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 34,
+                                            height: 34,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.surface,
+                                              border: Border.all(
+                                                color: AppDesign.cardStroke(
+                                                  context,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Icon(
+                                              splitModeIcon(splitMode),
+                                              size: 19,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Text(
+                                              splitModeLabel(splitMode),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: 'equal',
-                                      child: Text(t.equalSplitLabel),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 'exact',
-                                      child: Text(t.exactAmountsLabel),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 'percent',
-                                      child: Text(t.percentagesLabel),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 'shares',
-                                      child: Text(t.sharesLabel),
-                                    ),
-                                  ],
-                                  onChanged: (value) {
-                                    if (value == null) {
-                                      return;
-                                    }
-                                    setDialogState(() {
-                                      splitMode = value;
-                                    });
-                                  },
                                 ),
                                 if (splitMode != 'equal') ...[
                                   const SizedBox(height: 8),
