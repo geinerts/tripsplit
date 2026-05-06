@@ -418,20 +418,6 @@ extension _TripsPageWidgets on _TripsPageState {
       );
     }
 
-    if (trip.isActive && trip.totalAmountCents <= 0) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: AppEmptyState(
-          icon: Icons.receipt_long_outlined,
-          title: 'No expenses yet',
-          message:
-              'Start by adding the first shared cost. You can still invite more people later.',
-          actionLabel: context.l10n.addExpenseTitle,
-          onAction: () => _openWorkspace(trip, openAddExpense: true),
-        ),
-      );
-    }
-
     return const SizedBox.shrink();
   }
 
