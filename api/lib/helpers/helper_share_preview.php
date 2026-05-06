@@ -456,12 +456,16 @@ function share_draw_avatar($image, string $displayName, string $avatarPath, int 
 {
     $ring = share_hex_color($image, '#1b3a2c');
     $innerRing = share_hex_color($image, '#5fae86', 84);
+    $border = share_hex_color($image, '#5fae86');
     imagefilledellipse($image, $centerX, $centerY, $diameter + 12, $diameter + 12, $ring);
     imagefilledellipse($image, $centerX, $centerY, $diameter + 4, $diameter + 4, $innerRing);
 
     $avatar = $avatarPath !== '' ? share_load_image_from_path($avatarPath) : null;
     if ($avatar) {
         share_draw_circle_image($image, $avatar, $centerX, $centerY, $diameter);
+        for ($i = 0; $i < 3; $i++) {
+            imageellipse($image, $centerX, $centerY, $diameter + $i, $diameter + $i, $border);
+        }
         return;
     }
 
@@ -472,6 +476,9 @@ function share_draw_avatar($image, string $displayName, string $avatarPath, int 
     $size = 28;
     $width = share_text_width($initials, $size, true);
     share_draw_text($image, $initials, $size, $centerX - (int) ($width / 2), $centerY + 10, $text, true);
+    for ($i = 0; $i < 3; $i++) {
+        imageellipse($image, $centerX, $centerY, $diameter + $i, $diameter + $i, $border);
+    }
 }
 
 function share_logo_path(bool $dark = false): string
@@ -1040,27 +1047,25 @@ function share_draw_app_qr($image, string $data, int $x, int $y, int $size): voi
 function share_render_friend_qr_card(string $friendUrl, array $friendMeta = [])
 {
     $image = share_create_canvas();
-    share_fill_gradient($image, '#06130d', '#0c2017');
-    imagefilledellipse($image, 950, 42, 520, 220, share_hex_color($image, '#57b487', 111));
-    imagefilledellipse($image, 150, 615, 440, 180, share_hex_color($image, '#2eaf6e', 115));
+    share_fill_gradient($image, '#03100b', '#173825');
+    imagefilledellipse($image, 980, 68, 520, 250, share_hex_color($image, '#57b487', 105));
+    imagefilledellipse($image, 160, 620, 460, 210, share_hex_color($image, '#2eaf6e', 110));
+
+    $panel = share_hex_color($image, '#07120d', 10);
+    share_draw_rounded_rect($image, 62, 56, 1138, 574, 40, $panel);
 
     $displayName = trim((string) ($friendMeta['display_name'] ?? 'Splyto friend'));
     if ($displayName === '') {
         $displayName = 'Splyto friend';
     }
     $avatarPath = trim((string) ($friendMeta['avatar_path'] ?? ''));
-    $text = share_hex_color($image, '#f4fbf7');
-    $nameSize = share_text_width($displayName, 38, true) > 560 ? 32 : 38;
-    $nameWidth = share_text_width($displayName, $nameSize, true);
-    share_draw_text($image, $displayName, $nameSize, 600 - (int) ($nameWidth / 2), 58, $text, true);
-    share_draw_avatar($image, $displayName, $avatarPath, 600, 126, 76);
 
-    $cardSize = 396;
-    $cardX = 600 - (int) ($cardSize / 2);
-    $cardY = 188;
+    $cardSize = 428;
+    $cardX = 92;
+    $cardY = 86;
     $white = share_hex_color($image, '#ffffff');
     share_draw_rounded_rect($image, $cardX, $cardY, $cardX + $cardSize, $cardY + $cardSize, 38, $white);
-    $qrPadding = 34;
+    $qrPadding = 50;
     share_draw_app_qr(
         $image,
         $friendUrl,
@@ -1068,5 +1073,23 @@ function share_render_friend_qr_card(string $friendUrl, array $friendMeta = [])
         $cardY + $qrPadding,
         $cardSize - ($qrPadding * 2)
     );
+
+    $rightCenterX = 818;
+    $text = share_hex_color($image, '#f4fbf7');
+    $nameSize = share_text_width($displayName, 27, true) > 400 ? 23 : 27;
+    $nameWidth = share_text_width($displayName, $nameSize, true);
+    share_draw_text(
+        $image,
+        $displayName,
+        $nameSize,
+        $rightCenterX - (int) ($nameWidth / 2),
+        140,
+        $text,
+        true
+    );
+    share_draw_avatar($image, $displayName, $avatarPath, $rightCenterX, 198, 70);
+
+    share_draw_text($image, 'Add me on', 48, 620, 316, $text, true);
+    share_draw_logo($image, 620, 352, 330, true);
     return $image;
 }

@@ -13,7 +13,7 @@ $pageUrl = share_absolute_url('/friend', $hasToken ? ['code' => $token] : []);
 $imageUrl = share_absolute_url('/share-image.php', [
     'type' => 'friend',
     'code' => $hasToken ? $token : '',
-    'v' => $hasToken ? 'myqr2-' . substr(hash('sha256', $token), 0, 12) : 'myqr2-missing',
+    'v' => $hasToken ? 'myqr3-' . substr(hash('sha256', $token), 0, 12) : 'myqr3-missing',
 ]);
 $friendDisplayName = trim((string) ($friendMeta['display_name'] ?? ''));
 $isValid = (bool) ($friendMeta['valid'] ?? false);
