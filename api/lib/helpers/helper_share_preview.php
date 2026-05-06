@@ -150,6 +150,8 @@ function share_friend_meta(?string $token): array
 {
     $fallback = [
         'valid' => false,
+        'display_name' => 'Splyto friend',
+        'avatar_path' => '',
     ];
     if ($token === null || $token === '') {
         return $fallback;
@@ -158,17 +160,36 @@ function share_friend_meta(?string $token): array
     try {
         $pdo = db();
         $tokensTable = table_name('friend_link_tokens');
+        $usersTable = table_name('users');
+        $nameSelect = users_name_columns_available($pdo)
+            ? 'u.first_name, u.last_name, '
+            : 'NULL AS first_name, NULL AS last_name, ';
+        $activeFilter = users_active_filter_sql($pdo, 'u');
         $stmt = $pdo->prepare(
-            'SELECT id
+            'SELECT
+                t.id,
+                ' . $nameSelect . '
+                u.nickname,
+                u.avatar_path
              FROM ' . $tokensTable . '
+             t JOIN ' . $usersTable . ' u ON u.id = t.user_id
              WHERE token_hash = :token_hash
-               AND revoked_at IS NULL
-               AND expires_at > UTC_TIMESTAMP()
+               AND t.revoked_at IS NULL
+               AND t.expires_at > UTC_TIMESTAMP()
+               ' . $activeFilter . '
              LIMIT 1'
         );
         $stmt->execute(['token_hash' => hash('sha256', $token)]);
+        $row = $stmt->fetch();
+        if (!is_array($row)) {
+            return $fallback;
+        }
+        $displayName = me_display_name($row);
+        $displayName = trim($displayName) !== '' ? trim($displayName) : 'Splyto friend';
         return [
-            'valid' => (bool) $stmt->fetchColumn(),
+            'valid' => true,
+            'display_name' => $displayName,
+            'avatar_path' => trim((string) ($row['avatar_path'] ?? '')),
         ];
     } catch (Throwable $error) {
         return $fallback;
@@ -390,6 +411,67 @@ function share_draw_cover($dst, $src, int $x, int $y, int $width, int $height): 
     $srcX = max(0, (int) floor(($srcWidth - $cropWidth) / 2));
     $srcY = max(0, (int) floor(($srcHeight - $cropHeight) / 2));
     imagecopyresampled($dst, $src, $x, $y, $srcX, $srcY, $width, $height, $cropWidth, $cropHeight);
+}
+
+function share_draw_circle_image($dst, $src, int $centerX, int $centerY, int $diameter): void
+{
+    $diameter = max(8, $diameter);
+    $tmp = imagecreatetruecolor($diameter, $diameter);
+    imagealphablending($tmp, true);
+    imagesavealpha($tmp, true);
+    imagefilledrectangle($tmp, 0, 0, $diameter, $diameter, imagecolorallocatealpha($tmp, 0, 0, 0, 127));
+    share_draw_cover($tmp, $src, 0, 0, $diameter, $diameter);
+
+    $radius = $diameter / 2;
+    for ($y = 0; $y < $diameter; $y++) {
+        for ($x = 0; $x < $diameter; $x++) {
+            $dx = $x + 0.5 - $radius;
+            $dy = $y + 0.5 - $radius;
+            if (($dx * $dx) + ($dy * $dy) > ($radius * $radius)) {
+                imagesetpixel($tmp, $x, $y, imagecolorallocatealpha($tmp, 0, 0, 0, 127));
+            }
+        }
+    }
+
+    imagecopy($dst, $tmp, $centerX - (int) ($diameter / 2), $centerY - (int) ($diameter / 2), 0, 0, $diameter, $diameter);
+}
+
+function share_initials(string $displayName): string
+{
+    $parts = preg_split('/\s+/', trim($displayName)) ?: [];
+    $letters = '';
+    foreach ($parts as $part) {
+        if ($part === '') {
+            continue;
+        }
+        $letters .= strtoupper(substr($part, 0, 1));
+        if (strlen($letters) >= 2) {
+            break;
+        }
+    }
+    return $letters !== '' ? $letters : 'S';
+}
+
+function share_draw_avatar($image, string $displayName, string $avatarPath, int $centerX, int $centerY, int $diameter): void
+{
+    $ring = share_hex_color($image, '#1b3a2c');
+    $innerRing = share_hex_color($image, '#5fae86', 84);
+    imagefilledellipse($image, $centerX, $centerY, $diameter + 12, $diameter + 12, $ring);
+    imagefilledellipse($image, $centerX, $centerY, $diameter + 4, $diameter + 4, $innerRing);
+
+    $avatar = $avatarPath !== '' ? share_load_image_from_path($avatarPath) : null;
+    if ($avatar) {
+        share_draw_circle_image($image, $avatar, $centerX, $centerY, $diameter);
+        return;
+    }
+
+    $fill = share_hex_color($image, '#10231a');
+    $text = share_hex_color($image, '#f4fbf7');
+    imagefilledellipse($image, $centerX, $centerY, $diameter, $diameter, $fill);
+    $initials = share_initials($displayName);
+    $size = 28;
+    $width = share_text_width($initials, $size, true);
+    share_draw_text($image, $initials, $size, $centerX - (int) ($width / 2), $centerY + 10, $text, true);
 }
 
 function share_logo_path(bool $dark = false): string
@@ -849,24 +931,142 @@ function share_draw_qr($image, string $data, int $x, int $y, int $size): void
     }
 }
 
-function share_render_friend_qr_card(string $friendUrl)
+function share_draw_finder_pattern($image, int $x, int $y, int $cell): void
+{
+    $ink = share_hex_color($image, '#050a07');
+    $white = share_hex_color($image, '#ffffff');
+    $outer = $cell * 7;
+    share_draw_rounded_rect($image, $x, $y, $x + $outer, $y + $outer, (int) round($cell * 2.0), $ink);
+    $innerInset = (int) round($cell * 1.05);
+    share_draw_rounded_rect(
+        $image,
+        $x + $innerInset,
+        $y + $innerInset,
+        $x + $outer - $innerInset,
+        $y + $outer - $innerInset,
+        (int) round($cell * 1.25),
+        $white
+    );
+    $coreInset = (int) round($cell * 2.2);
+    share_draw_rounded_rect(
+        $image,
+        $x + $coreInset,
+        $y + $coreInset,
+        $x + $outer - $coreInset,
+        $y + $outer - $coreInset,
+        max(2, (int) round($cell * 0.35)),
+        $ink
+    );
+}
+
+function share_is_finder_module(int $row, int $col, int $moduleCount): bool
+{
+    $inTop = $row >= 0 && $row < 7;
+    $inLeft = $col >= 0 && $col < 7;
+    $inRight = $col >= $moduleCount - 7 && $col < $moduleCount;
+    $inBottom = $row >= $moduleCount - 7 && $row < $moduleCount;
+    return ($inTop && $inLeft) || ($inTop && $inRight) || ($inBottom && $inLeft);
+}
+
+function share_draw_diamond($image, int $centerX, int $centerY, int $radius, int $color): void
+{
+    imagefilledpolygon(
+        $image,
+        [
+            $centerX, $centerY - $radius,
+            $centerX + $radius, $centerY,
+            $centerX, $centerY + $radius,
+            $centerX - $radius, $centerY,
+        ],
+        $color
+    );
+}
+
+function share_draw_launch_symbol($image, int $centerX, int $centerY, int $size): void
+{
+    $path = project_root_abs() . DIRECTORY_SEPARATOR . 'mobile/assets/branding/launch_symbol_420.png';
+    if (!is_file($path)) {
+        return;
+    }
+    $logo = @imagecreatefrompng($path);
+    if (!$logo) {
+        return;
+    }
+    imagealphablending($logo, true);
+    imagesavealpha($logo, true);
+    $ratio = min($size / imagesx($logo), $size / imagesy($logo));
+    $targetWidth = (int) round(imagesx($logo) * $ratio);
+    $targetHeight = (int) round(imagesy($logo) * $ratio);
+    $x = $centerX - (int) ($targetWidth / 2);
+    $y = $centerY - (int) ($targetHeight / 2);
+    imagecopyresampled($image, $logo, $x, $y, 0, 0, $targetWidth, $targetHeight, imagesx($logo), imagesy($logo));
+}
+
+function share_draw_app_qr($image, string $data, int $x, int $y, int $size): void
+{
+    $matrix = share_qr_matrix($data);
+    $moduleCount = count($matrix);
+    $cell = $size / $moduleCount;
+    $ink = share_hex_color($image, '#050a07');
+    $centerX = $x + (int) round($size / 2);
+    $centerY = $y + (int) round($size / 2);
+    $clearWidth = $size * 0.25;
+    $clearHeight = $size * 0.32;
+
+    for ($row = 0; $row < $moduleCount; $row++) {
+        for ($col = 0; $col < $moduleCount; $col++) {
+            if (!$matrix[$row][$col] || share_is_finder_module($row, $col, $moduleCount)) {
+                continue;
+            }
+            $moduleCenterX = $x + (int) round(($col + 0.5) * $cell);
+            $moduleCenterY = $y + (int) round(($row + 0.5) * $cell);
+            if (
+                abs($moduleCenterX - $centerX) <= $clearWidth / 2 &&
+                abs($moduleCenterY - $centerY) <= $clearHeight / 2
+            ) {
+                continue;
+            }
+            share_draw_diamond($image, $moduleCenterX, $moduleCenterY, max(2, (int) round($cell * 0.43)), $ink);
+        }
+    }
+
+    $cellInt = max(1, (int) round($cell));
+    share_draw_finder_pattern($image, $x, $y, $cellInt);
+    share_draw_finder_pattern($image, $x + (int) round(($moduleCount - 7) * $cell), $y, $cellInt);
+    share_draw_finder_pattern($image, $x, $y + (int) round(($moduleCount - 7) * $cell), $cellInt);
+    share_draw_launch_symbol($image, $centerX, $centerY, (int) round($size * 0.28));
+}
+
+function share_render_friend_qr_card(string $friendUrl, array $friendMeta = [])
 {
     $image = share_create_canvas();
-    share_fill_gradient($image, '#03100b', '#173825');
-    imagefilledellipse($image, 980, 68, 520, 250, share_hex_color($image, '#57b487', 105));
-    imagefilledellipse($image, 160, 620, 460, 210, share_hex_color($image, '#2eaf6e', 110));
+    share_fill_gradient($image, '#06130d', '#0c2017');
+    imagefilledellipse($image, 950, 42, 520, 220, share_hex_color($image, '#57b487', 111));
+    imagefilledellipse($image, 150, 615, 440, 180, share_hex_color($image, '#2eaf6e', 115));
 
-    $panel = share_hex_color($image, '#07120d', 10);
-    $stroke = share_hex_color($image, '#57b487', 92);
-    share_draw_rounded_rect($image, 62, 56, 1138, 574, 40, $panel);
-    imagerectangle($image, 102, 96, 498, 492, $stroke);
-
-    $white = share_hex_color($image, '#ffffff');
-    share_draw_rounded_rect($image, 92, 86, 520, 514, 32, $white);
-    share_draw_qr($image, $friendUrl, 124, 118, 364);
-
+    $displayName = trim((string) ($friendMeta['display_name'] ?? 'Splyto friend'));
+    if ($displayName === '') {
+        $displayName = 'Splyto friend';
+    }
+    $avatarPath = trim((string) ($friendMeta['avatar_path'] ?? ''));
     $text = share_hex_color($image, '#f4fbf7');
-    share_draw_text($image, 'Add me on', 54, 620, 278, $text, true);
-    share_draw_logo($image, 620, 318, 330, true);
+    $nameSize = share_text_width($displayName, 38, true) > 560 ? 32 : 38;
+    $nameWidth = share_text_width($displayName, $nameSize, true);
+    share_draw_text($image, $displayName, $nameSize, 600 - (int) ($nameWidth / 2), 58, $text, true);
+    share_draw_avatar($image, $displayName, $avatarPath, 600, 126, 76);
+
+    $cardSize = 396;
+    $cardX = 600 - (int) ($cardSize / 2);
+    $cardY = 188;
+    $white = share_hex_color($image, '#ffffff');
+    share_draw_rounded_rect($image, $cardX, $cardY, $cardX + $cardSize, $cardY + $cardSize, 38, $white);
+    $qrPadding = 34;
+    share_draw_app_qr(
+        $image,
+        $friendUrl,
+        $cardX + $qrPadding,
+        $cardY + $qrPadding,
+        $cardSize - ($qrPadding * 2)
+    );
     return $image;
 }

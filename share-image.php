@@ -16,7 +16,11 @@ $type = strtolower(trim((string) ($_GET['type'] ?? '')));
 if ($type === 'friend') {
     $token = share_normalize_friend_token(share_param(['code', 'friend_token', 'friend_code']));
     $friendUrl = share_absolute_url('/friend', $token !== null ? ['code' => $token] : []);
-    share_output_png(share_render_friend_qr_card($friendUrl), $token !== null ? 300 : 60);
+    $friendMeta = share_friend_meta($token);
+    share_output_png(
+        share_render_friend_qr_card($friendUrl, $friendMeta),
+        (bool) ($friendMeta['valid'] ?? false) ? 300 : 60
+    );
 }
 
 if ($type === 'trip' || $type === 'invite') {

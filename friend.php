@@ -13,12 +13,15 @@ $pageUrl = share_absolute_url('/friend', $hasToken ? ['code' => $token] : []);
 $imageUrl = share_absolute_url('/share-image.php', [
     'type' => 'friend',
     'code' => $hasToken ? $token : '',
-    'v' => $hasToken ? substr(hash('sha256', $token), 0, 12) : 'missing',
+    'v' => $hasToken ? 'myqr2-' . substr(hash('sha256', $token), 0, 12) : 'myqr2-missing',
 ]);
-$title = 'Add me on Splyto';
+$friendDisplayName = trim((string) ($friendMeta['display_name'] ?? ''));
+$isValid = (bool) ($friendMeta['valid'] ?? false);
+$title = $isValid && $friendDisplayName !== ''
+    ? 'Add ' . $friendDisplayName . ' on Splyto'
+    : 'Add me on Splyto';
 $description = 'Scan the QR code or open Splyto to send a friend request.';
 $appQuery = $hasToken ? 'code=' . rawurlencode($token) : '';
-$isValid = (bool) ($friendMeta['valid'] ?? false);
 
 share_send_html_headers($isValid ? 300 : 60);
 ?>
