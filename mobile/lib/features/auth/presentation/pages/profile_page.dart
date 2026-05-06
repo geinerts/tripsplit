@@ -20,6 +20,7 @@ import '../../../../core/currency/app_currency.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/media/app_image_cropper.dart';
+import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/app_scaffold.dart';
