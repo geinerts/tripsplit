@@ -107,135 +107,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
               ),
             ],
             const SizedBox(height: 16),
-            _buildProfileSectionHeading(
-              context: context,
-              title: context.l10n.profileAppSettingsSectionTitle,
-            ),
-            const SizedBox(height: 8),
-            _buildProfileSectionCard(
-              context: context,
-              children: [
-                _buildProfileSectionTile(
-                  context: context,
-                  title: context.l10n.profileAppearance,
-                  icon: Icons.palette_outlined,
-                  valueText: _currentAppearanceLabel(context),
-                  subtitle: context.l10n.profileThemeDisplayMode,
-                  onTap: _isBusy ? null : () => showThemeModePicker(context),
-                ),
-                _buildProfileSectionTile(
-                  context: context,
-                  title: context.l10n.profileLanguage,
-                  icon: Icons.translate_outlined,
-                  valueText: _currentLanguageLabel(context),
-                  subtitle: context.l10n.profileDisplayLanguage,
-                  onTap: _isBusy ? null : () => showAppLocalePicker(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildProfileSectionHeading(
-              context: context,
-              title: context.l10n.profileNotificationsSectionHeading,
-            ),
-            const SizedBox(height: 8),
-            _buildProfileSectionCard(
-              context: context,
-              children: [
-                _buildProfileSwitchNavigationTile(
-                  context: context,
-                  title: context.l10n.profileAppBanners,
-                  subtitle:
-                      context.l10n.profileShowNewNotificationBannersInsideApp,
-                  icon: Icons.chat_bubble_outline_rounded,
-                  value: _inAppNotificationsEnabled,
-                  onTap: () {
-                    unawaited(_openInAppNotificationSettingsPage());
-                  },
-                  onChanged: (value) {
-                    unawaited(_setAllInAppNotificationsEnabled(value));
-                  },
-                ),
-                _buildProfileSwitchNavigationTile(
-                  context: context,
-                  title: context.l10n.profilePushNotificationsTitle,
-                  subtitle: context
-                      .l10n
-                      .profilePhoneNotificationsExpensesFriendsTripsSettlements,
-                  icon: Icons.notifications_active_outlined,
-                  value: _pushNotificationsEnabled,
-                  onTap: () {
-                    unawaited(_openPushNotificationSettingsPage());
-                  },
-                  onChanged: (value) {
-                    unawaited(_setAllPushNotificationsEnabled(value));
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildProfileSectionHeading(
-              context: context,
-              title: context.l10n.profileSupportSectionHeading,
-            ),
-            const SizedBox(height: 8),
-            _buildProfileSectionCard(
-              context: context,
-              children: [
-                _buildProfileSectionTile(
-                  context: context,
-                  title: context.l10n.profileContactUs,
-                  icon: Icons.support_agent_outlined,
-                  subtitle: context.l10n.profileReportBugSuggestion,
-                  onTap: _isBusy ? null : _openFeedbackDialog,
-                ),
-                _buildProfileSectionTile(
-                  context: context,
-                  title: context.l10n.profileRateSplyto,
-                  icon: Icons.star_outline_rounded,
-                  subtitle: context.l10n.profileLeaveStoreRating,
-                  onTap: _isBusy ? null : _openRateHint,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildProfileSectionHeading(
-              context: context,
-              title: context.l10n.profileSecuritySectionHeading,
-            ),
-            const SizedBox(height: 8),
-            _buildProfileSectionCard(
-              context: context,
-              children: [
-                _buildProfileSectionTile(
-                  context: context,
-                  title: context.l10n.profileChangePassword,
-                  icon: Icons.lock_outline_rounded,
-                  subtitle: context.l10n.profileUpdateAccountPassword,
-                  onTap: _isBusy ? null : _openChangePasswordDialog,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildProfileSectionHeading(
-              context: context,
-              title: context.l10n.profileDangerZoneSectionHeading,
-              isDanger: true,
-            ),
-            const SizedBox(height: 8),
-            _buildProfileSectionCard(
-              context: context,
-              children: [
-                _buildProfileSectionTile(
-                  context: context,
-                  title: context.l10n.profileDeactivateAccount,
-                  icon: Icons.warning_amber_rounded,
-                  subtitle: context.l10n.profileManageAccountAccess,
-                  onTap: _isBusy ? null : _openDangerZone,
-                  isDanger: true,
-                ),
-              ],
-            ),
+            _buildProfileSettingsPanel(context),
             const SizedBox(height: 12),
             _buildProfileLogoutCard(context),
             const SizedBox(height: 16),
@@ -264,6 +136,173 @@ extension _ProfilePageWidgets on _ProfilePageState {
           letterSpacing: 0.9,
           color: color,
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfileSettingsPanel(BuildContext context) {
+    return AppSurfaceCard(
+      padding: const EdgeInsets.fromLTRB(12, 14, 12, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildProfileSectionGroup(
+            context: context,
+            title: context.l10n.profileAppSettingsSectionTitle,
+            children: [
+              _buildProfileSectionTile(
+                context: context,
+                title: context.l10n.profileAppearance,
+                icon: Icons.palette_outlined,
+                valueText: _currentAppearanceLabel(context),
+                subtitle: context.l10n.profileThemeDisplayMode,
+                onTap: _isBusy ? null : () => showThemeModePicker(context),
+              ),
+              _buildProfileSectionTile(
+                context: context,
+                title: context.l10n.profileLanguage,
+                icon: Icons.translate_outlined,
+                valueText: _currentLanguageLabel(context),
+                subtitle: context.l10n.profileDisplayLanguage,
+                onTap: _isBusy ? null : () => showAppLocalePicker(context),
+              ),
+            ],
+          ),
+          _buildProfilePanelDivider(context),
+          _buildProfileSectionGroup(
+            context: context,
+            title: context.l10n.profileNotificationsSectionHeading,
+            children: [
+              _buildProfileSwitchNavigationTile(
+                context: context,
+                title: context.l10n.profileAppBanners,
+                subtitle:
+                    context.l10n.profileShowNewNotificationBannersInsideApp,
+                icon: Icons.chat_bubble_outline_rounded,
+                value: _inAppNotificationsEnabled,
+                onTap: () {
+                  unawaited(_openInAppNotificationSettingsPage());
+                },
+                onChanged: (value) {
+                  unawaited(_setAllInAppNotificationsEnabled(value));
+                },
+              ),
+              _buildProfileSwitchNavigationTile(
+                context: context,
+                title: context.l10n.profilePushNotificationsTitle,
+                subtitle: context
+                    .l10n
+                    .profilePhoneNotificationsExpensesFriendsTripsSettlements,
+                icon: Icons.notifications_active_outlined,
+                value: _pushNotificationsEnabled,
+                onTap: () {
+                  unawaited(_openPushNotificationSettingsPage());
+                },
+                onChanged: (value) {
+                  unawaited(_setAllPushNotificationsEnabled(value));
+                },
+              ),
+            ],
+          ),
+          _buildProfilePanelDivider(context),
+          _buildProfileSectionGroup(
+            context: context,
+            title: context.l10n.profileSupportSectionHeading,
+            children: [
+              _buildProfileSectionTile(
+                context: context,
+                title: context.l10n.profileContactUs,
+                icon: Icons.support_agent_outlined,
+                subtitle: context.l10n.profileReportBugSuggestion,
+                onTap: _isBusy ? null : _openFeedbackDialog,
+              ),
+              _buildProfileSectionTile(
+                context: context,
+                title: context.l10n.profileRateSplyto,
+                icon: Icons.star_outline_rounded,
+                subtitle: context.l10n.profileLeaveStoreRating,
+                onTap: _isBusy ? null : _openRateHint,
+              ),
+            ],
+          ),
+          _buildProfilePanelDivider(context),
+          _buildProfileSectionGroup(
+            context: context,
+            title: context.l10n.profileSecuritySectionHeading,
+            children: [
+              _buildProfileSectionTile(
+                context: context,
+                title: context.l10n.profileChangePassword,
+                icon: Icons.lock_outline_rounded,
+                subtitle: context.l10n.profileUpdateAccountPassword,
+                onTap: _isBusy ? null : _openChangePasswordDialog,
+              ),
+            ],
+          ),
+          _buildProfilePanelDivider(context),
+          _buildProfileSectionGroup(
+            context: context,
+            title: context.l10n.profileDangerZoneSectionHeading,
+            isDanger: true,
+            children: [
+              _buildProfileSectionTile(
+                context: context,
+                title: context.l10n.profileDeactivateAccount,
+                icon: Icons.warning_amber_rounded,
+                subtitle: context.l10n.profileManageAccountAccess,
+                onTap: _isBusy ? null : _openDangerZone,
+                isDanger: true,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileSectionGroup({
+    required BuildContext context,
+    required String title,
+    required List<Widget> children,
+    bool isDanger = false,
+  }) {
+    final content = <Widget>[];
+    for (var i = 0; i < children.length; i++) {
+      content.add(children[i]);
+      if (i < children.length - 1) {
+        content.add(
+          Divider(
+            height: 1,
+            indent: 8,
+            endIndent: 8,
+            color: AppDesign.cardStroke(context),
+          ),
+        );
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildProfileSectionHeading(
+          context: context,
+          title: title,
+          isDanger: isDanger,
+        ),
+        const SizedBox(height: 8),
+        ...content,
+      ],
+    );
+  }
+
+  Widget _buildProfilePanelDivider(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Divider(
+        height: 1,
+        indent: 8,
+        endIndent: 8,
+        color: AppDesign.cardStroke(context),
       ),
     );
   }
@@ -341,34 +380,6 @@ extension _ProfilePageWidgets on _ProfilePageState {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildProfileSectionCard({
-    required BuildContext context,
-    required List<Widget> children,
-  }) {
-    final content = <Widget>[];
-    for (var i = 0; i < children.length; i++) {
-      content.add(children[i]);
-      if (i < children.length - 1) {
-        content.add(
-          Divider(
-            height: 1,
-            indent: 8,
-            endIndent: 8,
-            color: AppDesign.cardStroke(context),
-          ),
-        );
-      }
-    }
-
-    return AppSurfaceCard(
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [...content],
       ),
     );
   }
