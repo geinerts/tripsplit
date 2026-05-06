@@ -17,7 +17,15 @@ extension _MainShellPageWidgets on _MainShellPageState {
               )
             : null,
         title: _buildAppBarTitle(context, titleStyle),
-        actions: [_buildNotificationsAction(context)],
+        actions: [
+          if (_canShowWorkspaceTripActions)
+            IconButton(
+              onPressed: _workspaceCommandController.requestOpenTripActions,
+              icon: const Icon(Icons.more_horiz_rounded),
+              tooltip: context.l10n.settings,
+            ),
+          _buildNotificationsAction(context),
+        ],
       ),
       body: _isWorkspaceOpen
           ? WorkspacePage(
@@ -152,6 +160,14 @@ extension _MainShellPageWidgets on _MainShellPageState {
         }
       },
     );
+  }
+
+  bool get _canShowWorkspaceTripActions {
+    final trip = _openedTrip;
+    return _isWorkspaceOpen &&
+        trip != null &&
+        trip.isActive &&
+        trip.canCurrentUserManageTrip;
   }
 
   Widget _buildNotificationsAction(BuildContext context) {

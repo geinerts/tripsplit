@@ -115,9 +115,11 @@ class WorkspacePage extends StatefulWidget {
 class WorkspacePageCommandController extends ChangeNotifier {
   int _refreshRequestCount = 0;
   int _openAddExpenseRequestCount = 0;
+  int _openTripActionsRequestCount = 0;
 
   int get refreshRequestCount => _refreshRequestCount;
   int get openAddExpenseRequestCount => _openAddExpenseRequestCount;
+  int get openTripActionsRequestCount => _openTripActionsRequestCount;
 
   void requestRefresh() {
     _refreshRequestCount += 1;
@@ -126,6 +128,11 @@ class WorkspacePageCommandController extends ChangeNotifier {
 
   void requestOpenAddExpense() {
     _openAddExpenseRequestCount += 1;
+    notifyListeners();
+  }
+
+  void requestOpenTripActions() {
+    _openTripActionsRequestCount += 1;
     notifyListeners();
   }
 }
@@ -146,6 +153,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
   final bool _showAllBalances = false;
   int _handledRefreshRequestCount = 0;
   int _handledOpenAddExpenseRequestCount = 0;
+  int _handledOpenTripActionsRequestCount = 0;
   bool _openAddExpenseAfterLoad = false;
   bool _isStartingWithAddExpense = false;
   List<QueuedMutation> _queuedMutations = const <QueuedMutation>[];
@@ -243,6 +251,8 @@ class _WorkspacePageState extends State<WorkspacePage> {
     }
     _handledRefreshRequestCount = controller.refreshRequestCount;
     _handledOpenAddExpenseRequestCount = controller.openAddExpenseRequestCount;
+    _handledOpenTripActionsRequestCount =
+        controller.openTripActionsRequestCount;
     controller.addListener(_onCommandControllerChanged);
   }
 
@@ -270,6 +280,12 @@ class _WorkspacePageState extends State<WorkspacePage> {
         return;
       }
       unawaited(_onAddExpensePressed());
+    }
+
+    final openTripActionsRequestCount = controller.openTripActionsRequestCount;
+    if (openTripActionsRequestCount != _handledOpenTripActionsRequestCount) {
+      _handledOpenTripActionsRequestCount = openTripActionsRequestCount;
+      unawaited(_openTripActionsSheet());
     }
   }
 
