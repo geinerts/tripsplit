@@ -417,18 +417,21 @@ function share_draw_circle_image($dst, $src, int $centerX, int $centerY, int $di
 {
     $diameter = max(8, $diameter);
     $tmp = imagecreatetruecolor($diameter, $diameter);
-    imagealphablending($tmp, true);
+    imagealphablending($tmp, false);
     imagesavealpha($tmp, true);
-    imagefilledrectangle($tmp, 0, 0, $diameter, $diameter, imagecolorallocatealpha($tmp, 0, 0, 0, 127));
+    $transparent = imagecolorallocatealpha($tmp, 0, 0, 0, 127);
+    imagefilledrectangle($tmp, 0, 0, $diameter, $diameter, $transparent);
+    imagealphablending($tmp, true);
     share_draw_cover($tmp, $src, 0, 0, $diameter, $diameter);
 
+    imagealphablending($tmp, false);
     $radius = $diameter / 2;
     for ($y = 0; $y < $diameter; $y++) {
         for ($x = 0; $x < $diameter; $x++) {
             $dx = $x + 0.5 - $radius;
             $dy = $y + 0.5 - $radius;
             if (($dx * $dx) + ($dy * $dy) > ($radius * $radius)) {
-                imagesetpixel($tmp, $x, $y, imagecolorallocatealpha($tmp, 0, 0, 0, 127));
+                imagesetpixel($tmp, $x, $y, $transparent);
             }
         }
     }
@@ -1089,7 +1092,19 @@ function share_render_friend_qr_card(string $friendUrl, array $friendMeta = [])
     );
     share_draw_avatar($image, $displayName, $avatarPath, $rightCenterX, 198, 70);
 
-    share_draw_text($image, 'Add me on', 48, 620, 316, $text, true);
-    share_draw_logo($image, 620, 352, 330, true);
+    $addMeOn = 'Add me on';
+    $addMeOnSize = 48;
+    $addMeOnWidth = share_text_width($addMeOn, $addMeOnSize, true);
+    share_draw_text(
+        $image,
+        $addMeOn,
+        $addMeOnSize,
+        $rightCenterX - (int) ($addMeOnWidth / 2),
+        316,
+        $text,
+        true
+    );
+    $logoWidth = 280;
+    share_draw_logo($image, $rightCenterX - (int) ($logoWidth / 2), 352, $logoWidth, true);
     return $image;
 }
