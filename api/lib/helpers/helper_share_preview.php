@@ -865,18 +865,8 @@ function share_render_friend_qr_card(string $friendUrl)
     share_draw_rounded_rect($image, 92, 86, 520, 514, 32, $white);
     share_draw_qr($image, $friendUrl, 124, 118, 364);
 
-    share_draw_logo($image, 604, 112, 196);
-    $accent = share_hex_color($image, '#77d7a7');
     $text = share_hex_color($image, '#f4fbf7');
-    $muted = share_hex_color($image, '#b7c9bf');
-    share_draw_text($image, 'Friend QR', 26, 608, 234, $accent, true);
-    share_draw_text($image, 'Add me on Splyto', 46, 604, 306, $text, true);
-    $lines = share_wrap_text('Scan this QR or open the link to send a friend request.', 26, 460, 2);
-    $y = 368;
-    foreach ($lines as $line) {
-        share_draw_text($image, $line, 26, 608, $y, $muted);
-        $y += 36;
-    }
-    share_draw_text($image, 'Private link. No user ID in the URL.', 21, 608, 500, $muted);
+    share_draw_text($image, 'Add me on', 54, 620, 278, $text, true);
+    share_draw_logo($image, 620, 318, 330, true);
     return $image;
 }
