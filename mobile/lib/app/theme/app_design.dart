@@ -10,7 +10,7 @@ class AppDesign {
   static const Color logoBackgroundEnd = Color(0xFF243B55);
 
   // Shared light palette (base for Trips/Friends/Profile/Analytics).
-  static const Color lightCanvas = Color(0xFFF7F5F0);
+  static const Color lightCanvas = Color(0xFFFFFFFF);
   static const Color lightSurface = Color(0xFFFFFFFF);
   static const Color lightPrimary = Color(0xFF2D7A5E);
   static const Color lightPrimaryDeep = Color(0xFF215A45);
@@ -131,13 +131,10 @@ class AppDesign {
         colors: const [darkCanvas, darkCanvasSoft, darkSurface],
       );
     }
-    return LinearGradient(
+    return const LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [
-        lightCanvas,
-        colors.surfaceContainerLowest.withValues(alpha: 0.92),
-      ],
+      colors: [lightCanvas, lightCanvas],
     );
   }
 

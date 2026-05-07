@@ -17,8 +17,8 @@ class AppBackground extends StatelessWidget {
     }
     final colors = Theme.of(context).colorScheme;
     final brightness = Theme.of(context).brightness;
-    final primaryGlowAlpha = brightness == Brightness.dark ? 0.18 : 0.12;
-    final secondaryGlowAlpha = brightness == Brightness.dark ? 0.14 : 0.08;
+    final primaryGlowAlpha = brightness == Brightness.dark ? 0.18 : 0.0;
+    final secondaryGlowAlpha = brightness == Brightness.dark ? 0.14 : 0.0;
     final glowPrimary = AppDesign.glowPrimary(brightness);
     final glowSecondary = AppDesign.glowSecondary(brightness);
     return _AppBackgroundScope(
