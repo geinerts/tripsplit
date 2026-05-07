@@ -444,7 +444,7 @@ class _InAppNotificationSettingsPageState
       }
     }
 
-    return AppSurfaceCard(
+    return Padding(
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

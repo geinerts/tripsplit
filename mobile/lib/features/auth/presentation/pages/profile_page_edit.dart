@@ -406,7 +406,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     final t = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return AppSurfaceCard(
+    return Padding(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
       child: Column(
         key: ValueKey('profile-edit-page-$_editSession'),
@@ -470,7 +470,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
 
   Widget _buildDeactivateAccountPage(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return AppSurfaceCard(
+    return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Column(
         key: ValueKey('deactivate-page-$_editSession'),
@@ -616,7 +616,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   Widget _buildChangePasswordPage(BuildContext context) {
     final t = context.l10n;
     final email = (_initialEmail ?? '').trim().toLowerCase();
-    return AppSurfaceCard(
+    return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       child: Column(
         key: ValueKey('change-password-page-$_editSession'),
@@ -1629,7 +1629,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
           16 + MediaQuery.viewInsetsOf(context).bottom,
         ),
         children: [
-          AppSurfaceCard(
+          Padding(
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
