@@ -25,12 +25,38 @@ ALERT_COOLDOWN_SEC="$(env_value "$ENV_FILE" "TRIP_HEALTH_ALERT_COOLDOWN_SEC")"
 if [[ -z "$ALERT_COOLDOWN_SEC" ]]; then
   ALERT_COOLDOWN_SEC=900
 fi
+HEALTH_CHECK_ATTEMPTS="$(int_or_default "$(env_value "$ENV_FILE" "TRIP_HEALTH_CHECK_ATTEMPTS")" 3)"
+HEALTH_CHECK_RETRY_DELAY_SEC="$(int_or_default "$(env_value "$ENV_FILE" "TRIP_HEALTH_CHECK_RETRY_DELAY_SEC")" 2)"
+if (( HEALTH_CHECK_ATTEMPTS < 1 )); then
+  HEALTH_CHECK_ATTEMPTS=1
+fi
 
-check_status() {
+log_line() {
+  printf '[%s] %s\n' "$(date -Is)" "$*"
+}
+
+check_status_once() {
   local url="$1"
   local expected="$2"
   local got
-  got="$(curl -sS --max-time 12 -o /dev/null -w '%{http_code}' "$url" || printf '000')"
+  local curl_error
+  local curl_status
+  local error_file
+
+  error_file="$(mktemp)"
+  got="$(curl -sS --connect-timeout 5 --max-time 15 -o /dev/null -w '%{http_code}' "$url" 2>"$error_file")"
+  curl_status=$?
+  curl_error="$(tr '\n' ' ' < "$error_file" | sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//')"
+  rm -f "$error_file"
+
+  if (( curl_status != 0 )); then
+    if [[ -z "$got" ]]; then
+      got="000"
+    fi
+    echo "FAIL $url expected=$expected got=$got curl_exit=$curl_status error=${curl_error:-curl failed}"
+    return 1
+  fi
+
   if [[ "$got" != "$expected" ]]; then
     echo "FAIL $url expected=$expected got=$got"
     return 1
@@ -38,17 +64,44 @@ check_status() {
   echo "OK   $url status=$got"
 }
 
+check_status() {
+  local url="$1"
+  local expected="$2"
+  local attempt
+  local out
+  local last_out
+
+  for (( attempt = 1; attempt <= HEALTH_CHECK_ATTEMPTS; attempt++ )); do
+    if out="$(check_status_once "$url" "$expected")"; then
+      if (( attempt > 1 )); then
+        echo "$out recovered_after_attempt=$attempt"
+      else
+        echo "$out"
+      fi
+      return 0
+    fi
+
+    last_out="$out"
+    if (( attempt < HEALTH_CHECK_ATTEMPTS )); then
+      sleep "$HEALTH_CHECK_RETRY_DELAY_SEC"
+    fi
+  done
+
+  echo "$last_out attempts=$HEALTH_CHECK_ATTEMPTS"
+  return 1
+}
+
 HOSTNAME_SHORT="$(hostname -s 2>/dev/null || hostname)"
 failures=()
 if ! out="$(check_status "$BASE_URL/api/api.php?action=unknown" "404")"; then
   failures+=("$out")
 else
-  echo "$out"
+  log_line "$out"
 fi
 if ! out="$(check_status "$BASE_URL/api/api.php?action=me" "401")"; then
   failures+=("$out")
 else
-  echo "$out"
+  log_line "$out"
 fi
 
 if (( ${#failures[@]} > 0 )); then
@@ -65,7 +118,7 @@ Checks:"
     msg="${msg}
 - ${failure}"
   done
-  echo "$msg" >&2
+  log_line "$msg" >&2
   mark_alert_unhealthy "health_api"
   send_alert_with_cooldown "health_api" "$msg" "$ENV_FILE" "$ALERT_COOLDOWN_SEC"
   if [[ -n "$HC_PING_FAIL_URL" ]]; then
@@ -84,4 +137,4 @@ Summary:
 - Status: OK
 - Base URL: ${BASE_URL}
 - Checks passed: 2" "$ENV_FILE"
-echo "[SPLYTO][HEALTH][OK] ${BASE_URL}"
+log_line "[SPLYTO][HEALTH][OK] ${BASE_URL}"
