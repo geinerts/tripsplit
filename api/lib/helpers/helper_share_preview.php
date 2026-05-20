@@ -515,7 +515,7 @@ function share_render_fallback_card(string $title, string $subtitle)
 {
     $image = share_create_canvas();
     share_fill_gradient($image, '#04100b', '#163525');
-    share_draw_logo($image, 84, 76, 190);
+    share_draw_logo($image, 84, 76, 190, true);
     $white = share_hex_color($image, '#f3f8f5');
     $muted = share_hex_color($image, '#b5c7bd');
     $lines = share_wrap_text($title, 48, 900, 2, true);
@@ -540,11 +540,10 @@ function share_render_trip_card(string $tripName, string $imagePath)
 
     imagefilledrectangle($image, 0, 0, 1200, 630, share_hex_color($image, '#000000', 52));
     imagefilledrectangle($image, 0, 360, 1200, 630, share_hex_color($image, '#000000', 34));
-    share_draw_logo($image, 72, 66, 176);
+    share_draw_logo($image, 72, 66, 176, true);
 
     $accent = share_hex_color($image, '#79d9aa');
     $white = share_hex_color($image, '#f4fbf7');
-    $muted = share_hex_color($image, '#c7d6cf');
     share_draw_text($image, 'Trip invite', 24, 78, 400, $accent, true);
     $lines = share_wrap_text($tripName !== '' ? $tripName : 'Join this trip', 54, 940, 2, true);
     $y = 470;
@@ -552,7 +551,6 @@ function share_render_trip_card(string $tripName, string $imagePath)
         share_draw_text($image, $line, 54, 76, $y, $white, true);
         $y += 68;
     }
-    share_draw_text($image, 'Open Splyto to join and split expenses together.', 25, 80, 582, $muted);
     return $image;
 }
 
