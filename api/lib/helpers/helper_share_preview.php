@@ -540,7 +540,7 @@ function share_render_trip_card(string $tripName, string $imagePath)
 
     imagefilledrectangle($image, 0, 0, 1200, 630, share_hex_color($image, '#000000', 52));
     imagefilledrectangle($image, 0, 360, 1200, 630, share_hex_color($image, '#000000', 34));
-    share_draw_logo($image, 72, 66, 176, true);
+    share_draw_logo($image, 72, 66, 352, true);
 
     $accent = share_hex_color($image, '#79d9aa');
     $white = share_hex_color($image, '#f4fbf7');
