@@ -538,18 +538,24 @@ function share_render_trip_card(string $tripName, string $imagePath)
         share_fill_gradient($image, '#07110d', '#1e4a33');
     }
 
-    imagefilledrectangle($image, 0, 0, 1200, 630, share_hex_color($image, '#000000', 52));
-    imagefilledrectangle($image, 0, 360, 1200, 630, share_hex_color($image, '#000000', 34));
-    share_draw_logo($image, 72, 66, 352, true);
-
     $accent = share_hex_color($image, '#79d9aa');
     $white = share_hex_color($image, '#f4fbf7');
-    share_draw_text($image, 'Trip invite', 24, 78, 400, $accent, true);
     $lines = share_wrap_text($tripName !== '' ? $tripName : 'Join this trip', 54, 940, 2, true);
-    $y = 470;
+    $labelBaselineY = 400;
+    $titleBaselineY = 470;
+    $titleLineHeight = 68;
+    $panelTop = $labelBaselineY - 70;
+    $panelBottom = min(630, $titleBaselineY + ((max(1, count($lines)) - 1) * $titleLineHeight) + 54);
+
+    imagefilledrectangle($image, 0, 0, 1200, 630, share_hex_color($image, '#000000', 52));
+    imagefilledrectangle($image, 0, $panelTop, 1200, $panelBottom, share_hex_color($image, '#000000', 34));
+    share_draw_logo($image, 72, 66, 352, true);
+
+    share_draw_text($image, 'Trip invite', 24, 78, $labelBaselineY, $accent, true);
+    $y = $titleBaselineY;
     foreach ($lines as $line) {
         share_draw_text($image, $line, 54, 76, $y, $white, true);
-        $y += 68;
+        $y += $titleLineHeight;
     }
     return $image;
 }
