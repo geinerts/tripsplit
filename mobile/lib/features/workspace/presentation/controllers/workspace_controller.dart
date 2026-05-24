@@ -122,6 +122,50 @@ class WorkspaceController {
     );
   }
 
+  Future<void> createTripPayment({
+    required int tripId,
+    required int toUserId,
+    required double amount,
+    String note = '',
+  }) {
+    return _repository.createTripPayment(
+      tripId: tripId,
+      toUserId: toUserId,
+      amount: amount,
+      note: note,
+    );
+  }
+
+  Future<void> confirmTripPaymentReceived({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _repository.confirmTripPaymentReceived(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  Future<void> cancelTripPaymentSent({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _repository.cancelTripPaymentSent(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  Future<void> reportTripPaymentNotReceived({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _repository.reportTripPaymentNotReceived(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
   Future<void> markNotificationsRead({
     required int tripId,
     List<int> notificationIds = const <int>[],

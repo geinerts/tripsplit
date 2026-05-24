@@ -44,6 +44,7 @@ import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_participant.dart';
 import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_split_value.dart';
+import '../../domain/entities/payment_item.dart';
 import '../../domain/entities/queued_mutation.dart';
 import '../../domain/entities/random_draw_result.dart';
 import '../../domain/entities/receipt_upload_payload.dart';

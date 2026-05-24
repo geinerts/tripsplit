@@ -36,6 +36,7 @@ function workspace_sync_cursor_for_trip(PDO $pdo, int $tripId, int $userId): int
     $tripsTable = table_name('trips');
     $expensesTable = table_name('expenses');
     $settlementsTable = table_name('settlements');
+    $paymentsTable = table_name('payments');
     $tripMembersTable = table_name('trip_members');
     $ordersTable = table_name('random_orders');
     $notificationsTable = table_name('notifications');
@@ -84,6 +85,13 @@ function workspace_sync_cursor_for_trip(PDO $pdo, int $tripId, int $userId): int
             ],
         ],
     ];
+
+    if (function_exists('trip_payments_table_available') && trip_payments_table_available($pdo)) {
+        $sources[] = [
+            'sql' => 'SELECT MAX(updated_at) FROM ' . $paymentsTable . ' WHERE trip_id = :trip_id',
+            'params' => ['trip_id' => $tripId],
+        ];
+    }
 
     foreach ($sources as $source) {
         $stmt = $pdo->prepare((string) $source['sql']);
@@ -685,6 +693,7 @@ function workspace_snapshot_action(): void
     $orders = workspace_load_trip_orders($pdo, $tripId, 30);
     $tripNotifications = workspace_load_trip_notifications($pdo, $tripId, $userId, 50);
     $readyToSettle = load_trip_ready_to_settle_state($pdo, $tripId, $userId);
+    $payments = load_trip_payments_payload($pdo, $tripId, $userId);
 
     json_out([
         'ok' => true,
@@ -697,6 +706,7 @@ function workspace_snapshot_action(): void
         'users' => $users,
         'balances' => $balances,
         'settlements' => $settlements,
+        'payments' => $payments,
         'settlement_progress' => $progress,
         'all_settled' => (bool) ($progress['all_settled'] ?? false),
         'expenses' => $expenses,

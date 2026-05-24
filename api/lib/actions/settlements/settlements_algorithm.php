@@ -59,9 +59,15 @@ function calculate_greedy_settlements(array $creditors, array $debtors, array $s
  * @param  array<int, array{id:int, nickname:string, paid_cents:int, owed_cents:int}> $stats
  * @param  array<array{id:int, amount:string|float, paid_by:int}>                    $expenses
  * @param  array<int, array<array{user_id:int, owed_cents:int}>>                     $participantsByExpense
+ * @param  array<array{from_user_id:int, to_user_id:int, amount_cents:int}>          $confirmedPayments
  * @return array{stats:array, balances:array, recommended_settlements:array}
  */
-function compute_balance_from_data(array $stats, array $expenses, array $participantsByExpense): array
+function compute_balance_from_data(
+    array $stats,
+    array $expenses,
+    array $participantsByExpense,
+    array $confirmedPayments = []
+): array
 {
     foreach ($expenses as $expense) {
         $expenseId   = (int) $expense['id'];
@@ -109,9 +115,22 @@ function compute_balance_from_data(array $stats, array $expenses, array $partici
     $creditors = [];
     $debtors   = [];
     $balances  = [];
+    $paymentAdjustments = [];
+
+    foreach ($confirmedPayments as $payment) {
+        $fromUserId = (int) ($payment['from_user_id'] ?? 0);
+        $toUserId = (int) ($payment['to_user_id'] ?? 0);
+        $amountCents = max(0, (int) ($payment['amount_cents'] ?? 0));
+        if ($amountCents <= 0 || !isset($stats[$fromUserId]) || !isset($stats[$toUserId])) {
+            continue;
+        }
+        $paymentAdjustments[$fromUserId] = ($paymentAdjustments[$fromUserId] ?? 0) + $amountCents;
+        $paymentAdjustments[$toUserId] = ($paymentAdjustments[$toUserId] ?? 0) - $amountCents;
+    }
 
     foreach ($stats as $stat) {
-        $net = $stat['paid_cents'] - $stat['owed_cents'];
+        $userId = (int) $stat['id'];
+        $net = $stat['paid_cents'] - $stat['owed_cents'] + ($paymentAdjustments[$userId] ?? 0);
         if ($net > 0) {
             $creditors[] = ['id' => $stat['id'], 'amount_cents' => $net];
         } elseif ($net < 0) {

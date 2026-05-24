@@ -1,5 +1,6 @@
 import '../../domain/entities/balance_item.dart';
 import '../../domain/entities/expense_participant.dart';
+import '../../domain/entities/payment_item.dart';
 import '../../domain/entities/random_order.dart';
 import '../../domain/entities/random_order_member.dart';
 import '../../domain/entities/settlement_item.dart';
@@ -150,6 +151,29 @@ class WorkspaceRemoteParsers {
       canCancelSent: item['can_cancel_sent'] == true,
       canReportNotReceived: item['can_report_not_received'] == true,
       isConfirmed: item['is_confirmed'] == true || status == 'confirmed',
+    );
+  }
+
+  static PaymentItem parsePayment(Map<String, dynamic> item) {
+    final status = parsePaymentStatus(item['status']);
+    return PaymentItem(
+      id: _toInt(item['id']),
+      fromUserId: _toInt(item['from_user_id']),
+      toUserId: _toInt(item['to_user_id']),
+      from: _toString(item['from']).trim(),
+      to: _toString(item['to']).trim(),
+      amount: (item['amount'] as num?)?.toDouble() ?? 0,
+      status: status,
+      note: _toString(item['note']).trim(),
+      createdAt: _toNullableString(item['created_at']),
+      markedSentAt: _toNullableString(item['marked_sent_at']),
+      confirmedAt: _toNullableString(item['confirmed_at']),
+      cancelledAt: _toNullableString(item['cancelled_at']),
+      cancelReason: _toNullableString(item['cancel_reason']),
+      canConfirmReceived: _toBool(item['can_confirm_received']),
+      canCancelSent: _toBool(item['can_cancel_sent']),
+      canReportNotReceived: _toBool(item['can_report_not_received']),
+      isConfirmed: _toBool(item['is_confirmed']) || status == 'confirmed',
     );
   }
 
@@ -306,6 +330,14 @@ class WorkspaceRemoteParsers {
       return value;
     }
     return 'suggested';
+  }
+
+  static String parsePaymentStatus(Object? raw) {
+    final value = (raw as String? ?? '').trim().toLowerCase();
+    if (value == 'sent' || value == 'confirmed' || value == 'cancelled') {
+      return value;
+    }
+    return 'sent';
   }
 
   static String parseExpenseSplitMode(Object? raw) {

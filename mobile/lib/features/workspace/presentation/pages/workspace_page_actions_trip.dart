@@ -284,6 +284,122 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     );
   }
 
+  Future<void> _onTripPaymentCreate({
+    required SettlementItem settlement,
+    required double amount,
+    required String note,
+  }) async {
+    if (_snapshot == null || _isMutating || !_snapshot!.isActive) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.createTripPayment(
+          tripId: widget.trip.id,
+          toUserId: settlement.toUserId,
+          amount: amount,
+          note: note,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack('Payment recorded. Waiting for confirmation.');
+        }
+      },
+    );
+  }
+
+  Future<void> _onTripPaymentConfirmReceived(PaymentItem payment) async {
+    if (_snapshot == null || _isMutating) {
+      return;
+    }
+    final confirmed = await showAppConfirmationDialog(
+      context: context,
+      title: 'Confirm payment',
+      message:
+          'Confirm that you received ${_formatMoney(context, payment.amount, currencyCode: widget.trip.currencyCode)} from ${payment.from}.',
+      confirmLabel: context.l10n.confirmReceivedAction,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.verified_rounded,
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.confirmTripPaymentReceived(
+          tripId: widget.trip.id,
+          paymentId: payment.id,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack('Payment confirmed.');
+        }
+      },
+    );
+  }
+
+  Future<void> _onTripPaymentCancelSent(PaymentItem payment) async {
+    if (_snapshot == null || _isMutating) {
+      return;
+    }
+    final confirmed = await showAppConfirmationDialog(
+      context: context,
+      title: 'Cancel payment record',
+      message:
+          'Cancel the ${_formatMoney(context, payment.amount, currencyCode: widget.trip.currencyCode)} payment mark to ${payment.to}?',
+      confirmLabel: context.l10n.settlementCancelSentAction,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.undo_rounded,
+      destructive: true,
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.cancelTripPaymentSent(
+          tripId: widget.trip.id,
+          paymentId: payment.id,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack('Payment record cancelled.');
+        }
+      },
+    );
+  }
+
+  Future<void> _onTripPaymentReportNotReceived(PaymentItem payment) async {
+    if (_snapshot == null || _isMutating) {
+      return;
+    }
+    final confirmed = await showAppConfirmationDialog(
+      context: context,
+      title: 'Payment not received',
+      message:
+          'Mark this ${_formatMoney(context, payment.amount, currencyCode: widget.trip.currencyCode)} payment from ${payment.from} as not received?',
+      confirmLabel: context.l10n.settlementNotReceivedAction,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.report_problem_outlined,
+      destructive: true,
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.reportTripPaymentNotReceived(
+          tripId: widget.trip.id,
+          paymentId: payment.id,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack('Payment marked as not received.');
+        }
+      },
+    );
+  }
+
   Future<void> _openReceiptUrl(String url) async {
     final parsed = Uri.tryParse(url.trim());
     if (parsed == null) {

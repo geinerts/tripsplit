@@ -62,6 +62,24 @@ abstract class WorkspaceRemoteDataSource {
     required int tripId,
     required int settlementId,
   });
+  Future<void> createTripPayment({
+    required int tripId,
+    required int toUserId,
+    required double amount,
+    String note = '',
+  });
+  Future<void> confirmTripPaymentReceived({
+    required int tripId,
+    required int paymentId,
+  });
+  Future<void> cancelTripPaymentSent({
+    required int tripId,
+    required int paymentId,
+  });
+  Future<void> reportTripPaymentNotReceived({
+    required int tripId,
+    required int paymentId,
+  });
   Future<void> markNotificationsRead({
     required int tripId,
     List<int> notificationIds = const <int>[],
@@ -298,6 +316,54 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     return _mutationApi.remindSettlement(
       tripId: tripId,
       settlementId: settlementId,
+    );
+  }
+
+  @override
+  Future<void> createTripPayment({
+    required int tripId,
+    required int toUserId,
+    required double amount,
+    String note = '',
+  }) {
+    return _mutationApi.createTripPayment(
+      tripId: tripId,
+      toUserId: toUserId,
+      amount: amount,
+      note: note,
+    );
+  }
+
+  @override
+  Future<void> confirmTripPaymentReceived({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _mutationApi.confirmTripPaymentReceived(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  @override
+  Future<void> cancelTripPaymentSent({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _mutationApi.cancelTripPaymentSent(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  @override
+  Future<void> reportTripPaymentNotReceived({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _mutationApi.reportTripPaymentNotReceived(
+      tripId: tripId,
+      paymentId: paymentId,
     );
   }
 

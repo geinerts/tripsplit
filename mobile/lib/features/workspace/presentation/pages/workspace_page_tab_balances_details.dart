@@ -434,6 +434,43 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       }
     }
 
+    for (final payment in snapshot.payments) {
+      if (!payment.isConfirmed) {
+        continue;
+      }
+      final fromUser = usersById[payment.fromUserId];
+      final toUser = usersById[payment.toUserId];
+      final fromName = (fromUser?.preferredName ?? payment.from).trim();
+      final toName = (toUser?.preferredName ?? payment.to).trim();
+      final date = _formatDisplayDate(
+        context,
+        (payment.confirmedAt ?? payment.markedSentAt ?? '').split(' ').first,
+      );
+      if (payment.fromUserId == memberId) {
+        transactions.add(
+          _MemberTransactionEntry(
+            title:
+                'Payment to ${toName.isEmpty ? context.l10n.userWithId(payment.toUserId) : toName}',
+            subtitle: date.isEmpty ? 'Confirmed payment' : 'Confirmed $date',
+            amount: payment.amount,
+            isPositive: true,
+            icon: Icons.payments_rounded,
+          ),
+        );
+      } else if (payment.toUserId == memberId) {
+        transactions.add(
+          _MemberTransactionEntry(
+            title:
+                'Payment from ${fromName.isEmpty ? context.l10n.userWithId(payment.fromUserId) : fromName}',
+            subtitle: date.isEmpty ? 'Confirmed payment' : 'Confirmed $date',
+            amount: payment.amount,
+            isPositive: false,
+            icon: Icons.payments_rounded,
+          ),
+        );
+      }
+    }
+
     return transactions;
   }
 

@@ -178,6 +178,40 @@ class SettlementAlgorithmTest extends TestCase
         $this->assertEqualsWithDelta(0.0, $netTotal, 0.001);
     }
 
+    public function test_confirmed_payments_reduce_outstanding_settlements(): void
+    {
+        $stats = $this->makeStats([
+            ['id' => 1, 'nickname' => 'Alice'],
+            ['id' => 2, 'nickname' => 'Bob'],
+        ]);
+
+        $expenses = [
+            ['id' => 1, 'amount' => '100.00', 'paid_by' => 1],
+        ];
+        $participants = [
+            1 => [
+                ['user_id' => 1, 'owed_cents' => 5000],
+                ['user_id' => 2, 'owed_cents' => 5000],
+            ],
+        ];
+        $confirmedPayments = [
+            ['from_user_id' => 2, 'to_user_id' => 1, 'amount_cents' => 2000],
+        ];
+
+        $result = compute_balance_from_data(
+            $stats,
+            $expenses,
+            $participants,
+            $confirmedPayments
+        );
+
+        $settlements = $result['recommended_settlements'];
+        $this->assertCount(1, $settlements);
+        $this->assertSame(2, $settlements[0]['from_user_id']);
+        $this->assertSame(1, $settlements[0]['to_user_id']);
+        $this->assertSame(3000, $settlements[0]['amount_cents']);
+    }
+
     // -------------------------------------------------------------------------
     // calculate_greedy_settlements tests
     // -------------------------------------------------------------------------

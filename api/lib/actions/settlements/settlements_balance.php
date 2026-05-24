@@ -66,7 +66,11 @@ function compute_trip_balance_data(PDO $pdo, int $tripId): array
         }
     }
 
+    $confirmedPayments = function_exists('load_trip_confirmed_payment_rows')
+        ? load_trip_confirmed_payment_rows($pdo, $tripId)
+        : [];
+
     // Keep this function as DB adapter only: fetch data, then delegate
     // all math to pure settlement algorithm helpers.
-    return compute_balance_from_data($stats, $expenses, $participantsByExpense);
+    return compute_balance_from_data($stats, $expenses, $participantsByExpense, $confirmedPayments);
 }

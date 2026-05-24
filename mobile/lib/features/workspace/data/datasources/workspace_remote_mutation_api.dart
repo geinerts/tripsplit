@@ -98,6 +98,60 @@ class WorkspaceRemoteMutationApi {
     );
   }
 
+  Future<void> createTripPayment({
+    required int tripId,
+    required int toUserId,
+    required double amount,
+    String note = '',
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('create_trip_payment'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{
+        'to_user_id': toUserId,
+        'amount': amount,
+        if (note.trim().isNotEmpty) 'note': note.trim(),
+      },
+    );
+  }
+
+  Future<void> confirmTripPaymentReceived({
+    required int tripId,
+    required int paymentId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('confirm_trip_payment_received'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'payment_id': paymentId},
+    );
+  }
+
+  Future<void> cancelTripPaymentSent({
+    required int tripId,
+    required int paymentId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('cancel_trip_payment_sent'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'payment_id': paymentId},
+    );
+  }
+
+  Future<void> reportTripPaymentNotReceived({
+    required int tripId,
+    required int paymentId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('report_trip_payment_not_received'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'payment_id': paymentId},
+    );
+  }
+
   Future<void> markNotificationsRead({
     required int tripId,
     List<int> notificationIds = const <int>[],

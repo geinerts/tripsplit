@@ -221,8 +221,13 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     final totalMembers = snapshot.readyToSettleMembersTotal;
     final readyMembers = snapshot.readyToSettleMembersReady;
     final allMembersReady = snapshot.allMembersReadyToSettle;
+    final hasPendingPayments = snapshot.payments.any((item) => item.isSent);
     final canFinishTrip =
-        snapshot.isActive && _canEditMembers && !_isMutating && allMembersReady;
+        snapshot.isActive &&
+        _canEditMembers &&
+        !_isMutating &&
+        allMembersReady &&
+        !hasPendingPayments;
     WorkspaceUser? currentUser;
     for (final user in snapshot.users) {
       if (user.id == _currentUserId) {
@@ -239,6 +244,18 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     final paidSettlements = settlements
         .where((item) => item.isConfirmed)
         .toList(growable: false);
+    final payments =
+        snapshot.payments
+            .where((item) => !item.isCancelled)
+            .toList(growable: false)
+          ..sort((a, b) {
+            final aWeight = a.isSent ? 0 : 1;
+            final bWeight = b.isSent ? 0 : 1;
+            if (aWeight != bWeight) {
+              return aWeight.compareTo(bWeight);
+            }
+            return b.id.compareTo(a.id);
+          });
 
     return ListView(
       physics: const NeverScrollableScrollPhysics(),
@@ -252,6 +269,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
             allMembersReady: allMembersReady,
             readyMembers: readyMembers,
             totalMembers: totalMembers,
+            hasPendingPayments: hasPendingPayments,
             isCurrentUserReady: isCurrentUserReady,
             canToggleReady: canToggleReady,
             finishLabel: context.l10n.finishTripStartSettlementsAction,
@@ -263,6 +281,14 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           _buildSettlementProgressOverview(
             snapshot: snapshot,
             settlements: settlements,
+            usersById: usersById,
+            semantic: semantic,
+          ),
+          const SizedBox(height: 12),
+        ],
+        if (payments.isNotEmpty) ...[
+          _buildTripPaymentsSection(
+            payments: payments,
             usersById: usersById,
             semantic: semantic,
           ),
@@ -460,6 +486,14 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         : (normalizedStatus == 'sent'
               ? context.l10n.statusSent
               : context.l10n.statusPending);
+    final payableAmount = _tripPaymentOutstandingAmount(snapshot, item);
+    final canRecordPayment =
+        snapshot.isActive &&
+        item.isSuggested &&
+        _currentUserId > 0 &&
+        item.fromUserId == _currentUserId &&
+        payableAmount > 0.004 &&
+        !_isMutating;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
@@ -541,7 +575,29 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 ),
                 const SizedBox(height: 12),
                 Divider(height: 1, color: AppDesign.cardStroke(context)),
-                const SizedBox(height: 52),
+                const SizedBox(height: 14),
+                if (canRecordPayment) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: () => _openCreateTripPaymentSheet(
+                        settlement: item,
+                        maxAmount: payableAmount,
+                      ),
+                      icon: const Icon(Icons.payments_rounded, size: 18),
+                      label: const Text('Record payment'),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: AppDesign.successColor(context),
+                        foregroundColor: AppDesign.darkForeground,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        textStyle: const TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ] else ...[
+                  const SizedBox(height: 38),
+                ],
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -569,6 +625,367 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         ),
       ),
     );
+  }
+
+  Widget _buildTripPaymentsSection({
+    required List<PaymentItem> payments,
+    required Map<int, WorkspaceUser> usersById,
+    required AppSemanticColors semantic,
+  }) {
+    final pendingCount = payments.where((item) => item.isSent).length;
+    return _WorkspaceSectionCard(
+      accent: pendingCount > 0
+          ? semantic.statusSentForeground
+          : AppDesign.successColor(context),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: semantic.statusActiveBackground,
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.account_balance_wallet_rounded,
+                  color: semantic.flowStepCurrent,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  pendingCount > 0
+                      ? '$pendingCount payment${pendingCount == 1 ? '' : 's'} awaiting confirmation'
+                      : 'Recorded payments',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: AppDesign.titleColor(context),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          for (var i = 0; i < payments.length; i++) ...[
+            _buildTripPaymentCard(
+              payment: payments[i],
+              usersById: usersById,
+              semantic: semantic,
+            ),
+            if (i < payments.length - 1) const SizedBox(height: 10),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTripPaymentCard({
+    required PaymentItem payment,
+    required Map<int, WorkspaceUser> usersById,
+    required AppSemanticColors semantic,
+  }) {
+    final fromUser = usersById[payment.fromUserId];
+    final toUser = usersById[payment.toUserId];
+    final fromName = _paymentMemberName(
+      payment.from,
+      payment.fromUserId,
+      fromUser,
+    );
+    final toName = _paymentMemberName(payment.to, payment.toUserId, toUser);
+    final isConfirmed = payment.isConfirmed;
+    final statusForeground = isConfirmed
+        ? semantic.statusConfirmedForeground
+        : semantic.statusSentForeground;
+    final statusBackground = isConfirmed
+        ? semantic.statusConfirmedBackground
+        : semantic.statusSentBackground;
+    final statusBorder = isConfirmed
+        ? semantic.statusConfirmedBorder
+        : semantic.statusSentBorder;
+    final statusLabel = isConfirmed ? 'Confirmed' : 'Awaiting confirmation';
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+      decoration: BoxDecoration(
+        color: AppDesign.cardSurface(context),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppDesign.cardStroke(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _balanceAvatar(
+                name: fromName,
+                avatarUrl: fromUser?.avatarThumbUrl ?? fromUser?.avatarUrl,
+                size: 38,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$fromName paid $toName',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: AppDesign.titleColor(context),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _formatMoney(
+                        context,
+                        payment.amount,
+                        currencyCode: widget.trip.currencyCode,
+                      ),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppDesign.mutedColor(context),
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              _buildSettlementStatusPill(
+                label: statusLabel,
+                foreground: statusForeground,
+                background: statusBackground,
+                border: statusBorder,
+              ),
+            ],
+          ),
+          if (payment.note.trim().isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              payment.note.trim(),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppDesign.mutedColor(context),
+              ),
+            ),
+          ],
+          if (payment.isSent &&
+              (payment.canConfirmReceived ||
+                  payment.canCancelSent ||
+                  payment.canReportNotReceived)) ...[
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                if (payment.canConfirmReceived)
+                  FilledButton.icon(
+                    onPressed: _isMutating
+                        ? null
+                        : () => _onTripPaymentConfirmReceived(payment),
+                    icon: const Icon(Icons.verified_rounded, size: 17),
+                    label: const Text('Confirm received'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppDesign.successColor(context),
+                      foregroundColor: AppDesign.darkForeground,
+                    ),
+                  ),
+                if (payment.canCancelSent)
+                  TextButton.icon(
+                    onPressed: _isMutating
+                        ? null
+                        : () => _onTripPaymentCancelSent(payment),
+                    icon: const Icon(Icons.undo_rounded, size: 17),
+                    label: const Text('Cancel'),
+                  ),
+                if (payment.canReportNotReceived)
+                  TextButton.icon(
+                    onPressed: _isMutating
+                        ? null
+                        : () => _onTripPaymentReportNotReceived(payment),
+                    icon: const Icon(Icons.report_problem_outlined, size: 17),
+                    label: const Text('Not received'),
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _paymentMemberName(String fallback, int userId, WorkspaceUser? user) {
+    final preferred = (user?.preferredName ?? fallback).trim();
+    if (preferred.isNotEmpty) {
+      return preferred;
+    }
+    return context.l10n.userWithId(userId);
+  }
+
+  double _tripPaymentOutstandingAmount(
+    WorkspaceSnapshot snapshot,
+    SettlementItem settlement,
+  ) {
+    final pendingAmount = snapshot.payments
+        .where(
+          (payment) =>
+              payment.isSent &&
+              payment.fromUserId == settlement.fromUserId &&
+              payment.toUserId == settlement.toUserId,
+        )
+        .fold<double>(0, (total, payment) => total + payment.amount);
+    final outstanding = settlement.amount - pendingAmount;
+    return outstanding <= 0 ? 0 : outstanding;
+  }
+
+  Future<void> _openCreateTripPaymentSheet({
+    required SettlementItem settlement,
+    required double maxAmount,
+  }) async {
+    if (maxAmount <= 0) {
+      return;
+    }
+    final amountController = TextEditingController(
+      text: maxAmount.toStringAsFixed(2),
+    );
+    final noteController = TextEditingController();
+    var errorText = '';
+
+    await showAppBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (sheetContext, setSheetState) {
+            final bottomInset = MediaQuery.of(sheetContext).viewInsets.bottom;
+            final bottomSafePadding = MediaQuery.paddingOf(sheetContext).bottom;
+            final colors = Theme.of(sheetContext).colorScheme;
+            return Padding(
+              padding: EdgeInsets.only(bottom: bottomInset),
+              child: SafeArea(
+                top: false,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.fromLTRB(
+                    16,
+                    8,
+                    16,
+                    18 + bottomSafePadding,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Record payment',
+                              style: Theme.of(sheetContext).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.w800),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () => Navigator.of(sheetContext).pop(),
+                            icon: const Icon(Icons.close_rounded),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        'Use this after you paid ${settlement.to} outside Splyto. ${settlement.to} will confirm receiving it.',
+                        style: Theme.of(sheetContext).textTheme.bodyMedium
+                            ?.copyWith(color: colors.onSurfaceVariant),
+                      ),
+                      const SizedBox(height: 14),
+                      TextField(
+                        controller: amountController,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: 'Amount',
+                          helperText:
+                              'Max ${_formatMoney(sheetContext, maxAmount, currencyCode: widget.trip.currencyCode)}',
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: noteController,
+                        maxLength: 120,
+                        decoration: const InputDecoration(
+                          labelText: 'Note',
+                          hintText: 'Bank transfer, Revolut, cash...',
+                          counterText: '',
+                        ),
+                      ),
+                      if (errorText.isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          errorText,
+                          style: Theme.of(
+                            sheetContext,
+                          ).textTheme.bodySmall?.copyWith(color: colors.error),
+                        ),
+                      ],
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          onPressed: _isMutating
+                              ? null
+                              : () async {
+                                  final amount = _parseAmount(
+                                    amountController.text,
+                                  );
+                                  if (amount <= 0) {
+                                    setSheetState(() {
+                                      errorText =
+                                          'Payment amount must be greater than zero.';
+                                    });
+                                    return;
+                                  }
+                                  if (amount - maxAmount > 0.005) {
+                                    setSheetState(() {
+                                      errorText =
+                                          'Payment cannot be higher than the outstanding amount.';
+                                    });
+                                    return;
+                                  }
+                                  Navigator.of(sheetContext).pop();
+                                  await _onTripPaymentCreate(
+                                    settlement: settlement,
+                                    amount: amount,
+                                    note: noteController.text,
+                                  );
+                                },
+                          icon: const Icon(Icons.payments_rounded),
+                          label: const Text('Mark as paid'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppDesign.successColor(context),
+                            foregroundColor: AppDesign.darkForeground,
+                            padding: const EdgeInsets.symmetric(vertical: 13),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    amountController.dispose();
+    noteController.dispose();
   }
 
   Widget _buildSettlementPersonColumn({
@@ -635,15 +1052,18 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     required bool allMembersReady,
     required int readyMembers,
     required int totalMembers,
+    required bool hasPendingPayments,
     required bool isCurrentUserReady,
     required bool canToggleReady,
     required String finishLabel,
     required String creatorMustFinishLabel,
   }) {
     final readyTitle = context.l10n.workspaceReadyToSettle;
-    final readySubtitle = allMembersReady
-        ? context.l10n.workspaceAllMembersAreReadyYouCanStartSettlements
-        : context.l10n.workspaceWaitingForEveryoneToMarkReady;
+    final readySubtitle = hasPendingPayments
+        ? 'Confirm or cancel pending payments before final settlements.'
+        : (allMembersReady
+              ? context.l10n.workspaceAllMembersAreReadyYouCanStartSettlements
+              : context.l10n.workspaceWaitingForEveryoneToMarkReady);
     final markReadyTitle = context.l10n.workspaceIMReady;
     final markReadySubtitle =
         context.l10n.workspaceConfirmThatYouAddedAllYourExpenses;
@@ -743,11 +1163,15 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
               ),
             ),
           ),
-          if (!allMembersReady)
+          if (!allMembersReady || hasPendingPayments)
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                context.l10n.workspaceFinishButtonUnlocksOnceEveryoneMarksReady,
+                hasPendingPayments
+                    ? 'Finish unlocks after pending payments are resolved.'
+                    : context
+                          .l10n
+                          .workspaceFinishButtonUnlocksOnceEveryoneMarksReady,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),

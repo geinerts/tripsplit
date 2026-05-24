@@ -68,6 +68,24 @@ abstract class WorkspaceRepository {
     required int tripId,
     required int settlementId,
   });
+  Future<void> createTripPayment({
+    required int tripId,
+    required int toUserId,
+    required double amount,
+    String note = '',
+  });
+  Future<void> confirmTripPaymentReceived({
+    required int tripId,
+    required int paymentId,
+  });
+  Future<void> cancelTripPaymentSent({
+    required int tripId,
+    required int paymentId,
+  });
+  Future<void> reportTripPaymentNotReceived({
+    required int tripId,
+    required int paymentId,
+  });
   Future<void> markNotificationsRead({
     required int tripId,
     List<int> notificationIds = const <int>[],

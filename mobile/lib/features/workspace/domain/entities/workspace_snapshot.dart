@@ -1,4 +1,5 @@
 import 'balance_item.dart';
+import 'payment_item.dart';
 import 'random_order.dart';
 import 'settlement_item.dart';
 import 'trip_expense.dart';
@@ -13,6 +14,7 @@ class WorkspaceSnapshot {
     required this.users,
     required this.balances,
     required this.settlements,
+    required this.payments,
     required this.settlementTotal,
     required this.settlementConfirmed,
     required this.settlementRemaining,
@@ -29,6 +31,7 @@ class WorkspaceSnapshot {
   final List<WorkspaceUser> users;
   final List<BalanceItem> balances;
   final List<SettlementItem> settlements;
+  final List<PaymentItem> payments;
   final int settlementTotal;
   final int settlementConfirmed;
   final int settlementRemaining;
@@ -76,6 +79,7 @@ class WorkspaceSnapshot {
     List<WorkspaceUser>? users,
     List<BalanceItem>? balances,
     List<SettlementItem>? settlements,
+    List<PaymentItem>? payments,
     int? settlementTotal,
     int? settlementConfirmed,
     int? settlementRemaining,
@@ -94,6 +98,7 @@ class WorkspaceSnapshot {
       users: users ?? this.users,
       balances: balances ?? this.balances,
       settlements: settlements ?? this.settlements,
+      payments: payments ?? this.payments,
       settlementTotal: settlementTotal ?? this.settlementTotal,
       settlementConfirmed: settlementConfirmed ?? this.settlementConfirmed,
       settlementRemaining: settlementRemaining ?? this.settlementRemaining,

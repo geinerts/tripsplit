@@ -162,6 +162,51 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   }
 
   @override
+  Future<void> createTripPayment({
+    required int tripId,
+    required int toUserId,
+    required double amount,
+    String note = '',
+  }) {
+    return _remote.createTripPayment(
+      tripId: tripId,
+      toUserId: toUserId,
+      amount: amount,
+      note: note,
+    );
+  }
+
+  @override
+  Future<void> confirmTripPaymentReceived({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _remote.confirmTripPaymentReceived(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  @override
+  Future<void> cancelTripPaymentSent({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _remote.cancelTripPaymentSent(tripId: tripId, paymentId: paymentId);
+  }
+
+  @override
+  Future<void> reportTripPaymentNotReceived({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _remote.reportTripPaymentNotReceived(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  @override
   Future<void> markNotificationsRead({
     required int tripId,
     List<int> notificationIds = const <int>[],

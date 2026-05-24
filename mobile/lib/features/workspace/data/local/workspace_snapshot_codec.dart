@@ -1,5 +1,6 @@
 import '../../domain/entities/balance_item.dart';
 import '../../domain/entities/expense_participant.dart';
+import '../../domain/entities/payment_item.dart';
 import '../../domain/entities/random_order.dart';
 import '../../domain/entities/random_order_member.dart';
 import '../../domain/entities/settlement_item.dart';
@@ -62,6 +63,29 @@ class WorkspaceSnapshotCodec {
               'marked_sent_at': item.markedSentAt,
               'confirmed_at': item.confirmedAt,
               'can_mark_sent': item.canMarkSent,
+              'can_confirm_received': item.canConfirmReceived,
+              'can_cancel_sent': item.canCancelSent,
+              'can_report_not_received': item.canReportNotReceived,
+              'is_confirmed': item.isConfirmed,
+            },
+          )
+          .toList(growable: false),
+      'payments': snapshot.payments
+          .map(
+            (item) => <String, dynamic>{
+              'id': item.id,
+              'from_user_id': item.fromUserId,
+              'to_user_id': item.toUserId,
+              'from': item.from,
+              'to': item.to,
+              'amount': item.amount,
+              'status': item.status,
+              'note': item.note,
+              'created_at': item.createdAt,
+              'marked_sent_at': item.markedSentAt,
+              'confirmed_at': item.confirmedAt,
+              'cancelled_at': item.cancelledAt,
+              'cancel_reason': item.cancelReason,
               'can_confirm_received': item.canConfirmReceived,
               'can_cancel_sent': item.canCancelSent,
               'can_report_not_received': item.canReportNotReceived,
@@ -247,6 +271,34 @@ class WorkspaceSnapshotCodec {
         )
         .toList(growable: false);
 
+    final payments = (map['payments'] as List<dynamic>? ?? <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map(
+          (item) => PaymentItem(
+            id: (item['id'] as num?)?.toInt() ?? 0,
+            fromUserId: (item['from_user_id'] as num?)?.toInt() ?? 0,
+            toUserId: (item['to_user_id'] as num?)?.toInt() ?? 0,
+            from: item['from'] as String? ?? '',
+            to: item['to'] as String? ?? '',
+            amount: (item['amount'] as num?)?.toDouble() ?? 0,
+            status: _parsePaymentStatus(item['status']),
+            note: item['note'] as String? ?? '',
+            createdAt: item['created_at'] as String?,
+            markedSentAt: item['marked_sent_at'] as String?,
+            confirmedAt: item['confirmed_at'] as String?,
+            cancelledAt: item['cancelled_at'] as String?,
+            cancelReason: item['cancel_reason'] as String?,
+            canConfirmReceived: item['can_confirm_received'] == true,
+            canCancelSent: item['can_cancel_sent'] == true,
+            canReportNotReceived: item['can_report_not_received'] == true,
+            isConfirmed:
+                item['is_confirmed'] == true ||
+                (item['status'] as String? ?? '').trim().toLowerCase() ==
+                    'confirmed',
+          ),
+        )
+        .toList(growable: false);
+
     final expenses = (map['expenses'] as List<dynamic>? ?? <dynamic>[])
         .whereType<Map<String, dynamic>>()
         .map((item) {
@@ -351,6 +403,7 @@ class WorkspaceSnapshotCodec {
       users: users,
       balances: balances,
       settlements: settlements,
+      payments: payments,
       settlementTotal: (map['settlement_total'] as num?)?.toInt() ?? 0,
       settlementConfirmed: (map['settlement_confirmed'] as num?)?.toInt() ?? 0,
       settlementRemaining: (map['settlement_remaining'] as num?)?.toInt() ?? 0,
@@ -370,6 +423,14 @@ class WorkspaceSnapshotCodec {
       return value;
     }
     return 'equal';
+  }
+
+  static String _parsePaymentStatus(Object? raw) {
+    final value = (raw as String? ?? '').trim().toLowerCase();
+    if (value == 'confirmed' || value == 'cancelled') {
+      return value;
+    }
+    return 'sent';
   }
 
   static String _normalizeTripRole(Object? value) {

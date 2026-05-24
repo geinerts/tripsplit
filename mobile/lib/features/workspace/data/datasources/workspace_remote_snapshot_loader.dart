@@ -205,6 +205,12 @@ class WorkspaceRemoteSnapshotLoader {
         .map(WorkspaceRemoteParsers.parseSettlement)
         .toList(growable: false);
 
+    final payments =
+        (balancesResponse['payments'] as List<dynamic>? ?? <dynamic>[])
+            .whereType<Map<String, dynamic>>()
+            .map(WorkspaceRemoteParsers.parsePayment)
+            .toList(growable: false);
+
     final expenses =
         (expensesResponse['expenses'] as List<dynamic>? ?? <dynamic>[])
             .whereType<Map<String, dynamic>>()
@@ -233,6 +239,7 @@ class WorkspaceRemoteSnapshotLoader {
       users: users,
       balances: balances,
       settlements: settlements,
+      payments: payments,
       settlementTotal: settlementTotal,
       settlementConfirmed: settlementConfirmed,
       settlementRemaining: settlementRemaining < 0 ? 0 : settlementRemaining,

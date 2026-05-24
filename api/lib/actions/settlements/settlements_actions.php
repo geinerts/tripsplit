@@ -68,6 +68,7 @@ function balances_action(): void
         'trip' => build_trip_payload($trip),
         'balances' => $balances,
         'settlements' => $settlements,
+        'payments' => load_trip_payments_payload($pdo, $tripId, (int) $me['id']),
         'settlement_progress' => $progress,
         'all_settled' => (bool) ($progress['all_settled'] ?? false),
         'ready_to_settle' => $readyToSettle,
@@ -108,6 +109,17 @@ function end_trip_action(): void
             'ok' => false,
             'error' => 'All trip members must mark ready before starting settlements.',
             'ready_to_settle' => $readyToSettle,
+        ], 409);
+    }
+
+    $pendingPaymentCount = function_exists('trip_pending_payments_count')
+        ? trip_pending_payments_count($pdo, $tripId)
+        : 0;
+    if ($pendingPaymentCount > 0) {
+        json_out([
+            'ok' => false,
+            'error' => 'Confirm or cancel pending payments before starting final settlements.',
+            'pending_payments_count' => $pendingPaymentCount,
         ], 409);
     }
 

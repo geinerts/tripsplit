@@ -365,6 +365,38 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
           return 'envió un recordatorio';
         }
         return en('sent a settlement reminder');
+      case 'payment.marked_sent':
+        if (language == 'lv') {
+          return 'atzīmēja maksājumu kā nosūtītu';
+        }
+        if (language == 'es') {
+          return 'marcó un pago como enviado';
+        }
+        return en('recorded a payment');
+      case 'payment.confirmed':
+        if (language == 'lv') {
+          return 'apstiprināja maksājumu';
+        }
+        if (language == 'es') {
+          return 'confirmó un pago';
+        }
+        return en('confirmed a payment');
+      case 'payment.cancelled':
+        if (language == 'lv') {
+          return 'atcēla maksājuma ierakstu';
+        }
+        if (language == 'es') {
+          return 'canceló un pago';
+        }
+        return en('cancelled a payment record');
+      case 'payment.not_received':
+        if (language == 'lv') {
+          return 'atzīmēja maksājumu kā nesaņemtu';
+        }
+        if (language == 'es') {
+          return 'marcó un pago como no recibido';
+        }
+        return en('marked a payment as not received');
       default:
         if (language == 'lv') {
           return 'veica izmaiņas';
@@ -492,6 +524,9 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     if (normalized.contains('settlement')) {
       return Icons.payments_rounded;
     }
+    if (normalized.contains('payment')) {
+      return Icons.account_balance_wallet_rounded;
+    }
     if (normalized.contains('ready')) {
       return Icons.verified_rounded;
     }
@@ -515,6 +550,9 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
       return AppDesign.lightDestructive;
     }
     if (normalized.contains('settlement')) {
+      return AppDesign.lightAccent;
+    }
+    if (normalized.contains('payment')) {
       return AppDesign.lightAccent;
     }
     if (normalized.contains('ready') || normalized.contains('finished')) {
