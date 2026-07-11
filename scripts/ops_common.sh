@@ -6,6 +6,10 @@ resolve_trip_env_file() {
     printf '%s\n' "${TRIP_ENV_FILE}"
     return 0
   fi
+  if [[ -f "/etc/splyto/splyto.env" ]]; then
+    printf '%s\n' "/etc/splyto/splyto.env"
+    return 0
+  fi
   if [[ -f ".env" ]]; then
     printf '%s\n' ".env"
     return 0

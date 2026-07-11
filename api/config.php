@@ -3,8 +3,21 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/config/config_env.php';
 
-load_env_file(__DIR__ . '/../.env');
-load_env_file(__DIR__ . '/.env');
+// Production secrets live outside the web root. Local development continues
+// to use the ignored project .env file when the system file is absent.
+$configuredEnvFile = trim((string) getenv('TRIP_ENV_FILE'));
+$envFiles = [
+    $configuredEnvFile,
+    '/etc/splyto/splyto.env',
+    __DIR__ . '/../.env',
+    __DIR__ . '/.env',
+];
+
+foreach (array_unique($envFiles) as $envFile) {
+    if ($envFile !== '') {
+        load_env_file($envFile);
+    }
+}
 
 require_once __DIR__ . '/config/config_constants.php';
 require_once __DIR__ . '/config/config_db.php';

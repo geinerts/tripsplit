@@ -69,7 +69,7 @@ php scripts/run_migrations.php --baseline
      - `TRIP_PUSH_ENABLED=true`
      - FCM for Android + Web (recommended HTTP v1):
        - `TRIP_PUSH_FCM_PROJECT_ID` (optional if present in service account JSON)
-       - `TRIP_PUSH_FCM_SERVICE_ACCOUNT_REL_PATH` (e.g. `keys/firebase-service-account.json`)
+       - `TRIP_PUSH_FCM_SERVICE_ACCOUNT_REL_PATH` (e.g. `/etc/splyto/keys/firebase-service-account.json`)
      - FCM legacy (optional fallback only):
        - `TRIP_PUSH_FCM_SERVER_KEY`
      - APNs for iOS:
@@ -87,7 +87,9 @@ php scripts/run_migrations.php --baseline
      - `TRIP_SETTLEMENT_MANUAL_REMINDER_COOLDOWN_MIN` (default 15)
    - optional limits for rate-limit and upload quotas
 3. Upload project files to `public_html` (or your target subdirectory).
-4. Upload `.env` to project root (`.../trip/.env`) or `api/.env`.
+4. On a production server, keep secrets outside the web root at
+   `/etc/splyto/splyto.env` (recommended ownership/mode: `root:www-data`, `0640`).
+   The project-root `.env` and `api/.env` fallbacks are for local development only.
 5. Ensure directories `uploads/receipts`, `uploads/avatars`, `uploads/trips`, `uploads/feedback` exist and are writable by PHP process.
 6. Place Verot `class.upload.php` at `api/lib/verot/class.upload.php` (or change `TRIP_CLASS_UPLOAD_REL_PATH`).
 
@@ -125,8 +127,9 @@ php /home/<user>/public_html/projekti/trip/scripts/run_email_verification_cleanu
    - `mobile/android/app/google-services.json`
 4. Rebuild Android app (`flutter run` or Gradle build).
 5. Server-side FCM credentials:
-   - preferred: service account JSON at `keys/firebase-service-account.json` and set:
-     - `TRIP_PUSH_FCM_SERVICE_ACCOUNT_REL_PATH=keys/firebase-service-account.json`
+   - preferred: service account JSON outside the web root at
+     `/etc/splyto/keys/firebase-service-account.json` and set:
+     - `TRIP_PUSH_FCM_SERVICE_ACCOUNT_REL_PATH=/etc/splyto/keys/firebase-service-account.json`
      - `TRIP_PUSH_FCM_PROJECT_ID=<your-project-id>` (optional if JSON includes it)
    - optional fallback: set legacy `TRIP_PUSH_FCM_SERVER_KEY` (if your Firebase project still provides it).
 

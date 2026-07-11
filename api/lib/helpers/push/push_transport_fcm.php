@@ -303,7 +303,19 @@ function push_fcm_data_payload(array $notification): array
 
 function push_fcm_service_account_abs(): string
 {
-    $relative = trim(str_replace('\\', '/', (string) PUSH_FCM_SERVICE_ACCOUNT_REL_PATH));
+    $rawPath = trim(str_replace('\\', '/', (string) PUSH_FCM_SERVICE_ACCOUNT_REL_PATH));
+    if ($rawPath === '') {
+        return '';
+    }
+    if (strpos($rawPath, '..') !== false) {
+        return '';
+    }
+    if (strpos($rawPath, '/') === 0) {
+        $absolute = realpath($rawPath);
+        return is_string($absolute) && $absolute !== '' ? $absolute : $rawPath;
+    }
+
+    $relative = $rawPath;
     $relative = ltrim($relative, '/');
     if ($relative === '') {
         return '';
