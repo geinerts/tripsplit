@@ -39,6 +39,16 @@ function admin_session_token_from_cookie(): string
     return preg_match('/^[a-f0-9]{64}$/', $raw) ? $raw : '';
 }
 
+function admin_session_token_hash(string $token): string
+{
+    $token = trim($token);
+    if (!preg_match('/^[a-f0-9]{64}$/', $token)) {
+        return '';
+    }
+
+    return hash('sha256', $token);
+}
+
 function admin_set_session_cookie(string $token): void
 {
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
@@ -68,7 +78,8 @@ function admin_clear_session_cookie(): void
 
 function admin_create_session(PDO $pdo, int $adminUserId, bool $is2faVerified): string
 {
-    $token     = bin2hex(random_bytes(32)); // 64-char hex
+    $token     = bin2hex(random_bytes(32)); // Sent only to the secure cookie.
+    $tokenHash = admin_session_token_hash($token);
     $ip        = client_ip_address();
     $ua        = substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 512);
     $expiresAt = date('Y-m-d H:i:s', time() + ADMIN_SESSION_TTL);
@@ -89,14 +100,15 @@ function admin_create_session(PDO $pdo, int $adminUserId, bool $is2faVerified): 
     $pdo->prepare("
         INSERT INTO {$sessTable} (token, admin_user_id, ip_address, user_agent, is_2fa_verified, expires_at)
         VALUES (?, ?, ?, ?, ?, ?)
-    ")->execute([$token, $adminUserId, $ip, $ua, $is2faVerified ? 1 : 0, $expiresAt]);
+    ")->execute([$tokenHash, $adminUserId, $ip, $ua, $is2faVerified ? 1 : 0, $expiresAt]);
 
     return $token;
 }
 
 function admin_resolve_session(PDO $pdo, string $token): ?array
 {
-    if ($token === '') {
+    $tokenHash = admin_session_token_hash($token);
+    if ($tokenHash === '') {
         return null;
     }
 
@@ -112,7 +124,7 @@ function admin_resolve_session(PDO $pdo, string $token): ?array
           AND s.expires_at > UTC_TIMESTAMP()
           AND u.is_active = 1
     ");
-    $stmt->execute([$token]);
+    $stmt->execute([$tokenHash]);
     $row = $stmt->fetch();
     if (!is_array($row)) {
         return null;
@@ -121,7 +133,7 @@ function admin_resolve_session(PDO $pdo, string $token): ?array
     // Slide the expiry window
     $newExpiry = date('Y-m-d H:i:s', time() + ADMIN_SESSION_TTL);
     $pdo->prepare("UPDATE {$sessTable} SET last_active_at = UTC_TIMESTAMP(), expires_at = ? WHERE token = ?")
-        ->execute([$newExpiry, $token]);
+        ->execute([$newExpiry, $tokenHash]);
 
     return $row;
 }
@@ -273,6 +285,84 @@ function admin_base32_decode(string $encoded): string
 function admin_totp_generate_secret(): string
 {
     return admin_base32_encode(random_bytes(20));
+}
+
+function admin_totp_encryption_key_bytes(): string
+{
+    $configured = trim((string) ADMIN_TOTP_ENCRYPTION_KEY);
+    if (strlen($configured) < 32) {
+        throw new RuntimeException('TRIP_ADMIN_TOTP_ENCRYPTION_KEY must contain at least 32 characters.');
+    }
+
+    return hash('sha256', $configured, true);
+}
+
+function admin_totp_encrypt_secret(string $secret): string
+{
+    $secret = strtoupper(trim($secret));
+    if (!preg_match('/^[A-Z2-7]{16,128}$/', $secret)) {
+        throw new RuntimeException('Invalid TOTP secret.');
+    }
+    if (!function_exists('openssl_encrypt')) {
+        throw new RuntimeException('OpenSSL encryption support is required.');
+    }
+
+    $nonce = random_bytes(12);
+    $tag = '';
+    $ciphertext = openssl_encrypt(
+        $secret,
+        'aes-256-gcm',
+        admin_totp_encryption_key_bytes(),
+        OPENSSL_RAW_DATA,
+        $nonce,
+        $tag,
+        '',
+        16
+    );
+    if (!is_string($ciphertext) || strlen($tag) !== 16) {
+        throw new RuntimeException('Failed to encrypt TOTP secret.');
+    }
+
+    return 'enc:v1:' . base64_encode($nonce . $tag . $ciphertext);
+}
+
+function admin_totp_decrypt_secret(string $stored): string
+{
+    $stored = trim($stored);
+    if ($stored === '') {
+        return '';
+    }
+
+    // Temporary compatibility for rows created before encryption was enabled.
+    if (!str_starts_with($stored, 'enc:v1:')) {
+        $legacy = strtoupper($stored);
+        return preg_match('/^[A-Z2-7]{16,128}$/', $legacy) ? $legacy : '';
+    }
+    if (!function_exists('openssl_decrypt')) {
+        throw new RuntimeException('OpenSSL decryption support is required.');
+    }
+
+    $payload = base64_decode(substr($stored, 7), true);
+    if (!is_string($payload) || strlen($payload) <= 28) {
+        return '';
+    }
+    $nonce = substr($payload, 0, 12);
+    $tag = substr($payload, 12, 16);
+    $ciphertext = substr($payload, 28);
+    $secret = openssl_decrypt(
+        $ciphertext,
+        'aes-256-gcm',
+        admin_totp_encryption_key_bytes(),
+        OPENSSL_RAW_DATA,
+        $nonce,
+        $tag
+    );
+    if (!is_string($secret)) {
+        return '';
+    }
+
+    $secret = strtoupper(trim($secret));
+    return preg_match('/^[A-Z2-7]{16,128}$/', $secret) ? $secret : '';
 }
 
 function admin_totp_code(string $secret, int $counter): string

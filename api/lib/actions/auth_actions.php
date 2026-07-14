@@ -4,9 +4,14 @@ declare(strict_types=1);
 function register_proof_secret(): string
 {
     $configured = trim((string) REGISTER_PROOF_SECRET);
-    if ($configured !== '') {
+    if (strlen($configured) >= 32) {
         return $configured;
     }
+
+    if (!APP_DEBUG) {
+        throw new RuntimeException('TRIP_REGISTER_PROOF_SECRET must contain at least 32 characters.');
+    }
+
     return hash('sha256', DB_NAME . '|' . DB_USER . '|' . DB_PASS . '|' . ADMIN_KEY . '|trip-register-proof');
 }
 

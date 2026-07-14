@@ -74,6 +74,24 @@ abstract class WorkspaceRepository {
     required double amount,
     String note = '',
   });
+  Future<void> createTripPaymentRequest({
+    required int tripId,
+    required int fromUserId,
+    required double amount,
+    String note = '',
+  });
+  Future<void> markTripPaymentRequestSent({
+    required int tripId,
+    required int paymentId,
+  });
+  Future<void> cancelTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
+  });
+  Future<void> declineTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
+  });
   Future<void> confirmTripPaymentReceived({
     required int tripId,
     required int paymentId,

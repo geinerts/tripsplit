@@ -8,7 +8,10 @@ import '../../domain/entities/workspace_snapshot.dart';
 import 'workspace_snapshot_codec.dart';
 
 class WorkspaceLocalStore {
-  static const String _snapshotPrefix = 'workspace_snapshot_trip_v4_';
+  static const String _snapshotPrefix = 'workspace_snapshot_trip_v5_';
+  static const List<String> _legacySnapshotPrefixes = <String>[
+    'workspace_snapshot_trip_v4_',
+  ];
   static const String _queueKey = 'workspace_mutation_queue_v1';
   static const String _globalNotificationsKey =
       'workspace_global_notifications_v1';
@@ -18,6 +21,7 @@ class WorkspaceLocalStore {
     required WorkspaceSnapshot snapshot,
   }) async {
     final prefs = await SharedPreferences.getInstance();
+    await _removeLegacySnapshots(prefs);
     final key = '$_snapshotPrefix$tripId';
     final raw = jsonEncode(WorkspaceSnapshotCodec.toMap(snapshot));
     await prefs.setString(key, raw);
@@ -25,6 +29,7 @@ class WorkspaceLocalStore {
 
   Future<WorkspaceSnapshot?> readSnapshot({required int tripId}) async {
     final prefs = await SharedPreferences.getInstance();
+    await _removeLegacySnapshots(prefs);
     final key = '$_snapshotPrefix$tripId';
     final raw = prefs.getString(key);
     if (raw == null || raw.trim().isEmpty) {
@@ -154,5 +159,24 @@ class WorkspaceLocalStore {
     } catch (_) {
       return null;
     }
+  }
+
+  Future<void> clearAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys().where(
+      (key) =>
+          key.startsWith(_snapshotPrefix) ||
+          _legacySnapshotPrefixes.any(key.startsWith) ||
+          key == _queueKey ||
+          key == _globalNotificationsKey,
+    );
+    await Future.wait(keys.map(prefs.remove));
+  }
+
+  Future<void> _removeLegacySnapshots(SharedPreferences prefs) async {
+    final keys = prefs.getKeys().where(
+      (key) => _legacySnapshotPrefixes.any(key.startsWith),
+    );
+    await Future.wait(keys.map(prefs.remove));
   }
 }

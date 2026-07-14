@@ -1215,7 +1215,7 @@ registerView('sessions', {
         <td>${relTime(s.last_active_at)}</td>
         <td>
           ${!s.is_current
-            ? `<button class="btn btn-danger btn-sm" onclick="revokeSession('${esc(s.token_full)}')">Revoke</button>` : ''}
+            ? `<button class="btn btn-danger btn-sm" onclick="revokeSession('${esc(s.session_id)}')">Revoke</button>` : ''}
         </td>
       </tr>
     `).join('');
@@ -1231,9 +1231,9 @@ registerView('sessions', {
   },
 });
 
-async function revokeSession(token) {
+async function revokeSession(sessionId) {
   if (!confirm('Revoke this session?')) return;
-  const res = await post('admin_panel_revoke_session', { token });
+  const res = await post('admin_panel_revoke_session', { session_id: sessionId });
   if (res.ok) { toast('Session revoked', 'success'); navigate('sessions'); }
   else toast(res.error || 'Failed', 'error');
 }
@@ -1263,21 +1263,18 @@ registerView('my-account', {
 });
 
 async function setup2fa() {
-  const res = await get('admin_panel_setup_totp');
+  const res = await post('admin_panel_setup_totp');
   if (!res.ok) { toast(res.error || 'Failed', 'error'); return; }
 
   modal.open('Enable Two-Factor Auth', `
     <p style="color:var(--fg-dim);font-size:13px;margin-bottom:16px;">
-      Scan this QR code with your authenticator app (Google Authenticator, Authy, 1Password…)
+      Add a new account in your authenticator app and enter this setup key manually.
     </p>
-    <div style="text-align:center;margin-bottom:16px;">
-      <img src="${esc(res.qr_url)}" width="200" height="200" style="border-radius:8px;background:#fff;padding:8px;"/>
-    </div>
     <div style="background:var(--bg-card-2);border-radius:8px;padding:10px;font-family:monospace;font-size:13px;text-align:center;letter-spacing:2px;margin-bottom:16px;">
       ${esc(res.secret)}
     </div>
     <p style="color:var(--fg-muted);font-size:12px;margin-bottom:12px;">
-      Or enter the secret manually. Then enter the 6-digit code below to confirm.
+      The setup key stays between this browser and Splyto. Enter the generated 6-digit code below to confirm.
     </p>
     <div class="form-group">
       <label class="form-label">Confirmation code</label>

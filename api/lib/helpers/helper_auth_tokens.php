@@ -4,8 +4,12 @@ declare(strict_types=1);
 function auth_access_token_secret(): string
 {
     $configured = trim((string) AUTH_ACCESS_TOKEN_SECRET);
-    if ($configured !== '') {
+    if (strlen($configured) >= 32) {
         return $configured;
+    }
+
+    if (!APP_DEBUG) {
+        throw new RuntimeException('TRIP_AUTH_ACCESS_TOKEN_SECRET must contain at least 32 characters.');
     }
 
     return hash('sha256', DB_NAME . '|' . DB_USER . '|' . DB_PASS . '|' . ADMIN_KEY . '|trip-access-token');

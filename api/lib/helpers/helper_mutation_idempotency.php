@@ -64,8 +64,30 @@ function mutation_idempotency_try_replay(
     string $action,
     string $mutationId
 ): void {
-    if ($userId <= 0 || $tripId <= 0) {
+    $cached = mutation_idempotency_find_response(
+        $pdo,
+        $userId,
+        $tripId,
+        $action,
+        $mutationId
+    );
+    if ($cached === null) {
         return;
+    }
+
+    json_out($cached['payload'], $cached['status']);
+}
+
+function mutation_idempotency_find_response(
+    PDO $pdo,
+    int $userId,
+    int $tripId,
+    string $action,
+    string $mutationId,
+    bool $lockForUpdate = false
+): ?array {
+    if ($userId <= 0 || $tripId <= 0) {
+        return null;
     }
     $normalizedAction = trim($action);
     $normalizedMutationId = normalize_client_mutation_id($mutationId);
@@ -74,7 +96,7 @@ function mutation_idempotency_try_replay(
         $normalizedMutationId === '' ||
         !mutation_idempotency_table_available($pdo)
     ) {
-        return;
+        return null;
     }
 
     $table = table_name('mutation_idempotency');
@@ -85,7 +107,7 @@ function mutation_idempotency_try_replay(
            AND trip_id = :trip_id
            AND action = :action
            AND mutation_id = :mutation_id
-         LIMIT 1'
+         LIMIT 1' . ($lockForUpdate ? ' FOR UPDATE' : '')
     );
     $stmt->execute([
         'user_id' => $userId,
@@ -95,7 +117,7 @@ function mutation_idempotency_try_replay(
     ]);
     $row = $stmt->fetch();
     if (!$row) {
-        return;
+        return null;
     }
 
     $status = (int) ($row['response_status'] ?? 200);
@@ -105,10 +127,13 @@ function mutation_idempotency_try_replay(
     $rawJson = (string) ($row['response_json'] ?? '');
     $payload = json_decode($rawJson, true);
     if (!is_array($payload)) {
-        return;
+        return null;
     }
 
-    json_out($payload, $status);
+    return [
+        'status' => $status,
+        'payload' => $payload,
+    ];
 }
 
 function mutation_idempotency_store_response(
@@ -160,4 +185,3 @@ function mutation_idempotency_store_response(
         'response_json' => $encoded,
     ]);
 }
-

@@ -118,7 +118,7 @@ function end_trip_action(): void
     if ($pendingPaymentCount > 0) {
         json_out([
             'ok' => false,
-            'error' => 'Confirm or cancel pending payments before starting final settlements.',
+            'error' => 'Resolve pending payment requests and payments before starting final settlements.',
             'pending_payments_count' => $pendingPaymentCount,
         ], 409);
     }

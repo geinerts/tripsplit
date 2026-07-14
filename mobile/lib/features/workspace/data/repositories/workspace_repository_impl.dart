@@ -28,6 +28,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   final WorkspaceRemoteDataSource _remote;
   final WorkspaceLocalStore _localStore;
   final WorkspaceOfflineQueue _offlineQueue;
+  final Map<String, String> _pendingPaymentMutationIds = <String, String>{};
   int _mutationSeed = 0;
 
   @override
@@ -167,12 +168,86 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required int toUserId,
     required double amount,
     String note = '',
-  }) {
-    return _remote.createTripPayment(
+  }) async {
+    final key = _paymentMutationKey(
+      type: 'create_trip_payment',
       tripId: tripId,
-      toUserId: toUserId,
+      counterpartyUserId: toUserId,
       amount: amount,
       note: note,
+    );
+    await _runIdempotentPaymentMutation(
+      key: key,
+      type: 'create_trip_payment',
+      tripId: tripId,
+      action: (mutationId) => _remote.createTripPayment(
+        tripId: tripId,
+        toUserId: toUserId,
+        amount: amount,
+        note: note,
+        clientMutationId: mutationId,
+      ),
+    );
+  }
+
+  @override
+  Future<void> createTripPaymentRequest({
+    required int tripId,
+    required int fromUserId,
+    required double amount,
+    String note = '',
+  }) async {
+    final key = _paymentMutationKey(
+      type: 'create_trip_payment_request',
+      tripId: tripId,
+      counterpartyUserId: fromUserId,
+      amount: amount,
+      note: note,
+    );
+    await _runIdempotentPaymentMutation(
+      key: key,
+      type: 'create_trip_payment_request',
+      tripId: tripId,
+      action: (mutationId) => _remote.createTripPaymentRequest(
+        tripId: tripId,
+        fromUserId: fromUserId,
+        amount: amount,
+        note: note,
+        clientMutationId: mutationId,
+      ),
+    );
+  }
+
+  @override
+  Future<void> markTripPaymentRequestSent({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _remote.markTripPaymentRequestSent(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  @override
+  Future<void> cancelTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _remote.cancelTripPaymentRequest(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  @override
+  Future<void> declineTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _remote.declineTripPaymentRequest(
+      tripId: tripId,
+      paymentId: paymentId,
     );
   }
 
@@ -442,6 +517,41 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     final now = DateTime.now().microsecondsSinceEpoch;
     final seed = _mutationSeed.toString().padLeft(4, '0');
     return 'm_${type}_${tripId}_${now}_$seed';
+  }
+
+  String _paymentMutationKey({
+    required String type,
+    required int tripId,
+    required int counterpartyUserId,
+    required double amount,
+    required String note,
+  }) {
+    final amountCents = (amount * 100).round();
+    return '$type:$tripId:$counterpartyUserId:$amountCents:${note.trim()}';
+  }
+
+  Future<void> _runIdempotentPaymentMutation({
+    required String key,
+    required String type,
+    required int tripId,
+    required Future<void> Function(String mutationId) action,
+  }) async {
+    final mutationId = _pendingPaymentMutationIds.putIfAbsent(
+      key,
+      () => _newClientMutationId(type: type, tripId: tripId),
+    );
+    try {
+      await action(mutationId);
+      _pendingPaymentMutationIds.remove(key);
+    } on ApiException catch (error) {
+      if (!error.isNetworkError) {
+        _pendingPaymentMutationIds.remove(key);
+      }
+      rethrow;
+    } catch (_) {
+      _pendingPaymentMutationIds.remove(key);
+      rethrow;
+    }
   }
 
   @override

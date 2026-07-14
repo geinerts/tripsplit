@@ -343,6 +343,8 @@ extension _MainShellPageNotifications on _MainShellPageState {
     } else if (notification.type == 'trip_added' ||
         notification.type == 'trip_member_added') {
       icon = Icons.group_add_outlined;
+    } else if (notification.type.startsWith('payment_')) {
+      icon = Icons.account_balance_wallet_outlined;
     } else if (isUnread) {
       icon = Icons.notifications_active_outlined;
     }

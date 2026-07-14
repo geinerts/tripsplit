@@ -162,6 +162,7 @@ function admin_panel_verify_2fa_action(): void
     if ($token === '') {
         json_out(['ok' => false, 'error' => 'Not authenticated.'], 401);
     }
+    $tokenHash = admin_session_token_hash($token);
 
     enforce_rate_limit(
         $pdo,
@@ -188,7 +189,7 @@ function admin_panel_verify_2fa_action(): void
         JOIN {$userTable} u ON u.id = s.admin_user_id
         WHERE s.token = ? AND s.expires_at > UTC_TIMESTAMP() AND u.is_active = 1
     ");
-    $stmt->execute([$token]);
+    $stmt->execute([$tokenHash]);
     $sess = $stmt->fetch();
 
     if (!is_array($sess)) {
@@ -197,7 +198,8 @@ function admin_panel_verify_2fa_action(): void
     if ((int) $sess['totp_enabled'] !== 1) {
         json_out(['ok' => false, 'error' => '2FA is not enabled on this account.'], 400);
     }
-    if (!admin_totp_verify((string) $sess['totp_secret'], $code)) {
+    $totpSecret = admin_totp_decrypt_secret((string) $sess['totp_secret']);
+    if ($totpSecret === '' || !admin_totp_verify($totpSecret, $code)) {
         admin_audit_event(
             $pdo,
             (int) $sess['admin_user_id'],
@@ -211,7 +213,7 @@ function admin_panel_verify_2fa_action(): void
     }
 
     $pdo->prepare("UPDATE {$sessTable} SET is_2fa_verified = 1 WHERE token = ?")
-        ->execute([$token]);
+        ->execute([$tokenHash]);
     admin_audit_event(
         $pdo,
         (int) $sess['admin_user_id'],
@@ -241,7 +243,8 @@ function admin_panel_logout_action(): void
     if ($token !== '') {
         $sessTable = table_name('admin_sessions');
         $sess = admin_resolve_session($pdo, $token);
-        $pdo->prepare("DELETE FROM {$sessTable} WHERE token = ?")->execute([$token]);
+        $pdo->prepare("DELETE FROM {$sessTable} WHERE token = ?")
+            ->execute([admin_session_token_hash($token)]);
     }
     if (is_array($sess)) {
         admin_audit($pdo, $sess, 'admin.auth.logout');
@@ -282,17 +285,17 @@ function admin_panel_session_check_action(): void
 
 function admin_panel_setup_totp_action(): void
 {
+    require_post();
     $sess      = require_admin_session();
     $secret    = admin_totp_generate_secret();
     $uri       = admin_totp_uri($secret, (string) $sess['username']);
-    $qrUrl     = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . rawurlencode($uri);
 
     // Persist the pending secret (enabled=0 until confirmed)
     $userTable = table_name('admin_users');
     db()->prepare("UPDATE {$userTable} SET totp_secret = ? WHERE id = ?")
-       ->execute([$secret, (int) $sess['admin_user_id']]);
+       ->execute([admin_totp_encrypt_secret($secret), (int) $sess['admin_user_id']]);
 
-    json_out(['ok' => true, 'secret' => $secret, 'qr_url' => $qrUrl, 'uri' => $uri]);
+    json_out(['ok' => true, 'secret' => $secret, 'uri' => $uri]);
 }
 
 function admin_panel_confirm_totp_action(): void
@@ -306,14 +309,15 @@ function admin_panel_confirm_totp_action(): void
     $userTable = table_name('admin_users');
     $stmt      = $pdo->prepare("SELECT totp_secret FROM {$userTable} WHERE id = ?");
     $stmt->execute([(int) $sess['admin_user_id']]);
-    $secret = (string) ($stmt->fetchColumn() ?: '');
+    $storedSecret = (string) ($stmt->fetchColumn() ?: '');
+    $secret = admin_totp_decrypt_secret($storedSecret);
 
     if ($secret === '' || !admin_totp_verify($secret, $code)) {
         json_out(['ok' => false, 'error' => 'Invalid or expired 2FA code.'], 400);
     }
 
-    $pdo->prepare("UPDATE {$userTable} SET totp_enabled = 1 WHERE id = ?")
-       ->execute([(int) $sess['admin_user_id']]);
+    $pdo->prepare("UPDATE {$userTable} SET totp_enabled = 1, totp_secret = ? WHERE id = ?")
+       ->execute([admin_totp_encrypt_secret($secret), (int) $sess['admin_user_id']]);
 
     admin_audit($pdo, $sess, 'admin.totp.enable');
     json_out(['ok' => true]);
@@ -377,11 +381,11 @@ function admin_panel_active_sessions_action(): void
     }
 
     $rows     = $stmt->fetchAll();
-    $current  = admin_session_token_from_cookie();
+    $current  = admin_session_token_hash(admin_session_token_from_cookie());
     $sessions = array_map(function (array $row) use ($current): array {
         return [
             'token'           => substr($row['token'], 0, 8) . '…', // mask
-            'token_full'      => $row['token'],                       // for revoke
+            'session_id'      => $row['token'],
             'is_current'      => $row['token'] === $current,
             'username'        => $row['username'] ?? null,
             'role'            => $row['role'] ?? null,
@@ -403,7 +407,7 @@ function admin_panel_revoke_session_action(): void
     $sess      = require_admin_session();
     $pdo       = db();
     $body      = read_json();
-    $target    = trim((string) ($body['token'] ?? ''));
+    $target    = trim((string) ($body['session_id'] ?? ''));
 
     if (!preg_match('/^[a-f0-9]{64}$/', $target)) {
         json_out(['ok' => false, 'error' => 'Invalid session token.'], 400);

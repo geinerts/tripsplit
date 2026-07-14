@@ -222,9 +222,10 @@ function ensure_feedback_dir(): void
 
 function ensure_upload_dir_abs(string $dir, string $errorMessage): void
 {
-    if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
+    if (!is_dir($dir) && !mkdir($dir, 0750, true) && !is_dir($dir)) {
         throw new RuntimeException($errorMessage);
     }
+    @chmod($dir, 0750);
 }
 
 function project_base_path(): string
@@ -642,6 +643,7 @@ function generate_upload_thumbnail(string $relativePath): ?array
     if (!create_webp_thumbnail($sourceFile, $targetFile)) {
         return null;
     }
+    @chmod($targetFile, 0640);
 
     return [
         'path' => $thumbRelativePath,
@@ -869,6 +871,7 @@ function store_uploaded_image_as_webp(
     if (!$storedOk) {
         json_out(['ok' => false, 'error' => 'Server cannot store image.'], 500);
     }
+    @chmod($target, 0640);
 
     $thumb = generate_upload_thumbnail($relativePath);
 

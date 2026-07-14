@@ -26,13 +26,6 @@ class WorkspaceSnapshotCodec {
               'display_name': user.displayName,
               'avatar_url': user.avatarUrl,
               'avatar_thumb_url': user.avatarThumbUrl,
-              'bank_account_holder': user.bankAccountHolder,
-              'bank_iban': user.bankIban,
-              'bank_bic': user.bankBic,
-              'revolut_handle': user.revolutHandle,
-              'revolut_me_link': user.revolutMeLink,
-              'paypal_me_link': user.paypalMeLink,
-              'wise_pay_link': user.wisePayLink,
               'is_ready_to_settle': user.isReadyToSettle,
               'ready_to_settle_at': user.readyToSettleAt,
             },
@@ -81,11 +74,16 @@ class WorkspaceSnapshotCodec {
               'amount': item.amount,
               'status': item.status,
               'note': item.note,
+              'requester_user_id': item.requesterUserId,
+              'requested_at': item.requestedAt,
               'created_at': item.createdAt,
               'marked_sent_at': item.markedSentAt,
               'confirmed_at': item.confirmedAt,
               'cancelled_at': item.cancelledAt,
               'cancel_reason': item.cancelReason,
+              'can_mark_request_sent': item.canMarkRequestSent,
+              'can_cancel_request': item.canCancelRequest,
+              'can_decline_request': item.canDeclineRequest,
               'can_confirm_received': item.canConfirmReceived,
               'can_cancel_sent': item.canCancelSent,
               'can_report_not_received': item.canReportNotReceived,
@@ -283,11 +281,16 @@ class WorkspaceSnapshotCodec {
             amount: (item['amount'] as num?)?.toDouble() ?? 0,
             status: _parsePaymentStatus(item['status']),
             note: item['note'] as String? ?? '',
+            requesterUserId: (item['requester_user_id'] as num?)?.toInt(),
+            requestedAt: item['requested_at'] as String?,
             createdAt: item['created_at'] as String?,
             markedSentAt: item['marked_sent_at'] as String?,
             confirmedAt: item['confirmed_at'] as String?,
             cancelledAt: item['cancelled_at'] as String?,
             cancelReason: item['cancel_reason'] as String?,
+            canMarkRequestSent: item['can_mark_request_sent'] == true,
+            canCancelRequest: item['can_cancel_request'] == true,
+            canDeclineRequest: item['can_decline_request'] == true,
             canConfirmReceived: item['can_confirm_received'] == true,
             canCancelSent: item['can_cancel_sent'] == true,
             canReportNotReceived: item['can_report_not_received'] == true,
@@ -427,7 +430,10 @@ class WorkspaceSnapshotCodec {
 
   static String _parsePaymentStatus(Object? raw) {
     final value = (raw as String? ?? '').trim().toLowerCase();
-    if (value == 'confirmed' || value == 'cancelled') {
+    if (value == 'requested' ||
+        value == 'sent' ||
+        value == 'confirmed' ||
+        value == 'cancelled') {
       return value;
     }
     return 'sent';

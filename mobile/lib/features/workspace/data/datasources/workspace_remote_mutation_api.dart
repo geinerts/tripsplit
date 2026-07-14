@@ -103,16 +103,82 @@ class WorkspaceRemoteMutationApi {
     required int toUserId,
     required double amount,
     String note = '',
+    String? clientMutationId,
   }) async {
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('create_trip_payment'),
       method: HttpMethod.post,
-      headers: _tripHeaders(tripId),
+      headers: _tripHeaders(tripId, clientMutationId: clientMutationId),
       body: <String, dynamic>{
         'to_user_id': toUserId,
         'amount': amount,
         if (note.trim().isNotEmpty) 'note': note.trim(),
       },
+    );
+  }
+
+  Future<void> createTripPaymentRequest({
+    required int tripId,
+    required int fromUserId,
+    required double amount,
+    String note = '',
+    String? clientMutationId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('create_trip_payment_request'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId, clientMutationId: clientMutationId),
+      body: <String, dynamic>{
+        'from_user_id': fromUserId,
+        'amount': amount,
+        if (note.trim().isNotEmpty) 'note': note.trim(),
+      },
+    );
+  }
+
+  Future<void> markTripPaymentRequestSent({
+    required int tripId,
+    required int paymentId,
+  }) async {
+    await _postPaymentRequestAction(
+      action: 'mark_trip_payment_request_sent',
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  Future<void> cancelTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
+  }) async {
+    await _postPaymentRequestAction(
+      action: 'cancel_trip_payment_request',
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  Future<void> declineTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
+  }) async {
+    await _postPaymentRequestAction(
+      action: 'decline_trip_payment_request',
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  Future<void> _postPaymentRequestAction({
+    required String action,
+    required int tripId,
+    required int paymentId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction(action),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'payment_id': paymentId},
     );
   }
 

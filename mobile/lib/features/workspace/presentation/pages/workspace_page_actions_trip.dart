@@ -302,7 +302,138 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         );
         await _loadData(showLoader: false);
         if (mounted) {
-          _showSnack('Payment recorded. Waiting for confirmation.');
+          _showSnack(context.l10n.paymentRecordedWaiting);
+        }
+      },
+    );
+  }
+
+  Future<void> _onTripPaymentRequestCreate({
+    required SettlementItem settlement,
+    required double amount,
+    required String note,
+  }) async {
+    if (_snapshot == null || _isMutating || !_snapshot!.isActive) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.createTripPaymentRequest(
+          tripId: widget.trip.id,
+          fromUserId: settlement.fromUserId,
+          amount: amount,
+          note: note,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack(context.l10n.paymentRequestCreated);
+        }
+      },
+    );
+  }
+
+  Future<void> _onTripPaymentRequestMarkSent(PaymentItem payment) async {
+    if (_snapshot == null || _isMutating || !payment.canMarkRequestSent) {
+      return;
+    }
+    final amount = _formatMoney(
+      context,
+      payment.amount,
+      currencyCode: widget.trip.currencyCode,
+    );
+    final confirmed = await showAppConfirmationDialog(
+      context: context,
+      title: context.l10n.paymentRequestMarkPaidConfirmTitle,
+      message: context.l10n.paymentRequestMarkPaidConfirmText(
+        amount,
+        payment.to,
+      ),
+      confirmLabel: context.l10n.paymentMarkPaidAction,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.payments_rounded,
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.markTripPaymentRequestSent(
+          tripId: widget.trip.id,
+          paymentId: payment.id,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack(context.l10n.paymentRequestMarkedPaid);
+        }
+      },
+    );
+  }
+
+  Future<void> _onTripPaymentRequestCancel(PaymentItem payment) async {
+    if (_snapshot == null || _isMutating || !payment.canCancelRequest) {
+      return;
+    }
+    final amount = _formatMoney(
+      context,
+      payment.amount,
+      currencyCode: widget.trip.currencyCode,
+    );
+    final confirmed = await showAppConfirmationDialog(
+      context: context,
+      title: context.l10n.paymentRequestCancelTitle,
+      message: context.l10n.paymentRequestCancelText(amount, payment.from),
+      confirmLabel: context.l10n.cancelAction,
+      cancelLabel: context.l10n.friendsKeep,
+      icon: Icons.close_rounded,
+      destructive: true,
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.cancelTripPaymentRequest(
+          tripId: widget.trip.id,
+          paymentId: payment.id,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack(context.l10n.paymentRequestCancelled);
+        }
+      },
+    );
+  }
+
+  Future<void> _onTripPaymentRequestDecline(PaymentItem payment) async {
+    if (_snapshot == null || _isMutating || !payment.canDeclineRequest) {
+      return;
+    }
+    final amount = _formatMoney(
+      context,
+      payment.amount,
+      currencyCode: widget.trip.currencyCode,
+    );
+    final confirmed = await showAppConfirmationDialog(
+      context: context,
+      title: context.l10n.paymentRequestDeclineTitle,
+      message: context.l10n.paymentRequestDeclineText(amount, payment.to),
+      confirmLabel: context.l10n.paymentDeclineAction,
+      cancelLabel: context.l10n.cancelAction,
+      icon: Icons.block_rounded,
+      destructive: true,
+    );
+    if (!confirmed || !mounted) {
+      return;
+    }
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.declineTripPaymentRequest(
+          tripId: widget.trip.id,
+          paymentId: payment.id,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) {
+          _showSnack(context.l10n.paymentRequestDeclined);
         }
       },
     );
@@ -314,9 +445,15 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
     final confirmed = await showAppConfirmationDialog(
       context: context,
-      title: 'Confirm payment',
-      message:
-          'Confirm that you received ${_formatMoney(context, payment.amount, currencyCode: widget.trip.currencyCode)} from ${payment.from}.',
+      title: context.l10n.paymentConfirmTitle,
+      message: context.l10n.paymentConfirmText(
+        _formatMoney(
+          context,
+          payment.amount,
+          currencyCode: widget.trip.currencyCode,
+        ),
+        payment.from,
+      ),
       confirmLabel: context.l10n.confirmReceivedAction,
       cancelLabel: context.l10n.cancelAction,
       icon: Icons.verified_rounded,
@@ -332,7 +469,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         );
         await _loadData(showLoader: false);
         if (mounted) {
-          _showSnack('Payment confirmed.');
+          _showSnack(context.l10n.paymentConfirmedMessage);
         }
       },
     );
@@ -344,9 +481,15 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
     final confirmed = await showAppConfirmationDialog(
       context: context,
-      title: 'Cancel payment record',
-      message:
-          'Cancel the ${_formatMoney(context, payment.amount, currencyCode: widget.trip.currencyCode)} payment mark to ${payment.to}?',
+      title: context.l10n.paymentCancelRecordTitle,
+      message: context.l10n.paymentCancelRecordText(
+        _formatMoney(
+          context,
+          payment.amount,
+          currencyCode: widget.trip.currencyCode,
+        ),
+        payment.to,
+      ),
       confirmLabel: context.l10n.settlementCancelSentAction,
       cancelLabel: context.l10n.cancelAction,
       icon: Icons.undo_rounded,
@@ -363,7 +506,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         );
         await _loadData(showLoader: false);
         if (mounted) {
-          _showSnack('Payment record cancelled.');
+          _showSnack(context.l10n.paymentRecordCancelled);
         }
       },
     );
@@ -375,9 +518,15 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
     final confirmed = await showAppConfirmationDialog(
       context: context,
-      title: 'Payment not received',
-      message:
-          'Mark this ${_formatMoney(context, payment.amount, currencyCode: widget.trip.currencyCode)} payment from ${payment.from} as not received?',
+      title: context.l10n.paymentNotReceivedTitle,
+      message: context.l10n.paymentNotReceivedText(
+        _formatMoney(
+          context,
+          payment.amount,
+          currencyCode: widget.trip.currencyCode,
+        ),
+        payment.from,
+      ),
       confirmLabel: context.l10n.settlementNotReceivedAction,
       cancelLabel: context.l10n.cancelAction,
       icon: Icons.report_problem_outlined,
@@ -394,7 +543,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         );
         await _loadData(showLoader: false);
         if (mounted) {
-          _showSnack('Payment marked as not received.');
+          _showSnack(context.l10n.paymentMarkedNotReceived);
         }
       },
     );

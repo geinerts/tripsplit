@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `trip_admin_users` (
   `password_hash`      VARCHAR(255)  NOT NULL,
   `role`               ENUM('superadmin','admin','support','ops','readonly') NOT NULL DEFAULT 'readonly',
   `is_active`          TINYINT(1)    NOT NULL DEFAULT 1,
-  `totp_secret`        VARCHAR(128)  NULL DEFAULT NULL,
+  `totp_secret`        VARCHAR(255)  NULL DEFAULT NULL,
   `totp_enabled`       TINYINT(1)    NOT NULL DEFAULT 0,
   `last_login_at`      DATETIME      NULL DEFAULT NULL,
   `failed_login_count` TINYINT UNSIGNED NOT NULL DEFAULT 0,

@@ -1,0 +1,23 @@
+/var/log/splyto*.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    create 0600 root root
+    su root root
+}
+
+/var/www/splyto/logs/*.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    create 0640 www-data www-data
+    su www-data www-data
+}

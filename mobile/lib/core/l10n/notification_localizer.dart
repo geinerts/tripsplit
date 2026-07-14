@@ -66,6 +66,30 @@ final RegExp _settlementSentPattern = RegExp(
 final RegExp _settlementConfirmedPattern = RegExp(
   r'^(.+?) confirmed receiving (.+?) from you\.$',
 );
+final RegExp _paymentRequestedPattern = RegExp(
+  r'^(.+?) requested (.+?) from you\.$',
+);
+final RegExp _paymentRequestSentPattern = RegExp(
+  r'^(.+?) marked your (.+?) payment request as paid\.$',
+);
+final RegExp _paymentRequestCancelledPattern = RegExp(
+  r'^(.+?) cancelled the (.+?) payment request\.$',
+);
+final RegExp _paymentRequestDeclinedPattern = RegExp(
+  r'^(.+?) declined your (.+?) payment request\.$',
+);
+final RegExp _paymentSentPattern = RegExp(
+  r'^(.+?) marked (.+?) as paid to you\.$',
+);
+final RegExp _paymentConfirmedPattern = RegExp(
+  r'^(.+?) confirmed receiving (.+?) from you\.$',
+);
+final RegExp _paymentCancelledPattern = RegExp(
+  r'^(.+?) cancelled the (.+?) payment mark\.$',
+);
+final RegExp _paymentNotReceivedPattern = RegExp(
+  r'^(.+?) marked the (.+?) payment as not received\.$',
+);
 
 LocalizedWorkspaceNotification localizeWorkspaceNotification(
   BuildContext context,
@@ -235,6 +259,142 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
         return LocalizedWorkspaceNotification(
           title: t.notificationTripReadyToSettleTitle,
           body: t.notificationTripReadyToSettleBodyGeneric,
+        );
+      }
+    case 'payment_requested':
+      {
+        final match = _paymentRequestedPattern.firstMatch(rawBody);
+        if (match != null) {
+          return LocalizedWorkspaceNotification(
+            title: t.notificationPaymentRequestedTitle,
+            body: t.notificationPaymentRequestedBody(
+              match.group(1)!.trim(),
+              match.group(2)!.trim(),
+            ),
+          );
+        }
+        return LocalizedWorkspaceNotification(
+          title: t.notificationPaymentRequestedTitle,
+          body: t.notificationPaymentRequestedBodyGeneric,
+        );
+      }
+    case 'payment_request_sent':
+      {
+        final match = _paymentRequestSentPattern.firstMatch(rawBody);
+        if (match != null) {
+          return LocalizedWorkspaceNotification(
+            title: t.notificationPaymentRequestSentTitle,
+            body: t.notificationPaymentRequestSentBody(
+              match.group(1)!.trim(),
+              match.group(2)!.trim(),
+            ),
+          );
+        }
+        return LocalizedWorkspaceNotification(
+          title: t.notificationPaymentRequestSentTitle,
+          body: t.notificationPaymentRequestSentBodyGeneric,
+        );
+      }
+    case 'payment_request_cancelled':
+      {
+        final match = _paymentRequestCancelledPattern.firstMatch(rawBody);
+        if (match != null) {
+          return LocalizedWorkspaceNotification(
+            title: t.notificationPaymentRequestCancelledTitle,
+            body: t.notificationPaymentRequestCancelledBody(
+              match.group(1)!.trim(),
+              match.group(2)!.trim(),
+            ),
+          );
+        }
+        return LocalizedWorkspaceNotification(
+          title: t.notificationPaymentRequestCancelledTitle,
+          body: t.notificationPaymentRequestCancelledBodyGeneric,
+        );
+      }
+    case 'payment_request_declined':
+      {
+        final match = _paymentRequestDeclinedPattern.firstMatch(rawBody);
+        if (match != null) {
+          return LocalizedWorkspaceNotification(
+            title: t.notificationPaymentRequestDeclinedTitle,
+            body: t.notificationPaymentRequestDeclinedBody(
+              match.group(1)!.trim(),
+              match.group(2)!.trim(),
+            ),
+          );
+        }
+        return LocalizedWorkspaceNotification(
+          title: t.notificationPaymentRequestDeclinedTitle,
+          body: t.notificationPaymentRequestDeclinedBodyGeneric,
+        );
+      }
+    case 'payment_sent':
+      {
+        final match = _paymentSentPattern.firstMatch(rawBody);
+        if (match != null) {
+          return LocalizedWorkspaceNotification(
+            title: t.notificationPaymentSentTitle,
+            body: t.notificationPaymentSentBody(
+              match.group(1)!.trim(),
+              match.group(2)!.trim(),
+            ),
+          );
+        }
+        return LocalizedWorkspaceNotification(
+          title: t.notificationPaymentSentTitle,
+          body: t.notificationPaymentSentBodyGeneric,
+        );
+      }
+    case 'payment_confirmed':
+      {
+        final match = _paymentConfirmedPattern.firstMatch(rawBody);
+        if (match != null) {
+          return LocalizedWorkspaceNotification(
+            title: t.notificationPaymentConfirmedTitle,
+            body: t.notificationPaymentConfirmedBody(
+              match.group(1)!.trim(),
+              match.group(2)!.trim(),
+            ),
+          );
+        }
+        return LocalizedWorkspaceNotification(
+          title: t.notificationPaymentConfirmedTitle,
+          body: t.notificationPaymentConfirmedBodyGeneric,
+        );
+      }
+    case 'payment_cancelled':
+      {
+        final match = _paymentCancelledPattern.firstMatch(rawBody);
+        if (match != null) {
+          return LocalizedWorkspaceNotification(
+            title: t.notificationPaymentCancelledTitle,
+            body: t.notificationPaymentCancelledBody(
+              match.group(1)!.trim(),
+              match.group(2)!.trim(),
+            ),
+          );
+        }
+        return LocalizedWorkspaceNotification(
+          title: t.notificationPaymentCancelledTitle,
+          body: t.notificationPaymentCancelledBodyGeneric,
+        );
+      }
+    case 'payment_not_received':
+      {
+        final match = _paymentNotReceivedPattern.firstMatch(rawBody);
+        if (match != null) {
+          return LocalizedWorkspaceNotification(
+            title: t.notificationPaymentNotReceivedTitle,
+            body: t.notificationPaymentNotReceivedBody(
+              match.group(1)!.trim(),
+              match.group(2)!.trim(),
+            ),
+          );
+        }
+        return LocalizedWorkspaceNotification(
+          title: t.notificationPaymentNotReceivedTitle,
+          body: t.notificationPaymentNotReceivedBodyGeneric,
         );
       }
     case 'settlement_reminder':

@@ -1,0 +1,2 @@
+ALTER TABLE trip_admin_users
+  MODIFY COLUMN totp_secret VARCHAR(255) NULL DEFAULT NULL;

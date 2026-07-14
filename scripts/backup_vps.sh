@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+umask 077
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -34,7 +35,7 @@ DB_DIR="${BACKUP_ROOT}/db"
 APP_DIR="${BACKUP_ROOT}/app_state"
 META_DIR="${BACKUP_ROOT}/meta"
 
-mkdir -p "$DB_DIR" "$APP_DIR" "$META_DIR"
+install -d -m 700 "$BACKUP_ROOT" "$DB_DIR" "$APP_DIR" "$META_DIR"
 
 MYSQL_AUTH=(-h"$DB_HOST" -u"$DB_USER")
 if [[ -n "$DB_PASS" ]]; then

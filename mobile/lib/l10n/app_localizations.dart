@@ -5676,6 +5676,426 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copied.'**
   String get paymentCopied;
+
+  /// No description provided for @paymentRequestAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Request payment'**
+  String get paymentRequestAction;
+
+  /// No description provided for @paymentRecordAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Record payment'**
+  String get paymentRecordAction;
+
+  /// No description provided for @paymentRequestSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request payment'**
+  String get paymentRequestSheetTitle;
+
+  /// No description provided for @paymentRecordSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record payment'**
+  String get paymentRecordSheetTitle;
+
+  /// No description provided for @paymentRequestSheetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask {arg1} to pay an amount they currently owe you.'**
+  String paymentRequestSheetBody(Object arg1);
+
+  /// No description provided for @paymentRecordSheetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this after you paid {arg1} outside Splyto. They will confirm receiving it.'**
+  String paymentRecordSheetBody(Object arg1);
+
+  /// No description provided for @paymentMaxAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum {arg1}'**
+  String paymentMaxAmount(Object arg1);
+
+  /// No description provided for @paymentNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transfer, Revolut, cash...'**
+  String get paymentNoteHint;
+
+  /// No description provided for @paymentAmountPositiveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount must be greater than zero.'**
+  String get paymentAmountPositiveError;
+
+  /// No description provided for @paymentAmountTooHighError.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount cannot be higher than the outstanding balance.'**
+  String get paymentAmountTooHighError;
+
+  /// No description provided for @paymentRequestCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment request sent.'**
+  String get paymentRequestCreated;
+
+  /// No description provided for @paymentRecordedWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment recorded. Waiting for confirmation.'**
+  String get paymentRecordedWaiting;
+
+  /// No description provided for @paymentConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm payment'**
+  String get paymentConfirmTitle;
+
+  /// No description provided for @paymentConfirmText.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm that you received {arg1} from {arg2}.'**
+  String paymentConfirmText(Object arg1, Object arg2);
+
+  /// No description provided for @paymentConfirmedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment confirmed.'**
+  String get paymentConfirmedMessage;
+
+  /// No description provided for @paymentCancelRecordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel payment record'**
+  String get paymentCancelRecordTitle;
+
+  /// No description provided for @paymentCancelRecordText.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel the {arg1} payment mark to {arg2}?'**
+  String paymentCancelRecordText(Object arg1, Object arg2);
+
+  /// No description provided for @paymentRecordCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment record cancelled.'**
+  String get paymentRecordCancelled;
+
+  /// No description provided for @paymentNotReceivedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment not received'**
+  String get paymentNotReceivedTitle;
+
+  /// No description provided for @paymentNotReceivedText.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark the {arg1} payment from {arg2} as not received?'**
+  String paymentNotReceivedText(Object arg1, Object arg2);
+
+  /// No description provided for @paymentMarkedNotReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment marked as not received.'**
+  String get paymentMarkedNotReceived;
+
+  /// No description provided for @paymentActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment activity'**
+  String get paymentActivityTitle;
+
+  /// No description provided for @paymentOpenRequestsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} open payment requests'**
+  String paymentOpenRequestsCount(Object arg1);
+
+  /// No description provided for @paymentAwaitingConfirmationCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} payments awaiting confirmation'**
+  String paymentAwaitingConfirmationCount(Object arg1);
+
+  /// No description provided for @paymentRecordedPaymentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded payments'**
+  String get paymentRecordedPaymentsTitle;
+
+  /// No description provided for @paymentRequestedFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} requested payment from {arg2}'**
+  String paymentRequestedFrom(Object arg1, Object arg2);
+
+  /// No description provided for @paymentPaidTo.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} paid {arg2}'**
+  String paymentPaidTo(Object arg1, Object arg2);
+
+  /// No description provided for @paymentRequestPendingStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment requested'**
+  String get paymentRequestPendingStatus;
+
+  /// No description provided for @paymentAwaitingConfirmationStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting confirmation'**
+  String get paymentAwaitingConfirmationStatus;
+
+  /// No description provided for @paymentReviewRequestAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Review request'**
+  String get paymentReviewRequestAction;
+
+  /// No description provided for @paymentViewDetailsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment details'**
+  String get paymentViewDetailsAction;
+
+  /// No description provided for @paymentMarkPaidAction.
+  ///
+  /// In en, this message translates to:
+  /// **'I have paid'**
+  String get paymentMarkPaidAction;
+
+  /// No description provided for @paymentDeclineAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get paymentDeclineAction;
+
+  /// No description provided for @paymentRequestReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment request'**
+  String get paymentRequestReviewTitle;
+
+  /// No description provided for @paymentRequestReviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} requested {arg2} from you. Pay outside Splyto, then mark it as paid.'**
+  String paymentRequestReviewBody(Object arg1, Object arg2);
+
+  /// No description provided for @paymentRequestMarkPaidConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark request as paid?'**
+  String get paymentRequestMarkPaidConfirmTitle;
+
+  /// No description provided for @paymentRequestMarkPaidConfirmText.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm only after you have paid {arg1} to {arg2} outside Splyto.'**
+  String paymentRequestMarkPaidConfirmText(Object arg1, Object arg2);
+
+  /// No description provided for @paymentRequestMarkedPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as paid. Waiting for confirmation.'**
+  String get paymentRequestMarkedPaid;
+
+  /// No description provided for @paymentRequestCancelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel payment request?'**
+  String get paymentRequestCancelTitle;
+
+  /// No description provided for @paymentRequestCancelText.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel your {arg1} request to {arg2}?'**
+  String paymentRequestCancelText(Object arg1, Object arg2);
+
+  /// No description provided for @paymentRequestCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment request cancelled.'**
+  String get paymentRequestCancelled;
+
+  /// No description provided for @paymentRequestDeclineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline payment request?'**
+  String get paymentRequestDeclineTitle;
+
+  /// No description provided for @paymentRequestDeclineText.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline the {arg1} request from {arg2}? They will be notified.'**
+  String paymentRequestDeclineText(Object arg1, Object arg2);
+
+  /// No description provided for @paymentRequestDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment request declined.'**
+  String get paymentRequestDeclined;
+
+  /// No description provided for @paymentPendingBeforeFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolve open payment requests and unconfirmed payments before final settlement.'**
+  String get paymentPendingBeforeFinish;
+
+  /// No description provided for @paymentFinishBlockedByPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish unlocks after payment requests and unconfirmed payments are resolved.'**
+  String get paymentFinishBlockedByPending;
+
+  /// No description provided for @notificationPaymentRequestedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment requested'**
+  String get notificationPaymentRequestedTitle;
+
+  /// No description provided for @notificationPaymentRequestedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} requested {arg2} from you.'**
+  String notificationPaymentRequestedBody(Object arg1, Object arg2);
+
+  /// No description provided for @notificationPaymentRequestedBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'You received a payment request.'**
+  String get notificationPaymentRequestedBodyGeneric;
+
+  /// No description provided for @notificationPaymentRequestSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested payment sent'**
+  String get notificationPaymentRequestSentTitle;
+
+  /// No description provided for @notificationPaymentRequestSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} marked your {arg2} payment request as paid.'**
+  String notificationPaymentRequestSentBody(Object arg1, Object arg2);
+
+  /// No description provided for @notificationPaymentRequestSentBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment request was marked as paid.'**
+  String get notificationPaymentRequestSentBodyGeneric;
+
+  /// No description provided for @notificationPaymentRequestCancelledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment request cancelled'**
+  String get notificationPaymentRequestCancelledTitle;
+
+  /// No description provided for @notificationPaymentRequestCancelledBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} cancelled the {arg2} payment request.'**
+  String notificationPaymentRequestCancelledBody(Object arg1, Object arg2);
+
+  /// No description provided for @notificationPaymentRequestCancelledBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'A payment request was cancelled.'**
+  String get notificationPaymentRequestCancelledBodyGeneric;
+
+  /// No description provided for @notificationPaymentRequestDeclinedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment request declined'**
+  String get notificationPaymentRequestDeclinedTitle;
+
+  /// No description provided for @notificationPaymentRequestDeclinedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} declined your {arg2} payment request.'**
+  String notificationPaymentRequestDeclinedBody(Object arg1, Object arg2);
+
+  /// No description provided for @notificationPaymentRequestDeclinedBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment request was declined.'**
+  String get notificationPaymentRequestDeclinedBodyGeneric;
+
+  /// No description provided for @notificationPaymentSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment marked as sent'**
+  String get notificationPaymentSentTitle;
+
+  /// No description provided for @notificationPaymentSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} marked {arg2} as paid to you.'**
+  String notificationPaymentSentBody(Object arg1, Object arg2);
+
+  /// No description provided for @notificationPaymentSentBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'A payment was marked as sent to you.'**
+  String get notificationPaymentSentBodyGeneric;
+
+  /// No description provided for @notificationPaymentConfirmedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment confirmed'**
+  String get notificationPaymentConfirmedTitle;
+
+  /// No description provided for @notificationPaymentConfirmedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} confirmed receiving {arg2} from you.'**
+  String notificationPaymentConfirmedBody(Object arg1, Object arg2);
+
+  /// No description provided for @notificationPaymentConfirmedBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment was confirmed.'**
+  String get notificationPaymentConfirmedBodyGeneric;
+
+  /// No description provided for @notificationPaymentCancelledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment cancelled'**
+  String get notificationPaymentCancelledTitle;
+
+  /// No description provided for @notificationPaymentCancelledBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} cancelled the {arg2} payment mark.'**
+  String notificationPaymentCancelledBody(Object arg1, Object arg2);
+
+  /// No description provided for @notificationPaymentCancelledBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'A payment mark was cancelled.'**
+  String get notificationPaymentCancelledBodyGeneric;
+
+  /// No description provided for @notificationPaymentNotReceivedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment not received'**
+  String get notificationPaymentNotReceivedTitle;
+
+  /// No description provided for @notificationPaymentNotReceivedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} marked the {arg2} payment as not received.'**
+  String notificationPaymentNotReceivedBody(Object arg1, Object arg2);
+
+  /// No description provided for @notificationPaymentNotReceivedBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'A payment was marked as not received.'**
+  String get notificationPaymentNotReceivedBodyGeneric;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -95,6 +95,35 @@ void main() {
     });
   });
 
+  group('WorkspaceRemoteParsers.parsePayment', () {
+    test('parses an open payment request and its allowed actions', () {
+      final payment = WorkspaceRemoteParsers.parsePayment(<String, dynamic>{
+        'id': 21,
+        'from_user_id': 8,
+        'to_user_id': 3,
+        'from': 'Debtor',
+        'to': 'Creditor',
+        'amount': 42.50,
+        'status': 'requested',
+        'note': 'Dinner balance',
+        'requester_user_id': 3,
+        'requested_at': '2026-07-14 12:00:00',
+        'can_mark_request_sent': true,
+        'can_cancel_request': false,
+        'can_decline_request': true,
+      });
+
+      expect(payment.id, 21);
+      expect(payment.isRequested, isTrue);
+      expect(payment.reservesBalance, isTrue);
+      expect(payment.requesterUserId, 3);
+      expect(payment.canMarkRequestSent, isTrue);
+      expect(payment.canCancelRequest, isFalse);
+      expect(payment.canDeclineRequest, isTrue);
+      expect(payment.isConfirmed, isFalse);
+    });
+  });
+
   group('WorkspaceRemoteParsers.parseExpense', () {
     test('uses explicit category and defaults missing category to other', () {
       final withCategory =

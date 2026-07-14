@@ -3065,4 +3065,258 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get paymentCopied => 'Copiado.';
+
+  @override
+  String get paymentRequestAction => 'Solicitar pago';
+
+  @override
+  String get paymentRecordAction => 'Registrar pago';
+
+  @override
+  String get paymentRequestSheetTitle => 'Solicitar pago';
+
+  @override
+  String get paymentRecordSheetTitle => 'Registrar pago';
+
+  @override
+  String paymentRequestSheetBody(Object arg1) {
+    return 'Pide a $arg1 que pague una cantidad que actualmente te debe.';
+  }
+
+  @override
+  String paymentRecordSheetBody(Object arg1) {
+    return 'Usa esto después de pagar a $arg1 fuera de Splyto. Confirmará que lo recibió.';
+  }
+
+  @override
+  String paymentMaxAmount(Object arg1) {
+    return 'Máximo $arg1';
+  }
+
+  @override
+  String get paymentNoteHint => 'Transferencia bancaria, Revolut, efectivo...';
+
+  @override
+  String get paymentAmountPositiveError => 'El importe debe ser mayor que cero.';
+
+  @override
+  String get paymentAmountTooHighError => 'El importe no puede superar la deuda pendiente.';
+
+  @override
+  String get paymentRequestCreated => 'Solicitud de pago enviada.';
+
+  @override
+  String get paymentRecordedWaiting => 'Pago registrado. Esperando confirmación.';
+
+  @override
+  String get paymentConfirmTitle => 'Confirmar pago';
+
+  @override
+  String paymentConfirmText(Object arg1, Object arg2) {
+    return 'Confirma que recibiste $arg1 de $arg2.';
+  }
+
+  @override
+  String get paymentConfirmedMessage => 'Pago confirmado.';
+
+  @override
+  String get paymentCancelRecordTitle => 'Cancelar registro de pago';
+
+  @override
+  String paymentCancelRecordText(Object arg1, Object arg2) {
+    return '¿Cancelar el registro del pago de $arg1 a $arg2?';
+  }
+
+  @override
+  String get paymentRecordCancelled => 'Registro de pago cancelado.';
+
+  @override
+  String get paymentNotReceivedTitle => 'Pago no recibido';
+
+  @override
+  String paymentNotReceivedText(Object arg1, Object arg2) {
+    return '¿Marcar el pago de $arg1 de $arg2 como no recibido?';
+  }
+
+  @override
+  String get paymentMarkedNotReceived => 'Pago marcado como no recibido.';
+
+  @override
+  String get paymentActivityTitle => 'Actividad de pagos';
+
+  @override
+  String paymentOpenRequestsCount(Object arg1) {
+    return 'Solicitudes de pago abiertas: $arg1';
+  }
+
+  @override
+  String paymentAwaitingConfirmationCount(Object arg1) {
+    return 'Pagos pendientes de confirmación: $arg1';
+  }
+
+  @override
+  String get paymentRecordedPaymentsTitle => 'Pagos registrados';
+
+  @override
+  String paymentRequestedFrom(Object arg1, Object arg2) {
+    return '$arg1 solicitó un pago a $arg2';
+  }
+
+  @override
+  String paymentPaidTo(Object arg1, Object arg2) {
+    return '$arg1 pagó a $arg2';
+  }
+
+  @override
+  String get paymentRequestPendingStatus => 'Pago solicitado';
+
+  @override
+  String get paymentAwaitingConfirmationStatus => 'Esperando confirmación';
+
+  @override
+  String get paymentReviewRequestAction => 'Revisar solicitud';
+
+  @override
+  String get paymentViewDetailsAction => 'Datos de pago';
+
+  @override
+  String get paymentMarkPaidAction => 'Ya he pagado';
+
+  @override
+  String get paymentDeclineAction => 'Rechazar';
+
+  @override
+  String get paymentRequestReviewTitle => 'Solicitud de pago';
+
+  @override
+  String paymentRequestReviewBody(Object arg1, Object arg2) {
+    return '$arg1 te solicitó $arg2. Paga fuera de Splyto y después márcalo como pagado.';
+  }
+
+  @override
+  String get paymentRequestMarkPaidConfirmTitle => '¿Marcar como pagado?';
+
+  @override
+  String paymentRequestMarkPaidConfirmText(Object arg1, Object arg2) {
+    return 'Confirma solo después de pagar $arg1 a $arg2 fuera de Splyto.';
+  }
+
+  @override
+  String get paymentRequestMarkedPaid => 'Marcado como pagado. Esperando confirmación.';
+
+  @override
+  String get paymentRequestCancelTitle => '¿Cancelar solicitud de pago?';
+
+  @override
+  String paymentRequestCancelText(Object arg1, Object arg2) {
+    return '¿Cancelar tu solicitud de $arg1 a $arg2?';
+  }
+
+  @override
+  String get paymentRequestCancelled => 'Solicitud de pago cancelada.';
+
+  @override
+  String get paymentRequestDeclineTitle => '¿Rechazar solicitud de pago?';
+
+  @override
+  String paymentRequestDeclineText(Object arg1, Object arg2) {
+    return '¿Rechazar la solicitud de $arg1 de $arg2? Recibirá una notificación.';
+  }
+
+  @override
+  String get paymentRequestDeclined => 'Solicitud de pago rechazada.';
+
+  @override
+  String get paymentPendingBeforeFinish => 'Resuelve las solicitudes de pago abiertas y los pagos sin confirmar antes de la liquidación final.';
+
+  @override
+  String get paymentFinishBlockedByPending => 'El viaje podrá finalizar cuando se resuelvan las solicitudes y los pagos sin confirmar.';
+
+  @override
+  String get notificationPaymentRequestedTitle => 'Pago solicitado';
+
+  @override
+  String notificationPaymentRequestedBody(Object arg1, Object arg2) {
+    return '$arg1 te solicitó $arg2.';
+  }
+
+  @override
+  String get notificationPaymentRequestedBodyGeneric => 'Has recibido una solicitud de pago.';
+
+  @override
+  String get notificationPaymentRequestSentTitle => 'Pago solicitado enviado';
+
+  @override
+  String notificationPaymentRequestSentBody(Object arg1, Object arg2) {
+    return '$arg1 marcó tu solicitud de $arg2 como pagada.';
+  }
+
+  @override
+  String get notificationPaymentRequestSentBodyGeneric => 'Tu solicitud de pago fue marcada como pagada.';
+
+  @override
+  String get notificationPaymentRequestCancelledTitle => 'Solicitud de pago cancelada';
+
+  @override
+  String notificationPaymentRequestCancelledBody(Object arg1, Object arg2) {
+    return '$arg1 canceló la solicitud de pago de $arg2.';
+  }
+
+  @override
+  String get notificationPaymentRequestCancelledBodyGeneric => 'Se canceló una solicitud de pago.';
+
+  @override
+  String get notificationPaymentRequestDeclinedTitle => 'Solicitud de pago rechazada';
+
+  @override
+  String notificationPaymentRequestDeclinedBody(Object arg1, Object arg2) {
+    return '$arg1 rechazó tu solicitud de pago de $arg2.';
+  }
+
+  @override
+  String get notificationPaymentRequestDeclinedBodyGeneric => 'Tu solicitud de pago fue rechazada.';
+
+  @override
+  String get notificationPaymentSentTitle => 'Pago marcado como enviado';
+
+  @override
+  String notificationPaymentSentBody(Object arg1, Object arg2) {
+    return '$arg1 marcó $arg2 como pagado para ti.';
+  }
+
+  @override
+  String get notificationPaymentSentBodyGeneric => 'Se marcó un pago como enviado para ti.';
+
+  @override
+  String get notificationPaymentConfirmedTitle => 'Pago confirmado';
+
+  @override
+  String notificationPaymentConfirmedBody(Object arg1, Object arg2) {
+    return '$arg1 confirmó haber recibido $arg2 de ti.';
+  }
+
+  @override
+  String get notificationPaymentConfirmedBodyGeneric => 'Tu pago fue confirmado.';
+
+  @override
+  String get notificationPaymentCancelledTitle => 'Pago cancelado';
+
+  @override
+  String notificationPaymentCancelledBody(Object arg1, Object arg2) {
+    return '$arg1 canceló la marca de pago de $arg2.';
+  }
+
+  @override
+  String get notificationPaymentCancelledBodyGeneric => 'Se canceló una marca de pago.';
+
+  @override
+  String get notificationPaymentNotReceivedTitle => 'Pago no recibido';
+
+  @override
+  String notificationPaymentNotReceivedBody(Object arg1, Object arg2) {
+    return '$arg1 marcó el pago de $arg2 como no recibido.';
+  }
+
+  @override
+  String get notificationPaymentNotReceivedBodyGeneric => 'Se marcó un pago como no recibido.';
 }

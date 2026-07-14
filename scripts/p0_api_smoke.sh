@@ -55,6 +55,7 @@ api_request() {
   local access_token="${4:-}"
   local trip_id="${5:-}"
   local body_json="${6:-}"
+  local mutation_id="${7:-}"
 
   local request_id="smoke_${RUN_ID}_${action}_$RANDOM"
   local url="${BASE_URL}?action=${action}"
@@ -76,6 +77,9 @@ api_request() {
 
   if [[ -n "$access_token" ]]; then
     args+=(-H "Authorization: Bearer ${access_token}")
+  fi
+  if [[ -n "$mutation_id" ]]; then
+    args+=(-H "X-Client-Mutation-Id: ${mutation_id}")
   fi
 
   if [[ "$method" == "POST" ]]; then
@@ -252,10 +256,90 @@ main() {
   expense_count="$(jq -r '.expenses | length' "$LAST_BODY")"
   [[ "$expense_count" -ge 1 ]] || fail "No expenses visible for user B in shared trip"
 
+  log "Payment request: A requests part of B's outstanding balance"
+  local request_payment_body request_mutation_id payment_request_id replayed_payment_request_id
+  request_payment_body="$(jq -nc \
+    --argjson from_user_id "$USER_B_ID" \
+    --arg amount "5.00" \
+    '{from_user_id:$from_user_id,amount:$amount,note:"Smoke request"}')"
+  request_mutation_id="smoke_payment_request_${RUN_ID}"
+  api_request "POST" "create_trip_payment_request" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$request_payment_body" "$request_mutation_id"
+  assert_status "200"
+  payment_request_id="$(json_get '.payment_id')"
+
+  log "Payment request: identical mutation is replayed without a duplicate"
+  api_request "POST" "create_trip_payment_request" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$request_payment_body" "$request_mutation_id"
+  assert_status "200"
+  replayed_payment_request_id="$(json_get '.payment_id')"
+  [[ "$replayed_payment_request_id" == "$payment_request_id" ]] || fail "Idempotent replay returned another payment id"
+  local replay_count
+  replay_count="$(jq -r --argjson pid "$payment_request_id" '[.payments[] | select(.id == $pid)] | length' "$LAST_BODY")"
+  [[ "$replay_count" == "1" ]] || fail "Idempotent replay duplicated the payment request"
+
+  log "Payment request: requester cannot mark their own request as paid"
+  local payment_action_body
+  payment_action_body="$(jq -nc --argjson payment_id "$payment_request_id" '{payment_id:$payment_id}')"
+  api_request "POST" "mark_trip_payment_request_sent" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$payment_action_body"
+  assert_status "403"
+
+  log "Payment request: amount above outstanding balance is rejected"
+  local excessive_request_body
+  excessive_request_body="$(jq -nc \
+    --argjson from_user_id "$USER_B_ID" \
+    '{from_user_id:$from_user_id,amount:"999.00"}')"
+  api_request "POST" "create_trip_payment_request" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$excessive_request_body" "smoke_payment_excess_${RUN_ID}"
+  assert_status "409"
+
+  log "Payment request: B pays outside Splyto and marks the request as paid"
+  api_request "POST" "mark_trip_payment_request_sent" "$DEVICE_B" "$ACCESS_B" "$TRIP_SHARED_ID" "$payment_action_body"
+  assert_status "200"
+
+  log "Payment request: A confirms receiving the payment"
+  api_request "POST" "confirm_trip_payment_received" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$payment_action_body"
+  assert_status "200"
+
+  log "Payment request: B can decline a new request"
+  local decline_request_body decline_request_id decline_action_body
+  decline_request_body="$(jq -nc \
+    --argjson from_user_id "$USER_B_ID" \
+    '{from_user_id:$from_user_id,amount:"3.00",note:"Smoke decline"}')"
+  api_request "POST" "create_trip_payment_request" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$decline_request_body" "smoke_payment_decline_${RUN_ID}"
+  assert_status "200"
+  decline_request_id="$(json_get '.payment_id')"
+  decline_action_body="$(jq -nc --argjson payment_id "$decline_request_id" '{payment_id:$payment_id}')"
+  api_request "POST" "decline_trip_payment_request" "$DEVICE_B" "$ACCESS_B" "$TRIP_SHARED_ID" "$decline_action_body"
+  assert_status "200"
+
+  log "Payment request: A can cancel a new request"
+  local cancel_request_body cancel_request_id cancel_action_body
+  cancel_request_body="$(jq -nc \
+    --argjson from_user_id "$USER_B_ID" \
+    '{from_user_id:$from_user_id,amount:"2.00",note:"Smoke cancel"}')"
+  api_request "POST" "create_trip_payment_request" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$cancel_request_body" "smoke_payment_cancel_${RUN_ID}"
+  assert_status "200"
+  cancel_request_id="$(json_get '.payment_id')"
+  cancel_action_body="$(jq -nc --argjson payment_id "$cancel_request_id" '{payment_id:$payment_id}')"
+  api_request "POST" "cancel_trip_payment_request" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$cancel_action_body"
+  assert_status "200"
+
   log "Happy path: A and B mark ready to settle"
   api_request "POST" "set_ready_to_settle" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" '{"ready":true}'
   assert_status "200"
   api_request "POST" "set_ready_to_settle" "$DEVICE_B" "$ACCESS_B" "$TRIP_SHARED_ID" '{"ready":true}'
+  assert_status "200"
+
+  log "Payment request: unresolved request blocks final settlement"
+  local blocking_request_body blocking_request_id blocking_action_body
+  blocking_request_body="$(jq -nc \
+    --argjson from_user_id "$USER_B_ID" \
+    '{from_user_id:$from_user_id,amount:"1.00",note:"Smoke settlement blocker"}')"
+  api_request "POST" "create_trip_payment_request" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$blocking_request_body" "smoke_payment_block_${RUN_ID}"
+  assert_status "200"
+  blocking_request_id="$(json_get '.payment_id')"
+  blocking_action_body="$(jq -nc --argjson payment_id "$blocking_request_id" '{payment_id:$payment_id}')"
+  api_request "POST" "end_trip" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" '{}'
+  assert_status "409"
+  api_request "POST" "cancel_trip_payment_request" "$DEVICE_A" "$ACCESS_A" "$TRIP_SHARED_ID" "$blocking_action_body"
   assert_status "200"
 
   log "Happy path: A ends trip (settling flow starts)"

@@ -2,7 +2,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthSessionStore {
   AuthSessionStore({FlutterSecureStorage? storage})
-    : _storage = storage ?? const FlutterSecureStorage();
+    : _storage =
+          storage ??
+          const FlutterSecureStorage(
+            aOptions: AndroidOptions(encryptedSharedPreferences: true),
+            iOptions: IOSOptions(
+              accessibility: KeychainAccessibility.unlocked_this_device,
+            ),
+          );
 
   static const String _accessTokenKey = 'trip_access_token_v1';
   static const String _accessExpiryKey = 'trip_access_expiry_epoch_ms_v1';

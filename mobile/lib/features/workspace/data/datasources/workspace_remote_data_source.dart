@@ -67,6 +67,26 @@ abstract class WorkspaceRemoteDataSource {
     required int toUserId,
     required double amount,
     String note = '',
+    String? clientMutationId,
+  });
+  Future<void> createTripPaymentRequest({
+    required int tripId,
+    required int fromUserId,
+    required double amount,
+    String note = '',
+    String? clientMutationId,
+  });
+  Future<void> markTripPaymentRequestSent({
+    required int tripId,
+    required int paymentId,
+  });
+  Future<void> cancelTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
+  });
+  Future<void> declineTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
   });
   Future<void> confirmTripPaymentReceived({
     required int tripId,
@@ -325,12 +345,64 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required int toUserId,
     required double amount,
     String note = '',
+    String? clientMutationId,
   }) {
     return _mutationApi.createTripPayment(
       tripId: tripId,
       toUserId: toUserId,
       amount: amount,
       note: note,
+      clientMutationId: clientMutationId,
+    );
+  }
+
+  @override
+  Future<void> createTripPaymentRequest({
+    required int tripId,
+    required int fromUserId,
+    required double amount,
+    String note = '',
+    String? clientMutationId,
+  }) {
+    return _mutationApi.createTripPaymentRequest(
+      tripId: tripId,
+      fromUserId: fromUserId,
+      amount: amount,
+      note: note,
+      clientMutationId: clientMutationId,
+    );
+  }
+
+  @override
+  Future<void> markTripPaymentRequestSent({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _mutationApi.markTripPaymentRequestSent(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  @override
+  Future<void> cancelTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _mutationApi.cancelTripPaymentRequest(
+      tripId: tripId,
+      paymentId: paymentId,
+    );
+  }
+
+  @override
+  Future<void> declineTripPaymentRequest({
+    required int tripId,
+    required int paymentId,
+  }) {
+    return _mutationApi.declineTripPaymentRequest(
+      tripId: tripId,
+      paymentId: paymentId,
     );
   }
 

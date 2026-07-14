@@ -373,6 +373,38 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
           return 'marcó un pago como enviado';
         }
         return en('recorded a payment');
+      case 'payment.requested':
+        if (language == 'lv') {
+          return 'pieprasīja maksājumu';
+        }
+        if (language == 'es') {
+          return 'solicitó un pago';
+        }
+        return en('requested a payment');
+      case 'payment.request_marked_sent':
+        if (language == 'lv') {
+          return 'atzīmēja pieprasīto maksājumu kā nosūtītu';
+        }
+        if (language == 'es') {
+          return 'marcó el pago solicitado como enviado';
+        }
+        return en('marked a requested payment as sent');
+      case 'payment.request_cancelled':
+        if (language == 'lv') {
+          return 'atcēla maksājuma pieprasījumu';
+        }
+        if (language == 'es') {
+          return 'canceló una solicitud de pago';
+        }
+        return en('cancelled a payment request');
+      case 'payment.request_declined':
+        if (language == 'lv') {
+          return 'noraidīja maksājuma pieprasījumu';
+        }
+        if (language == 'es') {
+          return 'rechazó una solicitud de pago';
+        }
+        return en('declined a payment request');
       case 'payment.confirmed':
         if (language == 'lv') {
           return 'apstiprināja maksājumu';

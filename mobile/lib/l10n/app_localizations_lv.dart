@@ -3065,4 +3065,258 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get paymentCopied => 'Nokopēts.';
+
+  @override
+  String get paymentRequestAction => 'Pieprasīt maksājumu';
+
+  @override
+  String get paymentRecordAction => 'Reģistrēt maksājumu';
+
+  @override
+  String get paymentRequestSheetTitle => 'Pieprasīt maksājumu';
+
+  @override
+  String get paymentRecordSheetTitle => 'Reģistrēt maksājumu';
+
+  @override
+  String paymentRequestSheetBody(Object arg1) {
+    return 'Pieprasi lietotājam $arg1 samaksāt summu, ko viņš tev pašlaik ir parādā.';
+  }
+
+  @override
+  String paymentRecordSheetBody(Object arg1) {
+    return 'Izmanto šo pēc tam, kad samaksāji lietotājam $arg1 ārpus Splyto. Viņš apstiprinās saņemšanu.';
+  }
+
+  @override
+  String paymentMaxAmount(Object arg1) {
+    return 'Maksimāli $arg1';
+  }
+
+  @override
+  String get paymentNoteHint => 'Bankas pārskaitījums, Revolut, skaidra nauda...';
+
+  @override
+  String get paymentAmountPositiveError => 'Summai jābūt lielākai par nulli.';
+
+  @override
+  String get paymentAmountTooHighError => 'Summa nedrīkst pārsniegt atlikušo parādu.';
+
+  @override
+  String get paymentRequestCreated => 'Maksājuma pieprasījums nosūtīts.';
+
+  @override
+  String get paymentRecordedWaiting => 'Maksājums reģistrēts. Gaida apstiprinājumu.';
+
+  @override
+  String get paymentConfirmTitle => 'Apstiprināt maksājumu';
+
+  @override
+  String paymentConfirmText(Object arg1, Object arg2) {
+    return 'Apstiprini, ka saņēmi $arg1 no $arg2.';
+  }
+
+  @override
+  String get paymentConfirmedMessage => 'Maksājums apstiprināts.';
+
+  @override
+  String get paymentCancelRecordTitle => 'Atcelt maksājuma ierakstu';
+
+  @override
+  String paymentCancelRecordText(Object arg1, Object arg2) {
+    return 'Atcelt $arg1 maksājuma atzīmi lietotājam $arg2?';
+  }
+
+  @override
+  String get paymentRecordCancelled => 'Maksājuma ieraksts atcelts.';
+
+  @override
+  String get paymentNotReceivedTitle => 'Maksājums nav saņemts';
+
+  @override
+  String paymentNotReceivedText(Object arg1, Object arg2) {
+    return 'Atzīmēt $arg1 maksājumu no $arg2 kā nesaņemtu?';
+  }
+
+  @override
+  String get paymentMarkedNotReceived => 'Maksājums atzīmēts kā nesaņemts.';
+
+  @override
+  String get paymentActivityTitle => 'Maksājumu aktivitāte';
+
+  @override
+  String paymentOpenRequestsCount(Object arg1) {
+    return 'Atvērti maksājumu pieprasījumi: $arg1';
+  }
+
+  @override
+  String paymentAwaitingConfirmationCount(Object arg1) {
+    return 'Maksājumi, kas gaida apstiprinājumu: $arg1';
+  }
+
+  @override
+  String get paymentRecordedPaymentsTitle => 'Reģistrētie maksājumi';
+
+  @override
+  String paymentRequestedFrom(Object arg1, Object arg2) {
+    return '$arg1 pieprasīja maksājumu no $arg2';
+  }
+
+  @override
+  String paymentPaidTo(Object arg1, Object arg2) {
+    return '$arg1 samaksāja lietotājam $arg2';
+  }
+
+  @override
+  String get paymentRequestPendingStatus => 'Maksājums pieprasīts';
+
+  @override
+  String get paymentAwaitingConfirmationStatus => 'Gaida apstiprinājumu';
+
+  @override
+  String get paymentReviewRequestAction => 'Apskatīt pieprasījumu';
+
+  @override
+  String get paymentViewDetailsAction => 'Maksājuma rekvizīti';
+
+  @override
+  String get paymentMarkPaidAction => 'Esmu samaksājis';
+
+  @override
+  String get paymentDeclineAction => 'Noraidīt';
+
+  @override
+  String get paymentRequestReviewTitle => 'Maksājuma pieprasījums';
+
+  @override
+  String paymentRequestReviewBody(Object arg1, Object arg2) {
+    return '$arg1 pieprasīja no tevis $arg2. Samaksā ārpus Splyto un pēc tam atzīmē kā samaksātu.';
+  }
+
+  @override
+  String get paymentRequestMarkPaidConfirmTitle => 'Atzīmēt kā samaksātu?';
+
+  @override
+  String paymentRequestMarkPaidConfirmText(Object arg1, Object arg2) {
+    return 'Apstiprini tikai pēc tam, kad esi samaksājis $arg1 lietotājam $arg2 ārpus Splyto.';
+  }
+
+  @override
+  String get paymentRequestMarkedPaid => 'Atzīmēts kā samaksāts. Gaida apstiprinājumu.';
+
+  @override
+  String get paymentRequestCancelTitle => 'Atcelt maksājuma pieprasījumu?';
+
+  @override
+  String paymentRequestCancelText(Object arg1, Object arg2) {
+    return 'Atcelt savu $arg1 pieprasījumu lietotājam $arg2?';
+  }
+
+  @override
+  String get paymentRequestCancelled => 'Maksājuma pieprasījums atcelts.';
+
+  @override
+  String get paymentRequestDeclineTitle => 'Noraidīt maksājuma pieprasījumu?';
+
+  @override
+  String paymentRequestDeclineText(Object arg1, Object arg2) {
+    return 'Noraidīt $arg1 pieprasījumu no $arg2? Viņš saņems paziņojumu.';
+  }
+
+  @override
+  String get paymentRequestDeclined => 'Maksājuma pieprasījums noraidīts.';
+
+  @override
+  String get paymentPendingBeforeFinish => 'Pirms gala norēķina atrisini atvērtos maksājumu pieprasījumus un neapstiprinātos maksājumus.';
+
+  @override
+  String get paymentFinishBlockedByPending => 'Ceļojumu varēs pabeigt, kad būs atrisināti maksājumu pieprasījumi un neapstiprinātie maksājumi.';
+
+  @override
+  String get notificationPaymentRequestedTitle => 'Pieprasīts maksājums';
+
+  @override
+  String notificationPaymentRequestedBody(Object arg1, Object arg2) {
+    return '$arg1 pieprasīja no tevis $arg2.';
+  }
+
+  @override
+  String get notificationPaymentRequestedBodyGeneric => 'Tu saņēmi maksājuma pieprasījumu.';
+
+  @override
+  String get notificationPaymentRequestSentTitle => 'Pieprasītais maksājums nosūtīts';
+
+  @override
+  String notificationPaymentRequestSentBody(Object arg1, Object arg2) {
+    return '$arg1 atzīmēja tavu $arg2 maksājuma pieprasījumu kā samaksātu.';
+  }
+
+  @override
+  String get notificationPaymentRequestSentBodyGeneric => 'Tavs maksājuma pieprasījums atzīmēts kā samaksāts.';
+
+  @override
+  String get notificationPaymentRequestCancelledTitle => 'Maksājuma pieprasījums atcelts';
+
+  @override
+  String notificationPaymentRequestCancelledBody(Object arg1, Object arg2) {
+    return '$arg1 atcēla $arg2 maksājuma pieprasījumu.';
+  }
+
+  @override
+  String get notificationPaymentRequestCancelledBodyGeneric => 'Maksājuma pieprasījums tika atcelts.';
+
+  @override
+  String get notificationPaymentRequestDeclinedTitle => 'Maksājuma pieprasījums noraidīts';
+
+  @override
+  String notificationPaymentRequestDeclinedBody(Object arg1, Object arg2) {
+    return '$arg1 noraidīja tavu $arg2 maksājuma pieprasījumu.';
+  }
+
+  @override
+  String get notificationPaymentRequestDeclinedBodyGeneric => 'Tavs maksājuma pieprasījums tika noraidīts.';
+
+  @override
+  String get notificationPaymentSentTitle => 'Maksājums atzīmēts kā nosūtīts';
+
+  @override
+  String notificationPaymentSentBody(Object arg1, Object arg2) {
+    return '$arg1 atzīmēja $arg2 kā samaksātu tev.';
+  }
+
+  @override
+  String get notificationPaymentSentBodyGeneric => 'Maksājums tika atzīmēts kā nosūtīts tev.';
+
+  @override
+  String get notificationPaymentConfirmedTitle => 'Maksājums apstiprināts';
+
+  @override
+  String notificationPaymentConfirmedBody(Object arg1, Object arg2) {
+    return '$arg1 apstiprināja, ka saņēma $arg2 no tevis.';
+  }
+
+  @override
+  String get notificationPaymentConfirmedBodyGeneric => 'Tavs maksājums tika apstiprināts.';
+
+  @override
+  String get notificationPaymentCancelledTitle => 'Maksājums atcelts';
+
+  @override
+  String notificationPaymentCancelledBody(Object arg1, Object arg2) {
+    return '$arg1 atcēla $arg2 maksājuma atzīmi.';
+  }
+
+  @override
+  String get notificationPaymentCancelledBodyGeneric => 'Maksājuma atzīme tika atcelta.';
+
+  @override
+  String get notificationPaymentNotReceivedTitle => 'Maksājums nav saņemts';
+
+  @override
+  String notificationPaymentNotReceivedBody(Object arg1, Object arg2) {
+    return '$arg1 atzīmēja $arg2 maksājumu kā nesaņemtu.';
+  }
+
+  @override
+  String get notificationPaymentNotReceivedBodyGeneric => 'Maksājums tika atzīmēts kā nesaņemts.';
 }

@@ -44,4 +44,13 @@ class WorkspaceUser {
   bool get isOwner => role == 'owner';
   bool get isAdmin => role == 'admin';
   bool get canManageTrip => isOwner || isAdmin;
+
+  bool get hasPaymentDetails => <String?>[
+    bankIban,
+    bankBic,
+    revolutHandle,
+    revolutMeLink,
+    paypalMeLink,
+    wisePayLink,
+  ].any((value) => (value ?? '').trim().isNotEmpty);
 }

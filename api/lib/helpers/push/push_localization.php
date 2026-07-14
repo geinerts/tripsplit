@@ -66,6 +66,22 @@ function push_localized_notification_title(string $type, string $rawTitle, strin
             return push_locale_phrase($locale, 'member_ready_title');
         case 'trip_ready_to_settle':
             return push_locale_phrase($locale, 'trip_ready_title');
+        case 'payment_requested':
+            return push_locale_phrase($locale, 'payment_requested_title');
+        case 'payment_request_sent':
+            return push_locale_phrase($locale, 'payment_request_sent_title');
+        case 'payment_request_cancelled':
+            return push_locale_phrase($locale, 'payment_request_cancelled_title');
+        case 'payment_request_declined':
+            return push_locale_phrase($locale, 'payment_request_declined_title');
+        case 'payment_sent':
+            return push_locale_phrase($locale, 'payment_sent_title');
+        case 'payment_confirmed':
+            return push_locale_phrase($locale, 'payment_confirmed_title');
+        case 'payment_cancelled':
+            return push_locale_phrase($locale, 'payment_cancelled_title');
+        case 'payment_not_received':
+            return push_locale_phrase($locale, 'payment_not_received_title');
         case 'settlement_reminder':
             return push_locale_phrase($locale, 'settlement_reminder_title');
         case 'settlement_auto_reminder':
@@ -179,6 +195,94 @@ function push_localized_notification_body(string $type, string $rawBody, string 
                 );
             }
             return push_locale_phrase($locale, 'trip_ready_body_generic');
+        case 'payment_requested':
+            if (preg_match('/^(.+?) requested (.+?) from you\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'payment_requested_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'amount' => trim((string) ($match[2] ?? '')),
+                    ]
+                );
+            }
+            return push_locale_phrase($locale, 'payment_requested_body_generic');
+        case 'payment_request_sent':
+            if (preg_match('/^(.+?) marked your (.+?) payment request as paid\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'payment_request_sent_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'amount' => trim((string) ($match[2] ?? '')),
+                    ]
+                );
+            }
+            return push_locale_phrase($locale, 'payment_request_sent_body_generic');
+        case 'payment_request_cancelled':
+            if (preg_match('/^(.+?) cancelled the (.+?) payment request\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'payment_request_cancelled_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'amount' => trim((string) ($match[2] ?? '')),
+                    ]
+                );
+            }
+            return push_locale_phrase($locale, 'payment_request_cancelled_body_generic');
+        case 'payment_request_declined':
+            if (preg_match('/^(.+?) declined your (.+?) payment request\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'payment_request_declined_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'amount' => trim((string) ($match[2] ?? '')),
+                    ]
+                );
+            }
+            return push_locale_phrase($locale, 'payment_request_declined_body_generic');
+        case 'payment_sent':
+            if (preg_match('/^(.+?) marked (.+?) as paid to you\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'payment_sent_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'amount' => trim((string) ($match[2] ?? '')),
+                    ]
+                );
+            }
+            return push_locale_phrase($locale, 'payment_sent_body_generic');
+        case 'payment_confirmed':
+            if (preg_match('/^(.+?) confirmed receiving (.+?) from you\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'payment_confirmed_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'amount' => trim((string) ($match[2] ?? '')),
+                    ]
+                );
+            }
+            return push_locale_phrase($locale, 'payment_confirmed_body_generic');
+        case 'payment_cancelled':
+            if (preg_match('/^(.+?) cancelled the (.+?) payment mark\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'payment_cancelled_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'amount' => trim((string) ($match[2] ?? '')),
+                    ]
+                );
+            }
+            return push_locale_phrase($locale, 'payment_cancelled_body_generic');
+        case 'payment_not_received':
+            if (preg_match('/^(.+?) marked the (.+?) payment as not received\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'payment_not_received_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'amount' => trim((string) ($match[2] ?? '')),
+                    ]
+                );
+            }
+            return push_locale_phrase($locale, 'payment_not_received_body_generic');
         case 'settlement_reminder':
             if (preg_match('/^(.+?) reminded (.+?) to mark (.+?) as sent\.$/u', $rawBody, $match) === 1) {
                 return push_locale_format(
@@ -294,6 +398,30 @@ function push_locale_phrase(string $locale, string $key): string
             'trip_ready_title' => 'Visi dalībnieki ir gatavi',
             'trip_ready_body' => 'Visi dalībnieki atzīmēja gatavību ceļojumā "{trip}". Vari sākt norēķinus.',
             'trip_ready_body_generic' => 'Visi dalībnieki ir gatavi. Vari sākt norēķinus.',
+            'payment_requested_title' => 'Pieprasīts maksājums',
+            'payment_requested_body' => '{name} pieprasīja no tevis {amount}.',
+            'payment_requested_body_generic' => 'Tu saņēmi maksājuma pieprasījumu.',
+            'payment_request_sent_title' => 'Pieprasītais maksājums nosūtīts',
+            'payment_request_sent_body' => '{name} atzīmēja tavu {amount} maksājuma pieprasījumu kā samaksātu.',
+            'payment_request_sent_body_generic' => 'Tavs maksājuma pieprasījums atzīmēts kā samaksāts.',
+            'payment_request_cancelled_title' => 'Maksājuma pieprasījums atcelts',
+            'payment_request_cancelled_body' => '{name} atcēla {amount} maksājuma pieprasījumu.',
+            'payment_request_cancelled_body_generic' => 'Maksājuma pieprasījums tika atcelts.',
+            'payment_request_declined_title' => 'Maksājuma pieprasījums noraidīts',
+            'payment_request_declined_body' => '{name} noraidīja tavu {amount} maksājuma pieprasījumu.',
+            'payment_request_declined_body_generic' => 'Tavs maksājuma pieprasījums tika noraidīts.',
+            'payment_sent_title' => 'Maksājums atzīmēts kā nosūtīts',
+            'payment_sent_body' => '{name} atzīmēja {amount} kā samaksātu tev.',
+            'payment_sent_body_generic' => 'Maksājums tika atzīmēts kā nosūtīts tev.',
+            'payment_confirmed_title' => 'Maksājums apstiprināts',
+            'payment_confirmed_body' => '{name} apstiprināja, ka saņēma {amount} no tevis.',
+            'payment_confirmed_body_generic' => 'Tavs maksājums tika apstiprināts.',
+            'payment_cancelled_title' => 'Maksājums atcelts',
+            'payment_cancelled_body' => '{name} atcēla {amount} maksājuma atzīmi.',
+            'payment_cancelled_body_generic' => 'Maksājuma atzīme tika atcelta.',
+            'payment_not_received_title' => 'Maksājums nav saņemts',
+            'payment_not_received_body' => '{name} atzīmēja {amount} maksājumu kā nesaņemtu.',
+            'payment_not_received_body_generic' => 'Maksājums tika atzīmēts kā nesaņemts.',
             'settlement_reminder_title' => 'Atgādinājums par norēķinu',
             'settlement_reminder_mark_sent_body' => '{actor} atgādināja {target} atzīmēt {amount} kā nosūtītu.',
             'settlement_reminder_confirm_body' => '{actor} atgādināja {target} apstiprināt {amount} saņemšanu.',
@@ -335,6 +463,30 @@ function push_locale_phrase(string $locale, string $key): string
             'trip_ready_title' => 'Todos los miembros están listos',
             'trip_ready_body' => 'Todos los miembros se marcaron como listos en "{trip}". Puedes iniciar las liquidaciones.',
             'trip_ready_body_generic' => 'Todos los miembros están listos. Puedes iniciar las liquidaciones.',
+            'payment_requested_title' => 'Pago solicitado',
+            'payment_requested_body' => '{name} te solicitó {amount}.',
+            'payment_requested_body_generic' => 'Has recibido una solicitud de pago.',
+            'payment_request_sent_title' => 'Pago solicitado enviado',
+            'payment_request_sent_body' => '{name} marcó tu solicitud de {amount} como pagada.',
+            'payment_request_sent_body_generic' => 'Tu solicitud de pago fue marcada como pagada.',
+            'payment_request_cancelled_title' => 'Solicitud de pago cancelada',
+            'payment_request_cancelled_body' => '{name} canceló la solicitud de pago de {amount}.',
+            'payment_request_cancelled_body_generic' => 'Se canceló una solicitud de pago.',
+            'payment_request_declined_title' => 'Solicitud de pago rechazada',
+            'payment_request_declined_body' => '{name} rechazó tu solicitud de pago de {amount}.',
+            'payment_request_declined_body_generic' => 'Tu solicitud de pago fue rechazada.',
+            'payment_sent_title' => 'Pago marcado como enviado',
+            'payment_sent_body' => '{name} marcó {amount} como pagado para ti.',
+            'payment_sent_body_generic' => 'Se marcó un pago como enviado para ti.',
+            'payment_confirmed_title' => 'Pago confirmado',
+            'payment_confirmed_body' => '{name} confirmó haber recibido {amount} de ti.',
+            'payment_confirmed_body_generic' => 'Tu pago fue confirmado.',
+            'payment_cancelled_title' => 'Pago cancelado',
+            'payment_cancelled_body' => '{name} canceló la marca de pago de {amount}.',
+            'payment_cancelled_body_generic' => 'Se canceló una marca de pago.',
+            'payment_not_received_title' => 'Pago no recibido',
+            'payment_not_received_body' => '{name} marcó el pago de {amount} como no recibido.',
+            'payment_not_received_body_generic' => 'Se marcó un pago como no recibido.',
             'settlement_reminder_title' => 'Recordatorio de liquidación',
             'settlement_reminder_mark_sent_body' => '{actor} recordó a {target} marcar {amount} como enviado.',
             'settlement_reminder_confirm_body' => '{actor} recordó a {target} confirmar la recepción de {amount}.',

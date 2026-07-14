@@ -140,32 +140,6 @@ class AppDependencies {
     );
     final inviteDeepLinkController = InviteDeepLinkController();
 
-    final authRemote = AuthRemoteDataSourceImpl(apiClient);
-    final authRepository = AuthRepositoryImpl(authRemote);
-    final authController = AuthController(
-      LoginUseCase(authRepository),
-      SocialLoginUseCase(authRepository),
-      RegisterUseCase(authRepository),
-      SetCredentialsUseCase(authRepository),
-      UpdateProfileUseCase(authRepository),
-      GetMeUseCase(authRepository),
-      ForgotPasswordUseCase(authRepository),
-      RequestEmailVerificationLinkUseCase(authRepository),
-      RequestReactivationLinkUseCase(authRepository),
-      RequestEmailChangeUseCase(authRepository),
-      DeactivateAccountUseCase(authRepository),
-      RequestAccountDeletionLinkUseCase(authRepository),
-      GetNotificationPreferencesUseCase(authRepository),
-      UpdateNotificationPreferencesUseCase(authRepository),
-      tokenStore,
-      authSessionStore,
-      currentUserStore,
-      avatarStore,
-      avatarUploader,
-      feedbackReporter,
-      pushRegistrationService,
-    );
-
     final tripsRemote = TripsRemoteDataSourceImpl(apiClient, tripImageUploader);
     final tripsLocalStore = TripsLocalStore();
     final tripsRepository = TripsRepositoryImpl(tripsRemote, tripsLocalStore);
@@ -209,6 +183,40 @@ class AppDependencies {
       workspaceLocalStore,
     );
     final workspaceController = WorkspaceController(workspaceRepository);
+
+    final authRemote = AuthRemoteDataSourceImpl(apiClient);
+    final authRepository = AuthRepositoryImpl(authRemote);
+    final authController = AuthController(
+      LoginUseCase(authRepository),
+      SocialLoginUseCase(authRepository),
+      RegisterUseCase(authRepository),
+      SetCredentialsUseCase(authRepository),
+      UpdateProfileUseCase(authRepository),
+      GetMeUseCase(authRepository),
+      ForgotPasswordUseCase(authRepository),
+      RequestEmailVerificationLinkUseCase(authRepository),
+      RequestReactivationLinkUseCase(authRepository),
+      RequestEmailChangeUseCase(authRepository),
+      DeactivateAccountUseCase(authRepository),
+      RequestAccountDeletionLinkUseCase(authRepository),
+      GetNotificationPreferencesUseCase(authRepository),
+      UpdateNotificationPreferencesUseCase(authRepository),
+      tokenStore,
+      authSessionStore,
+      currentUserStore,
+      avatarStore,
+      avatarUploader,
+      feedbackReporter,
+      pushRegistrationService,
+      () async {
+        tripsController.clearTripsCache();
+        friendsController.clearSnapshotCache();
+        await Future.wait(<Future<void>>[
+          tripsLocalStore.clear(),
+          workspaceLocalStore.clearAll(),
+        ]);
+      },
+    );
 
     return AppDependencies(
       authController: authController,

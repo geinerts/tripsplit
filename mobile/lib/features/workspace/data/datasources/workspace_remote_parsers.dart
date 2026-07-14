@@ -165,11 +165,18 @@ class WorkspaceRemoteParsers {
       amount: (item['amount'] as num?)?.toDouble() ?? 0,
       status: status,
       note: _toString(item['note']).trim(),
+      requesterUserId: _toInt(item['requester_user_id']) > 0
+          ? _toInt(item['requester_user_id'])
+          : null,
+      requestedAt: _toNullableString(item['requested_at']),
       createdAt: _toNullableString(item['created_at']),
       markedSentAt: _toNullableString(item['marked_sent_at']),
       confirmedAt: _toNullableString(item['confirmed_at']),
       cancelledAt: _toNullableString(item['cancelled_at']),
       cancelReason: _toNullableString(item['cancel_reason']),
+      canMarkRequestSent: _toBool(item['can_mark_request_sent']),
+      canCancelRequest: _toBool(item['can_cancel_request']),
+      canDeclineRequest: _toBool(item['can_decline_request']),
       canConfirmReceived: _toBool(item['can_confirm_received']),
       canCancelSent: _toBool(item['can_cancel_sent']),
       canReportNotReceived: _toBool(item['can_report_not_received']),
@@ -334,7 +341,10 @@ class WorkspaceRemoteParsers {
 
   static String parsePaymentStatus(Object? raw) {
     final value = (raw as String? ?? '').trim().toLowerCase();
-    if (value == 'sent' || value == 'confirmed' || value == 'cancelled') {
+    if (value == 'requested' ||
+        value == 'sent' ||
+        value == 'confirmed' ||
+        value == 'cancelled') {
       return value;
     }
     return 'sent';

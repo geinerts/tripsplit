@@ -64,15 +64,23 @@ if (!defined('EMAIL_VERIFICATION_CLEANUP_BATCH_LIMIT')) {
 if (!defined('EMAIL_CHANGE_TOKEN_TTL_SEC')) {
     define('EMAIL_CHANGE_TOKEN_TTL_SEC', 86400);
 }
+if (!defined('ADMIN_TOTP_ENCRYPTION_KEY')) {
+    define('ADMIN_TOTP_ENCRYPTION_KEY', str_repeat('test-key-', 8));
+}
 
 // Load pure math + validation helpers
 require_once __DIR__ . '/../config/config_user_validation.php';
 require_once __DIR__ . '/../lib/helpers/helper_validation.php';
 require_once __DIR__ . '/../lib/helpers/helper_account_lifecycle.php';
+require_once __DIR__ . '/../lib/helpers/helper_notification_preferences.php';
+require_once __DIR__ . '/../lib/helpers/push/push_localization.php';
+require_once __DIR__ . '/../lib/helpers/helper_admin_auth.php';
+require_once __DIR__ . '/../lib/http/action_router.php';
 
 // Load settlements pure logic
 require_once __DIR__ . '/../lib/actions/settlements/settlements_core.php';
 require_once __DIR__ . '/../lib/actions/settlements/settlements_algorithm.php';
+require_once __DIR__ . '/../lib/actions/settlements/settlements_payments.php';
 
 // Load trip helpers (pure functions only)
 require_once __DIR__ . '/../lib/helpers/helper_trip.php';

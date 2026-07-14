@@ -50,6 +50,7 @@ class AuthController {
     this._avatarUploader,
     this._feedbackReporter,
     this._pushRegistrationService,
+    this._onLoggedOut,
   );
 
   final LoginUseCase _loginUseCase;
@@ -75,6 +76,7 @@ class AuthController {
   final LegacyAvatarUploader _avatarUploader;
   final LegacyFeedbackReporter _feedbackReporter;
   final PushRegistrationService _pushRegistrationService;
+  final Future<void> Function() _onLoggedOut;
 
   AuthUser? currentUser;
   NotificationPreferences _notificationPreferences =
@@ -390,6 +392,7 @@ class AuthController {
   }
 
   Future<void> logout() async {
+    final userId = currentUser?.id ?? 0;
     try {
       await _pushRegistrationService.unregisterCurrentDevice();
     } catch (_) {
@@ -397,9 +400,13 @@ class AuthController {
     }
     await _authSessionStore.clear();
     await _tokenStore.resetToken();
+    if (userId > 0) {
+      await _avatarStore.writeAvatarBase64(userId: userId, avatarBase64: null);
+    }
     currentUser = null;
     _notificationPreferences = const NotificationPreferences.defaults();
     await _currentUserStore.clear();
+    await _onLoggedOut();
   }
 
   Future<void> syncPushRegistration() {

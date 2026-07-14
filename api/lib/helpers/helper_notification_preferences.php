@@ -615,6 +615,28 @@ function notification_in_app_pref_key_for_type(string $type): ?string
         return 'in_app_settlement_confirmed_enabled';
     }
 
+    if ($normalized === 'payment_sent' || $normalized === 'payment_request_sent') {
+        return 'in_app_settlement_sent_enabled';
+    }
+
+    if ($normalized === 'payment_confirmed') {
+        return 'in_app_settlement_confirmed_enabled';
+    }
+
+    if (in_array(
+        $normalized,
+        [
+            'payment_requested',
+            'payment_request_cancelled',
+            'payment_request_declined',
+            'payment_cancelled',
+            'payment_not_received',
+        ],
+        true
+    )) {
+        return 'in_app_settlement_updates_enabled';
+    }
+
     return null;
 }
 
@@ -645,7 +667,22 @@ function notification_push_pref_key_for_type(string $type): ?string
         return 'push_trip_updates_enabled';
     }
 
-    if (in_array($normalized, ['settlement_sent', 'settlement_confirmed'], true)) {
+    if (in_array(
+        $normalized,
+        [
+            'settlement_sent',
+            'settlement_confirmed',
+            'payment_requested',
+            'payment_request_sent',
+            'payment_request_cancelled',
+            'payment_request_declined',
+            'payment_sent',
+            'payment_confirmed',
+            'payment_cancelled',
+            'payment_not_received',
+        ],
+        true
+    )) {
         return 'push_settlement_updates_enabled';
     }
 

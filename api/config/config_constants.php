@@ -11,6 +11,7 @@ define('PUBLIC_BASE_URL', env_string('TRIP_PUBLIC_BASE_URL', ''));
 define('API_MAX_JSON_BYTES', env_int('TRIP_API_MAX_JSON_BYTES', 65_536)); // 64 KB
 define('DB_TABLE_PREFIX', env_string('TRIP_DB_TABLE_PREFIX', 'trip_'));
 define('ADMIN_KEY', env_string('TRIP_ADMIN_KEY', ''));
+define('ADMIN_TOTP_ENCRYPTION_KEY', env_string('TRIP_ADMIN_TOTP_ENCRYPTION_KEY', ''));
 define('RECEIPTS_REL_DIR', env_string('TRIP_RECEIPTS_REL_DIR', 'uploads/receipts'));
 define('RECEIPTS_MAX_BYTES', env_int('TRIP_RECEIPTS_MAX_BYTES', 8_388_608)); // 8 MB
 define('AVATARS_REL_DIR', env_string('TRIP_AVATARS_REL_DIR', 'uploads/avatars'));

@@ -8,11 +8,16 @@ class PaymentItem {
     required this.amount,
     required this.status,
     required this.note,
+    required this.requesterUserId,
+    required this.requestedAt,
     required this.createdAt,
     required this.markedSentAt,
     required this.confirmedAt,
     required this.cancelledAt,
     required this.cancelReason,
+    required this.canMarkRequestSent,
+    required this.canCancelRequest,
+    required this.canDeclineRequest,
     required this.canConfirmReceived,
     required this.canCancelSent,
     required this.canReportNotReceived,
@@ -27,16 +32,24 @@ class PaymentItem {
   final double amount;
   final String status;
   final String note;
+  final int? requesterUserId;
+  final String? requestedAt;
   final String? createdAt;
   final String? markedSentAt;
   final String? confirmedAt;
   final String? cancelledAt;
   final String? cancelReason;
+  final bool canMarkRequestSent;
+  final bool canCancelRequest;
+  final bool canDeclineRequest;
   final bool canConfirmReceived;
   final bool canCancelSent;
   final bool canReportNotReceived;
   final bool isConfirmed;
 
+  bool get isRequested => status == 'requested';
   bool get isSent => status == 'sent';
   bool get isCancelled => status == 'cancelled';
+  bool get originatedAsRequest => requesterUserId != null;
+  bool get reservesBalance => isRequested || isSent;
 }
