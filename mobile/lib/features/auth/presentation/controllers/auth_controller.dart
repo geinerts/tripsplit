@@ -17,6 +17,7 @@ import '../../domain/usecases/forgot_password_use_case.dart';
 import '../../domain/usecases/get_me_use_case.dart';
 import '../../domain/usecases/get_notification_preferences_use_case.dart';
 import '../../domain/usecases/login_use_case.dart';
+import '../../domain/usecases/logout_session_use_case.dart';
 import '../../domain/usecases/register_use_case.dart';
 import '../../domain/usecases/request_account_deletion_link_use_case.dart';
 import '../../domain/usecases/request_email_change_use_case.dart';
@@ -30,6 +31,7 @@ import '../../domain/usecases/update_profile_use_case.dart';
 class AuthController {
   AuthController(
     this._loginUseCase,
+    this._logoutSessionUseCase,
     this._socialLoginUseCase,
     this._registerUseCase,
     this._setCredentialsUseCase,
@@ -54,6 +56,7 @@ class AuthController {
   );
 
   final LoginUseCase _loginUseCase;
+  final LogoutSessionUseCase _logoutSessionUseCase;
   final SocialLoginUseCase _socialLoginUseCase;
   final RegisterUseCase _registerUseCase;
   final SetCredentialsUseCase _setCredentialsUseCase;
@@ -397,6 +400,11 @@ class AuthController {
       await _pushRegistrationService.unregisterCurrentDevice();
     } catch (_) {
       // Ignore push unregister errors during logout.
+    }
+    try {
+      await _logoutSessionUseCase.call();
+    } catch (_) {
+      // Local logout must still complete when the network is unavailable.
     }
     await _authSessionStore.clear();
     await _tokenStore.resetToken();

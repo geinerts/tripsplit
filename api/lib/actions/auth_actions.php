@@ -470,6 +470,36 @@ function refresh_session_action(): void
     ]);
 }
 
+function logout_session_action(): void
+{
+    require_post();
+    $body = read_json();
+    $refreshToken = strtolower(trim((string) ($body['refresh_token'] ?? '')));
+    if (!refresh_token_is_well_formed($refreshToken)) {
+        json_out(['ok' => true]);
+    }
+
+    $pdo = db();
+    enforce_rate_limit(
+        $pdo,
+        'refresh_ip',
+        client_ip_address(),
+        RATE_LIMIT_REFRESH_IP_MAX,
+        RATE_LIMIT_REFRESH_WINDOW_SEC
+    );
+    enforce_rate_limit(
+        $pdo,
+        'refresh_token',
+        $refreshToken,
+        RATE_LIMIT_REFRESH_TOKEN_MAX,
+        RATE_LIMIT_REFRESH_WINDOW_SEC
+    );
+    revoke_refresh_token($pdo, $refreshToken);
+
+    // Always return the same response so this endpoint cannot reveal token validity.
+    json_out(['ok' => true]);
+}
+
 function set_credentials_action(): void
 {
     require_post();

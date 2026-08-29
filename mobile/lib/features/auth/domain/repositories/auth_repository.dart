@@ -2,6 +2,8 @@ import '../entities/auth_user.dart';
 import '../entities/notification_preferences.dart';
 
 abstract class AuthRepository {
+  Future<void> logoutSession();
+
   Future<AuthUser> loginWithEmail({
     required String email,
     required String password,

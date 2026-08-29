@@ -6,6 +6,8 @@ import '../models/auth_user_model.dart';
 import '../models/notification_preferences_model.dart';
 
 abstract class AuthRemoteDataSource {
+  Future<void> logoutSession();
+
   Future<AuthUserModel> loginWithEmail({
     required String email,
     required String password,
@@ -86,6 +88,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   AuthRemoteDataSourceImpl(this._apiClient);
 
   final ApiClient _apiClient;
+
+  @override
+  Future<void> logoutSession() {
+    return _apiClient.revokeCurrentSession();
+  }
 
   @override
   Future<AuthUserModel> loginWithEmail({

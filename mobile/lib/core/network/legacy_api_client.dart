@@ -57,6 +57,36 @@ class LegacyApiClient implements ApiClient {
     );
   }
 
+  @override
+  Future<void> revokeCurrentSession() async {
+    final refreshToken = await _authSessionStore.readValidRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) {
+      return;
+    }
+
+    final requestId = _nextRequestId();
+    final uri = _buildUri(
+      path: ApiEndpoints.legacyAction(ApiEndpoints.legacyLogoutSessionAction),
+    );
+    final response = await _sendJsonRequest(
+      uri: uri,
+      method: HttpMethod.post,
+      requestId: requestId,
+      body: <String, dynamic>{'refresh_token': refreshToken},
+    );
+    final payload = _parsePayload(response, requestId: requestId);
+    if (response.statusCode < 200 ||
+        response.statusCode >= 300 ||
+        payload['ok'] != true) {
+      throw ApiException(
+        _errorMessage(payload, response.statusCode),
+        statusCode: response.statusCode,
+        requestId: _responseRequestId(response) ?? requestId,
+        code: _errorCode(payload),
+      );
+    }
+  }
+
   Future<Map<String, dynamic>> _requestWithOptionalRefresh({
     required String path,
     required HttpMethod method,

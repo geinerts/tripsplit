@@ -240,7 +240,7 @@ function project_base_path(): string
 
 function receipt_public_url(?string $receiptPath): ?string
 {
-    return project_public_url($receiptPath);
+    return private_receipt_url($receiptPath);
 }
 
 function avatar_public_url(?string $avatarPath): ?string
@@ -260,7 +260,85 @@ function feedback_public_url(?string $feedbackPath): ?string
 
 function receipt_thumb_public_url(?string $receiptPath): ?string
 {
-    return upload_thumb_public_url($receiptPath, 'receipt_public_url');
+    if (!$receiptPath) {
+        return null;
+    }
+    $normalized = ltrim(str_replace('\\', '/', trim($receiptPath)), '/');
+    if ($normalized === '') {
+        return null;
+    }
+    $thumbRelative = upload_thumb_relative_path($normalized);
+    if ($thumbRelative === null || !upload_relative_file_exists($thumbRelative)) {
+        return private_receipt_url($normalized);
+    }
+    return private_receipt_url($thumbRelative);
+}
+
+function private_media_signing_secret(): string
+{
+    $secret = trim((string) PRIVATE_MEDIA_SIGNING_SECRET);
+    if (strlen($secret) >= 32) {
+        return $secret;
+    }
+    if (!APP_DEBUG) {
+        throw new RuntimeException('TRIP_PRIVATE_MEDIA_SIGNING_SECRET must contain at least 32 characters.');
+    }
+    return hash('sha256', DB_NAME . '|' . DB_USER . '|' . DB_PASS . '|private-media');
+}
+
+function private_media_url_ttl_seconds(): int
+{
+    return max(60, min(3_600, (int) PRIVATE_MEDIA_URL_TTL_SEC));
+}
+
+function private_receipt_signature(string $relativePath, int $expiresAt): string
+{
+    return hash_hmac(
+        'sha256',
+        "receipt\n" . $expiresAt . "\n" . $relativePath,
+        private_media_signing_secret()
+    );
+}
+
+function normalize_private_receipt_path(string $receiptPath): ?string
+{
+    $normalized = ltrim(str_replace('\\', '/', trim($receiptPath)), '/');
+    $relativeDir = sanitize_upload_relative_dir(RECEIPTS_REL_DIR);
+    if (!preg_match('#^' . preg_quote($relativeDir, '#') . '/[A-Za-z0-9._-]+$#', $normalized)) {
+        return null;
+    }
+    return $normalized;
+}
+
+function private_receipt_url(?string $receiptPath): ?string
+{
+    if (!$receiptPath) {
+        return null;
+    }
+    $normalized = normalize_private_receipt_path((string) $receiptPath);
+    if ($normalized === null) {
+        return null;
+    }
+    $expiresAt = time() + private_media_url_ttl_seconds();
+    $query = http_build_query([
+        'path' => $normalized,
+        'expires' => $expiresAt,
+        'signature' => private_receipt_signature($normalized, $expiresAt),
+    ], '', '&', PHP_QUERY_RFC3986);
+    return public_base_url() . '/api/receipt-media.php?' . $query;
+}
+
+function private_receipt_request_is_valid(string $relativePath, int $expiresAt, string $signature): bool
+{
+    $now = time();
+    if (
+        $expiresAt < $now ||
+        $expiresAt > ($now + private_media_url_ttl_seconds() + 60) ||
+        !preg_match('/^[a-f0-9]{64}$/', $signature)
+    ) {
+        return false;
+    }
+    return hash_equals(private_receipt_signature($relativePath, $expiresAt), $signature);
 }
 
 function avatar_thumb_public_url(?string $avatarPath): ?string

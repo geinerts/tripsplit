@@ -39,6 +39,42 @@ function auth_refresh_token_ttl_seconds(): int
     return $ttl;
 }
 
+function auth_max_active_sessions(): int
+{
+    return max(1, min(20, (int) AUTH_MAX_ACTIVE_SESSIONS));
+}
+
+function trim_active_refresh_tokens_for_user(PDO $pdo, int $userId): void
+{
+    if ($userId <= 0) {
+        return;
+    }
+    $table = table_name('refresh_tokens');
+    $select = $pdo->prepare(
+        'SELECT id
+         FROM ' . $table . '
+         WHERE user_id = :user_id
+           AND revoked_at IS NULL
+           AND expires_at > CURRENT_TIMESTAMP
+         ORDER BY id DESC
+         LIMIT 100'
+    );
+    $select->execute(['user_id' => $userId]);
+    $ids = array_map('intval', $select->fetchAll(PDO::FETCH_COLUMN));
+    $revokeIds = array_slice($ids, auth_max_active_sessions());
+    if ($revokeIds === []) {
+        return;
+    }
+
+    $placeholders = implode(',', array_fill(0, count($revokeIds), '?'));
+    $revoke = $pdo->prepare(
+        'UPDATE ' . $table . '
+         SET revoked_at = COALESCE(revoked_at, CURRENT_TIMESTAMP)
+         WHERE id IN (' . $placeholders . ')'
+    );
+    $revoke->execute($revokeIds);
+}
+
 function create_access_token_for_user(int $userId): string
 {
     if ($userId <= 0) {
@@ -186,6 +222,7 @@ function create_refresh_token_row(PDO $pdo, int $userId): array
         'user_agent' => trim(substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255)) ?: null,
         'ip_address' => client_ip_address(),
     ]);
+    trim_active_refresh_tokens_for_user($pdo, $userId);
 
     return [
         'refresh_token' => $plain,
@@ -287,6 +324,7 @@ function rotate_refresh_token(PDO $pdo, string $refreshToken): ?array
             'user_agent' => $userAgent !== '' ? $userAgent : null,
             'ip_address' => $ipAddress,
         ]);
+        trim_active_refresh_tokens_for_user($pdo, $userId);
 
         if (random_int(1, 80) === 1) {
             $cleanup = $pdo->prepare(
@@ -315,4 +353,23 @@ function rotate_refresh_token(PDO $pdo, string $refreshToken): ?array
             'refresh_expires_in_sec' => $ttl,
         ],
     ];
+}
+
+function revoke_refresh_token(PDO $pdo, string $refreshToken): bool
+{
+    $refreshToken = strtolower(trim($refreshToken));
+    if (!refresh_token_is_well_formed($refreshToken)) {
+        return false;
+    }
+    ensure_refresh_tokens_table_available($pdo);
+
+    $table = table_name('refresh_tokens');
+    $revoke = $pdo->prepare(
+        'UPDATE ' . $table . '
+         SET revoked_at = COALESCE(revoked_at, CURRENT_TIMESTAMP),
+             last_used_at = CURRENT_TIMESTAMP
+         WHERE token_hash = :token_hash'
+    );
+    $revoke->execute(['token_hash' => hash('sha256', $refreshToken)]);
+    return $revoke->rowCount() > 0;
 }

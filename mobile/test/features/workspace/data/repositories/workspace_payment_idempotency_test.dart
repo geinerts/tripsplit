@@ -85,6 +85,9 @@ class _RecordingApiClient implements ApiClient {
   final List<_RecordedRequest> requests = <_RecordedRequest>[];
 
   @override
+  Future<void> revokeCurrentSession() async {}
+
+  @override
   Future<Map<String, dynamic>> request({
     required String path,
     required HttpMethod method,

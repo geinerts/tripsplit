@@ -9,6 +9,11 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remote;
 
   @override
+  Future<void> logoutSession() {
+    return _remote.logoutSession();
+  }
+
+  @override
   Future<AuthUser> loginWithEmail({
     required String email,
     required String password,

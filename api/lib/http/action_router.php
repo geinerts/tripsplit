@@ -21,6 +21,7 @@ function api_action_handlers(): array
         'login'            => 'login_action',
         'social_auth'      => 'social_auth_action',
         'refresh_session' => 'refresh_session_action',
+        'logout_session' => 'logout_session_action',
         'set_credentials' => 'set_credentials_action',
         'update_profile' => 'update_profile_action',
         'me' => 'me_action',

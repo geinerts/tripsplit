@@ -22,6 +22,7 @@ import '../features/auth/domain/usecases/get_notification_preferences_use_case.d
 import '../features/auth/domain/usecases/deactivate_account_use_case.dart';
 import '../features/auth/domain/usecases/forgot_password_use_case.dart';
 import '../features/auth/domain/usecases/login_use_case.dart';
+import '../features/auth/domain/usecases/logout_session_use_case.dart';
 import '../features/auth/domain/usecases/register_use_case.dart';
 import '../features/auth/domain/usecases/request_account_deletion_link_use_case.dart';
 import '../features/auth/domain/usecases/request_email_change_use_case.dart';
@@ -188,6 +189,7 @@ class AppDependencies {
     final authRepository = AuthRepositoryImpl(authRemote);
     final authController = AuthController(
       LoginUseCase(authRepository),
+      LogoutSessionUseCase(authRepository),
       SocialLoginUseCase(authRepository),
       RegisterUseCase(authRepository),
       SetCredentialsUseCase(authRepository),

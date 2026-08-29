@@ -4,6 +4,7 @@ class ApiEndpoints {
   // Legacy backend compatibility (current running API).
   static const String legacyBasePath = 'api/api.php';
   static const String legacyRefreshSessionAction = 'refresh_session';
+  static const String legacyLogoutSessionAction = 'logout_session';
 
   static String legacyAction(String action) {
     return '$legacyBasePath?action=$action';

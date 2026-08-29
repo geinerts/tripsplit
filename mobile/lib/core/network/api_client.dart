@@ -8,4 +8,6 @@ abstract class ApiClient {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   });
+
+  Future<void> revokeCurrentSession();
 }
