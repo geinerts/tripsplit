@@ -147,6 +147,34 @@ function esc(str) {
   return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// Arguments stay JSON data, never JavaScript in an HTML event attribute.
+function actionAttrs(action, ...args) {
+  return `data-action="${esc(action)}" data-args="${esc(JSON.stringify(args))}"`;
+}
+
+const clickActions = Object.freeze({
+  openPremiumForm, premiumPage,
+  navigate, openUserDetail, suspendUser, reactivateUser, deleteUser, clearPushTokens,
+  userSearch, archiveFeedback, deleteFeedback, loadFeedback, retryPush,
+  updateIncident, submitIncident, loadAuditLog, loadAppEvents,
+  editAdminUser, deleteAdminUser, showCreateAdminModal, createAdminUser, saveAdminUser,
+  revokeSession, disable2fa, setup2fa, confirm2fa,
+  closeModal: () => modal.close(),
+});
+
+document.addEventListener('click', async e => {
+  const control = e.target.closest('[data-action]');
+  if (!control || control.disabled || !Object.hasOwn(clickActions, control.dataset.action)) return;
+  try {
+    const args = JSON.parse(control.dataset.args || '[]');
+    if (!Array.isArray(args)) return;
+    if (control.hasAttribute('data-close-modal')) modal.close();
+    await clickActions[control.dataset.action](...args);
+  } catch {
+    toast('Unable to complete the action. Please try again.', 'error');
+  }
+});
+
 function relTime(raw) {
   if (!raw) return '—';
   const iso = raw.replace(' ', 'T');
@@ -209,6 +237,9 @@ function showApp() {
   document.getElementById('app').style.display = 'flex';
   // Set sidebar user info
   if (state.user) {
+    for (const id of ['nav-premium', 'nav-partners']) {
+      document.getElementById(id).style.display = can('superadmin', 'admin') ? '' : 'none';
+    }
     document.getElementById('sidebar-avatar').textContent =
       state.user.username.slice(0, 2).toUpperCase();
     document.getElementById('sidebar-username').textContent = state.user.username;
@@ -344,7 +375,7 @@ registerView('dashboard', {
     const pq = s.push_queue || {};
 
     const incidentCards = (s.recent_incidents || []).map(inc => `
-      <div class="data-row" onclick="navigate('incidents')" style="cursor:pointer">
+      <div class="data-row" ${actionAttrs('navigate', 'incidents')} style="cursor:pointer">
         <div class="data-row-top">
           <span class="inc-dot ${esc(inc.severity)}"></span>
           <span class="data-row-title">${esc(inc.title)}</span>
@@ -390,7 +421,7 @@ registerView('dashboard', {
             <div class="activity-text">
               <span style="margin-right:4px">${appEventIcon(entry.event_type)}</span>
               <strong>${esc(entry.username || '—')}</strong> — <span style="font-family:monospace;font-size:11.5px;color:var(--fg-dim)">${esc(entry.event_type)}</span>
-              ${entry.entity_id ? `<span style="color:var(--fg-muted)"> #${entry.entity_id}</span>` : ''}
+              ${entry.entity_id ? `<span style="color:var(--fg-muted)"> #${esc(entry.entity_id)}</span>` : ''}
             </div>
             <div class="activity-time">${relTime(entry.created_at)}</div>
           </div>
@@ -438,7 +469,7 @@ registerView('dashboard', {
           <div class="table-card">
             <div class="table-card-header">
               <div class="table-card-title">🚨 Open Incidents</div>
-              <span class="table-card-link" onclick="navigate('incidents')">View all →</span>
+              <span class="table-card-link" ${actionAttrs('navigate', 'incidents')}>View all →</span>
             </div>
             ${incidentCards || '<div class="empty-state" style="padding:24px">No open incidents — all clear ✓</div>'}
           </div>
@@ -446,7 +477,7 @@ registerView('dashboard', {
           <div class="table-card dashboard-audit-table">
             <div class="table-card-header">
               <div class="table-card-title">⚡ Recent Activity</div>
-              <span class="table-card-link" onclick="navigate('app-events')">View all →</span>
+              <span class="table-card-link" ${actionAttrs('navigate', 'app-events')}>View all →</span>
             </div>
             ${appEventsRes.ok && appEventsRes.events.length ? `
             <table>
@@ -456,7 +487,7 @@ registerView('dashboard', {
                   <tr>
                     <td style="font-family:monospace;font-size:12px;color:${e.event_type.includes('delete')?'var(--red)':e.event_type.startsWith('user.')?'var(--green-soft)':e.event_type.startsWith('trip.')?'var(--blue)':e.event_type.startsWith('expense.')?'var(--amber)':'var(--fg-dim)'}">${esc(e.event_type)}</td>
                     <td style="color:var(--fg-muted)">${esc(e.username || '—')}</td>
-                    <td style="color:var(--fg-muted)">${esc(e.entity_type ?? '')}${e.entity_id ? ` #${e.entity_id}` : ''}</td>
+                    <td style="color:var(--fg-muted)">${esc(e.entity_type ?? '')}${e.entity_id ? ` #${esc(e.entity_id)}` : ''}</td>
                     <td style="color:var(--fg-muted);font-size:12px">${relTime(e.created_at)}</td>
                   </tr>`).join('')}
               </tbody>
@@ -491,7 +522,7 @@ registerView('dashboard', {
           <div class="activity-card">
             <div class="activity-header" style="display:flex;justify-content:space-between;align-items:center">
               <span>📋 Recent Audit</span>
-              <span class="table-card-link" onclick="navigate('audit-log')">View all →</span>
+              <span class="table-card-link" ${actionAttrs('navigate', 'audit-log')}>View all →</span>
             </div>
             ${(auditRes.ok ? (auditRes.log || []) : []).map(entry => {
               const color = entry.action.includes('delete') ? 'var(--red)'
@@ -503,7 +534,7 @@ registerView('dashboard', {
                   <div style="flex:1;min-width:0">
                     <div class="activity-text">
                       <strong>${esc(entry.admin_username)}</strong> — <span style="font-family:monospace;font-size:11.5px;color:var(--fg-dim)">${esc(entry.action)}</span>
-                      ${entry.target_id ? `<span style="color:var(--fg-muted)"> #${entry.target_id}</span>` : ''}
+                      ${entry.target_id ? `<span style="color:var(--fg-muted)"> #${esc(entry.target_id)}</span>` : ''}
                     </div>
                     <div class="activity-time">${relTime(entry.created_at)}</div>
                   </div>
@@ -572,21 +603,21 @@ async function userSearch(offset = 0) {
         ${statusBadge(u.account_status)}
       </div>
       <div class="cl-actions">
-        <button class="btn btn-ghost btn-sm" onclick="openUserDetail(${u.id})">View</button>
+        <button class="btn btn-ghost btn-sm" ${actionAttrs('openUserDetail', u.id)}>View</button>
         ${u.account_status === 'active' && can('superadmin','admin','support') ?
-          `<button class="btn btn-amber btn-sm" onclick="suspendUser(${u.id},'${esc(u.nickname)}')">Suspend</button>` : ''}
+          `<button class="btn btn-amber btn-sm" ${actionAttrs('suspendUser', u.id, u.nickname)}>Suspend</button>` : ''}
         ${u.account_status === 'deactivated' && can('superadmin','admin','support') ?
-          `<button class="btn btn-ghost btn-sm" onclick="reactivateUser(${u.id},'${esc(u.nickname)}')">Reactivate</button>` : ''}
+          `<button class="btn btn-ghost btn-sm" ${actionAttrs('reactivateUser', u.id, u.nickname)}>Reactivate</button>` : ''}
         <span style="margin-left:auto;font-size:11px;color:var(--fg-muted);align-self:center">${relTime(u.created_at)}</span>
       </div>
     </div>
   `).join('');
 
   const prevBtn = offset > 0
-    ? `<button class="btn btn-ghost btn-sm" onclick="userSearch(${offset - 40})">← Prev</button>`
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('userSearch', offset - 40)}>← Prev</button>`
     : '';
   const nextBtn = (offset + 40) < res.total
-    ? `<button class="btn btn-ghost btn-sm" onclick="userSearch(${offset + 40})">Next →</button>`
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('userSearch', offset + 40)}>Next →</button>`
     : '';
 
   document.getElementById('user-results').innerHTML = `
@@ -612,13 +643,13 @@ async function openUserDetail(userId) {
 
   const actions = [];
   if (u.account_status === 'active' && can('superadmin','admin','support'))
-    actions.push(`<button class="btn btn-amber btn-sm" onclick="modal.close();suspendUser(${u.id},'${esc(u.nickname)}')">Suspend</button>`);
+    actions.push(`<button class="btn btn-amber btn-sm" data-close-modal ${actionAttrs('suspendUser', u.id, u.nickname)}>Suspend</button>`);
   if (u.account_status === 'deactivated' && can('superadmin','admin','support'))
-    actions.push(`<button class="btn btn-ghost btn-sm" onclick="modal.close();reactivateUser(${u.id},'${esc(u.nickname)}')">Reactivate</button>`);
+    actions.push(`<button class="btn btn-ghost btn-sm" data-close-modal ${actionAttrs('reactivateUser', u.id, u.nickname)}>Reactivate</button>`);
   if (can('superadmin','admin','support'))
-    actions.push(`<button class="btn btn-ghost btn-sm" onclick="modal.close();clearPushTokens(${u.id})">Clear push tokens</button>`);
+    actions.push(`<button class="btn btn-ghost btn-sm" data-close-modal ${actionAttrs('clearPushTokens', u.id)}>Clear push tokens</button>`);
   if (can('superadmin','admin'))
-    actions.push(`<button class="btn btn-danger btn-sm" onclick="modal.close();deleteUser(${u.id},'${esc(u.nickname)}')">Delete user</button>`);
+    actions.push(`<button class="btn btn-danger btn-sm" data-close-modal ${actionAttrs('deleteUser', u.id, u.nickname)}>Delete user</button>`);
 
   modal.open('User: ' + u.nickname, `
     <div class="detail-row"><span class="detail-label">ID</span><span class="detail-value">${u.id}</span></div>
@@ -629,8 +660,9 @@ async function openUserDetail(userId) {
     <div class="detail-row"><span class="detail-label">Push tokens</span><span class="detail-value">${(res.push_tokens || []).length}</span></div>
     <div style="margin-top:14px;font-size:12px;font-weight:700;color:var(--fg-muted);letter-spacing:0.3px;text-transform:uppercase;margin-bottom:6px;">Recent trips</div>
     ${trips}
+    ${premiumDetailHtml(res.premium, u)}
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">${actions.join('')}</div>
-  `, `<button class="btn btn-ghost" onclick="modal.close()">Close</button>`);
+  `, `<button class="btn btn-ghost" ${actionAttrs('closeModal')}>Close</button>`);
 }
 
 async function suspendUser(userId, name) {
@@ -662,8 +694,190 @@ async function clearPushTokens(userId) {
   else toast(res.error || 'Failed', 'error');
 }
 
-// Make functions global (called from inline onclick)
+// Expose existing public helpers for integrations.
 Object.assign(window, { navigate, openUserDetail, suspendUser, reactivateUser, deleteUser, clearPushTokens, modal });
+
+// Premium is an expiring, audited grant, independent from paid subscriptions.
+function premiumDate(value) {
+  if (!value) return '-';
+  const date = new Date(value.includes('T') ? value : value.replace(' ', 'T') + 'Z');
+  return Number.isNaN(date.getTime()) ? '-' : date.toLocaleString();
+}
+
+function premiumStatus(grant) {
+  if (grant.revoked_at) return 'Revoked';
+  if (new Date(grant.ends_at.replace(' ', 'T') + 'Z') <= new Date()) return 'Expired';
+  return grant.account_status && grant.account_status !== 'active' ? 'Account inactive' : 'Active';
+}
+
+function premiumHistoryDates(event) {
+  try {
+    const before = JSON.parse(event.before_json || 'null');
+    const after = JSON.parse(event.after_json || 'null');
+    if (!after?.ends_at || event.action === 'grant_revoke') return '';
+    return `<div>${before?.ends_at ? `${esc(premiumDate(before.ends_at))} &rarr; ` : 'Until '}${esc(premiumDate(after.ends_at))}</div>`;
+  } catch { return ''; }
+}
+
+function premiumDetailHtml(premium, user) {
+  if (!premium) return '';
+  const access = premium.access || {};
+  const title = access.plan === 'premium' ? `Premium until ${premiumDate(access.expires_at)}`
+    : access.plan === 'free' ? 'Free' : 'Status unavailable';
+  const controls = premium.can_manage && user.account_status === 'active';
+  return `<section class="premium-section"><h3>${esc(title)}</h3>
+    ${controls ? `<button class="btn btn-primary btn-sm" ${actionAttrs('openPremiumForm', 'grant_create', user.id)}>Grant Premium</button>` : ''}
+    ${(premium.grants || []).map(g => `<div class="premium-entry">
+      <div><strong>${esc(g.partner_name || g.source)}</strong> <span class="badge badge-gray">${esc(premiumStatus({...g, account_status: user.account_status}))}</span></div>
+      <div>${esc(premiumDate(g.starts_at))} - ${esc(premiumDate(g.ends_at))}</div>
+      <div>${esc(g.reason)}</div>
+      ${premium.can_manage && !g.revoked_at ? `<div class="premium-actions">
+        ${controls ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('openPremiumForm', 'grant_extend', user.id, g.id)}>Extend</button>` : ''}
+        <button class="btn btn-danger btn-sm" ${actionAttrs('openPremiumForm', 'grant_revoke', user.id, g.id)}>Revoke</button></div>` : ''}
+    </div>`).join('')}
+    ${(premium.history || []).length ? `<details><summary>Premium history (latest 100)</summary>${premium.history.map(h =>
+      `<div class="premium-entry"><strong>${esc(h.action.replace('grant_', ''))}</strong> &middot; ${esc(h.admin_username)}
+      <div>${esc(premiumDate(h.created_at))}</div>${premiumHistoryDates(h)}<div>${esc(h.reason)}</div></div>`).join('')}</details>` : ''}
+    ${!premium.can_manage && can('superadmin') ? '<p class="muted">Changes require enabled and verified two-factor authentication.</p>' : ''}
+  </section>`;
+}
+
+for (const kind of ['premium', 'partners']) {
+  registerView(kind, {
+    title: kind === 'premium' ? 'Premium' : 'Partners',
+    async render() {
+      if (!can('superadmin', 'admin')) throw new Error('Access denied.');
+      return `<div class="toolbar"><input class="form-input" id="premium-search" type="search" placeholder="Search ${kind}" aria-label="Search ${kind}">
+        ${kind === 'premium' ? `<select class="form-input" id="premium-status" aria-label="Status"><option value="active">Active</option><option value="expiring">Expiring in 14 days</option><option value="expired">Expired</option><option value="revoked">Revoked</option><option value="all">All</option></select>` : ''}
+        <button class="btn btn-ghost" id="premium-filter">Filter</button>
+        ${kind === 'partners' ? '<button class="btn btn-primary" id="partner-create" hidden>Add partner</button>' : ''}</div>
+        <div id="premium-results"></div>`;
+    },
+    init() {
+      document.getElementById('premium-filter').addEventListener('click', () => premiumPage(0));
+      document.getElementById('premium-search').addEventListener('keydown', e => { if (e.key === 'Enter') premiumPage(0); });
+      document.getElementById('premium-status')?.addEventListener('change', () => premiumPage(0));
+      document.getElementById('partner-create')?.addEventListener('click', () => openPremiumForm('partner_create'));
+      premiumPage(0);
+    },
+  });
+}
+
+let premiumListSequence = 0;
+async function premiumPage(offset = 0) {
+  const sequence = ++premiumListSequence;
+  const target = document.getElementById('premium-results');
+  if (!target) return;
+  const kind = state.view === 'partners' ? 'partners' : 'grants';
+  const params = {kind, offset, q: document.getElementById('premium-search').value,
+    status: document.getElementById('premium-status')?.value || 'all', partner_id: state.viewData.partnerId || ''};
+  target.innerHTML = '<div class="loading-state">Loading...</div>';
+  try {
+    const result = await get('admin_panel_premium_list', params);
+    if (sequence !== premiumListSequence || !target.isConnected) return;
+    if (!result.ok) throw new Error(result.error || 'Unable to load Premium.');
+    const create = document.getElementById('partner-create');
+    if (create) create.hidden = !result.can_manage;
+    target.innerHTML = `${params.partner_id ? `<p>Partner filter active <button class="btn btn-ghost btn-sm" ${actionAttrs('navigate', 'premium')}>Clear</button></p>` : ''}
+      ${result.rows.length ? `<div class="table-wrap"><table><thead><tr>${kind === 'partners' ? '<th>Partner</th><th>Active grants</th><th></th>' : '<th>User</th><th>Partner / Source</th><th>Until</th><th>Status</th><th></th>'}</tr></thead><tbody>
+      ${result.rows.map(r => kind === 'partners'
+        ? `<tr><td>${esc(r.name)}</td><td>${Number(r.active_grants)}</td><td><button class="btn btn-ghost btn-sm" ${actionAttrs('navigate', 'premium', {partnerId:r.id})}>View grants</button></td></tr>`
+        : `<tr><td>${esc(r.nickname)}</td><td>${esc(r.partner_name || r.source)}</td><td>${esc(premiumDate(r.ends_at))}</td><td>${esc(premiumStatus(r))}</td><td><button class="btn btn-ghost btn-sm" ${actionAttrs('openUserDetail', r.user_id)}>View user</button></td></tr>`).join('')}</tbody></table></div>`
+        : '<div class="empty-state">No matching records</div>'}
+      <div class="premium-actions"><button class="btn btn-ghost" ${offset === 0 ? 'disabled' : ''} ${actionAttrs('premiumPage', Math.max(0, offset - 40))}>Previous</button>
+      <button class="btn btn-ghost" ${!result.has_more ? 'disabled' : ''} ${actionAttrs('premiumPage', offset + 40)}>Next</button></div>`;
+  } catch (error) {
+    if (target.isConnected && sequence === premiumListSequence) target.innerHTML = `<div class="empty-state">${esc(error.message)}</div>`;
+  }
+}
+
+async function openPremiumForm(operation, userId = null, grantId = null) {
+  const isPartner = operation === 'partner_create';
+  const isCreate = operation === 'grant_create';
+  const needsDate = isCreate || operation === 'grant_extend';
+  const result = isPartner ? await get('admin_panel_premium_list', {kind:'partners'})
+    : await get('admin_panel_user_detail', {user_id:userId});
+  const permission = isPartner ? result : result.premium;
+  if (!result.ok || !permission?.can_manage) { toast(result.error || 'Verified 2FA is required.', 'error'); return; }
+  const grant = permission.grants?.find(g => Number(g.id) === Number(grantId));
+  if (!isPartner && !isCreate && !grant) { toast('Grant not found. Reload the user.', 'error'); return; }
+  const titles = {partner_create:'Add partner', grant_create:'Grant Premium', grant_extend:'Extend Premium', grant_revoke:'Revoke Premium'};
+  const title = titles[operation];
+  modal.open(title, `<form id="premium-form" class="premium-form">
+    ${isPartner ? '<label>Partner name<input class="form-input" name="name" required maxlength="120"></label>' : `<p><strong>${esc(result.user.nickname)}</strong> &middot; ${esc(result.user.email)}</p>`}
+    ${isCreate ? `<label>Source<select class="form-input" name="source"><option value="testing">Testing</option><option value="partner">Partner</option><option value="compensation">Compensation</option></select></label>
+      <label id="premium-partner-label" hidden>Partner<select class="form-input" name="partner_id" disabled><option value="">Select partner</option></select></label>` : ''}
+    ${needsDate ? `<label>Expires (your local time)<input class="form-input" name="ends_at" type="datetime-local" required></label>` : ''}
+    ${operation === 'grant_revoke' ? '<p>This revokes only this grant. Other valid grants remain active.</p>' : ''}
+    <label>Reason<textarea class="form-input" name="reason" required maxlength="500" rows="3"></textarea></label>
+    <p id="premium-form-error" role="alert"></p>
+    <div class="premium-actions"><button type="button" class="btn btn-ghost" ${actionAttrs('closeModal')}>Cancel</button><button type="submit" class="btn btn-primary">${esc(title)}</button></div>
+  </form>`);
+  const form = document.getElementById('premium-form');
+  form.querySelector('[type="submit"]').disabled = true;
+  if (needsDate) {
+    const base = grant ? new Date(grant.ends_at.replace(' ', 'T') + 'Z').getTime() : Date.now();
+    const end = new Date(Math.max(base, Date.now()) + 30 * 86400000);
+    form.elements.ends_at.value = new Date(end.getTime() - end.getTimezoneOffset() * 60000).toISOString().slice(0,16);
+  }
+  if (isCreate) {
+    form.elements.source.addEventListener('change', () => {
+      const selected = form.elements.source.value === 'partner';
+      form.querySelector('#premium-partner-label').hidden = !selected;
+      form.elements.partner_id.disabled = !selected;
+      form.elements.partner_id.required = selected;
+    });
+    // Paginate the partner selector instead of silently omitting partners after the first page.
+    let offset = 0;
+    try {
+      do {
+        const page = await get('admin_panel_premium_list', {kind:'partners', offset});
+        if (!form.isConnected) return;
+        if (!page.ok) throw new Error(page.error);
+        for (const partner of page.rows) form.elements.partner_id.add(new Option(partner.name, partner.id));
+        if (!page.has_more) break;
+        offset += 40;
+      } while (offset <= 100000);
+    } catch {
+      form.querySelector('#premium-form-error').textContent = 'Partners could not be loaded. Reopen this form to retry.';
+    }
+  }
+  let requestId = crypto.randomUUID();
+  let previousBody = null;
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = form.querySelector('[type="submit"]');
+    if (button.disabled) return;
+    const body = {operation, reason:form.elements.reason.value.trim()};
+    if (isPartner) body.name = form.elements.name.value.trim();
+    else if (isCreate) {
+      body.user_id = Number(userId);
+      body.source = form.elements.source.value;
+      if (body.source === 'partner') body.partner_id = Number(form.elements.partner_id.value);
+    } else { body.grant_id = Number(grant.id); body.version = Number(grant.version); }
+    if (needsDate) body.ends_at = new Date(form.elements.ends_at.value).toISOString().replace(/\.\d{3}Z$/, 'Z');
+    const serialized = JSON.stringify(body);
+    if (previousBody !== null && previousBody !== serialized) requestId = crypto.randomUUID();
+    previousBody = serialized;
+    body.request_id = requestId;
+    button.disabled = true;
+    form.querySelector('#premium-form-error').textContent = '';
+    try {
+      const response = await fetch(`${API}?action=admin_panel_premium_mutate`, {method:'POST', credentials:'include',
+        headers:{'Content-Type':'application/json', 'X-Premium-CSRF':permission.csrf_token}, body:JSON.stringify(body)});
+      const saved = await response.json();
+      if (!saved.ok) throw new Error(saved.error || 'Change was not saved.');
+      toast('Saved', 'success');
+      if (form.isConnected) {
+        modal.close();
+        if (isPartner) premiumPage(0); else await openUserDetail(userId);
+      }
+    } catch (error) {
+      if (form.isConnected) form.querySelector('#premium-form-error').textContent = error.message;
+    } finally { button.disabled = false; }
+  });
+  form.querySelector('[type="submit"]').disabled = false;
+}
 
 // ── View: Feedback ────────────────────────────────────────────────────────────
 
@@ -732,17 +946,17 @@ async function loadFeedback(offset = 0) {
       ${f.user_nickname ? `<div class="cl-meta">by ${esc(f.user_nickname)}</div>` : ''}
       <div class="cl-actions">
         ${f.status === 'open' && can('superadmin','admin','support')
-          ? `<button class="btn btn-ghost btn-sm" onclick="archiveFeedback(${f.id})">Archive</button>` : ''}
+          ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('archiveFeedback', f.id)}>Archive</button>` : ''}
         ${can('superadmin','admin')
-          ? `<button class="btn btn-danger btn-sm" onclick="deleteFeedback(${f.id})">Delete</button>` : ''}
+          ? `<button class="btn btn-danger btn-sm" ${actionAttrs('deleteFeedback', f.id)}>Delete</button>` : ''}
       </div>
     </div>
   `).join('');
 
   const nextBtn = (offset + 40) < res.total
-    ? `<button class="btn btn-ghost btn-sm" onclick="loadFeedback(${offset + 40})">Next →</button>` : '';
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('loadFeedback', offset + 40)}>Next →</button>` : '';
   const prevBtn = offset > 0
-    ? `<button class="btn btn-ghost btn-sm" onclick="loadFeedback(${offset - 40})">← Prev</button>` : '';
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('loadFeedback', offset - 40)}>← Prev</button>` : '';
 
   document.getElementById('fb-results').innerHTML = `
     <div class="table-card" style="padding:0">
@@ -796,7 +1010,7 @@ registerView('push-queue', {
         <div class="cl-row">
           <span class="cl-meta">${r.attempts} attempt${r.attempts !== 1 ? 's' : ''} · ${relTime(r.created_at)}</span>
           ${r.status !== 'sent' && can('superadmin','admin','ops')
-            ? `<button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="retryPush(${r.id})">Retry</button>` : ''}
+            ? `<button class="btn btn-ghost btn-sm" style="margin-left:auto" ${actionAttrs('retryPush', r.id)}>Retry</button>` : ''}
         </div>
       </div>
     `).join('');
@@ -864,8 +1078,8 @@ async function loadIncidents() {
         <span>${esc(inc.admin_username)} · ${relTime(inc.created_at)}</span>
         ${inc.status !== 'resolved' && can('superadmin','admin','ops') ? `
           <div style="display:flex;gap:6px">
-            <button class="btn btn-ghost btn-sm" onclick="updateIncident(${inc.id},'investigating')">Investigate</button>
-            <button class="btn btn-primary btn-sm" onclick="updateIncident(${inc.id},'resolved')">Resolve</button>
+            <button class="btn btn-ghost btn-sm" ${actionAttrs('updateIncident', inc.id, 'investigating')}>Investigate</button>
+            <button class="btn btn-primary btn-sm" ${actionAttrs('updateIncident', inc.id, 'resolved')}>Resolve</button>
           </div>` : ''}
       </div>
     </div>
@@ -898,8 +1112,8 @@ function showNewIncidentModal() {
       </select>
     </div>
   `, `
-    <button class="btn btn-ghost" onclick="modal.close()">Cancel</button>
-    <button class="btn btn-primary" onclick="submitIncident()">Create incident</button>
+    <button class="btn btn-ghost" ${actionAttrs('closeModal')}>Cancel</button>
+    <button class="btn btn-primary" ${actionAttrs('submitIncident')}>Create incident</button>
   `);
 }
 
@@ -982,7 +1196,7 @@ async function loadAuditLog(offset = 0) {
         </div>
         <div class="cl-meta">
           ${esc(entry.admin_username)}
-          ${entry.target_type ? ` → ${esc(entry.target_type)}${entry.target_id ? ` #${entry.target_id}` : ''}` : ''}
+          ${entry.target_type ? ` → ${esc(entry.target_type)}${entry.target_id ? ` #${esc(entry.target_id)}` : ''}` : ''}
           ${entry.ip_address ? ` · ${esc(entry.ip_address)}` : ''}
         </div>
         ${entry.details ? `<div style="font-size:11px;color:var(--fg-muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(JSON.stringify(entry.details).slice(0,80))}</div>` : ''}
@@ -991,9 +1205,9 @@ async function loadAuditLog(offset = 0) {
   }).join('');
 
   const prevBtn = offset > 0
-    ? `<button class="btn btn-ghost btn-sm" onclick="loadAuditLog(${offset - 50})">← Prev</button>` : '';
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('loadAuditLog', offset - 50)}>← Prev</button>` : '';
   const nextBtn = (offset + 50) < res.total
-    ? `<button class="btn btn-ghost btn-sm" onclick="loadAuditLog(${offset + 50})">Next →</button>` : '';
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('loadAuditLog', offset + 50)}>Next →</button>` : '';
 
   document.getElementById('audit-results').innerHTML = `
     <div class="table-card" style="padding:0">
@@ -1054,15 +1268,15 @@ async function loadAppEvents(offset = 0) {
       </div>
       <div class="cl-meta">
         ${esc(entry.username || 'deleted user')}
-        ${entry.entity_type ? ` → ${esc(entry.entity_type)}${entry.entity_id ? ` #${entry.entity_id}` : ''}` : ''}
+        ${entry.entity_type ? ` → ${esc(entry.entity_type)}${entry.entity_id ? ` #${esc(entry.entity_id)}` : ''}` : ''}
       </div>
     </div>
   `).join('');
 
   const prevBtn = offset > 0
-    ? `<button class="btn btn-ghost btn-sm" onclick="loadAppEvents(${offset - 50})">← Prev</button>` : '';
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('loadAppEvents', offset - 50)}>← Prev</button>` : '';
   const nextBtn = (offset + 50) < res.total
-    ? `<button class="btn btn-ghost btn-sm" onclick="loadAppEvents(${offset + 50})">Next →</button>` : '';
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('loadAppEvents', offset + 50)}>Next →</button>` : '';
 
   document.getElementById('app-events-results').innerHTML = `
     <div class="table-card" style="padding:0">
@@ -1096,9 +1310,9 @@ registerView('admin-users', {
           <span class="cl-meta">2FA: ${u.totp_enabled ? '✓' : '—'} · Last login: ${relTime(u.last_login_at)} · ${u.active_sessions} session${u.active_sessions !== 1 ? 's' : ''}</span>
         </div>
         <div class="cl-actions">
-          <button class="btn btn-ghost btn-sm" onclick="editAdminUser(${u.id},'${esc(u.username)}','${esc(u.role)}',${u.is_active})">Edit</button>
+          <button class="btn btn-ghost btn-sm" ${actionAttrs('editAdminUser', u.id, u.username, u.role, u.is_active)}>Edit</button>
           ${u.id !== state.user?.id
-            ? `<button class="btn btn-danger btn-sm" onclick="deleteAdminUser(${u.id},'${esc(u.username)}')">Delete</button>` : ''}
+            ? `<button class="btn btn-danger btn-sm" ${actionAttrs('deleteAdminUser', u.id, u.username)}>Delete</button>` : ''}
         </div>
       </div>
     `).join('');
@@ -1106,7 +1320,7 @@ registerView('admin-users', {
     return `
       <div class="section-header">
         <div class="section-title">Admin accounts</div>
-        <button class="btn btn-primary btn-sm" onclick="showCreateAdminModal()">+ Add admin</button>
+        <button class="btn btn-primary btn-sm" ${actionAttrs('showCreateAdminModal')}>+ Add admin</button>
       </div>
       <div class="table-card" style="padding:0">
         ${cards}
@@ -1131,8 +1345,8 @@ function showCreateAdminModal() {
       </select>
     </div>
   `, `
-    <button class="btn btn-ghost" onclick="modal.close()">Cancel</button>
-    <button class="btn btn-primary" onclick="createAdminUser()">Create</button>
+    <button class="btn btn-ghost" ${actionAttrs('closeModal')}>Cancel</button>
+    <button class="btn btn-primary" ${actionAttrs('createAdminUser')}>Create</button>
   `);
 }
 
@@ -1167,8 +1381,8 @@ function editAdminUser(id, username, role, isActive) {
       <input class="form-input" id="edit-admin-pw" type="password" placeholder="(unchanged)"/>
     </div>
   `, `
-    <button class="btn btn-ghost" onclick="modal.close()">Cancel</button>
-    <button class="btn btn-primary" onclick="saveAdminUser(${id})">Save</button>
+    <button class="btn btn-ghost" ${actionAttrs('closeModal')}>Cancel</button>
+    <button class="btn btn-primary" ${actionAttrs('saveAdminUser', id)}>Save</button>
   `);
 }
 
@@ -1215,7 +1429,7 @@ registerView('sessions', {
         <td>${relTime(s.last_active_at)}</td>
         <td>
           ${!s.is_current
-            ? `<button class="btn btn-danger btn-sm" onclick="revokeSession('${esc(s.session_id)}')">Revoke</button>` : ''}
+            ? `<button class="btn btn-danger btn-sm" ${actionAttrs('revokeSession', s.session_id)}>Revoke</button>` : ''}
         </td>
       </tr>
     `).join('');
@@ -1254,8 +1468,8 @@ registerView('my-account', {
         <div class="detail-row"><span class="detail-label">Role</span><span class="detail-value">${roleBadge(u?.role)}</span></div>
         <div class="detail-row"><span class="detail-label">2FA</span><span class="detail-value">
           ${u?.totp_enabled
-            ? `<span class="badge badge-green">Enabled</span> <button class="btn btn-danger btn-sm" style="margin-left:8px" onclick="disable2fa()">Disable</button>`
-            : `<span class="badge badge-gray">Disabled</span> <button class="btn btn-primary btn-sm" style="margin-left:8px" onclick="setup2fa()">Enable 2FA</button>`}
+            ? `<span class="badge badge-green">Enabled</span> <button class="btn btn-danger btn-sm" style="margin-left:8px" ${actionAttrs('disable2fa')}>Disable</button>`
+            : `<span class="badge badge-gray">Disabled</span> <button class="btn btn-primary btn-sm" style="margin-left:8px" ${actionAttrs('setup2fa')}>Enable 2FA</button>`}
         </span></div>
       </div>
     `;
@@ -1281,8 +1495,8 @@ async function setup2fa() {
       <input class="form-input" id="totp-confirm-code" type="text" inputmode="numeric" maxlength="6" placeholder="000000"/>
     </div>
   `, `
-    <button class="btn btn-ghost" onclick="modal.close()">Cancel</button>
-    <button class="btn btn-primary" onclick="confirm2fa()">Confirm & enable</button>
+    <button class="btn btn-ghost" ${actionAttrs('closeModal')}>Cancel</button>
+    <button class="btn btn-primary" ${actionAttrs('confirm2fa')}>Confirm & enable</button>
   `);
 }
 

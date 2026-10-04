@@ -1,16 +1,17 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../core/auth/account_local_storage.dart';
 
 import '../../domain/entities/trip.dart';
 import '../models/trip_model.dart';
 
 class TripsLocalStore {
+  TripsLocalStore(this.storage);
+  final AccountLocalStorage storage;
   static const String _key = 'trips_list_cache_v1';
 
-  Future<List<Trip>> readTrips() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = (prefs.getString(_key) ?? '').trim();
+  Future<List<Trip>> readTrips() => storage.session.run(() async {
+    final raw = (await storage.read(_key) ?? '').trim();
     if (raw.isEmpty) {
       return const <Trip>[];
     }
@@ -30,23 +31,22 @@ class TripsLocalStore {
     } catch (_) {
       return const <Trip>[];
     }
-  }
+  });
 
   Future<void> writeTrips(List<Trip> trips) async {
     final payload = trips.map(_tripToMap).toList(growable: false);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_key, jsonEncode(payload));
+    await storage.write(_key, jsonEncode(payload));
   }
 
   Future<void> clear() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_key);
+    await storage.update(_key, (_) => null);
   }
 
   static Map<String, dynamic> _tripToMap(Trip trip) {
     return <String, dynamic>{
       'id': trip.id,
       'name': trip.name,
+      'trip_mode': trip.tripMode,
       'currency_code': trip.currencyCode,
       'status': trip.status,
       'image_url': trip.imageUrl,

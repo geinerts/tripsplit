@@ -65,6 +65,7 @@ class AuthRepositoryImpl implements AuthRepository {
     String? lastName,
     String? email,
     String? password,
+    String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   }) {
@@ -73,6 +74,7 @@ class AuthRepositoryImpl implements AuthRepository {
       lastName: lastName,
       email: email,
       password: password,
+      currentPassword: currentPassword,
       preferredCurrencyCode: preferredCurrencyCode,
       paymentDetails: paymentDetails,
     );
@@ -99,14 +101,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> requestEmailChange({
-    required String newEmail,
-    required String currentPassword,
-  }) {
-    return _remote.requestEmailChange(
-      newEmail: newEmail,
-      currentPassword: currentPassword,
-    );
+  Future<void> requestDeactivationLink() {
+    return _remote.requestDeactivationLink();
   }
 
   @override

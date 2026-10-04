@@ -43,7 +43,8 @@ Future<String> _resolveInitialRoute(AppDependencies dependencies) async {
       // Ignore network/bootstrap errors; route fallback below.
     }
 
-    return AppRouter.trips;
+    // No verified account identity means no access to account-scoped offline data.
+    return AppRouter.authIntro;
   } catch (_) {
     final fallback = await dependencies.authController.readCachedCurrentUser();
     if (fallback != null) {

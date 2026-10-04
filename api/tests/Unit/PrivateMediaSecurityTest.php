@@ -14,6 +14,10 @@ final class PrivateMediaSecurityTest extends TestCase
         self::assertTrue(private_receipt_request_is_valid($path, $expiresAt, $signature));
         self::assertFalse(private_receipt_request_is_valid($path . 'x', $expiresAt, $signature));
         self::assertFalse(private_receipt_request_is_valid($path, time() - 1, $signature));
+        $expiredAt = time() - 60;
+        self::assertFalse(private_receipt_request_is_valid($path, $expiredAt, private_receipt_signature($path, $expiredAt)));
+        $future = time() + private_media_url_ttl_seconds() + 300;
+        self::assertFalse(private_receipt_request_is_valid($path, $future, private_receipt_signature($path, $future)));
     }
 
     public function test_receipt_path_cannot_escape_private_directory(): void
@@ -25,6 +29,10 @@ final class PrivateMediaSecurityTest extends TestCase
         self::assertNull(normalize_private_receipt_path('../.env'));
         self::assertNull(normalize_private_receipt_path('uploads/avatars/avatar.webp'));
         self::assertNull(normalize_private_receipt_path('uploads/receipts/subdir/receipt.webp'));
+        self::assertNull(normalize_private_receipt_path('uploads/receipts/..'));
+        self::assertNull(normalize_private_receipt_path('uploads/receipts/.env'));
+        self::assertNull(normalize_private_receipt_path('uploads/receipts/receipt.php'));
+        self::assertNull(normalize_private_receipt_path("uploads/receipts/receipt.webp\ninvalid"));
     }
 
     public function test_logout_route_and_session_cap_are_enabled(): void

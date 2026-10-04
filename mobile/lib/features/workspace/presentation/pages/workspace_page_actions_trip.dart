@@ -549,19 +549,26 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     );
   }
 
-  Future<void> _openReceiptUrl(String url) async {
-    final parsed = Uri.tryParse(url.trim());
-    if (parsed == null) {
-      _showSnack(context.l10n.receiptLinkInvalid, isError: true);
-      return;
-    }
-
-    final opened = await launchUrl(
-      parsed,
-      mode: LaunchMode.externalApplication,
-    );
-    if (!opened && mounted) {
-      _showSnack(context.l10n.couldNotOpenReceiptLink, isError: true);
+  Future<void> _openReceiptUrl(int expenseId) async {
+    final userId = widget.authController.currentUser?.id;
+    try {
+      final parsed = await widget.workspaceController.loadReceiptUri(
+        tripId: widget.trip.id,
+        expenseId: expenseId,
+      );
+      if (!mounted || widget.authController.currentUser?.id != userId) return;
+      if (parsed == null) {
+        _showSnack(context.l10n.receiptLinkInvalid, isError: true);
+        return;
+      }
+      final opened = await launchUrl(parsed, mode: LaunchMode.inAppBrowserView);
+      if (!opened && mounted) {
+        _showSnack(context.l10n.couldNotOpenReceiptLink, isError: true);
+      }
+    } catch (_) {
+      if (mounted) {
+        _showSnack(context.l10n.couldNotOpenReceiptLink, isError: true);
+      }
     }
   }
 
@@ -579,7 +586,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
   Future<void> _openTripActionsSheet() async {
     final t = context.l10n;
     final canEdit = _isTripActive && widget.trip.canCurrentUserManageTrip;
-    final canManageMembers = _canEditMembers;
+    final canManageMembers = _canEditMembers && !widget.trip.isSolo;
     final canDelete = _isTripActive && _isCurrentTripOwner();
     if (!canEdit && !canDelete && !canManageMembers) {
       return;

@@ -12,6 +12,7 @@ extension _TripsPageDialogs on _TripsPageState {
     var isLoadingFriendQuickPicks = false;
     var friendQuickPicksRequested = false;
     var selectedCurrencyCode = AppCurrencyCatalog.defaultCode;
+    var tripMode = 'group';
     DateTime? tripDateFrom;
     DateTime? tripDateTo;
 
@@ -408,6 +409,38 @@ extension _TripsPageDialogs on _TripsPageState {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: SegmentedButton<String>(
+                                      segments: [
+                                        ButtonSegment(
+                                          value: 'solo',
+                                          icon: const Icon(
+                                            Icons.person_outline,
+                                          ),
+                                          label: Text(t.tripModeSolo),
+                                        ),
+                                        ButtonSegment(
+                                          value: 'group',
+                                          icon: const Icon(
+                                            Icons.group_outlined,
+                                          ),
+                                          label: Text(t.tripModeGroup),
+                                        ),
+                                      ],
+                                      selected: {tripMode},
+                                      onSelectionChanged: (value) {
+                                        setDialogState(() {
+                                          tripMode = value.single;
+                                          if (tripMode == 'solo') {
+                                            selected.clear();
+                                            selectedUsers.clear();
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
@@ -735,72 +768,77 @@ extension _TripsPageDialogs on _TripsPageState {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    t.selectedPeopleLabel,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  if (selectedUsers.isEmpty)
+                                  if (tripMode == 'group') ...[
+                                    const SizedBox(height: 12),
                                     Text(
-                                      t.workspaceNoMembersSelectedYet,
+                                      t.selectedPeopleLabel,
                                       style: Theme.of(
                                         context,
                                       ).textTheme.bodySmall,
-                                    )
-                                  else
-                                    Wrap(
-                                      spacing: 8,
-                                      runSpacing: 8,
-                                      children: [
-                                        for (final user in selectedUsers.values)
-                                          InputChip(
-                                            label: Text(user.nickname),
-                                            selected: true,
-                                            onDeleted: () {
-                                              setDialogState(() {
-                                                selected.remove(user.id);
-                                                selectedUsers.remove(user.id);
-                                              });
-                                            },
-                                          ),
-                                      ],
                                     ),
-                                  if (isLoadingFriendQuickPicks) ...[
-                                    const SizedBox(height: 10),
-                                    const LinearProgressIndicator(minHeight: 2),
-                                  ],
-                                  if (friendQuickPicks.isNotEmpty) ...[
-                                    const SizedBox(height: 10),
-                                    Wrap(
-                                      spacing: 8,
-                                      runSpacing: 8,
-                                      children: [
-                                        for (final friend in friendQuickPicks)
-                                          FilterChip(
-                                            label: Text(friend.nickname),
-                                            selected: selected.contains(
-                                              friend.id,
+                                    const SizedBox(height: 6),
+                                    if (selectedUsers.isEmpty)
+                                      Text(
+                                        t.workspaceNoMembersSelectedYet,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodySmall,
+                                      )
+                                    else
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: [
+                                          for (final user
+                                              in selectedUsers.values)
+                                            InputChip(
+                                              label: Text(user.nickname),
+                                              selected: true,
+                                              onDeleted: () {
+                                                setDialogState(() {
+                                                  selected.remove(user.id);
+                                                  selectedUsers.remove(user.id);
+                                                });
+                                              },
                                             ),
-                                            onSelected: (isSelected) {
-                                              setDialogState(() {
-                                                if (isSelected) {
-                                                  selected.add(friend.id);
-                                                  selectedUsers[friend.id] =
-                                                      friend;
-                                                } else {
-                                                  selected.remove(friend.id);
-                                                  selectedUsers.remove(
-                                                    friend.id,
-                                                  );
-                                                }
-                                              });
-                                            },
-                                          ),
-                                      ],
-                                    ),
+                                        ],
+                                      ),
+                                    if (isLoadingFriendQuickPicks) ...[
+                                      const SizedBox(height: 10),
+                                      const LinearProgressIndicator(
+                                        minHeight: 2,
+                                      ),
+                                    ],
+                                    if (friendQuickPicks.isNotEmpty) ...[
+                                      const SizedBox(height: 10),
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: [
+                                          for (final friend in friendQuickPicks)
+                                            FilterChip(
+                                              label: Text(friend.nickname),
+                                              selected: selected.contains(
+                                                friend.id,
+                                              ),
+                                              onSelected: (isSelected) {
+                                                setDialogState(() {
+                                                  if (isSelected) {
+                                                    selected.add(friend.id);
+                                                    selectedUsers[friend.id] =
+                                                        friend;
+                                                  } else {
+                                                    selected.remove(friend.id);
+                                                    selectedUsers.remove(
+                                                      friend.id,
+                                                    );
+                                                  }
+                                                });
+                                              },
+                                            ),
+                                        ],
+                                      ),
+                                    ],
                                   ],
                                   if (errorText != null) ...[
                                     const SizedBox(height: 12),
@@ -884,6 +922,7 @@ extension _TripsPageDialogs on _TripsPageState {
                                         _CreateTripResult(
                                           name: name,
                                           currencyCode: selectedCurrencyCode,
+                                          tripMode: tripMode,
                                           memberIds: memberIds,
                                           dateFrom: dateFromIso,
                                           dateTo: dateToIso,

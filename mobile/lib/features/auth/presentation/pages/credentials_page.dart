@@ -74,6 +74,16 @@ class _CredentialsPageState extends State<CredentialsPage> {
       if (!mounted) {
         return;
       }
+      if (error.code == 'EMAIL_VERIFICATION_REQUIRED') {
+        _isNavigatingAway = true;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error.message)));
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(AppRouter.login, (route) => false);
+        return;
+      }
       setState(() {
         _errorText = error.message;
       });

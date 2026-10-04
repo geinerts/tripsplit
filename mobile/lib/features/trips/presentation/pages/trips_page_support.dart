@@ -5,6 +5,7 @@ class _CreateTripResult {
     required this.name,
     required this.currencyCode,
     required this.memberIds,
+    required this.tripMode,
     required this.dateFrom,
     required this.dateTo,
     this.imageFileName,
@@ -14,6 +15,7 @@ class _CreateTripResult {
   final String name;
   final String currencyCode;
   final List<int> memberIds;
+  final String tripMode;
   final String dateFrom;
   final String dateTo;
   final String? imageFileName;

@@ -15,15 +15,15 @@ on:
         default: "no"
         type: choice
         options:
-          - no
-          - prod
+          - "no"
+          - "prod"
 
 permissions:
   contents: read
 
 concurrency:
   group: ci-deploy-vps-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   backend-tests:
@@ -59,12 +59,76 @@ jobs:
       - name: Run PHPUnit
         run: php vendor/bin/phpunit
 
+  web-tests:
+    name: Web security regression tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup PHP for landing-page template tests
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+
+      - name: Install pinned Playwright and Chromium dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/web-tests" --no-save --package-lock=false --ignore-scripts playwright@1.59.1
+          "$RUNNER_TEMP/web-tests/node_modules/.bin/playwright" install --with-deps chromium
+
+      - name: Run web regression tests
+        shell: bash
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
+        run: |
+          set -euo pipefail
+          NODE_PATH="$RUNNER_TEMP/web-tests/node_modules" node --test admin2/tests/web-security.test.cjs
+
+  flutter-tests:
+    name: Flutter unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Flutter matching local SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.41.4"
+          channel: stable
+          cache: true
+
+      - name: Install locked dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Run Flutter unit tests
+        run: flutter test --no-pub
+
   deploy-vps:
     name: Deploy to VPS
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs:
       - backend-tests
+      - web-tests
+      - flutter-tests
     if: |
       github.event_name != 'pull_request' &&
       (
@@ -72,9 +136,11 @@ jobs:
         (github.event_name == 'push' && vars.AUTO_DEPLOY_VPS == 'true')
       )
     environment: production
+    concurrency:
+      group: deploy-vps-production
+      cancel-in-progress: false
     steps:
       - name: Check required deploy secrets
-        id: precheck
         shell: bash
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
@@ -84,6 +150,10 @@ jobs:
           API_BASE_URL: ${{ secrets.API_BASE_URL }}
         run: |
           set -euo pipefail
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "::error::Production deployment must be requested from main."
+            exit 1
+          fi
           missing=""
           [ -n "${VPS_HOST:-}" ] || missing="$missing VPS_HOST"
           [ -n "${VPS_USER:-}" ] || missing="$missing VPS_USER"
@@ -92,21 +162,16 @@ jobs:
           [ -n "${API_BASE_URL:-}" ] || missing="$missing API_BASE_URL"
 
           if [ -n "$missing" ]; then
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "missing=${missing# }" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=true" >> "$GITHUB_OUTPUT"
-            echo "missing=" >> "$GITHUB_OUTPUT"
+            echo "::error::Missing required deploy secrets:${missing}"
+            exit 1
           fi
 
       - name: Start SSH agent
-        if: steps.precheck.outputs.ready == 'true'
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
 
       - name: Add pinned VPS host key
-        if: steps.precheck.outputs.ready == 'true'
         shell: bash
         env:
           VPS_SSH_KNOWN_HOSTS: ${{ secrets.VPS_SSH_KNOWN_HOSTS }}
@@ -121,14 +186,14 @@ jobs:
           printf '%s\n' "$VPS_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
 
-      - name: Deploy latest main on VPS
-        if: steps.precheck.outputs.ready == 'true'
+      - name: Fast-forward clean VPS checkout to the tested SHA
         shell: bash
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_PORT: ${{ secrets.VPS_PORT }}
           VPS_APP_DIR: ${{ secrets.VPS_APP_DIR }}
+          DEPLOY_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           if [ -z "${VPS_USER:-}" ]; then
@@ -136,24 +201,58 @@ jobs:
             exit 1
           fi
           APP_DIR="${VPS_APP_DIR:-/var/www/splyto}"
+          if [[ ! "$APP_DIR" =~ ^/[A-Za-z0-9_./-]+$ ]] || [[ ! "$DEPLOY_SHA" =~ ^[a-f0-9]{40}$ ]]; then
+            echo "::error::Invalid absolute VPS_APP_DIR or tested commit SHA."
+            exit 1
+          fi
           ssh \
+            -o BatchMode=yes \
+            -o ConnectTimeout=15 \
             -o StrictHostKeyChecking=yes \
             -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
             -p "${VPS_PORT:-22}" \
             "$VPS_USER@$VPS_HOST" \
-            "APP_DIR='$APP_DIR' bash -s" <<'EOF'
+            "bash -s -- '$APP_DIR' '$DEPLOY_SHA'" <<'EOF'
             set -euo pipefail
-            cd "$APP_DIR"
-            git config --global --add safe.directory "$APP_DIR" || true
-            git fetch origin
-            git checkout main
-            git reset --hard origin/main
-
-            mkdir -p uploads uploads/receipts uploads/avatars uploads/trips uploads/feedback logs
-            if id www-data >/dev/null 2>&1; then
-              chown -R www-data:www-data uploads logs || true
+            APP_DIR="$1"
+            DEPLOY_SHA="$2"
+            cd -P "$APP_DIR"
+            if [ "$(git rev-parse --show-toplevel)" != "$PWD" ]; then
+              echo "Deployment refused: VPS_APP_DIR must be the repository root."
+              exit 1
             fi
-            chmod -R ug+rwX uploads logs || true
+            exec 9>"$(git rev-parse --git-path splyto-deploy.lock)"
+            flock -n 9 || { echo "Deployment refused: another deployment holds the lock."; exit 1; }
+            if [ "$(git symbolic-ref --quiet --short HEAD)" != "main" ]; then
+              echo "Deployment refused: production must already be on main."
+              exit 1
+            fi
+            # Index flags can hide tracked drift from git status.
+            index_flags="$(git ls-files -v)"
+            if awk '$1 ~ /^[a-zS]/ { found = 1 } END { exit !found }' <<< "$index_flags"; then
+              echo "Deployment refused: assume-unchanged or skip-worktree index flags are present."
+              exit 1
+            fi
+            worktree_status="$(git status --porcelain=v1 --untracked-files=all)"
+            if [ -n "$worktree_status" ]; then
+              echo "Deployment refused: production has local changes; reconcile them explicitly."
+              exit 1
+            fi
+            git fetch --no-tags origin refs/heads/main
+            if [ "$(git rev-parse --verify 'FETCH_HEAD^{commit}')" != "$DEPLOY_SHA" ]; then
+              echo "Deployment refused: main changed since this run; test and deploy the new SHA."
+              exit 1
+            fi
+            if ! git merge-base --is-ancestor HEAD "$DEPLOY_SHA"; then
+              echo "Deployment refused: production contains commits outside the tested history."
+              exit 1
+            fi
+            git -c merge.autoStash=false merge --ff-only --no-edit --no-overwrite-ignore "$DEPLOY_SHA"
+            worktree_status="$(git status --porcelain=v1 --untracked-files=all)"
+            if [ "$(git rev-parse HEAD)" != "$DEPLOY_SHA" ] || [ -n "$worktree_status" ]; then
+              echo "Deployment failed: checkout does not exactly match the tested SHA."
+              exit 1
+            fi
 
             cd api
             php -l api.php >/dev/null
@@ -167,7 +266,6 @@ jobs:
           EOF
 
       - name: Health check
-        if: steps.precheck.outputs.ready == 'true'
         shell: bash
         env:
           API_BASE_URL: ${{ secrets.API_BASE_URL }}
@@ -193,9 +291,3 @@ jobs:
             echo "Health check failed: me action expected 401, got $me_status"
             exit 1
           fi
-
-      - name: Deploy skipped (missing secrets)
-        if: steps.precheck.outputs.ready != 'true'
-        shell: bash
-        run: |
-          echo "Deploy skipped because required secrets are missing: ${{ steps.precheck.outputs.missing }}"

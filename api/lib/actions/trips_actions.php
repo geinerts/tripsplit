@@ -282,6 +282,7 @@ function trips_action(): void
             t.id,
             t.name,
             ' . $tripCurrencySelect . ',
+            ' . trip_mode_select($pdo) . ',
             t.status,
             t.created_by,
             ' . $tripRoleSelect . '
@@ -336,7 +337,7 @@ function trips_action(): void
             t.created_by,
             t.created_at,
             t.ended_at,
-            t.archived_at' . $tripImageGroupBy . $tripCurrencyGroupBy . $tripDateGroupBy . $tripRoleGroupBy . '
+            t.archived_at' . (trips_mode_column_available($pdo) ? ', t.trip_mode' : '') . $tripImageGroupBy . $tripCurrencyGroupBy . $tripDateGroupBy . $tripRoleGroupBy . '
          ORDER BY t.created_at DESC, t.id DESC'
     );
     $stmt->execute(['user_id' => $currentUserId]);
@@ -463,7 +464,13 @@ function all_users_action(): void
 }
 
 
-function create_trip_action(): void
+function create_solo_trip_action(): void
+{
+    // A distinct action makes old servers fail closed instead of silently creating a group.
+    create_trip_action(true);
+}
+
+function create_trip_action(bool $solo = false): void
 {
     require_post();
     $me = get_me();
@@ -473,6 +480,11 @@ function create_trip_action(): void
     $tripMembersTable = table_name('trip_members');
     $tripCurrencyColumnAvailable = trips_currency_column_available($pdo);
     $tripDateColumnsAvailable = trips_date_range_columns_available($pdo);
+
+    $tripMode = validate_trip_mode($solo ? 'solo' : ($body['trip_mode'] ?? 'group'));
+    if ($tripMode === 'solo' && !trips_mode_column_available($pdo)) {
+        json_out(['ok' => false, 'error' => 'Personal trips require a server update.'], 409);
+    }
 
     $name = trim((string) ($body['name'] ?? ''));
     if (str_length($name) < 2 || str_length($name) > 120) {
@@ -534,6 +546,9 @@ function create_trip_action(): void
     $memberIds = require_valid_user_ids($pdo, (array) ($body['member_ids'] ?? []), false);
     $memberIds[] = $meId;
     $memberIds = normalize_user_ids($memberIds);
+    if ($tripMode === 'solo' && $memberIds !== [$meId]) {
+        json_out(['ok' => false, 'error' => 'Personal trips can only include their owner.'], 400);
+    }
     if (count($memberIds) < 1) {
         json_out(['ok' => false, 'error' => 'Trip must include at least one member.'], 400);
     }
@@ -594,6 +609,11 @@ function create_trip_action(): void
         }
         $tripId = (int) $pdo->lastInsertId();
 
+        if ($tripMode === 'solo') {
+            $pdo->prepare('UPDATE ' . $tripsTable . ' SET trip_mode = :mode WHERE id = :id')
+                ->execute(['mode' => $tripMode, 'id' => $tripId]);
+        }
+
         $memberRoleColumnAvailable = trip_members_role_column_available($pdo);
         $insertMember = $memberRoleColumnAvailable
             ? $pdo->prepare(
@@ -645,12 +665,14 @@ function create_trip_action(): void
     app_event($pdo, $meId, 'trip.created', 'trip', $tripId, $tripId, [
         'members_count' => count($memberIds),
         'currency_code' => $currencyCode,
+        'trip_mode' => $tripMode,
     ]);
     json_out([
         'ok' => true,
         'trip' => [
             'id' => $tripId,
             'name' => $name,
+            'trip_mode' => $tripMode,
             'currency_code' => $currencyCode,
             'status' => 'active',
             'created_by' => $meId,
@@ -833,6 +855,7 @@ function update_trip_action(): void
         'trip' => [
             'id' => (int) ($fresh['id'] ?? 0),
             'name' => (string) ($fresh['name'] ?? ''),
+            'trip_mode' => $fresh['trip_mode'] ?? 'group',
             'currency_code' => normalize_currency_code(
                 $fresh['currency_code'] ?? default_trip_currency_code()
             ),
@@ -954,6 +977,7 @@ function add_trip_members_action(): void
     $body = read_json();
     $pdo = db();
     $trip = get_current_trip($pdo, $me, true);
+    require_group_trip($trip);
     $tripId = (int) $trip['id'];
 
     $tripsTable = table_name('trips');
@@ -1441,6 +1465,7 @@ function create_trip_invite_action(): void
     $me = get_me();
     $pdo = db();
     $trip = get_current_trip($pdo, $me, true);
+    require_group_trip($trip);
     $tripId = (int) ($trip['id'] ?? 0);
     if ($tripId <= 0) {
         json_out(['ok' => false, 'error' => 'Trip not found.'], 404);
@@ -1562,6 +1587,7 @@ function preview_trip_invite_action(): void
             i.expires_at,
             i.revoked_at,
             t.name AS trip_name,
+            ' . trip_mode_select($pdo) . ',
             t.status AS trip_status,
             t.created_by AS inviter_id,
             ' . $inviterNameSelect . '
@@ -1593,6 +1619,7 @@ function preview_trip_invite_action(): void
     }
 
     $status = normalize_trip_status($invite['trip_status'] ?? 'active');
+    require_group_trip($invite);
     if ($status !== 'active') {
         json_out(['ok' => false, 'error' => 'Trip is closed.'], 409);
     }
@@ -1802,6 +1829,7 @@ function join_trip_invite_action(): void
                 t.id,
                 t.name,
                 t.status,
+                ' . trip_mode_select($pdo) . ',
                 t.created_by,
                 t.ended_at,
                 t.archived_at,
@@ -1818,6 +1846,7 @@ function join_trip_invite_action(): void
         }
 
         $status = normalize_trip_status($trip['status'] ?? 'active');
+        require_group_trip($trip);
         if ($status !== 'active') {
             json_out(['ok' => false, 'error' => 'Trip is closed.'], 409);
         }

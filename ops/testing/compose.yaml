@@ -1,0 +1,52 @@
+name: splyto-security-tests
+
+services:
+  mysql:
+    image: mysql:8.4@sha256:6ea90827b1100f8f2ae306a539f86d2c264a26ed435a2a9f75551dd5c3aeb242
+    environment:
+      MYSQL_DATABASE: splyto_security_test
+      MYSQL_USER: splyto_test
+      MYSQL_PASSWORD: isolated-test-password-not-production
+      MYSQL_ROOT_PASSWORD: isolated-test-root-not-production
+    # Ephemeral synthetic data only; permits failure-injection triggers without SUPER grants.
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--skip-log-bin"]
+    tmpfs:
+      - /var/lib/mysql
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/00-test-environment.sql:ro
+    networks: [test_only]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--host=127.0.0.1", "--silent"]
+      interval: 2s
+      timeout: 5s
+      retries: 60
+    security_opt: ["no-new-privileges:true"]
+
+  tests:
+    build:
+      context: .
+    environment:
+      SPLYTO_ISOLATED_MYSQL: "1"
+    volumes:
+      - ../../api/lib:/workspace/api/lib:ro
+      - ../../api/config:/workspace/api/config:ro
+      - ../../api/tests:/workspace/api/tests:ro
+      - ../../api/vendor:/workspace/api/vendor:ro
+      - ../../api/phpunit.xml:/workspace/api/phpunit.xml:ro
+      - ../../sql/migrations/2026-10-04-social-identity-subject-case.sql:/workspace/sql/migrations/2026-10-04-social-identity-subject-case.sql:ro
+      - ../../sql/migrations/2026-10-04-password-reset-state.sql:/workspace/sql/migrations/2026-10-04-password-reset-state.sql:ro
+      - ../../sql/migrations/2026-10-04-deactivation-email-proof.sql:/workspace/sql/migrations/2026-10-04-deactivation-email-proof.sql:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [test_only]
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    command: ["php", "tests/Integration/run_security_mysql.php"]
+
+networks:
+  test_only:
+    internal: true

@@ -304,7 +304,7 @@ function normalize_private_receipt_path(string $receiptPath): ?string
 {
     $normalized = ltrim(str_replace('\\', '/', trim($receiptPath)), '/');
     $relativeDir = sanitize_upload_relative_dir(RECEIPTS_REL_DIR);
-    if (!preg_match('#^' . preg_quote($relativeDir, '#') . '/[A-Za-z0-9._-]+$#', $normalized)) {
+    if (!preg_match('#^' . preg_quote($relativeDir, '#') . '/[A-Za-z0-9_-]+\.(?:webp|png|jpe?g)$#iD', $normalized)) {
         return null;
     }
     return $normalized;
@@ -325,14 +325,15 @@ function private_receipt_url(?string $receiptPath): ?string
         'expires' => $expiresAt,
         'signature' => private_receipt_signature($normalized, $expiresAt),
     ], '', '&', PHP_QUERY_RFC3986);
-    return public_base_url() . '/api/receipt-media.php?' . $query;
+    return project_public_url('api/receipt-media.php') . '?' . $query;
 }
 
 function private_receipt_request_is_valid(string $relativePath, int $expiresAt, string $signature): bool
 {
     $now = time();
     if (
-        $expiresAt < $now ||
+        normalize_private_receipt_path($relativePath) !== $relativePath ||
+        $expiresAt <= $now ||
         $expiresAt > ($now + private_media_url_ttl_seconds() + 60) ||
         !preg_match('/^[a-f0-9]{64}$/', $signature)
     ) {

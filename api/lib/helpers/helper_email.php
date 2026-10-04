@@ -348,6 +348,20 @@ function build_account_reactivation_email(string $reactivateUrl, string $firstNa
     HTML;
 }
 
+function build_account_deactivation_email(string $deactivateUrl, string $name): string
+{
+    $name = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+    $url = htmlspecialchars($deactivateUrl, ENT_QUOTES, 'UTF-8');
+    $logo = build_email_brand_logo_html();
+    return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Confirm account deactivation</title></head>'
+        . '<body style="font-family:Arial,sans-serif;color:#17251d;background:#fff;padding:24px">'
+        . $logo . '<h1>Confirm account deactivation</h1><p>Hi ' . $name . ',</p>'
+        . '<p>Confirm that you want to deactivate your Splyto account. Your trips and expenses will not be deleted.</p>'
+        . '<p><a href="' . $url . '">Review and confirm deactivation</a></p>'
+        . '<p>This link expires in 15 minutes. You can later request a reactivation link from the sign-in screen.</p>'
+        . '<p>If you did not request this, ignore this email. Your account is still active.</p></body></html>';
+}
+
 function build_account_delete_email(string $deleteUrl, string $firstName): string
 {
     $name = htmlspecialchars($firstName, ENT_QUOTES, 'UTF-8');

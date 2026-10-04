@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
   <title>Splyto Invite</title>
   <style>
     :root {
@@ -126,7 +127,20 @@
         codeEl.textContent = invite;
       } else {
         codeEl.textContent = 'Invite code missing in URL';
+        document.querySelector('h1').textContent = 'Invite link missing';
       }
+      openBtn.disabled = !invite;
+
+      var openTimer;
+      var fallbackTimer;
+      function cancelOpen() {
+        window.clearTimeout(openTimer);
+        window.clearTimeout(fallbackTimer);
+      }
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) cancelOpen();
+      });
+      window.addEventListener('pagehide', cancelOpen);
 
       function buildOpenTargets() {
         var encoded = encodeURIComponent(invite);
@@ -140,26 +154,27 @@
       }
 
       function openApp() {
-        if (!invite) {
+        cancelOpen();
+        if (!invite || document.hidden) {
           return;
         }
         var targets = buildOpenTargets();
         if (isAndroid) {
           window.location.href = targets.intentPrimary;
-          window.setTimeout(function () {
-            window.location.href = targets.schemePrimary;
+          fallbackTimer = window.setTimeout(function () {
+            if (!document.hidden) window.location.href = targets.schemePrimary;
           }, 650);
           return;
         }
         window.location.href = targets.schemePrimary;
-        window.setTimeout(function () {
-          window.location.href = targets.schemeFallback;
+        fallbackTimer = window.setTimeout(function () {
+          if (!document.hidden) window.location.href = targets.schemeFallback;
         }, 650);
       }
 
       openBtn.addEventListener('click', openApp);
       if (invite) {
-        window.setTimeout(openApp, 220);
+        openTimer = window.setTimeout(openApp, 220);
       }
     })();
   </script>

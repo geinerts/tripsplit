@@ -1,5 +1,13 @@
 {
   "@@locale": "en",
+  "tripModeSolo": "Just me",
+  "tripModeGroup": "With others",
+  "premiumFree": "Free",
+  "premiumStatusUnavailable": "Plan status unavailable",
+  "premiumGrantedUntil": "Premium granted until {date}",
+  "@premiumGrantedUntil": {"placeholders": {"date": {"type": "String"}}},
+  "premiumBillingNotActive": "No active subscription",
+  "premiumRefreshStatus": "Refresh plan status",
   "@addedMembersCount": {
     "placeholders": {
       "count": {}
@@ -403,6 +411,11 @@
   "finishTripTitle": "Finish trip",
   "forParticipants": "For: {participants}",
   "forgotPassword": "Forgot password?",
+  "profilePasswordByEmail": "Set password by email",
+  "sendDeactivationEmail": "Send deactivation link",
+  "deactivationEmailSent": "Check your email to confirm deactivation. Your account is still active.",
+  "deactivationConfirmationMethods": "Confirm deactivation with your password or an email link. Your trips and expenses will remain.",
+  "passwordEmailBackToProfile": "Back to profile",
   "forgotPasswordSubtitle": "Enter your email and we will send a password reset link.",
   "forgotPasswordSuccessMessage": "If an account with this email exists, we have sent a password reset link.",
   "forgotPasswordTitle": "Reset password",
@@ -426,6 +439,7 @@
   "logInButton": "Log in",
   "logOutButton": "Log out",
   "logoutFromDeviceQuestion": "Log out from this device?",
+  "logoutRevocationUnconfirmed": "Signed out on this device. Server session revocation could not be confirmed.",
   "markedAsSent": "Marked as sent.",
   "markSettlementSentConfirmTitle": "Mark transfer as sent?",
   "markSettlementSentConfirmText": "Use this only after you have actually sent the payment. The receiver will be asked to confirm.",
@@ -857,7 +871,7 @@
   "profileOpenWebsiteQuestion": "Open website?",
   "profileOpenPortfolioAction": "Open portfolio.egm.lv",
   "profileImageFormatNotSupportedDevicePleaseChooseJpg": "This image format is not supported on this device. Please choose JPG or PNG.",
-  "profileEditSetValidEmailEditProfileChangingPassword": "Set a valid email in Edit profile before changing password.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "A valid account email is required to change your password. Contact support if your email is missing or incorrect.",
   "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Account deactivated. Use reactivation link from email to restore access.",
   "profileEditCouldNotDeactivateTryAgain": "Could not deactivate account. Please try again.",
   "profileEditDeletionLinkSentEmail": "Deletion link sent to your email.",

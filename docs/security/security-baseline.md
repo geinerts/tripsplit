@@ -1,6 +1,6 @@
 # Splyto security baseline
 
-Last reviewed: 2026-07-14
+Last targeted review: 2026-09-23. See `audit-2026-09-18.md` for the wider review and `offline-account-isolation.md` for the subsequent mobile isolation work.
 
 ## Trust boundaries
 
@@ -20,7 +20,11 @@ Last reviewed: 2026-07-14
 - Access tokens expire quickly; refresh tokens are random, hash-stored and rotated.
 - Android backups and cleartext HTTP are disabled.
 - App caches are cleared on logout and exclude payment profile details.
+- Offline caches and queues are account/API-host scoped and protected against stale login generations. Legacy unowned queues are quarantined for recovery, never automatically replayed; see the migration notes for their retention exception.
 - Feedback screenshots are not publicly served.
+- Receipt storage is not publicly served. Authorized API responses issue short-lived signed image URLs; new attachments are bound to the uploader.
+- Receipt delivery has both positive (valid image) and negative (unsigned/direct storage) checks. An unsigned 404 alone does not demonstrate working receipt delivery.
+- Admin action arguments are encoded as data, not executable inline handlers.
 - Upload, log and backup filesystem permissions use least-readable modes.
 - HSTS, nosniff, frame, referrer and permissions headers are set by Nginx.
 - UFW, Fail2ban and unattended security updates are enabled.
@@ -36,7 +40,7 @@ Last reviewed: 2026-07-14
 
 ## Remaining priority work
 
-1. Serve receipts through an authenticated member-only media endpoint or short-lived signed URLs.
+1. Complete live multi-device session-revocation concurrency checks. Account-scoped offline storage now has focused regression coverage. Signed receipt URLs remain bearer capabilities until expiry, not per-request membership checks.
 2. Encrypt backups and send them to an isolated offsite account with tested restore procedures.
 3. Split the MySQL runtime, migration and backup users; remove `ALL PRIVILEGES` from runtime.
 4. Replace local SharedPreferences snapshots with an encrypted database if long-term offline storage is required.

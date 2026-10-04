@@ -57,7 +57,7 @@ function deactivate_account_action(): void
     require_post();
     $me = get_me();
     $body = read_json();
-    $password = trim((string) ($body['password'] ?? ''));
+    $password = (string) ($body['password'] ?? '');
 
     $pdo = db();
     $userId = (int) ($me['id'] ?? 0);
@@ -114,35 +114,13 @@ function deactivate_account_action(): void
         $email = trim((string) ($user['email'] ?? ''));
         $hash = (string) ($user['password_hash'] ?? '');
         $requiresCredentials = ((int) ($user['credentials_required'] ?? 1)) === 1;
-        $hasSocialIdentity = user_has_social_identity($pdo, $userId);
-
-        if ($email === '') {
+        if ($email === '' || $requiresCredentials || $hash === ''
+            || $password === '' || !password_verify($password, $hash)) {
             $pdo->rollBack();
-            json_out([
-                'ok' => false,
-                'error' => 'Add email first before deactivating your account.',
-            ], 409);
+            json_out(['ok' => false, 'code' => 'REAUTHENTICATION_REQUIRED',
+                'error' => 'Confirm with your current password or request a deactivation email.'], 403);
         }
-        if (!$hasSocialIdentity) {
-            if ($requiresCredentials || $hash === '') {
-                $pdo->rollBack();
-                json_out([
-                    'ok' => false,
-                    'error' => 'Add email and password first before deactivating your account.',
-                ], 409);
-            }
-            if ($password === '') {
-                $pdo->rollBack();
-                json_out(['ok' => false, 'error' => 'Password is required.'], 400);
-            }
-            if (!password_verify($password, $hash)) {
-                $pdo->rollBack();
-                json_out(['ok' => false, 'error' => 'Password is incorrect.'], 401);
-            }
-        } elseif ($password !== '' && $hash !== '' && !password_verify($password, $hash)) {
-            $pdo->rollBack();
-            json_out(['ok' => false, 'error' => 'Password is incorrect.'], 401);
-        }
+        ensure_refresh_tokens_table_available($pdo);
 
         $setDeletedAt = users_deleted_at_column_available($pdo)
             ? ', deleted_at = NULL'
@@ -156,6 +134,11 @@ function deactivate_account_action(): void
 
         revoke_refresh_tokens_for_user($pdo, $userId);
         deactivate_push_tokens_for_user($pdo, $userId);
+        if (account_action_tokens_table_available($pdo)) {
+            $pdo->prepare('UPDATE ' . table_name('account_action_tokens')
+                . ' SET used_at = UTC_TIMESTAMP() WHERE user_id = :id AND used_at IS NULL')
+                ->execute(['id' => $userId]);
+        }
 
         $pdo->commit();
     } catch (Throwable $error) {
@@ -357,7 +340,7 @@ function request_account_deletion_link_action(): void
     require_post();
     $me = get_me();
     $body = read_json();
-    $password = trim((string) ($body['password'] ?? ''));
+    $password = (string) ($body['password'] ?? '');
 
     $pdo = db();
     $userId = (int) ($me['id'] ?? 0);

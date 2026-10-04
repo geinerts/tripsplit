@@ -1,6 +1,61 @@
 <?php
 declare(strict_types=1);
 
+function trips_mode_column_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if ($cached === null) {
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(*) FROM information_schema.columns
+             WHERE table_schema = DATABASE() AND table_name = :table_name
+               AND column_name = \'trip_mode\''
+        );
+        $stmt->execute(['table_name' => DB_TABLE_PREFIX . 'trips']);
+        $cached = (int) $stmt->fetchColumn() > 0;
+    }
+    return $cached;
+}
+
+function trip_mode_select(PDO $pdo): string
+{
+    return trips_mode_column_available($pdo) ? 't.trip_mode' : '\'group\' AS trip_mode';
+}
+
+function trip_is_solo(array $trip): bool
+{
+    return ($trip['trip_mode'] ?? 'group') === 'solo';
+}
+
+function require_group_trip(array $trip): void
+{
+    if (trip_is_solo($trip)) {
+        json_out(['ok' => false, 'error' => 'Personal trips cannot be shared.', 'code' => 'solo_trip_private'], 409);
+    }
+}
+
+function validate_trip_mode($value): string
+{
+    if (!is_string($value) || !in_array($value, ['solo', 'group'], true)) {
+        json_out(['ok' => false, 'error' => 'Invalid trip mode.'], 400);
+    }
+    return $value;
+}
+
+function validate_solo_expense(array $trip, int $actorId, array $body): void
+{
+    if (!trip_is_solo($trip)) {
+        return;
+    }
+    if ((int) ($trip['created_by'] ?? 0) !== $actorId) {
+        json_out(['ok' => false, 'error' => 'Personal trip access denied.'], 403);
+    }
+    $participants = normalize_user_ids((array) ($body['participants'] ?? []));
+    if (($participants && $participants !== [$actorId]) || ($body['split_mode'] ?? 'equal') !== 'equal'
+        || !empty($body['splits'])) {
+        json_out(['ok' => false, 'error' => 'Personal expenses belong only to the trip owner.'], 400);
+    }
+}
+
 function trips_image_column_available(PDO $pdo): bool
 {
     static $cached = null;
@@ -211,6 +266,7 @@ function build_trip_payload(array $trip): array
         'id' => (int) ($trip['id'] ?? 0),
         'name' => (string) ($trip['name'] ?? ''),
         'currency_code' => $currencyCode,
+        'trip_mode' => $trip['trip_mode'] ?? 'group',
         'status' => normalize_trip_status($trip['status'] ?? 'active'),
         'created_by' => array_key_exists('created_by', $trip) && $trip['created_by'] !== null
             ? (int) $trip['created_by']
@@ -228,6 +284,7 @@ function normalize_trip_row(array $trip): array
 {
     $trip['id'] = (int) ($trip['id'] ?? 0);
     $trip['name'] = (string) ($trip['name'] ?? '');
+    $trip['trip_mode'] = $trip['trip_mode'] ?? 'group';
     $trip['currency_code'] = normalize_currency_code(
         $trip['currency_code'] ?? default_trip_currency_code()
     );
@@ -345,7 +402,7 @@ function find_trip_for_user(PDO $pdo, int $userId, int $tripId): ?array
         ? 't.date_to'
         : 'NULL AS date_to';
     $stmt = $pdo->prepare(
-        'SELECT t.id, t.name, ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
+        'SELECT t.id, t.name, ' . trip_mode_select($pdo) . ', ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
          FROM ' . $tripsTable . ' t
          JOIN ' . $tripMembersTable . ' tm ON tm.trip_id = t.id
          WHERE t.id = :trip_id AND tm.user_id = :user_id
@@ -376,7 +433,7 @@ function find_default_trip_for_user(PDO $pdo, int $userId): ?array
         ? 't.date_to'
         : 'NULL AS date_to';
     $stmt = $pdo->prepare(
-        'SELECT t.id, t.name, ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
+        'SELECT t.id, t.name, ' . trip_mode_select($pdo) . ', ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
          FROM ' . $tripsTable . ' t
          JOIN ' . $tripMembersTable . ' tm ON tm.trip_id = t.id
          WHERE tm.user_id = :user_id

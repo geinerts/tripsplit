@@ -11,6 +11,7 @@ class UpdateProfileUseCase {
     String? lastName,
     String? email,
     String? password,
+    String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   }) {
@@ -19,6 +20,7 @@ class UpdateProfileUseCase {
       lastName: lastName,
       email: email,
       password: password,
+      currentPassword: currentPassword,
       preferredCurrencyCode: preferredCurrencyCode,
       paymentDetails: paymentDetails,
     );

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthSessionStore {
@@ -15,6 +17,7 @@ class AuthSessionStore {
   static const String _accessExpiryKey = 'trip_access_expiry_epoch_ms_v1';
   static const String _refreshTokenKey = 'trip_refresh_token_v1';
   static const String _refreshExpiryKey = 'trip_refresh_expiry_epoch_ms_v1';
+  static const String _sessionKey = 'trip_auth_session_v2';
 
   final FlutterSecureStorage _storage;
   String? _memoryAccessToken;
@@ -43,20 +46,34 @@ class AuthSessionStore {
     final accessExpiryMs = now + accessExpiresInSec * 1000;
     final refreshExpiryMs = now + refreshExpiresInSec * 1000;
 
+    // Tokens, expiry and verified account identity change as one secure record.
+    await _storage.write(
+      key: _sessionKey,
+      value: jsonEncode({
+        'access_token': accessToken,
+        'access_expiry': accessExpiryMs,
+        'refresh_token': refreshToken,
+        'refresh_expiry': refreshExpiryMs,
+        'user_id': _parsePositiveInt(payload['user_id']),
+      }),
+    );
     _memoryAccessToken = accessToken;
     _memoryAccessExpiryMs = accessExpiryMs;
     _memoryRefreshToken = refreshToken;
     _memoryRefreshExpiryMs = refreshExpiryMs;
-
-    await _storage.write(key: _accessTokenKey, value: accessToken);
-    await _storage.write(key: _accessExpiryKey, value: '$accessExpiryMs');
-    await _storage.write(key: _refreshTokenKey, value: refreshToken);
-    await _storage.write(key: _refreshExpiryKey, value: '$refreshExpiryMs');
+    await _storage.delete(key: _accessTokenKey);
+    await _storage.delete(key: _accessExpiryKey);
+    await _storage.delete(key: _refreshTokenKey);
+    await _storage.delete(key: _refreshExpiryKey);
   }
 
   Future<String?> readValidAccessToken({
     Duration leeway = const Duration(seconds: 30),
   }) async {
+    final record = await _readRecord();
+    if (record != null) {
+      return _validRecordToken(record, 'access', leeway);
+    }
     final nowMs = DateTime.now().toUtc().millisecondsSinceEpoch;
     final memoryAccess = _memoryAccessToken?.trim() ?? '';
     if (memoryAccess.isNotEmpty &&
@@ -96,6 +113,10 @@ class AuthSessionStore {
   Future<String?> readValidRefreshToken({
     Duration leeway = const Duration(minutes: 1),
   }) async {
+    final record = await _readRecord();
+    if (record != null) {
+      return _validRecordToken(record, 'refresh', leeway);
+    }
     final nowMs = DateTime.now().toUtc().millisecondsSinceEpoch;
     final memoryRefresh = _memoryRefreshToken?.trim() ?? '';
     if (memoryRefresh.isNotEmpty &&
@@ -142,6 +163,44 @@ class AuthSessionStore {
     await _storage.delete(key: _accessExpiryKey);
     await _storage.delete(key: _refreshTokenKey);
     await _storage.delete(key: _refreshExpiryKey);
+    await _storage.delete(key: _sessionKey);
+  }
+
+  Future<Map<String, dynamic>?> _readRecord() async {
+    final raw = await _storage.read(key: _sessionKey);
+    if (raw == null) return null;
+    try {
+      final value = jsonDecode(raw);
+      return value is Map<String, dynamic> ? value : <String, dynamic>{};
+    } catch (_) {
+      // A damaged new record must not fall back to a previous account's keys.
+      return <String, dynamic>{};
+    }
+  }
+
+  String? _validRecordToken(
+    Map<String, dynamic> record,
+    String kind,
+    Duration leeway,
+  ) {
+    final token = record['${kind}_token'];
+    final expiry = record['${kind}_expiry'];
+    if (token is! String || token.isEmpty || expiry is! int) return null;
+    if (!_isStillValid(
+      expiryMs: expiry,
+      nowMs: DateTime.now().toUtc().millisecondsSinceEpoch,
+      leewayMs: leeway.inMilliseconds,
+    )) {
+      return null;
+    }
+    return token;
+  }
+
+  Future<int?> readAccountOwner() async {
+    final record = await _readRecord();
+    if (record == null) return null;
+    final id = _parsePositiveInt(record['user_id']);
+    return id > 0 ? id : null;
   }
 
   bool _isStillValid({

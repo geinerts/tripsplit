@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../../../../core/auth/auth_session_store.dart';
+import '../../../../core/auth/account_data_session.dart';
 import '../../../../core/auth/current_user_store.dart';
 import '../../../../core/auth/device_token_store.dart';
 import '../../../../core/auth/user_avatar_store.dart';
+import '../../../../core/errors/api_exception.dart';
 import '../../../../core/network/legacy_avatar_uploader.dart';
 import '../../../../core/network/legacy_feedback_reporter.dart';
 import '../../../../core/push/push_registration_service.dart';
@@ -20,7 +22,7 @@ import '../../domain/usecases/login_use_case.dart';
 import '../../domain/usecases/logout_session_use_case.dart';
 import '../../domain/usecases/register_use_case.dart';
 import '../../domain/usecases/request_account_deletion_link_use_case.dart';
-import '../../domain/usecases/request_email_change_use_case.dart';
+import '../../domain/usecases/request_deactivation_link_use_case.dart';
 import '../../domain/usecases/request_email_verification_link_use_case.dart';
 import '../../domain/usecases/request_reactivation_link_use_case.dart';
 import '../../domain/usecases/set_credentials_use_case.dart';
@@ -40,7 +42,7 @@ class AuthController {
     this._forgotPasswordUseCase,
     this._requestEmailVerificationLinkUseCase,
     this._requestReactivationLinkUseCase,
-    this._requestEmailChangeUseCase,
+    this._requestDeactivationLinkUseCase,
     this._deactivateAccountUseCase,
     this._requestAccountDeletionLinkUseCase,
     this._getNotificationPreferencesUseCase,
@@ -52,8 +54,9 @@ class AuthController {
     this._avatarUploader,
     this._feedbackReporter,
     this._pushRegistrationService,
-    this._onLoggedOut,
-  );
+    this._onLoggedOut, {
+    AccountDataSession? accountSession,
+  }) : _accountSession = accountSession ?? AccountDataSession();
 
   final LoginUseCase _loginUseCase;
   final LogoutSessionUseCase _logoutSessionUseCase;
@@ -66,7 +69,7 @@ class AuthController {
   final RequestEmailVerificationLinkUseCase
   _requestEmailVerificationLinkUseCase;
   final RequestReactivationLinkUseCase _requestReactivationLinkUseCase;
-  final RequestEmailChangeUseCase _requestEmailChangeUseCase;
+  final RequestDeactivationLinkUseCase _requestDeactivationLinkUseCase;
   final DeactivateAccountUseCase _deactivateAccountUseCase;
   final RequestAccountDeletionLinkUseCase _requestAccountDeletionLinkUseCase;
   final GetNotificationPreferencesUseCase _getNotificationPreferencesUseCase;
@@ -80,6 +83,9 @@ class AuthController {
   final LegacyFeedbackReporter _feedbackReporter;
   final PushRegistrationService _pushRegistrationService;
   final Future<void> Function() _onLoggedOut;
+  final AccountDataSession _accountSession;
+  Future<bool>? _logoutInFlight;
+  bool _signingIn = false;
 
   AuthUser? currentUser;
   NotificationPreferences _notificationPreferences =
@@ -88,64 +94,55 @@ class AuthController {
   NotificationPreferences get notificationPreferences =>
       _notificationPreferences;
 
-  Future<AuthUser> login({
-    required String email,
-    required String password,
-  }) async {
-    final user = await _withStoredAvatar(
-      await _loginUseCase.call(email: email, password: password),
-    );
-    await _setCurrentUser(user);
-    unawaited(_syncPushRegistration());
-    return user;
-  }
+  Future<AuthUser> login({required String email, required String password}) =>
+      _signIn(() => _loginUseCase.call(email: email, password: password));
 
   Future<AuthUser> register({
     required String firstName,
     required String lastName,
     required String email,
     required String password,
-  }) async {
-    final user = await _withStoredAvatar(
-      await _registerUseCase.call(
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password,
-      ),
-    );
-    await _setCurrentUser(user);
-    unawaited(_syncPushRegistration());
-    return user;
-  }
+  }) => _signIn(
+    () => _registerUseCase.call(
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+    ),
+  );
 
   Future<AuthUser> loginWithSocial({
     required String provider,
     required String idToken,
     String? fullName,
     String? email,
-  }) async {
-    final user = await _withStoredAvatar(
-      await _socialLoginUseCase.call(
-        provider: provider,
-        idToken: idToken,
-        fullName: fullName,
-        email: email,
-      ),
-    );
-    await _setCurrentUser(user);
-    unawaited(_syncPushRegistration());
-    return user;
-  }
+  }) => _signIn(
+    () => _socialLoginUseCase.call(
+      provider: provider,
+      idToken: idToken,
+      fullName: fullName,
+      email: email,
+    ),
+  );
 
   Future<AuthUser> setCredentials({
     required String email,
     required String password,
   }) async {
-    final user = await _withStoredAvatar(
-      await _setCredentialsUseCase.call(email: email, password: password),
-    );
-    await _setCurrentUser(user);
+    final generation = _accountSession.generation;
+    late final AuthUser user;
+    try {
+      user = await _withStoredAvatar(
+        await _setCredentialsUseCase.call(email: email, password: password),
+      );
+    } on ApiException catch (error) {
+      if (error.code == 'EMAIL_VERIFICATION_REQUIRED') {
+        _accountSession.checkGeneration(generation);
+        await logout();
+      }
+      rethrow;
+    }
+    await _setCurrentUser(user, generation);
     unawaited(_syncPushRegistration());
     return user;
   }
@@ -155,27 +152,31 @@ class AuthController {
     String? lastName,
     String? email,
     String? password,
+    String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   }) async {
+    final generation = _accountSession.generation;
     final user = await _withStoredAvatar(
       await _updateProfileUseCase.call(
         firstName: firstName,
         lastName: lastName,
         email: email,
         password: password,
+        currentPassword: currentPassword,
         preferredCurrencyCode: preferredCurrencyCode,
         paymentDetails: paymentDetails,
       ),
     );
-    await _setCurrentUser(user);
+    await _setCurrentUser(user, generation);
     unawaited(_syncPushRegistration());
     return user;
   }
 
   Future<AuthUser> loadCurrentUser() async {
+    final generation = _accountSession.generation;
     final user = await _withStoredAvatar(await _getMeUseCase.call());
-    await _setCurrentUser(user);
+    await _setCurrentUser(user, generation);
     unawaited(_syncPushRegistration());
     return user;
   }
@@ -192,14 +193,8 @@ class AuthController {
     return _requestReactivationLinkUseCase.call(email: email);
   }
 
-  Future<void> requestEmailChange({
-    required String newEmail,
-    required String currentPassword,
-  }) {
-    return _requestEmailChangeUseCase.call(
-      newEmail: newEmail,
-      currentPassword: currentPassword,
-    );
+  Future<void> requestDeactivationLink() {
+    return _requestDeactivationLinkUseCase.call();
   }
 
   Future<void> deactivateAccount({required String password}) {
@@ -265,16 +260,20 @@ class AuthController {
   }
 
   Future<AuthUser?> readCachedCurrentUser() async {
+    if (_signingIn || _logoutInFlight != null) return null;
+    final generation = _accountSession.generation;
     final inMemory = currentUser;
     if (inMemory != null && inMemory.id > 0) {
       return inMemory;
     }
+    if (!await hasRecoverableSession()) return null;
     final stored = await _currentUserStore.read();
     if (stored == null || stored.id <= 0) {
       return null;
     }
+    if (await _authSessionStore.readAccountOwner() != stored.id) return null;
     final merged = await _withStoredAvatar(stored);
-    await _setCurrentUser(merged);
+    await _setCurrentUser(merged, generation);
     return merged;
   }
 
@@ -313,6 +312,7 @@ class AuthController {
   }
 
   Future<AuthUser?> updateLocalAvatar(Uint8List? bytes) async {
+    final generation = _accountSession.generation;
     final user = currentUser;
     if (user == null || user.id <= 0) {
       return null;
@@ -325,7 +325,7 @@ class AuthController {
     final next = encoded == null
         ? user.copyWith(clearAvatar: true)
         : user.copyWith(avatarBase64: encoded);
-    await _setCurrentUser(next);
+    await _setCurrentUser(next, generation);
     return next;
   }
 
@@ -333,6 +333,7 @@ class AuthController {
     required String fileName,
     required Uint8List bytes,
   }) async {
+    final generation = _accountSession.generation;
     final user = currentUser;
     if (user == null || user.id <= 0 || bytes.isEmpty) {
       return null;
@@ -353,11 +354,12 @@ class AuthController {
       userId: merged.id,
       avatarBase64: encoded,
     );
-    await _setCurrentUser(merged);
+    await _setCurrentUser(merged, generation);
     return merged;
   }
 
   Future<AuthUser?> removeAvatar() async {
+    final generation = _accountSession.generation;
     final user = currentUser;
     if (user == null || user.id <= 0) {
       return null;
@@ -370,7 +372,7 @@ class AuthController {
     ).copyWith(clearAvatar: true);
 
     await _avatarStore.writeAvatarBase64(userId: merged.id, avatarBase64: null);
-    await _setCurrentUser(merged);
+    await _setCurrentUser(merged, generation);
     return merged;
   }
 
@@ -394,17 +396,25 @@ class AuthController {
     );
   }
 
-  Future<void> logout() async {
+  Future<bool> logout() =>
+      _logoutInFlight ??= _performLogout().whenComplete(() {
+        _logoutInFlight = null;
+      });
+
+  Future<bool> _performLogout() async {
+    _accountSession.invalidate();
     final userId = currentUser?.id ?? 0;
     try {
       await _pushRegistrationService.unregisterCurrentDevice();
     } catch (_) {
       // Ignore push unregister errors during logout.
     }
+    var revocationConfirmed = false;
     try {
       await _logoutSessionUseCase.call();
+      revocationConfirmed = true;
     } catch (_) {
-      // Local logout must still complete when the network is unavailable.
+      // Offline logout must still remove access on this device.
     }
     await _authSessionStore.clear();
     await _tokenStore.resetToken();
@@ -415,6 +425,7 @@ class AuthController {
     _notificationPreferences = const NotificationPreferences.defaults();
     await _currentUserStore.clear();
     await _onLoggedOut();
+    return revocationConfirmed;
   }
 
   Future<void> syncPushRegistration() {
@@ -437,9 +448,46 @@ class AuthController {
     return user.copyWith(avatarBase64: stored);
   }
 
-  Future<void> _setCurrentUser(AuthUser user) async {
+  Future<int> _beginSignIn() async {
+    // Also drain a restored session's refresh when no profile is loaded yet.
+    await logout();
+    return _accountSession.generation;
+  }
+
+  Future<AuthUser> _signIn(Future<AuthUser> Function() authenticate) async {
+    if (_signingIn) throw AccountDataSession.changed;
+    _signingIn = true;
+    try {
+      final generation = await _beginSignIn();
+      final user = await _withStoredAvatar(await authenticate());
+      await _setCurrentUser(user, generation, signingIn: true);
+      unawaited(_syncPushRegistration());
+      return user;
+    } finally {
+      _signingIn = false;
+    }
+  }
+
+  Future<void> _setCurrentUser(
+    AuthUser user,
+    int generation, {
+    bool signingIn = false,
+  }) async {
+    if (_logoutInFlight != null || (_signingIn && !signingIn)) {
+      throw AccountDataSession.changed;
+    }
+    _accountSession.checkGeneration(generation);
+    final previous = currentUser ?? await _currentUserStore.read();
+    _accountSession.checkGeneration(generation);
+    if (previous != null && previous.id != user.id) {
+      await _onLoggedOut();
+      _notificationPreferences = const NotificationPreferences.defaults();
+    }
+    _accountSession.checkGeneration(generation);
     currentUser = user;
     await _currentUserStore.write(user);
+    _accountSession.checkGeneration(generation);
+    _accountSession.activate(user.id);
   }
 
   AuthUser _mergeRemoteMe(AuthUser fallback, Map<String, dynamic>? mePayload) {

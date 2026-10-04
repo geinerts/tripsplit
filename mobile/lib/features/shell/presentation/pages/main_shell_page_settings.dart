@@ -180,7 +180,7 @@ extension _MainShellPageSettings on _MainShellPageState {
       _isLoggingOut = true;
     });
     try {
-      await widget.authController.logout();
+      final revocationConfirmed = await widget.authController.logout();
       widget.tripsController.clearTripsCache(clearDisk: true);
       if (!mounted) {
         return;
@@ -188,6 +188,13 @@ extension _MainShellPageSettings on _MainShellPageState {
       Navigator.of(
         context,
       ).pushNamedAndRemoveUntil(AppRouter.authIntro, (route) => false);
+      if (!revocationConfirmed) {
+        _showSnack(t.logoutRevocationUnconfirmed, isError: false);
+      }
+    } on ApiException catch (error) {
+      if (mounted) {
+        _showSnack(error.message, isError: true);
+      }
     } finally {
       if (mounted) {
         _updateState(() {

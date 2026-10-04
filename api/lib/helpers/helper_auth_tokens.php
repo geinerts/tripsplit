@@ -280,7 +280,7 @@ function rotate_refresh_token(PDO $pdo, string $refreshToken): ?array
 
         $revokedAt = $row['revoked_at'] ?? null;
         $expiresAt = (string) ($row['expires_at'] ?? '');
-        if ($revokedAt !== null || $expiresAt === '' || strtotime($expiresAt) <= time()) {
+        if ($revokedAt !== null || !refresh_token_expiry_is_valid($expiresAt)) {
             $revoke = $pdo->prepare(
                 'UPDATE ' . $table . '
                  SET revoked_at = COALESCE(revoked_at, :revoked_at),
@@ -353,6 +353,14 @@ function rotate_refresh_token(PDO $pdo, string $refreshToken): ?array
             'refresh_expires_in_sec' => $ttl,
         ],
     ];
+}
+
+function refresh_token_expiry_is_valid(string $expiresAt): bool
+{
+    $expiry = DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', $expiresAt, new DateTimeZone('UTC'));
+    return $expiry !== false
+        && $expiry->format('Y-m-d H:i:s') === $expiresAt
+        && $expiry->getTimestamp() > time();
 }
 
 function revoke_refresh_token(PDO $pdo, string $refreshToken): bool

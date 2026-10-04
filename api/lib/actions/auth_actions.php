@@ -156,6 +156,12 @@ function register_action(): void
     $passwordRaw = (string) ($body['password'] ?? '');
     $hasCredentials = ($emailRaw !== '' || $passwordRaw !== '');
 
+    $values = ['nickname' => $legacyNickname, 'device_token' => $deviceToken];
+    if ($hasNameColumns) {
+        $values['first_name'] = $firstName;
+        $values['last_name'] = $lastName;
+    }
+
     if ($hasCredentials) {
         $email = validate_email_address($emailRaw);
         $password = validate_password_plain($passwordRaw);
@@ -164,95 +170,34 @@ function register_action(): void
             json_out(['ok' => false, 'error' => 'Failed to hash password.'], 500);
         }
 
-        $existsStmt = $pdo->prepare(
-            'SELECT id
-             FROM ' . $usersTable . '
-             WHERE email = :email AND device_token <> :device_token
-             LIMIT 1'
-        );
-        $existsStmt->execute([
-            'email' => $email,
-            'device_token' => $deviceToken,
-        ]);
-        if ($existsStmt->fetch()) {
-            json_out(['ok' => false, 'error' => 'Email is already used by another account.'], 409);
-        }
-
-        if ($hasNameColumns) {
-            $stmt = $pdo->prepare(
-                'INSERT INTO ' . $usersTable . ' (first_name, last_name, nickname, email, password_hash, credentials_required, email_verified_at, device_token)
-                 VALUES (:first_name, :last_name, :nickname, :email, :password_hash, 0, NULL, :device_token)
-                 ON DUPLICATE KEY UPDATE
-                     first_name = VALUES(first_name),
-                     last_name = VALUES(last_name),
-                     nickname = VALUES(nickname),
-                     email = VALUES(email),
-                     password_hash = VALUES(password_hash),
-                     credentials_required = 0,
-                     email_verified_at = CASE
-                         WHEN email <=> VALUES(email) THEN email_verified_at
-                         ELSE NULL
-                     END'
-            );
-            $stmt->execute([
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'nickname' => $legacyNickname,
-                'email' => $email,
-                'password_hash' => $passwordHash,
-                'device_token' => $deviceToken,
-            ]);
-        } else {
-            $stmt = $pdo->prepare(
-                'INSERT INTO ' . $usersTable . ' (nickname, email, password_hash, credentials_required, email_verified_at, device_token)
-                 VALUES (:nickname, :email, :password_hash, 0, NULL, :device_token)
-                 ON DUPLICATE KEY UPDATE
-                     nickname = VALUES(nickname),
-                     email = VALUES(email),
-                     password_hash = VALUES(password_hash),
-                     credentials_required = 0,
-                     email_verified_at = CASE
-                         WHEN email <=> VALUES(email) THEN email_verified_at
-                         ELSE NULL
-                     END'
-            );
-            $stmt->execute([
-                'nickname' => $legacyNickname,
-                'email' => $email,
-                'password_hash' => $passwordHash,
-                'device_token' => $deviceToken,
-            ]);
-        }
-    } else {
-        if ($hasNameColumns) {
-            $stmt = $pdo->prepare(
-                'INSERT INTO ' . $usersTable . ' (first_name, last_name, nickname, device_token)
-                 VALUES (:first_name, :last_name, :nickname, :device_token)
-                 ON DUPLICATE KEY UPDATE
-                     first_name = VALUES(first_name),
-                     last_name = VALUES(last_name),
-                     nickname = VALUES(nickname)'
-            );
-            $stmt->execute([
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'nickname' => $legacyNickname,
-                'device_token' => $deviceToken,
-            ]);
-        } else {
-            $stmt = $pdo->prepare(
-                'INSERT INTO ' . $usersTable . ' (nickname, device_token)
-                 VALUES (:nickname, :device_token)
-                 ON DUPLICATE KEY UPDATE nickname = VALUES(nickname)'
-            );
-            $stmt->execute([
-                'nickname' => $legacyNickname,
-                'device_token' => $deviceToken,
-            ]);
-        }
+        $values['email'] = $email;
+        $values['password_hash'] = $passwordHash;
+        $values['credentials_required'] = 0;
+        $values['email_verified_at'] = null;
     }
 
-    $me = fetch_me_row_by_token($pdo, $deviceToken);
+    // Registration creates an identity; a device ID must never authenticate an old one.
+    // Unique indexes arbitrate concurrent requests without updating the winning account.
+    $columns = array_keys($values);
+    try {
+        $stmt = $pdo->prepare(
+            'INSERT INTO ' . $usersTable . ' (' . implode(', ', $columns) . ')
+             VALUES (:' . implode(', :', $columns) . ')'
+        );
+        $stmt->execute($values);
+    } catch (PDOException $error) {
+        if ((string) $error->getCode() !== '23000') {
+            throw $error;
+        }
+        json_out([
+            'ok' => false,
+            'code' => 'REGISTRATION_CONFLICT',
+            'error' => 'Registration conflicts with an existing account. Sign in or recover your account.',
+        ], 409);
+    }
+
+    $newUserId = (int) $pdo->lastInsertId();
+    $me = $newUserId > 0 ? fetch_me_row_by_id($pdo, $newUserId) : null;
     if (!$me) {
         json_out(['ok' => false, 'error' => 'Failed to resolve user.'], 500);
     }
@@ -266,7 +211,7 @@ function register_action(): void
             $pdo->prepare(
                 'UPDATE ' . $usersTable . ' SET email_verified_at = NOW() WHERE id = :id'
             )->execute(['id' => (int) ($me['id'] ?? 0)]);
-            $me = fetch_me_row_by_token($pdo, $deviceToken);
+            $me = fetch_me_row_by_id($pdo, $newUserId);
         } else {
             send_email_verification_link_for_user($pdo, (array) $me);
             json_out([
@@ -283,7 +228,7 @@ function register_action(): void
     app_event($pdo, $newUserId, 'user.registered', 'user', $newUserId);
     json_out([
         'ok' => true,
-        'me' => build_me_payload($me),
+        'me' => build_me_payload($me, $pdo),
         'auth' => issue_auth_payload($pdo, $newUserId),
     ]);
 }
@@ -410,7 +355,7 @@ function login_action(): void
     app_event($pdo, $loggedInUserId, 'user.login', 'user', $loggedInUserId);
     json_out([
         'ok' => true,
-        'me' => build_me_payload($me),
+        'me' => build_me_payload($me, $pdo),
         'auth' => issue_auth_payload($pdo, $loggedInUserId),
     ]);
 }
@@ -452,6 +397,7 @@ function refresh_session_action(): void
 
     $me = fetch_me_row_by_id($pdo, $userId);
     if (!$me) {
+        revoke_refresh_tokens_for_user($pdo, $userId);
         json_out(['ok' => false, 'error' => 'User not found.'], 401);
     }
     if (user_requires_email_verification((array) $me)) {
@@ -465,7 +411,7 @@ function refresh_session_action(): void
 
     json_out([
         'ok' => true,
-        'me' => build_me_payload($me),
+        'me' => build_me_payload($me, $pdo),
         'auth' => (array) ($rotated['auth'] ?? []),
     ]);
 }
@@ -507,48 +453,146 @@ function set_credentials_action(): void
     $body = read_json();
     $email = validate_email_address((string) ($body['email'] ?? ''));
     $password = validate_password_plain((string) ($body['password'] ?? ''));
-    $passwordHash = password_hash($password, credential_password_algo());
-    if (!is_string($passwordHash) || $passwordHash === '') {
-        json_out(['ok' => false, 'error' => 'Failed to hash password.'], 500);
-    }
-
     $pdo = db();
     $usersTable = table_name('users');
+    $userId = (int) $me['id'];
+    enforce_credential_change_rate_limits($pdo, $userId);
+    ensure_refresh_tokens_table_available($pdo);
+    if (!email_verification_required() || !users_email_verified_at_column_available($pdo)) {
+        json_out(['ok' => false, 'error' => 'Verified credential enrollment is unavailable.'], 503);
+    }
+    ensure_email_verification_tokens_table_available($pdo);
 
-    $existsStmt = $pdo->prepare(
-        'SELECT id
-         FROM ' . $usersTable . '
-         WHERE email = :email AND id <> :id
-         LIMIT 1'
-    );
-    $existsStmt->execute([
-        'email' => $email,
-        'id' => (int) $me['id'],
-    ]);
-    if ($existsStmt->fetch()) {
-        json_out(['ok' => false, 'error' => 'Email is already used by another account.'], 409);
+    try {
+        $pdo->beginTransaction();
+        $user = lock_credential_user($pdo, $userId);
+        // Only a pristine guest can enroll. Social and partially initialized accounts fail closed.
+        if ((int) $user['credentials_required'] !== 1
+            || trim((string) $user['email']) !== ''
+            || (string) $user['password_hash'] !== ''
+            || !empty($user['email_verified_at'])) {
+            reject_credential_change($pdo, 'CREDENTIALS_ALREADY_SET',
+                'Use password change or account recovery for this account.', 409);
+        }
+        $passwordHash = password_hash($password, credential_password_algo());
+        if (!is_string($passwordHash) || $passwordHash === '') {
+            throw new RuntimeException('Failed to hash password.');
+        }
+        $pdo->prepare(
+            'UPDATE ' . $usersTable . '
+             SET email = :email, password_hash = :password_hash,
+                 credentials_required = 0, email_verified_at = NULL
+             WHERE id = :id'
+        )->execute(['email' => $email, 'password_hash' => $passwordHash, 'id' => $userId]);
+        revoke_refresh_tokens_for_user($pdo, $userId);
+        $fresh = fetch_me_row_by_id($pdo, $userId);
+        if (!$fresh) {
+            throw new RuntimeException('Failed to resolve enrolled user.');
+        }
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        if ($error instanceof PDOException && (string) $error->getCode() === '23000') {
+            json_out(['ok' => false, 'code' => 'CREDENTIALS_CONFLICT',
+                'error' => 'Credentials could not be saved. Use another email or account recovery.'], 409);
+        }
+        throw $error;
     }
 
-    $update = $pdo->prepare(
-        'UPDATE ' . $usersTable . '
-         SET email = :email,
-             password_hash = :password_hash,
-             credentials_required = 0,
-             email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP)
-         WHERE id = :id'
-    );
-    $update->execute([
-        'email' => $email,
-        'password_hash' => $passwordHash,
-        'id' => (int) $me['id'],
-    ]);
-
-    $fresh = fetch_me_row_by_id($pdo, (int) $me['id']);
-    if (!$fresh) {
-        json_out(['ok' => false, 'error' => 'Failed to resolve user.'], 500);
+    // Enrollment is committed even if mail delivery fails; the public resend flow remains usable.
+    $sent = false;
+    try {
+        $sent = send_email_verification_link_for_user($pdo, $fresh, true);
+    } catch (Throwable $error) {
+        error_log('Credential enrollment verification delivery failed.');
     }
+    json_out(['ok' => true, 'email_verification_required' => true,
+        'verification_email_sent' => $sent,
+        'message' => $sent
+            ? 'Verify your email before logging in.'
+            : 'Credentials saved. Request a verification email from the login screen.']);
+}
 
-    json_out(['ok' => true, 'me' => build_me_payload($fresh)]);
+function enforce_credential_change_rate_limits(PDO $pdo, int $userId): void
+{
+    enforce_rate_limit($pdo, 'credential_change_ip', client_ip_address(),
+        RATE_LIMIT_LOGIN_IP_MAX, RATE_LIMIT_LOGIN_WINDOW_SEC);
+    enforce_rate_limit($pdo, 'credential_change_user', (string) $userId,
+        RATE_LIMIT_LOGIN_EMAIL_MAX, RATE_LIMIT_LOGIN_WINDOW_SEC);
+}
+
+function reject_credential_change(PDO $pdo, string $code, string $message, int $status): void
+{
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    json_out(['ok' => false, 'code' => $code, 'error' => $message], $status);
+}
+
+function lock_credential_user(PDO $pdo, int $userId): array
+{
+    $stmt = $pdo->prepare('SELECT id, email, password_hash, credentials_required, '
+        . users_account_status_select_sql($pdo) . 'nickname FROM ' . table_name('users')
+        . ' WHERE id = :id FOR UPDATE');
+    $stmt->execute(['id' => $userId]);
+    $user = $stmt->fetch();
+    if (!$user || user_account_status($user) !== 'active') {
+        reject_credential_change($pdo, 'ACCOUNT_UNAVAILABLE', 'Account is unavailable.', 403);
+    }
+    return $user;
+}
+
+function change_profile_password(PDO $pdo, int $userId, array $body): void
+{
+    // Keep credential mutations separate from ordinary profile writes, including legacy clients.
+    if (array_diff(array_keys($body), ['email', 'password', 'current_password']) !== []
+        || !isset($body['email'], $body['password'])) {
+        json_out(['ok' => false, 'error' => 'Submit password changes separately with email and current password.'], 400);
+    }
+    enforce_credential_change_rate_limits($pdo, $userId);
+    $email = validate_email_address((string) $body['email']);
+    $password = validate_password_plain((string) $body['password']);
+    $currentPassword = (string) ($body['current_password'] ?? '');
+    if ($currentPassword === '' || strlen($currentPassword) > 4096) {
+        json_out(['ok' => false, 'code' => 'REAUTHENTICATION_REQUIRED',
+            'error' => 'Enter your current password or use password recovery.'], 403);
+    }
+    ensure_refresh_tokens_table_available($pdo);
+    try {
+        $pdo->beginTransaction();
+        $user = lock_credential_user($pdo, $userId);
+        if ((int) $user['credentials_required'] !== 0 || empty($user['email_verified_at'])
+            || strtolower(trim((string) $user['email'])) !== $email) {
+            reject_credential_change($pdo, 'VERIFIED_EMAIL_REQUIRED',
+                'Use the verified email change or credential enrollment flow.', 409);
+        }
+        if (!password_verify($currentPassword, (string) $user['password_hash'])) {
+            reject_credential_change($pdo, 'REAUTHENTICATION_REQUIRED',
+                'Current password is incorrect. Use password recovery if needed.', 403);
+        }
+        $hash = password_hash($password, credential_password_algo());
+        if (!is_string($hash) || $hash === '') {
+            throw new RuntimeException('Failed to hash password.');
+        }
+        $pdo->prepare('UPDATE ' . table_name('users') . ' SET password_hash = :hash WHERE id = :id')
+            ->execute(['hash' => $hash, 'id' => $userId]);
+        revoke_refresh_tokens_for_user($pdo, $userId);
+        $auth = issue_auth_payload($pdo, $userId);
+        $fresh = fetch_me_row_by_id($pdo, $userId);
+        if (!$fresh) {
+            throw new RuntimeException('Failed to resolve user after password change.');
+        }
+        $payload = build_me_payload($fresh, $pdo);
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $error;
+    }
+    json_out(['ok' => true, 'me' => $payload, 'auth' => $auth]);
 }
 
 function normalize_profile_optional_short_text($value, string $fieldLabel, int $maxLength): ?string
@@ -746,6 +790,11 @@ function update_profile_action(): void
     $pdo = db();
     $usersTable = table_name('users');
     $userId = (int) $me['id'];
+    if (array_key_exists('email', $body) || array_key_exists('password', $body)
+        || array_key_exists('current_password', $body)) {
+        change_profile_password($pdo, $userId, $body);
+        return;
+    }
     $nameColumnsAvailable = users_name_columns_available($pdo);
     $paymentColumnsAvailable = users_payment_columns_available($pdo);
     $revolutMeLinkColumnAvailable = users_revolut_me_link_column_available($pdo);
@@ -781,42 +830,6 @@ function update_profile_action(): void
         $params['first_name'] = $firstName;
         $params['last_name'] = $lastName;
         $params['nickname'] = $legacyNickname;
-    }
-
-    $hasEmail = array_key_exists('email', $body);
-    $hasPassword = array_key_exists('password', $body);
-    if ($hasEmail xor $hasPassword) {
-        json_out([
-            'ok' => false,
-            'error' => 'Email and password must be provided together.',
-        ], 400);
-    }
-
-    if ($hasEmail && $hasPassword) {
-        $email = validate_email_address((string) ($body['email'] ?? ''));
-        $password = validate_password_plain((string) ($body['password'] ?? ''));
-        $passwordHash = password_hash($password, credential_password_algo());
-        if (!is_string($passwordHash) || $passwordHash === '') {
-            json_out(['ok' => false, 'error' => 'Failed to hash password.'], 500);
-        }
-        $currentEmail = strtolower(trim((string) ($me['email'] ?? '')));
-        if ($currentEmail === '') {
-            json_out([
-                'ok' => false,
-                'error' => 'Add email first before updating password.',
-            ], 409);
-        }
-        if ($email !== $currentEmail) {
-            json_out([
-                'ok' => false,
-                'error' => 'Email change now requires verification. Use request_email_change endpoint.',
-            ], 409);
-        }
-
-        $updateParts[] = 'password_hash = :password_hash';
-        $updateParts[] = 'credentials_required = 0';
-        $updateParts[] = 'email_verified_at = COALESCE(email_verified_at, CURRENT_TIMESTAMP)';
-        $params['password_hash'] = $passwordHash;
     }
 
     $paymentFieldNormalizers = [
@@ -918,7 +931,7 @@ function update_profile_action(): void
         json_out(['ok' => false, 'error' => 'Failed to resolve user.'], 500);
     }
 
-    json_out(['ok' => true, 'me' => build_me_payload($fresh)]);
+    json_out(['ok' => true, 'me' => build_me_payload($fresh, $pdo)]);
 }
 
 function me_action(): void
@@ -929,5 +942,5 @@ function me_action(): void
     if (!$row) {
         json_out(['ok' => false, 'error' => 'User not found.'], 404);
     }
-    json_out(['ok' => true, 'me' => build_me_payload($row)]);
+    json_out(['ok' => true, 'me' => build_me_payload($row, $pdo)]);
 }

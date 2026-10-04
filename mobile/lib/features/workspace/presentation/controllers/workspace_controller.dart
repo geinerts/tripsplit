@@ -1,3 +1,4 @@
+import '../../../../core/config/app_env.dart';
 import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
@@ -18,6 +19,43 @@ class WorkspaceController {
   WorkspaceController(this._repository);
 
   final WorkspaceRepository _repository;
+
+  Future<Uri?> loadReceiptUri({
+    required int tripId,
+    required int expenseId,
+  }) async {
+    if (expenseId <= 0) return null;
+    String? cursor;
+    int? offset;
+    final visited = <String>{};
+    while (visited.add('${cursor ?? ''}:${offset ?? 0}')) {
+      // Always authorize and refresh through the existing expenses endpoint.
+      final page = await _repository.loadExpensesPage(
+        tripId: tripId,
+        limit: 300,
+        cursor: cursor,
+        offset: offset,
+      );
+      for (final expense in page.items) {
+        if (expense.id != expenseId) continue;
+        final uri = Uri.tryParse(expense.receiptUrl ?? '');
+        final base = Uri.parse(AppEnv.current.apiBaseUrl);
+        if (uri == null ||
+            uri.scheme != 'https' ||
+            uri.host != base.host ||
+            uri.port != base.port ||
+            uri.userInfo.isNotEmpty) {
+          return null;
+        }
+        return uri;
+      }
+      if (!page.hasMore || page.items.isEmpty) return null;
+      cursor = page.nextCursor;
+      offset = page.nextOffset;
+      if (cursor == null && offset == null) return null;
+    }
+    return null;
+  }
 
   Future<int> loadCurrentUserId() {
     return _repository.loadCurrentUserId();

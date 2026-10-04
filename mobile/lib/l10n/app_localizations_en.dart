@@ -9,6 +9,29 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get tripModeSolo => 'Just me';
+
+  @override
+  String get tripModeGroup => 'With others';
+
+  @override
+  String get premiumFree => 'Free';
+
+  @override
+  String get premiumStatusUnavailable => 'Plan status unavailable';
+
+  @override
+  String premiumGrantedUntil(String date) {
+    return 'Premium granted until $date';
+  }
+
+  @override
+  String get premiumBillingNotActive => 'No active subscription';
+
+  @override
+  String get premiumRefreshStatus => 'Refresh plan status';
+
+  @override
   String get accountSectionTitle => 'Account';
 
   @override
@@ -336,6 +359,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPassword => 'Forgot password?';
 
   @override
+  String get profilePasswordByEmail => 'Set password by email';
+
+  @override
+  String get sendDeactivationEmail => 'Send deactivation link';
+
+  @override
+  String get deactivationEmailSent => 'Check your email to confirm deactivation. Your account is still active.';
+
+  @override
+  String get deactivationConfirmationMethods => 'Confirm deactivation with your password or an email link. Your trips and expenses will remain.';
+
+  @override
+  String get passwordEmailBackToProfile => 'Back to profile';
+
+  @override
   String get forgotPasswordSubtitle => 'Enter your email and we will send a password reset link.';
 
   @override
@@ -409,6 +447,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logoutFromDeviceQuestion => 'Log out from this device?';
+
+  @override
+  String get logoutRevocationUnconfirmed => 'Signed out on this device. Server session revocation could not be confirmed.';
 
   @override
   String get markedAsSent => 'Marked as sent.';
@@ -1846,7 +1887,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileImageFormatNotSupportedDevicePleaseChooseJpg => 'This image format is not supported on this device. Please choose JPG or PNG.';
 
   @override
-  String get profileEditSetValidEmailEditProfileChangingPassword => 'Set a valid email in Edit profile before changing password.';
+  String get profileEditSetValidEmailEditProfileChangingPassword => 'A valid account email is required to change your password. Contact support if your email is missing or incorrect.';
 
   @override
   String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Account deactivated. Use reactivation link from email to restore access.';

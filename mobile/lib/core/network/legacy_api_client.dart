@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../auth/auth_session_store.dart';
+import '../auth/account_data_session.dart';
 import '../auth/device_token_store.dart';
 import '../errors/api_exception.dart';
 import '../monitoring/app_monitoring.dart';
@@ -38,6 +39,10 @@ class LegacyApiClient implements ApiClient {
   final http.Client _httpClient;
   final Random _requestIdRandom = Random();
   Future<bool>? _refreshInFlight;
+  Future<void>? _revocationInFlight;
+  bool _sessionRevoked = false;
+  int _sessionGeneration = 0;
+  final Set<Future<void>> _pendingAuthWrites = <Future<void>>{};
 
   @override
   Future<Map<String, dynamic>> request({
@@ -47,6 +52,7 @@ class LegacyApiClient implements ApiClient {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
+    AccountDataSession.boundLease?.check();
     return _requestWithOptionalRefresh(
       path: path,
       method: method,
@@ -58,9 +64,24 @@ class LegacyApiClient implements ApiClient {
   }
 
   @override
-  Future<void> revokeCurrentSession() async {
-    final refreshToken = await _authSessionStore.readValidRefreshToken();
+  Future<void> revokeCurrentSession() {
+    return _revocationInFlight ??= _revokeCurrentSession().whenComplete(() {
+      // Local logout remains a boundary even when remote revocation fails.
+      _sessionRevoked = true;
+      _revocationInFlight = null;
+    });
+  }
+
+  Future<void> _revokeCurrentSession() async {
+    // Let rotation finish before selecting the token to revoke.
+    _sessionGeneration++;
+    await _refreshInFlight;
+    await Future.wait(_pendingAuthWrites.toList());
+    final refreshToken = await _authSessionStore.readValidRefreshToken(
+      leeway: Duration.zero,
+    );
     if (refreshToken == null || refreshToken.isEmpty) {
+      _sessionRevoked = true;
       return;
     }
 
@@ -85,6 +106,7 @@ class LegacyApiClient implements ApiClient {
         code: _errorCode(payload),
       );
     }
+    _sessionRevoked = true;
   }
 
   Future<Map<String, dynamic>> _requestWithOptionalRefresh({
@@ -95,6 +117,12 @@ class LegacyApiClient implements ApiClient {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
+    final generation = _sessionGeneration;
+    AccountDataSession.boundLease?.check();
+    if (_revocationInFlight != null ||
+        (_sessionRevoked && !_isPublicAuthRequest(path))) {
+      throw const ApiException('Session ended. Please sign in again.');
+    }
     final metricPath = _metricNameForPath(path);
     final requestWatch = Stopwatch()..start();
     var requestId = _nextRequestId();
@@ -103,6 +131,7 @@ class LegacyApiClient implements ApiClient {
       if (allowRefreshRetry && _shouldTryRefresh(path)) {
         await _tryRefreshBeforeRequest();
       }
+      _checkSessionGeneration(generation);
 
       final uri = _buildUri(path: path, query: query);
       if (_enableVerboseLogs) {
@@ -115,7 +144,10 @@ class LegacyApiClient implements ApiClient {
         body: body,
         headers: headers,
         requestId: requestId,
+        sessionGeneration: generation,
       );
+      _checkSessionGeneration(generation);
+      AccountDataSession.boundLease?.check();
       requestId = _responseRequestId(response) ?? requestId;
       final payload = _parsePayload(response, requestId: requestId);
       final ok = payload['ok'] == true;
@@ -131,6 +163,7 @@ class LegacyApiClient implements ApiClient {
             _shouldTryRefresh(path);
         if (canRetry) {
           final refreshed = await _refreshAccessSession();
+          AccountDataSession.boundLease?.check();
           if (refreshed) {
             trace.stop(success: false, statusCode: response.statusCode);
             return _requestWithOptionalRefresh(
@@ -154,6 +187,10 @@ class LegacyApiClient implements ApiClient {
       }
 
       await _captureAuthPayload(payload);
+      _checkSessionGeneration(generation);
+      if (payload['auth'] is Map) {
+        _sessionRevoked = false;
+      }
       trace.stop(success: true, statusCode: response.statusCode);
       AppMonitoring.recordApiRequest(
         endpoint: metricPath,
@@ -209,11 +246,16 @@ class LegacyApiClient implements ApiClient {
     required String requestId,
     Map<String, dynamic>? body,
     Map<String, String>? headers,
+    int? sessionGeneration,
   }) async {
     final mergedHeaders = await _buildAuthHeaders(
       extra: headers,
       requestId: requestId,
     );
+    AccountDataSession.boundLease?.check();
+    if (sessionGeneration != null) {
+      _checkSessionGeneration(sessionGeneration);
+    }
     Object? requestBody;
     if (_methodHasBody(method)) {
       mergedHeaders['Content-Type'] = 'application/json';
@@ -275,7 +317,17 @@ class LegacyApiClient implements ApiClient {
       auth.forEach((key, value) {
         authPayload['$key'] = value;
       });
-      await _authSessionStore.saveFromAuthPayload(authPayload);
+      final me = payload['me'];
+      if (me is Map && me['id'] is num) {
+        authPayload['user_id'] = (me['id'] as num).toInt();
+      }
+      final write = _authSessionStore.saveFromAuthPayload(authPayload);
+      _pendingAuthWrites.add(write);
+      try {
+        await write;
+      } finally {
+        _pendingAuthWrites.remove(write);
+      }
     }
   }
 
@@ -324,7 +376,23 @@ class LegacyApiClient implements ApiClient {
     return true;
   }
 
+  bool _isPublicAuthRequest(String path) {
+    final action = Uri.tryParse(path)?.queryParameters['action'];
+    return const <String>{
+      'login',
+      'social_auth',
+      'register',
+      'register_proof',
+      'forgot_password',
+      'request_email_verification_link',
+      'request_reactivation_link',
+    }.contains(action);
+  }
+
   Future<bool> _refreshAccessSession() {
+    if (_revocationInFlight != null || _sessionRevoked) {
+      return Future<bool>.value(false);
+    }
     final inFlight = _refreshInFlight;
     if (inFlight != null) {
       return inFlight;
@@ -335,6 +403,12 @@ class LegacyApiClient implements ApiClient {
     return next.whenComplete(() {
       _refreshInFlight = null;
     });
+  }
+
+  void _checkSessionGeneration(int generation) {
+    if (generation != _sessionGeneration || _revocationInFlight != null) {
+      throw const ApiException('Session changed. Please try again.');
+    }
   }
 
   Future<bool> _refreshAccessSessionInner() async {

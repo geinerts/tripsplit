@@ -9,6 +9,29 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get tripModeSolo => 'Solo yo';
+
+  @override
+  String get tripModeGroup => 'Con otros';
+
+  @override
+  String get premiumFree => 'Gratis';
+
+  @override
+  String get premiumStatusUnavailable => 'Estado del plan no disponible';
+
+  @override
+  String premiumGrantedUntil(String date) {
+    return 'Premium concedido hasta $date';
+  }
+
+  @override
+  String get premiumBillingNotActive => 'Sin suscripción activa';
+
+  @override
+  String get premiumRefreshStatus => 'Actualizar estado del plan';
+
+  @override
   String get accountSectionTitle => 'Cuenta';
 
   @override
@@ -336,6 +359,21 @@ class AppLocalizationsEs extends AppLocalizations {
   String get forgotPassword => '¿Has olvidado tu contraseña?';
 
   @override
+  String get profilePasswordByEmail => 'Establecer contraseña por correo';
+
+  @override
+  String get sendDeactivationEmail => 'Enviar enlace de desactivación';
+
+  @override
+  String get deactivationEmailSent => 'Confirma la desactivación en tu correo. Tu cuenta sigue activa.';
+
+  @override
+  String get deactivationConfirmationMethods => 'Confirma la desactivación con tu contraseña o un enlace por correo. Tus viajes y gastos se conservarán.';
+
+  @override
+  String get passwordEmailBackToProfile => 'Volver al perfil';
+
+  @override
   String get forgotPasswordSubtitle => 'Ingrese su correo electrónico y le enviaremos un enlace para restablecer su contraseña.';
 
   @override
@@ -409,6 +447,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get logoutFromDeviceQuestion => '¿Cerrar sesión en este dispositivo?';
+
+  @override
+  String get logoutRevocationUnconfirmed => 'Se ha cerrado la sesión en este dispositivo. No se pudo confirmar la revocación de la sesión en el servidor.';
 
   @override
   String get markedAsSent => 'Marcado como enviado.';
@@ -1846,7 +1887,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileImageFormatNotSupportedDevicePleaseChooseJpg => 'Este formato de imagen no es compatible con este dispositivo. Elija JPG o PNG.';
 
   @override
-  String get profileEditSetValidEmailEditProfileChangingPassword => 'Establezca un correo electrónico válido en Editar perfil antes de cambiar la contraseña.';
+  String get profileEditSetValidEmailEditProfileChangingPassword => 'Se necesita un correo electrónico válido en la cuenta para cambiar la contraseña. Contacta con soporte si falta o es incorrecto.';
 
   @override
   String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Cuenta desactivada. Utilice el enlace de reactivación del correo electrónico para restaurar el acceso.';

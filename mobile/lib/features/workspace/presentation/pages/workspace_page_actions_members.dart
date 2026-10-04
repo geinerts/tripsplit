@@ -207,7 +207,10 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
   }
 
   Future<void> _openAddMembersDialog() async {
-    if (!_canEditMembers || _snapshot == null || _isMutating) {
+    if (widget.trip.isSolo ||
+        !_canEditMembers ||
+        _snapshot == null ||
+        _isMutating) {
       return;
     }
 

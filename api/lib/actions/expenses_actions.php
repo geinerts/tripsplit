@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
+
 function normalize_expense_split_mode($value): string
 {
     $raw = strtolower(trim((string) $value));
@@ -426,6 +428,10 @@ function add_expense_action(): void
     $pdo = db();
     $trip = get_current_trip($pdo, $me, true);
     assert_trip_is_active($trip);
+    validate_solo_expense($trip, (int) $me['id'], $body);
+    if (trip_is_solo($trip)) {
+        $body['participants'] = [(int) $me['id']];
+    }
     $tripId = (int) ($trip['id'] ?? 0);
     $userId = (int) ($me['id'] ?? 0);
     $clientMutationId = request_client_mutation_id();
@@ -487,6 +493,7 @@ function add_expense_action(): void
         $participants = all_trip_member_ids($pdo, (int) $trip['id']);
     }
     $receiptPath = normalize_receipt_path((string) ($body['receipt_path'] ?? ''), true);
+    assert_receipt_attachment_owned($receiptPath, $userId);
     $splitMode = normalize_expense_split_mode($body['split_mode'] ?? 'equal');
     $rawSplits = $body['splits'] ?? [];
     if (!is_array($rawSplits)) {
@@ -642,6 +649,10 @@ function update_expense_action(): void
     $pdo = db();
     $trip = get_current_trip($pdo, $me, true);
     assert_trip_is_active($trip);
+    validate_solo_expense($trip, (int) $me['id'], $body);
+    if (trip_is_solo($trip)) {
+        $body['participants'] = [(int) $me['id']];
+    }
     $tripId = (int) ($trip['id'] ?? 0);
     $userId = (int) ($me['id'] ?? 0);
     $clientMutationId = request_client_mutation_id();
@@ -700,6 +711,7 @@ function update_expense_action(): void
 
     $oldReceiptPath = (string) ($expense['receipt_path'] ?? '');
     $newReceiptPath = normalize_receipt_path((string) ($body['receipt_path'] ?? ''), true);
+    assert_receipt_attachment_owned($newReceiptPath, $userId, $oldReceiptPath);
     $removeReceipt = (bool) ($body['remove_receipt'] ?? false);
     $nextReceiptPath = $oldReceiptPath;
     if ($newReceiptPath !== '') {
@@ -828,7 +840,7 @@ function update_expense_action(): void
         $pdo->commit();
 
         if ($oldReceiptPath !== '' && $oldReceiptPath !== $nextReceiptPath) {
-            delete_receipt_file($oldReceiptPath);
+            delete_unreferenced_receipt($pdo, $oldReceiptPath);
         }
 
         $responsePayload = [
@@ -940,7 +952,7 @@ function delete_expense_action(): void
         'trip_id' => $tripId,
     ]);
 
-    delete_receipt_file((string) ($expense['receipt_path'] ?? ''));
+    delete_unreferenced_receipt($pdo, (string) ($expense['receipt_path'] ?? ''));
     $responsePayload = ['ok' => true, 'deleted_id' => $expenseId];
     mutation_idempotency_store_response(
         $pdo,

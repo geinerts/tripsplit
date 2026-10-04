@@ -554,19 +554,15 @@ function admin_panel_user_detail_action(): void
     $userTable   = table_name('users');
     $tripsTable  = table_name('trips');
     $membTable   = table_name('trip_members');
-    $expTable    = table_name('expenses');
     $pushTable   = table_name('push_tokens');
     $notifTable  = table_name('notifications');
 
-    $stmt = $pdo->prepare("SELECT * FROM {$userTable} WHERE id = ? LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, nickname, email, account_status, created_at FROM {$userTable} WHERE id = ? LIMIT 1");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
     if (!is_array($user)) {
         json_out(['ok' => false, 'error' => 'User not found.'], 404);
     }
-
-    // Remove sensitive fields
-    unset($user['password_hash']);
 
     // Recent trips
     $stmt = $pdo->prepare("
@@ -578,20 +574,9 @@ function admin_panel_user_detail_action(): void
     $stmt->execute([$userId]);
     $trips = $stmt->fetchAll();
 
-    // Recent expenses
-    $stmt = $pdo->prepare("
-        SELECT id, trip_id, note AS description, amount, currency_code, created_at
-        FROM {$expTable}
-        WHERE paid_by = ?
-        ORDER BY created_at DESC LIMIT 10
-    ");
-    $stmt->execute([$userId]);
-    $expenses = $stmt->fetchAll();
-
     // Push tokens
     $stmt = $pdo->prepare("
-        SELECT platform, provider, app_bundle, is_active,
-               LEFT(push_token, 20) AS token_preview, last_seen_at
+        SELECT platform, provider, app_bundle, is_active, last_seen_at
         FROM {$pushTable}
         WHERE user_id = ?
         ORDER BY last_seen_at DESC
@@ -608,7 +593,7 @@ function admin_panel_user_detail_action(): void
         'ok'             => true,
         'user'           => $user,
         'trips'          => $trips,
-        'expenses'       => $expenses,
+        'premium'        => premium_user_detail($pdo, $userId, $sess),
         'push_tokens'    => $pushTokens,
         'unread_notifs'  => $unreadNotifs,
     ]);

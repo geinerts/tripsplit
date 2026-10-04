@@ -36,9 +36,14 @@ class FriendsController {
   final TripsController _tripsController;
   FriendsSnapshot? _cachedSnapshot;
   DateTime? _cachedSnapshotAt;
+  int? _cacheGeneration;
   static const Duration _cacheTtl = Duration(minutes: 2);
 
   FriendsSnapshot? peekSnapshotCache({bool allowStale = true}) {
+    final session = _tripsController.accountSession;
+    if (session.userId == null || _cacheGeneration != session.generation) {
+      return null;
+    }
     final cached = _cachedSnapshot;
     if (cached == null) {
       return null;
@@ -52,18 +57,22 @@ class FriendsController {
     return cached;
   }
 
-  Future<FriendsSnapshot> loadSnapshot({bool forceRefresh = false}) async {
-    if (!forceRefresh) {
-      final cached = peekSnapshotCache(allowStale: false);
-      if (cached != null) {
-        return cached;
-      }
-    }
-    final snapshot = await _loadSnapshotUseCase.call();
-    _cachedSnapshot = snapshot;
-    _cachedSnapshotAt = DateTime.now();
-    return snapshot;
-  }
+  Future<FriendsSnapshot> loadSnapshot({bool forceRefresh = false}) =>
+      _tripsController.accountSession.run(() async {
+        final lease = _tripsController.accountSession.capture();
+        if (!forceRefresh) {
+          final cached = peekSnapshotCache(allowStale: false);
+          if (cached != null) {
+            return cached;
+          }
+        }
+        final snapshot = await _loadSnapshotUseCase.call();
+        lease.check();
+        _cacheGeneration = lease.generation;
+        _cachedSnapshot = snapshot;
+        _cachedSnapshotAt = DateTime.now();
+        return snapshot;
+      });
 
   Future<FriendsSectionPage> loadSectionPage({
     required String section,
@@ -128,6 +137,7 @@ class FriendsController {
   }
 
   void clearSnapshotCache() {
+    _cacheGeneration = null;
     _cachedSnapshot = null;
     _cachedSnapshotAt = null;
   }

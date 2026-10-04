@@ -374,9 +374,7 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                   OutlinedButton.icon(
                                     onPressed: _isMutating
                                         ? null
-                                        : () => _openReceiptUrl(
-                                            expense.receiptUrl!,
-                                          ),
+                                        : () => _openReceiptUrl(expense.id),
                                     icon: const Icon(Icons.receipt_long),
                                     label: Text(context.l10n.openReceiptAction),
                                   ),

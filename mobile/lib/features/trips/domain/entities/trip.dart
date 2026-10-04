@@ -2,6 +2,7 @@ class Trip {
   const Trip({
     required this.id,
     required this.name,
+    this.tripMode = 'group',
     required this.currencyCode,
     required this.status,
     required this.imageUrl,
@@ -29,6 +30,9 @@ class Trip {
 
   final int id;
   final String name;
+  final String tripMode;
+
+  bool get isSolo => tripMode == 'solo';
   final String currencyCode;
   final String status;
   final String? imageUrl;

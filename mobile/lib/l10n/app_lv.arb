@@ -1,5 +1,13 @@
 {
   "@@locale": "lv",
+  "tripModeSolo": "Tikai es",
+  "tripModeGroup": "Ar citiem",
+  "premiumFree": "Bezmaksas",
+  "premiumStatusUnavailable": "Plāna statuss nav pieejams",
+  "premiumGrantedUntil": "Premium piešķirts līdz {date}",
+  "@premiumGrantedUntil": {"placeholders": {"date": {"type": "String"}}},
+  "premiumBillingNotActive": "Nav aktīva abonementa",
+  "premiumRefreshStatus": "Atjaunot plāna statusu",
   "@addedMembersCount": {
     "placeholders": {
       "count": {}
@@ -403,6 +411,11 @@
   "finishTripTitle": "Pabeigt ceļojumu",
   "forParticipants": "Dalībniekiem: {participants}",
   "forgotPassword": "Aizmirsi paroli?",
+  "profilePasswordByEmail": "Iestatīt paroli pa e-pastu",
+  "sendDeactivationEmail": "Nosūtīt deaktivizēšanas saiti",
+  "deactivationEmailSent": "Apstiprini deaktivizēšanu e-pastā. Tavs konts vēl ir aktīvs.",
+  "deactivationConfirmationMethods": "Apstiprini deaktivizēšanu ar paroli vai e-pasta saiti. Ceļojumi un izdevumi saglabāsies.",
+  "passwordEmailBackToProfile": "Atpakaļ uz profilu",
   "forgotPasswordSubtitle": "Ievadi savu e-pastu, un mēs nosūtīsim paroles atiestatīšanas saiti.",
   "forgotPasswordSuccessMessage": "Ja konts ar šo e-pastu eksistē, paroles atiestatīšanas saite ir nosūtīta.",
   "forgotPasswordTitle": "Atiestatīt paroli",
@@ -426,6 +439,7 @@
   "logInButton": "Pieslēgties",
   "logOutButton": "Iziet",
   "logoutFromDeviceQuestion": "Iziet no šīs ierīces?",
+  "logoutRevocationUnconfirmed": "Šajā ierīcē sesija ir beigta. Neizdevās apstiprināt sesijas atsaukšanu serverī.",
   "markedAsSent": "Atzīmēts kā nosūtīts.",
   "markSettlementSentConfirmTitle": "Atzīmēt pārskaitījumu kā nosūtītu?",
   "markSettlementSentConfirmText": "Izmanto tikai tad, ja maksājums tiešām ir nosūtīts. Saņēmējam būs jāapstiprina saņemšana.",
@@ -857,7 +871,7 @@
   "profileOpenWebsiteQuestion": "Atvērt mājaslapu?",
   "profileOpenPortfolioAction": "Atvērt portfolio.egm.lv",
   "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Šis attēla formāts šajā ierīcē netiek atbalstīts. Lūdzu, izvēlies JPG vai PNG.",
-  "profileEditSetValidEmailEditProfileChangingPassword": "Pirms paroles maiņas ievadi derīgu e-pastu sadaļā \"Edit profile\".",
+  "profileEditSetValidEmailEditProfileChangingPassword": "Paroles maiņai nepieciešama derīga konta e-pasta adrese. Ja tās trūkst vai tā ir nepareiza, sazinies ar atbalstu.",
   "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Konts deaktivēts. Lai atjaunotu piekļuvi, izmanto reaktivācijas saiti e-pastā.",
   "profileEditCouldNotDeactivateTryAgain": "Neizdevās deaktivēt kontu. Mēģini vēlreiz.",
   "profileEditDeletionLinkSentEmail": "Dzēšanas saite nosūtīta uz tavu e-pastu.",

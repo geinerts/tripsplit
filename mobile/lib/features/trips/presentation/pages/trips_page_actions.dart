@@ -103,6 +103,7 @@ extension _TripsPageActions on _TripsPageState {
           name: result.name,
           currencyCode: result.currencyCode,
           memberIds: result.memberIds,
+          tripMode: result.tripMode,
           dateFrom: result.dateFrom,
           dateTo: result.dateTo,
         );

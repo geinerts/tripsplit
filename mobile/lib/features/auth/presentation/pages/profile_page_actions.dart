@@ -189,7 +189,6 @@ extension _ProfilePageActions on _ProfilePageState {
     _fullNameController.text = _initialFullName;
     _emailController.text = user.email ?? '';
     _draftFullName = _initialFullName;
-    _draftEmail = user.email ?? '';
     _draftBankCountryCode = _initialBankCountryCode;
     _draftBankAccountNumber = _initialBankAccountNumber;
     _draftBankIban = _initialBankIban;

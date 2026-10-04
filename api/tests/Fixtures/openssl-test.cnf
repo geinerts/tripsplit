@@ -1,0 +1,2 @@
+# Test keys use the OS RNG. Never write seed material into a developer home directory.
+RANDFILE = $ENV::SPLYTO_TEST_RAND_FILE

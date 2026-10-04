@@ -18,7 +18,7 @@ class TripsRepositoryImpl implements TripsRepository {
   final TripsLocalStore _localStore;
 
   @override
-  Future<List<Trip>> listTrips() async {
+  Future<List<Trip>> listTrips() => _localStore.storage.session.run(() async {
     try {
       final trips = await _remote.listTrips();
       await _localStore.writeTrips(trips);
@@ -33,7 +33,7 @@ class TripsRepositoryImpl implements TripsRepository {
       }
       rethrow;
     }
-  }
+  });
 
   @override
   Future<List<TripUser>> listDirectoryUsers({
@@ -53,6 +53,7 @@ class TripsRepositoryImpl implements TripsRepository {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String tripMode = 'group',
     String? dateFrom,
     String? dateTo,
   }) {
@@ -60,6 +61,7 @@ class TripsRepositoryImpl implements TripsRepository {
       name: name,
       currencyCode: currencyCode,
       memberIds: memberIds,
+      tripMode: tripMode,
       dateFrom: dateFrom,
       dateTo: dateTo,
     );
@@ -110,36 +112,38 @@ class TripsRepositoryImpl implements TripsRepository {
   }
 
   @override
-  Future<void> leaveTrip({required int tripId}) async {
-    await _remote.leaveTrip(tripId: tripId);
-    if (tripId <= 0) {
-      return;
-    }
-    final cached = await _localStore.readTrips();
-    if (cached.isEmpty) {
-      return;
-    }
-    final next = cached
-        .where((trip) => trip.id != tripId)
-        .toList(growable: false);
-    await _localStore.writeTrips(next);
-  }
+  Future<void> leaveTrip({required int tripId}) =>
+      _localStore.storage.session.run(() async {
+        await _remote.leaveTrip(tripId: tripId);
+        if (tripId <= 0) {
+          return;
+        }
+        final cached = await _localStore.readTrips();
+        if (cached.isEmpty) {
+          return;
+        }
+        final next = cached
+            .where((trip) => trip.id != tripId)
+            .toList(growable: false);
+        await _localStore.writeTrips(next);
+      });
 
   @override
-  Future<void> deleteTrip({required int tripId}) async {
-    await _remote.deleteTrip(tripId: tripId);
-    if (tripId <= 0) {
-      return;
-    }
-    final cached = await _localStore.readTrips();
-    if (cached.isEmpty) {
-      return;
-    }
-    final next = cached
-        .where((trip) => trip.id != tripId)
-        .toList(growable: false);
-    await _localStore.writeTrips(next);
-  }
+  Future<void> deleteTrip({required int tripId}) =>
+      _localStore.storage.session.run(() async {
+        await _remote.deleteTrip(tripId: tripId);
+        if (tripId <= 0) {
+          return;
+        }
+        final cached = await _localStore.readTrips();
+        if (cached.isEmpty) {
+          return;
+        }
+        final next = cached
+            .where((trip) => trip.id != tripId)
+            .toList(growable: false);
+        await _localStore.writeTrips(next);
+      });
 
   @override
   Future<TripInviteLink> createTripInviteLink({required int tripId}) {

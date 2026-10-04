@@ -33,6 +33,7 @@ abstract class AuthRepository {
     String? lastName,
     String? email,
     String? password,
+    String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   });
@@ -45,10 +46,7 @@ abstract class AuthRepository {
 
   Future<void> requestReactivationLink({required String email});
 
-  Future<void> requestEmailChange({
-    required String newEmail,
-    required String currentPassword,
-  });
+  Future<void> requestDeactivationLink();
 
   Future<void> deactivateAccount({required String password});
 

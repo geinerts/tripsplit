@@ -97,6 +97,48 @@ abstract class AppLocalizations {
     Locale('lv')
   ];
 
+  /// No description provided for @tripModeSolo.
+  ///
+  /// In en, this message translates to:
+  /// **'Just me'**
+  String get tripModeSolo;
+
+  /// No description provided for @tripModeGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'With others'**
+  String get tripModeGroup;
+
+  /// No description provided for @premiumFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get premiumFree;
+
+  /// No description provided for @premiumStatusUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan status unavailable'**
+  String get premiumStatusUnavailable;
+
+  /// No description provided for @premiumGrantedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium granted until {date}'**
+  String premiumGrantedUntil(String date);
+
+  /// No description provided for @premiumBillingNotActive.
+  ///
+  /// In en, this message translates to:
+  /// **'No active subscription'**
+  String get premiumBillingNotActive;
+
+  /// No description provided for @premiumRefreshStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh plan status'**
+  String get premiumRefreshStatus;
+
   /// No description provided for @accountSectionTitle.
   ///
   /// In en, this message translates to:
@@ -667,6 +709,36 @@ abstract class AppLocalizations {
   /// **'Forgot password?'**
   String get forgotPassword;
 
+  /// No description provided for @profilePasswordByEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Set password by email'**
+  String get profilePasswordByEmail;
+
+  /// No description provided for @sendDeactivationEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Send deactivation link'**
+  String get sendDeactivationEmail;
+
+  /// No description provided for @deactivationEmailSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email to confirm deactivation. Your account is still active.'**
+  String get deactivationEmailSent;
+
+  /// No description provided for @deactivationConfirmationMethods.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm deactivation with your password or an email link. Your trips and expenses will remain.'**
+  String get deactivationConfirmationMethods;
+
+  /// No description provided for @passwordEmailBackToProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to profile'**
+  String get passwordEmailBackToProfile;
+
   /// No description provided for @forgotPasswordSubtitle.
   ///
   /// In en, this message translates to:
@@ -804,6 +876,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log out from this device?'**
   String get logoutFromDeviceQuestion;
+
+  /// No description provided for @logoutRevocationUnconfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed out on this device. Server session revocation could not be confirmed.'**
+  String get logoutRevocationUnconfirmed;
 
   /// No description provided for @markedAsSent.
   ///
@@ -3394,7 +3472,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileEditSetValidEmailEditProfileChangingPassword.
   ///
   /// In en, this message translates to:
-  /// **'Set a valid email in Edit profile before changing password.'**
+  /// **'A valid account email is required to change your password. Contact support if your email is missing or incorrect.'**
   String get profileEditSetValidEmailEditProfileChangingPassword;
 
   /// No description provided for @profileEditDeactivatedReactivationLinkEmailRestoreAccess.

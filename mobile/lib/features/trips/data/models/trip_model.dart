@@ -6,6 +6,7 @@ class TripModel extends Trip {
   const TripModel({
     required super.id,
     required super.name,
+    super.tripMode,
     required super.currencyCode,
     required super.status,
     required super.imageUrl,
@@ -65,6 +66,7 @@ class TripModel extends Trip {
     return TripModel(
       id: (map['id'] as num?)?.toInt() ?? 0,
       name: map['name'] as String? ?? '',
+      tripMode: map['trip_mode'] == 'solo' ? 'solo' : 'group',
       currencyCode: AppCurrencyCatalog.normalize(
         map['currency_code'] as String?,
       ),

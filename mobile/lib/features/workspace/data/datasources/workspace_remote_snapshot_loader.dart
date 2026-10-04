@@ -13,9 +13,6 @@ class WorkspaceRemoteSnapshotLoader {
   WorkspaceRemoteSnapshotLoader(this._apiClient);
 
   final ApiClient _apiClient;
-  final Map<int, WorkspaceSnapshot> _snapshotCacheByTrip =
-      <int, WorkspaceSnapshot>{};
-  final Map<int, int> _syncCursorByTrip = <int, int>{};
 
   Future<int> loadCurrentUserId() async {
     final response = await _apiClient.request(
@@ -36,8 +33,6 @@ class WorkspaceRemoteSnapshotLoader {
     } on ApiException catch (error) {
       if (_isMissingWorkspaceSnapshotAction(error)) {
         final legacy = await _loadSnapshotLegacy(tripId: tripId);
-        _snapshotCacheByTrip[tripId] = legacy;
-        _syncCursorByTrip.remove(tripId);
         return legacy;
       }
       rethrow;
@@ -85,10 +80,9 @@ class WorkspaceRemoteSnapshotLoader {
     required int tripId,
   }) async {
     final headers = _tripHeaders(tripId);
-    final since = _syncCursorByTrip[tripId] ?? 0;
-    final path = since > 0
-        ? '${ApiEndpoints.legacyAction('workspace_snapshot')}&since=$since'
-        : ApiEndpoints.legacyAction('workspace_snapshot');
+    // Signed media expires independently of the workspace revision. A full
+    // response also avoids retaining user-specific data across accounts.
+    final path = ApiEndpoints.legacyAction('workspace_snapshot');
 
     final response = await _apiClient.request(
       path: path,
@@ -97,18 +91,8 @@ class WorkspaceRemoteSnapshotLoader {
     );
     final sync = response['sync'] as Map<String, dynamic>?;
     final changed = sync?['changed'] != false;
-    final nextCursor = (sync?['cursor'] as num?)?.toInt() ?? 0;
-    if (nextCursor > 0) {
-      _syncCursorByTrip[tripId] = nextCursor;
-    }
-
     if (!changed) {
-      final cached = _snapshotCacheByTrip[tripId];
-      if (cached != null) {
-        return cached;
-      }
       final legacy = await _loadSnapshotLegacy(tripId: tripId);
-      _snapshotCacheByTrip[tripId] = legacy;
       return legacy;
     }
 
@@ -119,7 +103,6 @@ class WorkspaceRemoteSnapshotLoader {
       ordersResponse: response,
       notificationsResponse: response,
     );
-    _snapshotCacheByTrip[tripId] = snapshot;
     return snapshot;
   }
 

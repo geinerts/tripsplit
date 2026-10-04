@@ -6,6 +6,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
     TripExpense? existing,
     List<TripExpense> recentExpenses = const <TripExpense>[],
   }) async {
+    final isSolo = widget.trip.isSolo;
+    final ownerId = widget.trip.createdBy ?? _currentUserId;
     final amountController = TextEditingController(
       text: existing != null ? existing.originalAmount.toStringAsFixed(2) : '',
     );
@@ -52,13 +54,17 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
       existing?.expenseCurrencyCode ?? widget.trip.currencyCode,
     );
 
-    final selected = existing == null
+    final selected = isSolo
+        ? <int>{ownerId}
+        : existing == null
         ? <int>{}
         : existing.participants.map((p) => p.id).toSet();
     final rawSplitMode = (existing?.splitMode ?? 'equal').trim().toLowerCase();
     final supportedSplitModes = <String>{'equal', 'exact', 'percent', 'shares'};
     final isLegacySplitMode = !supportedSplitModes.contains(rawSplitMode);
-    var splitMode = isLegacySplitMode ? 'exact' : rawSplitMode;
+    var splitMode = isSolo
+        ? 'equal'
+        : (isLegacySplitMode ? 'exact' : rawSplitMode);
     final splitControllers = <int, TextEditingController>{};
     void seedSplitControllersFrom(
       TripExpense? expense,
@@ -1004,121 +1010,132 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                     hintText: t.noteHint,
                                   ),
                                 ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  t.participantsEmptyMeansAll,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                const SizedBox(height: 6),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children: [
-                                    for (final user in users)
-                                      FilterChip(
-                                        label: Text(user.nickname),
-                                        selected: selected.contains(user.id),
-                                        onSelected: (value) {
-                                          setDialogState(() {
-                                            if (value) {
-                                              selected.add(user.id);
-                                            } else {
-                                              selected.remove(user.id);
-                                            }
-                                          });
-                                        },
-                                      ),
-                                  ],
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  t.splitModeLabel,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                const SizedBox(height: 6),
-                                Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(18),
-                                    onTap: () async {
-                                      final value = await pickSplitMode(
-                                        sheetContext,
-                                        splitMode,
-                                      );
-                                      if (!mounted ||
-                                          !context.mounted ||
-                                          value == null) {
-                                        return;
-                                      }
-                                      setDialogState(() {
-                                        splitMode = value;
-                                      });
-                                    },
-                                    child: Ink(
-                                      padding: const EdgeInsets.fromLTRB(
-                                        12,
-                                        12,
-                                        12,
-                                        12,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(18),
-                                        border: Border.all(
-                                          color: AppDesign.cardStroke(context),
+                                if (!isSolo) ...[
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    t.participantsEmptyMeansAll,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: [
+                                      for (final user in users)
+                                        FilterChip(
+                                          label: Text(user.nickname),
+                                          selected: selected.contains(user.id),
+                                          onSelected: (value) {
+                                            setDialogState(() {
+                                              if (value) {
+                                                selected.add(user.id);
+                                              } else {
+                                                selected.remove(user.id);
+                                              }
+                                            });
+                                          },
                                         ),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .surfaceContainerHighest
-                                            .withValues(alpha: 0.35),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 34,
-                                            height: 34,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Theme.of(
-                                                context,
-                                              ).colorScheme.surface,
-                                              border: Border.all(
-                                                color: AppDesign.cardStroke(
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    t.splitModeLabel,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(18),
+                                      onTap: () async {
+                                        final value = await pickSplitMode(
+                                          sheetContext,
+                                          splitMode,
+                                        );
+                                        if (!mounted ||
+                                            !context.mounted ||
+                                            value == null) {
+                                          return;
+                                        }
+                                        setDialogState(() {
+                                          splitMode = value;
+                                        });
+                                      },
+                                      child: Ink(
+                                        padding: const EdgeInsets.fromLTRB(
+                                          12,
+                                          12,
+                                          12,
+                                          12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
+                                          border: Border.all(
+                                            color: AppDesign.cardStroke(
+                                              context,
+                                            ),
+                                          ),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceContainerHighest
+                                              .withValues(alpha: 0.35),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: 34,
+                                              height: 34,
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Theme.of(
                                                   context,
+                                                ).colorScheme.surface,
+                                                border: Border.all(
+                                                  color: AppDesign.cardStroke(
+                                                    context,
+                                                  ),
                                                 ),
                                               ),
+                                              child: Icon(
+                                                splitModeIcon(splitMode),
+                                                size: 19,
+                                              ),
                                             ),
-                                            child: Icon(
-                                              splitModeIcon(splitMode),
-                                              size: 19,
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Text(
+                                                splitModeLabel(splitMode),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Text(
-                                              splitModeLabel(splitMode),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleMedium
-                                                  ?.copyWith(
-                                                    fontWeight: FontWeight.w700,
-                                                  ),
+                                            Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurfaceVariant,
                                             ),
-                                          ),
-                                          Icon(
-                                            Icons.keyboard_arrow_down_rounded,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.onSurfaceVariant,
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                if (splitMode != 'equal') ...[
+                                ],
+                                if (!isSolo && splitMode != 'equal') ...[
                                   const SizedBox(height: 8),
                                   Text(
                                     _splitModeHint(splitMode),

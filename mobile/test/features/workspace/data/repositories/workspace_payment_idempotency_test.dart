@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/core/auth/auth_session_store.dart';
+import 'package:tripsplit/core/auth/account_data_session.dart';
+import 'package:tripsplit/core/auth/account_local_storage.dart';
 import 'package:tripsplit/core/auth/device_token_store.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/core/network/api_client.dart';
@@ -75,7 +77,11 @@ WorkspaceRepositoryImpl _repository(ApiClient apiClient) {
     authSessionStore: AuthSessionStore(),
   );
   final remote = WorkspaceRemoteDataSourceImpl(apiClient, uploader);
-  return WorkspaceRepositoryImpl(remote, WorkspaceLocalStore());
+  final session = AccountDataSession()..activate(1);
+  return WorkspaceRepositoryImpl(
+    remote,
+    WorkspaceLocalStore(AccountLocalStorage(session)),
+  );
 }
 
 class _RecordingApiClient implements ApiClient {

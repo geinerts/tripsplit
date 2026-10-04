@@ -1,4 +1,6 @@
 import '../../domain/entities/auth_user.dart';
+import '../../../subscriptions/domain/entities/subscription_preview.dart';
+import '../../../subscriptions/domain/entities/premium_access.dart';
 import '../../../../core/currency/app_currency.dart';
 import '../../../../core/network/media_url_resolver.dart';
 
@@ -26,6 +28,8 @@ class AuthUserModel extends AuthUser {
     super.avatarBase64,
     super.avatarUrl,
     super.avatarThumbUrl,
+    super.subscriptionPreview,
+    super.premiumAccess,
   });
 
   factory AuthUserModel.fromLegacyMap(Map<String, dynamic> map) {
@@ -55,8 +59,17 @@ class AuthUserModel extends AuthUser {
     final preferredCurrencyCode = AppCurrencyCatalog.normalizeProfilePreferred(
       (map['preferred_currency_code'] as String?)?.trim(),
     );
+    final id = (map['id'] as num?)?.toInt() ?? 0;
     return AuthUserModel(
-      id: (map['id'] as num?)?.toInt() ?? 0,
+      id: id,
+      premiumAccess: PremiumAccess.fromMap(
+        map['premium_access'],
+        accountId: id,
+      ),
+      subscriptionPreview: SubscriptionPreview.fromMap(
+        map['subscription_preview'],
+        accountId: id,
+      ),
       firstName: (firstName == null || firstName.isEmpty) ? null : firstName,
       lastName: (lastName == null || lastName.isEmpty) ? null : lastName,
       displayName: (displayName != null && displayName.isNotEmpty)

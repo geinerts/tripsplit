@@ -129,31 +129,43 @@ share_send_html_headers($isValid ? 300 : 60);
   </main>
   <script>
     (function () {
-      var appQuery = <?= json_encode($appQuery, JSON_UNESCAPED_SLASHES) ?>;
+      var appQuery = <?= json_encode($appQuery, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
       var openBtn = document.getElementById('openAppBtn');
       var ua = navigator.userAgent.toLowerCase();
       var isAndroid = ua.indexOf('android') >= 0;
 
+      var openTimer;
+      var fallbackTimer;
+      function cancelOpen() {
+        window.clearTimeout(openTimer);
+        window.clearTimeout(fallbackTimer);
+      }
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) cancelOpen();
+      });
+      window.addEventListener('pagehide', cancelOpen);
+
       function openApp() {
-        if (!appQuery) return;
+        cancelOpen();
+        if (!appQuery || document.hidden) return;
         if (isAndroid) {
           window.location.href =
             'intent://friend?' + appQuery +
             '#Intent;scheme=splyto;package=com.tripsplit.app.tripsplit;end';
-          window.setTimeout(function () {
-            window.location.href = 'splyto://friend?' + appQuery;
+          fallbackTimer = window.setTimeout(function () {
+            if (!document.hidden) window.location.href = 'splyto://friend?' + appQuery;
           }, 650);
           return;
         }
         window.location.href = 'splyto://friend?' + appQuery;
-        window.setTimeout(function () {
-          window.location.href = 'tripsplit://friend?' + appQuery;
+        fallbackTimer = window.setTimeout(function () {
+          if (!document.hidden) window.location.href = 'tripsplit://friend?' + appQuery;
         }, 650);
       }
 
       openBtn.addEventListener('click', openApp);
       if (appQuery) {
-        window.setTimeout(openApp, 220);
+        openTimer = window.setTimeout(openApp, 220);
       }
     })();
   </script>

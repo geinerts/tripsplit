@@ -30,6 +30,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   final WorkspaceOfflineQueue _offlineQueue;
   final Map<String, String> _pendingPaymentMutationIds = <String, String>{};
   int _mutationSeed = 0;
+  int? _paymentGeneration;
 
   @override
   Future<int> loadCurrentUserId() {
@@ -46,7 +47,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     int limit = 80,
     String? cursor,
     int? offset,
-  }) async {
+  }) => _localStore.storage.session.run(() async {
     final isFirstPage =
         (cursor == null || cursor.trim().isEmpty) &&
         (offset == null || offset <= 0);
@@ -70,7 +71,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       }
       rethrow;
     }
-  }
+  });
 
   @override
   Future<WorkspaceActivityPage> loadTripActivity({
@@ -302,25 +303,26 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   }
 
   @override
-  Future<WorkspaceSnapshot> loadSnapshot({required int tripId}) async {
-    await _offlineQueue.flushBestEffort();
+  Future<WorkspaceSnapshot> loadSnapshot({required int tripId}) =>
+      _localStore.storage.session.run(() async {
+        await _offlineQueue.flushBestEffort();
 
-    try {
-      final snapshot = await _remote.loadSnapshot(tripId: tripId);
-      await _localStore.writeSnapshot(tripId: tripId, snapshot: snapshot);
-      return snapshot;
-    } on ApiException catch (error) {
-      if (!error.isNetworkError) {
-        rethrow;
-      }
+        try {
+          final snapshot = await _remote.loadSnapshot(tripId: tripId);
+          await _localStore.writeSnapshot(tripId: tripId, snapshot: snapshot);
+          return snapshot;
+        } on ApiException catch (error) {
+          if (!error.isNetworkError) {
+            rethrow;
+          }
 
-      final cached = await _localStore.readSnapshot(tripId: tripId);
-      if (cached != null) {
-        return cached;
-      }
-      rethrow;
-    }
-  }
+          final cached = await _localStore.readSnapshot(tripId: tripId);
+          if (cached != null) {
+            return cached;
+          }
+          rethrow;
+        }
+      });
 
   @override
   Future<TripExpensesPage> loadExpensesPage({
@@ -498,7 +500,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   Future<MutationResult> _runMutationOrQueue({
     required Future<void> Function() remoteAction,
     required Future<void> Function() enqueueOnNetworkError,
-  }) async {
+  }) => _localStore.storage.session.run(() async {
     try {
       await remoteAction();
       return const MutationResult(queued: false);
@@ -510,7 +512,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       await enqueueOnNetworkError();
       return const MutationResult(queued: true);
     }
-  }
+  });
 
   String _newClientMutationId({required String type, required int tripId}) {
     _mutationSeed += 1;
@@ -527,7 +529,12 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required String note,
   }) {
     final amountCents = (amount * 100).round();
-    return '$type:$tripId:$counterpartyUserId:$amountCents:${note.trim()}';
+    final lease = _localStore.storage.session.capture();
+    if (_paymentGeneration != lease.generation) {
+      _pendingPaymentMutationIds.clear();
+      _paymentGeneration = lease.generation;
+    }
+    return '${lease.userId}:${lease.generation}:$type:$tripId:$counterpartyUserId:$amountCents:${note.trim()}';
   }
 
   Future<void> _runIdempotentPaymentMutation({
@@ -535,7 +542,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required String type,
     required int tripId,
     required Future<void> Function(String mutationId) action,
-  }) async {
+  }) => _localStore.storage.session.run(() async {
     final mutationId = _pendingPaymentMutationIds.putIfAbsent(
       key,
       () => _newClientMutationId(type: type, tripId: tripId),
@@ -552,7 +559,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       _pendingPaymentMutationIds.remove(key);
       rethrow;
     }
-  }
+  });
 
   @override
   Future<List<ExpenseReaction>> listExpenseReactions({

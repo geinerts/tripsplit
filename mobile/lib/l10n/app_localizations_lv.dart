@@ -9,6 +9,29 @@ class AppLocalizationsLv extends AppLocalizations {
   AppLocalizationsLv([String locale = 'lv']) : super(locale);
 
   @override
+  String get tripModeSolo => 'Tikai es';
+
+  @override
+  String get tripModeGroup => 'Ar citiem';
+
+  @override
+  String get premiumFree => 'Bezmaksas';
+
+  @override
+  String get premiumStatusUnavailable => 'Plāna statuss nav pieejams';
+
+  @override
+  String premiumGrantedUntil(String date) {
+    return 'Premium piešķirts līdz $date';
+  }
+
+  @override
+  String get premiumBillingNotActive => 'Nav aktīva abonementa';
+
+  @override
+  String get premiumRefreshStatus => 'Atjaunot plāna statusu';
+
+  @override
   String get accountSectionTitle => 'Konts';
 
   @override
@@ -336,6 +359,21 @@ class AppLocalizationsLv extends AppLocalizations {
   String get forgotPassword => 'Aizmirsi paroli?';
 
   @override
+  String get profilePasswordByEmail => 'Iestatīt paroli pa e-pastu';
+
+  @override
+  String get sendDeactivationEmail => 'Nosūtīt deaktivizēšanas saiti';
+
+  @override
+  String get deactivationEmailSent => 'Apstiprini deaktivizēšanu e-pastā. Tavs konts vēl ir aktīvs.';
+
+  @override
+  String get deactivationConfirmationMethods => 'Apstiprini deaktivizēšanu ar paroli vai e-pasta saiti. Ceļojumi un izdevumi saglabāsies.';
+
+  @override
+  String get passwordEmailBackToProfile => 'Atpakaļ uz profilu';
+
+  @override
   String get forgotPasswordSubtitle => 'Ievadi savu e-pastu, un mēs nosūtīsim paroles atiestatīšanas saiti.';
 
   @override
@@ -409,6 +447,9 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get logoutFromDeviceQuestion => 'Iziet no šīs ierīces?';
+
+  @override
+  String get logoutRevocationUnconfirmed => 'Šajā ierīcē sesija ir beigta. Neizdevās apstiprināt sesijas atsaukšanu serverī.';
 
   @override
   String get markedAsSent => 'Atzīmēts kā nosūtīts.';
@@ -1846,7 +1887,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileImageFormatNotSupportedDevicePleaseChooseJpg => 'Šis attēla formāts šajā ierīcē netiek atbalstīts. Lūdzu, izvēlies JPG vai PNG.';
 
   @override
-  String get profileEditSetValidEmailEditProfileChangingPassword => 'Pirms paroles maiņas ievadi derīgu e-pastu sadaļā \"Edit profile\".';
+  String get profileEditSetValidEmailEditProfileChangingPassword => 'Paroles maiņai nepieciešama derīga konta e-pasta adrese. Ja tās trūkst vai tā ir nepareiza, sazinies ar atbalstu.';
 
   @override
   String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Konts deaktivēts. Lai atjaunotu piekļuvi, izmanto reaktivācijas saiti e-pastā.';

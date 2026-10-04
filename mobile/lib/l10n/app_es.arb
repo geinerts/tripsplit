@@ -1,5 +1,13 @@
 {
   "@@locale": "es",
+  "tripModeSolo": "Solo yo",
+  "tripModeGroup": "Con otros",
+  "premiumFree": "Gratis",
+  "premiumStatusUnavailable": "Estado del plan no disponible",
+  "premiumGrantedUntil": "Premium concedido hasta {date}",
+  "@premiumGrantedUntil": {"placeholders": {"date": {"type": "String"}}},
+  "premiumBillingNotActive": "Sin suscripción activa",
+  "premiumRefreshStatus": "Actualizar estado del plan",
   "@addedMembersCount": {
     "placeholders": {
       "count": {}
@@ -403,6 +411,11 @@
   "finishTripTitle": "Terminar viaje",
   "forParticipants": "Para: {participants}",
   "forgotPassword": "¿Has olvidado tu contraseña?",
+  "profilePasswordByEmail": "Establecer contraseña por correo",
+  "sendDeactivationEmail": "Enviar enlace de desactivación",
+  "deactivationEmailSent": "Confirma la desactivación en tu correo. Tu cuenta sigue activa.",
+  "deactivationConfirmationMethods": "Confirma la desactivación con tu contraseña o un enlace por correo. Tus viajes y gastos se conservarán.",
+  "passwordEmailBackToProfile": "Volver al perfil",
   "forgotPasswordSubtitle": "Ingrese su correo electrónico y le enviaremos un enlace para restablecer su contraseña.",
   "forgotPasswordSuccessMessage": "Si existe una cuenta con este correo electrónico, le hemos enviado un enlace para restablecer la contraseña.",
   "forgotPasswordTitle": "Restablecer contraseña",
@@ -426,6 +439,7 @@
   "logInButton": "Acceso",
   "logOutButton": "Finalizar la sesión",
   "logoutFromDeviceQuestion": "¿Cerrar sesión en este dispositivo?",
+  "logoutRevocationUnconfirmed": "Se ha cerrado la sesión en este dispositivo. No se pudo confirmar la revocación de la sesión en el servidor.",
   "markedAsSent": "Marcado como enviado.",
   "markSettlementSentConfirmTitle": "¿Marcar transferencia como enviada?",
   "markSettlementSentConfirmText": "Úsalo solo después de haber enviado realmente el pago. El receptor deberá confirmarlo.",
@@ -857,7 +871,7 @@
   "profileOpenWebsiteQuestion": "¿Abrir sitio web?",
   "profileOpenPortfolioAction": "Abrir portafolio.egm.lv",
   "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Este formato de imagen no es compatible con este dispositivo. Elija JPG o PNG.",
-  "profileEditSetValidEmailEditProfileChangingPassword": "Establezca un correo electrónico válido en Editar perfil antes de cambiar la contraseña.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "Se necesita un correo electrónico válido en la cuenta para cambiar la contraseña. Contacta con soporte si falta o es incorrecto.",
   "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Cuenta desactivada. Utilice el enlace de reactivación del correo electrónico para restaurar el acceso.",
   "profileEditCouldNotDeactivateTryAgain": "No se pudo desactivar la cuenta. Por favor inténtalo de nuevo.",
   "profileEditDeletionLinkSentEmail": "Enlace de eliminación enviado a su correo electrónico.",

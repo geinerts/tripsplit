@@ -18,6 +18,7 @@ abstract class TripsRepository {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String tripMode = 'group',
     String? dateFrom,
     String? dateTo,
   });

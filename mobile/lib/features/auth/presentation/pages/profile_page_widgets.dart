@@ -148,6 +148,13 @@ extension _ProfilePageWidgets on _ProfilePageState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        PremiumStatusTile(
+          access: _user?.premiumAccess,
+          onRefresh: _isLoading || _isBusy
+              ? null
+              : () => unawaited(_loadProfile()),
+        ),
+        const SizedBox(height: 8),
         _buildProfileSectionGroup(
           context: context,
           title: context.l10n.profileAppSettingsSectionTitle,

@@ -10,7 +10,7 @@
     http-equiv="Content-Security-Policy"
     content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:"
   />
-  <link rel="stylesheet" href="app.css?v=8"/>
+  <link rel="stylesheet" href="app.css?v=9"/>
 </head>
 <body>
 
@@ -75,6 +75,8 @@
     <div class="sidebar-section">
       <div class="sidebar-section-label">Support</div>
       <div class="nav-item" data-view="users"><span class="nav-icon">👤</span> Users</div>
+      <div class="nav-item" data-view="premium" id="nav-premium" style="display:none">Premium</div>
+      <div class="nav-item" data-view="partners" id="nav-partners" style="display:none">Partners</div>
       <div class="nav-item" data-view="feedback"><span class="nav-icon">💬</span> Feedback</div>
       <div class="nav-item" data-view="push-queue"><span class="nav-icon">🔔</span> Push Queue</div>
     </div>
@@ -146,6 +148,6 @@
 <!-- ── Toast container ──────────────────────────────────────────────────────── -->
 <div id="toast-container"></div>
 
-<script src="app.js?v=9"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>

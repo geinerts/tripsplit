@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
+
 function receipt_ocr_suggestions(string $imagePath): array
 {
     $empty = [
@@ -159,7 +161,7 @@ function upload_receipt_action(): void
         'ensure_receipts_dir',
         (string) $validated['mime']
     );
-    $relativePath = (string) $stored['path'];
+    $relativePath = bind_stored_receipt_to_owner($stored, $userId);
     $storedSize = (int) $stored['size'];
     $ocr = receipt_ocr_suggestions((string) $validated['tmp']);
 
@@ -338,7 +340,7 @@ function upload_avatar_action(): void
         'avatar_url' => avatar_public_url($avatarPath),
         'avatar_thumb_url' => avatar_thumb_public_url($avatarPath),
         'size' => $storedSize > 0 ? $storedSize : $sourceSize,
-        'me' => build_me_payload($next),
+        'me' => build_me_payload($next, $pdo),
     ]);
 }
 
@@ -374,6 +376,6 @@ function remove_avatar_action(): void
 
     json_out([
         'ok' => true,
-        'me' => build_me_payload($next),
+        'me' => build_me_payload($next, $pdo),
     ]);
 }

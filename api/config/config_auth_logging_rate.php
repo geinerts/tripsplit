@@ -249,7 +249,8 @@ function enforce_rate_limit(
     string $scope,
     string $subject,
     int $maxHits,
-    int $windowSeconds
+    int $windowSeconds,
+    bool $failClosed = false
 ): void {
     $scope = trim($scope);
     $subject = trim(strtolower($subject));
@@ -303,6 +304,9 @@ function enforce_rate_limit(
         }
     } catch (Throwable $error) {
         if (is_missing_table_error($error)) {
+            if ($failClosed) {
+                json_out(['ok' => false, 'error' => 'This service is temporarily unavailable.'], 503);
+            }
             return;
         }
         throw $error;

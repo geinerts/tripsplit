@@ -1,4 +1,5 @@
 import '../../../../core/errors/api_exception.dart';
+import '../../../../core/auth/account_data_session.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/queued_mutation.dart';
 import '../datasources/workspace_remote_data_source.dart';
@@ -18,6 +19,8 @@ class WorkspaceOfflineQueue {
   final WorkspaceRemoteDataSource _remote;
   final WorkspaceLocalStore _localStore;
   int _queueSeed = 0;
+  Future<void>? _flushInFlight;
+  AccountDataLease? _flushLease;
 
   Future<int> pendingCount({int? tripId}) async {
     final queue = await _localStore.readQueue();
@@ -141,30 +144,49 @@ class WorkspaceOfflineQueue {
     });
   }
 
-  Future<void> flushBestEffort() async {
+  Future<void> flushBestEffort() {
+    final lease = _localStore.storage.session.capture();
+    if (_flushInFlight != null && _flushLease?.generation == lease.generation) {
+      return _flushInFlight!;
+    }
+    _flushLease = lease;
+    final next = _localStore.storage.session.run(_flush);
+    _flushInFlight = next;
+    return next.whenComplete(() {
+      if (identical(_flushInFlight, next)) {
+        _flushInFlight = null;
+        _flushLease = null;
+      }
+    });
+  }
+
+  Future<void> _flush() async {
+    final lease = _localStore.storage.session.capture();
     final queue = await _localStore.readQueue();
     if (queue.isEmpty) {
       return;
     }
 
-    final keep = <Map<String, dynamic>>[];
-
     for (var i = 0; i < queue.length; i++) {
+      lease.check();
       final item = queue[i];
       try {
         await _executeQueuedItem(item);
       } on ApiException catch (error) {
-        if (error.isNetworkError) {
-          keep.addAll(queue.sublist(i));
+        lease.check();
+        if (error.isNetworkError ||
+            error.statusCode == 401 ||
+            (error.statusCode ?? 0) >= 500) {
           break;
         }
         // Drop invalid or forbidden items and continue.
       } catch (_) {
+        lease.check();
         // Drop malformed queue item.
       }
+      lease.check();
+      await _localStore.removeQueuedItem(item['id'] as String);
     }
-
-    await _localStore.writeQueue(keep);
   }
 
   Future<void> _executeQueuedItem(Map<String, dynamic> item) async {

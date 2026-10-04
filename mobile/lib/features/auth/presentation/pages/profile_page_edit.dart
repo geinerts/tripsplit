@@ -34,6 +34,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _editSession += 1;
       _isDeactivateAccountPage = false;
       _isChangePasswordPage = true;
+      _draftCurrentPassword = '';
       _draftPassword = '';
       _draftRepeatPassword = '';
       _activeEditField = null;
@@ -56,7 +57,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _deactivateDraftPassword = '';
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
-      _draftEmail = _emailController.text.trim();
       _draftBankCountryCode = _initialBankCountryCode;
       _draftBankAccountNumber = _initialBankAccountNumber;
       _draftBankIban = _initialBankIban;
@@ -78,12 +78,12 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   void _closeEditMode() {
     _updateState(() {
       _isEditMode = false;
+      _draftCurrentPassword = '';
       _isDeactivateAccountPage = false;
       _isChangePasswordPage = false;
       _deactivateDraftPassword = '';
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
-      _draftEmail = _emailController.text.trim();
       _draftBankCountryCode = _initialBankCountryCode;
       _draftBankAccountNumber = _initialBankAccountNumber;
       _draftBankIban = _initialBankIban;
@@ -162,6 +162,27 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     }
   }
 
+  Future<void> _onSendDeactivationLinkPressed() async {
+    if (_isSubmitting || _isLoading) return;
+    _updateState(() {
+      _isSubmitting = true;
+      _editErrorText = null;
+    });
+    try {
+      await widget.controller.requestDeactivationLink();
+      if (!mounted) return;
+      _showSnack(context.l10n.deactivationEmailSent);
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      _updateState(() => _editErrorText = error.message);
+    } catch (_) {
+      if (!mounted) return;
+      _updateState(() => _editErrorText = context.l10n.requestFailedTryAgain);
+    } finally {
+      if (mounted) _updateState(() => _isSubmitting = false);
+    }
+  }
+
   Future<void> _onSendDeletionLinkPressed() async {
     if (_isSubmitting || _isLoading) {
       return;
@@ -213,11 +234,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
         case _ProfileEditField.fullName:
           _draftFullName = _fullNameController.text.trim();
           break;
-        case _ProfileEditField.email:
-          _draftEmail = _emailController.text.trim();
-          _draftPassword = '';
-          _draftRepeatPassword = '';
-          break;
         case _ProfileEditField.preferredCurrency:
           _draftPreferredCurrencyCode =
               AppCurrencyCatalog.normalizeProfilePreferred(
@@ -230,15 +246,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
 
   void _onDraftFullNameChanged(String value) {
     _draftFullName = value;
-    if (_editErrorText != null) {
-      _updateState(() {
-        _editErrorText = null;
-      });
-    }
-  }
-
-  void _onDraftEmailChanged(String value) {
-    _draftEmail = value;
     if (_editErrorText != null) {
       _updateState(() {
         _editErrorText = null;
@@ -265,7 +272,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   }
 
   Future<void> _saveInlineField(_ProfileEditField field) async {
-    final t = context.l10n;
     if (_isSubmitting || _isLoading) {
       return;
     }
@@ -284,77 +290,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _emailController.text = _emailController.text.trim();
       _passwordController.clear();
       _repeatController.clear();
-    } else if (field == _ProfileEditField.email) {
-      final proposed = _draftEmail.trim().toLowerCase();
-      final current = _emailController.text.trim().toLowerCase();
-      if (proposed == current) {
-        _updateState(() {
-          _activeEditField = null;
-          _editErrorText = null;
-        });
-        return;
-      }
-      if (!_isValidEmail(proposed)) {
-        _updateState(() {
-          _editErrorText = t.invalidEmailFormat;
-        });
-        return;
-      }
-
-      final currentPassword = _draftPassword.trim();
-      if (currentPassword.isEmpty) {
-        _updateState(() {
-          _editErrorText =
-              context.l10n.profileEditEnterCurrentPasswordChangeEmail;
-        });
-        return;
-      }
-
-      _updateState(() {
-        _isSubmitting = true;
-        _editErrorText = null;
-      });
-      try {
-        await widget.controller.requestEmailChange(
-          newEmail: proposed,
-          currentPassword: currentPassword,
-        );
-        if (!mounted) {
-          return;
-        }
-        _updateState(() {
-          _activeEditField = null;
-          _editErrorText = null;
-          _draftEmail = _emailController.text.trim();
-          _draftPassword = '';
-          _draftRepeatPassword = '';
-        });
-        _showSnack(
-          context.l10n.profileEditVerificationWasSentNewEmailSecurityNoticeWas,
-        );
-      } on ApiException catch (error) {
-        if (!mounted) {
-          return;
-        }
-        _updateState(() {
-          _editErrorText = error.message;
-        });
-      } catch (_) {
-        if (!mounted) {
-          return;
-        }
-        _updateState(() {
-          _editErrorText =
-              context.l10n.profileEditCouldNotStartEmailChangeRightNowTry;
-        });
-      } finally {
-        if (mounted) {
-          _updateState(() {
-            _isSubmitting = false;
-          });
-        }
-      }
-      return;
     } else if (field == _ProfileEditField.preferredCurrency) {
       final proposed = AppCurrencyCatalog.normalize(
         _draftPreferredCurrencyCode,
@@ -422,15 +357,14 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             editor: _buildFullNameInlineEditor,
           ),
           const Divider(height: 1),
-          _buildEditableProfileRow(
-            context: context,
-            field: _ProfileEditField.email,
-            label: t.emailAddressLabel,
-            displayValue: _draftEmail.trim().isEmpty
-                ? t.notSetValue
-                : _draftEmail.trim(),
-            labelTrailing: _buildPrimaryEmailBadge(context),
-            editor: _buildEmailInlineEditor,
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(t.emailAddressLabel),
+            subtitle: Text(
+              _emailController.text.trim().isEmpty
+                  ? t.notSetValue
+                  : _emailController.text.trim(),
+            ),
           ),
           const Divider(height: 1),
           _buildEditableProfileRow(
@@ -484,9 +418,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           ),
           const SizedBox(height: 8),
           Text(
-            context
-                .l10n
-                .profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword,
+            context.l10n.deactivationConfirmationMethods,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -499,8 +431,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             obscureText: true,
             decoration: InputDecoration(
               labelText: context.l10n.passwordLabel,
-              hintText:
-                  context.l10n.profileEditEnterPasswordOptionalGoogleApple,
+              hintText: context.l10n.profileEditCurrentPassword,
             ),
             onChanged: _onDeactivatePasswordChanged,
             onFieldSubmitted: (_) => unawaited(_onDeactivateAccountPressed()),
@@ -526,6 +457,15 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                 foregroundColor: colorScheme.onError,
               ),
               label: Text(context.l10n.profileDeactivateAccount),
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _isSubmitting ? null : _onSendDeactivationLinkPressed,
+              icon: const Icon(Icons.mail_outline),
+              label: Text(context.l10n.sendDeactivationEmail),
             ),
           ),
           const SizedBox(height: 10),
@@ -562,7 +502,13 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       });
       return;
     }
-    if (_draftPassword.trim().length < 8) {
+    if (_draftCurrentPassword.isEmpty) {
+      _updateState(() {
+        _editErrorText = t.profileEditCurrentPassword;
+      });
+      return;
+    }
+    if (_draftPassword.length < 8) {
       _updateState(() {
         _editErrorText = t.passwordMinLengthShort;
       });
@@ -583,6 +529,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       final updated = await widget.controller.updateProfile(
         email: email,
         password: _draftPassword,
+        currentPassword: _draftCurrentPassword,
       );
       if (!mounted) {
         return;
@@ -636,6 +583,33 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             ),
           ),
           const SizedBox(height: 14),
+          TextFormField(
+            key: ValueKey('change-password-current-$_editSession'),
+            initialValue: _draftCurrentPassword,
+            textInputAction: TextInputAction.next,
+            obscureText: true,
+            autofillHints: const [AutofillHints.password],
+            decoration: InputDecoration(
+              labelText: t.profileEditCurrentPassword,
+            ),
+            onChanged: (value) {
+              _draftCurrentPassword = value;
+              if (_editErrorText != null) {
+                _updateState(() => _editErrorText = null);
+              }
+            },
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: _isSubmitting
+                  ? null
+                  : () => Navigator.of(
+                      context,
+                    ).pushNamed(AppRouter.forgotPassword, arguments: email),
+              child: Text(t.profilePasswordByEmail),
+            ),
+          ),
           TextFormField(
             key: ValueKey('change-password-$_editSession'),
             initialValue: _draftPassword,
@@ -763,36 +737,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                   )
                 : Icon(isActive ? Icons.check_rounded : Icons.edit_outlined),
             tooltip: isActive ? t.saveAction : t.editAction,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPrimaryEmailBadge(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final dotColor = colorScheme.primary;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: dotColor.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            context.l10n.profileEditPrimary,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: dotColor,
-              fontWeight: FontWeight.w700,
-            ),
           ),
         ],
       ),
@@ -1159,38 +1103,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       ),
       onChanged: _onDraftFullNameChanged,
       onFieldSubmitted: (_) => _saveInlineField(_ProfileEditField.fullName),
-    );
-  }
-
-  Widget _buildEmailInlineEditor(BuildContext context) {
-    final t = context.l10n;
-    return Column(
-      children: [
-        TextFormField(
-          key: ValueKey('edit-email-$_editSession'),
-          initialValue: _draftEmail,
-          textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.emailAddress,
-          autofillHints: const [AutofillHints.email],
-          decoration: InputDecoration(isDense: true, hintText: t.emailHint),
-          onChanged: _onDraftEmailChanged,
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          key: ValueKey('edit-email-password-$_editSession'),
-          initialValue: _draftPassword,
-          textInputAction: TextInputAction.done,
-          obscureText: true,
-          autofillHints: const [AutofillHints.password],
-          decoration: InputDecoration(
-            isDense: true,
-            labelText: context.l10n.profileEditCurrentPassword,
-            helperText: t.changeEmailWithPasswordHelper,
-          ),
-          onChanged: _onDraftPasswordChanged,
-          onFieldSubmitted: (_) => _saveInlineField(_ProfileEditField.email),
-        ),
-      ],
     );
   }
 }

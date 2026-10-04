@@ -8,9 +8,14 @@ import '../../../../core/ui/responsive.dart';
 import '../controllers/auth_controller.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key, required this.controller});
+  const ForgotPasswordPage({
+    super.key,
+    required this.controller,
+    this.initialEmail,
+  });
 
   final AuthController controller;
+  final String? initialEmail;
 
   @override
   State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
@@ -24,13 +29,19 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   String? _errorText;
 
   @override
+  void initState() {
+    super.initState();
+    _emailController.text = widget.initialEmail ?? '';
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     super.dispose();
   }
 
   String? _validateEmail(String? value) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     final email = (value ?? '').trim();
     if (email.isEmpty) {
       return t.emailRequired;
@@ -76,7 +87,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         return;
       }
       setState(() {
-        _errorText = context.l10nEn.requestFailedTryAgain;
+        _errorText = context.l10n.requestFailedTryAgain;
       });
     } finally {
       if (mounted) {
@@ -89,12 +100,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     final responsive = context.responsive;
     final horizontalPadding = responsive.pageHorizontalPadding;
 
     return AppPageScaffold(
-      appBar: AppBar(title: Text(t.forgotPasswordTitle)),
+      appBar: AppBar(
+        title: Text(
+          widget.initialEmail == null
+              ? t.forgotPasswordTitle
+              : t.profilePasswordByEmail,
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -124,7 +141,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   Widget _buildRequestForm(BuildContext context) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     final muted = AppDesign.mutedColor(context).withValues(alpha: 0.72);
     return Form(
@@ -219,7 +236,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   Widget _buildSuccessBody(BuildContext context) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,7 +256,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           width: double.infinity,
           child: OutlinedButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(t.backToLoginAction),
+            child: Text(
+              widget.initialEmail == null
+                  ? t.backToLoginAction
+                  : t.passwordEmailBackToProfile,
+            ),
           ),
         ),
       ],

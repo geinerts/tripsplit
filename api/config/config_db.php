@@ -26,6 +26,12 @@ function table_name(string $key): string
 {
     $map = [
         'users' => DB_TABLE_PREFIX . 'users',
+        'premium_partners' => DB_TABLE_PREFIX . 'premium_partners',
+        'premium_grants' => DB_TABLE_PREFIX . 'premium_grants',
+        'premium_events' => DB_TABLE_PREFIX . 'premium_events',
+        'subscription_accounts' => DB_TABLE_PREFIX . 'subscription_accounts',
+        'subscription_sandbox_attempts' => DB_TABLE_PREFIX . 'subscription_sandbox_attempts',
+        'subscription_sandbox_purchases' => DB_TABLE_PREFIX . 'subscription_sandbox_purchases',
         'trips' => DB_TABLE_PREFIX . 'trips',
         'trip_members' => DB_TABLE_PREFIX . 'trip_members',
         'expenses' => DB_TABLE_PREFIX . 'expenses',

@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/helper_subscription.php';
+require_once __DIR__ . '/helper_premium.php';
+
 function users_name_columns_available(PDO $pdo): bool
 {
     static $cached = null;
@@ -205,7 +208,7 @@ function credential_password_algo()
     return defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
 }
 
-function build_me_payload(array $user): array
+function build_me_payload(array $user, ?PDO $pdo = null): array
 {
     $email = trim((string) ($user['email'] ?? ''));
     $passwordHash = trim((string) ($user['password_hash'] ?? ''));
@@ -236,6 +239,8 @@ function build_me_payload(array $user): array
 
     return [
         'id' => (int) $user['id'],
+        'subscription_preview' => subscription_preview_payload((int) $user['id']),
+        'premium_access' => $pdo === null ? null : premium_access_for_user($pdo, (int) $user['id']),
         'first_name' => $firstName,
         'last_name' => $lastName,
         'full_name' => combine_full_name($firstName, $lastName),

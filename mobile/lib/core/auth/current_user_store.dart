@@ -19,6 +19,9 @@ class CurrentUserStore {
       if (decoded is! Map<String, dynamic>) {
         return null;
       }
+      // Cached profile data is not evidence of a current billing entitlement.
+      decoded.remove('subscription_preview');
+      decoded.remove('premium_access');
       return AuthUserModel.fromLegacyMap(decoded);
     } catch (_) {
       return null;

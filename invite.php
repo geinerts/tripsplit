@@ -144,32 +144,44 @@ share_send_html_headers($isValid ? 300 : 60);
   </main>
   <script>
     (function () {
-      var invite = <?= json_encode($inviteForApp, JSON_UNESCAPED_SLASHES) ?>;
+      var invite = <?= json_encode($hasInvite ? $inviteForApp : '', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
       var openBtn = document.getElementById('openAppBtn');
       var ua = navigator.userAgent.toLowerCase();
       var isAndroid = ua.indexOf('android') >= 0;
 
+      var openTimer;
+      var fallbackTimer;
+      function cancelOpen() {
+        window.clearTimeout(openTimer);
+        window.clearTimeout(fallbackTimer);
+      }
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) cancelOpen();
+      });
+      window.addEventListener('pagehide', cancelOpen);
+
       function openApp() {
-        if (!invite) return;
+        cancelOpen();
+        if (!invite || document.hidden) return;
         var encoded = encodeURIComponent(invite);
         if (isAndroid) {
           window.location.href =
             'intent://join?invite=' + encoded +
             '#Intent;scheme=splyto;package=com.tripsplit.app.tripsplit;end';
-          window.setTimeout(function () {
-            window.location.href = 'splyto://join?invite=' + encoded;
+          fallbackTimer = window.setTimeout(function () {
+            if (!document.hidden) window.location.href = 'splyto://join?invite=' + encoded;
           }, 650);
           return;
         }
         window.location.href = 'splyto://join?invite=' + encoded;
-        window.setTimeout(function () {
-          window.location.href = 'tripsplit://join?invite=' + encoded;
+        fallbackTimer = window.setTimeout(function () {
+          if (!document.hidden) window.location.href = 'tripsplit://join?invite=' + encoded;
         }, 650);
       }
 
       openBtn.addEventListener('click', openApp);
       if (invite) {
-        window.setTimeout(openApp, 220);
+        openTimer = window.setTimeout(openApp, 220);
       }
     })();
   </script>

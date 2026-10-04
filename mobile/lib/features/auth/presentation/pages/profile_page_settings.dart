@@ -41,13 +41,20 @@ extension _ProfilePageSettings on _ProfilePageState {
       _isSubmitting = true;
     });
     try {
-      await widget.controller.logout();
+      final revocationConfirmed = await widget.controller.logout();
       if (!mounted) {
         return;
       }
       Navigator.of(
         context,
       ).pushNamedAndRemoveUntil(AppRouter.authIntro, (route) => false);
+      if (!revocationConfirmed) {
+        _showSnack(t.logoutRevocationUnconfirmed);
+      }
+    } on ApiException catch (error) {
+      if (mounted) {
+        _showSnack(error.message);
+      }
     } finally {
       if (mounted) {
         _updateState(() {

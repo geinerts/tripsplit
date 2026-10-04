@@ -45,9 +45,15 @@ class AppRouter {
       credentials: (_) => AuthFlowTheme(
         child: CredentialsPage(controller: _dependencies.authController),
       ),
-      forgotPassword: (_) => AuthFlowTheme(
-        child: ForgotPasswordPage(controller: _dependencies.authController),
-      ),
+      forgotPassword: (context) {
+        final args = ModalRoute.of(context)?.settings.arguments;
+        return AuthFlowTheme(
+          child: ForgotPasswordPage(
+            controller: _dependencies.authController,
+            initialEmail: args is String ? args : null,
+          ),
+        );
+      },
       shell: (context) {
         final args = ModalRoute.of(context)?.settings.arguments;
         final initialTab = args is Map && args['initial_tab'] is int

@@ -1,4 +1,6 @@
 import '../core/auth/auth_session_store.dart';
+import '../core/auth/account_data_session.dart';
+import '../core/auth/account_local_storage.dart';
 import '../core/auth/current_user_store.dart';
 import '../core/auth/device_token_store.dart';
 import '../core/auth/user_avatar_store.dart';
@@ -25,7 +27,7 @@ import '../features/auth/domain/usecases/login_use_case.dart';
 import '../features/auth/domain/usecases/logout_session_use_case.dart';
 import '../features/auth/domain/usecases/register_use_case.dart';
 import '../features/auth/domain/usecases/request_account_deletion_link_use_case.dart';
-import '../features/auth/domain/usecases/request_email_change_use_case.dart';
+import '../features/auth/domain/usecases/request_deactivation_link_use_case.dart';
 import '../features/auth/domain/usecases/request_email_verification_link_use_case.dart';
 import '../features/auth/domain/usecases/request_reactivation_link_use_case.dart';
 import '../features/auth/domain/usecases/set_credentials_use_case.dart';
@@ -86,6 +88,8 @@ class AppDependencies {
 
   factory AppDependencies.bootstrap() {
     final env = AppEnv.current;
+    final accountSession = AccountDataSession(namespace: env.apiBaseUrl);
+    final accountStorage = AccountLocalStorage(accountSession);
     PerfMonitor.configure(
       enabled: env.enableVerboseLogs || env.enablePerformanceLogs,
     );
@@ -142,7 +146,7 @@ class AppDependencies {
     final inviteDeepLinkController = InviteDeepLinkController();
 
     final tripsRemote = TripsRemoteDataSourceImpl(apiClient, tripImageUploader);
-    final tripsLocalStore = TripsLocalStore();
+    final tripsLocalStore = TripsLocalStore(accountStorage);
     final tripsRepository = TripsRepositoryImpl(tripsRemote, tripsLocalStore);
     final tripsController = TripsController(
       ListTripsUseCase(tripsRepository),
@@ -178,7 +182,7 @@ class AppDependencies {
       apiClient,
       receiptUploader,
     );
-    final workspaceLocalStore = WorkspaceLocalStore();
+    final workspaceLocalStore = WorkspaceLocalStore(accountStorage);
     final workspaceRepository = WorkspaceRepositoryImpl(
       workspaceRemote,
       workspaceLocalStore,
@@ -198,7 +202,7 @@ class AppDependencies {
       ForgotPasswordUseCase(authRepository),
       RequestEmailVerificationLinkUseCase(authRepository),
       RequestReactivationLinkUseCase(authRepository),
-      RequestEmailChangeUseCase(authRepository),
+      RequestDeactivationLinkUseCase(authRepository),
       DeactivateAccountUseCase(authRepository),
       RequestAccountDeletionLinkUseCase(authRepository),
       GetNotificationPreferencesUseCase(authRepository),
@@ -213,11 +217,9 @@ class AppDependencies {
       () async {
         tripsController.clearTripsCache();
         friendsController.clearSnapshotCache();
-        await Future.wait(<Future<void>>[
-          tripsLocalStore.clear(),
-          workspaceLocalStore.clearAll(),
-        ]);
+        await accountStorage.clear();
       },
+      accountSession: accountSession,
     );
 
     return AppDependencies(

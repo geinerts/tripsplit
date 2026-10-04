@@ -10,6 +10,7 @@ class CreateTripUseCase {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String tripMode = 'group',
     String? dateFrom,
     String? dateTo,
   }) {
@@ -17,6 +18,7 @@ class CreateTripUseCase {
       name: name,
       currencyCode: currencyCode,
       memberIds: memberIds,
+      tripMode: tripMode,
       dateFrom: dateFrom,
       dateTo: dateTo,
     );

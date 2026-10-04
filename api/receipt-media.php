@@ -19,19 +19,27 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
     private_media_not_found();
 }
 
-$path = trim((string) ($_GET['path'] ?? ''));
-$expiresAt = filter_var($_GET['expires'] ?? null, FILTER_VALIDATE_INT);
-$signature = strtolower(trim((string) ($_GET['signature'] ?? '')));
+$path = $_GET['path'] ?? null;
+$expires = $_GET['expires'] ?? null;
+$signature = $_GET['signature'] ?? null;
+if (!is_string($path) || !is_string($expires) || !is_string($signature)) {
+    private_media_not_found();
+}
+$path = trim($path);
+$expiresAt = filter_var($expires, FILTER_VALIDATE_INT);
+$signature = strtolower(trim($signature));
 if ($path === '' || !is_int($expiresAt)) {
     private_media_not_found();
 }
 
 try {
     $path = normalize_private_receipt_path($path);
+    $valid = $path !== null && private_receipt_request_is_valid($path, $expiresAt, $signature);
 } catch (Throwable $error) {
+    error_log('Private receipt validation unavailable.');
     private_media_not_found();
 }
-if ($path === null || !private_receipt_request_is_valid($path, $expiresAt, $signature)) {
+if (!$valid) {
     private_media_not_found();
 }
 

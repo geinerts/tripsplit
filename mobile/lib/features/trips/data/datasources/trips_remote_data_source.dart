@@ -22,6 +22,7 @@ abstract class TripsRemoteDataSource {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String tripMode = 'group',
     String? dateFrom,
     String? dateTo,
   });
@@ -110,16 +111,20 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String tripMode = 'group',
     String? dateFrom,
     String? dateTo,
   }) async {
     final response = await _apiClient.request(
-      path: ApiEndpoints.legacyAction('create_trip'),
+      path: ApiEndpoints.legacyAction(
+        tripMode == 'solo' ? 'create_solo_trip' : 'create_trip',
+      ),
       method: HttpMethod.post,
       body: <String, dynamic>{
         'name': name,
         'currency_code': currencyCode,
         'member_ids': memberIds,
+        'trip_mode': tripMode,
         if (dateFrom != null && dateFrom.trim().isNotEmpty)
           'date_from': dateFrom.trim(),
         if (dateTo != null && dateTo.trim().isNotEmpty)

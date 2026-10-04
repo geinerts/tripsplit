@@ -27,6 +27,7 @@ import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../domain/entities/auth_user.dart';
+import '../../../subscriptions/presentation/widgets/premium_status_tile.dart';
 import '../../domain/entities/notification_preferences.dart';
 import '../controllers/auth_controller.dart';
 
@@ -108,7 +109,6 @@ class _ProfilePageState extends State<ProfilePage> {
   String _initialWisePayLink = '';
   String _initialPreferredCurrencyCode = AppCurrencyCatalog.defaultCode;
   String _draftFullName = '';
-  String _draftEmail = '';
   String _draftBankIban = '';
   String _draftBankBic = '';
   String _draftBankCountryCode = '';
@@ -120,6 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _draftWisePayLink = '';
   String _draftPreferredCurrencyCode = AppCurrencyCatalog.defaultCode;
   String _draftPassword = '';
+  String _draftCurrentPassword = '';
   String _draftRepeatPassword = '';
   String _deactivateDraftPassword = '';
   bool _isDeactivateAccountPage = false;
@@ -192,4 +193,4 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-enum _ProfileEditField { fullName, email, preferredCurrency }
+enum _ProfileEditField { fullName, preferredCurrency }

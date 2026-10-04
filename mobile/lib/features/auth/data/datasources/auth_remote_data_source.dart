@@ -37,6 +37,7 @@ abstract class AuthRemoteDataSource {
     String? lastName,
     String? email,
     String? password,
+    String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   });
@@ -49,10 +50,7 @@ abstract class AuthRemoteDataSource {
 
   Future<void> requestReactivationLink({required String email});
 
-  Future<void> requestEmailChange({
-    required String newEmail,
-    required String currentPassword,
-  });
+  Future<void> requestDeactivationLink();
 
   Future<void> deactivateAccount({required String password});
 
@@ -206,6 +204,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       body: <String, dynamic>{'email': email, 'password': password},
     );
 
+    if (response['email_verification_required'] == true) {
+      throw ApiException(
+        response['message'] as String? ??
+            'Verify your email before logging in.',
+        code: 'EMAIL_VERIFICATION_REQUIRED',
+      );
+    }
     final me = response['me'] as Map<String, dynamic>?;
     if (me == null) {
       throw StateError('Missing me payload in set_credentials response.');
@@ -219,6 +224,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String? lastName,
     String? email,
     String? password,
+    String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
   }) async {
@@ -230,6 +236,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     if (email != null && password != null) {
       payload['email'] = email;
       payload['password'] = password;
+    }
+    if (currentPassword != null) {
+      payload['current_password'] = currentPassword;
     }
     if (preferredCurrencyCode != null &&
         preferredCurrencyCode.trim().isNotEmpty) {
@@ -295,17 +304,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> requestEmailChange({
-    required String newEmail,
-    required String currentPassword,
-  }) async {
+  Future<void> requestDeactivationLink() async {
     await _apiClient.request(
-      path: ApiEndpoints.legacyAction('request_email_change'),
+      path: ApiEndpoints.legacyAction('request_deactivation_link'),
       method: HttpMethod.post,
-      body: <String, dynamic>{
-        'new_email': newEmail,
-        'current_password': currentPassword,
-      },
+      body: <String, dynamic>{},
     );
   }
 

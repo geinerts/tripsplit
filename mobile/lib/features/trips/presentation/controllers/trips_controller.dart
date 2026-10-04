@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import '../../../../core/errors/api_exception.dart';
+import '../../../../core/auth/account_data_session.dart';
 import '../../data/local/trips_local_store.dart';
 import '../../domain/entities/trip.dart';
 import '../../domain/entities/trip_invite_join_result.dart';
@@ -52,6 +53,8 @@ class TripsController {
   final UpdateTripUseCase _updateTripUseCase;
   final UploadTripImageUseCase _uploadTripImageUseCase;
   final TripsLocalStore _localStore;
+  AccountDataSession get accountSession => _localStore.storage.session;
+  int? _cacheGeneration;
   List<Trip> _cachedTrips = const <Trip>[];
   DateTime? _cachedTripsAt;
   bool _diskCachePrimed = false;
@@ -59,6 +62,10 @@ class TripsController {
   static const Duration _cacheTtl = Duration(minutes: 2);
 
   List<Trip>? peekTripsCache({bool allowStale = true}) {
+    if (accountSession.userId == null ||
+        _cacheGeneration != accountSession.generation) {
+      return null;
+    }
     if (_cachedTrips.isEmpty) {
       return null;
     }
@@ -71,36 +78,37 @@ class TripsController {
     return List<Trip>.unmodifiable(_cachedTrips);
   }
 
-  Future<List<Trip>> loadTrips({bool forceRefresh = false}) async {
-    if (!forceRefresh) {
-      await _primeCacheFromDisk();
-      final cached = peekTripsCache(allowStale: false);
-      if (cached != null) {
-        return cached;
-      }
-    }
+  Future<List<Trip>> loadTrips({bool forceRefresh = false}) =>
+      accountSession.run(() async {
+        if (!forceRefresh) {
+          await _primeCacheFromDisk();
+          final cached = peekTripsCache(allowStale: false);
+          if (cached != null) {
+            return cached;
+          }
+        }
 
-    try {
-      final trips = await _listTripsUseCase.call();
-      await _setCachedTrips(trips, persist: true);
-      return _cachedTrips;
-    } on ApiException catch (error) {
-      if (!error.isNetworkError) {
-        rethrow;
-      }
-      await _primeCacheFromDisk();
-      final cached = peekTripsCache(allowStale: true);
-      if (cached != null) {
-        return cached;
-      }
-      rethrow;
-    }
-  }
+        try {
+          final trips = await _listTripsUseCase.call();
+          await _setCachedTrips(trips, persist: true);
+          return _cachedTrips;
+        } on ApiException catch (error) {
+          if (!error.isNetworkError) {
+            rethrow;
+          }
+          await _primeCacheFromDisk();
+          final cached = peekTripsCache(allowStale: true);
+          if (cached != null) {
+            return cached;
+          }
+          rethrow;
+        }
+      });
 
-  Future<List<Trip>?> primeTripsCacheFromDisk() async {
+  Future<List<Trip>?> primeTripsCacheFromDisk() => accountSession.run(() async {
     await _primeCacheFromDisk();
     return peekTripsCache(allowStale: true);
-  }
+  });
 
   Future<List<TripUser>> loadDirectoryUsers({
     String query = '',
@@ -118,6 +126,7 @@ class TripsController {
     required String name,
     required String currencyCode,
     required List<int> memberIds,
+    String tripMode = 'group',
     String? dateFrom,
     String? dateTo,
   }) {
@@ -125,6 +134,7 @@ class TripsController {
       name: name,
       currencyCode: currencyCode,
       memberIds: memberIds,
+      tripMode: tripMode,
       dateFrom: dateFrom,
       dateTo: dateTo,
     );
@@ -194,6 +204,7 @@ class TripsController {
   }
 
   void clearTripsCache({bool clearDisk = false}) {
+    _cacheGeneration = null;
     _cachedTrips = const <Trip>[];
     _cachedTripsAt = null;
     _diskCachePrimed = false;
@@ -207,6 +218,9 @@ class TripsController {
     List<Trip> trips, {
     required bool persist,
   }) async {
+    final lease = accountSession.capture();
+    lease.check();
+    _cacheGeneration = lease.generation;
     _cachedTrips = List<Trip>.unmodifiable(trips);
     _cachedTripsAt = DateTime.now();
     _diskCachePrimed = true;
@@ -216,6 +230,11 @@ class TripsController {
   }
 
   Future<void> _primeCacheFromDisk() async {
+    final lease = accountSession.capture();
+    if (_cacheGeneration != lease.generation) {
+      clearTripsCache();
+      _cacheGeneration = lease.generation;
+    }
     if (_diskCachePrimed) {
       return;
     }
@@ -231,11 +250,13 @@ class TripsController {
           await _setCachedTrips(persisted, persist: false);
         }
       } finally {
-        _diskCachePrimed = true;
+        if (lease.isCurrent) _diskCachePrimed = true;
       }
     }();
     _primeDiskCacheInFlight = next;
     await next;
-    _primeDiskCacheInFlight = null;
+    if (identical(_primeDiskCacheInFlight, next)) {
+      _primeDiskCacheInFlight = null;
+    }
   }
 }

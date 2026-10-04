@@ -120,7 +120,7 @@ function social_auth_action(): void
     $claims = verify_social_id_token($provider, $idToken);
     $providerSubject = trim((string) ($claims['subject'] ?? ''));
     $providerEmail = strtolower(trim((string) ($claims['email'] ?? '')));
-    $providerEmailVerified = ((bool) ($claims['email_verified'] ?? false));
+    $providerEmailVerified = ($claims['email_verified'] ?? false) === true;
     $providerPayloadJson = (string) ($claims['payload_json'] ?? '{}');
     if ($providerSubject === '') {
         json_out(['ok' => false, 'error' => 'Invalid social token subject.'], 401);
@@ -159,7 +159,7 @@ function social_auth_action(): void
     try {
         $identityId = 0;
         $identityStmt = $pdo->prepare(
-            'SELECT id, user_id
+            'SELECT id, user_id, provider_subject
              FROM ' . $identitiesTable . '
              WHERE provider = :provider
                AND provider_subject = :provider_subject
@@ -174,6 +174,13 @@ function social_auth_action(): void
         $identityId = (int) ($identity['id'] ?? 0);
 
         if ($identity) {
+            // Older schemas use a case-insensitive subject index. Never authenticate an
+            // opaque provider subject that only compares equal under that collation.
+            if (!hash_equals((string) $identity['provider_subject'], $providerSubject)) {
+                $pdo->rollBack();
+                json_out(['ok' => false, 'code' => 'SOCIAL_IDENTITY_CONFLICT',
+                    'error' => 'Social identity does not match the linked account.'], 409);
+            }
             $userId = (int) ($identity['user_id'] ?? 0);
             $user = social_auth_select_user_by_id_for_update($pdo, $userId, $nameColumnsAvailable);
             if (!$user) {
@@ -181,11 +188,18 @@ function social_auth_action(): void
                 json_out(['ok' => false, 'error' => 'Linked user not found.'], 409);
             }
         } else {
-            if ($providerEmail !== '') {
-                $user = social_auth_select_user_by_email_for_update($pdo, $providerEmail, $nameColumnsAvailable);
-                if (is_array($user)) {
-                    $userId = (int) ($user['id'] ?? 0);
-                }
+            // Email is not a provider identity. Linking an existing account needs its own
+            // authenticated, reauthorized flow, even when this provider verified the email.
+            if ($providerEmail === '' || !$providerEmailVerified) {
+                $pdo->rollBack();
+                json_out(['ok' => false, 'code' => 'SOCIAL_VERIFIED_EMAIL_REQUIRED',
+                    'error' => 'A verified provider email is required to create a new account.'], 409);
+            }
+            $emailOwner = social_auth_select_user_by_email_for_update($pdo, $providerEmail, $nameColumnsAvailable);
+            if ($emailOwner) {
+                $pdo->rollBack();
+                json_out(['ok' => false, 'code' => 'SOCIAL_LINK_REQUIRED',
+                    'error' => 'Sign in using your existing sign-in method. This provider is not linked to your account.'], 409);
             }
 
             if (!$user) {
@@ -286,16 +300,8 @@ function social_auth_action(): void
             $userUpdateParts[] = 'credentials_required = 0';
         }
 
-        $currentEmail = strtolower(trim((string) ($user['email'] ?? '')));
-        if ($providerEmail !== '' && $currentEmail === '') {
-            $userUpdateParts[] = 'email = :email';
-            $userUpdateParams['email'] = $providerEmail;
-            $currentEmail = $providerEmail;
-        }
-        if ($currentEmail !== '' && $providerEmail !== '' && $currentEmail === $providerEmail) {
-            // Social login with same email is trusted as verified.
-            $userUpdateParts[] = 'email_verified_at = COALESCE(email_verified_at, UTC_TIMESTAMP())';
-        }
+        // Returning users are identified only by the stored (provider, subject) pair.
+        // Provider email changes/missing claims must not change the Splyto email or its verification.
 
         if ($nameColumnsAvailable) {
             $currentFirstName = trim((string) ($user['first_name'] ?? ''));
@@ -357,10 +363,14 @@ function social_auth_action(): void
                     'email_verified' => $providerEmailVerified ? 1 : 0,
                     'payload_json' => $providerPayloadJson,
                 ]);
-            } catch (Throwable $identityError) {
+            } catch (PDOException $identityError) {
                 $pdo->rollBack();
+                if ((string) $identityError->getCode() !== '23000') {
+                    throw $identityError;
+                }
                 json_out([
                     'ok' => false,
+                    'code' => 'SOCIAL_AUTH_RETRY',
                     'error' => 'Social identity is already linked to another account.',
                 ], 409);
             }
@@ -372,6 +382,10 @@ function social_auth_action(): void
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }
+        if ($error instanceof PDOException && in_array((string) $error->getCode(), ['23000', '40001'], true)) {
+            json_out(['ok' => false, 'code' => 'SOCIAL_AUTH_RETRY',
+                'error' => 'Another sign-in is being processed. Please try again.'], 409);
+        }
         throw $error;
     }
 
@@ -382,7 +396,7 @@ function social_auth_action(): void
 
     json_out([
         'ok' => true,
-        'me' => build_me_payload((array) $me),
+        'me' => build_me_payload((array) $me, $pdo),
         'auth' => issue_auth_payload($pdo, $userId),
     ]);
 }

@@ -189,7 +189,8 @@ function admin_audit(
     string $action,
     ?string $targetType = null,
     ?int    $targetId   = null,
-    ?array  $details    = null
+    ?array  $details    = null,
+    bool    $strict     = false
 ): void {
     admin_audit_event(
         $pdo,
@@ -198,7 +199,8 @@ function admin_audit(
         $action,
         $targetType,
         $targetId,
-        $details
+        $details,
+        $strict
     );
 }
 
@@ -209,7 +211,8 @@ function admin_audit_event(
     string $action,
     ?string $targetType = null,
     ?int    $targetId   = null,
-    ?array  $details    = null
+    ?array  $details    = null,
+    bool    $strict     = false
 ): void {
     try {
         $tbl     = table_name('admin_audit_log');
@@ -233,7 +236,10 @@ function admin_audit_event(
             $details,
             client_ip_address(),
         ]);
-    } catch (Throwable) {
+    } catch (Throwable $error) {
+        if ($strict) {
+            throw $error;
+        }
         // Non-fatal — don't break the actual action if audit log fails
     }
 }
