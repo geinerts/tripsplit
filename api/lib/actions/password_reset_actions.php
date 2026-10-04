@@ -6,7 +6,7 @@ function ensure_password_reset_security_schema(PDO $pdo): void
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.columns
         WHERE table_schema = DATABASE() AND table_name = :table_name
         AND column_name = 'credential_state_hash'");
-    $stmt->execute(['table_name' => table_name('password_resets')]);
+    $stmt->execute(['table_name' => trim(table_name('password_resets'), '`')]);
     if (!(bool) $stmt->fetchColumn() || !users_email_verified_at_column_available($pdo)) {
         json_out(['ok' => false, 'error' => 'Password recovery is temporarily unavailable.'], 503);
     }

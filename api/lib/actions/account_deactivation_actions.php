@@ -13,7 +13,7 @@ function ensure_deactivation_link_schema(PDO $pdo): void
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.columns
         WHERE table_schema = DATABASE() AND table_name = :table_name
         AND column_name = 'credential_state_hash'");
-    $stmt->execute(['table_name' => table_name('account_action_tokens')]);
+    $stmt->execute(['table_name' => trim(table_name('account_action_tokens'), '`')]);
     if (!(bool) $stmt->fetchColumn() || !users_deactivated_at_column_available($pdo)
         || !users_account_status_column_available($pdo) || !users_email_verified_at_column_available($pdo)) {
         json_out(['ok' => false, 'error' => 'Deactivation by email is temporarily unavailable.'], 503);
