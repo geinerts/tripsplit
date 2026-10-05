@@ -3,6 +3,7 @@ class WorkspaceNotification {
     required this.id,
     required this.tripId,
     this.tripName,
+    this.inviteToken,
     required this.type,
     required this.title,
     required this.body,
@@ -13,6 +14,7 @@ class WorkspaceNotification {
   final int id;
   final int tripId;
   final String? tripName;
+  final String? inviteToken;
   final String type;
   final String title;
   final String body;

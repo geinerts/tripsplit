@@ -108,6 +108,7 @@ class WorkspaceLocalStore {
               'id': item.id,
               'trip_id': item.tripId,
               'trip_name': item.tripName,
+              'invite_token': item.inviteToken,
               'type': item.type,
               'title': item.title,
               'body': item.body,
@@ -139,6 +140,7 @@ class WorkspaceLocalStore {
                 (item) => WorkspaceNotification(
                   id: (item['id'] as num?)?.toInt() ?? 0,
                   tripId: (item['trip_id'] as num?)?.toInt() ?? 0,
+                  inviteToken: item['invite_token'] as String?,
                   tripName:
                       (item['trip_name'] as String?)?.trim().isNotEmpty == true
                       ? (item['trip_name'] as String).trim()

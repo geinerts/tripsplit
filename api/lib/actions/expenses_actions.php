@@ -518,6 +518,9 @@ function add_expense_action(): void
 
     $pdo->beginTransaction();
     try {
+        lock_active_trip_membership_scope($pdo, (int) $trip['id']);
+        require_locked_trip_member($pdo, (int) $trip['id'], $userId);
+        require_valid_trip_member_ids($pdo, (int) $trip['id'], $participants);
         if ($expenseCurrencyColumnsAvailable) {
             $insertExpense = $pdo->prepare(
                 'INSERT INTO ' . $expensesTable . '
@@ -776,6 +779,9 @@ function update_expense_action(): void
 
     $pdo->beginTransaction();
     try {
+        lock_active_trip_membership_scope($pdo, (int) $trip['id']);
+        require_locked_trip_member($pdo, (int) $trip['id'], (int) $me['id']);
+        require_valid_trip_member_ids($pdo, (int) $trip['id'], $participants);
         if ($expenseCurrencyColumnsAvailable) {
             $update = $pdo->prepare(
                 'UPDATE ' . $expensesTable . '

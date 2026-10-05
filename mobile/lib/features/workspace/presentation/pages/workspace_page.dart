@@ -37,6 +37,7 @@ import '../../../friends/presentation/controllers/friends_controller.dart';
 import '../../../trips/domain/entities/trip.dart';
 import '../../../trips/domain/entities/trip_user.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
+import '../../../trips/presentation/widgets/pending_trip_invitations.dart';
 import '../utils/expense_math.dart';
 import '../../domain/entities/balance_item.dart';
 import '../../domain/entities/expense_comment.dart';

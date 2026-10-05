@@ -55,6 +55,8 @@ import '../features/trips/domain/usecases/create_trip_use_case.dart';
 import '../features/trips/domain/usecases/delete_trip_use_case.dart';
 import '../features/trips/domain/usecases/list_directory_users_use_case.dart';
 import '../features/trips/domain/usecases/join_trip_invite_use_case.dart';
+import '../features/trips/domain/usecases/manage_trip_invitations_use_case.dart';
+import '../features/trips/domain/usecases/decline_trip_invite_use_case.dart';
 import '../features/trips/domain/usecases/leave_trip_use_case.dart';
 import '../features/trips/domain/usecases/list_trips_use_case.dart';
 import '../features/trips/domain/usecases/preview_trip_invite_use_case.dart';
@@ -159,6 +161,8 @@ class AppDependencies {
       CreateTripInviteLinkUseCase(tripsRepository),
       PreviewTripInviteUseCase(tripsRepository),
       JoinTripInviteUseCase(tripsRepository),
+      ManageTripInvitationsUseCase(tripsRepository),
+      DeclineTripInviteUseCase(tripsRepository),
       UpdateTripUseCase(tripsRepository),
       UploadTripImageUseCase(tripsRepository),
       tripsLocalStore,

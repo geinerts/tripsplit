@@ -312,6 +312,31 @@ function assert_trip_is_active(array $trip): void
     }
 }
 
+// Serialize membership and dependent writes before locking invitations or members.
+function lock_active_trip_membership_scope(PDO $pdo, int $tripId): array
+{
+    $stmt = $pdo->prepare('SELECT * FROM ' . table_name('trips') . ' WHERE id = :id FOR UPDATE');
+    $stmt->execute(['id' => $tripId]);
+    $trip = $stmt->fetch();
+    if (!$trip) {
+        json_out(['ok' => false, 'error' => 'Trip not found.'], 404);
+    }
+    if (normalize_trip_status($trip['status'] ?? 'active') !== 'active') {
+        json_out(['ok' => false, 'error' => 'Trip is closed.'], 409);
+    }
+    return $trip;
+}
+
+function require_locked_trip_member(PDO $pdo, int $tripId, int $userId): void
+{
+    $stmt = $pdo->prepare('SELECT user_id FROM ' . table_name('trip_members') . '
+        WHERE trip_id = :trip AND user_id = :user FOR UPDATE');
+    $stmt->execute(['trip' => $tripId, 'user' => $userId]);
+    if (!$stmt->fetchColumn()) {
+        json_out(['ok' => false, 'error' => 'Trip not found.'], 404);
+    }
+}
+
 function create_user_notification(
     PDO $pdo,
     int $tripId,

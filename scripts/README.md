@@ -14,6 +14,8 @@ Available:
 - `run_push_delivery.php` processes queued push deliveries to APNs/FCM.
 - `run_migrations.php` runs SQL migrations from `sql/migrations` and tracks applied files in `trip_schema_migrations`.
 - `vps_run_migrations.sh` runs `run_migrations.php` remotely on VPS over SSH.
+- Migrations and backups require separate protected operator credentials, never
+  the runtime DB account. See [database access](../docs/operations/database-access.md).
 - `monitor_api_health.sh` verifies API health endpoints and sends alerts (webhook/Telegram), optional healthcheck ping.
 - `monitor_push_queue.sh` checks push queue backlog/failures against alert thresholds.
 - `monitor_system_updates.sh` checks pending package updates, reboot-required flag, and core service health, then includes package names/version changes in Telegram alerts.

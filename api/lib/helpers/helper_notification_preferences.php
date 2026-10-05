@@ -579,7 +579,7 @@ function notification_in_app_pref_key_for_type(string $type): ?string
         return 'in_app_friend_invite_accepted_enabled';
     }
 
-    if ($normalized === 'trip_added') {
+    if ($normalized === 'trip_added' || $normalized === 'trip_invitation') {
         return 'in_app_trip_added_enabled';
     }
 
@@ -661,7 +661,7 @@ function notification_push_pref_key_for_type(string $type): ?string
 
     if (in_array(
         $normalized,
-        ['trip_added', 'trip_member_added', 'trip_finished', 'trip_ready_to_settle', 'member_ready_to_settle'],
+        ['trip_invitation', 'trip_added', 'trip_member_added', 'trip_finished', 'trip_ready_to_settle', 'member_ready_to_settle'],
         true
     )) {
         return 'push_trip_updates_enabled';

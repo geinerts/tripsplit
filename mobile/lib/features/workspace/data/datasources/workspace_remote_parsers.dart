@@ -258,6 +258,9 @@ class WorkspaceRemoteParsers {
       id: _toInt(item['id']),
       tripId: _toInt(item['trip_id']),
       tripName: tripName,
+      inviteToken: item['type'] == 'trip_invitation' && item['payload'] is Map
+          ? _toNullableString((item['payload'] as Map)['invite_token'])
+          : null,
       type: _toString(item['type'], fallback: 'info').trim(),
       title: _toString(item['title']).trim(),
       body: _toString(item['body']).trim(),

@@ -55,6 +55,12 @@ function push_localized_notification_title(string $type, string $rawTitle, strin
             return push_locale_phrase($locale, 'friend_invite_title');
         case 'friend_invite_accepted':
             return push_locale_phrase($locale, 'friend_invite_accepted_title');
+        case 'trip_invitation':
+            return match ($locale) {
+                'lv' => 'Ceļojuma uzaicinājums',
+                'es' => 'Invitación al viaje',
+                default => 'Trip invitation',
+            };
         case 'trip_added':
         case 'trip_member_added':
             return push_locale_phrase($locale, 'trip_added_title');
@@ -105,6 +111,12 @@ function push_localized_notification_body(string $type, string $rawBody, string 
     }
 
     switch ($type) {
+        case 'trip_invitation':
+            return match ($locale) {
+                'lv' => 'Tev ir ceļojuma uzaicinājums. Atver to, lai atbildētu.',
+                'es' => 'Te han invitado a un viaje. Abre la invitación para responder.',
+                default => 'You have been invited to a trip. Open the invitation to respond.',
+            };
         case 'friend_invite':
         case 'friend_invite_received':
             if (preg_match('/^(.+?) sent you a friend invite\.$/u', $rawBody, $match) === 1) {

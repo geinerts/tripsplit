@@ -226,14 +226,56 @@ abstract class AppLocalizations {
   /// No description provided for @addTripMembersTitle.
   ///
   /// In en, this message translates to:
-  /// **'Add trip members'**
+  /// **'Invite trip members'**
   String get addTripMembersTitle;
 
   /// No description provided for @addedMembersCount.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, one{{count} member added.} other{{count} members added.}}'**
+  /// **'{count, plural, one{{count} invitation sent.} other{{count} invitations sent.}}'**
   String addedMembersCount(num count);
+
+  /// No description provided for @tripInvitationDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip invitation declined.'**
+  String get tripInvitationDeclined;
+
+  /// No description provided for @tripInviteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get tripInviteAction;
+
+  /// No description provided for @tripInvitationsPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting response'**
+  String get tripInvitationsPending;
+
+  /// No description provided for @tripInvitationsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations unavailable. Retry'**
+  String get tripInvitationsRetry;
+
+  /// No description provided for @tripInvitationRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel invitation'**
+  String get tripInvitationRevoke;
+
+  /// No description provided for @tripInvitationRevokeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not cancel invitation. Try again.'**
+  String get tripInvitationRevokeFailed;
+
+  /// No description provided for @tripInvitationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have been invited to a trip. Open the invitation to respond.'**
+  String get tripInvitationBody;
 
   /// No description provided for @allCaughtUp.
   ///
@@ -1282,7 +1324,7 @@ abstract class AppLocalizations {
   /// No description provided for @noNewMembersAdded.
   ///
   /// In en, this message translates to:
-  /// **'No new members were added.'**
+  /// **'These people are already members or have pending invitations.'**
   String get noNewMembersAdded;
 
   /// No description provided for @noNotePlaceholder.

@@ -76,18 +76,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addMembersAction => 'Add members';
 
   @override
-  String get addTripMembersTitle => 'Add trip members';
+  String get addTripMembersTitle => 'Invite trip members';
 
   @override
   String addedMembersCount(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count members added.',
-      one: '$count member added.',
+      other: '$count invitations sent.',
+      one: '$count invitation sent.',
     );
     return '$_temp0';
   }
+
+  @override
+  String get tripInvitationDeclined => 'Trip invitation declined.';
+
+  @override
+  String get tripInviteAction => 'Invite';
+
+  @override
+  String get tripInvitationsPending => 'Awaiting response';
+
+  @override
+  String get tripInvitationsRetry => 'Invitations unavailable. Retry';
+
+  @override
+  String get tripInvitationRevoke => 'Cancel invitation';
+
+  @override
+  String get tripInvitationRevokeFailed => 'Could not cancel invitation. Try again.';
+
+  @override
+  String get tripInvitationBody => 'You have been invited to a trip. Open the invitation to respond.';
 
   @override
   String get allCaughtUp => 'All caught up';
@@ -658,7 +679,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMembersFound => 'No members found.';
 
   @override
-  String get noNewMembersAdded => 'No new members were added.';
+  String get noNewMembersAdded => 'These people are already members or have pending invitations.';
 
   @override
   String get noNotePlaceholder => 'No note';

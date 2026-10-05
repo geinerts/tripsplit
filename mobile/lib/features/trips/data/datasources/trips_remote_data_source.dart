@@ -7,6 +7,7 @@ import '../../../../core/network/http_method.dart';
 import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_invite_preview.dart';
+import '../../domain/entities/pending_trip_invitation.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../models/trip_model.dart';
 import '../models/trip_user_model.dart';
@@ -46,6 +47,14 @@ abstract class TripsRemoteDataSource {
   Future<void> deleteTrip({required int tripId});
   Future<TripInviteLink> createTripInviteLink({required int tripId});
   Future<TripInvitePreview> previewTripInvite({required String inviteToken});
+  Future<void> declineTripInvite({required String inviteToken});
+  Future<List<PendingTripInvitation>> listPendingInvitations({
+    required int tripId,
+  });
+  Future<void> revokeInvitation({
+    required int tripId,
+    required int invitationId,
+  });
   Future<TripInviteJoinResult> joinTripInvite({
     required String inviteToken,
     required String previewNonce,
@@ -323,6 +332,50 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
           ? (invite['preview_nonce_expires_at'] as String).trim()
           : null,
       alreadyMember: invite['already_member'] == true,
+      isDirected: invite['is_directed'] == true,
+    );
+  }
+
+  @override
+  Future<void> declineTripInvite({required String inviteToken}) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('decline_trip_invite'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'invite_token': inviteToken},
+    );
+  }
+
+  @override
+  Future<List<PendingTripInvitation>> listPendingInvitations({
+    required int tripId,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('list_pending_trip_invitations'),
+      method: HttpMethod.get,
+      headers: {'X-Trip-Id': '$tripId'},
+    );
+    return (response['invitations'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .map(
+          (item) => PendingTripInvitation(
+            id: (item['id'] as num).toInt(),
+            userId: (item['user_id'] as num).toInt(),
+            name: item['nickname'] as String? ?? '',
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  @override
+  Future<void> revokeInvitation({
+    required int tripId,
+    required int invitationId,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('revoke_trip_invitation'),
+      method: HttpMethod.post,
+      headers: {'X-Trip-Id': '$tripId'},
+      body: {'invitation_id': invitationId},
     );
   }
 }

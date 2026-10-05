@@ -76,18 +76,39 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addMembersAction => 'Agregar miembros';
 
   @override
-  String get addTripMembersTitle => 'Agregar miembros de viaje';
+  String get addTripMembersTitle => 'Invitar miembros al viaje';
 
   @override
   String addedMembersCount(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count miembros agregados.',
-      one: '$count miembro agregado.',
+      other: '$count invitaciones enviadas.',
+      one: '$count invitación enviada.',
     );
     return '$_temp0';
   }
+
+  @override
+  String get tripInvitationDeclined => 'Invitación al viaje rechazada.';
+
+  @override
+  String get tripInviteAction => 'Invitar';
+
+  @override
+  String get tripInvitationsPending => 'Esperando respuesta';
+
+  @override
+  String get tripInvitationsRetry => 'Invitaciones no disponibles. Reintentar';
+
+  @override
+  String get tripInvitationRevoke => 'Cancelar invitación';
+
+  @override
+  String get tripInvitationRevokeFailed => 'No se pudo cancelar la invitación. Inténtalo de nuevo.';
+
+  @override
+  String get tripInvitationBody => 'Te han invitado a un viaje. Abre la invitación para responder.';
 
   @override
   String get allCaughtUp => 'todos atrapados';
@@ -658,7 +679,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noMembersFound => 'No se encontraron miembros.';
 
   @override
-  String get noNewMembersAdded => 'No se agregaron nuevos miembros.';
+  String get noNewMembersAdded => 'Estas personas ya son miembros o tienen invitaciones pendientes.';
 
   @override
   String get noNotePlaceholder => 'Sin nota';

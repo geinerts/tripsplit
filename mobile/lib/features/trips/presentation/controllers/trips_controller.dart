@@ -8,6 +8,9 @@ import '../../domain/entities/trip.dart';
 import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_invite_preview.dart';
+import '../../domain/entities/pending_trip_invitation.dart';
+import '../../domain/usecases/manage_trip_invitations_use_case.dart';
+import '../../domain/usecases/decline_trip_invite_use_case.dart';
 import '../../domain/entities/trip_user.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../../domain/usecases/add_trip_members_use_case.dart';
@@ -35,6 +38,8 @@ class TripsController {
     this._createTripInviteLinkUseCase,
     this._previewTripInviteUseCase,
     this._joinTripInviteUseCase,
+    this._manageTripInvitationsUseCase,
+    this._declineTripInviteUseCase,
     this._updateTripUseCase,
     this._uploadTripImageUseCase,
     this._localStore,
@@ -50,6 +55,8 @@ class TripsController {
   final CreateTripInviteLinkUseCase _createTripInviteLinkUseCase;
   final PreviewTripInviteUseCase _previewTripInviteUseCase;
   final JoinTripInviteUseCase _joinTripInviteUseCase;
+  final ManageTripInvitationsUseCase _manageTripInvitationsUseCase;
+  final DeclineTripInviteUseCase _declineTripInviteUseCase;
   final UpdateTripUseCase _updateTripUseCase;
   final UploadTripImageUseCase _uploadTripImageUseCase;
   final TripsLocalStore _localStore;
@@ -192,6 +199,22 @@ class TripsController {
   Future<TripInvitePreview> previewTripInvite({required String inviteToken}) {
     return _previewTripInviteUseCase.call(inviteToken: inviteToken);
   }
+
+  Future<void> declineTripInvite({required String inviteToken}) {
+    return _declineTripInviteUseCase.call(inviteToken: inviteToken);
+  }
+
+  Future<List<PendingTripInvitation>> listPendingInvitations({
+    required int tripId,
+  }) => _manageTripInvitationsUseCase.list(tripId: tripId);
+
+  Future<void> revokeInvitation({
+    required int tripId,
+    required int invitationId,
+  }) => _manageTripInvitationsUseCase.revoke(
+    tripId: tripId,
+    invitationId: invitationId,
+  );
 
   Future<TripInviteJoinResult> joinTripInvite({
     required String inviteToken,

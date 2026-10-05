@@ -5,6 +5,7 @@ import '../../domain/entities/trip.dart';
 import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_invite_preview.dart';
+import '../../domain/entities/pending_trip_invitation.dart';
 import '../../domain/entities/trip_user.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../../domain/repositories/trips_repository.dart';
@@ -155,14 +156,40 @@ class TripsRepositoryImpl implements TripsRepository {
     required String inviteToken,
     required String previewNonce,
   }) {
-    return _remote.joinTripInvite(
-      inviteToken: inviteToken,
-      previewNonce: previewNonce,
+    return _localStore.storage.session.run(
+      () => _remote.joinTripInvite(
+        inviteToken: inviteToken,
+        previewNonce: previewNonce,
+      ),
     );
   }
 
   @override
   Future<TripInvitePreview> previewTripInvite({required String inviteToken}) {
-    return _remote.previewTripInvite(inviteToken: inviteToken);
+    return _localStore.storage.session.run(
+      () => _remote.previewTripInvite(inviteToken: inviteToken),
+    );
   }
+
+  @override
+  Future<void> declineTripInvite({required String inviteToken}) {
+    return _localStore.storage.session.run(
+      () => _remote.declineTripInvite(inviteToken: inviteToken),
+    );
+  }
+
+  @override
+  Future<List<PendingTripInvitation>> listPendingInvitations({
+    required int tripId,
+  }) => _localStore.storage.session.run(
+    () => _remote.listPendingInvitations(tripId: tripId),
+  );
+
+  @override
+  Future<void> revokeInvitation({
+    required int tripId,
+    required int invitationId,
+  }) => _localStore.storage.session.run(
+    () => _remote.revokeInvitation(tripId: tripId, invitationId: invitationId),
+  );
 }

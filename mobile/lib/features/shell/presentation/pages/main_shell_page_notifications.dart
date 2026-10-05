@@ -23,7 +23,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
     if (type == 'friend_invite_accepted') {
       return prefs.inAppFriendInviteAcceptedEnabled;
     }
-    if (type == 'trip_added') {
+    if (type == 'trip_added' || type == 'trip_invitation') {
       return prefs.inAppTripAddedEnabled;
     }
     if (type == 'trip_member_added') {
@@ -242,6 +242,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
               id: item.id,
               tripId: item.tripId,
               tripName: item.tripName,
+              inviteToken: item.inviteToken,
               type: item.type,
               title: item.title,
               body: item.body,
@@ -340,7 +341,8 @@ extension _MainShellPageNotifications on _MainShellPageState {
       icon = Icons.person_pin_circle_outlined;
     } else if (notification.type == 'trip_ready_to_settle') {
       icon = Icons.task_alt_outlined;
-    } else if (notification.type == 'trip_added' ||
+    } else if (notification.type == 'trip_invitation' ||
+        notification.type == 'trip_added' ||
         notification.type == 'trip_member_added') {
       icon = Icons.group_add_outlined;
     } else if (notification.type.startsWith('payment_')) {
@@ -575,6 +577,11 @@ extension _MainShellPageNotifications on _MainShellPageState {
     WorkspaceNotification notification,
   ) async {
     if (!mounted) {
+      return;
+    }
+    if (notification.type == 'trip_invitation' &&
+        notification.inviteToken != null) {
+      await _handleInviteDeepLinkCode(notification.inviteToken!);
       return;
     }
     if (_isFriendNotificationType(notification.type)) {

@@ -15,12 +15,7 @@ if [[ -z "$ENV_FILE" ]]; then
 fi
 
 DB_NAME="$(env_value "$ENV_FILE" "TRIP_DB_NAME")"
-DB_USER="$(env_value "$ENV_FILE" "TRIP_DB_USER")"
-DB_PASS="$(env_value "$ENV_FILE" "TRIP_DB_PASS")"
-DB_HOST="$(env_value "$ENV_FILE" "TRIP_DB_HOST")"
-if [[ -z "$DB_HOST" ]]; then
-  DB_HOST="localhost"
-fi
+[[ "$DB_NAME" =~ ^[A-Za-z0-9_]+$ ]] || { echo "Invalid database name" >&2; exit 1; }
 
 BACKUP_ROOT="$(env_value "$ENV_FILE" "TRIP_BACKUP_ROOT_DIR")"
 RETENTION_DAYS="$(env_value "$ENV_FILE" "TRIP_BACKUP_RETENTION_DAYS")"
@@ -37,11 +32,6 @@ META_DIR="${BACKUP_ROOT}/meta"
 
 install -d -m 700 "$BACKUP_ROOT" "$DB_DIR" "$APP_DIR" "$META_DIR"
 
-MYSQL_AUTH=(-h"$DB_HOST" -u"$DB_USER")
-if [[ -n "$DB_PASS" ]]; then
-  MYSQL_AUTH+=(-p"$DB_PASS")
-fi
-
 DB_FILE="${DB_DIR}/${DB_NAME}_${TIMESTAMP}.sql.gz"
 APP_FILE="${APP_DIR}/splyto_app_${TIMESTAMP}.tar.gz"
 META_FILE="${META_DIR}/backup_${TIMESTAMP}.sha256"
@@ -54,13 +44,8 @@ on_error() {
 }
 trap 'on_error $LINENO' ERR
 
-mysqldump "${MYSQL_AUTH[@]}" \
-  --single-transaction \
-  --quick \
-  --no-tablespaces \
-  --routines \
-  --triggers \
-  "$DB_NAME" | gzip -c > "$DB_FILE"
+php "$SCRIPT_DIR/backup_database.php" | gzip -c > "${DB_FILE}.partial"
+mv "${DB_FILE}.partial" "$DB_FILE"
 
 include_paths=()
 for p in ".env" "api/.env" "uploads" "keys"; do

@@ -266,6 +266,23 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
           return count > 0 ? 'añadió $count miembro(s)' : 'añadió miembros';
         }
         return en(count > 0 ? 'added $count member(s)' : 'added members');
+      case 'trip.members_invited':
+        final invitedCount = _payloadInt(event, 'members_invited_count');
+        if (language == 'lv') return 'nosūtīja $invitedCount uzaicinājumu(s)';
+        if (language == 'es') return 'envió $invitedCount invitación(es)';
+        return en('sent $invitedCount invitation(s)');
+      case 'trip.member_joined':
+        if (language == 'lv') return 'pievienojās ceļojumam';
+        if (language == 'es') return 'se unió al viaje';
+        return en('joined the trip');
+      case 'trip.invitation_declined':
+        if (language == 'lv') return 'noraidīja ceļojuma uzaicinājumu';
+        if (language == 'es') return 'rechazó la invitación al viaje';
+        return en('declined the trip invitation');
+      case 'trip.invitation_revoked':
+        if (language == 'lv') return 'atsauca ceļojuma uzaicinājumu';
+        if (language == 'es') return 'canceló una invitación al viaje';
+        return en('cancelled a trip invitation');
       case 'trip.member_removed':
         final name = _payloadString(event, 'removed_user_name') ?? '';
         if (language == 'lv') {

@@ -76,18 +76,39 @@ class AppLocalizationsLv extends AppLocalizations {
   String get addMembersAction => 'Pievienot dalībniekus';
 
   @override
-  String get addTripMembersTitle => 'Pievienot ceļojuma dalībniekus';
+  String get addTripMembersTitle => 'Uzaicināt ceļojuma dalībniekus';
 
   @override
   String addedMembersCount(num count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Pievienoti $count dalībnieki.',
-      one: 'Pievienots $count dalībnieks.',
+      other: 'Nosūtīti $count uzaicinājumi.',
+      one: 'Nosūtīts $count uzaicinājums.',
     );
     return '$_temp0';
   }
+
+  @override
+  String get tripInvitationDeclined => 'Ceļojuma uzaicinājums noraidīts.';
+
+  @override
+  String get tripInviteAction => 'Uzaicināt';
+
+  @override
+  String get tripInvitationsPending => 'Gaida atbildi';
+
+  @override
+  String get tripInvitationsRetry => 'Uzaicinājumi nav pieejami. Mēģināt vēlreiz';
+
+  @override
+  String get tripInvitationRevoke => 'Atsaukt uzaicinājumu';
+
+  @override
+  String get tripInvitationRevokeFailed => 'Neizdevās atsaukt uzaicinājumu. Mēģini vēlreiz.';
+
+  @override
+  String get tripInvitationBody => 'Tev ir ceļojuma uzaicinājums. Atver to, lai atbildētu.';
 
   @override
   String get allCaughtUp => 'Viss nokārtots';
@@ -658,7 +679,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get noMembersFound => 'Dalībnieki nav atrasti.';
 
   @override
-  String get noNewMembersAdded => 'Netika pievienoti jauni dalībnieki.';
+  String get noNewMembersAdded => 'Šie cilvēki jau ir dalībnieki vai gaida uzaicinājuma apstiprināšanu.';
 
   @override
   String get noNotePlaceholder => 'Nav piezīmes';

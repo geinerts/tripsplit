@@ -122,6 +122,7 @@ function share_trip_meta(?string $inviteCode): array
              FROM ' . $tripInvitesTable . ' i
              JOIN ' . $tripsTable . ' t ON t.id = i.trip_id
              WHERE i.invite_code = :invite_code
+               AND i.target_user_id IS NULL
              LIMIT 1'
         );
         $stmt->execute(['invite_code' => $inviteCode]);

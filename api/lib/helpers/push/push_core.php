@@ -85,7 +85,7 @@ function push_should_queue_notification_type(string $type): bool
     // Always deliver these high-frequency collaboration updates via push,
     // even when env critical types is narrowed down.
     if (
-        in_array($normalizedType, ['expense_added', 'friend_invite_received'], true)
+        in_array($normalizedType, ['expense_added', 'friend_invite_received', 'trip_invitation'], true)
         || str_starts_with($normalizedType, 'payment_')
     ) {
         return true;

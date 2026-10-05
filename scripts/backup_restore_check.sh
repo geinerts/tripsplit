@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+umask 077
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -14,12 +15,9 @@ if [[ -z "${ENV_FILE:-}" ]]; then
 fi
 
 DB_NAME="$(env_value "$ENV_FILE" "TRIP_DB_NAME")"
-DB_USER="$(env_value "$ENV_FILE" "TRIP_DB_USER")"
-DB_PASS="$(env_value "$ENV_FILE" "TRIP_DB_PASS")"
-DB_HOST="$(env_value "$ENV_FILE" "TRIP_DB_HOST")"
 DB_TABLE_PREFIX="$(env_value "$ENV_FILE" "TRIP_DB_TABLE_PREFIX")"
-if [[ -z "$DB_HOST" ]]; then DB_HOST="localhost"; fi
 if [[ -z "$DB_TABLE_PREFIX" ]]; then DB_TABLE_PREFIX="trip_"; fi
+[[ "$DB_NAME" =~ ^[A-Za-z0-9_]+$ && "$DB_TABLE_PREFIX" =~ ^[A-Za-z0-9_]+$ ]] || exit 1
 
 BACKUP_ROOT="$(env_value "$ENV_FILE" "TRIP_BACKUP_ROOT_DIR")"
 if [[ -z "$BACKUP_ROOT" ]]; then BACKUP_ROOT="/var/backups/splyto"; fi
@@ -34,19 +32,13 @@ if [[ -z "${LATEST_DB_BACKUP:-}" ]]; then
   exit 1
 fi
 
-MYSQL_AUTH=(-h"$DB_HOST" -u"$DB_USER")
-if [[ -n "$DB_PASS" ]]; then
-  MYSQL_AUTH+=(-p"$DB_PASS")
+# Restore is an explicit local administrative operation, never a runtime/backup fallback.
+if [[ "$(id -u)" -ne 0 ]]; then
+  echo "backup_restore_check requires the local root socket administrator." >&2
+  exit 1
 fi
-
-MYSQL_RESTORE_AUTH=("${MYSQL_AUTH[@]}")
-if [[ "$(id -u)" -eq 0 ]]; then
-  MYSQL_RESTORE_AUTH=(-u root)
-fi
-
-if ! mysql "${MYSQL_RESTORE_AUTH[@]}" -e "SELECT 1;" >/dev/null 2>&1; then
-  MYSQL_RESTORE_AUTH=("${MYSQL_AUTH[@]}")
-fi
+MYSQL_RESTORE_AUTH=(--no-defaults --protocol=SOCKET --socket=/var/run/mysqld/mysqld.sock -u root)
+mysql "${MYSQL_RESTORE_AUTH[@]}" -e "SELECT 1;" >/dev/null
 
 TS="$(date -u +%Y%m%d_%H%M%S)"
 RESTORE_DB="${DB_NAME}_restore_smoke_${TS}"

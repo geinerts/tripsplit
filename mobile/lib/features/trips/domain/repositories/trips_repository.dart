@@ -4,6 +4,7 @@ import '../entities/trip.dart';
 import '../entities/trip_invite_join_result.dart';
 import '../entities/trip_invite_link.dart';
 import '../entities/trip_invite_preview.dart';
+import '../entities/pending_trip_invitation.dart';
 import '../entities/trip_user.dart';
 import '../entities/uploaded_trip_image.dart';
 
@@ -42,6 +43,14 @@ abstract class TripsRepository {
   Future<void> deleteTrip({required int tripId});
   Future<TripInviteLink> createTripInviteLink({required int tripId});
   Future<TripInvitePreview> previewTripInvite({required String inviteToken});
+  Future<void> declineTripInvite({required String inviteToken});
+  Future<List<PendingTripInvitation>> listPendingInvitations({
+    required int tripId,
+  });
+  Future<void> revokeInvitation({
+    required int tripId,
+    required int invitationId,
+  });
   Future<TripInviteJoinResult> joinTripInvite({
     required String inviteToken,
     required String previewNonce,

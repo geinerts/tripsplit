@@ -8,6 +8,7 @@ if (PHP_SAPI !== 'cli') {
 }
 
 require __DIR__ . '/../api/config.php';
+require_once __DIR__ . '/lib/database_access.php';
 
 main($argv);
 
@@ -16,9 +17,7 @@ function main(array $argv): void
     $options = parse_migration_cli_options($argv);
     $migrationsDir = normalize_migrations_dir($options['migrations_dir']);
     $table = table_name('schema_migrations');
-    $pdo = db();
-
-    ensure_schema_migrations_table($pdo, $table);
+    $pdo = operator_database_connection(getenv('TRIP_MIGRATION_CREDENTIALS_FILE') ?: '/etc/splyto/migrations.cnf');
 
     $allMigrations = list_migration_files($migrationsDir);
     if (!$allMigrations) {
@@ -50,6 +49,7 @@ function main(array $argv): void
     }
 
     try {
+        ensure_schema_migrations_table($pdo, $table);
         $appliedMap = load_applied_migration_map($pdo, $table);
         [$pendingMigrations, $appliedCount] = resolve_pending_migrations(
             $allMigrations,
@@ -163,6 +163,8 @@ function print_migration_help(): void
     echo "  --migrations-dir=PATH     Override migration directory path.\n";
     echo "  --lock-timeout-sec=N      DB lock timeout in seconds (1..120), default 20.\n";
     echo "  --help, -h                Show this help.\n";
+    echo "\nCredentials: TRIP_MIGRATION_CREDENTIALS_FILE (default /etc/splyto/migrations.cnf), mode 0600.\n";
+    echo "The runtime database account is never used for migrations.\n";
     echo "\n";
     echo "Examples:\n";
     echo "  php scripts/run_migrations.php --dry-run\n";
@@ -209,11 +211,7 @@ function ensure_schema_migrations_table(PDO $pdo, string $quotedTableName): void
 
 function migration_lock_name(): string
 {
-    return 'trip_schema_migrations_' . substr(
-        hash('sha256', DB_HOST . ':' . DB_NAME . ':' . DB_TABLE_PREFIX),
-        0,
-        20
-    );
+    return database_maintenance_lock_name();
 }
 
 function acquire_migration_lock(PDO $pdo, string $lockName, int $timeoutSec): bool
@@ -267,6 +265,11 @@ function list_migration_files(string $migrationsDir): array
 
 function load_applied_migration_map(PDO $pdo, string $table): array
 {
+    $exists = $pdo->prepare('SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?');
+    $exists->execute([trim($table, '`')]);
+    if ((int) $exists->fetchColumn() === 0) {
+        return [];
+    }
     $stmt = $pdo->query(
         'SELECT migration_name, checksum_sha256, applied_at, execution_ms, executed_by
          FROM ' . $table . '

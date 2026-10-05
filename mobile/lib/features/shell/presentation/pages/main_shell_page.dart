@@ -31,6 +31,7 @@ import '../../../trips/domain/entities/trip.dart';
 import '../../../trips/domain/entities/trip_invite_preview.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../../trips/presentation/pages/trips_page.dart';
+import '../../../trips/presentation/widgets/trip_invitation_dialog.dart';
 import '../../../workspace/presentation/controllers/workspace_controller.dart';
 import '../../../workspace/domain/entities/workspace_notification.dart';
 import '../../../workspace/domain/entities/workspace_notifications_inbox.dart';
@@ -322,15 +323,30 @@ class _MainShellPageState extends State<MainShellPage>
     _isProcessingInviteDeepLink = true;
 
     try {
+      final lease = widget.tripsController.accountSession.capture();
       final preview = await widget.tripsController.previewTripInvite(
         inviteToken: inviteCode,
       );
+      lease.check();
       if (!mounted) {
         return;
       }
 
       final confirmed = await _showInviteJoinConfirmDialog(preview);
-      if (!mounted || !confirmed) {
+      lease.check();
+      if (!mounted || confirmed == null) {
+        return;
+      }
+      if (!confirmed) {
+        if (preview.isDirected && !preview.alreadyMember) {
+          await widget.tripsController.declineTripInvite(
+            inviteToken: inviteCode,
+          );
+          lease.check();
+          if (mounted) {
+            _showSnack(context.l10n.tripInvitationDeclined, isError: false);
+          }
+        }
         return;
       }
 
@@ -338,6 +354,7 @@ class _MainShellPageState extends State<MainShellPage>
         inviteToken: inviteCode,
         previewNonce: preview.previewNonce,
       );
+      lease.check();
       if (!mounted) {
         return;
       }
@@ -360,6 +377,7 @@ class _MainShellPageState extends State<MainShellPage>
         // Keep fallback trip from join payload when reload fails.
       }
 
+      lease.check();
       if (!mounted) {
         return;
       }
@@ -586,7 +604,7 @@ class _MainShellPageState extends State<MainShellPage>
     );
   }
 
-  Future<bool> _showInviteJoinConfirmDialog(TripInvitePreview preview) async {
+  Future<bool?> _showInviteJoinConfirmDialog(TripInvitePreview preview) async {
     final inviterName = preview.inviterName.trim();
     final tripName = preview.tripName.trim().isNotEmpty
         ? preview.tripName.trim()
@@ -602,6 +620,12 @@ class _MainShellPageState extends State<MainShellPage>
           )
         : context.l10n.shellInviteJoinTripQuestion(tripName, inviterLabel);
 
+    if (preview.isDirected && !preview.alreadyMember) {
+      return showDialog<bool>(
+        context: context,
+        builder: (_) => TripInvitationDialog(message: message),
+      );
+    }
     final decision = await showAppConfirmationDialog(
       context: context,
       title: context.l10n.shellTripInviteTitle,

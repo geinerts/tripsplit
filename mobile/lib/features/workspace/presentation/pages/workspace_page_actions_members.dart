@@ -490,6 +490,14 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                         ),
                       ],
                       const SizedBox(height: 12),
+                      PendingTripInvitations(
+                        load: () => widget.tripsController
+                            .listPendingInvitations(tripId: widget.trip.id),
+                        revoke: (id) => widget.tripsController.revokeInvitation(
+                          tripId: widget.trip.id,
+                          invitationId: id,
+                        ),
+                      ),
                       Text(
                         t.selectedPeopleLabel,
                         style: Theme.of(context).textTheme.bodySmall,
@@ -580,7 +588,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                   onPressed: selected.isEmpty
                       ? null
                       : () => Navigator.of(context).pop(selected),
-                  child: Text(t.addAction),
+                  child: Text(t.tripInviteAction),
                 ),
               ],
             );

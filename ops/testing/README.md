@@ -14,7 +14,13 @@ From the repository root:
 docker compose --env-file /dev/null -f ops/testing/compose.yaml up --build --abort-on-container-exit --exit-code-from tests
 ```
 
-The runner executes the existing 19 registration regression tests on MySQL, then five
+The runner first checks isolated runtime/migrator/backup identities: permitted DML,
+denied DDL/writes/global access, actual migration apply/dry-run, fresh-schema dry-run,
+maintenance-lock exclusion and missing/incorrect operator credentials. It creates a
+separate synthetic schema and uses the container-only root account to provision test
+roles; no host database or credentials are mounted. See `docs/operations/database-access.md`.
+
+The runner then executes the existing 19 registration regression tests on MySQL, then five
 rounds of four simultaneous-request scenarios, six PHP workers each (120 requests).
 It fails on duplicate users, changed existing identities, unexpected rejection codes or
 extra session/email/event calls. A readiness barrier starts workers together. This tests

@@ -8,6 +8,7 @@ class TripInvitePreview {
     required this.expiresAt,
     required this.previewNonceExpiresAt,
     required this.alreadyMember,
+    this.isDirected = false,
   });
 
   final String inviteToken;
@@ -18,4 +19,5 @@ class TripInvitePreview {
   final String? expiresAt;
   final String? previewNonceExpiresAt;
   final bool alreadyMember;
+  final bool isDirected;
 }

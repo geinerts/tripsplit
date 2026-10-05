@@ -102,6 +102,11 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
   final tripName = (notification.tripName ?? '').trim();
 
   switch (type) {
+    case 'trip_invitation':
+      return LocalizedWorkspaceNotification(
+        title: t.shellTripInviteTitle,
+        body: t.tripInvitationBody,
+      );
     case 'friend_invite':
       {
         final match = _friendInviteBodyPattern.firstMatch(rawBody);
