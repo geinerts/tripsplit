@@ -29,6 +29,7 @@ const state = {
   user:        null,   // { id, username, email, role, totp_enabled }
   view:        null,
   viewData:    {},
+  navigationId: 0,
   openIncidentCount: 0,
 };
 
@@ -113,6 +114,7 @@ document.getElementById('sidebar-overlay').addEventListener('click', closeSideba
 // ─────────────────────────────────────────────────────────────────────────────
 
 function navigate(name, data = {}) {
+  const navigationId = ++state.navigationId;
   state.view     = name;
   state.viewData = data;
 
@@ -131,10 +133,17 @@ function navigate(name, data = {}) {
   document.getElementById('topbar-actions').innerHTML = '';
   setContent('<div class="loading-state"><span class="spinner"></span> Loading…</div>');
 
-  Promise.resolve()
+  return Promise.resolve()
     .then(() => v.render(data))
-    .then(html => { setContent(html); if (v.init) v.init(data); })
-    .catch(err => { setContent(`<div class="empty-state">Error: ${esc(err.message)}</div>`); });
+    .then(html => {
+      if (navigationId !== state.navigationId) return;
+      setContent(html);
+      if (v.init) v.init(data);
+    })
+    .catch(err => {
+      if (navigationId !== state.navigationId) return;
+      setContent(`<div class="empty-state">Error: ${esc(err.message)}</div>`);
+    });
 }
 
 function setContent(html) {

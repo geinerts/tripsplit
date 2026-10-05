@@ -235,6 +235,26 @@ test('admin actions render and operate under CSP without executing untrusted dat
     assert.equal(await page.evaluate(() => window.xss), undefined);
     assert.deepEqual(errors, []);
     assert.deepEqual(violations, []);
+    for (const rejectOld of [false, true]) {
+      await page.evaluate(async rejectOld => {
+        let settleOld;
+        registerView('slow-regression', {
+          title: 'Slow',
+          render: () => new Promise((resolve, reject) => {
+            settleOld = () => rejectOld ? reject(new Error('Old failure')) : resolve('Old content');
+          }),
+          init: () => { window.staleViewInitialized = true; },
+        });
+        registerView('latest-regression', { title: 'Latest', render: () => '<div id="latest-view">Latest</div>' });
+        const oldNavigation = navigate('slow-regression');
+        await Promise.resolve();
+        await navigate('latest-regression');
+        settleOld();
+        await oldNavigation;
+      }, rejectOld);
+      assert.equal(await page.locator('#latest-view').textContent(), 'Latest');
+      assert.equal(await page.evaluate(() => window.staleViewInitialized), undefined);
+    }
     const source = fs.readFileSync(path.join(root, 'admin2/app.js'), 'utf8');
     assert.doesNotMatch(source, /\bon\w+\s*=/i);
   } finally {
