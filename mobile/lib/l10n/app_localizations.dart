@@ -97,6 +97,30 @@ abstract class AppLocalizations {
     Locale('lv')
   ];
 
+  /// No description provided for @paymentShareDetailsConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Share my saved payment details with {arg1}'**
+  String paymentShareDetailsConsent(Object arg1);
+
+  /// No description provided for @paymentShareDetailsScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Only while this request is awaiting payment. Cancelling the request ends access.'**
+  String get paymentShareDetailsScope;
+
+  /// No description provided for @paymentDetailsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment details are unavailable. Connect to the internet and check that the request is still open.'**
+  String get paymentDetailsUnavailable;
+
+  /// No description provided for @paymentDetailsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get paymentDetailsRetry;
+
   /// No description provided for @tripModeSolo.
   ///
   /// In en, this message translates to:

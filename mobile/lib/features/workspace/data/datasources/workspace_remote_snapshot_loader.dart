@@ -9,10 +9,29 @@ import '../../domain/entities/workspace_snapshot.dart';
 import '../../domain/entities/trip_expenses_page.dart';
 import 'workspace_remote_parsers.dart';
 
+import '../../domain/entities/payment_details.dart';
+
 class WorkspaceRemoteSnapshotLoader {
   WorkspaceRemoteSnapshotLoader(this._apiClient);
 
   final ApiClient _apiClient;
+
+  Future<PaymentDetails> loadPaymentRequestDetails({
+    required int tripId,
+    required int paymentId,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('trip_payment_request_details'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'payment_id': paymentId},
+    );
+    final details = response['payment_details'];
+    if (details is! Map<String, dynamic>) {
+      throw StateError('Missing payment details payload.');
+    }
+    return WorkspaceRemoteParsers.parsePaymentDetails(details);
+  }
 
   Future<int> loadCurrentUserId() async {
     final response = await _apiClient.request(

@@ -15,8 +15,14 @@ import '../../domain/entities/workspace_snapshot.dart';
 import 'workspace_remote_mutation_api.dart';
 import 'workspace_remote_snapshot_loader.dart';
 
+import '../../domain/entities/payment_details.dart';
+
 abstract class WorkspaceRemoteDataSource {
   Future<int> loadCurrentUserId();
+  Future<PaymentDetails> loadPaymentRequestDetails({
+    required int tripId,
+    required int paymentId,
+  });
 
   Future<WorkspaceSnapshot> loadSnapshot({required int tripId});
   Future<TripExpensesPage> loadExpensesPage({
@@ -70,6 +76,7 @@ abstract class WorkspaceRemoteDataSource {
     String? clientMutationId,
   });
   Future<void> createTripPaymentRequest({
+    bool sharePaymentDetails = false,
     required int tripId,
     required int fromUserId,
     required double amount,
@@ -211,6 +218,15 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
 
   final WorkspaceRemoteSnapshotLoader _snapshotLoader;
   final WorkspaceRemoteMutationApi _mutationApi;
+
+  @override
+  Future<PaymentDetails> loadPaymentRequestDetails({
+    required int tripId,
+    required int paymentId,
+  }) => _snapshotLoader.loadPaymentRequestDetails(
+    tripId: tripId,
+    paymentId: paymentId,
+  );
 
   @override
   Future<int> loadCurrentUserId() {
@@ -358,6 +374,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
 
   @override
   Future<void> createTripPaymentRequest({
+    bool sharePaymentDetails = false,
     required int tripId,
     required int fromUserId,
     required double amount,
@@ -365,6 +382,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     String? clientMutationId,
   }) {
     return _mutationApi.createTripPaymentRequest(
+      sharePaymentDetails: sharePaymentDetails,
       tripId: tripId,
       fromUserId: fromUserId,
       amount: amount,

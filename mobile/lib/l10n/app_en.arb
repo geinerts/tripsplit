@@ -1,4 +1,8 @@
 {
+  "paymentShareDetailsConsent": "Share my saved payment details with {arg1}",
+  "paymentShareDetailsScope": "Only while this request is awaiting payment. Cancelling the request ends access.",
+  "paymentDetailsUnavailable": "Payment details are unavailable. Connect to the internet and check that the request is still open.",
+  "paymentDetailsRetry": "Try again",
   "@@locale": "en",
   "tripModeSolo": "Just me",
   "tripModeGroup": "With others",

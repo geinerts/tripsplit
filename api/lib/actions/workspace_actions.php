@@ -113,15 +113,6 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
     $nameSelect = users_name_columns_available($pdo)
         ? 'u.first_name, u.last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
-    $revolutMeLinkSelect = users_revolut_me_link_column_available($pdo)
-        ? 'u.revolut_me_link, '
-        : 'NULL AS revolut_me_link, ';
-    $wisePayLinkSelect = users_wise_pay_link_column_available($pdo)
-        ? 'u.wise_pay_link, '
-        : 'NULL AS wise_pay_link, ';
-    $paymentSelect = users_payment_columns_available($pdo)
-        ? 'u.bank_account_holder, u.bank_iban, u.bank_bic, u.revolut_handle, ' . $revolutMeLinkSelect . 'u.paypal_me_link, ' . $wisePayLinkSelect
-        : 'NULL AS bank_account_holder, NULL AS bank_iban, NULL AS bank_bic, NULL AS revolut_handle, NULL AS revolut_me_link, NULL AS paypal_me_link, NULL AS wise_pay_link, ';
     $readySelect = trip_members_ready_columns_available($pdo)
         ? 'tm.ready_to_settle, tm.ready_to_settle_at, '
         : '1 AS ready_to_settle, NULL AS ready_to_settle_at, ';
@@ -130,7 +121,7 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
         : 'CASE WHEN t.created_by = tm.user_id THEN "owner" ELSE "member" END AS role, ';
 
     $stmt = $pdo->prepare(
-        'SELECT u.id, ' . $nameSelect . $paymentSelect . $roleSelect . $readySelect . 'u.nickname, u.avatar_path
+        'SELECT u.id, ' . $nameSelect . $roleSelect . $readySelect . 'u.nickname, u.avatar_path
          FROM ' . $tripMembersTable . ' tm
          JOIN ' . $tripsTable . ' t ON t.id = tm.trip_id
          JOIN ' . $usersTable . ' u ON u.id = tm.user_id
@@ -150,17 +141,6 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
             ? $displayName
             : trim((string) ($row['nickname'] ?? ''));
         $row['role'] = normalize_trip_member_role($row['role'] ?? 'member');
-        $bankAccountHolder = normalize_me_profile_text_value($row['bank_account_holder'] ?? null);
-        if ($bankAccountHolder === null) {
-            $bankAccountHolder = $displayName;
-        }
-        $row['bank_account_holder'] = $bankAccountHolder;
-        $row['bank_iban'] = normalize_me_profile_text_value($row['bank_iban'] ?? null);
-        $row['bank_bic'] = normalize_me_profile_text_value($row['bank_bic'] ?? null);
-        $row['revolut_handle'] = normalize_me_profile_text_value($row['revolut_handle'] ?? null);
-        $row['revolut_me_link'] = normalize_me_profile_text_value($row['revolut_me_link'] ?? null);
-        $row['paypal_me_link'] = normalize_me_profile_text_value($row['paypal_me_link'] ?? null);
-        $row['wise_pay_link'] = normalize_me_profile_text_value($row['wise_pay_link'] ?? null);
         $row['is_ready_to_settle'] = ((int) ($row['ready_to_settle'] ?? 0)) === 1;
         $row['ready_to_settle_at'] = $row['ready_to_settle_at'] ?: null;
         $avatarPath = trim((string) ($row['avatar_path'] ?? ''));

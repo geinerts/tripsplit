@@ -1,4 +1,8 @@
 {
+  "paymentShareDetailsConsent": "Kopīgot manus saglabātos maksājumu rekvizītus ar {arg1}",
+  "paymentShareDetailsScope": "Tikai kamēr šis pieprasījums gaida apmaksu. Atceļot pieprasījumu, piekļuve beidzas.",
+  "paymentDetailsUnavailable": "Maksājumu rekvizīti nav pieejami. Pārbaudi interneta savienojumu un vai pieprasījums joprojām ir atvērts.",
+  "paymentDetailsRetry": "Mēģināt vēlreiz",
   "@@locale": "lv",
   "tripModeSolo": "Tikai es",
   "tripModeGroup": "Ar citiem",

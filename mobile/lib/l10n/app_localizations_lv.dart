@@ -9,6 +9,20 @@ class AppLocalizationsLv extends AppLocalizations {
   AppLocalizationsLv([String locale = 'lv']) : super(locale);
 
   @override
+  String paymentShareDetailsConsent(Object arg1) {
+    return 'Kopīgot manus saglabātos maksājumu rekvizītus ar $arg1';
+  }
+
+  @override
+  String get paymentShareDetailsScope => 'Tikai kamēr šis pieprasījums gaida apmaksu. Atceļot pieprasījumu, piekļuve beidzas.';
+
+  @override
+  String get paymentDetailsUnavailable => 'Maksājumu rekvizīti nav pieejami. Pārbaudi interneta savienojumu un vai pieprasījums joprojām ir atvērts.';
+
+  @override
+  String get paymentDetailsRetry => 'Mēģināt vēlreiz';
+
+  @override
   String get tripModeSolo => 'Tikai es';
 
   @override

@@ -16,6 +16,7 @@ class PaymentItem {
     required this.cancelledAt,
     required this.cancelReason,
     required this.canMarkRequestSent,
+    this.canViewPaymentDetails = false,
     required this.canCancelRequest,
     required this.canDeclineRequest,
     required this.canConfirmReceived,
@@ -40,6 +41,7 @@ class PaymentItem {
   final String? cancelledAt;
   final String? cancelReason;
   final bool canMarkRequestSent;
+  final bool canViewPaymentDetails;
   final bool canCancelRequest;
   final bool canDeclineRequest;
   final bool canConfirmReceived;

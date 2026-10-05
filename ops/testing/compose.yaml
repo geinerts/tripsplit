@@ -33,6 +33,7 @@ services:
       - ../../api/tests:/workspace/api/tests:ro
       - ../../api/vendor:/workspace/api/vendor:ro
       - ../../api/phpunit.xml:/workspace/api/phpunit.xml:ro
+      - ../../sql/migrations/2026-10-05-add-payment-details-consent.sql:/workspace/sql/migrations/2026-10-05-add-payment-details-consent.sql:ro
       - ../../sql/migrations/2026-10-04-social-identity-subject-case.sql:/workspace/sql/migrations/2026-10-04-social-identity-subject-case.sql:ro
       - ../../sql/migrations/2026-10-04-password-reset-state.sql:/workspace/sql/migrations/2026-10-04-password-reset-state.sql:ro
       - ../../sql/migrations/2026-10-04-deactivation-email-proof.sql:/workspace/sql/migrations/2026-10-04-deactivation-email-proof.sql:ro

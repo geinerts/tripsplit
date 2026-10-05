@@ -9,6 +9,20 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String paymentShareDetailsConsent(Object arg1) {
+    return 'Share my saved payment details with $arg1';
+  }
+
+  @override
+  String get paymentShareDetailsScope => 'Only while this request is awaiting payment. Cancelling the request ends access.';
+
+  @override
+  String get paymentDetailsUnavailable => 'Payment details are unavailable. Connect to the internet and check that the request is still open.';
+
+  @override
+  String get paymentDetailsRetry => 'Try again';
+
+  @override
   String get tripModeSolo => 'Just me';
 
   @override

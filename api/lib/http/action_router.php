@@ -74,6 +74,7 @@ function api_action_handlers(): array
         'balances' => 'balances_action',
         'create_trip_payment' => 'create_trip_payment_action',
         'create_trip_payment_request' => 'create_trip_payment_request_action',
+        'trip_payment_request_details' => 'trip_payment_request_details_action',
         'mark_trip_payment_request_sent' => 'mark_trip_payment_request_sent_action',
         'cancel_trip_payment_request' => 'cancel_trip_payment_request_action',
         'decline_trip_payment_request' => 'decline_trip_payment_request_action',

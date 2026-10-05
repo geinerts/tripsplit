@@ -9,6 +9,20 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String paymentShareDetailsConsent(Object arg1) {
+    return 'Compartir mis datos de pago guardados con $arg1';
+  }
+
+  @override
+  String get paymentShareDetailsScope => 'Solo mientras esta solicitud esté pendiente de pago. Al cancelarla, finaliza el acceso.';
+
+  @override
+  String get paymentDetailsUnavailable => 'Los datos de pago no están disponibles. Comprueba la conexión y que la solicitud siga abierta.';
+
+  @override
+  String get paymentDetailsRetry => 'Reintentar';
+
+  @override
   String get tripModeSolo => 'Solo yo';
 
   @override

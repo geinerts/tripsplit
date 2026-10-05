@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/settlements_payment_details.php';
+
 function trip_payments_table_available(PDO $pdo): bool
 {
     static $available = null;
@@ -116,6 +118,9 @@ function payment_row_to_payload(array $row, int $currentUserId): array
         'cancelled_at' => $row['cancelled_at'] ?? null,
         'cancel_reason' => $row['cancel_reason'] ?? null,
         'can_mark_request_sent' => $status === 'requested' && $currentUserId > 0 && $currentUserId === $fromUserId,
+        'can_view_payment_details' => $status === 'requested' && $currentUserId > 0
+            && $currentUserId === $fromUserId && $fromUserId !== $toUserId
+            && $requesterUserId === $toUserId && (int) ($row['share_payment_details'] ?? 0) === 1,
         'can_cancel_request' => $status === 'requested' && $currentUserId > 0 && $currentUserId === $toUserId,
         'can_decline_request' => $status === 'requested' && $currentUserId > 0 && $currentUserId === $fromUserId,
         'can_confirm_received' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $toUserId,
@@ -133,6 +138,8 @@ function load_trip_payments_payload(PDO $pdo, int $tripId, int $currentUserId): 
 
     $paymentsTable = table_name('payments');
     $usersTable = table_name('users');
+    $detailsConsentSelect = trip_payment_details_sharing_available($pdo)
+        ? 'p.share_payment_details' : '0 AS share_payment_details';
     $stmt = $pdo->prepare(
         'SELECT
             p.id,
@@ -143,6 +150,7 @@ function load_trip_payments_payload(PDO $pdo, int $tripId, int $currentUserId): 
             p.status,
             p.note,
             p.requester_user_id,
+            ' . $detailsConsentSelect . ',
             p.requested_at,
             p.marked_sent_at,
             p.confirmed_at,
@@ -454,6 +462,11 @@ function create_trip_payment_request_action(): void
     $pdo = db();
     ensure_trip_payments_table_available($pdo);
 
+    $sharePaymentDetails = ($body['share_payment_details'] ?? false) === true;
+    if ($sharePaymentDetails) {
+        require_trip_payment_details_sharing($pdo);
+    }
+
     $trip = get_current_trip($pdo, $me, true);
     $tripId = (int) ($trip['id'] ?? 0);
     if (normalize_trip_status($trip['status'] ?? 'active') !== 'active') {
@@ -566,6 +579,11 @@ function create_trip_payment_request_action(): void
             'requester_user_id' => $toUserId,
         ]);
         $paymentId = (int) $pdo->lastInsertId();
+
+        if ($sharePaymentDetails) {
+            $pdo->prepare('UPDATE ' . $paymentsTable . ' SET share_payment_details = 1 WHERE id = :id')
+                ->execute(['id' => $paymentId]);
+        }
 
         $touchTrip = $pdo->prepare(
             'UPDATE ' . $tripsTable . '

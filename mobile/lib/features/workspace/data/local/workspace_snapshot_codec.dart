@@ -177,14 +177,6 @@ class WorkspaceSnapshotCodec {
           final avatarThumbUrl = MediaUrlResolver.normalize(
             item['avatar_thumb_url'],
           );
-          final bankAccountHolder = (item['bank_account_holder'] as String?)
-              ?.trim();
-          final bankIban = (item['bank_iban'] as String?)?.trim();
-          final bankBic = (item['bank_bic'] as String?)?.trim();
-          final revolutHandle = (item['revolut_handle'] as String?)?.trim();
-          final revolutMeLink = (item['revolut_me_link'] as String?)?.trim();
-          final paypalMeLink = (item['paypal_me_link'] as String?)?.trim();
-          final wisePayLink = (item['wise_pay_link'] as String?)?.trim();
           final readyToSettleAt = (item['ready_to_settle_at'] as String?)
               ?.trim();
           return WorkspaceUser(
@@ -196,24 +188,6 @@ class WorkspaceSnapshotCodec {
                 : displayName,
             avatarUrl: avatarUrl,
             avatarThumbUrl: avatarThumbUrl,
-            bankAccountHolder:
-                bankAccountHolder == null || bankAccountHolder.isEmpty
-                ? null
-                : bankAccountHolder,
-            bankIban: bankIban == null || bankIban.isEmpty ? null : bankIban,
-            bankBic: bankBic == null || bankBic.isEmpty ? null : bankBic,
-            revolutHandle: revolutHandle == null || revolutHandle.isEmpty
-                ? null
-                : revolutHandle,
-            revolutMeLink: revolutMeLink == null || revolutMeLink.isEmpty
-                ? null
-                : revolutMeLink,
-            paypalMeLink: paypalMeLink == null || paypalMeLink.isEmpty
-                ? null
-                : paypalMeLink,
-            wisePayLink: wisePayLink == null || wisePayLink.isEmpty
-                ? null
-                : wisePayLink,
             isReadyToSettle:
                 item['is_ready_to_settle'] == true ||
                 (item['is_ready_to_settle'] as num?)?.toInt() == 1 ||

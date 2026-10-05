@@ -56,6 +56,7 @@ import '../../domain/entities/workspace_notification.dart';
 import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
 import '../../domain/entities/workspace_user.dart';
+import '../widgets/payment_request_details_sheet.dart';
 import '../controllers/workspace_controller.dart';
 
 part 'workspace_page_actions_loading.dart';

@@ -18,6 +18,8 @@ import '../datasources/workspace_remote_data_source.dart';
 import '../local/workspace_local_store.dart';
 import 'workspace_offline_queue.dart';
 
+import '../../domain/entities/payment_details.dart';
+
 class WorkspaceRepositoryImpl implements WorkspaceRepository {
   WorkspaceRepositoryImpl(this._remote, this._localStore)
     : _offlineQueue = WorkspaceOfflineQueue(
@@ -25,7 +27,17 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
         localStore: _localStore,
       );
 
+  @override
+  Future<PaymentDetails> loadPaymentRequestDetails({
+    required int tripId,
+    required int paymentId,
+  }) => _localStore.storage.session.run(
+    () =>
+        _remote.loadPaymentRequestDetails(tripId: tripId, paymentId: paymentId),
+  );
+
   final WorkspaceRemoteDataSource _remote;
+
   final WorkspaceLocalStore _localStore;
   final WorkspaceOfflineQueue _offlineQueue;
   final Map<String, String> _pendingPaymentMutationIds = <String, String>{};
@@ -193,23 +205,26 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
   @override
   Future<void> createTripPaymentRequest({
+    bool sharePaymentDetails = false,
     required int tripId,
     required int fromUserId,
     required double amount,
     String note = '',
   }) async {
-    final key = _paymentMutationKey(
+    final baseKey = _paymentMutationKey(
       type: 'create_trip_payment_request',
       tripId: tripId,
       counterpartyUserId: fromUserId,
       amount: amount,
       note: note,
     );
+    final key = '$baseKey:share=$sharePaymentDetails';
     await _runIdempotentPaymentMutation(
       key: key,
       type: 'create_trip_payment_request',
       tripId: tripId,
       action: (mutationId) => _remote.createTripPaymentRequest(
+        sharePaymentDetails: sharePaymentDetails,
         tripId: tripId,
         fromUserId: fromUserId,
         amount: amount,

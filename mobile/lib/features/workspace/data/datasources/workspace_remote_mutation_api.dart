@@ -118,6 +118,7 @@ class WorkspaceRemoteMutationApi {
   }
 
   Future<void> createTripPaymentRequest({
+    bool sharePaymentDetails = false,
     required int tripId,
     required int fromUserId,
     required double amount,
@@ -130,6 +131,7 @@ class WorkspaceRemoteMutationApi {
       headers: _tripHeaders(tripId, clientMutationId: clientMutationId),
       body: <String, dynamic>{
         'from_user_id': fromUserId,
+        'share_payment_details': sharePaymentDetails,
         'amount': amount,
         if (note.trim().isNotEmpty) 'note': note.trim(),
       },

@@ -827,7 +827,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                         ? null
                         : () => _openTripPaymentRequestReviewSheet(
                             payment: payment,
-                            payee: toUser,
                           ),
                     icon: const Icon(Icons.receipt_long_rounded, size: 17),
                     label: Text(context.l10n.paymentReviewRequestAction),
@@ -929,6 +928,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     );
     final noteController = TextEditingController();
     var errorText = '';
+    var sharePaymentDetails = false;
 
     await showAppBottomSheet<void>(
       context: context,
@@ -1009,6 +1009,22 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                           counterText: '',
                         ),
                       ),
+                      if (isRequest)
+                        CheckboxListTile(
+                          contentPadding: EdgeInsets.zero,
+                          value: sharePaymentDetails,
+                          title: Text(
+                            sheetContext.l10n.paymentShareDetailsConsent(
+                              settlement.from,
+                            ),
+                          ),
+                          subtitle: Text(
+                            sheetContext.l10n.paymentShareDetailsScope,
+                          ),
+                          onChanged: (value) => setSheetState(() {
+                            sharePaymentDetails = value == true;
+                          }),
+                        ),
                       if (errorText.isNotEmpty) ...[
                         const SizedBox(height: 10),
                         Text(
@@ -1047,6 +1063,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                                   Navigator.of(sheetContext).pop();
                                   if (isRequest) {
                                     await _onTripPaymentRequestCreate(
+                                      sharePaymentDetails: sharePaymentDetails,
                                       settlement: settlement,
                                       amount: amount,
                                       note: noteController.text,
@@ -1095,7 +1112,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
 
   Future<void> _openTripPaymentRequestReviewSheet({
     required PaymentItem payment,
-    required WorkspaceUser? payee,
   }) async {
     final amount = _formatMoney(
       context,
@@ -1154,16 +1170,25 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                   ),
                 ],
                 const SizedBox(height: 18),
-                if (payee?.hasPaymentDetails == true) ...[
+                if (payment.canViewPaymentDetails) ...[
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
                       onPressed: () {
                         Navigator.of(sheetContext).pop();
-                        final target = payee;
-                        if (target != null) {
-                          unawaited(_openTripMemberProfilePage(target));
-                        }
+                        unawaited(
+                          showAppBottomSheet<void>(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (_) => PaymentRequestDetailsSheet(
+                              load: () => widget.workspaceController
+                                  .loadPaymentRequestDetails(
+                                    tripId: widget.trip.id,
+                                    paymentId: payment.id,
+                                  ),
+                            ),
+                          ),
+                        );
                       },
                       icon: const Icon(Icons.account_balance_wallet_outlined),
                       label: Text(sheetContext.l10n.paymentViewDetailsAction),

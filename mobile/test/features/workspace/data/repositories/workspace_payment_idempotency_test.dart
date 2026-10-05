@@ -42,6 +42,7 @@ void main() {
           apiClient.requests[1].headers['X-Client-Mutation-Id'];
       expect(firstMutationId, isNotNull);
       expect(firstMutationId, secondMutationId);
+      expect(apiClient.requests[0].body['share_payment_details'], isFalse);
     },
   );
 
@@ -68,6 +69,33 @@ void main() {
     expect(secondMutationId, isNotNull);
     expect(firstMutationId, isNot(secondMutationId));
   });
+
+  test(
+    'changing consent uses a different retry key and sends explicit consent',
+    () async {
+      final api = _RecordingApiClient(failFirstRequest: true);
+      final repository = _repository(api);
+      await expectLater(
+        repository.createTripPaymentRequest(
+          tripId: 17,
+          fromUserId: 8,
+          amount: 10,
+        ),
+        throwsA(isA<ApiException>()),
+      );
+      await repository.createTripPaymentRequest(
+        tripId: 17,
+        fromUserId: 8,
+        amount: 10,
+        sharePaymentDetails: true,
+      );
+      expect(api.requests.last.body['share_payment_details'], isTrue);
+      expect(
+        api.requests.last.headers['X-Client-Mutation-Id'],
+        isNot(api.requests.first.headers['X-Client-Mutation-Id']),
+      );
+    },
+  );
 }
 
 WorkspaceRepositoryImpl _repository(ApiClient apiClient) {
@@ -104,6 +132,7 @@ class _RecordingApiClient implements ApiClient {
     requests.add(
       _RecordedRequest(
         path: path,
+        body: Map<String, dynamic>.from(body ?? {}),
         headers: Map<String, String>.from(headers ?? const <String, String>{}),
       ),
     );
@@ -115,8 +144,13 @@ class _RecordingApiClient implements ApiClient {
 }
 
 class _RecordedRequest {
-  const _RecordedRequest({required this.path, required this.headers});
+  const _RecordedRequest({
+    required this.path,
+    required this.headers,
+    required this.body,
+  });
 
   final String path;
+  final Map<String, dynamic> body;
   final Map<String, String> headers;
 }

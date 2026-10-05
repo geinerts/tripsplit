@@ -1,6 +1,7 @@
 import '../../domain/entities/balance_item.dart';
 import '../../domain/entities/expense_participant.dart';
 import '../../domain/entities/payment_item.dart';
+import '../../domain/entities/payment_details.dart';
 import '../../domain/entities/random_order.dart';
 import '../../domain/entities/random_order_member.dart';
 import '../../domain/entities/settlement_item.dart';
@@ -88,13 +89,6 @@ class WorkspaceRemoteParsers {
     final readyToSettleAt = _toNullableString(
       item['ready_to_settle_at'] ?? item['ready_at'],
     );
-    final bankAccountHolder = _toNullableString(item['bank_account_holder']);
-    final bankIban = _toNullableString(item['bank_iban']);
-    final bankBic = _toNullableString(item['bank_bic']);
-    final revolutHandle = _toNullableString(item['revolut_handle']);
-    final revolutMeLink = _toNullableString(item['revolut_me_link']);
-    final paypalMeLink = _toNullableString(item['paypal_me_link']);
-    final wisePayLink = _toNullableString(item['wise_pay_link']);
     final role = _normalizeTripRole(item['role']);
     return WorkspaceUser(
       id: (item['id'] as num?)?.toInt() ?? 0,
@@ -103,13 +97,6 @@ class WorkspaceRemoteParsers {
       displayName: displayName.isEmpty ? null : displayName,
       avatarUrl: avatarUrl,
       avatarThumbUrl: avatarThumbUrl,
-      bankAccountHolder: bankAccountHolder,
-      bankIban: bankIban,
-      bankBic: bankBic,
-      revolutHandle: revolutHandle,
-      revolutMeLink: revolutMeLink,
-      paypalMeLink: paypalMeLink,
-      wisePayLink: wisePayLink,
       isReadyToSettle: isReadyToSettle,
       readyToSettleAt: readyToSettleAt,
     );
@@ -122,6 +109,17 @@ class WorkspaceRemoteParsers {
     }
     return 'member';
   }
+
+  static PaymentDetails parsePaymentDetails(Map<String, dynamic> item) =>
+      PaymentDetails(
+        bankAccountHolder: _toNullableString(item['bank_account_holder']),
+        bankIban: _toNullableString(item['bank_iban']),
+        bankBic: _toNullableString(item['bank_bic']),
+        revolutHandle: _toNullableString(item['revolut_handle']),
+        revolutMeLink: _toNullableString(item['revolut_me_link']),
+        paypalMeLink: _toNullableString(item['paypal_me_link']),
+        wisePayLink: _toNullableString(item['wise_pay_link']),
+      );
 
   static BalanceItem parseBalance(Map<String, dynamic> item) {
     return BalanceItem(
@@ -175,6 +173,7 @@ class WorkspaceRemoteParsers {
       cancelledAt: _toNullableString(item['cancelled_at']),
       cancelReason: _toNullableString(item['cancel_reason']),
       canMarkRequestSent: _toBool(item['can_mark_request_sent']),
+      canViewPaymentDetails: _toBool(item['can_view_payment_details']),
       canCancelRequest: _toBool(item['can_cancel_request']),
       canDeclineRequest: _toBool(item['can_decline_request']),
       canConfirmReceived: _toBool(item['can_confirm_received']),

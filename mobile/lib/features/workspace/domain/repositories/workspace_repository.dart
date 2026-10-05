@@ -13,8 +13,14 @@ import '../entities/workspace_notifications_inbox.dart';
 import '../entities/workspace_shared_trip.dart';
 import '../entities/workspace_snapshot.dart';
 
+import '../entities/payment_details.dart';
+
 abstract class WorkspaceRepository {
   Future<int> loadCurrentUserId();
+  Future<PaymentDetails> loadPaymentRequestDetails({
+    required int tripId,
+    required int paymentId,
+  });
 
   Future<WorkspaceSnapshot?> readCachedSnapshot({required int tripId});
   Future<WorkspaceSnapshot> loadSnapshot({required int tripId});
@@ -75,6 +81,7 @@ abstract class WorkspaceRepository {
     String note = '',
   });
   Future<void> createTripPaymentRequest({
+    bool sharePaymentDetails = false,
     required int tripId,
     required int fromUserId,
     required double amount,

@@ -62,7 +62,7 @@ final class BackendDataIsolationTest extends TestCase
         delete_unreferenced_receipt($pdo, 'uploads/receipts/shared.webp');
     }
 
-    public function test_public_and_pending_friend_payloads_exclude_financial_details(): void
+    public function test_all_friend_payloads_exclude_financial_details(): void
     {
         $row = ['id' => 7, 'nickname' => 'Test', 'bank_iban' => 'PRIVATE_IBAN',
             'bank_bic' => 'PRIVATE_BIC', 'bank_account_number' => 'PRIVATE_ACCOUNT',
@@ -75,7 +75,5 @@ final class BackendDataIsolationTest extends TestCase
                 self::assertArrayNotHasKey($key, $public);
             }
         }
-        self::assertSame('PRIVATE_IBAN', friend_user_payload_from_row($row, true)['bank_iban']);
-        self::assertArrayNotHasKey('password_hash', friend_user_payload_from_row($row, true));
     }
 }

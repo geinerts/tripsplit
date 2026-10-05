@@ -104,3 +104,14 @@ then 12 races / 36 requests combining real password login, refresh rotation and
 password-reset or deactivation handlers. Newly issued access and refresh tokens
 must be unusable after the security event commits. Unrelated sessions must stay
 unchanged. See `docs/api/session-revocation.md` for boundaries and rollout behavior.
+
+## Payment details privacy
+
+The final suite runs 25 payment-details read/payload cases and 8 consent handler
+cases against MySQL. It recreates only synthetic users, trips, trip members and
+payments, and applies the mounted `2026-10-05-add-payment-details-consent.sql`.
+Existing requests must keep consent off. Tests exercise payer/recipient/other-user
+boundaries, membership/account/request status, explicit consent, spoofed request
+fields, missing migration and transactional rollback. Handler transport, rate
+limits, balance computation, notifications and idempotency storage are adapters.
+See `docs/api/payment-details-privacy.md`; pending membership is not covered yet.

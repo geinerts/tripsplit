@@ -15,10 +15,20 @@ import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
 import '../../domain/repositories/workspace_repository.dart';
 
+import '../../domain/entities/payment_details.dart';
+
 class WorkspaceController {
   WorkspaceController(this._repository);
 
   final WorkspaceRepository _repository;
+
+  Future<PaymentDetails> loadPaymentRequestDetails({
+    required int tripId,
+    required int paymentId,
+  }) => _repository.loadPaymentRequestDetails(
+    tripId: tripId,
+    paymentId: paymentId,
+  );
 
   Future<Uri?> loadReceiptUri({
     required int tripId,
@@ -175,12 +185,14 @@ class WorkspaceController {
   }
 
   Future<void> createTripPaymentRequest({
+    bool sharePaymentDetails = false,
     required int tripId,
     required int fromUserId,
     required double amount,
     String note = '',
   }) {
     return _repository.createTripPaymentRequest(
+      sharePaymentDetails: sharePaymentDetails,
       tripId: tripId,
       fromUserId: fromUserId,
       amount: amount,

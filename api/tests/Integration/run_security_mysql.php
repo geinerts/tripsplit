@@ -16,3 +16,9 @@ if (!is_resource($process) || proc_close($process) !== 0) {
     throw new RuntimeException('Social identity regression suite failed');
 }
 require __DIR__ . '/verify_social_subject_migration.php';
+
+$process = proc_open([PHP_BINARY, 'vendor/bin/phpunit', '--do-not-cache-result',
+    '--filter', 'PaymentDetailsPrivacyTest|PaymentDetailsConsentHandlerTest'], [STDIN, STDOUT, STDERR], $pipes);
+if (!is_resource($process) || proc_close($process) !== 0) {
+    throw new RuntimeException('Payment details privacy regression suite failed');
+}

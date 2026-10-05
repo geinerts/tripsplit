@@ -31,13 +31,6 @@ class FriendUserModel extends FriendUser {
       displayName: (map['display_name'] as String?)?.trim(),
       avatarUrl: avatarUrl,
       avatarThumbUrl: avatarThumbUrl,
-      bankAccountHolder: (map['bank_account_holder'] as String?)?.trim(),
-      bankIban: (map['bank_iban'] as String?)?.trim(),
-      bankBic: (map['bank_bic'] as String?)?.trim(),
-      revolutHandle: (map['revolut_handle'] as String?)?.trim(),
-      revolutMeLink: (map['revolut_me_link'] as String?)?.trim(),
-      paypalMeLink: (map['paypal_me_link'] as String?)?.trim(),
-      wisePayLink: (map['wise_pay_link'] as String?)?.trim(),
       commonTripsCount: (map['common_trips_count'] as num?)?.toInt() ?? 0,
     );
   }

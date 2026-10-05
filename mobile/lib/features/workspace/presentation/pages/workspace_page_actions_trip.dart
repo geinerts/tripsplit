@@ -309,6 +309,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
   }
 
   Future<void> _onTripPaymentRequestCreate({
+    required bool sharePaymentDetails,
     required SettlementItem settlement,
     required double amount,
     required String note,
@@ -319,6 +320,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     await _runMutation(
       action: () async {
         await widget.workspaceController.createTripPaymentRequest(
+          sharePaymentDetails: sharePaymentDetails,
           tripId: widget.trip.id,
           fromUserId: settlement.fromUserId,
           amount: amount,

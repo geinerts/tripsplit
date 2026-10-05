@@ -150,28 +150,29 @@ extension _FriendsPageProfile on _FriendsPageState {
                     context: profileContext,
                     future: sharedTripsFuture,
                   ),
-                  UserProfilePaymentDetailsSection(
-                    sectionTitle: context.l10n.workspacePaymentDetails,
-                    emptyText: context
-                        .l10n
-                        .friendsThisFriendHasNotAddedPayoutDetailsYet,
-                    bankTransferTitle: context.l10n.workspaceBankTransfer,
-                    bankHolderLabel: context.l10n.workspaceHolder,
-                    bankHolderName: holderName,
-                    bankIban: profileUser.bankIban,
-                    bankBic: profileUser.bankBic,
-                    revolutTitle: 'Revolut',
-                    revolutHandle: profileUser.revolutHandle,
-                    revolutMeLink: profileUser.revolutMeLink,
-                    paypalTitle: 'PayPal.me',
-                    paypalMeLink: profileUser.paypalMeLink,
-                    wiseTitle: 'Wise',
-                    wisePayLink: profileUser.wisePayLink,
-                    openLinkFailedText:
-                        context.l10n.workspaceCouldNotOpenPaymentLink,
-                    onErrorMessage: (message) =>
-                        _showSnack(message, isError: true),
-                  ),
+                  if (profileUser.hasPaymentDetails)
+                    UserProfilePaymentDetailsSection(
+                      sectionTitle: context.l10n.workspacePaymentDetails,
+                      emptyText: context
+                          .l10n
+                          .friendsThisFriendHasNotAddedPayoutDetailsYet,
+                      bankTransferTitle: context.l10n.workspaceBankTransfer,
+                      bankHolderLabel: context.l10n.workspaceHolder,
+                      bankHolderName: holderName,
+                      bankIban: profileUser.bankIban,
+                      bankBic: profileUser.bankBic,
+                      revolutTitle: 'Revolut',
+                      revolutHandle: profileUser.revolutHandle,
+                      revolutMeLink: profileUser.revolutMeLink,
+                      paypalTitle: 'PayPal.me',
+                      paypalMeLink: profileUser.paypalMeLink,
+                      wiseTitle: 'Wise',
+                      wisePayLink: profileUser.wisePayLink,
+                      openLinkFailedText:
+                          context.l10n.workspaceCouldNotOpenPaymentLink,
+                      onErrorMessage: (message) =>
+                          _showSnack(message, isError: true),
+                    ),
                 ],
                 bankTitle: context.l10n.workspaceBankDetails,
                 bankDescription: context

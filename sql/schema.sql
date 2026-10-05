@@ -185,6 +185,7 @@ CREATE TABLE IF NOT EXISTS trip_payments (
   status ENUM('requested', 'sent', 'confirmed', 'cancelled') NOT NULL DEFAULT 'sent',
   note VARCHAR(255) NULL,
   requester_user_id INT UNSIGNED NULL,
+  share_payment_details TINYINT(1) NOT NULL DEFAULT 0,
   requested_at TIMESTAMP NULL DEFAULT NULL,
   marked_sent_by INT UNSIGNED NULL,
   marked_sent_at TIMESTAMP NULL DEFAULT NULL,
