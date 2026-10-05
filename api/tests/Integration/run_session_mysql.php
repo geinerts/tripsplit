@@ -46,4 +46,15 @@ for($round=1;$round<=6;$round++)foreach(['reset','deactivate'] as $event) {
             foreach($w['pipes']as $pipe)if(is_resource($pipe))fclose($pipe);proc_close($w['process']);}
     }
 }
-echo "PASS: 12 session races / 36 synthetic requests\n";
+// Establish an old repeatable-read snapshot, then let another connection create
+// sessions before this transaction acquires the user lock and issues its own.
+reset_session_schema($pdo);
+$pdo->beginTransaction();
+$pdo->query('SELECT COUNT(*) FROM trip_refresh_tokens')->fetchColumn();
+$otherConnection=isolated_test_mysql();
+for($i=0;$i<AUTH_MAX_ACTIVE_SESSIONS;$i++)issue_auth_payload($otherConnection,1);
+issue_auth_payload($pdo,1);
+$pdo->commit();
+$active=(int)$pdo->query('SELECT COUNT(*) FROM trip_refresh_tokens WHERE user_id=1 AND revoked_at IS NULL')->fetchColumn();
+check_session_race($active===AUTH_MAX_ACTIVE_SESSIONS,'Stale snapshot bypassed session cap');
+echo "PASS: 12 session races / 36 synthetic requests; stale-snapshot session cap\n";

@@ -57,7 +57,7 @@ function trim_active_refresh_tokens_for_user(PDO $pdo, int $userId): void
            AND revoked_at IS NULL
            AND expires_at > CURRENT_TIMESTAMP
          ORDER BY id DESC
-         LIMIT 100'
+         LIMIT 100 FOR UPDATE'
     );
     $select->execute(['user_id' => $userId]);
     $ids = array_map('intval', $select->fetchAll(PDO::FETCH_COLUMN));
