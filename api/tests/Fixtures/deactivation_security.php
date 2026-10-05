@@ -6,7 +6,7 @@ $pdo = credentials_test_db();
 reset_deactivation_schema($pdo);
 $scenario = $argv[1];
 seed_credential_user($pdo, str_contains($scenario, 'social') ? 'social' : 'established');
-$accessToken = create_access_token_for_user(1);
+$accessToken = create_access_token_for_user(1, 1);
 $request = str_starts_with($scenario, 'request');
 $direct = str_starts_with($scenario, 'direct');
 if (!$request) {

@@ -51,6 +51,13 @@ final class SocialIdentitySecurityTest extends TestCase
     public function test_linked_subject_is_stable_and_cannot_rewrite_or_verify_contact_email(string $provider, string $scenario): void
     {
         $r = $this->scenario($provider, $scenario);
+        if ($scenario === 'linked_unverified') {
+            self::assertSame(403, $r['response']['status']);
+            self::assertTrue($r['users_unchanged']);
+            self::assertTrue($r['sessions_unchanged']);
+            self::assertArrayNotHasKey('auth', $r['response']['payload']);
+            return;
+        }
         self::assertSame(200, $r['response']['status']);
         self::assertSame(1, $r['response']['payload']['me']['id']);
         self::assertSame('owner@example.invalid', $r['authenticated_email']);

@@ -11,7 +11,7 @@ if (in_array($state, ['success', 'duplicate', 'mail_failure', 'rollback', 'repla
 if ($scenario === 'password_social') { $state = 'social'; }
 if ($scenario === 'password_unverified') { $state = 'unverified'; }
 seed_credential_user($pdo, $state);
-$accessToken = create_access_token_for_user(1);
+$accessToken = create_access_token_for_user(1, 1);
 $beforeUser = fetch_me_row_by_id($pdo, 1);
 $beforeOther = fetch_me_row_by_id($pdo, 2);
 $beforeSessions = $pdo->query('SELECT * FROM trip_refresh_tokens ORDER BY id')->fetchAll();

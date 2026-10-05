@@ -27,6 +27,12 @@ final class RefreshTokenSecurityTest extends TestCase
                 $statement = $this->createMock(PDOStatement::class);
                 if (str_contains($sql, 'information_schema')) {
                     $statement->method('fetchColumn')->willReturn(1);
+                } elseif (str_starts_with($sql, 'SELECT user_id')) {
+                    $statement->method('fetchColumn')->willReturn(7);
+                } elseif (str_contains($sql, 'FROM trip_users')) {
+                    $statement->method('fetch')->willReturn(['id' => 7, 'account_status' => 'active',
+                        'email' => 'unit@example.invalid', 'password_hash' => 'hash',
+                        'credentials_required' => 0, 'email_verified_at' => '2026-01-01']);
                 } elseif (str_contains($sql, 'SELECT id, user_id')) {
                     self::assertStringContainsString('FOR UPDATE', $sql);
                     $statement->method('fetch')->willReturn($state + ['id' => 10, 'user_id' => 7]);
@@ -47,10 +53,17 @@ final class RefreshTokenSecurityTest extends TestCase
         $pdo = $this->createMock(PDO::class);
         $pdo->expects(self::once())->method('beginTransaction');
         $pdo->expects(self::once())->method('commit');
+        $pdo->method('lastInsertId')->willReturn('11');
         $pdo->method('prepare')->willReturnCallback(function (string $sql) use ($plain, &$inserted, &$revoked): PDOStatement {
             $statement = $this->createMock(PDOStatement::class);
             if (str_contains($sql, 'information_schema')) {
                 $statement->method('fetchColumn')->willReturn(1);
+            } elseif (str_starts_with($sql, 'SELECT user_id')) {
+                $statement->method('fetchColumn')->willReturn(7);
+            } elseif (str_contains($sql, 'FROM trip_users')) {
+                $statement->method('fetch')->willReturn(['id' => 7, 'account_status' => 'active',
+                    'email' => 'unit@example.invalid', 'password_hash' => 'hash',
+                    'credentials_required' => 0, 'email_verified_at' => '2026-01-01']);
             } elseif (str_contains($sql, 'SELECT id, user_id')) {
                 self::assertStringContainsString('FOR UPDATE', $sql);
                 $statement->expects(self::once())->method('execute')->with(['token_hash' => hash('sha256', $plain)]);
@@ -77,7 +90,7 @@ final class RefreshTokenSecurityTest extends TestCase
         self::assertSame(7, $result['user_id']);
         self::assertNotSame($plain, $result['auth']['refresh_token']);
         self::assertSame(hash('sha256', $result['auth']['refresh_token']), $inserted['token_hash']);
-        self::assertSame(7, resolve_user_id_from_access_token($result['auth']['access_token']));
+        self::assertSame(7, resolve_user_id_from_access_token($result['auth']['access_token'], $pdo));
     }
 
     public function test_expiry_is_utc_regardless_of_server_timezone(): void

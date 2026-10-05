@@ -5,7 +5,7 @@ require __DIR__ . '/../Fixtures/credentials_harness.php';
 $pdo = isolated_test_mysql();
 $scenario = $argv[1];
 $index = (int) $argv[2];
-$accessToken = create_access_token_for_user(1);
+$accessToken = create_access_token_for_user(1, 1);
 $requestBody = ['email' => $scenario === 'enroll' ? "guest$index@example.invalid" : 'owner@example.invalid',
     'password' => "New-password-456-$index", 'current_password' => ' Current-password-123 '];
 echo "READY\n";

@@ -1,55 +1,11 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_account_action_proofs.php';
+
 function account_action_token_is_well_formed(string $token): bool
 {
-    return (bool) preg_match('/^[a-f0-9]{64}$/', strtolower(trim($token)));
-}
-
-function create_account_action_link_token(PDO $pdo, int $userId, string $action): array
-{
-    if ($userId <= 0) {
-        throw new RuntimeException('Invalid user id for account action token.');
-    }
-    $action = normalize_account_action($action);
-    if ($action === '') {
-        throw new RuntimeException('Unsupported account action token type.');
-    }
-
-    ensure_account_action_tokens_table_available($pdo);
-    $table = table_name('account_action_tokens');
-    $ttlSec = account_action_ttl_seconds($action);
-
-    $pdo->prepare(
-        'UPDATE ' . $table . '
-         SET used_at = COALESCE(used_at, UTC_TIMESTAMP())
-         WHERE user_id = :user_id
-           AND action = :action
-           AND used_at IS NULL
-           AND expires_at > UTC_TIMESTAMP()'
-    )->execute([
-        'user_id' => $userId,
-        'action' => $action,
-    ]);
-
-    $token = bin2hex(random_bytes(32));
-    $tokenHash = hash('sha256', $token);
-    $expiresAt = gmdate('Y-m-d H:i:s', time() + $ttlSec);
-
-    $pdo->prepare(
-        'INSERT INTO ' . $table . ' (user_id, action, token_hash, expires_at)
-         VALUES (:user_id, :action, :token_hash, :expires_at)'
-    )->execute([
-        'user_id' => $userId,
-        'action' => $action,
-        'token_hash' => $tokenHash,
-        'expires_at' => $expiresAt,
-    ]);
-
-    return [
-        'token' => $token,
-        'expires_at' => $expiresAt,
-    ];
+    return (bool) preg_match('/^[a-f0-9]{64}$/D', $token);
 }
 
 function deactivate_account_action(): void
@@ -110,6 +66,10 @@ function deactivate_account_action(): void
             $pdo->rollBack();
             json_out(user_account_block_error_payload((array) $user), 403);
         }
+        if (resolve_user_id_from_access_token(bearer_access_token_from_header(), $pdo) !== $userId) {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Please sign in again.'], 401);
+        }
 
         $email = trim((string) ($user['email'] ?? ''));
         $hash = (string) ($user['password_hash'] ?? '');
@@ -156,442 +116,165 @@ function deactivate_account_action(): void
 
 function request_reactivation_link_action(): void
 {
+    request_account_lifecycle_link('reactivate');
+}
+
+function request_account_deletion_link_action(): void
+{
+    request_account_lifecycle_link('delete');
+}
+
+function request_account_lifecycle_link(string $action): void
+{
     require_post();
     $body = read_json();
+    $me = $action === 'delete' ? get_me() : null;
     $email = strtolower(trim((string) ($body['email'] ?? '')));
-    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if ($action === 'reactivate' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         json_out(['ok' => false, 'error' => 'Email is invalid.'], 400);
     }
-
     $pdo = db();
-    enforce_rate_limit(
-        $pdo,
-        'reactivate_link_ip',
-        client_ip_address(),
-        RATE_LIMIT_LOGIN_IP_MAX,
-        RATE_LIMIT_LOGIN_WINDOW_SEC
-    );
-    enforce_rate_limit(
-        $pdo,
-        'reactivate_link_email',
-        $email,
-        RATE_LIMIT_LOGIN_EMAIL_MAX,
-        RATE_LIMIT_LOGIN_WINDOW_SEC
-    );
-    if (!users_account_status_column_available($pdo) || !account_action_tokens_table_available($pdo)) {
-        json_out(['ok' => true]);
+    $scope = $action === 'delete' ? 'delete_link' : 'reactivate_link';
+    enforce_rate_limit($pdo, $scope . '_ip', client_ip_address(), 10, 900, true);
+    enforce_rate_limit($pdo, $scope . ($me ? '_user' : '_email'),
+        $me ? (string) $me['id'] : $email, 3, 3600, true);
+    enforce_rate_limit($pdo, $scope . '_global', 'all', 100, 3600, true);
+    ensure_account_action_proof_schema($pdo);
+    $userId = (int) ($me['id'] ?? 0);
+    if ($action === 'reactivate') {
+        $stmt = $pdo->prepare('SELECT id FROM ' . table_name('users') . ' WHERE email = :email LIMIT 1');
+        $stmt->execute(['email' => $email]);
+        $userId = (int) $stmt->fetchColumn();
     }
-
-    $usersTable = table_name('users');
-    $nameSelect = users_name_columns_available($pdo)
-        ? 'first_name, '
-        : 'NULL AS first_name, ';
-    $accountSelect = users_account_status_select_sql($pdo);
-    $stmt = $pdo->prepare(
-        'SELECT id, email, credentials_required, ' . $nameSelect . $accountSelect . '
-         nickname
-         FROM ' . $usersTable . '
-         WHERE email = :email
-         LIMIT 1'
-    );
-    $stmt->execute(['email' => $email]);
-    $user = $stmt->fetch();
-    if (!$user) {
-        json_out(['ok' => true]);
+    $proof = null;
+    $pdo->beginTransaction();
+    try {
+        $user = lock_account_action_user($pdo, $userId);
+        if (!$user || !account_action_user_is_eligible($user, $action)
+            || ($action === 'reactivate' && strtolower(trim((string) $user['email'])) !== $email)) {
+            $pdo->rollBack();
+            if ($action === 'reactivate') { json_out(['ok' => true]); }
+            json_out(['ok' => false, 'error' => 'A verified active account is required.'], 403);
+        }
+        if ($action === 'delete') {
+            if (resolve_user_id_from_access_token(bearer_access_token_from_header(), $pdo) !== $userId) {
+                $pdo->rollBack();
+                json_out(['ok' => false, 'error' => 'Please sign in again.'], 401);
+            }
+            $password = (string) ($body['password'] ?? '');
+            $hasSocialIdentity = user_has_social_identity($pdo, $userId);
+            // Email confirmation is always required; keep the existing local-password request check.
+            if ((!$hasSocialIdentity || $password !== '')
+                && ($password === '' || !password_verify($password, (string) $user['password_hash']))) {
+                $pdo->rollBack();
+                json_out(['ok' => false, 'code' => 'REAUTHENTICATION_REQUIRED',
+                    'error' => 'Confirm your current password to request the deletion email.'], 403);
+            }
+        }
+        $proof = create_account_action_link_token($pdo, $user, $action);
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) { $pdo->rollBack(); }
+        throw $error;
     }
-
-    $status = user_account_status((array) $user);
-    if ($status !== 'deactivated') {
-        json_out(['ok' => true]);
+    if ($proof !== null) {
+        $path = $action === 'delete' ? 'delete-account.php' : 'reactivate-account.php';
+        $url = app_base_url() . '/api/' . $path . '?token=' . urlencode($proof['token']);
+        try {
+            $html = $action === 'delete'
+                ? build_account_delete_email($url, (string) $user['nickname'])
+                : build_account_reactivation_email($url, (string) $user['nickname']);
+            $sent = send_email_via_resend((string) $user['email'],
+                $action === 'delete' ? 'Confirm permanent account deletion' : 'Reactivate your Splyto account', $html);
+        } catch (Throwable $error) { $sent = false; }
+        if (!$sent) {
+            $pdo->prepare('UPDATE ' . table_name('account_action_tokens')
+                . ' SET used_at = UTC_TIMESTAMP() WHERE id = :id AND used_at IS NULL')
+                ->execute(['id' => $proof['id']]);
+            if ($action === 'delete') {
+                json_out(['ok' => false, 'error' => 'Could not send the confirmation email. Try again later.'], 503);
+            }
+        }
     }
-
-    $userId = (int) ($user['id'] ?? 0);
-    if ($userId <= 0 || ((int) ($user['credentials_required'] ?? 1)) === 1) {
-        json_out(['ok' => true]);
-    }
-
-    $tokenMeta = create_account_action_link_token($pdo, $userId, 'reactivate');
-    $plainToken = (string) ($tokenMeta['token'] ?? '');
-    if ($plainToken === '') {
-        json_out(['ok' => true]);
-    }
-
-    $firstName = trim((string) ($user['first_name'] ?? ''));
-    if ($firstName === '') {
-        $firstName = trim((string) ($user['nickname'] ?? 'there'));
-    }
-
-    $reactivateUrl = app_base_url() . '/api/reactivate-account.php?token=' . urlencode($plainToken);
-    $html = build_account_reactivation_email($reactivateUrl, $firstName);
-    send_email_via_resend($email, 'Reactivate your Splyto account', $html);
-
     json_out(['ok' => true]);
 }
 
 function confirm_reactivation_action(): void
 {
-    require_post();
-    $body = read_json();
-    $token = strtolower(trim((string) ($body['token'] ?? '')));
-    if (!account_action_token_is_well_formed($token)) {
-        json_out(['ok' => false, 'error' => 'Invalid or expired reactivation link.'], 400);
-    }
-
-    $pdo = db();
-    enforce_rate_limit(
-        $pdo,
-        'confirm_reactivation_ip',
-        client_ip_address(),
-        RATE_LIMIT_LOGIN_IP_MAX,
-        RATE_LIMIT_LOGIN_WINDOW_SEC
-    );
-    if (!users_account_status_column_available($pdo) || !account_action_tokens_table_available($pdo)) {
-        json_out([
-            'ok' => false,
-            'error' => 'Account reactivation is not enabled on server yet. Run migration first.',
-        ], 409);
-    }
-
-    $table = table_name('account_action_tokens');
-    $usersTable = table_name('users');
-    $tokenHash = hash('sha256', $token);
-
-    $pdo->beginTransaction();
-    try {
-        $tokenStmt = $pdo->prepare(
-            'SELECT id, user_id
-             FROM ' . $table . '
-             WHERE action = "reactivate"
-               AND token_hash = :token_hash
-               AND used_at IS NULL
-               AND expires_at > UTC_TIMESTAMP()
-             LIMIT 1
-             FOR UPDATE'
-        );
-        $tokenStmt->execute(['token_hash' => $tokenHash]);
-        $tokenRow = $tokenStmt->fetch();
-        if (!$tokenRow) {
-            $pdo->rollBack();
-            json_out(['ok' => false, 'error' => 'Invalid or expired reactivation link.'], 400);
-        }
-
-        $tokenId = (int) ($tokenRow['id'] ?? 0);
-        $userId = (int) ($tokenRow['user_id'] ?? 0);
-        if ($tokenId <= 0 || $userId <= 0) {
-            $pdo->rollBack();
-            json_out(['ok' => false, 'error' => 'Invalid reactivation token state.'], 400);
-        }
-
-        $accountSelect = users_account_status_select_sql($pdo);
-        $userStmt = $pdo->prepare(
-            'SELECT id, ' . $accountSelect . 'email
-             FROM ' . $usersTable . '
-             WHERE id = :id
-             LIMIT 1
-             FOR UPDATE'
-        );
-        $userStmt->execute(['id' => $userId]);
-        $user = $userStmt->fetch();
-        if (!$user) {
-            $pdo->rollBack();
-            json_out(['ok' => false, 'error' => 'User not found for this link.'], 404);
-        }
-
-        $status = user_account_status((array) $user);
-        if ($status === 'deleted') {
-            $pdo->prepare(
-                'UPDATE ' . $table . '
-                 SET used_at = UTC_TIMESTAMP()
-                 WHERE id = :id'
-            )->execute(['id' => $tokenId]);
-            $pdo->commit();
-            json_out(user_account_block_error_payload((array) $user), 403);
-        }
-
-        $setDeletedAt = users_deleted_at_column_available($pdo)
-            ? ', deleted_at = NULL'
-            : '';
-        $pdo->prepare(
-            'UPDATE ' . $usersTable . '
-             SET account_status = "active",
-                 deactivated_at = NULL' . $setDeletedAt . '
-             WHERE id = :id'
-        )->execute(['id' => $userId]);
-
-        $pdo->prepare(
-            'UPDATE ' . $table . '
-             SET used_at = UTC_TIMESTAMP()
-             WHERE id = :id'
-        )->execute(['id' => $tokenId]);
-
-        $pdo->commit();
-    } catch (Throwable $error) {
-        if ($pdo->inTransaction()) {
-            $pdo->rollBack();
-        }
-        throw $error;
-    }
-
-    json_out(['ok' => true]);
-}
-
-function request_account_deletion_link_action(): void
-{
-    require_post();
-    $me = get_me();
-    $body = read_json();
-    $password = (string) ($body['password'] ?? '');
-
-    $pdo = db();
-    $userId = (int) ($me['id'] ?? 0);
-    enforce_rate_limit(
-        $pdo,
-        'delete_link_ip',
-        client_ip_address(),
-        RATE_LIMIT_TRIP_WRITE_IP_MAX,
-        RATE_LIMIT_MUTATION_WINDOW_SEC
-    );
-    enforce_rate_limit(
-        $pdo,
-        'delete_link_user',
-        (string) $userId,
-        RATE_LIMIT_TRIP_WRITE_USER_MAX,
-        RATE_LIMIT_MUTATION_WINDOW_SEC
-    );
-    if (!users_account_status_column_available($pdo) || !account_action_tokens_table_available($pdo)) {
-        json_out([
-            'ok' => false,
-            'error' => 'Account deletion is not enabled on server yet. Run migration first.',
-        ], 409);
-    }
-
-    $usersTable = table_name('users');
-
-    $nameSelect = users_name_columns_available($pdo)
-        ? 'first_name, '
-        : 'NULL AS first_name, ';
-    $accountSelect = users_account_status_select_sql($pdo);
-    $stmt = $pdo->prepare(
-        'SELECT id, email, password_hash, credentials_required, ' . $nameSelect . $accountSelect . '
-         nickname
-         FROM ' . $usersTable . '
-         WHERE id = :id
-         LIMIT 1'
-    );
-    $stmt->execute(['id' => $userId]);
-    $user = $stmt->fetch();
-    if (!$user) {
-        json_out(['ok' => false, 'error' => 'User not found.'], 404);
-    }
-    if (!user_account_is_active((array) $user)) {
-        json_out(user_account_block_error_payload((array) $user), 403);
-    }
-
-    $email = strtolower(trim((string) ($user['email'] ?? '')));
-    $hash = (string) ($user['password_hash'] ?? '');
-    $requiresCredentials = ((int) ($user['credentials_required'] ?? 1)) === 1;
-    $hasSocialIdentity = user_has_social_identity($pdo, $userId);
-
-    if ($email === '') {
-        json_out([
-            'ok' => false,
-            'error' => 'Add email first before requesting account deletion.',
-        ], 409);
-    }
-    if (!$hasSocialIdentity) {
-        if ($requiresCredentials || $hash === '') {
-            json_out([
-                'ok' => false,
-                'error' => 'Add email and password first before requesting account deletion.',
-            ], 409);
-        }
-        if ($password === '') {
-            json_out(['ok' => false, 'error' => 'Password is required.'], 400);
-        }
-        if (!password_verify($password, $hash)) {
-            json_out(['ok' => false, 'error' => 'Password is incorrect.'], 401);
-        }
-    } elseif ($password !== '' && $hash !== '' && !password_verify($password, $hash)) {
-        json_out(['ok' => false, 'error' => 'Password is incorrect.'], 401);
-    }
-
-    $tokenMeta = create_account_action_link_token($pdo, $userId, 'delete');
-    $plainToken = (string) ($tokenMeta['token'] ?? '');
-    if ($plainToken === '') {
-        json_out(['ok' => false, 'error' => 'Could not create deletion link.'], 500);
-    }
-
-    $firstName = trim((string) ($user['first_name'] ?? ''));
-    if ($firstName === '') {
-        $firstName = trim((string) ($user['nickname'] ?? 'there'));
-    }
-
-    $deleteUrl = app_base_url() . '/api/delete-account.php?token=' . urlencode($plainToken);
-    $html = build_account_delete_email($deleteUrl, $firstName);
-    $sent = send_email_via_resend($email, 'Confirm permanent account deletion', $html);
-    if (!$sent) {
-        json_out([
-            'ok' => false,
-            'error' => 'Could not send deletion email right now. Please try again later.',
-        ], 503);
-    }
-
-    json_out(['ok' => true]);
+    confirm_account_lifecycle_link('reactivate');
 }
 
 function confirm_account_deletion_action(): void
 {
+    confirm_account_lifecycle_link('delete');
+}
+
+function confirm_account_lifecycle_link(string $action): void
+{
     require_post();
     $body = read_json();
-    $token = strtolower(trim((string) ($body['token'] ?? '')));
-    if (!account_action_token_is_well_formed($token)) {
-        json_out(['ok' => false, 'error' => 'Invalid or expired deletion link.'], 400);
-    }
-
+    $token = is_string($body['token'] ?? null) ? $body['token'] : '';
+    $invalid = ['ok' => false, 'error' => 'Invalid or expired account confirmation link.'];
+    if (!account_action_token_is_well_formed($token)) { json_out($invalid, 400); }
     $pdo = db();
-    enforce_rate_limit(
-        $pdo,
-        'confirm_deletion_ip',
-        client_ip_address(),
-        RATE_LIMIT_TRIP_WRITE_IP_MAX,
-        RATE_LIMIT_MUTATION_WINDOW_SEC
-    );
-    if (!users_account_status_column_available($pdo) || !account_action_tokens_table_available($pdo)) {
-        json_out([
-            'ok' => false,
-            'error' => 'Account deletion is not enabled on server yet. Run migration first.',
-        ], 409);
-    }
-
-    $tokenHash = hash('sha256', $token);
-    $tokensTable = table_name('account_action_tokens');
-    $usersTable = table_name('users');
-    $friendsTable = table_name('friends');
-    $userId = 0;
+    $scope = $action === 'delete' ? 'confirm_deletion' : 'confirm_reactivation';
+    enforce_rate_limit($pdo, $scope . '_ip', client_ip_address(), 20, 900, true);
+    enforce_rate_limit($pdo, $scope . '_token', hash('sha256', $token), 5, 900, true);
+    ensure_account_action_proof_schema($pdo);
+    ensure_refresh_tokens_table_available($pdo);
+    $table = table_name('account_action_tokens');
+    $hash = hash('sha256', $token);
+    $lookup = $pdo->prepare('SELECT user_id FROM ' . $table . ' WHERE token_hash = :hash AND action = :action');
+    $lookup->execute(['hash' => $hash, 'action' => $action]);
+    $userId = (int) $lookup->fetchColumn();
     $avatarPath = '';
-
     $pdo->beginTransaction();
     try {
-        $tokenStmt = $pdo->prepare(
-            'SELECT id, user_id
-             FROM ' . $tokensTable . '
-             WHERE action = "delete"
-               AND token_hash = :token_hash
-               AND used_at IS NULL
-               AND expires_at > UTC_TIMESTAMP()
-             LIMIT 1
-             FOR UPDATE'
-        );
-        $tokenStmt->execute(['token_hash' => $tokenHash]);
-        $tokenRow = $tokenStmt->fetch();
-        if (!$tokenRow) {
+        // All lifecycle flows lock the user first, then the proof, avoiding opposite lock ordering.
+        $user = lock_account_action_user($pdo, $userId);
+        $stmt = $pdo->prepare('SELECT credential_state_hash FROM ' . $table . '
+            WHERE token_hash = :hash AND action = :action AND user_id = :user
+              AND used_at IS NULL AND expires_at > UTC_TIMESTAMP() LIMIT 1 FOR UPDATE');
+        $stmt->execute(['hash' => $hash, 'action' => $action, 'user' => $userId]);
+        $proof = $stmt->fetch();
+        if (!$user || !account_action_user_is_eligible($user, $action) || !$proof
+            || !hash_equals(account_action_proof_state($user, $action), (string) $proof['credential_state_hash'])) {
             $pdo->rollBack();
-            json_out(['ok' => false, 'error' => 'Invalid or expired deletion link.'], 400);
+            json_out($invalid, 400);
         }
-
-        $tokenId = (int) ($tokenRow['id'] ?? 0);
-        $userId = (int) ($tokenRow['user_id'] ?? 0);
-        if ($tokenId <= 0 || $userId <= 0) {
-            $pdo->rollBack();
-            json_out(['ok' => false, 'error' => 'Invalid deletion token state.'], 400);
+        if ($action === 'reactivate') {
+            $pdo->prepare('UPDATE ' . table_name('users') . '
+                SET account_status = "active", deactivated_at = NULL, deleted_at = NULL WHERE id = :id')
+                ->execute(['id' => $userId]);
+        } else {
+            $avatarPath = trim((string) ($user['avatar_path'] ?? ''));
+            $pdo->prepare('DELETE FROM ' . table_name('friends')
+                . ' WHERE user_a_id = :a OR user_b_id = :b')->execute(['a' => $userId, 'b' => $userId]);
+            if (social_auth_identity_table_available($pdo)) {
+                $pdo->prepare('DELETE FROM ' . table_name('user_identities') . ' WHERE user_id = :id')
+                    ->execute(['id' => $userId]);
+            }
+            $names = users_name_columns_available($pdo) ? 'first_name = "Deleted", last_name = "User", ' : '';
+            $paymentFields = deleted_account_payment_assignments($pdo);
+            $pdo->prepare('UPDATE ' . table_name('users') . ' SET ' . $names . $paymentFields . '
+                nickname = "Deleted User", email = NULL, password_hash = NULL, credentials_required = 1,
+                email_verified_at = NULL, avatar_path = NULL, device_token = :device,
+                account_status = "deleted", deactivated_at = UTC_TIMESTAMP(), deleted_at = UTC_TIMESTAMP()
+                WHERE id = :id')->execute(['device' => bin2hex(random_bytes(32)), 'id' => $userId]);
         }
-
-        $nameSelect = users_name_columns_available($pdo)
-            ? 'first_name, last_name, '
-            : 'NULL AS first_name, NULL AS last_name, ';
-        $accountSelect = users_account_status_select_sql($pdo);
-        $userStmt = $pdo->prepare(
-            'SELECT id, ' . $nameSelect . $accountSelect . '
-                nickname, avatar_path
-             FROM ' . $usersTable . '
-             WHERE id = :id
-             LIMIT 1
-             FOR UPDATE'
-        );
-        $userStmt->execute(['id' => $userId]);
-        $user = $userStmt->fetch();
-        if (!$user) {
-            $pdo->rollBack();
-            json_out(['ok' => false, 'error' => 'User not found for this link.'], 404);
-        }
-
-        $status = user_account_status((array) $user);
-        if ($status === 'deleted') {
-            $pdo->prepare(
-                'UPDATE ' . $tokensTable . '
-                 SET used_at = UTC_TIMESTAMP()
-                 WHERE id = :id'
-            )->execute(['id' => $tokenId]);
-            $pdo->commit();
-            json_out(['ok' => true, 'status' => 'deleted']);
-        }
-
-        $avatarPath = trim((string) ($user['avatar_path'] ?? ''));
-
-        $pdo->prepare(
-            'DELETE FROM ' . $friendsTable . '
-             WHERE user_a_id = :user_a_id OR user_b_id = :user_b_id'
-        )->execute([
-            'user_a_id' => $userId,
-            'user_b_id' => $userId,
-        ]);
-
-        if (social_auth_identity_table_available($pdo)) {
-            $pdo->prepare(
-                'DELETE FROM ' . table_name('user_identities') . '
-                 WHERE user_id = :user_id'
-            )->execute(['user_id' => $userId]);
-        }
-
         revoke_refresh_tokens_for_user($pdo, $userId);
         deactivate_push_tokens_for_user($pdo, $userId);
-
-        $setNames = '';
-        if (users_name_columns_available($pdo)) {
-            $setNames = 'first_name = "Deleted", last_name = "User", ';
-        }
-        $setDeletedAt = users_deleted_at_column_available($pdo)
-            ? ', deleted_at = UTC_TIMESTAMP()'
-            : '';
-        $setDeactivatedAt = users_deactivated_at_column_available($pdo)
-            ? ', deactivated_at = UTC_TIMESTAMP()'
-            : '';
-        $randomDeviceToken = bin2hex(random_bytes(32));
-
-        $updateSql =
-            'UPDATE ' . $usersTable . '
-             SET ' . $setNames . '
-                 nickname = "Deleted User",
-                 email = NULL,
-                 password_hash = NULL,
-                 credentials_required = 1,
-                 email_verified_at = NULL,
-                 avatar_path = NULL,
-                 device_token = :device_token,
-                 account_status = "deleted"' . $setDeactivatedAt . $setDeletedAt . '
-             WHERE id = :id';
-        $pdo->prepare($updateSql)->execute([
-            'device_token' => $randomDeviceToken,
-            'id' => $userId,
-        ]);
-
-        $pdo->prepare(
-            'UPDATE ' . $tokensTable . '
-             SET used_at = UTC_TIMESTAMP()
-             WHERE id = :id'
-        )->execute(['id' => $tokenId]);
-
+        consume_account_action_proofs($pdo, $userId);
         $pdo->commit();
     } catch (Throwable $error) {
-        if ($pdo->inTransaction()) {
-            $pdo->rollBack();
-        }
+        if ($pdo->inTransaction()) { $pdo->rollBack(); }
         throw $error;
     }
-
     if ($avatarPath !== '') {
-        delete_avatar_file($avatarPath);
+        try { delete_avatar_file($avatarPath); }
+        catch (Throwable $error) { error_log('Account deletion avatar cleanup failed.'); }
     }
-
-    json_out(['ok' => true, 'status' => 'deleted', 'user_id' => $userId]);
+    json_out($action === 'delete'
+        ? ['ok' => true, 'status' => 'deleted', 'user_id' => $userId]
+        : ['ok' => true]);
 }

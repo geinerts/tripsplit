@@ -50,6 +50,10 @@ function request_deactivation_link_action(): void
             $pdo->rollBack();
             json_out(['ok' => false, 'error' => 'A verified active account is required.'], 403);
         }
+        if (resolve_user_id_from_access_token(bearer_access_token_from_header(), $pdo) !== $userId) {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Please sign in again.'], 401);
+        }
         $stmt = $pdo->prepare('SELECT created_at FROM ' . $table . '
             WHERE user_id = :id AND action = :action AND created_at > :cutoff
             ORDER BY created_at DESC FOR UPDATE');

@@ -59,7 +59,7 @@ final class CredentialsSecurityTest extends TestCase
     public function test_enrollment_cannot_be_replayed_and_verification_link_still_works(): void
     {
         $replay = $this->scenario('enroll_replay');
-        self::assertSame(403, $replay['response']['status']);
+        self::assertSame(401, $replay['response']['status']);
         self::assertSame(1, $replay['mail_count']);
         $verified = $this->scenario('enroll_verify');
         self::assertSame(200, $verified['response']['status']);
@@ -93,7 +93,7 @@ final class CredentialsSecurityTest extends TestCase
     public function test_missing_session_storage_fails_closed(): void
     {
         $result = $this->scenario('missing_sessions');
-        self::assertSame(503, $result['response']['status']);
+        self::assertSame(401, $result['response']['status']);
         self::assertTrue($result['user_unchanged']);
     }
     public function test_removed_email_change_routes_reject_old_clients_and_valid_pending_links(): void

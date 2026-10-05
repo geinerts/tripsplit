@@ -52,6 +52,11 @@ email ownership, purpose/state/expiry, request-only session preservation, failur
 mail failure and retired email-change compatibility. Its real migration is applied to a
 minimal old account-action table. Mail and handler rate-limit calls remain test adapters.
 
+Deletion/reactivation adds 77 tests (734 assertions), six schema-contract cases using the
+real table mapper, and 35 four-worker races (140 requests). Covers single-use state-bound
+proofs, request cooldowns, rollback and deletion racing deactivation. Synthetic fixtures
+also include friendship/provider rows and payment profile fields; no real data is mounted.
+
 Stop/remove only this disposable test environment afterward:
 
 ```sh
@@ -91,3 +96,11 @@ images for the next run; do not use global Docker prune or remove unrelated cont
 - No production deployment, application migration, store build or configuration change
   is performed by these commands. F01/F04 local coverage is not full deployed assurance;
   other audit findings and the credential contract's residual risks remain separate work.
+
+## Session revocation
+
+The suite also runs `SessionRevocationSecurityTest` (11 scenarios) against MySQL,
+then 12 races / 36 requests combining real password login, refresh rotation and
+password-reset or deactivation handlers. Newly issued access and refresh tokens
+must be unusable after the security event commits. Unrelated sessions must stay
+unchanged. See `docs/api/session-revocation.md` for boundaries and rollout behavior.

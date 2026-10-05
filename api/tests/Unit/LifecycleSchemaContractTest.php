@@ -7,7 +7,7 @@ final class LifecycleSchemaContractTest extends TestCase
 {
     public static function cases(): iterable
     {
-        foreach (['deactivation', 'password_reset'] as $flow) {
+        foreach (['deactivation', 'password_reset', 'lifecycle'] as $flow) {
             yield [$flow, 'available', '200'];
             yield [$flow, 'missing', '503'];
         }

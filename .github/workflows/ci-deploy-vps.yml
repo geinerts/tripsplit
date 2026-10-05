@@ -93,7 +93,7 @@ jobs:
           PLAYWRIGHT_CHANNEL: chromium
         run: |
           set -euo pipefail
-          NODE_PATH="$RUNNER_TEMP/web-tests/node_modules" node --test admin2/tests/web-security.test.cjs
+          NODE_PATH="$RUNNER_TEMP/web-tests/node_modules" node --test admin2/tests/*.test.cjs
 
   flutter-tests:
     name: Flutter unit tests

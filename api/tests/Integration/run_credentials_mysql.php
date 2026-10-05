@@ -45,7 +45,7 @@ for ($round = 1; $round <= 5; $round++) {
             assertCredentials(count($winners) === 1, 'Expected exactly one credential mutation');
             foreach ($results as $result) {
                 if ($result['status'] !== 200) {
-                    assertCredentials(in_array($result['status'], [403, 409], true), 'Unexpected loser response');
+                    assertCredentials(in_array($result['status'], [401, 403, 409], true), 'Unexpected loser response');
                     assertCredentials(!$result['auth'] && $result['mail_count'] === 0, 'Rejected mutation had side effects');
                 }
             }

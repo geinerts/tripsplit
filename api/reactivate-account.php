@@ -66,8 +66,8 @@ require_once __DIR__ . '/web_security_headers.php';
   <div class="logo"><img src="/mobile/assets/branding/logo_full.png" alt="Splyto"></div>
 
   <?php
-  $token = strtolower(trim((string) ($_GET['token'] ?? '')));
-  if ($token === '' || !preg_match('/^[a-f0-9]{64}$/', $token)):
+  $token = is_string($_GET['token'] ?? null) ? $_GET['token'] : '';
+  if (!preg_match('/^[a-f0-9]{64}$/D', $token)):
   ?>
     <h1>Invalid link</h1>
     <p>This reactivation link is invalid or expired. Please request a new one from the app login screen.</p>
@@ -79,11 +79,12 @@ require_once __DIR__ . '/web_security_headers.php';
     <div class="msg" id="msg"></div>
 
     <script>
-      const token = <?= json_encode($token, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
+      let token = <?= json_encode($token, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
       const btn = document.getElementById('btn');
       const msg = document.getElementById('msg');
 
       btn.addEventListener('click', async () => {
+        if (btn.disabled || !token) return;
         btn.disabled = true;
         btn.textContent = 'Reactivating...';
         msg.className = 'msg';
@@ -96,7 +97,8 @@ require_once __DIR__ . '/web_security_headers.php';
             body: JSON.stringify({ token })
           });
           const data = await res.json();
-          if (data.ok) {
+          if (res.ok && data.ok) {
+            token = '';
             msg.className = 'msg success';
             msg.textContent = 'Account reactivated. You can now log in to Splyto.';
             btn.style.display = 'none';

@@ -75,9 +75,9 @@ function trim_active_refresh_tokens_for_user(PDO $pdo, int $userId): void
     $revoke->execute($revokeIds);
 }
 
-function create_access_token_for_user(int $userId): string
+function create_access_token_for_user(int $userId, int $sessionId): string
 {
-    if ($userId <= 0) {
+    if ($userId <= 0 || $sessionId <= 0) {
         throw new RuntimeException('Invalid user id for access token.');
     }
 
@@ -85,6 +85,7 @@ function create_access_token_for_user(int $userId): string
     $payload = [
         'typ' => 'access',
         'uid' => $userId,
+        'sid' => $sessionId,
         'iat' => $now,
         'exp' => $now + auth_access_token_ttl_seconds(),
         'jti' => bin2hex(random_bytes(8)),
@@ -99,7 +100,7 @@ function create_access_token_for_user(int $userId): string
     return $encoded . '.' . $sig;
 }
 
-function resolve_user_id_from_access_token(string $token): int
+function resolve_user_id_from_access_token(string $token, ?PDO $pdo = null): int
 {
     $parts = explode('.', trim($token), 2);
     if (count($parts) !== 2) {
@@ -125,6 +126,7 @@ function resolve_user_id_from_access_token(string $token): int
 
     $typ = (string) ($payload['typ'] ?? '');
     $userId = (int) ($payload['uid'] ?? 0);
+    $sessionId = $payload['sid'] ?? null;
     $issuedAt = (int) ($payload['iat'] ?? 0);
     $expiresAt = (int) ($payload['exp'] ?? 0);
     $jti = (string) ($payload['jti'] ?? '');
@@ -133,6 +135,7 @@ function resolve_user_id_from_access_token(string $token): int
     if (
         $typ !== 'access' ||
         $userId <= 0 ||
+        !is_int($sessionId) || $sessionId <= 0 ||
         $issuedAt <= 0 ||
         $expiresAt <= $issuedAt ||
         $issuedAt > ($now + 60) ||
@@ -146,7 +149,20 @@ function resolve_user_id_from_access_token(string $token): int
         return 0;
     }
 
-    return $userId;
+    $pdo ??= db();
+    // Every access token is backed by a revocable server-side session. Legacy
+    // tokens without sid deliberately fail closed; clients can use refresh.
+    try {
+        $stmt = $pdo->prepare('SELECT user_id FROM ' . table_name('refresh_tokens')
+            . ' WHERE id = :id AND user_id = :user_id AND revoked_at IS NULL'
+            . ' AND expires_at > CURRENT_TIMESTAMP'
+            . ($pdo->inTransaction() ? ' FOR UPDATE' : ''));
+        $stmt->execute(['id' => $sessionId, 'user_id' => $userId]);
+        return (int) $stmt->fetchColumn() === $userId ? $userId : 0;
+    } catch (PDOException $error) {
+        // This resolver is also used by error logging: never recurse into json_out.
+        return 0;
+    }
 }
 
 function refresh_tokens_table_available(PDO $pdo): bool
@@ -222,9 +238,11 @@ function create_refresh_token_row(PDO $pdo, int $userId): array
         'user_agent' => trim(substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255)) ?: null,
         'ip_address' => client_ip_address(),
     ]);
+    $sessionId = (int) $pdo->lastInsertId();
     trim_active_refresh_tokens_for_user($pdo, $userId);
 
     return [
+        'session_id' => $sessionId,
         'refresh_token' => $plain,
         'refresh_expires_in_sec' => $ttl,
     ];
@@ -232,16 +250,36 @@ function create_refresh_token_row(PDO $pdo, int $userId): array
 
 function issue_auth_payload(PDO $pdo, int $userId): array
 {
-    $accessToken = create_access_token_for_user($userId);
-    $refresh = create_refresh_token_row($pdo, $userId);
+    $ownsTransaction = !$pdo->inTransaction();
+    if ($ownsTransaction) { $pdo->beginTransaction(); }
+    try {
+        $user = lock_auth_user($pdo, $userId);
+        if (!$user || !user_account_is_active($user) || user_requires_email_verification($user)) {
+            throw new RuntimeException('Account cannot start a session.');
+        }
+        $refresh = create_refresh_token_row($pdo, $userId);
+        $payload = [
+            'token_type' => 'Bearer',
+            'access_token' => create_access_token_for_user($userId, $refresh['session_id']),
+            'access_expires_in_sec' => auth_access_token_ttl_seconds(),
+            'refresh_token' => (string) ($refresh['refresh_token'] ?? ''),
+            'refresh_expires_in_sec' => (int) ($refresh['refresh_expires_in_sec'] ?? auth_refresh_token_ttl_seconds()),
+        ];
+        if ($ownsTransaction) { $pdo->commit(); }
+        return $payload;
+    } catch (Throwable $error) {
+        if ($ownsTransaction && $pdo->inTransaction()) { $pdo->rollBack(); }
+        throw $error;
+    }
+}
 
-    return [
-        'token_type' => 'Bearer',
-        'access_token' => $accessToken,
-        'access_expires_in_sec' => auth_access_token_ttl_seconds(),
-        'refresh_token' => (string) ($refresh['refresh_token'] ?? ''),
-        'refresh_expires_in_sec' => (int) ($refresh['refresh_expires_in_sec'] ?? auth_refresh_token_ttl_seconds()),
-    ];
+function lock_auth_user(PDO $pdo, int $userId): ?array
+{
+    $stmt = $pdo->prepare('SELECT id, email, password_hash, credentials_required, '
+        . users_account_status_select_sql($pdo) . 'nickname FROM ' . table_name('users')
+        . ' WHERE id = :id FOR UPDATE');
+    $stmt->execute(['id' => $userId]);
+    return $stmt->fetch() ?: null;
 }
 
 function rotate_refresh_token(PDO $pdo, string $refreshToken): ?array
@@ -264,6 +302,15 @@ function rotate_refresh_token(PDO $pdo, string $refreshToken): ?array
 
     $pdo->beginTransaction();
     try {
+        $owner = $pdo->prepare('SELECT user_id FROM ' . $table . ' WHERE token_hash = :token_hash');
+        $owner->execute(['token_hash' => $tokenHash]);
+        $userId = (int) $owner->fetchColumn();
+        $user = $userId > 0 ? lock_auth_user($pdo, $userId) : null;
+        if (!$user || !user_account_is_active($user) || user_requires_email_verification($user)) {
+            $pdo->rollBack();
+            return null;
+        }
+        // Match credential/lifecycle mutations: user first, then session.
         $select = $pdo->prepare(
             'SELECT id, user_id, expires_at, revoked_at
              FROM ' . $table . '
@@ -273,7 +320,7 @@ function rotate_refresh_token(PDO $pdo, string $refreshToken): ?array
         );
         $select->execute(['token_hash' => $tokenHash]);
         $row = $select->fetch();
-        if (!$row) {
+        if (!$row || (int) $row['user_id'] !== $userId) {
             $pdo->rollBack();
             return null;
         }
@@ -324,17 +371,17 @@ function rotate_refresh_token(PDO $pdo, string $refreshToken): ?array
             'user_agent' => $userAgent !== '' ? $userAgent : null,
             'ip_address' => $ipAddress,
         ]);
+        $nextSessionId = (int) $pdo->lastInsertId();
         trim_active_refresh_tokens_for_user($pdo, $userId);
 
+        // Cleanup stays within the locked account; never lock other users' sessions.
         if (random_int(1, 80) === 1) {
-            $cleanup = $pdo->prepare(
-                'DELETE FROM ' . $table . '
-                 WHERE (revoked_at IS NOT NULL AND revoked_at < (CURRENT_TIMESTAMP - INTERVAL 30 DAY))
-                    OR (expires_at < (CURRENT_TIMESTAMP - INTERVAL 7 DAY))'
-            );
-            $cleanup->execute();
+            $pdo->prepare('DELETE FROM ' . $table . ' WHERE user_id = :user_id AND '
+                . '((revoked_at IS NOT NULL AND revoked_at < :revoked_before) OR expires_at < :expired_before)')
+                ->execute(['user_id' => $userId, 'revoked_before' => gmdate('Y-m-d H:i:s', time() - 2592000),
+                    'expired_before' => gmdate('Y-m-d H:i:s', time() - 604800)]);
         }
-
+        $accessToken = create_access_token_for_user($userId, $nextSessionId);
         $pdo->commit();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
@@ -347,7 +394,7 @@ function rotate_refresh_token(PDO $pdo, string $refreshToken): ?array
         'user_id' => $userId,
         'auth' => [
             'token_type' => 'Bearer',
-            'access_token' => create_access_token_for_user($userId),
+            'access_token' => $accessToken,
             'access_expires_in_sec' => auth_access_token_ttl_seconds(),
             'refresh_token' => $nextToken,
             'refresh_expires_in_sec' => $ttl,

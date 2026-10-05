@@ -26,6 +26,9 @@ final class CredentialsSQLite extends CredentialsSQLiteBase
         if (str_contains($query, 'information_schema.tables')) {
             $query = "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = :table_name";
         } elseif (str_contains($query, 'information_schema.columns')) {
+            if (str_starts_with($query, 'SELECT column_name')) {
+                return parent::prepare('SELECT name FROM pragma_table_info(:table_name)', $options);
+            }
             preg_match("/column_name = '([^']+)'/", $query, $match);
             if (!isset($match[1])) { throw new RuntimeException('Unsupported schema query'); }
             $query = "SELECT COUNT(*) FROM pragma_table_info(:table_name) WHERE name = '" . $match[1] . "'";

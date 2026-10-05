@@ -163,8 +163,7 @@ function social_auth_action(): void
              FROM ' . $identitiesTable . '
              WHERE provider = :provider
                AND provider_subject = :provider_subject
-             LIMIT 1
-             FOR UPDATE'
+             LIMIT 1'
         );
         $identityStmt->execute([
             'provider' => $provider,
@@ -186,6 +185,13 @@ function social_auth_action(): void
             if (!$user) {
                 $pdo->rollBack();
                 json_out(['ok' => false, 'error' => 'Linked user not found.'], 409);
+            }
+            $identityCheck = $pdo->prepare('SELECT id FROM ' . $identitiesTable
+                . ' WHERE id = :id AND user_id = :user_id FOR UPDATE');
+            $identityCheck->execute(['id' => $identityId, 'user_id' => $userId]);
+            if (!$identityCheck->fetchColumn()) {
+                $pdo->rollBack();
+                json_out(['ok' => false, 'error' => 'Linked identity is unavailable.'], 409);
             }
         } else {
             // Email is not a provider identity. Linking an existing account needs its own
@@ -252,6 +258,10 @@ function social_auth_action(): void
             $pdo->rollBack();
             revoke_refresh_tokens_for_user($pdo, (int) ($user['id'] ?? 0));
             json_out(user_account_block_error_payload((array) $user), 403);
+        }
+        if (user_requires_email_verification($user)) {
+            $pdo->rollBack();
+            json_out(user_email_verification_block_error_payload($user), 403);
         }
 
         $resolvedUserId = (int) ($user['id'] ?? 0);
@@ -377,6 +387,7 @@ function social_auth_action(): void
         }
 
         $userId = $resolvedUserId;
+        $auth = issue_auth_payload($pdo, $userId);
         $pdo->commit();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
@@ -397,6 +408,6 @@ function social_auth_action(): void
     json_out([
         'ok' => true,
         'me' => build_me_payload((array) $me, $pdo),
-        'auth' => issue_auth_payload($pdo, $userId),
+        'auth' => $auth,
     ]);
 }

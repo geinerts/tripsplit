@@ -293,6 +293,17 @@ function login_action(): void
     $pdo->beginTransaction();
     try {
         $id = (int) $user['id'];
+        $locked = lock_auth_user($pdo, $id);
+        if (!$locked || strtolower((string) $locked['email']) !== $email
+            || !password_verify($password, (string) $locked['password_hash'])) {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Invalid email or password.'], 401);
+        }
+        if (!user_account_is_active($locked) || user_requires_email_verification($locked)) {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'Account is unavailable.'], 403);
+        }
+        $hash = (string) $locked['password_hash'];
         $conflictStmt = $pdo->prepare(
             'SELECT id
              FROM ' . $usersTable . '
@@ -338,6 +349,7 @@ function login_action(): void
             'id' => $id,
         ]);
 
+        $auth = issue_auth_payload($pdo, $id);
         $pdo->commit();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
@@ -356,7 +368,7 @@ function login_action(): void
     json_out([
         'ok' => true,
         'me' => build_me_payload($me, $pdo),
-        'auth' => issue_auth_payload($pdo, $loggedInUserId),
+        'auth' => $auth,
     ]);
 }
 
@@ -540,6 +552,9 @@ function lock_credential_user(PDO $pdo, int $userId): array
     $user = $stmt->fetch();
     if (!$user || user_account_status($user) !== 'active') {
         reject_credential_change($pdo, 'ACCOUNT_UNAVAILABLE', 'Account is unavailable.', 403);
+    }
+    if (resolve_user_id_from_access_token(bearer_access_token_from_header(), $pdo) !== $userId) {
+        reject_credential_change($pdo, 'SESSION_REVOKED', 'Please sign in again.', 401);
     }
     return $user;
 }
