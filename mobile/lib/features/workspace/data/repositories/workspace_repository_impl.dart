@@ -43,6 +43,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   final Map<String, String> _pendingPaymentMutationIds = <String, String>{};
   int _mutationSeed = 0;
   int? _paymentGeneration;
+  int _notificationRevision = 0;
 
   @override
   Future<int> loadCurrentUserId() {
@@ -60,6 +61,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     String? cursor,
     int? offset,
   }) => _localStore.storage.session.run(() async {
+    final revision = _notificationRevision;
     final isFirstPage =
         (cursor == null || cursor.trim().isEmpty) &&
         (offset == null || offset <= 0);
@@ -69,7 +71,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
         cursor: cursor,
         offset: offset,
       );
-      if (isFirstPage) {
+      if (isFirstPage && revision == _notificationRevision) {
         await _localStore.writeGlobalNotificationsInbox(inbox);
       }
       return inbox;
@@ -79,7 +81,14 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       }
       final cached = await _localStore.readGlobalNotificationsInbox();
       if (cached != null) {
-        return cached;
+        return WorkspaceNotificationsInbox(
+          unreadCount: cached.unreadCount,
+          notifications: cached.notifications,
+          hasMore: cached.hasMore,
+          nextCursor: cached.nextCursor,
+          nextOffset: cached.nextOffset,
+          isCached: true,
+        );
       }
       rethrow;
     }
@@ -311,33 +320,57 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
   @override
   Future<int> markGlobalNotificationsRead({
     List<int> notificationIds = const <int>[],
-  }) {
-    return _remote.markGlobalNotificationsRead(
+  }) => _localStore.storage.session.run(() async {
+    _notificationRevision++;
+    final count = await _remote.markGlobalNotificationsRead(
       notificationIds: notificationIds,
     );
-  }
+    _notificationRevision++;
+    final cached = await _localStore.readGlobalNotificationsInbox();
+    if (cached != null) {
+      await _localStore.writeGlobalNotificationsInbox(
+        WorkspaceNotificationsInbox(
+          unreadCount: count,
+          notifications: cached.notifications
+              .map(
+                (item) =>
+                    notificationIds.isEmpty || notificationIds.contains(item.id)
+                    ? item.copyWith(isRead: true)
+                    : item,
+              )
+              .toList(),
+          hasMore: cached.hasMore,
+          nextCursor: cached.nextCursor,
+          nextOffset: cached.nextOffset,
+        ),
+      );
+    }
+    return count;
+  });
 
   @override
-  Future<WorkspaceSnapshot> loadSnapshot({required int tripId}) =>
-      _localStore.storage.session.run(() async {
-        await _offlineQueue.flushBestEffort();
+  Future<WorkspaceSnapshot> loadSnapshot({
+    required int tripId,
+    bool allowOfflineCache = true,
+  }) => _localStore.storage.session.run(() async {
+    await _offlineQueue.flushBestEffort();
 
-        try {
-          final snapshot = await _remote.loadSnapshot(tripId: tripId);
-          await _localStore.writeSnapshot(tripId: tripId, snapshot: snapshot);
-          return snapshot;
-        } on ApiException catch (error) {
-          if (!error.isNetworkError) {
-            rethrow;
-          }
+    try {
+      final snapshot = await _remote.loadSnapshot(tripId: tripId);
+      await _localStore.writeSnapshot(tripId: tripId, snapshot: snapshot);
+      return snapshot;
+    } on ApiException catch (error) {
+      if (!error.isNetworkError || !allowOfflineCache) {
+        rethrow;
+      }
 
-          final cached = await _localStore.readSnapshot(tripId: tripId);
-          if (cached != null) {
-            return cached;
-          }
-          rethrow;
-        }
-      });
+      final cached = await _localStore.readSnapshot(tripId: tripId);
+      if (cached != null) {
+        return cached;
+      }
+      rethrow;
+    }
+  });
 
   @override
   Future<TripExpensesPage> loadExpensesPage({

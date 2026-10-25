@@ -97,6 +97,96 @@ abstract class AppLocalizations {
     Locale('lv')
   ];
 
+  /// No description provided for @homeFirstTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Your first trip'**
+  String get homeFirstTrip;
+
+  /// No description provided for @homeYourShareAllTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Your share across all trips'**
+  String get homeYourShareAllTrips;
+
+  /// No description provided for @homeAllTime.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get homeAllTime;
+
+  /// No description provided for @homeSolo.
+  ///
+  /// In en, this message translates to:
+  /// **'Solo'**
+  String get homeSolo;
+
+  /// No description provided for @homePeople.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 person} other{{count} people}}'**
+  String homePeople(int count);
+
+  /// No description provided for @homeTripActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip actions: {name}'**
+  String homeTripActions(String name);
+
+  /// No description provided for @homeNoActiveTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'No active trips'**
+  String get homeNoActiveTrips;
+
+  /// No description provided for @homeNoArchivedTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'No archived trips'**
+  String get homeNoArchivedTrips;
+
+  /// No description provided for @homeLoadingTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your trips'**
+  String get homeLoadingTrips;
+
+  /// No description provided for @homeLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your trips'**
+  String get homeLoadErrorTitle;
+
+  /// No description provided for @homeLoadErrorBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Please try again in a moment.'**
+  String get homeLoadErrorBody;
+
+  /// No description provided for @homeOfflineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline'**
+  String get homeOfflineTitle;
+
+  /// No description provided for @homeOfflineNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trips aren\'t available on this device yet.'**
+  String get homeOfflineNoData;
+
+  /// No description provided for @homeOfflineCached.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline. Showing saved trips.'**
+  String get homeOfflineCached;
+
+  /// No description provided for @homeRefreshError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t refresh. Showing previously loaded trips.'**
+  String get homeRefreshError;
+
   /// No description provided for @paymentShareDetailsConsent.
   ///
   /// In en, this message translates to:
@@ -739,6 +829,24 @@ abstract class AppLocalizations {
   /// **'Filter settlements by member'**
   String get filterSettlementByMemberSubtitle;
 
+  /// No description provided for @finishSoloTripConfirmationText.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish this trip and move it to your archive? Your expenses will remain available to view.'**
+  String get finishSoloTripConfirmationText;
+
+  /// No description provided for @soloTripArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip finished and archived.'**
+  String get soloTripArchived;
+
+  /// No description provided for @finishTripSyncPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync your pending changes before finishing this trip.'**
+  String get finishTripSyncPending;
+
   /// No description provided for @finishTripAction.
   ///
   /// In en, this message translates to:
@@ -1332,6 +1440,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No note'**
   String get noNotePlaceholder;
+
+  /// No description provided for @notificationsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get notificationsToday;
+
+  /// No description provided for @notificationsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates about trips, expenses and friends will appear here.'**
+  String get notificationsEmptyBody;
+
+  /// No description provided for @notificationsCached.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline — showing saved notifications.'**
+  String get notificationsCached;
+
+  /// No description provided for @notificationsRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not refresh. Previously loaded notifications are shown.'**
+  String get notificationsRefreshFailed;
+
+  /// No description provided for @notificationsJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get notificationsJustNow;
+
+  /// No description provided for @notificationsMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String notificationsMinutesAgo(int count);
+
+  /// No description provided for @notificationsHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} h ago'**
+  String notificationsHoursAgo(int count);
+
+  /// No description provided for @notificationsUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get notificationsUnread;
 
   /// No description provided for @noNotificationsYet.
   ///
@@ -3186,6 +3342,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'APP SETTINGS'**
   String get profileAppSettingsSectionTitle;
+
+  /// No description provided for @profileAccountSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Account settings'**
+  String get profileAccountSettings;
+
+  /// No description provided for @profileChangePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change profile photo'**
+  String get profileChangePhoto;
 
   /// No description provided for @profileAppearance.
   ///
@@ -6240,6 +6408,732 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A payment was marked as not received.'**
   String get notificationPaymentNotReceivedBodyGeneric;
+
+  /// No description provided for @quickStartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Start'**
+  String get quickStartTitle;
+
+  /// No description provided for @quickStartCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a trip'**
+  String get quickStartCreateTitle;
+
+  /// No description provided for @quickStartCreateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a name and currency. Keep your own expenses or share costs with a group.'**
+  String get quickStartCreateBody;
+
+  /// No description provided for @quickStartInviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel together or solo'**
+  String get quickStartInviteTitle;
+
+  /// No description provided for @quickStartInviteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends to share your trip, or start a personal trip on your own.'**
+  String get quickStartInviteBody;
+
+  /// No description provided for @quickStartExpenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first expense'**
+  String get quickStartExpenseTitle;
+
+  /// No description provided for @quickStartExpenseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the amount, choose who paid and split the cost. Your balances stay up to date.'**
+  String get quickStartExpenseBody;
+
+  /// No description provided for @quickStartNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get quickStartNext;
+
+  /// No description provided for @quickStartBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get quickStartBack;
+
+  /// No description provided for @quickStartSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get quickStartSkip;
+
+  /// No description provided for @quickStartCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create trip'**
+  String get quickStartCreateAction;
+
+  /// No description provided for @quickStartClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Quick Start'**
+  String get quickStartClose;
+
+  /// No description provided for @quickStartSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See how trips and expenses work'**
+  String get quickStartSubtitle;
+
+  /// No description provided for @quickStartStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} of {total}'**
+  String quickStartStep(int step, int total);
+
+  /// No description provided for @workspaceTripTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip total'**
+  String get workspaceTripTotal;
+
+  /// No description provided for @workspacePersonalTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total spent'**
+  String get workspacePersonalTotal;
+
+  /// No description provided for @workspaceBalanceEven.
+  ///
+  /// In en, this message translates to:
+  /// **'Your balance is even'**
+  String get workspaceBalanceEven;
+
+  /// No description provided for @workspaceBalanceOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'You owe {amount}'**
+  String workspaceBalanceOwe(String amount);
+
+  /// No description provided for @workspaceBalanceReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'You get back {amount}'**
+  String workspaceBalanceReceive(String amount);
+
+  /// No description provided for @workspaceMemberCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} members'**
+  String workspaceMemberCount(int count);
+
+  /// No description provided for @workspaceSearchExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Search expenses'**
+  String get workspaceSearchExpenses;
+
+  /// No description provided for @workspaceClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get workspaceClearSearch;
+
+  /// No description provided for @workspaceSearchLoadedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search covers loaded expenses. Load more to include older expenses.'**
+  String get workspaceSearchLoadedHint;
+
+  /// No description provided for @workspaceNoExpenseMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching expenses'**
+  String get workspaceNoExpenseMatches;
+
+  /// No description provided for @workspaceNoExpenseMatchesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another search or clear it to see all loaded expenses.'**
+  String get workspaceNoExpenseMatchesBody;
+
+  /// No description provided for @workspaceEmptyPersonalExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first expense to start tracking your spending.'**
+  String get workspaceEmptyPersonalExpenses;
+
+  /// No description provided for @workspaceEmptyGroupExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first shared expense to see everyone’s share.'**
+  String get workspaceEmptyGroupExpenses;
+
+  /// No description provided for @workspaceLoadMoreExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more expenses'**
+  String get workspaceLoadMoreExpenses;
+
+  /// No description provided for @workspaceOriginalExpenseAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Original amount: {amount}'**
+  String workspaceOriginalExpenseAmount(String amount);
+
+  /// No description provided for @workspaceCommentCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} comments'**
+  String workspaceCommentCount(int count);
+
+  /// No description provided for @workspaceExpenseActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense actions'**
+  String get workspaceExpenseActions;
+
+  /// No description provided for @workspaceLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load this trip'**
+  String get workspaceLoadErrorTitle;
+
+  /// No description provided for @workspaceCachedWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing saved data. It may be out of date.'**
+  String get workspaceCachedWarning;
+
+  /// No description provided for @workspaceActivityTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get workspaceActivityTab;
+
+  /// No description provided for @workspaceLoadingTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading trip'**
+  String get workspaceLoadingTrip;
+
+  /// No description provided for @workspaceRefreshFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh failed'**
+  String get workspaceRefreshFailed;
+
+  /// No description provided for @expenseDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense details'**
+  String get expenseDetailsTitle;
+
+  /// No description provided for @expenseQuickCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick categories'**
+  String get expenseQuickCategories;
+
+  /// No description provided for @expenseReceiptRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt read and form updated.'**
+  String get expenseReceiptRead;
+
+  /// No description provided for @expenseReceiptNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt attached. No clear amount, date or merchant found.'**
+  String get expenseReceiptNoData;
+
+  /// No description provided for @expenseReceiptScanFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt selected. Automatic reading failed; check the fields manually.'**
+  String get expenseReceiptScanFailed;
+
+  /// No description provided for @expenseReceiptOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt will upload when you save. Automatic reading requires a connection.'**
+  String get expenseReceiptOffline;
+
+  /// No description provided for @expenseReadingReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading receipt…'**
+  String get expenseReadingReceipt;
+
+  /// No description provided for @expenseCommentsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load comments. Try again.'**
+  String get expenseCommentsLoadFailed;
+
+  /// No description provided for @expenseReplyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get expenseReplyAction;
+
+  /// No description provided for @expenseReplyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a reply…'**
+  String get expenseReplyHint;
+
+  /// No description provided for @expenseReplyTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply to {name}'**
+  String expenseReplyTo(String name);
+
+  /// No description provided for @balanceEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Balances appear after expenses are added.'**
+  String get balanceEmptyBody;
+
+  /// No description provided for @balanceAfterPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Balances include confirmed payments.'**
+  String get balanceAfterPayments;
+
+  /// No description provided for @balanceExpenseShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense share'**
+  String get balanceExpenseShare;
+
+  /// No description provided for @balanceHistoryScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Loaded expenses and confirmed payments. This list may not include the entire trip history.'**
+  String get balanceHistoryScope;
+
+  /// No description provided for @balancePaymentTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment to {name}'**
+  String balancePaymentTo(String name);
+
+  /// No description provided for @balancePaymentFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment from {name}'**
+  String balancePaymentFrom(String name);
+
+  /// No description provided for @settlementEmptyActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark everyone ready before starting final settlements.'**
+  String get settlementEmptyActive;
+
+  /// No description provided for @settlementEmptyClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'No transfers are listed for this trip.'**
+  String get settlementEmptyClosed;
+
+  /// No description provided for @settlementConfirmedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total} transfers confirmed'**
+  String settlementConfirmedCount(int count, int total);
+
+  /// No description provided for @settlementReadyCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total} members ready'**
+  String settlementReadyCount(int count, int total);
+
+  /// No description provided for @settlementMemberReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get settlementMemberReady;
+
+  /// No description provided for @settlementMemberNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Not ready'**
+  String get settlementMemberNotReady;
+
+  /// No description provided for @settlementSuggested.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggested transfer'**
+  String get settlementSuggested;
+
+  /// No description provided for @activityLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not refresh activity. Any visible entries may be out of date.'**
+  String get activityLoadFailed;
+
+  /// No description provided for @activityMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip member'**
+  String get activityMember;
+
+  /// No description provided for @friendsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a friend by name or email, or use a QR code.'**
+  String get friendsEmptyBody;
+
+  /// No description provided for @friendsDeclineAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get friendsDeclineAction;
+
+  /// No description provided for @friendsLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading friends'**
+  String get friendsLoading;
+
+  /// No description provided for @friendsCommonTripsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared trips: {count}'**
+  String friendsCommonTripsCount(int count);
+
+  /// No description provided for @memberActivityScope.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on loaded expenses; this may not cover the whole trip.'**
+  String get memberActivityScope;
+
+  /// No description provided for @sharedTripsLoadedLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing up to 20 shared trips.'**
+  String get sharedTripsLoadedLimit;
+
+  /// No description provided for @memberRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove member?'**
+  String get memberRemoveTitle;
+
+  /// No description provided for @memberRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from this trip? This is only possible if they have no expenses, settlements or balances.'**
+  String memberRemoveBody(String name);
+
+  /// No description provided for @memberRemoveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from trip'**
+  String get memberRemoveAction;
+
+  /// No description provided for @memberRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} removed from trip.'**
+  String memberRemoved(String name);
+
+  /// No description provided for @profilePaymentNotAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Not added yet'**
+  String get profilePaymentNotAdded;
+
+  /// No description provided for @friendRelationshipLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend'**
+  String get friendRelationshipLabel;
+
+  /// No description provided for @sharedTripsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Trips you both join will appear here.'**
+  String get sharedTripsEmptyBody;
+
+  /// No description provided for @analyticsAllTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'All trips'**
+  String get analyticsAllTrips;
+
+  /// No description provided for @analyticsByTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'By trip'**
+  String get analyticsByTrip;
+
+  /// No description provided for @analyticsYourSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Your spending'**
+  String get analyticsYourSpending;
+
+  /// No description provided for @analyticsActiveArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Active & archived trips'**
+  String get analyticsActiveArchived;
+
+  /// No description provided for @analyticsTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Trips'**
+  String get analyticsTrips;
+
+  /// No description provided for @analyticsAveragePerTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Average per trip'**
+  String get analyticsAveragePerTrip;
+
+  /// No description provided for @analyticsPaidByMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid by member'**
+  String get analyticsPaidByMember;
+
+  /// No description provided for @analyticsYouPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'You paid'**
+  String get analyticsYouPaid;
+
+  /// No description provided for @analyticsYouGetBack.
+  ///
+  /// In en, this message translates to:
+  /// **'You get back'**
+  String get analyticsYouGetBack;
+
+  /// No description provided for @analyticsYouOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'You owe'**
+  String get analyticsYouOwe;
+
+  /// No description provided for @analyticsParticipants.
+  ///
+  /// In en, this message translates to:
+  /// **'Participants'**
+  String get analyticsParticipants;
+
+  /// No description provided for @analyticsYourCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Your spending by category'**
+  String get analyticsYourCategories;
+
+  /// No description provided for @analyticsLargestShares.
+  ///
+  /// In en, this message translates to:
+  /// **'Your largest shares'**
+  String get analyticsLargestShares;
+
+  /// No description provided for @analyticsLargestExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Largest expenses'**
+  String get analyticsLargestExpenses;
+
+  /// No description provided for @analyticsSpendingByTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Your spending by trip'**
+  String get analyticsSpendingByTrip;
+
+  /// No description provided for @analyticsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No spending yet'**
+  String get analyticsEmptyTitle;
+
+  /// No description provided for @analyticsEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your spending will appear here when you add expenses to a trip.'**
+  String get analyticsEmptyBody;
+
+  /// No description provided for @analyticsPeriodEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no expenses for this view. Try another trip or period.'**
+  String get analyticsPeriodEmptyBody;
+
+  /// No description provided for @analyticsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the complete spending report. Please try again.'**
+  String get analyticsLoadFailed;
+
+  /// No description provided for @analyticsLastLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the last successfully loaded report.'**
+  String get analyticsLastLoaded;
+
+  /// No description provided for @analyticsExpenseCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} expenses'**
+  String analyticsExpenseCount(int count);
+
+  /// No description provided for @tripOptionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip options'**
+  String get tripOptionsTitle;
+
+  /// No description provided for @editTripAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit trip'**
+  String get editTripAction;
+
+  /// No description provided for @deleteTripAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete trip'**
+  String get deleteTripAction;
+
+  /// No description provided for @inviteTripMembersAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite members'**
+  String get inviteTripMembersAction;
+
+  /// No description provided for @tripCoverPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover photo'**
+  String get tripCoverPhoto;
+
+  /// No description provided for @tripInviteLaterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can invite people after creating the trip.'**
+  String get tripInviteLaterHint;
+
+  /// No description provided for @inviteClipboardFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not access the clipboard. Try again.'**
+  String get inviteClipboardFailed;
+
+  /// No description provided for @friendInviteToTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite to trip'**
+  String get friendInviteToTrip;
+
+  /// No description provided for @friendChooseTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a trip'**
+  String get friendChooseTrip;
+
+  /// No description provided for @friendNoInvitableTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'No available trips. You can invite friends to active group trips you manage, unless they are already members or have a pending invitation.'**
+  String get friendNoInvitableTrips;
+
+  /// No description provided for @friendTripInviteSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation sent.'**
+  String get friendTripInviteSent;
+
+  /// No description provided for @friendTripUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This trip is no longer available for this action. Refresh and try again.'**
+  String get friendTripUnavailable;
+
+  /// No description provided for @friendTripActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not complete this action. Try again.'**
+  String get friendTripActionFailed;
+
+  /// No description provided for @profileContactDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a problem, a suggestion or a question about Splyto? Email us — we’d be happy to help.'**
+  String get profileContactDescription;
+
+  /// No description provided for @profileContactEmailAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Write an email'**
+  String get profileContactEmailAction;
+
+  /// No description provided for @profileContactEmailUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open an email app. Copy the address and write to us from your email app.'**
+  String get profileContactEmailUnavailable;
+
+  /// No description provided for @profilePrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get profilePrivacyPolicy;
+
+  /// No description provided for @privacyLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the privacy policy. Please try again.'**
+  String get privacyLoadFailed;
+
+  /// No description provided for @addReceiptAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add receipt'**
+  String get addReceiptAction;
+
+  /// No description provided for @receiptPickFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the receipt. Please try again.'**
+  String get receiptPickFailed;
+
+  /// No description provided for @receiptPhotoAccessDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow camera or photo library access for Splyto in Settings, then try again.'**
+  String get receiptPhotoAccessDenied;
+
+  /// No description provided for @receiptPhotoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt photo'**
+  String get receiptPhotoLabel;
+
+  /// No description provided for @replaceReceiptAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace receipt'**
+  String get replaceReceiptAction;
+
+  /// No description provided for @removeReceiptAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove receipt'**
+  String get removeReceiptAction;
+
+  /// No description provided for @restoreReceiptAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore previous receipt'**
+  String get restoreReceiptAction;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

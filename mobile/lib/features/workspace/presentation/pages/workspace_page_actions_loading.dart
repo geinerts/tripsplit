@@ -12,175 +12,154 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
   }
 
   Future<void> _loadData({required bool showLoader}) async {
+    final generation = ++_loadGeneration;
+    ++_activityGeneration;
+    _isLoadingActivity = false;
+    final tripId = widget.trip.id;
+    bool current() =>
+        mounted && generation == _loadGeneration && tripId == widget.trip.id;
     final trace = PerfMonitor.start('screen.workspace.load');
     var success = false;
-    var openedAddExpenseDuringLoad = false;
-    final shouldTryCachedFirst = _snapshot == null;
-    if (showLoader) {
-      _updateState(() {
-        _isLoading = true;
-        _errorText = null;
-        _syncState = _SyncState.syncing;
-      });
-    } else {
-      _updateState(() {
-        _errorText = null;
-        _syncState = _SyncState.syncing;
-      });
-    }
-
-    final snapshotFuture = widget.workspaceController.loadSnapshot(
-      tripId: widget.trip.id,
-    );
-
-    if (shouldTryCachedFirst) {
-      try {
-        final cachedSnapshot = await widget.workspaceController
-            .readCachedSnapshot(tripId: widget.trip.id);
-        if (cachedSnapshot != null && mounted) {
-          final memberIds = cachedSnapshot.users.map((user) => user.id).toSet();
-          final nextSelection = _normalizeRandomSelection(memberIds);
-          final nextExpenseFilter = memberIds.contains(_expenseFilterUserId)
-              ? _expenseFilterUserId
-              : 0;
-          _updateState(() {
-            _errorText = null;
-            _syncState = _SyncState.syncing;
-            _expenseFilterUserId = nextExpenseFilter;
-            _snapshot = cachedSnapshot;
-            _expensesFeed = cachedSnapshot.expenses;
-            _reconcileExpenseSocialPreviewState(cachedSnapshot.expenses);
-            _expensesHasMore = false;
-            _isLoadingMoreExpenses = false;
-            _expensesNextCursor = null;
-            _expensesNextOffset = null;
-            _randomSelection = nextSelection;
-            _isLoading = false;
-          });
-          if (_openAddExpenseAfterLoad) {
-            _openAddExpenseAfterLoad = false;
-            openedAddExpenseDuringLoad = true;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted) {
-                return;
-              }
-              unawaited(_runStartupAddExpenseFlow());
+    _updateState(() {
+      _isLoading = _snapshot == null;
+      _errorText = null;
+      _refreshError = null;
+      _syncState = _SyncState.syncing;
+    });
+    try {
+      if (_snapshot == null && _mayUseWorkspaceCache) {
+        try {
+          final cached = await widget.workspaceController.readCachedSnapshot(
+            tripId: tripId,
+          );
+          if (!current()) return;
+          if (cached != null) {
+            _updateState(() {
+              _snapshot = cached;
+              _expensesFeed = cached.expenses;
+              _isLoading = false;
             });
           }
+        } catch (_) {
+          // A failed cache read is not a successful empty/server response.
         }
-      } catch (_) {
-        // Ignore cache read errors and continue with live fetch.
       }
-    }
-
-    try {
-      final snapshot = await snapshotFuture;
-      final queuedMutations = await widget.workspaceController
-          .listQueuedMutations(tripId: widget.trip.id);
-      final queueCount = queuedMutations.length;
+      final snapshot = await widget.workspaceController
+          .refreshSnapshotFromServer(tripId: tripId);
+      if (!current()) return;
+      final queue = await widget.workspaceController.listQueuedMutations(
+        tripId: tripId,
+      );
       var userId = _currentUserId;
       try {
         userId = await widget.workspaceController.loadCurrentUserId();
       } on ApiException catch (error) {
-        if (!error.isNetworkError) {
-          rethrow;
-        }
+        if (!error.isNetworkError) rethrow;
       }
-      if (!mounted) {
-        return;
-      }
-
+      if (!current()) return;
       final memberIds = snapshot.users.map((user) => user.id).toSet();
-      final nextSelection = _normalizeRandomSelection(memberIds);
-      final nextExpenseFilter = memberIds.contains(_expenseFilterUserId)
-          ? _expenseFilterUserId
-          : 0;
-
       _updateState(() {
         _currentUserId = userId;
-        _pendingQueueCount = queueCount;
-        _queuedMutations = queuedMutations;
-        _syncState = queueCount > 0
-            ? _SyncState.onlineQueue
-            : _SyncState.online;
-        _expenseFilterUserId = nextExpenseFilter;
+        _pendingQueueCount = queue.length;
+        _queuedMutations = queue;
+        _syncState = queue.isEmpty ? _SyncState.online : _SyncState.onlineQueue;
         _snapshot = snapshot;
+        _mayUseWorkspaceCache = true;
+        _workspaceOffline = false;
         _expensesFeed = snapshot.expenses;
         _reconcileExpenseSocialPreviewState(snapshot.expenses);
         _expensesHasMore = false;
         _isLoadingMoreExpenses = false;
         _expensesNextCursor = null;
         _expensesNextOffset = null;
-        _randomSelection = nextSelection;
+        _randomSelection = _normalizeRandomSelection(memberIds);
+        if (!memberIds.contains(_expenseFilterUserId)) _expenseFilterUserId = 0;
       });
       unawaited(_primeExpensesFeed());
-      if (_activityLoaded || _workspaceTabIndex == 3) {
+      if (!widget.trip.isSolo && (_activityLoaded || _workspaceTabIndex == 3)) {
         unawaited(_loadTripActivity(reset: true));
-      }
-
-      if (_openAddExpenseAfterLoad && !openedAddExpenseDuringLoad) {
-        _openAddExpenseAfterLoad = false;
-        unawaited(_runStartupAddExpenseFlow());
       }
       success = true;
     } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _openAddExpenseAfterLoad = false;
-      _isStartingWithAddExpense = false;
-      if (_snapshot != null) {
-        _updateState(() {
-          if (error.isNetworkError) {
-            _syncState = _pendingQueueCount > 0
-                ? _SyncState.offlineQueue
-                : _SyncState.offline;
-          } else {
-            _syncState = _pendingQueueCount > 0
-                ? _SyncState.onlineQueue
-                : _SyncState.online;
-          }
-        });
-        _showSnack(error.message, isError: true);
-        return;
-      }
+      if (!current()) return;
+      _workspaceOffline = error.isNetworkError;
+      final denied =
+          error.statusCode == 401 ||
+          error.statusCode == 403 ||
+          error.statusCode == 404 ||
+          error.code == 'account_changed';
       _updateState(() {
-        _errorText = error.message;
-        if (error.isNetworkError) {
-          _syncState = _pendingQueueCount > 0
-              ? _SyncState.offlineQueue
-              : _SyncState.offline;
+        if (denied) {
+          _snapshot = null;
+          _expensesFeed = const [];
+          _activityEvents = const [];
+          _activityLoaded = false;
+          _activityError = null;
+          _activityHasMore = false;
+          _activityNextOffset = null;
+          _queuedMutations = const [];
+          _pendingQueueCount = 0;
+          _mayUseWorkspaceCache = false;
+          _reconcileExpenseSocialPreviewState(const []);
+        }
+        _syncState = _pendingQueueCount > 0
+            ? _SyncState.offlineQueue
+            : _SyncState.offline;
+        if (_snapshot == null) {
+          _errorText = error.message;
+        } else {
+          _refreshError = error.message;
         }
       });
+      if (error.isNetworkError && _snapshot != null) {
+        try {
+          final queue = await widget.workspaceController.listQueuedMutations(
+            tripId: tripId,
+          );
+          if (!current()) return;
+          _updateState(() {
+            _queuedMutations = queue;
+            _pendingQueueCount = queue.length;
+            _syncState = queue.isEmpty
+                ? _SyncState.offline
+                : _SyncState.offlineQueue;
+          });
+        } catch (_) {
+          /* Retain the last known queue on a local read failure. */
+        }
+      }
     } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _openAddExpenseAfterLoad = false;
-      _isStartingWithAddExpense = false;
-      if (_snapshot != null) {
-        _updateState(() {
-          _syncState = _pendingQueueCount > 0
-              ? _SyncState.onlineQueue
-              : _SyncState.online;
-        });
-        _showSnack(context.l10n.unexpectedErrorLoadingTripData, isError: true);
-        return;
-      }
+      if (!current()) return;
+      _workspaceOffline = false;
       _updateState(() {
-        _errorText = context.l10n.unexpectedErrorLoadingTripData;
+        _syncState = _pendingQueueCount > 0
+            ? _SyncState.offlineQueue
+            : _SyncState.offline;
+        if (_snapshot == null) {
+          _errorText = context.l10n.unexpectedErrorLoadingTripData;
+        } else {
+          _refreshError = context.l10n.unexpectedErrorLoadingTripData;
+        }
       });
     } finally {
       trace.stop(success: success);
-      if (mounted) {
-        _updateState(() {
-          _isLoading = false;
-        });
+      if (current()) {
+        _updateState(() => _isLoading = false);
+        if (_openAddExpenseAfterLoad &&
+            _snapshot != null &&
+            (success || _refreshError != null)) {
+          _openAddExpenseAfterLoad = false;
+          unawaited(_runStartupAddExpenseFlow());
+        } else if (_snapshot == null) {
+          _openAddExpenseAfterLoad = false;
+          _updateState(() => _isStartingWithAddExpense = false);
+        }
       }
     }
   }
 
   Future<void> _primeExpensesFeed() async {
+    final generation = _loadGeneration;
     final snapshot = _snapshot;
     if (snapshot == null) {
       return;
@@ -190,7 +169,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
         tripId: widget.trip.id,
         limit: 50,
       );
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
       _updateState(() {
@@ -206,6 +185,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
   }
 
   Future<void> _loadMoreExpensesPage() async {
+    final generation = _loadGeneration;
     if (_isLoadingMoreExpenses || !_expensesHasMore) {
       return;
     }
@@ -219,7 +199,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
         cursor: _expensesNextCursor,
         offset: _expensesNextCursor == null ? _expensesNextOffset : null,
       );
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
       final existingIds = _expensesFeed.map((item) => item.id).toSet();
@@ -236,8 +216,16 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
         _expensesNextCursor = page.nextCursor;
         _expensesNextOffset = page.nextOffset;
       });
+    } on ApiException catch (error) {
+      if (mounted && generation == _loadGeneration) {
+        _showSnack(error.message, isError: true);
+      }
+    } catch (_) {
+      if (mounted && generation == _loadGeneration) {
+        _showSnack(context.l10n.unexpectedErrorLoadingTripData, isError: true);
+      }
     } finally {
-      if (mounted) {
+      if (mounted && generation == _loadGeneration) {
         _updateState(() {
           _isLoadingMoreExpenses = false;
         });
@@ -246,61 +234,64 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
   }
 
   Future<void> _loadTripActivity({required bool reset}) async {
-    if (_isLoadingActivity) {
-      return;
-    }
+    if (_isLoadingActivity && !reset) return;
+    final generation = ++_activityGeneration;
+    final workspaceGeneration = _loadGeneration;
+    bool current() =>
+        mounted &&
+        generation == _activityGeneration &&
+        workspaceGeneration == _loadGeneration;
     final offset = reset ? 0 : (_activityNextOffset ?? _activityEvents.length);
     _updateState(() {
       _isLoadingActivity = true;
-      if (reset) {
-        _activityHasMore = false;
-        _activityNextOffset = null;
-      }
+      _activityError = null;
     });
-
     try {
       final page = await widget.workspaceController.loadTripActivity(
         tripId: widget.trip.id,
         limit: 50,
         offset: offset,
       );
-      if (!mounted) {
-        return;
-      }
-
-      final merged = reset
-          ? <WorkspaceActivityEvent>[]
-          : <WorkspaceActivityEvent>[..._activityEvents];
-      final existingIds = merged.map((item) => item.id).toSet();
+      if (!current()) return;
+      final merged = reset ? <WorkspaceActivityEvent>[] : [..._activityEvents];
+      final ids = merged.map((item) => item.id).toSet();
       for (final item in page.items) {
-        if (existingIds.add(item.id)) {
-          merged.add(item);
-        }
+        if (ids.add(item.id)) merged.add(item);
       }
-
       _updateState(() {
         _activityEvents = merged;
         _activityLoaded = true;
         _activityHasMore = page.hasMore;
         _activityNextOffset = page.nextOffset;
       });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      if (reset && !_activityLoaded) {
-        _updateState(() {
-          _activityEvents = const <WorkspaceActivityEvent>[];
+    } catch (error) {
+      if (!current()) return;
+      _updateState(() {
+        _activityError = context.l10n.activityLoadFailed;
+        _activityFailedReset = reset;
+        if (error is ApiException &&
+            (error.statusCode == 401 ||
+                error.statusCode == 403 ||
+                error.statusCode == 404 ||
+                error.code == 'account_changed')) {
+          _activityEvents = const [];
+          _activityLoaded = false;
           _activityHasMore = false;
           _activityNextOffset = null;
-        });
-      }
-    } finally {
-      if (mounted) {
-        _updateState(() {
+          ++_loadGeneration;
+          ++_activityGeneration;
           _isLoadingActivity = false;
-        });
-      }
+          _queuedMutations = const [];
+          _pendingQueueCount = 0;
+          _reconcileExpenseSocialPreviewState(const []);
+          _snapshot = null;
+          _expensesFeed = const [];
+          _mayUseWorkspaceCache = false;
+          _errorText = error.message;
+        }
+      });
+    } finally {
+      if (current()) _updateState(() => _isLoadingActivity = false);
     }
   }
 

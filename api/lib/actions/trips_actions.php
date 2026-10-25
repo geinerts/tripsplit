@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/trip_invitations.php';
+require_once __DIR__ . '/../helpers/helper_quick_start.php';
 
 function trip_invite_ttl_seconds(): int
 {
@@ -628,6 +629,7 @@ function create_trip_action(bool $solo = false): void
             $memberParams['role'] = 'owner';
         }
         $insertMember->execute($memberParams);
+        suppress_quick_start_for_member($pdo, $creatorId);
         if (count($memberIds) > 1) {
             invite_trip_users($pdo, $tripId, $creatorId, $name, $memberIds);
         }
@@ -1841,6 +1843,7 @@ function join_trip_invite_action(): void
             ]);
             app_event($pdo, $actorId, 'trip.member_joined', 'trip', $tripId, $tripId);
         }
+        suppress_quick_start_for_member($pdo, $actorId);
         if ($invite['target_user_id'] !== null) {
             $pdo->prepare('UPDATE ' . $tripInvitesTable . '
                 SET revoked_at = UTC_TIMESTAMP(), response = "accepted" WHERE id = :id')

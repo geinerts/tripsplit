@@ -4,376 +4,400 @@ enum _FriendRequestFeedType { incoming, outgoing }
 
 extension _FriendsPageWidgets on _FriendsPageState {
   Widget _buildFriendsScaffold(BuildContext context) {
-    final responsive = context.responsive;
-    if (_isLoading && _snapshot == null) {
-      return const AppBackground(
-        child: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    final snapshot =
-        _snapshot ??
-        const FriendsSnapshot(
-          friends: <FriendUser>[],
-          pendingSent: <FriendRequest>[],
-          pendingReceived: <FriendRequest>[],
-        );
-
+    final snapshot = _snapshot;
     return AppBackground(
-      child: RefreshIndicator(
-        onRefresh: () => _loadSnapshot(showLoader: false),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: responsive.pageMaxWidth,
-                  minHeight: constraints.maxHeight,
-                ),
-                child: ListView(
-                  controller: _scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: context.responsive.pageMaxWidth,
+          ),
+          child: RefreshIndicator(
+            onRefresh: () => _loadSnapshot(showLoader: false),
+            child: CustomScrollView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                  sliver: SliverList.list(
+                    children: [
+                      if (_isLoading && snapshot == null)
+                        Semantics(
+                          label: context.l10n.friendsLoading,
+                          child: const Column(
+                            children: [
+                              AppSkeletonBlock(height: 50),
+                              SizedBox(height: 24),
+                              AppSkeletonBlock(height: 64),
+                              SizedBox(height: 16),
+                              AppSkeletonBlock(height: 64),
+                              SizedBox(height: 16),
+                              AppSkeletonBlock(height: 64),
+                            ],
+                          ),
+                        ),
+                      if (_isLoading && snapshot != null)
+                        const LinearProgressIndicator(),
+                      if (_errorText != null) ...[
+                        _InlineErrorCard(
+                          message: _errorText!,
+                          retryLabel: context.l10n.retryAction,
+                          onRetry: () => _loadSnapshot(showLoader: false),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                      if (snapshot != null) ...[
+                        _buildFriendSearchField(snapshot),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: _qrAction(
+                                  Icons.qr_code_2,
+                                  context.l10n.friendsMyQr,
+                                  _openMyFriendQr,
+                                ),
+                              ),
+                              Container(
+                                width: 1,
+                                height: 32,
+                                color: AppDesign.cardStroke(context),
+                              ),
+                              Expanded(
+                                child: _qrAction(
+                                  Icons.qr_code_scanner,
+                                  context.l10n.friendsScanQr,
+                                  _openScanFriendQr,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        _buildInlineSearchResults(snapshot),
+                        if (_sectionCountRequests(snapshot) > 0) ...[
+                          const SizedBox(height: 8),
+                          _buildSectionHeadingRow(
+                            title: context.l10n.friendsRequests,
+                            trailing: Text(
+                              '${_sectionCountRequests(snapshot)}',
+                            ),
+                          ),
+                          _buildFriendRequestsFeed(snapshot),
+                        ],
+                        const SizedBox(height: 24),
+                        _buildSectionHeadingRow(
+                          title: context.l10n.navFriends,
+                          trailing: Text('${_sectionCountFriends(snapshot)}'),
+                        ),
+                        if (snapshot.friends.isEmpty)
+                          _buildFriendsEmpty(snapshot),
+                      ],
+                    ],
                   ),
-                  padding: EdgeInsets.fromLTRB(
-                    responsive.pageHorizontalPadding,
-                    12,
-                    responsive.pageHorizontalPadding,
-                    18,
+                ),
+                if (snapshot != null && snapshot.friends.isNotEmpty)
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    sliver: SliverList.builder(
+                      itemCount: snapshot.friends.length,
+                      itemBuilder: (_, index) =>
+                          _buildFriendListRow(snapshot.friends[index]),
+                    ),
                   ),
-                  children: [
-                    if (_errorText != null)
-                      _InlineErrorCard(
-                        message: _errorText!,
-                        retryLabel: context.l10n.retryAction,
-                        onRetry: () => _loadSnapshot(showLoader: false),
-                      ),
-                    if (_errorText != null) const SizedBox(height: 12),
-                    _buildFriendSearchField(snapshot),
-                    _buildInlineSearchResults(snapshot),
-                    const SizedBox(height: 22),
-                    _buildSectionHeadingRow(
-                      title: context.l10n.friendsRequests.toUpperCase(),
-                      trailing: _countBadge(_sectionCountRequests(snapshot)),
+                if (snapshot != null && _friendsHasMore)
+                  SliverToBoxAdapter(
+                    child: _buildLoadMoreTextButton(
+                      loading: _isLoadingMoreFriends,
+                      onPressed: () => unawaited(_loadMoreFriends()),
                     ),
-                    const SizedBox(height: 10),
-                    _buildFriendRequestsFeed(snapshot),
-                    const SizedBox(height: 24),
-                    _buildSectionHeadingRow(
-                      title: context.l10n.navFriends.toUpperCase(),
-                      trailing: _countBadge(_sectionCountFriends(snapshot)),
-                    ),
-                    const SizedBox(height: 10),
-                    _buildFriendsList(snapshot, friends: snapshot.friends),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFriendSearchField(FriendsSnapshot snapshot) {
-    return Material(
-      color: Colors.transparent,
-      child: TextField(
-        controller: _searchController,
-        focusNode: _searchFocusNode,
-        textInputAction: TextInputAction.search,
-        onChanged: (value) => _onFriendSearchChanged(snapshot, value),
-        decoration: InputDecoration(
-          hintText: context.l10n.friendsSearchByNameOrEmail,
-          prefixIcon: const Icon(Icons.search_rounded),
-          suffixIcon: _friendSearchQuery.isEmpty
-              ? IconButton(
-                  tooltip: context.l10n.friendsAddFriend,
-                  onPressed: () => unawaited(_openAddFriendActions(snapshot)),
-                  icon: const Icon(Icons.person_add_alt_1_rounded),
-                )
-              : IconButton(
-                  tooltip: MaterialLocalizations.of(
-                    context,
-                  ).deleteButtonTooltip,
-                  onPressed: () {
-                    _searchController.clear();
-                    _clearInlineFriendSearch();
-                  },
-                  icon: const Icon(Icons.close_rounded),
-                ),
-          filled: true,
-          fillColor: AppDesign.cardSurface(context),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 18,
-            vertical: 18,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(24),
-            borderSide: BorderSide(color: AppDesign.cardStroke(context)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(24),
-            borderSide: BorderSide(color: AppDesign.cardStroke(context)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(24),
-            borderSide: BorderSide(
-              color: Theme.of(
-                context,
-              ).colorScheme.primary.withValues(alpha: 0.7),
+                  ),
+                const SliverToBoxAdapter(child: SizedBox(height: 24)),
+              ],
             ),
           ),
         ),
       ),
     );
   }
+
+  Widget _buildFriendSearchField(FriendsSnapshot snapshot) => TextField(
+    key: const ValueKey('friends-search'),
+    controller: _searchController,
+    focusNode: _searchFocusNode,
+    textInputAction: TextInputAction.search,
+    onChanged: (value) => _onFriendSearchChanged(snapshot, value),
+    decoration: InputDecoration(
+      hintText: context.l10n.friendsSearchByNameOrEmail,
+      fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+      prefixIcon: const Icon(Icons.search_rounded),
+      suffixIcon: _friendSearchQuery.isEmpty
+          ? null
+          : IconButton(
+              tooltip: context.l10n.workspaceClearSearch,
+              onPressed: () => _clearInlineFriendSearch(),
+              icon: const Icon(Icons.close_rounded),
+            ),
+    ),
+  );
 
   Widget _buildInlineSearchResults(FriendsSnapshot snapshot) {
-    final query = _friendSearchQuery.trim();
-    if (query.length < 2 &&
-        !_isSearchingUsers &&
-        _friendSearchResults.isEmpty &&
-        _friendSearchError == null) {
+    if (_friendSearchQuery.isEmpty) {
       return const SizedBox.shrink();
     }
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: AppSurfaceCard(
-        radius: 22,
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-        borderColor: Theme.of(
-          context,
-        ).colorScheme.primary.withValues(alpha: 0.35),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_isSearchingUsers)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        context.l10n.friendsSearchUsers,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppDesign.mutedColor(context),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            else if (_friendSearchError != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                child: Text(
-                  _friendSearchError!,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppDesign.destructiveColor(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )
-            else if (_friendSearchResults.isEmpty)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                child: Text(
-                  context.l10n.friendsNoUsersFound,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppDesign.mutedColor(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )
-            else
-              for (var i = 0; i < _friendSearchResults.length; i++) ...[
-                _buildInlineSearchUserRow(snapshot, _friendSearchResults[i]),
-                if (i < _friendSearchResults.length - 1)
-                  Divider(
-                    height: 1,
-                    color: AppDesign.cardStroke(context).withValues(alpha: 0.5),
-                  ),
-              ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInlineSearchUserRow(FriendsSnapshot snapshot, FriendUser user) {
-    final busy = _inlineInviteLoading.contains(user.id);
-    return AppListRow(
-      leading: _userAvatar(user, size: 42),
-      title: _friendPrimaryName(user),
-      subtitle: user.nickname.trim().isEmpty ? null : user.nickname.trim(),
-      trailing: FilledButton.icon(
-        onPressed: busy
-            ? null
-            : () => unawaited(_sendInlineInvite(snapshot, user)),
-        icon: busy
-            ? const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const Icon(Icons.person_add_alt_1_rounded, size: 17),
-        label: Text(context.l10n.friendsInviteAction),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
-    );
-  }
-
-  Widget _buildSectionHeadingRow({required String title, Widget? trailing}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1.7,
-                color: AppDesign.mutedColor(context),
-              ),
-            ),
-          ),
-          ?trailing,
-        ],
-      ),
-    );
-  }
-
-  Widget _countBadge(int value) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
-        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
-      ),
-      child: Text(
-        '$value',
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.w800,
-          color: AppDesign.titleColor(context).withValues(alpha: 0.82),
-          height: 1,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFriendRequestsFeed(FriendsSnapshot snapshot) {
-    final rows = <({FriendRequest request, _FriendRequestFeedType type})>[
-      for (final request in snapshot.pendingReceived)
-        (request: request, type: _FriendRequestFeedType.incoming),
-      for (final request in snapshot.pendingSent)
-        (request: request, type: _FriendRequestFeedType.outgoing),
-    ];
-
-    if (rows.isEmpty) {
-      return _buildEmptyFeedRow(
-        icon: Icons.person_add_alt_1_rounded,
-        message: context.l10n.friendsNoPendingActivity,
-      );
+    if (_friendSearchQuery.length < 2) {
+      return Text(context.l10n.friendsTypeAtLeast2CharactersToSearch);
     }
-
-    return Column(
-      children: [
-        for (var i = 0; i < rows.length; i++) ...[
-          _buildFriendRequestFeedRow(rows[i].request, type: rows[i].type),
-          if (i < rows.length - 1) const SizedBox(height: 16),
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (_isSearchingUsers)
+            const LinearProgressIndicator()
+          else if (_friendSearchError != null) ...[
+            Text(
+              _friendSearchError!,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+            TextButton(
+              onPressed: () =>
+                  _performInlineFriendSearch(snapshot, _friendSearchQuery),
+              child: Text(context.l10n.retryAction),
+            ),
+          ] else if (_friendSearchResults.isEmpty)
+            Text(context.l10n.friendsNoUsersFound)
+          else
+            for (final user in _friendSearchResults)
+              _buildInlineSearchUserRow(snapshot, user),
         ],
-        if (_pendingReceivedHasMore || _pendingSentHasMore) ...[
-          const SizedBox(height: 12),
-          Row(
+      ),
+    );
+  }
+
+  Widget _buildInlineSearchUserRow(
+    FriendsSnapshot snapshot,
+    FriendUser user,
+  ) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) => Row(
             children: [
-              if (_pendingReceivedHasMore)
-                _buildLoadMoreTextButton(
-                  loading: _isLoadingMorePendingReceived,
-                  onPressed: () => unawaited(_loadMorePendingReceived()),
+              ExcludeSemantics(
+                child: MediaQuery.withClampedTextScaling(
+                  maxScaleFactor: 1,
+                  child: _userAvatar(user, size: 40),
                 ),
-              if (_pendingReceivedHasMore && _pendingSentHasMore)
-                const SizedBox(width: 8),
-              if (_pendingSentHasMore)
-                _buildLoadMoreTextButton(
-                  loading: _isLoadingMorePendingSent,
-                  onPressed: () => unawaited(_loadMorePendingSent()),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _friendPrimaryName(user),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              const SizedBox(width: 12),
+              if (MediaQuery.textScalerOf(context).scale(14) > 21)
+                IconButton.filled(
+                  tooltip: context.l10n.friendsInviteAction,
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
+                  onPressed: _inlineInviteLoading.contains(user.id)
+                      ? null
+                      : () => unawaited(_sendInlineInvite(snapshot, user)),
+                  icon: const Icon(Icons.person_add_alt_1_outlined, size: 20),
+                )
+              else
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: constraints.maxWidth * .42,
+                  ),
+                  child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(48, 36),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      textStyle: Theme.of(
+                        context,
+                      ).textTheme.labelMedium?.copyWith(fontSize: 14),
+                      tapTargetSize: MaterialTapTargetSize.padded,
+                      visualDensity: VisualDensity.standard,
+                    ),
+                    onPressed: _inlineInviteLoading.contains(user.id)
+                        ? null
+                        : () => unawaited(_sendInlineInvite(snapshot, user)),
+                    icon: const Icon(Icons.person_add_alt_1_outlined, size: 16),
+                    label: Text(
+                      context.l10n.friendsInviteAction,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
             ],
           ),
-        ],
+        ),
+        const Divider(),
       ],
-    );
-  }
+    ),
+  );
+
+  Widget _qrAction(
+    IconData icon,
+    String title,
+    Future<void> Function() action,
+  ) => TextButton(
+    onPressed: () => unawaited(action()),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 26),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+        ),
+      ],
+    ),
+  );
+
+  Widget _buildSectionHeadingRow({required String title, Widget? trailing}) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Row(
+          children: [
+            Flexible(
+              child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+            ),
+            if (trailing != null) ...[
+              const SizedBox(width: 10),
+              DefaultTextStyle.merge(
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: AppDesign.mutedColor(context),
+                ),
+                child: trailing,
+              ),
+            ],
+          ],
+        ),
+      );
+
+  Widget _buildFriendRequestsFeed(FriendsSnapshot snapshot) => Column(
+    children: [
+      for (final request in snapshot.pendingReceived)
+        _buildFriendRequestFeedRow(
+          request,
+          type: _FriendRequestFeedType.incoming,
+        ),
+      for (final request in snapshot.pendingSent)
+        _buildFriendRequestFeedRow(
+          request,
+          type: _FriendRequestFeedType.outgoing,
+        ),
+      if (_pendingReceivedHasMore)
+        _buildLoadMoreTextButton(
+          loading: _isLoadingMorePendingReceived,
+          onPressed: () => unawaited(_loadMorePendingReceived()),
+        ),
+      if (_pendingSentHasMore)
+        _buildLoadMoreTextButton(
+          loading: _isLoadingMorePendingSent,
+          onPressed: () => unawaited(_loadMorePendingSent()),
+        ),
+    ],
+  );
 
   Widget _buildFriendRequestFeedRow(
     FriendRequest request, {
     required _FriendRequestFeedType type,
   }) {
     final busy = _respondLoading.contains(request.requestId);
-    final isIncoming = type == _FriendRequestFeedType.incoming;
-    final subtitle = isIncoming
-        ? context.l10n.friendsIncomingRequestSubtitle
-        : context.l10n.friendsOutgoingInviteSubtitle;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _userAvatar(request.user, size: 48),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildFeedTextBlock(
-              title: _friendPrimaryName(request.user),
-              subtitle: subtitle,
-            ),
-          ),
-          const SizedBox(width: 8),
-          if (isIncoming)
-            _buildIncomingRequestActions(request, busy: busy)
-          else
-            _buildFeedButton(
-              label: context.l10n.cancelAction,
-              busy: busy,
-              onPressed: () => unawaited(_cancelInvite(request)),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildIncomingRequestActions(
-    FriendRequest request, {
-    required bool busy,
-  }) {
-    return Wrap(
-      spacing: 6,
+    final incoming = type == _FriendRequestFeedType.incoming;
+    final identity = Row(
       children: [
-        _buildFeedButton(
-          label: context.l10n.friendsAccept,
-          primary: true,
-          busy: busy,
-          onPressed: () => unawaited(_respondInvite(request, true)),
+        ExcludeSemantics(child: _userAvatar(request.user, size: 48)),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildFeedTextBlock(
+            title: _friendPrimaryName(request.user),
+            subtitle: incoming
+                ? context.l10n.friendsIncomingRequestSubtitle
+                : context.l10n.friendsOutgoingInviteSubtitle,
+          ),
         ),
-        _buildFeedButton(
-          label: context.l10n.deleteAction,
-          busy: false,
+      ],
+    );
+    final actions = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (incoming) ...[
+          IconButton.filled(
+            tooltip: context.l10n.friendsAccept,
+            onPressed: busy
+                ? null
+                : () => unawaited(_respondInvite(request, true)),
+            style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
+            icon: const Icon(Icons.check, size: 26),
+          ),
+          const SizedBox(width: 4),
+        ],
+        IconButton.filledTonal(
+          tooltip: incoming
+              ? context.l10n.friendsDeclineAction
+              : context.l10n.cancelAction,
           onPressed: busy
               ? null
-              : () => unawaited(_respondInvite(request, false)),
+              : () => incoming
+                    ? unawaited(_respondInvite(request, false))
+                    : unawaited(_cancelInvite(request)),
+          style: IconButton.styleFrom(
+            minimumSize: const Size(48, 48),
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+            foregroundColor: Theme.of(context).colorScheme.onSurface,
+          ),
+          icon: const Icon(Icons.close, size: 26),
         ),
+      ],
+    );
+    return Column(
+      key: ValueKey('friend-request-${request.requestId}'),
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              if (MediaQuery.textScalerOf(context).scale(16) > 23 ||
+                  constraints.maxWidth < 300) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    identity,
+                    const SizedBox(height: 8),
+                    Align(alignment: Alignment.centerRight, child: actions),
+                  ],
+                );
+              }
+              return Row(
+                children: [
+                  Expanded(child: identity),
+                  const SizedBox(width: 8),
+                  actions,
+                ],
+              );
+            },
+          ),
+        ),
+        const Divider(height: 1),
       ],
     );
   }
@@ -381,218 +405,102 @@ extension _FriendsPageWidgets on _FriendsPageState {
   Widget _buildFeedTextBlock({
     required String title,
     required String subtitle,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          softWrap: true,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: AppDesign.titleColor(context),
-            fontWeight: FontWeight.w800,
-            height: 1.06,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          subtitle,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: AppDesign.mutedColor(context),
-            fontWeight: FontWeight.w500,
-            height: 1.16,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFeedButton({
-    required String label,
-    required bool busy,
-    required VoidCallback? onPressed,
-    bool primary = false,
-  }) {
-    final colors = Theme.of(context).colorScheme;
-    final background = primary
-        ? colors.primary
-        : colors.onSurface.withValues(
-            alpha: AppDesign.isDark(context) ? 0.10 : 0.08,
-          );
-    final foreground = primary
-        ? AppDesign.darkForeground
-        : AppDesign.titleColor(context);
-
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minWidth: 64, minHeight: 30),
-      child: TextButton(
-        onPressed: busy ? null : onPressed,
-        style: TextButton.styleFrom(
-          backgroundColor: background,
-          foregroundColor: foreground,
-          disabledForegroundColor: foreground.withValues(alpha: 0.55),
-          minimumSize: Size.zero,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          visualDensity: VisualDensity.compact,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
-          textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
-            fontSize: 13.5,
-            fontWeight: FontWeight.w800,
-            height: 1,
-          ),
-        ),
-        child: busy
-            ? SizedBox(
-                width: 14,
-                height: 14,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(foreground),
-                ),
-              )
-            : Text(label),
+  }) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        title,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.titleMedium,
       ),
-    );
-  }
+      const SizedBox(height: 4),
+      Text(
+        subtitle,
+        style: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(color: AppDesign.mutedColor(context)),
+      ),
+    ],
+  );
 
   Widget _buildLoadMoreTextButton({
     required bool loading,
     required VoidCallback onPressed,
-  }) {
-    return TextButton.icon(
-      onPressed: loading ? null : onPressed,
-      icon: loading
-          ? const SizedBox(
-              width: 14,
-              height: 14,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.expand_more_rounded),
-      label: Text(context.l10n.tripsLoadMore),
-    );
-  }
+  }) => TextButton.icon(
+    onPressed: loading ? null : onPressed,
+    icon: loading
+        ? const SizedBox(
+            width: 18,
+            height: 18,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          )
+        : const Icon(Icons.expand_more_rounded),
+    label: Text(context.l10n.tripsLoadMore),
+  );
 
-  Widget _buildFriendsList(
-    FriendsSnapshot snapshot, {
-    required List<FriendUser> friends,
-  }) {
-    if (snapshot.friends.isEmpty) {
-      return _buildEmptyPanel(
-        icon: Icons.people_outline_rounded,
-        message: context.l10n.friendsNoFriendsYet,
-      );
-    }
-    if (friends.isEmpty) {
-      return _buildEmptyPanel(
-        icon: Icons.search_off_rounded,
-        message: context.l10n.friendsNoUsersFound,
-      );
-    }
-
-    return Column(
-      children: [
-        for (var i = 0; i < friends.length; i++) ...[
-          _buildFriendListRow(friends[i]),
-          if (i < friends.length - 1) const SizedBox(height: 14),
-        ],
-        if (_isLoadingMoreFriends)
-          const Padding(
-            padding: EdgeInsets.only(top: 12),
-            child: Center(
-              child: SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
-          ),
-        if (_friendsHasMore && !_isLoadingMoreFriends)
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                context.l10n.friendsScrollDownToLoadMoreFriends,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppDesign.mutedColor(context),
+  Widget _buildFriendListRow(FriendUser friend) => Column(
+    children: [
+      Material(
+        color: Colors.transparent,
+        child: InkWell(
+          key: ValueKey('friend-row-${friend.id}'),
+          borderRadius: AppDesign.cardRadius,
+          onTap: () => unawaited(_openFriendProfile(friend)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                ExcludeSemantics(child: _userAvatar(friend, size: 48)),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildFeedTextBlock(
+                    title: _friendPrimaryName(friend),
+                    subtitle: _friendTripsLabel(friend),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                const Icon(Icons.more_horiz_rounded),
+              ],
             ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildFriendListRow(FriendUser friend) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: () => unawaited(_openFriendProfile(friend)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          child: Row(
-            children: [
-              _userAvatar(friend, size: 50),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildFeedTextBlock(
-                  title: _friendPrimaryName(friend),
-                  subtitle: _friendTripsLabel(friend),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppDesign.mutedColor(context).withValues(alpha: 0.72),
-              ),
-            ],
           ),
         ),
       ),
-    );
-  }
+      const Divider(height: 1),
+    ],
+  );
 
-  Widget _buildEmptyPanel({required IconData icon, required String message}) {
-    return _buildEmptyFeedRow(icon: icon, message: message);
-  }
-
-  Widget _buildEmptyFeedRow({required IconData icon, required String message}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 48,
-            height: 48,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppDesign.cardSurface(context).withValues(alpha: 0.72),
-              ),
-              child: Icon(icon, color: AppDesign.mutedColor(context), size: 22),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              message,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppDesign.mutedColor(context),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildFriendsEmpty(FriendsSnapshot snapshot) => Padding(
+    key: const ValueKey('friends-empty'),
+    padding: const EdgeInsets.symmetric(vertical: 24),
+    child: Column(
+      children: [
+        SplytoIllustration(
+          'assets/branding/splyto_empty_friends.svg',
+          width: 180,
+          height: 140,
+        ),
+        const SizedBox(height: 16),
+        Text(
+          context.l10n.friendsNoFriendsYet,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(context.l10n.friendsEmptyBody, textAlign: TextAlign.center),
+        const SizedBox(height: 16),
+        FilledButton.icon(
+          onPressed: () => _searchFocusNode.requestFocus(),
+          icon: const Icon(Icons.person_add_alt_1_outlined),
+          label: Text(context.l10n.friendsAddFriend),
+        ),
+      ],
+    ),
+  );
 
   void _onFriendSearchChanged(FriendsSnapshot snapshot, String rawValue) {
     final query = rawValue.trim();
+    _searchGeneration++;
     _friendSearchDebounce?.cancel();
     _updateState(() {
       _friendSearchQuery = query;
@@ -614,6 +522,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
     FriendsSnapshot snapshot,
     String query,
   ) async {
+    final generation = ++_searchGeneration;
     final normalizedQuery = query.trim();
     if (normalizedQuery.length < 2) {
       return;
@@ -628,7 +537,9 @@ extension _FriendsPageWidgets on _FriendsPageState {
         limit: 8,
         excludeIds: _searchExcludeIds(_snapshot ?? snapshot),
       );
-      if (!mounted || _friendSearchQuery != normalizedQuery) {
+      if (!mounted ||
+          _friendSearchQuery != normalizedQuery ||
+          generation != _searchGeneration) {
         return;
       }
       _updateState(() {
@@ -636,7 +547,14 @@ extension _FriendsPageWidgets on _FriendsPageState {
         _isSearchingUsers = false;
       });
     } on ApiException catch (error) {
-      if (!mounted || _friendSearchQuery != normalizedQuery) {
+      if (!mounted ||
+          _friendSearchQuery != normalizedQuery ||
+          generation != _searchGeneration) {
+        return;
+      }
+      if ([401, 403, 404].contains(error.statusCode) ||
+          error.code == 'account_changed') {
+        _handleFriendsLoadError(error);
         return;
       }
       _updateState(() {
@@ -644,7 +562,9 @@ extension _FriendsPageWidgets on _FriendsPageState {
         _isSearchingUsers = false;
       });
     } catch (_) {
-      if (!mounted || _friendSearchQuery != normalizedQuery) {
+      if (!mounted ||
+          _friendSearchQuery != normalizedQuery ||
+          generation != _searchGeneration) {
         return;
       }
       _updateState(() {
@@ -696,6 +616,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
   }
 
   void _clearInlineFriendSearch({bool keepText = false}) {
+    _searchGeneration++;
     _friendSearchDebounce?.cancel();
     _updateState(() {
       if (!keepText) {
@@ -757,14 +678,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
     required double size,
     required int seed,
   }) {
-    final palette = <Color>[
-      const Color(0xFF35B7C9),
-      const Color(0xFF6D56B8),
-      const Color(0xFFC98625),
-      const Color(0xFF5E9F54),
-      const Color(0xFFB95C7F),
-    ];
-    final color = palette[seed.abs() % palette.length];
+    final color = Theme.of(context).colorScheme.primaryContainer;
     return Container(
       width: size,
       height: size,
@@ -772,9 +686,9 @@ extension _FriendsPageWidgets on _FriendsPageState {
       alignment: Alignment.center,
       child: Text(
         initials,
-        style: TextStyle(
-          color: AppDesign.darkForeground,
-          fontWeight: FontWeight.w800,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          fontWeight: FontWeight.w600,
           fontSize: size * 0.34,
           height: 1,
         ),
@@ -792,9 +706,9 @@ extension _FriendsPageWidgets on _FriendsPageState {
       return '?';
     }
     if (parts.length == 1) {
-      return parts.first.substring(0, 1).toUpperCase();
+      return parts.first.characters.first.toUpperCase();
     }
-    return '${parts.first.substring(0, 1)}${parts.last.substring(0, 1)}'
+    return '${parts.first.characters.first}${parts.last.characters.first}'
         .toUpperCase();
   }
 
@@ -813,8 +727,8 @@ extension _FriendsPageWidgets on _FriendsPageState {
   String _friendTripsLabel(FriendUser friend) {
     final count = friend.commonTripsCount;
     if (count <= 0) {
-      return context.l10n.noTripsYet;
+      return context.l10n.workspaceNoCommonTripsFoundYet;
     }
-    return count == 1 ? '1 trip' : '$count trips';
+    return context.l10n.friendsCommonTripsCount(count);
   }
 }

@@ -1,0 +1,127 @@
+{
+  "title": "Privātuma politika",
+  "updated": "Sagatavota 2026. gada 23. oktobrī",
+  "reviewNotice": "Projekts pārskatīšanai. Pirms publicēšanas vēl jāapstiprina pārējo datu kategoriju glabāšanas kārtība un aizsardzības pasākumi starptautiskai datu nodošanai.",
+  "intro": "Šī politika skaidro, kā Splyto apstrādā personas datus konta, ceļojumu un kopīgo izdevumu funkcijās. Tā attiecas arī uz informāciju, ko par jums ievada citi dalībnieki. Tā neaizstāj jūsu e-pasta, pieteikšanās vai maksājumu pakalpojuma privātuma noteikumus.",
+  "sections": [
+    {
+      "id": "controller",
+      "title": "Kas atbild par datiem",
+      "paragraphs": [
+        "Par šeit aprakstīto datu apstrādi atbild Splyto, Latvija. Privātuma jautājumus un pieprasījumus sūtiet uz info@splyto.eu. Vispārējiem lietotnes atbalsta jautājumiem paredzēts support@splyto.eu."
+      ]
+    },
+    {
+      "id": "account",
+      "title": "Konts un pieteikšanās",
+      "paragraphs": [
+        "Apstrādājam konta identifikatoru, e-pastu, vārdu vai segvārdu, pievienoto profila attēlu, izvēlēto valūtu, valodu un paziņojumu iestatījumus. Ja iestatāt Splyto paroli, serverī glabājas tās jaucējvērtība, nevis pati parole.",
+        "Izvēloties Google vai Apple pieteikšanos, saņemam pakalpojuma lietotāja identifikatoru un tā nodoto identitātes informāciju, piemēram, e-pastu un vārdu. Apple var nodot pārsūtīšanas e-pasta adresi. Jūsu Google vai Apple paroli nesaņemam. Sesiju uzturēšanai apstrādājam arī autentifikācijas marķierus, pieteikšanās laikus, IP adreses un lietotnes/pārlūka tehnisko identifikāciju."
+      ]
+    },
+    {
+      "id": "shared",
+      "title": "Ceļojumi, izdevumi un citu ievadīti dati",
+      "paragraphs": [
+        "Glabājam ceļojumus, dalību un uzaicinājumus; izdevumu aprakstus, summas, valūtas, datumus, kategorijas, maksātājus un dalībniekus; katra daļu; komentārus, reakcijas un čekus; maksājumu pieprasījumus, norēķinu statusus un darbību vēsturi. Citi dalībnieki var ievadīt izdevumus vai komentārus, kas attiecas uz jums. Lietotnes tēriņu pārskatus aprēķina no šiem ierakstiem.",
+        "Konta un kopīgo izdevumu dati ir nepieciešami attiecīgo funkciju nodrošināšanai. Fotogrāfijas, maksājumu rekvizīti un atbalstam sūtīti pielikumi ir brīvprātīgi. Bez attiecīgajiem obligātajiem datiem nevaram izveidot kontu, reģistrēt izdevumu vai nodrošināt konkrēto funkciju."
+      ]
+    },
+    {
+      "id": "visibility",
+      "title": "Ko redz citi cilvēki",
+      "paragraphs": [
+        "Lietotāji, kuri ir pieteikušies, var atrast profilus pēc vārda, segvārda vai e-pasta un saņemt profilu ieteikumus. Rezultātos ir vārds, profila attēls un konta identifikators, nevis pati e-pasta adrese. Profila atrašana nav ierobežota tikai ar esošajiem draugiem.",
+        "Ceļojuma dalībniekiem pieejami viņu dalībai un lomai atļautie kopīgie ieraksti, tostarp izdevumi, čeki un darbību vēsture. Cilvēki var saglabāt jau apskatīto vai nokopēto informāciju. Avatāriem un ceļojumu vāka attēliem ir tālāk nododamas attēlu saites; tos nevajag uzskatīt par konfidenciāliem failiem. Čekiem izmanto saites ar ierobežotu derīgumu; derīgas saites saņēmējs var to atvērt līdz termiņa beigām. Piekļuves noņemšana neizdzēš iepriekš lejupielādētas kopijas."
+      ]
+    },
+    {
+      "id": "payments",
+      "title": "Maksājumu rekvizīti un ārējie maksājumi",
+      "paragraphs": [
+        "Ja tos pievienojat, glabājam konta īpašnieka vārdu, IBAN, BIC/SWIFT un Revolut, PayPal vai Wise identifikatorus vai saites. Draudzība vai dalība ceļojumā pati par sevi nedod piekļuvi rekvizītiem. Ja maksājuma pieprasījumā skaidri izvēlaties dalīties ar rekvizītiem, norādītais maksātājs tos var pieprasīt, kamēr pieprasījums un ceļojums ir aktīvi un izpildīti attiecīgie dalības un kontu nosacījumi.",
+        "Rekvizītus profilā varat labot vai noņemt. Tas neatsauc citas personas jau nokopēto informāciju. Splyto uzskaita atlikumus un norēķinu apstiprinājumus; tas neievāc maksājumu karšu piekļuves datus un neveic bankas pārskaitījumus. Atverot maksājuma saiti, pārejat pie attiecīgā pakalpojuma sniedzēja, uz kuru attiecas tā privātuma noteikumi."
+      ]
+    },
+    {
+      "id": "media",
+      "title": "Fotogrāfijas, kamera un dati telefonā",
+      "paragraphs": [
+        "Kameru izmanto, kad izvēlaties fotografēšanas vai QR skenēšanas funkciju; attēlu/failu atlase paredzēta jūsu izvēlētam augšupielādējamam saturam. Ja pieejama čeka atpazīšana, Splyto serveris nolasa augšupielādēto attēlu ar lokālu teksta atpazīšanu, lai piedāvātu tirgotāju, summu un datumu. Šis process nesūta čekus ārējam mākslīgā intelekta pakalpojumam.",
+        "Telefonā glabājas iestatījumi, profila/ceļojumu datu kešatmiņa un rindā gaidošas bezsaistes izmaiņas. Autentifikācijas dati izmanto operētājsistēmas aizsargāto glabātuvi, bet parastā kešatmiņa — lietotnes datu glabātuvi. Daļu datu var ietekmēt arī ierīces rezerves kopēšanas iestatījumi. Izrakstīšanās nav serverī glabātā konta dzēšana. Kameras, attēlu un paziņojumu atļaujas varat pārvaldīt ierīces iestatījumos."
+      ]
+    },
+    {
+      "id": "notifications",
+      "title": "Paziņojumi, pakalpojuma e-pasti un atbalsts",
+      "paragraphs": [
+        "Paziņojumiem izmanto instalācijas/ierīces identifikatoru, piegādes marķieri, platformu, valodu un iestatījumus. Apple Push Notification service iOS ierīcēs un Google Firebase Cloud Messaging Android ierīcēs saņem piegādes informāciju un paziņojuma saturu, kurā var būt vārdi, ceļojumu/izdevumu notikumi un saistītie identifikatori. Vai priekšskatījums redzams citiem bloķētā ekrānā, nosaka jūsu ierīces iestatījumi.",
+        "Resend piegādā konta apstiprināšanas, paroles atjaunošanas un konta pārvaldības e-pastus, apstrādājot saņēmēja adresi, vēstules saturu un piegādes informāciju. “Sazināties ar mums” atver jūsu e-pasta lietotni. Nosūtot vēstuli, saņemam sūtītāja datus, tekstu un jūsu pievienotos pielikumus. Vecākās lietotnes versijās iesniegtās atsauksmes var ietvert arī ekrānuzņēmumus, lietotnes/versijas datus un ziņojuma kontekstu."
+      ]
+    },
+    {
+      "id": "purposes",
+      "title": "Apstrādes nolūki un tiesiskais pamats",
+      "paragraphs": [
+        "Konta, autentifikācijas un kopīgo izdevumu datus izmantojam jūsu pieprasītā pakalpojuma nodrošināšanai, pamatojoties uz pakalpojuma līguma izpildi (VDAR 6. panta 1. punkta b) apakšpunkts). Drošības žurnālus, sesiju kontroli un nepieciešamo diagnostiku izmantojam ļaunprātīgas izmantošanas novēršanai, kļūmju izmeklēšanai un lietotāju/pakalpojuma aizsardzībai, pamatojoties uz leģitīmajām interesēm (f) apakšpunkts). Nepieciešamā atbalsta saziņa un kopīgās uzskaites vēsture var kalpot arī mūsu un dalībnieku leģitīmajām interesēm atrisināt jautājumus un strīdus par atlikumiem.",
+        "Ja brīvprātīga izpaušana, piemēram, rekvizītu kopīgošana konkrētam maksātājam, balstās uz piekrišanu, pamats ir a) apakšpunkts. Piekrišanu turpmākai apstrādei varat atsaukt, neietekmējot iepriekš likumīgi veikto apstrādi; palīdzībai rakstiet uz info@splyto.eu. Ja piemērojams konkrēts juridisks pienākums, pamats ir c) apakšpunkts. Šīs politikas pieņemšanu neuzskatām par vispārēju piekrišanu nesaistītai apstrādei."
+      ]
+    },
+    {
+      "id": "providers",
+      "title": "Pakalpojumu sniedzēji un starptautiska apstrāde",
+      "paragraphs": [
+        "Splyto lietotnes serveris ir izvietots pie Hetzner Helsinkos, Somijā (Eiropas Savienībā). Šī atrašanās vieta attiecas uz lietotnes serveri; tā pati par sevi nenosaka citu pakalpojumu vai atsevišķu rezerves kopiju glabāšanas vietas.",
+        "Hostinga, datubāžu, datņu glabāšanas, rezerves kopēšanas, tīkla drošības un e-pasta pakalpojumu sniedzēji apstrādā pakalpojuma darbībai nepieciešamos datus. Apple un Google iesaistīti, ja izmantojat to pieteikšanās vai paziņojumu pakalpojumus; Resend — pakalpojuma e-pastu piegādē. Maksājumu pakalpojumi saņem datus, kad izvēlaties tos apmeklēt. Pilnvaroti pakalpojuma administratori var piekļūt datiem, ja tas nepieciešams atbalstam, uzturēšanai vai drošībai. Datus var izpaust arī tad, ja to pieprasa likums.",
+        "Daži citi pakalpojumu sniedzēji darbojas starptautiski, tostarp ārpus Eiropas Ekonomikas zonas. Pirms šī projekta publicēšanas vēl jāapstiprina pārējo pakalpojumu un atsevišķu rezerves kopiju apstrādes vietas, apstrādes līgumi un piemērojamie datu nodošanas aizsardzības pasākumi. Servera atrašanās Somijā nenozīmē, ka visi pakalpojuma dati vienmēr paliek ES."
+      ]
+    },
+    {
+      "id": "diagnostics",
+      "title": "Diagnostika, reklāma un automatizēti lēmumi",
+      "paragraphs": [
+        "Serveris darbības un drošības nodrošināšanai apstrādā pieprasījumu un kļūdu tehnisko informāciju, tostarp IP adresi, laiku, pieprasījuma/konta/ceļojuma identifikatorus un kļūdas aprakstu. Pašreizējā lietotnes konfigurācijā Sentry kļūdu ziņošana nav ieslēgta. Ja to ieslēdz nākamā versijā, šajā politikā jāatspoguļo tās apjoms un saņēmēji.",
+        "Pašreizējā lietotnē nav reklāmas vai reklāmas izsekošanas integrācijas. Analītikas sadaļa rāda tēriņu pārskatus, nevis nodrošina reklāmas analīzi. Atlikumu aprēķini un drošības ierobežojumi ir automatizēti, bet izvērtētā lietotne nepieņem tikai automatizētus lēmumus, kuru mērķis būtu radīt jums tiesiskas vai līdzvērtīgi būtiskas sekas."
+      ]
+    },
+    {
+      "id": "retention",
+      "title": "Cik ilgi glabājam datus",
+      "paragraphs": [
+        "Konta un ceļojumu datus glabājam, kamēr tie nepieciešami konta un kopīgo izdevumu vēstures nodrošināšanai. Kopīgie ieraksti var palikt pēc konta dzēšanas, jo citiem dalībniekiem joprojām nepieciešama uzskaites vēsture vai strīda par atlikumu atrisināšana. Nepieciešamība saglabāt identificējošo saturu jāvērtē atsevišķi no nepieciešamības saglabāt summas.",
+        "Regulārajām servera datubāzes un lietotnes datu rezerves kopijām noteikts 14 dienu atjaunošanas periods. Katras veiksmīgas ikdienas kopēšanas beigās pilnus regulāro kopiju komplektus, kas vecāki par 14 dienām, dzēš pēc jaunākas kopijas kontrolsummu un arhīvu integritātes pārbaudes. Tātad dzēšana notiek nākamajā veiksmīgajā ikdienas ciklā, nevis precīzi brīdī, kad kopijai aprit 14 dienas. Ja pārbaude neizdodas, tīrīšana apstājas, lai saglabātu atjaunošanas iespēju, un kļūme jānovērš.",
+        "Šī kārtība attiecas uz regulārajiem servera kopiju komplektiem. Atsevišķi veidotas atjaunošanas kopijas un hostinga sniedzēja momentuzņēmumi šajā procesā netiek dzēsti; to nepieciešamība un dzēšanas termiņš jāizvērtē atsevišķi. Drošības/sesiju ierakstiem, agrākajām atsauksmēm un atbalsta sarakstei arī nepieciešami atsevišķi glabāšanas noteikumi atbilstoši darbības, incidentu atrisināšanas un tiesisku prasījumu vajadzībām. Šī atlikusī kārtība jāapstiprina pirms projekta publicēšanas. Marķiera vai saites derīguma beigas pašas par sevi neizdzēš katru saistīto ierakstu."
+      ]
+    },
+    {
+      "id": "deletion",
+      "title": "Deaktivizēšana, dzēšana un jūsu izvēles",
+      "paragraphs": [
+        "Profilā → Konta iestatījumos varat pieprasīt konta deaktivizēšanu vai dzēšanu. Deaktivizēšana bloķē parasto konta izmantošanu, bet saglabā datus atjaunošanai. Dzēšana jāapstiprina konta e-pastā saņemtajā plūsmā. Tā noņem vai aizstāj profila/kontaktinformācijas, paroles un maksājumu laukus, noņem draudzības un saites ar pieteikšanās pakalpojumu, atspējo sesijas/paziņojumu reģistrācijas un mēģina izdzēst avatāra datni.",
+        "Dzēšana automātiski neizņem katru atsauci kopīgajos izdevumos, komentāros, čekos, vēsturiskās atsauksmēs, žurnālos vai rezerves kopijās. Par tur palikušo personas informāciju rakstiet uz info@splyto.eu, lai pieprasījumu varētu izvērtēt, ņemot vērā arī citu personu tiesības un piemērojamos izņēmumus. Splyto konta dzēšana neizdzēš jūsu Apple/Google kontu vai citu dalībnieku jau saglabāto informāciju."
+      ]
+    },
+    {
+      "id": "rights",
+      "title": "Jūsu datu aizsardzības tiesības",
+      "paragraphs": [
+        "Ja piemērojama VDAR, varat pieprasīt piekļuvi saviem datiem un to kopiju, labošanu, dzēšanu, apstrādes ierobežošanu un attiecīgajos gadījumos datu pārnesamību. Varat iebilst pret apstrādi, kas balstās uz leģitīmajām interesēm, un atsaukt piekrišanu, ja tā ir apstrādes pamats. Tiesībām ir nosacījumi un izņēmumi; tās ne vienmēr prasa dzēst cita dalībnieka ierakstus.",
+        "Rakstiet uz info@splyto.eu. Varam prasīt identitātes pārbaudei nepieciešamu informāciju. Atbildam bez nepamatotas kavēšanās, parasti viena mēneša laikā; sarežģītam pieprasījumam likumā atļautu pagarinājumu paskaidrojam pirmā mēneša laikā. Varat iesniegt sūdzību savas valsts uzraudzības iestādei, tostarp Latvijas Datu valsts inspekcijai (www.dvi.gov.lv)."
+      ]
+    },
+    {
+      "id": "security",
+      "title": "Drošība, bērni un izmaiņas",
+      "paragraphs": [
+        "Datu aizsardzībai izmantojam HTTPS, paroļu jaukšanu, piekļuves kontroli un aizsargātu autentifikācijas datu glabāšanu. Tas nenozīmē, ka katrs ieraksts ir šifrēts vai visi riski ir novērsti. Augšupielādējiet kopīgo izdevumu uzskaitei nepieciešamo un izvairieties no nevajadzīgas sensitīvas informācijas par sevi vai citiem.",
+        "Splyto ir kopīgo izdevumu pakalpojums un nav veidots īpaši bērniem. Sazinieties ar mums, ja uzskatāt, ka bērna dati ievadīti neatbilstoši. Šis projekts nenosaka jaunu vecuma slieksni.",
+        "Politiku atjaunojam, mainoties apstrādei, un norādām versijas datumu. Būtiski jauni izmantošanas veidi vai saņēmēji jāizskaidro pirms attiecīgās apstrādes sākuma; piekrišanu, ja tā nepieciešama, lūdzam atsevišķi."
+      ]
+    }
+  ],
+  "version": "2026-10-23",
+  "status": "draft",
+  "contactEmail": "info@splyto.eu",
+  "country": "Latvia",
+  "controller": "Splyto"
+}

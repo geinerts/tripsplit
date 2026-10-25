@@ -9,7 +9,7 @@ import '../entities/trip_user.dart';
 import '../entities/uploaded_trip_image.dart';
 
 abstract class TripsRepository {
-  Future<List<Trip>> listTrips();
+  Future<List<Trip>> listTrips({bool allowOfflineCache = true});
   Future<List<TripUser>> listDirectoryUsers({
     String query = '',
     int limit = 20,

@@ -33,7 +33,7 @@
 			<array>
 				<string>tripsplit</string>
 				<string>splyto</string>
-				<string>com.googleusercontent.apps.126032869696-8tomvru488udp8n4lo01tsttan2jrqfo</string>
+				<string>com.googleusercontent.apps.126032869696-dj2bor37gpjsa899va14ab59hl0080rt</string>
 			</array>
 		</dict>
 	</array>
@@ -42,17 +42,19 @@
 	<key>FlutterDeepLinkingEnabled</key>
 	<false/>
 	<key>GIDClientID</key>
-	<string>126032869696-8tomvru488udp8n4lo01tsttan2jrqfo.apps.googleusercontent.com</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
+	<string>126032869696-dj2bor37gpjsa899va14ab59hl0080rt.apps.googleusercontent.com</string>
+	<key>GIDServerClientID</key>
+	<string>126032869696-qvttfvd5p8sq0js3mms0kqfnbpbig0mm.apps.googleusercontent.com</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Splyto uses iOS file/media picker to let you select files to upload.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Splyto needs camera access so you can take profile photos and attach receipt pictures.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Splyto needs photo library access so you can attach receipts, trip images, and profile photos.</string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>Splyto uses iOS file/media picker to let you select files to upload.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -80,14 +82,12 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
-	<key>UIStatusBarHidden</key>
-	<false/>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIStatusBarHidden</key>
+	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -101,5 +101,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
 </dict>
 </plist>

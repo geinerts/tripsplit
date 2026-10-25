@@ -96,9 +96,7 @@ class TripsController {
         }
 
         try {
-          final trips = await _listTripsUseCase.call();
-          await _setCachedTrips(trips, persist: true);
-          return _cachedTrips;
+          return await refreshTripsFromServer();
         } on ApiException catch (error) {
           if (!error.isNetworkError) {
             rethrow;
@@ -111,6 +109,14 @@ class TripsController {
           rethrow;
         }
       });
+
+  /// Home renders its cached content separately and needs to distinguish an
+  /// offline fallback from a successful server refresh.
+  Future<List<Trip>> refreshTripsFromServer() => accountSession.run(() async {
+    final trips = await _listTripsUseCase.call(allowOfflineCache: false);
+    await _setCachedTrips(trips, persist: true);
+    return _cachedTrips;
+  });
 
   Future<List<Trip>?> primeTripsCacheFromDisk() => accountSession.run(() async {
     await _primeCacheFromDisk();

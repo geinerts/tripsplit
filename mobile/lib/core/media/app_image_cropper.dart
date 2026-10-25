@@ -7,6 +7,9 @@ import '../l10n/l10n.dart';
 class AppImageCropper {
   AppImageCropper._();
 
+  // Shared with trip photo previews: never crop the saved frame a second time.
+  static const tripAspectRatio = 16 / 9;
+
   static final ImageCropper _cropper = ImageCropper();
 
   static Future<XFile?> cropAvatar({
@@ -57,7 +60,9 @@ class AppImageCropper {
           cropFrameColor: scheme.primary,
           cropGridColor: scheme.primary.withValues(alpha: 0.35),
           lockAspectRatio: true,
-          initAspectRatio: CropAspectRatioPreset.original,
+          initAspectRatio: ratioX == ratioY
+              ? CropAspectRatioPreset.square
+              : CropAspectRatioPreset.ratio16x9,
         ),
         IOSUiSettings(
           // Keep iOS crop UI clean: one title area (no duplicate heading),

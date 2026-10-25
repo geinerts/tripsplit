@@ -1,0 +1,127 @@
+{
+  "title": "Privacy policy",
+  "updated": "Prepared on 23 October 2026",
+  "reviewNotice": "Draft for review. Retention rules for other data categories and safeguards for international transfers still need to be confirmed before publication.",
+  "intro": "This policy explains how Splyto processes personal data when you use its account, trip and shared-expense features. It also covers information that other participants enter about you. It does not replace the privacy notices of your email, sign-in or payment provider.",
+  "sections": [
+    {
+      "id": "controller",
+      "title": "Who is responsible",
+      "paragraphs": [
+        "Splyto, Latvia, is responsible for the processing described here. For privacy questions and requests, write to info@splyto.eu. General app support is available at support@splyto.eu."
+      ]
+    },
+    {
+      "id": "account",
+      "title": "Account and sign-in data",
+      "paragraphs": [
+        "We process your account ID, email address, name or nickname, profile photo if supplied, preferred currency, language and notification settings. If you set a Splyto password, the server stores a password hash, not the password itself.",
+        "If you choose Google or Apple sign-in, we receive the provider identifier and the identity information supplied by that provider, such as an email address and name. Apple may supply a relay email address. We do not receive your Google or Apple password. Sessions also involve authentication tokens, sign-in times, IP addresses and user-agent information."
+      ]
+    },
+    {
+      "id": "shared",
+      "title": "Trips, expenses and information from others",
+      "paragraphs": [
+        "We store trips, membership and invitations; expense descriptions, amounts, currencies, dates, categories, payers and participants; each person’s share; comments, reactions, receipts; and payment requests, settlement status and activity history. Other participants may enter expenses or comments that concern you. The app’s spending summaries are calculated from these records.",
+        "Account and shared-expense information is needed to provide these features. Photos, payment details and support attachments are optional. Without the relevant required information, we cannot create an account, record an expense or provide the corresponding feature."
+      ]
+    },
+    {
+      "id": "visibility",
+      "title": "What other people can see",
+      "paragraphs": [
+        "Signed-in users can find profiles by name, nickname or email, and may receive profile suggestions. Search results show names, profile pictures and account identifiers; they do not return the email address itself. Profile discovery is not restricted to existing friends.",
+        "Trip participants can access the shared records allowed by their membership and role, including expenses, receipts and activity. People can retain information they have already viewed or copied. Avatars and trip-cover photos use shareable image URLs and should not be treated as confidential files. Receipts use time-limited links; someone who receives a valid link can open it until it expires. Removing access does not erase previously downloaded copies."
+      ]
+    },
+    {
+      "id": "payments",
+      "title": "Payment details and external payments",
+      "paragraphs": [
+        "If you add them, we store the account-holder name, IBAN, BIC/SWIFT and Revolut, PayPal or Wise identifiers or links. Friendship or trip membership alone does not disclose these details. When you explicitly choose to share details with a payment request, the designated payer can request them while the request and trip are active and the relevant membership/account conditions are met.",
+        "You can edit or remove your payment details in your profile. This cannot retract information already copied by another person. Splyto records balances and settlement confirmations; it does not collect card credentials or execute bank transfers. Opening a payment link takes you to the corresponding provider, whose own privacy terms apply."
+      ]
+    },
+    {
+      "id": "media",
+      "title": "Photos, camera and local storage",
+      "paragraphs": [
+        "Camera access is used when you choose a photo or QR-scanning feature; photo/file selection is used for content you choose to upload. Receipt recognition, when available, reads the uploaded image on the Splyto server using local OCR to suggest a merchant, amount and date. This flow does not send receipts to an external AI service.",
+        "The phone stores settings, cached profile/trip information and queued offline changes so the app can work between connections. Authentication credentials use the platform’s secure storage; ordinary cached data uses app storage. Some data may also be affected by your device backup settings. Signing out is not the same as deleting your server account. You can manage camera, photo and notification permissions in your device settings."
+      ]
+    },
+    {
+      "id": "notifications",
+      "title": "Notifications, service emails and support",
+      "paragraphs": [
+        "Push notifications use an installation/device identifier, delivery token, platform, language and preferences. Apple Push Notification service on iOS and Google Firebase Cloud Messaging on Android receive the delivery information and notification content, which can include names, trip/expense events and related identifiers. Your lock-screen settings determine whether previews are visible to others.",
+        "Resend delivers account verification, password recovery and account-management emails and processes the recipient address, message content and delivery information. “Contact us” opens your own email app. If you send a message, we receive its sender details, text and any attachments you choose to include. Reports submitted through older app versions may also include screenshots, app/version information and report context."
+      ]
+    },
+    {
+      "id": "purposes",
+      "title": "Why we process data and our legal bases",
+      "paragraphs": [
+        "We use account, authentication and shared-expense data to provide the service you request, relying on performance of the service contract (GDPR Article 6(1)(b)). We use security logs, session controls and necessary diagnostics to prevent abuse, investigate failures and protect users and the service, relying on legitimate interests (Article 6(1)(f)). Necessary support and shared accounting history can also serve our and participants’ legitimate interests in resolving questions and disputed balances.",
+        "Where an optional disclosure is based on consent, such as sharing payment details with a specific payer, the basis is Article 6(1)(a); you may withdraw consent for future processing without affecting earlier lawful processing. Contact info@splyto.eu for help. Where a specific legal obligation applies, the basis is Article 6(1)(c). We do not treat accepting this policy as blanket consent to unrelated processing."
+      ]
+    },
+    {
+      "id": "providers",
+      "title": "Service providers and international processing",
+      "paragraphs": [
+        "The Splyto application server is hosted by Hetzner in Helsinki, Finland (European Union). This location applies to the application server; it does not by itself determine the processing locations of other services or separately stored backups.",
+        "Hosting, database, storage, backup, network-security and email providers process data needed to operate the service. Apple and Google are involved if you use their sign-in or notification services; Resend is involved in service-email delivery. Payment services receive data when you choose to visit them. Authorized service administrators may access data when needed for support, maintenance or security. Data may also be disclosed where legally required.",
+        "Some other service providers operate internationally, including outside the European Economic Area. Before this draft is published, the processing locations of other services and separately stored backups, contracted processing arrangements and applicable transfer safeguards still need to be confirmed. Hosting the server in Finland does not mean that all service data always remains in the EU."
+      ]
+    },
+    {
+      "id": "diagnostics",
+      "title": "Diagnostics, advertising and automated decisions",
+      "paragraphs": [
+        "The server processes technical request and error information, including IP address, timestamps, request/account/trip identifiers and error details, for operation and security. The current app configuration does not enable Sentry error reporting. If reporting is enabled in a future release, its scope and recipients must be reflected in this policy.",
+        "The current app has no advertising or advertising-tracking integration. Its analytics feature shows spending summaries; it is not an advertising analytics service. Balance calculations and security limits are automated, but the reviewed app does not make solely automated decisions intended to have legal or similarly significant effects on you."
+      ]
+    },
+    {
+      "id": "retention",
+      "title": "How long data is kept",
+      "paragraphs": [
+        "Account and trip information is kept while needed to provide your account and shared-expense history. Shared records may remain after an account is deleted because other participants still need their accounting history or to resolve a balance dispute. The need to retain identifiable content must be assessed separately from the need to retain totals.",
+        "Routine server backups of the database and application data use a 14-day recovery window. At each successful daily backup run, complete routine sets older than 14 days are deleted after a recent replacement set passes checksum and archive-integrity checks. Deletion therefore takes place at the next successful daily run, rather than exactly at the instant a copy reaches 14 days. If verification fails, cleanup stops to protect recoverability and requires attention.",
+        "This schedule covers the routine server backup sets. Separately created recovery copies and hosting-provider snapshots are not removed by that process; their need and expiry must be assessed separately. Security/session records, historical feedback and support correspondence also need category-specific retention rules based on operational, incident-resolution and legal-claim needs. Those remaining schedules must be confirmed before this draft is published. Token or link expiry does not itself erase every related record."
+      ]
+    },
+    {
+      "id": "deletion",
+      "title": "Deactivation, deletion and your choices",
+      "paragraphs": [
+        "Profile → Account settings lets you request account deactivation or deletion. Deactivation blocks normal account use but retains data for reactivation. Deletion requires confirmation through the account email flow. It removes or replaces profile/contact and password/payment fields, removes friendships and sign-in-provider links, disables sessions/push registrations and attempts removal of the avatar file.",
+        "Deletion does not automatically erase every reference in shared expenses, comments, receipts, historical reports, logs or backups. For personal information remaining in those records, contact info@splyto.eu so the request can be assessed, including other people’s rights and any applicable legal exceptions. Deleting Splyto does not delete your Apple/Google account or information already held by other participants."
+      ]
+    },
+    {
+      "id": "rights",
+      "title": "Your data-protection rights",
+      "paragraphs": [
+        "Where the GDPR applies, you can request access and a copy of your data, correction, erasure, restriction, and portability where applicable. You can object to processing based on legitimate interests and withdraw consent where processing relies on it. These rights have conditions and exceptions; they do not always require deletion of another participant’s records.",
+        "Write to info@splyto.eu. We may ask for information necessary to verify your identity. We respond without undue delay, normally within one month; where permitted for a complex request, we explain an extension within that first month. You may complain to your local supervisory authority, including Latvia’s Datu valsts inspekcija (www.dvi.gov.lv)."
+      ]
+    },
+    {
+      "id": "security",
+      "title": "Security, children and changes",
+      "paragraphs": [
+        "We use HTTPS, password hashing, access controls and secure credential storage to protect data. These measures do not make every stored record encrypted or eliminate all risk. Only upload information needed for shared expenses, and avoid unnecessary sensitive information about yourself or others.",
+        "Splyto is a shared-expense service and is not designed specifically for children. Contact us if you believe a child’s data has been provided improperly. This draft does not establish a new age threshold.",
+        "We update this policy when processing changes and show the version date. Material new uses or recipients must be explained before the relevant processing begins; consent is requested separately where required."
+      ]
+    }
+  ],
+  "version": "2026-10-23",
+  "status": "draft",
+  "contactEmail": "info@splyto.eu",
+  "country": "Latvia",
+  "controller": "Splyto"
+}

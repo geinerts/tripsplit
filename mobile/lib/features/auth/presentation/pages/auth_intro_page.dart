@@ -113,7 +113,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       isScrollControlled: true,
       wrapWithSurface: false,
       barrierColor: semantic.modalBarrier,
-      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width),
+      constraints: const BoxConstraints(maxWidth: 640),
       builder: (_) {
         return LoginPage(
           controller: widget.controller,
@@ -134,7 +134,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       isScrollControlled: true,
       wrapWithSurface: false,
       barrierColor: semantic.modalBarrier,
-      constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width),
+      constraints: const BoxConstraints(maxWidth: 640),
       builder: (_) {
         return LoginPage(
           controller: widget.controller,
@@ -373,42 +373,50 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
                   maintainBottomViewPadding: true,
                   child: LayoutBuilder(
                     builder: (context, constraints) {
-                      final heroWidth = constraints.maxWidth
-                          .clamp(242.0, 315.0)
-                          .toDouble();
-                      // Keep hero scale stable even when keyboard insets
-                      // change available height during bottom-sheet focus.
-                      final heroViewportHeight = (heroWidth * 0.92)
-                          .clamp(232.0, 300.0)
-                          .toDouble();
-
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 12, 24, 22),
-                        child: Stack(
-                          children: [
-                            IgnorePointer(
-                              child: RepaintBoundary(
-                                child: _AuthIntroStaticHero(
-                                  heroWidth: heroWidth,
-                                  heroViewportHeight: heroViewportHeight,
-                                  splitSettledLabel:
-                                      context.l10nEn.authIntroSplitSettled,
-                                  paris3FriendsLabel:
-                                      context.l10nEn.authIntroParis3Friends,
-                                ),
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      final wide = constraints.maxWidth >= 700;
+                      final heroWidth = wide
+                          ? 340.0
+                          : constraints.maxWidth.clamp(0.0, 315.0);
+                      final heroViewportHeight = wide
+                          ? math.min(420.0, constraints.maxHeight - 40)
+                          : math.min(
+                              (heroWidth * .92).clamp(0.0, 300.0),
+                              math.max(0.0, constraints.maxHeight - 290),
+                            );
+                      return Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1000),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(24, 12, 24, 22),
+                            child: Flex(
+                              direction: wide ? Axis.horizontal : Axis.vertical,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                SizedBox(height: heroViewportHeight + 10),
-                                const SizedBox(height: 1),
-                                Container(
-                                  width: 42,
-                                  height: 1.2,
-                                  color: semantic.cardGlassBorder,
+                                SizedBox(
+                                  width: wide ? 340 : null,
+                                  height: wide ? null : heroViewportHeight + 10,
+                                  child: Center(
+                                    child: IgnorePointer(
+                                      child: RepaintBoundary(
+                                        child: _AuthIntroStaticHero(
+                                          heroWidth: heroWidth,
+                                          heroViewportHeight:
+                                              heroViewportHeight,
+                                          splitSettledLabel: context
+                                              .l10nEn
+                                              .authIntroSplitSettled,
+                                          paris3FriendsLabel: context
+                                              .l10nEn
+                                              .authIntroParis3Friends,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(
+                                  width: wide ? 32 : 0,
+                                  height: wide ? 0 : 6,
+                                ),
                                 Expanded(
                                   child: PageView(
                                     controller: _panelPageController,
@@ -433,7 +441,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       );
                     },
@@ -512,9 +520,6 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
           children: [
             Text(
               context.l10nEn.authIntroCreateAccount,
-              maxLines: 1,
-              softWrap: false,
-              overflow: TextOverflow.visible,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 color: AppDesign.darkForeground,
                 fontSize: 36,
@@ -602,51 +607,51 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
 
         return Align(
           alignment: Alignment.centerLeft,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '${slide.titleTop}\n',
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(
-                            color: AppDesign.darkForeground,
-                            fontSize: titleSize,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.9,
-                            height: titleHeight,
-                          ),
-                    ),
-                    TextSpan(
-                      text: slide.titleAccent,
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(
-                            color: AppDesign.authAccent,
-                            fontSize: titleSize,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.9,
-                            height: titleHeight,
-                          ),
-                    ),
-                  ],
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${slide.titleTop}\n',
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              color: AppDesign.darkForeground,
+                              fontSize: titleSize,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.9,
+                              height: titleHeight,
+                            ),
+                      ),
+                      TextSpan(
+                        text: slide.titleAccent,
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              color: AppDesign.authAccent,
+                              fontSize: titleSize,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.9,
+                              height: titleHeight,
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: gap),
-              Text(
-                slide.subtitle,
-                maxLines: isCompactHeight ? 2 : null,
-                overflow: isCompactHeight ? TextOverflow.ellipsis : null,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: muted,
-                  fontSize: subtitleSize,
-                  height: subtitleHeight,
-                  fontWeight: FontWeight.w500,
+                SizedBox(height: gap),
+                Text(
+                  slide.subtitle,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: muted,
+                    fontSize: subtitleSize,
+                    height: subtitleHeight,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -852,7 +857,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(24),
         child: Ink(
-          height: 58,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: semantic.cardGlassBackground.withValues(alpha: 0.20),
             borderRadius: BorderRadius.circular(24),
@@ -860,17 +865,21 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
               color: semantic.cardGlassBorder.withValues(alpha: 0.82),
             ),
           ),
-          child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 30),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 icon,
                 const SizedBox(width: 18),
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: semantic.heroAvatarStroke.withValues(alpha: 0.92),
-                    fontWeight: FontWeight.w700,
+                Flexible(
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: semantic.heroAvatarStroke.withValues(alpha: 0.92),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ],

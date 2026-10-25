@@ -12,34 +12,34 @@ class AppDesign {
   // Shared light palette (base for Trips/Friends/Profile/Analytics).
   static const Color lightCanvas = Color(0xFFFFFFFF);
   static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightPrimary = Color(0xFF2D7A5E);
+  static const Color lightPrimary = Color(0xFF00836B);
   static const Color lightPrimaryDeep = Color(0xFF215A45);
-  static const Color lightAccent = Color(0xFFD4915C);
-  static const Color lightForeground = Color(0xFF2C2418);
-  static const Color lightMuted = Color(0xFF8A8277);
-  static const Color lightSuccess = Color(0xFF3D8B5F);
-  static const Color lightDestructive = Color(0xFFC45C4A);
-  static const Color lightStroke = Color(0xFFE9E4DD);
-  static const Color lightSurfaceTab = Color(0xFFF0ECE3);
-  static const Color lightSurfaceMuted = Color(0xFFF2EFE8);
-  static const Color lightSurfaceMutedAlt = Color(0xFFEDE8DF);
-  static const Color lightSurfaceTrack = Color(0xFFE8E2D9);
-  static const Color lightSurfaceTrackSoft = Color(0xFFE7E2D9);
+  static const Color lightAccent = Color(0xFF007E99);
+  static const Color lightForeground = Color(0xFF0B1220);
+  static const Color lightMuted = Color(0xFF697182);
+  static const Color lightSuccess = Color(0xFF26734F);
+  static const Color lightDestructive = Color(0xFFB83A40);
+  static const Color lightStroke = Color(0xFFDDE1E5);
+  static const Color lightSurfaceTab = Color(0xFFFFFFFF);
+  static const Color lightSurfaceMuted = Color(0xFFF5F6F7);
+  static const Color lightSurfaceMutedAlt = Color(0xFFEEF0F2);
+  static const Color lightSurfaceTrack = Color(0xFFE3E6E9);
+  static const Color lightSurfaceTrackSoft = Color(0xFFEEF0F2);
   static const Color lightSurfaceSuccessTint = Color(0xFFE6EDE4);
 
   // Shared dark palette.
-  static const Color darkCanvas = Color(0xFF040607);
-  static const Color darkCanvasSoft = Color(0xFF07110D);
-  static const Color darkSurface = Color(0xFF0C1611);
-  static const Color darkSurfaceRaised = Color(0xFF13211A);
-  static const Color darkSurfaceHighest = Color(0xFF182C22);
-  static const Color darkOutline = Color(0xFF294339);
-  static const Color darkOutlineSoft = Color(0xFF22382F);
+  static const Color darkCanvas = Color(0xFF101214);
+  static const Color darkCanvasSoft = Color(0xFF16181B);
+  static const Color darkSurface = Color(0xFF16181B);
+  static const Color darkSurfaceRaised = Color(0xFF202327);
+  static const Color darkSurfaceHighest = Color(0xFF292D32);
+  static const Color darkOutline = Color(0xFF7F8791);
+  static const Color darkOutlineSoft = Color(0xFF363C43);
   static const Color darkPrimary = Color(0xFF57B487);
   static const Color darkPrimaryStrong = Color(0xFF2EAF6E);
   static const Color darkAccent = Color(0xFF53D79B);
   static const Color darkForeground = Color(0xFFF3F8F5);
-  static const Color darkMuted = Color(0xFF98AB9F);
+  static const Color darkMuted = Color(0xFFADB4BD);
   static const Color darkPrimaryContainer = Color(0xFF1B3A2E);
 
   // Auth/intro visual constants.
@@ -83,9 +83,9 @@ class AppDesign {
   };
 
   // Radius scale.
-  static const double radiusXs = 12;
-  static const double radiusSm = 16;
-  static const double radiusMd = 20;
+  static const double radiusXs = 4;
+  static const double radiusSm = 8;
+  static const double radiusMd = 8;
   static const double radiusLg = 24;
 
   // Spacing scale.
@@ -94,9 +94,12 @@ class AppDesign {
   static const double spaceMd = 12;
   static const double spaceLg = 16;
   static const double spaceXl = 24;
+  static const double pagePadding = 20;
+  static const double touchTarget = 48;
+  static const double buttonHeight = 50;
 
   static const BorderRadius cardRadius = BorderRadius.all(
-    Radius.circular(radiusLg),
+    Radius.circular(radiusMd),
   );
   static const BorderRadius buttonRadius = BorderRadius.all(
     Radius.circular(radiusSm),

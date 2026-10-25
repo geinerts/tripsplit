@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/helper_quick_start.php';
+
 require_once __DIR__ . '/helper_validation.php';
 require_once __DIR__ . '/helper_account_lifecycle.php';
 require_once __DIR__ . '/helper_auth_user.php';

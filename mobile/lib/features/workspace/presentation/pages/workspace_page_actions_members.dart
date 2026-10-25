@@ -28,7 +28,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                       child: Text(
                         '$title (${members.length})',
                         style: Theme.of(sheetContext).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.w800),
+                            ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
                     IconButton(
@@ -42,11 +42,12 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                 ),
               ),
               const Divider(height: 1),
-              Expanded(
+              Flexible(
                 child: ListView.separated(
+                  shrinkWrap: true,
                   padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
                   itemCount: members.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 6),
+                  separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final user = members[index];
                     final isCurrent = user.id == _currentUserId;
@@ -59,7 +60,8 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                     return Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(14),
+                        key: ValueKey('member-row-${user.id}'),
+                        borderRadius: AppDesign.cardRadius,
                         onTap: () async {
                           Navigator.of(sheetContext).pop();
                           await Future<void>.delayed(
@@ -75,19 +77,6 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                             horizontal: 10,
                             vertical: 8,
                           ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(sheetContext)
-                                .colorScheme
-                                .surfaceContainerHighest
-                                .withValues(alpha: 0.35),
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: Theme.of(sheetContext)
-                                  .colorScheme
-                                  .outlineVariant
-                                  .withValues(alpha: 0.5),
-                            ),
-                          ),
                           child: Row(
                             children: [
                               _largeMemberAvatar(
@@ -101,7 +90,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                               Expanded(
                                 child: Text(
                                   name,
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(sheetContext)
                                       .textTheme
@@ -137,7 +126,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                                 ),
                               if (canRemoveMember)
                                 IconButton(
-                                  tooltip: 'Remove from trip',
+                                  tooltip: context.l10n.memberRemoveAction,
                                   onPressed: _isMutating
                                       ? null
                                       : () async {
@@ -180,10 +169,9 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
         : user.preferredName.trim();
     final confirmed = await showAppConfirmationDialog(
       context: context,
-      title: 'Remove member?',
-      message:
-          'Remove $name from this trip? This is only possible if they have no expenses, settlements, or balances.',
-      confirmLabel: 'Remove',
+      title: context.l10n.memberRemoveTitle,
+      message: context.l10n.memberRemoveBody(name),
+      confirmLabel: context.l10n.memberRemoveAction,
       cancelLabel: context.l10n.cancelAction,
       icon: Icons.person_remove_alt_1_outlined,
       destructive: true,
@@ -200,7 +188,7 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
         );
         await _loadData(showLoader: false);
         if (mounted) {
-          _showSnack('$name removed from trip.');
+          _showSnack(context.l10n.memberRemoved(name));
         }
       },
     );
@@ -243,358 +231,36 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
 
   Future<Set<int>?> _showAddMembersSearchDialog({
     required Set<int> existingMemberIds,
-  }) async {
-    final selected = <int>{};
-    final selectedUsers = <int, TripUser>{};
-    BuildContext? dialogBuildContext;
-    var isInviteLinkLoading = false;
-    var inviteLinkRequested = false;
-    var inviteLink = '';
-    String? inviteLinkErrorText;
-    String? inviteLinkExpiresAt;
-    var friendQuickPicks = const <TripUser>[];
-    var isLoadingFriendQuickPicks = false;
-    var friendQuickPicksRequested = false;
-    String? friendQuickPicksErrorText;
-
-    return await showDialog<Set<int>>(
-      context: context,
-      builder: (dialogContext) {
-        final t = dialogContext.l10n;
-
-        Future<void> loadFriendQuickPicks(StateSetter setDialogState) async {
-          if (isLoadingFriendQuickPicks) {
-            return;
-          }
-
-          bool canUpdateDialog() {
-            final c = dialogBuildContext;
-            return mounted && c != null && c.mounted;
-          }
-
-          setDialogState(() {
-            isLoadingFriendQuickPicks = true;
-            friendQuickPicksErrorText = null;
-          });
-
-          try {
-            final cached = widget.friendsController.peekSnapshotCache(
-              allowStale: false,
-            );
-            final snapshot =
-                cached ??
-                await widget.friendsController.loadSnapshot(
-                  forceRefresh: false,
-                );
-            if (!canUpdateDialog()) {
-              return;
-            }
-
-            setDialogState(() {
-              friendQuickPicks = snapshot.friends
-                  .where((friend) => !existingMemberIds.contains(friend.id))
-                  .map(
-                    (friend) => TripUser(
-                      id: friend.id,
-                      nickname: friend.nickname,
-                      avatarUrl: friend.avatarUrl,
-                      avatarThumbUrl: friend.avatarThumbUrl,
-                    ),
-                  )
-                  .toList(growable: false);
-            });
-          } catch (_) {
-            if (!canUpdateDialog()) {
-              return;
-            }
-            setDialogState(() {
-              friendQuickPicks = const <TripUser>[];
-              friendQuickPicksErrorText =
-                  context.l10n.workspaceFailedToLoadFriends;
-            });
-          } finally {
-            if (canUpdateDialog()) {
-              setDialogState(() {
-                isLoadingFriendQuickPicks = false;
-              });
-            }
-          }
-        }
-
-        Future<void> loadInviteLink(StateSetter setDialogState) async {
-          if (isInviteLinkLoading) {
-            return;
-          }
-          bool canUpdateDialog() {
-            final c = dialogBuildContext;
-            return mounted && c != null && c.mounted;
-          }
-
-          setDialogState(() {
-            isInviteLinkLoading = true;
-            inviteLinkErrorText = null;
-          });
-
-          try {
-            final payload = await widget.tripsController.createTripInviteLink(
-              tripId: widget.trip.id,
-            );
-            if (!canUpdateDialog()) {
-              return;
-            }
-            setDialogState(() {
-              inviteLink = payload.inviteUrl.trim();
-              inviteLinkExpiresAt = payload.expiresAt;
-              inviteLinkErrorText = null;
-            });
-          } on ApiException catch (error) {
-            if (!canUpdateDialog()) {
-              return;
-            }
-            final normalized = error.message.trim();
-            setDialogState(() {
-              inviteLinkErrorText = normalized.isNotEmpty
-                  ? normalized
-                  : context.l10n.workspaceFailedToGenerateInviteLink;
-            });
-          } catch (_) {
-            if (!canUpdateDialog()) {
-              return;
-            }
-            setDialogState(() {
-              inviteLinkErrorText =
-                  context.l10n.workspaceFailedToGenerateInviteLink;
-            });
-          } finally {
-            if (canUpdateDialog()) {
-              setDialogState(() {
-                isInviteLinkLoading = false;
-              });
-            }
-          }
-        }
-
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            dialogBuildContext = context;
-            if (!inviteLinkRequested) {
-              inviteLinkRequested = true;
-              unawaited(loadInviteLink(setDialogState));
-            }
-            if (!friendQuickPicksRequested) {
-              friendQuickPicksRequested = true;
-              unawaited(loadFriendQuickPicks(setDialogState));
-            }
-
-            return AlertDialog(
-              title: Text(t.addTripMembersTitle),
-              content: SizedBox(
-                width: 430,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.l10n.workspaceInviteLink,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 6),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .surfaceContainerHighest
-                              .withValues(alpha: 0.45),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.outlineVariant
-                                .withValues(alpha: 0.55),
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: isInviteLinkLoading
-                                  ? Text(
-                                      context
-                                          .l10n
-                                          .workspaceGeneratingInviteLink,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                    )
-                                  : Text(
-                                      inviteLink.isEmpty
-                                          ? context
-                                                .l10n
-                                                .workspaceInviteLinkUnavailable
-                                          : inviteLink,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                    ),
-                            ),
-                            IconButton(
-                              tooltip: context.l10n.workspaceCopyInviteLink,
-                              onPressed:
-                                  isInviteLinkLoading || inviteLink.isEmpty
-                                  ? null
-                                  : () async {
-                                      final copiedMessage = context
-                                          .l10n
-                                          .workspaceInviteLinkCopied;
-                                      await Clipboard.setData(
-                                        ClipboardData(text: inviteLink),
-                                      );
-                                      if (!mounted) {
-                                        return;
-                                      }
-                                      _showSnack(copiedMessage);
-                                    },
-                              icon: const Icon(Icons.copy_all_outlined),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (inviteLinkErrorText != null) ...[
-                        const SizedBox(height: 6),
-                        Text(
-                          inviteLinkErrorText!,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                      if (!isInviteLinkLoading &&
-                          inviteLinkErrorText == null &&
-                          inviteLinkExpiresAt != null) ...[
-                        const SizedBox(height: 6),
-                        Text(
-                          context.l10n.workspaceExpiresUtc(
-                            inviteLinkExpiresAt!,
-                          ),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                      const SizedBox(height: 12),
-                      PendingTripInvitations(
-                        load: () => widget.tripsController
-                            .listPendingInvitations(tripId: widget.trip.id),
-                        revoke: (id) => widget.tripsController.revokeInvitation(
-                          tripId: widget.trip.id,
-                          invitationId: id,
-                        ),
-                      ),
-                      Text(
-                        t.selectedPeopleLabel,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: 6),
-                      if (selectedUsers.isEmpty)
-                        Text(
-                          t.workspaceNoMembersSelectedYet,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        )
-                      else
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            for (final user in selectedUsers.values)
-                              InputChip(
-                                label: Text(user.nickname),
-                                selected: true,
-                                onDeleted: () {
-                                  setDialogState(() {
-                                    selected.remove(user.id);
-                                    selectedUsers.remove(user.id);
-                                  });
-                                },
-                              ),
-                          ],
-                        ),
-                      const SizedBox(height: 12),
-                      Text(
-                        context.l10n.navFriends,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      if (isLoadingFriendQuickPicks) ...[
-                        const SizedBox(height: 10),
-                        const LinearProgressIndicator(minHeight: 2),
-                      ] else ...[
-                        const SizedBox(height: 8),
-                      ],
-                      if (friendQuickPicksErrorText != null)
-                        Text(
-                          friendQuickPicksErrorText!,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                      else if (friendQuickPicks.isEmpty)
-                        Text(
-                          context
-                              .l10n
-                              .workspaceNoFriendsAvailableAddFriendsFirst,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        )
-                      else
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            for (final friend in friendQuickPicks)
-                              FilterChip(
-                                label: Text(friend.nickname),
-                                selected: selected.contains(friend.id),
-                                onSelected: (isSelected) {
-                                  setDialogState(() {
-                                    if (isSelected) {
-                                      selected.add(friend.id);
-                                      selectedUsers[friend.id] = friend;
-                                    } else {
-                                      selected.remove(friend.id);
-                                      selectedUsers.remove(friend.id);
-                                    }
-                                  });
-                                },
-                              ),
-                          ],
-                        ),
-                    ],
-                  ),
+  }) => Navigator.of(context).push<Set<int>>(
+    AppFormPageRoute(
+      builder: (_) => TripInviteMembersPage(
+        tripName: widget.trip.name,
+        loadFriends: () async {
+          final snapshot =
+              widget.friendsController.peekSnapshotCache(allowStale: false) ??
+              await widget.friendsController.loadSnapshot(forceRefresh: false);
+          return snapshot.friends
+              .where((friend) => !existingMemberIds.contains(friend.id))
+              .map(
+                (friend) => TripUser(
+                  id: friend.id,
+                  nickname: friend.nickname,
+                  avatarUrl: friend.avatarUrl,
+                  avatarThumbUrl: friend.avatarThumbUrl,
                 ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(t.cancelAction),
-                ),
-                ElevatedButton(
-                  onPressed: selected.isEmpty
-                      ? null
-                      : () => Navigator.of(context).pop(selected),
-                  child: Text(t.tripInviteAction),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+              )
+              .toList();
+        },
+        loadLink: () =>
+            widget.tripsController.createTripInviteLink(tripId: widget.trip.id),
+        loadPending: () => widget.tripsController.listPendingInvitations(
+          tripId: widget.trip.id,
+        ),
+        revoke: (id) => widget.tripsController.revokeInvitation(
+          tripId: widget.trip.id,
+          invitationId: id,
+        ),
+      ),
+    ),
+  );
 }

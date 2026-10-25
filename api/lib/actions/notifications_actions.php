@@ -151,73 +151,6 @@ function count_pending_friend_invites(PDO $pdo, int $userId): int
     return (int) ($stmt->fetchColumn() ?: 0);
 }
 
-function list_pending_friend_invite_notifications(PDO $pdo, int $userId, int $limit = 80): array
-{
-    if ($userId <= 0) {
-        return [];
-    }
-
-    if ($limit < 1) {
-        $limit = 1;
-    } elseif ($limit > 200) {
-        $limit = 200;
-    }
-
-    $friendsTable = table_name('friends');
-    $usersTable = table_name('users');
-    $stmt = $pdo->prepare(
-        'SELECT
-            f.id AS request_id,
-            f.created_at,
-            u.id AS from_user_id,
-            u.nickname AS from_nickname
-         FROM ' . $friendsTable . ' f
-         JOIN ' . $usersTable . ' u ON u.id = f.requested_by
-         WHERE (f.user_a_id = :user_id_a OR f.user_b_id = :user_id_b)
-           AND f.status = "pending"
-           AND f.requested_by <> :user_id_sender
-         ORDER BY f.created_at DESC, f.id DESC
-         LIMIT ' . $limit
-    );
-    $stmt->execute([
-        'user_id_a' => $userId,
-        'user_id_b' => $userId,
-        'user_id_sender' => $userId,
-    ]);
-
-    $rows = $stmt->fetchAll();
-    $notifications = [];
-    foreach ($rows as $row) {
-        $requestId = (int) ($row['request_id'] ?? 0);
-        if ($requestId <= 0) {
-            continue;
-        }
-        $fromUserId = (int) ($row['from_user_id'] ?? 0);
-        $fromName = trim((string) ($row['from_nickname'] ?? ''));
-        if ($fromName === '') {
-            $fromName = 'Trip member';
-        }
-
-        $notifications[] = [
-            'id' => -$requestId,
-            'trip_id' => 0,
-            'trip_name' => null,
-            'type' => 'friend_invite',
-            'title' => 'Friend invite',
-            'body' => $fromName . ' sent you a friend invite.',
-            'payload' => [
-                'request_id' => $requestId,
-                'from_user_id' => $fromUserId,
-            ],
-            'is_read' => false,
-            'read_at' => null,
-            'created_at' => $row['created_at'] ?? null,
-        ];
-    }
-
-    return $notifications;
-}
-
 function list_notifications_global_action(): void
 {
     $me = get_me();
@@ -247,31 +180,12 @@ function list_notifications_global_legacy_action(PDO $pdo, int $userId): void
         0
     );
     $pendingFriendInvites = count_pending_friend_invites($pdo, $userId);
-    $friendNotifications = list_pending_friend_invite_notifications($pdo, $userId, $limit);
-    $merged = array_merge($notifications['items'], $friendNotifications);
-    usort(
-        $merged,
-        static function (array $a, array $b): int {
-            $aTime = strtotime((string) ($a['created_at'] ?? '')) ?: 0;
-            $bTime = strtotime((string) ($b['created_at'] ?? '')) ?: 0;
-            if ($aTime !== $bTime) {
-                return $bTime <=> $aTime;
-            }
-            $aId = (int) ($a['id'] ?? 0);
-            $bId = (int) ($b['id'] ?? 0);
-            return $bId <=> $aId;
-        }
-    );
-    if (count($merged) > $limit) {
-        $merged = array_slice($merged, 0, $limit);
-    }
-
     json_out([
         'ok' => true,
-        'unread_count' => $notifications['unread_notifications_count'] + $pendingFriendInvites,
+        'unread_count' => $notifications['unread_notifications_count'],
         'unread_notifications_count' => $notifications['unread_notifications_count'],
         'pending_friend_invites_count' => $pendingFriendInvites,
-        'notifications' => $merged,
+        'notifications' => $notifications['items'],
     ]);
 }
 
@@ -291,67 +205,15 @@ function list_notifications_global_paged_action(PDO $pdo, int $userId): void
         ? pagination_offset($query['offset'])
         : 0;
     $limit = pagination_limit($query['limit'] ?? 50, 50, 200);
-    $includeFriendInvites = !$hasCursor && $offset === 0;
-    $friendNotifications = $includeFriendInvites
-        ? list_pending_friend_invite_notifications($pdo, $userId, min(20, $limit))
-        : [];
-    $friendCount = count($friendNotifications);
-
-    $dbLimit = $limit;
-    if ($includeFriendInvites) {
-        $dbLimit = max(0, $limit - $friendCount);
-    }
-
-    $result = [
-        'items' => [],
-        'has_more' => false,
-        'next_cursor' => null,
-        'unread_notifications_count' => 0,
-    ];
-    if ($dbLimit > 0) {
-        $result = load_global_notifications_page(
-            $pdo,
-            $userId,
-            $dbLimit,
-            $cursorId,
-            $offset
-        );
-    } else {
-        $probe = load_global_notifications_page(
-            $pdo,
-            $userId,
-            1,
-            null,
-            0
-        );
-        $probeFirstId = 0;
-        if (!empty($probe['items'])) {
-            $probeFirstId = (int) (($probe['items'][0]['id'] ?? 0));
-        }
-        $result = [
-            'items' => [],
-            'has_more' => $probeFirstId > 0,
-            'next_cursor' => $probeFirstId > 0
-                ? pagination_encode_cursor(['id' => $probeFirstId + 1])
-                : null,
-            'unread_notifications_count' => (int) ($probe['unread_notifications_count'] ?? 0),
-        ];
-    }
-
+    $result = load_global_notifications_page($pdo, $userId, $limit, $cursorId, $offset);
     $pendingFriendInvites = count_pending_friend_invites($pdo, $userId);
-    $items = $includeFriendInvites
-        ? array_merge($friendNotifications, $result['items'])
-        : $result['items'];
-    if (count($items) > $limit) {
-        $items = array_slice($items, 0, $limit);
-    }
 
     json_out([
         'ok' => true,
-        'unread_count' => $result['unread_notifications_count'] + $pendingFriendInvites,
+        'unread_count' => $result['unread_notifications_count'],
         'unread_notifications_count' => $result['unread_notifications_count'],
         'pending_friend_invites_count' => $pendingFriendInvites,
-        'notifications' => $items,
+        'notifications' => $result['items'],
         'pagination' => [
             'mode' => $hasCursor ? 'cursor' : 'offset',
             'limit' => $limit,
@@ -551,7 +413,11 @@ function mark_notifications_read_global_action(): void
         json_out(['ok' => false, 'error' => 'Invalid session user.'], 401);
     }
 
-    $ids = normalize_user_ids((array) ($body['notification_ids'] ?? []));
+    $rawIds = (array) ($body['notification_ids'] ?? []);
+    $ids = normalize_user_ids($rawIds);
+    if ($rawIds && !$ids) {
+        json_out(['ok' => false, 'error' => 'Invalid notification IDs.'], 400);
+    }
     $updated = 0;
     if ($ids) {
         $baseSql = 'UPDATE ' . $notificationsTable . '
@@ -593,7 +459,7 @@ function mark_notifications_read_global_action(): void
     json_out([
         'ok' => true,
         'updated_count' => $updated,
-        'unread_count' => $unreadNotificationsCount + $pendingFriendInvitesCount,
+        'unread_count' => $unreadNotificationsCount,
         'unread_notifications_count' => $unreadNotificationsCount,
         'pending_friend_invites_count' => $pendingFriendInvitesCount,
     ]);

@@ -2,534 +2,268 @@ part of 'workspace_page.dart';
 
 extension _WorkspacePageLayoutOverview on _WorkspacePageState {
   Widget _buildOverviewPanel(BuildContext context, WorkspaceSnapshot snapshot) {
-    final totalAmount = snapshot.expenses.fold<double>(
-      0,
-      (sum, item) => sum + item.amount,
-    );
-    BalanceItem? currentBalance;
-    for (final item in snapshot.balances) {
-      if (item.id == _currentUserId) {
-        currentBalance = item;
-        break;
-      }
-    }
-    final yourShare = currentBalance?.owed ?? 0;
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-      child: Column(
-        children: [
-          _buildTripHeroCard(
-            context,
-            snapshot: snapshot,
-            totalAmount: totalAmount,
-            yourShare: yourShare,
-            currentBalance: currentBalance,
-          ),
-          if (!snapshot.isActive) ...[
-            const SizedBox(height: 8),
-            _buildClosedTripBanner(context, snapshot, padding: EdgeInsets.zero),
-          ],
-          if (_queuedMutations.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            _buildQueuedChangesCard(context, padding: EdgeInsets.zero),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTripHeroCard(
-    BuildContext context, {
-    required WorkspaceSnapshot snapshot,
-    required double totalAmount,
-    required double yourShare,
-    required BalanceItem? currentBalance,
-  }) {
     final t = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.light;
-    final statusText = snapshot.isArchived
+    final theme = Theme.of(context);
+    // Balances cover the whole trip; snapshot.expenses is capped by the API.
+    final total = snapshot.balances.fold<double>(
+      0,
+      (sum, item) => sum + item.paid,
+    );
+    BalanceItem? mine;
+    for (final balance in snapshot.balances) {
+      if (balance.id == _currentUserId) mine = balance;
+    }
+    final status = snapshot.isArchived
         ? t.archivedStatus
-        : (snapshot.isSettling
-              ? t.settlingStatus
-              : (snapshot.allSettled ? t.settledStatus : t.activeStatus));
-    final isSettledState = snapshot.isArchived || snapshot.allSettled;
-    final statusChipForeground = snapshot.isSettling
-        ? semantic.statusSettlingForeground
-        : (isSettledState
-              ? semantic.statusSettledForeground
-              : semantic.statusActiveForeground);
-    final coverUrl = (widget.trip.imageThumbUrl ?? widget.trip.imageUrl ?? '')
-        .trim();
-    final hasCoverImage = coverUrl.isNotEmpty;
-
-    final currentNet = currentBalance?.net ?? 0;
-    final showsNegative = currentNet < -0.004;
-    final netValue = _formatMoney(
+        : snapshot.isSettling
+        ? t.settlingStatus
+        : t.activeStatus;
+    final dates = AppFormatters.tripDateRange(
       context,
-      currentNet.abs(),
-      currencyCode: widget.trip.currencyCode,
+      startRaw: widget.trip.dateFrom,
+      endRaw: widget.trip.dateTo,
+      unknownLabel: '',
     );
-    final netAccent = showsNegative
-        ? AppDesign.lightDestructive
-        : statusChipForeground;
-    final shareRatio = totalAmount <= 0
-        ? 0.0
-        : (yourShare / totalAmount).clamp(0.0, 1.0).toDouble();
-
-    return Container(
-      width: double.infinity,
-      height: 250,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          color: hasCoverImage
-              ? semantic.heroGlassBorder.withValues(alpha: isDark ? 0.48 : 0.58)
-              : Colors.white.withValues(alpha: isDark ? 0.16 : 0.28),
-          width: 1.2,
-        ),
-        color: hasCoverImage
-            ? AppDesign.darkCanvas.withValues(alpha: isDark ? 0.30 : 0.42)
-            : AppDesign.darkCanvas,
-        boxShadow: AppDesign.heroShadow(context),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Stack(
-        children: [
-          if (hasCoverImage)
-            Positioned.fill(
-              child: Image.network(
-                coverUrl,
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.low,
-                gaplessPlayback: true,
-                errorBuilder: (context, error, stackTrace) =>
-                    const SizedBox.expand(),
-              ),
-            )
-          else
-            Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppDesign.darkSurfaceHighest.withValues(
-                        alpha: isDark ? 0.92 : 0.88,
-                      ),
-                      AppDesign.darkCanvasSoft.withValues(
-                        alpha: isDark ? 0.98 : 0.95,
-                      ),
-                      AppDesign.darkCanvas.withValues(alpha: 0.98),
-                    ],
-                    stops: const [0, 0.54, 1],
-                  ),
-                ),
-              ),
-            ),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: hasCoverImage
-                      ? [
-                          Colors.black.withValues(alpha: 0.72),
-                          AppDesign.darkPrimary.withValues(alpha: 0.46),
-                          Colors.black.withValues(alpha: 0.18),
-                        ]
-                      : [
-                          AppDesign.darkPrimary.withValues(
-                            alpha: isDark ? 0.16 : 0.22,
-                          ),
-                          AppDesign.darkPrimary.withValues(
-                            alpha: isDark ? 0.055 : 0.08,
-                          ),
-                          Colors.white.withValues(alpha: isDark ? 0.025 : 0.04),
-                        ],
-                  stops: const [0, 0.52, 1],
-                ),
-              ),
-            ),
-          ),
-          if (!hasCoverImage) ...[
-            Positioned(
-              right: -58,
-              top: -64,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      Colors.white.withValues(alpha: isDark ? 0.12 : 0.16),
-                      Colors.white.withValues(alpha: 0),
-                    ],
-                  ),
-                ),
-                child: const SizedBox(width: 190, height: 190),
-              ),
-            ),
-            Positioned(
-              left: -70,
-              bottom: -96,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppDesign.darkPrimary.withValues(
-                        alpha: isDark ? 0.18 : 0.22,
-                      ),
-                      AppDesign.darkPrimary.withValues(alpha: 0),
-                    ],
-                  ),
-                ),
-                child: const SizedBox(width: 210, height: 210),
-              ),
-            ),
-          ],
-          if (hasCoverImage)
-            Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.26),
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.50),
-                    ],
-                    stops: const [0, 0.48, 1],
-                  ),
-                ),
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: _buildHeroStatusPill(
-                        context,
-                        statusText: statusText,
-                        statusColor: statusChipForeground,
-                      ),
-                    ),
-                    const SizedBox(width: 28),
-                    _buildTripHeroMemberStack(snapshot.users),
-                  ],
-                ),
-                const SizedBox(height: 22),
-                Text(
-                  'NET BALANCE',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: semantic.heroAvatarStroke.withValues(alpha: 0.66),
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                _buildHeroNetBalanceAmount(
-                  context,
-                  value: netValue,
-                  isNegative: showsNegative,
-                  accentColor: netAccent,
-                ),
-                const SizedBox(height: 22),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: LinearProgressIndicator(
-                    value: shareRatio,
-                    minHeight: 8,
-                    backgroundColor: Colors.white.withValues(alpha: 0.11),
-                    valueColor: AlwaysStoppedAnimation<Color>(netAccent),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildHeroFooterAmount(
-                        context,
-                        label: context.l10n.yourShare,
-                        value: _formatMoney(
-                          context,
-                          yourShare,
-                          currencyCode: widget.trip.currencyCode,
-                        ),
-                        alignEnd: false,
-                      ),
-                    ),
-                    Expanded(
-                      child: _buildHeroFooterAmount(
-                        context,
-                        label: context.l10n.workspaceTotalCost,
-                        value: _formatMoney(
-                          context,
-                          totalAmount,
-                          currencyCode: widget.trip.currencyCode,
-                        ),
-                        alignEnd: true,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    final cover = (_displayTrip.imageUrl ?? _displayTrip.imageThumbUrl ?? '')
+        .trim();
+    final net = mine?.net;
+    Widget fallback() => const SplytoIllustration(
+      'assets/branding/splyto_trip_cover_large.svg',
+      fit: BoxFit.contain,
     );
-  }
-
-  Widget _buildHeroStatusPill(
-    BuildContext context, {
-    required String statusText,
-    required Color statusColor,
-  }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    Widget metric(String label, double? value) => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: statusColor.withValues(alpha: 0.92),
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: statusColor.withValues(alpha: 0.72),
-                blurRadius: 18,
-                spreadRadius: 1,
-              ),
-            ],
+        Text(
+          label,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
-          child: const SizedBox(width: 9, height: 9),
         ),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Text(
-            statusText.toUpperCase(),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: statusColor,
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 1.35,
-            ),
+        const SizedBox(height: 4),
+        Text(
+          value == null
+              ? '—'
+              : AppFormatters.displayCurrencyFromCents(
+                  context,
+                  (value * 100).round(),
+                  currencyCode: widget.trip.currencyCode,
+                ),
+          key: ValueKey(
+            label == t.yourShare ? 'workspace-share' : 'workspace-total',
+          ),
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontFeatures: const [FontFeature.tabularFigures()],
           ),
         ),
       ],
     );
-  }
-
-  Widget _buildHeroNetBalanceAmount(
-    BuildContext context, {
-    required String value,
-    required bool isNegative,
-    required Color accentColor,
-  }) {
-    final parts = _HeroMoneyParts.parse(value);
-    const mainFontSize = 56.0;
-    const sideFontSize = 28.0;
-    final baseTextStyle = Theme.of(context).textTheme.displayLarge;
-    final sign = isNegative ? '-' : '';
-    final leadingSymbol = parts.leadingSymbol;
-    final trailing = parts.trailingSymbol;
-    final sideStyle = TextStyle(
-      color: accentColor,
-      fontSize: sideFontSize,
-      fontWeight: FontWeight.w900,
-      height: 1,
-      letterSpacing: -1.2,
-      fontFeatures: const [FontFeature.tabularFigures()],
+    final coverWidget = ExcludeSemantics(
+      child: ClipRRect(
+        borderRadius: AppDesign.cardRadius,
+        child: AspectRatio(
+          aspectRatio: AppImageCropper.tripAspectRatio,
+          child: cover.isEmpty
+              ? fallback()
+              : Image.network(
+                  cover,
+                  key: const ValueKey('workspace-cover-photo'),
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, error, stack) => fallback(),
+                ),
+        ),
+      ),
     );
-
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.centerLeft,
-      child: RichText(
-        maxLines: 1,
-        overflow: TextOverflow.visible,
-        textHeightBehavior: const TextHeightBehavior(
-          applyHeightToFirstAscent: false,
-          applyHeightToLastDescent: false,
-        ),
-        strutStyle: const StrutStyle(
-          fontSize: mainFontSize,
-          height: 1,
-          forceStrutHeight: true,
-        ),
-        text: TextSpan(
-          style: baseTextStyle?.copyWith(
-            height: 1,
-            fontFeatures: const [FontFeature.tabularFigures()],
-          ),
-          children: [
-            if (sign.isNotEmpty)
-              WidgetSpan(
-                alignment: PlaceholderAlignment.middle,
-                child: SizedBox(
-                  width: 17,
-                  height: mainFontSize,
-                  child: Center(
-                    child: Text(
-                      sign,
-                      textHeightBehavior: const TextHeightBehavior(
-                        applyHeightToFirstAscent: false,
-                        applyHeightToLastDescent: false,
+    final details = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final statusDate = Wrap(
+              spacing: 10,
+              runSpacing: 4,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      snapshot.isArchived
+                          ? Icons.inventory_2_outlined
+                          : snapshot.isSettling
+                          ? Icons.sync
+                          : Icons.circle,
+                      size: 9,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      status,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w600,
                       ),
-                      style: sideStyle.copyWith(fontSize: 30),
+                    ),
+                  ],
+                ),
+                if (dates.isNotEmpty)
+                  Text(
+                    '·  $dates',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+              ],
+            );
+            final members = Semantics(
+              label: t.workspaceMemberCount(snapshot.users.length),
+              button: true,
+              child: Tooltip(
+                message: t.workspaceMemberCount(snapshot.users.length),
+                child: InkWell(
+                  onTap: () => _openTripMembersListSheet(snapshot.users),
+                  borderRadius: AppDesign.cardRadius,
+                  child: SizedBox(
+                    height: 48,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final user in snapshot.users.take(3))
+                          Padding(
+                            padding: const EdgeInsets.only(left: 2),
+                            child: ExcludeSemantics(
+                              child: _largeMemberAvatar(
+                                id: user.id,
+                                name: user.preferredName,
+                                avatarUrl:
+                                    user.avatarThumbUrl ?? user.avatarUrl,
+                                size: 32,
+                              ),
+                            ),
+                          ),
+                        if (snapshot.users.length > 3)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Text('+${snapshot.users.length - 3}'),
+                          ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            if (leadingSymbol.isNotEmpty)
-              TextSpan(text: leadingSymbol, style: sideStyle),
-            TextSpan(
-              text: parts.wholeAmount,
-              style: const TextStyle(
-                color: AppDesign.darkForeground,
-                fontSize: mainFontSize,
-                fontWeight: FontWeight.w900,
-                height: 1,
-                letterSpacing: -3.4,
-                fontFeatures: [FontFeature.tabularFigures()],
-              ),
-            ),
-            if (parts.fraction.isNotEmpty)
-              TextSpan(
-                text: parts.fraction,
-                style: const TextStyle(
-                  color: AppDesign.darkMuted,
-                  fontSize: sideFontSize,
-                  fontWeight: FontWeight.w900,
-                  height: 1,
-                  letterSpacing: -1.2,
-                  fontFeatures: [FontFeature.tabularFigures()],
+            );
+            if (widget.trip.isSolo) return statusDate;
+            if (MediaQuery.textScalerOf(context).scale(16) > 23 ||
+                constraints.maxWidth < 300) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [statusDate, members],
+              );
+            }
+            return Row(
+              children: [
+                Expanded(child: statusDate),
+                const SizedBox(width: 8),
+                members,
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: 4),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final totalMetric = metric(
+              widget.trip.isSolo
+                  ? t.workspacePersonalTotal
+                  : t.workspaceTripTotal,
+              snapshot.balances.isEmpty ? null : total,
+            );
+            if (widget.trip.isSolo) return totalMetric;
+            final shareMetric = metric(t.yourShare, mine?.owed);
+            if (constraints.maxWidth < 300 ||
+                MediaQuery.textScalerOf(context).scale(16) > 21) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  totalMetric,
+                  const SizedBox(height: 16),
+                  shareMetric,
+                ],
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: totalMetric),
+                Container(
+                  width: 1,
+                  height: 48,
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  color: AppDesign.cardStroke(context),
                 ),
-              ),
-            if (trailing.isNotEmpty)
-              TextSpan(text: ' $trailing', style: sideStyle),
-          ],
+                Expanded(child: shareMetric),
+              ],
+            );
+          },
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeroFooterAmount(
-    BuildContext context, {
-    required String label,
-    required String value,
-    required bool alignEnd,
-  }) {
-    final textAlign = alignEnd ? TextAlign.right : TextAlign.left;
-    return RichText(
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-      textAlign: textAlign,
-      text: TextSpan(
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-          color: AppDesign.darkMuted,
-          fontWeight: FontWeight.w500,
-        ),
-        children: [
-          TextSpan(text: '$label '),
-          TextSpan(
-            text: value,
-            style: const TextStyle(
-              color: AppDesign.darkForeground,
-              fontWeight: FontWeight.w700,
+        if (!widget.trip.isSolo && net != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            net.abs() < .005
+                ? t.workspaceBalanceEven
+                : (net < 0
+                      ? t.workspaceBalanceOwe(
+                          AppFormatters.displayCurrencyFromCents(
+                            context,
+                            (net.abs() * 100).round(),
+                            currencyCode: widget.trip.currencyCode,
+                          ),
+                        )
+                      : t.workspaceBalanceReceive(
+                          AppFormatters.displayCurrencyFromCents(
+                            context,
+                            (net * 100).round(),
+                            currencyCode: widget.trip.currencyCode,
+                          ),
+                        )),
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: net < -.004
+                  ? theme.colorScheme.error
+                  : theme.colorScheme.primary,
             ),
           ),
         ],
-      ),
+        if (!snapshot.isActive) ...[
+          const SizedBox(height: 16),
+          _buildClosedTripBanner(context, snapshot, padding: EdgeInsets.zero),
+        ],
+        if (_queuedMutations.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _buildQueuedChangesCard(context, padding: EdgeInsets.zero),
+        ],
+      ],
     );
-  }
-
-  Widget _buildTripHeroMemberStack(List<WorkspaceUser> users) {
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.light;
-    if (users.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    final visible = users.take(4).toList(growable: false);
-    final extraCount = users.length - visible.length;
-    final itemCount = visible.length + (extraCount > 0 ? 1 : 0);
-    const avatarSize = 36.0;
-    const step = 28.0;
-    const stroke = 2.0;
-
-    return GestureDetector(
-      onTap: () => _openTripMembersListSheet(users),
-      behavior: HitTestBehavior.opaque,
-      child: SizedBox(
-        height: avatarSize + 4,
-        width: (itemCount * step) + (avatarSize - step) + 2,
-        child: Stack(
-          children: [
-            for (var i = 0; i < visible.length; i++)
-              Positioned(
-                left: i * step,
-                top: 2,
-                child: Container(
-                  width: avatarSize,
-                  height: avatarSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: semantic.heroAvatarStroke,
-                      width: stroke,
-                    ),
-                  ),
-                  child: _largeMemberAvatar(
-                    id: visible[i].id,
-                    name: visible[i].preferredName,
-                    avatarUrl:
-                        visible[i].avatarThumbUrl ?? visible[i].avatarUrl,
-                    size: avatarSize,
-                  ),
-                ),
-              ),
-            if (extraCount > 0)
-              Positioned(
-                left: visible.length * step,
-                top: 2,
-                child: Container(
-                  width: avatarSize,
-                  height: avatarSize,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: semantic.heroAvatarOverflowBackground,
-                    border: Border.all(
-                      color: semantic.heroAvatarStroke,
-                      width: stroke,
-                    ),
-                  ),
-                  child: Text(
-                    '+$extraCount',
-                    style: TextStyle(
-                      color: semantic.heroAvatarStroke,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth >= 640) {
+            return Row(
+              key: const ValueKey('workspace-wide-overview'),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(flex: 5, child: coverWidget),
+                const SizedBox(width: 24),
+                Expanded(flex: 6, child: details),
+              ],
+            );
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [coverWidget, const SizedBox(height: 4), details],
+          );
+        },
       ),
     );
   }
@@ -554,6 +288,8 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
           child: Text(
             snapshot.isArchived
                 ? context.l10n.tripArchivedReadOnly
+                : _settlementsCompleted(snapshot)
+                ? context.l10n.settledStatus
                 : context.l10n.tripFinishedCompleteSettlements,
           ),
         ),
@@ -561,71 +297,41 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     );
   }
 
-  Widget _buildSyncStatusBadge(BuildContext context) {
+  Widget _buildSyncStatusBadge(BuildContext context, {bool compact = false}) {
     final visual = _syncVisual(context, _syncState);
-    final label = _syncStatusLabel(context);
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(999),
-        onTap: _isMutating ? null : _onRefreshPressed,
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 178),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-          decoration: BoxDecoration(
-            color: visual.background,
-            borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: visual.border),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(visual.icon, size: 14, color: visual.foreground),
-              const SizedBox(width: 6),
-              Flexible(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: visual.foreground,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-              if (_syncState != _SyncState.online || _pendingQueueCount > 0)
-                Padding(
-                  padding: const EdgeInsets.only(left: 6),
-                  child: Icon(
-                    Icons.refresh_rounded,
-                    size: 14,
-                    color: visual.foreground.withValues(alpha: 0.80),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
+    final offline =
+        _syncState == _SyncState.offline ||
+        _syncState == _SyncState.offlineQueue;
+    final label = _refreshError != null && !_workspaceOffline
+        ? context.l10n.workspaceRefreshFailed
+        : _pendingQueueCount > 0
+        ? context.l10n.syncChangesWaiting(_pendingQueueCount)
+        : (_syncState == _SyncState.syncing
+              ? context.l10n.syncingStatus
+              : (offline
+                    ? context.l10n.offlineStatus
+                    : context.l10n.syncAllSynced));
+    if (compact &&
+        _refreshError == null &&
+        _pendingQueueCount == 0 &&
+        !offline) {
+      return IconButton(
+        tooltip: label,
+        color: Theme.of(context).colorScheme.primary,
+        onPressed: _isMutating || _syncState == _SyncState.syncing
+            ? null
+            : _onRefreshPressed,
+        icon: Icon(visual.icon),
+      );
+    }
+    return TextButton.icon(
+      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+      onPressed: _isMutating || _syncState == _SyncState.syncing
+          ? null
+          : _onRefreshPressed,
+      icon: Icon(visual.icon, size: 20),
+      label: Text(label),
     );
-  }
-
-  String _syncStatusLabel(BuildContext context) {
-    if (_pendingQueueCount > 0) {
-      return context.l10n.syncChangesWaiting(_pendingQueueCount);
-    }
-    switch (_syncState) {
-      case _SyncState.syncing:
-        return context.l10n.syncingStatus;
-      case _SyncState.online:
-        return context.l10n.syncAllSynced;
-      case _SyncState.onlineQueue:
-        return context.l10n.syncAllSynced;
-      case _SyncState.offline:
-        return context.l10n.syncFailedTapToRetry;
-      case _SyncState.offlineQueue:
-        return context.l10n.syncFailedTapToRetry;
-    }
   }
 
   Widget _buildQueuedChangesCard(
@@ -671,93 +377,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _HeroMoneyParts {
-  const _HeroMoneyParts({
-    required this.leadingSymbol,
-    required this.wholeAmount,
-    required this.fraction,
-    required this.trailingSymbol,
-  });
-
-  final String leadingSymbol;
-  final String wholeAmount;
-  final String fraction;
-  final String trailingSymbol;
-
-  static final RegExp _valuePattern = RegExp(
-    r"^([^\d]*)([\d\s\u00A0.,'’]+)([^\d]*)$",
-  );
-  static final RegExp _decimalPattern = RegExp(r'^(.*)([,.]\d{2})$');
-
-  static _HeroMoneyParts parse(String value) {
-    final trimmed = value.trim();
-    final match = _valuePattern.firstMatch(trimmed);
-    if (match == null) {
-      return _HeroMoneyParts(
-        leadingSymbol: '',
-        wholeAmount: trimmed,
-        fraction: '',
-        trailingSymbol: '',
-      );
-    }
-
-    final amount = (match.group(2) ?? '').trim();
-    final amountMatch = _decimalPattern.firstMatch(amount);
-    final whole = (amountMatch?.group(1) ?? amount).trim();
-    final fraction = (amountMatch?.group(2) ?? '').trim();
-
-    return _HeroMoneyParts(
-      leadingSymbol: (match.group(1) ?? '').trim(),
-      wholeAmount: whole.isEmpty ? '0' : whole,
-      fraction: fraction,
-      trailingSymbol: (match.group(3) ?? '').trim(),
-    );
-  }
-}
-
-class _OverviewMetaPill extends StatelessWidget {
-  const _OverviewMetaPill({
-    required this.icon,
-    required this.label,
-    required this.color,
-  });
-
-  final IconData icon;
-  final String label;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final bg = color.withValues(alpha: 0.12);
-    final fg = color;
-    final border = color.withValues(alpha: 0.3);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: border),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 13, color: fg),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: TextStyle(
-              color: fg,
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
       ),
     );
   }

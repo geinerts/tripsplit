@@ -2,9 +2,9 @@ part of 'main_shell_page.dart';
 
 extension _MainShellPageWidgets on _MainShellPageState {
   Widget _buildShellScaffold(BuildContext context) {
-    final titleStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
-      fontWeight: FontWeight.w800,
-      letterSpacing: 0.1,
+    final titleStyle = Theme.of(context).textTheme.headlineSmall?.copyWith(
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
     );
     return AppPageScaffold(
       appBar: AppBar(
@@ -29,6 +29,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
       ),
       body: _isWorkspaceOpen
           ? WorkspacePage(
+              key: ValueKey('workspace-${_openedTrip!.id}'),
               trip: _openedTrip!,
               workspaceController: widget.workspaceController,
               tripsController: widget.tripsController,
@@ -39,6 +40,11 @@ extension _MainShellPageWidgets on _MainShellPageState {
               openAddExpenseOnStart: _openAddExpenseOnWorkspaceStart,
               commandController: _workspaceCommandController,
               onExitRequested: _closeWorkspaceInShell,
+              onTripUpdated: (trip) {
+                if (_openedTrip?.id == trip.id) {
+                  _updateState(() => _openedTrip = trip);
+                }
+              },
             )
           : IndexedStack(
               index: _stackIndex,
@@ -51,8 +57,16 @@ extension _MainShellPageWidgets on _MainShellPageState {
                   showBottomNav: false,
                   commandController: _tripsCommandController,
                   onTripOpened: _openWorkspaceInShell,
+                  onServerTripsState: _onHomeServerTripsState,
+                  onInteractionStateChanged: (busy) {
+                    _homeInteractionBusy = busy;
+                    _scheduleQuickStart();
+                  },
                 ),
                 AnalyticsPage(
+                  active:
+                      _selectedTabIndex == _MainShellPageState._tabActivities &&
+                      !_isWorkspaceOpen,
                   tripsController: widget.tripsController,
                   workspaceController: widget.workspaceController,
                   authController: widget.authController,
@@ -61,6 +75,8 @@ extension _MainShellPageWidgets on _MainShellPageState {
                   onOpenTrip: (trip) => _openWorkspaceInShell(trip),
                 ),
                 FriendsPage(
+                  tripsController: widget.tripsController,
+                  onOpenTrip: (trip) => _openWorkspaceInShell(trip),
                   controller: widget.friendsController,
                   authController: widget.authController,
                   workspaceController: widget.workspaceController,
@@ -71,6 +87,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
                   showAppBar: false,
                   showBottomNav: false,
                   onProfileChanged: _onProfileChanged,
+                  onQuickStartRequested: _replayQuickStart,
                   onEditModeChanged: _onProfileEditModeChanged,
                   commandController: _profileCommandController,
                 ),
@@ -100,8 +117,8 @@ extension _MainShellPageWidgets on _MainShellPageState {
       child: Padding(
         padding: const EdgeInsets.only(left: 8, top: 4),
         child: SizedBox(
-          width: 170,
-          height: 46,
+          width: 110,
+          height: 40,
           child: Image.asset(
             logoAsset,
             fit: BoxFit.contain,
@@ -177,9 +194,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
       padding: const EdgeInsets.only(right: 16),
       child: IconButton(
         key: const ValueKey(AppTestKeys.shellNotificationsButton),
-        onPressed: (_isLoggingOut || _isNotificationsLoading)
-            ? null
-            : _onNotificationsPressed,
+        onPressed: _isLoggingOut ? null : _onNotificationsPressed,
         tooltip: context.l10n.notificationsTitle,
         icon: Stack(
           clipBehavior: Clip.none,

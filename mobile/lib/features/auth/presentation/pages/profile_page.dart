@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -25,11 +25,14 @@ import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/app_sheet.dart';
+import '../../../../core/ui/app_settings_widgets.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../domain/entities/auth_user.dart';
+import '../../../quick_start/presentation/quick_start_sheet.dart';
 import '../../../subscriptions/presentation/widgets/premium_status_tile.dart';
 import '../../domain/entities/notification_preferences.dart';
 import '../controllers/auth_controller.dart';
+import '../widgets/privacy_policy_page.dart';
 
 part 'profile_page_actions.dart';
 part 'profile_page_edit.dart';
@@ -64,6 +67,7 @@ class ProfilePage extends StatefulWidget {
     this.showAppBar = true,
     this.showBottomNav = true,
     this.onProfileChanged,
+    this.onQuickStartRequested,
     this.onEditModeChanged,
     this.commandController,
   });
@@ -72,6 +76,7 @@ class ProfilePage extends StatefulWidget {
   final bool showAppBar;
   final bool showBottomNav;
   final VoidCallback? onProfileChanged;
+  final VoidCallback? onQuickStartRequested;
   final ValueChanged<bool>? onEditModeChanged;
   final ProfilePageCommandController? commandController;
 
@@ -89,7 +94,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   bool _isLoading = true;
   bool _isSubmitting = false;
-  bool _isSendingFeedback = false;
   bool _isEditMode = false;
   bool _isChangePasswordPage = false;
   String? _errorText;

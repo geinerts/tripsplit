@@ -6,43 +6,6 @@ const double _friendQrLogoSize = 69;
 const Size _friendQrLogoClearSize = Size(58, 74);
 
 extension _FriendsPageActionsQr on _FriendsPageState {
-  Future<void> _openAddFriendActions(FriendsSnapshot snapshot) async {
-    final choice = await showAppBottomSheet<String>(
-      context: context,
-      builder: (sheetContext) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppActionSheetTile(
-              icon: Icons.qr_code_scanner_rounded,
-              title: context.l10n.friendsScanQr,
-              subtitle: context.l10n.friendsScanAnotherUserToAddFriend,
-              onTap: () => Navigator.of(sheetContext).pop('scan'),
-            ),
-            AppActionSheetTile(
-              icon: Icons.qr_code_2_rounded,
-              title: context.l10n.friendsMyQr,
-              subtitle: context.l10n.friendsShowOrShareYourQrCode,
-              onTap: () => Navigator.of(sheetContext).pop('mine'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (!mounted || choice == null) {
-      return;
-    }
-    switch (choice) {
-      case 'scan':
-        await _openScanFriendQr();
-        break;
-      case 'mine':
-        await _openMyFriendQr();
-        break;
-    }
-  }
-
   Future<void> _openScanFriendQr() async {
     final rawCode = await Navigator.of(context).push<String>(
       AppPageRoute<String>(builder: (context) => const _FriendQrScannerPage()),
@@ -483,7 +446,14 @@ class _FriendQrScannerPageState extends State<_FriendQrScannerPage> {
   Widget build(BuildContext context) {
     final t = context.l10n;
     return AppPageScaffold(
-      appBar: AppBar(title: Text(t.friendsScanFriendQrTitle)),
+      appBar: AppBar(
+        title: Text(t.friendsScanFriendQrTitle),
+        leading: IconButton(
+          tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.close),
+        ),
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final layoutSize = constraints.biggest;
@@ -661,110 +631,100 @@ class _MyFriendQrPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.l10n;
-    return AppPageScaffold(
-      appBar: AppBar(title: Text(t.friendsMyFriendQrTitle)),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: AppDesign.cardSurface(context),
-                  borderRadius: BorderRadius.circular(28),
-                  border: Border.all(color: AppDesign.cardStroke(context)),
-                  boxShadow: AppDesign.cardShadow(context),
+    return AppFormScaffold(
+      key: const ValueKey('friend-qr-page'),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 4, 20, 12),
+            child: Row(
+              children: [
+                IconButton(
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 22, 20, 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    t.friendsMyFriendQrTitle,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        displayName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
                       _FriendQrProfileImage(
                         displayName: displayName,
                         avatarBytes: avatarBytes,
                         avatarUrl: avatarUrl,
                       ),
-                      const SizedBox(height: 18),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(26),
-                          border: Border.all(color: const Color(0xFFE5E9E6)),
-                          boxShadow: const <BoxShadow>[
-                            BoxShadow(
-                              color: Color(0x14000000),
-                              blurRadius: 20,
-                              offset: Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: SizedBox.square(
-                            dimension: _friendQrSize,
-                            child: _FriendQrCodeView(
-                              data: payload,
-                              logoSize: _friendQrLogoSize,
-                              logoClearArea: _friendQrLogoClearSize,
+                      const SizedBox(height: 12),
+                      Text(
+                        displayName,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 24),
+                      // Preserve the existing QR matrix, logo clearance and white quiet zone.
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: SizedBox.square(
+                              dimension: _friendQrSize,
+                              child: _FriendQrCodeView(
+                                data: payload,
+                                logoSize: _friendQrLogoSize,
+                                logoClearArea: _friendQrLogoClearSize,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 20),
                       SelectableText(
                         payload,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppDesign.mutedColor(context),
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
-                      const SizedBox(height: 14),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () async {
-                                await Clipboard.setData(
-                                  ClipboardData(text: payload),
-                                );
-                                if (!context.mounted) {
-                                  return;
-                                }
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(t.paymentCopied)),
-                                );
-                              },
-                              icon: const Icon(Icons.copy_rounded),
-                              label: Text(t.copyAction),
-                            ),
+                      const SizedBox(height: 24),
+                      const Divider(height: 1),
+                      AppPlainActionTile(
+                        icon: Icons.copy_outlined,
+                        title: t.copyAction,
+                        onTap: () async {
+                          await Clipboard.setData(ClipboardData(text: payload));
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(t.paymentCopied)),
+                          );
+                        },
+                      ),
+                      const Divider(height: 1),
+                      AppPlainActionTile(
+                        icon: Icons.share_outlined,
+                        title: t.shareAction,
+                        onTap: () => SharePlus.instance.share(
+                          ShareParams(
+                            text:
+                                '${t.friendsAddMeOnTripSplitFriends}\n$payload',
+                            subject: t.friendsTripSplitFriendCode,
                           ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () => SharePlus.instance.share(
-                                ShareParams(
-                                  text:
-                                      '${t.friendsAddMeOnTripSplitFriends}\n$payload',
-                                  subject: t.friendsTripSplitFriendCode,
-                                ),
-                              ),
-                              icon: const Icon(Icons.share_rounded),
-                              label: Text(t.shareAction),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
@@ -772,7 +732,7 @@ class _MyFriendQrPage extends StatelessWidget {
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -830,7 +790,6 @@ class _FriendQrProfileImage extends StatelessWidget {
         border: Border.all(
           color: AppDesign.cardStroke(context).withValues(alpha: 0.9),
         ),
-        boxShadow: AppDesign.avatarShadow(context),
       ),
       child: ClipOval(child: child),
     );
@@ -843,13 +802,13 @@ class _FriendQrProfileImage extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.72),
+        color: Theme.of(context).colorScheme.primaryContainer,
       ),
       child: Text(
         initials,
         style: TextStyle(
-          color: AppDesign.darkForeground,
-          fontWeight: FontWeight.w800,
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          fontWeight: FontWeight.w600,
           fontSize: 22,
           height: 1,
         ),

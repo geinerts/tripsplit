@@ -58,6 +58,42 @@ function push_apns_private_key_abs(): string
     return $roots[0] . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative);
 }
 
+function push_apns_es256_signature(string $der): string
+{
+    // OpenSSL emits ASN.1 DER; ES256 JWTs require fixed-width R || S (RFC 7518).
+    $size = strlen($der);
+    if ($size < 8 || $size > 72 || $der[0] !== "\x30" || ord($der[1]) !== $size - 2) {
+        return '';
+    }
+
+    $offset = 2;
+    $raw = '';
+    for ($part = 0; $part < 2; $part++) {
+        if ($offset + 2 > $size || $der[$offset] !== "\x02") {
+            return '';
+        }
+        $length = ord($der[$offset + 1]);
+        $offset += 2;
+        if ($length < 1 || $length > 33 || $offset + $length > $size) {
+            return '';
+        }
+        $integer = substr($der, $offset, $length);
+        $offset += $length;
+        if ((ord($integer[0]) & 0x80) !== 0) {
+            return '';
+        }
+        if ($length > 1 && $integer[0] === "\x00" && (ord($integer[1]) & 0x80) === 0) {
+            return '';
+        }
+        $integer = ltrim($integer, "\x00");
+        if ($integer === '' || strlen($integer) > 32) {
+            return '';
+        }
+        $raw .= str_pad($integer, 32, "\x00", STR_PAD_LEFT);
+    }
+    return $offset === $size ? $raw : '';
+}
+
 function push_apns_jwt(): string
 {
     static $cache = [
@@ -96,17 +132,24 @@ function push_apns_jwt(): string
     if ($keyResource === false) {
         return '';
     }
+    $details = openssl_pkey_get_details($keyResource);
+    if (!is_array($details) || ($details['type'] ?? null) !== OPENSSL_KEYTYPE_EC
+        || ($details['ec']['curve_name'] ?? '') !== 'prime256v1') {
+        return '';
+    }
 
     $signature = '';
     $signed = openssl_sign($unsigned, $signature, $keyResource, 'sha256');
-    if (is_resource($keyResource) || $keyResource instanceof OpenSSLAsymmetricKey) {
-        openssl_free_key($keyResource);
-    }
+    unset($keyResource);
     if (!$signed || !is_string($signature) || $signature === '') {
         return '';
     }
 
-    $jwt = $unsigned . '.' . push_base64url_encode($signature);
+    $rawSignature = push_apns_es256_signature($signature);
+    if ($rawSignature === '') {
+        return '';
+    }
+    $jwt = $unsigned . '.' . push_base64url_encode($rawSignature);
     $cache['token'] = $jwt;
     $cache['issued_at'] = $now;
 

@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import '../../../../core/ui/splyto_illustration.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -15,12 +16,14 @@ import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
+import '../../../../core/ui/app_skeleton.dart';
 import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../../../core/ui/user_profile_payment_section.dart';
 import '../../../../core/ui/user_profile_page.dart';
+import '../../../../core/ui/user_shared_trips_section.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../domain/entities/friend_request.dart';
 import '../../domain/entities/friends_section_page.dart';
@@ -29,6 +32,10 @@ import '../../domain/entities/friends_snapshot.dart';
 import '../../../workspace/domain/entities/workspace_shared_trip.dart';
 import '../../../workspace/presentation/controllers/workspace_controller.dart';
 import '../controllers/friends_controller.dart';
+import '../controllers/friend_trip_actions.dart';
+import '../widgets/friend_trip_invite_page.dart';
+import '../../../trips/presentation/controllers/trips_controller.dart';
+import '../../../trips/domain/entities/trip.dart';
 
 part 'friends_page_actions_core.dart';
 part 'friends_page_actions_search.dart';
@@ -55,12 +62,16 @@ class FriendsPage extends StatefulWidget {
     required this.controller,
     required this.authController,
     required this.workspaceController,
+    required this.tripsController,
+    required this.onOpenTrip,
     this.commandController,
   });
 
   final FriendsController controller;
   final AuthController authController;
   final WorkspaceController workspaceController;
+  final TripsController tripsController;
+  final ValueChanged<Trip> onOpenTrip;
   final FriendsPageCommandController? commandController;
 
   @override
@@ -73,6 +84,8 @@ class _FriendsPageState extends State<FriendsPage> {
   static const String _sectionPendingSent = 'pending_sent';
   static const String _sectionPendingReceived = 'pending_received';
 
+  int _loadGeneration = 0;
+  int _searchGeneration = 0;
   bool _isLoading = true;
   bool _isLoadingMoreFriends = false;
   bool _isLoadingMorePendingReceived = false;

@@ -1,4 +1,19 @@
 {
+  "homeFirstTrip": "Tu primer viaje",
+  "homeYourShareAllTrips": "Tu parte en todos los viajes",
+  "homeAllTime": "Todo el período",
+  "homeSolo": "Solo",
+  "homePeople": "{count, plural, =1{1 persona} other{{count} personas}}",
+  "homeTripActions": "Acciones del viaje: {name}",
+  "homeNoActiveTrips": "No hay viajes activos",
+  "homeNoArchivedTrips": "No hay viajes archivados",
+  "homeLoadingTrips": "Cargando tus viajes",
+  "homeLoadErrorTitle": "No se pudieron cargar tus viajes",
+  "homeLoadErrorBody": "Vuelve a intentarlo en un momento.",
+  "homeOfflineTitle": "Sin conexión",
+  "homeOfflineNoData": "Aún no hay viajes guardados en este dispositivo.",
+  "homeOfflineCached": "Sin conexión. Mostrando viajes guardados.",
+  "homeRefreshError": "No se pudo actualizar. Mostrando los viajes anteriores.",
   "paymentShareDetailsConsent": "Compartir mis datos de pago guardados con {arg1}",
   "paymentShareDetailsScope": "Solo mientras esta solicitud esté pendiente de pago. Al cancelarla, finaliza el acceso.",
   "paymentDetailsUnavailable": "Los datos de pago no están disponibles. Comprueba la conexión y que la solicitud siga abierta.",
@@ -9,7 +24,13 @@
   "premiumFree": "Gratis",
   "premiumStatusUnavailable": "Estado del plan no disponible",
   "premiumGrantedUntil": "Premium concedido hasta {date}",
-  "@premiumGrantedUntil": {"placeholders": {"date": {"type": "String"}}},
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "premiumBillingNotActive": "Sin suscripción activa",
   "premiumRefreshStatus": "Actualizar estado del plan",
   "@addedMembersCount": {
@@ -416,6 +437,9 @@
   "failedToCreateTrip": "No se pudo crear el viaje.",
   "failedToLoadUsersDirectory": "No se pudo cargar el directorio de usuarios.",
   "filterSettlementByMemberSubtitle": "Filtrar liquidaciones por miembro",
+  "finishSoloTripConfirmationText": "¿Finalizar este viaje y moverlo al archivo? Podrás seguir consultando tus gastos.",
+  "soloTripArchived": "Viaje finalizado y archivado.",
+  "finishTripSyncPending": "Sincroniza los cambios pendientes antes de finalizar este viaje.",
   "finishTripAction": "Terminar viaje",
   "finishTripConfirmationText": "¿Terminar este viaje y empezar a establecer asentamientos?",
   "finishTripStartSettlementsAction": "Finalizar e iniciar asentamientos.",
@@ -515,6 +539,16 @@
   "noMembersFound": "No se encontraron miembros.",
   "noNewMembersAdded": "Estas personas ya son miembros o tienen invitaciones pendientes.",
   "noNotePlaceholder": "Sin nota",
+  "notificationsToday": "Hoy",
+  "notificationsEmptyBody": "Aquí aparecerán novedades sobre viajes, gastos y amigos.",
+  "notificationsCached": "Sin conexión: se muestran las notificaciones guardadas.",
+  "notificationsRefreshFailed": "No se pudo actualizar. Se muestran las notificaciones anteriores.",
+  "notificationsJustNow": "Ahora mismo",
+  "notificationsMinutesAgo": "Hace {count} min",
+  "@notificationsMinutesAgo": {"placeholders": {"count": {"type": "int"}}},
+  "notificationsHoursAgo": "Hace {count} h",
+  "@notificationsHoursAgo": {"placeholders": {"count": {"type": "int"}}},
+  "notificationsUnread": "Sin leer",
   "noNotificationsYet": "Aún no hay notificaciones.",
   "noParticipantData": "Sin datos de participantes.",
   "noParticipantsSelected": "No se seleccionó ningún participante.",
@@ -824,6 +858,8 @@
   "authClose": "Cerca",
   "authResendLink": "Reenviar enlace",
   "profileAppSettingsSectionTitle": "CONFIGURACIÓN DE LA APLICACIÓN",
+  "profileAccountSettings": "Ajustes de la cuenta",
+  "profileChangePhoto": "Cambiar foto de perfil",
   "profileAppearance": "Apariencia",
   "profileThemeDisplayMode": "Tema y modo de visualización",
   "profileLanguage": "Idioma",
@@ -1337,5 +1373,240 @@
   "notificationPaymentCancelledBodyGeneric": "Se canceló una marca de pago.",
   "notificationPaymentNotReceivedTitle": "Pago no recibido",
   "notificationPaymentNotReceivedBody": "{arg1} marcó el pago de {arg2} como no recibido.",
-  "notificationPaymentNotReceivedBodyGeneric": "Se marcó un pago como no recibido."
+  "notificationPaymentNotReceivedBodyGeneric": "Se marcó un pago como no recibido.",
+  "quickStartTitle": "Guía rápida",
+  "quickStartCreateTitle": "Crea un viaje",
+  "quickStartCreateBody": "Elige un nombre y una moneda. Registra tus gastos o comparte los costes en grupo.",
+  "quickStartInviteTitle": "Viaja en grupo o por tu cuenta",
+  "quickStartInviteBody": "Invita a tus amigos a un viaje en grupo o empieza un viaje personal por tu cuenta.",
+  "quickStartExpenseTitle": "Añade tu primer gasto",
+  "quickStartExpenseBody": "Introduce el importe, elige quién pagó y reparte el coste. Tus saldos se actualizan.",
+  "quickStartNext": "Siguiente",
+  "quickStartBack": "Atrás",
+  "quickStartSkip": "Omitir",
+  "quickStartCreateAction": "Crear viaje",
+  "quickStartClose": "Cerrar la guía rápida",
+  "quickStartSubtitle": "Descubre cómo usar los viajes y los gastos",
+  "quickStartStep": "Paso {step} de {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Total del viaje",
+  "workspacePersonalTotal": "Total gastado",
+  "workspaceBalanceEven": "Tu saldo está equilibrado",
+  "workspaceBalanceOwe": "Debes {amount}",
+  "workspaceBalanceReceive": "Te deben {amount}",
+  "workspaceMemberCount": "Miembros: {count}",
+  "workspaceSearchExpenses": "Buscar gastos",
+  "workspaceClearSearch": "Borrar búsqueda",
+  "workspaceSearchLoadedHint": "La búsqueda incluye los gastos cargados. Carga más para buscar gastos anteriores.",
+  "workspaceNoExpenseMatches": "No hay gastos coincidentes",
+  "workspaceNoExpenseMatchesBody": "Prueba otra búsqueda o bórrala para ver todos los gastos cargados.",
+  "workspaceEmptyPersonalExpenses": "Añade tu primer gasto para empezar a controlar lo que gastas.",
+  "workspaceEmptyGroupExpenses": "Añade el primer gasto compartido para ver la parte de cada persona.",
+  "workspaceLoadMoreExpenses": "Cargar más gastos",
+  "workspaceOriginalExpenseAmount": "Importe original: {amount}",
+  "workspaceCommentCount": "Comentarios: {count}",
+  "workspaceExpenseActions": "Acciones del gasto",
+  "workspaceLoadErrorTitle": "No se pudo cargar el viaje",
+  "workspaceCachedWarning": "Se muestran datos guardados. Es posible que no estén actualizados.",
+  "workspaceActivityTab": "Actividad",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Cargando el viaje",
+  "workspaceRefreshFailed": "Error al actualizar",
+  "expenseDetailsTitle": "Detalles del gasto",
+  "expenseQuickCategories": "Categorías rápidas",
+  "expenseReceiptRead": "Recibo leído y formulario actualizado.",
+  "expenseReceiptNoData": "Recibo adjunto. No se identificó el importe, la fecha ni el comercio.",
+  "expenseReceiptScanFailed": "Recibo seleccionado. La lectura automática falló; revisa los campos.",
+  "expenseReceiptOffline": "El recibo se subirá al guardar. La lectura automática requiere conexión.",
+  "expenseReadingReceipt": "Leyendo recibo…",
+  "expenseCommentsLoadFailed": "No se pudieron cargar los comentarios. Inténtalo de nuevo.",
+  "expenseReplyAction": "Responder",
+  "expenseReplyHint": "Escribe una respuesta…",
+  "expenseReplyTo": "Respuesta a {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Los balances aparecerán al añadir gastos.",
+  "balanceAfterPayments": "Los balances incluyen los pagos confirmados.",
+  "balanceExpenseShare": "Parte de los gastos",
+  "balanceHistoryScope": "Gastos cargados y pagos confirmados. Esta lista puede no incluir todo el historial del viaje.",
+  "balancePaymentTo": "Pago a {name}",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Pago de {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Todos deben marcar que están listos antes de la liquidación final.",
+  "settlementEmptyClosed": "No hay transferencias registradas para este viaje.",
+  "settlementConfirmedCount": "{count} de {total} transferencias confirmadas",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "{count} de {total} miembros listos",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Listo",
+  "settlementMemberNotReady": "Aún no está listo",
+  "settlementSuggested": "Transferencia sugerida",
+  "activityLoadFailed": "No se pudo actualizar la actividad. Los registros visibles pueden estar desactualizados.",
+  "activityMember": "Miembro del viaje",
+  "friendsEmptyBody": "Busca a un amigo por nombre o correo, o usa un código QR.",
+  "friendsDeclineAction": "Rechazar",
+  "friendsLoading": "Cargando amigos",
+  "friendsCommonTripsCount": "Viajes compartidos: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "Basado en los gastos cargados; puede no abarcar todo el viaje.",
+  "sharedTripsLoadedLimit": "Se muestran hasta 20 viajes compartidos.",
+  "memberRemoveTitle": "¿Eliminar participante?",
+  "memberRemoveBody": "¿Eliminar a {name} de este viaje? Solo es posible si no tiene gastos, liquidaciones ni saldos.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Eliminar del viaje",
+  "memberRemoved": "Se ha eliminado a {name} del viaje.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Aún no añadidos",
+  "friendRelationshipLabel": "Amigo",
+  "sharedTripsEmptyBody": "Aquí aparecerán los viajes en los que participéis ambos.",
+  "analyticsAllTrips": "Todos los viajes",
+  "analyticsByTrip": "Por viaje",
+  "analyticsYourSpending": "Tus gastos",
+  "analyticsActiveArchived": "Viajes activos y archivados",
+  "analyticsTrips": "Viajes",
+  "analyticsAveragePerTrip": "Promedio por viaje",
+  "analyticsPaidByMember": "Pagado por participante",
+  "analyticsYouPaid": "Has pagado",
+  "analyticsYouGetBack": "Te deben",
+  "analyticsYouOwe": "Debes",
+  "analyticsParticipants": "Participantes",
+  "analyticsYourCategories": "Tus gastos por categoría",
+  "analyticsLargestShares": "Tus mayores partes",
+  "analyticsLargestExpenses": "Gastos más grandes",
+  "analyticsSpendingByTrip": "Tus gastos por viaje",
+  "analyticsEmptyTitle": "Aún no hay gastos",
+  "analyticsEmptyBody": "Tus gastos aparecerán aquí cuando añadas gastos a un viaje.",
+  "analyticsPeriodEmptyBody": "No hay gastos en esta vista. Elige otro viaje o período.",
+  "analyticsLoadFailed": "No se pudo cargar el informe completo. Inténtalo de nuevo.",
+  "analyticsLastLoaded": "Se muestra el último informe cargado correctamente.",
+  "analyticsExpenseCount": "{count} gastos",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Opciones del viaje",
+  "editTripAction": "Editar viaje",
+  "deleteTripAction": "Eliminar viaje",
+  "inviteTripMembersAction": "Invitar miembros",
+  "tripCoverPhoto": "Foto de portada",
+  "tripInviteLaterHint": "Puedes invitar a otras personas después de crear el viaje.",
+  "inviteClipboardFailed": "No se pudo acceder al portapapeles. Inténtalo de nuevo.",
+  "friendInviteToTrip": "Invitar a un viaje",
+  "friendChooseTrip": "Elige un viaje",
+  "friendNoInvitableTrips": "No hay viajes disponibles. Puedes invitar amigos a viajes de grupo activos que administras, si aún no son miembros ni tienen una invitación pendiente.",
+  "friendTripInviteSent": "Invitación enviada.",
+  "friendTripUnavailable": "Esta acción ya no está disponible para este viaje. Actualiza la lista e inténtalo de nuevo.",
+  "friendTripActionFailed": "No se pudo completar esta acción. Inténtalo de nuevo.",
+  "profileContactDescription": "¿Tienes algún problema, sugerencia o pregunta sobre Splyto? Escríbenos por correo electrónico; estaremos encantados de ayudarte.",
+  "profileContactEmailAction": "Escribir un correo",
+  "profileContactEmailUnavailable": "No se pudo abrir una aplicación de correo. Copia la dirección y escríbenos desde tu aplicación de correo.",
+  "profilePrivacyPolicy": "Política de privacidad",
+  "privacyLoadFailed": "No se pudo cargar la política de privacidad. Inténtalo de nuevo.",
+  "addReceiptAction": "Añadir recibo",
+  "receiptPickFailed": "No se pudo cargar el recibo. Inténtalo de nuevo.",
+  "receiptPhotoAccessDenied": "Permite el acceso de Splyto a la cámara o a las fotos en Ajustes y vuelve a intentarlo.",
+  "receiptPhotoLabel": "Foto del recibo",
+  "replaceReceiptAction": "Cambiar recibo",
+  "removeReceiptAction": "Quitar recibo",
+  "restoreReceiptAction": "Restaurar recibo anterior"
 }

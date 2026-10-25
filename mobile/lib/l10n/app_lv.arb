@@ -1,4 +1,19 @@
 {
+  "homeFirstTrip": "Tavs pirmais ceļojums",
+  "homeYourShareAllTrips": "Tava daļa visos ceļojumos",
+  "homeAllTime": "Visā laikā",
+  "homeSolo": "Solo",
+  "homePeople": "{count, plural, one{{count} dalībnieks} other{{count} dalībnieki}}",
+  "homeTripActions": "Ceļojuma darbības: {name}",
+  "homeNoActiveTrips": "Nav aktīvu ceļojumu",
+  "homeNoArchivedTrips": "Nav arhivētu ceļojumu",
+  "homeLoadingTrips": "Ielādē tavus ceļojumus",
+  "homeLoadErrorTitle": "Neizdevās ielādēt ceļojumus",
+  "homeLoadErrorBody": "Lūdzu, pēc brīža mēģini vēlreiz.",
+  "homeOfflineTitle": "Nav interneta savienojuma",
+  "homeOfflineNoData": "Šajā ierīcē vēl nav saglabātu ceļojumu.",
+  "homeOfflineCached": "Bezsaistē. Redzami saglabātie ceļojumi.",
+  "homeRefreshError": "Neizdevās atsvaidzināt. Redzami iepriekš ielādētie ceļojumi.",
   "paymentShareDetailsConsent": "Kopīgot manus saglabātos maksājumu rekvizītus ar {arg1}",
   "paymentShareDetailsScope": "Tikai kamēr šis pieprasījums gaida apmaksu. Atceļot pieprasījumu, piekļuve beidzas.",
   "paymentDetailsUnavailable": "Maksājumu rekvizīti nav pieejami. Pārbaudi interneta savienojumu un vai pieprasījums joprojām ir atvērts.",
@@ -9,7 +24,13 @@
   "premiumFree": "Bezmaksas",
   "premiumStatusUnavailable": "Plāna statuss nav pieejams",
   "premiumGrantedUntil": "Premium piešķirts līdz {date}",
-  "@premiumGrantedUntil": {"placeholders": {"date": {"type": "String"}}},
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "premiumBillingNotActive": "Nav aktīva abonementa",
   "premiumRefreshStatus": "Atjaunot plāna statusu",
   "@addedMembersCount": {
@@ -416,6 +437,9 @@
   "failedToCreateTrip": "Neizdevās izveidot ceļojumu.",
   "failedToLoadUsersDirectory": "Neizdevās ielādēt lietotāju sarakstu.",
   "filterSettlementByMemberSubtitle": "Filtrēt norēķinus pēc dalībnieka",
+  "finishSoloTripConfirmationText": "Noslēgt šo ceļojumu un pārvietot to uz arhīvu? Tavi izdevumi paliks pieejami apskatei.",
+  "soloTripArchived": "Ceļojums noslēgts un arhivēts.",
+  "finishTripSyncPending": "Pirms ceļojuma noslēgšanas sinhronizē nesaglabātās izmaiņas.",
   "finishTripAction": "Pabeigt ceļojumu",
   "finishTripConfirmationText": "Pabeigt šo ceļojumu un sākt norēķinus?",
   "finishTripStartSettlementsAction": "Pabeigt ceļojumu un sākt norēķinus",
@@ -516,6 +540,16 @@
   "noMembersFound": "Dalībnieki nav atrasti.",
   "noNewMembersAdded": "Šie cilvēki jau ir dalībnieki vai gaida uzaicinājuma apstiprināšanu.",
   "noNotePlaceholder": "Nav piezīmes",
+  "notificationsToday": "Šodien",
+  "notificationsEmptyBody": "Šeit parādīsies jaunumi par ceļojumiem, izdevumiem un draugiem.",
+  "notificationsCached": "Bezsaistē — redzami saglabātie paziņojumi.",
+  "notificationsRefreshFailed": "Neizdevās atjaunināt. Redzami iepriekš ielādētie paziņojumi.",
+  "notificationsJustNow": "Tikko",
+  "notificationsMinutesAgo": "Pirms {count} min",
+  "@notificationsMinutesAgo": {"placeholders": {"count": {"type": "int"}}},
+  "notificationsHoursAgo": "Pirms {count} h",
+  "@notificationsHoursAgo": {"placeholders": {"count": {"type": "int"}}},
+  "notificationsUnread": "Nelasīts",
   "noNotificationsYet": "Paziņojumu vēl nav.",
   "noParticipantData": "Nav dalībnieku datu.",
   "noParticipantsSelected": "Nav izvēlētu dalībnieku.",
@@ -824,6 +858,8 @@
   "authClose": "Aizvērt",
   "authResendLink": "Sūtīt vēlreiz",
   "profileAppSettingsSectionTitle": "LIETOTNES IESTATĪJUMI",
+  "profileAccountSettings": "Konta iestatījumi",
+  "profileChangePhoto": "Mainīt profila attēlu",
   "profileAppearance": "Izskats",
   "profileThemeDisplayMode": "Tēma un attēlošanas režīms",
   "profileLanguage": "Valoda",
@@ -1043,7 +1079,7 @@
   "tripsClipboardIsEmpty": "Starpliktuve ir tukša.",
   "tripsPaste": "Ielīmēt",
   "tripsJoin": "Pievienoties",
-  "workspaceTripMembers": "Trip dalībnieki",
+  "workspaceTripMembers": "Ceļojuma dalībnieki",
   "workspaceFailedToLoadFriends": "Neizdevās ielādēt draugus.",
   "workspaceFailedToGenerateInviteLink": "Neizdevās izveidot ielūguma saiti.",
   "workspaceInviteLink": "Ielūguma saite",
@@ -1108,7 +1144,7 @@
   "workspaceArchivedTrip": "Arhivēts ceļojums",
   "workspaceActiveTrip": "Aktīvs ceļojums",
   "workspaceMemberProfile": "Dalībnieka profils",
-  "workspaceTripOwner": "Trip īpašnieks",
+  "workspaceTripOwner": "Ceļojuma īpašnieks",
   "workspaceMember": "Dalībnieks",
   "workspaceReadyForSettlement": "Gatavs norēķiniem",
   "workspaceNotReadyForSettlement": "Nav gatavs norēķiniem",
@@ -1119,14 +1155,14 @@
   "workspaceBankTransfer": "Bankas pārskaitījums",
   "workspaceHolder": "Turētājs",
   "workspaceCouldNotOpenPaymentLink": "Neizdevās atvērt maksājuma saiti.",
-  "workspaceTripActivity": "Trip aktivitāte",
+  "workspaceTripActivity": "Ceļojuma aktivitāte",
   "workspacePaidExpenses": "Apmaksāti izdevumi",
   "workspacePaidTotal": "Apmaksāts kopā",
   "workspaceInvolvedIn": "Iesaistīts",
   "workspaceCurrentTrip": "Pašreizējais trips",
-  "workspaceCommonTrips": "Kopīgie tripi",
-  "workspaceLoadingCommonTrips": "Ielādē kopīgos tripus...",
-  "workspaceNoCommonTripsFoundYet": "Kopīgi tripi vēl nav atrasti.",
+  "workspaceCommonTrips": "Kopīgie ceļojumi",
+  "workspaceLoadingCommonTrips": "Ielādē kopīgos ceļojumus…",
+  "workspaceNoCommonTripsFoundYet": "Vēl nav kopīgu ceļojumu.",
   "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "Neizdevās ielādēt visus kopīgos tripus. Rādu pašreizējo.",
   "workspaceMembers": "dalībnieki",
   "workspaceExpense": "Izdevums",
@@ -1337,5 +1373,240 @@
   "notificationPaymentCancelledBodyGeneric": "Maksājuma atzīme tika atcelta.",
   "notificationPaymentNotReceivedTitle": "Maksājums nav saņemts",
   "notificationPaymentNotReceivedBody": "{arg1} atzīmēja {arg2} maksājumu kā nesaņemtu.",
-  "notificationPaymentNotReceivedBodyGeneric": "Maksājums tika atzīmēts kā nesaņemts."
+  "notificationPaymentNotReceivedBodyGeneric": "Maksājums tika atzīmēts kā nesaņemts.",
+  "quickStartTitle": "Īsā pamācība",
+  "quickStartCreateTitle": "Izveido ceļojumu",
+  "quickStartCreateBody": "Izvēlies nosaukumu un valūtu. Uzskaiti savus izdevumus vai dali izmaksas ar grupu.",
+  "quickStartInviteTitle": "Ceļo kopā vai vienatnē",
+  "quickStartInviteBody": "Uzaicini draugus kopīgā ceļojumā vai sāc personīgo ceļojumu patstāvīgi.",
+  "quickStartExpenseTitle": "Pievieno pirmo izdevumu",
+  "quickStartExpenseBody": "Ievadi summu, norādi maksātāju un sadali izmaksas. Splyto aprēķinās katra bilanci.",
+  "quickStartNext": "Tālāk",
+  "quickStartBack": "Atpakaļ",
+  "quickStartSkip": "Izlaist",
+  "quickStartCreateAction": "Izveidot ceļojumu",
+  "quickStartClose": "Aizvērt pamācību",
+  "quickStartSubtitle": "Uzzini, kā lietot ceļojumus un izdevumus",
+  "quickStartStep": "{step}. solis no {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Ceļojuma kopsumma",
+  "workspacePersonalTotal": "Kopā iztērēts",
+  "workspaceBalanceEven": "Tava bilance ir līdzsvarā",
+  "workspaceBalanceOwe": "Tev jāmaksā {amount}",
+  "workspaceBalanceReceive": "Tev jāsaņem {amount}",
+  "workspaceMemberCount": "Dalībnieki: {count}",
+  "workspaceSearchExpenses": "Meklēt izdevumus",
+  "workspaceClearSearch": "Notīrīt meklēšanu",
+  "workspaceSearchLoadedHint": "Meklēšana aptver ielādētos izdevumus. Ielādē vairāk, lai meklētu arī senākos.",
+  "workspaceNoExpenseMatches": "Nav atbilstošu izdevumu",
+  "workspaceNoExpenseMatchesBody": "Maini meklēto tekstu vai notīri meklēšanu, lai redzētu visus ielādētos izdevumus.",
+  "workspaceEmptyPersonalExpenses": "Pievieno pirmo izdevumu, lai sekotu saviem tēriņiem.",
+  "workspaceEmptyGroupExpenses": "Pievieno pirmo kopīgo izdevumu, lai redzētu katra dalībnieka daļu.",
+  "workspaceLoadMoreExpenses": "Ielādēt vairāk izdevumu",
+  "workspaceOriginalExpenseAmount": "Sākotnējā summa: {amount}",
+  "workspaceCommentCount": "Komentāri: {count}",
+  "workspaceExpenseActions": "Izdevuma darbības",
+  "workspaceLoadErrorTitle": "Ceļojumu neizdevās ielādēt",
+  "workspaceCachedWarning": "Redzami saglabātie dati. Tie var būt novecojuši.",
+  "workspaceActivityTab": "Aktivitāte",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Ielādē ceļojumu",
+  "workspaceRefreshFailed": "Neizdevās atjaunināt",
+  "expenseDetailsTitle": "Izdevuma detaļas",
+  "expenseQuickCategories": "Ātrā kategoriju izvēle",
+  "expenseReceiptRead": "Čeks nolasīts un forma papildināta.",
+  "expenseReceiptNoData": "Čeks pievienots. Summu, datumu vai tirgotāju neizdevās nolasīt.",
+  "expenseReceiptScanFailed": "Čeks izvēlēts. Automātiskā nolasīšana neizdevās; pārbaudi laukus pats.",
+  "expenseReceiptOffline": "Čeks tiks augšupielādēts saglabājot. Automātiskai nolasīšanai vajadzīgs savienojums.",
+  "expenseReadingReceipt": "Nolasa čeku…",
+  "expenseCommentsLoadFailed": "Komentārus neizdevās ielādēt. Mēģini vēlreiz.",
+  "expenseReplyAction": "Atbildēt",
+  "expenseReplyHint": "Raksti atbildi…",
+  "expenseReplyTo": "Atbilde lietotājam {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Bilances parādīsies pēc izdevumu pievienošanas.",
+  "balanceAfterPayments": "Bilancēs iekļauti apstiprinātie maksājumi.",
+  "balanceExpenseShare": "Izdevumu daļa",
+  "balanceHistoryScope": "Ielādētie izdevumi un apstiprinātie maksājumi. Sarakstā var nebūt visa ceļojuma vēsture.",
+  "balancePaymentTo": "Maksājums saņēmējam {name}",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Maksājums no {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Pirms noslēguma norēķiniem visiem jāatzīmē gatavība.",
+  "settlementEmptyClosed": "Šim ceļojumam nav norādītu pārskaitījumu.",
+  "settlementConfirmedCount": "Apstiprināti {count} no {total} pārskaitījumiem",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "Gatavi {count} no {total} dalībniekiem",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Gatavs",
+  "settlementMemberNotReady": "Vēl nav gatavs",
+  "settlementSuggested": "Ieteiktais pārskaitījums",
+  "activityLoadFailed": "Aktivitāti neizdevās atjaunot. Redzamie ieraksti var būt novecojuši.",
+  "activityMember": "Ceļojuma dalībnieks",
+  "friendsEmptyBody": "Atrodi draugu pēc vārda vai e-pasta vai izmanto QR kodu.",
+  "friendsDeclineAction": "Noraidīt",
+  "friendsLoading": "Ielādē draugus",
+  "friendsCommonTripsCount": "Kopīgie ceļojumi: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "Dati par ielādētajiem izdevumiem; tie var neaptvert visu ceļojumu.",
+  "sharedTripsLoadedLimit": "Parādīti līdz 20 kopīgajiem ceļojumiem.",
+  "memberRemoveTitle": "Noņemt dalībnieku?",
+  "memberRemoveBody": "Noņemt {name} no šī ceļojuma? Tas iespējams tikai tad, ja dalībniekam nav izdevumu, norēķinu vai atlikuma.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Noņemt no ceļojuma",
+  "memberRemoved": "{name} noņemts no ceļojuma.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Vēl nav pievienoti",
+  "friendRelationshipLabel": "Draugs",
+  "sharedTripsEmptyBody": "Šeit būs redzami ceļojumi, kuros piedalāties abi.",
+  "analyticsAllTrips": "Visi ceļojumi",
+  "analyticsByTrip": "Pa ceļojumam",
+  "analyticsYourSpending": "Tavi izdevumi",
+  "analyticsActiveArchived": "Aktīvie un arhivētie ceļojumi",
+  "analyticsTrips": "Ceļojumi",
+  "analyticsAveragePerTrip": "Vidēji ceļojumā",
+  "analyticsPaidByMember": "Samaksāts pa dalībniekiem",
+  "analyticsYouPaid": "Tu samaksāji",
+  "analyticsYouGetBack": "Tev jāsaņem",
+  "analyticsYouOwe": "Tev jāmaksā",
+  "analyticsParticipants": "Dalībnieki",
+  "analyticsYourCategories": "Tavi izdevumi pa kategorijām",
+  "analyticsLargestShares": "Tavas lielākās izdevumu daļas",
+  "analyticsLargestExpenses": "Lielākie izdevumi",
+  "analyticsSpendingByTrip": "Tavi izdevumi pa ceļojumiem",
+  "analyticsEmptyTitle": "Vēl nav izdevumu",
+  "analyticsEmptyBody": "Pievieno izdevumus ceļojumam, un šeit redzēsi to pārskatu.",
+  "analyticsPeriodEmptyBody": "Šajā skatā nav izdevumu. Izvēlies citu ceļojumu vai periodu.",
+  "analyticsLoadFailed": "Neizdevās ielādēt pilnu izdevumu pārskatu. Mēģini vēlreiz.",
+  "analyticsLastLoaded": "Redzams pēdējais veiksmīgi ielādētais pārskats.",
+  "analyticsExpenseCount": "{count} izdevumi",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Ceļojuma darbības",
+  "editTripAction": "Labot ceļojumu",
+  "deleteTripAction": "Dzēst ceļojumu",
+  "inviteTripMembersAction": "Uzaicināt dalībniekus",
+  "tripCoverPhoto": "Vāka attēls",
+  "tripInviteLaterHint": "Dalībniekus vari uzaicināt pēc ceļojuma izveides.",
+  "inviteClipboardFailed": "Neizdevās piekļūt starpliktuvei. Mēģini vēlreiz.",
+  "friendInviteToTrip": "Uzaicināt ceļojumā",
+  "friendChooseTrip": "Izvēlies ceļojumu",
+  "friendNoInvitableTrips": "Nav pieejamu ceļojumu. Draugus vari uzaicināt aktīvos grupas ceļojumos, kurus pārvaldi, ja viņi vēl nav dalībnieki un viņiem nav gaidoša uzaicinājuma.",
+  "friendTripInviteSent": "Uzaicinājums nosūtīts.",
+  "friendTripUnavailable": "Šī darbība ceļojumā vairs nav pieejama. Atjauno sarakstu un mēģini vēlreiz.",
+  "friendTripActionFailed": "Neizdevās veikt darbību. Mēģini vēlreiz.",
+  "profileContactDescription": "Radusies problēma, ir ieteikums vai jautājums par Splyto? Raksti mums e-pastā — labprāt palīdzēsim.",
+  "profileContactEmailAction": "Rakstīt e-pastu",
+  "profileContactEmailUnavailable": "Neizdevās atvērt e-pasta lietotni. Nokopē adresi un raksti mums no savas e-pasta lietotnes.",
+  "profilePrivacyPolicy": "Privātuma politika",
+  "privacyLoadFailed": "Neizdevās ielādēt privātuma politiku. Mēģiniet vēlreiz.",
+  "addReceiptAction": "Pievienot čeku",
+  "receiptPickFailed": "Neizdevās ielādēt čeku. Mēģini vēlreiz.",
+  "receiptPhotoAccessDenied": "Iestatījumos atļauj Splyto piekļuvi kamerai vai fotoattēliem un mēģini vēlreiz.",
+  "receiptPhotoLabel": "Čeka foto",
+  "replaceReceiptAction": "Nomainīt čeku",
+  "removeReceiptAction": "Noņemt čeku",
+  "restoreReceiptAction": "Atjaunot iepriekšējo čeku"
 }

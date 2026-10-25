@@ -24,6 +24,11 @@ ALERT_COOLDOWN_SEC="$(env_value "$ENV_FILE" "TRIP_BACKUP_ALERT_COOLDOWN_SEC")"
 if [[ -z "$BACKUP_ROOT" ]]; then BACKUP_ROOT="/var/backups/splyto"; fi
 if [[ -z "$RETENTION_DAYS" ]]; then RETENTION_DAYS=14; fi
 if [[ -z "$ALERT_COOLDOWN_SEC" ]]; then ALERT_COOLDOWN_SEC=3600; fi
+[[ "$RETENTION_DAYS" =~ ^[1-9][0-9]{0,3}$ ]] && (( RETENTION_DAYS <= 3650 )) || {
+  echo "Invalid backup retention period." >&2
+  exit 1
+}
+command -v python3 >/dev/null
 
 TIMESTAMP="$(date -u +%Y%m%d_%H%M%S)"
 DB_DIR="${BACKUP_ROOT}/db"
@@ -66,8 +71,7 @@ tar -czf "$APP_FILE" "${include_paths[@]}"
   sha256sum "$APP_FILE"
 } > "$META_FILE"
 
-find "$DB_DIR" -type f -name "*.sql.gz" -mtime +"$RETENTION_DAYS" -delete
-find "$APP_DIR" -type f -name "*.tar.gz" -mtime +"$RETENTION_DAYS" -delete
-find "$META_DIR" -type f -name "*.sha256" -mtime +"$RETENTION_DAYS" -delete
+python3 "$SCRIPT_DIR/backup_retention.py" \
+  --root "$BACKUP_ROOT" --database "$DB_NAME" --days "$RETENTION_DAYS" --apply
 
 echo "[SPLYTO][BACKUP][OK] db=${DB_FILE} app=${APP_FILE} retention_days=${RETENTION_DAYS}"

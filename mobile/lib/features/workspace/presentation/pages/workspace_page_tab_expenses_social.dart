@@ -20,6 +20,7 @@ TextStyle _emojiTextStyle(double size) => TextStyle(
   fontSize: size,
   height: 1.0,
   letterSpacing: 0,
+  fontFamily: 'Apple Color Emoji',
   fontFamilyFallback: const <String>[
     'Apple Color Emoji',
     'Segoe UI Emoji',
@@ -295,53 +296,6 @@ extension _WorkspacePageExpenseSocialInline on _WorkspacePageState {
   }
 }
 
-class _ExpenseInlineSocialBar extends StatelessWidget {
-  const _ExpenseInlineSocialBar({
-    required this.popularReactions,
-    required this.commentCount,
-    required this.isLoading,
-    required this.isBusy,
-    required this.isDark,
-    required this.onCommentsTap,
-    required this.onQuickReactionTap,
-  });
-
-  final List<_InlineEmojiCount> popularReactions;
-  final int? commentCount;
-  final bool isLoading;
-  final bool isBusy;
-  final bool isDark;
-  final VoidCallback onCommentsTap;
-  final ValueChanged<String> onQuickReactionTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        for (final row in popularReactions) ...[
-          _ExpenseInlineReactionChip(
-            emoji: row.emoji,
-            count: row.count,
-            isMine: row.isMine,
-            isDark: isDark,
-            isDisabled: isBusy,
-            onTap: () => onQuickReactionTap(row.emoji),
-          ),
-          const SizedBox(width: 2),
-        ],
-        _ExpenseInlineCommentsChip(
-          isDark: isDark,
-          count: commentCount ?? 0,
-          isLoading: isLoading && commentCount == null,
-          onTap: onCommentsTap,
-        ),
-      ],
-    );
-  }
-}
-
 class _ExpenseInlineReactionChip extends StatelessWidget {
   const _ExpenseInlineReactionChip({
     required this.emoji,
@@ -392,50 +346,6 @@ class _ExpenseInlineReactionChip extends StatelessWidget {
               ],
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ExpenseInlineCommentsChip extends StatelessWidget {
-  const _ExpenseInlineCommentsChip({
-    required this.isDark,
-    required this.count,
-    required this.isLoading,
-    required this.onTap,
-  });
-
-  final bool isDark;
-  final int count;
-  final bool isLoading;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.mode_comment_outlined,
-              size: 13,
-              color: isDark ? colors.onSurfaceVariant : AppDesign.lightMuted,
-            ),
-            const SizedBox(width: 1),
-            Text(
-              isLoading ? '…' : '$count',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: isDark ? colors.onSurfaceVariant : AppDesign.lightMuted,
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -497,67 +407,6 @@ class _EmojiPickerRow extends StatelessWidget {
   }
 }
 
-class _CommentActionRow extends StatelessWidget {
-  const _CommentActionRow({
-    required this.label,
-    required this.icon,
-    required this.isDark,
-    required this.onTap,
-    this.isDestructive = false,
-    this.showDivider = false,
-  });
-
-  final String label;
-  final IconData icon;
-  final bool isDark;
-  final bool isDestructive;
-  final bool showDivider;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final textColor = isDestructive
-        ? AppDesign.lightDestructive
-        : (isDark ? colors.onSurface : AppDesign.lightForeground);
-    final iconColor = isDestructive
-        ? AppDesign.lightDestructive
-        : (isDark ? colors.onSurfaceVariant : AppDesign.lightMuted);
-
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          border: showDivider
-              ? Border(
-                  bottom: BorderSide(
-                    color: isDark
-                        ? colors.outlineVariant.withValues(alpha: 0.20)
-                        : AppDesign.lightStroke,
-                  ),
-                )
-              : null,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: textColor,
-                ),
-              ),
-            ),
-            Icon(icon, size: 20, color: iconColor),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 // ── _ExpenseSocialSection ────────────────────────────────────────────────────
 
 class _ExpenseSocialSection extends StatefulWidget {
@@ -582,6 +431,7 @@ class _ExpenseSocialSection extends StatefulWidget {
 class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
   List<ExpenseCommentReaction>? _commentReactions;
   List<ExpenseComment>? _comments;
+  bool _loadFailed = false;
   ExpenseComment? _replyTarget;
   bool _isSubmittingComment = false;
   final Set<int> _commentReactionBusyIds = <int>{};
@@ -604,6 +454,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
   // ── Data loading ────────────────────────────────────────────────────────────
 
   Future<void> _load() async {
+    setState(() => _loadFailed = false);
     try {
       final results = await Future.wait<dynamic>([
         widget.controller.listExpenseCommentReactions(
@@ -623,8 +474,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _commentReactions = const [];
-        _comments = const [];
+        _loadFailed = true;
       });
     }
   }
@@ -735,93 +585,64 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
     final isOwn = comment.userId == widget.currentUserId;
     final picked = await showAppBottomSheet<_CommentQuickActionResult>(
       context: context,
-      isScrollControlled: false,
-      showDragHandle: false,
-      builder: (context) {
-        final colors = Theme.of(context).colorScheme;
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: isDark ? colors.surface : AppDesign.lightSurface,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: isDark
-                        ? colors.outlineVariant.withValues(alpha: 0.32)
-                        : AppDesign.lightStroke,
-                  ),
+      isScrollControlled: true,
+      builder: (context) => AppActionSheet(
+        title: context.l10n.expenseCommentsTitle,
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  comment.userNickname,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-                padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                child: _EmojiPickerRow(
-                  emojis: _kSocialEmojis,
-                  onSelect: (emoji) {
-                    Navigator.of(
-                      context,
-                    ).pop(_CommentQuickActionResult.react(emoji));
-                  },
+                const SizedBox(height: 4),
+                Text(
+                  comment.body,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: isDark ? colors.surface : AppDesign.lightSurface,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isDark
-                        ? colors.outlineVariant.withValues(alpha: 0.32)
-                        : AppDesign.lightStroke,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    _CommentActionRow(
-                      label: 'Reply',
-                      icon: Icons.reply_rounded,
-                      isDark: isDark,
-                      showDivider: isOwn,
-                      onTap: () {
-                        Navigator.of(
-                          context,
-                        ).pop(const _CommentQuickActionResult.reply());
-                      },
-                    ),
-                    if (isOwn)
-                      _CommentActionRow(
-                        label: 'Edit',
-                        icon: Icons.edit_outlined,
-                        isDark: isDark,
-                        showDivider: true,
-                        onTap: () {
-                          Navigator.of(
-                            context,
-                          ).pop(const _CommentQuickActionResult.edit());
-                        },
-                      ),
-                    if (isOwn)
-                      _CommentActionRow(
-                        label: context.l10n.deleteAction,
-                        icon: Icons.delete_outline_rounded,
-                        isDark: isDark,
-                        isDestructive: true,
-                        onTap: () {
-                          Navigator.of(
-                            context,
-                          ).pop(const _CommentQuickActionResult.delete());
-                        },
-                      ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
-      },
+          const SizedBox(height: 16),
+          _EmojiPickerRow(
+            emojis: _kSocialEmojis,
+            onSelect: (emoji) =>
+                Navigator.pop(context, _CommentQuickActionResult.react(emoji)),
+          ),
+          const SizedBox(height: 12),
+          const Divider(height: 1),
+          AppPlainActionTile(
+            title: context.l10n.expenseReplyAction,
+            icon: Icons.reply_outlined,
+            onTap: () =>
+                Navigator.pop(context, const _CommentQuickActionResult.reply()),
+          ),
+          if (isOwn) ...[
+            const Divider(height: 1),
+            AppPlainActionTile(
+              title: context.l10n.editAction,
+              icon: Icons.edit_outlined,
+              onTap: () => Navigator.pop(
+                context,
+                const _CommentQuickActionResult.edit(),
+              ),
+            ),
+            const Divider(height: 1),
+            AppPlainActionTile(
+              title: context.l10n.deleteAction,
+              icon: Icons.delete_outline,
+              destructive: true,
+              onTap: () => Navigator.pop(
+                context,
+                const _CommentQuickActionResult.delete(),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
     if (!mounted || picked == null) {
       return;
@@ -854,38 +675,12 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
 
   Future<void> _showEditCommentDialog(ExpenseComment comment) async {
     final initial = comment.body.trim();
-    final textController = TextEditingController(text: initial);
-    String? edited;
-    try {
-      edited = await showDialog<String>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Edit comment'),
-          content: TextField(
-            controller: textController,
-            autofocus: true,
-            maxLength: 280,
-            minLines: 1,
-            maxLines: 6,
-            textCapitalization: TextCapitalization.sentences,
-            decoration: const InputDecoration(hintText: 'Write a comment...'),
+    final edited = await Navigator.of(context, rootNavigator: true)
+        .push<String>(
+          AppFormPageRoute(
+            builder: (_) => EditExpenseCommentPage(initial: initial),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(context.l10n.cancelAction),
-            ),
-            FilledButton(
-              onPressed: () =>
-                  Navigator.of(ctx).pop(textController.text.trim()),
-              child: const Text('Save'),
-            ),
-          ],
-        ),
-      );
-    } finally {
-      textController.dispose();
-    }
+        );
     final next = (edited ?? '').trim();
     if (next.isEmpty || next == initial || !mounted) {
       return;
@@ -977,7 +772,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
       context: context,
       title: context.l10n.expenseDeleteCommentTitle,
       message: comment.body.trim().isEmpty
-          ? 'Delete this comment?'
+          ? context.l10n.expenseDeleteCommentTitle
           : comment.body,
       confirmLabel: context.l10n.deleteAction,
       cancelLabel: context.l10n.cancelAction,
@@ -1064,7 +859,19 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
           ),
         ),
         const SizedBox(height: 10),
-        if (comments == null)
+        if (_loadFailed)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(context.l10n.expenseCommentsLoadFailed),
+              TextButton.icon(
+                onPressed: _load,
+                icon: const Icon(Icons.refresh),
+                label: Text(context.l10n.retryAction),
+              ),
+            ],
+          )
+        else if (comments == null)
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8),
             child: LinearProgressIndicator(),
@@ -1129,7 +936,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
         color: isDark
             ? colors.surfaceContainerHighest.withValues(alpha: 0.55)
             : AppDesign.lightSurfaceMuted.withValues(alpha: 0.72),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: AppDesign.cardRadius,
         border: Border.all(
           color: isDark
               ? colors.outlineVariant.withValues(alpha: 0.34)
@@ -1150,7 +957,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Replying to $nickname',
+                  context.l10n.expenseReplyTo(nickname),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -1177,7 +984,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
           IconButton(
             onPressed: _clearReplyTarget,
             icon: const Icon(Icons.close_rounded, size: 16),
-            visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             splashRadius: 16,
             tooltip: context.l10n.cancelAction,
           ),
@@ -1192,6 +999,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
       children: [
         Expanded(
           child: TextField(
+            key: const ValueKey('expense-comment-input'),
             controller: _commentController,
             focusNode: _commentFocus,
             maxLength: 280,
@@ -1202,11 +1010,9 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
             decoration: InputDecoration(
               hintText: _replyTarget == null
                   ? context.l10n.expenseAddCommentHint
-                  : 'Write a reply...',
+                  : context.l10n.expenseReplyHint,
               counterText: '',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
+              border: OutlineInputBorder(borderRadius: AppDesign.cardRadius),
               contentPadding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
             ),
           ),
@@ -1218,6 +1024,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
             final canSend =
                 value.text.trim().isNotEmpty && !_isSubmittingComment;
             return IconButton.filled(
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
               onPressed: canSend ? _sendComment : null,
               icon: _isSubmittingComment
                   ? const SizedBox(
@@ -1285,22 +1092,17 @@ class _CommentTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Flexible(
-                        child: Text(
-                          comment.userNickname,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: isDark
-                                    ? null
-                                    : AppDesign.lightForeground,
-                              ),
+                      Text(
+                        comment.userNickname,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? null : AppDesign.lightForeground,
                         ),
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(height: 4),
                       Text(
                         timeStr,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -1325,7 +1127,7 @@ class _CommentTile extends StatelessWidget {
                             : AppDesign.lightSurfaceMuted.withValues(
                                 alpha: 0.72,
                               ),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: AppDesign.cardRadius,
                         border: Border.all(
                           color: isDark
                               ? colors.outlineVariant.withValues(alpha: 0.30)
@@ -1337,7 +1139,9 @@ class _CommentTile extends StatelessWidget {
                         children: [
                           if ((replyToNickname ?? '').trim().isNotEmpty)
                             Text(
-                              'Reply to ${(replyToNickname ?? '').trim()}',
+                              context.l10n.expenseReplyTo(
+                                (replyToNickname ?? '').trim(),
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context).textTheme.bodySmall

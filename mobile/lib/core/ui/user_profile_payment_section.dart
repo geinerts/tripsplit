@@ -26,8 +26,12 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
     this.wisePayLink,
     required this.openLinkFailedText,
     this.onErrorMessage,
+    this.compactEmpty = false,
+    this.showTitle = true,
   });
 
+  final bool compactEmpty;
+  final bool showTitle;
   final String sectionTitle;
   final String emptyText;
   final String bankTransferTitle;
@@ -70,31 +74,75 @@ class UserProfilePaymentDetailsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.account_balance_wallet_outlined,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  sectionTitle,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
+          if (showTitle) ...[
+            Text(sectionTitle, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 16),
+          ],
           if (!hasAny)
-            Text(
-              emptyText,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppDesign.mutedColor(context),
-              ),
-            )
+            compactEmpty
+                ? Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerLow,
+                          borderRadius: AppDesign.cardRadius,
+                        ),
+                        child: Icon(
+                          Icons.account_balance_wallet_outlined,
+                          size: 28,
+                          color: AppDesign.mutedColor(context),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Tooltip(
+                          message: emptyText,
+                          child: Text(
+                            context.l10n.profilePaymentNotAdded,
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(
+                                  color: AppDesign.mutedColor(context),
+                                ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.account_balance_wallet_outlined,
+                            size: 40,
+                            color: AppDesign.mutedColor(context),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            context.l10n.profilePaymentNotAdded,
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(
+                                  color: AppDesign.mutedColor(context),
+                                ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            emptyText,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: AppDesign.mutedColor(context),
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
           else ...[
             if (hasBank)
               _PaymentMethodTile(
@@ -404,11 +452,6 @@ class _PaymentMethodTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final content = Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.82),
-        border: Border.all(color: AppDesign.cardStroke(context)),
-      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -429,7 +472,7 @@ class _PaymentMethodTile extends StatelessWidget {
                   title,
                   style: Theme.of(
                     context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 3),
                 for (var i = 0; i < detailLines.length; i++) ...[
@@ -450,7 +493,7 @@ class _PaymentMethodTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: AppDesign.cardRadius,
         onTap: onTap,
         child: content,
       ),
@@ -499,10 +542,10 @@ class _PaymentLineRow extends StatelessWidget {
               size: 16,
               color: Theme.of(context).colorScheme.primary,
             ),
-            constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             padding: EdgeInsets.zero,
             splashRadius: 18,
-            visualDensity: VisualDensity.compact,
+
             tooltip: context.l10n.copyAction,
           ),
       ],

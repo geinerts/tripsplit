@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="184" viewBox="0 0 240 184">
+  <title>Vel nav analitikas datu</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M57 48v94h121" stroke="#00BED4" stroke-width="4.5"/>
+    <path d="M73 64h100M73 90h58M73 116h54" stroke="#C6DBE1" stroke-width="2" stroke-dasharray="3 6"/>
+    <path d="M79 136v6m27-6v6m27-6v6" stroke="#00BED4" stroke-width="3"/>
+    <circle cx="160" cy="106" r="27" stroke="#DD2684" stroke-width="4.5"/>
+    <path d="m180 126 19 19" stroke="#DD2684" stroke-width="5"/>
+    <path d="M150 106h20" stroke="#B5CAD3" stroke-width="3"/>
+  </g>
+</svg>

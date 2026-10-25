@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+<title>Liela celojuma kartite</title>
+<path fill="#EAF9FC" d="M0 0h640v360H0z"/>
+<g transform="translate(248 106) scale(1.38)">
+  <path d="M34 27V14a6 6 0 0 1 6-6h24a6 6 0 0 1 6 6v13" fill="none" stroke="#00BED4" stroke-width="5" stroke-linejoin="round"/>
+  <rect x="8" y="27" width="88" height="67" rx="8" fill="#F6FDFF" stroke="#00BED4" stroke-width="5"/>
+  <path d="M27 29v63M77 70v22" fill="none" stroke="#00BED4" stroke-width="5" stroke-linecap="round"/>
+  <path d="m62 29 6 11" fill="none" stroke="#253950" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="m65 41 9-4 7 4 13 22-16 10-14-24Z" fill="#DD2684"/>
+  <circle cx="72" cy="44" r="2.5" fill="#FFF"/>
+</g>
+</svg>

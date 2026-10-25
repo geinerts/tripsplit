@@ -1,198 +1,137 @@
 part of 'analytics_page.dart';
 
 extension _AnalyticsPageActions on _AnalyticsPageState {
-  void _bindCommandController(AnalyticsPageCommandController? controller) {
-    if (controller == null) {
-      return;
+  void _refresh() {
+    if (widget.active) {
+      unawaited(_load());
+    } else {
+      _loaded = false;
     }
-    _handledRefreshRequestCount = controller.refreshRequestCount;
-    controller.addListener(_onCommandControllerChanged);
   }
 
-  void _unbindCommandController(AnalyticsPageCommandController? controller) {
-    controller?.removeListener(_onCommandControllerChanged);
-  }
-
-  void _onCommandControllerChanged() {
-    final controller = widget.commandController;
-    if (controller == null) {
-      return;
-    }
-    if (controller.refreshRequestCount == _handledRefreshRequestCount) {
-      return;
-    }
-    _handledRefreshRequestCount = controller.refreshRequestCount;
-    unawaited(_loadTrips(forceReload: true));
-  }
-
-  Future<void> _loadTrips({required bool forceReload}) async {
-    final trace = PerfMonitor.start('screen.analytics.trips.load');
-    var success = false;
+  Future<void> _load() async {
+    final request = ++_generation;
+    final account = widget.authController.currentUser?.id ?? 0;
+    bool current() =>
+        mounted &&
+        request == _generation &&
+        account > 0 &&
+        widget.authController.currentUser?.id == account;
+    if (account <= 0) return;
     _updateState(() {
-      _isLoadingTrips = true;
-      _tripsError = null;
+      _loading = true;
+      _error = null;
     });
-
     try {
-      final trips = await widget.tripsController.loadTrips(
-        forceRefresh: forceReload,
-      );
-      if (!mounted) {
-        return;
-      }
-
-      final selectedTripId = _selectTripId(
+      // Force a server read: cached trip totals must not silently mix with fresh pages.
+      final trips = await widget.tripsController.loadTrips(forceRefresh: true);
+      if (!current()) return;
+      final entries = await loadAnalyticsEntries(
         trips: trips,
-        previousTripId: _selectedTripId,
+        userId: account,
+        loadPage: widget.workspaceController.loadExpensesPage,
+        isCurrent: current,
       );
+      if (!current()) return;
       _updateState(() {
         _trips = trips;
-        _selectedTripId = selectedTripId;
-        if (trips.isEmpty) {
-          _showTripSelectorMenu = false;
+        _entries = entries;
+        _loaded = true;
+        if (!trips.any((t) => t.id == _selectedTripId)) {
+          _selectedTripId = trips.firstOrNull?.id;
         }
+        final codes = trips.map((t) => t.currencyCode).toSet();
+        if (!codes.contains(_currency)) {
+          _currency = (codes.toList()..sort()).firstOrNull;
+        }
+        if (!_months.contains(_month)) _month = null;
       });
-
-      await _loadSelectedTripSnapshot(forceReload: forceReload);
-      success = true;
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
+    } catch (error) {
+      if (!current()) return;
       _updateState(() {
-        _tripsError = error.message.trim().isNotEmpty
-            ? error.message.trim()
-            : context.l10n.unexpectedErrorLoadingTrips;
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _tripsError = context.l10n.unexpectedErrorLoadingTrips;
+        final denied =
+            error is ApiException &&
+            ([401, 403, 404].contains(error.statusCode) ||
+                error.code == 'account_changed');
+        if (denied) {
+          _entries = [];
+          _trips = [];
+          _loaded = false;
+        }
+        _error = context.l10n.analyticsLoadFailed;
       });
     } finally {
-      trace.stop(success: success);
-      if (mounted) {
-        _updateState(() {
-          _isLoadingTrips = false;
-        });
-      }
+      if (current()) _updateState(() => _loading = false);
     }
   }
 
-  int? _selectTripId({
-    required List<Trip> trips,
-    required int? previousTripId,
-  }) {
-    if (trips.isEmpty) {
-      return null;
-    }
-    if (previousTripId != null &&
-        trips.any((trip) => trip.id == previousTripId)) {
-      return previousTripId;
-    }
-    for (final trip in trips) {
-      if (trip.isActive) {
-        return trip.id;
-      }
-    }
-    return trips.first.id;
+  Future<void> _chooseTrip() async {
+    final choice = await showModalBottomSheet<int>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (context) => ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * .7,
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text(
+                context.l10n.analyticsByTrip,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+            for (final trip in _trips)
+              ListTile(
+                leading: _tripCover(trip, width: 52, height: 48),
+                title: Text(trip.name),
+                subtitle: Text('${_tripDates(trip)} · ${trip.currencyCode}'),
+                trailing: trip.id == _selectedTripId
+                    ? const Icon(Icons.check)
+                    : null,
+                onTap: () => Navigator.pop(context, trip.id),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (mounted && choice != null) _updateState(() => _selectedTripId = choice);
   }
 
-  Future<void> _loadSelectedTripSnapshot({required bool forceReload}) async {
-    final trace = PerfMonitor.start('screen.analytics.snapshot.load');
-    var success = false;
-    final tripId = _selectedTripId;
-    if (tripId == null) {
-      _updateState(() {
-        _snapshotError = null;
-      });
-      trace.stop(success: true);
-      return;
-    }
-
-    if (!forceReload && _snapshotCache.containsKey(tripId)) {
-      _updateState(() {
-        _snapshotError = null;
-      });
-      trace.stop(success: true);
-      return;
-    }
-
-    _updateState(() {
-      _isLoadingSnapshot = true;
-      _snapshotError = null;
-    });
-
-    try {
-      final snapshot = await widget.workspaceController.loadSnapshot(
-        tripId: tripId,
-      );
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _snapshotCache[tripId] = snapshot;
-      });
-      success = true;
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _snapshotError = error.message.trim().isNotEmpty
-            ? error.message.trim()
-            : context.l10n.unexpectedErrorLoadingTripData;
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _snapshotError = context.l10n.unexpectedErrorLoadingTripData;
-      });
-    } finally {
-      trace.stop(success: success);
-      if (mounted) {
-        _updateState(() {
-          _isLoadingSnapshot = false;
-        });
-      }
+  Future<void> _chooseMonth() async {
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (context) => ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * .65,
+        ),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            ListTile(
+              title: Text(context.l10n.homeAllTime),
+              trailing: _month == null ? const Icon(Icons.check) : null,
+              onTap: () => Navigator.pop(context, 'all'),
+            ),
+            for (final month in _months)
+              ListTile(
+                title: Text(_monthLabel(month)),
+                trailing: _month == month ? const Icon(Icons.check) : null,
+                onTap: () => Navigator.pop(context, month),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (mounted && choice != null) {
+      _updateState(() => _month = choice == 'all' ? null : choice);
     }
   }
-
-  Future<void> _onTripSelected(int tripId) async {
-    if (_selectedTripId == tripId) {
-      return;
-    }
-    _updateState(() {
-      _selectedTripId = tripId;
-      _snapshotError = null;
-    });
-    await _loadSelectedTripSnapshot(forceReload: false);
-  }
-
-  Trip? get _selectedTrip {
-    final selectedTripId = _selectedTripId;
-    if (selectedTripId == null) {
-      return null;
-    }
-    for (final trip in _trips) {
-      if (trip.id == selectedTripId) {
-        return trip;
-      }
-    }
-    return null;
-  }
-
-  WorkspaceSnapshot? get _selectedSnapshot {
-    final selectedTripId = _selectedTripId;
-    if (selectedTripId == null) {
-      return null;
-    }
-    return _snapshotCache[selectedTripId];
-  }
-
-  int get _currentUserId => widget.authController.currentUser?.id ?? 0;
 }

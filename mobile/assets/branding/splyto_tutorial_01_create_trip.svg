@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg height='184' viewBox='0 0 320 184' width='320' xmlns='http://www.w3.org/2000/svg'>
+<title>Izveido celojumu</title>
+
+<g transform='translate(48 47) scale(1.15)'>
+  <path d='M34 27V14a6 6 0 0 1 6-6h24a6 6 0 0 1 6 6v13' fill='none' stroke='#00BED4' stroke-linejoin='round' stroke-width='5'/>
+  <rect fill='#F6FDFF' height='67' rx='8' stroke='#00BED4' stroke-width='5' width='88' x='8' y='27'/>
+  <path d='M27 29v63M77 70v22' fill='none' stroke='#00BED4' stroke-linecap='round' stroke-width='5'/>
+  <path d='m62 29 6 11' fill='none' stroke='#253950' stroke-linecap='round' stroke-width='2.5'/>
+  <path d='m65 41 9-4 7 4 13 22-16 10-14-24Z' fill='#DD2684'/>
+  <circle cx='72' cy='44' fill='#FFF' r='2.5'/>
+</g>
+<g transform='translate(179 79)'>
+<rect fill='#FFF' height='72' rx='8' stroke='#B5CAD3' stroke-width='2' width='86' x='0' y='0'/>
+<path d='M0 23h86' stroke='#DCE8EC' stroke-width='2'/>
+<path d='M22-5V7M64-5V7' stroke='#253950' stroke-linecap='round' stroke-width='3'/>
+<path d='M18 38h8m15 0h8m15 0h5M18 55h8' stroke='#B5CAD3' stroke-linecap='round' stroke-width='3'/>
+<rect fill='#FCE7F2' height='16' rx='4' width='17' x='36' y='47'/>
+<path d='m40 55 3 3 6-6' fill='none' stroke='#DD2684' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'/>
+</g>
+
+</svg>

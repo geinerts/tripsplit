@@ -10,8 +10,10 @@ class UserProfilePage extends StatelessWidget {
     required this.title,
     required this.name,
     this.nickname,
+    this.subtitle,
     this.avatarUrl,
     this.badges = const <String>[],
+    this.statusBadge,
     this.sections = const <Widget>[],
     required this.bankTitle,
     required this.bankDescription,
@@ -27,8 +29,10 @@ class UserProfilePage extends StatelessWidget {
   final String title;
   final String name;
   final String? nickname;
+  final String? subtitle;
   final String? avatarUrl;
   final List<String> badges;
+  final Widget? statusBadge;
   final List<Widget> sections;
   final String bankTitle;
   final String bankDescription;
@@ -49,6 +53,7 @@ class UserProfilePage extends StatelessWidget {
 
     return AppPageScaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(title),
         actions: appBarActions.isEmpty ? null : appBarActions,
       ),
@@ -61,20 +66,21 @@ class UserProfilePage extends StatelessWidget {
               : const AlwaysScrollableScrollPhysics(
                   parent: BouncingScrollPhysics(),
                 ),
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 24),
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
           children: [
             _UserProfileHeroCard(
               name: name,
-              nickname: visibleNickname,
+              nickname: subtitle ?? visibleNickname,
               avatarUrl: avatarUrl,
               badges: badges,
+              statusBadge: statusBadge,
               enableNameCopy: enableNameCopy,
               copyNameTooltip: copyNameTooltip,
               copyNameSuccessText: copyNameSuccessText,
               copyNameFailureText: copyNameFailureText,
             ),
             for (final section in sections) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               section,
             ],
             if (showBankDetails) ...[
@@ -93,7 +99,7 @@ class UserProfilePage extends StatelessWidget {
                         Text(
                           bankTitle,
                           style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),
@@ -129,20 +135,23 @@ class UserProfilePage extends StatelessWidget {
 }
 
 class UserProfileSectionCard extends StatelessWidget {
-  const UserProfileSectionCard({super.key, required this.child});
+  const UserProfileSectionCard({
+    super.key,
+    required this.child,
+    this.showDivider = true,
+  });
 
   final Widget child;
+  final bool showDivider;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.only(top: showDivider ? 20 : 0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: Theme.of(
-          context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
-        border: Border.all(color: AppDesign.cardStroke(context)),
+        border: showDivider
+            ? Border(top: BorderSide(color: AppDesign.cardStroke(context)))
+            : null,
       ),
       child: child,
     );
@@ -159,11 +168,8 @@ class UserProfileBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.28),
-        ),
       ),
       child: Text(
         label,
@@ -180,47 +186,30 @@ class UserProfileMetricTile extends StatelessWidget {
     super.key,
     required this.label,
     required this.value,
+    this.labelHeight = 0,
   });
 
   final String label;
   final String value;
+  final double labelHeight;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(
-            context,
-          ).colorScheme.outlineVariant.withValues(alpha: 0.45),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(minHeight: labelHeight),
+          child: Text(
             label,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppDesign.mutedColor(context),
-              fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 4),
+        Text(value, style: Theme.of(context).textTheme.headlineSmall),
+      ],
     );
   }
 }
@@ -231,6 +220,7 @@ class _UserProfileHeroCard extends StatelessWidget {
     this.nickname,
     this.avatarUrl,
     this.badges = const <String>[],
+    this.statusBadge,
     this.enableNameCopy = false,
     this.copyNameTooltip,
     this.copyNameSuccessText,
@@ -241,6 +231,7 @@ class _UserProfileHeroCard extends StatelessWidget {
   final String? nickname;
   final String? avatarUrl;
   final List<String> badges;
+  final Widget? statusBadge;
   final bool enableNameCopy;
   final String? copyNameTooltip;
   final String? copyNameSuccessText;
@@ -249,23 +240,7 @@ class _UserProfileHeroCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Theme.of(
-            context,
-          ).colorScheme.outlineVariant.withValues(alpha: 0.45),
-        ),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
-            Theme.of(context).colorScheme.surface.withValues(alpha: 0.95),
-          ],
-        ),
-      ),
+      padding: const EdgeInsets.fromLTRB(0, 14, 0, 8),
       child: Column(
         children: [
           _UserProfileAvatar(name: name, avatarUrl: avatarUrl),
@@ -278,7 +253,7 @@ class _UserProfileHeroCard extends StatelessWidget {
                   name,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -302,13 +277,17 @@ class _UserProfileHeroCard extends StatelessWidget {
               ),
             ),
           ],
-          if (badges.isNotEmpty) ...[
+          if (badges.isNotEmpty || statusBadge != null) ...[
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
               runSpacing: 8,
               alignment: WrapAlignment.center,
-              children: [for (final badge in badges) UserProfileBadge(badge)],
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                for (final badge in badges) UserProfileBadge(badge),
+                ?statusBadge,
+              ],
             ),
           ],
         ],
@@ -367,7 +346,6 @@ class _UserProfileNameCopyButton extends StatelessWidget {
         size: 20,
         color: AppDesign.mutedColor(context),
       ),
-      visualDensity: VisualDensity.compact,
     );
   }
 }
@@ -386,7 +364,14 @@ class _UserProfileAvatar extends StatelessWidget {
     final trimmedUrl = (avatarUrl ?? '').trim();
     final initial = name.trim().isEmpty
         ? '?'
-        : name.trim().substring(0, 1).toUpperCase();
+        : name
+              .trim()
+              .split(RegExp(r'\s+'))
+              .where((part) => part.isNotEmpty)
+              .take(2)
+              .map((part) => part.characters.first)
+              .join()
+              .toUpperCase();
 
     if (trimmedUrl.isNotEmpty) {
       return ClipOval(
@@ -418,16 +403,16 @@ class _UserProfileAvatarFallback extends StatelessWidget {
     return Container(
       width: 84,
       height: 84,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: AppDesign.brandGradient,
+        color: Theme.of(context).colorScheme.primaryContainer,
       ),
       alignment: Alignment.center,
       child: Text(
         initial,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w800,
+        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          fontWeight: FontWeight.w600,
           fontSize: 32,
         ),
       ),

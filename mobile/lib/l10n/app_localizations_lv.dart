@@ -9,6 +9,61 @@ class AppLocalizationsLv extends AppLocalizations {
   AppLocalizationsLv([String locale = 'lv']) : super(locale);
 
   @override
+  String get homeFirstTrip => 'Tavs pirmais ceļojums';
+
+  @override
+  String get homeYourShareAllTrips => 'Tava daļa visos ceļojumos';
+
+  @override
+  String get homeAllTime => 'Visā laikā';
+
+  @override
+  String get homeSolo => 'Solo';
+
+  @override
+  String homePeople(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dalībnieki',
+      one: '$count dalībnieks',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String homeTripActions(String name) {
+    return 'Ceļojuma darbības: $name';
+  }
+
+  @override
+  String get homeNoActiveTrips => 'Nav aktīvu ceļojumu';
+
+  @override
+  String get homeNoArchivedTrips => 'Nav arhivētu ceļojumu';
+
+  @override
+  String get homeLoadingTrips => 'Ielādē tavus ceļojumus';
+
+  @override
+  String get homeLoadErrorTitle => 'Neizdevās ielādēt ceļojumus';
+
+  @override
+  String get homeLoadErrorBody => 'Lūdzu, pēc brīža mēģini vēlreiz.';
+
+  @override
+  String get homeOfflineTitle => 'Nav interneta savienojuma';
+
+  @override
+  String get homeOfflineNoData => 'Šajā ierīcē vēl nav saglabātu ceļojumu.';
+
+  @override
+  String get homeOfflineCached => 'Bezsaistē. Redzami saglabātie ceļojumi.';
+
+  @override
+  String get homeRefreshError => 'Neizdevās atsvaidzināt. Redzami iepriekš ielādētie ceļojumi.';
+
+  @override
   String paymentShareDetailsConsent(Object arg1) {
     return 'Kopīgot manus saglabātos maksājumu rekvizītus ar $arg1';
   }
@@ -374,6 +429,15 @@ class AppLocalizationsLv extends AppLocalizations {
   String get filterSettlementByMemberSubtitle => 'Filtrēt norēķinus pēc dalībnieka';
 
   @override
+  String get finishSoloTripConfirmationText => 'Noslēgt šo ceļojumu un pārvietot to uz arhīvu? Tavi izdevumi paliks pieejami apskatei.';
+
+  @override
+  String get soloTripArchived => 'Ceļojums noslēgts un arhivēts.';
+
+  @override
+  String get finishTripSyncPending => 'Pirms ceļojuma noslēgšanas sinhronizē nesaglabātās izmaiņas.';
+
+  @override
   String get finishTripAction => 'Pabeigt ceļojumu';
 
   @override
@@ -683,6 +747,34 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get noNotePlaceholder => 'Nav piezīmes';
+
+  @override
+  String get notificationsToday => 'Šodien';
+
+  @override
+  String get notificationsEmptyBody => 'Šeit parādīsies jaunumi par ceļojumiem, izdevumiem un draugiem.';
+
+  @override
+  String get notificationsCached => 'Bezsaistē — redzami saglabātie paziņojumi.';
+
+  @override
+  String get notificationsRefreshFailed => 'Neizdevās atjaunināt. Redzami iepriekš ielādētie paziņojumi.';
+
+  @override
+  String get notificationsJustNow => 'Tikko';
+
+  @override
+  String notificationsMinutesAgo(int count) {
+    return 'Pirms $count min';
+  }
+
+  @override
+  String notificationsHoursAgo(int count) {
+    return 'Pirms $count h';
+  }
+
+  @override
+  String get notificationsUnread => 'Nelasīts';
 
   @override
   String get noNotificationsYet => 'Paziņojumu vēl nav.';
@@ -1748,6 +1840,12 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'LIETOTNES IESTATĪJUMI';
 
   @override
+  String get profileAccountSettings => 'Konta iestatījumi';
+
+  @override
+  String get profileChangePhoto => 'Mainīt profila attēlu';
+
+  @override
   String get profileAppearance => 'Izskats';
 
   @override
@@ -2406,7 +2504,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get tripsJoin => 'Pievienoties';
 
   @override
-  String get workspaceTripMembers => 'Trip dalībnieki';
+  String get workspaceTripMembers => 'Ceļojuma dalībnieki';
 
   @override
   String get workspaceFailedToLoadFriends => 'Neizdevās ielādēt draugus.';
@@ -2611,7 +2709,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspaceMemberProfile => 'Dalībnieka profils';
 
   @override
-  String get workspaceTripOwner => 'Trip īpašnieks';
+  String get workspaceTripOwner => 'Ceļojuma īpašnieks';
 
   @override
   String get workspaceMember => 'Dalībnieks';
@@ -2644,7 +2742,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspaceCouldNotOpenPaymentLink => 'Neizdevās atvērt maksājuma saiti.';
 
   @override
-  String get workspaceTripActivity => 'Trip aktivitāte';
+  String get workspaceTripActivity => 'Ceļojuma aktivitāte';
 
   @override
   String get workspacePaidExpenses => 'Apmaksāti izdevumi';
@@ -2659,13 +2757,13 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspaceCurrentTrip => 'Pašreizējais trips';
 
   @override
-  String get workspaceCommonTrips => 'Kopīgie tripi';
+  String get workspaceCommonTrips => 'Kopīgie ceļojumi';
 
   @override
-  String get workspaceLoadingCommonTrips => 'Ielādē kopīgos tripus...';
+  String get workspaceLoadingCommonTrips => 'Ielādē kopīgos ceļojumus…';
 
   @override
-  String get workspaceNoCommonTripsFoundYet => 'Kopīgi tripi vēl nav atrasti.';
+  String get workspaceNoCommonTripsFoundYet => 'Vēl nav kopīgu ceļojumu.';
 
   @override
   String get workspaceCouldNotLoadAllCommonTripsShowingCurrentOne => 'Neizdevās ielādēt visus kopīgos tripus. Rādu pašreizējo.';
@@ -3395,4 +3493,397 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get notificationPaymentNotReceivedBodyGeneric => 'Maksājums tika atzīmēts kā nesaņemts.';
+
+  @override
+  String get quickStartTitle => 'Īsā pamācība';
+
+  @override
+  String get quickStartCreateTitle => 'Izveido ceļojumu';
+
+  @override
+  String get quickStartCreateBody => 'Izvēlies nosaukumu un valūtu. Uzskaiti savus izdevumus vai dali izmaksas ar grupu.';
+
+  @override
+  String get quickStartInviteTitle => 'Ceļo kopā vai vienatnē';
+
+  @override
+  String get quickStartInviteBody => 'Uzaicini draugus kopīgā ceļojumā vai sāc personīgo ceļojumu patstāvīgi.';
+
+  @override
+  String get quickStartExpenseTitle => 'Pievieno pirmo izdevumu';
+
+  @override
+  String get quickStartExpenseBody => 'Ievadi summu, norādi maksātāju un sadali izmaksas. Splyto aprēķinās katra bilanci.';
+
+  @override
+  String get quickStartNext => 'Tālāk';
+
+  @override
+  String get quickStartBack => 'Atpakaļ';
+
+  @override
+  String get quickStartSkip => 'Izlaist';
+
+  @override
+  String get quickStartCreateAction => 'Izveidot ceļojumu';
+
+  @override
+  String get quickStartClose => 'Aizvērt pamācību';
+
+  @override
+  String get quickStartSubtitle => 'Uzzini, kā lietot ceļojumus un izdevumus';
+
+  @override
+  String quickStartStep(int step, int total) {
+    return '$step. solis no $total';
+  }
+
+  @override
+  String get workspaceTripTotal => 'Ceļojuma kopsumma';
+
+  @override
+  String get workspacePersonalTotal => 'Kopā iztērēts';
+
+  @override
+  String get workspaceBalanceEven => 'Tava bilance ir līdzsvarā';
+
+  @override
+  String workspaceBalanceOwe(String amount) {
+    return 'Tev jāmaksā $amount';
+  }
+
+  @override
+  String workspaceBalanceReceive(String amount) {
+    return 'Tev jāsaņem $amount';
+  }
+
+  @override
+  String workspaceMemberCount(int count) {
+    return 'Dalībnieki: $count';
+  }
+
+  @override
+  String get workspaceSearchExpenses => 'Meklēt izdevumus';
+
+  @override
+  String get workspaceClearSearch => 'Notīrīt meklēšanu';
+
+  @override
+  String get workspaceSearchLoadedHint => 'Meklēšana aptver ielādētos izdevumus. Ielādē vairāk, lai meklētu arī senākos.';
+
+  @override
+  String get workspaceNoExpenseMatches => 'Nav atbilstošu izdevumu';
+
+  @override
+  String get workspaceNoExpenseMatchesBody => 'Maini meklēto tekstu vai notīri meklēšanu, lai redzētu visus ielādētos izdevumus.';
+
+  @override
+  String get workspaceEmptyPersonalExpenses => 'Pievieno pirmo izdevumu, lai sekotu saviem tēriņiem.';
+
+  @override
+  String get workspaceEmptyGroupExpenses => 'Pievieno pirmo kopīgo izdevumu, lai redzētu katra dalībnieka daļu.';
+
+  @override
+  String get workspaceLoadMoreExpenses => 'Ielādēt vairāk izdevumu';
+
+  @override
+  String workspaceOriginalExpenseAmount(String amount) {
+    return 'Sākotnējā summa: $amount';
+  }
+
+  @override
+  String workspaceCommentCount(int count) {
+    return 'Komentāri: $count';
+  }
+
+  @override
+  String get workspaceExpenseActions => 'Izdevuma darbības';
+
+  @override
+  String get workspaceLoadErrorTitle => 'Ceļojumu neizdevās ielādēt';
+
+  @override
+  String get workspaceCachedWarning => 'Redzami saglabātie dati. Tie var būt novecojuši.';
+
+  @override
+  String get workspaceActivityTab => 'Aktivitāte';
+
+  @override
+  String get workspaceLoadingTrip => 'Ielādē ceļojumu';
+
+  @override
+  String get workspaceRefreshFailed => 'Neizdevās atjaunināt';
+
+  @override
+  String get expenseDetailsTitle => 'Izdevuma detaļas';
+
+  @override
+  String get expenseQuickCategories => 'Ātrā kategoriju izvēle';
+
+  @override
+  String get expenseReceiptRead => 'Čeks nolasīts un forma papildināta.';
+
+  @override
+  String get expenseReceiptNoData => 'Čeks pievienots. Summu, datumu vai tirgotāju neizdevās nolasīt.';
+
+  @override
+  String get expenseReceiptScanFailed => 'Čeks izvēlēts. Automātiskā nolasīšana neizdevās; pārbaudi laukus pats.';
+
+  @override
+  String get expenseReceiptOffline => 'Čeks tiks augšupielādēts saglabājot. Automātiskai nolasīšanai vajadzīgs savienojums.';
+
+  @override
+  String get expenseReadingReceipt => 'Nolasa čeku…';
+
+  @override
+  String get expenseCommentsLoadFailed => 'Komentārus neizdevās ielādēt. Mēģini vēlreiz.';
+
+  @override
+  String get expenseReplyAction => 'Atbildēt';
+
+  @override
+  String get expenseReplyHint => 'Raksti atbildi…';
+
+  @override
+  String expenseReplyTo(String name) {
+    return 'Atbilde lietotājam $name';
+  }
+
+  @override
+  String get balanceEmptyBody => 'Bilances parādīsies pēc izdevumu pievienošanas.';
+
+  @override
+  String get balanceAfterPayments => 'Bilancēs iekļauti apstiprinātie maksājumi.';
+
+  @override
+  String get balanceExpenseShare => 'Izdevumu daļa';
+
+  @override
+  String get balanceHistoryScope => 'Ielādētie izdevumi un apstiprinātie maksājumi. Sarakstā var nebūt visa ceļojuma vēsture.';
+
+  @override
+  String balancePaymentTo(String name) {
+    return 'Maksājums saņēmējam $name';
+  }
+
+  @override
+  String balancePaymentFrom(String name) {
+    return 'Maksājums no $name';
+  }
+
+  @override
+  String get settlementEmptyActive => 'Pirms noslēguma norēķiniem visiem jāatzīmē gatavība.';
+
+  @override
+  String get settlementEmptyClosed => 'Šim ceļojumam nav norādītu pārskaitījumu.';
+
+  @override
+  String settlementConfirmedCount(int count, int total) {
+    return 'Apstiprināti $count no $total pārskaitījumiem';
+  }
+
+  @override
+  String settlementReadyCount(int count, int total) {
+    return 'Gatavi $count no $total dalībniekiem';
+  }
+
+  @override
+  String get settlementMemberReady => 'Gatavs';
+
+  @override
+  String get settlementMemberNotReady => 'Vēl nav gatavs';
+
+  @override
+  String get settlementSuggested => 'Ieteiktais pārskaitījums';
+
+  @override
+  String get activityLoadFailed => 'Aktivitāti neizdevās atjaunot. Redzamie ieraksti var būt novecojuši.';
+
+  @override
+  String get activityMember => 'Ceļojuma dalībnieks';
+
+  @override
+  String get friendsEmptyBody => 'Atrodi draugu pēc vārda vai e-pasta vai izmanto QR kodu.';
+
+  @override
+  String get friendsDeclineAction => 'Noraidīt';
+
+  @override
+  String get friendsLoading => 'Ielādē draugus';
+
+  @override
+  String friendsCommonTripsCount(int count) {
+    return 'Kopīgie ceļojumi: $count';
+  }
+
+  @override
+  String get memberActivityScope => 'Dati par ielādētajiem izdevumiem; tie var neaptvert visu ceļojumu.';
+
+  @override
+  String get sharedTripsLoadedLimit => 'Parādīti līdz 20 kopīgajiem ceļojumiem.';
+
+  @override
+  String get memberRemoveTitle => 'Noņemt dalībnieku?';
+
+  @override
+  String memberRemoveBody(String name) {
+    return 'Noņemt $name no šī ceļojuma? Tas iespējams tikai tad, ja dalībniekam nav izdevumu, norēķinu vai atlikuma.';
+  }
+
+  @override
+  String get memberRemoveAction => 'Noņemt no ceļojuma';
+
+  @override
+  String memberRemoved(String name) {
+    return '$name noņemts no ceļojuma.';
+  }
+
+  @override
+  String get profilePaymentNotAdded => 'Vēl nav pievienoti';
+
+  @override
+  String get friendRelationshipLabel => 'Draugs';
+
+  @override
+  String get sharedTripsEmptyBody => 'Šeit būs redzami ceļojumi, kuros piedalāties abi.';
+
+  @override
+  String get analyticsAllTrips => 'Visi ceļojumi';
+
+  @override
+  String get analyticsByTrip => 'Pa ceļojumam';
+
+  @override
+  String get analyticsYourSpending => 'Tavi izdevumi';
+
+  @override
+  String get analyticsActiveArchived => 'Aktīvie un arhivētie ceļojumi';
+
+  @override
+  String get analyticsTrips => 'Ceļojumi';
+
+  @override
+  String get analyticsAveragePerTrip => 'Vidēji ceļojumā';
+
+  @override
+  String get analyticsPaidByMember => 'Samaksāts pa dalībniekiem';
+
+  @override
+  String get analyticsYouPaid => 'Tu samaksāji';
+
+  @override
+  String get analyticsYouGetBack => 'Tev jāsaņem';
+
+  @override
+  String get analyticsYouOwe => 'Tev jāmaksā';
+
+  @override
+  String get analyticsParticipants => 'Dalībnieki';
+
+  @override
+  String get analyticsYourCategories => 'Tavi izdevumi pa kategorijām';
+
+  @override
+  String get analyticsLargestShares => 'Tavas lielākās izdevumu daļas';
+
+  @override
+  String get analyticsLargestExpenses => 'Lielākie izdevumi';
+
+  @override
+  String get analyticsSpendingByTrip => 'Tavi izdevumi pa ceļojumiem';
+
+  @override
+  String get analyticsEmptyTitle => 'Vēl nav izdevumu';
+
+  @override
+  String get analyticsEmptyBody => 'Pievieno izdevumus ceļojumam, un šeit redzēsi to pārskatu.';
+
+  @override
+  String get analyticsPeriodEmptyBody => 'Šajā skatā nav izdevumu. Izvēlies citu ceļojumu vai periodu.';
+
+  @override
+  String get analyticsLoadFailed => 'Neizdevās ielādēt pilnu izdevumu pārskatu. Mēģini vēlreiz.';
+
+  @override
+  String get analyticsLastLoaded => 'Redzams pēdējais veiksmīgi ielādētais pārskats.';
+
+  @override
+  String analyticsExpenseCount(int count) {
+    return '$count izdevumi';
+  }
+
+  @override
+  String get tripOptionsTitle => 'Ceļojuma darbības';
+
+  @override
+  String get editTripAction => 'Labot ceļojumu';
+
+  @override
+  String get deleteTripAction => 'Dzēst ceļojumu';
+
+  @override
+  String get inviteTripMembersAction => 'Uzaicināt dalībniekus';
+
+  @override
+  String get tripCoverPhoto => 'Vāka attēls';
+
+  @override
+  String get tripInviteLaterHint => 'Dalībniekus vari uzaicināt pēc ceļojuma izveides.';
+
+  @override
+  String get inviteClipboardFailed => 'Neizdevās piekļūt starpliktuvei. Mēģini vēlreiz.';
+
+  @override
+  String get friendInviteToTrip => 'Uzaicināt ceļojumā';
+
+  @override
+  String get friendChooseTrip => 'Izvēlies ceļojumu';
+
+  @override
+  String get friendNoInvitableTrips => 'Nav pieejamu ceļojumu. Draugus vari uzaicināt aktīvos grupas ceļojumos, kurus pārvaldi, ja viņi vēl nav dalībnieki un viņiem nav gaidoša uzaicinājuma.';
+
+  @override
+  String get friendTripInviteSent => 'Uzaicinājums nosūtīts.';
+
+  @override
+  String get friendTripUnavailable => 'Šī darbība ceļojumā vairs nav pieejama. Atjauno sarakstu un mēģini vēlreiz.';
+
+  @override
+  String get friendTripActionFailed => 'Neizdevās veikt darbību. Mēģini vēlreiz.';
+
+  @override
+  String get profileContactDescription => 'Radusies problēma, ir ieteikums vai jautājums par Splyto? Raksti mums e-pastā — labprāt palīdzēsim.';
+
+  @override
+  String get profileContactEmailAction => 'Rakstīt e-pastu';
+
+  @override
+  String get profileContactEmailUnavailable => 'Neizdevās atvērt e-pasta lietotni. Nokopē adresi un raksti mums no savas e-pasta lietotnes.';
+
+  @override
+  String get profilePrivacyPolicy => 'Privātuma politika';
+
+  @override
+  String get privacyLoadFailed => 'Neizdevās ielādēt privātuma politiku. Mēģiniet vēlreiz.';
+
+  @override
+  String get addReceiptAction => 'Pievienot čeku';
+
+  @override
+  String get receiptPickFailed => 'Neizdevās ielādēt čeku. Mēģini vēlreiz.';
+
+  @override
+  String get receiptPhotoAccessDenied => 'Iestatījumos atļauj Splyto piekļuvi kamerai vai fotoattēliem un mēģini vēlreiz.';
+
+  @override
+  String get receiptPhotoLabel => 'Čeka foto';
+
+  @override
+  String get replaceReceiptAction => 'Nomainīt čeku';
+
+  @override
+  String get removeReceiptAction => 'Noņemt čeku';
+
+  @override
+  String get restoreReceiptAction => 'Atjaunot iepriekšējo čeku';
 }

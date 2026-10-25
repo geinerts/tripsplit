@@ -23,7 +23,10 @@ abstract class WorkspaceRepository {
   });
 
   Future<WorkspaceSnapshot?> readCachedSnapshot({required int tripId});
-  Future<WorkspaceSnapshot> loadSnapshot({required int tripId});
+  Future<WorkspaceSnapshot> loadSnapshot({
+    required int tripId,
+    bool allowOfflineCache = true,
+  });
   Future<TripExpensesPage> loadExpensesPage({
     required int tripId,
     int limit,

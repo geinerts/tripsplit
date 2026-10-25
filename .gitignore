@@ -54,3 +54,13 @@ mobile/ios/Runner/GoogleService-Info.plist
 *.p12
 *.pem
 *.key
+
+# Local design/release artifacts and private operational assessments
+/output/
+/CODEX_*.md
+/docs/security/audit-*.md
+/docs/security/probes/
+/docs/operations/
+/docs/privacy/
+__pycache__/
+*.pyc

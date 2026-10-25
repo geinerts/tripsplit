@@ -11,6 +11,18 @@ class WorkspaceNotification {
     required this.createdAt,
   });
 
+  WorkspaceNotification copyWith({bool? isRead}) => WorkspaceNotification(
+    id: id,
+    tripId: tripId,
+    tripName: tripName,
+    inviteToken: inviteToken,
+    type: type,
+    title: title,
+    body: body,
+    isRead: isRead ?? this.isRead,
+    createdAt: createdAt,
+  );
+
   final int id;
   final int tripId;
   final String? tripName;

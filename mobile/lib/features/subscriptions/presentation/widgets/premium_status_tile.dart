@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../app/theme/app_design.dart';
 import '../../domain/entities/premium_access.dart';
 
 class PremiumStatusTile extends StatefulWidget {
@@ -81,7 +82,9 @@ class _PremiumStatusTileState extends State<PremiumStatusTile>
         children: [
           Icon(
             premium ? Icons.verified_outlined : Icons.account_circle_outlined,
-            color: Theme.of(context).colorScheme.primary,
+            color: premium
+                ? Theme.of(context).colorScheme.primary
+                : AppDesign.mutedColor(context),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -90,7 +93,12 @@ class _PremiumStatusTileState extends State<PremiumStatusTile>
               children: [
                 Text(label, style: Theme.of(context).textTheme.titleMedium),
                 const SizedBox(height: 4),
-                Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
+                Text(
+                  subtitle,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppDesign.mutedColor(context),
+                  ),
+                ),
               ],
             ),
           ),

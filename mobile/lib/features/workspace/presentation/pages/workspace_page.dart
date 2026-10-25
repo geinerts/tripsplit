@@ -1,3 +1,4 @@
+import '../../../trips/presentation/widgets/trip_form_page.dart';
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
@@ -7,6 +8,7 @@ import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../../core/ui/splyto_illustration.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,23 +23,26 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/l10n/notification_localizer.dart';
 import '../../../../core/currency/app_currency.dart';
 import '../../../../core/media/app_image_cropper.dart';
+import '../../../../core/media/receipt_image_preparer.dart';
 import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_components.dart';
+import '../../../../core/ui/app_currency_picker.dart';
 import '../../../../core/ui/app_formatters.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/app_skeleton.dart';
 import '../../../../core/ui/user_profile_payment_section.dart';
 import '../../../../core/ui/user_profile_page.dart';
+import '../../../../core/ui/user_shared_trips_section.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../friends/presentation/controllers/friends_controller.dart';
 import '../../../trips/domain/entities/trip.dart';
 import '../../../trips/domain/entities/trip_user.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
-import '../../../trips/presentation/widgets/pending_trip_invitations.dart';
+import '../../../trips/presentation/widgets/trip_invite_members_page.dart';
 import '../utils/expense_math.dart';
 import '../../domain/entities/balance_item.dart';
 import '../../domain/entities/expense_comment.dart';
@@ -58,6 +63,9 @@ import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
 import '../../domain/entities/workspace_user.dart';
 import '../widgets/payment_request_details_sheet.dart';
+import '../widgets/receipt_open_action.dart';
+import '../widgets/receipt_attachment_card.dart';
+import '../widgets/workspace_input_pages.dart';
 import '../controllers/workspace_controller.dart';
 
 part 'workspace_page_actions_loading.dart';
@@ -98,6 +106,7 @@ class WorkspacePage extends StatefulWidget {
     this.openAddExpenseOnStart = false,
     this.commandController,
     this.onExitRequested,
+    this.onTripUpdated,
   });
 
   final Trip trip;
@@ -110,6 +119,7 @@ class WorkspacePage extends StatefulWidget {
   final bool openAddExpenseOnStart;
   final WorkspacePageCommandController? commandController;
   final VoidCallback? onExitRequested;
+  final ValueChanged<Trip>? onTripUpdated;
 
   @override
   State<WorkspacePage> createState() => _WorkspacePageState();
@@ -145,6 +155,10 @@ class _WorkspacePageState extends State<WorkspacePage> {
   bool _isMutating = false;
   bool _isAddExpenseDialogOpen = false;
   String? _errorText;
+  String? _refreshError;
+  bool _workspaceOffline = false;
+  int _loadGeneration = 0;
+  bool _mayUseWorkspaceCache = true;
 
   int _currentUserId = 0;
   int _pendingQueueCount = 0;
@@ -153,7 +167,6 @@ class _WorkspacePageState extends State<WorkspacePage> {
       TextEditingController();
   String _expenseSearchQuery = '';
   int _workspaceTabIndex = 0;
-  final bool _showAllBalances = false;
   int _handledRefreshRequestCount = 0;
   int _handledOpenAddExpenseRequestCount = 0;
   int _handledOpenTripActionsRequestCount = 0;
@@ -161,6 +174,8 @@ class _WorkspacePageState extends State<WorkspacePage> {
   bool _isStartingWithAddExpense = false;
   List<QueuedMutation> _queuedMutations = const <QueuedMutation>[];
   WorkspaceSnapshot? _snapshot;
+  Trip? _editedTrip;
+  Trip get _displayTrip => _editedTrip ?? widget.trip;
   List<TripExpense> _expensesFeed = const <TripExpense>[];
   List<WorkspaceActivityEvent> _activityEvents =
       const <WorkspaceActivityEvent>[];
@@ -168,6 +183,9 @@ class _WorkspacePageState extends State<WorkspacePage> {
   bool _isLoadingMoreExpenses = false;
   bool _isLoadingActivity = false;
   bool _activityLoaded = false;
+  String? _activityError;
+  bool _activityFailedReset = true;
+  int _activityGeneration = 0;
   bool _activityHasMore = false;
   String? _expensesNextCursor;
   int? _expensesNextOffset;
@@ -229,6 +247,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
   @override
   void didUpdateWidget(covariant WorkspacePage oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.trip, widget.trip)) _editedTrip = null;
     if (oldWidget.commandController != widget.commandController) {
       _unbindCommandController(oldWidget.commandController);
       _bindCommandController(widget.commandController);
@@ -313,19 +332,12 @@ class _WorkspacePageState extends State<WorkspacePage> {
 }
 
 class _SplytoPressScale extends StatefulWidget {
-  const _SplytoPressScale({
-    required this.child,
-    required this.onTap,
-    this.onLongPress,
-    this.borderRadius = const BorderRadius.all(Radius.circular(20)),
-    this.enabled = true,
-  });
+  const _SplytoPressScale({required this.child, required this.onTap});
 
   final Widget child;
   final VoidCallback onTap;
-  final VoidCallback? onLongPress;
-  final BorderRadius borderRadius;
-  final bool enabled;
+  final BorderRadius borderRadius = AppDesign.cardRadius;
+  final bool enabled = true;
 
   @override
   State<_SplytoPressScale> createState() => _SplytoPressScaleState();
@@ -354,12 +366,6 @@ class _SplytoPressScaleState extends State<_SplytoPressScale> {
       onTapUp: (_) => _setPressed(false),
       onTapCancel: () => _setPressed(false),
       onTap: widget.enabled ? widget.onTap : null,
-      onLongPress: widget.enabled && widget.onLongPress != null
-          ? () {
-              _setPressed(false);
-              widget.onLongPress?.call();
-            }
-          : null,
       child: AnimatedScale(
         duration: const Duration(milliseconds: 130),
         curve: Curves.easeOutCubic,

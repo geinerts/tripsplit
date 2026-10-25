@@ -57,11 +57,10 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
       participants: participantModels,
     );
     final nextSnapshotExpenses = [queuedExpense, ...snapshot.expenses];
-    final visibleExpenses = _expensesFeed.isNotEmpty
-        ? _expensesFeed
-        : nextSnapshotExpenses;
+    final visibleExpenses = [queuedExpense, ..._expensesFeed];
 
     _updateState(() {
+      _expensesFeed = visibleExpenses;
       _reconcileExpenseSocialPreviewState(visibleExpenses);
       _snapshot = snapshot.copyWith(expenses: nextSnapshotExpenses);
     });
@@ -104,39 +103,42 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
         )
         .toList(growable: false);
 
+    TripExpense updateExpense(TripExpense expense) {
+      if (expense.id != expenseId) {
+        return expense;
+      }
+      return TripExpense(
+        id: expense.id,
+        amount: form.amount,
+        originalAmount: form.amount,
+        tripCurrencyCode: widget.trip.currencyCode,
+        expenseCurrencyCode: form.currencyCode,
+        fxRateToTrip: 1.0,
+        category: form.category,
+        note: _tagQueuedNote(form.note),
+        expenseDate: form.date,
+        splitMode: form.splitMode,
+        paidById: expense.paidById,
+        paidByNickname: expense.paidByNickname,
+        receiptUrl: form.removeReceipt
+            ? null
+            : (uploadedReceipt?.url ?? expense.receiptUrl),
+        receiptThumbUrl: form.removeReceipt
+            ? null
+            : (uploadedReceipt?.thumbUrl ?? expense.receiptThumbUrl),
+        participants: participantModels,
+      );
+    }
+
     final nextExpenses = snapshot.expenses
-        .map((expense) {
-          if (expense.id != expenseId) {
-            return expense;
-          }
-          return TripExpense(
-            id: expense.id,
-            amount: form.amount,
-            originalAmount: form.amount,
-            tripCurrencyCode: widget.trip.currencyCode,
-            expenseCurrencyCode: form.currencyCode,
-            fxRateToTrip: 1.0,
-            category: form.category,
-            note: _tagQueuedNote(form.note),
-            expenseDate: form.date,
-            splitMode: form.splitMode,
-            paidById: expense.paidById,
-            paidByNickname: expense.paidByNickname,
-            receiptUrl: form.removeReceipt
-                ? null
-                : (uploadedReceipt?.url ?? expense.receiptUrl),
-            receiptThumbUrl: form.removeReceipt
-                ? null
-                : (uploadedReceipt?.thumbUrl ?? expense.receiptThumbUrl),
-            participants: participantModels,
-          );
-        })
+        .map(updateExpense)
         .toList(growable: false);
-    final visibleExpenses = _expensesFeed.isNotEmpty
-        ? _expensesFeed
-        : nextExpenses;
+    final visibleExpenses = _expensesFeed
+        .map(updateExpense)
+        .toList(growable: false);
 
     _updateState(() {
+      _expensesFeed = visibleExpenses;
       _reconcileExpenseSocialPreviewState(visibleExpenses);
       _snapshot = snapshot.copyWith(expenses: nextExpenses);
     });
@@ -152,9 +154,10 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
       final nextExpenses = snapshot.expenses
           .where((expense) => expense.id != expenseId)
           .toList(growable: false);
-      final visibleExpenses = _expensesFeed.isNotEmpty
-          ? _expensesFeed
-          : nextExpenses;
+      final visibleExpenses = _expensesFeed
+          .where((expense) => expense.id != expenseId)
+          .toList(growable: false);
+      _expensesFeed = visibleExpenses;
       _reconcileExpenseSocialPreviewState(visibleExpenses);
       _snapshot = snapshot.copyWith(expenses: nextExpenses);
     });

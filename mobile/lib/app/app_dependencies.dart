@@ -1,3 +1,4 @@
+import '../features/quick_start/data/quick_start_service.dart';
 import '../core/auth/auth_session_store.dart';
 import '../core/auth/account_data_session.dart';
 import '../core/auth/account_local_storage.dart';
@@ -72,6 +73,7 @@ import '../features/workspace/presentation/controllers/workspace_controller.dart
 class AppDependencies {
   AppDependencies({
     required this.authController,
+    this.quickStartService,
     required this.tripsController,
     required this.friendsController,
     required this.workspaceController,
@@ -81,6 +83,7 @@ class AppDependencies {
   });
 
   final AuthController authController;
+  final QuickStartService? quickStartService;
   final TripsController tripsController;
   final FriendsController friendsController;
   final WorkspaceController workspaceController;
@@ -227,6 +230,7 @@ class AppDependencies {
     );
 
     return AppDependencies(
+      quickStartService: QuickStartService(apiClient, accountSession),
       authController: authController,
       tripsController: tripsController,
       friendsController: friendsController,

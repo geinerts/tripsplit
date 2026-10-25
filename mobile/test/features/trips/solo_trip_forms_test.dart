@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tripsplit/app/theme/app_theme.dart';
 import 'package:tripsplit/features/auth/domain/entities/auth_user.dart';
 import 'package:tripsplit/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:tripsplit/features/friends/domain/entities/friends_snapshot.dart';
@@ -44,6 +45,8 @@ class _Trips implements TripsController {
   @override
   Future<List<Trip>> loadTrips({bool forceRefresh = false}) async => [];
   @override
+  Future<List<Trip>> refreshTripsFromServer() async => [];
+  @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
@@ -68,9 +71,14 @@ const _snapshot = WorkspaceSnapshot(
 class _Workspace implements WorkspaceController {
   List<int>? savedParticipants;
   String? savedMode;
+  bool queueResult = false;
   @override
   Future<WorkspaceSnapshot> loadSnapshot({required int tripId}) async =>
       _snapshot;
+  @override
+  Future<WorkspaceSnapshot> refreshSnapshotFromServer({
+    required int tripId,
+  }) async => _snapshot;
   @override
   Future<WorkspaceSnapshot?> readCachedSnapshot({required int tripId}) async =>
       null;
@@ -94,7 +102,7 @@ class _Workspace implements WorkspaceController {
     savedParticipants = participants;
     savedMode = splitMode;
     expect(splitValues, isEmpty);
-    return const MutationResult(queued: false);
+    return MutationResult(queued: queueResult);
   }
 
   @override
@@ -102,6 +110,7 @@ class _Workspace implements WorkspaceController {
 }
 
 Widget _app(Widget home, {String locale = 'en'}) => MaterialApp(
+  theme: AppTheme.light(),
   locale: Locale(locale),
   localizationsDelegates: AppLocalizations.localizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
@@ -138,41 +147,19 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      final picker = find.byType(SegmentedButton<String>);
-      expect(tester.widget<SegmentedButton<String>>(picker).selected, {
-        'group',
-      });
-      await tester.ensureVisible(
-        find.widgetWithText(FilterChip, 'Test friend'),
-      );
-      await tester.tap(find.widgetWithText(FilterChip, 'Test friend'));
+      final friend = find.byKey(const ValueKey('trip-friend-8'));
+      await tester.ensureVisible(friend);
+      await tester.tap(friend);
       await tester.pumpAndSettle();
-      expect(find.widgetWithText(InputChip, 'Test friend'), findsOneWidget);
-      await tester.ensureVisible(picker);
-      final soloLabel = {
-        'en': 'Just me',
-        'lv': 'Tikai es',
-        'es': 'Solo yo',
-      }[locale]!;
-      await tester.tap(find.text(soloLabel));
+      expect(tester.widget<CheckboxListTile>(friend).value, isTrue);
+      final solo = find.byKey(const ValueKey('trip-mode-solo'));
+      await tester.ensureVisible(solo);
+      await tester.tap(solo);
       await tester.pumpAndSettle();
-      expect(tester.widget<SegmentedButton<String>>(picker).selected, {'solo'});
-      expect(find.byType(FilterChip), findsNothing);
-      expect(find.byType(InputChip), findsNothing);
-      final groupLabel = {
-        'en': 'With others',
-        'lv': 'Ar citiem',
-        'es': 'Con otros',
-      }[locale]!;
-      await tester.tap(find.text(groupLabel));
+      expect(find.byType(CheckboxListTile), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('trip-mode-group')));
       await tester.pumpAndSettle();
-      expect(find.widgetWithText(InputChip, 'Test friend'), findsNothing);
-      expect(
-        tester
-            .widget<FilterChip>(find.widgetWithText(FilterChip, 'Test friend'))
-            .selected,
-        isFalse,
-      );
+      expect(tester.widget<CheckboxListTile>(friend).value, isFalse);
       expect(tester.takeException(), isNull);
       await _dispose(tester);
     });
@@ -187,7 +174,7 @@ void main() {
           tester.view.devicePixelRatio = 1;
           addTearDown(tester.view.resetPhysicalSize);
           addTearDown(tester.view.resetDevicePixelRatio);
-          final workspace = _Workspace();
+          final workspace = _Workspace()..queueResult = width == 360;
           final trip = TripModel.fromLegacyMap({
             'id': 1,
             'name': 'Test trip',
@@ -220,7 +207,7 @@ void main() {
             mode == 'solo' ? findsNothing : findsOneWidget,
           );
           expect(find.text('Note'), findsOneWidget);
-          expect(find.text('Choose receipt file'), findsOneWidget);
+          expect(find.text('Add receipt'), findsOneWidget);
           if (mode == 'solo') {
             await tester.enterText(find.byType(TextField).first, '12.34');
             await tester.ensureVisible(find.text('Other'));
@@ -234,6 +221,29 @@ void main() {
             await tester.pumpAndSettle();
             expect(workspace.savedParticipants, [7]);
             expect(workspace.savedMode, 'equal');
+            if (workspace.queueResult) {
+              final queuedRow = find.byWidgetPredicate(
+                (widget) =>
+                    widget.key is ValueKey<String> &&
+                    (widget.key as ValueKey<String>).value.startsWith(
+                      'expense-row--',
+                    ),
+              );
+              await tester.scrollUntilVisible(
+                queuedRow,
+                200,
+                scrollable: find.byType(Scrollable).first,
+              );
+              await tester.pumpAndSettle();
+              expect(queuedRow, findsOneWidget);
+              expect(
+                find.descendant(
+                  of: queuedRow,
+                  matching: find.textContaining('12.34'),
+                ),
+                findsOneWidget,
+              );
+            }
           }
           expect(tester.takeException(), isNull);
           await _dispose(tester);

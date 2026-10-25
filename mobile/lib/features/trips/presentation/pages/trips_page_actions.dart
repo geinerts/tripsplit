@@ -1,81 +1,88 @@
 part of 'trips_page.dart';
 
 extension _TripsPageActions on _TripsPageState {
-  Future<void> _loadTrips({bool forceRefresh = true}) async {
+  Future<void> _loadTrips() async {
+    final generation = ++_loadGeneration;
+    widget.onServerTripsState?.call(null);
     final trace = PerfMonitor.start('screen.trips.load');
     var success = false;
-    var cached = widget.controller.peekTripsCache(allowStale: true);
-    if (_trips.isEmpty && cached == null) {
-      cached = await widget.controller.primeTripsCacheFromDisk();
-    }
-    if (_trips.isEmpty && cached != null) {
-      final cachedTrips = cached;
-      _updateState(() {
-        _trips = cachedTrips;
-        _isLoading = false;
-        _errorText = null;
-      });
-    }
-
-    final shouldShowLoader = _trips.isEmpty;
-    if (shouldShowLoader) {
-      _updateState(() {
-        _isLoading = true;
-        _errorText = null;
-      });
-    } else {
-      _updateState(() {
-        _errorText = null;
-      });
-    }
-
+    bool current() => mounted && generation == _loadGeneration;
+    _updateState(() {
+      _isRefreshing = true;
+      _isLoading = !_hasLoaded;
+      _errorText = null;
+      _refreshError = null;
+    });
     try {
-      final trips = await widget.controller.loadTrips(
-        forceRefresh: forceRefresh,
-      );
-      if (!mounted) {
-        return;
+      if (!_hasLoaded && _mayUseCache) {
+        final cached =
+            widget.controller.peekTripsCache(allowStale: true) ??
+            await widget.controller.primeTripsCacheFromDisk();
+        if (!current()) return;
+        if (cached != null && cached.isNotEmpty) {
+          _updateState(() {
+            _trips = cached;
+            _hasLoaded = true;
+            _isLoading = false;
+            if (!_hasChosenFilter) {
+              _showArchived = cached.every((trip) => trip.isArchived);
+            }
+          });
+        }
       }
+      final trips = await widget.controller.refreshTripsFromServer();
+      if (!current()) return;
       _updateState(() {
         _trips = trips;
-        _errorText = null;
+        _hasLoaded = true;
+        _isOffline = false;
+        _mayUseCache = true;
+        if (!_hasChosenFilter) {
+          _showArchived =
+              trips.isNotEmpty && trips.every((trip) => trip.isArchived);
+        }
       });
       success = true;
+      widget.onServerTripsState?.call(trips.isEmpty);
     } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      if (_trips.isEmpty) {
-        _updateState(() {
+      if (!current()) return;
+      _updateState(() {
+        _isOffline = error.isNetworkError;
+        // A failed authorization must never leave cached protected content up.
+        if (error.statusCode == 401 ||
+            error.statusCode == 403 ||
+            error.code == 'account_changed') {
+          _trips = const [];
+          _hasLoaded = false;
+          _mayUseCache = false;
+        }
+        if (!_hasLoaded || _trips.isEmpty) {
           _errorText = error.message;
-        });
-      } else {
-        _showSnack(error.message, isError: true);
-      }
+        } else {
+          _refreshError = error.message;
+        }
+      });
     } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      if (_trips.isEmpty) {
-        _updateState(() {
+      if (!current()) return;
+      _updateState(() {
+        _isOffline = false;
+        if (!_hasLoaded || _trips.isEmpty) {
           _errorText = context.l10n.unexpectedErrorLoadingTrips;
-        });
-      } else {
-        _showSnack(context.l10n.unexpectedErrorLoadingTrips, isError: true);
-      }
+        } else {
+          _refreshError = context.l10n.unexpectedErrorLoadingTrips;
+        }
+      });
     } finally {
       trace.stop(success: success);
-      if (mounted) {
+      if (current()) {
         _updateState(() {
           _isLoading = false;
+          _isRefreshing = false;
         });
-        if (_openCreateAfterLoad && _errorText == null) {
+        if (_openCreateAfterLoad && success) {
           _openCreateAfterLoad = false;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) {
-              return;
-            }
-            _openCreateTripDialog();
+            if (mounted) _openCreateTripDialog();
           });
         }
       }
@@ -88,6 +95,7 @@ extension _TripsPageActions on _TripsPageState {
     }
 
     _isCreateTripDialogOpen = true;
+    _notifyInteractionState();
     try {
       final result = await _showCreateTripDialog();
       if (result == null || !mounted) {
@@ -161,6 +169,7 @@ extension _TripsPageActions on _TripsPageState {
       }
     } finally {
       _isCreateTripDialogOpen = false;
+      _notifyInteractionState();
     }
   }
 
@@ -188,31 +197,32 @@ extension _TripsPageActions on _TripsPageState {
     final canDelete = trip.isActive && _isTripOwner(trip);
     final choice = await showAppBottomSheet<String>(
       context: context,
-      builder: (sheetContext) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppActionSheetTile(
-              icon: Icons.open_in_new,
-              title: t.openLabel,
-              onTap: () => Navigator.of(sheetContext).pop('open'),
+      builder: (sheetContext) => AppActionSheet(
+        key: const ValueKey('trip-actions-sheet'),
+        title: t.tripOptionsTitle,
+        children: [
+          AppPlainActionTile(
+            icon: Icons.open_in_new,
+            title: t.openLabel,
+            onTap: () => Navigator.of(sheetContext).pop('open'),
+          ),
+          if (canEdit)
+            AppPlainActionTile(
+              icon: Icons.edit_outlined,
+              title: t.editTripAction,
+              onTap: () => Navigator.of(sheetContext).pop('edit'),
             ),
-            if (canEdit)
-              AppActionSheetTile(
-                icon: Icons.edit_outlined,
-                title: '${t.editAction} ${t.tripTitleShort}',
-                onTap: () => Navigator.of(sheetContext).pop('edit'),
-              ),
-            if (canDelete)
-              AppActionSheetTile(
-                icon: Icons.delete_outline,
-                title: '${t.deleteAction} ${t.tripTitleShort}',
-                destructive: true,
-                onTap: () => Navigator.of(sheetContext).pop('delete'),
-              ),
+          if (canDelete) ...[
+            const Divider(height: 16),
+            AppPlainActionTile(
+              icon: Icons.delete_outline,
+              title: t.deleteTripAction,
+              destructive: true,
+              onTap: () => Navigator.of(sheetContext).pop('delete'),
+            ),
           ],
-        );
-      },
+        ],
+      ),
     );
 
     if (!mounted || choice == null) {

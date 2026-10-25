@@ -20,344 +20,182 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       memberId: item.id,
       usersById: usersById,
     );
-    final positiveColor = AppDesign.lightSuccess;
-    final negativeColor = AppDesign.lightDestructive;
-    final netColor = item.net < 0 ? negativeColor : positiveColor;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final statusText = item.net > 0
-        ? context.l10n.workspaceGetsBackFromTheGroup
-        : item.net < 0
-        ? context.l10n.workspaceOwesToTheGroup
-        : context.l10n.workspaceSettledWithTheGroup;
-
     await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      wrapWithSurface: false,
       builder: (context) {
-        final colors = Theme.of(context).colorScheme;
-        final bottomInset = MediaQuery.of(context).viewInsets.bottom;
-        final bottomSafePadding = MediaQuery.paddingOf(context).bottom;
-        return SafeArea(
-          top: false,
-          bottom: false,
-          child: Stack(
+        final theme = Theme.of(context);
+        Widget stat(String label, double value) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: theme.textTheme.bodyMedium),
+            const SizedBox(height: 4),
+            Text(_balanceMoney(value), style: theme.textTheme.headlineSmall),
+          ],
+        );
+        return SizedBox(
+          height: MediaQuery.sizeOf(context).height * .74,
+          child: Column(
             children: [
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                    child: Container(
-                      color: Colors.black.withValues(
-                        alpha: isDark ? 0.22 : 0.10,
-                      ),
-                    ),
-                  ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                  icon: const Icon(Icons.close),
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: bottomInset),
-                  child: FractionallySizedBox(
-                    widthFactor: 1,
-                    heightFactor: 0.92,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: isDark ? colors.surface : AppDesign.lightSurface,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(30),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 10),
-                          Container(
-                            width: 48,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? Colors.white.withValues(alpha: 0.24)
-                                  : const Color(0xFFD8D2C8),
-                              borderRadius: BorderRadius.circular(999),
-                            ),
-                          ),
-                          Expanded(
-                            child: ListView(
-                              padding: EdgeInsets.fromLTRB(
-                                18,
-                                10,
-                                18,
-                                20 + bottomSafePadding,
-                              ),
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: IconButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    tooltip: MaterialLocalizations.of(
-                                      context,
-                                    ).closeButtonTooltip,
-                                    icon: const Icon(Icons.close_rounded),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Center(
-                                  child: _largeMemberAvatar(
-                                    id: item.id,
-                                    name: memberName,
-                                    avatarUrl:
-                                        member?.avatarThumbUrl ??
-                                        member?.avatarUrl,
-                                    size: 96,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Center(
-                                  child: Text(
-                                    memberName,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineMedium
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.w800,
-                                          color: isDark
-                                              ? null
-                                              : AppDesign.lightForeground,
-                                        ),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Center(
-                                  child: Text(
-                                    statusText,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          color: isDark
-                                              ? colors.onSurfaceVariant
-                                              : AppDesign.lightMuted,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Center(
-                                  child: Text(
-                                    _signedMoney(
-                                      context,
-                                      item.net,
-                                      currencyCode: widget.trip.currencyCode,
-                                    ),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium
-                                        ?.copyWith(
-                                          color: netColor,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                  ),
-                                ),
-                                const SizedBox(height: 14),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: _buildBalanceStatCard(
-                                        context,
-                                        label: context.l10n.workspaceTotalPaid,
-                                        value: _formatMoney(
-                                          context,
-                                          item.paid,
-                                          currencyCode:
-                                              widget.trip.currencyCode,
-                                        ),
-                                        color: positiveColor,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      child: _buildBalanceStatCard(
-                                        context,
-                                        label: context.l10n.workspaceTotalOwes,
-                                        value: _formatMoney(
-                                          context,
-                                          item.owed,
-                                          currencyCode:
-                                              widget.trip.currencyCode,
-                                        ),
-                                        color: negativeColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  context.l10n.workspaceTransactionHistory,
-                                  style: Theme.of(context).textTheme.titleLarge
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w800,
-                                        color: isDark
-                                            ? null
-                                            : AppDesign.lightForeground,
-                                      ),
-                                ),
-                                const SizedBox(height: 10),
-                                if (transactions.isEmpty)
-                                  Container(
-                                    padding: const EdgeInsets.all(14),
-                                    decoration: BoxDecoration(
-                                      color: isDark
-                                          ? colors.surfaceContainerHighest
-                                          : const Color(0xFFF2EFE8),
-                                      borderRadius: BorderRadius.circular(18),
-                                    ),
-                                    child: Text(
-                                      context
-                                          .l10n
-                                          .workspaceNoTransactionsYetForThisMember,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium,
-                                    ),
-                                  )
-                                else
-                                  ...transactions.map((entry) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: 10,
-                                      ),
-                                      child: Container(
-                                        padding: const EdgeInsets.fromLTRB(
-                                          12,
-                                          12,
-                                          12,
-                                          12,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: isDark
-                                              ? colors.surfaceContainerHighest
-                                              : const Color(0xFFF6F3ED),
-                                          borderRadius: BorderRadius.circular(
-                                            18,
-                                          ),
-                                          border: Border.all(
-                                            color: isDark
-                                                ? colors.outlineVariant
-                                                      .withValues(alpha: 0.30)
-                                                : AppDesign.lightStroke,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 40,
-                                              height: 40,
-                                              decoration: BoxDecoration(
-                                                color: entry.isPositive
-                                                    ? AppDesign.lightSuccess
-                                                          .withValues(
-                                                            alpha: 0.18,
-                                                          )
-                                                    : AppDesign.lightDestructive
-                                                          .withValues(
-                                                            alpha: 0.16,
-                                                          ),
-                                                borderRadius:
-                                                    BorderRadius.circular(999),
-                                              ),
-                                              alignment: Alignment.center,
-                                              child: Icon(
-                                                entry.icon,
-                                                color: entry.isPositive
-                                                    ? AppDesign.lightSuccess
-                                                    : AppDesign
-                                                          .lightDestructive,
-                                                size: 20,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    entry.title,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleMedium
-                                                        ?.copyWith(
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                          color: isDark
-                                                              ? null
-                                                              : AppDesign
-                                                                    .lightForeground,
-                                                        ),
-                                                  ),
-                                                  const SizedBox(height: 2),
-                                                  Text(
-                                                    entry.subtitle,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium
-                                                        ?.copyWith(
-                                                          color: isDark
-                                                              ? colors
-                                                                    .onSurfaceVariant
-                                                              : AppDesign
-                                                                    .lightMuted,
-                                                        ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Text(
-                                              '${entry.isPositive ? '+' : '-'}${_formatMoney(context, entry.amount, currencyCode: widget.trip.currencyCode)}',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleLarge
-                                                  ?.copyWith(
-                                                    fontWeight: FontWeight.w800,
-                                                    color: entry.isPositive
-                                                        ? AppDesign.lightSuccess
-                                                        : AppDesign
-                                                              .lightDestructive,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                if (linkedSettlements.isNotEmpty) ...[
-                                  const SizedBox(height: 6),
-                                  Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: [
-                                      _OverviewMetaPill(
-                                        icon: Icons.swap_horiz_rounded,
-                                        label: context.l10n
-                                            .workspaceSettlements(
-                                              linkedSettlements.length,
-                                            ),
-                                        color: AppDesign.lightPrimary,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ],
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  children: [
+                    Center(
+                      child: _largeMemberAvatar(
+                        id: item.id,
+                        name: memberName,
+                        avatarUrl: member?.avatarThumbUrl ?? member?.avatarUrl,
+                        size: 76,
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 12),
+                    Text(
+                      memberName,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _balanceDescription(item.net),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _balanceMoney(item.net.abs()),
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.displaySmall?.copyWith(
+                        color: item.net < -.004
+                            ? theme.colorScheme.error
+                            : theme.colorScheme.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final metrics = [
+                          stat(context.l10n.workspaceTotalPaid, item.paid),
+                          stat(context.l10n.balanceExpenseShare, item.owed),
+                        ];
+                        if (constraints.maxWidth < 340 ||
+                            MediaQuery.textScalerOf(context).scale(16) > 21) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              metrics[0],
+                              const SizedBox(height: 16),
+                              metrics[1],
+                            ],
+                          );
+                        }
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(child: metrics[0]),
+                            const SizedBox(width: 16),
+                            Expanded(child: metrics[1]),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      context.l10n.workspaceTransactionHistory,
+                      style: theme.textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      context.l10n.balanceHistoryScope,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                    for (final entry in transactions) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final amount = Text(
+                              '${entry.isPositive ? '+' : '−'}${_balanceMoney(entry.amount)}',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: entry.isPositive
+                                    ? theme.colorScheme.primary
+                                    : theme.colorScheme.error,
+                              ),
+                            );
+                            final stacked =
+                                MediaQuery.textScalerOf(context).scale(16) >
+                                    23 ||
+                                constraints.maxWidth < 300;
+                            return Row(
+                              children: [
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        theme.colorScheme.surfaceContainerLow,
+                                    borderRadius: AppDesign.cardRadius,
+                                  ),
+                                  child: Icon(
+                                    entry.icon,
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        entry.title,
+                                        style: theme.textTheme.titleMedium,
+                                      ),
+                                      Text(
+                                        entry.subtitle,
+                                        style: theme.textTheme.bodyMedium,
+                                      ),
+                                      if (stacked) amount,
+                                    ],
+                                  ),
+                                ),
+                                if (!stacked) ...[
+                                  const SizedBox(width: 12),
+                                  amount,
+                                ],
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      const Divider(height: 1),
+                    ],
+                    if (linkedSettlements.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        context.l10n.workspaceSettle,
+                        style: theme.textTheme.titleLarge,
+                      ),
+                      for (final settlement in linkedSettlements)
+                        TextButton(
+                          onPressed: () => _openSettlementFlowTimelineSheet(
+                            snapshot: snapshot,
+                            item: settlement,
+                            usersById: usersById,
+                          ),
+                          child: Text(
+                            '${settlement.from} → ${settlement.to} · ${_balanceMoney(settlement.amount)}',
+                          ),
+                        ),
+                    ],
+                  ],
                 ),
               ),
             ],
@@ -449,9 +287,12 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       if (payment.fromUserId == memberId) {
         transactions.add(
           _MemberTransactionEntry(
-            title:
-                'Payment to ${toName.isEmpty ? context.l10n.userWithId(payment.toUserId) : toName}',
-            subtitle: date.isEmpty ? 'Confirmed payment' : 'Confirmed $date',
+            title: context.l10n.balancePaymentTo(
+              toName.isEmpty
+                  ? context.l10n.userWithId(payment.toUserId)
+                  : toName,
+            ),
+            subtitle: '${context.l10n.statusConfirmed} $date'.trim(),
             amount: payment.amount,
             isPositive: true,
             icon: Icons.payments_rounded,
@@ -460,9 +301,12 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       } else if (payment.toUserId == memberId) {
         transactions.add(
           _MemberTransactionEntry(
-            title:
-                'Payment from ${fromName.isEmpty ? context.l10n.userWithId(payment.fromUserId) : fromName}',
-            subtitle: date.isEmpty ? 'Confirmed payment' : 'Confirmed $date',
+            title: context.l10n.balancePaymentFrom(
+              fromName.isEmpty
+                  ? context.l10n.userWithId(payment.fromUserId)
+                  : fromName,
+            ),
+            subtitle: '${context.l10n.statusConfirmed} $date'.trim(),
             amount: payment.amount,
             isPositive: false,
             icon: Icons.payments_rounded,
@@ -472,46 +316,6 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
     }
 
     return transactions;
-  }
-
-  Widget _buildBalanceStatCard(
-    BuildContext context, {
-    required String label,
-    required String value,
-    required Color color,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final fg = isDark ? Colors.white : AppDesign.lightForeground;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: isDark ? 0.24 : 0.18),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: color.withValues(alpha: 0.30)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.86)
-                  : AppDesign.lightMuted,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: fg,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 

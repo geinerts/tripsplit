@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/user_profile_payment_section.dart';
 import '../../domain/entities/payment_details.dart';
 
@@ -21,15 +22,14 @@ class _PaymentRequestDetailsSheetState
   @override
   void initState() {
     super.initState();
-    _details = widget.load();
+    _details = Future.sync(widget.load);
   }
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-    top: false,
-    child: SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: FutureBuilder<PaymentDetails>(
+  Widget build(BuildContext context) => AppActionSheet(
+    title: context.l10n.workspacePaymentDetails,
+    children: [
+      FutureBuilder<PaymentDetails>(
         future: _details,
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
@@ -44,17 +44,18 @@ class _PaymentRequestDetailsSheetState
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(context.l10n.paymentDetailsUnavailable),
-                IconButton(
-                  tooltip: context.l10n.paymentDetailsRetry,
+                TextButton.icon(
+                  label: Text(context.l10n.paymentDetailsRetry),
                   icon: const Icon(Icons.refresh_rounded),
                   onPressed: () => setState(() {
-                    _details = widget.load();
+                    _details = Future.sync(widget.load);
                   }),
                 ),
               ],
             );
           }
           return UserProfilePaymentDetailsSection(
+            showTitle: false,
             sectionTitle: context.l10n.workspacePaymentDetails,
             emptyText:
                 context.l10n.workspaceThisMemberHasNotAddedPayoutDetailsYet,
@@ -77,6 +78,6 @@ class _PaymentRequestDetailsSheetState
           );
         },
       ),
-    ),
+    ],
   );
 }

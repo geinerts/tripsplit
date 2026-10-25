@@ -102,7 +102,8 @@ function end_trip_action(): void
 
     $readyToSettle = load_trip_ready_to_settle_state($pdo, $tripId, (int) ($me['id'] ?? 0));
     if (
-        ($readyToSettle['enabled'] ?? false) === true
+        !trip_is_solo($trip)
+        && ($readyToSettle['enabled'] ?? false) === true
         && ($readyToSettle['all_ready'] ?? false) !== true
     ) {
         json_out([

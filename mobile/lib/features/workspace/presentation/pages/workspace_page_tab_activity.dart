@@ -1,196 +1,171 @@
 part of 'workspace_page.dart';
 
 extension _WorkspacePageActivityTab on _WorkspacePageState {
-  Widget _buildActivityTab() {
-    final colors = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  List<Widget> _buildActivitySlivers() {
     final events = _activityEvents
         .where(_isVisibleTripActivityEvent)
         .toList(growable: false);
-
-    return ListView(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
-      children: [
-        Row(
-          children: [
-            Icon(Icons.history_rounded, color: colors.primary, size: 22),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                context.l10n.workspaceTripActivity,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: isDark ? null : AppDesign.lightForeground,
+    final t = context.l10n;
+    return [
+      if (_activityError != null)
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Semantics(liveRegion: true, child: Text(t.activityLoadFailed)),
+                TextButton.icon(
+                  onPressed: _isLoadingActivity
+                      ? null
+                      : () => _loadTripActivity(reset: _activityFailedReset),
+                  icon: const Icon(Icons.refresh),
+                  label: Text(t.retryAction),
                 ),
-              ),
+              ],
             ),
-            if (_activityLoaded)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                decoration: BoxDecoration(
-                  color: AppDesign.lightPrimary.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  '${events.length}',
-                  style: const TextStyle(
-                    color: AppDesign.lightPrimary,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-          ],
+          ),
         ),
-        const SizedBox(height: 12),
-        if (_isLoadingActivity && events.isEmpty)
-          ...List<Widget>.generate(
-            4,
-            (index) => Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _ActivitySkeletonCard(isDark: isDark),
+      if (_isLoadingActivity && events.isEmpty)
+        const SliverPadding(
+          padding: EdgeInsets.all(20),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              children: [
+                AppSkeletonBlock(height: 60),
+                SizedBox(height: 16),
+                AppSkeletonBlock(height: 60),
+              ],
             ),
-          )
-        else if (events.isEmpty)
-          Card(
-            color: isDark ? colors.surface : AppDesign.lightSurface,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-              side: BorderSide(
-                color: isDark
-                    ? colors.outlineVariant.withValues(alpha: 0.30)
-                    : AppDesign.lightStroke,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(context.l10n.workspaceNoRecentActivityYet),
-            ),
-          )
-        else
-          for (final event in events)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: _buildActivityEventCard(event),
-            ),
-        if (_activityHasMore) ...[
-          const SizedBox(height: 2),
-          Align(
-            alignment: Alignment.centerLeft,
+          ),
+        )
+      else if (events.isEmpty && _activityError == null && _activityLoaded)
+        SliverPadding(
+          padding: const EdgeInsets.all(20),
+          sliver: SliverToBoxAdapter(
+            child: Text(t.workspaceNoRecentActivityYet),
+          ),
+        )
+      else
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          sliver: SliverList.builder(
+            itemCount: events.length,
+            itemBuilder: (context, index) {
+              final event = events[index];
+              final day = (event.createdAt ?? '').split(RegExp('[ T]')).first;
+              final previous = index == 0
+                  ? null
+                  : (events[index - 1].createdAt ?? '')
+                        .split(RegExp('[ T]'))
+                        .first;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (day.isNotEmpty && day != previous)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20, bottom: 12),
+                      child: Semantics(
+                        header: true,
+                        child: Text(
+                          _formatDisplayDate(context, day),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                    ),
+                  _buildActivityEventCard(event),
+                ],
+              );
+            },
+          ),
+        ),
+      if (_activityHasMore)
+        SliverPadding(
+          padding: const EdgeInsets.all(20),
+          sliver: SliverToBoxAdapter(
             child: OutlinedButton.icon(
               onPressed: _isLoadingActivity
                   ? null
-                  : () => unawaited(_loadTripActivity(reset: false)),
-              icon: _isLoadingActivity
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.keyboard_arrow_down_rounded),
-              label: Text(context.l10n.tripsLoadMore),
+                  : () => _loadTripActivity(reset: false),
+              icon: const Icon(Icons.expand_more),
+              label: Text(
+                _isLoadingActivity
+                    ? t.workspaceLoadingMoreExpenses
+                    : t.tripsLoadMore,
+              ),
             ),
           ),
-        ],
-      ],
-    );
+        ),
+      const SliverToBoxAdapter(child: SizedBox(height: 24)),
+    ];
   }
 
   Widget _buildActivityEventCard(WorkspaceActivityEvent event) {
-    final colors = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final accent = _activityColor(event.eventType);
-    final actorName = event.actorName.trim().isEmpty
-        ? 'Trip member'
+    final theme = Theme.of(context);
+    final actor = event.actorName.trim().isEmpty
+        ? context.l10n.activityMember
         : event.actorName.trim();
-    final actionText = _activityActionText(context, event);
     final meta = _activityMeta(context, event);
-
-    final mutedColor = isDark ? colors.onSurfaceVariant : AppDesign.lightMuted;
-    final isDestructive = _isDestructiveActivity(event.eventType);
-    final metaColor = isDestructive
-        ? AppDesign.lightDestructive.withValues(alpha: 0.92)
-        : mutedColor;
-    final metaLine = meta.join(' • ');
-    final textDecoration = isDestructive
-        ? TextDecoration.lineThrough
-        : TextDecoration.none;
-    final decorationColor = isDestructive
-        ? AppDesign.lightDestructive.withValues(alpha: 0.86)
-        : null;
-    final decorationThickness = isDestructive ? 1.7 : null;
-
+    final note = _payloadString(event, 'note');
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+      key: ValueKey('activity-row-${event.id}'),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _largeMemberAvatar(
             id: event.actorUserId ?? event.id,
-            name: actorName,
+            name: actor,
             avatarUrl: event.actorAvatarThumbUrl ?? event.actorAvatarUrl,
-            size: 42,
+            size: 44,
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  actorName,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w500,
-                    height: 1.18,
-                    color: isDark ? null : AppDesign.lightForeground,
-                    decoration: textDecoration,
-                    decorationColor: decorationColor,
-                    decorationThickness: decorationThickness,
+                Text(actor, style: theme.textTheme.titleMedium),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text:
+                            '${_activityActionText(context, event)}${note != null && note.isNotEmpty ? ' ' : ''}',
+                      ),
+                      if (note != null && note.isNotEmpty)
+                        TextSpan(
+                          text: note,
+                          style: TextStyle(
+                            decoration: _isDestructiveActivity(event.eventType)
+                                ? TextDecoration.lineThrough
+                                : null,
+                          ),
+                        ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  actionText,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontSize: 15.2,
-                    fontWeight: FontWeight.w400,
-                    height: 1.22,
-                    color: isDark
-                        ? colors.onSurface.withValues(alpha: 0.92)
-                        : AppDesign.lightForeground,
-                    decoration: textDecoration,
-                    decorationColor: decorationColor,
-                    decorationThickness: decorationThickness,
-                  ),
+                  style: theme.textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  metaLine.isEmpty
-                      ? _activityRelativeTime(context, event.createdAt)
-                      : '$metaLine • ${_activityRelativeTime(context, event.createdAt)}',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: metaColor,
-                    fontWeight: FontWeight.w500,
-                    height: 1.28,
-                    decoration: textDecoration,
-                    decorationColor: decorationColor,
-                    decorationThickness: decorationThickness,
-                  ),
+                  [
+                    ...meta,
+                    _activityRelativeTime(context, event.createdAt),
+                  ].join(' · '),
+                  style: theme.textTheme.bodySmall,
                 ),
               ],
             ),
           ),
           const SizedBox(width: 8),
-          Icon(_activityIcon(event.eventType), size: 18, color: accent),
+          ExcludeSemantics(
+            child: Icon(
+              _activityIcon(event.eventType),
+              size: 20,
+              color: _isDestructiveActivity(event.eventType)
+                  ? theme.colorScheme.error
+                  : theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
         ],
       ),
     );
@@ -241,7 +216,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         return en('deleted an expense');
       case 'trip.created':
         if (language == 'lv') {
-          return 'izveidoja tripu';
+          return 'izveidoja ceļojumu';
         }
         if (language == 'es') {
           return 'creó el viaje';
@@ -249,7 +224,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         return en('created the trip');
       case 'trip.updated':
         if (language == 'lv') {
-          return 'atjaunoja tripa detaļas';
+          return 'atjaunoja ceļojuma detaļas';
         }
         if (language == 'es') {
           return 'actualizó el viaje';
@@ -286,7 +261,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
       case 'trip.member_removed':
         final name = _payloadString(event, 'removed_user_name') ?? '';
         if (language == 'lv') {
-          return 'noņēma ${name.isEmpty ? 'dalībnieku' : name} no tripa';
+          return 'noņēma ${name.isEmpty ? 'dalībnieku' : name} no ceļojuma';
         }
         if (language == 'es') {
           return 'quitó a ${name.isEmpty ? 'un miembro' : name} del viaje';
@@ -294,7 +269,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         return en('removed ${name.isEmpty ? 'a member' : name}');
       case 'trip.member_left':
         if (language == 'lv') {
-          return 'pameta tripu';
+          return 'pameta ceļojumu';
         }
         if (language == 'es') {
           return 'salió del viaje';
@@ -336,7 +311,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         return en('All members are ready to settle');
       case 'trip.finished':
         if (language == 'lv') {
-          return 'pabeidza tripu';
+          return 'pabeidza ceļojumu';
         }
         if (language == 'es') {
           return 'finalizó el viaje';
@@ -493,7 +468,11 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     }
     final currencyCode =
         _payloadString(event, 'trip_currency_code') ?? widget.trip.currencyCode;
-    return _formatMoney(context, amountCents / 100, currencyCode: currencyCode);
+    return AppFormatters.displayCurrencyFromCents(
+      context,
+      amountCents,
+      currencyCode: currencyCode,
+    );
   }
 
   int _payloadInt(WorkspaceActivityEvent event, String key) {
@@ -591,63 +570,5 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
   bool _isDestructiveActivity(String type) {
     final normalized = type.trim().toLowerCase();
     return normalized.contains('deleted');
-  }
-
-  Color _activityColor(String type) {
-    final normalized = type.trim().toLowerCase();
-    if (normalized.contains('deleted')) {
-      return AppDesign.lightDestructive;
-    }
-    if (normalized.contains('settlement')) {
-      return AppDesign.lightAccent;
-    }
-    if (normalized.contains('payment')) {
-      return AppDesign.lightAccent;
-    }
-    if (normalized.contains('ready') || normalized.contains('finished')) {
-      return AppDesign.lightSuccess;
-    }
-    return AppDesign.lightPrimary;
-  }
-}
-
-class _ActivitySkeletonCard extends StatelessWidget {
-  const _ActivitySkeletonCard({required this.isDark});
-
-  final bool isDark;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Card(
-      color: isDark ? colors.surface : AppDesign.lightSurface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-        side: BorderSide(
-          color: isDark
-              ? colors.outlineVariant.withValues(alpha: 0.30)
-              : AppDesign.lightStroke,
-        ),
-      ),
-      child: const Padding(
-        padding: EdgeInsets.all(12),
-        child: Row(
-          children: [
-            AppSkeletonBlock(width: 42, height: 42, radius: 999),
-            SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppSkeletonBlock(height: 15),
-                  SizedBox(height: 7),
-                  AppSkeletonBlock(width: 120, height: 12),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

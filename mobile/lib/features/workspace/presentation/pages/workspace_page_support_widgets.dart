@@ -525,42 +525,6 @@ class _DetailChip extends StatelessWidget {
   }
 }
 
-class _WorkspaceSectionCard extends StatelessWidget {
-  const _WorkspaceSectionCard({
-    required this.child,
-    this.padding = const EdgeInsets.all(14),
-    this.accent,
-    this.radius = 16,
-  });
-
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-  final Color? accent;
-  final double radius;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final tone = accent ?? colors.primary;
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: tone.withValues(alpha: 0.22)),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            tone.withValues(alpha: 0.12),
-            colors.surface.withValues(alpha: 0.96),
-          ],
-        ),
-      ),
-      child: child,
-    );
-  }
-}
-
 class _SheetHeadlineCard extends StatelessWidget {
   const _SheetHeadlineCard({
     required this.icon,

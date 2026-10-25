@@ -9,6 +9,61 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get homeFirstTrip => 'Your first trip';
+
+  @override
+  String get homeYourShareAllTrips => 'Your share across all trips';
+
+  @override
+  String get homeAllTime => 'All time';
+
+  @override
+  String get homeSolo => 'Solo';
+
+  @override
+  String homePeople(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count people',
+      one: '1 person',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String homeTripActions(String name) {
+    return 'Trip actions: $name';
+  }
+
+  @override
+  String get homeNoActiveTrips => 'No active trips';
+
+  @override
+  String get homeNoArchivedTrips => 'No archived trips';
+
+  @override
+  String get homeLoadingTrips => 'Loading your trips';
+
+  @override
+  String get homeLoadErrorTitle => 'Could not load your trips';
+
+  @override
+  String get homeLoadErrorBody => 'Please try again in a moment.';
+
+  @override
+  String get homeOfflineTitle => 'You\'re offline';
+
+  @override
+  String get homeOfflineNoData => 'Your trips aren\'t available on this device yet.';
+
+  @override
+  String get homeOfflineCached => 'Offline. Showing saved trips.';
+
+  @override
+  String get homeRefreshError => 'Couldn\'t refresh. Showing previously loaded trips.';
+
+  @override
   String paymentShareDetailsConsent(Object arg1) {
     return 'Share my saved payment details with $arg1';
   }
@@ -374,6 +429,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterSettlementByMemberSubtitle => 'Filter settlements by member';
 
   @override
+  String get finishSoloTripConfirmationText => 'Finish this trip and move it to your archive? Your expenses will remain available to view.';
+
+  @override
+  String get soloTripArchived => 'Trip finished and archived.';
+
+  @override
+  String get finishTripSyncPending => 'Sync your pending changes before finishing this trip.';
+
+  @override
   String get finishTripAction => 'Finish trip';
 
   @override
@@ -683,6 +747,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noNotePlaceholder => 'No note';
+
+  @override
+  String get notificationsToday => 'Today';
+
+  @override
+  String get notificationsEmptyBody => 'Updates about trips, expenses and friends will appear here.';
+
+  @override
+  String get notificationsCached => 'Offline — showing saved notifications.';
+
+  @override
+  String get notificationsRefreshFailed => 'Could not refresh. Previously loaded notifications are shown.';
+
+  @override
+  String get notificationsJustNow => 'Just now';
+
+  @override
+  String notificationsMinutesAgo(int count) {
+    return '$count min ago';
+  }
+
+  @override
+  String notificationsHoursAgo(int count) {
+    return '$count h ago';
+  }
+
+  @override
+  String get notificationsUnread => 'Unread';
 
   @override
   String get noNotificationsYet => 'No notifications yet.';
@@ -1746,6 +1838,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileAppSettingsSectionTitle => 'APP SETTINGS';
+
+  @override
+  String get profileAccountSettings => 'Account settings';
+
+  @override
+  String get profileChangePhoto => 'Change profile photo';
 
   @override
   String get profileAppearance => 'Appearance';
@@ -3395,4 +3493,397 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationPaymentNotReceivedBodyGeneric => 'A payment was marked as not received.';
+
+  @override
+  String get quickStartTitle => 'Quick Start';
+
+  @override
+  String get quickStartCreateTitle => 'Create a trip';
+
+  @override
+  String get quickStartCreateBody => 'Choose a name and currency. Keep your own expenses or share costs with a group.';
+
+  @override
+  String get quickStartInviteTitle => 'Travel together or solo';
+
+  @override
+  String get quickStartInviteBody => 'Invite friends to share your trip, or start a personal trip on your own.';
+
+  @override
+  String get quickStartExpenseTitle => 'Add your first expense';
+
+  @override
+  String get quickStartExpenseBody => 'Enter the amount, choose who paid and split the cost. Your balances stay up to date.';
+
+  @override
+  String get quickStartNext => 'Next';
+
+  @override
+  String get quickStartBack => 'Back';
+
+  @override
+  String get quickStartSkip => 'Skip';
+
+  @override
+  String get quickStartCreateAction => 'Create trip';
+
+  @override
+  String get quickStartClose => 'Close Quick Start';
+
+  @override
+  String get quickStartSubtitle => 'See how trips and expenses work';
+
+  @override
+  String quickStartStep(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String get workspaceTripTotal => 'Trip total';
+
+  @override
+  String get workspacePersonalTotal => 'Total spent';
+
+  @override
+  String get workspaceBalanceEven => 'Your balance is even';
+
+  @override
+  String workspaceBalanceOwe(String amount) {
+    return 'You owe $amount';
+  }
+
+  @override
+  String workspaceBalanceReceive(String amount) {
+    return 'You get back $amount';
+  }
+
+  @override
+  String workspaceMemberCount(int count) {
+    return '$count members';
+  }
+
+  @override
+  String get workspaceSearchExpenses => 'Search expenses';
+
+  @override
+  String get workspaceClearSearch => 'Clear search';
+
+  @override
+  String get workspaceSearchLoadedHint => 'Search covers loaded expenses. Load more to include older expenses.';
+
+  @override
+  String get workspaceNoExpenseMatches => 'No matching expenses';
+
+  @override
+  String get workspaceNoExpenseMatchesBody => 'Try another search or clear it to see all loaded expenses.';
+
+  @override
+  String get workspaceEmptyPersonalExpenses => 'Add your first expense to start tracking your spending.';
+
+  @override
+  String get workspaceEmptyGroupExpenses => 'Add your first shared expense to see everyone’s share.';
+
+  @override
+  String get workspaceLoadMoreExpenses => 'Load more expenses';
+
+  @override
+  String workspaceOriginalExpenseAmount(String amount) {
+    return 'Original amount: $amount';
+  }
+
+  @override
+  String workspaceCommentCount(int count) {
+    return '$count comments';
+  }
+
+  @override
+  String get workspaceExpenseActions => 'Expense actions';
+
+  @override
+  String get workspaceLoadErrorTitle => 'Could not load this trip';
+
+  @override
+  String get workspaceCachedWarning => 'Showing saved data. It may be out of date.';
+
+  @override
+  String get workspaceActivityTab => 'Activity';
+
+  @override
+  String get workspaceLoadingTrip => 'Loading trip';
+
+  @override
+  String get workspaceRefreshFailed => 'Refresh failed';
+
+  @override
+  String get expenseDetailsTitle => 'Expense details';
+
+  @override
+  String get expenseQuickCategories => 'Quick categories';
+
+  @override
+  String get expenseReceiptRead => 'Receipt read and form updated.';
+
+  @override
+  String get expenseReceiptNoData => 'Receipt attached. No clear amount, date or merchant found.';
+
+  @override
+  String get expenseReceiptScanFailed => 'Receipt selected. Automatic reading failed; check the fields manually.';
+
+  @override
+  String get expenseReceiptOffline => 'Receipt will upload when you save. Automatic reading requires a connection.';
+
+  @override
+  String get expenseReadingReceipt => 'Reading receipt…';
+
+  @override
+  String get expenseCommentsLoadFailed => 'Could not load comments. Try again.';
+
+  @override
+  String get expenseReplyAction => 'Reply';
+
+  @override
+  String get expenseReplyHint => 'Write a reply…';
+
+  @override
+  String expenseReplyTo(String name) {
+    return 'Reply to $name';
+  }
+
+  @override
+  String get balanceEmptyBody => 'Balances appear after expenses are added.';
+
+  @override
+  String get balanceAfterPayments => 'Balances include confirmed payments.';
+
+  @override
+  String get balanceExpenseShare => 'Expense share';
+
+  @override
+  String get balanceHistoryScope => 'Loaded expenses and confirmed payments. This list may not include the entire trip history.';
+
+  @override
+  String balancePaymentTo(String name) {
+    return 'Payment to $name';
+  }
+
+  @override
+  String balancePaymentFrom(String name) {
+    return 'Payment from $name';
+  }
+
+  @override
+  String get settlementEmptyActive => 'Mark everyone ready before starting final settlements.';
+
+  @override
+  String get settlementEmptyClosed => 'No transfers are listed for this trip.';
+
+  @override
+  String settlementConfirmedCount(int count, int total) {
+    return '$count of $total transfers confirmed';
+  }
+
+  @override
+  String settlementReadyCount(int count, int total) {
+    return '$count of $total members ready';
+  }
+
+  @override
+  String get settlementMemberReady => 'Ready';
+
+  @override
+  String get settlementMemberNotReady => 'Not ready';
+
+  @override
+  String get settlementSuggested => 'Suggested transfer';
+
+  @override
+  String get activityLoadFailed => 'Could not refresh activity. Any visible entries may be out of date.';
+
+  @override
+  String get activityMember => 'Trip member';
+
+  @override
+  String get friendsEmptyBody => 'Find a friend by name or email, or use a QR code.';
+
+  @override
+  String get friendsDeclineAction => 'Decline';
+
+  @override
+  String get friendsLoading => 'Loading friends';
+
+  @override
+  String friendsCommonTripsCount(int count) {
+    return 'Shared trips: $count';
+  }
+
+  @override
+  String get memberActivityScope => 'Based on loaded expenses; this may not cover the whole trip.';
+
+  @override
+  String get sharedTripsLoadedLimit => 'Showing up to 20 shared trips.';
+
+  @override
+  String get memberRemoveTitle => 'Remove member?';
+
+  @override
+  String memberRemoveBody(String name) {
+    return 'Remove $name from this trip? This is only possible if they have no expenses, settlements or balances.';
+  }
+
+  @override
+  String get memberRemoveAction => 'Remove from trip';
+
+  @override
+  String memberRemoved(String name) {
+    return '$name removed from trip.';
+  }
+
+  @override
+  String get profilePaymentNotAdded => 'Not added yet';
+
+  @override
+  String get friendRelationshipLabel => 'Friend';
+
+  @override
+  String get sharedTripsEmptyBody => 'Trips you both join will appear here.';
+
+  @override
+  String get analyticsAllTrips => 'All trips';
+
+  @override
+  String get analyticsByTrip => 'By trip';
+
+  @override
+  String get analyticsYourSpending => 'Your spending';
+
+  @override
+  String get analyticsActiveArchived => 'Active & archived trips';
+
+  @override
+  String get analyticsTrips => 'Trips';
+
+  @override
+  String get analyticsAveragePerTrip => 'Average per trip';
+
+  @override
+  String get analyticsPaidByMember => 'Paid by member';
+
+  @override
+  String get analyticsYouPaid => 'You paid';
+
+  @override
+  String get analyticsYouGetBack => 'You get back';
+
+  @override
+  String get analyticsYouOwe => 'You owe';
+
+  @override
+  String get analyticsParticipants => 'Participants';
+
+  @override
+  String get analyticsYourCategories => 'Your spending by category';
+
+  @override
+  String get analyticsLargestShares => 'Your largest shares';
+
+  @override
+  String get analyticsLargestExpenses => 'Largest expenses';
+
+  @override
+  String get analyticsSpendingByTrip => 'Your spending by trip';
+
+  @override
+  String get analyticsEmptyTitle => 'No spending yet';
+
+  @override
+  String get analyticsEmptyBody => 'Your spending will appear here when you add expenses to a trip.';
+
+  @override
+  String get analyticsPeriodEmptyBody => 'There are no expenses for this view. Try another trip or period.';
+
+  @override
+  String get analyticsLoadFailed => 'Could not load the complete spending report. Please try again.';
+
+  @override
+  String get analyticsLastLoaded => 'Showing the last successfully loaded report.';
+
+  @override
+  String analyticsExpenseCount(int count) {
+    return '$count expenses';
+  }
+
+  @override
+  String get tripOptionsTitle => 'Trip options';
+
+  @override
+  String get editTripAction => 'Edit trip';
+
+  @override
+  String get deleteTripAction => 'Delete trip';
+
+  @override
+  String get inviteTripMembersAction => 'Invite members';
+
+  @override
+  String get tripCoverPhoto => 'Cover photo';
+
+  @override
+  String get tripInviteLaterHint => 'You can invite people after creating the trip.';
+
+  @override
+  String get inviteClipboardFailed => 'Could not access the clipboard. Try again.';
+
+  @override
+  String get friendInviteToTrip => 'Invite to trip';
+
+  @override
+  String get friendChooseTrip => 'Choose a trip';
+
+  @override
+  String get friendNoInvitableTrips => 'No available trips. You can invite friends to active group trips you manage, unless they are already members or have a pending invitation.';
+
+  @override
+  String get friendTripInviteSent => 'Invitation sent.';
+
+  @override
+  String get friendTripUnavailable => 'This trip is no longer available for this action. Refresh and try again.';
+
+  @override
+  String get friendTripActionFailed => 'Could not complete this action. Try again.';
+
+  @override
+  String get profileContactDescription => 'Have a problem, a suggestion or a question about Splyto? Email us — we’d be happy to help.';
+
+  @override
+  String get profileContactEmailAction => 'Write an email';
+
+  @override
+  String get profileContactEmailUnavailable => 'Could not open an email app. Copy the address and write to us from your email app.';
+
+  @override
+  String get profilePrivacyPolicy => 'Privacy policy';
+
+  @override
+  String get privacyLoadFailed => 'Could not load the privacy policy. Please try again.';
+
+  @override
+  String get addReceiptAction => 'Add receipt';
+
+  @override
+  String get receiptPickFailed => 'Could not load the receipt. Please try again.';
+
+  @override
+  String get receiptPhotoAccessDenied => 'Allow camera or photo library access for Splyto in Settings, then try again.';
+
+  @override
+  String get receiptPhotoLabel => 'Receipt photo';
+
+  @override
+  String get replaceReceiptAction => 'Replace receipt';
+
+  @override
+  String get removeReceiptAction => 'Remove receipt';
+
+  @override
+  String get restoreReceiptAction => 'Restore previous receipt';
 }

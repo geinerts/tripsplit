@@ -6,6 +6,7 @@ require_once __DIR__ . '/helpers/helper_email.php';
 require_once __DIR__ . '/helpers/helper_app_events.php';
 
 require_once __DIR__ . '/actions/auth_actions.php';
+require_once __DIR__ . '/actions/quick_start_actions.php';
 require_once __DIR__ . '/actions/subscription_sandbox_actions.php';
 require_once __DIR__ . '/actions/auth_social_actions.php';
 require_once __DIR__ . '/actions/password_reset_actions.php';

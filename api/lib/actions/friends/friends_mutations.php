@@ -100,7 +100,8 @@ function send_friend_invite_action(): void
                     'UPDATE ' . $friendsTable . '
                      SET requested_by = :requested_by,
                          status = "pending",
-                         responded_at = NULL
+                         responded_at = NULL,
+                         created_at = UTC_TIMESTAMP()
                      WHERE id = :id'
                 );
                 $update->execute([
@@ -109,6 +110,14 @@ function send_friend_invite_action(): void
                 ]);
                 $status = 'pending';
             }
+        }
+
+        if ($autoAccepted) {
+            mark_friend_invitation_notification_read($pdo, $meId, $requestId);
+        } else {
+            create_user_notification($pdo, 0, $targetUserId, 'friend_invite_received',
+                'Friend invite', actor_display_name($me) . ' sent you a friend invite.',
+                ['request_id' => $requestId, 'from_user_id' => $meId, 'status' => 'pending']);
         }
 
         $pdo->commit();
@@ -120,47 +129,18 @@ function send_friend_invite_action(): void
     }
 
     if ($autoAccepted && $requestId > 0) {
-        $tripIdForNotification = resolve_notification_trip_id($pdo, $targetUserId, $meId);
-        if ($tripIdForNotification > 0) {
-            create_user_notification(
-                $pdo,
-                $tripIdForNotification,
-                $targetUserId,
-                'friend_invite_accepted',
-                'Invite accepted',
-                actor_display_name($me) . ' accepted your friend invite.',
-                [
-                    'request_id' => $requestId,
-                    'from_user_id' => $meId,
-                    'status' => 'accepted',
-                ]
-            );
-        }
-    }
-
-    if (
-        !$autoAccepted &&
-        $status === 'pending' &&
-        $requestId > 0 &&
-        push_should_queue_notification_type('friend_invite_received') &&
-        user_allows_push_notification($pdo, $targetUserId, 'friend_invite_received')
-    ) {
-        $tripIdForPush = resolve_notification_trip_id($pdo, $targetUserId, $meId);
-        $pushTitle = 'Friend invite';
-        $pushBody = actor_display_name($me) . ' sent you a friend invite.';
-        queue_push_notification(
+        create_user_notification(
             $pdo,
+            0,
             $targetUserId,
-            $tripIdForPush,
-            'friend_invite_received',
-            $pushTitle,
-            $pushBody,
+            'friend_invite_accepted',
+            'Invite accepted',
+            actor_display_name($me) . ' accepted your friend invite.',
             [
                 'request_id' => $requestId,
                 'from_user_id' => $meId,
-                'status' => 'pending',
-            ],
-            null
+                'status' => 'accepted',
+            ]
         );
     }
 
@@ -253,6 +233,8 @@ function respond_friend_invite_action(): void
             'id' => $requestId,
         ]);
 
+        mark_friend_invitation_notification_read($pdo, $meId, $requestId);
+
         $pdo->commit();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
@@ -262,22 +244,19 @@ function respond_friend_invite_action(): void
     }
 
     if ($accept && $otherUserId > 0 && $requestId > 0) {
-        $tripIdForNotification = resolve_notification_trip_id($pdo, $otherUserId, $meId);
-        if ($tripIdForNotification > 0) {
-            create_user_notification(
-                $pdo,
-                $tripIdForNotification,
-                $otherUserId,
-                'friend_invite_accepted',
-                'Invite accepted',
-                actor_display_name($me) . ' accepted your friend invite.',
-                [
-                    'request_id' => $requestId,
-                    'from_user_id' => $meId,
-                    'status' => $nextStatus,
-                ]
-            );
-        }
+        create_user_notification(
+            $pdo,
+            0,
+            $otherUserId,
+            'friend_invite_accepted',
+            'Invite accepted',
+            actor_display_name($me) . ' accepted your friend invite.',
+            [
+                'request_id' => $requestId,
+                'from_user_id' => $meId,
+                'status' => $nextStatus,
+            ]
+        );
     }
 
     if ($accept) {
@@ -364,6 +343,8 @@ function cancel_friend_invite_action(): void
              WHERE id = :id'
         );
         $update->execute(['id' => $requestId]);
+
+        mark_friend_invitation_notification_read($pdo, $otherUserId, $requestId);
 
         $pdo->commit();
     } catch (Throwable $error) {
@@ -463,4 +444,14 @@ function remove_friend_action(): void
         'ok' => true,
         'user' => $targetUser ? friend_user_payload_from_row($targetUser) : null,
     ]);
+}
+
+// The invitation remains in history after a response or cancellation.
+function mark_friend_invitation_notification_read(PDO $pdo, int $userId, int $requestId): void
+{
+    $stmt = $pdo->prepare('UPDATE ' . table_name('notifications') . '
+        SET is_read = 1, read_at = COALESCE(read_at, CURRENT_TIMESTAMP)
+        WHERE user_id = :user_id AND type = "friend_invite_received"
+          AND CAST(JSON_EXTRACT(payload_json, "$.request_id") AS UNSIGNED) = :request_id AND is_read = 0');
+    $stmt->execute(['user_id' => $userId, 'request_id' => $requestId]);
 }

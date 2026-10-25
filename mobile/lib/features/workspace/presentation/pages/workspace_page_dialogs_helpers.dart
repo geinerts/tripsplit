@@ -1,5 +1,7 @@
 part of 'workspace_page.dart';
 
+enum _ReceiptSource { camera, gallery, files }
+
 extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
   String _splitModeHint(String splitMode) {
     final t = context.l10n;
@@ -68,7 +70,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
       String label = t.userWithId(userId);
       for (final user in users) {
         if (user.id == userId) {
-          label = user.nickname;
+          label = user.preferredName;
           break;
         }
       }
@@ -78,14 +80,60 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
       );
       fields.add(
         Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: TextField(
-            controller: controller,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              labelText: '$label - ${_splitModeValueLabel(splitMode)}',
-              suffixText: _splitModeValueSuffix(splitMode),
-            ),
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final stacked =
+                  constraints.maxWidth < 300 ||
+                  MediaQuery.textScalerOf(context).scale(16) > 24;
+              final inputWidth = stacked ? constraints.maxWidth : 128.0;
+              return Column(
+                children: [
+                  Flex(
+                    direction: stacked ? Axis.vertical : Axis.horizontal,
+                    crossAxisAlignment: stacked
+                        ? CrossAxisAlignment.start
+                        : CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: stacked
+                            ? constraints.maxWidth
+                            : constraints.maxWidth - inputWidth - 16,
+                        child: Text(
+                          label,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      SizedBox(
+                        width: stacked ? 0 : 16,
+                        height: stacked ? 8 : 0,
+                      ),
+                      SizedBox(
+                        width: inputWidth,
+                        child: Semantics(
+                          label: label,
+                          child: TextField(
+                            key: ValueKey('split-input-$userId'),
+                            controller: controller,
+                            textAlign: TextAlign.end,
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            decoration: InputDecoration(
+                              filled: false,
+                              labelText: _splitModeValueLabel(splitMode),
+                              suffixText: _splitModeValueSuffix(splitMode),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Divider(height: 1),
+                ],
+              );
+            },
           ),
         ),
       );
@@ -99,6 +147,97 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
       );
     }
     return fields;
+  }
+
+  Future<_PickedFile?> _pickReceiptAttachment(
+    BuildContext pickerContext,
+  ) async {
+    final t = pickerContext.l10n;
+    final account = widget.authController.currentUser?.id;
+    try {
+      final source = await showAppPlatformActionSheet<_ReceiptSource>(
+        context: pickerContext,
+        title: t.addReceiptAction,
+        cancelLabel: t.cancelAction,
+        actions: [
+          AppPlatformAction(
+            value: _ReceiptSource.camera,
+            icon: Icons.photo_camera_outlined,
+            title: t.takePhotoAction,
+          ),
+          AppPlatformAction(
+            value: _ReceiptSource.gallery,
+            icon: Icons.photo_library_outlined,
+            title: t.chooseFromLibraryAction,
+          ),
+          AppPlatformAction(
+            value: _ReceiptSource.files,
+            icon: Icons.folder_open_outlined,
+            title: t.chooseReceiptFile,
+          ),
+        ],
+      );
+      if (!mounted ||
+          !pickerContext.mounted ||
+          source == null ||
+          account != widget.authController.currentUser?.id) {
+        return null;
+      }
+      if (source == _ReceiptSource.files) {
+        final file = await _pickReceiptFile();
+        return mounted &&
+                pickerContext.mounted &&
+                account == widget.authController.currentUser?.id
+            ? file
+            : null;
+      }
+      final photo = await ImagePicker().pickImage(
+        source: source == _ReceiptSource.camera
+            ? ImageSource.camera
+            : ImageSource.gallery,
+        imageQuality: 94,
+        maxWidth: 4096,
+        maxHeight: 4096,
+        requestFullMetadata: false,
+      );
+      if (!mounted ||
+          !pickerContext.mounted ||
+          photo == null ||
+          account != widget.authController.currentUser?.id) {
+        return null;
+      }
+      final bytes = await photo.readAsBytes();
+      if (!mounted ||
+          !pickerContext.mounted ||
+          bytes.isEmpty ||
+          account != widget.authController.currentUser?.id) {
+        return null;
+      }
+      final prepared = await _prepareReceiptForUpload(
+        fileName: photo.name.trim().isEmpty ? 'receipt.jpg' : photo.name,
+        bytes: bytes,
+      );
+      return mounted &&
+              pickerContext.mounted &&
+              account == widget.authController.currentUser?.id
+          ? prepared
+          : null;
+    } on PlatformException catch (error) {
+      if (mounted && pickerContext.mounted) {
+        final denied =
+            error.code.toLowerCase().contains('access_denied') ||
+            error.code.toLowerCase().contains('access_restricted');
+        _showSnack(
+          denied ? t.receiptPhotoAccessDenied : t.receiptPickFailed,
+          isError: true,
+        );
+      }
+    } catch (_) {
+      if (mounted && pickerContext.mounted) {
+        _showSnack(t.receiptPickFailed, isError: true);
+      }
+    }
+    return null;
   }
 
   Future<_PickedFile?> _pickReceiptFile() async {
@@ -150,38 +289,17 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
     required String fileName,
     required Uint8List bytes,
   }) async {
-    final lowered = fileName.toLowerCase();
-    final isDirectSupported =
-        lowered.endsWith('.jpg') ||
-        lowered.endsWith('.jpeg') ||
-        lowered.endsWith('.png') ||
-        lowered.endsWith('.webp');
-    if (isDirectSupported) {
-      return _PickedFile(fileName: fileName, bytes: bytes);
-    }
-
-    final pngBytes = await _tryTranscodeReceiptToPng(bytes);
-    if (pngBytes == null || pngBytes.isEmpty) {
-      _showSnack(
-        context.l10n.profileImageFormatNotSupportedDevicePleaseChooseJpg,
-        isError: true,
-      );
-      return null;
-    }
-
-    final dot = fileName.lastIndexOf('.');
-    final baseName = dot > 0 ? fileName.substring(0, dot) : fileName;
-    final safeBase = baseName.trim().isEmpty ? 'receipt' : baseName.trim();
-    return _PickedFile(fileName: '$safeBase.png', bytes: pngBytes);
-  }
-
-  Future<Uint8List?> _tryTranscodeReceiptToPng(Uint8List bytes) async {
     try {
-      final codec = await instantiateImageCodec(bytes);
-      final frame = await codec.getNextFrame();
-      final data = await frame.image.toByteData(format: ImageByteFormat.png);
-      return data?.buffer.asUint8List();
+      final prepared = await ReceiptImagePreparer.prepare(
+        fileName: fileName,
+        bytes: bytes,
+      );
+      if (!mounted) return null;
+      return _PickedFile(fileName: prepared.fileName, bytes: prepared.bytes);
     } catch (_) {
+      if (mounted) {
+        _showSnack(context.l10n.receiptPickFailed, isError: true);
+      }
       return null;
     }
   }
@@ -196,7 +314,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
         maxWidth: 2048,
         maxHeight: 2048,
       );
-      if (picked == null) {
+      if (!mounted || picked == null) {
         return null;
       }
 
@@ -262,6 +380,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
     }
 
     final pngBytes = await _tryTranscodeTripToPng(rawBytes);
+    if (!mounted) return null;
     if (pngBytes == null || pngBytes.isEmpty) {
       _showSnack(
         context.l10n.profileImageFormatNotSupportedDevicePleaseChooseJpg,

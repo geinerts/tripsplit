@@ -27,6 +27,7 @@ class _PendingTripInvitationsState extends State<PendingTripInvitations> {
   }
 
   Future<void> _revoke(int id) async {
+    if (_revoking != null) return;
     setState(() {
       _revoking = id;
       _failed = false;
@@ -80,38 +81,26 @@ class _PendingTripInvitationsState extends State<PendingTripInvitations> {
                   context.l10n.tripInvitationRevokeFailed,
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 180),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: invitations.length,
-                  itemBuilder: (context, index) {
-                    final invite = invitations[index];
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.schedule),
-                      title: Text(
-                        invite.name,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      trailing: _revoking == invite.id
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : IconButton(
-                              tooltip: context.l10n.tripInvitationRevoke,
-                              icon: const Icon(Icons.close),
-                              onPressed: _revoking != null
-                                  ? null
-                                  : () => _revoke(invite.id),
-                            ),
-                    );
-                  },
+              for (final invite in invitations) ...[
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.schedule),
+                  title: Text(invite.name),
+                  trailing: _revoking == invite.id
+                      ? const SizedBox.square(
+                          dimension: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : IconButton(
+                          tooltip: context.l10n.tripInvitationRevoke,
+                          icon: const Icon(Icons.close),
+                          onPressed: _revoking != null
+                              ? null
+                              : () => _revoke(invite.id),
+                        ),
                 ),
-              ),
+                const Divider(height: 1),
+              ],
             ],
           );
         },

@@ -282,6 +282,10 @@ class WorkspaceController {
     return _repository.loadSnapshot(tripId: tripId);
   }
 
+  Future<WorkspaceSnapshot> refreshSnapshotFromServer({required int tripId}) {
+    return _repository.loadSnapshot(tripId: tripId, allowOfflineCache: false);
+  }
+
   Future<TripExpensesPage> loadExpensesPage({
     required int tripId,
     int limit = 50,

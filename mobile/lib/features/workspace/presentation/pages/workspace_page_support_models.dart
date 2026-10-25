@@ -51,8 +51,6 @@ class _EditTripResult {
   final bool removeImage;
 }
 
-enum _TripImageSourceOption { camera, library, remove }
-
 class _ExpenseShareLine {
   const _ExpenseShareLine({
     required this.userId,

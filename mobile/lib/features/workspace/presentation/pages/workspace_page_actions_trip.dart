@@ -61,7 +61,12 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       _showSnack(context.l10n.onlyCreatorCanFinishTrip, isError: true);
       return;
     }
-    if (!snapshot.allMembersReadyToSettle) {
+    final isSolo = widget.trip.isSolo;
+    if (isSolo && _pendingQueueCount > 0) {
+      _showSnack(context.l10n.finishTripSyncPending, isError: true);
+      return;
+    }
+    if (!isSolo && !snapshot.allMembersReadyToSettle) {
       _showSnack(
         context.l10n.workspaceAllMembersMustMarkReadyBeforeStartingSettlements,
         isError: true,
@@ -72,8 +77,12 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     final confirmed = await showAppConfirmationDialog(
       context: context,
       title: context.l10n.finishTripTitle,
-      message: context.l10n.finishTripConfirmationText,
-      confirmLabel: context.l10n.finishTripStartSettlementsAction,
+      message: isSolo
+          ? context.l10n.finishSoloTripConfirmationText
+          : context.l10n.finishTripConfirmationText,
+      confirmLabel: isSolo
+          ? context.l10n.finishTripAction
+          : context.l10n.finishTripStartSettlementsAction,
       cancelLabel: context.l10n.cancelAction,
       icon: Icons.flag_circle_outlined,
     );
@@ -94,7 +103,9 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
           _showSnack(context.l10n.tripFinished);
           return;
         }
-        if (next.isArchived) {
+        if (isSolo && next.isArchived) {
+          _showSnack(context.l10n.soloTripArchived);
+        } else if (next.isArchived) {
           _showSnack(context.l10n.tripFullySettledArchived);
         } else {
           _showSnack(context.l10n.tripFinishedSettlementStarted);
@@ -551,29 +562,6 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     );
   }
 
-  Future<void> _openReceiptUrl(int expenseId) async {
-    final userId = widget.authController.currentUser?.id;
-    try {
-      final parsed = await widget.workspaceController.loadReceiptUri(
-        tripId: widget.trip.id,
-        expenseId: expenseId,
-      );
-      if (!mounted || widget.authController.currentUser?.id != userId) return;
-      if (parsed == null) {
-        _showSnack(context.l10n.receiptLinkInvalid, isError: true);
-        return;
-      }
-      final opened = await launchUrl(parsed, mode: LaunchMode.inAppBrowserView);
-      if (!opened && mounted) {
-        _showSnack(context.l10n.couldNotOpenReceiptLink, isError: true);
-      }
-    } catch (_) {
-      if (mounted) {
-        _showSnack(context.l10n.couldNotOpenReceiptLink, isError: true);
-      }
-    }
-  }
-
   bool _isCurrentTripOwner() {
     final userId = widget.authController.currentUser?.id ?? _currentUserId;
     if (userId <= 0) {
@@ -589,40 +577,47 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     final t = context.l10n;
     final canEdit = _isTripActive && widget.trip.canCurrentUserManageTrip;
     final canManageMembers = _canEditMembers && !widget.trip.isSolo;
+    final canFinishSolo = widget.trip.isSolo && _canEditMembers;
     final canDelete = _isTripActive && _isCurrentTripOwner();
-    if (!canEdit && !canDelete && !canManageMembers) {
+    if (!canEdit && !canDelete && !canManageMembers && !canFinishSolo) {
       return;
     }
 
     final choice = await showAppBottomSheet<String>(
       context: context,
-      builder: (sheetContext) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (canEdit)
-              AppActionSheetTile(
-                icon: Icons.edit_outlined,
-                title: '${t.editAction} ${t.tripTitleShort}',
-                onTap: () => Navigator.of(sheetContext).pop('edit'),
-              ),
-            if (canManageMembers)
-              AppActionSheetTile(
-                icon: Icons.group_add_outlined,
-                title: t.addMembersAction,
-                subtitle: context.l10n.workspaceInviteLinkOrAddFromFriends,
-                onTap: () => Navigator.of(sheetContext).pop('members'),
-              ),
-            if (canDelete)
-              AppActionSheetTile(
-                icon: Icons.delete_outline,
-                title: '${t.deleteAction} ${t.tripTitleShort}',
-                destructive: true,
-                onTap: () => Navigator.of(sheetContext).pop('delete'),
-              ),
+      builder: (sheetContext) => AppActionSheet(
+        key: const ValueKey('trip-actions-sheet'),
+        title: t.tripOptionsTitle,
+        children: [
+          if (canEdit)
+            AppPlainActionTile(
+              icon: Icons.edit_outlined,
+              title: t.editTripAction,
+              onTap: () => Navigator.of(sheetContext).pop('edit'),
+            ),
+          if (canManageMembers)
+            AppPlainActionTile(
+              icon: Icons.person_add_alt_outlined,
+              title: t.inviteTripMembersAction,
+              onTap: () => Navigator.of(sheetContext).pop('members'),
+            ),
+          if (canFinishSolo)
+            AppPlainActionTile(
+              icon: Icons.flag_outlined,
+              title: t.finishTripAction,
+              onTap: () => Navigator.of(sheetContext).pop('finish'),
+            ),
+          if (canDelete) ...[
+            const Divider(height: 16),
+            AppPlainActionTile(
+              icon: Icons.delete_outline,
+              title: t.deleteTripAction,
+              destructive: true,
+              onTap: () => Navigator.of(sheetContext).pop('delete'),
+            ),
           ],
-        );
-      },
+        ],
+      ),
     );
 
     if (!mounted || choice == null) {
@@ -641,6 +636,10 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       await _onDeleteCurrentTripPressed();
       return;
     }
+    if (choice == 'finish') {
+      await _onEndTripPressed();
+      return;
+    }
   }
 
   Future<void> _onEditCurrentTripPressed() async {
@@ -655,13 +654,19 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
 
-    final result = await _showEditTripDialog(widget.trip);
-    if (result == null || !mounted) {
+    final tripId = widget.trip.id;
+    final userId = widget.authController.currentUser?.id;
+    bool current() =>
+        mounted &&
+        widget.trip.id == tripId &&
+        widget.authController.currentUser?.id == userId;
+    final result = await _showEditTripDialog(_displayTrip);
+    if (result == null || !current()) {
       return;
     }
 
     final nextName = result.name.trim();
-    final hasNameChange = nextName != widget.trip.name.trim();
+    final hasNameChange = nextName != _displayTrip.name.trim();
     final imageBytes = result.imageBytes;
     final imageFileName = result.imageFileName?.trim() ?? '';
     final hasNewImage =
@@ -684,15 +689,20 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
           fileName: imageFileName,
           bytes: imageBytes,
         );
+        if (!current()) return;
         imagePath = uploaded.path;
       }
 
-      await widget.tripsController.updateTrip(
+      final updatedTrip = await widget.tripsController.updateTrip(
         tripId: widget.trip.id,
         name: nextName,
         imagePath: imagePath,
         removeImage: removeImage,
       );
+
+      if (!current()) return;
+      _updateState(() => _editedTrip = updatedTrip);
+      widget.onTripUpdated?.call(updatedTrip);
 
       await _loadData(showLoader: false);
       if (!mounted) {
@@ -719,273 +729,21 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
   }
 
   Future<_EditTripResult?> _showEditTripDialog(Trip trip) async {
-    final t = context.l10n;
-    final nameController = TextEditingController(text: trip.name.trim());
-    Uint8List? selectedImageBytes;
-    String? selectedImageName;
-    bool removeImageRequested = false;
-    String? errorText;
-
-    Future<void> onPickTripImage(
-      StateSetter setDialogState,
-      BuildContext dialogContext,
-    ) async {
-      final existingTripImageUrl = (trip.imageUrl ?? trip.imageThumbUrl ?? '')
-          .trim();
-      final hasExistingTripImage =
-          !removeImageRequested && existingTripImageUrl.isNotEmpty;
-      final hasImage = selectedImageBytes != null || hasExistingTripImage;
-
-      final selectedSource =
-          await showAppPlatformActionSheet<_TripImageSourceOption>(
-            context: dialogContext,
-            cancelLabel: t.cancelAction,
-            actions: [
-              AppPlatformAction(
-                value: _TripImageSourceOption.camera,
-                icon: Icons.photo_camera_outlined,
-                title: t.takePhotoAction,
-              ),
-              AppPlatformAction(
-                value: _TripImageSourceOption.library,
-                icon: Icons.photo_library_outlined,
-                title: t.chooseFromLibraryAction,
-              ),
-              if (hasImage)
-                AppPlatformAction(
-                  value: _TripImageSourceOption.remove,
-                  icon: Icons.delete_outline,
-                  title: context.l10n.profileRemoveImage,
-                  destructive: true,
-                ),
-            ],
-          );
-
-      if (!mounted || !dialogContext.mounted || selectedSource == null) {
-        return;
-      }
-      if (selectedSource == _TripImageSourceOption.remove) {
-        setDialogState(() {
-          selectedImageBytes = null;
-          selectedImageName = null;
-          removeImageRequested = true;
-        });
-        return;
-      }
-
-      final source = selectedSource == _TripImageSourceOption.camera
-          ? ImageSource.camera
-          : ImageSource.gallery;
-      final picked = await _pickTripImageForUploadFromSource(source);
-      if (!mounted || !dialogContext.mounted || picked == null) {
-        return;
-      }
-      setDialogState(() {
-        selectedImageBytes = picked.bytes;
-        selectedImageName = picked.fileName;
-        removeImageRequested = false;
-      });
-    }
-
-    try {
-      return await showDialog<_EditTripResult>(
-        context: context,
-        builder: (dialogContext) {
-          return StatefulBuilder(
-            builder: (context, setDialogState) {
-              final existingTripImageUrl =
-                  (trip.imageUrl ?? trip.imageThumbUrl ?? '').trim();
-              final hasExistingTripImage =
-                  !removeImageRequested && existingTripImageUrl.isNotEmpty;
-
-              return AlertDialog(
-                title: Text('${t.editAction} ${t.tripTitleShort}'),
-                content: SizedBox(
-                  width: 430,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () => unawaited(
-                                onPickTripImage(setDialogState, dialogContext),
-                              ),
-                              behavior: HitTestBehavior.opaque,
-                              child: SizedBox(
-                                width: 62,
-                                height: 62,
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Container(
-                                      width: 56,
-                                      height: 56,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: AppDesign.cardStroke(context),
-                                        ),
-                                        gradient:
-                                            selectedImageBytes == null &&
-                                                !hasExistingTripImage
-                                            ? AppDesign.brandGradient
-                                            : null,
-                                        color:
-                                            selectedImageBytes == null &&
-                                                hasExistingTripImage
-                                            ? Theme.of(context)
-                                                  .colorScheme
-                                                  .surfaceContainerHighest
-                                            : null,
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: selectedImageBytes != null
-                                          ? ClipOval(
-                                              child: Image.memory(
-                                                selectedImageBytes!,
-                                                width: 56,
-                                                height: 56,
-                                                fit: BoxFit.cover,
-                                                gaplessPlayback: true,
-                                              ),
-                                            )
-                                          : hasExistingTripImage
-                                          ? ClipOval(
-                                              child: Image.network(
-                                                existingTripImageUrl,
-                                                width: 56,
-                                                height: 56,
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (_, _, _) =>
-                                                    const Icon(
-                                                      Icons.image_outlined,
-                                                      color: AppDesign
-                                                          .darkForeground,
-                                                      size: 22,
-                                                    ),
-                                              ),
-                                            )
-                                          : const Icon(
-                                              Icons.image_outlined,
-                                              color: AppDesign.darkForeground,
-                                              size: 22,
-                                            ),
-                                    ),
-                                    Positioned(
-                                      right: 0,
-                                      bottom: 0,
-                                      child: Container(
-                                        width: 24,
-                                        height: 24,
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.surface,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: AppDesign.cardStroke(
-                                              context,
-                                            ),
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Icon(
-                                          Icons.photo_camera_rounded,
-                                          size: 14,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.onSurface,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: TextField(
-                                controller: nameController,
-                                decoration: InputDecoration(
-                                  labelText: t.tripNameLabel,
-                                  hintText: t.tripNameHint,
-                                ),
-                                onChanged: (_) {
-                                  setDialogState(() {
-                                    errorText = null;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        if (selectedImageName != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            context.l10n.tripsSelectedImage(selectedImageName!),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ] else if (existingTripImageUrl.isNotEmpty &&
-                            !removeImageRequested) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            context.l10n.tripsTripImageAlreadySet,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                        if (errorText != null) ...[
-                          const SizedBox(height: 12),
-                          Text(
-                            errorText!,
-                            style: Theme.of(context).textTheme.bodyMedium
-                                ?.copyWith(
-                                  color: Theme.of(context).colorScheme.error,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(t.cancelAction),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      final nextName = nameController.text.trim();
-                      if (nextName.length < 2 || nextName.length > 120) {
-                        setDialogState(() {
-                          errorText = t.tripNameLengthValidation;
-                        });
-                        return;
-                      }
-                      Navigator.of(context).pop(
-                        _EditTripResult(
-                          name: nextName,
-                          imageFileName: selectedImageName,
-                          imageBytes: selectedImageBytes,
-                          removeImage: removeImageRequested,
-                        ),
-                      );
-                    },
-                    child: Text(t.saveAction),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
-    } finally {
-      nameController.dispose();
-    }
+    final result = await Navigator.of(context).push<TripFormDraft>(
+      AppFormPageRoute(
+        builder: (_) => TripFormPage(
+          trip: trip,
+          pickImage: _pickTripImageForUploadFromSource,
+        ),
+      ),
+    );
+    if (result == null) return null;
+    return _EditTripResult(
+      name: result.name,
+      imageFileName: result.image?.fileName,
+      imageBytes: result.image?.bytes,
+      removeImage: result.removeImage,
+    );
   }
 
   Future<void> _openSettingsSheet() async {

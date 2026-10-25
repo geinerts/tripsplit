@@ -19,13 +19,13 @@ Future<T?> showAppBottomSheet<T>({
     context: context,
     isScrollControlled: isScrollControlled,
     useRootNavigator: useRootNavigator,
-    useSafeArea: false,
+    useSafeArea: useSafeArea,
     enableDrag: enableDrag,
     showDragHandle: false,
     backgroundColor: Colors.transparent,
     barrierColor:
         barrierColor ?? Colors.black.withValues(alpha: isDark ? 0.62 : 0.38),
-    constraints: constraints,
+    constraints: constraints ?? const BoxConstraints(maxWidth: 640),
     builder: (sheetContext) {
       if (!wrapWithSurface) {
         return builder(sheetContext);
@@ -95,7 +95,7 @@ class AppBottomSheetSurface extends StatelessWidget {
                   child: const SizedBox(width: 42, height: 4),
                 ),
               ),
-            child,
+            Flexible(child: child),
             if (bottomSafePadding > 0) SizedBox(height: bottomSafePadding),
           ],
         ),

@@ -36,6 +36,23 @@ class _WorkspaceRemote implements WorkspaceRemoteDataSource {
   final release = Completer<void>();
   bool blockFirst = true;
   bool fail = false;
+  Object? notificationError;
+  @override
+  Future<WorkspaceNotificationsInbox> loadGlobalNotifications({
+    int limit = 80,
+    String? cursor,
+    int? offset,
+  }) async {
+    if (notificationError != null) throw notificationError!;
+    return const WorkspaceNotificationsInbox(unreadCount: 0, notifications: []);
+  }
+
+  @override
+  Future<WorkspaceSnapshot> loadSnapshot({required int tripId}) async {
+    if (fail) throw offline;
+    return snapshot(11);
+  }
+
   @override
   Future<void> deleteExpense({
     required int tripId,
@@ -112,6 +129,31 @@ void main() {
       );
       expect((await workspace.readGlobalNotificationsInbox())!.unreadCount, 11);
       expect((await workspace.readQueue()).single['id'], 'A');
+    },
+  );
+
+  test(
+    'Home refresh surfaces network failure instead of silently returning disk cache',
+    () async {
+      await trips.writeTrips([trip('Saved trip')]);
+      final remote = _TripsRemote();
+      final repository = TripsRepositoryImpl(remote, trips);
+      final strictRequest = repository.listTrips(allowOfflineCache: false);
+      final check = expectLater(
+        strictRequest,
+        throwsA(
+          isA<ApiException>().having(
+            (error) => error.isNetworkError,
+            'network failure',
+            true,
+          ),
+        ),
+      );
+      remote.result.completeError(offline);
+      await check;
+      expect((await trips.readTrips()).single.name, 'Saved trip');
+      // Existing callers retain their offline fallback contract.
+      expect((await repository.listTrips()).single.name, 'Saved trip');
     },
   );
 
@@ -203,6 +245,59 @@ void main() {
       },
     );
   }
+
+  test(
+    'notification fallback is labelled and never bypasses access denial',
+    () async {
+      await workspace.writeGlobalNotificationsInbox(
+        const WorkspaceNotificationsInbox(unreadCount: 4, notifications: []),
+      );
+      final remote = _WorkspaceRemote()..notificationError = offline;
+      final repository = WorkspaceRepositoryImpl(remote, workspace);
+      final cached = await repository.loadGlobalNotifications();
+      expect(cached.isCached, true);
+      expect(cached.unreadCount, 4);
+      remote.notificationError = const ApiException(
+        'Forbidden',
+        statusCode: 403,
+      );
+      await expectLater(
+        repository.loadGlobalNotifications(),
+        throwsA(isA<ApiException>()),
+      );
+      remote.notificationError = null;
+      expect((await repository.loadGlobalNotifications()).isCached, false);
+    },
+  );
+
+  test(
+    'strict workspace refresh exposes network failure while ordinary load uses cache',
+    () async {
+      await workspace.writeSnapshot(tripId: 7, snapshot: snapshot(22));
+      final repository = WorkspaceRepositoryImpl(
+        _WorkspaceRemote()..fail = true,
+        workspace,
+      );
+      expect(
+        (await repository.loadSnapshot(tripId: 7)).unreadNotifications,
+        22,
+      );
+      await expectLater(
+        repository.loadSnapshot(tripId: 7, allowOfflineCache: false),
+        throwsA(
+          isA<ApiException>().having(
+            (error) => error.isNetworkError,
+            'network failure',
+            true,
+          ),
+        ),
+      );
+      expect(
+        (await workspace.readSnapshot(tripId: 7))!.unreadNotifications,
+        22,
+      );
+    },
+  );
 
   test(
     'failed old-account mutation is never queued under the next account',

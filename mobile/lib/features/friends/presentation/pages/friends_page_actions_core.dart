@@ -38,7 +38,7 @@ extension _FriendsPageActionsCore on _FriendsPageState {
   }
 
   void _onScroll() {
-    if (!_scrollController.hasClients) {
+    if (!_scrollController.hasClients || _errorText != null || _isLoading) {
       return;
     }
     final position = _scrollController.position;
@@ -49,7 +49,7 @@ extension _FriendsPageActionsCore on _FriendsPageState {
   }
 
   Future<void> _loadMoreFriends() async {
-    if (_isLoadingMoreFriends || !_friendsHasMore) {
+    if (_isLoading || _isLoadingMoreFriends || !_friendsHasMore) {
       return;
     }
     final snapshot = _snapshot;
@@ -57,7 +57,9 @@ extension _FriendsPageActionsCore on _FriendsPageState {
       return;
     }
 
+    final generation = _loadGeneration;
     _updateState(() {
+      _errorText = null;
       _isLoadingMoreFriends = true;
     });
     try {
@@ -67,12 +69,13 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         cursor: _friendsNextCursor,
         offset: _friendsNextCursor == null ? _friendsNextOffset : null,
       );
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
 
-      final existing = snapshot.friends.map((item) => item.id).toSet();
-      final mergedFriends = <FriendUser>[...snapshot.friends];
+      final current = _snapshot!;
+      final existing = current.friends.map((item) => item.id).toSet();
+      final mergedFriends = <FriendUser>[...current.friends];
       for (final friend in page.friends) {
         if (existing.add(friend.id)) {
           mergedFriends.add(friend);
@@ -87,14 +90,16 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         _friendsNextOffset = page.nextOffset;
         _snapshot = _buildSnapshot(
           friends: mergedFriends,
-          pendingSent: snapshot.pendingSent,
-          pendingReceived: snapshot.pendingReceived,
+          pendingSent: current.pendingSent,
+          pendingReceived: current.pendingReceived,
         );
       });
-    } catch (_) {
-      // Keep infinite scroll silent; user can still pull-to-refresh.
+    } catch (error) {
+      if (mounted && generation == _loadGeneration) {
+        _handleFriendsLoadError(error);
+      }
     } finally {
-      if (mounted) {
+      if (mounted && generation == _loadGeneration) {
         _updateState(() {
           _isLoadingMoreFriends = false;
         });
@@ -103,7 +108,9 @@ extension _FriendsPageActionsCore on _FriendsPageState {
   }
 
   Future<void> _loadMorePendingReceived() async {
-    if (_isLoadingMorePendingReceived || !_pendingReceivedHasMore) {
+    if (_isLoading ||
+        _isLoadingMorePendingReceived ||
+        !_pendingReceivedHasMore) {
       return;
     }
     final snapshot = _snapshot;
@@ -111,7 +118,9 @@ extension _FriendsPageActionsCore on _FriendsPageState {
       return;
     }
 
+    final generation = _loadGeneration;
     _updateState(() {
+      _errorText = null;
       _isLoadingMorePendingReceived = true;
     });
     try {
@@ -123,14 +132,15 @@ extension _FriendsPageActionsCore on _FriendsPageState {
             ? _pendingReceivedNextOffset
             : null,
       );
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
 
-      final existing = snapshot.pendingReceived
+      final current = _snapshot!;
+      final existing = current.pendingReceived
           .map((item) => item.requestId)
           .toSet();
-      final merged = <FriendRequest>[...snapshot.pendingReceived];
+      final merged = <FriendRequest>[...current.pendingReceived];
       for (final req in page.requests) {
         if (existing.add(req.requestId)) {
           merged.add(req);
@@ -144,13 +154,17 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         _pendingReceivedNextCursor = page.nextCursor;
         _pendingReceivedNextOffset = page.nextOffset;
         _snapshot = _buildSnapshot(
-          friends: snapshot.friends,
-          pendingSent: snapshot.pendingSent,
+          friends: current.friends,
+          pendingSent: current.pendingSent,
           pendingReceived: merged,
         );
       });
+    } catch (error) {
+      if (mounted && generation == _loadGeneration) {
+        _handleFriendsLoadError(error);
+      }
     } finally {
-      if (mounted) {
+      if (mounted && generation == _loadGeneration) {
         _updateState(() {
           _isLoadingMorePendingReceived = false;
         });
@@ -159,7 +173,7 @@ extension _FriendsPageActionsCore on _FriendsPageState {
   }
 
   Future<void> _loadMorePendingSent() async {
-    if (_isLoadingMorePendingSent || !_pendingSentHasMore) {
+    if (_isLoading || _isLoadingMorePendingSent || !_pendingSentHasMore) {
       return;
     }
     final snapshot = _snapshot;
@@ -167,7 +181,9 @@ extension _FriendsPageActionsCore on _FriendsPageState {
       return;
     }
 
+    final generation = _loadGeneration;
     _updateState(() {
+      _errorText = null;
       _isLoadingMorePendingSent = true;
     });
     try {
@@ -177,14 +193,15 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         cursor: _pendingSentNextCursor,
         offset: _pendingSentNextCursor == null ? _pendingSentNextOffset : null,
       );
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
 
-      final existing = snapshot.pendingSent
+      final current = _snapshot!;
+      final existing = current.pendingSent
           .map((item) => item.requestId)
           .toSet();
-      final merged = <FriendRequest>[...snapshot.pendingSent];
+      final merged = <FriendRequest>[...current.pendingSent];
       for (final req in page.requests) {
         if (existing.add(req.requestId)) {
           merged.add(req);
@@ -199,13 +216,17 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         _pendingSentNextCursor = page.nextCursor;
         _pendingSentNextOffset = page.nextOffset;
         _snapshot = _buildSnapshot(
-          friends: snapshot.friends,
+          friends: current.friends,
           pendingSent: merged,
-          pendingReceived: snapshot.pendingReceived,
+          pendingReceived: current.pendingReceived,
         );
       });
+    } catch (error) {
+      if (mounted && generation == _loadGeneration) {
+        _handleFriendsLoadError(error);
+      }
     } finally {
-      if (mounted) {
+      if (mounted && generation == _loadGeneration) {
         _updateState(() {
           _isLoadingMorePendingSent = false;
         });
@@ -216,17 +237,14 @@ extension _FriendsPageActionsCore on _FriendsPageState {
   Future<void> _loadSnapshot({required bool showLoader}) async {
     final trace = PerfMonitor.start('screen.friends.load');
     var success = false;
-    final shouldShowLoader = showLoader && _snapshot == null;
-    if (shouldShowLoader) {
-      _updateState(() {
-        _isLoading = true;
-        _errorText = null;
-      });
-    } else {
-      _updateState(() {
-        _errorText = null;
-      });
-    }
+    final generation = ++_loadGeneration;
+    _updateState(() {
+      _isLoading = true;
+      _errorText = null;
+      _isLoadingMoreFriends = false;
+      _isLoadingMorePendingReceived = false;
+      _isLoadingMorePendingSent = false;
+    });
 
     try {
       final pages = await Future.wait<FriendsSectionPage>([
@@ -243,7 +261,7 @@ extension _FriendsPageActionsCore on _FriendsPageState {
           limit: _FriendsPageState._pageLimit,
         ),
       ]);
-      if (!mounted) {
+      if (!mounted || generation != _loadGeneration) {
         return;
       }
 
@@ -272,35 +290,13 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         _snapshot = snapshot;
       });
       success = true;
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      final message = error.message.trim().isNotEmpty
-          ? error.message.trim()
-          : context.l10n.workspaceFailedToLoadFriends;
-      if (_snapshot == null) {
-        _updateState(() {
-          _errorText = message;
-        });
-      } else {
-        _showSnack(message, isError: true);
-      }
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      final message = context.l10n.friendsUnexpectedErrorLoadingFriends;
-      if (_snapshot == null) {
-        _updateState(() {
-          _errorText = message;
-        });
-      } else {
-        _showSnack(message, isError: true);
+    } catch (error) {
+      if (mounted && generation == _loadGeneration) {
+        _handleFriendsLoadError(error);
       }
     } finally {
       trace.stop(success: success);
-      if (mounted) {
+      if (mounted && generation == _loadGeneration) {
         _updateState(() {
           _isLoading = false;
           _isLoadingMoreFriends = false;
@@ -309,6 +305,29 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         });
       }
     }
+  }
+
+  void _handleFriendsLoadError(Object error) {
+    final denied =
+        error is ApiException &&
+        ([401, 403, 404].contains(error.statusCode) ||
+            error.code == 'account_changed');
+    _updateState(() {
+      _errorText = error is ApiException && error.message.trim().isNotEmpty
+          ? error.message
+          : context.l10n.workspaceFailedToLoadFriends;
+      if (denied) {
+        _loadGeneration++;
+        _searchGeneration++;
+        _snapshot = null;
+        _friendSearchDebounce?.cancel();
+        _friendSearchResults = [];
+        _isSearchingUsers = false;
+        _friendsHasMore = _pendingReceivedHasMore = _pendingSentHasMore = false;
+        _isLoading = _isLoadingMoreFriends = _isLoadingMorePendingReceived =
+            _isLoadingMorePendingSent = false;
+      }
+    });
   }
 
   void _showSnack(String message, {bool isError = false}) {

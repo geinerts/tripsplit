@@ -19,9 +19,9 @@ extension _WorkspacePageLayout on _WorkspacePageState {
               tooltip: MaterialLocalizations.of(context).backButtonTooltip,
             ),
       title: Text(
-        widget.trip.name.isEmpty
+        _displayTrip.name.isEmpty
             ? t.tripWithId(widget.trip.id)
-            : widget.trip.name,
+            : _displayTrip.name,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: titleStyle,
@@ -55,327 +55,252 @@ extension _WorkspacePageLayout on _WorkspacePageState {
   }
 
   Widget _buildBody(BuildContext context) {
-    if (_isStartingWithAddExpense) {
+    if (_isStartingWithAddExpense || _isLoading) {
       return _buildWorkspaceLoadingSurface(context);
     }
-
-    if (_isLoading) {
-      return _buildWorkspaceLoadingSurface(context);
-    }
-
-    if (_errorText != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _errorText!,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () => _loadData(showLoader: true),
-                child: Text(context.l10n.retryAction),
-              ),
-            ],
+    if (_errorText != null || _snapshot == null) {
+      return ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          _buildWorkspaceIllustratedState(
+            asset: 'splyto_trip_load_error.svg',
+            title: context.l10n.workspaceLoadErrorTitle,
+            message: _errorText ?? context.l10n.noTripDataLoaded,
+            action: OutlinedButton.icon(
+              onPressed: () => _loadData(showLoader: true),
+              icon: const Icon(Icons.refresh),
+              label: Text(context.l10n.retryAction),
+            ),
           ),
-        ),
+        ],
       );
     }
-
-    final snapshot = _snapshot;
-    if (snapshot == null) {
-      return Center(child: Text(context.l10n.noTripDataLoaded));
-    }
-
-    final tabIndex = _workspaceTabIndex.clamp(0, 3);
+    final snapshot = _snapshot!;
+    final tab = widget.trip.isSolo ? 0 : _workspaceTabIndex.clamp(0, 3);
+    final tabHeight = math.max(
+      56.0,
+      MediaQuery.textScalerOf(context).scale(16) * 1.5 + 24,
+    );
     return AppBackground(
-      child: RefreshIndicator(
-        triggerMode: RefreshIndicatorTriggerMode.anywhere,
-        onRefresh: () {
-          if (_isMutating) {
-            return Future<void>.value();
-          }
-          return _loadData(showLoader: false);
-        },
-        notificationPredicate: (notification) {
-          return notification.metrics.axis == Axis.vertical &&
-              notification.depth == 0;
-        },
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics(),
-          ),
-          slivers: [
-            SliverToBoxAdapter(child: _buildOverviewPanel(context, snapshot)),
-            SliverAppBar(
-              pinned: true,
-              automaticallyImplyLeading: false,
-              primary: false,
-              toolbarHeight: 60,
-              collapsedHeight: 60,
-              expandedHeight: 60,
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              elevation: 0,
-              flexibleSpace: _buildWorkspaceStickyHeader(context),
-            ),
-            SliverToBoxAdapter(child: _buildWorkspaceTab(snapshot, tabIndex)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWorkspaceTab(WorkspaceSnapshot snapshot, int tabIndex) {
-    switch (tabIndex) {
-      case 0:
-        return _buildExpensesTab(snapshot);
-      case 1:
-        return _buildBalancesTab(snapshot);
-      case 2:
-        return _buildSettleTab(snapshot);
-      case 3:
-        return _buildActivityTab();
-      default:
-        return _buildExpensesTab(snapshot);
-    }
-  }
-
-  Widget _buildWorkspaceTabSwitcher(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final selectedTab = _workspaceTabIndex.clamp(0, 3);
-    final activeColor = isDark ? AppDesign.darkAccent : AppDesign.lightPrimary;
-    final dividerColor = isDark
-        ? colors.outlineVariant.withValues(alpha: 0.28)
-        : AppDesign.lightStroke.withValues(alpha: 0.95);
-    final labelStyle = Theme.of(context).textTheme.titleSmall?.copyWith(
-      fontSize: 15,
-      height: 1.0,
-      letterSpacing: 0.1,
-    );
-
-    Widget buildTab({required int index, required String label}) {
-      final selected = selectedTab == index;
-      final foreground = selected
-          ? (isDark ? AppDesign.darkForeground : AppDesign.lightForeground)
-          : (isDark
-                ? colors.onSurfaceVariant.withValues(alpha: 0.64)
-                : AppDesign.lightMuted.withValues(alpha: 0.86));
-
-      return Expanded(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              if (index == _workspaceTabIndex) {
-                return;
-              }
-              _updateState(() {
-                _workspaceTabIndex = index;
-              });
-              if (index == 3 && !_activityLoaded) {
-                unawaited(_loadTripActivity(reset: true));
-              }
-            },
-            child: SizedBox(
-              height: 48,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        label,
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: labelStyle?.copyWith(
-                          color: foreground,
-                          fontWeight: selected
-                              ? FontWeight.w800
-                              : FontWeight.w700,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1040),
+          child: RefreshIndicator(
+            triggerMode: RefreshIndicatorTriggerMode.anywhere,
+            onRefresh: () => _isMutating
+                ? Future<void>.value()
+                : _loadData(showLoader: false),
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 2,
+                    child: _syncState == _SyncState.syncing
+                        ? const LinearProgressIndicator()
+                        : null,
+                  ),
+                ),
+                if (_refreshError != null)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                    sliver: SliverToBoxAdapter(
+                      child: Semantics(
+                        liveRegion: true,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              context.l10n.workspaceCachedWarning,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            Text(
+                              _refreshError!,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: TextButton.icon(
+                                onPressed: _onRefreshPressed,
+                                icon: const Icon(Icons.refresh),
+                                label: Text(context.l10n.retryAction),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      return AnimatedContainer(
-                        duration: const Duration(milliseconds: 220),
-                        curve: Curves.easeOutCubic,
-                        width: selected
-                            ? math.min(constraints.maxWidth * 0.70, 84)
-                            : 0,
-                        height: 3,
-                        decoration: BoxDecoration(
-                          color: activeColor,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                      );
+                SliverToBoxAdapter(
+                  child: _buildOverviewPanel(context, snapshot),
+                ),
+                if (!widget.trip.isSolo)
+                  SliverAppBar(
+                    pinned: true,
+                    automaticallyImplyLeading: false,
+                    primary: false,
+                    toolbarHeight: tabHeight,
+                    collapsedHeight: tabHeight,
+                    expandedHeight: tabHeight,
+                    backgroundColor: AppDesign.pageBaseColor(context),
+                    surfaceTintColor: Colors.transparent,
+                    elevation: 0,
+                    flexibleSpace: _buildWorkspaceTabSwitcher(context),
+                  ),
+                if (tab == 0)
+                  ..._buildExpensesSlivers(snapshot)
+                else if (tab == 3)
+                  ..._buildActivitySlivers()
+                else
+                  SliverToBoxAdapter(
+                    child: switch (tab) {
+                      1 => _buildBalancesTab(snapshot),
+                      2 => _buildSettleTab(snapshot),
+                      _ => const SizedBox.shrink(),
                     },
                   ),
-                ],
-              ),
+              ],
             ),
           ),
         ),
-      );
-    }
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: dividerColor)),
-      ),
-      child: Row(
-        children: [
-          buildTab(index: 0, label: context.l10n.navExpenses),
-          buildTab(index: 1, label: context.l10n.navBalances),
-          buildTab(index: 2, label: context.l10n.workspaceSettle),
-          buildTab(
-            index: 3,
-            label: Localizations.localeOf(context).languageCode == 'lv'
-                ? 'Aktivitāte'
-                : 'Activity',
-          ),
-        ],
       ),
     );
   }
 
-  Widget _buildWorkspaceStickyHeader(BuildContext context) {
+  Widget _buildWorkspaceTabSwitcher(BuildContext context) {
+    final tabs = <(int, String)>[
+      (0, context.l10n.navExpenses),
+      if (!widget.trip.isSolo) (1, context.l10n.navBalances),
+      if (!widget.trip.isSolo) (2, context.l10n.workspaceSettle),
+      if (!widget.trip.isSolo) (3, context.l10n.workspaceActivityTab),
+    ];
+    final colors = Theme.of(context).colorScheme;
+    Widget tabButton((int, String) tab) => Semantics(
+      selected: _workspaceTabIndex == tab.$1,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              width: 2,
+              color: _workspaceTabIndex == tab.$1
+                  ? colors.primary
+                  : Colors.transparent,
+            ),
+          ),
+        ),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            minimumSize: const Size(48, 48),
+            foregroundColor: _workspaceTabIndex == tab.$1
+                ? colors.onSurface
+                : colors.onSurfaceVariant,
+            shape: const RoundedRectangleBorder(),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          ),
+          onPressed: () {
+            _updateState(() => _workspaceTabIndex = tab.$1);
+            if (tab.$1 == 3 && !_activityLoaded) {
+              unawaited(_loadTripActivity(reset: true));
+            }
+          },
+          child: Text(tab.$2),
+        ),
+      ),
+    );
     return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 4, 18, 8),
-      child: _buildWorkspaceTabSwitcher(context),
-    );
-  }
-
-  Widget _buildWorkspaceLoadingSurface(BuildContext context) {
-    return AppBackground(
-      child: SafeArea(
-        top: !widget.showAppBar,
-        bottom: !widget.showBottomNav,
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
-          ),
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 18),
-          children: [
-            _buildWorkspaceLoadingOverviewSkeleton(context),
-            const SizedBox(height: 10),
-            _buildWorkspaceLoadingTabSwitcherSkeleton(context),
-            const SizedBox(height: 12),
-            _buildWorkspaceLoadingSectionSkeleton(context),
-            const SizedBox(height: 12),
-            _buildWorkspaceLoadingExpenseCardSkeleton(context),
-            const SizedBox(height: 10),
-            _buildWorkspaceLoadingExpenseCardSkeleton(context),
-          ],
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: colors.outlineVariant)),
+        ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final labelsFit =
+                tabs.fold<double>(0, (sum, tab) {
+                  final painter = TextPainter(
+                    text: TextSpan(
+                      text: tab.$2,
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    textDirection: Directionality.of(context),
+                    textScaler: MediaQuery.textScalerOf(context),
+                  )..layout();
+                  return sum + painter.width + 16;
+                }) <=
+                constraints.maxWidth;
+            return labelsFit
+                ? Row(
+                    children: [
+                      for (final tab in tabs) Expanded(child: tabButton(tab)),
+                    ],
+                  )
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [for (final tab in tabs) tabButton(tab)],
+                    ),
+                  );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildWorkspaceLoadingOverviewSkeleton(BuildContext context) {
-    return Container(
-      height: 210,
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppDesign.cardStroke(context)),
-        color: AppDesign.cardSurface(context).withValues(alpha: 0.88),
-      ),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildWorkspaceIllustratedState({
+    required String asset,
+    required String title,
+    required String message,
+    Widget? action,
+  }) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+      child: Column(
         children: [
-          AppSkeletonBlock(width: 170, height: 36, radius: 12),
-          SizedBox(height: 12),
-          AppSkeletonBlock(width: 84, height: 84, radius: 42),
-          Spacer(),
-          AppSkeletonBlock(height: 14, radius: 8),
-          SizedBox(height: 8),
-          AppSkeletonBlock(height: 14, radius: 8),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWorkspaceLoadingTabSwitcherSkeleton(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppDesign.cardStroke(context)),
-        color: AppDesign.cardSurface(context).withValues(alpha: 0.88),
-      ),
-      child: const Row(
-        children: [
-          Expanded(child: AppSkeletonBlock(height: 44, radius: 18)),
-          SizedBox(width: 8),
-          Expanded(child: AppSkeletonBlock(height: 44, radius: 18)),
-          SizedBox(width: 8),
-          Expanded(child: AppSkeletonBlock(height: 44, radius: 18)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWorkspaceLoadingSectionSkeleton(BuildContext context) {
-    return const Row(
-      children: [
-        AppSkeletonBlock(width: 132, height: 30, radius: 10),
-        SizedBox(width: 10),
-        AppSkeletonBlock(width: 30, height: 30, radius: 15),
-      ],
-    );
-  }
-
-  Widget _buildWorkspaceLoadingExpenseCardSkeleton(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppDesign.cardStroke(context)),
-        color: AppDesign.cardSurface(context).withValues(alpha: 0.88),
-      ),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppSkeletonBlock(width: 64, height: 64, radius: 18),
-              SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppSkeletonBlock(width: 140, height: 24, radius: 10),
-                    SizedBox(height: 8),
-                    AppSkeletonBlock(width: 110, height: 18, radius: 8),
-                  ],
-                ),
-              ),
-              SizedBox(width: 8),
-              AppSkeletonBlock(width: 92, height: 24, radius: 10),
-            ],
+          SplytoIllustration('assets/branding/$asset', width: 180, height: 140),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium,
           ),
-          SizedBox(height: 12),
-          Row(
-            children: [
-              AppSkeletonBlock(width: 31, height: 31, radius: 16),
-              SizedBox(width: 8),
-              AppSkeletonBlock(width: 120, height: 16, radius: 8),
-            ],
+          const SizedBox(height: 8),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           ),
+          if (action != null) ...[const SizedBox(height: 16), action],
         ],
       ),
     );
   }
+
+  Widget _buildWorkspaceLoadingSurface(BuildContext context) => Semantics(
+    label: context.l10n.workspaceLoadingTrip,
+    child: ExcludeSemantics(
+      child: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const AspectRatio(
+            aspectRatio: 2.3,
+            child: AppSkeletonBlock(radius: 8),
+          ),
+          const SizedBox(height: 16),
+          const AppSkeletonBlock(width: 160, height: 20),
+          const SizedBox(height: 24),
+          const AppSkeletonBlock(height: 72),
+          const SizedBox(height: 24),
+          const AppSkeletonBlock(height: 48),
+          for (var i = 0; i < 3; i++)
+            const Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: AppSkeletonBlock(height: 72, radius: 8),
+            ),
+        ],
+      ),
+    ),
+  );
 }

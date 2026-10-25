@@ -1,212 +1,144 @@
 part of 'workspace_page.dart';
 
 extension _WorkspacePageBalancesTab on _WorkspacePageState {
-  Widget _buildBalancesTab(WorkspaceSnapshot snapshot) {
-    final colors = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final t = context.l10n;
-    final usersById = <int, WorkspaceUser>{
-      for (final user in snapshot.users) user.id: user,
-    };
-    final balances = snapshot.balances.toList(growable: false)
-      ..sort((a, b) => b.net.abs().compareTo(a.net.abs()));
-    const previewBalanceCount = 4;
-    final hasBalanceOverflow = balances.length > previewBalanceCount;
-    final visibleBalances = _showAllBalances
-        ? balances
-        : balances.take(previewBalanceCount).toList(growable: false);
-    final maxAbsNet = visibleBalances.fold<double>(
-      1,
-      (maxValue, item) => math.max(maxValue, item.net.abs()),
-    );
+  String _balanceMoney(double value) => AppFormatters.displayCurrencyFromCents(
+    context,
+    (value * 100).round(),
+    currencyCode: widget.trip.currencyCode,
+  );
 
-    return ListView(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 20),
-      children: [
-        if (visibleBalances.isEmpty)
-          AppEmptyState(
-            icon: Icons.balance_outlined,
-            title: t.noBalancesYet,
-            message:
-                'Balances appear after the first expense. Add one shared cost to see who owes what.',
-            actionLabel: snapshot.isActive ? 'Add first expense' : null,
-            onAction: snapshot.isActive ? _onAddExpensePressed : null,
-          )
-        else
-          ...visibleBalances.map((item) {
-            final netColor = item.net < 0
-                ? AppDesign.lightDestructive
-                : AppDesign.lightSuccess;
-            final member = usersById[item.id];
-            final preferredName = (member?.preferredName ?? item.nickname)
-                .trim();
-            final displayName = preferredName.isEmpty
-                ? t.userWithId(item.id)
-                : preferredName;
-            final nickname = (member?.nickname ?? item.nickname).trim();
-            final showNicknameSecondary =
-                nickname.isNotEmpty &&
-                displayName.toLowerCase() != nickname.toLowerCase();
-            final differenceRatio = (item.net.abs() / maxAbsNet)
-                .clamp(0.0, 1.0)
-                .toDouble();
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Card(
-                color: isDark ? colors.surface : AppDesign.lightSurface,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  side: BorderSide(
-                    color: isDark
-                        ? colors.outlineVariant.withValues(alpha: 0.32)
-                        : AppDesign.lightStroke,
-                  ),
-                ),
-                elevation: 0,
-                shadowColor: Colors.transparent,
-                child: _SplytoPressScale(
-                  borderRadius: BorderRadius.circular(24),
-                  onTap: () =>
-                      _openBalanceDetails(snapshot: snapshot, item: item),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _largeMemberAvatar(
-                              id: item.id,
-                              name: displayName,
-                              avatarUrl:
-                                  member?.avatarThumbUrl ?? member?.avatarUrl,
-                              size: 62,
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    displayName,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w800,
-                                          color: isDark
-                                              ? null
-                                              : AppDesign.lightForeground,
-                                        ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+  String _balanceDescription(double net) => net.abs() < .005
+      ? context.l10n.workspaceSettledWithTheGroup
+      : net < 0
+      ? context.l10n.workspaceOwesToTheGroup
+      : context.l10n.workspaceGetsBackFromTheGroup;
+
+  Widget _buildBalancesTab(WorkspaceSnapshot snapshot) {
+    final t = context.l10n;
+    final theme = Theme.of(context);
+    final users = {for (final user in snapshot.users) user.id: user};
+    final balances = snapshot.balances.toList()
+      ..sort((a, b) => b.net.abs().compareTo(a.net.abs()));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (balances.isEmpty)
+            AppEmptyState(
+              icon: Icons.balance_outlined,
+              title: t.noBalancesYet,
+              message: t.balanceEmptyBody,
+              actionLabel: snapshot.isActive ? t.addExpensesAction : null,
+              onAction: snapshot.isActive ? _onAddExpensePressed : null,
+            ),
+          for (final item in balances) ...[
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                key: ValueKey('balance-row-${item.id}'),
+                onTap: () =>
+                    _openBalanceDetails(snapshot: snapshot, item: item),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final user = users[item.id];
+                      final name = _paymentMemberName(
+                        item.nickname,
+                        item.id,
+                        user,
+                      );
+                      final stacked =
+                          constraints.maxWidth < 340 ||
+                          MediaQuery.textScalerOf(context).scale(16) > 21;
+                      final amount = Text(
+                        '${item.net > .004 ? '+' : ''}${_balanceMoney(item.net)}',
+                        key: ValueKey('balance-amount-${item.id}'),
+                        textAlign: TextAlign.end,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: item.net.abs() < .005
+                              ? theme.colorScheme.onSurface
+                              : (item.net < 0
+                                    ? theme.colorScheme.error
+                                    : theme.colorScheme.primary),
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      );
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _largeMemberAvatar(
+                            id: item.id,
+                            name: name,
+                            avatarUrl: user?.avatarThumbUrl ?? user?.avatarUrl,
+                            size: 44,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  name,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.titleMedium,
+                                ),
+                                Text(
+                                  _balanceDescription(item.net),
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
                                   ),
-                                  if (showNicknameSecondary)
-                                    Text(
-                                      nickname,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: isDark
-                                                ? colors.onSurfaceVariant
-                                                : AppDesign.lightMuted,
-                                          ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    item.net < 0
-                                        ? context.l10n.workspaceOwesToTheGroup
-                                        : context
-                                              .l10n
-                                              .workspaceGetsBackFromGroup,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleSmall
-                                        ?.copyWith(
-                                          fontSize: 15,
-                                          color: isDark
-                                              ? colors.onSurfaceVariant
-                                              : AppDesign.lightMuted,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                ),
+                                if (stacked) ...[
+                                  const SizedBox(height: 8),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: amount,
                                   ),
                                 ],
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              _signedMoney(
-                                context,
-                                item.net,
-                                currencyCode: widget.trip.currencyCode,
-                              ),
-                              style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(
-                                    fontSize: 20,
-                                    color: netColor,
-                                    fontWeight: FontWeight.w800,
-                                    letterSpacing: -0.2,
-                                  ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(999),
-                          child: SizedBox(
-                            height: 10,
-                            child: Stack(
-                              children: [
-                                Positioned.fill(
-                                  child: ColoredBox(
-                                    color: isDark
-                                        ? colors.surfaceContainerHighest
-                                              .withValues(alpha: 0.45)
-                                        : AppDesign.lightSurfaceTrack,
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: FractionallySizedBox(
-                                    widthFactor: differenceRatio,
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                        color: netColor,
-                                        borderRadius: BorderRadius.circular(
-                                          999,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                          if (!stacked) ...[
+                            const SizedBox(width: 12),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: constraints.maxWidth * .45,
+                              ),
+                              child: amount,
+                            ),
+                          ],
+                          const SizedBox(width: 4),
+                          const Icon(Icons.chevron_right, size: 20),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ),
-            );
-          }),
-        if (hasBalanceOverflow && !_showAllBalances)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              context.l10n.workspaceShowingTop4ByBalanceDifference,
-              style: Theme.of(context).textTheme.bodySmall,
             ),
-          ),
-      ],
+            const Divider(height: 1),
+          ],
+          if (balances.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(t.balanceAfterPayments, style: theme.textTheme.bodySmall),
+          ],
+        ],
+      ),
     );
   }
+
+  bool _settlementsCompleted(WorkspaceSnapshot snapshot) =>
+      !snapshot.isActive &&
+      snapshot.allSettled &&
+      snapshot.settlementRemaining == 0 &&
+      !snapshot.payments.any((item) => item.reservesBalance) &&
+      snapshot.settlements.every((item) => item.isConfirmed) &&
+      (snapshot.settlements.isNotEmpty ||
+          (snapshot.balances.isNotEmpty &&
+              snapshot.balances.every((item) => item.net.abs() < .005)));
 
   Widget _buildSettleTab(WorkspaceSnapshot snapshot) {
     final colors = Theme.of(context).colorScheme;
@@ -262,7 +194,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     return ListView(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 22),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       children: [
         if (snapshot.isActive) ...[
           _buildFinishTripActionBlock(
@@ -296,19 +228,21 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           ),
           const SizedBox(height: 12),
         ],
-        if (settlements.isEmpty)
+        if (_settlementsCompleted(snapshot))
+          _buildWorkspaceIllustratedState(
+            asset: 'splyto_settlements_complete.svg',
+            title: context.l10n.settledStatus,
+            message: context.l10n.workspaceAllTripSettlementsAreFullyCompleted,
+          ),
+        if (!snapshot.isActive &&
+            settlements.isEmpty &&
+            !_settlementsCompleted(snapshot))
           AppEmptyState(
             icon: Icons.payments_outlined,
             title: context.l10n.noSettlements,
             message: snapshot.isActive
-                ? 'Mark everyone ready, then the trip owner can start settlements.'
-                : 'There are no payments needed for this trip.',
-            actionLabel: snapshot.isActive && canToggleReady
-                ? (isCurrentUserReady ? 'You are ready' : 'Mark me ready')
-                : null,
-            onAction: snapshot.isActive && canToggleReady && !isCurrentUserReady
-                ? () => _onReadyToSettleChanged(true)
-                : null,
+                ? context.l10n.settlementEmptyActive
+                : context.l10n.settlementEmptyClosed,
           )
         else ...[
           if (pendingSettlements.isNotEmpty) ...[
@@ -346,109 +280,29 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     final total = snapshot.settlementTotal > 0
         ? snapshot.settlementTotal
         : settlements.length;
-    final confirmed = snapshot.settlementConfirmed.clamp(0, total).toInt();
-    final ratio = total <= 0 ? 0.0 : confirmed / total;
-    final waitingLabel = _settlementWaitingLabel(
-      settlements: settlements,
-      usersById: usersById,
-    );
-    final colors = Theme.of(context).colorScheme;
-
-    return _WorkspaceSectionCard(
-      accent: confirmed >= total ? colors.primary : colors.tertiary,
+    final confirmed = snapshot.settlementConfirmed.clamp(0, total);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: semantic.statusActiveBackground,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                child: Icon(
-                  confirmed >= total
-                      ? Icons.check_circle_outline_rounded
-                      : Icons.timeline_rounded,
-                  color: semantic.flowStepCurrent,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '$confirmed of $total payments confirmed',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: AppDesign.titleColor(context),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      waitingLabel,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppDesign.mutedColor(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          Text(
+            context.l10n.settlementConfirmedCount(confirmed, total),
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 12),
-          ClipRRect(
+          LinearProgressIndicator(
+            value: total == 0 ? 0 : confirmed / total,
+            minHeight: 6,
             borderRadius: BorderRadius.circular(999),
-            child: LinearProgressIndicator(
-              value: ratio,
-              minHeight: 8,
-              backgroundColor: colors.surfaceContainerHighest.withValues(
-                alpha: 0.45,
-              ),
+            semanticsLabel: context.l10n.settlementConfirmedCount(
+              confirmed,
+              total,
             ),
           ),
         ],
       ),
     );
-  }
-
-  String _settlementWaitingLabel({
-    required List<SettlementItem> settlements,
-    required Map<int, WorkspaceUser> usersById,
-  }) {
-    for (final item in settlements) {
-      if (item.canConfirmReceived) {
-        return 'You need to confirm receiving ${_formatMoney(context, item.amount, currencyCode: widget.trip.currencyCode)} from ${item.from}.';
-      }
-      if (item.canMarkSent) {
-        return 'You need to mark payment sent to ${item.to}.';
-      }
-    }
-
-    final waitingNames = <String>{};
-    for (final item in settlements) {
-      if (item.isConfirmed) {
-        continue;
-      }
-      final waitingUserId = item.isSent ? item.toUserId : item.fromUserId;
-      final user = usersById[waitingUserId];
-      final name = (user?.preferredName ?? user?.nickname ?? '').trim();
-      waitingNames.add(name.isEmpty ? item.to : name);
-      if (waitingNames.length >= 2) {
-        break;
-      }
-    }
-
-    if (waitingNames.isEmpty) {
-      return 'All payments are confirmed.';
-    }
-    if (waitingNames.length == 1) {
-      return 'Waiting for ${waitingNames.first}.';
-    }
-    return 'Waiting for ${waitingNames.join(', ')}.';
   }
 
   Widget _buildSettlementFlowCard({
@@ -505,143 +359,67 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         !_isMutating;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Card(
-        color: AppDesign.cardSurface(context),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-          side: BorderSide(color: AppDesign.cardStroke(context)),
-        ),
-        child: _SplytoPressScale(
-          borderRadius: BorderRadius.circular(24),
-          enabled: true,
-          onTap: () => _openSettlementFlowTimelineSheet(
-            snapshot: snapshot,
-            item: item,
-            usersById: usersById,
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            '${_paymentMemberName(item.from, item.fromUserId, fromUser)} → ${_paymentMemberName(item.to, item.toUserId, toUser)}',
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: _buildSettlementPersonColumn(
-                        userId: item.fromUserId,
-                        name: item.from,
-                        avatarUrl:
-                            fromUser?.avatarThumbUrl ?? fromUser?.avatarUrl,
-                        alignEnd: false,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 78,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: semantic.statusActiveBackground,
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: Alignment.center,
-                            child: Icon(
-                              Icons.arrow_forward_rounded,
-                              color: semantic.flowStepCurrent,
-                              size: 28,
-                            ),
-                          ),
-                          const SizedBox(height: 7),
-                          Text(
-                            _formatMoney(
-                              context,
-                              item.amount,
-                              currencyCode: widget.trip.currencyCode,
-                            ),
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w800,
-                                  color: amountColor,
-                                  letterSpacing: -0.35,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: _buildSettlementPersonColumn(
-                        userId: item.toUserId,
-                        name: item.to,
-                        avatarUrl: toUser?.avatarThumbUrl ?? toUser?.avatarUrl,
-                        alignEnd: true,
-                      ),
-                    ),
-                  ],
+          const SizedBox(height: 8),
+          Text(
+            _balanceMoney(item.amount),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(color: amountColor),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              _buildSettlementStatusPill(
+                label: item.isSuggested
+                    ? context.l10n.settlementSuggested
+                    : statusLabel,
+                foreground: statusForeground,
+                background: statusBackground,
+                border: statusBorder,
+              ),
+              TextButton.icon(
+                onPressed: () => _openSettlementFlowTimelineSheet(
+                  snapshot: snapshot,
+                  item: item,
+                  usersById: usersById,
                 ),
-                const SizedBox(height: 12),
-                Divider(height: 1, color: AppDesign.cardStroke(context)),
-                const SizedBox(height: 14),
-                if (canRecordPayment || canRequestPayment) ...[
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: () => _openTripPaymentComposerSheet(
-                        settlement: item,
-                        maxAmount: payableAmount,
-                        isRequest: canRequestPayment,
-                      ),
-                      icon: Icon(
-                        canRequestPayment
-                            ? Icons.notification_add_outlined
-                            : Icons.payments_rounded,
-                        size: 18,
-                      ),
-                      label: Text(
-                        canRequestPayment
-                            ? context.l10n.paymentRequestAction
-                            : context.l10n.paymentRecordAction,
-                      ),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppDesign.successColor(context),
-                        foregroundColor: AppDesign.darkForeground,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        textStyle: const TextStyle(fontWeight: FontWeight.w800),
-                      ),
-                    ),
+                icon: const Icon(Icons.chevron_right),
+                label: Text(openFlowLabel),
+              ),
+              if (canRecordPayment || canRequestPayment)
+                OutlinedButton.icon(
+                  onPressed: () => _openTripPaymentComposerSheet(
+                    settlement: item,
+                    maxAmount: payableAmount,
+                    isRequest: canRequestPayment,
                   ),
-                  const SizedBox(height: 10),
-                ] else ...[
-                  const SizedBox(height: 38),
-                ],
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildSettlementStatusPill(
-                      label: statusLabel,
-                      foreground: statusForeground,
-                      background: statusBackground,
-                      border: statusBorder,
-                    ),
-                    const Spacer(),
-                    TextButton.icon(
-                      onPressed: () => _openSettlementFlowTimelineSheet(
-                        snapshot: snapshot,
-                        item: item,
-                        usersById: usersById,
-                      ),
-                      icon: const Icon(Icons.timeline_rounded, size: 16),
-                      label: Text(openFlowLabel),
-                    ),
-                  ],
+                  icon: Icon(
+                    canRequestPayment
+                        ? Icons.notification_add_outlined
+                        : Icons.payments_outlined,
+                  ),
+                  label: Text(
+                    canRequestPayment
+                        ? context.l10n.paymentRequestAction
+                        : context.l10n.paymentRecordAction,
+                  ),
                 ),
-              ],
-            ),
+            ],
           ),
-        ),
+          const SizedBox(height: 12),
+          const Divider(height: 1),
+        ],
       ),
     );
   }
@@ -653,59 +431,43 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
   }) {
     final requestCount = payments.where((item) => item.isRequested).length;
     final sentCount = payments.where((item) => item.isSent).length;
-    final hasOpenItems = requestCount > 0 || sentCount > 0;
-    return _WorkspaceSectionCard(
-      accent: hasOpenItems
-          ? semantic.statusSentForeground
-          : AppDesign.successColor(context),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: semantic.statusActiveBackground,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.account_balance_wallet_rounded,
-                  color: semantic.flowStepCurrent,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  requestCount > 0
-                      ? context.l10n.paymentOpenRequestsCount(requestCount)
-                      : (sentCount > 0
-                            ? context.l10n.paymentAwaitingConfirmationCount(
-                                sentCount,
-                              )
-                            : context.l10n.paymentRecordedPaymentsTitle),
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: AppDesign.titleColor(context),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          for (var i = 0; i < payments.length; i++) ...[
-            _buildTripPaymentCard(
-              payment: payments[i],
-              usersById: usersById,
-              semantic: semantic,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.account_balance_wallet_outlined,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
-            if (i < payments.length - 1) const SizedBox(height: 10),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                requestCount > 0
+                    ? context.l10n.paymentOpenRequestsCount(requestCount)
+                    : (sentCount > 0
+                          ? context.l10n.paymentAwaitingConfirmationCount(
+                              sentCount,
+                            )
+                          : context.l10n.paymentRecordedPaymentsTitle),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: AppDesign.titleColor(context),
+                ),
+              ),
+            ),
           ],
+        ),
+        const SizedBox(height: 12),
+        for (var i = 0; i < payments.length; i++) ...[
+          _buildTripPaymentCard(
+            payment: payments[i],
+            usersById: usersById,
+            semantic: semantic,
+          ),
+          if (i < payments.length - 1) const SizedBox(height: 10),
         ],
-      ),
+      ],
     );
   }
 
@@ -729,29 +491,14 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         : (isConfirmed
               ? semantic.statusConfirmedForeground
               : semantic.statusSentForeground);
-    final statusBackground = isRequested
-        ? semantic.statusPendingBackground
-        : (isConfirmed
-              ? semantic.statusConfirmedBackground
-              : semantic.statusSentBackground);
-    final statusBorder = isRequested
-        ? semantic.statusPendingBorder
-        : (isConfirmed
-              ? semantic.statusConfirmedBorder
-              : semantic.statusSentBorder);
     final statusLabel = isRequested
         ? context.l10n.paymentRequestPendingStatus
         : (isConfirmed
               ? context.l10n.statusConfirmed
               : context.l10n.paymentAwaitingConfirmationStatus);
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-      decoration: BoxDecoration(
-        color: AppDesign.cardSurface(context),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppDesign.cardStroke(context)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -772,20 +519,14 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                       isRequested
                           ? context.l10n.paymentRequestedFrom(toName, fromName)
                           : context.l10n.paymentPaidTo(fromName, toName),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                         color: AppDesign.titleColor(context),
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      _formatMoney(
-                        context,
-                        payment.amount,
-                        currencyCode: widget.trip.currencyCode,
-                      ),
+                      _balanceMoney(payment.amount),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppDesign.mutedColor(context),
                         fontWeight: FontWeight.w700,
@@ -795,13 +536,14 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 ),
               ),
               const SizedBox(width: 8),
-              _buildSettlementStatusPill(
-                label: statusLabel,
-                foreground: statusForeground,
-                background: statusBackground,
-                border: statusBorder,
-              ),
             ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            statusLabel,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: statusForeground),
           ),
           if (payment.note.trim().isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -832,7 +574,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                     label: Text(context.l10n.paymentReviewRequestAction),
                     style: FilledButton.styleFrom(
                       backgroundColor: AppDesign.successColor(context),
-                      foregroundColor: AppDesign.darkForeground,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 if (payment.canCancelRequest)
@@ -864,7 +606,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                     label: Text(context.l10n.confirmReceivedAction),
                     style: FilledButton.styleFrom(
                       backgroundColor: AppDesign.successColor(context),
-                      foregroundColor: AppDesign.darkForeground,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 if (payment.canCancelSent)
@@ -886,6 +628,8 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
               ],
             ),
           ],
+          const SizedBox(height: 12),
+          const Divider(height: 1),
         ],
       ),
     );
@@ -923,191 +667,36 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     if (maxAmount <= 0) {
       return;
     }
-    final amountController = TextEditingController(
-      text: maxAmount.toStringAsFixed(2),
-    );
-    final noteController = TextEditingController();
-    var errorText = '';
-    var sharePaymentDetails = false;
-
-    await showAppBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (sheetContext, setSheetState) {
-            final bottomInset = MediaQuery.of(sheetContext).viewInsets.bottom;
-            final bottomSafePadding = MediaQuery.paddingOf(sheetContext).bottom;
-            final colors = Theme.of(sheetContext).colorScheme;
-            return Padding(
-              padding: EdgeInsets.only(bottom: bottomInset),
-              child: SafeArea(
-                top: false,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.fromLTRB(
-                    16,
-                    8,
-                    16,
-                    18 + bottomSafePadding,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              isRequest
-                                  ? sheetContext.l10n.paymentRequestSheetTitle
-                                  : sheetContext.l10n.paymentRecordSheetTitle,
-                              style: Theme.of(sheetContext).textTheme.titleLarge
-                                  ?.copyWith(fontWeight: FontWeight.w800),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () => Navigator.of(sheetContext).pop(),
-                            icon: const Icon(Icons.close_rounded),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        isRequest
-                            ? sheetContext.l10n.paymentRequestSheetBody(
-                                settlement.from,
-                              )
-                            : sheetContext.l10n.paymentRecordSheetBody(
-                                settlement.to,
-                              ),
-                        style: Theme.of(sheetContext).textTheme.bodyMedium
-                            ?.copyWith(color: colors.onSurfaceVariant),
-                      ),
-                      const SizedBox(height: 14),
-                      TextField(
-                        controller: amountController,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        decoration: InputDecoration(
-                          labelText: sheetContext.l10n.amountLabel,
-                          helperText: sheetContext.l10n.paymentMaxAmount(
-                            _formatMoney(
-                              sheetContext,
-                              maxAmount,
-                              currencyCode: widget.trip.currencyCode,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: noteController,
-                        maxLength: 120,
-                        decoration: InputDecoration(
-                          labelText: sheetContext.l10n.noteLabel,
-                          hintText: sheetContext.l10n.paymentNoteHint,
-                          counterText: '',
-                        ),
-                      ),
-                      if (isRequest)
-                        CheckboxListTile(
-                          contentPadding: EdgeInsets.zero,
-                          value: sharePaymentDetails,
-                          title: Text(
-                            sheetContext.l10n.paymentShareDetailsConsent(
-                              settlement.from,
-                            ),
-                          ),
-                          subtitle: Text(
-                            sheetContext.l10n.paymentShareDetailsScope,
-                          ),
-                          onChanged: (value) => setSheetState(() {
-                            sharePaymentDetails = value == true;
-                          }),
-                        ),
-                      if (errorText.isNotEmpty) ...[
-                        const SizedBox(height: 10),
-                        Text(
-                          errorText,
-                          style: Theme.of(
-                            sheetContext,
-                          ).textTheme.bodySmall?.copyWith(color: colors.error),
-                        ),
-                      ],
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        child: FilledButton.icon(
-                          onPressed: _isMutating
-                              ? null
-                              : () async {
-                                  final amount = _parseAmount(
-                                    amountController.text,
-                                  );
-                                  if (amount <= 0) {
-                                    setSheetState(() {
-                                      errorText = sheetContext
-                                          .l10n
-                                          .paymentAmountPositiveError;
-                                    });
-                                    return;
-                                  }
-                                  if (amount - maxAmount > 0.005) {
-                                    setSheetState(() {
-                                      errorText = sheetContext
-                                          .l10n
-                                          .paymentAmountTooHighError;
-                                    });
-                                    return;
-                                  }
-                                  Navigator.of(sheetContext).pop();
-                                  if (isRequest) {
-                                    await _onTripPaymentRequestCreate(
-                                      sharePaymentDetails: sharePaymentDetails,
-                                      settlement: settlement,
-                                      amount: amount,
-                                      note: noteController.text,
-                                    );
-                                  } else {
-                                    await _onTripPaymentCreate(
-                                      settlement: settlement,
-                                      amount: amount,
-                                      note: noteController.text,
-                                    );
-                                  }
-                                },
-                          icon: Icon(
-                            isRequest
-                                ? Icons.notification_add_outlined
-                                : Icons.payments_rounded,
-                          ),
-                          label: Text(
-                            isRequest
-                                ? sheetContext.l10n.paymentRequestAction
-                                : sheetContext.l10n.paymentMarkPaidAction,
-                          ),
-                          style: FilledButton.styleFrom(
-                            backgroundColor: AppDesign.successColor(context),
-                            foregroundColor: AppDesign.darkForeground,
-                            padding: const EdgeInsets.symmetric(vertical: 13),
-                            textStyle: const TextStyle(
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+    final draft = await Navigator.of(context, rootNavigator: true)
+        .push<TripPaymentDraft>(
+          AppFormPageRoute(
+            builder: (_) => TripPaymentComposerPage(
+              memberName: isRequest ? settlement.from : settlement.to,
+              maxAmount: maxAmount,
+              maxAmountLabel: _formatMoney(
+                context,
+                maxAmount,
+                currencyCode: widget.trip.currencyCode,
               ),
-            );
-          },
+              isRequest: isRequest,
+            ),
+          ),
         );
-      },
-    );
-
-    amountController.dispose();
-    noteController.dispose();
+    if (draft == null || !mounted) return;
+    if (isRequest) {
+      await _onTripPaymentRequestCreate(
+        sharePaymentDetails: draft.sharePaymentDetails,
+        settlement: settlement,
+        amount: draft.amount,
+        note: draft.note,
+      );
+    } else {
+      await _onTripPaymentCreate(
+        settlement: settlement,
+        amount: draft.amount,
+        note: draft.note,
+      );
+    }
   }
 
   Future<void> _openTripPaymentRequestReviewSheet({
@@ -1123,150 +712,86 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
       isScrollControlled: true,
       builder: (sheetContext) {
         final colors = Theme.of(sheetContext).colorScheme;
-        final bottomSafePadding = MediaQuery.paddingOf(sheetContext).bottom;
-        return SafeArea(
-          top: false,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 18 + bottomSafePadding),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        sheetContext.l10n.paymentRequestReviewTitle,
-                        style: Theme.of(sheetContext).textTheme.titleLarge
-                            ?.copyWith(fontWeight: FontWeight.w800),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.of(sheetContext).pop(),
-                      icon: const Icon(Icons.close_rounded),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  sheetContext.l10n.paymentRequestReviewBody(
-                    payment.to,
-                    amount,
-                  ),
-                  style: Theme.of(sheetContext).textTheme.bodyLarge?.copyWith(
-                    color: colors.onSurfaceVariant,
-                  ),
-                ),
-                if (payment.note.trim().isNotEmpty) ...[
-                  const SizedBox(height: 14),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: colors.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Text(payment.note.trim()),
-                  ),
-                ],
-                const SizedBox(height: 18),
-                if (payment.canViewPaymentDetails) ...[
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.of(sheetContext).pop();
-                        unawaited(
-                          showAppBottomSheet<void>(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (_) => PaymentRequestDetailsSheet(
-                              load: () => widget.workspaceController
-                                  .loadPaymentRequestDetails(
-                                    tripId: widget.trip.id,
-                                    paymentId: payment.id,
-                                  ),
-                            ),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.account_balance_wallet_outlined),
-                      label: Text(sheetContext.l10n.paymentViewDetailsAction),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: _isMutating
-                        ? null
-                        : () {
-                            Navigator.of(sheetContext).pop();
-                            unawaited(_onTripPaymentRequestMarkSent(payment));
-                          },
-                    icon: const Icon(Icons.check_circle_outline_rounded),
-                    label: Text(sheetContext.l10n.paymentMarkPaidAction),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppDesign.successColor(sheetContext),
-                      foregroundColor: AppDesign.darkForeground,
-                      padding: const EdgeInsets.symmetric(vertical: 13),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton.icon(
-                    onPressed: _isMutating
-                        ? null
-                        : () {
-                            Navigator.of(sheetContext).pop();
-                            unawaited(_onTripPaymentRequestDecline(payment));
-                          },
-                    icon: const Icon(Icons.block_rounded),
-                    label: Text(sheetContext.l10n.paymentDeclineAction),
-                  ),
-                ),
-              ],
+        return AppActionSheet(
+          title: sheetContext.l10n.paymentRequestReviewTitle,
+          children: [
+            Text(
+              sheetContext.l10n.paymentRequestReviewBody(payment.to, amount),
+              style: Theme.of(
+                sheetContext,
+              ).textTheme.bodyLarge?.copyWith(color: colors.onSurfaceVariant),
             ),
-          ),
+            if (payment.note.trim().isNotEmpty) ...[
+              const SizedBox(height: 14),
+              const Divider(height: 1),
+              const SizedBox(height: 14),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(payment.note.trim()),
+              ),
+            ],
+            const SizedBox(height: 18),
+            if (payment.canViewPaymentDetails) ...[
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.of(sheetContext).pop();
+                    unawaited(
+                      showAppBottomSheet<void>(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (_) => PaymentRequestDetailsSheet(
+                          load: () => widget.workspaceController
+                              .loadPaymentRequestDetails(
+                                tripId: widget.trip.id,
+                                paymentId: payment.id,
+                              ),
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.account_balance_wallet_outlined),
+                  label: Text(sheetContext.l10n.paymentViewDetailsAction),
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: _isMutating
+                    ? null
+                    : () {
+                        Navigator.of(sheetContext).pop();
+                        unawaited(_onTripPaymentRequestMarkSent(payment));
+                      },
+                icon: const Icon(Icons.check_circle_outline_rounded),
+                label: Text(sheetContext.l10n.paymentMarkPaidAction),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppDesign.successColor(sheetContext),
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  padding: const EdgeInsets.symmetric(vertical: 13),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton.icon(
+                onPressed: _isMutating
+                    ? null
+                    : () {
+                        Navigator.of(sheetContext).pop();
+                        unawaited(_onTripPaymentRequestDecline(payment));
+                      },
+                icon: const Icon(Icons.block_rounded),
+                label: Text(sheetContext.l10n.paymentDeclineAction),
+              ),
+            ),
+          ],
         );
       },
-    );
-  }
-
-  Widget _buildSettlementPersonColumn({
-    required int userId,
-    required String name,
-    required String? avatarUrl,
-    required bool alignEnd,
-  }) {
-    return Column(
-      crossAxisAlignment: alignEnd
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
-      children: [
-        _largeMemberAvatar(
-          id: userId,
-          name: name,
-          avatarUrl: avatarUrl,
-          size: 56,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          name,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          textAlign: alignEnd ? TextAlign.end : TextAlign.start,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w800,
-            fontSize: 16,
-            height: 1.04,
-            color: AppDesign.titleColor(context),
-          ),
-        ),
-      ],
     );
   }
 
@@ -1316,128 +841,94 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     final markReadySubtitle =
         context.l10n.workspaceConfirmThatYouAddedAllYourExpenses;
 
-    final readyCard = _WorkspaceSectionCard(
-      accent: allMembersReady ? colors.primary : colors.tertiary,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                allMembersReady
-                    ? Icons.check_circle_outline
-                    : Icons.pending_actions_outlined,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  readyTitle,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: (allMembersReady ? colors.primary : colors.tertiary)
-                      .withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  '$readyMembers/$totalMembers',
-                  style: TextStyle(
-                    color: allMembersReady ? colors.primary : colors.tertiary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(readySubtitle, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 8),
-          SwitchListTile.adaptive(
-            contentPadding: EdgeInsets.zero,
-            value: isCurrentUserReady,
-            onChanged: canToggleReady ? _onReadyToSettleChanged : null,
-            title: Text(
-              markReadyTitle,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            subtitle: Text(markReadySubtitle),
-          ),
-        ],
-      ),
-    );
-
-    if (_canEditMembers) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          readyCard,
-          const SizedBox(height: 8),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              gradient: canFinishTrip
-                  ? AppDesign.actionGradient(context)
-                  : LinearGradient(
-                      colors: [
-                        colors.surfaceContainerHighest,
-                        colors.surfaceContainerHighest,
-                      ],
-                    ),
-            ),
-            child: ElevatedButton.icon(
-              onPressed: canFinishTrip ? _onEndTripPressed : null,
-              icon: const Icon(Icons.flag_outlined),
-              label: Text(finishLabel),
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                foregroundColor: canFinishTrip
-                    ? AppDesign.darkForeground
-                    : colors.onSurfaceVariant,
-                disabledForegroundColor: colors.onSurfaceVariant,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-            ),
-          ),
-          if (!allMembersReady || hasPendingPayments)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                hasPendingPayments
-                    ? context.l10n.paymentFinishBlockedByPending
-                    : context
-                          .l10n
-                          .workspaceFinishButtonUnlocksOnceEveryoneMarksReady,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ),
-        ],
-      );
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        readyCard,
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 16,
+          children: [
+            Text(readyTitle, style: Theme.of(context).textTheme.titleLarge),
+            Text(
+              '$readyMembers / $totalMembers',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        LinearProgressIndicator(
+          value: totalMembers == 0 ? 0 : readyMembers / totalMembers,
+          minHeight: 6,
+          borderRadius: BorderRadius.circular(999),
+        ),
         const SizedBox(height: 8),
-        _WorkspaceSectionCard(
-          accent: colors.tertiary,
-          child: Text(
-            creatorMustFinishLabel,
-            style: Theme.of(context).textTheme.bodyMedium,
+        SwitchListTile.adaptive(
+          contentPadding: EdgeInsets.zero,
+          value: isCurrentUserReady,
+          onChanged: canToggleReady ? _onReadyToSettleChanged : null,
+          secondary: MediaQuery.textScalerOf(context).scale(16) > 23
+              ? null
+              : _largeMemberAvatar(
+                  id: _currentUserId,
+                  name:
+                      _snapshot!.users
+                          .where((u) => u.id == _currentUserId)
+                          .firstOrNull
+                          ?.preferredName ??
+                      context.l10n.youLabel,
+                  avatarUrl: _snapshot!.users
+                      .where((u) => u.id == _currentUserId)
+                      .firstOrNull
+                      ?.avatarThumbUrl,
+                  size: 40,
+                ),
+          title: Text(markReadyTitle),
+          subtitle: Text(markReadySubtitle),
+        ),
+        for (final member in _snapshot!.users.where(
+          (user) => user.id != _currentUserId,
+        )) ...[
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: _largeMemberAvatar(
+              id: member.id,
+              name: member.preferredName,
+              avatarUrl: member.avatarThumbUrl ?? member.avatarUrl,
+              size: 40,
+            ),
+            title: Text(member.preferredName),
+            subtitle: Text(
+              member.isReadyToSettle
+                  ? context.l10n.settlementMemberReady
+                  : context.l10n.settlementMemberNotReady,
+            ),
+            trailing: Icon(
+              member.isReadyToSettle
+                  ? Icons.check_circle_outline
+                  : Icons.schedule,
+              color: member.isReadyToSettle
+                  ? colors.primary
+                  : colors.onSurfaceVariant,
+            ),
           ),
+          const Divider(height: 1),
+        ],
+        const SizedBox(height: 16),
+
+        if (_canEditMembers)
+          FilledButton.icon(
+            onPressed: canFinishTrip ? _onEndTripPressed : null,
+            icon: const Icon(Icons.flag_outlined),
+            label: Text(finishLabel),
+          )
+        else
+          Text(creatorMustFinishLabel),
+        const SizedBox(height: 8),
+        Text(
+          readySubtitle,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );
@@ -1471,21 +962,21 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
   }
 
   Widget _balanceAvatarFallback(String name, {double size = 38}) {
-    final letter = name.trim().isEmpty ? '?' : name.trim().substring(0, 1);
+    final letter = name.trim().isEmpty ? '?' : name.trim().characters.first;
     final fontSize = (size * 0.34).clamp(11, 14).toDouble();
     return Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: AppDesign.brandGradient,
+        color: Theme.of(context).colorScheme.primaryContainer,
       ),
       alignment: Alignment.center,
       child: Text(
         letter.toUpperCase(),
         style: TextStyle(
-          color: AppDesign.darkForeground,
-          fontWeight: FontWeight.w700,
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          fontWeight: FontWeight.w600,
           fontSize: fontSize,
         ),
       ),
@@ -1522,21 +1013,17 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     required double size,
   }) {
     final initials = _avatarInitials(name);
-    final bg = _memberAvatarColorById(id);
+    final bg = Theme.of(context).colorScheme.primaryContainer;
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: bg,
-        shape: BoxShape.circle,
-        boxShadow: AppDesign.avatarShadow(context),
-      ),
+      decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
       alignment: Alignment.center,
       child: Text(
         initials,
-        style: TextStyle(
-          color: AppDesign.darkForeground,
-          fontWeight: FontWeight.w800,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          fontWeight: FontWeight.w600,
           fontSize: size * 0.38,
           letterSpacing: 0.2,
         ),
@@ -1555,15 +1042,10 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     }
     if (parts.length == 1) {
       final first = parts.first;
-      return (first.length >= 2 ? first.substring(0, 2) : first).toUpperCase();
+      return first.characters.first.toUpperCase();
     }
-    return (parts.first[0] + parts.last[0]).toUpperCase();
-  }
-
-  Color _memberAvatarColorById(int id) {
-    final palette = AppDesign.memberPalette;
-    final safeId = id < 0 ? -id : id;
-    return palette[safeId % palette.length];
+    return (parts.first.characters.first + parts.last.characters.first)
+        .toUpperCase();
   }
 
   Color _settlementStatusColor(BuildContext context, String status) {

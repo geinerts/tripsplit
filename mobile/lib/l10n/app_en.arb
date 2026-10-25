@@ -1,4 +1,33 @@
 {
+  "homeFirstTrip": "Your first trip",
+  "homeYourShareAllTrips": "Your share across all trips",
+  "homeAllTime": "All time",
+  "homeSolo": "Solo",
+  "homePeople": "{count, plural, =1{1 person} other{{count} people}}",
+  "homeTripActions": "Trip actions: {name}",
+  "homeNoActiveTrips": "No active trips",
+  "homeNoArchivedTrips": "No archived trips",
+  "homeLoadingTrips": "Loading your trips",
+  "homeLoadErrorTitle": "Could not load your trips",
+  "homeLoadErrorBody": "Please try again in a moment.",
+  "homeOfflineTitle": "You're offline",
+  "homeOfflineNoData": "Your trips aren't available on this device yet.",
+  "homeOfflineCached": "Offline. Showing saved trips.",
+  "homeRefreshError": "Couldn't refresh. Showing previously loaded trips.",
+  "@homePeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@homeTripActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "paymentShareDetailsConsent": "Share my saved payment details with {arg1}",
   "paymentShareDetailsScope": "Only while this request is awaiting payment. Cancelling the request ends access.",
   "paymentDetailsUnavailable": "Payment details are unavailable. Connect to the internet and check that the request is still open.",
@@ -9,7 +38,13 @@
   "premiumFree": "Free",
   "premiumStatusUnavailable": "Plan status unavailable",
   "premiumGrantedUntil": "Premium granted until {date}",
-  "@premiumGrantedUntil": {"placeholders": {"date": {"type": "String"}}},
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "premiumBillingNotActive": "No active subscription",
   "premiumRefreshStatus": "Refresh plan status",
   "@addedMembersCount": {
@@ -416,6 +451,9 @@
   "failedToCreateTrip": "Failed to create trip.",
   "failedToLoadUsersDirectory": "Failed to load users directory.",
   "filterSettlementByMemberSubtitle": "Filter settlements by member",
+  "finishSoloTripConfirmationText": "Finish this trip and move it to your archive? Your expenses will remain available to view.",
+  "soloTripArchived": "Trip finished and archived.",
+  "finishTripSyncPending": "Sync your pending changes before finishing this trip.",
   "finishTripAction": "Finish trip",
   "finishTripConfirmationText": "Finish this trip and start settlements?",
   "finishTripStartSettlementsAction": "Finish and start settlements",
@@ -515,6 +553,16 @@
   "noMembersFound": "No members found.",
   "noNewMembersAdded": "These people are already members or have pending invitations.",
   "noNotePlaceholder": "No note",
+  "notificationsToday": "Today",
+  "notificationsEmptyBody": "Updates about trips, expenses and friends will appear here.",
+  "notificationsCached": "Offline — showing saved notifications.",
+  "notificationsRefreshFailed": "Could not refresh. Previously loaded notifications are shown.",
+  "notificationsJustNow": "Just now",
+  "notificationsMinutesAgo": "{count} min ago",
+  "@notificationsMinutesAgo": {"placeholders": {"count": {"type": "int"}}},
+  "notificationsHoursAgo": "{count} h ago",
+  "@notificationsHoursAgo": {"placeholders": {"count": {"type": "int"}}},
+  "notificationsUnread": "Unread",
   "noNotificationsYet": "No notifications yet.",
   "noParticipantData": "No participant data.",
   "noParticipantsSelected": "No participants selected.",
@@ -824,6 +872,8 @@
   "authClose": "Close",
   "authResendLink": "Resend link",
   "profileAppSettingsSectionTitle": "APP SETTINGS",
+  "profileAccountSettings": "Account settings",
+  "profileChangePhoto": "Change profile photo",
   "profileAppearance": "Appearance",
   "profileThemeDisplayMode": "Theme & display mode",
   "profileLanguage": "Language",
@@ -1337,5 +1387,240 @@
   "notificationPaymentCancelledBodyGeneric": "A payment mark was cancelled.",
   "notificationPaymentNotReceivedTitle": "Payment not received",
   "notificationPaymentNotReceivedBody": "{arg1} marked the {arg2} payment as not received.",
-  "notificationPaymentNotReceivedBodyGeneric": "A payment was marked as not received."
+  "notificationPaymentNotReceivedBodyGeneric": "A payment was marked as not received.",
+  "quickStartTitle": "Quick Start",
+  "quickStartCreateTitle": "Create a trip",
+  "quickStartCreateBody": "Choose a name and currency. Keep your own expenses or share costs with a group.",
+  "quickStartInviteTitle": "Travel together or solo",
+  "quickStartInviteBody": "Invite friends to share your trip, or start a personal trip on your own.",
+  "quickStartExpenseTitle": "Add your first expense",
+  "quickStartExpenseBody": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
+  "quickStartNext": "Next",
+  "quickStartBack": "Back",
+  "quickStartSkip": "Skip",
+  "quickStartCreateAction": "Create trip",
+  "quickStartClose": "Close Quick Start",
+  "quickStartSubtitle": "See how trips and expenses work",
+  "quickStartStep": "Step {step} of {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Trip total",
+  "workspacePersonalTotal": "Total spent",
+  "workspaceBalanceEven": "Your balance is even",
+  "workspaceBalanceOwe": "You owe {amount}",
+  "workspaceBalanceReceive": "You get back {amount}",
+  "workspaceMemberCount": "{count} members",
+  "workspaceSearchExpenses": "Search expenses",
+  "workspaceClearSearch": "Clear search",
+  "workspaceSearchLoadedHint": "Search covers loaded expenses. Load more to include older expenses.",
+  "workspaceNoExpenseMatches": "No matching expenses",
+  "workspaceNoExpenseMatchesBody": "Try another search or clear it to see all loaded expenses.",
+  "workspaceEmptyPersonalExpenses": "Add your first expense to start tracking your spending.",
+  "workspaceEmptyGroupExpenses": "Add your first shared expense to see everyone’s share.",
+  "workspaceLoadMoreExpenses": "Load more expenses",
+  "workspaceOriginalExpenseAmount": "Original amount: {amount}",
+  "workspaceCommentCount": "{count} comments",
+  "workspaceExpenseActions": "Expense actions",
+  "workspaceLoadErrorTitle": "Could not load this trip",
+  "workspaceCachedWarning": "Showing saved data. It may be out of date.",
+  "workspaceActivityTab": "Activity",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Loading trip",
+  "workspaceRefreshFailed": "Refresh failed",
+  "expenseDetailsTitle": "Expense details",
+  "expenseQuickCategories": "Quick categories",
+  "expenseReceiptRead": "Receipt read and form updated.",
+  "expenseReceiptNoData": "Receipt attached. No clear amount, date or merchant found.",
+  "expenseReceiptScanFailed": "Receipt selected. Automatic reading failed; check the fields manually.",
+  "expenseReceiptOffline": "Receipt will upload when you save. Automatic reading requires a connection.",
+  "expenseReadingReceipt": "Reading receipt…",
+  "expenseCommentsLoadFailed": "Could not load comments. Try again.",
+  "expenseReplyAction": "Reply",
+  "expenseReplyHint": "Write a reply…",
+  "expenseReplyTo": "Reply to {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Balances appear after expenses are added.",
+  "balanceAfterPayments": "Balances include confirmed payments.",
+  "balanceExpenseShare": "Expense share",
+  "balanceHistoryScope": "Loaded expenses and confirmed payments. This list may not include the entire trip history.",
+  "balancePaymentTo": "Payment to {name}",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Payment from {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Mark everyone ready before starting final settlements.",
+  "settlementEmptyClosed": "No transfers are listed for this trip.",
+  "settlementConfirmedCount": "{count} of {total} transfers confirmed",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "{count} of {total} members ready",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Ready",
+  "settlementMemberNotReady": "Not ready",
+  "settlementSuggested": "Suggested transfer",
+  "activityLoadFailed": "Could not refresh activity. Any visible entries may be out of date.",
+  "activityMember": "Trip member",
+  "friendsEmptyBody": "Find a friend by name or email, or use a QR code.",
+  "friendsDeclineAction": "Decline",
+  "friendsLoading": "Loading friends",
+  "friendsCommonTripsCount": "Shared trips: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "Based on loaded expenses; this may not cover the whole trip.",
+  "sharedTripsLoadedLimit": "Showing up to 20 shared trips.",
+  "memberRemoveTitle": "Remove member?",
+  "memberRemoveBody": "Remove {name} from this trip? This is only possible if they have no expenses, settlements or balances.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Remove from trip",
+  "memberRemoved": "{name} removed from trip.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Not added yet",
+  "friendRelationshipLabel": "Friend",
+  "sharedTripsEmptyBody": "Trips you both join will appear here.",
+  "analyticsAllTrips": "All trips",
+  "analyticsByTrip": "By trip",
+  "analyticsYourSpending": "Your spending",
+  "analyticsActiveArchived": "Active & archived trips",
+  "analyticsTrips": "Trips",
+  "analyticsAveragePerTrip": "Average per trip",
+  "analyticsPaidByMember": "Paid by member",
+  "analyticsYouPaid": "You paid",
+  "analyticsYouGetBack": "You get back",
+  "analyticsYouOwe": "You owe",
+  "analyticsParticipants": "Participants",
+  "analyticsYourCategories": "Your spending by category",
+  "analyticsLargestShares": "Your largest shares",
+  "analyticsLargestExpenses": "Largest expenses",
+  "analyticsSpendingByTrip": "Your spending by trip",
+  "analyticsEmptyTitle": "No spending yet",
+  "analyticsEmptyBody": "Your spending will appear here when you add expenses to a trip.",
+  "analyticsPeriodEmptyBody": "There are no expenses for this view. Try another trip or period.",
+  "analyticsLoadFailed": "Could not load the complete spending report. Please try again.",
+  "analyticsLastLoaded": "Showing the last successfully loaded report.",
+  "analyticsExpenseCount": "{count} expenses",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Trip options",
+  "editTripAction": "Edit trip",
+  "deleteTripAction": "Delete trip",
+  "inviteTripMembersAction": "Invite members",
+  "tripCoverPhoto": "Cover photo",
+  "tripInviteLaterHint": "You can invite people after creating the trip.",
+  "inviteClipboardFailed": "Could not access the clipboard. Try again.",
+  "friendInviteToTrip": "Invite to trip",
+  "friendChooseTrip": "Choose a trip",
+  "friendNoInvitableTrips": "No available trips. You can invite friends to active group trips you manage, unless they are already members or have a pending invitation.",
+  "friendTripInviteSent": "Invitation sent.",
+  "friendTripUnavailable": "This trip is no longer available for this action. Refresh and try again.",
+  "friendTripActionFailed": "Could not complete this action. Try again.",
+  "profileContactDescription": "Have a problem, a suggestion or a question about Splyto? Email us — we’d be happy to help.",
+  "profileContactEmailAction": "Write an email",
+  "profileContactEmailUnavailable": "Could not open an email app. Copy the address and write to us from your email app.",
+  "profilePrivacyPolicy": "Privacy policy",
+  "privacyLoadFailed": "Could not load the privacy policy. Please try again.",
+  "addReceiptAction": "Add receipt",
+  "receiptPickFailed": "Could not load the receipt. Please try again.",
+  "receiptPhotoAccessDenied": "Allow camera or photo library access for Splyto in Settings, then try again.",
+  "receiptPhotoLabel": "Receipt photo",
+  "replaceReceiptAction": "Replace receipt",
+  "removeReceiptAction": "Remove receipt",
+  "restoreReceiptAction": "Restore previous receipt"
 }

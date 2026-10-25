@@ -1,16 +1,15 @@
 part of 'profile_page.dart';
 
 extension _ProfilePageWidgets on _ProfilePageState {
-  Widget _profileAvatarLetter(String value) {
-    return Text(
-      value,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 24,
-        fontWeight: FontWeight.w800,
-      ),
-    );
-  }
+  Widget _profileAvatarLetter(String value) => Text(
+    value,
+    textScaler: TextScaler.noScaling,
+    style: TextStyle(
+      color: Theme.of(context).colorScheme.onPrimaryContainer,
+      fontSize: 24,
+      fontWeight: FontWeight.w600,
+    ),
+  );
 
   Widget _buildProfileScaffold(BuildContext context) {
     final t = context.l10n;
@@ -24,7 +23,15 @@ extension _ProfilePageWidgets on _ProfilePageState {
         : (rawPreferredName.isNotEmpty
               ? rawPreferredName
               : t.travelerFallbackName);
-    final avatarLetter = displayName.substring(0, 1).toUpperCase();
+    final words = displayName
+        .split(RegExp(r'\s+'))
+        .where((s) => s.isNotEmpty)
+        .toList();
+    final avatarLetter = words
+        .take(2)
+        .map((s) => s.characters.first)
+        .join()
+        .toUpperCase();
     final avatarUrl = widget.controller.avatarUrlFor(_user);
 
     final body = SafeArea(
@@ -77,12 +84,13 @@ extension _ProfilePageWidgets on _ProfilePageState {
 
     return RefreshIndicator(
       onRefresh: () async {
-        if (_isEditMode || _isSubmitting || _isLoading || _isSendingFeedback) {
+        if (_isEditMode || _isSubmitting || _isLoading) {
           return;
         }
         await _loadProfile();
       },
       child: ListView(
+        key: const ValueKey('profile-scroll'),
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.fromLTRB(
           horizontalPadding,
@@ -110,7 +118,8 @@ extension _ProfilePageWidgets on _ProfilePageState {
                 ),
               ),
             ],
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
+            const Divider(height: 1),
             _buildProfileSettingsPanel(context),
             const SizedBox(height: 12),
             _buildProfileLogoutCard(context),
@@ -131,12 +140,12 @@ extension _ProfilePageWidgets on _ProfilePageState {
         ? AppDesign.destructiveColor(context)
         : AppDesign.mutedColor(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
+      padding: EdgeInsets.zero,
       child: Text(
         title,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
           fontSize: 12,
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.w600,
           letterSpacing: 0.9,
           color: color,
         ),
@@ -164,7 +173,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
               title: context.l10n.profileAppearance,
               icon: Icons.palette_outlined,
               valueText: _currentAppearanceLabel(context),
-              subtitle: context.l10n.profileThemeDisplayMode,
+              subtitle: '',
               onTap: _isBusy ? null : () => showThemeModePicker(context),
             ),
             _buildProfileSectionTile(
@@ -172,12 +181,12 @@ extension _ProfilePageWidgets on _ProfilePageState {
               title: context.l10n.profileLanguage,
               icon: Icons.translate_outlined,
               valueText: _currentLanguageLabel(context),
-              subtitle: context.l10n.profileDisplayLanguage,
+              subtitle: '',
               onTap: _isBusy ? null : () => showAppLocalePicker(context),
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         _buildProfileSectionGroup(
           context: context,
           title: context.l10n.profileNotificationsSectionHeading,
@@ -212,28 +221,44 @@ extension _ProfilePageWidgets on _ProfilePageState {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         _buildProfileSectionGroup(
           context: context,
           title: context.l10n.profileSupportSectionHeading,
           children: [
             _buildProfileSectionTile(
               context: context,
+              title: context.l10n.quickStartTitle,
+              subtitle: '',
+              icon: Icons.help_outline,
+              onTap: _isBusy
+                  ? null
+                  : (widget.onQuickStartRequested ?? _openQuickStart),
+            ),
+            _buildProfileSectionTile(
+              context: context,
               title: context.l10n.profileContactUs,
               icon: Icons.support_agent_outlined,
-              subtitle: context.l10n.profileReportBugSuggestion,
-              onTap: _isBusy ? null : _openFeedbackDialog,
+              subtitle: '',
+              onTap: _isBusy ? null : _openContactDialog,
+            ),
+            _buildProfileSectionTile(
+              context: context,
+              title: context.l10n.profilePrivacyPolicy,
+              icon: Icons.privacy_tip_outlined,
+              subtitle: '',
+              onTap: _isBusy ? null : _openPrivacyPolicy,
             ),
             _buildProfileSectionTile(
               context: context,
               title: context.l10n.profileRateSplyto,
               icon: Icons.star_outline_rounded,
-              subtitle: context.l10n.profileLeaveStoreRating,
+              subtitle: '',
               onTap: _isBusy ? null : _openRateHint,
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         _buildProfileSectionGroup(
           context: context,
           title: context.l10n.profileSecuritySectionHeading,
@@ -242,26 +267,18 @@ extension _ProfilePageWidgets on _ProfilePageState {
               context: context,
               title: context.l10n.profileChangePassword,
               icon: Icons.lock_outline_rounded,
-              subtitle: context.l10n.profileUpdateAccountPassword,
+              subtitle: '',
               onTap: _isBusy ? null : _openChangePasswordDialog,
             ),
           ],
         ),
-        const SizedBox(height: 24),
-        _buildProfileSectionGroup(
+        const Divider(height: 1),
+        _buildProfileSectionTile(
           context: context,
-          title: context.l10n.profileDangerZoneSectionHeading,
-          isDanger: true,
-          children: [
-            _buildProfileSectionTile(
-              context: context,
-              title: context.l10n.profileDeactivateAccount,
-              icon: Icons.warning_amber_rounded,
-              subtitle: context.l10n.profileManageAccountAccess,
-              onTap: _isBusy ? null : _openDangerZone,
-              isDanger: true,
-            ),
-          ],
+          title: context.l10n.profileAccountSettings,
+          icon: Icons.manage_accounts_outlined,
+          subtitle: '',
+          onTap: _isBusy ? null : _openDangerZone,
         ),
       ],
     );
@@ -280,8 +297,8 @@ extension _ProfilePageWidgets on _ProfilePageState {
         content.add(
           Divider(
             height: 1,
-            indent: 8,
-            endIndent: 8,
+            indent: 0,
+            endIndent: 0,
             color: AppDesign.cardStroke(context),
           ),
         );
@@ -302,29 +319,18 @@ extension _ProfilePageWidgets on _ProfilePageState {
     );
   }
 
-  Widget _buildProfileLogoutCard(BuildContext context) {
-    final textColor = AppDesign.titleColor(context);
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+  Widget _buildProfileLogoutCard(BuildContext context) => Column(
+    children: [
+      const Divider(height: 1),
+      AppSettingsRow(
+        title: context.l10n.logOutButton,
+        icon: Icons.logout_rounded,
+        destructive: true,
+        chevron: false,
         onTap: _isBusy ? null : _onLogoutPressed,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-          child: Center(
-            child: Text(
-              context.l10n.logOutButton,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: textColor,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-        ),
       ),
-    );
-  }
+    ],
+  );
 
   Widget _buildProfileFooter(BuildContext context) {
     final muted = AppDesign.mutedColor(context);
@@ -387,67 +393,14 @@ extension _ProfilePageWidgets on _ProfilePageState {
     String? valueText,
     required VoidCallback? onTap,
     bool isDanger = false,
-  }) {
-    final muted = AppDesign.mutedColor(context);
-    final danger = AppDesign.destructiveColor(context);
-    final titleColor = isDanger ? danger : AppDesign.titleColor(context);
-    final subtitleColor = isDanger ? danger.withValues(alpha: 0.72) : muted;
-    final trailColor = isDanger ? danger.withValues(alpha: 0.66) : muted;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppDesign.radiusSm),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Row(
-            children: [
-              Icon(icon, color: isDanger ? danger : muted),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: titleColor,
-                      ),
-                    ),
-                    if (subtitle.trim().isNotEmpty)
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: subtitleColor),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              if (valueText != null) ...[
-                Text(
-                  valueText,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: trailColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(width: 4),
-              ],
-              Icon(Icons.chevron_right_rounded, color: trailColor),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  }) => AppSettingsRow(
+    title: title,
+    icon: icon,
+    subtitle: subtitle,
+    value: valueText,
+    onTap: onTap,
+    destructive: isDanger,
+  );
 
   Widget _buildProfileIdentityCard({
     required BuildContext context,
@@ -466,7 +419,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
         borderRadius: BorderRadius.circular(18),
         onTap: _isSubmitting ? null : _openEditProfilePage,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          padding: const EdgeInsets.symmetric(vertical: 6),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -482,18 +435,16 @@ extension _ProfilePageWidgets on _ProfilePageState {
                   children: [
                     Text(
                       displayName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w600,
                         color: AppDesign.titleColor(context),
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       email,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppDesign.mutedColor(context),
                       ),
@@ -519,74 +470,84 @@ extension _ProfilePageWidgets on _ProfilePageState {
     required String? avatarUrl,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    return GestureDetector(
-      onTap: _isSubmitting || _isLoading ? null : _onAvatarTapped,
-      behavior: HitTestBehavior.opaque,
-      child: SizedBox(
-        width: 62,
-        height: 62,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: AppDesign.brandGradient,
-              ),
-              alignment: Alignment.center,
-              child: _avatarBytes != null && _avatarBytes!.isNotEmpty
-                  ? ClipOval(
-                      child: Image.memory(
-                        _avatarBytes!,
-                        width: 56,
-                        height: 56,
-                        fit: BoxFit.cover,
-                        gaplessPlayback: true,
-                      ),
-                    )
-                  : (avatarUrl != null
-                        ? ClipOval(
-                            child: Image.network(
-                              avatarUrl,
-                              width: 56,
-                              height: 56,
-                              fit: BoxFit.cover,
-                              filterQuality: FilterQuality.low,
-                              gaplessPlayback: true,
-                              cacheWidth:
-                                  (56 * MediaQuery.devicePixelRatioOf(context))
-                                      .round(),
-                              cacheHeight:
-                                  (56 * MediaQuery.devicePixelRatioOf(context))
-                                      .round(),
-                              errorBuilder: (context, error, stackTrace) =>
-                                  _profileAvatarLetter(avatarLetter),
-                            ),
-                          )
-                        : _profileAvatarLetter(avatarLetter)),
-            ),
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                width: 24,
-                height: 24,
+    return Semantics(
+      label: context.l10n.profileChangePhoto,
+      button: true,
+      child: GestureDetector(
+        onTap: _isSubmitting || _isLoading ? null : _onAvatarTapped,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox(
+          width: 62,
+          height: 62,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
-                  color: colorScheme.surface,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppDesign.cardStroke(context)),
+                  color: colorScheme.primaryContainer,
                 ),
                 alignment: Alignment.center,
-                child: Icon(
-                  Icons.photo_camera_rounded,
-                  size: 14,
-                  color: colorScheme.onSurface,
+                child: _avatarBytes != null && _avatarBytes!.isNotEmpty
+                    ? ClipOval(
+                        child: Image.memory(
+                          _avatarBytes!,
+                          width: 56,
+                          height: 56,
+                          fit: BoxFit.cover,
+                          gaplessPlayback: true,
+                        ),
+                      )
+                    : (avatarUrl != null
+                          ? ClipOval(
+                              child: Image.network(
+                                avatarUrl,
+                                width: 56,
+                                height: 56,
+                                fit: BoxFit.cover,
+                                filterQuality: FilterQuality.low,
+                                gaplessPlayback: true,
+                                cacheWidth:
+                                    (56 *
+                                            MediaQuery.devicePixelRatioOf(
+                                              context,
+                                            ))
+                                        .round(),
+                                cacheHeight:
+                                    (56 *
+                                            MediaQuery.devicePixelRatioOf(
+                                              context,
+                                            ))
+                                        .round(),
+                                errorBuilder: (context, error, stackTrace) =>
+                                    _profileAvatarLetter(avatarLetter),
+                              ),
+                            )
+                          : _profileAvatarLetter(avatarLetter)),
+              ),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppDesign.cardStroke(context)),
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.photo_camera_rounded,
+                    size: 14,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -600,61 +561,27 @@ extension _ProfilePageWidgets on _ProfilePageState {
     required bool value,
     required VoidCallback onTap,
     required ValueChanged<bool> onChanged,
-  }) {
-    final muted = AppDesign.mutedColor(context);
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: _isBusy ? null : onTap,
-        borderRadius: BorderRadius.circular(AppDesign.radiusSm),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Icon(icon, color: muted),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppDesign.titleColor(context),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: muted,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Switch.adaptive(
-                value: value,
-                onChanged: _isBusy ? null : onChanged,
-                activeThumbColor: AppDesign.successColor(context),
-              ),
-            ],
-          ),
-        ),
+  }) => AppSettingsRow(
+    title: title,
+    icon: icon,
+    onTap: _isBusy ? null : onTap,
+    trailing: Semantics(
+      label: title,
+      child: Switch.adaptive(
+        value: value,
+        onChanged: _isBusy ? null : onChanged,
+        activeTrackColor: Theme.of(context).colorScheme.primary,
+        activeThumbColor: Theme.of(context).colorScheme.onPrimary,
       ),
-    );
-  }
+    ),
+  );
 
   String _currentAppearanceLabel(BuildContext context) {
     final t = context.l10n;
     final controller = ThemeModeScope.maybeOf(context);
-    final mode = controller?.themeMode ?? ThemeMode.dark;
+    final mode =
+        controller?.themeMode ??
+        (AppDesign.isDark(context) ? ThemeMode.dark : ThemeMode.light);
     if (mode == ThemeMode.light) return t.themeModeLight;
     return t.themeModeDark;
   }
@@ -680,5 +607,5 @@ extension _ProfilePageWidgets on _ProfilePageState {
     _openDeactivateAccountPage();
   }
 
-  bool get _isBusy => _isSubmitting || _isLoading || _isSendingFeedback;
+  bool get _isBusy => _isSubmitting || _isLoading;
 }

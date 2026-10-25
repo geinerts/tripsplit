@@ -24,6 +24,43 @@ import UserNotifications
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "SplytoWindowLayout") {
+      let layoutChannel = FlutterMethodChannel(
+        name: "app.splyto/window_layout", binaryMessenger: registrar.messenger())
+      layoutChannel.setMethodCallHandler { [weak registrar] call, result in
+        guard call.method == "getLayout" else {
+          result(FlutterMethodNotImplemented)
+          return
+        }
+        guard #available(iOS 27.1, *), let view = registrar?.viewController?.view,
+              view.window != nil else {
+          result(nil)
+          return
+        }
+        // UIKit knows the camera/status region, including its interactive margins.
+        // Ask for a full-width safe rectangle below it instead of guessing a
+        // camera height from a device name or the horizontal Flutter inset.
+        var insets = view.edgeInsets(for: .safeArea(cornerAdaptation: .vertical))
+        let occlusions = view.reservedRegions(kind: .occlusion).filter { $0.isActive }
+        let obstructionBottom = occlusions.map { $0.frame.maxY }.max() ?? 0
+        // Only reclaim a side inset when UIKit identifies all obstructions in
+        // the upper part of this window. Ordinary landscape notches keep their
+        // standard safe area. Keep the unobstructed side's base margin on both
+        // sides; the vertical safe-area bottom still protects rounded corners.
+        if view.safeAreaInsets.left + view.safeAreaInsets.right > 0,
+           obstructionBottom > 0, obstructionBottom < view.bounds.height * 0.4 {
+          let sideMargin = min(insets.left, insets.right)
+          insets = UIEdgeInsets(top: max(obstructionBottom, insets.top),
+                                left: sideMargin, bottom: insets.bottom,
+                                right: sideMargin)
+        }
+        result([
+          "width": view.bounds.width, "height": view.bounds.height,
+          "left": insets.left, "top": insets.top,
+          "right": insets.right, "bottom": insets.bottom
+        ])
+      }
+    }
     let messenger = engineBridge.applicationRegistrar.messenger()
     let pushChannel = FlutterMethodChannel(name: pushChannelName, binaryMessenger: messenger)
     pushChannel.setMethodCallHandler { [weak self] call, result in

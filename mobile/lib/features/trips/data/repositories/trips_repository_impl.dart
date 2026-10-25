@@ -19,22 +19,23 @@ class TripsRepositoryImpl implements TripsRepository {
   final TripsLocalStore _localStore;
 
   @override
-  Future<List<Trip>> listTrips() => _localStore.storage.session.run(() async {
-    try {
-      final trips = await _remote.listTrips();
-      await _localStore.writeTrips(trips);
-      return trips;
-    } on ApiException catch (error) {
-      if (!error.isNetworkError) {
-        rethrow;
-      }
-      final cached = await _localStore.readTrips();
-      if (cached.isNotEmpty) {
-        return cached;
-      }
-      rethrow;
-    }
-  });
+  Future<List<Trip>> listTrips({bool allowOfflineCache = true}) =>
+      _localStore.storage.session.run(() async {
+        try {
+          final trips = await _remote.listTrips();
+          await _localStore.writeTrips(trips);
+          return trips;
+        } on ApiException catch (error) {
+          if (!error.isNetworkError || !allowOfflineCache) {
+            rethrow;
+          }
+          final cached = await _localStore.readTrips();
+          if (cached.isNotEmpty) {
+            return cached;
+          }
+          rethrow;
+        }
+      });
 
   @override
   Future<List<TripUser>> listDirectoryUsers({

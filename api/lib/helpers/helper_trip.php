@@ -346,7 +346,8 @@ function create_user_notification(
     string $body,
     array $payload = []
 ): void {
-    if ($tripId <= 0 || $userId <= 0) {
+    $accountNotification = in_array($type, ['friend_invite_received', 'friend_invite_accepted'], true);
+    if ($userId <= 0 || ($tripId <= 0 && !$accountNotification)) {
         return;
     }
 
@@ -368,7 +369,7 @@ function create_user_notification(
          VALUES (:trip_id, :user_id, :type, :title, :body, :payload_json, 0)'
     );
     $insert->execute([
-        'trip_id' => $tripId,
+        'trip_id' => $tripId > 0 ? $tripId : null,
         'user_id' => $userId,
         'type' => $normalizedType,
         'title' => $normalizedTitle,

@@ -412,12 +412,12 @@ class _InAppNotificationSettingsPageState
 
   Widget _buildSectionHeading(BuildContext context, String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
+      padding: EdgeInsets.zero,
       child: Text(
         title,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
           fontSize: 12,
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.w600,
           letterSpacing: 0.9,
           color: AppDesign.mutedColor(context),
         ),
@@ -436,8 +436,8 @@ class _InAppNotificationSettingsPageState
         content.add(
           Divider(
             height: 1,
-            indent: 8,
-            endIndent: 8,
+            indent: 0,
+            endIndent: 0,
             color: AppDesign.cardStroke(context),
           ),
         );
@@ -445,7 +445,7 @@ class _InAppNotificationSettingsPageState
     }
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [...content],
@@ -460,46 +460,22 @@ class _InAppNotificationSettingsPageState
     required IconData icon,
     required bool value,
     required ValueChanged<bool> onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 2),
-            child: Icon(icon, color: AppDesign.mutedColor(context)),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppDesign.titleColor(context),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppDesign.mutedColor(context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Switch.adaptive(
-            value: value,
-            onChanged: _isSaving ? null : onChanged,
-            activeThumbColor: AppDesign.successColor(context),
-          ),
-        ],
+  }) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: AppSettingsRow(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      chevron: false,
+      trailing: Semantics(
+        label: title,
+        child: Switch.adaptive(
+          value: value,
+          onChanged: _isSaving ? null : onChanged,
+          activeTrackColor: Theme.of(context).colorScheme.primary,
+          activeThumbColor: Theme.of(context).colorScheme.onPrimary,
+        ),
       ),
-    );
-  }
+    ),
+  );
 }

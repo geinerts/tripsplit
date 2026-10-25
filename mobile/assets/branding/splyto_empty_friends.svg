@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="184" viewBox="0 0 240 184">
+  <title>Pirmais draugs</title>
+  <g fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#00BED4">
+      <circle cx="72" cy="99" r="16"/>
+      <path d="M42 148a30 30 0 0 1 60 0v1H42Z"/>
+    </g>
+    <g stroke="#DD2684">
+      <circle cx="168" cy="99" r="16"/>
+      <path d="M138 148a30 30 0 0 1 60 0v1h-60Z"/>
+    </g>
+    <path d="m120 72 5-5a7 7 0 0 1 10 10l-7 7a7 7 0 0 1-10 0" stroke="#00BED4"/>
+    <path d="m120 92-5 5a7 7 0 0 1-10-10l7-7a7 7 0 0 1 10 0" stroke="#DD2684"/>
+    <path d="m104 56-7-7" stroke="#00BED4" stroke-width="4"/>
+    <path d="M120 49V38m16 18 7-7" stroke="#DD2684" stroke-width="4"/>
+  </g>
+</svg>

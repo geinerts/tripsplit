@@ -43,7 +43,9 @@ function combine_full_name($first, $last): ?string { return trim($first . ' ' . 
 function me_display_name(array $user): string { return $user['nickname']; }
 function push_should_queue_notification_type(string $type): bool { return false; }
 function app_event(...$args): void {}
-function compute_trip_balance_data(PDO $pdo, int $id): array { return ['stats'=>[]]; }
+if (!function_exists('compute_trip_balance_data')) {
+    function compute_trip_balance_data(PDO $pdo, int $id): array { return ['stats'=>[]]; }
+}
 function trip_payments_table_available(PDO $pdo): bool { return true; }
 
 // Real handlers, membership/role checks, notification SQL and transactions.

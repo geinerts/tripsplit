@@ -9,6 +9,61 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get homeFirstTrip => 'Tu primer viaje';
+
+  @override
+  String get homeYourShareAllTrips => 'Tu parte en todos los viajes';
+
+  @override
+  String get homeAllTime => 'Todo el período';
+
+  @override
+  String get homeSolo => 'Solo';
+
+  @override
+  String homePeople(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count personas',
+      one: '1 persona',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String homeTripActions(String name) {
+    return 'Acciones del viaje: $name';
+  }
+
+  @override
+  String get homeNoActiveTrips => 'No hay viajes activos';
+
+  @override
+  String get homeNoArchivedTrips => 'No hay viajes archivados';
+
+  @override
+  String get homeLoadingTrips => 'Cargando tus viajes';
+
+  @override
+  String get homeLoadErrorTitle => 'No se pudieron cargar tus viajes';
+
+  @override
+  String get homeLoadErrorBody => 'Vuelve a intentarlo en un momento.';
+
+  @override
+  String get homeOfflineTitle => 'Sin conexión';
+
+  @override
+  String get homeOfflineNoData => 'Aún no hay viajes guardados en este dispositivo.';
+
+  @override
+  String get homeOfflineCached => 'Sin conexión. Mostrando viajes guardados.';
+
+  @override
+  String get homeRefreshError => 'No se pudo actualizar. Mostrando los viajes anteriores.';
+
+  @override
   String paymentShareDetailsConsent(Object arg1) {
     return 'Compartir mis datos de pago guardados con $arg1';
   }
@@ -374,6 +429,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get filterSettlementByMemberSubtitle => 'Filtrar liquidaciones por miembro';
 
   @override
+  String get finishSoloTripConfirmationText => '¿Finalizar este viaje y moverlo al archivo? Podrás seguir consultando tus gastos.';
+
+  @override
+  String get soloTripArchived => 'Viaje finalizado y archivado.';
+
+  @override
+  String get finishTripSyncPending => 'Sincroniza los cambios pendientes antes de finalizar este viaje.';
+
+  @override
   String get finishTripAction => 'Terminar viaje';
 
   @override
@@ -683,6 +747,34 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noNotePlaceholder => 'Sin nota';
+
+  @override
+  String get notificationsToday => 'Hoy';
+
+  @override
+  String get notificationsEmptyBody => 'Aquí aparecerán novedades sobre viajes, gastos y amigos.';
+
+  @override
+  String get notificationsCached => 'Sin conexión: se muestran las notificaciones guardadas.';
+
+  @override
+  String get notificationsRefreshFailed => 'No se pudo actualizar. Se muestran las notificaciones anteriores.';
+
+  @override
+  String get notificationsJustNow => 'Ahora mismo';
+
+  @override
+  String notificationsMinutesAgo(int count) {
+    return 'Hace $count min';
+  }
+
+  @override
+  String notificationsHoursAgo(int count) {
+    return 'Hace $count h';
+  }
+
+  @override
+  String get notificationsUnread => 'Sin leer';
 
   @override
   String get noNotificationsYet => 'Aún no hay notificaciones.';
@@ -1746,6 +1838,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get profileAppSettingsSectionTitle => 'CONFIGURACIÓN DE LA APLICACIÓN';
+
+  @override
+  String get profileAccountSettings => 'Ajustes de la cuenta';
+
+  @override
+  String get profileChangePhoto => 'Cambiar foto de perfil';
 
   @override
   String get profileAppearance => 'Apariencia';
@@ -3395,4 +3493,397 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notificationPaymentNotReceivedBodyGeneric => 'Se marcó un pago como no recibido.';
+
+  @override
+  String get quickStartTitle => 'Guía rápida';
+
+  @override
+  String get quickStartCreateTitle => 'Crea un viaje';
+
+  @override
+  String get quickStartCreateBody => 'Elige un nombre y una moneda. Registra tus gastos o comparte los costes en grupo.';
+
+  @override
+  String get quickStartInviteTitle => 'Viaja en grupo o por tu cuenta';
+
+  @override
+  String get quickStartInviteBody => 'Invita a tus amigos a un viaje en grupo o empieza un viaje personal por tu cuenta.';
+
+  @override
+  String get quickStartExpenseTitle => 'Añade tu primer gasto';
+
+  @override
+  String get quickStartExpenseBody => 'Introduce el importe, elige quién pagó y reparte el coste. Tus saldos se actualizan.';
+
+  @override
+  String get quickStartNext => 'Siguiente';
+
+  @override
+  String get quickStartBack => 'Atrás';
+
+  @override
+  String get quickStartSkip => 'Omitir';
+
+  @override
+  String get quickStartCreateAction => 'Crear viaje';
+
+  @override
+  String get quickStartClose => 'Cerrar la guía rápida';
+
+  @override
+  String get quickStartSubtitle => 'Descubre cómo usar los viajes y los gastos';
+
+  @override
+  String quickStartStep(int step, int total) {
+    return 'Paso $step de $total';
+  }
+
+  @override
+  String get workspaceTripTotal => 'Total del viaje';
+
+  @override
+  String get workspacePersonalTotal => 'Total gastado';
+
+  @override
+  String get workspaceBalanceEven => 'Tu saldo está equilibrado';
+
+  @override
+  String workspaceBalanceOwe(String amount) {
+    return 'Debes $amount';
+  }
+
+  @override
+  String workspaceBalanceReceive(String amount) {
+    return 'Te deben $amount';
+  }
+
+  @override
+  String workspaceMemberCount(int count) {
+    return 'Miembros: $count';
+  }
+
+  @override
+  String get workspaceSearchExpenses => 'Buscar gastos';
+
+  @override
+  String get workspaceClearSearch => 'Borrar búsqueda';
+
+  @override
+  String get workspaceSearchLoadedHint => 'La búsqueda incluye los gastos cargados. Carga más para buscar gastos anteriores.';
+
+  @override
+  String get workspaceNoExpenseMatches => 'No hay gastos coincidentes';
+
+  @override
+  String get workspaceNoExpenseMatchesBody => 'Prueba otra búsqueda o bórrala para ver todos los gastos cargados.';
+
+  @override
+  String get workspaceEmptyPersonalExpenses => 'Añade tu primer gasto para empezar a controlar lo que gastas.';
+
+  @override
+  String get workspaceEmptyGroupExpenses => 'Añade el primer gasto compartido para ver la parte de cada persona.';
+
+  @override
+  String get workspaceLoadMoreExpenses => 'Cargar más gastos';
+
+  @override
+  String workspaceOriginalExpenseAmount(String amount) {
+    return 'Importe original: $amount';
+  }
+
+  @override
+  String workspaceCommentCount(int count) {
+    return 'Comentarios: $count';
+  }
+
+  @override
+  String get workspaceExpenseActions => 'Acciones del gasto';
+
+  @override
+  String get workspaceLoadErrorTitle => 'No se pudo cargar el viaje';
+
+  @override
+  String get workspaceCachedWarning => 'Se muestran datos guardados. Es posible que no estén actualizados.';
+
+  @override
+  String get workspaceActivityTab => 'Actividad';
+
+  @override
+  String get workspaceLoadingTrip => 'Cargando el viaje';
+
+  @override
+  String get workspaceRefreshFailed => 'Error al actualizar';
+
+  @override
+  String get expenseDetailsTitle => 'Detalles del gasto';
+
+  @override
+  String get expenseQuickCategories => 'Categorías rápidas';
+
+  @override
+  String get expenseReceiptRead => 'Recibo leído y formulario actualizado.';
+
+  @override
+  String get expenseReceiptNoData => 'Recibo adjunto. No se identificó el importe, la fecha ni el comercio.';
+
+  @override
+  String get expenseReceiptScanFailed => 'Recibo seleccionado. La lectura automática falló; revisa los campos.';
+
+  @override
+  String get expenseReceiptOffline => 'El recibo se subirá al guardar. La lectura automática requiere conexión.';
+
+  @override
+  String get expenseReadingReceipt => 'Leyendo recibo…';
+
+  @override
+  String get expenseCommentsLoadFailed => 'No se pudieron cargar los comentarios. Inténtalo de nuevo.';
+
+  @override
+  String get expenseReplyAction => 'Responder';
+
+  @override
+  String get expenseReplyHint => 'Escribe una respuesta…';
+
+  @override
+  String expenseReplyTo(String name) {
+    return 'Respuesta a $name';
+  }
+
+  @override
+  String get balanceEmptyBody => 'Los balances aparecerán al añadir gastos.';
+
+  @override
+  String get balanceAfterPayments => 'Los balances incluyen los pagos confirmados.';
+
+  @override
+  String get balanceExpenseShare => 'Parte de los gastos';
+
+  @override
+  String get balanceHistoryScope => 'Gastos cargados y pagos confirmados. Esta lista puede no incluir todo el historial del viaje.';
+
+  @override
+  String balancePaymentTo(String name) {
+    return 'Pago a $name';
+  }
+
+  @override
+  String balancePaymentFrom(String name) {
+    return 'Pago de $name';
+  }
+
+  @override
+  String get settlementEmptyActive => 'Todos deben marcar que están listos antes de la liquidación final.';
+
+  @override
+  String get settlementEmptyClosed => 'No hay transferencias registradas para este viaje.';
+
+  @override
+  String settlementConfirmedCount(int count, int total) {
+    return '$count de $total transferencias confirmadas';
+  }
+
+  @override
+  String settlementReadyCount(int count, int total) {
+    return '$count de $total miembros listos';
+  }
+
+  @override
+  String get settlementMemberReady => 'Listo';
+
+  @override
+  String get settlementMemberNotReady => 'Aún no está listo';
+
+  @override
+  String get settlementSuggested => 'Transferencia sugerida';
+
+  @override
+  String get activityLoadFailed => 'No se pudo actualizar la actividad. Los registros visibles pueden estar desactualizados.';
+
+  @override
+  String get activityMember => 'Miembro del viaje';
+
+  @override
+  String get friendsEmptyBody => 'Busca a un amigo por nombre o correo, o usa un código QR.';
+
+  @override
+  String get friendsDeclineAction => 'Rechazar';
+
+  @override
+  String get friendsLoading => 'Cargando amigos';
+
+  @override
+  String friendsCommonTripsCount(int count) {
+    return 'Viajes compartidos: $count';
+  }
+
+  @override
+  String get memberActivityScope => 'Basado en los gastos cargados; puede no abarcar todo el viaje.';
+
+  @override
+  String get sharedTripsLoadedLimit => 'Se muestran hasta 20 viajes compartidos.';
+
+  @override
+  String get memberRemoveTitle => '¿Eliminar participante?';
+
+  @override
+  String memberRemoveBody(String name) {
+    return '¿Eliminar a $name de este viaje? Solo es posible si no tiene gastos, liquidaciones ni saldos.';
+  }
+
+  @override
+  String get memberRemoveAction => 'Eliminar del viaje';
+
+  @override
+  String memberRemoved(String name) {
+    return 'Se ha eliminado a $name del viaje.';
+  }
+
+  @override
+  String get profilePaymentNotAdded => 'Aún no añadidos';
+
+  @override
+  String get friendRelationshipLabel => 'Amigo';
+
+  @override
+  String get sharedTripsEmptyBody => 'Aquí aparecerán los viajes en los que participéis ambos.';
+
+  @override
+  String get analyticsAllTrips => 'Todos los viajes';
+
+  @override
+  String get analyticsByTrip => 'Por viaje';
+
+  @override
+  String get analyticsYourSpending => 'Tus gastos';
+
+  @override
+  String get analyticsActiveArchived => 'Viajes activos y archivados';
+
+  @override
+  String get analyticsTrips => 'Viajes';
+
+  @override
+  String get analyticsAveragePerTrip => 'Promedio por viaje';
+
+  @override
+  String get analyticsPaidByMember => 'Pagado por participante';
+
+  @override
+  String get analyticsYouPaid => 'Has pagado';
+
+  @override
+  String get analyticsYouGetBack => 'Te deben';
+
+  @override
+  String get analyticsYouOwe => 'Debes';
+
+  @override
+  String get analyticsParticipants => 'Participantes';
+
+  @override
+  String get analyticsYourCategories => 'Tus gastos por categoría';
+
+  @override
+  String get analyticsLargestShares => 'Tus mayores partes';
+
+  @override
+  String get analyticsLargestExpenses => 'Gastos más grandes';
+
+  @override
+  String get analyticsSpendingByTrip => 'Tus gastos por viaje';
+
+  @override
+  String get analyticsEmptyTitle => 'Aún no hay gastos';
+
+  @override
+  String get analyticsEmptyBody => 'Tus gastos aparecerán aquí cuando añadas gastos a un viaje.';
+
+  @override
+  String get analyticsPeriodEmptyBody => 'No hay gastos en esta vista. Elige otro viaje o período.';
+
+  @override
+  String get analyticsLoadFailed => 'No se pudo cargar el informe completo. Inténtalo de nuevo.';
+
+  @override
+  String get analyticsLastLoaded => 'Se muestra el último informe cargado correctamente.';
+
+  @override
+  String analyticsExpenseCount(int count) {
+    return '$count gastos';
+  }
+
+  @override
+  String get tripOptionsTitle => 'Opciones del viaje';
+
+  @override
+  String get editTripAction => 'Editar viaje';
+
+  @override
+  String get deleteTripAction => 'Eliminar viaje';
+
+  @override
+  String get inviteTripMembersAction => 'Invitar miembros';
+
+  @override
+  String get tripCoverPhoto => 'Foto de portada';
+
+  @override
+  String get tripInviteLaterHint => 'Puedes invitar a otras personas después de crear el viaje.';
+
+  @override
+  String get inviteClipboardFailed => 'No se pudo acceder al portapapeles. Inténtalo de nuevo.';
+
+  @override
+  String get friendInviteToTrip => 'Invitar a un viaje';
+
+  @override
+  String get friendChooseTrip => 'Elige un viaje';
+
+  @override
+  String get friendNoInvitableTrips => 'No hay viajes disponibles. Puedes invitar amigos a viajes de grupo activos que administras, si aún no son miembros ni tienen una invitación pendiente.';
+
+  @override
+  String get friendTripInviteSent => 'Invitación enviada.';
+
+  @override
+  String get friendTripUnavailable => 'Esta acción ya no está disponible para este viaje. Actualiza la lista e inténtalo de nuevo.';
+
+  @override
+  String get friendTripActionFailed => 'No se pudo completar esta acción. Inténtalo de nuevo.';
+
+  @override
+  String get profileContactDescription => '¿Tienes algún problema, sugerencia o pregunta sobre Splyto? Escríbenos por correo electrónico; estaremos encantados de ayudarte.';
+
+  @override
+  String get profileContactEmailAction => 'Escribir un correo';
+
+  @override
+  String get profileContactEmailUnavailable => 'No se pudo abrir una aplicación de correo. Copia la dirección y escríbenos desde tu aplicación de correo.';
+
+  @override
+  String get profilePrivacyPolicy => 'Política de privacidad';
+
+  @override
+  String get privacyLoadFailed => 'No se pudo cargar la política de privacidad. Inténtalo de nuevo.';
+
+  @override
+  String get addReceiptAction => 'Añadir recibo';
+
+  @override
+  String get receiptPickFailed => 'No se pudo cargar el recibo. Inténtalo de nuevo.';
+
+  @override
+  String get receiptPhotoAccessDenied => 'Permite el acceso de Splyto a la cámara o a las fotos en Ajustes y vuelve a intentarlo.';
+
+  @override
+  String get receiptPhotoLabel => 'Foto del recibo';
+
+  @override
+  String get replaceReceiptAction => 'Cambiar recibo';
+
+  @override
+  String get removeReceiptAction => 'Quitar recibo';
+
+  @override
+  String get restoreReceiptAction => 'Restaurar recibo anterior';
 }

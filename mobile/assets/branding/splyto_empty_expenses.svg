@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="184" viewBox="0 0 240 184">
+  <title>Celojuma vel nav izdevumu</title>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <path d="M77 39h73v103l-9-5-9 5-9-5-9 5-9-5-9 5-9-5-10 5Z" fill="#FFF" stroke="#00BED4" stroke-width="4.5"/>
+    <path d="M94 61h22M94 80h39M94 93h30M94 115h18" stroke="#B5CAD3" stroke-width="3"/>
+    <circle cx="155" cy="125" r="26" fill="#FFF" stroke="#DD2684" stroke-width="4.5"/>
+    <path d="M143 125h24m-12-12v24" fill="none" stroke="#DD2684" stroke-width="4.5"/>
+  </g>
+</svg>

@@ -63,6 +63,7 @@ class AppRouter {
         final openAddExpense = args is Map && args['open_add_expense'] == true;
         return AppDynamicSystemOverlay(
           child: MainShellPage(
+            quickStartService: _dependencies.quickStartService,
             authController: _dependencies.authController,
             tripsController: _dependencies.tripsController,
             friendsController: _dependencies.friendsController,
@@ -76,6 +77,7 @@ class AppRouter {
       },
       profile: (_) => AppDynamicSystemOverlay(
         child: MainShellPage(
+          quickStartService: _dependencies.quickStartService,
           authController: _dependencies.authController,
           tripsController: _dependencies.tripsController,
           friendsController: _dependencies.friendsController,
@@ -90,6 +92,7 @@ class AppRouter {
         final openAddExpense = args is Map && args['open_add_expense'] == true;
         return AppDynamicSystemOverlay(
           child: MainShellPage(
+            quickStartService: _dependencies.quickStartService,
             authController: _dependencies.authController,
             tripsController: _dependencies.tripsController,
             friendsController: _dependencies.friendsController,

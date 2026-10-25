@@ -10,7 +10,7 @@ class AppSurfaceCard extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(14),
-    this.radius = AppDesign.radiusLg,
+    this.radius = AppDesign.radiusMd,
     this.onTap,
     this.borderColor,
   });
@@ -203,6 +203,113 @@ class AppListRow extends StatelessWidget {
   }
 }
 
+/// Shared compact action panel. The header stays visible while long content scrolls.
+class AppActionSheet extends StatelessWidget {
+  const AppActionSheet({
+    super.key,
+    required this.title,
+    required this.children,
+  });
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => ConstrainedBox(
+    constraints: BoxConstraints(
+      maxHeight: MediaQuery.sizeOf(context).height * .8,
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 8, 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Semantics(
+                    header: true,
+                    child: Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              IconButton(
+                tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
+        ),
+        Flexible(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(mainAxisSize: MainAxisSize.min, children: children),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Plain action row used by the approved trip and expense menus.
+class AppPlainActionTile extends StatelessWidget {
+  const AppPlainActionTile({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.destructive = false,
+  });
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  final bool destructive;
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final color = destructive ? colors.error : colors.onSurface;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 52),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 24,
+                  color: destructive ? color : colors.onSurfaceVariant,
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class AppActionSheetTile extends StatelessWidget {
   const AppActionSheetTile({
     super.key,
@@ -369,57 +476,47 @@ Future<bool> showAppConfirmationDialog({
     context: context,
     builder: (dialogContext) {
       final colors = Theme.of(dialogContext).colorScheme;
-      final accent = destructive ? colors.error : colors.primary;
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        titlePadding: const EdgeInsets.fromLTRB(24, 22, 24, 0),
-        contentPadding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
-        actionsPadding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-        title: Row(
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: accent.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(icon, color: accent),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                title,
-                style: Theme.of(dialogContext).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: AppDesign.titleColor(dialogContext),
+      return Dialog(
+        key: const ValueKey('app-confirmation-dialog'),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: AppActionSheet(
+            title: title,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  message,
+                  style: Theme.of(dialogContext).textTheme.bodyLarge,
                 ),
               ),
-            ),
-          ],
-        ),
-        content: Text(
-          message,
-          style: Theme.of(dialogContext).textTheme.bodyMedium?.copyWith(
-            color: AppDesign.mutedColor(dialogContext),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(true),
+                  style: destructive
+                      ? FilledButton.styleFrom(
+                          backgroundColor: colors.error,
+                          foregroundColor: colors.onError,
+                        )
+                      : null,
+                  child: Text(confirmLabel),
+                ),
+              ),
+              const SizedBox(height: 4),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(cancelLabel),
+                ),
+              ),
+            ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(cancelLabel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(true),
-            style: destructive
-                ? FilledButton.styleFrom(
-                    backgroundColor: colors.error,
-                    foregroundColor: colors.onError,
-                  )
-                : null,
-            child: Text(confirmLabel),
-          ),
-        ],
       );
     },
   );

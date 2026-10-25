@@ -1,6 +1,22 @@
 part of 'profile_page.dart';
 
 extension _ProfilePageNavigation on _ProfilePageState {
+  Future<void> _openPrivacyPolicy() async {
+    await Navigator.of(
+      context,
+    ).push<void>(AppPageRoute(builder: (_) => const PrivacyPolicyPage()));
+  }
+
+  Future<void> _openQuickStart() async {
+    final create = await QuickStartPresenter().show(context);
+    if (!mounted || create != true) return;
+    await Navigator.of(context).pushNamedAndRemoveUntil(
+      AppRouter.shell,
+      (route) => false,
+      arguments: const <String, Object>{'open_create_trip': true},
+    );
+  }
+
   void _onBottomNavTapped(AppBottomNavItem item) {
     switch (item) {
       case AppBottomNavItem.home:

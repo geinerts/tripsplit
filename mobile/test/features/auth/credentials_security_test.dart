@@ -242,9 +242,9 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Deactivate account'), 300);
+      await tester.scrollUntilVisible(find.text('Account settings'), 300);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Deactivate account'));
+      await tester.tap(find.text('Account settings'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Send deactivation link'));
       await tester.pumpAndSettle();

@@ -9,7 +9,6 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      wrapWithSurface: false,
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (sheetContext, setSheetState) {
@@ -141,433 +140,183 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                 quickRevolutUri != null ||
                 quickPaypalUri != null ||
                 quickWiseUri != null;
-            final bottomSafePadding = MediaQuery.paddingOf(sheetContext).bottom;
-
-            return SafeArea(
-              top: false,
-              bottom: false,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: FractionallySizedBox(
-                  widthFactor: 1,
-                  heightFactor: 0.9,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: semantic.sheetSurface,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(30),
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        Container(
-                          width: 46,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: semantic.sheetHandle,
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                        ),
-                        Expanded(
-                          child: ListView(
-                            padding: EdgeInsets.fromLTRB(
-                              16,
-                              10,
-                              16,
-                              20 + bottomSafePadding,
-                            ),
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      sheetContext.l10n.workspaceSettlementFlow,
-                                      style: Theme.of(sheetContext)
-                                          .textTheme
-                                          .titleLarge
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () =>
-                                        Navigator.of(sheetContext).pop(),
-                                    icon: const Icon(Icons.close_rounded),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: semantic.sheetPanelSurfaceMuted,
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: semantic.sheetBorder,
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: _buildSettlementPartyCard(
-                                            context: sheetContext,
-                                            label: sheetContext.l10n.tripsFrom,
-                                            name: fromName,
-                                            icon: Icons.north_east_rounded,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                          ),
-                                          child: Container(
-                                            width: 30,
-                                            height: 30,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: semantic.flowStepCurrent
-                                                  .withValues(alpha: 0.20),
-                                            ),
-                                            alignment: Alignment.center,
-                                            child: Icon(
-                                              Icons.arrow_forward_rounded,
-                                              size: 18,
-                                              color: semantic.flowStepCurrent,
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: _buildSettlementPartyCard(
-                                            context: sheetContext,
-                                            label: sheetContext.l10n.tripsTo,
-                                            name: toName,
-                                            icon: Icons.south_west_rounded,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-                                    Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 10,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: semantic.sheetPanelSurface,
-                                        borderRadius: BorderRadius.circular(14),
-                                        border: Border.all(
-                                          color: semantic.sheetBorder,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.payments_outlined,
-                                            size: 18,
-                                            color: semantic.flowStepCurrent,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            sheetContext.l10n.amountLabel,
-                                            style: Theme.of(sheetContext)
-                                                .textTheme
-                                                .bodyMedium
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.w700,
-                                                  color: AppDesign.mutedColor(
-                                                    sheetContext,
-                                                  ),
-                                                ),
-                                          ),
-                                          const Spacer(),
-                                          Text(
-                                            _formatMoney(
-                                              sheetContext,
-                                              liveItem.amount,
-                                              currencyCode:
-                                                  widget.trip.currencyCode,
-                                            ),
-                                            style: Theme.of(sheetContext)
-                                                .textTheme
-                                                .titleMedium
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.w800,
-                                                  color:
-                                                      semantic.flowStepCurrent,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              _buildSettlementFlowSteps(
-                                context: sheetContext,
-                                steps: steps,
-                                highlightIndex: highlightIndex,
-                              ),
-                              const SizedBox(height: 16),
-                              for (var i = 0; i < steps.length; i++) ...[
-                                _buildSettlementFlowEventTile(
-                                  context: sheetContext,
-                                  step: steps[i],
-                                  isCurrent:
-                                      !steps[i].isDone && i == highlightIndex,
-                                ),
-                                if (i < steps.length - 1)
-                                  const SizedBox(height: 10),
-                              ],
-                              const SizedBox(height: 14),
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: semantic.sheetPanelSurfaceMuted,
-                                  borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(
-                                    color: semantic.sheetBorder,
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      sheetContext.l10n.workspaceActions,
-                                      style: Theme.of(sheetContext)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w800,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    if (hasQuickPayActions) ...[
-                                      Text(
-                                        sheetContext.l10n.workspaceQuickPay,
-                                        style: Theme.of(sheetContext)
-                                            .textTheme
-                                            .labelLarge
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              color: AppDesign.mutedColor(
-                                                sheetContext,
-                                              ),
-                                            ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Wrap(
-                                        spacing: 8,
-                                        runSpacing: 8,
-                                        children: [
-                                          if (quickRevolutUri != null)
-                                            OutlinedButton.icon(
-                                              onPressed: _isMutating
-                                                  ? null
-                                                  : () =>
-                                                        _openSettlementPaymentLink(
-                                                          quickRevolutUri,
-                                                        ),
-                                              icon: const Icon(
-                                                Icons.bolt_rounded,
-                                                size: 17,
-                                              ),
-                                              label: Text(
-                                                sheetContext
-                                                    .l10n
-                                                    .workspacePayWithRevolut,
-                                              ),
-                                            ),
-                                          if (quickPaypalUri != null)
-                                            OutlinedButton.icon(
-                                              onPressed: _isMutating
-                                                  ? null
-                                                  : () =>
-                                                        _openSettlementPaymentLink(
-                                                          quickPaypalUri,
-                                                        ),
-                                              icon: const Icon(
-                                                Icons.paypal_rounded,
-                                                size: 17,
-                                              ),
-                                              label: Text(
-                                                sheetContext
-                                                    .l10n
-                                                    .workspacePayWithPaypal,
-                                              ),
-                                            ),
-                                          if (quickWiseUri != null)
-                                            OutlinedButton.icon(
-                                              onPressed: _isMutating
-                                                  ? null
-                                                  : () =>
-                                                        _openSettlementPaymentLink(
-                                                          quickWiseUri,
-                                                        ),
-                                              icon: const Icon(
-                                                Icons.currency_exchange_rounded,
-                                                size: 17,
-                                              ),
-                                              label: Text(
-                                                sheetContext
-                                                    .l10n
-                                                    .workspacePayWithWise,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                                    ],
-                                    if (canPrimaryAction)
-                                      SizedBox(
-                                        width: double.infinity,
-                                        child: FilledButton.icon(
-                                          onPressed: _isMutating
-                                              ? null
-                                              : () async {
-                                                  if (liveItem
-                                                      .canConfirmReceived) {
-                                                    await _onSettlementConfirmReceived(
-                                                      liveItem,
-                                                    );
-                                                  } else if (liveItem
-                                                      .canMarkSent) {
-                                                    await _onSettlementMarkSent(
-                                                      liveItem,
-                                                    );
-                                                  }
-                                                  if (!mounted ||
-                                                      !sheetContext.mounted) {
-                                                    return;
-                                                  }
-                                                  setSheetState(() {});
-                                                },
-                                          icon: Icon(primaryActionIcon),
-                                          label: Text(primaryActionLabel),
-                                          style: FilledButton.styleFrom(
-                                            backgroundColor:
-                                                semantic.flowStepCurrent,
-                                            foregroundColor:
-                                                AppDesign.darkForeground,
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 12,
-                                            ),
-                                            textStyle: const TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    else
-                                      Text(
-                                        isConfirmed
-                                            ? sheetContext
-                                                  .l10n
-                                                  .workspaceTransferIsConfirmed
-                                            : sheetContext
-                                                  .l10n
-                                                  .workspaceWaitingForTheOtherMemberToCompleteTheNextStep,
-                                        style: Theme.of(sheetContext)
-                                            .textTheme
-                                            .bodyMedium
-                                            ?.copyWith(
-                                              color: AppDesign.mutedColor(
-                                                sheetContext,
-                                              ),
-                                            ),
-                                      ),
-                                    if (canRemind) ...[
-                                      const SizedBox(height: 8),
-                                      TextButton.icon(
-                                        onPressed: _isMutating
-                                            ? null
-                                            : () async {
-                                                await _onSettlementRemind(
-                                                  liveItem,
-                                                );
-                                                if (!mounted ||
-                                                    !sheetContext.mounted) {
-                                                  return;
-                                                }
-                                                setSheetState(() {});
-                                              },
-                                        icon: const Icon(
-                                          Icons.notifications_active_outlined,
-                                          size: 17,
-                                        ),
-                                        label: Text(
-                                          context.l10n.workspaceSendReminder,
-                                        ),
-                                      ),
-                                    ],
-                                    if (canCancelSent) ...[
-                                      const SizedBox(height: 8),
-                                      TextButton.icon(
-                                        onPressed: _isMutating
-                                            ? null
-                                            : () async {
-                                                await _onSettlementCancelSent(
-                                                  liveItem,
-                                                );
-                                                if (!mounted ||
-                                                    !sheetContext.mounted) {
-                                                  return;
-                                                }
-                                                setSheetState(() {});
-                                              },
-                                        icon: const Icon(
-                                          Icons.undo_rounded,
-                                          size: 17,
-                                        ),
-                                        label: Text(
-                                          context
-                                              .l10n
-                                              .settlementCancelSentAction,
-                                        ),
-                                      ),
-                                    ],
-                                    if (canReportNotReceived) ...[
-                                      const SizedBox(height: 8),
-                                      TextButton.icon(
-                                        onPressed: _isMutating
-                                            ? null
-                                            : () async {
-                                                await _onSettlementReportNotReceived(
-                                                  liveItem,
-                                                );
-                                                if (!mounted ||
-                                                    !sheetContext.mounted) {
-                                                  return;
-                                                }
-                                                setSheetState(() {});
-                                              },
-                                        icon: const Icon(
-                                          Icons.report_problem_outlined,
-                                          size: 17,
-                                        ),
-                                        label: Text(
-                                          context
-                                              .l10n
-                                              .settlementNotReceivedAction,
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+            return AppActionSheet(
+              title: t.workspaceSettlementFlow,
+              children: [
+                Text(
+                  '$fromName → $toName',
+                  style: Theme.of(sheetContext).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _balanceMoney(liveItem.amount),
+                  style: Theme.of(sheetContext).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 16),
+                _buildSettlementFlowSteps(
+                  context: sheetContext,
+                  steps: steps,
+                  highlightIndex: highlightIndex,
+                ),
+                const SizedBox(height: 16),
+                for (var i = 0; i < steps.length; i++) ...[
+                  _buildSettlementFlowEventTile(
+                    context: sheetContext,
+                    step: steps[i],
+                    isCurrent: !steps[i].isDone && i == highlightIndex,
+                  ),
+                  if (i < steps.length - 1) const SizedBox(height: 10),
+                ],
+                const SizedBox(height: 14),
+                const Divider(height: 1),
+                const SizedBox(height: 16),
+                Text(
+                  sheetContext.l10n.workspaceActions,
+                  style: Theme.of(sheetContext).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
+                const SizedBox(height: 8),
+                if (hasQuickPayActions) ...[
+                  Text(
+                    sheetContext.l10n.workspaceQuickPay,
+                    style: Theme.of(sheetContext).textTheme.labelLarge
+                        ?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: AppDesign.mutedColor(sheetContext),
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      if (quickRevolutUri != null)
+                        OutlinedButton.icon(
+                          onPressed: _isMutating
+                              ? null
+                              : () =>
+                                    _openSettlementPaymentLink(quickRevolutUri),
+                          icon: const Icon(Icons.bolt_rounded, size: 17),
+                          label: Text(
+                            sheetContext.l10n.workspacePayWithRevolut,
+                          ),
+                        ),
+                      if (quickPaypalUri != null)
+                        OutlinedButton.icon(
+                          onPressed: _isMutating
+                              ? null
+                              : () =>
+                                    _openSettlementPaymentLink(quickPaypalUri),
+                          icon: const Icon(Icons.paypal_rounded, size: 17),
+                          label: Text(sheetContext.l10n.workspacePayWithPaypal),
+                        ),
+                      if (quickWiseUri != null)
+                        OutlinedButton.icon(
+                          onPressed: _isMutating
+                              ? null
+                              : () => _openSettlementPaymentLink(quickWiseUri),
+                          icon: const Icon(
+                            Icons.currency_exchange_rounded,
+                            size: 17,
+                          ),
+                          label: Text(sheetContext.l10n.workspacePayWithWise),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                if (canPrimaryAction)
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: _isMutating
+                          ? null
+                          : () async {
+                              if (liveItem.canConfirmReceived) {
+                                await _onSettlementConfirmReceived(liveItem);
+                              } else if (liveItem.canMarkSent) {
+                                await _onSettlementMarkSent(liveItem);
+                              }
+                              if (!mounted || !sheetContext.mounted) {
+                                return;
+                              }
+                              setSheetState(() {});
+                            },
+                      icon: Icon(primaryActionIcon),
+                      label: Text(primaryActionLabel),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: semantic.flowStepCurrent,
+                        foregroundColor: Theme.of(
+                          sheetContext,
+                        ).colorScheme.onPrimary,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        textStyle: Theme.of(sheetContext).textTheme.labelLarge,
+                      ),
+                    ),
+                  )
+                else
+                  Text(
+                    isConfirmed
+                        ? sheetContext.l10n.workspaceTransferIsConfirmed
+                        : sheetContext
+                              .l10n
+                              .workspaceWaitingForTheOtherMemberToCompleteTheNextStep,
+                    style: Theme.of(sheetContext).textTheme.bodyMedium
+                        ?.copyWith(color: AppDesign.mutedColor(sheetContext)),
+                  ),
+                if (canRemind) ...[
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: _isMutating
+                        ? null
+                        : () async {
+                            await _onSettlementRemind(liveItem);
+                            if (!mounted || !sheetContext.mounted) {
+                              return;
+                            }
+                            setSheetState(() {});
+                          },
+                    icon: const Icon(
+                      Icons.notifications_active_outlined,
+                      size: 17,
+                    ),
+                    label: Text(context.l10n.workspaceSendReminder),
+                  ),
+                ],
+                if (canCancelSent) ...[
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: _isMutating
+                        ? null
+                        : () async {
+                            await _onSettlementCancelSent(liveItem);
+                            if (!mounted || !sheetContext.mounted) {
+                              return;
+                            }
+                            setSheetState(() {});
+                          },
+                    icon: const Icon(Icons.undo_rounded, size: 17),
+                    label: Text(context.l10n.settlementCancelSentAction),
+                  ),
+                ],
+                if (canReportNotReceived) ...[
+                  const SizedBox(height: 8),
+                  TextButton.icon(
+                    onPressed: _isMutating
+                        ? null
+                        : () async {
+                            await _onSettlementReportNotReceived(liveItem);
+                            if (!mounted || !sheetContext.mounted) {
+                              return;
+                            }
+                            setSheetState(() {});
+                          },
+                    icon: const Icon(Icons.report_problem_outlined, size: 17),
+                    label: Text(context.l10n.settlementNotReceivedAction),
+                  ),
+                ],
+              ],
             );
           },
         );
@@ -670,66 +419,16 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     return '${AppFormatters.shortDayMonth(context, moment)} $time';
   }
 
-  Widget _buildSettlementPartyCard({
-    required BuildContext context,
-    required String label,
-    required String name,
-    required IconData icon,
-  }) {
-    final colors = Theme.of(context).colorScheme;
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.light;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-      decoration: BoxDecoration(
-        color: semantic.sheetPanelSurface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: semantic.sheetBorder),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 14, color: semantic.flowStepCurrent),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppDesign.mutedColor(context),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 3),
-          Text(
-            name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: colors.onSurface,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSettlementFlowSteps({
     required BuildContext context,
     required List<_SettlementFlowStep> steps,
     required int highlightIndex,
   }) {
-    return _AnimatedSettlementTimeline(
-      steps: steps,
-      highlightIndex: highlightIndex,
+    final completed = steps.where((step) => step.isDone).length;
+    return LinearProgressIndicator(
+      value: steps.isEmpty ? 0 : completed / steps.length,
+      minHeight: 4,
+      semanticsLabel: context.l10n.workspaceSettlementFlow,
     );
   }
 
@@ -738,121 +437,38 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
     required _SettlementFlowStep step,
     required bool isCurrent,
   }) {
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.light;
-    final stateLabel = step.isDone
+    final theme = Theme.of(context);
+    final status = step.isDone
         ? context.l10n.doneStatus
         : (isCurrent
               ? context.l10n.workspaceInProgress
               : context.l10n.statusPending);
-    final stateColor = step.isDone
-        ? semantic.flowStepDone
-        : (isCurrent ? semantic.flowStepCurrent : semantic.flowStepPending);
-    final completedAtLabel = step.isDone
-        ? _formatSettlementStepTime(context, step.completedAtRaw)
-        : null;
-
-    return Container(
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-      decoration: BoxDecoration(
-        color: isCurrent
-            ? semantic.sheetPanelSurfaceHighlighted
-            : semantic.sheetPanelSurfaceMuted,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isCurrent
-              ? stateColor.withValues(alpha: 0.36)
-              : semantic.sheetBorder,
-        ),
-        boxShadow: isCurrent
-            ? [
-                BoxShadow(
-                  color: semantic.flowHighlightShadow,
-                  blurRadius: 14,
-                  offset: const Offset(0, 6),
-                ),
-              ]
-            : null,
-      ),
+    final completedAt = _formatSettlementStepTime(context, step.completedAtRaw);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: stateColor.withValues(alpha: 0.14),
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: Icon(
-              step.isDone ? Icons.check_rounded : step.icon,
-              size: 17,
-              color: stateColor,
-            ),
+          Icon(
+            step.isDone ? Icons.check_circle_outline : step.icon,
+            color: step.isDone || isCurrent
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurfaceVariant,
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(step.title, style: theme.textTheme.titleMedium),
+                Text(step.subtitle, style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 4),
                 Text(
-                  step.title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  step.subtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                  '$status${step.isDone && completedAt != null ? ' · $completedAt' : ''}',
+                  style: theme.textTheme.bodySmall,
                 ),
               ],
             ),
-          ),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: stateColor.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  stateLabel,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: stateColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              if (step.isDone) ...[
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.schedule_rounded,
-                      size: 12,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      completedAtLabel ?? context.l10n.workspaceTimeUnknown,
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ],
           ),
         ],
       ),
@@ -1576,252 +1192,3 @@ class _SettlementFlowStep {
 }
 
 // ─── Animated step-by-step timeline ──────────────────────────────────────────
-
-class _AnimatedSettlementTimeline extends StatefulWidget {
-  const _AnimatedSettlementTimeline({
-    required this.steps,
-    required this.highlightIndex,
-  });
-
-  final List<_SettlementFlowStep> steps;
-  final int highlightIndex;
-
-  @override
-  State<_AnimatedSettlementTimeline> createState() =>
-      _AnimatedSettlementTimelineState();
-}
-
-class _AnimatedSettlementTimelineState
-    extends State<_AnimatedSettlementTimeline>
-    with TickerProviderStateMixin {
-  // One scale controller per dot — elasticOut pop-in.
-  late final List<AnimationController> _dotControllers;
-  late final List<Animation<double>> _dotScales;
-  // Separate easeOut curve for label opacity so elastic overshoot doesn't clip.
-  late final List<Animation<double>> _dotFades;
-
-  // One controller per connector segment — easeOut draw-in from left.
-  late final List<AnimationController> _connectorControllers;
-
-  // Looping pulse for the active (current) dot.
-  AnimationController? _pulseController;
-  Animation<double>? _pulseAnim;
-
-  @override
-  void initState() {
-    super.initState();
-    final n = widget.steps.length;
-
-    _dotControllers = List.generate(
-      n,
-      (_) => AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 420),
-      ),
-    );
-    _dotScales = _dotControllers
-        .map((c) => CurvedAnimation(parent: c, curve: Curves.elasticOut))
-        .toList();
-    _dotFades = _dotControllers
-        .map((c) => CurvedAnimation(parent: c, curve: Curves.easeOut))
-        .toList();
-
-    _connectorControllers = List.generate(
-      (n - 1).clamp(0, n),
-      (_) => AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 300),
-      ),
-    );
-
-    // Pulse only when there is an active step that isn't finished yet.
-    final hasActive = widget.steps.any((s) => !s.isDone);
-    if (hasActive) {
-      _pulseController = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 1300),
-      );
-      _pulseAnim = Tween<double>(begin: 1.0, end: 1.14).animate(
-        CurvedAnimation(parent: _pulseController!, curve: Curves.easeInOut),
-      );
-      _pulseController!.repeat(reverse: true);
-    }
-
-    _runEntrance();
-  }
-
-  /// Staggers the dot pop-ins and connector draw-ins.
-  ///   dot[0]       → t = 60 ms
-  ///   connector[0] → t = 130 ms
-  ///   dot[1]       → t = 180 ms
-  ///   connector[1] → t = 250 ms
-  ///   …
-  void _runEntrance() {
-    const initialDelay = 60;
-    const stagger = 120;
-    const connectorOffset = 70;
-
-    for (var i = 0; i < widget.steps.length; i++) {
-      final t = initialDelay + i * stagger;
-      Future<void>.delayed(Duration(milliseconds: t), () {
-        if (mounted) _dotControllers[i].forward();
-      });
-      if (i < _connectorControllers.length) {
-        Future<void>.delayed(Duration(milliseconds: t + connectorOffset), () {
-          if (mounted) _connectorControllers[i].forward();
-        });
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    for (final c in _dotControllers) {
-      c.dispose();
-    }
-    for (final c in _connectorControllers) {
-      c.dispose();
-    }
-    _pulseController?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.light;
-    final steps = widget.steps;
-    final n = steps.length;
-    final hi = widget.highlightIndex;
-
-    return Column(
-      children: [
-        Row(
-          children: [
-            for (var i = 0; i < n; i++) ...[
-              ScaleTransition(
-                scale: _dotScales[i],
-                child: _buildDot(context, steps[i], i, hi, semantic),
-              ),
-              if (i < n - 1)
-                Expanded(
-                  child: _buildConnector(
-                    context,
-                    index: i,
-                    nextIsDone: steps[i + 1].isDone,
-                    semantic: semantic,
-                  ),
-                ),
-            ],
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            for (var i = 0; i < n; i++)
-              Expanded(
-                child: FadeTransition(
-                  opacity: _dotFades[i],
-                  child: Text(
-                    steps[i].title,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: steps[i].isDone
-                          ? semantic.flowStepDone
-                          : (i == hi
-                                ? semantic.flowStepCurrent
-                                : Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDot(
-    BuildContext context,
-    _SettlementFlowStep step,
-    int index,
-    int highlightIndex,
-    AppSemanticColors semantic,
-  ) {
-    final isDone = step.isDone;
-    final isCurrent = !isDone && index == highlightIndex;
-    final baseColor = isDone
-        ? semantic.flowStepDone
-        : (isCurrent ? semantic.flowStepCurrent : semantic.flowStepPending);
-
-    Widget dot = Container(
-      width: 34,
-      height: 34,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: baseColor.withValues(alpha: isDone || isCurrent ? 0.18 : 0.12),
-        border: Border.all(
-          color: baseColor.withValues(alpha: isDone || isCurrent ? 0.88 : 0.44),
-          width: isCurrent ? 1.8 : 1.2,
-        ),
-      ),
-      alignment: Alignment.center,
-      child: Icon(
-        isDone ? Icons.check_rounded : step.icon,
-        size: 17,
-        color: baseColor,
-      ),
-    );
-
-    // Wrap the current dot in a looping pulse.
-    final pulse = _pulseAnim;
-    if (isCurrent && pulse != null) {
-      dot = AnimatedBuilder(
-        animation: pulse,
-        builder: (_, child) =>
-            Transform.scale(scale: pulse.value, child: child),
-        child: dot,
-      );
-    }
-
-    return dot;
-  }
-
-  Widget _buildConnector(
-    BuildContext context, {
-    required int index,
-    required bool nextIsDone,
-    required AppSemanticColors semantic,
-  }) {
-    final color = nextIsDone
-        ? semantic.flowConnectorDone
-        : semantic.flowConnectorPending;
-
-    return Container(
-      height: 2,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return AnimatedBuilder(
-            animation: _connectorControllers[index],
-            builder: (_, child) {
-              final fill = _connectorControllers[index].value;
-              return Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  width: constraints.maxWidth * fill,
-                  height: 2,
-                  child: ColoredBox(color: color),
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-}

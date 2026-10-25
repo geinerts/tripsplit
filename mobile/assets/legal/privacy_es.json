@@ -1,0 +1,127 @@
+{
+  "title": "Política de privacidad",
+  "updated": "Preparada el 23 de octubre de 2026",
+  "reviewNotice": "Borrador para revisión. Antes de publicarlo deben confirmarse las reglas de conservación de otras categorías de datos y las garantías para las transferencias internacionales.",
+  "intro": "Esta política explica cómo Splyto trata datos personales en sus funciones de cuenta, viajes y gastos compartidos. También abarca información que otros participantes introducen sobre ti. No sustituye los avisos de privacidad de tus proveedores de correo, inicio de sesión o pagos.",
+  "sections": [
+    {
+      "id": "controller",
+      "title": "Responsable del tratamiento",
+      "paragraphs": [
+        "Splyto, Letonia, es responsable del tratamiento descrito aquí. Para consultas y solicitudes de privacidad, escribe a info@splyto.eu. Para asistencia general de la aplicación, utiliza support@splyto.eu."
+      ]
+    },
+    {
+      "id": "account",
+      "title": "Cuenta e inicio de sesión",
+      "paragraphs": [
+        "Tratamos tu identificador de cuenta, correo, nombre o apodo, foto de perfil si la añades, moneda preferida, idioma y preferencias de notificaciones. Si estableces una contraseña de Splyto, el servidor almacena su hash, no la contraseña.",
+        "Si eliges iniciar sesión con Google o Apple, recibimos el identificador del proveedor y los datos de identidad que facilite, como correo y nombre. Apple puede facilitar una dirección de retransmisión. No recibimos tu contraseña de Google o Apple. Las sesiones también implican tokens de autenticación, fechas de acceso, direcciones IP e información del agente de usuario."
+      ]
+    },
+    {
+      "id": "shared",
+      "title": "Viajes, gastos y datos de otras personas",
+      "paragraphs": [
+        "Almacenamos viajes, miembros e invitaciones; descripciones, importes, monedas, fechas, categorías, pagadores y participantes de gastos; cuotas individuales; comentarios, reacciones y recibos; solicitudes de pago, estados de liquidación e historial de actividad. Otros participantes pueden introducir gastos o comentarios relacionados contigo. Los resúmenes de gastos se calculan a partir de estos registros.",
+        "Los datos de cuenta y gastos compartidos son necesarios para estas funciones. Las fotos, los datos de pago y los archivos enviados al soporte son opcionales. Sin los datos obligatorios correspondientes no podemos crear una cuenta, registrar un gasto o proporcionar esa función."
+      ]
+    },
+    {
+      "id": "visibility",
+      "title": "Qué pueden ver otras personas",
+      "paragraphs": [
+        "Los usuarios que han iniciado sesión pueden buscar perfiles por nombre, apodo o correo y recibir sugerencias de perfiles. Los resultados muestran nombres, fotos e identificadores de cuenta, no la propia dirección de correo. La búsqueda no se limita a los amigos existentes.",
+        "Los participantes de un viaje acceden a los registros compartidos permitidos por su pertenencia y función, incluidos gastos, recibos y actividad. Pueden conservar lo que hayan visto o copiado. Los avatares y portadas de viajes usan enlaces compartibles y no deben considerarse archivos confidenciales. Los recibos usan enlaces temporales: quien recibe un enlace válido puede abrirlo hasta que caduque. Retirar el acceso no elimina copias ya descargadas."
+      ]
+    },
+    {
+      "id": "payments",
+      "title": "Datos de pago y pagos externos",
+      "paragraphs": [
+        "Si los añades, almacenamos el titular, IBAN, BIC/SWIFT e identificadores o enlaces de Revolut, PayPal o Wise. La amistad o pertenencia a un viaje no permite por sí sola acceder a estos datos. Si eliges expresamente compartirlos en una solicitud de pago, el pagador designado puede consultarlos mientras la solicitud y el viaje estén activos y se cumplan las condiciones de pertenencia y cuenta.",
+        "Puedes editar o eliminar tus datos de pago en el perfil. Esto no retira información ya copiada por otra persona. Splyto registra saldos y confirmaciones de liquidación; no recoge credenciales de tarjetas ni ejecuta transferencias bancarias. Al abrir un enlace de pago, accedes al proveedor correspondiente, sujeto a sus propias condiciones de privacidad."
+      ]
+    },
+    {
+      "id": "media",
+      "title": "Fotos, cámara y almacenamiento local",
+      "paragraphs": [
+        "La cámara se usa cuando eliges una función de fotografía o lectura de QR; la selección de fotos/archivos se utiliza para el contenido que decides subir. Cuando está disponible, el reconocimiento de recibos lee la imagen en el servidor de Splyto mediante OCR local para sugerir comercio, importe y fecha. Este proceso no envía recibos a un servicio externo de inteligencia artificial.",
+        "El teléfono guarda ajustes, datos de perfil/viajes en caché y cambios pendientes sin conexión. Las credenciales usan el almacenamiento seguro de la plataforma; la caché normal usa el almacenamiento de la aplicación. Tus ajustes de copia de seguridad del dispositivo también pueden afectar a estos datos. Cerrar sesión no elimina la cuenta del servidor. Puedes gestionar permisos de cámara, fotos y notificaciones en los ajustes del dispositivo."
+      ]
+    },
+    {
+      "id": "notifications",
+      "title": "Notificaciones, correos del servicio y soporte",
+      "paragraphs": [
+        "Las notificaciones usan un identificador de instalación/dispositivo, token de entrega, plataforma, idioma y preferencias. Apple Push Notification service en iOS y Google Firebase Cloud Messaging en Android reciben información de entrega y contenido, que puede incluir nombres, eventos de viajes/gastos e identificadores relacionados. Los ajustes de pantalla bloqueada determinan si otros pueden ver las vistas previas.",
+        "Resend entrega correos de verificación, recuperación de contraseña y gestión de cuenta, y trata la dirección del destinatario, el contenido y la información de entrega. “Contáctenos” abre tu aplicación de correo. Si envías un mensaje, recibimos los datos del remitente, texto y archivos que adjuntes. Los informes enviados desde versiones anteriores también pueden contener capturas, datos de versión/aplicación y contexto del informe."
+      ]
+    },
+    {
+      "id": "purposes",
+      "title": "Finalidades y bases jurídicas",
+      "paragraphs": [
+        "Usamos los datos de cuenta, autenticación y gastos compartidos para prestar el servicio solicitado, basándonos en la ejecución del contrato (artículo 6.1.b del RGPD). Usamos registros de seguridad, controles de sesión y diagnósticos necesarios para prevenir abusos, investigar fallos y proteger el servicio y a sus usuarios, basándonos en intereses legítimos (artículo 6.1.f). El soporte necesario y el historial contable compartido también pueden servir a nuestros intereses legítimos y a los de los participantes para resolver consultas y disputas sobre saldos.",
+        "Cuando una comunicación opcional se basa en el consentimiento, como compartir datos de pago con un pagador específico, la base es el artículo 6.1.a. Puedes retirarlo para tratamientos futuros sin afectar a la licitud del tratamiento anterior; escribe a info@splyto.eu para obtener ayuda. Si existe una obligación legal concreta, la base es el artículo 6.1.c. Aceptar esta política no constituye consentimiento general para tratamientos ajenos al servicio."
+      ]
+    },
+    {
+      "id": "providers",
+      "title": "Proveedores y tratamiento internacional",
+      "paragraphs": [
+        "El servidor de la aplicación Splyto está alojado en Hetzner, en Helsinki, Finlandia (Unión Europea). Esta ubicación corresponde al servidor de la aplicación; no determina por sí sola las ubicaciones de tratamiento de otros servicios o de las copias de seguridad almacenadas por separado.",
+        "Los proveedores de alojamiento, bases de datos, almacenamiento, copias de seguridad, seguridad de red y correo tratan datos necesarios para el servicio. Apple y Google intervienen si usas sus servicios de acceso o notificaciones; Resend interviene en los correos del servicio. Los servicios de pago reciben datos cuando eliges visitarlos. Los administradores autorizados pueden acceder a datos cuando sea necesario para soporte, mantenimiento o seguridad. También pueden comunicarse datos cuando lo exija la ley.",
+        "Algunos otros proveedores operan internacionalmente, incluso fuera del Espacio Económico Europeo. Antes de publicar este borrador deben confirmarse las ubicaciones de tratamiento de otros servicios y de las copias de seguridad almacenadas por separado, los acuerdos de tratamiento y las garantías aplicables a las transferencias. Alojar el servidor en Finlandia no significa que todos los datos del servicio permanezcan siempre en la UE."
+      ]
+    },
+    {
+      "id": "diagnostics",
+      "title": "Diagnósticos, publicidad y decisiones automatizadas",
+      "paragraphs": [
+        "El servidor trata información técnica de solicitudes y errores, incluidas direcciones IP, fechas, identificadores de solicitud/cuenta/viaje y detalles del error, para funcionamiento y seguridad. La configuración actual no activa los informes de errores de Sentry. Si se activan en una versión futura, su alcance y destinatarios deben reflejarse en esta política.",
+        "La aplicación actual no incorpora publicidad ni seguimiento publicitario. La sección de análisis muestra resúmenes de gastos, no análisis publicitario. Los cálculos de saldos y límites de seguridad están automatizados, pero la aplicación revisada no adopta decisiones exclusivamente automatizadas destinadas a producir efectos jurídicos o similares de importancia sobre ti."
+      ]
+    },
+    {
+      "id": "retention",
+      "title": "Cuánto tiempo conservamos los datos",
+      "paragraphs": [
+        "Los datos de cuenta y viajes se conservan mientras sean necesarios para la cuenta y el historial de gastos compartidos. Los registros compartidos pueden permanecer tras eliminar una cuenta porque otros participantes necesitan su historial contable o resolver una disputa. La necesidad de conservar contenido identificativo debe evaluarse por separado de la necesidad de conservar importes.",
+        "Las copias periódicas de la base de datos y de los datos de la aplicación en el servidor utilizan un período de recuperación de 14 días. Al finalizar cada copia diaria correctamente, se eliminan los conjuntos completos de copias periódicas de más de 14 días después de verificar las sumas de comprobación y la integridad de los archivos de una copia reciente. Por tanto, la eliminación se realiza en el siguiente ciclo diario satisfactorio, no exactamente al cumplirse los 14 días. Si la verificación falla, la limpieza se detiene para proteger la recuperación y requiere atención.",
+        "Este calendario cubre los conjuntos periódicos de copias del servidor. Las copias de recuperación creadas por separado y las instantáneas del proveedor de alojamiento no se eliminan mediante este proceso; su necesidad y fecha de eliminación deben evaluarse por separado. Los registros de seguridad/sesión, informes históricos y correspondencia de soporte también requieren reglas específicas según las necesidades operativas, de resolución de incidentes y de reclamaciones legales. Estos calendarios pendientes deben confirmarse antes de publicar el borrador. La caducidad de un token o enlace no elimina por sí sola cada registro relacionado."
+      ]
+    },
+    {
+      "id": "deletion",
+      "title": "Desactivación, eliminación y opciones",
+      "paragraphs": [
+        "En Perfil → Ajustes de la cuenta puedes solicitar la desactivación o eliminación. La desactivación bloquea el uso normal, pero conserva datos para reactivar la cuenta. La eliminación requiere confirmación mediante el correo de la cuenta. Elimina o sustituye campos del perfil/contacto, contraseña y pagos, elimina amistades y vínculos con proveedores de acceso, desactiva sesiones/registros de notificaciones e intenta borrar el archivo del avatar.",
+        "No borra automáticamente cada referencia en gastos compartidos, comentarios, recibos, informes históricos, registros o copias de seguridad. Para datos personales que permanezcan allí, escribe a info@splyto.eu para evaluar la solicitud, teniendo en cuenta derechos de otras personas y excepciones aplicables. Eliminar Splyto no elimina tu cuenta de Apple/Google ni información ya guardada por otros participantes."
+      ]
+    },
+    {
+      "id": "rights",
+      "title": "Tus derechos de protección de datos",
+      "paragraphs": [
+        "Cuando se aplique el RGPD, puedes solicitar acceso y copia, rectificación, supresión, limitación y portabilidad cuando corresponda. Puedes oponerte al tratamiento basado en intereses legítimos y retirar el consentimiento cuando sea la base. Estos derechos tienen condiciones y excepciones; no siempre exigen borrar registros de otro participante.",
+        "Escribe a info@splyto.eu. Podemos pedir información necesaria para comprobar tu identidad. Respondemos sin demora indebida, normalmente en un mes; cuando sea legalmente posible ampliar el plazo por complejidad, lo explicamos dentro del primer mes. Puedes reclamar ante la autoridad de tu país, incluida la Datu valsts inspekcija de Letonia (www.dvi.gov.lv)."
+      ]
+    },
+    {
+      "id": "security",
+      "title": "Seguridad, menores y cambios",
+      "paragraphs": [
+        "Usamos HTTPS, hashes de contraseñas, controles de acceso y almacenamiento seguro de credenciales. Estas medidas no cifran necesariamente todos los registros ni eliminan todo riesgo. Sube solo información necesaria para los gastos compartidos y evita datos sensibles innecesarios sobre ti u otras personas.",
+        "Splyto es un servicio de gastos compartidos y no está diseñado específicamente para menores. Contacta con nosotros si crees que se han facilitado indebidamente datos de un menor. Este borrador no establece un nuevo límite de edad.",
+        "Actualizamos la política cuando cambia el tratamiento e indicamos su fecha. Los nuevos usos o destinatarios importantes deben explicarse antes del tratamiento correspondiente; el consentimiento se solicita por separado cuando sea necesario."
+      ]
+    }
+  ],
+  "version": "2026-10-23",
+  "status": "draft",
+  "contactEmail": "info@splyto.eu",
+  "country": "Latvia",
+  "controller": "Splyto"
+}

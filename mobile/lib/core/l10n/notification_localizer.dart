@@ -108,6 +108,7 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
         body: t.tripInvitationBody,
       );
     case 'friend_invite':
+    case 'friend_invite_received':
       {
         final match = _friendInviteBodyPattern.firstMatch(rawBody);
         if (match != null) {
@@ -168,8 +169,8 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
           return LocalizedWorkspaceNotification(
             title: t.notificationExpenseAddedTitle,
             body: t.notificationExpenseAddedBodyWithTrip(
-              withTrip.group(1)!.trim(),
               withTrip.group(2)!.trim(),
+              withTrip.group(1)!.trim(),
               withTrip.group(3)!.trim(),
             ),
           );
@@ -179,8 +180,8 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
           return LocalizedWorkspaceNotification(
             title: t.notificationExpenseAddedTitle,
             body: t.notificationExpenseAddedBodyWithNote(
-              withNote.group(1)!.trim(),
               withNote.group(2)!.trim(),
+              withNote.group(1)!.trim(),
               withNote.group(3)!.trim(),
             ),
           );
@@ -410,8 +411,8 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
             title: t.notificationSettlementReminderTitle,
             body: t.notificationSettlementReminderBodyMarkSent(
               markSent.group(1)!.trim(),
-              markSent.group(2)!.trim(),
               markSent.group(3)!.trim(),
+              markSent.group(2)!.trim(),
             ),
           );
         }
@@ -421,8 +422,8 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
             title: t.notificationSettlementReminderTitle,
             body: t.notificationSettlementReminderBodyConfirm(
               confirm.group(1)!.trim(),
-              confirm.group(2)!.trim(),
               confirm.group(3)!.trim(),
+              confirm.group(2)!.trim(),
             ),
           );
         }
@@ -476,8 +477,8 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
           return LocalizedWorkspaceNotification(
             title: t.notificationSettlementSentTitle,
             body: t.notificationSettlementSentBody(
-              match.group(1)!.trim(),
               match.group(2)!.trim(),
+              match.group(1)!.trim(),
             ),
           );
         }
@@ -493,8 +494,8 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
           return LocalizedWorkspaceNotification(
             title: t.notificationSettlementConfirmedTitle,
             body: t.notificationSettlementConfirmedBody(
-              match.group(1)!.trim(),
               match.group(2)!.trim(),
+              match.group(1)!.trim(),
             ),
           );
         }
@@ -509,4 +510,43 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
         body: rawBody,
       );
   }
+}
+
+/// Only use names present in a recognized server sentence; never infer a person
+/// from arbitrary notification text or use a random profile image.
+String? notificationActorName(WorkspaceNotification notification) {
+  final patterns = switch (notification.type.trim().toLowerCase()) {
+    'friend_invite' || 'friend_invite_received' => [_friendInviteBodyPattern],
+    'friend_invite_accepted' => [_friendInviteAcceptedBodyPattern],
+    'trip_added' || 'trip_member_added' => [_tripAddedBodyPattern],
+    'expense_added' => [
+      _expenseAddedWithNotePattern,
+      _expenseAddedWithTripPattern,
+    ],
+    'trip_finished' => [
+      _tripFinishedSettlingPattern,
+      _tripFinishedArchivedPattern,
+    ],
+    'member_ready_to_settle' => [_memberReadyPattern],
+    'settlement_reminder' => [
+      _settlementReminderMarkSentPattern,
+      _settlementReminderConfirmPattern,
+    ],
+    'settlement_sent' => [_settlementSentPattern],
+    'settlement_confirmed' => [_settlementConfirmedPattern],
+    'payment_requested' => [_paymentRequestedPattern],
+    'payment_request_sent' => [_paymentRequestSentPattern],
+    'payment_request_cancelled' => [_paymentRequestCancelledPattern],
+    'payment_request_declined' => [_paymentRequestDeclinedPattern],
+    'payment_sent' => [_paymentSentPattern],
+    'payment_confirmed' => [_paymentConfirmedPattern],
+    'payment_cancelled' => [_paymentCancelledPattern],
+    'payment_not_received' => [_paymentNotReceivedPattern],
+    _ => <RegExp>[],
+  };
+  for (final pattern in patterns) {
+    final name = pattern.firstMatch(notification.body.trim())?.group(1)?.trim();
+    if (name != null && name.isNotEmpty) return name;
+  }
+  return null;
 }

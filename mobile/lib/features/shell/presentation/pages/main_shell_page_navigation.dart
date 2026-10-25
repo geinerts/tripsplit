@@ -18,6 +18,17 @@ extension _MainShellPageNavigation on _MainShellPageState {
   }
 
   Future<void> _requestAddExpenseFromNav() async {
+    if (_isOpeningExpense) return;
+    _isOpeningExpense = true;
+    try {
+      await _openExpenseFromNav();
+    } finally {
+      _isOpeningExpense = false;
+      _scheduleQuickStart();
+    }
+  }
+
+  Future<void> _openExpenseFromNav() async {
     if (_isLoggingOut) {
       return;
     }
@@ -68,6 +79,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
         .where((trip) => trip.isActive)
         .toList(growable: false);
     if (activeTrips.isEmpty) {
+      _showSnack(context.l10n.tripArchivedReadOnly, isError: false);
       return null;
     }
     if (activeTrips.length == 1) {
@@ -205,6 +217,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
       _openAddExpenseOnWorkspaceStart = false;
     });
     _tripsCommandController.requestRefresh();
+    _analyticsCommandController?.requestRefresh();
     unawaited(_refreshGlobalNotifications());
   }
 

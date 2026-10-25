@@ -6,7 +6,7 @@ class ListTripsUseCase {
 
   final TripsRepository _repository;
 
-  Future<List<Trip>> call() {
-    return _repository.listTrips();
+  Future<List<Trip>> call({bool allowOfflineCache = true}) {
+    return _repository.listTrips(allowOfflineCache: allowOfflineCache);
   }
 }

@@ -90,6 +90,26 @@ class AppFormatters {
     );
   }
 
+  /// The euro symbol is unambiguous; retain ISO codes for dollar/krone currencies.
+  static String displayCurrencyFromCents(
+    BuildContext context,
+    int cents, {
+    String currencyCode = AppCurrencyCatalog.defaultCode,
+    bool signed = false,
+  }) => AppCurrencyCatalog.normalize(currencyCode) == 'EUR'
+      ? currencyFromCents(
+          context,
+          cents,
+          currencyCode: currencyCode,
+          signed: signed,
+        )
+      : currencyCodeFromCents(
+          context,
+          cents,
+          currencyCode: currencyCode,
+          signed: signed,
+        );
+
   static String currencyCodeFromCents(
     BuildContext context,
     int cents, {

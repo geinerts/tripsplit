@@ -20,6 +20,8 @@ import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/test_keys.dart';
+import '../../../quick_start/data/quick_start_service.dart';
+import '../../../quick_start/presentation/quick_start_sheet.dart';
 import '../../../analytics/presentation/pages/analytics_page.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../auth/presentation/pages/profile_page.dart';
@@ -36,7 +38,9 @@ import '../../../workspace/presentation/controllers/workspace_controller.dart';
 import '../../../workspace/domain/entities/workspace_notification.dart';
 import '../../../workspace/domain/entities/workspace_notifications_inbox.dart';
 import '../../../workspace/presentation/pages/workspace_page.dart';
+import '../widgets/notifications_sheet.dart';
 
+part 'main_shell_page_quick_start.dart';
 part 'main_shell_page_navigation.dart';
 part 'main_shell_page_notifications.dart';
 part 'main_shell_page_settings.dart';
@@ -50,11 +54,13 @@ class MainShellPage extends StatefulWidget {
     required this.friendsController,
     required this.workspaceController,
     required this.inviteDeepLinkController,
+    this.quickStartService,
     this.initialTabIndex = 0,
     this.openCreateTripOnStart = false,
     this.openAddExpenseOnStart = false,
   });
 
+  final QuickStartService? quickStartService;
   final AuthController authController;
   final TripsController tripsController;
   final FriendsController friendsController;
@@ -83,18 +89,25 @@ class _MainShellPageState extends State<MainShellPage>
   late final WorkspacePageCommandController _workspaceCommandController;
   late int _selectedTabIndex;
   Trip? _openedTrip;
+  final _quickStartPresenter = QuickStartPresenter();
+  Timer? _quickStartTimer;
+  bool _homeConfirmedEmpty = false;
+  bool _homeInteractionBusy = false;
+  bool _quickStartChecking = false;
+  bool _quickStartClaimed = false;
+  bool _quickStartFinished = false;
+  bool _quickStartOpen = false;
+  bool _isOpeningExpense = false;
+  int? _quickStartGeneration;
   bool _openAddExpenseOnWorkspaceStart = false;
   bool _isProfileInEditMode = false;
   bool _isLoggingOut = false;
   bool _isSendingFeedback = false;
   bool _isNotificationsLoading = false;
-  bool _isNotificationsLoadingMore = false;
+  bool _notificationsSheetOpen = false;
+  bool _isMarkingNotifications = false;
+  int _notificationsGeneration = 0;
   int _unreadNotificationsCount = 0;
-  List<WorkspaceNotification> _globalNotifications =
-      const <WorkspaceNotification>[];
-  bool _globalNotificationsHasMore = false;
-  String? _globalNotificationsNextCursor;
-  int? _globalNotificationsNextOffset;
   bool _notificationsPrimed = false;
   DateTime? _lastUnreadNotificationHintAt;
   Timer? _notificationsPollTimer;
@@ -110,6 +123,7 @@ class _MainShellPageState extends State<MainShellPage>
   String? _lastProcessedInviteDeepLinkCode;
   DateTime? _lastProcessedInviteDeepLinkAt;
   bool _isProcessingFriendDeepLink = false;
+  int _friendLinkResolutions = 0;
   FriendDeepLinkTarget? _queuedFriendDeepLinkTarget;
   String? _queuedFriendDeepLinkToken;
   int? _lastProcessedFriendDeepLinkUserId;
@@ -164,6 +178,7 @@ class _MainShellPageState extends State<MainShellPage>
 
   @override
   void dispose() {
+    _quickStartTimer?.cancel();
     _notificationsPollTimer?.cancel();
     _connectivitySubscription?.cancel();
     _inviteCodeSubscription?.cancel();
@@ -191,6 +206,7 @@ class _MainShellPageState extends State<MainShellPage>
       return;
     }
     _isAppInForeground = nextIsForeground;
+    _scheduleQuickStart();
     if (_isAppInForeground) {
       unawaited(widget.authController.syncPushRegistration());
       unawaited(_flushWorkspaceQueueBestEffort());
@@ -271,6 +287,9 @@ class _MainShellPageState extends State<MainShellPage>
     }
     _lastProcessedFriendDeepLinkToken = token;
 
+    _friendLinkResolutions++;
+    _quickStartPresenter.dismiss();
+
     try {
       final resolved = await widget.friendsController.resolveFriendLink(
         token: token,
@@ -296,6 +315,8 @@ class _MainShellPageState extends State<MainShellPage>
         return;
       }
       _showSnack(context.l10n.shellFailedToOpenFriendLink, isError: true);
+    } finally {
+      _friendLinkResolutions--;
     }
   }
 
@@ -321,6 +342,7 @@ class _MainShellPageState extends State<MainShellPage>
     _lastProcessedInviteDeepLinkCode = inviteCode;
     _lastProcessedInviteDeepLinkAt = now;
     _isProcessingInviteDeepLink = true;
+    _quickStartPresenter.dismiss();
 
     try {
       final lease = widget.tripsController.accountSession.capture();
@@ -437,6 +459,7 @@ class _MainShellPageState extends State<MainShellPage>
     _lastProcessedFriendDeepLinkUserId = userId;
     _lastProcessedFriendDeepLinkAt = now;
     _isProcessingFriendDeepLink = true;
+    _quickStartPresenter.dismiss();
 
     try {
       final currentUser =
@@ -620,22 +643,15 @@ class _MainShellPageState extends State<MainShellPage>
           )
         : context.l10n.shellInviteJoinTripQuestion(tripName, inviterLabel);
 
-    if (preview.isDirected && !preview.alreadyMember) {
-      return showDialog<bool>(
-        context: context,
-        builder: (_) => TripInvitationDialog(message: message),
-      );
-    }
-    final decision = await showAppConfirmationDialog(
+    final directed = preview.isDirected && !preview.alreadyMember;
+    return showDialog<bool>(
       context: context,
-      title: context.l10n.shellTripInviteTitle,
-      message: message,
-      confirmLabel: context.l10n.shellYesAction,
-      cancelLabel: context.l10n.shellNoAction,
-      icon: Icons.group_add_outlined,
+      builder: (_) => TripInvitationDialog(
+        message: message,
+        acceptLabel: directed ? null : context.l10n.shellYesAction,
+        declineLabel: directed ? null : context.l10n.shellNoAction,
+      ),
     );
-
-    return decision;
   }
 
   bool _hasOnlineConnectivity(List<ConnectivityResult> results) {
@@ -711,13 +727,18 @@ class _MainShellPageState extends State<MainShellPage>
 
   bool get _isWorkspaceOpen => _openedTrip != null;
   bool get _showTopBackButton =>
-      _isWorkspaceOpen || _selectedTabIndex != _tabHome;
+      _isWorkspaceOpen ||
+      (_selectedTabIndex == _tabProfile
+          ? _isProfileInEditMode
+          : _selectedTabIndex != _tabHome &&
+                _selectedTabIndex != _tabActivities);
 
   void _updateState(VoidCallback update) {
     if (!mounted) {
       return;
     }
     setState(update);
+    _scheduleQuickStart();
     unawaited(
       AppMonitoring.updateRuntimeContext(
         userId: widget.authController.currentUser?.id,

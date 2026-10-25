@@ -342,7 +342,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Column(
         key: ValueKey('profile-edit-page-$_editSession'),
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,7 +405,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   Widget _buildDeactivateAccountPage(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         key: ValueKey('deactivate-page-$_editSession'),
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,7 +414,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             context.l10n.profileDeactivateAccount,
             style: Theme.of(
               context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Text(
@@ -510,7 +510,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     }
     if (_draftPassword.length < 8) {
       _updateState(() {
-        _editErrorText = t.passwordMinLengthShort;
+        _editErrorText = t.passwordMinLength;
       });
       return;
     }
@@ -564,7 +564,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     final t = context.l10n;
     final email = (_initialEmail ?? '').trim().toLowerCase();
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Column(
         key: ValueKey('change-password-page-$_editSession'),
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -573,7 +573,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             context.l10n.profileChangePassword,
             style: Theme.of(
               context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Text(
@@ -618,7 +618,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
             autofillHints: const [AutofillHints.newPassword],
             decoration: InputDecoration(
               labelText: t.newPasswordLabel,
-              helperText: t.passwordMinLengthShort,
+              helperText: t.passwordMinLength,
             ),
             onChanged: _onDraftPasswordChanged,
           ),
@@ -702,7 +702,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                   label,
                   style: Theme.of(
                     context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
                 ),
                 if (labelTrailing != null && isActive) ...[
                   const SizedBox(height: 6),
@@ -834,93 +834,13 @@ extension _ProfilePageEditFlow on _ProfilePageState {
                             itemBuilder: (context, index) {
                               final item = filtered[index];
                               final selected = item.code == currentCode;
-                              return Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(14),
-                                  onTap: () => Navigator.of(
-                                    pickerContext,
-                                  ).pop(item.code),
-                                  child: Ink(
-                                    padding: const EdgeInsets.fromLTRB(
-                                      12,
-                                      10,
-                                      12,
-                                      10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      color: selected
-                                          ? Theme.of(pickerContext)
-                                                .colorScheme
-                                                .primary
-                                                .withValues(alpha: 0.10)
-                                          : Theme.of(pickerContext)
-                                                .colorScheme
-                                                .surfaceContainerHighest
-                                                .withValues(alpha: 0.45),
-                                      border: Border.all(
-                                        color: selected
-                                            ? Theme.of(
-                                                pickerContext,
-                                              ).colorScheme.primary
-                                            : AppDesign.cardStroke(
-                                                pickerContext,
-                                              ),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 34,
-                                          height: 34,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Theme.of(
-                                              pickerContext,
-                                            ).colorScheme.surface,
-                                            border: Border.all(
-                                              color: AppDesign.cardStroke(
-                                                pickerContext,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            item.symbol,
-                                            style: Theme.of(pickerContext)
-                                                .textTheme
-                                                .titleMedium
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.w800,
-                                                ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Text(
-                                            '${item.code} - ${AppCurrencyCatalog.labelForCode(item.code, context.l10n)}',
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(pickerContext)
-                                                .textTheme
-                                                .titleSmall
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                          ),
-                                        ),
-                                        if (selected)
-                                          Icon(
-                                            Icons.check_circle_rounded,
-                                            color: Theme.of(
-                                              pickerContext,
-                                            ).colorScheme.primary,
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                              return AppSettingsRow(
+                                title:
+                                    '${item.code} · ${AppCurrencyCatalog.labelForCode(item.code, context.l10n)}',
+                                selected: selected,
+                                chevron: false,
+                                onTap: () =>
+                                    Navigator.of(pickerContext).pop(item.code),
                               );
                             },
                           ),
@@ -950,41 +870,13 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: _isSubmitting
-                ? null
-                : () => unawaited(_pickPreferredCurrencyCode()),
-            borderRadius: BorderRadius.circular(14),
-            child: Ink(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppDesign.cardStroke(context)),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    option.symbol,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      '${option.code} - ${AppCurrencyCatalog.labelForCode(option.code, context.l10n)}',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  const Icon(Icons.keyboard_arrow_down_rounded),
-                ],
-              ),
-            ),
-          ),
+        AppSettingsRow(
+          title:
+              '${option.code} · ${AppCurrencyCatalog.labelForCode(option.code, context.l10n)}',
+          icon: Icons.currency_exchange,
+          onTap: _isSubmitting
+              ? null
+              : () => unawaited(_pickPreferredCurrencyCode()),
         ),
         const SizedBox(height: 6),
         Text(
@@ -1299,28 +1191,12 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
     final picked = await showAppBottomSheet<_PaymentInfoMethod>(
       context: context,
       builder: (sheetContext) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-                child: Text(
-                  context.l10n.profileEditChoosePaymentMethod,
-                  style: Theme.of(sheetContext).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-              for (final method in _PaymentInfoMethod.values) ...[
-                _buildPaymentMethodOptionTile(sheetContext, method),
-                if (method != _PaymentInfoMethod.values.last)
-                  const SizedBox(height: 8),
-              ],
-            ],
-          ),
+        return AppSettingsSheet(
+          title: context.l10n.profileEditChoosePaymentMethod,
+          children: [
+            for (final method in _PaymentInfoMethod.values)
+              _buildPaymentMethodOptionTile(sheetContext, method),
+          ],
         );
       },
     );
@@ -1337,137 +1213,25 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
   Widget _buildPaymentMethodOptionTile(
     BuildContext context,
     _PaymentInfoMethod method,
-  ) {
-    final selected = method == _selectedMethod;
-    final primary = Theme.of(context).colorScheme.primary;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: () => Navigator.of(context).pop(method),
-        child: Ink(
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: selected
-                ? primary.withValues(alpha: 0.08)
-                : Theme.of(
-                    context,
-                  ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
-            border: Border.all(
-              color: selected ? primary : AppDesign.cardStroke(context),
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.surface,
-                  border: Border.all(color: AppDesign.cardStroke(context)),
-                ),
-                alignment: Alignment.center,
-                child: Icon(
-                  _methodIcon(method),
-                  size: 18,
-                  color: selected ? primary : AppDesign.mutedColor(context),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _methodLabel(method),
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      _methodHint(method),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppDesign.mutedColor(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Icon(
-                selected ? Icons.check_circle_rounded : Icons.circle_outlined,
-                color: selected ? primary : AppDesign.mutedColor(context),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  ) => AppSettingsRow(
+    title: _methodLabel(method),
+    subtitle: _methodHint(method),
+    icon: _methodIcon(method),
+    selected: method == _selectedMethod,
+    chevron: false,
+    onTap: () => Navigator.of(context).pop(method),
+  );
 
-  Widget _buildPaymentMethodField(BuildContext context) {
-    final method = _selectedMethod;
-    final primary = Theme.of(context).colorScheme.primary;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+  Widget _buildPaymentMethodField(BuildContext context) => Column(
+    children: [
+      AppSettingsRow(
+        title: _methodLabel(_selectedMethod),
+        icon: _methodIcon(_selectedMethod),
         onTap: _isSaving ? null : () => unawaited(_openPaymentMethodPicker()),
-        child: Ink(
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppDesign.cardStroke(context)),
-            color: Theme.of(context).colorScheme.surface,
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: primary.withValues(alpha: 0.10),
-                  border: Border.all(color: primary.withValues(alpha: 0.28)),
-                ),
-                alignment: Alignment.center,
-                child: Icon(_methodIcon(method), size: 18, color: primary),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _methodLabel(method),
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      context.l10n.profileEditTapChange,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppDesign.mutedColor(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              Icon(
-                Icons.unfold_more_rounded,
-                color: AppDesign.mutedColor(context),
-              ),
-            ],
-          ),
-        ),
       ),
-    );
-  }
+      const Divider(height: 1),
+    ],
+  );
 
   void _saveAndClose() {
     if (_isSaving) {
@@ -1542,14 +1306,14 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
         ),
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+            padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   context.l10n.profileEditPaymentMethod,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -1603,7 +1367,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
               context.l10n.profileEditBankRegion,
               style: Theme.of(
                 context,
-              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 8),
             SegmentedButton<_BankTransferRegion>(

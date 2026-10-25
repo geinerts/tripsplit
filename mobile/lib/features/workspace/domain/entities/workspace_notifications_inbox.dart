@@ -5,6 +5,7 @@ class WorkspaceNotificationsInbox {
     required this.unreadCount,
     required this.notifications,
     this.hasMore = false,
+    this.isCached = false,
     this.nextCursor,
     this.nextOffset,
   });
@@ -12,6 +13,7 @@ class WorkspaceNotificationsInbox {
   final int unreadCount;
   final List<WorkspaceNotification> notifications;
   final bool hasMore;
+  final bool isCached;
   final String? nextCursor;
   final int? nextOffset;
 }

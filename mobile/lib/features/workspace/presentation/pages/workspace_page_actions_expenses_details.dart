@@ -26,28 +26,6 @@ extension _WorkspacePageExpensesDetailsActions on _WorkspacePageState {
         .toList(growable: false);
   }
 
-  String _splitModeSummaryLabel({
-    required String splitMode,
-    required int participantsCount,
-    required bool hasCustomParticipants,
-  }) {
-    final t = context.l10n;
-    final mode = splitMode.trim().toLowerCase();
-    final target = hasCustomParticipants
-        ? '$participantsCount'
-        : t.allMembersLabel;
-    switch (mode) {
-      case 'exact':
-        return t.splitModeExact(target);
-      case 'percent':
-        return t.splitModePercent(target);
-      case 'shares':
-        return t.splitModeShares(target);
-      default:
-        return t.splitModeEqual(target);
-    }
-  }
-
   List<_ExpenseTransferLine> _buildExpenseTransfers({
     required List<_ExpenseShareLine> lines,
     required int payerId,
