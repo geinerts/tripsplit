@@ -1,6 +1,8 @@
 # Splyto security baseline
 
-Last targeted review: 2026-09-23. See `audit-2026-09-18.md` for the wider review and `offline-account-isolation.md` for the subsequent mobile isolation work.
+Last targeted review: 2026-10-25. Historical audits describe the state at their
+original dates; they are not a current list of unpatched findings. See
+`admin-api-boundary.md` for the current admin boundary and its deployment checks.
 
 ## Trust boundaries
 
@@ -12,7 +14,11 @@ Last targeted review: 2026-09-23. See `audit-2026-09-18.md` for the wider review
 ## Enforced controls
 
 - Cloudflare IP allowlist blocks direct origin access with HTTP 403.
-- Cloudflare Access protects `ops.splyto.eu` before the admin login page.
+- Admin API routes are restricted to the dedicated HTTPS admin virtual host;
+  cookie-authenticated POST requests additionally require the same origin.
+- Cloudflare Access coverage still needs independent policy verification. On
+  2026-10-25, an unauthenticated request from the VPS received the ops login page
+  (HTTP 200). This does not distinguish a bypass rule from missing Access coverage.
 - Legacy `X-Admin-Key` API actions are not routable.
 - Admin session cookies are Secure, HttpOnly and SameSite=Strict.
 - Only SHA-256 hashes of admin session tokens are stored in MySQL.
@@ -34,15 +40,25 @@ Last targeted review: 2026-09-23. See `audit-2026-09-18.md` for the wider review
 1. Keep Cloudflare proxy enabled for both public hostnames.
 2. Update `ops/nginx/cloudflare-origin-only.conf` if Cloudflare changes its published ranges.
 3. Run `nginx -t` before every Nginx reload.
-4. Keep every active admin account protected by TOTP.
+4. Before release, enroll every active admin account in TOTP, establish recovery,
+   and finish the factor-lifecycle hardening. The owner deferred this work on
+   2026-10-25; the one active production administrator currently has TOTP disabled.
 5. Rotate a secret immediately after suspected exposure; never paste secret values into tickets or chat.
 6. Run PHPUnit, Flutter tests, Flutter analyze, Gitleaks and Composer audit before a release.
 
 ## Remaining priority work
 
-1. Complete live multi-device session-revocation concurrency checks. Account-scoped offline storage now has focused regression coverage. Signed receipt URLs remain bearer capabilities until expiry, not per-request membership checks.
-2. Encrypt backups and send them to an isolated offsite account with tested restore procedures.
-3. Split the MySQL runtime, migration and backup users; remove `ALL PRIVILEGES` from runtime.
+1. Complete real-device session-revocation checks. Session-bound access-token
+   revocation and account-scoped offline storage have automated regression
+   coverage. Signed receipt URLs remain bearer capabilities until expiry.
+2. Encrypt backups, include protected external configuration/key material and
+   send them to an isolated offsite account with tested restore procedures.
+   The owner confirmed on 2026-10-25 that the offsite destination is not yet created.
+3. Keep the already separated runtime, migration and backup database privileges
+   restricted; the current grants were rechecked on 2026-10-25. See
+   `../operations/database-access.md` for scope and limits.
 4. Replace local SharedPreferences snapshots with an encrypted database if long-term offline storage is required.
 5. Add Cloudflare Authenticated Origin Pulls or migrate the origin to Cloudflare Tunnel.
-6. Add admin recovery codes and enforce TOTP enrollment for every privileged role.
+6. Complete the deferred administrator MFA/recovery work before release; enabled
+   factor replacement and old-session invalidation still need fixes. No MFA
+   changes or enrollment were applied in the 2026-10-25 boundary batch.

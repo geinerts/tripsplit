@@ -157,6 +157,18 @@ function dispatch_api_action(string $action): bool
         return false;
     }
 
+    // Hide every admin route (including login and future admin actions) on the
+    // public API. SERVER_NAME must come from the trusted web-server vhost.
+    if (str_starts_with($action, 'admin_panel_')) {
+        if (!admin_request_is_on_private_host($_SERVER)) {
+            return false;
+        }
+        if (strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET')) === 'POST'
+            && !admin_request_has_same_origin($_SERVER)) {
+            json_out(['ok' => false, 'error' => 'Request origin is not allowed.'], 403);
+        }
+    }
+
     $handler = $handlers[$action];
     if (!is_string($handler) || $handler === '' || !function_exists($handler)) {
         throw new RuntimeException('Action handler is not available for "' . $action . '".');
@@ -164,4 +176,32 @@ function dispatch_api_action(string $action): bool
 
     $handler();
     return true;
+}
+
+/** Reject forwarded-host spoofing and wrong/default TLS virtual hosts. */
+function admin_request_is_on_private_host(array $server): bool
+{
+    $expected = strtolower(trim(defined('ADMIN_PANEL_HOST') ? ADMIN_PANEL_HOST : 'ops.splyto.eu'));
+    if ($expected === '' || !preg_match('/^[a-z0-9]+(?:[.-][a-z0-9]+)*$/D', $expected)) {
+        return false;
+    }
+    $https = strtolower((string) ($server['HTTPS'] ?? ''));
+    if ($https !== 'on' && $https !== '1') {
+        return false;
+    }
+    $vhost = strtolower((string) ($server['SERVER_NAME'] ?? ''));
+    $host = strtolower((string) ($server['HTTP_HOST'] ?? ''));
+    return $vhost === $expected && ($host === $expected || $host === $expected . ':443');
+}
+
+/** Cookie-authenticated writes need an explicit same-origin browser request. */
+function admin_request_has_same_origin(array $server): bool
+{
+    if (!admin_request_is_on_private_host($server)) {
+        return false;
+    }
+    $host = strtolower((string) $server['SERVER_NAME']);
+    $origin = strtolower((string) ($server['HTTP_ORIGIN'] ?? ''));
+    return ($origin === 'https://' . $host || $origin === 'https://' . $host . ':443')
+        && !in_array(strtolower((string) ($server['HTTP_SEC_FETCH_SITE'] ?? '')), ['cross-site', 'same-site'], true);
 }

@@ -12,6 +12,7 @@ define('API_MAX_JSON_BYTES', env_int('TRIP_API_MAX_JSON_BYTES', 65_536)); // 64 
 define('DB_TABLE_PREFIX', env_string('TRIP_DB_TABLE_PREFIX', 'trip_'));
 define('ADMIN_KEY', env_string('TRIP_ADMIN_KEY', ''));
 define('ADMIN_TOTP_ENCRYPTION_KEY', env_string('TRIP_ADMIN_TOTP_ENCRYPTION_KEY', ''));
+define('ADMIN_PANEL_HOST', env_string('TRIP_ADMIN_PANEL_HOST', 'ops.splyto.eu'));
 define('RECEIPTS_REL_DIR', env_string('TRIP_RECEIPTS_REL_DIR', 'uploads/receipts'));
 define('RECEIPTS_MAX_BYTES', env_int('TRIP_RECEIPTS_MAX_BYTES', 8_388_608)); // 8 MB
 define('PRIVATE_MEDIA_SIGNING_SECRET', env_string('TRIP_PRIVATE_MEDIA_SIGNING_SECRET', ''));
