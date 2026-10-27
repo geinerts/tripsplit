@@ -1,3 +1,4 @@
+import '../features/travel_map/data/travel_places_repository.dart';
 import '../features/quick_start/data/quick_start_service.dart';
 import '../core/auth/auth_session_store.dart';
 import '../core/auth/account_data_session.dart';
@@ -74,6 +75,7 @@ class AppDependencies {
   AppDependencies({
     required this.authController,
     this.quickStartService,
+    this.travelPlacesRepository,
     required this.tripsController,
     required this.friendsController,
     required this.workspaceController,
@@ -84,6 +86,7 @@ class AppDependencies {
 
   final AuthController authController;
   final QuickStartService? quickStartService;
+  final TravelPlacesRepository? travelPlacesRepository;
   final TripsController tripsController;
   final FriendsController friendsController;
   final WorkspaceController workspaceController;
@@ -231,6 +234,10 @@ class AppDependencies {
 
     return AppDependencies(
       quickStartService: QuickStartService(apiClient, accountSession),
+      travelPlacesRepository: ApiTravelPlacesRepository(
+        apiClient,
+        accountStorage,
+      ),
       authController: authController,
       tripsController: tripsController,
       friendsController: friendsController,

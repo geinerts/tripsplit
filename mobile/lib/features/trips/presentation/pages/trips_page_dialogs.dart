@@ -29,6 +29,8 @@ extension _TripsPageDialogs on _TripsPageState {
     if (result == null) return null;
     return _CreateTripResult(
       name: result.name,
+      budgetCents: result.budgetCents,
+      destinations: result.destinations,
       currencyCode: result.currencyCode,
       tripMode: result.tripMode,
       memberIds: result.memberIds,

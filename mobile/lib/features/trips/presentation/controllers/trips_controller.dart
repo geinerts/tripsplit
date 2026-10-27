@@ -9,6 +9,7 @@ import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_invite_preview.dart';
 import '../../domain/entities/pending_trip_invitation.dart';
+import '../../domain/entities/received_trip_invitation.dart';
 import '../../domain/usecases/manage_trip_invitations_use_case.dart';
 import '../../domain/usecases/decline_trip_invite_use_case.dart';
 import '../../domain/entities/trip_user.dart';
@@ -140,6 +141,8 @@ class TripsController {
     required String currencyCode,
     required List<int> memberIds,
     String tripMode = 'group',
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
     String? dateFrom,
     String? dateTo,
   }) {
@@ -148,6 +151,8 @@ class TripsController {
       currencyCode: currencyCode,
       memberIds: memberIds,
       tripMode: tripMode,
+      budgetCents: budgetCents,
+      destinations: destinations,
       dateFrom: dateFrom,
       dateTo: dateTo,
     );
@@ -158,12 +163,18 @@ class TripsController {
     required String name,
     String? imagePath,
     bool removeImage = false,
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
+    bool clearBudget = false,
   }) {
     return _updateTripUseCase.call(
       tripId: tripId,
       name: name,
       imagePath: imagePath,
       removeImage: removeImage,
+      budgetCents: budgetCents,
+      destinations: destinations,
+      clearBudget: clearBudget,
     );
   }
 
@@ -209,6 +220,9 @@ class TripsController {
   Future<void> declineTripInvite({required String inviteToken}) {
     return _declineTripInviteUseCase.call(inviteToken: inviteToken);
   }
+
+  Future<List<ReceivedTripInvitation>> listReceivedInvitations() =>
+      _manageTripInvitationsUseCase.received();
 
   Future<List<PendingTripInvitation>> listPendingInvitations({
     required int tripId,

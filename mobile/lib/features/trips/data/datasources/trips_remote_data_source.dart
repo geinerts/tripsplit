@@ -8,6 +8,7 @@ import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_invite_preview.dart';
 import '../../domain/entities/pending_trip_invitation.dart';
+import '../../domain/entities/received_trip_invitation.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../models/trip_model.dart';
 import '../models/trip_user_model.dart';
@@ -24,6 +25,8 @@ abstract class TripsRemoteDataSource {
     required String currencyCode,
     required List<int> memberIds,
     String tripMode = 'group',
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
     String? dateFrom,
     String? dateTo,
   });
@@ -32,6 +35,9 @@ abstract class TripsRemoteDataSource {
     required String name,
     String? imagePath,
     bool removeImage = false,
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
+    bool clearBudget = false,
   });
   Future<UploadedTripImageData> uploadTripImage({
     required int tripId,
@@ -48,6 +54,8 @@ abstract class TripsRemoteDataSource {
   Future<TripInviteLink> createTripInviteLink({required int tripId});
   Future<TripInvitePreview> previewTripInvite({required String inviteToken});
   Future<void> declineTripInvite({required String inviteToken});
+  Future<List<ReceivedTripInvitation>> listReceivedInvitations();
+
   Future<List<PendingTripInvitation>> listPendingInvitations({
     required int tripId,
   });
@@ -121,6 +129,8 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
     required String currencyCode,
     required List<int> memberIds,
     String tripMode = 'group',
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
     String? dateFrom,
     String? dateTo,
   }) async {
@@ -134,6 +144,8 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
         'currency_code': currencyCode,
         'member_ids': memberIds,
         'trip_mode': tripMode,
+        'budget_cents': ?budgetCents,
+        'destinations': ?destinations,
         if (dateFrom != null && dateFrom.trim().isNotEmpty)
           'date_from': dateFrom.trim(),
         if (dateTo != null && dateTo.trim().isNotEmpty)
@@ -154,6 +166,9 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
     required String name,
     String? imagePath,
     bool removeImage = false,
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
+    bool clearBudget = false,
   }) async {
     final response = await _apiClient.request(
       path: ApiEndpoints.legacyAction('update_trip'),
@@ -162,6 +177,9 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
         'id': tripId,
         'name': name,
         if (removeImage) 'remove_image': true,
+        'destinations': ?destinations,
+        if (clearBudget || budgetCents != null)
+          'budget_cents': clearBudget ? null : budgetCents,
         if (imagePath != null && imagePath.trim().isNotEmpty)
           'image_path': imagePath.trim(),
       },
@@ -343,6 +361,26 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
       method: HttpMethod.post,
       body: <String, dynamic>{'invite_token': inviteToken},
     );
+  }
+
+  @override
+  Future<List<ReceivedTripInvitation>> listReceivedInvitations() async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('list_received_trip_invitations'),
+      method: HttpMethod.get,
+    );
+    return (response['invitations'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .map(
+          (item) => ReceivedTripInvitation(
+            id: (item['id'] as num).toInt(),
+            tripId: (item['trip_id'] as num).toInt(),
+            tripName: item['trip_name'] as String? ?? '',
+            inviterName: item['inviter_name'] as String? ?? '',
+            inviteToken: item['invite_token'] as String,
+          ),
+        )
+        .toList(growable: false);
   }
 
   @override

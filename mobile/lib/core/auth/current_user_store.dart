@@ -41,6 +41,7 @@ class CurrentUserStore {
       'nickname': user.nickname,
       'email': user.email,
       'needs_credentials': user.needsCredentials,
+      'share_payment_details_with_trips': user.sharePaymentDetailsWithTrips,
       'preferred_currency_code': user.preferredCurrencyCode,
       'avatar_base64': user.avatarBase64,
       'avatar_url': user.avatarUrl,

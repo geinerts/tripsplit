@@ -12,6 +12,7 @@ import 'router/app_router.dart';
 import 'theme/theme_mode_scope.dart';
 import 'theme/app_theme.dart';
 import '../core/ui/app_background.dart';
+import '../core/ui/app_keyboard_dismissal.dart';
 
 class TripSplitApp extends StatefulWidget {
   const TripSplitApp({
@@ -80,7 +81,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
                 if (child == null) {
                   return const SizedBox.shrink();
                 }
-                return AppBackground(child: child);
+                return AppKeyboardDismissal(child: AppBackground(child: child));
               },
               supportedLocales: AppLocalizations.supportedLocales,
               localizationsDelegates: const [

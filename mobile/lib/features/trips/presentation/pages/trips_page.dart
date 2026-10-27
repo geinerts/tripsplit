@@ -1,4 +1,9 @@
 import '../widgets/join_trip_invite_page.dart';
+import '../widgets/trip_invitation_dialog.dart';
+import '../widgets/received_trip_invitations_sheet.dart';
+import '../../domain/entities/received_trip_invitation.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import '../widgets/trip_form_page.dart';
 import 'dart:async';
 import 'dart:ui' show ImageByteFormat, instantiateImageCodec;
@@ -43,6 +48,12 @@ part 'trips_page_support.dart';
 class TripsPageCommandController extends ChangeNotifier {
   int _openCreateTripRequestCount = 0;
   int _refreshRequestCount = 0;
+  int _invitationsRefreshCount = 0;
+  int get invitationsRefreshCount => _invitationsRefreshCount;
+  void requestInvitationsRefresh() {
+    _invitationsRefreshCount++;
+    notifyListeners();
+  }
 
   int get openCreateTripRequestCount => _openCreateTripRequestCount;
   int get refreshRequestCount => _refreshRequestCount;
@@ -108,6 +119,13 @@ class _TripsPageState extends State<TripsPage> {
   bool _isJoiningTrip = false;
   int _handledCreateTripRequestCount = 0;
   int _handledRefreshRequestCount = 0;
+  int _handledInvitationsRefreshCount = 0;
+  int _invitationsGeneration = 0;
+  List<ReceivedTripInvitation> _receivedInvitations = const [];
+  bool _invitationsFailed = false;
+  bool _invitationSheetOpen = false;
+  int? _sharingTripId;
+
   String? _errorText;
   String? _refreshError;
   List<Trip> _trips = const <Trip>[];
@@ -123,7 +141,11 @@ class _TripsPageState extends State<TripsPage> {
   void _notifyInteractionState() {
     if (!mounted) return;
     widget.onInteractionStateChanged?.call(
-      _isMutating || _isCreateTripDialogOpen || _isJoiningTrip,
+      _isMutating ||
+          _isCreateTripDialogOpen ||
+          _isJoiningTrip ||
+          _invitationSheetOpen ||
+          _sharingTripId != null,
     );
   }
 
@@ -156,6 +178,7 @@ class _TripsPageState extends State<TripsPage> {
     }
     _handledCreateTripRequestCount = controller.openCreateTripRequestCount;
     _handledRefreshRequestCount = controller.refreshRequestCount;
+    _handledInvitationsRefreshCount = controller.invitationsRefreshCount;
     controller.addListener(_onCommandControllerChanged);
   }
 
@@ -167,6 +190,10 @@ class _TripsPageState extends State<TripsPage> {
     final controller = widget.commandController;
     if (controller == null) {
       return;
+    }
+    if (_handledInvitationsRefreshCount != controller.invitationsRefreshCount) {
+      _handledInvitationsRefreshCount = controller.invitationsRefreshCount;
+      unawaited(_refreshReceivedInvitations());
     }
     final createTripRequestCount = controller.openCreateTripRequestCount;
     if (createTripRequestCount != _handledCreateTripRequestCount) {
@@ -236,6 +263,13 @@ class _TripsPageState extends State<TripsPage> {
                         ],
                       ),
                     ),
+                    if (_trips.isEmpty)
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                        sliver: SliverToBoxAdapter(
+                          child: _buildTripsSectionHeader(context),
+                        ),
+                      ),
                     if (_trips.isEmpty)
                       SliverFillRemaining(
                         hasScrollBody: false,

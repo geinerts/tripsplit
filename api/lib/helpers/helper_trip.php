@@ -1,5 +1,7 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/helper_travel_places.php';
+require_once __DIR__ . '/helper_trip_budget.php';
 
 function trips_mode_column_available(PDO $pdo): bool
 {
@@ -265,6 +267,8 @@ function build_trip_payload(array $trip): array
     return [
         'id' => (int) ($trip['id'] ?? 0),
         'name' => (string) ($trip['name'] ?? ''),
+        'destinations' => trip_destinations_payload($trip),
+        'budget_cents' => isset($trip['budget_cents']) ? (int) $trip['budget_cents'] : null,
         'currency_code' => $currencyCode,
         'trip_mode' => $trip['trip_mode'] ?? 'group',
         'status' => normalize_trip_status($trip['status'] ?? 'active'),
@@ -415,6 +419,8 @@ function find_trip_for_user(PDO $pdo, int $userId, int $tripId): ?array
 {
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
+    $tripBudgetSelect = trips_budget_column_available($pdo) ? 't.budget_cents' : 'NULL AS budget_cents';
+    $tripBudgetSelect .= travel_column_available($pdo,'trips','destinations_json') ? ', t.destinations_json' : ', NULL AS destinations_json';
     $tripImageSelect = trips_image_column_available($pdo)
         ? 't.image_path'
         : 'NULL AS image_path';
@@ -428,7 +434,7 @@ function find_trip_for_user(PDO $pdo, int $userId, int $tripId): ?array
         ? 't.date_to'
         : 'NULL AS date_to';
     $stmt = $pdo->prepare(
-        'SELECT t.id, t.name, ' . trip_mode_select($pdo) . ', ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
+        'SELECT t.id, t.name, ' . $tripBudgetSelect . ', ' . trip_mode_select($pdo) . ', ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
          FROM ' . $tripsTable . ' t
          JOIN ' . $tripMembersTable . ' tm ON tm.trip_id = t.id
          WHERE t.id = :trip_id AND tm.user_id = :user_id
@@ -446,6 +452,8 @@ function find_default_trip_for_user(PDO $pdo, int $userId): ?array
 {
     $tripsTable = table_name('trips');
     $tripMembersTable = table_name('trip_members');
+    $tripBudgetSelect = trips_budget_column_available($pdo) ? 't.budget_cents' : 'NULL AS budget_cents';
+    $tripBudgetSelect .= travel_column_available($pdo,'trips','destinations_json') ? ', t.destinations_json' : ', NULL AS destinations_json';
     $tripImageSelect = trips_image_column_available($pdo)
         ? 't.image_path'
         : 'NULL AS image_path';
@@ -459,7 +467,7 @@ function find_default_trip_for_user(PDO $pdo, int $userId): ?array
         ? 't.date_to'
         : 'NULL AS date_to';
     $stmt = $pdo->prepare(
-        'SELECT t.id, t.name, ' . trip_mode_select($pdo) . ', ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
+        'SELECT t.id, t.name, ' . $tripBudgetSelect . ', ' . trip_mode_select($pdo) . ', ' . $tripCurrencySelect . ', t.status, t.created_by, ' . $tripDateFromSelect . ', ' . $tripDateToSelect . ', t.ended_at, t.archived_at, ' . $tripImageSelect . '
          FROM ' . $tripsTable . ' t
          JOIN ' . $tripMembersTable . ' tm ON tm.trip_id = t.id
          WHERE tm.user_id = :user_id

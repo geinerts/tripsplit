@@ -11,6 +11,8 @@ class CreateTripUseCase {
     required String currencyCode,
     required List<int> memberIds,
     String tripMode = 'group',
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
     String? dateFrom,
     String? dateTo,
   }) {
@@ -19,6 +21,8 @@ class CreateTripUseCase {
       currencyCode: currencyCode,
       memberIds: memberIds,
       tripMode: tripMode,
+      budgetCents: budgetCents,
+      destinations: destinations,
       dateFrom: dateFrom,
       dateTo: dateTo,
     );

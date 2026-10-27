@@ -2,7 +2,7 @@
 
 ## Contract
 
-Friendship and trip membership do not grant access to payment profiles. Both
+Friendship and trip membership alone do not grant access to payment profiles. Both
 friend-list variants and workspace users omit bank details and payment links.
 The account owner's own profile is unchanged.
 
@@ -74,3 +74,42 @@ tests, nor new concurrent membership-change tests.
 Pending-invitation membership, accept/decline/remove/rejoin behavior and related
 receipt/activity/statistics permissions are a separate remaining security batch.
 Do not interpret payment-profile minimization as completion of that work.
+
+
+## Profile opt-in for all joined trips (2026-10-26)
+
+Locally implemented; requires backend migration/deployment and a new mobile build.
+The owner requested an explicit global preference under Profile → Payment methods.
+`share_payment_details_with_trips` defaults to 0 for all existing/new users. Only
+literal JSON booleans on `update_profile` change the authenticated user's setting;
+client-supplied user IDs cannot change somebody else's consent. `me` returns the
+boolean; unrelated profile changes leave it unchanged. Missing migration rejects
+consent writes and member-detail reads with 409, and reports false in `me`.
+
+`POST trip_member_payment_details` takes `X-Trip-Id` and `user_id`. One SQL query
+checks the target's opt-in and both active accounts' membership in the selected
+trip, then returns only the seven existing payment-detail fields. Pending invites,
+friendship, owner/admin status or membership in a different trip do not grant
+access. The preference applies to current and future joined trips, including
+retained membership in archived trips. Leaving/removal or switching it off denies
+subsequent reads. Separate explicitly shared payment requests keep their original
+consent contract; this preference does not silently revoke those requests.
+
+Details are fetched when a member profile opens or is refreshed/retried, never
+placed into workspace/friend caches, and guarded against late cross-account
+responses. The owner continues to see their own data. A failed/denied read shows
+“not shared or currently unavailable”, not “not added”. Already displayed or copied
+data cannot be remotely erased. The own-account preference boolean may be cached;
+other members' payment details may not.
+
+Rollout: apply `2026-10-26-add-profile-payment-sharing.sql` (no consent backfill),
+deploy API/helper/router, then release mobile. No migration or deployment was
+performed during implementation. Tests: `ProfilePaymentSharingTest`,
+`payment_details_privacy_test.dart`, profile and workspace widget regressions,
+and auth consent transport tests. Synthetic adapters do not replace device/HTTP
+rollout verification.
+
+Validation result on 2026-10-26: all 445 PHP tests (3946 assertions) and all
+521 Flutter tests pass. Static analysis reports existing warnings in unrelated
+files; the changed production files introduce no new diagnostics. No archive,
+version bump, deployment or live data changes were performed.

@@ -2548,7 +2548,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceShowingTop4ByBalanceDifference => 'Showing top 4 by balance difference.';
 
   @override
-  String get workspaceOpenFlow => 'Open flow';
+  String get workspaceOpenFlow => 'Details';
 
   @override
   String get workspaceFriend => 'Friend';
@@ -3886,4 +3886,281 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restoreReceiptAction => 'Restore previous receipt';
+
+  @override
+  String get expenseSplitBetween => 'Split between';
+
+  @override
+  String get expenseEditParticipants => 'Choose participants';
+
+  @override
+  String get expenseCustomSplit => 'Custom split';
+
+  @override
+  String expenseSplitAllocated(String amount) {
+    return 'All $amount allocated';
+  }
+
+  @override
+  String expenseSplitRemaining(String amount) {
+    return '$amount left to split';
+  }
+
+  @override
+  String expenseSplitOver(String amount) {
+    return '$amount over the total';
+  }
+
+  @override
+  String get profilePaymentSharingTitle => 'Share payment methods with my trips';
+
+  @override
+  String get profilePaymentSharingDescription => 'Allow accepted members of trips I create or join to see my payment methods. This applies to current and future trips. Turn it off at any time to stop new access.';
+
+  @override
+  String get memberPaymentDetailsNotShared => 'Payment methods are not shared or are currently unavailable.';
+
+  @override
+  String get homeTripInvitations => 'Trip invitations';
+
+  @override
+  String get homeNoTripInvitations => 'No pending trip invitations';
+
+  @override
+  String get homeInvitationsLoadFailed => 'Could not load invitations. Please try again.';
+
+  @override
+  String get homeInvitationResponseFailed => 'Could not respond to the invitation. Please try again.';
+
+  @override
+  String get homeTripShareFailed => 'Could not share the trip. Please try again.';
+
+  @override
+  String get settleStillToReceive => 'Still to receive';
+
+  @override
+  String get settleStillToPay => 'Still to pay';
+
+  @override
+  String get settleEstimateCaption => 'Estimate based on current expenses. Amounts may change until the trip ends.';
+
+  @override
+  String get settleOutstandingCaption => 'Awaiting payment or confirmation.';
+
+  @override
+  String get settleWaitingForYou => 'Waiting for you to mark ready.';
+
+  @override
+  String get settleWhoPaysWhom => 'Who pays whom';
+
+  @override
+  String get settlePreviewCaption => 'Preview · finalised when the trip ends';
+
+  @override
+  String get settleOpenPaymentCaption => 'Open a payment to view details and available actions.';
+
+  @override
+  String get tripBudgetEnable => 'Set a budget';
+
+  @override
+  String get tripBudgetSoloHint => 'Optional spending target for this trip.';
+
+  @override
+  String get tripBudgetGroupHint => 'One shared budget for the whole group.';
+
+  @override
+  String get tripBudgetAmount => 'Budget amount';
+
+  @override
+  String get tripBudgetInvalid => 'Enter an amount from 0.01 to 999999999.99, with up to two decimal places.';
+
+  @override
+  String get tripBudgetTitle => 'Trip budget';
+
+  @override
+  String get tripBudgetGroupTitle => 'Group budget';
+
+  @override
+  String get tripBudgetRemaining => 'Remaining';
+
+  @override
+  String get tripBudgetOver => 'Over budget';
+
+  @override
+  String get tripBudgetSpent => 'Spent';
+
+  @override
+  String get tripBudgetLimit => 'Budget';
+
+  @override
+  String get travelMapTitle => 'My travel map';
+
+  @override
+  String get travelMapSubtitle => 'Visited places, just for you.';
+
+  @override
+  String get travelMapHere => 'I’ve been here';
+
+  @override
+  String get travelMapAdd => 'Add place';
+
+  @override
+  String get travelMapSearch => 'Search city and country';
+
+  @override
+  String get travelMapSearchAction => 'Search';
+
+  @override
+  String get travelMapSearchHint => 'For example, Lisbon, Portugal';
+
+  @override
+  String get travelMapEmpty => 'Your next memory starts here';
+
+  @override
+  String get travelMapEmptyBody => 'Add a city you have visited, or check in where you are now.';
+
+  @override
+  String get travelMapConfirm => 'Save this visit?';
+
+  @override
+  String get travelMapConfirmBody => 'Check the city and date before saving it to your private map.';
+
+  @override
+  String get travelMapDate => 'Visit date';
+
+  @override
+  String get travelMapSave => 'Save to my map';
+
+  @override
+  String get travelMapCancel => 'Cancel';
+
+  @override
+  String get travelMapClose => 'Close';
+
+  @override
+  String get travelMapNoResults => 'No city found. Try adding the country to your search.';
+
+  @override
+  String get travelMapLookupError => 'Could not find the city. Check your connection or add a place manually.';
+
+  @override
+  String get travelMapDenied => 'Location access is off. You can still add a city manually.';
+
+  @override
+  String get travelMapDisabled => 'Turn on location services, or add a city manually.';
+
+  @override
+  String get travelMapError => 'Could not load your travel map. Please try again.';
+
+  @override
+  String get travelMapSaveError => 'Could not save the visit. Please try again.';
+
+  @override
+  String get travelMapUnavailable => 'Travel map needs a server update.';
+
+  @override
+  String get travelMapOffline => 'Offline · showing saved places';
+
+  @override
+  String get travelMapRetry => 'Retry';
+
+  @override
+  String get travelMapDelete => 'Remove visit';
+
+  @override
+  String get travelMapDeleteConfirm => 'Remove this visit from your private map?';
+
+  @override
+  String get travelMapFit => 'Show all places';
+
+  @override
+  String get travelMapSaved => 'Visit saved';
+
+  @override
+  String get travelMapVisited => 'Visited';
+
+  @override
+  String get travelMapLimit => 'Your map has reached 1,000 visits. Remove an old visit before adding another.';
+
+  @override
+  String travelMapCounts(int countries, int cities) {
+    String _temp0 = intl.Intl.pluralLogic(
+      countries,
+      locale: localeName,
+      other: '$countries countries',
+      one: '1 country',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      cities,
+      locale: localeName,
+      other: '$cities cities',
+      one: '1 city',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String travelMapVisits(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count visits',
+      one: '1 visit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get travelTripDestinations => 'Destinations (optional)';
+
+  @override
+  String get travelAddDestination => 'Add destination';
+
+  @override
+  String get travelRemoveDestination => 'Remove destination';
+
+  @override
+  String get travelFromTrip => 'From a trip';
+
+  @override
+  String get travelChooseTrip => 'Choose a trip';
+
+  @override
+  String get travelNoTrips => 'No trips available yet. You can add a place manually.';
+
+  @override
+  String get travelAddToMap => 'Add to my map';
+
+  @override
+  String get travelTripConfirm => 'Save only places you actually visited. This adds a private memory to your map.';
+
+  @override
+  String get travelVisitTitle => 'Title (optional)';
+
+  @override
+  String get travelAddPhoto => 'Add a photo';
+
+  @override
+  String get travelChangePhoto => 'Change photo';
+
+  @override
+  String get travelRemovePhoto => 'Remove photo';
+
+  @override
+  String get travelPhotoError => 'Could not prepare this photo. Please choose another.';
+
+  @override
+  String get travelEditVisit => 'Edit visit';
+
+  @override
+  String get travelOpenTrip => 'Open trip';
+
+  @override
+  String get travelPreviousVisit => 'Previous visit';
+
+  @override
+  String get travelNextVisit => 'Next visit';
+
+  @override
+  String get travelDuplicate => 'This visit is already on your map.';
 }

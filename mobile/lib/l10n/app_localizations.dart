@@ -4726,7 +4726,7 @@ abstract class AppLocalizations {
   /// No description provided for @workspaceOpenFlow.
   ///
   /// In en, this message translates to:
-  /// **'Open flow'**
+  /// **'Details'**
   String get workspaceOpenFlow;
 
   /// No description provided for @workspaceFriend.
@@ -7134,6 +7134,504 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore previous receipt'**
   String get restoreReceiptAction;
+
+  /// No description provided for @expenseSplitBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'Split between'**
+  String get expenseSplitBetween;
+
+  /// No description provided for @expenseEditParticipants.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose participants'**
+  String get expenseEditParticipants;
+
+  /// No description provided for @expenseCustomSplit.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom split'**
+  String get expenseCustomSplit;
+
+  /// No description provided for @expenseSplitAllocated.
+  ///
+  /// In en, this message translates to:
+  /// **'All {amount} allocated'**
+  String expenseSplitAllocated(String amount);
+
+  /// No description provided for @expenseSplitRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} left to split'**
+  String expenseSplitRemaining(String amount);
+
+  /// No description provided for @expenseSplitOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} over the total'**
+  String expenseSplitOver(String amount);
+
+  /// No description provided for @profilePaymentSharingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share payment methods with my trips'**
+  String get profilePaymentSharingTitle;
+
+  /// No description provided for @profilePaymentSharingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow accepted members of trips I create or join to see my payment methods. This applies to current and future trips. Turn it off at any time to stop new access.'**
+  String get profilePaymentSharingDescription;
+
+  /// No description provided for @memberPaymentDetailsNotShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment methods are not shared or are currently unavailable.'**
+  String get memberPaymentDetailsNotShared;
+
+  /// No description provided for @homeTripInvitations.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip invitations'**
+  String get homeTripInvitations;
+
+  /// No description provided for @homeNoTripInvitations.
+  ///
+  /// In en, this message translates to:
+  /// **'No pending trip invitations'**
+  String get homeNoTripInvitations;
+
+  /// No description provided for @homeInvitationsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load invitations. Please try again.'**
+  String get homeInvitationsLoadFailed;
+
+  /// No description provided for @homeInvitationResponseFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not respond to the invitation. Please try again.'**
+  String get homeInvitationResponseFailed;
+
+  /// No description provided for @homeTripShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not share the trip. Please try again.'**
+  String get homeTripShareFailed;
+
+  /// No description provided for @settleStillToReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'Still to receive'**
+  String get settleStillToReceive;
+
+  /// No description provided for @settleStillToPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Still to pay'**
+  String get settleStillToPay;
+
+  /// No description provided for @settleEstimateCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate based on current expenses. Amounts may change until the trip ends.'**
+  String get settleEstimateCaption;
+
+  /// No description provided for @settleOutstandingCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting payment or confirmation.'**
+  String get settleOutstandingCaption;
+
+  /// No description provided for @settleWaitingForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for you to mark ready.'**
+  String get settleWaitingForYou;
+
+  /// No description provided for @settleWhoPaysWhom.
+  ///
+  /// In en, this message translates to:
+  /// **'Who pays whom'**
+  String get settleWhoPaysWhom;
+
+  /// No description provided for @settlePreviewCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview · finalised when the trip ends'**
+  String get settlePreviewCaption;
+
+  /// No description provided for @settleOpenPaymentCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a payment to view details and available actions.'**
+  String get settleOpenPaymentCaption;
+
+  /// No description provided for @tripBudgetEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a budget'**
+  String get tripBudgetEnable;
+
+  /// No description provided for @tripBudgetSoloHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional spending target for this trip.'**
+  String get tripBudgetSoloHint;
+
+  /// No description provided for @tripBudgetGroupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One shared budget for the whole group.'**
+  String get tripBudgetGroupHint;
+
+  /// No description provided for @tripBudgetAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget amount'**
+  String get tripBudgetAmount;
+
+  /// No description provided for @tripBudgetInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount from 0.01 to 999999999.99, with up to two decimal places.'**
+  String get tripBudgetInvalid;
+
+  /// No description provided for @tripBudgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip budget'**
+  String get tripBudgetTitle;
+
+  /// No description provided for @tripBudgetGroupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Group budget'**
+  String get tripBudgetGroupTitle;
+
+  /// No description provided for @tripBudgetRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get tripBudgetRemaining;
+
+  /// No description provided for @tripBudgetOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Over budget'**
+  String get tripBudgetOver;
+
+  /// No description provided for @tripBudgetSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get tripBudgetSpent;
+
+  /// No description provided for @tripBudgetLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get tripBudgetLimit;
+
+  /// No description provided for @travelMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My travel map'**
+  String get travelMapTitle;
+
+  /// No description provided for @travelMapSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Visited places, just for you.'**
+  String get travelMapSubtitle;
+
+  /// No description provided for @travelMapHere.
+  ///
+  /// In en, this message translates to:
+  /// **'I’ve been here'**
+  String get travelMapHere;
+
+  /// No description provided for @travelMapAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add place'**
+  String get travelMapAdd;
+
+  /// No description provided for @travelMapSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search city and country'**
+  String get travelMapSearch;
+
+  /// No description provided for @travelMapSearchAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get travelMapSearchAction;
+
+  /// No description provided for @travelMapSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example, Lisbon, Portugal'**
+  String get travelMapSearchHint;
+
+  /// No description provided for @travelMapEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your next memory starts here'**
+  String get travelMapEmpty;
+
+  /// No description provided for @travelMapEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a city you have visited, or check in where you are now.'**
+  String get travelMapEmptyBody;
+
+  /// No description provided for @travelMapConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this visit?'**
+  String get travelMapConfirm;
+
+  /// No description provided for @travelMapConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the city and date before saving it to your private map.'**
+  String get travelMapConfirmBody;
+
+  /// No description provided for @travelMapDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit date'**
+  String get travelMapDate;
+
+  /// No description provided for @travelMapSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to my map'**
+  String get travelMapSave;
+
+  /// No description provided for @travelMapCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get travelMapCancel;
+
+  /// No description provided for @travelMapClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get travelMapClose;
+
+  /// No description provided for @travelMapNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No city found. Try adding the country to your search.'**
+  String get travelMapNoResults;
+
+  /// No description provided for @travelMapLookupError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not find the city. Check your connection or add a place manually.'**
+  String get travelMapLookupError;
+
+  /// No description provided for @travelMapDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location access is off. You can still add a city manually.'**
+  String get travelMapDenied;
+
+  /// No description provided for @travelMapDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on location services, or add a city manually.'**
+  String get travelMapDisabled;
+
+  /// No description provided for @travelMapError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your travel map. Please try again.'**
+  String get travelMapError;
+
+  /// No description provided for @travelMapSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the visit. Please try again.'**
+  String get travelMapSaveError;
+
+  /// No description provided for @travelMapUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel map needs a server update.'**
+  String get travelMapUnavailable;
+
+  /// No description provided for @travelMapOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline · showing saved places'**
+  String get travelMapOffline;
+
+  /// No description provided for @travelMapRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get travelMapRetry;
+
+  /// No description provided for @travelMapDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove visit'**
+  String get travelMapDelete;
+
+  /// No description provided for @travelMapDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this visit from your private map?'**
+  String get travelMapDeleteConfirm;
+
+  /// No description provided for @travelMapFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all places'**
+  String get travelMapFit;
+
+  /// No description provided for @travelMapSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit saved'**
+  String get travelMapSaved;
+
+  /// No description provided for @travelMapVisited.
+  ///
+  /// In en, this message translates to:
+  /// **'Visited'**
+  String get travelMapVisited;
+
+  /// No description provided for @travelMapLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Your map has reached 1,000 visits. Remove an old visit before adding another.'**
+  String get travelMapLimit;
+
+  /// No description provided for @travelMapCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{countries, plural, one{1 country} other{{countries} countries}} · {cities, plural, one{1 city} other{{cities} cities}}'**
+  String travelMapCounts(int countries, int cities);
+
+  /// No description provided for @travelMapVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 visit} other{{count} visits}}'**
+  String travelMapVisits(int count);
+
+  /// No description provided for @travelTripDestinations.
+  ///
+  /// In en, this message translates to:
+  /// **'Destinations (optional)'**
+  String get travelTripDestinations;
+
+  /// No description provided for @travelAddDestination.
+  ///
+  /// In en, this message translates to:
+  /// **'Add destination'**
+  String get travelAddDestination;
+
+  /// No description provided for @travelRemoveDestination.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove destination'**
+  String get travelRemoveDestination;
+
+  /// No description provided for @travelFromTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'From a trip'**
+  String get travelFromTrip;
+
+  /// No description provided for @travelChooseTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a trip'**
+  String get travelChooseTrip;
+
+  /// No description provided for @travelNoTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'No trips available yet. You can add a place manually.'**
+  String get travelNoTrips;
+
+  /// No description provided for @travelAddToMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to my map'**
+  String get travelAddToMap;
+
+  /// No description provided for @travelTripConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Save only places you actually visited. This adds a private memory to your map.'**
+  String get travelTripConfirm;
+
+  /// No description provided for @travelVisitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (optional)'**
+  String get travelVisitTitle;
+
+  /// No description provided for @travelAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo'**
+  String get travelAddPhoto;
+
+  /// No description provided for @travelChangePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get travelChangePhoto;
+
+  /// No description provided for @travelRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get travelRemovePhoto;
+
+  /// No description provided for @travelPhotoError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not prepare this photo. Please choose another.'**
+  String get travelPhotoError;
+
+  /// No description provided for @travelEditVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit visit'**
+  String get travelEditVisit;
+
+  /// No description provided for @travelOpenTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Open trip'**
+  String get travelOpenTrip;
+
+  /// No description provided for @travelPreviousVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous visit'**
+  String get travelPreviousVisit;
+
+  /// No description provided for @travelNextVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Next visit'**
+  String get travelNextVisit;
+
+  /// No description provided for @travelDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'This visit is already on your map.'**
+  String get travelDuplicate;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

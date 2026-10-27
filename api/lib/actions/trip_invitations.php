@@ -111,6 +111,30 @@ function decline_trip_invite_action(): void
     json_out(['ok' => true]);
 }
 
+function load_received_trip_invitations(PDO $pdo, int $userId): array
+{
+    $stmt = $pdo->prepare('SELECT i.id, i.trip_id, i.invite_code AS invite_token,
+            t.name AS trip_name, u.nickname AS inviter_name, i.expires_at
+        FROM ' . table_name('trip_invites') . ' i
+        JOIN ' . table_name('trips') . ' t ON t.id = i.trip_id
+        JOIN ' . table_name('users') . ' u ON u.id = i.created_by
+        WHERE i.target_user_id = :user_id AND i.revoked_at IS NULL
+          AND i.expires_at > UTC_TIMESTAMP() AND t.status = "active"
+          AND NOT EXISTS (SELECT 1 FROM ' . table_name('trip_members') . ' m
+            WHERE m.trip_id = i.trip_id AND m.user_id = i.target_user_id)
+        ORDER BY i.id DESC LIMIT 100');
+    $stmt->execute(['user_id' => $userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function list_received_trip_invitations_action(): void
+{
+    $me = get_me();
+    $pdo = db();
+    require_trip_invitation_schema($pdo);
+    json_out(['ok' => true, 'invitations' => load_received_trip_invitations($pdo, (int) $me['id'])]);
+}
+
 function list_pending_trip_invitations_action(): void
 {
     $me = get_me();

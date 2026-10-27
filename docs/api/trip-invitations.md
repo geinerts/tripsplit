@@ -24,6 +24,11 @@ cascades the invitation rather than converting it into a public link.
   can use it. Public links retain their existing sharing behavior.
 - `POST decline_trip_invite {invite_token}` is recipient-only and personal-only.
   It consumes the invitation with `response=declined`, without granting access.
+- `GET list_received_trip_invitations` uses the authenticated recipient only (no
+  user ID or trip header). It returns up to 100 pending personal invitations,
+  newest first: ID, trip ID/name, inviter nickname, invitation token and expiry.
+  Revoked, expired, archived-trip and already-joined invitations are excluded.
+  Generic share links and other recipients' tokens are never returned.
 - `GET list_pending_trip_invitations` with `X-Trip-Id` is owner/admin-only. It
   returns ID, recipient ID, display nickname and expiry, never invitation tokens
   or payment profiles. At most 100 live personal invitations are allowed per trip.
@@ -37,6 +42,22 @@ successful acceptance/decline. The invite-members dialog shows pending recipient
 and supports cancellation, loading and retry states. Notifications respect trip
 push/banner preferences; the inbox record is retained even when push is disabled.
 Invitation operations are online-only and account-generation guarded.
+
+The home invitation button sits beside the join-link and create buttons, including
+for users with no trips. Its badge counts actionable invitations (capped at 99+),
+independently of notification read state. Opening the sheet or dismissing its
+confirmation does not accept or decline an invitation. The existing notification
+refresh/resume cycle refreshes the badge; load failures offer retry. Incoming
+tokens are not stored in the offline trip cache.
+
+Active group-trip cards expose a native share action to owners/admins. It obtains
+a link using the existing invite-link endpoint and opens the platform share sheet
+with the trip name and URL. Sharing itself sends no message; the user chooses an
+app and recipient. Solo, settling/archived trips and ordinary members do not show
+this action. The trip options sheet also offers Share directly below Invite
+members, with the same outlined curved-arrow icon used on home cards. Both entry
+points open the native share sheet; iPad popovers are anchored to the pressed
+button or menu row.
 
 ## Removal and concurrency
 
@@ -54,6 +75,12 @@ acceptance. Revoking a public link affects everyone holding that old link, so an
 owner/admin must generate a new link for subsequent sharing.
 
 ## Rollout and verification
+
+The 2026-10-26 home inbox/share additions are implemented and tested locally;
+they require backend deployment and a matching mobile build. They add no database
+migration beyond the existing directed-invitation schema below. Native share
+sheet invocation is verified with a mocked platform channel; device/WhatsApp
+delivery still requires an installed build and user interaction.
 
 1. Apply `2026-10-05-add-directed-trip-invitations.sql` through the migration runner.
 2. Deploy backend including `trip_invitations.php`, router and share-preview change.

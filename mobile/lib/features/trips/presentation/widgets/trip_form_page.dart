@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import '../../../travel_map/presentation/travel_city_picker.dart';
 
 import 'package:flutter/material.dart';
 import '../../../../core/ui/splyto_illustration.dart';
@@ -26,12 +27,16 @@ class TripFormDraft {
     this.dateTo,
     this.image,
     this.removeImage = false,
+    this.budgetCents,
+    this.destinations = const [],
   });
   final String name, currencyCode, tripMode;
   final List<int> memberIds;
   final String? dateFrom, dateTo;
   final TripImageDraft? image;
   final bool removeImage;
+  final int? budgetCents;
+  final List<Map<String, dynamic>> destinations;
 }
 
 enum _ImageChoice { camera, library, remove }
@@ -42,9 +47,13 @@ class TripFormPage extends StatefulWidget {
     super.key,
     this.trip,
     this.loadFriends,
+    this.budgetLoaded = false,
+    this.budgetCents,
     required this.pickImage,
   });
   final Trip? trip;
+  final bool budgetLoaded;
+  final int? budgetCents;
   final Future<List<TripUser>> Function()? loadFriends;
   final Future<TripImageDraft?> Function(ImageSource source) pickImage;
   @override
@@ -60,9 +69,14 @@ class _TripFormPageState extends State<TripFormPage> {
   TripImageDraft? _image;
   bool _removeImage = false, _picking = false, _loadingFriends = false;
   bool _submitted = false;
+  final _budget = TextEditingController();
+  bool _budgetEnabled = false, _budgetInvalid = false;
   bool _friendsFailed = false, _nameInvalid = false, _datesInvalid = false;
   List<TripUser> _friends = [];
   final _selected = <int>{};
+  late final List<Map<String, dynamic>> _destinations = [
+    ...?widget.trip?.destinations,
+  ];
   bool get _editing => widget.trip != null;
   String get _existingImage => _removeImage
       ? ''
@@ -71,12 +85,23 @@ class _TripFormPageState extends State<TripFormPage> {
   @override
   void initState() {
     super.initState();
+    _currency = widget.trip?.currencyCode ?? _currency;
+    _mode = widget.trip?.tripMode ?? _mode;
+    final budget = widget.budgetLoaded
+        ? widget.budgetCents
+        : widget.trip?.budgetCents;
+    _budgetEnabled = budget != null;
+    if (budget != null) {
+      _budget.text =
+          '${budget ~/ 100}.${(budget % 100).toString().padLeft(2, '0')}';
+    }
     if (!_editing) _loadFriends();
   }
 
   @override
   void dispose() {
     _name.dispose();
+    _budget.dispose();
     super.dispose();
   }
 
@@ -184,12 +209,26 @@ class _TripFormPageState extends State<TripFormPage> {
   void _submit() {
     if (_picking || _submitted) return;
     final name = _name.text.trim();
+    final rawBudget = _budget.text.trim().replaceAll(',', '.');
+    int? budgetCents;
+    if (_budgetEnabled &&
+        RegExp(r'^\d{1,9}(?:\.\d{1,2})?$').hasMatch(rawBudget)) {
+      final parts = rawBudget.split('.');
+      budgetCents =
+          int.parse(parts[0]) * 100 +
+          int.parse(parts.length == 1 ? '0' : parts[1].padRight(2, '0'));
+    }
     setState(() {
       _nameInvalid = name.length < 2 || name.length > 120;
+      _budgetInvalid =
+          _budgetEnabled &&
+          (budgetCents == null ||
+              budgetCents <= 0 ||
+              budgetCents > 99999999999);
       _datesInvalid =
           !_editing && (_from == null || _to == null || _to!.isBefore(_from!));
     });
-    if (_nameInvalid || _datesInvalid) return;
+    if (_nameInvalid || _datesInvalid || _budgetInvalid) return;
     setState(() => _submitted = true);
     String? iso(DateTime? value) => value == null
         ? null
@@ -205,6 +244,8 @@ class _TripFormPageState extends State<TripFormPage> {
         dateTo: iso(_to),
         image: _image,
         removeImage: _removeImage,
+        budgetCents: _budgetEnabled ? budgetCents : null,
+        destinations: List.of(_destinations),
       ),
     );
   }
@@ -432,6 +473,90 @@ class _TripFormPageState extends State<TripFormPage> {
                               },
                             ),
                             const SizedBox(height: 12),
+                            Text(
+                              t.travelTripDestinations,
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                            for (final place in _destinations)
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: const Icon(Icons.place_outlined),
+                                title: Text(place['city'] as String),
+                                subtitle: Text(place['country'] as String),
+                                trailing: IconButton(
+                                  tooltip: t.travelRemoveDestination,
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () => setState(
+                                    () => _destinations.remove(place),
+                                  ),
+                                ),
+                              ),
+                            TextButton.icon(
+                              key: const ValueKey('trip-add-destination'),
+                              icon: const Icon(Icons.add_location_alt_outlined),
+                              label: Text(t.travelAddDestination),
+                              onPressed: _destinations.length >= 20
+                                  ? null
+                                  : () async {
+                                      final place = await pickTravelCity(
+                                        context,
+                                      );
+                                      if (!mounted || place == null) return;
+                                      if (_destinations.any(
+                                        (d) =>
+                                            d['city'] == place.city &&
+                                            d['region'] == place.region &&
+                                            d['country_code'] ==
+                                                place.countryCode,
+                                      )) {
+                                        return;
+                                      }
+                                      setState(
+                                        () => _destinations.add(place.toJson()),
+                                      );
+                                    },
+                            ),
+                            const SizedBox(height: 12),
+                            SwitchListTile.adaptive(
+                              key: const ValueKey('trip-budget-toggle'),
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(t.tripBudgetEnable),
+                              subtitle: Text(
+                                _mode == 'solo'
+                                    ? t.tripBudgetSoloHint
+                                    : t.tripBudgetGroupHint,
+                              ),
+                              value: _budgetEnabled,
+                              onChanged: (value) => setState(() {
+                                _budgetEnabled = value;
+                                _budgetInvalid = false;
+                              }),
+                            ),
+                            if (_budgetEnabled) ...[
+                              TextField(
+                                key: const ValueKey('trip-budget-amount'),
+                                controller: _budget,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                    ),
+                                textInputAction: TextInputAction.done,
+                                decoration: InputDecoration(
+                                  labelText: t.tripBudgetAmount,
+                                  suffixText: _currency,
+                                  errorMaxLines: 3,
+                                  errorText: _budgetInvalid
+                                      ? t.tripBudgetInvalid
+                                      : null,
+                                ),
+                                onChanged: (_) {
+                                  if (_budgetInvalid) {
+                                    setState(() => _budgetInvalid = false);
+                                  }
+                                },
+                              ),
+                              const SizedBox(height: 12),
+                            ],
                             if (!_editing) ...[
                               AppSettingsRow(
                                 key: const ValueKey('trip-date-from'),

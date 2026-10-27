@@ -40,7 +40,18 @@
       "title": "Maksājumu rekvizīti un ārējie maksājumi",
       "paragraphs": [
         "Ja tos pievienojat, glabājam konta īpašnieka vārdu, IBAN, BIC/SWIFT un Revolut, PayPal vai Wise identifikatorus vai saites. Draudzība vai dalība ceļojumā pati par sevi nedod piekļuvi rekvizītiem. Ja maksājuma pieprasījumā skaidri izvēlaties dalīties ar rekvizītiem, norādītais maksātājs tos var pieprasīt, kamēr pieprasījums un ceļojums ir aktīvi un izpildīti attiecīgie dalības un kontu nosacījumi.",
+        "Profilā → Maksājumu metodes varat arī ieslēgt “Rādīt maksājumu metodes manos ceļojumos”. Sākotnēji šī izvēle ir izslēgta. Pēc ieslēgšanas datus var redzēt apstiprinātie dalībnieki ceļojumos, kurus izveidojat vai kuriem pievienojaties, tostarp esošajos un turpmākajos ceļojumos. Neapstiprināts ielūgums vai draudzība vien nedod piekļuvi. Izslēgšana liedz jaunu piekļuvi caur ceļojuma dalībnieka profilu; atsevišķi kopīgotajiem maksājuma pieprasījumiem saglabājas to kopīgošanas noteikumi. Jau redzētu vai nokopētu informāciju nevar atsaukt.",
         "Rekvizītus profilā varat labot vai noņemt. Tas neatsauc citas personas jau nokopēto informāciju. Splyto uzskaita atlikumus un norēķinu apstiprinājumus; tas neievāc maksājumu karšu piekļuves datus un neveic bankas pārskaitījumus. Atverot maksājuma saiti, pārejat pie attiecīgā pakalpojuma sniedzēja, uz kuru attiecas tā privātuma noteikumi."
+      ]
+    },
+    {
+      "id": "travel_map",
+      "title": "Tava privātā ceļojumu karte",
+      "paragraphs": [
+        "Izvēles sadaļa “Mana ceļojumu karte” tavā Splyto kontā saglabā apstiprinātās pilsētas, valsti un reģionu, pilsētas centra koordinātas un apmeklējuma datumus. Karte ir privāta tavam kontam; pievienošanās ceļojumam neatklāj šos apmeklējumus citiem dalībniekiem. Atsevišķu apmeklējumu var izdzēst tā kartes atzīmē. Apstiprināta konta dzēšana izdzēš kartes ierakstus no aktīvās datubāzes; regulārajām rezerves kopijām piemēro tālāk aprakstīto atjaunošanas periodu.",
+        "“Esmu šeit” pieprasa atrašanās vietas atļauju tikai pēc pogas nospiešanas. Telefons vienreiz nosaka atrašanās vietu, lai ar platformas ģeokodēšanas pakalpojumu piedāvātu pilsētu. Tikai pēc apmeklējuma apstiprināšanas Splyto saņem pilsētas centra koordinātas, nevis šo ierīces atrašanās punktu. Manuālai pilsētas meklēšanai atrašanās vietas atļauja nav vajadzīga. Meklēšanas tekstu un pilsētas noteikšanai izmantotās koordinātas var apstrādāt platformas ģeokodēšanas pakalpojuma sniedzējs saskaņā ar saviem noteikumiem. Šī funkcija neseko atrašanās vietai fonā un nekoplieto atrašanās vietu tiešraidē.",
+        "Pārskata karte ir iekļauta lietotnē; iepriekš ielādētos apmeklējumus var apskatīt bez interneta. Meklēšanai, pašreizējās pilsētas noteikšanai un sinhronizācijai var būt vajadzīgs savienojums. Lokālie kartes ieraksti tiek glabāti atsevišķi katram kontam un tiek notīrīti, izrakstoties no konta.",
+        "Apstiprinātu apmeklējumu vari sasaistīt ar ceļojumu, kurā esi pievienojies, norādīt personīgu nosaukumu un izvēlēties bildi. Plānotie ceļojuma galamērķi ir redzami tā dalībniekiem, bet automātiski nekļūst par personīgiem apmeklējumiem. Saglabājot apmeklējumu no ceļojuma, tā nosaukums un pieejamā vāka bilde tiek nokopēti tavā privātajā ierakstā. Šī kopija var saglabāties arī pēc ceļojuma mainīšanas vai dzēšanas; saite uz ceļojumu ir pieejama tikai tikmēr, kamēr tev ir piekļuve. Privāto bildi vari nomainīt vai noņemt, nemainot kopīgo ceļojumu. Bildes tiek samazinātas, pārveidotas WebP formātā un attīrītas no metadatiem. Tās ir pieejamas ar autentificētiem tava konta pieprasījumiem, tiek glabātas ierīces kešatmiņā kopā ar konta datiem un dzēstas līdz ar apmeklējumu vai apstiprinātu konta dzēšanu."
       ]
     },
     {

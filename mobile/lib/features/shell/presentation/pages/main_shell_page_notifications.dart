@@ -66,6 +66,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
     final account = widget.authController.currentUser?.id;
     _isNotificationsLoading = true;
     try {
+      _tripsCommandController.requestInvitationsRefresh();
       final previousUnread = _unreadNotificationsCount;
       final inbox = await widget.workspaceController.loadGlobalNotifications(
         limit: 40,

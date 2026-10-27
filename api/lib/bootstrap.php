@@ -16,6 +16,7 @@ require_once __DIR__ . '/actions/account_lifecycle_actions.php';
 require_once __DIR__ . '/actions/account_deactivation_actions.php';
 require_once __DIR__ . '/actions/friends_actions.php';
 require_once __DIR__ . '/actions/trips_actions.php';
+require_once __DIR__ . '/actions/travel_places_actions.php';
 require_once __DIR__ . '/actions/uploads_actions.php';
 require_once __DIR__ . '/actions/expenses_actions.php';
 require_once __DIR__ . '/actions/expense_social_actions.php';

@@ -13,6 +13,8 @@ extension _TripsPageEditDialog on _TripsPageState {
     if (result == null) return null;
     return _EditTripResult(
       name: result.name,
+      budgetCents: result.budgetCents,
+      destinations: result.destinations,
       imageFileName: result.image?.fileName,
       imageBytes: result.image?.bytes,
       removeImage: result.removeImage,

@@ -157,6 +157,16 @@ extension _ProfilePageWidgets on _ProfilePageState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (widget.onTravelMapRequested != null) ...[
+          _buildProfileSectionTile(
+            context: context,
+            title: context.l10n.travelMapTitle,
+            subtitle: context.l10n.travelMapSubtitle,
+            icon: Icons.travel_explore,
+            onTap: _isBusy ? null : widget.onTravelMapRequested,
+          ),
+          const SizedBox(height: 16),
+        ],
         PremiumStatusTile(
           access: _user?.premiumAccess,
           onRefresh: _isLoading || _isBusy

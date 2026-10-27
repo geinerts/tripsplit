@@ -1,6 +1,37 @@
 part of 'main_shell_page.dart';
 
 extension _MainShellPageNavigation on _MainShellPageState {
+  Future<void> _openTravelMap({int? tripId}) async {
+    final repository = widget.travelPlacesRepository;
+    if (repository == null) return;
+    final owner = repository.capture();
+    final selected = await Navigator.of(context).push<int>(
+      AppPageRoute<int>(
+        builder: (_) => TravelMapPage(
+          repository: repository,
+          initialTripId: tripId,
+          loadTrips: () => widget.tripsController.loadTrips(forceRefresh: true),
+        ),
+      ),
+    );
+    if (!mounted || !owner.isCurrent || selected == null) return;
+    try {
+      final trips = await widget.tripsController.loadTrips(forceRefresh: true);
+      if (!mounted || !owner.isCurrent) return;
+      for (final trip in trips) {
+        if (trip.id == selected) {
+          _openWorkspaceInShell(trip);
+          return;
+        }
+      }
+      _showSnack(context.l10n.travelMapError, isError: true);
+    } catch (_) {
+      if (mounted && owner.isCurrent) {
+        _showSnack(context.l10n.travelMapError, isError: true);
+      }
+    }
+  }
+
   void _requestCreateTrip() {
     if (_selectedTabIndex != _MainShellPageState._tabHome || _isWorkspaceOpen) {
       _updateState(() {

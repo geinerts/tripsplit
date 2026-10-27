@@ -68,6 +68,7 @@ class ProfilePage extends StatefulWidget {
     this.showBottomNav = true,
     this.onProfileChanged,
     this.onQuickStartRequested,
+    this.onTravelMapRequested,
     this.onEditModeChanged,
     this.commandController,
   });
@@ -77,6 +78,7 @@ class ProfilePage extends StatefulWidget {
   final bool showBottomNav;
   final VoidCallback? onProfileChanged;
   final VoidCallback? onQuickStartRequested;
+  final VoidCallback? onTravelMapRequested;
   final ValueChanged<bool>? onEditModeChanged;
   final ProfilePageCommandController? commandController;
 

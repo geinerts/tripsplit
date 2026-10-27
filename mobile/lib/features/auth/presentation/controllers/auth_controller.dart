@@ -155,6 +155,7 @@ class AuthController {
     String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
+    bool? sharePaymentDetailsWithTrips,
   }) async {
     final generation = _accountSession.generation;
     final user = await _withStoredAvatar(
@@ -166,6 +167,7 @@ class AuthController {
         currentPassword: currentPassword,
         preferredCurrencyCode: preferredCurrencyCode,
         paymentDetails: paymentDetails,
+        sharePaymentDetailsWithTrips: sharePaymentDetailsWithTrips,
       ),
     );
     await _setCurrentUser(user, generation);

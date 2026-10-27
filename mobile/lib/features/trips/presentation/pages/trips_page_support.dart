@@ -3,6 +3,8 @@ part of 'trips_page.dart';
 class _CreateTripResult {
   const _CreateTripResult({
     required this.name,
+    this.budgetCents,
+    this.destinations = const [],
     required this.currencyCode,
     required this.memberIds,
     required this.tripMode,
@@ -13,6 +15,8 @@ class _CreateTripResult {
   });
 
   final String name;
+  final int? budgetCents;
+  final List<Map<String, dynamic>> destinations;
   final String currencyCode;
   final List<int> memberIds;
   final String tripMode;
@@ -25,12 +29,16 @@ class _CreateTripResult {
 class _EditTripResult {
   const _EditTripResult({
     required this.name,
+    this.budgetCents,
+    this.destinations = const [],
     this.imageFileName,
     this.imageBytes,
     this.removeImage = false,
   });
 
   final String name;
+  final int? budgetCents;
+  final List<Map<String, dynamic>> destinations;
   final String? imageFileName;
   final Uint8List? imageBytes;
   final bool removeImage;

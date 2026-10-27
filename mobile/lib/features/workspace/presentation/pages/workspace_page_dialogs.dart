@@ -96,21 +96,6 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
 
     seedSplitControllersFrom(existing, splitMode);
 
-    List<String> recentCategoryKeys() {
-      final keys = <String>[];
-      for (final expense in recentExpenses) {
-        final key = ExpenseCategoryCatalog.normalizeStored(expense.category);
-        if (key.isEmpty || keys.contains(key)) {
-          continue;
-        }
-        keys.add(key);
-        if (keys.length >= 4) {
-          break;
-        }
-      }
-      return keys;
-    }
-
     const customCategoryDropdownValue = '__custom_category__';
 
     Uint8List? selectedReceiptBytes;
@@ -229,51 +214,6 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
               );
             }
 
-            Future<String?> pickSplitMode(
-              BuildContext dialogContext,
-              String currentMode,
-            ) {
-              const modes = <String>['equal', 'exact', 'percent', 'shares'];
-              return showAppBottomSheet<String>(
-                context: dialogContext,
-                builder: (pickerContext) {
-                  return AppActionSheet(
-                    key: const ValueKey('split-mode-picker'),
-                    title: t.splitModeLabel,
-                    children: [
-                      for (final mode in modes) ...[
-                        ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 6,
-                          ),
-                          leading: Icon(
-                            splitModeIcon(mode),
-                            color: Theme.of(
-                              pickerContext,
-                            ).colorScheme.onSurfaceVariant,
-                          ),
-                          title: Text(splitModeLabel(mode)),
-                          subtitle: Text(_splitModeHint(mode)),
-                          selected: mode == currentMode,
-                          trailing: mode == currentMode
-                              ? Icon(
-                                  Icons.check,
-                                  color: Theme.of(
-                                    pickerContext,
-                                  ).colorScheme.primary,
-                                )
-                              : null,
-                          onTap: () => Navigator.of(pickerContext).pop(mode),
-                        ),
-                        if (mode != modes.last) const Divider(height: 1),
-                      ],
-                    ],
-                  );
-                },
-              );
-            }
-
             return StatefulBuilder(
               builder: (context, setDialogState) {
                 AppCurrencyOption selectedCurrency =
@@ -284,12 +224,6 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                     break;
                   }
                 }
-                final quickCategoryKeys = <String>{
-                  'food',
-                  'transport',
-                  'activities',
-                  ...recentCategoryKeys(),
-                }.toList();
                 final normalizedSelectedCategory =
                     ExpenseCategoryCatalog.normalizeStored(selectedCategory);
                 String? categoryDropdownValue;
@@ -316,6 +250,81 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                     : ExpenseCategoryCatalog.iconFor(selectedCategoryValue);
                 final keyboardOpen =
                     MediaQuery.viewInsetsOf(context).bottom > 0;
+                final activeUsers = users
+                    .where(
+                      (user) =>
+                          user.id > 0 &&
+                          (selected.isEmpty || selected.contains(user.id)),
+                    )
+                    .toList();
+                final payerId = existing?.paidById ?? _currentUserId;
+                final payer = users
+                    .where((user) => user.id == payerId)
+                    .firstOrNull;
+                final payerName = payer?.preferredName ?? t.youLabel;
+                Widget memberAvatar(WorkspaceUser user) => _largeMemberAvatar(
+                  id: user.id,
+                  name: user.preferredName,
+                  avatarUrl: user.avatarThumbUrl ?? user.avatarUrl,
+                  size: 30,
+                );
+                Future<void> editParticipants() async {
+                  FocusScope.of(context).unfocus();
+                  final result = await showAppBottomSheet<Set<int>>(
+                    context: context,
+                    builder: (_) => _ExpenseParticipantsEditor(
+                      users: users.where((user) => user.id > 0).toList(),
+                      selected: activeUsers.map((u) => u.id).toSet(),
+                      avatarBuilder: memberAvatar,
+                    ),
+                  );
+                  if (!mounted || !context.mounted || result == null) return;
+                  setDialogState(() {
+                    selected
+                      ..clear()
+                      ..addAll(result);
+                    errorText = null;
+                  });
+                }
+
+                Future<void> editSplit() async {
+                  final amount = _parseAmount(amountController.text);
+                  if (!amount.isFinite || amount <= 0 || activeUsers.isEmpty) {
+                    setDialogState(() {
+                      errorText = activeUsers.isEmpty
+                          ? t.pickAtLeastOneParticipant
+                          : t.amountMustBeGreaterThanZero;
+                    });
+                    return;
+                  }
+                  FocusScope.of(context).unfocus();
+                  final result = await showAppBottomSheet<_ExpenseSplitDraft>(
+                    context: context,
+                    builder: (_) => _ExpenseSplitEditor(
+                      users: activeUsers,
+                      amount: amount,
+                      currencyCode: selectedCurrencyCode,
+                      initialMode: splitMode,
+                      initialValues: {
+                        for (final entry in splitControllers.entries)
+                          entry.key: entry.value.text,
+                      },
+                      avatarBuilder: memberAvatar,
+                    ),
+                  );
+                  if (!mounted || !context.mounted || result == null) return;
+                  setDialogState(() {
+                    splitMode = result.mode;
+                    for (final entry in result.values.entries) {
+                      splitControllers
+                          .putIfAbsent(entry.key, () => TextEditingController())
+                          .text = entry
+                          .value;
+                    }
+                    errorText = null;
+                  });
+                }
+
                 return PopScope(
                   canPop: !isSaving,
                   child: AppFormScaffold(
@@ -392,37 +401,44 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                       ),
                                     ),
                                     _ExpenseAmountRow(
-                                      amount: TextField(
-                                        controller: amountController,
-                                        key: const ValueKey(
-                                          'expense-form-amount',
-                                        ),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headlineLarge
-                                            ?.copyWith(
-                                              fontSize: 36,
-                                              fontWeight: FontWeight.w700,
-                                              fontFeatures: const [
-                                                FontFeature.tabularFigures(),
-                                              ],
-                                            ),
-                                        keyboardType:
-                                            const TextInputType.numberWithOptions(
-                                              decimal: true,
-                                            ),
-                                        decoration: InputDecoration(
-                                          labelText: t.amountLabel,
-                                          filled: false,
-                                          border: const UnderlineInputBorder(),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: AppDesign.cardStroke(
-                                                context,
-                                              ),
-                                            ),
+                                      amount: Semantics(
+                                        label: t.amountLabel,
+                                        child: TextField(
+                                          controller: amountController,
+                                          key: const ValueKey(
+                                            'expense-form-amount',
                                           ),
-                                          hintText: t.amountHint,
+                                          onChanged: (_) =>
+                                              setDialogState(() {}),
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineLarge
+                                              ?.copyWith(
+                                                fontSize: 48,
+                                                fontWeight: FontWeight.w700,
+                                                fontFeatures: const [
+                                                  FontFeature.tabularFigures(),
+                                                ],
+                                              ),
+                                          keyboardType:
+                                              const TextInputType.numberWithOptions(
+                                                decimal: true,
+                                              ),
+                                          decoration: InputDecoration(
+                                            isDense: true,
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                  vertical: 10,
+                                                ),
+                                            hintText: '0.00',
+                                            prefixText:
+                                                '${selectedCurrency.symbol} ',
+                                            filled: false,
+                                            border: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                          ),
                                         ),
                                       ),
                                       currency: _ExpenseFormSelector(
@@ -431,6 +447,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                         value: selectedCurrency.code,
                                         icon: Icons.currency_exchange,
                                         onTap: () async {
+                                          FocusScope.of(context).unfocus();
                                           final picked = await pickCurrencyCode(
                                             sheetContext,
                                             selectedCurrencyCode,
@@ -449,373 +466,308 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                         },
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    InkWell(
-                                      borderRadius: AppDesign.cardRadius,
-                                      onTap: () async {
-                                        final picked = await showDatePicker(
-                                          context: sheetContext,
-                                          initialDate: selectedExpenseDate,
-                                          firstDate: DateTime(2020, 1, 1),
-                                          lastDate: DateTime(2100, 12, 31),
-                                        );
-                                        if (!mounted || picked == null) {
-                                          return;
-                                        }
-                                        setDialogState(() {
-                                          selectedExpenseDate = DateTime(
-                                            picked.year,
-                                            picked.month,
-                                            picked.day,
-                                          );
-                                          errorText = null;
-                                        });
-                                      },
-                                      child: Column(
-                                        children: [
-                                          ListTile(
-                                            contentPadding: EdgeInsets.zero,
-                                            minTileHeight: 64,
-                                            minVerticalPadding: 8,
-                                            dense: true,
-                                            leading: const Icon(
-                                              Icons.calendar_today_outlined,
+                                    TextField(
+                                      controller: noteController,
+                                      textAlign: TextAlign.center,
+                                      minLines: 1,
+                                      maxLines: 3,
+                                      decoration: InputDecoration(
+                                        hintText: t.noteHint,
+                                        isDense: true,
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              vertical: 8,
                                             ),
-                                            title: Text(
-                                              t.dateLabel,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium
-                                                  ?.copyWith(
-                                                    color: AppDesign.mutedColor(
-                                                      context,
-                                                    ),
-                                                  ),
-                                            ),
-                                            subtitle: Text(
-                                              formatExpenseDate(
-                                                selectedExpenseDate,
-                                              ),
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.bodyLarge,
-                                            ),
-                                            trailing: const Icon(
-                                              Icons.chevron_right,
-                                            ),
-                                          ),
-                                          const Divider(height: 1),
-                                        ],
+                                        labelText: t.noteLabel,
+                                        floatingLabelBehavior:
+                                            FloatingLabelBehavior.never,
+                                        filled: false,
+                                        border: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    if (!isSolo) ...[
-                                      ListTile(
-                                        contentPadding: EdgeInsets.zero,
-                                        minTileHeight: 64,
-                                        minVerticalPadding: 8,
-                                        dense: true,
-                                        leading: _largeMemberAvatar(
-                                          id:
-                                              existing?.paidById ??
-                                              _currentUserId,
-                                          name:
-                                              users
-                                                  .where(
-                                                    (user) =>
-                                                        user.id ==
-                                                        (existing?.paidById ??
-                                                            _currentUserId),
-                                                  )
-                                                  .map(
-                                                    (user) =>
-                                                        user.preferredName,
-                                                  )
-                                                  .firstOrNull ??
-                                              t.youLabel,
-                                          avatarUrl: users
-                                              .where(
-                                                (user) =>
-                                                    user.id ==
-                                                    (existing?.paidById ??
-                                                        _currentUserId),
-                                              )
-                                              .firstOrNull
-                                              ?.avatarThumbUrl,
-                                          size: 40,
-                                        ),
-                                        title: Text(
-                                          t.paidByLabel,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium
-                                              ?.copyWith(
-                                                color: AppDesign.mutedColor(
-                                                  context,
-                                                ),
-                                              ),
-                                        ),
-                                        subtitle: Text(
-                                          users
-                                                  .where(
-                                                    (user) =>
-                                                        user.id ==
-                                                        (existing?.paidById ??
-                                                            _currentUserId),
-                                                  )
-                                                  .map(
-                                                    (user) =>
-                                                        user.preferredName,
-                                                  )
-                                                  .firstOrNull ??
-                                              t.youLabel,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodyLarge,
-                                        ),
-                                      ),
-                                      const Divider(height: 1),
-                                      const SizedBox(height: 16),
-                                    ],
-                                    if (quickCategoryKeys.isNotEmpty) ...[
-                                      Text(
-                                        t.expenseQuickCategories,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall
-                                            ?.copyWith(
-                                              color: AppDesign.mutedColor(
-                                                context,
-                                              ),
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Wrap(
-                                        spacing: 8,
-                                        runSpacing: 8,
-                                        children: [
-                                          for (final categoryKey
-                                              in quickCategoryKeys)
-                                            _ExpenseQuickCategory(
-                                              labelStyle: Theme.of(
-                                                context,
-                                              ).textTheme.bodyMedium,
-                                              materialTapTargetSize:
-                                                  MaterialTapTargetSize.padded,
-                                              label: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Icon(
-                                                    ExpenseCategoryCatalog.iconFor(
-                                                      categoryKey,
-                                                    ),
-                                                    size: 16,
-                                                  ),
-                                                  const SizedBox(width: 6),
-                                                  Text(
-                                                    ExpenseCategoryCatalog.labelFor(
-                                                      categoryKey,
-                                                      Localizations.localeOf(
-                                                        context,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              selected:
-                                                  ExpenseCategoryCatalog.isBuiltInKey(
-                                                    categoryKey,
-                                                  )
-                                                  ? !isCustomCategoryMode &&
-                                                        selectedCategory
-                                                                .toLowerCase() ==
-                                                            categoryKey
-                                                                .toLowerCase()
-                                                  : isCustomCategoryMode &&
-                                                        ExpenseCategoryCatalog.normalizeStored(
-                                                              customCategoryController
-                                                                  .text,
-                                                            ) ==
-                                                            categoryKey,
-                                              onSelected: (_) {
-                                                setDialogState(() {
-                                                  final isBuiltIn =
-                                                      ExpenseCategoryCatalog.isBuiltInKey(
-                                                        categoryKey,
-                                                      );
-                                                  isCustomCategoryMode =
-                                                      !isBuiltIn;
-                                                  selectedCategory = isBuiltIn
-                                                      ? categoryKey
-                                                      : '';
-                                                  if (isBuiltIn) {
-                                                    customCategoryController
-                                                        .clear();
-                                                  } else {
-                                                    customCategoryController
-                                                            .text =
-                                                        categoryKey;
-                                                  }
-                                                  errorText = null;
-                                                });
-                                              },
-                                            ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                    ],
-                                    _ExpenseFormSelector(
-                                      label: t.workspaceCategory,
-                                      value: selectedCategoryLabel,
-                                      icon: selectedCategoryIcon,
-                                      onTap: () async {
-                                        final value = await pickCategoryValue(
-                                          sheetContext,
-                                          categoryDropdownValue,
+                                    const SizedBox(height: 20),
+                                    LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        final category = _ExpenseCompactTile(
+                                          key: const ValueKey(
+                                            'expense-category',
+                                          ),
+                                          label: t.workspaceCategory,
+                                          value:
+                                              selectedCategory.isEmpty &&
+                                                  !isCustomCategoryMode
+                                              ? t.workspaceCategory
+                                              : selectedCategoryLabel,
+                                          icon: selectedCategoryIcon,
+                                          onTap: () async {
+                                            FocusScope.of(context).unfocus();
+                                            final value =
+                                                await pickCategoryValue(
+                                                  sheetContext,
+                                                  categoryDropdownValue,
+                                                );
+                                            if (!mounted ||
+                                                !context.mounted ||
+                                                value == null) {
+                                              return;
+                                            }
+                                            setDialogState(() {
+                                              isCustomCategoryMode =
+                                                  value ==
+                                                  customCategoryDropdownValue;
+                                              selectedCategory =
+                                                  isCustomCategoryMode
+                                                  ? ''
+                                                  : value;
+                                              if (!isCustomCategoryMode) {
+                                                customCategoryController
+                                                    .clear();
+                                              }
+                                              errorText = null;
+                                            });
+                                          },
                                         );
-                                        if (!mounted ||
-                                            !context.mounted ||
-                                            value == null) {
-                                          return;
+                                        final date = _ExpenseCompactTile(
+                                          key: const ValueKey('expense-date'),
+                                          label: t.dateLabel,
+                                          value: formatExpenseDate(
+                                            selectedExpenseDate,
+                                          ),
+                                          icon: Icons.calendar_today_outlined,
+                                          onTap: () async {
+                                            FocusScope.of(context).unfocus();
+                                            final picked = await showDatePicker(
+                                              context: sheetContext,
+                                              initialDate: selectedExpenseDate,
+                                              firstDate: DateTime(2020),
+                                              lastDate: DateTime(2100),
+                                            );
+                                            if (!mounted ||
+                                                !context.mounted ||
+                                                picked == null) {
+                                              return;
+                                            }
+                                            setDialogState(() {
+                                              selectedExpenseDate = DateTime(
+                                                picked.year,
+                                                picked.month,
+                                                picked.day,
+                                              );
+                                            });
+                                          },
+                                        );
+                                        if (constraints.maxWidth < 300 ||
+                                            MediaQuery.textScalerOf(
+                                                  context,
+                                                ).scale(16) >
+                                                24) {
+                                          return Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              category,
+                                              const SizedBox(height: 8),
+                                              date,
+                                            ],
+                                          );
                                         }
-                                        setDialogState(() {
-                                          if (value ==
-                                              customCategoryDropdownValue) {
-                                            isCustomCategoryMode = true;
-                                            selectedCategory = '';
-                                          } else {
-                                            isCustomCategoryMode = false;
-                                            selectedCategory = value;
-                                            customCategoryController.clear();
-                                          }
-                                          errorText = null;
-                                        });
+                                        return Row(
+                                          children: [
+                                            Expanded(child: category),
+                                            const SizedBox(width: 10),
+                                            Expanded(child: date),
+                                          ],
+                                        );
                                       },
                                     ),
                                     if (isCustomCategoryMode) ...[
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: 12),
                                       TextField(
                                         controller: customCategoryController,
-                                        maxLength: 64,
                                         decoration: InputDecoration(
-                                          labelText: context
-                                              .l10n
-                                              .workspaceCategoryName,
-                                          hintText: context
-                                              .l10n
+                                          labelText: t.workspaceCustomCategory,
+                                          hintText: t
                                               .workspaceApartmentRentParkingEtc,
                                         ),
                                       ),
                                     ],
-                                    const SizedBox(height: 12),
-                                    TextField(
-                                      controller: noteController,
-                                      minLines: 1,
-                                      maxLines: 3,
-                                      decoration: InputDecoration(
-                                        labelText: t.noteLabel,
-                                        filled: false,
-                                        prefixIcon: const Icon(
-                                          Icons.description_outlined,
+                                    const SizedBox(height: 18),
+                                    const Divider(height: 1),
+                                    if (!isSolo) ...[
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 16,
                                         ),
-                                        border: const UnderlineInputBorder(),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: AppDesign.cardStroke(
-                                              context,
+                                        child: Row(
+                                          children: [
+                                            _largeMemberAvatar(
+                                              id: payerId,
+                                              name: payerName,
+                                              avatarUrl:
+                                                  payer?.avatarThumbUrl ??
+                                                  payer?.avatarUrl,
+                                              size: 36,
                                             ),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Text(
+                                                t.paidByLabel,
+                                                style: Theme.of(
+                                                  context,
+                                                ).textTheme.bodyMedium,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 12),
+                                            Flexible(
+                                              child: Text(
+                                                payerName,
+                                                textAlign: TextAlign.end,
+                                                style: Theme.of(
+                                                  context,
+                                                ).textTheme.titleSmall,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Divider(height: 1),
+                                      ListTile(
+                                        key: const ValueKey(
+                                          'expense-participants',
+                                        ),
+                                        contentPadding: EdgeInsets.zero,
+                                        title: Text(
+                                          t.expenseSplitBetween,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodyMedium,
+                                        ),
+                                        subtitle: Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 6,
+                                          ),
+                                          child: Wrap(
+                                            spacing: 4,
+                                            runSpacing: 6,
+                                            crossAxisAlignment:
+                                                WrapCrossAlignment.center,
+                                            children: [
+                                              for (final user
+                                                  in activeUsers.take(3))
+                                                memberAvatar(user),
+                                              Text(
+                                                t.workspaceMemberCount(
+                                                  activeUsers.length,
+                                                ),
+                                                style: Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall,
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        hintText: t.noteHint,
+                                        trailing: IconButton(
+                                          tooltip: t.expenseEditParticipants,
+                                          onPressed: editParticipants,
+                                          icon: const Icon(
+                                            Icons.add_circle_outline,
+                                          ),
+                                        ),
+                                        onTap: editParticipants,
                                       ),
-                                    ),
-                                    if (!isSolo) ...[
-                                      const SizedBox(height: 12),
+                                      const SizedBox(height: 8),
                                       Text(
-                                        t.participantsEmptyMeansAll,
+                                        t.splitModeLabel,
                                         style: Theme.of(
                                           context,
                                         ).textTheme.bodySmall,
                                       ),
                                       const SizedBox(height: 6),
-                                      for (final user in users)
-                                        CheckboxListTile(
-                                          dense: true,
-                                          visualDensity: VisualDensity.compact,
-                                          contentPadding: EdgeInsets.zero,
-                                          controlAffinity:
-                                              ListTileControlAffinity.leading,
-                                          title: Row(
-                                            children: [
-                                              _largeMemberAvatar(
-                                                id: user.id,
-                                                name: user.preferredName,
-                                                avatarUrl:
-                                                    user.avatarThumbUrl ??
-                                                    user.avatarUrl,
-                                                size: 36,
-                                              ),
-                                              const SizedBox(width: 12),
-                                              Expanded(
-                                                child: Text(user.preferredName),
-                                              ),
-                                            ],
-                                          ),
-                                          value:
-                                              selected.isEmpty ||
-                                              selected.contains(user.id),
-                                          onChanged: (value) => setDialogState(
-                                            () {
-                                              if (selected.isEmpty) {
-                                                selected.addAll(
-                                                  users.map((item) => item.id),
-                                                );
-                                              }
-                                              if (value == true) {
-                                                selected.add(user.id);
-                                              } else {
-                                                selected.remove(user.id);
-                                              }
-                                            },
+                                      Container(
+                                        padding: const EdgeInsets.all(3),
+                                        decoration: BoxDecoration(
+                                          color: AppDesign.isDark(context)
+                                              ? AppDesign.darkSurface
+                                              : AppDesign.lightSurfaceMuted,
+                                          borderRadius: BorderRadius.circular(
+                                            12,
                                           ),
                                         ),
-                                      const SizedBox(height: 12),
-                                      _ExpenseFormSelector(
-                                        label: t.splitModeLabel,
-                                        value: splitModeLabel(splitMode),
-                                        icon: splitModeIcon(splitMode),
-                                        onTap: () async {
-                                          final value = await pickSplitMode(
-                                            sheetContext,
-                                            splitMode,
-                                          );
-                                          if (!mounted ||
-                                              !context.mounted ||
-                                              value == null) {
-                                            return;
-                                          }
-                                          setDialogState(() {
-                                            splitMode = value;
-                                          });
-                                        },
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: _ExpenseSplitMethodButton(
+                                                label: t.equalSplitLabel,
+                                                icon: Icons.balance_rounded,
+                                                selected: splitMode == 'equal',
+                                                onTap: () => setDialogState(() {
+                                                  splitMode = 'equal';
+                                                  errorText = null;
+                                                }),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 3),
+                                            Expanded(
+                                              child: _ExpenseSplitMethodButton(
+                                                key: const ValueKey(
+                                                  'expense-custom-split',
+                                                ),
+                                                label: t.expenseCustomSplit,
+                                                icon: Icons.tune,
+                                                selected: splitMode != 'equal',
+                                                onTap: editSplit,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                    if (!isSolo && splitMode != 'equal') ...[
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        _splitModeHint(splitMode),
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodySmall,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      ..._buildSplitInputFields(
-                                        users: users,
-                                        selected: selected,
-                                        splitMode: splitMode,
-                                        splitControllers: splitControllers,
-                                      ),
+                                      const SizedBox(height: 10),
+                                      if (splitMode == 'equal')
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 6,
+                                          ),
+                                          child: Text(
+                                            t.splitHintEqual,
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.bodySmall,
+                                          ),
+                                        )
+                                      else
+                                        _ExpenseCompactTile(
+                                          key: const ValueKey(
+                                            'expense-split-summary',
+                                          ),
+                                          label: t.splitModeLabel,
+                                          value: splitModeLabel(splitMode),
+                                          icon: splitModeIcon(splitMode),
+                                          detail: activeUsers
+                                              .map((user) {
+                                                final raw =
+                                                    splitControllers[user.id]
+                                                        ?.text
+                                                        .trim() ??
+                                                    '';
+                                                final value = raw.isEmpty
+                                                    ? '—'
+                                                    : splitMode == 'exact'
+                                                    ? _formatMoney(
+                                                        context,
+                                                        _parseAmount(raw),
+                                                        currencyCode:
+                                                            selectedCurrencyCode,
+                                                      )
+                                                    : '$raw${splitMode == 'percent' ? '%' : ' ${t.shareUnit}'}';
+                                                return '${user.preferredName} $value';
+                                              })
+                                              .join(' · '),
+                                          onTap: editSplit,
+                                        ),
+                                      const SizedBox(height: 18),
+                                      const Divider(height: 1),
                                     ],
                                     const SizedBox(height: 12),
                                     Text(
@@ -839,7 +791,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                         icon: const Icon(Icons.undo),
                                         label: Text(t.restoreReceiptAction),
                                       ),
-                                    OutlinedButton.icon(
+                                    TextButton.icon(
                                       key: const ValueKey('receipt-add'),
                                       onPressed:
                                           isSaving ||
@@ -1100,7 +1052,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                       .trim()
                                                 : selectedCategory.trim();
 
-                                            if (amount <= 0) {
+                                            if (!amount.isFinite ||
+                                                amount <= 0) {
                                               setDialogState(() {
                                                 errorText = t
                                                     .amountMustBeGreaterThanZero;
@@ -1423,20 +1376,21 @@ class _ExpenseFormSelector extends StatelessWidget {
   final VoidCallback onTap;
   @override
   Widget build(BuildContext context) => compact
-      ? InkWell(
-          onTap: onTap,
-          borderRadius: AppDesign.cardRadius,
-          child: InputDecorator(
-            decoration: InputDecoration(labelText: label, filled: false),
+      ? TextButton(
+          onPressed: onTap,
+          style: TextButton.styleFrom(
+            backgroundColor: (AppDesign.isDark(context)
+                ? AppDesign.darkSurface
+                : AppDesign.lightSurfaceMuted),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+          ),
+          child: Semantics(
+            label: label,
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: Text(
-                    value,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
-                const Icon(Icons.expand_more),
+                Flexible(child: Text(value)),
+                const Icon(Icons.expand_more, size: 18),
               ],
             ),
           ),
@@ -1479,54 +1433,117 @@ class _ExpenseAmountRow extends StatelessWidget {
         return Column(children: [amount, const SizedBox(height: 12), currency]);
       }
       return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(flex: 3, child: amount),
           const SizedBox(width: 8),
-          SizedBox(width: 112, child: currency),
+          SizedBox(width: 84, child: currency),
         ],
       );
     },
   );
 }
 
-class _ExpenseQuickCategory extends StatelessWidget {
-  const _ExpenseQuickCategory({
+class _ExpenseCompactTile extends StatelessWidget {
+  const _ExpenseCompactTile({
+    super.key,
     required this.label,
-    required this.selected,
-    required this.onSelected,
-    this.labelStyle,
-    this.materialTapTargetSize,
+    required this.value,
+    required this.icon,
+    required this.onTap,
+    this.detail,
   });
-  final Widget label;
-  final bool selected;
-  final ValueChanged<bool> onSelected;
-  final TextStyle? labelStyle;
-  final MaterialTapTargetSize? materialTapTargetSize;
+  final String label, value;
+  final String? detail;
+  final IconData icon;
+  final VoidCallback onTap;
   @override
   Widget build(BuildContext context) => Semantics(
-    selected: selected,
-    child: Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 2,
-            color: selected
-                ? Theme.of(context).colorScheme.primary
-                : Colors.transparent,
+    label: label,
+    button: true,
+    child: Material(
+      color: (AppDesign.isDark(context)
+          ? AppDesign.darkSurface
+          : AppDesign.lightSurfaceMuted),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 20,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(value, style: Theme.of(context).textTheme.bodyMedium),
+                    if (detail != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        detail!,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: 4),
+              const Icon(Icons.chevron_right, size: 18),
+            ],
           ),
         ),
       ),
-      child: TextButton(
-        onPressed: () => onSelected(!selected),
-        style: TextButton.styleFrom(
-          minimumSize: const Size(48, 48),
-          shape: const RoundedRectangleBorder(),
-          foregroundColor: selected
-              ? Theme.of(context).colorScheme.primary
-              : AppDesign.mutedColor(context),
+    ),
+  );
+}
+
+class _ExpenseSplitMethodButton extends StatelessWidget {
+  const _ExpenseSplitMethodButton({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) => Semantics(
+    selected: selected,
+    child: TextButton(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
+        minimumSize: const Size(0, 44),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        foregroundColor: selected
+            ? Theme.of(context).colorScheme.primary
+            : AppDesign.mutedColor(context),
+        backgroundColor: selected
+            ? AppDesign.pageSurface(context)
+            : Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+        textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
         ),
-        child: DefaultTextStyle.merge(style: labelStyle, child: label),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 17),
+          const SizedBox(width: 5),
+          Flexible(child: Text(label, textAlign: TextAlign.center)),
+        ],
       ),
     ),
   );

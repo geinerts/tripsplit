@@ -112,6 +112,20 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         }
       },
     );
+    if (mounted &&
+        _snapshot != null &&
+        !_snapshot!.isActive &&
+        widget.onTravelMapRequested != null) {
+      final add = await showAppConfirmationDialog(
+        context: context,
+        title: context.l10n.travelAddToMap,
+        message: context.l10n.travelTripConfirm,
+        confirmLabel: context.l10n.travelAddToMap,
+        cancelLabel: context.l10n.cancelAction,
+        icon: Icons.add_location_alt_outlined,
+      );
+      if (add && mounted) await widget.onTravelMapRequested?.call();
+    }
   }
 
   Future<void> _onReadyToSettleChanged(bool isReady) async {
@@ -574,21 +588,34 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
   }
 
   Future<void> _openTripActionsSheet() async {
+    if (_isMutating) return;
     final t = context.l10n;
     final canEdit = _isTripActive && widget.trip.canCurrentUserManageTrip;
     final canManageMembers = _canEditMembers && !widget.trip.isSolo;
     final canFinishSolo = widget.trip.isSolo && _canEditMembers;
     final canDelete = _isTripActive && _isCurrentTripOwner();
-    if (!canEdit && !canDelete && !canManageMembers && !canFinishSolo) {
+    if (!canEdit &&
+        !canDelete &&
+        !canManageMembers &&
+        !canFinishSolo &&
+        widget.onTravelMapRequested == null) {
       return;
     }
 
+    Rect? shareOrigin;
     final choice = await showAppBottomSheet<String>(
       context: context,
       builder: (sheetContext) => AppActionSheet(
         key: const ValueKey('trip-actions-sheet'),
         title: t.tripOptionsTitle,
         children: [
+          if (widget.onTravelMapRequested != null)
+            AppPlainActionTile(
+              key: const ValueKey('trip-add-to-map'),
+              icon: Icons.add_location_alt_outlined,
+              title: t.travelAddToMap,
+              onTap: () => Navigator.of(sheetContext).pop('map'),
+            ),
           if (canEdit)
             AppPlainActionTile(
               icon: Icons.edit_outlined,
@@ -600,6 +627,21 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
               icon: Icons.person_add_alt_outlined,
               title: t.inviteTripMembersAction,
               onTap: () => Navigator.of(sheetContext).pop('members'),
+            ),
+          if (canManageMembers)
+            Builder(
+              builder: (shareContext) => AppPlainActionTile(
+                key: const ValueKey('workspace-trip-share'),
+                icon: CupertinoIcons.arrowshape_turn_up_right,
+                title: t.shareAction,
+                onTap: () {
+                  final box = shareContext.findRenderObject() as RenderBox?;
+                  if (box != null && box.hasSize) {
+                    shareOrigin = box.localToGlobal(Offset.zero) & box.size;
+                  }
+                  Navigator.of(sheetContext).pop('share');
+                },
+              ),
             ),
           if (canFinishSolo)
             AppPlainActionTile(
@@ -624,12 +666,20 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
 
+    if (choice == 'map') {
+      await widget.onTravelMapRequested?.call();
+      return;
+    }
     if (choice == 'edit') {
       await _onEditCurrentTripPressed();
       return;
     }
     if (choice == 'members') {
       await _openAddMembersDialog();
+      return;
+    }
+    if (choice == 'share') {
+      await _shareCurrentTrip(shareOrigin);
       return;
     }
     if (choice == 'delete') {
@@ -642,11 +692,41 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
   }
 
+  Future<void> _shareCurrentTrip(Rect? origin) async {
+    if (_isMutating || !_canEditMembers || widget.trip.isSolo) return;
+    final trip = _displayTrip;
+    final accountId = widget.authController.currentUser?.id;
+    bool current() =>
+        mounted &&
+        widget.trip.id == trip.id &&
+        widget.authController.currentUser?.id == accountId;
+    _updateState(() => _isMutating = true);
+    try {
+      final invite = await widget.tripsController.createTripInviteLink(
+        tripId: trip.id,
+      );
+      if (!current()) return;
+      await SharePlus.instance.share(
+        ShareParams(
+          text: '${trip.name}\n${invite.inviteUrl}',
+          subject: trip.name,
+          sharePositionOrigin: origin,
+        ),
+      );
+    } catch (_) {
+      if (mounted && current()) {
+        _showSnack(context.l10n.homeTripShareFailed, isError: true);
+      }
+    } finally {
+      if (mounted) _updateState(() => _isMutating = false);
+    }
+  }
+
   Future<void> _onEditCurrentTripPressed() async {
     if (_isMutating) {
       return;
     }
-    if (!_isCurrentTripOwner()) {
+    if (!_canEditMembers) {
       _showSnack(
         context.l10n.workspaceOnlyTripCreatorCanEditThisTrip,
         isError: true,
@@ -667,13 +747,22 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
 
     final nextName = result.name.trim();
     final hasNameChange = nextName != _displayTrip.name.trim();
+    final hasBudgetChange = result.budgetCents != _tripBudgetCents;
+    final hasDestinationsChange = !tripDestinationsEqual(
+      result.destinations,
+      _displayTrip.destinations,
+    );
     final imageBytes = result.imageBytes;
     final imageFileName = result.imageFileName?.trim() ?? '';
     final hasNewImage =
         imageBytes != null && imageBytes.isNotEmpty && imageFileName.isNotEmpty;
     final removeImage = result.removeImage && !hasNewImage;
 
-    if (!hasNameChange && !hasNewImage && !removeImage) {
+    if (!hasNameChange &&
+        !hasNewImage &&
+        !removeImage &&
+        !hasBudgetChange &&
+        !hasDestinationsChange) {
       _showSnack(context.l10n.noChangesToSave);
       return;
     }
@@ -698,10 +787,20 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         name: nextName,
         imagePath: imagePath,
         removeImage: removeImage,
+        budgetCents: hasBudgetChange ? result.budgetCents : null,
+        destinations: hasDestinationsChange ? result.destinations : null,
+        clearBudget: hasBudgetChange && result.budgetCents == null,
       );
 
       if (!current()) return;
-      _updateState(() => _editedTrip = updatedTrip);
+      _updateState(() {
+        _editedTrip = updatedTrip;
+        _snapshot = _snapshot?.copyWith(
+          budgetCents: updatedTrip.budgetCents,
+          clearBudget: updatedTrip.budgetCents == null,
+          budgetLoaded: true,
+        );
+      });
       widget.onTripUpdated?.call(updatedTrip);
 
       await _loadData(showLoader: false);
@@ -733,6 +832,8 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       AppFormPageRoute(
         builder: (_) => TripFormPage(
           trip: trip,
+          budgetLoaded: true,
+          budgetCents: _tripBudgetCents,
           pickImage: _pickTripImageForUploadFromSource,
         ),
       ),
@@ -740,6 +841,8 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     if (result == null) return null;
     return _EditTripResult(
       name: result.name,
+      budgetCents: result.budgetCents,
+      destinations: result.destinations,
       imageFileName: result.image?.fileName,
       imageBytes: result.image?.bytes,
       removeImage: result.removeImage,

@@ -15,6 +15,8 @@ class WorkspaceSnapshotCodec {
   static Map<String, dynamic> toMap(WorkspaceSnapshot snapshot) {
     return <String, dynamic>{
       'trip_status': snapshot.tripStatus,
+      'budget_cents': snapshot.budgetCents,
+      'budget_loaded': snapshot.budgetLoaded,
       'trip_ended_at': snapshot.tripEndedAt,
       'trip_archived_at': snapshot.tripArchivedAt,
       'users': snapshot.users
@@ -375,6 +377,8 @@ class WorkspaceSnapshotCodec {
 
     return WorkspaceSnapshot(
       tripStatus: tripStatus,
+      budgetCents: (map['budget_cents'] as num?)?.toInt(),
+      budgetLoaded: map['budget_loaded'] == true,
       tripEndedAt: map['trip_ended_at'] as String?,
       tripArchivedAt: map['trip_archived_at'] as String?,
       users: users,

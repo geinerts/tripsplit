@@ -199,7 +199,7 @@ void main() {
           );
           await tester.pumpAndSettle();
           expect(
-            find.text('Participants (empty = all members)'),
+            find.byKey(const ValueKey('expense-participants')),
             mode == 'solo' ? findsNothing : findsOneWidget,
           );
           expect(
@@ -210,8 +210,10 @@ void main() {
           expect(find.text('Add receipt'), findsOneWidget);
           if (mode == 'solo') {
             await tester.enterText(find.byType(TextField).first, '12.34');
-            await tester.ensureVisible(find.text('Other'));
-            await tester.tap(find.text('Other'));
+            await tester.ensureVisible(
+              find.byKey(const ValueKey('expense-category')),
+            );
+            await tester.tap(find.byKey(const ValueKey('expense-category')));
             await tester.pumpAndSettle();
             await tester.tap(find.text('Food').last);
             await tester.pumpAndSettle();

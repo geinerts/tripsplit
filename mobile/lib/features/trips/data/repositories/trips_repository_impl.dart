@@ -6,6 +6,7 @@ import '../../domain/entities/trip_invite_join_result.dart';
 import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/trip_invite_preview.dart';
 import '../../domain/entities/pending_trip_invitation.dart';
+import '../../domain/entities/received_trip_invitation.dart';
 import '../../domain/entities/trip_user.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../../domain/repositories/trips_repository.dart';
@@ -56,6 +57,8 @@ class TripsRepositoryImpl implements TripsRepository {
     required String currencyCode,
     required List<int> memberIds,
     String tripMode = 'group',
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
     String? dateFrom,
     String? dateTo,
   }) {
@@ -64,6 +67,8 @@ class TripsRepositoryImpl implements TripsRepository {
       currencyCode: currencyCode,
       memberIds: memberIds,
       tripMode: tripMode,
+      budgetCents: budgetCents,
+      destinations: destinations,
       dateFrom: dateFrom,
       dateTo: dateTo,
     );
@@ -75,12 +80,18 @@ class TripsRepositoryImpl implements TripsRepository {
     required String name,
     String? imagePath,
     bool removeImage = false,
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
+    bool clearBudget = false,
   }) {
     return _remote.updateTrip(
       tripId: tripId,
       name: name,
       imagePath: imagePath,
       removeImage: removeImage,
+      budgetCents: budgetCents,
+      destinations: destinations,
+      clearBudget: clearBudget,
     );
   }
 
@@ -178,6 +189,10 @@ class TripsRepositoryImpl implements TripsRepository {
       () => _remote.declineTripInvite(inviteToken: inviteToken),
     );
   }
+
+  @override
+  Future<List<ReceivedTripInvitation>> listReceivedInvitations() =>
+      _localStore.storage.session.run(_remote.listReceivedInvitations);
 
   @override
   Future<List<PendingTripInvitation>> listPendingInvitations({

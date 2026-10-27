@@ -27,9 +27,10 @@ if ($type === 'trip' || $type === 'invite') {
     $rawInvite = share_param(['invite']);
     $inviteCode = share_normalize_invite_code($rawInvite);
     $tripMeta = share_trip_meta($inviteCode);
-    $tripName = trim((string) ($tripMeta['trip_name'] ?? 'Splyto trip'));
-    $imagePath = trim((string) ($tripMeta['image_path'] ?? ''));
-    share_output_png(share_render_trip_card($tripName, $imagePath), (bool) ($tripMeta['valid'] ?? false) ? 300 : 60);
+    $isValid = (bool) ($tripMeta['valid'] ?? false);
+    $tripName = $isValid ? trim((string) $tripMeta['trip_name']) : 'Splyto trip';
+    $imagePath = $isValid ? trim((string) $tripMeta['image_path']) : '';
+    share_output_png(share_render_trip_card($tripName, $imagePath), 0);
 }
 
 share_output_png(share_render_fallback_card('Splyto', 'Open the link in the app.'), 60);

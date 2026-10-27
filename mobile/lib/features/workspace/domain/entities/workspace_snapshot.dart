@@ -9,6 +9,8 @@ import 'workspace_user.dart';
 class WorkspaceSnapshot {
   const WorkspaceSnapshot({
     required this.tripStatus,
+    this.budgetCents,
+    this.budgetLoaded = false,
     required this.tripEndedAt,
     required this.tripArchivedAt,
     required this.users,
@@ -26,6 +28,8 @@ class WorkspaceSnapshot {
   });
 
   final String tripStatus;
+  final int? budgetCents;
+  final bool budgetLoaded;
   final String? tripEndedAt;
   final String? tripArchivedAt;
   final List<WorkspaceUser> users;
@@ -72,6 +76,9 @@ class WorkspaceSnapshot {
 
   WorkspaceSnapshot copyWith({
     String? tripStatus,
+    int? budgetCents,
+    bool? budgetLoaded,
+    bool clearBudget = false,
     String? tripEndedAt,
     bool clearTripEndedAt = false,
     String? tripArchivedAt,
@@ -91,6 +98,8 @@ class WorkspaceSnapshot {
   }) {
     return WorkspaceSnapshot(
       tripStatus: tripStatus ?? this.tripStatus,
+      budgetCents: clearBudget ? null : budgetCents ?? this.budgetCents,
+      budgetLoaded: budgetLoaded ?? this.budgetLoaded,
       tripEndedAt: clearTripEndedAt ? null : (tripEndedAt ?? this.tripEndedAt),
       tripArchivedAt: clearTripArchivedAt
           ? null

@@ -40,7 +40,18 @@
       "title": "Payment details and external payments",
       "paragraphs": [
         "If you add them, we store the account-holder name, IBAN, BIC/SWIFT and Revolut, PayPal or Wise identifiers or links. Friendship or trip membership alone does not disclose these details. When you explicitly choose to share details with a payment request, the designated payer can request them while the request and trip are active and the relevant membership/account conditions are met.",
+        "You can also enable “Share payment methods with my trips” in Profile → Payment methods. This is off by default. When enabled, accepted members of trips you create or join can view these details, including in current and future trips. Pending invitations and friendship alone do not grant access. Turning it off stops new access through trip member profiles; separately shared payment requests retain their own sharing rules. Information already seen or copied cannot be withdrawn.",
         "You can edit or remove your payment details in your profile. This cannot retract information already copied by another person. Splyto records balances and settlement confirmations; it does not collect card credentials or execute bank transfers. Opening a payment link takes you to the corresponding provider, whose own privacy terms apply."
+      ]
+    },
+    {
+      "id": "travel_map",
+      "title": "Your private travel map",
+      "paragraphs": [
+        "The optional “My travel map” stores cities you confirm, their country and region, city-centre coordinates and visit dates in your Splyto account. This map is private to your account; joining a trip does not share these visits with other participants. You can remove individual visits from their map markers. Confirmed account deletion removes the map records from the active database; routine backups follow the recovery window described below.",
+        "“I’ve been here” requests location access only when you tap it. Your phone uses a one-time location reading to suggest a city through its native geocoding service. Splyto receives the city centre, not that device location, only after you confirm the visit. Manual city search does not require location permission. Search terms and coordinates used to suggest a city may be processed by your platform’s geocoding provider, under its own terms. This feature does not track you in the background or share live locations.",
+        "The overview map is bundled in the app; cached visits can be displayed offline. Searching, resolving the current city and synchronising visits may require a connection. Local map records use account-scoped app storage and are cleared with sign-out cleanup.",
+        "You can optionally associate a confirmed visit with a trip you have joined, add a personal title and choose a photo. Planned trip destinations are visible to that trip’s participants; they do not automatically become personal visits. When you save a visit from a trip, its name and available cover photo are copied into your private visit. That copy can remain after the trip is changed or deleted; a link back is available only while you still have access to the trip. You can replace or remove the private photo without changing the shared trip. Photos are resized, converted to WebP and stripped of metadata. They are available through authenticated requests for your account, cached locally with your account data, and removed with the visit or confirmed account deletion."
       ]
     },
     {

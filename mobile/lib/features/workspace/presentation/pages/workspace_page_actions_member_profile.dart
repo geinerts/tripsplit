@@ -3,6 +3,17 @@ part of 'workspace_page.dart';
 extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
   Future<void> _openTripMemberProfilePage(WorkspaceUser user) async {
     var profileUser = user;
+    Future<PaymentDetails>? paymentDetailsFuture;
+    Future<PaymentDetails> loadMemberDetails() => Future.sync(
+      () => widget.workspaceController.loadMemberPaymentDetails(
+        tripId: widget.trip.id,
+        userId: user.id,
+      ),
+    );
+    if (user.id != _currentUserId) {
+      paymentDetailsFuture = loadMemberDetails();
+      paymentDetailsFuture.ignore();
+    }
     final snapshot = _snapshot;
     var paidExpensesCount = 0;
     var involvedExpensesCount = 0;
@@ -45,6 +56,10 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                 tripsRequest.ignore();
                 setProfileState(() {
                   sharedTripsFuture = tripsRequest;
+                  if (user.id != _currentUserId) {
+                    paymentDetailsFuture = loadMemberDetails();
+                    paymentDetailsFuture!.ignore();
+                  }
                 });
 
                 await _loadData(showLoader: false);
@@ -97,8 +112,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
               final readyText = profileUser.isReadyToSettle
                   ? context.l10n.workspaceReadyForSettlement
                   : context.l10n.workspaceNotReadyForSettlement;
-              // Workspace members deliberately omit private payout details.
-              // Only the signed-in owner's profile can use their own details.
+              // Shared payout details are fetched separately and never cached in workspace users.
               final currentUser = widget.authController.currentUser;
               final ownProfile = currentUser?.id == profileUser.id
                   ? currentUser
@@ -159,29 +173,92 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                     involvedExpensesCount: involvedExpensesCount,
                     currencyCode: widget.trip.currencyCode,
                   ),
-                  UserProfilePaymentDetailsSection(
-                    compactEmpty: true,
-                    sectionTitle: context.l10n.workspacePaymentDetails,
-                    emptyText: context
-                        .l10n
-                        .workspaceThisMemberHasNotAddedPayoutDetailsYet,
-                    bankTransferTitle: context.l10n.workspaceBankTransfer,
-                    bankHolderLabel: context.l10n.workspaceHolder,
-                    bankHolderName: holderName,
-                    bankIban: ownProfile?.bankIban,
-                    bankBic: ownProfile?.bankBic,
-                    revolutTitle: 'Revolut',
-                    revolutHandle: ownProfile?.revolutHandle,
-                    revolutMeLink: ownProfile?.revolutMeLink,
-                    paypalTitle: 'PayPal.me',
-                    paypalMeLink: ownProfile?.paypalMeLink,
-                    wiseTitle: 'Wise',
-                    wisePayLink: ownProfile?.wisePayLink,
-                    openLinkFailedText:
-                        context.l10n.workspaceCouldNotOpenPaymentLink,
-                    onErrorMessage: (message) =>
-                        _showSnack(message, isError: true),
-                  ),
+                  if (ownProfile == null)
+                    FutureBuilder<PaymentDetails>(
+                      future: paymentDetailsFuture,
+                      builder: (context, detailsSnapshot) {
+                        if (detailsSnapshot.connectionState !=
+                            ConnectionState.done) {
+                          return const Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        final details = detailsSnapshot.data;
+                        if (detailsSnapshot.hasError || details == null) {
+                          return UserProfileSectionCard(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  context.l10n.workspacePaymentDetails,
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  context.l10n.memberPaymentDetailsNotShared,
+                                ),
+                                TextButton.icon(
+                                  icon: const Icon(Icons.refresh),
+                                  label: Text(context.l10n.paymentDetailsRetry),
+                                  onPressed: () => setProfileState(() {
+                                    paymentDetailsFuture = loadMemberDetails();
+                                    paymentDetailsFuture!.ignore();
+                                  }),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        return UserProfilePaymentDetailsSection(
+                          compactEmpty: true,
+                          sectionTitle: context.l10n.workspacePaymentDetails,
+                          emptyText: context
+                              .l10n
+                              .workspaceThisMemberHasNotAddedPayoutDetailsYet,
+                          bankTransferTitle: context.l10n.workspaceBankTransfer,
+                          bankHolderLabel: context.l10n.workspaceHolder,
+                          bankHolderName: details.bankAccountHolder ?? name,
+                          bankIban: details.bankIban,
+                          bankBic: details.bankBic,
+                          revolutTitle: 'Revolut',
+                          revolutHandle: details.revolutHandle,
+                          revolutMeLink: details.revolutMeLink,
+                          paypalTitle: 'PayPal.me',
+                          paypalMeLink: details.paypalMeLink,
+                          wiseTitle: 'Wise',
+                          wisePayLink: details.wisePayLink,
+                          openLinkFailedText:
+                              context.l10n.workspaceCouldNotOpenPaymentLink,
+                          onErrorMessage: (message) =>
+                              _showSnack(message, isError: true),
+                        );
+                      },
+                    )
+                  else
+                    UserProfilePaymentDetailsSection(
+                      compactEmpty: true,
+                      sectionTitle: context.l10n.workspacePaymentDetails,
+                      emptyText: context
+                          .l10n
+                          .workspaceThisMemberHasNotAddedPayoutDetailsYet,
+                      bankTransferTitle: context.l10n.workspaceBankTransfer,
+                      bankHolderLabel: context.l10n.workspaceHolder,
+                      bankHolderName: holderName,
+                      bankIban: ownProfile.bankIban,
+                      bankBic: ownProfile.bankBic,
+                      revolutTitle: 'Revolut',
+                      revolutHandle: ownProfile.revolutHandle,
+                      revolutMeLink: ownProfile.revolutMeLink,
+                      paypalTitle: 'PayPal.me',
+                      paypalMeLink: ownProfile.paypalMeLink,
+                      wiseTitle: 'Wise',
+                      wisePayLink: ownProfile.wisePayLink,
+                      openLinkFailedText:
+                          context.l10n.workspaceCouldNotOpenPaymentLink,
+                      onErrorMessage: (message) =>
+                          _showSnack(message, isError: true),
+                    ),
                   UserSharedTripsSection(
                     future: sharedTripsFuture,
                     reload: () =>

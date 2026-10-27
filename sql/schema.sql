@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS trip_users (
   revolut_me_link VARCHAR(255) NULL,
   paypal_me_link VARCHAR(255) NULL,
   wise_pay_link VARCHAR(255) NULL,
+  share_payment_details_with_trips TINYINT(1) NOT NULL DEFAULT 0,
   preferred_currency_code CHAR(3) NOT NULL DEFAULT 'EUR',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -50,11 +51,15 @@ CREATE TABLE IF NOT EXISTS trip_user_identities (
   CONSTRAINT fk_trip_user_identities_user_id FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+
 CREATE TABLE IF NOT EXISTS trip_trips (
+  destinations_json TEXT NULL,
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(120) NOT NULL,
   trip_mode ENUM('group', 'solo') NOT NULL DEFAULT 'group',
   currency_code CHAR(3) NOT NULL DEFAULT 'EUR',
+  budget_cents BIGINT UNSIGNED NULL DEFAULT NULL,
   status ENUM('active', 'settling', 'archived') NOT NULL DEFAULT 'active',
   created_by INT UNSIGNED NULL,
   date_from DATE NULL DEFAULT NULL,
@@ -69,6 +74,32 @@ CREATE TABLE IF NOT EXISTS trip_trips (
   KEY idx_trip_trips_created_at (created_at, id),
   KEY idx_trip_trips_created_by (created_by),
   CONSTRAINT fk_trip_trips_created_by FOREIGN KEY (created_by) REFERENCES trip_users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS trip_travel_places (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  trip_id INT UNSIGNED NULL,
+  source_key VARCHAR(40) NOT NULL DEFAULT 'manual',
+  trip_name VARCHAR(120) NULL,
+  title VARCHAR(120) NOT NULL DEFAULT '',
+  photo_data MEDIUMBLOB NULL,
+  photo_source VARCHAR(10) NULL,
+  photo_version INT UNSIGNED NOT NULL DEFAULT 0,
+  place_key CHAR(64) NOT NULL,
+  city VARCHAR(120) NOT NULL,
+  region VARCHAR(120) NOT NULL DEFAULT '',
+  country VARCHAR(120) NOT NULL,
+  country_code CHAR(2) NOT NULL,
+  latitude DECIMAL(8,5) NOT NULL,
+  longitude DECIMAL(9,5) NOT NULL,
+  visited_on DATE NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_travel_visit (user_id, place_key, visited_on, source_key),
+  KEY idx_travel_places_user_date (user_id, visited_on),
+  CONSTRAINT fk_travel_places_trip FOREIGN KEY (trip_id) REFERENCES trip_trips(id) ON DELETE SET NULL,
+  CONSTRAINT fk_travel_places_user FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS trip_friends (

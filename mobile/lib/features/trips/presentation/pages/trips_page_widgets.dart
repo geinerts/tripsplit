@@ -79,7 +79,7 @@ extension _TripsPageWidgets on _TripsPageState {
     asset: 'splyto_empty_trips.svg',
     title: context.l10n.homeFirstTrip,
     primary: FilledButton.icon(
-      key: const ValueKey('home-create-trip'),
+      key: const ValueKey('home-create-first-trip'),
       onPressed: _isMutating ? null : _openCreateTripDialog,
       icon: const Icon(Icons.add),
       label: Text(context.l10n.createTripAction),
@@ -229,6 +229,26 @@ extension _TripsPageWidgets on _TripsPageState {
         child: Text(
           context.l10n.yourTrips,
           style: Theme.of(context).textTheme.headlineSmall,
+        ),
+      ),
+      IconButton(
+        key: const ValueKey('home-trip-invitations'),
+        tooltip: context.l10n.homeTripInvitations,
+        onPressed: _isMutating ? null : _openReceivedInvitations,
+        icon: Badge(
+          key: const ValueKey('home-trip-invitation-badge'),
+          isLabelVisible: _receivedInvitations.isNotEmpty || _invitationsFailed,
+          label: Text(
+            _invitationsFailed
+                ? '!'
+                : (_receivedInvitations.length > 99
+                      ? '99+'
+                      : '${_receivedInvitations.length}'),
+          ),
+          child: Icon(
+            Icons.mark_email_unread_outlined,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
       ),
       IconButton(

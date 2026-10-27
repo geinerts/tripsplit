@@ -36,6 +36,7 @@ abstract class AuthRepository {
     String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
+    bool? sharePaymentDetailsWithTrips,
   });
 
   Future<AuthUser> getMe();

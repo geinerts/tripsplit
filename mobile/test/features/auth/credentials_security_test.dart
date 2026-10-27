@@ -186,6 +186,7 @@ class ProfileController extends Fake implements AuthController {
     String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
+    bool? sharePaymentDetailsWithTrips,
   }) async {
     submittedCurrentPassword = currentPassword;
     submittedPassword = password;
@@ -199,6 +200,42 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     FlutterSecureStorage.setMockInitialValues({});
   });
+
+  test(
+    'profile payment consent sends real booleans and reads server state',
+    () async {
+      final api = RecordingApi();
+      api.respond = () async => {
+        'ok': true,
+        'me': {
+          'id': 1,
+          'nickname': 'Owner',
+          'share_payment_details_with_trips':
+              api.body?['share_payment_details_with_trips'],
+        },
+      };
+      final remote = AuthRemoteDataSourceImpl(api);
+      final enabled = await remote.updateProfile(
+        sharePaymentDetailsWithTrips: true,
+      );
+      expect(api.body, {'share_payment_details_with_trips': true});
+      expect(enabled.sharePaymentDetailsWithTrips, isTrue);
+      expect(
+        enabled.copyWith(nickname: 'Updated').sharePaymentDetailsWithTrips,
+        isTrue,
+      );
+      final disabled = await remote.updateProfile(
+        sharePaymentDetailsWithTrips: false,
+      );
+      expect(api.body, {'share_payment_details_with_trips': false});
+      expect(disabled.sharePaymentDetailsWithTrips, isFalse);
+      await remote.updateProfile(firstName: 'New', lastName: 'Name');
+      expect(
+        api.body!.containsKey('share_payment_details_with_trips'),
+        isFalse,
+      );
+    },
+  );
 
   testWidgets('profile email is visible but cannot be edited', (tester) async {
     await tester.pumpWidget(

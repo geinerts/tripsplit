@@ -22,7 +22,8 @@ $isValid = (bool) ($tripMeta['valid'] ?? false);
 $title = $isValid ? 'Join ' . $tripName . ' on Splyto' : 'Splyto trip invite';
 $description = 'Open Splyto to join this trip and split expenses together.';
 
-share_send_html_headers($isValid ? 300 : 60);
+// Invite validity can change immediately after this response.
+share_send_html_headers(0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -134,7 +135,7 @@ share_send_html_headers($isValid ? 300 : 60);
     <h1>Opening Splyto...</h1>
     <p>If app does not open automatically, tap the button below.</p>
     <div class="trip" id="inviteStatus">
-      <?= $hasInvite ? share_html($tripName) : 'Invite link missing' ?>
+      <?= $isValid ? share_html($tripName) : ($hasInvite ? 'Invite unavailable or expired' : 'Invite link missing') ?>
     </div>
     <button id="openAppBtn" type="button" class="primary"<?= $hasInvite ? '' : ' disabled' ?>>Open in app</button>
     <a id="openPlayBtn" class="action secondary" href="https://play.google.com/store/apps/details?id=com.tripsplit.app.tripsplit">

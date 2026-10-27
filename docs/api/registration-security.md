@@ -32,7 +32,8 @@ Authenticated guest credential enrollment is a separate flow; registration is no
 
 This patch intentionally does not modify `set_credentials`, profile password updates,
 email changes, password recovery, social linking or session revocation policy. F01 remains
-open. The `@example.test` production shortcut (F11) also remains open in this first slice.
+open in this historical slice. The `@example.test` shortcut (F11 / S-03) was removed
+locally on 2026-10-26; see [the follow-up and deployment status](../security/trip-media-registration-fixes.md).
 
 ## Verification and limits
 

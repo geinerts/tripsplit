@@ -196,6 +196,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
       shrinkWrap: true,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       children: [
+        _settlementSummary(snapshot),
         if (snapshot.isActive) ...[
           _buildFinishTripActionBlock(
             colors: colors,
@@ -206,7 +207,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
             hasPendingPayments: hasPendingPayments,
             isCurrentUserReady: isCurrentUserReady,
             canToggleReady: canToggleReady,
-            finishLabel: context.l10n.finishTripStartSettlementsAction,
+            finishLabel: context.l10n.finishTripAction,
             creatorMustFinishLabel: context.l10n.creatorMustFinishTripFirst,
           ),
           const SizedBox(height: 12),
@@ -245,6 +246,23 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 : context.l10n.settlementEmptyClosed,
           )
         else ...[
+          if (settlements.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              context.l10n.settleWhoPaysWhom,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              snapshot.isActive
+                  ? context.l10n.settlePreviewCaption
+                  : context.l10n.settleOpenPaymentCaption,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+            ),
+            const SizedBox(height: 12),
+          ],
           if (pendingSettlements.isNotEmpty) ...[
             ...pendingSettlements.map(
               (item) => _buildSettlementFlowCard(
@@ -281,144 +299,55 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
         ? snapshot.settlementTotal
         : settlements.length;
     final confirmed = snapshot.settlementConfirmed.clamp(0, total);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withValues(alpha: .08),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            context.l10n.settlementConfirmedCount(confirmed, total),
-            style: Theme.of(context).textTheme.titleLarge,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(
+                Icons.flag_outlined,
+                size: 22,
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.workspaceTripFinished,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      context.l10n.settlementConfirmedCount(confirmed, total),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           LinearProgressIndicator(
             value: total == 0 ? 0 : confirmed / total,
-            minHeight: 6,
+            minHeight: 4,
             borderRadius: BorderRadius.circular(999),
             semanticsLabel: context.l10n.settlementConfirmedCount(
               confirmed,
               total,
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSettlementFlowCard({
-    required WorkspaceSnapshot snapshot,
-    required SettlementItem item,
-    required Map<int, WorkspaceUser> usersById,
-    required AppSemanticColors semantic,
-  }) {
-    final fromUser = usersById[item.fromUserId];
-    final toUser = usersById[item.toUserId];
-    final isPositiveForCurrent =
-        _currentUserId > 0 && item.toUserId == _currentUserId;
-    final amountColor = isPositiveForCurrent
-        ? AppDesign.successColor(context)
-        : AppDesign.titleColor(context);
-    final openFlowLabel = context.l10n.workspaceOpenFlow;
-
-    final normalizedStatus = item.status.trim().toLowerCase();
-    final isCompleted = normalizedStatus == 'confirmed';
-    final statusForeground = isCompleted
-        ? semantic.statusConfirmedForeground
-        : (normalizedStatus == 'sent'
-              ? semantic.statusSentForeground
-              : semantic.statusPendingForeground);
-    final statusBackground = isCompleted
-        ? semantic.statusConfirmedBackground
-        : (normalizedStatus == 'sent'
-              ? semantic.statusSentBackground
-              : semantic.statusPendingBackground);
-    final statusBorder = isCompleted
-        ? semantic.statusConfirmedBorder
-        : (normalizedStatus == 'sent'
-              ? semantic.statusSentBorder
-              : semantic.statusPendingBorder);
-    final statusLabel = isCompleted
-        ? context.l10n.settledStatus
-        : (normalizedStatus == 'sent'
-              ? context.l10n.statusSent
-              : context.l10n.statusPending);
-    final payableAmount = _tripPaymentOutstandingAmount(snapshot, item);
-    final canRecordPayment =
-        snapshot.isActive &&
-        item.isSuggested &&
-        _currentUserId > 0 &&
-        item.fromUserId == _currentUserId &&
-        payableAmount > 0.004 &&
-        !_isMutating;
-    final canRequestPayment =
-        snapshot.isActive &&
-        item.isSuggested &&
-        _currentUserId > 0 &&
-        item.toUserId == _currentUserId &&
-        payableAmount > 0.004 &&
-        !_isMutating;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            '${_paymentMemberName(item.from, item.fromUserId, fromUser)} → ${_paymentMemberName(item.to, item.toUserId, toUser)}',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _balanceMoney(item.amount),
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(color: amountColor),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 12,
-            runSpacing: 8,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              _buildSettlementStatusPill(
-                label: item.isSuggested
-                    ? context.l10n.settlementSuggested
-                    : statusLabel,
-                foreground: statusForeground,
-                background: statusBackground,
-                border: statusBorder,
-              ),
-              TextButton.icon(
-                onPressed: () => _openSettlementFlowTimelineSheet(
-                  snapshot: snapshot,
-                  item: item,
-                  usersById: usersById,
-                ),
-                icon: const Icon(Icons.chevron_right),
-                label: Text(openFlowLabel),
-              ),
-              if (canRecordPayment || canRequestPayment)
-                OutlinedButton.icon(
-                  onPressed: () => _openTripPaymentComposerSheet(
-                    settlement: item,
-                    maxAmount: payableAmount,
-                    isRequest: canRequestPayment,
-                  ),
-                  icon: Icon(
-                    canRequestPayment
-                        ? Icons.notification_add_outlined
-                        : Icons.payments_outlined,
-                  ),
-                  label: Text(
-                    canRequestPayment
-                        ? context.l10n.paymentRequestAction
-                        : context.l10n.paymentRecordAction,
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          const Divider(height: 1),
         ],
       ),
     );
@@ -792,145 +721,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildSettlementStatusPill({
-    required String label,
-    required Color foreground,
-    required Color background,
-    required Color border,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(999),
-        color: background,
-        border: Border.all(color: border),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          color: foreground,
-          fontSize: 12,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFinishTripActionBlock({
-    required ColorScheme colors,
-    required bool canFinishTrip,
-    required bool allMembersReady,
-    required int readyMembers,
-    required int totalMembers,
-    required bool hasPendingPayments,
-    required bool isCurrentUserReady,
-    required bool canToggleReady,
-    required String finishLabel,
-    required String creatorMustFinishLabel,
-  }) {
-    final readyTitle = context.l10n.workspaceReadyToSettle;
-    final readySubtitle = hasPendingPayments
-        ? context.l10n.paymentPendingBeforeFinish
-        : (allMembersReady
-              ? context.l10n.workspaceAllMembersAreReadyYouCanStartSettlements
-              : context.l10n.workspaceWaitingForEveryoneToMarkReady);
-    final markReadyTitle = context.l10n.workspaceIMReady;
-    final markReadySubtitle =
-        context.l10n.workspaceConfirmThatYouAddedAllYourExpenses;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 16,
-          children: [
-            Text(readyTitle, style: Theme.of(context).textTheme.titleLarge),
-            Text(
-              '$readyMembers / $totalMembers',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        LinearProgressIndicator(
-          value: totalMembers == 0 ? 0 : readyMembers / totalMembers,
-          minHeight: 6,
-          borderRadius: BorderRadius.circular(999),
-        ),
-        const SizedBox(height: 8),
-        SwitchListTile.adaptive(
-          contentPadding: EdgeInsets.zero,
-          value: isCurrentUserReady,
-          onChanged: canToggleReady ? _onReadyToSettleChanged : null,
-          secondary: MediaQuery.textScalerOf(context).scale(16) > 23
-              ? null
-              : _largeMemberAvatar(
-                  id: _currentUserId,
-                  name:
-                      _snapshot!.users
-                          .where((u) => u.id == _currentUserId)
-                          .firstOrNull
-                          ?.preferredName ??
-                      context.l10n.youLabel,
-                  avatarUrl: _snapshot!.users
-                      .where((u) => u.id == _currentUserId)
-                      .firstOrNull
-                      ?.avatarThumbUrl,
-                  size: 40,
-                ),
-          title: Text(markReadyTitle),
-          subtitle: Text(markReadySubtitle),
-        ),
-        for (final member in _snapshot!.users.where(
-          (user) => user.id != _currentUserId,
-        )) ...[
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: _largeMemberAvatar(
-              id: member.id,
-              name: member.preferredName,
-              avatarUrl: member.avatarThumbUrl ?? member.avatarUrl,
-              size: 40,
-            ),
-            title: Text(member.preferredName),
-            subtitle: Text(
-              member.isReadyToSettle
-                  ? context.l10n.settlementMemberReady
-                  : context.l10n.settlementMemberNotReady,
-            ),
-            trailing: Icon(
-              member.isReadyToSettle
-                  ? Icons.check_circle_outline
-                  : Icons.schedule,
-              color: member.isReadyToSettle
-                  ? colors.primary
-                  : colors.onSurfaceVariant,
-            ),
-          ),
-          const Divider(height: 1),
-        ],
-        const SizedBox(height: 16),
-
-        if (_canEditMembers)
-          FilledButton.icon(
-            onPressed: canFinishTrip ? _onEndTripPressed : null,
-            icon: const Icon(Icons.flag_outlined),
-            label: Text(finishLabel),
-          )
-        else
-          Text(creatorMustFinishLabel),
-        const SizedBox(height: 8),
-        Text(
-          readySubtitle,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ],
     );
   }
 

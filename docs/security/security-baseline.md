@@ -4,6 +4,10 @@ Last targeted review: 2026-10-25. Historical audits describe the state at their
 original dates; they are not a current list of unpatched findings. See
 `admin-api-boundary.md` for the current admin boundary and its deployment checks.
 
+The 2026-10-26 cover ownership, revoked invite preview and registration verification
+fixes are locally tested but not yet deployed; see
+[scope and verification](trip-media-registration-fixes.md).
+
 ## Trust boundaries
 
 - Mobile clients are untrusted. Every read and mutation must be authorized by the API.

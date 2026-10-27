@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'package:tripsplit/features/trips/domain/entities/received_trip_invitation.dart';
+import 'package:tripsplit/features/trips/domain/entities/trip_invite_link.dart';
+import 'package:tripsplit/features/trips/domain/entities/trip_invite_preview.dart';
+import 'package:tripsplit/features/trips/domain/entities/trip_invite_join_result.dart';
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
@@ -50,6 +54,62 @@ class _Friends implements FriendsController {
 }
 
 class _Trips implements TripsController {
+  List<ReceivedTripInvitation> invitations = [];
+  bool invitationsFail = false, shareFail = false;
+  int accepted = 0, declined = 0, shareCalls = 0;
+  @override
+  Future<List<ReceivedTripInvitation>> listReceivedInvitations() async {
+    if (invitationsFail) {
+      throw const ApiException('Offline', isNetworkError: true);
+    }
+    return List.of(invitations);
+  }
+
+  @override
+  Future<TripInvitePreview> previewTripInvite({
+    required String inviteToken,
+  }) async => TripInvitePreview(
+    inviteToken: inviteToken,
+    previewNonce: 'fresh-nonce',
+    tripId: 77,
+    tripName: 'Summer trip',
+    inviterName: 'Anna',
+    expiresAt: null,
+    previewNonceExpiresAt: null,
+    alreadyMember: false,
+    isDirected: true,
+  );
+  @override
+  Future<TripInviteJoinResult> joinTripInvite({
+    required String inviteToken,
+    required String previewNonce,
+  }) async {
+    expect(previewNonce, 'fresh-nonce');
+    accepted++;
+    invitations = [];
+    trips = [_trip(77)];
+    return TripInviteJoinResult(trip: trips.single, alreadyMember: false);
+  }
+
+  @override
+  Future<void> declineTripInvite({required String inviteToken}) async {
+    declined++;
+    invitations = [];
+  }
+
+  @override
+  Future<TripInviteLink> createTripInviteLink({required int tripId}) async {
+    shareCalls++;
+    if (shareFail) throw const ApiException('Failed');
+    return TripInviteLink(
+      tripId: tripId,
+      inviteUrl: 'https://splyto.eu/invite?invite=abcdefghij',
+      inviteToken: 'abcdefghij',
+      expiresAt: null,
+      expiresInSeconds: 3600,
+    );
+  }
+
   List<Trip>? cache;
   List<Trip> trips = [];
   Object? error;
@@ -163,6 +223,206 @@ Future<void> _pump(
 }
 
 void main() {
+  const received = ReceivedTripInvitation(
+    id: 9,
+    tripId: 77,
+    tripName: 'Summer trip',
+    inviterName: 'Anna',
+    inviteToken: 'abcdefghij',
+  );
+
+  for (final accept in [true, false]) {
+    testWidgets(
+      'home invitation badge survives opening and responds accept=$accept',
+      (tester) async {
+        final trips = _Trips()..invitations = [received];
+        await _pump(tester, trips);
+        await tester.pumpAndSettle();
+        Badge badge() => tester.widget<Badge>(
+          find.byKey(const ValueKey('home-trip-invitation-badge')),
+        );
+        expect(badge().isLabelVisible, isTrue);
+        expect((badge().label! as Text).data, '1');
+        await tester.tap(find.byKey(const ValueKey('home-trip-invitations')));
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.byKey(const ValueKey('received-trip-invitation-9')),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+        // Dismissing the confirmation is not a rejection or acceptance.
+        await tester.tap(find.byTooltip('Close').last);
+        await tester.pumpAndSettle();
+        expect(trips.accepted + trips.declined, 0);
+        expect((badge().label! as Text).data, '1');
+        await tester.tap(
+          find.byKey(const ValueKey('received-trip-invitation-9')),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 400));
+        await tester.tap(find.text(accept ? 'Accept' : 'Decline'));
+        await tester.pumpAndSettle();
+        expect(trips.accepted, accept ? 1 : 0);
+        expect(trips.declined, accept ? 0 : 1);
+        expect(badge().isLabelVisible, isFalse);
+        expect(find.text('No pending trip invitations'), findsOneWidget);
+      },
+    );
+  }
+
+  testWidgets('home invitations refresh and recover from failure', (
+    tester,
+  ) async {
+    final commands = TripsPageCommandController();
+    addTearDown(commands.dispose);
+    final trips = _Trips()..invitationsFail = true;
+    await _pump(tester, trips, commands: commands);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('home-trip-invitations')));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Could not load invitations. Please try again.'),
+      findsOneWidget,
+    );
+    trips.invitationsFail = false;
+    trips.invitations = [received];
+    await tester.tap(find.text('Retry'));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('received-trip-invitation-9')),
+      findsOneWidget,
+    );
+    await tester.tap(find.byTooltip('Close').last);
+    await tester.pumpAndSettle();
+    trips.invitations = [];
+    commands.requestInvitationsRefresh();
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<Badge>(
+            find.byKey(const ValueKey('home-trip-invitation-badge')),
+          )
+          .isLabelVisible,
+      isFalse,
+    );
+  });
+
+  testWidgets(
+    'share opens native menu with invite URL and anchor without opening trip',
+    (tester) async {
+      MethodCall? shared;
+      const channel = MethodChannel('dev.fluttercommunity.plus/share');
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+        call,
+      ) async {
+        shared = call;
+        return 'com.whatsapp';
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          null,
+        ),
+      );
+      final trips = _Trips()..trips = [_trip(1, role: 'owner')];
+      var opened = false;
+      await _pump(
+        tester,
+        trips,
+        onTripOpened: (trip, {bool openAddExpense = false}) {
+          opened = true;
+        },
+      );
+      await tester.pumpAndSettle();
+      final share = find.byKey(const ValueKey('home-trip-share-1'));
+      expect(
+        tester.getTopLeft(share).dy,
+        greaterThan(
+          tester.getTopLeft(find.byKey(const ValueKey('home-trip-menu-1'))).dy,
+        ),
+      );
+      await tester.tap(share);
+      await tester.pumpAndSettle();
+      expect(shared?.method, 'share');
+      expect(
+        shared?.arguments['text'],
+        contains('https://splyto.eu/invite?invite=abcdefghij'),
+      );
+      expect(shared?.arguments['originWidth'], greaterThan(0));
+      expect(opened, isFalse);
+      expect(trips.shareCalls, 1);
+      trips.shareFail = true;
+      shared = null;
+      await tester.tap(share);
+      await tester.pumpAndSettle();
+      expect(shared, isNull);
+      expect(
+        find.text('Could not share the trip. Please try again.'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('share is restricted to active group owners and admins', (
+    tester,
+  ) async {
+    for (final trip in [
+      _trip(1, role: 'owner'),
+      _trip(1, role: 'admin'),
+      _trip(1),
+      _trip(1, role: 'owner', mode: 'solo'),
+      _trip(1, role: 'owner', status: 'archived'),
+    ]) {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await _pump(tester, _Trips()..trips = [trip]);
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('home-trip-share-1')),
+        trip.canCurrentUserManageTrip && trip.isActive && !trip.isSolo
+            ? findsOneWidget
+            : findsNothing,
+      );
+    }
+  });
+
+  testWidgets('home invitation and share review images', (tester) async {
+    if (!const bool.fromEnvironment('HOME_ACTIONS_PREVIEWS')) return;
+    for (final dark in [false, true]) {
+      final key = GlobalKey();
+      await tester.pumpWidget(const SizedBox.shrink());
+      final trips = _Trips()
+        ..trips = [_trip(1, role: 'owner')]
+        ..invitations = [received];
+      await _pump(
+        tester,
+        trips,
+        boundary: key,
+        brightness: dark ? Brightness.dark : Brightness.light,
+      );
+      await tester.pumpAndSettle();
+      for (final sheet in [false, true]) {
+        if (sheet) {
+          await tester.tap(find.byKey(const ValueKey('home-trip-invitations')));
+          await tester.pumpAndSettle();
+        }
+        expect(tester.takeException(), isNull);
+        await tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/home-actions/${dark ? 'dark' : 'light'}-${sheet ? 'invitations' : 'home'}.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+      }
+    }
+  });
+
   testWidgets('invitation review join', (tester) async {
     if (!const bool.fromEnvironment('INVITATION_PREVIEWS')) return;
     for (final dark in [false, true]) {
@@ -197,6 +457,10 @@ void main() {
 
   setUp(() => SharedPreferences.setMockInitialValues({}));
   setUpAll(() async {
+    await (FontLoader('packages/cupertino_icons/CupertinoIcons')..addFont(
+          rootBundle.load('packages/cupertino_icons/assets/CupertinoIcons.ttf'),
+        ))
+        .load();
     final loader = FontLoader('Inter')
       ..addFont(rootBundle.load('assets/fonts/Inter.ttf'));
     await loader.load();

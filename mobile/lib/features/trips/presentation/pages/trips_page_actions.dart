@@ -2,6 +2,7 @@ part of 'trips_page.dart';
 
 extension _TripsPageActions on _TripsPageState {
   Future<void> _loadTrips() async {
+    unawaited(_refreshReceivedInvitations());
     final generation = ++_loadGeneration;
     widget.onServerTripsState?.call(null);
     final trace = PerfMonitor.start('screen.trips.load');
@@ -112,6 +113,8 @@ extension _TripsPageActions on _TripsPageState {
           currencyCode: result.currencyCode,
           memberIds: result.memberIds,
           tripMode: result.tripMode,
+          budgetCents: result.budgetCents,
+          destinations: result.destinations,
           dateFrom: result.dateFrom,
           dateTo: result.dateTo,
         );
@@ -258,12 +261,21 @@ extension _TripsPageActions on _TripsPageState {
 
     final nextName = result.name.trim();
     final hasNameChange = nextName != trip.name.trim();
+    final hasBudgetChange = result.budgetCents != trip.budgetCents;
+    final hasDestinationsChange = !tripDestinationsEqual(
+      result.destinations,
+      trip.destinations,
+    );
     final imageBytes = result.imageBytes;
     final imageFileName = result.imageFileName?.trim() ?? '';
     final hasNewImage =
         imageBytes != null && imageBytes.isNotEmpty && imageFileName.isNotEmpty;
     final removeImage = result.removeImage && !hasNewImage;
-    if (!hasNameChange && !hasNewImage && !removeImage) {
+    if (!hasNameChange &&
+        !hasNewImage &&
+        !removeImage &&
+        !hasBudgetChange &&
+        !hasDestinationsChange) {
       _showSnack(context.l10n.noChangesToSave);
       return;
     }
@@ -286,6 +298,9 @@ extension _TripsPageActions on _TripsPageState {
         name: nextName,
         imagePath: imagePath,
         removeImage: removeImage,
+        budgetCents: hasBudgetChange ? result.budgetCents : null,
+        destinations: hasDestinationsChange ? result.destinations : null,
+        clearBudget: hasBudgetChange && result.budgetCents == null,
       );
       if (!mounted) {
         return;

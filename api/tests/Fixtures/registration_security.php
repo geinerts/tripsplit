@@ -45,16 +45,17 @@ if ($scenario === 'existing_guest') {
     $pdo->exec("UPDATE trip_users SET account_status = 'deactivated'");
 }
 $before = fetch_me_row_by_id($pdo, 1);
-$isNew = in_array($scenario, ['new_guest', 'new_credentials', 'duplicate_email',
+$isNew = in_array($scenario, ['new_guest', 'new_credentials', 'reserved_credentials', 'duplicate_email',
     'invalid_proof', 'replay', 'database_failure'], true);
 $_SERVER['HTTP_X_DEVICE_TOKEN'] = $isNew ? $freshToken : $victimToken;
 $proof = runRegistrationHandler('register_proof_action')['payload']['register_proof'];
 $requestBody = ['first_name' => 'New', 'last_name' => 'User', 'register_proof' => $proof];
-if (in_array($scenario, ['new_credentials', 'existing_credentials', 'duplicate_email', 'existing_same_email'], true)) {
+if (in_array($scenario, ['new_credentials', 'reserved_credentials', 'existing_credentials', 'duplicate_email', 'existing_same_email'], true)) {
     $requestBody['email'] = in_array($scenario, ['duplicate_email', 'existing_same_email'], true)
         ? 'existing@example.invalid' : 'new@example.invalid';
     $requestBody['password'] = 'NewSyntheticPassword9!';
 }
+if ($scenario === 'reserved_credentials') { $requestBody['email'] = 'New@EXAMPLE.TEST'; }
 if ($scenario === 'invalid_proof') { $requestBody['register_proof'] = 'not-a-valid-proof'; }
 if ($scenario === 'database_failure') { $pdo->exec('DROP TABLE trip_users'); }
 

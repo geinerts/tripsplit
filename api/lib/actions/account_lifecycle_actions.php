@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/../helpers/helper_travel_places.php';
 
 require_once __DIR__ . '/../helpers/helper_account_action_proofs.php';
 
@@ -248,6 +249,7 @@ function confirm_account_lifecycle_link(string $action): void
                 ->execute(['id' => $userId]);
         } else {
             $avatarPath = trim((string) ($user['avatar_path'] ?? ''));
+            delete_user_travel_places($pdo, $userId);
             $pdo->prepare('DELETE FROM ' . table_name('friends')
                 . ' WHERE user_a_id = :a OR user_b_id = :b')->execute(['a' => $userId, 'b' => $userId]);
             if (social_auth_identity_table_available($pdo)) {

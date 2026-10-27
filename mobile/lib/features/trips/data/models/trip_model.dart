@@ -6,6 +6,8 @@ class TripModel extends Trip {
   const TripModel({
     required super.id,
     required super.name,
+    super.budgetCents,
+    super.destinations,
     super.tripMode,
     required super.currencyCode,
     required super.status,
@@ -66,6 +68,10 @@ class TripModel extends Trip {
     return TripModel(
       id: (map['id'] as num?)?.toInt() ?? 0,
       name: map['name'] as String? ?? '',
+      budgetCents: (map['budget_cents'] as num?)?.toInt(),
+      destinations: (map['destinations'] as List? ?? [])
+          .map((d) => Map<String, dynamic>.from(d as Map))
+          .toList(),
       tripMode: map['trip_mode'] == 'solo' ? 'solo' : 'group',
       currencyCode: AppCurrencyCatalog.normalize(
         map['currency_code'] as String?,

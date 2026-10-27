@@ -40,12 +40,16 @@ class _PickedFile {
 class _EditTripResult {
   const _EditTripResult({
     required this.name,
+    this.budgetCents,
+    this.destinations = const [],
     this.imageFileName,
     this.imageBytes,
     this.removeImage = false,
   });
 
   final String name;
+  final int? budgetCents;
+  final List<Map<String, dynamic>> destinations;
   final String? imageFileName;
   final Uint8List? imageBytes;
   final bool removeImage;

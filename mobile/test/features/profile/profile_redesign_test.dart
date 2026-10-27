@@ -389,6 +389,47 @@ void main() {
     );
   });
   testWidgets(
+    'payment sharing defaults off and only saves after confirmation',
+    (tester) async {
+      final auth = _Auth();
+      await _mount(tester, auth);
+      final t = _t(tester);
+      await _tap(tester, 'Matiss Geinerts');
+      await _tap(tester, t.profileEditPaymentMethod);
+      final toggle = find.byKey(const ValueKey('profile-payment-sharing'));
+      expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(auth.profiles, isEmpty);
+      await _back(tester);
+      expect(auth.profiles, isEmpty);
+      await _tap(tester, t.profileEditPaymentMethod);
+      expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      await _tap(tester, t.profileEditSaveDetails);
+      expect(auth.profiles.single[#sharePaymentDetailsWithTrips], isTrue);
+    },
+  );
+
+  testWidgets('previous payment sharing consent can be switched off', (
+    tester,
+  ) async {
+    final auth = _Auth();
+    auth.user = auth.user.copyWith(sharePaymentDetailsWithTrips: true);
+    await _mount(tester, auth);
+    final t = _t(tester);
+    await _tap(tester, 'Matiss Geinerts');
+    await _tap(tester, t.profileEditPaymentMethod);
+    final toggle = find.byKey(const ValueKey('profile-payment-sharing'));
+    expect(tester.widget<SwitchListTile>(toggle).value, isTrue);
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+    await _tap(tester, t.profileEditSaveDetails);
+    expect(auth.profiles.single[#sharePaymentDetailsWithTrips], isFalse);
+  });
+
+  testWidgets(
     'payment methods preserve edits while switching and cancel without saving',
     (tester) async {
       final auth = _Auth();

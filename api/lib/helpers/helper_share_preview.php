@@ -133,11 +133,14 @@ function share_trip_meta(?string $inviteCode): array
 
         $revokedAt = trim((string) ($row['revoked_at'] ?? ''));
         $expiresAt = trim((string) ($row['expires_at'] ?? ''));
-        $isExpired = $expiresAt === '' || strtotime($expiresAt) === false || strtotime($expiresAt) < time();
+        $isExpired = $expiresAt === '' || strtotime($expiresAt) === false || strtotime($expiresAt) <= time();
         $isActive = normalize_trip_status($row['trip_status'] ?? 'active') === 'active';
+        if ($revokedAt !== '' || $isExpired || !$isActive) {
+            return $fallback;
+        }
         $tripName = trim((string) ($row['trip_name'] ?? ''));
         return [
-            'valid' => $revokedAt === '' && !$isExpired && $isActive,
+            'valid' => true,
             'trip_name' => $tripName !== '' ? $tripName : 'Splyto trip',
             'image_path' => trim((string) ($row['image_path'] ?? '')),
             'expires_at' => $expiresAt,
@@ -200,7 +203,9 @@ function share_friend_meta(?string $token): array
 function share_send_html_headers(int $maxAgeSeconds = 300): void
 {
     header('Content-Type: text/html; charset=utf-8');
-    header('Cache-Control: public, max-age=' . max(60, $maxAgeSeconds));
+    header($maxAgeSeconds <= 0
+        ? 'Cache-Control: no-store'
+        : 'Cache-Control: public, max-age=' . max(60, $maxAgeSeconds));
     header('X-Content-Type-Options: nosniff');
     header('Referrer-Policy: strict-origin-when-cross-origin');
     header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
@@ -238,7 +243,9 @@ function share_open_graph_tags(
 function share_output_png($image, int $maxAgeSeconds = 300): void
 {
     header('Content-Type: image/png');
-    header('Cache-Control: public, max-age=' . max(60, $maxAgeSeconds));
+    header($maxAgeSeconds <= 0
+        ? 'Cache-Control: no-store'
+        : 'Cache-Control: public, max-age=' . max(60, $maxAgeSeconds));
     header('X-Content-Type-Options: nosniff');
     imagepng($image);
     exit;

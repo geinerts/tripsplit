@@ -22,6 +22,11 @@ class WorkspaceController {
 
   final WorkspaceRepository _repository;
 
+  Future<PaymentDetails> loadMemberPaymentDetails({
+    required int tripId,
+    required int userId,
+  }) => _repository.loadMemberPaymentDetails(tripId: tripId, userId: userId);
+
   Future<PaymentDetails> loadPaymentRequestDetails({
     required int tripId,
     required int paymentId,

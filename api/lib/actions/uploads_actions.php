@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
+require_once __DIR__ . '/../helpers/helper_trip_image_ownership.php';
 
 function receipt_ocr_suggestions(string $imagePath): array
 {
@@ -243,7 +244,7 @@ function upload_trip_image_action(): void
         'ensure_trip_images_dir',
         (string) $validated['mime']
     );
-    $tripImagePath = (string) $stored['path'];
+    $tripImagePath = bind_stored_trip_image_to_owner($stored, $tripId, $userId);
     $storedSize = (int) $stored['size'];
 
     json_out([

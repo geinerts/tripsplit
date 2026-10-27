@@ -17,6 +17,11 @@ import '../entities/payment_details.dart';
 
 abstract class WorkspaceRepository {
   Future<int> loadCurrentUserId();
+  Future<PaymentDetails> loadMemberPaymentDetails({
+    required int tripId,
+    required int userId,
+  });
+
   Future<PaymentDetails> loadPaymentRequestDetails({
     required int tripId,
     required int paymentId,

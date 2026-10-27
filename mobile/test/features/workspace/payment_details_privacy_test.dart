@@ -32,6 +32,7 @@ const privateUser = <String, dynamic>{
 };
 
 class _Api implements ApiClient {
+  bool member = false;
   int calls = 0;
   bool fail = false;
   @override
@@ -43,9 +44,14 @@ class _Api implements ApiClient {
     Map<String, String>? headers,
   }) async {
     calls++;
-    expect(path, contains('trip_payment_request_details'));
+    expect(
+      path,
+      contains(
+        member ? 'trip_member_payment_details' : 'trip_payment_request_details',
+      ),
+    );
     expect(method, HttpMethod.post);
-    expect(body, {'payment_id': 5});
+    expect(body, member ? {'user_id': 2} : {'payment_id': 5});
     expect(headers?['X-Trip-Id'], '10');
     if (fail) throw const ApiException('Offline', isNetworkError: true);
     return {'ok': true, 'payment_details': privateUser};
@@ -57,6 +63,11 @@ class _Api implements ApiClient {
 
 class _Remote implements WorkspaceRemoteDataSource {
   final pending = Completer<PaymentDetails>();
+  @override
+  Future<PaymentDetails> loadMemberPaymentDetails({
+    required int tripId,
+    required int userId,
+  }) => pending.future;
   @override
   Future<PaymentDetails> loadPaymentRequestDetails({
     required int tripId,
@@ -125,6 +136,51 @@ void main() {
       );
       session.activate(3);
       remote.pending.complete(const PaymentDetails(bankIban: 'PRIVATE-IBAN'));
+      await expectLater(
+        result,
+        throwsA(
+          isA<ApiException>().having((e) => e.code, 'code', 'account_changed'),
+        ),
+      );
+      expect((await SharedPreferences.getInstance()).getKeys(), isEmpty);
+    },
+  );
+
+  test(
+    'member profile fetches fresh details and never falls back offline',
+    () async {
+      final api = _Api()..member = true;
+      final loader = WorkspaceRemoteSnapshotLoader(api);
+      expect(
+        (await loader.loadMemberPaymentDetails(
+          tripId: 10,
+          userId: 2,
+        )).revolutHandle,
+        'PRIVATE-REVOLUT',
+      );
+      await loader.loadMemberPaymentDetails(tripId: 10, userId: 2);
+      expect(api.calls, 2);
+      api.fail = true;
+      await expectLater(
+        loader.loadMemberPaymentDetails(tripId: 10, userId: 2),
+        throwsA(isA<ApiException>()),
+      );
+    },
+  );
+
+  test(
+    'member profile response is rejected after account switch and is not stored',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final session = AccountDataSession()..activate(1);
+      final remote = _Remote();
+      final repository = WorkspaceRepositoryImpl(
+        remote,
+        WorkspaceLocalStore(AccountLocalStorage(session)),
+      );
+      final result = repository.loadMemberPaymentDetails(tripId: 10, userId: 2);
+      session.activate(3);
+      remote.pending.complete(const PaymentDetails(revolutHandle: '@private'));
       await expectLater(
         result,
         throwsA(

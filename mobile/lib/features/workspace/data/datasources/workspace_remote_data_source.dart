@@ -19,6 +19,11 @@ import '../../domain/entities/payment_details.dart';
 
 abstract class WorkspaceRemoteDataSource {
   Future<int> loadCurrentUserId();
+  Future<PaymentDetails> loadMemberPaymentDetails({
+    required int tripId,
+    required int userId,
+  });
+
   Future<PaymentDetails> loadPaymentRequestDetails({
     required int tripId,
     required int paymentId,
@@ -218,6 +223,13 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
 
   final WorkspaceRemoteSnapshotLoader _snapshotLoader;
   final WorkspaceRemoteMutationApi _mutationApi;
+
+  @override
+  Future<PaymentDetails> loadMemberPaymentDetails({
+    required int tripId,
+    required int userId,
+  }) =>
+      _snapshotLoader.loadMemberPaymentDetails(tripId: tripId, userId: userId);
 
   @override
   Future<PaymentDetails> loadPaymentRequestDetails({

@@ -55,6 +55,10 @@ dependencies:
   google_sign_in: ^6.3.0
   sign_in_with_apple: ^7.0.1
   flutter_image_compress: ^2.5.1
+  flutter_map: ^8.3.2
+  latlong2: ^0.10.1
+  geolocator: ^14.0.2
+  geocoding: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +88,7 @@ flutter:
   assets:
     - assets/branding/
     - assets/legal/
+    - assets/maps/
     - assets/fonts/OFL.txt
 
   fonts:

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_profile_payment_sharing.php';
+
 function register_proof_secret(): string
 {
     $configured = trim((string) REGISTER_PROOF_SECRET);
@@ -203,25 +205,15 @@ function register_action(): void
     }
     assert_user_account_is_active($me);
 
-    // Auto-verify RFC 2606 reserved test addresses (e.g. @example.test).
-    // These domains cannot receive real email; no verification needed.
     if ($hasCredentials && user_requires_email_verification((array) $me)) {
-        $emailLower = strtolower(trim((string) ($me['email'] ?? '')));
-        if (str_ends_with($emailLower, '@example.test')) {
-            $pdo->prepare(
-                'UPDATE ' . $usersTable . ' SET email_verified_at = NOW() WHERE id = :id'
-            )->execute(['id' => (int) ($me['id'] ?? 0)]);
-            $me = fetch_me_row_by_id($pdo, $newUserId);
-        } else {
-            send_email_verification_link_for_user($pdo, (array) $me);
-            json_out([
-                'ok' => true,
-                'code' => 'EMAIL_VERIFICATION_REQUIRED',
-                'email_verification_required' => true,
-                'verification_email' => $emailLower,
-                'message' => 'Verification email sent. Please verify your email before logging in.',
-            ]);
-        }
+        send_email_verification_link_for_user($pdo, (array) $me);
+        json_out([
+            'ok' => true,
+            'code' => 'EMAIL_VERIFICATION_REQUIRED',
+            'email_verification_required' => true,
+            'verification_email' => strtolower(trim((string) ($me['email'] ?? ''))),
+            'message' => 'Verification email sent. Please verify your email before logging in.',
+        ]);
     }
 
     $newUserId = (int) ($me['id'] ?? 0);
@@ -820,6 +812,15 @@ function update_profile_action(): void
     $params = [
         'id' => $userId,
     ];
+
+    if (array_key_exists('share_payment_details_with_trips', $body)) {
+        $sharing = profile_payment_sharing_value($body['share_payment_details_with_trips']);
+        if (!users_trip_payment_sharing_available($pdo)) {
+            json_out(['ok' => false, 'error' => 'Payment sharing is not available yet. Run migration first.'], 409);
+        }
+        $updateParts[] = 'share_payment_details_with_trips = :share_payment_details_with_trips';
+        $params['share_payment_details_with_trips'] = $sharing;
+    }
 
     $hasFirstName = array_key_exists('first_name', $body);
     $hasLastName = array_key_exists('last_name', $body);

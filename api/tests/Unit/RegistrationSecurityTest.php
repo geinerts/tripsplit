@@ -64,16 +64,20 @@ final class RegistrationSecurityTest extends TestCase
 
     public function test_new_credentials_still_require_email_verification(): void
     {
-        foreach ([true, false] as $hasNames) {
-            $result = $this->runScenario('new_credentials', $hasNames);
-            self::assertSame(200, $result['response']['status']);
-            self::assertSame('EMAIL_VERIFICATION_REQUIRED', $result['response']['payload']['code']);
-            self::assertTrue($result['new_password_matches']);
-            self::assertFalse($result['new_email_verified']);
-            self::assertSame([], $result['auth_issued']);
-            self::assertSame([2], $result['mail_users']);
-            self::assertSame(2, $result['user_count']);
-            self::assertTrue($result['existing_unchanged']);
+        foreach (['new_credentials', 'reserved_credentials'] as $scenario) {
+            foreach ([true, false] as $hasNames) {
+                $result = $this->runScenario($scenario, $hasNames);
+                self::assertSame(200, $result['response']['status']);
+                self::assertSame('EMAIL_VERIFICATION_REQUIRED', $result['response']['payload']['code']);
+                self::assertArrayNotHasKey('auth', $result['response']['payload']);
+                self::assertArrayNotHasKey('me', $result['response']['payload']);
+                self::assertTrue($result['new_password_matches']);
+                self::assertFalse($result['new_email_verified']);
+                self::assertSame([], $result['auth_issued']);
+                self::assertSame([2], $result['mail_users']);
+                self::assertSame(2, $result['user_count']);
+                self::assertTrue($result['existing_unchanged']);
+            }
         }
     }
 

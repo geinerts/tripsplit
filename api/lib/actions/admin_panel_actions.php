@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/../helpers/helper_travel_places.php';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Admin Panel v2 Actions
@@ -694,6 +695,7 @@ function admin_panel_user_delete_action(): void
     // Soft-delete: mark as deleted rather than hard-delete to preserve financial history
     $pdo->prepare("UPDATE {$userTable} SET account_status = 'deleted', email = CONCAT('deleted_', id, '_', email) WHERE id = ?")
         ->execute([$userId]);
+    delete_user_travel_places($pdo, $userId);
 
     json_out(['ok' => true]);
 }

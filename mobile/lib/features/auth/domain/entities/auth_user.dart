@@ -21,6 +21,7 @@ class AuthUser {
     this.revolutMeLink,
     this.paypalMeLink,
     this.wisePayLink,
+    this.sharePaymentDetailsWithTrips = false,
     this.preferredCurrencyCode,
     this.avatarBase64,
     this.avatarUrl,
@@ -47,6 +48,7 @@ class AuthUser {
   final String? revolutMeLink;
   final String? paypalMeLink;
   final String? wisePayLink;
+  final bool sharePaymentDetailsWithTrips;
   final String? preferredCurrencyCode;
   final String? avatarBase64;
   final String? avatarUrl;
@@ -73,6 +75,7 @@ class AuthUser {
     String? revolutMeLink,
     String? paypalMeLink,
     String? wisePayLink,
+    bool? sharePaymentDetailsWithTrips,
     String? preferredCurrencyCode,
     String? avatarBase64,
     String? avatarUrl,
@@ -102,6 +105,8 @@ class AuthUser {
       revolutMeLink: revolutMeLink ?? this.revolutMeLink,
       paypalMeLink: paypalMeLink ?? this.paypalMeLink,
       wisePayLink: wisePayLink ?? this.wisePayLink,
+      sharePaymentDetailsWithTrips:
+          sharePaymentDetailsWithTrips ?? this.sharePaymentDetailsWithTrips,
       preferredCurrencyCode:
           preferredCurrencyCode ?? this.preferredCurrencyCode,
       avatarBase64: clearAvatar ? null : (avatarBase64 ?? this.avatarBase64),

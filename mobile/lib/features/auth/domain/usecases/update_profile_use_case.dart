@@ -14,6 +14,7 @@ class UpdateProfileUseCase {
     String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
+    bool? sharePaymentDetailsWithTrips,
   }) {
     return _repository.updateProfile(
       firstName: firstName,
@@ -23,6 +24,7 @@ class UpdateProfileUseCase {
       currentPassword: currentPassword,
       preferredCurrencyCode: preferredCurrencyCode,
       paymentDetails: paymentDetails,
+      sharePaymentDetailsWithTrips: sharePaymentDetailsWithTrips,
     );
   }
 }

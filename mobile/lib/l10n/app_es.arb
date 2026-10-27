@@ -545,9 +545,21 @@
   "notificationsRefreshFailed": "No se pudo actualizar. Se muestran las notificaciones anteriores.",
   "notificationsJustNow": "Ahora mismo",
   "notificationsMinutesAgo": "Hace {count} min",
-  "@notificationsMinutesAgo": {"placeholders": {"count": {"type": "int"}}},
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "notificationsHoursAgo": "Hace {count} h",
-  "@notificationsHoursAgo": {"placeholders": {"count": {"type": "int"}}},
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "notificationsUnread": "Sin leer",
   "noNotificationsYet": "Aún no hay notificaciones.",
   "noParticipantData": "Sin datos de participantes.",
@@ -1093,7 +1105,7 @@
   "workspaceOwesToTheGroup": "Debe al grupo",
   "workspaceGetsBackFromGroup": "Recibe del grupo",
   "workspaceShowingTop4ByBalanceDifference": "Mostrando los 4 principales por diferencia de saldo.",
-  "workspaceOpenFlow": "Flujo abierto",
+  "workspaceOpenFlow": "Detalles",
   "workspaceFriend": "Amigo",
   "workspaceSettlementTransfer": "Transferencia de liquidación",
   "workspaceCompleted": "Completado",
@@ -1608,5 +1620,126 @@
   "receiptPhotoLabel": "Foto del recibo",
   "replaceReceiptAction": "Cambiar recibo",
   "removeReceiptAction": "Quitar recibo",
-  "restoreReceiptAction": "Restaurar recibo anterior"
+  "restoreReceiptAction": "Restaurar recibo anterior",
+  "expenseSplitBetween": "Dividir entre",
+  "expenseEditParticipants": "Elegir participantes",
+  "expenseCustomSplit": "Reparto personalizado",
+  "expenseSplitAllocated": "Se han repartido {amount}",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "Quedan {amount} por repartir",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "Se supera el total en {amount}",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Compartir métodos de pago con mis viajes",
+  "profilePaymentSharingDescription": "Permitir que los miembros aceptados de los viajes que creo o a los que me uno vean mis métodos de pago. Se aplica a los viajes actuales y futuros. Desactívalo en cualquier momento para impedir nuevos accesos.",
+  "memberPaymentDetailsNotShared": "Los métodos de pago no se comparten o no están disponibles en este momento.",
+  "homeTripInvitations": "Invitaciones a viajes",
+  "homeNoTripInvitations": "No hay invitaciones pendientes",
+  "homeInvitationsLoadFailed": "No se pudieron cargar las invitaciones. Inténtalo de nuevo.",
+  "homeInvitationResponseFailed": "No se pudo responder a la invitación. Inténtalo de nuevo.",
+  "homeTripShareFailed": "No se pudo compartir el viaje. Inténtalo de nuevo.",
+  "settleStillToReceive": "Pendiente de recibir",
+  "settleStillToPay": "Pendiente de pagar",
+  "settleEstimateCaption": "Estimación según los gastos actuales. Los importes pueden cambiar hasta finalizar el viaje.",
+  "settleOutstandingCaption": "Pendiente de pago o de confirmación.",
+  "settleWaitingForYou": "Falta que confirmes que estás listo.",
+  "settleWhoPaysWhom": "Quién paga a quién",
+  "settlePreviewCaption": "Vista previa · importes definitivos al finalizar el viaje",
+  "settleOpenPaymentCaption": "Abre un pago para ver los detalles y las acciones disponibles.",
+  "tripBudgetEnable": "Establecer un presupuesto",
+  "tripBudgetSoloHint": "Objetivo de gasto opcional para este viaje.",
+  "tripBudgetGroupHint": "Un presupuesto compartido para todo el grupo.",
+  "tripBudgetAmount": "Importe del presupuesto",
+  "tripBudgetInvalid": "Introduce un importe entre 0,01 y 999999999,99, con un máximo de dos decimales.",
+  "tripBudgetTitle": "Presupuesto del viaje",
+  "tripBudgetGroupTitle": "Presupuesto del grupo",
+  "tripBudgetRemaining": "Restante",
+  "tripBudgetOver": "Presupuesto superado",
+  "tripBudgetSpent": "Gastado",
+  "tripBudgetLimit": "Presupuesto",
+  "travelMapTitle": "Mi mapa de viajes",
+  "travelMapSubtitle": "Lugares visitados, solo para ti.",
+  "travelMapHere": "He estado aquí",
+  "travelMapAdd": "Añadir lugar",
+  "travelMapSearch": "Buscar ciudad y país",
+  "travelMapSearchAction": "Buscar",
+  "travelMapSearchHint": "Por ejemplo, Lisboa, Portugal",
+  "travelMapEmpty": "Tu próximo recuerdo empieza aquí",
+  "travelMapEmptyBody": "Añade una ciudad visitada o registra dónde estás ahora.",
+  "travelMapConfirm": "¿Guardar esta visita?",
+  "travelMapConfirmBody": "Comprueba la ciudad y la fecha antes de guardarlas en tu mapa privado.",
+  "travelMapDate": "Fecha de visita",
+  "travelMapSave": "Guardar en mi mapa",
+  "travelMapCancel": "Cancelar",
+  "travelMapClose": "Cerrar",
+  "travelMapNoResults": "No se encontró la ciudad. Añade el país a la búsqueda.",
+  "travelMapLookupError": "No se pudo encontrar la ciudad. Revisa la conexión o añade el lugar manualmente.",
+  "travelMapDenied": "El acceso a la ubicación está desactivado. Puedes añadir una ciudad manualmente.",
+  "travelMapDisabled": "Activa los servicios de ubicación o añade una ciudad manualmente.",
+  "travelMapError": "No se pudo cargar tu mapa. Inténtalo de nuevo.",
+  "travelMapSaveError": "No se pudo guardar la visita. Inténtalo de nuevo.",
+  "travelMapUnavailable": "El mapa necesita una actualización del servidor.",
+  "travelMapOffline": "Sin conexión · lugares guardados",
+  "travelMapRetry": "Reintentar",
+  "travelMapDelete": "Eliminar visita",
+  "travelMapDeleteConfirm": "¿Eliminar esta visita de tu mapa privado?",
+  "travelMapFit": "Mostrar todos los lugares",
+  "travelMapSaved": "Visita guardada",
+  "travelMapVisited": "Visitado",
+  "travelMapLimit": "Tu mapa ha alcanzado 1000 visitas. Elimina una visita antes de añadir otra.",
+  "travelMapCounts": "{countries, plural, one{1 país} other{{countries} países}} · {cities, plural, one{1 ciudad} other{{cities} ciudades}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{1 visita} other{{count} visitas}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Destinos (opcional)",
+  "travelAddDestination": "Añadir destino",
+  "travelRemoveDestination": "Quitar destino",
+  "travelFromTrip": "Desde un viaje",
+  "travelChooseTrip": "Elige un viaje",
+  "travelNoTrips": "Aún no hay viajes disponibles. Puedes añadir un lugar manualmente.",
+  "travelAddToMap": "Añadir a mi mapa",
+  "travelTripConfirm": "Guarda solo los lugares que realmente visitaste. Se añadirán a tu mapa privado.",
+  "travelVisitTitle": "Título (opcional)",
+  "travelAddPhoto": "Añadir foto",
+  "travelChangePhoto": "Cambiar foto",
+  "travelRemovePhoto": "Quitar foto",
+  "travelPhotoError": "No se pudo preparar la foto. Elige otra.",
+  "travelEditVisit": "Editar visita",
+  "travelOpenTrip": "Abrir viaje",
+  "travelPreviousVisit": "Visita anterior",
+  "travelNextVisit": "Visita siguiente",
+  "travelDuplicate": "Esta visita ya está en tu mapa."
 }

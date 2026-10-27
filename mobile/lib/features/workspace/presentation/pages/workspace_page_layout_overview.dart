@@ -234,6 +234,15 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             ),
           ),
         ],
+        if (_tripBudgetCents != null) ...[
+          const SizedBox(height: 16),
+          TripBudgetCard(
+            budgetCents: _tripBudgetCents!,
+            spentCents: (total * 100).round(),
+            currencyCode: widget.trip.currencyCode,
+            isSolo: widget.trip.isSolo,
+          ),
+        ],
         if (!snapshot.isActive) ...[
           const SizedBox(height: 16),
           _buildClosedTripBanner(context, snapshot, padding: EdgeInsets.zero),

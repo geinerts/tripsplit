@@ -2548,7 +2548,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get workspaceShowingTop4ByBalanceDifference => 'Mostrando los 4 principales por diferencia de saldo.';
 
   @override
-  String get workspaceOpenFlow => 'Flujo abierto';
+  String get workspaceOpenFlow => 'Detalles';
 
   @override
   String get workspaceFriend => 'Amigo';
@@ -3886,4 +3886,281 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get restoreReceiptAction => 'Restaurar recibo anterior';
+
+  @override
+  String get expenseSplitBetween => 'Dividir entre';
+
+  @override
+  String get expenseEditParticipants => 'Elegir participantes';
+
+  @override
+  String get expenseCustomSplit => 'Reparto personalizado';
+
+  @override
+  String expenseSplitAllocated(String amount) {
+    return 'Se han repartido $amount';
+  }
+
+  @override
+  String expenseSplitRemaining(String amount) {
+    return 'Quedan $amount por repartir';
+  }
+
+  @override
+  String expenseSplitOver(String amount) {
+    return 'Se supera el total en $amount';
+  }
+
+  @override
+  String get profilePaymentSharingTitle => 'Compartir métodos de pago con mis viajes';
+
+  @override
+  String get profilePaymentSharingDescription => 'Permitir que los miembros aceptados de los viajes que creo o a los que me uno vean mis métodos de pago. Se aplica a los viajes actuales y futuros. Desactívalo en cualquier momento para impedir nuevos accesos.';
+
+  @override
+  String get memberPaymentDetailsNotShared => 'Los métodos de pago no se comparten o no están disponibles en este momento.';
+
+  @override
+  String get homeTripInvitations => 'Invitaciones a viajes';
+
+  @override
+  String get homeNoTripInvitations => 'No hay invitaciones pendientes';
+
+  @override
+  String get homeInvitationsLoadFailed => 'No se pudieron cargar las invitaciones. Inténtalo de nuevo.';
+
+  @override
+  String get homeInvitationResponseFailed => 'No se pudo responder a la invitación. Inténtalo de nuevo.';
+
+  @override
+  String get homeTripShareFailed => 'No se pudo compartir el viaje. Inténtalo de nuevo.';
+
+  @override
+  String get settleStillToReceive => 'Pendiente de recibir';
+
+  @override
+  String get settleStillToPay => 'Pendiente de pagar';
+
+  @override
+  String get settleEstimateCaption => 'Estimación según los gastos actuales. Los importes pueden cambiar hasta finalizar el viaje.';
+
+  @override
+  String get settleOutstandingCaption => 'Pendiente de pago o de confirmación.';
+
+  @override
+  String get settleWaitingForYou => 'Falta que confirmes que estás listo.';
+
+  @override
+  String get settleWhoPaysWhom => 'Quién paga a quién';
+
+  @override
+  String get settlePreviewCaption => 'Vista previa · importes definitivos al finalizar el viaje';
+
+  @override
+  String get settleOpenPaymentCaption => 'Abre un pago para ver los detalles y las acciones disponibles.';
+
+  @override
+  String get tripBudgetEnable => 'Establecer un presupuesto';
+
+  @override
+  String get tripBudgetSoloHint => 'Objetivo de gasto opcional para este viaje.';
+
+  @override
+  String get tripBudgetGroupHint => 'Un presupuesto compartido para todo el grupo.';
+
+  @override
+  String get tripBudgetAmount => 'Importe del presupuesto';
+
+  @override
+  String get tripBudgetInvalid => 'Introduce un importe entre 0,01 y 999999999,99, con un máximo de dos decimales.';
+
+  @override
+  String get tripBudgetTitle => 'Presupuesto del viaje';
+
+  @override
+  String get tripBudgetGroupTitle => 'Presupuesto del grupo';
+
+  @override
+  String get tripBudgetRemaining => 'Restante';
+
+  @override
+  String get tripBudgetOver => 'Presupuesto superado';
+
+  @override
+  String get tripBudgetSpent => 'Gastado';
+
+  @override
+  String get tripBudgetLimit => 'Presupuesto';
+
+  @override
+  String get travelMapTitle => 'Mi mapa de viajes';
+
+  @override
+  String get travelMapSubtitle => 'Lugares visitados, solo para ti.';
+
+  @override
+  String get travelMapHere => 'He estado aquí';
+
+  @override
+  String get travelMapAdd => 'Añadir lugar';
+
+  @override
+  String get travelMapSearch => 'Buscar ciudad y país';
+
+  @override
+  String get travelMapSearchAction => 'Buscar';
+
+  @override
+  String get travelMapSearchHint => 'Por ejemplo, Lisboa, Portugal';
+
+  @override
+  String get travelMapEmpty => 'Tu próximo recuerdo empieza aquí';
+
+  @override
+  String get travelMapEmptyBody => 'Añade una ciudad visitada o registra dónde estás ahora.';
+
+  @override
+  String get travelMapConfirm => '¿Guardar esta visita?';
+
+  @override
+  String get travelMapConfirmBody => 'Comprueba la ciudad y la fecha antes de guardarlas en tu mapa privado.';
+
+  @override
+  String get travelMapDate => 'Fecha de visita';
+
+  @override
+  String get travelMapSave => 'Guardar en mi mapa';
+
+  @override
+  String get travelMapCancel => 'Cancelar';
+
+  @override
+  String get travelMapClose => 'Cerrar';
+
+  @override
+  String get travelMapNoResults => 'No se encontró la ciudad. Añade el país a la búsqueda.';
+
+  @override
+  String get travelMapLookupError => 'No se pudo encontrar la ciudad. Revisa la conexión o añade el lugar manualmente.';
+
+  @override
+  String get travelMapDenied => 'El acceso a la ubicación está desactivado. Puedes añadir una ciudad manualmente.';
+
+  @override
+  String get travelMapDisabled => 'Activa los servicios de ubicación o añade una ciudad manualmente.';
+
+  @override
+  String get travelMapError => 'No se pudo cargar tu mapa. Inténtalo de nuevo.';
+
+  @override
+  String get travelMapSaveError => 'No se pudo guardar la visita. Inténtalo de nuevo.';
+
+  @override
+  String get travelMapUnavailable => 'El mapa necesita una actualización del servidor.';
+
+  @override
+  String get travelMapOffline => 'Sin conexión · lugares guardados';
+
+  @override
+  String get travelMapRetry => 'Reintentar';
+
+  @override
+  String get travelMapDelete => 'Eliminar visita';
+
+  @override
+  String get travelMapDeleteConfirm => '¿Eliminar esta visita de tu mapa privado?';
+
+  @override
+  String get travelMapFit => 'Mostrar todos los lugares';
+
+  @override
+  String get travelMapSaved => 'Visita guardada';
+
+  @override
+  String get travelMapVisited => 'Visitado';
+
+  @override
+  String get travelMapLimit => 'Tu mapa ha alcanzado 1000 visitas. Elimina una visita antes de añadir otra.';
+
+  @override
+  String travelMapCounts(int countries, int cities) {
+    String _temp0 = intl.Intl.pluralLogic(
+      countries,
+      locale: localeName,
+      other: '$countries países',
+      one: '1 país',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      cities,
+      locale: localeName,
+      other: '$cities ciudades',
+      one: '1 ciudad',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String travelMapVisits(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count visitas',
+      one: '1 visita',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get travelTripDestinations => 'Destinos (opcional)';
+
+  @override
+  String get travelAddDestination => 'Añadir destino';
+
+  @override
+  String get travelRemoveDestination => 'Quitar destino';
+
+  @override
+  String get travelFromTrip => 'Desde un viaje';
+
+  @override
+  String get travelChooseTrip => 'Elige un viaje';
+
+  @override
+  String get travelNoTrips => 'Aún no hay viajes disponibles. Puedes añadir un lugar manualmente.';
+
+  @override
+  String get travelAddToMap => 'Añadir a mi mapa';
+
+  @override
+  String get travelTripConfirm => 'Guarda solo los lugares que realmente visitaste. Se añadirán a tu mapa privado.';
+
+  @override
+  String get travelVisitTitle => 'Título (opcional)';
+
+  @override
+  String get travelAddPhoto => 'Añadir foto';
+
+  @override
+  String get travelChangePhoto => 'Cambiar foto';
+
+  @override
+  String get travelRemovePhoto => 'Quitar foto';
+
+  @override
+  String get travelPhotoError => 'No se pudo preparar la foto. Elige otra.';
+
+  @override
+  String get travelEditVisit => 'Editar visita';
+
+  @override
+  String get travelOpenTrip => 'Abrir viaje';
+
+  @override
+  String get travelPreviousVisit => 'Visita anterior';
+
+  @override
+  String get travelNextVisit => 'Visita siguiente';
+
+  @override
+  String get travelDuplicate => 'Esta visita ya está en tu mapa.';
 }

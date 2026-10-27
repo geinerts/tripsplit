@@ -1,4 +1,5 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:tripsplit/features/workspace/domain/entities/payment_details.dart';
 import 'package:tripsplit/features/workspace/domain/entities/receipt_upload_payload.dart';
 import 'package:tripsplit/features/workspace/domain/entities/uploaded_receipt.dart';
 import 'package:tripsplit/core/ui/user_profile_payment_section.dart';
@@ -15,6 +16,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -66,6 +68,8 @@ class _Trips implements TripsController {
   Uint8List? uploadedBytes;
   String? savedPath;
   bool failUpdate = false;
+  bool failShare = false;
+  int shareCalls = 0;
   @override
   Future<UploadedTripImageData> uploadTripImage({
     required int tripId,
@@ -82,6 +86,9 @@ class _Trips implements TripsController {
     required String name,
     String? imagePath,
     bool removeImage = false,
+    int? budgetCents,
+    List<Map<String,dynamic>>? destinations,
+    bool clearBudget = false,
   }) async {
     if (failUpdate) throw const ApiException('Could not save trip');
     savedPath = removeImage ? null : imagePath;
@@ -99,14 +106,18 @@ class _Trips implements TripsController {
   }
 
   @override
-  Future<TripInviteLink> createTripInviteLink({required int tripId}) async =>
-      const TripInviteLink(
-        tripId: 1,
-        inviteUrl: 'https://splyto.app/?invite=lisbon-abcdefghij',
-        inviteToken: 'abcdefghij',
-        expiresAt: '2026-11-01 12:00:00',
-        expiresInSeconds: 86400,
-      );
+  Future<TripInviteLink> createTripInviteLink({required int tripId}) async {
+    shareCalls++;
+    if (failShare) throw const ApiException('Offline', isNetworkError: true);
+    return const TripInviteLink(
+      tripId: 1,
+      inviteUrl: 'https://splyto.app/?invite=lisbon-abcdefghij',
+      inviteToken: 'abcdefghij',
+      expiresAt: '2026-11-01 12:00:00',
+      expiresInSeconds: 86400,
+    );
+  }
+
   @override
   Future<List<PendingTripInvitation>> listPendingInvitations({
     required int tripId,
@@ -218,7 +229,40 @@ WorkspaceSnapshot snapshot({
 );
 
 class _Workspace implements WorkspaceController {
+  bool memberDetailsShared = false;
+  int memberDetailsCalls = 0;
+  @override
+  Future<PaymentDetails> loadMemberPaymentDetails({
+    required int tripId,
+    required int userId,
+  }) async {
+    memberDetailsCalls++;
+    if (!memberDetailsShared) {
+      throw const ApiException('Not shared', statusCode: 404);
+    }
+    return const PaymentDetails(revolutHandle: '@annarevtag');
+  }
+
   final endedTrips = <int>[];
+  final readinessCalls = <bool>[];
+  @override
+  Future<void> setReadyToSettle({
+    required int tripId,
+    required bool isReady,
+  }) async {
+    readinessCalls.add(isReady);
+    data = data.copyWith(
+      users: [
+        for (final u in data.users)
+          WorkspaceUser(
+            id: u.id,
+            nickname: u.nickname,
+            isReadyToSettle: u.id == 7 ? isReady : u.isReadyToSettle,
+          ),
+      ],
+    );
+  }
+
   Object? endError;
   List<QueuedMutation> queued = [];
   @override
@@ -645,6 +689,25 @@ Future<Uint8List> _receiptPreviewFixture() async {
   return data!.buffer.asUint8List();
 }
 
+Future<void> expandFirstSettlement(WidgetTester tester) async {
+  final card = find
+      .byWidgetPredicate(
+        (w) =>
+            w.key is ValueKey<String> &&
+            (w.key as ValueKey<String>).value.startsWith('settlement-card-'),
+      )
+      .first;
+  await tester.scrollUntilVisible(
+    card,
+    220,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.pumpAndSettle();
+  await tester.ensureVisible(card);
+  await tester.tap(card);
+  await tester.pumpAndSettle();
+}
+
 Future<void> disposePage(WidgetTester tester) async {
   await tester.pumpWidget(const SizedBox.shrink());
   await tester.pump(const Duration(seconds: 1));
@@ -719,7 +782,638 @@ Future<void> _selectTab(WidgetTester tester, String label) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> selectExpenseFood(WidgetTester tester) async {
+  await tester.ensureVisible(find.byKey(const ValueKey('expense-category')));
+  await tester.tap(find.byKey(const ValueKey('expense-category')));
+  await tester.pumpAndSettle();
+  await tester.tap(
+    find.descendant(
+      of: find.byKey(const ValueKey('expense-category-picker')),
+      matching: find.text('Food'),
+    ),
+  );
+  await tester.pumpAndSettle();
+}
+
+Future<void> visibleTap(
+  WidgetTester tester,
+  Finder finder, {
+  bool settle = true,
+}) async {
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await Scrollable.ensureVisible(tester.element(finder), alignment: .5);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+  }
+}
+
 void main() {
+  testWidgets(
+    'readiness card toggles only self and updates finish eligibility',
+    (tester) async {
+      final controller = _Workspace()
+        ..data = snapshot().copyWith(
+          users: const [
+            WorkspaceUser(id: 7, nickname: 'Matiss'),
+            WorkspaceUser(id: 8, nickname: 'Ruslans', isReadyToSettle: true),
+          ],
+        );
+      await _mount(tester, controller, manager: true);
+      await tester.pumpAndSettle();
+      await _selectTab(tester, 'Settle');
+      final finish = find.byKey(const ValueKey('settle-finish-trip'));
+      expect(tester.widget<FilledButton>(finish).onPressed, isNull);
+      final toggle = find.byKey(const ValueKey('settle-ready-switch'));
+      await visibleTap(tester, toggle);
+      expect(controller.readinessCalls, [true]);
+      expect(tester.widget<FilledButton>(finish).onPressed, isNotNull);
+      expect(find.text('2 / 2'), findsOneWidget);
+      await visibleTap(tester, toggle);
+      expect(controller.readinessCalls, [true, false]);
+      expect(tester.widget<FilledButton>(finish).onPressed, isNull);
+      await disposePage(tester);
+    },
+  );
+
+  testWidgets(
+    'settle totals keep incoming and outgoing separate and exclude confirmed',
+    (tester) async {
+      final outgoing = settlement('pending');
+      SettlementItem incoming(int id, double amount, bool confirmed) =>
+          SettlementItem(
+            id: id,
+            fromUserId: 8,
+            toUserId: 7,
+            from: 'Ruslans',
+            to: 'Matiss',
+            amount: amount,
+            status: confirmed ? 'confirmed' : 'sent',
+            createdAt: null,
+            markedSentAt: null,
+            confirmedAt: null,
+            canMarkSent: false,
+            canConfirmReceived: !confirmed,
+            canCancelSent: false,
+            canReportNotReceived: !confirmed,
+            isConfirmed: confirmed,
+          );
+      final controller = _Workspace()
+        ..data = snapshot().copyWith(
+          tripStatus: 'settling',
+          settlements: [
+            outgoing,
+            incoming(2, 30, false),
+            incoming(3, 15, true),
+          ],
+        );
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      await _selectTab(tester, 'Settle');
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('settle-summary-incoming')))
+            .data,
+        '€30.00',
+      );
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('settle-summary-outgoing')))
+            .data,
+        '€24.00',
+      );
+      expect(find.text('I sent'), findsNothing);
+      await expandFirstSettlement(tester);
+      expect(find.text('Confirm received'), findsOneWidget);
+      await disposePage(tester);
+    },
+  );
+
+  testWidgets('settlement cards review images', (tester) async {
+    if (!const bool.fromEnvironment('SETTLEMENT_CARDS_PREVIEWS')) return;
+    for (final dark in [false, true]) {
+      for (final phase in ['active', 'settling', 'expanded']) {
+        final boundary = GlobalKey();
+        final controller = _Workspace()
+          ..data = snapshot().copyWith(
+            tripStatus: phase == 'active' ? 'active' : 'settling',
+            users: const [
+              WorkspaceUser(id: 7, nickname: 'Matiss'),
+              WorkspaceUser(id: 8, nickname: 'Ruslans', isReadyToSettle: true),
+              WorkspaceUser(id: 9, nickname: 'Igors', isReadyToSettle: true),
+            ],
+            settlements: [
+              for (final id in [8, 9])
+                SettlementItem(
+                  id: phase == 'active' ? null : id,
+                  fromUserId: id,
+                  toUserId: 7,
+                  from: id == 8 ? 'Ruslans' : 'Igors',
+                  to: 'Matiss',
+                  amount: id == 8 ? 30 : 15,
+                  status: phase == 'active'
+                      ? 'suggested'
+                      : id == 8
+                      ? 'sent'
+                      : 'pending',
+                  createdAt: null,
+                  markedSentAt: null,
+                  confirmedAt: null,
+                  canMarkSent: false,
+                  canConfirmReceived: phase != 'active' && id == 8,
+                  canCancelSent: false,
+                  canReportNotReceived: false,
+                  isConfirmed: false,
+                ),
+            ],
+            balances: const [
+              BalanceItem(
+                id: 7,
+                nickname: 'Matiss',
+                paid: 90,
+                owed: 45,
+                net: 45,
+              ),
+              BalanceItem(
+                id: 8,
+                nickname: 'Ruslans',
+                paid: 15,
+                owed: 45,
+                net: -30,
+              ),
+              BalanceItem(
+                id: 9,
+                nickname: 'Igors',
+                paid: 30,
+                owed: 45,
+                net: -15,
+              ),
+            ],
+            settlementTotal: 2,
+            settlementRemaining: 2,
+            settlementConfirmed: 0,
+          );
+        await _mount(
+          tester,
+          controller,
+          dark: dark,
+          manager: true,
+          boundary: boundary,
+        );
+        await tester.pumpAndSettle();
+        await _selectTab(tester, 'Settle');
+        if (phase == 'expanded') await expandFirstSettlement(tester);
+        await tester.ensureVisible(
+          find.byKey(const ValueKey('settle-personal-summary')),
+        );
+        await tester.pumpAndSettle();
+        final position = tester
+            .state<ScrollableState>(find.byType(Scrollable).first)
+            .position;
+        final summaryTop = tester
+            .getTopLeft(find.byKey(const ValueKey('settle-personal-summary')))
+            .dy;
+        position.jumpTo(
+          (position.pixels + summaryTop - 172).clamp(
+            position.minScrollExtent,
+            position.maxScrollExtent,
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        await tester.runAsync(() async {
+          final image =
+              await (boundary.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/settlement-cards/${dark ? 'dark' : 'light'}-$phase.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+        await disposePage(tester);
+      }
+    }
+  });
+  testWidgets(
+    'trip menu shares through native sheet and recovers from failure',
+    (tester) async {
+      const channel = MethodChannel('dev.fluttercommunity.plus/share');
+      final calls = <MethodCall>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+        call,
+      ) async {
+        calls.add(call);
+        return 'com.example.share';
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          null,
+        ),
+      );
+      final trips = _Trips();
+      final commands = WorkspacePageCommandController();
+      final boundary = GlobalKey();
+      await _mount(
+        tester,
+        _Workspace(),
+        manager: true,
+        trips: trips,
+        commands: commands,
+        boundary: boundary,
+      );
+      await tester.pumpAndSettle();
+      for (final fail in [false, true, false]) {
+        trips.failShare = fail;
+        calls.clear();
+        commands.requestOpenTripActions();
+        await tester.pumpAndSettle();
+        final share = find.byKey(const ValueKey('workspace-trip-share'));
+        expect(
+          tester.getTopLeft(share).dy,
+          greaterThan(tester.getTopLeft(find.text('Invite members')).dy),
+        );
+        expect(
+          find.descendant(
+            of: share,
+            matching: find.byIcon(CupertinoIcons.arrowshape_turn_up_right),
+          ),
+          findsOneWidget,
+        );
+        if (const bool.fromEnvironment('HOME_ACTIONS_PREVIEWS') &&
+            trips.shareCalls == 0) {
+          await tester.runAsync(() async {
+            final image =
+                await (boundary.currentContext!.findRenderObject()!
+                        as RenderRepaintBoundary)
+                    .toImage(pixelRatio: 2);
+            final bytes = await image.toByteData(
+              format: ui.ImageByteFormat.png,
+            );
+            final file = File(
+              '../output/design/home-actions/trip-share-menu.png',
+            );
+            await file.parent.create(recursive: true);
+            await file.writeAsBytes(bytes!.buffer.asUint8List());
+            image.dispose();
+          });
+        }
+        await tester.tap(share);
+        await tester.pumpAndSettle();
+        expect(find.byKey(const ValueKey('trip-actions-sheet')), findsNothing);
+        if (fail) {
+          expect(calls, isEmpty);
+          expect(
+            find.text('Could not share the trip. Please try again.'),
+            findsOneWidget,
+          );
+        } else {
+          expect(calls.single.method, 'share');
+          expect(
+            calls.single.arguments['text'],
+            'Lisbon getaway\nhttps://splyto.app/?invite=lisbon-abcdefghij',
+          );
+          expect(calls.single.arguments['originWidth'], greaterThan(0));
+          expect(calls.single.arguments['originHeight'], greaterThan(0));
+        }
+        expect(tester.takeException(), isNull);
+      }
+      expect(trips.shareCalls, 3);
+      await disposePage(tester);
+      commands.dispose();
+    },
+  );
+
+  testWidgets('trip menu share requires active group management access', (
+    tester,
+  ) async {
+    for (final role in ['owner', 'admin', 'member']) {
+      for (final status in ['active', 'archived']) {
+        final commands = WorkspacePageCommandController();
+        await _mount(
+          tester,
+          _Workspace()..data = snapshot(status: status),
+          role: role,
+          commands: commands,
+        );
+        await tester.pumpAndSettle();
+        commands.requestOpenTripActions();
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const ValueKey('workspace-trip-share')),
+          status == 'active' && role != 'member'
+              ? findsOneWidget
+              : findsNothing,
+        );
+        await disposePage(tester);
+        commands.dispose();
+      }
+    }
+  });
+  testWidgets('participant picker commits explicit members and rejects none', (
+    tester,
+  ) async {
+    final commands = WorkspacePageCommandController();
+    final controller = _Workspace();
+    await _mount(tester, controller, commands: commands);
+    await tester.pumpAndSettle();
+    commands.requestOpenAddExpense();
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-form-amount')),
+      '10',
+    );
+    await selectExpenseFood(tester);
+    expect(find.byType(CheckboxListTile), findsNothing);
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-participants')),
+    );
+    await tester.tap(find.byKey(const ValueKey('expense-participant-7')));
+    await tester.tap(find.byKey(const ValueKey('expense-participant-8')));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<ElevatedButton>(
+            find.byKey(const ValueKey('expense-editor-done')),
+          )
+          .onPressed,
+      isNull,
+    );
+    await tester.tap(find.byKey(const ValueKey('expense-participant-8')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('expense-editor-done')));
+    await tester.pumpAndSettle();
+    // A dismissed edit must not change the applied participant list.
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-participants')),
+    );
+    expect(
+      tester
+          .widget<CheckboxListTile>(
+            find.byKey(const ValueKey('expense-participant-7')),
+          )
+          .value,
+      false,
+    );
+    await tester.tap(find.byKey(const ValueKey('expense-participant-7')));
+    await tester.tap(find.byKey(const ValueKey('expense-editor-close')));
+    await tester.pumpAndSettle();
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-custom-split')),
+    );
+    expect(find.byKey(const ValueKey('split-input-7')), findsNothing);
+    expect(
+      tester
+          .widget<TextField>(find.byKey(const ValueKey('split-input-8')))
+          .controller!
+          .text,
+      '10.00',
+    );
+    await tester.tap(find.byKey(const ValueKey('expense-editor-done')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('split-input-8')), findsNothing);
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+    await tester.pumpAndSettle();
+    expect(controller.savedParticipants, [8]);
+    expect(controller.savedSplits!.single.value, 10);
+    expect(controller.savedSplits!.single.userId, 8);
+    await disposePage(tester);
+  });
+
+  testWidgets(
+    'split editor validates totals and cancel preserves committed amounts',
+    (tester) async {
+      final commands = WorkspacePageCommandController();
+      final controller = _Workspace();
+      await _mount(tester, controller, commands: commands);
+      await tester.pumpAndSettle();
+      commands.requestOpenAddExpense();
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-form-amount')),
+        '10',
+      );
+      await selectExpenseFood(tester);
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-custom-split')),
+      );
+      await tester.enterText(find.byKey(const ValueKey('split-input-7')), '6');
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<ElevatedButton>(
+              find.byKey(const ValueKey('expense-editor-done')),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(find.textContaining('over the total'), findsOneWidget);
+      await tester.enterText(find.byKey(const ValueKey('split-input-8')), '4');
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('expense-editor-done')));
+      await tester.pumpAndSettle();
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-split-summary')),
+      );
+      await tester.enterText(find.byKey(const ValueKey('split-input-7')), '1');
+      await tester.pumpAndSettle();
+      expect(find.textContaining('left to split'), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('expense-editor-close')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+      await tester.pumpAndSettle();
+      expect(controller.savedSplits!.map((s) => s.value), [6, 4]);
+      await disposePage(tester);
+    },
+  );
+
+  testWidgets(
+    'split editor keeps mode drafts and rejects fractional shares with keyboard',
+    (tester) async {
+      final commands = WorkspacePageCommandController();
+      await _mount(
+        tester,
+        _Workspace(),
+        commands: commands,
+        width: 320,
+        height: 568,
+      );
+      await tester.pumpAndSettle();
+      commands.requestOpenAddExpense();
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-form-amount')),
+        '10.01',
+      );
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-custom-split')),
+      );
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('split-input-7')))
+            .controller!
+            .text,
+        '5.01',
+      );
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('split-input-8')))
+            .controller!
+            .text,
+        '5.00',
+      );
+      await tester.enterText(
+        find.byKey(const ValueKey('split-input-7')),
+        '6.01',
+      );
+      await visibleTap(tester, find.text('Percentages'));
+      await tester.enterText(find.byKey(const ValueKey('split-input-7')), '40');
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<ElevatedButton>(
+              find.byKey(const ValueKey('expense-editor-done')),
+            )
+            .onPressed,
+        isNull,
+      );
+      await visibleTap(tester, find.text('Exact amounts'));
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('split-input-7')))
+            .controller!
+            .text,
+        '6.01',
+      );
+      await visibleTap(tester, find.text('Shares'));
+      tester.view.viewInsets = const FakeViewPadding(bottom: 280);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.ensureVisible(find.byKey(const ValueKey('split-input-7')));
+      await tester.enterText(
+        find.byKey(const ValueKey('split-input-7')),
+        '1.5',
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<ElevatedButton>(
+              find.byKey(const ValueKey('expense-editor-done')),
+            )
+            .onPressed,
+        isNull,
+      );
+      expect(tester.takeException(), isNull);
+      expect(
+        tester
+            .getRect(find.byKey(const ValueKey('expense-editor-done')))
+            .bottom,
+        lessThanOrEqualTo(568 - 280),
+      );
+      await disposePage(tester);
+    },
+  );
+
+  testWidgets('compact expense layout review images', (tester) async {
+    if (!const bool.fromEnvironment('EXPENSE_LAYOUT_PREVIEWS')) return;
+    for (final dark in [false, true]) {
+      final key = GlobalKey();
+      final commands = WorkspacePageCommandController();
+      await _mount(
+        tester,
+        _Workspace()
+          ..data = snapshot().copyWith(
+            users: const [
+              WorkspaceUser(id: 7, nickname: 'Matiss'),
+              WorkspaceUser(id: 8, nickname: 'Ruslans'),
+              WorkspaceUser(id: 9, nickname: 'Igors'),
+            ],
+          ),
+        commands: commands,
+        boundary: key,
+        dark: dark,
+      );
+      await tester.pumpAndSettle();
+      commands.requestOpenAddExpense();
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-form-amount')),
+        '180.00',
+      );
+      await selectExpenseFood(tester);
+      final t = AppLocalizations.of(
+        tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+      )!;
+      await tester.enterText(
+        find.byWidgetPredicate(
+          (w) => w is TextField && w.decoration?.labelText == t.noteLabel,
+        ),
+        'Dinner with friends',
+      );
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+      for (final screen in ['split', 'form', 'participants']) {
+        if (screen == 'split') {
+          await visibleTap(
+            tester,
+            find.byKey(const ValueKey('expense-custom-split')),
+          );
+          for (final e in [(7, '80'), (8, '60'), (9, '40')]) {
+            await tester.enterText(
+              find.byKey(ValueKey('split-input-${e.$1}')),
+              e.$2,
+            );
+          }
+          FocusManager.instance.primaryFocus?.unfocus();
+          await tester.pumpAndSettle();
+        } else if (screen == 'form') {
+          await tester.tap(find.byKey(const ValueKey('expense-editor-done')));
+          await tester.pumpAndSettle();
+          Scrollable.of(
+            tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+          ).position.jumpTo(0);
+          await tester.pumpAndSettle();
+        } else {
+          await visibleTap(
+            tester,
+            find.byKey(const ValueKey('expense-participants')),
+          );
+        }
+        expect(tester.takeException(), isNull);
+        await tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/expense-layout/${dark ? 'dark' : 'light'}-$screen.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+      }
+      await disposePage(tester);
+      commands.dispose();
+    }
+  });
+
   testWidgets(
     'Duo trip overview reflows and retains expense tab while folding',
     (tester) async {
@@ -940,24 +1634,6 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  Future<void> visibleTap(
-    WidgetTester tester,
-    Finder finder, {
-    bool settle = true,
-  }) async {
-    await tester.ensureVisible(finder);
-    await tester.pumpAndSettle();
-    await Scrollable.ensureVisible(tester.element(finder), alignment: .5);
-    await tester.pumpAndSettle();
-    await tester.tap(finder);
-    if (settle) {
-      await tester.pumpAndSettle();
-    } else {
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-    }
-  }
-
   ExpenseComment comment({bool own = true}) => ExpenseComment(
     id: 11,
     userId: own ? 7 : 8,
@@ -965,6 +1641,36 @@ void main() {
     body: 'Airport transfer is included in this expense.',
     createdAt: '2026-10-22',
   );
+  testWidgets(
+    'member revtag loads with sharing and disappears after revocation refresh',
+    (tester) async {
+      final controller = _Workspace()..memberDetailsShared = true;
+      await _mount(tester, controller, auth: _Auth(revtag: '@myrevtag'));
+      await tester.pumpAndSettle();
+      final t = AppLocalizations.of(
+        tester.element(find.byType(WorkspacePage)),
+      )!;
+      await tester.ensureVisible(find.byTooltip(t.workspaceMemberCount(2)));
+      await tester.tap(find.byTooltip(t.workspaceMemberCount(2)));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('member-row-8')));
+      await tester.pumpAndSettle();
+      expect(find.text('@annarevtag'), findsOneWidget);
+      expect(find.text('@myrevtag'), findsNothing);
+      controller.memberDetailsShared = false;
+      final profile = tester.widget<UserProfilePage>(
+        find.byType(UserProfilePage),
+      );
+      final refreshed = profile.onRefresh!();
+      await tester.pumpAndSettle();
+      await refreshed;
+      expect(find.text('@annarevtag'), findsNothing);
+      expect(find.text(t.memberPaymentDetailsNotShared), findsOneWidget);
+      expect(controller.memberDetailsCalls, 2);
+      await disposePage(tester);
+    },
+  );
+
   for (final memberId in [7, 8]) {
     testWidgets('own revtag is visible only on own member profile $memberId', (
       tester,
@@ -982,10 +1688,15 @@ void main() {
       final profile = tester.widget<UserProfilePage>(
         find.byType(UserProfilePage),
       );
-      final payments = profile.sections
-          .whereType<UserProfilePaymentDetailsSection>()
-          .single;
-      expect(payments.revolutHandle, memberId == 7 ? '@myrevtag' : isNull);
+      if (memberId == 7) {
+        final payments = profile.sections
+            .whereType<UserProfilePaymentDetailsSection>()
+            .single;
+        expect(payments.revolutHandle, '@myrevtag');
+      } else {
+        expect(find.text(t.memberPaymentDetailsNotShared), findsOneWidget);
+        expect(find.text('@myrevtag'), findsNothing);
+      }
       await disposePage(tester);
     });
   }
@@ -1124,6 +1835,7 @@ void main() {
         tester.element(find.byType(WorkspacePage)),
       )!;
       await _selectTab(tester, t.workspaceSettle);
+      await expandFirstSettlement(tester);
       await tester.scrollUntilVisible(
         find.text(t.workspaceOpenFlow),
         200,
@@ -1132,7 +1844,10 @@ void main() {
       await visibleTap(tester, find.text(t.workspaceOpenFlow));
       await visibleTap(
         tester,
-        find.widgetWithText(FilledButton, t.iSentAction),
+        find.descendant(
+          of: find.byType(AppActionSheet).last,
+          matching: find.widgetWithText(FilledButton, t.iSentAction),
+        ),
       );
       expect(controller.sentCalls, isEmpty);
       await tester.tap(find.text(t.cancelAction));
@@ -1140,7 +1855,10 @@ void main() {
       expect(controller.sentCalls, isEmpty);
       await visibleTap(
         tester,
-        find.widgetWithText(FilledButton, t.iSentAction),
+        find.descendant(
+          of: find.byType(AppActionSheet).last,
+          matching: find.widgetWithText(FilledButton, t.iSentAction),
+        ),
       );
       await tester.tap(
         find.descendant(
@@ -1150,7 +1868,13 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(controller.sentCalls, [(1, 1)]);
-      expect(find.widgetWithText(FilledButton, t.iSentAction), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(AppActionSheet).last,
+          matching: find.widgetWithText(FilledButton, t.iSentAction),
+        ),
+        findsNothing,
+      );
       await disposePage(tester);
     },
   );
@@ -1167,6 +1891,7 @@ void main() {
         tester.element(find.byType(WorkspacePage)),
       )!;
       await _selectTab(tester, t.workspaceSettle);
+      await expandFirstSettlement(tester);
       await tester.scrollUntilVisible(
         find.text(t.paymentRecordAction),
         200,
@@ -1218,7 +1943,10 @@ void main() {
           200,
           scrollable: find.byType(Scrollable).last,
         );
-        await visibleTap(tester, find.text(t.splitModeLabel));
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-custom-split')),
+        );
         if (mode != 'picker') {
           final labels = {
             'exact': t.exactAmountsLabel,
@@ -1244,7 +1972,7 @@ void main() {
           FocusManager.instance.primaryFocus?.unfocus();
           await tester.pumpAndSettle();
           await Scrollable.ensureVisible(
-            tester.element(find.text(t.splitModeLabel)),
+            tester.element(find.byKey(const ValueKey('expense-split-status'))),
             alignment: 0,
           );
           await tester.pumpAndSettle();
@@ -1419,6 +2147,10 @@ void main() {
   }
   setUp(() => SharedPreferences.setMockInitialValues({}));
   setUpAll(() async {
+    await (FontLoader('packages/cupertino_icons/CupertinoIcons')..addFont(
+          rootBundle.load('packages/cupertino_icons/assets/CupertinoIcons.ttf'),
+        ))
+        .load();
     await (FontLoader(
       'Inter',
     )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
@@ -1634,6 +2366,7 @@ void main() {
       commands.requestOpenTripActions();
       await tester.pumpAndSettle();
       expect(find.text('Invite members'), findsNothing);
+      expect(find.byKey(const ValueKey('workspace-trip-share')), findsNothing);
       expect(
         find.text('Finish trip'),
         status == 'active' ? findsOneWidget : findsNothing,
@@ -1780,6 +2513,73 @@ void main() {
     expect(find.text('👍'), findsOneWidget);
     await disposePage(tester);
   });
+
+  testWidgets('budget review images', (tester) async {
+    if (!const bool.fromEnvironment('BUDGET_PREVIEWS')) return;
+    for (final dark in [false, true]) {
+      final key = GlobalKey();
+      final commands = WorkspacePageCommandController();
+      final controller = _Workspace()
+        ..data = snapshot().copyWith(budgetCents: 150000, budgetLoaded: true);
+      await _mount(
+        tester,
+        controller,
+        manager: true,
+        dark: dark,
+        boundary: key,
+        commands: commands,
+      );
+      await tester.pumpAndSettle();
+      for (final screen in ['overview', 'edit']) {
+        if (screen == 'edit') {
+          commands.requestOpenTripActions();
+          await tester.pumpAndSettle();
+          await tester.tap(find.text('Edit trip'));
+          await tester.pumpAndSettle();
+        }
+        expect(tester.takeException(), isNull);
+        await tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/trip-budget/${dark ? 'dark' : 'light'}-$screen.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+      }
+      await disposePage(tester);
+      commands.dispose();
+    }
+  });
+
+  testWidgets(
+    'budget uses complete group spending rather than loaded expenses or own share',
+    (tester) async {
+      final controller = _Workspace()
+        ..data = snapshot().copyWith(budgetCents: 150000, budgetLoaded: true);
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('trip-budget-spent')))
+            .data,
+        contains('1,000.00'),
+      );
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('trip-budget-remaining')))
+            .data,
+        contains('500.00'),
+      );
+      expect(find.text('Group budget'), findsOneWidget);
+      await disposePage(tester);
+    },
+  );
 
   testWidgets(
     'summary uses complete balances, personal share and real trip status',
@@ -2171,10 +2971,7 @@ void main() {
               scrollable: find.byType(Scrollable).last,
             );
             await tester.pumpAndSettle();
-            expect(
-              find.byType(CheckboxListTile),
-              solo ? findsNothing : findsNWidgets(2),
-            );
+            expect(find.byType(CheckboxListTile), findsNothing);
             expect(tester.takeException(), isNull);
             await disposePage(tester);
           },
@@ -2235,7 +3032,7 @@ void main() {
       await tester.pumpAndSettle();
       commands.requestOpenAddExpense();
       await tester.pumpAndSettle();
-      await visibleTap(tester, find.widgetWithText(TextButton, 'Food'));
+      await selectExpenseFood(tester);
       await visibleTap(
         tester,
         find.byKey(const ValueKey('receipt-add')),
@@ -2387,7 +3184,7 @@ void main() {
         );
         expect(
           tester
-              .widget<OutlinedButton>(find.byKey(const ValueKey('receipt-add')))
+              .widget<TextButton>(find.byKey(const ValueKey('receipt-add')))
               .onPressed,
           isNotNull,
         );
@@ -2413,7 +3210,7 @@ void main() {
         find.byKey(const ValueKey('expense-form-amount')),
         '42.50',
       );
-      await tester.tap(find.widgetWithText(TextButton, 'Food'));
+      await selectExpenseFood(tester);
       await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
       await tester.pumpAndSettle();
       expect(find.text('Save failed'), findsOneWidget);
@@ -2515,6 +3312,10 @@ void main() {
         final t = AppLocalizations.of(
           tester.element(find.byType(WorkspacePage, skipOffstage: false)),
         )!;
+        await tester.enterText(
+          find.byKey(const ValueKey('expense-form-amount')),
+          '100',
+        );
         for (final label in [
           t.exactAmountsLabel,
           t.percentagesLabel,
@@ -2525,13 +3326,13 @@ void main() {
             200,
             scrollable: find.byType(Scrollable).first,
           );
-          await visibleTap(tester, find.text(t.splitModeLabel));
-          final picker = find.byKey(const ValueKey('split-mode-picker'));
-          expect(picker, findsOneWidget);
           await visibleTap(
             tester,
-            find.descendant(of: picker, matching: find.text(label)),
+            find.byKey(const ValueKey('expense-custom-split')),
           );
+          final picker = find.byKey(const ValueKey('expense-editor-done'));
+          expect(picker, findsOneWidget);
+          await visibleTap(tester, find.text(label));
           for (final id in [7, 8]) {
             final field = find.byKey(ValueKey('split-input-$id'));
             await tester.ensureVisible(field);
@@ -2539,6 +3340,10 @@ void main() {
             await tester.enterText(field, '1');
             expect(tester.widget<TextField>(field).controller!.text, '1');
           }
+          FocusManager.instance.primaryFocus?.unfocus();
+          await tester.pumpAndSettle();
+          await tester.tap(find.byKey(const ValueKey('expense-editor-close')));
+          await tester.pumpAndSettle();
           expect(tester.takeException(), isNull);
         }
         await disposePage(tester);
@@ -2558,7 +3363,7 @@ void main() {
         find.byKey(const ValueKey('expense-form-amount')),
         '10',
       );
-      await tester.tap(find.widgetWithText(TextButton, 'Food'));
+      await selectExpenseFood(tester);
       final t = AppLocalizations.of(
         tester.element(find.byType(WorkspacePage, skipOffstage: false)),
       )!;
@@ -2573,7 +3378,7 @@ void main() {
         scrollable: find.byType(Scrollable).last,
       );
       await tester.pumpAndSettle();
-      await tester.tap(find.text(t.splitModeLabel));
+      await tester.tap(find.byKey(const ValueKey('expense-custom-split')));
       await tester.pumpAndSettle();
       await tester.tap(find.text(labels[mode]!).last);
       await tester.pumpAndSettle();
@@ -2587,6 +3392,10 @@ void main() {
           mode == 'exact' ? '5' : (mode == 'percent' ? '50' : '1'),
         );
       }
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('expense-editor-done')));
+      await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
       await tester.pumpAndSettle();
       await tester.pump(const Duration(seconds: 1));
@@ -2781,6 +3590,7 @@ void main() {
             scrollable: find.byType(Scrollable).first,
           );
           await tester.pumpAndSettle();
+          await expandFirstSettlement(tester);
           await tester.scrollUntilVisible(
             find.text(t.workspaceOpenFlow),
             200,
@@ -2868,6 +3678,7 @@ void main() {
         tester.element(find.byType(WorkspacePage)),
       )!;
       await _selectTab(tester, t.workspaceSettle);
+      await expandFirstSettlement(tester);
       await tester.scrollUntilVisible(
         find.text(t.workspaceOpenFlow),
         200,
@@ -2888,11 +3699,17 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(
-        find.widgetWithText(FilledButton, t.iSentAction),
+        find.descendant(
+          of: find.byType(AppActionSheet).last,
+          matching: find.widgetWithText(FilledButton, t.iSentAction),
+        ),
         state == 'pending' ? findsOneWidget : findsNothing,
       );
       expect(
-        find.widgetWithText(FilledButton, t.confirmReceivedAction),
+        find.descendant(
+          of: find.byType(AppActionSheet).last,
+          matching: find.widgetWithText(FilledButton, t.confirmReceivedAction),
+        ),
         state == 'sent' ? findsOneWidget : findsNothing,
       );
       await disposePage(tester);
@@ -2914,10 +3731,7 @@ void main() {
     await tester.pumpAndSettle();
     final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
     await _selectTab(tester, t.workspaceSettle);
-    final button = find.widgetWithText(
-      FilledButton,
-      t.finishTripStartSettlementsAction,
-    );
+    final button = find.widgetWithText(FilledButton, t.finishTripAction);
     expect(tester.widget<FilledButton>(button).onPressed, isNull);
     controller.data = controller.data.copyWith(payments: []);
     commands.requestRefresh();
@@ -3093,7 +3907,16 @@ void main() {
       tester.getTopLeft(currency).dx,
       greaterThan(tester.getCenter(amount).dx),
     );
-    expect(tester.getSize(currency).width, greaterThan(36));
+    expect(
+      tester
+          .getSize(
+            find
+                .ancestor(of: currency, matching: find.byType(TextButton))
+                .first,
+          )
+          .width,
+      greaterThanOrEqualTo(44),
+    );
     expect(tester.takeException(), isNull);
     await disposePage(tester);
   });
@@ -3237,6 +4060,7 @@ void main() {
           );
           await tester.tap(find.byKey(const ValueKey('balance-row-7')));
         } else if (screen == 'flow') {
+          await expandFirstSettlement(tester);
           await tester.scrollUntilVisible(
             find.text(t.workspaceOpenFlow),
             200,
@@ -3347,7 +4171,7 @@ void main() {
             find.byKey(const ValueKey('expense-form-amount')),
             '60.00',
           );
-          await tester.tap(find.widgetWithText(TextButton, 'Food'));
+          await selectExpenseFood(tester);
           await tester.pumpAndSettle();
           FocusManager.instance.primaryFocus?.unfocus();
           await tester.pumpAndSettle();

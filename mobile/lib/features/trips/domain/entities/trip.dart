@@ -2,6 +2,8 @@ class Trip {
   const Trip({
     required this.id,
     required this.name,
+    this.budgetCents,
+    this.destinations = const [],
     this.tripMode = 'group',
     required this.currencyCode,
     required this.status,
@@ -30,6 +32,8 @@ class Trip {
 
   final int id;
   final String name;
+  final int? budgetCents;
+  final List<Map<String, dynamic>> destinations;
   final String tripMode;
 
   bool get isSolo => tripMode == 'solo';
@@ -64,4 +68,19 @@ class Trip {
   bool get isCurrentUserAdmin => currentUserRole == 'admin';
   bool get canCurrentUserManageTrip => isCurrentUserOwner || isCurrentUserAdmin;
   bool get canCurrentUserDeleteTrip => isCurrentUserOwner;
+}
+
+/// Destination entries contain scalar JSON fields; preserve untouched server data.
+bool tripDestinationsEqual(
+  List<Map<String, dynamic>> a,
+  List<Map<String, dynamic>> b,
+) {
+  if (a.length != b.length) return false;
+  for (var i = 0; i < a.length; i++) {
+    if (a[i].length != b[i].length ||
+        a[i].entries.any((e) => b[i][e.key] != e.value)) {
+      return false;
+    }
+  }
+  return true;
 }

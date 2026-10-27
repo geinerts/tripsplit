@@ -28,6 +28,14 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       );
 
   @override
+  Future<PaymentDetails> loadMemberPaymentDetails({
+    required int tripId,
+    required int userId,
+  }) => _localStore.storage.session.run(
+    () => _remote.loadMemberPaymentDetails(tripId: tripId, userId: userId),
+  );
+
+  @override
   Future<PaymentDetails> loadPaymentRequestDetails({
     required int tripId,
     required int paymentId,

@@ -88,10 +88,10 @@ extension _TripsPageCardWidgets on _TripsPageState {
     );
     return Column(
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Stack(
           children: [
-            Expanded(
+            Padding(
+              padding: const EdgeInsets.only(right: 48),
               child: InkWell(
                 key: ValueKey('home-trip-${trip.id}'),
                 onTap: () => _openWorkspace(trip),
@@ -126,8 +126,9 @@ extension _TripsPageCardWidgets on _TripsPageState {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
+            Positioned(
+              top: 8,
+              right: 0,
               child: IconButton(
                 key: ValueKey('home-trip-menu-${trip.id}'),
                 tooltip: t.homeTripActions(title),
@@ -135,6 +136,29 @@ extension _TripsPageCardWidgets on _TripsPageState {
                 icon: const Icon(Icons.more_horiz),
               ),
             ),
+            if (!trip.isSolo && trip.isActive && trip.canCurrentUserManageTrip)
+              Positioned(
+                bottom: 8,
+                right: 0,
+                child: Builder(
+                  builder: (shareContext) => IconButton(
+                    key: ValueKey('home-trip-share-${trip.id}'),
+                    tooltip: t.shareAction,
+                    onPressed: _isMutating || _sharingTripId != null
+                        ? null
+                        : () => _shareTrip(trip, shareContext),
+                    icon: _sharingTripId == trip.id
+                        ? const SizedBox.square(
+                            dimension: 22,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Icon(
+                            CupertinoIcons.arrowshape_turn_up_right,
+                            color: theme.colorScheme.primary,
+                          ),
+                  ),
+                ),
+              ),
           ],
         ),
         const Divider(height: 1),

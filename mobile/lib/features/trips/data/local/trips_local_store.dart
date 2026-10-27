@@ -65,6 +65,8 @@ class TripsLocalStore {
       'all_settled': trip.allSettled,
       'ready_to_settle': trip.readyToSettle,
       'total_amount_cents': trip.totalAmountCents,
+      'budget_cents': trip.budgetCents,
+      'destinations': trip.destinations,
       'my_paid_cents': trip.myPaidCents,
       'my_paid_preferred_cents': trip.myPaidPreferredCents,
       'preferred_currency_code': trip.preferredCurrencyCode,

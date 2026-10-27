@@ -24,6 +24,7 @@ class AuthUserModel extends AuthUser {
     super.revolutMeLink,
     super.paypalMeLink,
     super.wisePayLink,
+    super.sharePaymentDetailsWithTrips,
     super.preferredCurrencyCode,
     super.avatarBase64,
     super.avatarUrl,
@@ -61,6 +62,8 @@ class AuthUserModel extends AuthUser {
     );
     final id = (map['id'] as num?)?.toInt() ?? 0;
     return AuthUserModel(
+      sharePaymentDetailsWithTrips:
+          map['share_payment_details_with_trips'] == true,
       id: id,
       premiumAccess: PremiumAccess.fromMap(
         map['premium_access'],

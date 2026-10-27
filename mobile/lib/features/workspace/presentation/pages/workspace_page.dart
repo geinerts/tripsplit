@@ -7,6 +7,8 @@ import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart' show CupertinoIcons;
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 import '../../../../core/ui/splyto_illustration.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,6 +36,7 @@ import '../../../../core/ui/app_formatters.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/app_skeleton.dart';
+import '../../../../core/ui/trip_budget_card.dart';
 import '../../../../core/ui/user_profile_payment_section.dart';
 import '../../../../core/ui/user_profile_page.dart';
 import '../../../../core/ui/user_shared_trips_section.dart';
@@ -51,6 +54,7 @@ import '../../domain/entities/expense_participant.dart';
 import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/payment_item.dart';
+import '../../domain/entities/payment_details.dart';
 import '../../domain/entities/queued_mutation.dart';
 import '../../domain/entities/random_draw_result.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
@@ -80,6 +84,7 @@ part 'workspace_page_layout.dart';
 part 'workspace_page_layout_navigation.dart';
 part 'workspace_page_layout_overview.dart';
 part 'workspace_page_tab_balances.dart';
+part 'workspace_page_settlement_cards.dart';
 part 'workspace_page_tab_balances_details.dart';
 part 'workspace_page_tab_settlement_details.dart';
 part 'workspace_page_tab_expenses.dart';
@@ -87,6 +92,7 @@ part 'workspace_page_tab_expenses_social.dart';
 part 'workspace_page_tab_activity.dart';
 part 'workspace_page_tab_random.dart';
 part 'workspace_page_dialogs.dart';
+part 'workspace_page_expense_editors.dart';
 part 'workspace_page_dialogs_helpers.dart';
 part 'workspace_page_support_sync.dart';
 part 'workspace_page_support_models.dart';
@@ -107,6 +113,7 @@ class WorkspacePage extends StatefulWidget {
     this.commandController,
     this.onExitRequested,
     this.onTripUpdated,
+    this.onTravelMapRequested,
   });
 
   final Trip trip;
@@ -120,6 +127,7 @@ class WorkspacePage extends StatefulWidget {
   final WorkspacePageCommandController? commandController;
   final VoidCallback? onExitRequested;
   final ValueChanged<Trip>? onTripUpdated;
+  final Future<void> Function()? onTravelMapRequested;
 
   @override
   State<WorkspacePage> createState() => _WorkspacePageState();
@@ -153,6 +161,7 @@ class WorkspacePageCommandController extends ChangeNotifier {
 class _WorkspacePageState extends State<WorkspacePage> {
   bool _isLoading = true;
   bool _isMutating = false;
+  final Set<String> _expandedSettlementCards = {};
   bool _isAddExpenseDialogOpen = false;
   String? _errorText;
   String? _refreshError;
@@ -176,6 +185,9 @@ class _WorkspacePageState extends State<WorkspacePage> {
   WorkspaceSnapshot? _snapshot;
   Trip? _editedTrip;
   Trip get _displayTrip => _editedTrip ?? widget.trip;
+  int? get _tripBudgetCents => _snapshot?.budgetLoaded == true
+      ? _snapshot!.budgetCents
+      : _displayTrip.budgetCents;
   List<TripExpense> _expensesFeed = const <TripExpense>[];
   List<WorkspaceActivityEvent> _activityEvents =
       const <WorkspaceActivityEvent>[];

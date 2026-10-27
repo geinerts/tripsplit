@@ -16,6 +16,23 @@ class WorkspaceRemoteSnapshotLoader {
 
   final ApiClient _apiClient;
 
+  Future<PaymentDetails> loadMemberPaymentDetails({
+    required int tripId,
+    required int userId,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('trip_member_payment_details'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'user_id': userId},
+    );
+    final details = response['payment_details'];
+    if (details is! Map<String, dynamic>) {
+      throw StateError('Missing payment details payload.');
+    }
+    return WorkspaceRemoteParsers.parsePaymentDetails(details);
+  }
+
   Future<PaymentDetails> loadPaymentRequestDetails({
     required int tripId,
     required int paymentId,
@@ -236,6 +253,8 @@ class WorkspaceRemoteSnapshotLoader {
 
     return WorkspaceSnapshot(
       tripStatus: tripStatus,
+      budgetCents: (tripPayload?['budget_cents'] as num?)?.toInt(),
+      budgetLoaded: tripPayload?.containsKey('budget_cents') ?? false,
       tripEndedAt: tripPayload?['ended_at'] as String?,
       tripArchivedAt: tripPayload?['archived_at'] as String?,
       users: users,

@@ -11,12 +11,18 @@ class UpdateTripUseCase {
     required String name,
     String? imagePath,
     bool removeImage = false,
+    int? budgetCents,
+    List<Map<String, dynamic>>? destinations,
+    bool clearBudget = false,
   }) {
     return _repository.updateTrip(
       tripId: tripId,
       name: name,
       imagePath: imagePath,
       removeImage: removeImage,
+      budgetCents: budgetCents,
+      destinations: destinations,
+      clearBudget: clearBudget,
     );
   }
 }

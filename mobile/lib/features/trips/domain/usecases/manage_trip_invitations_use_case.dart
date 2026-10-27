@@ -1,4 +1,5 @@
 import '../entities/pending_trip_invitation.dart';
+import '../entities/received_trip_invitation.dart';
 import '../repositories/trips_repository.dart';
 
 class ManageTripInvitationsUseCase {
@@ -7,6 +8,9 @@ class ManageTripInvitationsUseCase {
 
   Future<List<PendingTripInvitation>> list({required int tripId}) =>
       _repository.listPendingInvitations(tripId: tripId);
+
+  Future<List<ReceivedTripInvitation>> received() =>
+      _repository.listReceivedInvitations();
 
   Future<void> revoke({required int tripId, required int invitationId}) =>
       _repository.revokeInvitation(tripId: tripId, invitationId: invitationId);

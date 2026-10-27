@@ -27,7 +27,7 @@ extension _WorkspacePageLayout on _WorkspacePageState {
         style: titleStyle,
       ),
       actions: [
-        if (_isCurrentTripOwner())
+        if (_isCurrentTripOwner() || widget.onTravelMapRequested != null)
           IconButton(
             onPressed: _openTripActionsSheet,
             icon: const Icon(Icons.more_vert),

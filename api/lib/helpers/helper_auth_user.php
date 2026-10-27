@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/helper_profile_payment_sharing.php';
+
 require_once __DIR__ . '/helper_subscription.php';
 require_once __DIR__ . '/helper_premium.php';
 
@@ -258,6 +260,7 @@ function build_me_payload(array $user, ?PDO $pdo = null): array
         'deleted_at' => $accountStatus === 'deleted'
             ? (($user['deleted_at'] ?? null) ?: null)
             : null,
+        'share_payment_details_with_trips' => (int) ($user['share_payment_details_with_trips'] ?? 0) === 1,
         'bank_country_code' => $bankCountryCode,
         'bank_account_holder' => $bankAccountHolder,
         'bank_account_number' => $bankAccountNumber,
@@ -293,9 +296,12 @@ function fetch_me_row_by_token(PDO $pdo, string $token): ?array
     $preferredCurrencySelect = users_preferred_currency_column_available($pdo)
         ? 'preferred_currency_code, '
         : '\'' . default_trip_currency_code() . '\' AS preferred_currency_code, ';
+    $sharingSelect = users_trip_payment_sharing_available($pdo)
+        ? 'share_payment_details_with_trips, '
+        : '0 AS share_payment_details_with_trips, ';
     $accountSelect = users_account_status_select_sql($pdo);
     $stmt = $pdo->prepare(
-        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, ' . $paymentSelect . $preferredCurrencySelect . 'avatar_path
+        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, ' . $paymentSelect . $preferredCurrencySelect . $sharingSelect . 'avatar_path
          FROM ' . $usersTable . '
          WHERE device_token = :token
          LIMIT 1'
@@ -323,9 +329,12 @@ function fetch_me_row_by_id(PDO $pdo, int $userId): ?array
     $preferredCurrencySelect = users_preferred_currency_column_available($pdo)
         ? 'preferred_currency_code, '
         : '\'' . default_trip_currency_code() . '\' AS preferred_currency_code, ';
+    $sharingSelect = users_trip_payment_sharing_available($pdo)
+        ? 'share_payment_details_with_trips, '
+        : '0 AS share_payment_details_with_trips, ';
     $accountSelect = users_account_status_select_sql($pdo);
     $stmt = $pdo->prepare(
-        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, ' . $paymentSelect . $preferredCurrencySelect . 'avatar_path
+        'SELECT id, ' . $nameSelect . $accountSelect . 'nickname, email, password_hash, credentials_required, ' . $paymentSelect . $preferredCurrencySelect . $sharingSelect . 'avatar_path
          FROM ' . $usersTable . '
          WHERE id = :id
          LIMIT 1'

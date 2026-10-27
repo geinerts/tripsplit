@@ -546,9 +546,21 @@
   "notificationsRefreshFailed": "Neizdevās atjaunināt. Redzami iepriekš ielādētie paziņojumi.",
   "notificationsJustNow": "Tikko",
   "notificationsMinutesAgo": "Pirms {count} min",
-  "@notificationsMinutesAgo": {"placeholders": {"count": {"type": "int"}}},
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "notificationsHoursAgo": "Pirms {count} h",
-  "@notificationsHoursAgo": {"placeholders": {"count": {"type": "int"}}},
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "notificationsUnread": "Nelasīts",
   "noNotificationsYet": "Paziņojumu vēl nav.",
   "noParticipantData": "Nav dalībnieku datu.",
@@ -1093,7 +1105,7 @@
   "workspaceOwesToTheGroup": "Parādā grupai",
   "workspaceGetsBackFromGroup": "Jāsaņem no grupas",
   "workspaceShowingTop4ByBalanceDifference": "Parādīti 4 lielākie bilances ieraksti.",
-  "workspaceOpenFlow": "Atvērt plūsmu",
+  "workspaceOpenFlow": "Detaļas",
   "workspaceFriend": "Draugs",
   "workspaceSettlementTransfer": "Norēķina pārskaitījums",
   "workspaceCompleted": "Pabeigts",
@@ -1608,5 +1620,126 @@
   "receiptPhotoLabel": "Čeka foto",
   "replaceReceiptAction": "Nomainīt čeku",
   "removeReceiptAction": "Noņemt čeku",
-  "restoreReceiptAction": "Atjaunot iepriekšējo čeku"
+  "restoreReceiptAction": "Atjaunot iepriekšējo čeku",
+  "expenseSplitBetween": "Sadalīt starp",
+  "expenseEditParticipants": "Izvēlēties dalībniekus",
+  "expenseCustomSplit": "Pielāgots sadalījums",
+  "expenseSplitAllocated": "Sadalīti visi {amount}",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "Vēl jāsadala {amount}",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "Par {amount} pārsniegta kopsumma",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Rādīt maksājumu metodes manos ceļojumos",
+  "profilePaymentSharingDescription": "Atļaut apstiprinātajiem dalībniekiem redzēt manas maksājumu metodes ceļojumos, kurus izveidoju vai kuriem pievienojos. Attiecas uz esošajiem un turpmākajiem ceļojumiem. Izslēdzot jauna piekļuve tiek liegta.",
+  "memberPaymentDetailsNotShared": "Maksājumu metodes nav kopīgotas vai pašlaik nav pieejamas.",
+  "homeTripInvitations": "Ceļojumu ielūgumi",
+  "homeNoTripInvitations": "Nav neatbildētu ceļojumu ielūgumu",
+  "homeInvitationsLoadFailed": "Neizdevās ielādēt ielūgumus. Mēģiniet vēlreiz.",
+  "homeInvitationResponseFailed": "Neizdevās atbildēt uz ielūgumu. Mēģiniet vēlreiz.",
+  "homeTripShareFailed": "Neizdevās kopīgot ceļojumu. Mēģiniet vēlreiz.",
+  "settleStillToReceive": "Vēl jāsaņem",
+  "settleStillToPay": "Vēl jāsamaksā",
+  "settleEstimateCaption": "Aprēķins pēc pašreizējiem izdevumiem. Summas līdz ceļojuma noslēgšanai var mainīties.",
+  "settleOutstandingCaption": "Gaida pārskaitījumu vai saņemšanas apstiprinājumu.",
+  "settleWaitingForYou": "Gaida tavu gatavības apstiprinājumu.",
+  "settleWhoPaysWhom": "Kurš kam maksā",
+  "settlePreviewCaption": "Priekšskatījums · galīgās summas pēc noslēgšanas",
+  "settleOpenPaymentCaption": "Atver maksājumu, lai skatītu detaļas un pieejamās darbības.",
+  "tripBudgetEnable": "Iestatīt budžetu",
+  "tripBudgetSoloHint": "Izvēles tēriņu limits šim ceļojumam.",
+  "tripBudgetGroupHint": "Viens kopīgs budžets visai grupai.",
+  "tripBudgetAmount": "Budžeta summa",
+  "tripBudgetInvalid": "Ievadi summu no 0,01 līdz 999999999,99, ar ne vairāk kā divām zīmēm aiz komata.",
+  "tripBudgetTitle": "Ceļojuma budžets",
+  "tripBudgetGroupTitle": "Grupas budžets",
+  "tripBudgetRemaining": "Atlicis",
+  "tripBudgetOver": "Virs budžeta",
+  "tripBudgetSpent": "Iztērēts",
+  "tripBudgetLimit": "Budžets",
+  "travelMapTitle": "Mana ceļojumu karte",
+  "travelMapSubtitle": "Apmeklētās vietas — tikai tev.",
+  "travelMapHere": "Esmu šeit",
+  "travelMapAdd": "Pievienot vietu",
+  "travelMapSearch": "Meklēt pilsētu un valsti",
+  "travelMapSearchAction": "Meklēt",
+  "travelMapSearchHint": "Piemēram, Lisabona, Portugāle",
+  "travelMapEmpty": "Šeit sākas tavas ceļojumu atmiņas",
+  "travelMapEmptyBody": "Pievieno apmeklētu pilsētu vai atzīmē, kur esi šobrīd.",
+  "travelMapConfirm": "Saglabāt šo apmeklējumu?",
+  "travelMapConfirmBody": "Pārbaudi pilsētu un datumu pirms saglabāšanas savā privātajā kartē.",
+  "travelMapDate": "Apmeklējuma datums",
+  "travelMapSave": "Saglabāt manā kartē",
+  "travelMapCancel": "Atcelt",
+  "travelMapClose": "Aizvērt",
+  "travelMapNoResults": "Pilsēta nav atrasta. Pievieno meklējumam valsts nosaukumu.",
+  "travelMapLookupError": "Neizdevās noteikt pilsētu. Pārbaudi savienojumu vai pievieno vietu manuāli.",
+  "travelMapDenied": "Piekļuve atrašanās vietai nav atļauta. Pilsētu vari pievienot manuāli.",
+  "travelMapDisabled": "Ieslēdz atrašanās vietas pakalpojumus vai pievieno pilsētu manuāli.",
+  "travelMapError": "Neizdevās ielādēt ceļojumu karti. Mēģini vēlreiz.",
+  "travelMapSaveError": "Neizdevās saglabāt apmeklējumu. Mēģini vēlreiz.",
+  "travelMapUnavailable": "Ceļojumu kartei nepieciešams servera atjauninājums.",
+  "travelMapOffline": "Bezsaistē · saglabātās vietas",
+  "travelMapRetry": "Mēģināt vēlreiz",
+  "travelMapDelete": "Noņemt apmeklējumu",
+  "travelMapDeleteConfirm": "Noņemt šo apmeklējumu no tavas privātās kartes?",
+  "travelMapFit": "Rādīt visas vietas",
+  "travelMapSaved": "Apmeklējums saglabāts",
+  "travelMapVisited": "Apmeklēts",
+  "travelMapLimit": "Kartē sasniegti 1000 apmeklējumi. Pirms jauna pievienošanas noņem kādu vecāku apmeklējumu.",
+  "travelMapCounts": "{countries, plural, one{1 valsts} other{{countries} valstis}} · {cities, plural, one{1 pilsēta} other{{cities} pilsētas}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{1 apmeklējums} other{{count} apmeklējumi}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Galamērķi (pēc izvēles)",
+  "travelAddDestination": "Pievienot galamērķi",
+  "travelRemoveDestination": "Noņemt galamērķi",
+  "travelFromTrip": "No ceļojuma",
+  "travelChooseTrip": "Izvēlies ceļojumu",
+  "travelNoTrips": "Vēl nav pieejamu ceļojumu. Vietu vari pievienot manuāli.",
+  "travelAddToMap": "Pievienot manai kartei",
+  "travelTripConfirm": "Saglabā tikai vietas, kurās tiešām biji. Apmeklējums nonāks tavā privātajā kartē.",
+  "travelVisitTitle": "Nosaukums (pēc izvēles)",
+  "travelAddPhoto": "Pievienot bildi",
+  "travelChangePhoto": "Mainīt bildi",
+  "travelRemovePhoto": "Noņemt bildi",
+  "travelPhotoError": "Neizdevās sagatavot bildi. Izvēlies citu.",
+  "travelEditVisit": "Labot apmeklējumu",
+  "travelOpenTrip": "Atvērt ceļojumu",
+  "travelPreviousVisit": "Iepriekšējais apmeklējums",
+  "travelNextVisit": "Nākamais apmeklējums",
+  "travelDuplicate": "Šis apmeklējums jau ir tavā kartē."
 }

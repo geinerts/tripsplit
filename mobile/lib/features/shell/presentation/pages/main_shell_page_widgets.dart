@@ -40,6 +40,9 @@ extension _MainShellPageWidgets on _MainShellPageState {
               openAddExpenseOnStart: _openAddExpenseOnWorkspaceStart,
               commandController: _workspaceCommandController,
               onExitRequested: _closeWorkspaceInShell,
+              onTravelMapRequested: widget.travelPlacesRepository == null
+                  ? null
+                  : () => _openTravelMap(tripId: _openedTrip!.id),
               onTripUpdated: (trip) {
                 if (_openedTrip?.id == trip.id) {
                   _updateState(() => _openedTrip = trip);
@@ -88,6 +91,9 @@ extension _MainShellPageWidgets on _MainShellPageState {
                   showBottomNav: false,
                   onProfileChanged: _onProfileChanged,
                   onQuickStartRequested: _replayQuickStart,
+                  onTravelMapRequested: widget.travelPlacesRepository == null
+                      ? null
+                      : () => _openTravelMap(),
                   onEditModeChanged: _onProfileEditModeChanged,
                   commandController: _profileCommandController,
                 ),
@@ -183,8 +189,8 @@ extension _MainShellPageWidgets on _MainShellPageState {
     final trip = _openedTrip;
     return _isWorkspaceOpen &&
         trip != null &&
-        trip.isActive &&
-        trip.canCurrentUserManageTrip;
+        (widget.travelPlacesRepository != null ||
+            (trip.isActive && trip.canCurrentUserManageTrip));
   }
 
   Widget _buildNotificationsAction(BuildContext context) {

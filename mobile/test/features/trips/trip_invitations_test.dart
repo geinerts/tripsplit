@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'package:tripsplit/features/trips/domain/entities/received_trip_invitation.dart';
+import 'package:tripsplit/features/trips/data/repositories/trips_repository_impl.dart';
+import 'package:tripsplit/features/trips/data/local/trips_local_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +40,24 @@ class _Api implements ApiClient {
   }) async {
     this.path = path;
     this.body = body;
+    if (path.contains('list_received_trip_invitations')) {
+      expect(method, HttpMethod.get);
+      expect(body, isNull);
+      expect(headers, isNull);
+      if (fail) throw const ApiException('Unavailable', statusCode: 409);
+      return {
+        'ok': true,
+        'invitations': [
+          {
+            'id': 9,
+            'trip_id': 10,
+            'trip_name': 'Summer',
+            'inviter_name': 'Anna',
+            'invite_token': 'abcdefghij',
+          },
+        ],
+      };
+    }
     expect(method, HttpMethod.post);
     if (fail) throw const ApiException('Unavailable', statusCode: 409);
     return {
@@ -55,8 +77,68 @@ class _Api implements ApiClient {
   Future<void> revokeCurrentSession() async {}
 }
 
+class _IncomingRemote implements TripsRemoteDataSource {
+  final pending = Completer<List<ReceivedTripInvitation>>();
+  @override
+  Future<List<ReceivedTripInvitation>> listReceivedInvitations() =>
+      pending.future;
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test(
+    'received invitations use authenticated inbox without a target user or trip header',
+    () async {
+      final api = _Api();
+      final remote = TripsRemoteDataSourceImpl(api, _Uploader());
+      final invitations = await remote.listReceivedInvitations();
+      expect(invitations.single.inviteToken, 'abcdefghij');
+      expect(invitations.single.tripName, 'Summer');
+      api.fail = true;
+      await expectLater(
+        remote.listReceivedInvitations(),
+        throwsA(isA<ApiException>()),
+      );
+    },
+  );
+
+  test(
+    'received invitation tokens are not persisted or delivered across accounts',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final session = AccountDataSession()..activate(1);
+      final remote = _IncomingRemote();
+      final repo = TripsRepositoryImpl(
+        remote,
+        TripsLocalStore(AccountLocalStorage(session)),
+      );
+      final result = repo.listReceivedInvitations();
+      session.activate(2);
+      remote.pending.complete([
+        const ReceivedTripInvitation(
+          id: 9,
+          tripId: 10,
+          tripName: 'Private',
+          inviterName: 'Anna',
+          inviteToken: 'private-token',
+        ),
+      ]);
+      await expectLater(
+        result,
+        throwsA(
+          isA<ApiException>().having(
+            (error) => error.code,
+            'code',
+            'account_changed',
+          ),
+        ),
+      );
+      expect((await SharedPreferences.getInstance()).getKeys(), isEmpty);
+    },
+  );
+
   testWidgets(
     'pending management retries loading and revocation without losing state',
     (tester) async {

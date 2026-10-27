@@ -905,6 +905,9 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           initialRevolutMeLink: _draftRevolutMeLink,
           initialPaypalMeLink: _draftPaypalMeLink,
           initialWisePayLink: _draftWisePayLink,
+          initialSharePaymentDetailsWithTrips:
+              widget.controller.currentUser?.sharePaymentDetailsWithTrips ??
+              false,
         ),
       ),
     );
@@ -928,15 +931,22 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _errorText = null;
     });
 
-    await _savePaymentDetailsOnly();
+    await _savePaymentDetailsOnly(
+      sharePaymentDetailsWithTrips: result.sharePaymentDetailsWithTrips,
+    );
   }
 
-  Future<void> _savePaymentDetailsOnly() async {
+  Future<void> _savePaymentDetailsOnly({
+    required bool sharePaymentDetailsWithTrips,
+  }) async {
     if (_isSubmitting || _isLoading) {
       return;
     }
     final paymentPatch = _buildPaymentDetailsPatch();
-    if (paymentPatch.isEmpty) {
+    if (paymentPatch.isEmpty &&
+        sharePaymentDetailsWithTrips ==
+            (widget.controller.currentUser?.sharePaymentDetailsWithTrips ??
+                false)) {
       _showSnack(context.l10n.noChangesToSave);
       return;
     }
@@ -950,6 +960,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     try {
       final updated = await widget.controller.updateProfile(
         paymentDetails: paymentPatch,
+        sharePaymentDetailsWithTrips: sharePaymentDetailsWithTrips,
       );
       if (!mounted) {
         return;
@@ -1014,6 +1025,7 @@ class _PaymentInfoEditorResult {
     required this.revolutMeLink,
     required this.paypalMeLink,
     required this.wisePayLink,
+    required this.sharePaymentDetailsWithTrips,
   });
 
   final String bankCountryCode;
@@ -1025,6 +1037,7 @@ class _PaymentInfoEditorResult {
   final String revolutMeLink;
   final String paypalMeLink;
   final String wisePayLink;
+  final bool sharePaymentDetailsWithTrips;
 }
 
 class _PaymentInfoEditorPage extends StatefulWidget {
@@ -1038,6 +1051,7 @@ class _PaymentInfoEditorPage extends StatefulWidget {
     required this.initialRevolutMeLink,
     required this.initialPaypalMeLink,
     required this.initialWisePayLink,
+    required this.initialSharePaymentDetailsWithTrips,
   });
 
   final String initialBankCountryCode;
@@ -1049,6 +1063,7 @@ class _PaymentInfoEditorPage extends StatefulWidget {
   final String initialRevolutMeLink;
   final String initialPaypalMeLink;
   final String initialWisePayLink;
+  final bool initialSharePaymentDetailsWithTrips;
 
   @override
   State<_PaymentInfoEditorPage> createState() => _PaymentInfoEditorPageState();
@@ -1064,6 +1079,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
   late final TextEditingController _paypalMeController;
   late final TextEditingController _wisePayController;
   late _PaymentInfoMethod _selectedMethod;
+  late bool _sharePaymentDetailsWithTrips;
   late _BankTransferRegion _bankRegion;
   String? _formErrorText;
   bool _isSaving = false;
@@ -1089,6 +1105,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
       text: widget.initialPaypalMeLink,
     );
     _wisePayController = TextEditingController(text: widget.initialWisePayLink);
+    _sharePaymentDetailsWithTrips = widget.initialSharePaymentDetailsWithTrips;
     _selectedMethod = _resolveInitialMethod();
     _bankRegion = _resolveInitialBankRegion();
   }
@@ -1289,6 +1306,7 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
         revolutMeLink: _revolutMeController.text.trim(),
         paypalMeLink: _paypalMeController.text.trim(),
         wisePayLink: _wisePayController.text.trim(),
+        sharePaymentDetailsWithTrips: _sharePaymentDetailsWithTrips,
       ),
     );
   }
@@ -1318,6 +1336,18 @@ class _PaymentInfoEditorPageState extends State<_PaymentInfoEditorPage> {
                 ),
                 const SizedBox(height: 8),
                 _buildPaymentMethodField(context),
+                SwitchListTile.adaptive(
+                  key: const ValueKey('profile-payment-sharing'),
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(context.l10n.profilePaymentSharingTitle),
+                  subtitle: Text(context.l10n.profilePaymentSharingDescription),
+                  value: _sharePaymentDetailsWithTrips,
+                  onChanged: _isSaving
+                      ? null
+                      : (value) => setState(
+                          () => _sharePaymentDetailsWithTrips = value,
+                        ),
+                ),
                 const SizedBox(height: 12),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 170),

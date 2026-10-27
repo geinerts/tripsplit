@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/trip_invitations.php';
+require_once __DIR__ . '/../helpers/helper_trip_budget.php';
 require_once __DIR__ . '/../helpers/helper_quick_start.php';
+require_once __DIR__ . '/../helpers/helper_trip_image_ownership.php';
 
 function trip_invite_ttl_seconds(): int
 {
@@ -252,6 +254,12 @@ function trips_action(): void
     $settlementsTable = table_name('settlements');
     $expensesTable = table_name('expenses');
     $participantsTable = table_name('expense_participants');
+    $tripBudgetAvailable = trips_budget_column_available($pdo);
+    $tripBudgetSelect = $tripBudgetAvailable ? 't.budget_cents' : 'NULL AS budget_cents';
+    $tripBudgetGroupBy = $tripBudgetAvailable ? ', t.budget_cents' : '';
+    $destinationsAvailable = travel_column_available($pdo,'trips','destinations_json');
+    $tripBudgetSelect .= $destinationsAvailable ? ', t.destinations_json' : ', NULL AS destinations_json';
+    $tripBudgetGroupBy .= $destinationsAvailable ? ', t.destinations_json' : '';
     $tripImageSelect = trips_image_column_available($pdo)
         ? 't.image_path'
         : 'NULL AS image_path';
@@ -285,6 +293,7 @@ function trips_action(): void
             t.id,
             t.name,
             ' . $tripCurrencySelect . ',
+            ' . $tripBudgetSelect . ',
             ' . trip_mode_select($pdo) . ',
             t.status,
             t.created_by,
@@ -340,7 +349,7 @@ function trips_action(): void
             t.created_by,
             t.created_at,
             t.ended_at,
-            t.archived_at' . (trips_mode_column_available($pdo) ? ', t.trip_mode' : '') . $tripImageGroupBy . $tripCurrencyGroupBy . $tripDateGroupBy . $tripRoleGroupBy . '
+            t.archived_at' . (trips_mode_column_available($pdo) ? ', t.trip_mode' : '') . $tripBudgetGroupBy . $tripImageGroupBy . $tripCurrencyGroupBy . $tripDateGroupBy . $tripRoleGroupBy . '
          ORDER BY t.created_at DESC, t.id DESC'
     );
     $stmt->execute(['user_id' => $currentUserId]);
@@ -364,6 +373,9 @@ function trips_action(): void
         $row['date_to'] = $row['date_to'] ?: null;
         $row['ended_at'] = $row['ended_at'] ?: null;
         $row['archived_at'] = $row['archived_at'] ?: null;
+        $row['destinations'] = trip_destinations_payload($row);
+        unset($row['destinations_json']);
+        $row['budget_cents'] = isset($row['budget_cents']) ? (int) $row['budget_cents'] : null;
         $row['settlements_total'] = (int) ($row['settlements_total'] ?? 0);
         $row['settlements_confirmed'] = (int) ($row['settlements_confirmed'] ?? 0);
         $row['total_amount_cents'] = (int) ($row['total_amount_cents'] ?? 0);
@@ -483,6 +495,9 @@ function create_trip_action(bool $solo = false): void
     $tripMembersTable = table_name('trip_members');
     $tripCurrencyColumnAvailable = trips_currency_column_available($pdo);
     $tripDateColumnsAvailable = trips_date_range_columns_available($pdo);
+    $destinationsJson = trip_destinations_input($pdo,$body);
+    $budgetCents = validate_trip_budget_cents($body['budget_cents'] ?? null);
+    if ($budgetCents !== null) require_trip_budget_schema($pdo);
 
     $tripMode = validate_trip_mode($solo ? 'solo' : ($body['trip_mode'] ?? 'group'));
     if ($tripMode === 'solo' && !trips_mode_column_available($pdo)) {
@@ -608,6 +623,13 @@ function create_trip_action(bool $solo = false): void
             }
         }
         $tripId = (int) $pdo->lastInsertId();
+        if ($destinationsJson !== null) {
+            $pdo->prepare('UPDATE '.$tripsTable.' SET destinations_json=:destinations WHERE id=:id')->execute(['destinations'=>$destinationsJson,'id'=>$tripId]);
+        }
+        if ($budgetCents !== null) {
+            $pdo->prepare('UPDATE ' . $tripsTable . ' SET budget_cents = :budget WHERE id = :id')
+                ->execute(['budget' => $budgetCents, 'id' => $tripId]);
+        }
 
         if ($tripMode === 'solo') {
             $pdo->prepare('UPDATE ' . $tripsTable . ' SET trip_mode = :mode WHERE id = :id')
@@ -652,6 +674,8 @@ function create_trip_action(bool $solo = false): void
         'trip' => [
             'id' => $tripId,
             'name' => $name,
+            'destinations' => $destinationsJson===null ? [] : json_decode($destinationsJson,true),
+            'budget_cents' => $budgetCents,
             'trip_mode' => $tripMode,
             'currency_code' => $currencyCode,
             'status' => 'active',
@@ -698,6 +722,11 @@ function update_trip_action(): void
         'Only trip owner or admin can edit this trip.'
     );
 
+    $destinationsJson = trip_destinations_input($pdo,$body);
+    $hasBudget = array_key_exists('budget_cents', $body);
+    $budgetCents = $hasBudget ? validate_trip_budget_cents($body['budget_cents']) : null;
+    if ($hasBudget) require_trip_budget_schema($pdo);
+
     $hasName = array_key_exists('name', $body);
     $hasCurrencyCode = array_key_exists('currency_code', $body);
     $hasImagePath = array_key_exists('image_path', $body);
@@ -708,7 +737,7 @@ function update_trip_action(): void
     if ($hasCurrencyCode && !$tripCurrencyColumnAvailable) {
         json_out(['ok' => false, 'error' => 'Trip currency support is not enabled on server yet. Run migration first.'], 409);
     }
-    if (!$hasName && !$hasCurrencyCode && !$hasImagePath && !$removeImage) {
+    if (!$hasName && !$hasCurrencyCode && !$hasImagePath && !$removeImage && !$hasBudget && $destinationsJson===null) {
         json_out(['ok' => false, 'error' => 'No trip changes provided.'], 400);
     }
 
@@ -747,6 +776,7 @@ function update_trip_action(): void
     $nextImagePath = $oldImagePath;
     if ($hasImagePath) {
         $incomingImagePath = normalize_trip_image_path((string) ($body['image_path'] ?? ''), true);
+        assert_trip_image_attachment_owned($incomingImagePath, $tripId, (int) $me['id'], $oldImagePath);
         if ($incomingImagePath !== '') {
             $nextImagePath = $incomingImagePath;
         }
@@ -755,58 +785,32 @@ function update_trip_action(): void
         $nextImagePath = '';
     }
 
-    if ($tripImageColumnAvailable && $tripCurrencyColumnAvailable) {
-        $update = $pdo->prepare(
-            'UPDATE ' . $tripsTable . '
-             SET name = :name,
-                 currency_code = :currency_code,
-                 image_path = :image_path
-             WHERE id = :id'
-        );
-        $update->execute([
-            'name' => $nextName,
-            'currency_code' => $nextCurrencyCode,
-            'image_path' => $nextImagePath !== '' ? $nextImagePath : null,
-            'id' => $tripId,
-        ]);
-    } elseif ($tripCurrencyColumnAvailable) {
-        $update = $pdo->prepare(
-            'UPDATE ' . $tripsTable . '
-             SET name = :name,
-                 currency_code = :currency_code
-             WHERE id = :id'
-        );
-        $update->execute([
-            'name' => $nextName,
-            'currency_code' => $nextCurrencyCode,
-            'id' => $tripId,
-        ]);
-    } elseif ($tripImageColumnAvailable) {
-        $update = $pdo->prepare(
-            'UPDATE ' . $tripsTable . '
-             SET name = :name,
-                 image_path = :image_path
-             WHERE id = :id'
-        );
-        $update->execute([
-            'name' => $nextName,
-            'image_path' => $nextImagePath !== '' ? $nextImagePath : null,
-            'id' => $tripId,
-        ]);
-    } else {
-        $update = $pdo->prepare(
-            'UPDATE ' . $tripsTable . '
-             SET name = :name
-             WHERE id = :id'
-        );
-        $update->execute([
-            'name' => $nextName,
-            'id' => $tripId,
-        ]);
+    if ($hasCurrencyCode && $nextCurrencyCode !== ($trip['currency_code'] ?? default_trip_currency_code())
+        && isset($trip['budget_cents']) && !$hasBudget) {
+        json_out(['ok' => false, 'error' => 'Set or remove the budget explicitly when changing currency.'], 400);
     }
+    $assignments = ['name = :name'];
+    $params = ['name' => $nextName, 'id' => $tripId];
+    if ($tripCurrencyColumnAvailable) {
+        $assignments[] = 'currency_code = :currency_code';
+        $params['currency_code'] = $nextCurrencyCode;
+    }
+    if ($tripImageColumnAvailable) {
+        $assignments[] = 'image_path = :image_path';
+        $params['image_path'] = $nextImagePath !== '' ? $nextImagePath : null;
+    }
+    if ($destinationsJson !== null) {
+        $assignments[]='destinations_json=:destinations';
+        $params['destinations']=$destinationsJson;
+    }
+    if ($hasBudget) {
+        $assignments[] = 'budget_cents = :budget_cents';
+        $params['budget_cents'] = $budgetCents;
+    }
+    $pdo->prepare('UPDATE ' . $tripsTable . ' SET ' . implode(', ', $assignments) . ' WHERE id = :id')->execute($params);
 
     if ($tripImageColumnAvailable && $oldImagePath !== '' && $oldImagePath !== $nextImagePath) {
-        delete_trip_image_file($oldImagePath);
+        delete_unreferenced_trip_image($pdo, $oldImagePath);
     }
 
     $fresh = find_trip_for_user($pdo, (int) $me['id'], $tripId);
@@ -835,6 +839,8 @@ function update_trip_action(): void
         'trip' => [
             'id' => (int) ($fresh['id'] ?? 0),
             'name' => (string) ($fresh['name'] ?? ''),
+            'destinations' => trip_destinations_payload($fresh),
+            'budget_cents' => isset($fresh['budget_cents']) ? (int) $fresh['budget_cents'] : null,
             'trip_mode' => $fresh['trip_mode'] ?? 'group',
             'currency_code' => normalize_currency_code(
                 $fresh['currency_code'] ?? default_trip_currency_code()
@@ -939,7 +945,7 @@ function delete_trip_action(): void
 
     $imagePath = trim((string) ($trip['image_path'] ?? ''));
     if ($imagePath !== '') {
-        delete_trip_image_file($imagePath);
+        delete_unreferenced_trip_image($pdo, $imagePath);
     }
 
     app_event($pdo, $actorId, 'trip.deleted', 'trip', $tripId);

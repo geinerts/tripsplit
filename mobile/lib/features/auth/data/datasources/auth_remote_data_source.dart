@@ -40,6 +40,7 @@ abstract class AuthRemoteDataSource {
     String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
+    bool? sharePaymentDetailsWithTrips,
   });
 
   Future<AuthUserModel> getMe();
@@ -227,6 +228,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String? currentPassword,
     String? preferredCurrencyCode,
     Map<String, String?>? paymentDetails,
+    bool? sharePaymentDetailsWithTrips,
   }) async {
     final payload = <String, dynamic>{};
     if (firstName != null && lastName != null) {
@@ -243,6 +245,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     if (preferredCurrencyCode != null &&
         preferredCurrencyCode.trim().isNotEmpty) {
       payload['preferred_currency_code'] = preferredCurrencyCode.trim();
+    }
+    if (sharePaymentDetailsWithTrips != null) {
+      payload['share_payment_details_with_trips'] =
+          sharePaymentDetailsWithTrips;
     }
     if (paymentDetails != null && paymentDetails.isNotEmpty) {
       for (final entry in paymentDetails.entries) {

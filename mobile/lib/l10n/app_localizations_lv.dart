@@ -2548,7 +2548,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspaceShowingTop4ByBalanceDifference => 'Parādīti 4 lielākie bilances ieraksti.';
 
   @override
-  String get workspaceOpenFlow => 'Atvērt plūsmu';
+  String get workspaceOpenFlow => 'Detaļas';
 
   @override
   String get workspaceFriend => 'Draugs';
@@ -3886,4 +3886,281 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get restoreReceiptAction => 'Atjaunot iepriekšējo čeku';
+
+  @override
+  String get expenseSplitBetween => 'Sadalīt starp';
+
+  @override
+  String get expenseEditParticipants => 'Izvēlēties dalībniekus';
+
+  @override
+  String get expenseCustomSplit => 'Pielāgots sadalījums';
+
+  @override
+  String expenseSplitAllocated(String amount) {
+    return 'Sadalīti visi $amount';
+  }
+
+  @override
+  String expenseSplitRemaining(String amount) {
+    return 'Vēl jāsadala $amount';
+  }
+
+  @override
+  String expenseSplitOver(String amount) {
+    return 'Par $amount pārsniegta kopsumma';
+  }
+
+  @override
+  String get profilePaymentSharingTitle => 'Rādīt maksājumu metodes manos ceļojumos';
+
+  @override
+  String get profilePaymentSharingDescription => 'Atļaut apstiprinātajiem dalībniekiem redzēt manas maksājumu metodes ceļojumos, kurus izveidoju vai kuriem pievienojos. Attiecas uz esošajiem un turpmākajiem ceļojumiem. Izslēdzot jauna piekļuve tiek liegta.';
+
+  @override
+  String get memberPaymentDetailsNotShared => 'Maksājumu metodes nav kopīgotas vai pašlaik nav pieejamas.';
+
+  @override
+  String get homeTripInvitations => 'Ceļojumu ielūgumi';
+
+  @override
+  String get homeNoTripInvitations => 'Nav neatbildētu ceļojumu ielūgumu';
+
+  @override
+  String get homeInvitationsLoadFailed => 'Neizdevās ielādēt ielūgumus. Mēģiniet vēlreiz.';
+
+  @override
+  String get homeInvitationResponseFailed => 'Neizdevās atbildēt uz ielūgumu. Mēģiniet vēlreiz.';
+
+  @override
+  String get homeTripShareFailed => 'Neizdevās kopīgot ceļojumu. Mēģiniet vēlreiz.';
+
+  @override
+  String get settleStillToReceive => 'Vēl jāsaņem';
+
+  @override
+  String get settleStillToPay => 'Vēl jāsamaksā';
+
+  @override
+  String get settleEstimateCaption => 'Aprēķins pēc pašreizējiem izdevumiem. Summas līdz ceļojuma noslēgšanai var mainīties.';
+
+  @override
+  String get settleOutstandingCaption => 'Gaida pārskaitījumu vai saņemšanas apstiprinājumu.';
+
+  @override
+  String get settleWaitingForYou => 'Gaida tavu gatavības apstiprinājumu.';
+
+  @override
+  String get settleWhoPaysWhom => 'Kurš kam maksā';
+
+  @override
+  String get settlePreviewCaption => 'Priekšskatījums · galīgās summas pēc noslēgšanas';
+
+  @override
+  String get settleOpenPaymentCaption => 'Atver maksājumu, lai skatītu detaļas un pieejamās darbības.';
+
+  @override
+  String get tripBudgetEnable => 'Iestatīt budžetu';
+
+  @override
+  String get tripBudgetSoloHint => 'Izvēles tēriņu limits šim ceļojumam.';
+
+  @override
+  String get tripBudgetGroupHint => 'Viens kopīgs budžets visai grupai.';
+
+  @override
+  String get tripBudgetAmount => 'Budžeta summa';
+
+  @override
+  String get tripBudgetInvalid => 'Ievadi summu no 0,01 līdz 999999999,99, ar ne vairāk kā divām zīmēm aiz komata.';
+
+  @override
+  String get tripBudgetTitle => 'Ceļojuma budžets';
+
+  @override
+  String get tripBudgetGroupTitle => 'Grupas budžets';
+
+  @override
+  String get tripBudgetRemaining => 'Atlicis';
+
+  @override
+  String get tripBudgetOver => 'Virs budžeta';
+
+  @override
+  String get tripBudgetSpent => 'Iztērēts';
+
+  @override
+  String get tripBudgetLimit => 'Budžets';
+
+  @override
+  String get travelMapTitle => 'Mana ceļojumu karte';
+
+  @override
+  String get travelMapSubtitle => 'Apmeklētās vietas — tikai tev.';
+
+  @override
+  String get travelMapHere => 'Esmu šeit';
+
+  @override
+  String get travelMapAdd => 'Pievienot vietu';
+
+  @override
+  String get travelMapSearch => 'Meklēt pilsētu un valsti';
+
+  @override
+  String get travelMapSearchAction => 'Meklēt';
+
+  @override
+  String get travelMapSearchHint => 'Piemēram, Lisabona, Portugāle';
+
+  @override
+  String get travelMapEmpty => 'Šeit sākas tavas ceļojumu atmiņas';
+
+  @override
+  String get travelMapEmptyBody => 'Pievieno apmeklētu pilsētu vai atzīmē, kur esi šobrīd.';
+
+  @override
+  String get travelMapConfirm => 'Saglabāt šo apmeklējumu?';
+
+  @override
+  String get travelMapConfirmBody => 'Pārbaudi pilsētu un datumu pirms saglabāšanas savā privātajā kartē.';
+
+  @override
+  String get travelMapDate => 'Apmeklējuma datums';
+
+  @override
+  String get travelMapSave => 'Saglabāt manā kartē';
+
+  @override
+  String get travelMapCancel => 'Atcelt';
+
+  @override
+  String get travelMapClose => 'Aizvērt';
+
+  @override
+  String get travelMapNoResults => 'Pilsēta nav atrasta. Pievieno meklējumam valsts nosaukumu.';
+
+  @override
+  String get travelMapLookupError => 'Neizdevās noteikt pilsētu. Pārbaudi savienojumu vai pievieno vietu manuāli.';
+
+  @override
+  String get travelMapDenied => 'Piekļuve atrašanās vietai nav atļauta. Pilsētu vari pievienot manuāli.';
+
+  @override
+  String get travelMapDisabled => 'Ieslēdz atrašanās vietas pakalpojumus vai pievieno pilsētu manuāli.';
+
+  @override
+  String get travelMapError => 'Neizdevās ielādēt ceļojumu karti. Mēģini vēlreiz.';
+
+  @override
+  String get travelMapSaveError => 'Neizdevās saglabāt apmeklējumu. Mēģini vēlreiz.';
+
+  @override
+  String get travelMapUnavailable => 'Ceļojumu kartei nepieciešams servera atjauninājums.';
+
+  @override
+  String get travelMapOffline => 'Bezsaistē · saglabātās vietas';
+
+  @override
+  String get travelMapRetry => 'Mēģināt vēlreiz';
+
+  @override
+  String get travelMapDelete => 'Noņemt apmeklējumu';
+
+  @override
+  String get travelMapDeleteConfirm => 'Noņemt šo apmeklējumu no tavas privātās kartes?';
+
+  @override
+  String get travelMapFit => 'Rādīt visas vietas';
+
+  @override
+  String get travelMapSaved => 'Apmeklējums saglabāts';
+
+  @override
+  String get travelMapVisited => 'Apmeklēts';
+
+  @override
+  String get travelMapLimit => 'Kartē sasniegti 1000 apmeklējumi. Pirms jauna pievienošanas noņem kādu vecāku apmeklējumu.';
+
+  @override
+  String travelMapCounts(int countries, int cities) {
+    String _temp0 = intl.Intl.pluralLogic(
+      countries,
+      locale: localeName,
+      other: '$countries valstis',
+      one: '1 valsts',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      cities,
+      locale: localeName,
+      other: '$cities pilsētas',
+      one: '1 pilsēta',
+    );
+    return '$_temp0 · $_temp1';
+  }
+
+  @override
+  String travelMapVisits(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apmeklējumi',
+      one: '1 apmeklējums',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get travelTripDestinations => 'Galamērķi (pēc izvēles)';
+
+  @override
+  String get travelAddDestination => 'Pievienot galamērķi';
+
+  @override
+  String get travelRemoveDestination => 'Noņemt galamērķi';
+
+  @override
+  String get travelFromTrip => 'No ceļojuma';
+
+  @override
+  String get travelChooseTrip => 'Izvēlies ceļojumu';
+
+  @override
+  String get travelNoTrips => 'Vēl nav pieejamu ceļojumu. Vietu vari pievienot manuāli.';
+
+  @override
+  String get travelAddToMap => 'Pievienot manai kartei';
+
+  @override
+  String get travelTripConfirm => 'Saglabā tikai vietas, kurās tiešām biji. Apmeklējums nonāks tavā privātajā kartē.';
+
+  @override
+  String get travelVisitTitle => 'Nosaukums (pēc izvēles)';
+
+  @override
+  String get travelAddPhoto => 'Pievienot bildi';
+
+  @override
+  String get travelChangePhoto => 'Mainīt bildi';
+
+  @override
+  String get travelRemovePhoto => 'Noņemt bildi';
+
+  @override
+  String get travelPhotoError => 'Neizdevās sagatavot bildi. Izvēlies citu.';
+
+  @override
+  String get travelEditVisit => 'Labot apmeklējumu';
+
+  @override
+  String get travelOpenTrip => 'Atvērt ceļojumu';
+
+  @override
+  String get travelPreviousVisit => 'Iepriekšējais apmeklējums';
+
+  @override
+  String get travelNextVisit => 'Nākamais apmeklējums';
+
+  @override
+  String get travelDuplicate => 'Šis apmeklējums jau ir tavā kartē.';
 }

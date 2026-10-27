@@ -559,9 +559,21 @@
   "notificationsRefreshFailed": "Could not refresh. Previously loaded notifications are shown.",
   "notificationsJustNow": "Just now",
   "notificationsMinutesAgo": "{count} min ago",
-  "@notificationsMinutesAgo": {"placeholders": {"count": {"type": "int"}}},
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "notificationsHoursAgo": "{count} h ago",
-  "@notificationsHoursAgo": {"placeholders": {"count": {"type": "int"}}},
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "notificationsUnread": "Unread",
   "noNotificationsYet": "No notifications yet.",
   "noParticipantData": "No participant data.",
@@ -1107,7 +1119,7 @@
   "workspaceOwesToTheGroup": "Owes to the group",
   "workspaceGetsBackFromGroup": "Gets back from group",
   "workspaceShowingTop4ByBalanceDifference": "Showing top 4 by balance difference.",
-  "workspaceOpenFlow": "Open flow",
+  "workspaceOpenFlow": "Details",
   "workspaceFriend": "Friend",
   "workspaceSettlementTransfer": "Settlement transfer",
   "workspaceCompleted": "Completed",
@@ -1622,5 +1634,126 @@
   "receiptPhotoLabel": "Receipt photo",
   "replaceReceiptAction": "Replace receipt",
   "removeReceiptAction": "Remove receipt",
-  "restoreReceiptAction": "Restore previous receipt"
+  "restoreReceiptAction": "Restore previous receipt",
+  "expenseSplitBetween": "Split between",
+  "expenseEditParticipants": "Choose participants",
+  "expenseCustomSplit": "Custom split",
+  "expenseSplitAllocated": "All {amount} allocated",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "{amount} left to split",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "{amount} over the total",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Share payment methods with my trips",
+  "profilePaymentSharingDescription": "Allow accepted members of trips I create or join to see my payment methods. This applies to current and future trips. Turn it off at any time to stop new access.",
+  "memberPaymentDetailsNotShared": "Payment methods are not shared or are currently unavailable.",
+  "homeTripInvitations": "Trip invitations",
+  "homeNoTripInvitations": "No pending trip invitations",
+  "homeInvitationsLoadFailed": "Could not load invitations. Please try again.",
+  "homeInvitationResponseFailed": "Could not respond to the invitation. Please try again.",
+  "homeTripShareFailed": "Could not share the trip. Please try again.",
+  "settleStillToReceive": "Still to receive",
+  "settleStillToPay": "Still to pay",
+  "settleEstimateCaption": "Estimate based on current expenses. Amounts may change until the trip ends.",
+  "settleOutstandingCaption": "Awaiting payment or confirmation.",
+  "settleWaitingForYou": "Waiting for you to mark ready.",
+  "settleWhoPaysWhom": "Who pays whom",
+  "settlePreviewCaption": "Preview · finalised when the trip ends",
+  "settleOpenPaymentCaption": "Open a payment to view details and available actions.",
+  "tripBudgetEnable": "Set a budget",
+  "tripBudgetSoloHint": "Optional spending target for this trip.",
+  "tripBudgetGroupHint": "One shared budget for the whole group.",
+  "tripBudgetAmount": "Budget amount",
+  "tripBudgetInvalid": "Enter an amount from 0.01 to 999999999.99, with up to two decimal places.",
+  "tripBudgetTitle": "Trip budget",
+  "tripBudgetGroupTitle": "Group budget",
+  "tripBudgetRemaining": "Remaining",
+  "tripBudgetOver": "Over budget",
+  "tripBudgetSpent": "Spent",
+  "tripBudgetLimit": "Budget",
+  "travelMapTitle": "My travel map",
+  "travelMapSubtitle": "Visited places, just for you.",
+  "travelMapHere": "I’ve been here",
+  "travelMapAdd": "Add place",
+  "travelMapSearch": "Search city and country",
+  "travelMapSearchAction": "Search",
+  "travelMapSearchHint": "For example, Lisbon, Portugal",
+  "travelMapEmpty": "Your next memory starts here",
+  "travelMapEmptyBody": "Add a city you have visited, or check in where you are now.",
+  "travelMapConfirm": "Save this visit?",
+  "travelMapConfirmBody": "Check the city and date before saving it to your private map.",
+  "travelMapDate": "Visit date",
+  "travelMapSave": "Save to my map",
+  "travelMapCancel": "Cancel",
+  "travelMapClose": "Close",
+  "travelMapNoResults": "No city found. Try adding the country to your search.",
+  "travelMapLookupError": "Could not find the city. Check your connection or add a place manually.",
+  "travelMapDenied": "Location access is off. You can still add a city manually.",
+  "travelMapDisabled": "Turn on location services, or add a city manually.",
+  "travelMapError": "Could not load your travel map. Please try again.",
+  "travelMapSaveError": "Could not save the visit. Please try again.",
+  "travelMapUnavailable": "Travel map needs a server update.",
+  "travelMapOffline": "Offline · showing saved places",
+  "travelMapRetry": "Retry",
+  "travelMapDelete": "Remove visit",
+  "travelMapDeleteConfirm": "Remove this visit from your private map?",
+  "travelMapFit": "Show all places",
+  "travelMapSaved": "Visit saved",
+  "travelMapVisited": "Visited",
+  "travelMapLimit": "Your map has reached 1,000 visits. Remove an old visit before adding another.",
+  "travelMapCounts": "{countries, plural, one{1 country} other{{countries} countries}} · {cities, plural, one{1 city} other{{cities} cities}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{1 visit} other{{count} visits}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Destinations (optional)",
+  "travelAddDestination": "Add destination",
+  "travelRemoveDestination": "Remove destination",
+  "travelFromTrip": "From a trip",
+  "travelChooseTrip": "Choose a trip",
+  "travelNoTrips": "No trips available yet. You can add a place manually.",
+  "travelAddToMap": "Add to my map",
+  "travelTripConfirm": "Save only places you actually visited. This adds a private memory to your map.",
+  "travelVisitTitle": "Title (optional)",
+  "travelAddPhoto": "Add a photo",
+  "travelChangePhoto": "Change photo",
+  "travelRemovePhoto": "Remove photo",
+  "travelPhotoError": "Could not prepare this photo. Please choose another.",
+  "travelEditVisit": "Edit visit",
+  "travelOpenTrip": "Open trip",
+  "travelPreviousVisit": "Previous visit",
+  "travelNextVisit": "Next visit",
+  "travelDuplicate": "This visit is already on your map."
 }
