@@ -3,6 +3,17 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 final class TravelPlacesTest extends TestCase
 {
+ public function test_visit_queries_use_the_real_production_table_mapper(): void
+ {
+  foreach (['trip_', 'isolated_'] as $prefix) {
+   $process=proc_open([PHP_BINARY,__DIR__.'/../Fixtures/travel_places_schema_contract.php',$prefix],[0=>['pipe','r'],1=>['pipe','w'],2=>['pipe','w']],$pipes);
+   self::assertIsResource($process); fclose($pipes[0]);
+   $output=stream_get_contents($pipes[1]); $errors=stream_get_contents($pipes[2]);
+   fclose($pipes[1]); fclose($pipes[2]);
+   self::assertSame(0,proc_close($process),$errors); self::assertSame('',$errors);
+   self::assertSame(['city'=>'Lisbon','trip_id'=>9],json_decode($output,true,512,JSON_THROW_ON_ERROR));
+  }
+ }
  public function test_private_visits_validation_deduplication_and_deletion(): void
  {
   $process=proc_open([PHP_BINARY,__DIR__.'/../Fixtures/travel_places.php'],[0=>['pipe','r'],1=>['pipe','w'],2=>['pipe','w']],$pipes);

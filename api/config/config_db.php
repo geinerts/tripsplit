@@ -33,6 +33,7 @@ function table_name(string $key): string
         'subscription_sandbox_attempts' => DB_TABLE_PREFIX . 'subscription_sandbox_attempts',
         'subscription_sandbox_purchases' => DB_TABLE_PREFIX . 'subscription_sandbox_purchases',
         'trips' => DB_TABLE_PREFIX . 'trips',
+        'travel_places' => DB_TABLE_PREFIX . 'travel_places',
         'trip_members' => DB_TABLE_PREFIX . 'trip_members',
         'expenses' => DB_TABLE_PREFIX . 'expenses',
         'expense_participants' => DB_TABLE_PREFIX . 'expense_participants',
