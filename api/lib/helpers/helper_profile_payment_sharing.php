@@ -8,7 +8,7 @@ function users_trip_payment_sharing_available(PDO $pdo): bool
         $stmt = $pdo->prepare('SELECT COUNT(*) FROM information_schema.columns
             WHERE table_schema = DATABASE() AND table_name = :table_name
               AND column_name = "share_payment_details_with_trips"');
-        $stmt->execute(['table_name' => table_name('users')]);
+        $stmt->execute(['table_name' => trim(table_name('users'), '`')]);
         $available = (int) $stmt->fetchColumn() === 1;
     }
     return $available;

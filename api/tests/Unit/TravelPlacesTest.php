@@ -11,7 +11,7 @@ final class TravelPlacesTest extends TestCase
    $output=stream_get_contents($pipes[1]); $errors=stream_get_contents($pipes[2]);
    fclose($pipes[1]); fclose($pipes[2]);
    self::assertSame(0,proc_close($process),$errors); self::assertSame('',$errors);
-   self::assertSame(['city'=>'Lisbon','trip_id'=>9],json_decode($output,true,512,JSON_THROW_ON_ERROR));
+   self::assertSame(['city'=>'Lisbon','trip_id'=>9,'sharing_available'=>true,'budget_available'=>true],json_decode($output,true,512,JSON_THROW_ON_ERROR));
   }
  }
  public function test_private_visits_validation_deduplication_and_deletion(): void
