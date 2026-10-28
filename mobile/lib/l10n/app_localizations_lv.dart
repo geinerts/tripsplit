@@ -4163,4 +4163,70 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get travelDuplicate => 'Šis apmeklējums jau ir tavā kartē.';
+
+  @override
+  String get liveMapTitle => 'Dzīvā karte';
+
+  @override
+  String get liveShareTitle => 'Kopīgot manu lokāciju';
+
+  @override
+  String get liveConsent => 'Kopīgo savu precīzo atrašanās vietu tikai ar šī ceļojuma apstiprinātajiem dalībniekiem uz izvēlēto laiku. Kopīgošana turpinās fonā, un tu to vari apturēt jebkurā brīdī.';
+
+  @override
+  String get liveBackgroundNote => 'Bez interneta vai piespiedu kārtā aizverot lietotni, atjaunošana var apstāties. Tiek glabāta tikai pēdējā lokācija, nevis maršruta vēsture.';
+
+  @override
+  String get liveStart => 'Sākt kopīgot';
+
+  @override
+  String get liveStop => 'Pārtraukt kopīgošanu';
+
+  @override
+  String get liveNotification => 'Tava lokācija tiek kopīgota ar ceļojuma grupu. Atver Splyto, lai pārtrauktu.';
+
+  @override
+  String get livePermissionError => 'Lai kopīgotu lokāciju, tālruņa iestatījumos atļauj piekļuvi atrašanās vietai.';
+
+  @override
+  String get liveStartError => 'Neizdevās sākt kopīgošanu. Pārbaudi lokācijas atļauju, internetu un tālruņa datumu un laiku.';
+
+  @override
+  String get liveStopPending => 'Atjaunošana apturēta. Gaidām internetu, lai noņemtu pēdējo lokāciju; bez atjauninājumiem tā pazūd no kartes 2 minūšu laikā.';
+
+  @override
+  String get liveSharing => 'kopīgo';
+
+  @override
+  String get liveUnavailable => 'Šī dzīvā karte nav pieejama. Atgriezies ceļojumā un atsvaidzini.';
+
+  @override
+  String get liveLoadError => 'Neizdevās atsvaidzināt lokācijas. Redzami tikai nesenie atjauninājumi.';
+
+  @override
+  String get liveFit => 'Parādīt visus';
+
+  @override
+  String get liveEmpty => 'Pagaidām neviens nekopīgo aktuālu lokāciju.';
+
+  @override
+  String get liveRecent => 'Tikko atjaunots';
+
+  @override
+  String get liveLastKnown => 'Pēdējoreiz atjaunots';
+
+  @override
+  String get liveAccuracy => 'Precizitāte';
+
+  @override
+  String get liveUntil => 'Kopīgošana līdz';
+
+  @override
+  String get liveOtherSession => 'Ieslēgts citā sesijā. Šeit vari to pārtraukt.';
+
+  @override
+  String get liveUpdatesPaused => 'Atjaunošana pauzēta. Pārbaudi lokācijas atļauju un internetu.';
+
+  @override
+  String get livePrivateUntilShared => 'Tava lokācija ir privāta, līdz pats izvēlies to kopīgot.';
 }

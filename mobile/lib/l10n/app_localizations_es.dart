@@ -4163,4 +4163,70 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get travelDuplicate => 'Esta visita ya está en tu mapa.';
+
+  @override
+  String get liveMapTitle => 'Mapa en directo';
+
+  @override
+  String get liveShareTitle => 'Compartir mi ubicación';
+
+  @override
+  String get liveConsent => 'Comparte tu ubicación precisa solo con los miembros aceptados de este viaje durante el tiempo elegido. Continúa en segundo plano y puedes detenerla cuando quieras.';
+
+  @override
+  String get liveBackgroundNote => 'Las actualizaciones pueden pausarse sin internet o al forzar el cierre de la app. Solo se conserva la última ubicación, sin historial de rutas.';
+
+  @override
+  String get liveStart => 'Empezar a compartir';
+
+  @override
+  String get liveStop => 'Dejar de compartir';
+
+  @override
+  String get liveNotification => 'Tu ubicación se comparte con tu viaje. Abre Splyto para dejar de compartir.';
+
+  @override
+  String get livePermissionError => 'Permite el acceso a la ubicación en los ajustes del teléfono para compartirla.';
+
+  @override
+  String get liveStartError => 'No se pudo iniciar. Comprueba los permisos de ubicación, internet y la fecha y hora del teléfono.';
+
+  @override
+  String get liveStopPending => 'Actualizaciones detenidas. Se necesita internet para eliminar la última ubicación; desaparece del mapa en 2 minutos sin actualizaciones.';
+
+  @override
+  String get liveSharing => 'compartiendo';
+
+  @override
+  String get liveUnavailable => 'Este mapa no está disponible. Vuelve al viaje y actualiza.';
+
+  @override
+  String get liveLoadError => 'No se pudieron actualizar las ubicaciones. Solo se muestran las recientes.';
+
+  @override
+  String get liveFit => 'Mostrar a todos';
+
+  @override
+  String get liveEmpty => 'Todavía nadie comparte una ubicación reciente.';
+
+  @override
+  String get liveRecent => 'Recién actualizada';
+
+  @override
+  String get liveLastKnown => 'Última actualización';
+
+  @override
+  String get liveAccuracy => 'Precisión';
+
+  @override
+  String get liveUntil => 'Compartiendo hasta';
+
+  @override
+  String get liveOtherSession => 'Iniciado en otra sesión. Puedes detenerlo aquí.';
+
+  @override
+  String get liveUpdatesPaused => 'Actualizaciones pausadas. Comprueba la ubicación e internet.';
+
+  @override
+  String get livePrivateUntilShared => 'Tu ubicación es privada hasta que decidas compartirla.';
 }

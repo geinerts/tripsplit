@@ -265,6 +265,8 @@ void main() {
         expect(trips.accepted, accept ? 1 : 0);
         expect(trips.declined, accept ? 0 : 1);
         expect(badge().isLabelVisible, isFalse);
+        // The envelope itself must not contain an unread dot after responding.
+        expect((badge().child as Icon).icon, Icons.mail_outline);
         expect(find.text('No pending trip invitations'), findsOneWidget);
       },
     );

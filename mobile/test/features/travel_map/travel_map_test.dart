@@ -5,6 +5,8 @@ import 'package:tripsplit/features/travel_map/presentation/travel_place_sheet.da
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -430,6 +432,19 @@ void main() {
       expect(locations.here, 0);
       expect(locations.searches, 0);
       expect(find.text('Lisbon'), findsNothing);
+      expect(
+        tester.getSize(find.byKey(const ValueKey('travel-pin-symbol-1'))),
+        const Size(24, 24),
+      );
+      expect(
+        tester.getSize(find.byKey(const ValueKey('travel-pin-1'))),
+        const Size(48, 48),
+      );
+      tester
+          .widget<FlutterMap>(find.byType(FlutterMap))
+          .mapController!
+          .move(lisbon.point, 7);
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('travel-pin-1')));
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('travel-place-popup')), findsOneWidget);
@@ -544,23 +559,32 @@ void main() {
             tester.element(find.byType(TravelMapPage)),
           ),
         );
+        await savePreview(tester, '${dark ? 'dark' : 'light'}-overview');
         await tester.tap(find.byKey(const ValueKey('travel-pin-2')));
         await tester.pumpAndSettle();
-        final boundary = tester.renderObject<RenderRepaintBoundary>(
-          find.byKey(const ValueKey('preview')),
-        );
-        await tester.runAsync(() async {
-          final image = await boundary.toImage(pixelRatio: 3);
-          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-          final dir = Directory('../output/design/travel-map')
-            ..createSync(recursive: true);
-          File(
-            '${dir.path}/${dark ? 'dark' : 'light'}-map.png',
-          ).writeAsBytesSync(bytes!.buffer.asUint8List());
-          image.dispose();
-        });
+        await savePreview(tester, '${dark ? 'dark' : 'light'}-map');
+        tester
+            .widget<FlutterMap>(find.byType(FlutterMap))
+            .mapController!
+            .move(const LatLng(49, 9), 5.4);
+        await tester.pumpAndSettle();
+        await savePreview(tester, '${dark ? 'dark' : 'light'}-cities');
         debugDisableShadows = true;
       });
     }
   }
+}
+
+Future<void> savePreview(WidgetTester tester, String name) async {
+  final boundary = tester.renderObject<RenderRepaintBoundary>(
+    find.byKey(const ValueKey('preview')),
+  );
+  await tester.runAsync(() async {
+    final image = await boundary.toImage(pixelRatio: 3);
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    final dir = Directory('../output/design/travel-map')
+      ..createSync(recursive: true);
+    File('${dir.path}/$name.png').writeAsBytesSync(bytes!.buffer.asUint8List());
+    image.dispose();
+  });
 }

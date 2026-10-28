@@ -1,6 +1,6 @@
 {
   "title": "Privātuma politika",
-  "updated": "Sagatavota 2026. gada 23. oktobrī",
+  "updated": "Atjaunināta 2026. gada 28. oktobrī",
   "reviewNotice": "Projekts pārskatīšanai. Pirms publicēšanas vēl jāapstiprina pārējo datu kategoriju glabāšanas kārtība un aizsardzības pasākumi starptautiskai datu nodošanai.",
   "intro": "Šī politika skaidro, kā Splyto apstrādā personas datus konta, ceļojumu un kopīgo izdevumu funkcijās. Tā attiecas arī uz informāciju, ko par jums ievada citi dalībnieki. Tā neaizstāj jūsu e-pasta, pieteikšanās vai maksājumu pakalpojuma privātuma noteikumus.",
   "sections": [
@@ -52,6 +52,16 @@
         "“Esmu šeit” pieprasa atrašanās vietas atļauju tikai pēc pogas nospiešanas. Telefons vienreiz nosaka atrašanās vietu, lai ar platformas ģeokodēšanas pakalpojumu piedāvātu pilsētu. Tikai pēc apmeklējuma apstiprināšanas Splyto saņem pilsētas centra koordinātas, nevis šo ierīces atrašanās punktu. Manuālai pilsētas meklēšanai atrašanās vietas atļauja nav vajadzīga. Meklēšanas tekstu un pilsētas noteikšanai izmantotās koordinātas var apstrādāt platformas ģeokodēšanas pakalpojuma sniedzējs saskaņā ar saviem noteikumiem. Šī funkcija neseko atrašanās vietai fonā un nekoplieto atrašanās vietu tiešraidē.",
         "Pārskata karte ir iekļauta lietotnē; iepriekš ielādētos apmeklējumus var apskatīt bez interneta. Meklēšanai, pašreizējās pilsētas noteikšanai un sinhronizācijai var būt vajadzīgs savienojums. Lokālie kartes ieraksti tiek glabāti atsevišķi katram kontam un tiek notīrīti, izrakstoties no konta.",
         "Apstiprinātu apmeklējumu vari sasaistīt ar ceļojumu, kurā esi pievienojies, norādīt personīgu nosaukumu un izvēlēties bildi. Plānotie ceļojuma galamērķi ir redzami tā dalībniekiem, bet automātiski nekļūst par personīgiem apmeklējumiem. Saglabājot apmeklējumu no ceļojuma, tā nosaukums un pieejamā vāka bilde tiek nokopēti tavā privātajā ierakstā. Šī kopija var saglabāties arī pēc ceļojuma mainīšanas vai dzēšanas; saite uz ceļojumu ir pieejama tikai tikmēr, kamēr tev ir piekļuve. Privāto bildi vari nomainīt vai noņemt, nemainot kopīgo ceļojumu. Bildes tiek samazinātas, pārveidotas WebP formātā un attīrītas no metadatiem. Tās ir pieejamas ar autentificētiem tava konta pieprasījumiem, tiek glabātas ierīces kešatmiņā kopā ar konta datiem un dzēstas līdz ar apmeklējumu vai apstiprinātu konta dzēšanu."
+      ]
+    },
+    {
+      "id": "live_location",
+      "title": "Dzīvā lokācija ceļojuma grupā",
+      "paragraphs": [
+        "Dzīvā karte ir izvēles funkcija, kas pēc noklusējuma ir izslēgta. Tikai pēc ilguma izvēles un kopīgošanas apstiprināšanas Splyto saņem ierīces koordinātas, precizitāti un nolasīšanas laiku. Aktīvā grupas ceļojuma apstiprinātie dalībnieki redz tavu pēdējo atrašanās vietu un vārdu/attēlu. Pievienošanās ceļojumam vai kartes atvēršana neieslēdz kopīgošanu. Dzīvā lokācija ir atsevišķa no privātās ceļojumu kartes.",
+        "Vari izvēlēties 15 minūtes, 1, 4 vai 8 stundas un pārtraukt agrāk jebkurā brīdī. Atjaunošana var turpināties fonā ar operētājsistēmas lokācijas indikatoru vai paziņojumu. Bez interneta vai piespiedu kārtā aizverot lietotni, atjaunošana var apstāties. Lietotnes atkārtota palaišana automātiski neatsāk izsekošanu. Serveris ievēro izvēlēto termiņu. Koordinātas, kas vecākas par divām minūtēm, netiek rādītas. Apturot bez interneta, ierīces atjauninājumi beidzas uzreiz, un dzēšana serverī tiek mēģināta atkārtoti, kamēr sesija ir aktīva.",
+        "Tiek glabāta tikai pēdējā lokācija, nevis maršruta vēsture. Beigušās sesijas un novecojušās koordinātas regulāri dzēš tīrīšanas uzdevums. Izstāšanās no grupas izdzēš kopīgošanas sesiju; ceļojuma noslēgšana vai konta/sesijas atsaukšana arī pārtrauc piekļuvi. Atjaunošanas rezerves kopijās agrākas datubāzes kopijas var saglabāties līdz 14 dienām. Kopīgošanas apturēšana nevar atsaukt informāciju, ko cits dalībnieks jau redzējis vai nokopējis.",
+        "Dzīvās kartes ielu attēlošanai izmanto OpenStreetMap kartes fragmentus. Atverot vai pārvietojot karti, pakalpojuma sniedzējs saņem IP adresi un pieprasīto kartes apgabalu. Dalībnieku vārdus, kontu identifikatorus un kopīgošanas tokenus tam nenosūtām. Uz kartes un operētājsistēmas lokācijas pakalpojumiem attiecas to sniedzēju privātuma noteikumi."
       ]
     },
     {
@@ -130,7 +140,7 @@
       ]
     }
   ],
-  "version": "2026-10-23",
+  "version": "2026-10-28",
   "status": "draft",
   "contactEmail": "info@splyto.eu",
   "country": "Latvia",

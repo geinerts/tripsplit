@@ -1,3 +1,4 @@
+import '../../../live_location/presentation/live_location_controller.dart';
 import '../../../travel_map/data/travel_places_repository.dart';
 import '../../../travel_map/presentation/travel_map_page.dart';
 import 'dart:async';
@@ -58,6 +59,7 @@ class MainShellPage extends StatefulWidget {
     required this.inviteDeepLinkController,
     this.quickStartService,
     this.travelPlacesRepository,
+    this.liveLocationController,
     this.initialTabIndex = 0,
     this.openCreateTripOnStart = false,
     this.openAddExpenseOnStart = false,
@@ -65,6 +67,7 @@ class MainShellPage extends StatefulWidget {
 
   final QuickStartService? quickStartService;
   final TravelPlacesRepository? travelPlacesRepository;
+  final LiveLocationController? liveLocationController;
   final AuthController authController;
   final TripsController tripsController;
   final FriendsController friendsController;

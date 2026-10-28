@@ -87,7 +87,7 @@ class _Trips implements TripsController {
     String? imagePath,
     bool removeImage = false,
     int? budgetCents,
-    List<Map<String,dynamic>>? destinations,
+    List<Map<String, dynamic>>? destinations,
     bool clearBudget = false,
   }) async {
     if (failUpdate) throw const ApiException('Could not save trip');
@@ -230,6 +230,7 @@ WorkspaceSnapshot snapshot({
 
 class _Workspace implements WorkspaceController {
   bool memberDetailsShared = false;
+  ApiException? memberDetailsError;
   int memberDetailsCalls = 0;
   @override
   Future<PaymentDetails> loadMemberPaymentDetails({
@@ -237,6 +238,7 @@ class _Workspace implements WorkspaceController {
     required int userId,
   }) async {
     memberDetailsCalls++;
+    if (memberDetailsError != null) throw memberDetailsError!;
     if (!memberDetailsShared) {
       throw const ApiException('Not shared', statusCode: 404);
     }
@@ -1665,8 +1667,28 @@ void main() {
       await tester.pumpAndSettle();
       await refreshed;
       expect(find.text('@annarevtag'), findsNothing);
-      expect(find.text(t.memberPaymentDetailsNotShared), findsOneWidget);
+      expect(find.text(t.profilePaymentNotAdded), findsOneWidget);
+      expect(find.text(t.memberPaymentDetailsNotShared), findsNothing);
+      expect(find.text(t.paymentDetailsRetry), findsNothing);
       expect(controller.memberDetailsCalls, 2);
+      // A connectivity failure is still retryable and never shows stale details.
+      controller.memberDetailsShared = true;
+      controller.memberDetailsError = const ApiException(
+        'Offline',
+        isNetworkError: true,
+      );
+      final retryRefresh = profile.onRefresh!();
+      await tester.pumpAndSettle();
+      await retryRefresh;
+      expect(find.text('@annarevtag'), findsNothing);
+      expect(find.text(t.memberPaymentDetailsNotShared), findsOneWidget);
+      expect(find.text(t.paymentDetailsRetry), findsOneWidget);
+      controller.memberDetailsError = null;
+      await tester.ensureVisible(find.text(t.paymentDetailsRetry));
+      await tester.tap(find.text(t.paymentDetailsRetry));
+      await tester.pumpAndSettle();
+      expect(find.text('@annarevtag'), findsOneWidget);
+      expect(find.text(t.paymentDetailsRetry), findsNothing);
       await disposePage(tester);
     },
   );
@@ -1694,7 +1716,9 @@ void main() {
             .single;
         expect(payments.revolutHandle, '@myrevtag');
       } else {
-        expect(find.text(t.memberPaymentDetailsNotShared), findsOneWidget);
+        expect(find.text(t.profilePaymentNotAdded), findsOneWidget);
+        expect(find.text(t.memberPaymentDetailsNotShared), findsNothing);
+        expect(find.text(t.paymentDetailsRetry), findsNothing);
         expect(find.text('@myrevtag'), findsNothing);
       }
       await disposePage(tester);

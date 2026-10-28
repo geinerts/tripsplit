@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_components.dart';
+import '../../../../core/ui/splyto_illustration.dart';
 import '../../domain/entities/received_trip_invitation.dart';
 
 class ReceivedTripInvitationsSheet extends StatefulWidget {
@@ -79,10 +80,10 @@ class _ReceivedTripInvitationsSheetState
                 padding: const EdgeInsets.symmetric(vertical: 40),
                 child: Column(
                   children: [
-                    Icon(
-                      Icons.mark_email_read_outlined,
-                      size: 48,
-                      color: Theme.of(context).colorScheme.primary,
+                    const SplytoIllustration(
+                      'assets/branding/splyto_empty_trip_invitations.svg',
+                      width: 160,
+                      height: 124,
                     ),
                     const SizedBox(height: 16),
                     Text(

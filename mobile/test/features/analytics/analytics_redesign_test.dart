@@ -340,11 +340,22 @@ void main() {
   );
   if (const bool.fromEnvironment('ANALYTICS_PREVIEWS')) {
     for (final dark in [false, true]) {
-      for (final screen in ['all', 'total', 'share', 'empty']) {
+      for (final screen in ['all', 'total', 'share', 'empty', 'categories']) {
         testWidgets('preview $screen dark=$dark', (tester) async {
           final key = GlobalKey();
           final trips = _Trips();
           final workspace = _Workspace();
+          if (screen == 'categories') {
+            workspace.expenses = [
+              analyticsExpense(
+                1,
+                amount: 1000,
+                share: 1000,
+                category: 'tickets',
+              ),
+              analyticsExpense(2, amount: 25, share: 25, category: 'groceries'),
+            ];
+          }
           if (screen == 'empty') trips.trips = [];
           if (screen == 'all') {
             trips.trips = [
@@ -372,10 +383,12 @@ void main() {
             };
           }
           await _mount(tester, trips, workspace, dark: dark, boundary: key);
-          if (screen == 'total' || screen == 'share') {
+          if (screen == 'total' ||
+              screen == 'share' ||
+              screen == 'categories') {
             await tester.tap(find.text('By trip'));
             await tester.pumpAndSettle();
-            if (screen == 'total') {
+            if (screen == 'total' || screen == 'categories') {
               await tester.tap(find.text('Trip total').first);
               await tester.pumpAndSettle();
             }

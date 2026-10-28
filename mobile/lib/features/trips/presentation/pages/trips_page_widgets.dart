@@ -246,7 +246,7 @@ extension _TripsPageWidgets on _TripsPageState {
                       : '${_receivedInvitations.length}'),
           ),
           child: Icon(
-            Icons.mark_email_unread_outlined,
+            Icons.mail_outline,
             color: Theme.of(context).colorScheme.primary,
           ),
         ),

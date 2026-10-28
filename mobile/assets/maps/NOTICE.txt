@@ -3,3 +3,9 @@ Source: https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_1
 Terms: https://www.naturalearthdata.com/about/terms-of-use/
 Bundled as simplified country geometry with country code/name properties.
 Antarctica omitted for the Mercator travel map. This is an overview map, not navigation data.
+
+Country label anchors/names: Natural Earth 1:110m Admin 0 Countries.
+Major city labels: Natural Earth 1:50m Populated Places Simple (public domain).
+Source: https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_50m_populated_places_simple.geojson
+https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-populated-places/
+Downloaded 2026-10-28; labels are bundled offline and filtered by zoom/rank.

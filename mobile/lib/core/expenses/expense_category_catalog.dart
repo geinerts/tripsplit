@@ -81,6 +81,34 @@ class ExpenseCategoryCatalog {
     return optionFor(raw)?.icon ?? Icons.label_outline;
   }
 
+  /// Category identity stays the same across charts, filters and locales.
+  static Color colorFor(String raw) {
+    final key = normalizeStored(raw).toLowerCase();
+    final builtInColor = switch (key) {
+      'food' => const Color(0xFF00836B),
+      'groceries' => const Color(0xFF6BA83C),
+      'fuel' => const Color(0xFFE77A35),
+      'transport' => const Color(0xFF28BCE0),
+      'accommodation' || 'stays' || 'lodging' => const Color(0xFFD92192),
+      'activities' => const Color(0xFF8571C8),
+      'tickets' => const Color(0xFFE5AC2B),
+      'shopping' => const Color(0xFF4D75D9),
+      'party' => const Color(0xFFE45F83),
+      'parking' => const Color(0xFFA78657),
+      'other' => const Color(0xFF63869B),
+      _ => null,
+    };
+    if (builtInColor != null) return builtInColor;
+
+    // Custom names receive a repeatable colour instead of sharing Other's grey.
+    // Do not use String.hashCode, whose result can vary between platforms/runs.
+    var hash = 0;
+    for (final rune in key.runes) {
+      hash = (hash * 31 + rune) & 0x7fffffff;
+    }
+    return HSLColor.fromAHSL(1, (hash % 3600) / 10, .58, .52).toColor();
+  }
+
   static String groupingKey(String raw) {
     final normalized = normalizeStored(raw);
     final lower = normalized.toLowerCase();

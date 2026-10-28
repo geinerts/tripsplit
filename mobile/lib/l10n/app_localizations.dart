@@ -7632,6 +7632,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This visit is already on your map.'**
   String get travelDuplicate;
+
+  /// No description provided for @liveMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live map'**
+  String get liveMapTitle;
+
+  /// No description provided for @liveShareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share my location'**
+  String get liveShareTitle;
+
+  /// No description provided for @liveConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your precise location only with accepted members of this trip for the time you choose. Sharing continues in the background and you can stop it at any time.'**
+  String get liveConsent;
+
+  /// No description provided for @liveBackgroundNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates can pause without internet or if you force-close the app. Only the latest location is kept; no route history is recorded.'**
+  String get liveBackgroundNote;
+
+  /// No description provided for @liveStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start sharing'**
+  String get liveStart;
+
+  /// No description provided for @liveStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop sharing'**
+  String get liveStop;
+
+  /// No description provided for @liveNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Your location is being shared with your trip. Open Splyto to stop sharing.'**
+  String get liveNotification;
+
+  /// No description provided for @livePermissionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable location access in your phone settings to share your location.'**
+  String get livePermissionError;
+
+  /// No description provided for @liveStartError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start sharing. Check location access, internet and your phone’s date and time.'**
+  String get liveStartError;
+
+  /// No description provided for @liveStopPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates stopped. Waiting for internet to remove your last location; it disappears from the map within 2 minutes without updates.'**
+  String get liveStopPending;
+
+  /// No description provided for @liveSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'sharing'**
+  String get liveSharing;
+
+  /// No description provided for @liveUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This live map is unavailable. Return to the trip and refresh.'**
+  String get liveUnavailable;
+
+  /// No description provided for @liveLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not refresh locations. Only recent updates are shown.'**
+  String get liveLoadError;
+
+  /// No description provided for @liveFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Show everyone'**
+  String get liveFit;
+
+  /// No description provided for @liveEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody is sharing a recent location yet.'**
+  String get liveEmpty;
+
+  /// No description provided for @liveRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Just updated'**
+  String get liveRecent;
+
+  /// No description provided for @liveLastKnown.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated'**
+  String get liveLastKnown;
+
+  /// No description provided for @liveAccuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy'**
+  String get liveAccuracy;
+
+  /// No description provided for @liveUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing until'**
+  String get liveUntil;
+
+  /// No description provided for @liveOtherSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Started in another session. You can stop it here.'**
+  String get liveOtherSession;
+
+  /// No description provided for @liveUpdatesPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates paused. Check location access and internet.'**
+  String get liveUpdatesPaused;
+
+  /// No description provided for @livePrivateUntilShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Your location stays private until you choose to share it.'**
+  String get livePrivateUntilShared;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

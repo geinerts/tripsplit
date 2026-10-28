@@ -1,6 +1,6 @@
 {
   "title": "Privacy policy",
-  "updated": "Prepared on 23 October 2026",
+  "updated": "Updated on 28 October 2026",
   "reviewNotice": "Draft for review. Retention rules for other data categories and safeguards for international transfers still need to be confirmed before publication.",
   "intro": "This policy explains how Splyto processes personal data when you use its account, trip and shared-expense features. It also covers information that other participants enter about you. It does not replace the privacy notices of your email, sign-in or payment provider.",
   "sections": [
@@ -52,6 +52,16 @@
         "“I’ve been here” requests location access only when you tap it. Your phone uses a one-time location reading to suggest a city through its native geocoding service. Splyto receives the city centre, not that device location, only after you confirm the visit. Manual city search does not require location permission. Search terms and coordinates used to suggest a city may be processed by your platform’s geocoding provider, under its own terms. This feature does not track you in the background or share live locations.",
         "The overview map is bundled in the app; cached visits can be displayed offline. Searching, resolving the current city and synchronising visits may require a connection. Local map records use account-scoped app storage and are cleared with sign-out cleanup.",
         "You can optionally associate a confirmed visit with a trip you have joined, add a personal title and choose a photo. Planned trip destinations are visible to that trip’s participants; they do not automatically become personal visits. When you save a visit from a trip, its name and available cover photo are copied into your private visit. That copy can remain after the trip is changed or deleted; a link back is available only while you still have access to the trip. You can replace or remove the private photo without changing the shared trip. Photos are resized, converted to WebP and stripped of metadata. They are available through authenticated requests for your account, cached locally with your account data, and removed with the visit or confirmed account deletion."
+      ]
+    },
+    {
+      "id": "live_location",
+      "title": "Live location within a trip",
+      "paragraphs": [
+        "Live map is optional and off by default. Only after you choose a duration and confirm sharing does Splyto receive your device coordinates, accuracy and observation time. Accepted members of that active group trip can see your latest position and name/avatar. Joining a trip or opening its map does not start sharing. Live location is separate from your private travel map.",
+        "You can choose 15 minutes, 1 hour, 4 hours or 8 hours and stop earlier at any time. A location stream may continue in the background with the operating system location indicator or notification. Updates may pause without connectivity or when the app is force-closed. Restarting the app does not automatically restart location tracking. The server enforces the sharing deadline. Coordinates older than two minutes are not shown; stopping without internet stops device updates immediately and remote removal is retried while the session is active.",
+        "Only the latest location is stored, not a route history. Expired sessions are removed and stale coordinates are cleared by scheduled cleanup. Leaving the trip removes your sharing session; closing the trip or revoking the account/session also stops access. Routine recovery backups can retain earlier database copies for up to 14 days. Stopping sharing cannot retract information another member has already seen or copied.",
+        "The live street map uses OpenStreetMap tiles. Opening or moving the map requests tiles for the visible area, which exposes your IP address and the requested map area to the map provider. We do not send participant names, account identifiers or sharing tokens to that provider. Tile use is subject to the provider’s privacy terms. Operating-system location services also process data under their own terms."
       ]
     },
     {
@@ -130,7 +140,7 @@
       ]
     }
   ],
-  "version": "2026-10-23",
+  "version": "2026-10-28",
   "status": "draft",
   "contactEmail": "info@splyto.eu",
   "country": "Latvia",

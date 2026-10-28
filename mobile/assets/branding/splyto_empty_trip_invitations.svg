@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="184" viewBox="0 0 240 184">
+  <title>No pending trip invitations</title>
+  <g fill="none" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M126 132H66a8 8 0 0 1-8-8V62a8 8 0 0 1 8-8h108a8 8 0 0 1 8 8v39" stroke="#00BED4"/>
+    <path d="m61 59 59 42 59-42" stroke="#00BED4"/>
+    <path d="m76 116 23-22m42 0 14 13" stroke="#AFDEE7" stroke-width="3"/>
+    <path d="m145 132 13 13 27-29" stroke="#DD2684" stroke-width="6"/>
+  </g>
+</svg>

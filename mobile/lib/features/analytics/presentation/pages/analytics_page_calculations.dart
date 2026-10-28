@@ -34,13 +34,7 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
     endRaw: trip.dateTo,
     unknownLabel: '',
   );
-  Color _categoryColor(String key) => switch (key) {
-    'food' => const Color(0xFF00836B),
-    'transport' => const Color(0xFF28BCE0),
-    'accommodation' || 'stays' || 'lodging' => const Color(0xFFD92192),
-    'activities' => const Color(0xFF8571C8),
-    _ => const Color(0xFF63869B),
-  };
+  Color _categoryColor(String key) => ExpenseCategoryCatalog.colorFor(key);
   String _categoryName(String key) =>
       ExpenseCategoryCatalog.labelFor(key, Localizations.localeOf(context));
 }

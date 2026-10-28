@@ -4163,4 +4163,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get travelDuplicate => 'This visit is already on your map.';
+
+  @override
+  String get liveMapTitle => 'Live map';
+
+  @override
+  String get liveShareTitle => 'Share my location';
+
+  @override
+  String get liveConsent => 'Share your precise location only with accepted members of this trip for the time you choose. Sharing continues in the background and you can stop it at any time.';
+
+  @override
+  String get liveBackgroundNote => 'Updates can pause without internet or if you force-close the app. Only the latest location is kept; no route history is recorded.';
+
+  @override
+  String get liveStart => 'Start sharing';
+
+  @override
+  String get liveStop => 'Stop sharing';
+
+  @override
+  String get liveNotification => 'Your location is being shared with your trip. Open Splyto to stop sharing.';
+
+  @override
+  String get livePermissionError => 'Enable location access in your phone settings to share your location.';
+
+  @override
+  String get liveStartError => 'Could not start sharing. Check location access, internet and your phone’s date and time.';
+
+  @override
+  String get liveStopPending => 'Updates stopped. Waiting for internet to remove your last location; it disappears from the map within 2 minutes without updates.';
+
+  @override
+  String get liveSharing => 'sharing';
+
+  @override
+  String get liveUnavailable => 'This live map is unavailable. Return to the trip and refresh.';
+
+  @override
+  String get liveLoadError => 'Could not refresh locations. Only recent updates are shown.';
+
+  @override
+  String get liveFit => 'Show everyone';
+
+  @override
+  String get liveEmpty => 'Nobody is sharing a recent location yet.';
+
+  @override
+  String get liveRecent => 'Just updated';
+
+  @override
+  String get liveLastKnown => 'Last updated';
+
+  @override
+  String get liveAccuracy => 'Accuracy';
+
+  @override
+  String get liveUntil => 'Sharing until';
+
+  @override
+  String get liveOtherSession => 'Started in another session. You can stop it here.';
+
+  @override
+  String get liveUpdatesPaused => 'Updates paused. Check location access and internet.';
+
+  @override
+  String get livePrivateUntilShared => 'Your location stays private until you choose to share it.';
 }

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import '../../../core/l10n/l10n.dart';
 import '../domain/travel_place.dart';
+import 'travel_map_labels.dart';
 
 class TravelCountryShape {
   const TravelCountryShape(this.code, this.rings);
@@ -19,6 +20,7 @@ class TravelCountryShape {
     final data =
         jsonDecode(await rootBundle.loadString('assets/maps/world.json'))
             as Map;
+    await TravelMapLabel.load();
     final shapes = <TravelCountryShape>[];
     for (final feature in data['features'] as List) {
       final geometry = feature['geometry'] as Map;
@@ -121,6 +123,7 @@ class TravelMapCanvas extends StatelessWidget {
                 ),
             ],
           ),
+          TravelMapLabels(pins: unique.values.map((p) => p.point).toList()),
           MarkerLayer(
             markers: [
               for (final place in unique.values)
@@ -137,12 +140,22 @@ class TravelMapCanvas extends StatelessWidget {
                       onPressed: () => onSelect(
                         selected?.placeKey == place.placeKey ? null : place,
                       ),
-                      style: IconButton.styleFrom(
-                        backgroundColor: colors.primary,
-                        foregroundColor: colors.onPrimary,
-                        side: BorderSide(color: colors.surface, width: 3),
+                      style: IconButton.styleFrom(padding: EdgeInsets.zero),
+                      icon: Container(
+                        key: ValueKey('travel-pin-symbol-${place.id}'),
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: colors.primary,
+                          border: Border.all(color: colors.surface, width: 1.5),
+                        ),
+                        child: Icon(
+                          Icons.check,
+                          size: 12,
+                          color: colors.onPrimary,
+                        ),
                       ),
-                      icon: const Icon(Icons.check, size: 22),
                     ),
                   ),
                 ),

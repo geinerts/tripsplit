@@ -1,3 +1,6 @@
+import '../features/live_location/data/live_location_repository.dart';
+import '../features/live_location/data/live_location_device.dart';
+import '../features/live_location/presentation/live_location_controller.dart';
 import '../features/travel_map/data/travel_places_repository.dart';
 import '../features/quick_start/data/quick_start_service.dart';
 import '../core/auth/auth_session_store.dart';
@@ -76,6 +79,7 @@ class AppDependencies {
     required this.authController,
     this.quickStartService,
     this.travelPlacesRepository,
+    this.liveLocationController,
     required this.tripsController,
     required this.friendsController,
     required this.workspaceController,
@@ -87,6 +91,7 @@ class AppDependencies {
   final AuthController authController;
   final QuickStartService? quickStartService;
   final TravelPlacesRepository? travelPlacesRepository;
+  final LiveLocationController? liveLocationController;
   final TripsController tripsController;
   final FriendsController friendsController;
   final WorkspaceController workspaceController;
@@ -199,6 +204,11 @@ class AppDependencies {
     );
     final workspaceController = WorkspaceController(workspaceRepository);
 
+    final liveLocationController = LiveLocationController(
+      ApiLiveLocationRepository(apiClient, accountSession),
+      NativeLiveLocationDevice(),
+      accountSession,
+    );
     final authRemote = AuthRemoteDataSourceImpl(apiClient);
     final authRepository = AuthRepositoryImpl(authRemote);
     final authController = AuthController(
@@ -230,9 +240,11 @@ class AppDependencies {
         await accountStorage.clear();
       },
       accountSession: accountSession,
+      beforeLogout: liveLocationController.stopAll,
     );
 
     return AppDependencies(
+      liveLocationController: liveLocationController,
       quickStartService: QuickStartService(apiClient, accountSession),
       travelPlacesRepository: ApiTravelPlacesRepository(
         apiClient,

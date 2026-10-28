@@ -1,7 +1,10 @@
 # Private travel map
 
 Profile → My travel map shows a bundled Natural Earth overview with visited
-countries highlighted and one check marker per city. Selecting a marker opens a
+countries highlighted and one check marker per city. Markers have a 24-pixel
+visual inside a 48-pixel touch target. Bundled country labels appear at overview
+zoom levels; major city labels appear when zoomed in (starting at zoom 4.3).
+Labels avoid one another and visit markers, without external tile requests. Selecting a marker opens a
 small card with city, country/region and latest visit date. There is no persistent
 list below the map. Repeated dates in the same city are separate visits; the card
 pages between visits and allows editing or removing the displayed visit after confirmation.
@@ -89,7 +92,10 @@ has a separate private visit and may replace the photo from their gallery.
 The snapshot survives source-cover changes, leaving or deletion of a trip;
 leaving removes the Open trip link, not the person's existing private memory.
 
-Gallery photos are compressed client-side before upload. Server validation
+Gallery photos are compressed client-side before upload. The authenticated
+`save_travel_place` action permits a 704 KiB JSON body for base64 image data and
+metadata; other actions retain the default 64 KiB limit. The JSON reader checks
+both declared and actual body length and reads at most the limit plus one byte. Server validation
 accepts bounded JPG/PNG/WebP input (512 KiB, 12 megapixels), re-encodes to WebP
 (maximum 768-pixel edge, 256 KiB) and strips metadata. Private bytes live in the
 visit row, never a public uploads URL. Saves are limited to 60/15 minutes and

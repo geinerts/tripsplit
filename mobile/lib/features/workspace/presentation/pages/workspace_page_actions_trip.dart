@@ -587,6 +587,25 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     return (widget.trip.createdBy ?? 0) == userId;
   }
 
+  bool get _canOpenLiveMap =>
+      widget.liveLocationController != null &&
+      !widget.trip.isSolo &&
+      _isTripActive;
+
+  Future<void> _openLiveMap() async {
+    if (!_canOpenLiveMap) return;
+    await Navigator.of(context).push<void>(
+      AppPageRoute<void>(
+        builder: (_) => LiveMapPage(
+          tripId: widget.trip.id,
+          tripName: widget.trip.name,
+          controller: widget.liveLocationController!,
+          users: _snapshot?.users ?? [],
+        ),
+      ),
+    );
+  }
+
   Future<void> _openTripActionsSheet() async {
     if (_isMutating) return;
     final t = context.l10n;
@@ -598,6 +617,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         !canDelete &&
         !canManageMembers &&
         !canFinishSolo &&
+        !_canOpenLiveMap &&
         widget.onTravelMapRequested == null) {
       return;
     }
@@ -609,6 +629,12 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         key: const ValueKey('trip-actions-sheet'),
         title: t.tripOptionsTitle,
         children: [
+          if (_canOpenLiveMap)
+            AppPlainActionTile(
+              icon: Icons.location_on_outlined,
+              title: t.liveMapTitle,
+              onTap: () => Navigator.of(sheetContext).pop('live'),
+            ),
           if (widget.onTravelMapRequested != null)
             AppPlainActionTile(
               key: const ValueKey('trip-add-to-map'),
@@ -666,6 +692,10 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       return;
     }
 
+    if (choice == 'live') {
+      await _openLiveMap();
+      return;
+    }
     if (choice == 'map') {
       await widget.onTravelMapRequested?.call();
       return;
@@ -763,6 +793,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
         !removeImage &&
         !hasBudgetChange &&
         !hasDestinationsChange) {
+      if (!mounted) return;
       _showSnack(context.l10n.noChangesToSave);
       return;
     }

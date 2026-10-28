@@ -1,3 +1,5 @@
+import '../../../live_location/presentation/live_location_controller.dart';
+import '../../../live_location/presentation/live_map_page.dart';
 import '../../../trips/presentation/widgets/trip_form_page.dart';
 import 'dart:async';
 import 'dart:collection';
@@ -114,6 +116,7 @@ class WorkspacePage extends StatefulWidget {
     this.onExitRequested,
     this.onTripUpdated,
     this.onTravelMapRequested,
+    this.liveLocationController,
   });
 
   final Trip trip;
@@ -128,6 +131,7 @@ class WorkspacePage extends StatefulWidget {
   final VoidCallback? onExitRequested;
   final ValueChanged<Trip>? onTripUpdated;
   final Future<void> Function()? onTravelMapRequested;
+  final LiveLocationController? liveLocationController;
 
   @override
   State<WorkspacePage> createState() => _WorkspacePageState();

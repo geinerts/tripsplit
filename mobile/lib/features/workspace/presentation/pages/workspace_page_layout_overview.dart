@@ -169,6 +169,32 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             );
           },
         ),
+        if (_canOpenLiveMap)
+          Align(
+            alignment: Alignment.centerRight,
+            child: AnimatedBuilder(
+              animation: widget.liveLocationController!,
+              builder: (context, _) {
+                final sharing =
+                    widget.liveLocationController!.sharing(widget.trip.id) !=
+                        null &&
+                    !widget.liveLocationController!.stopping(widget.trip.id);
+                return TextButton.icon(
+                  key: const ValueKey('trip-live-map'),
+                  onPressed: _openLiveMap,
+                  icon: Icon(
+                    sharing ? Icons.my_location : Icons.location_on_outlined,
+                    size: 20,
+                  ),
+                  label: Text(
+                    sharing
+                        ? '${t.liveMapTitle} · ${t.liveSharing}'
+                        : t.liveMapTitle,
+                  ),
+                );
+              },
+            ),
+          ),
         const SizedBox(height: 4),
         LayoutBuilder(
           builder: (context, constraints) {

@@ -65,6 +65,7 @@ class AppRouter {
           child: MainShellPage(
             quickStartService: _dependencies.quickStartService,
             travelPlacesRepository: _dependencies.travelPlacesRepository,
+            liveLocationController: _dependencies.liveLocationController,
             authController: _dependencies.authController,
             tripsController: _dependencies.tripsController,
             friendsController: _dependencies.friendsController,
@@ -80,6 +81,7 @@ class AppRouter {
         child: MainShellPage(
           quickStartService: _dependencies.quickStartService,
           travelPlacesRepository: _dependencies.travelPlacesRepository,
+          liveLocationController: _dependencies.liveLocationController,
           authController: _dependencies.authController,
           tripsController: _dependencies.tripsController,
           friendsController: _dependencies.friendsController,
@@ -96,6 +98,7 @@ class AppRouter {
           child: MainShellPage(
             quickStartService: _dependencies.quickStartService,
             travelPlacesRepository: _dependencies.travelPlacesRepository,
+            liveLocationController: _dependencies.liveLocationController,
             authController: _dependencies.authController,
             tripsController: _dependencies.tripsController,
             friendsController: _dependencies.friendsController,
@@ -122,6 +125,7 @@ class AppRouter {
         }
         return AppDynamicSystemOverlay(
           child: WorkspacePage(
+            liveLocationController: _dependencies.liveLocationController,
             trip: trip,
             workspaceController: _dependencies.workspaceController,
             tripsController: _dependencies.tripsController,

@@ -56,6 +56,7 @@ class AuthController {
     this._pushRegistrationService,
     this._onLoggedOut, {
     AccountDataSession? accountSession,
+    this.beforeLogout,
   }) : _accountSession = accountSession ?? AccountDataSession();
 
   final LoginUseCase _loginUseCase;
@@ -84,6 +85,7 @@ class AuthController {
   final PushRegistrationService _pushRegistrationService;
   final Future<void> Function() _onLoggedOut;
   final AccountDataSession _accountSession;
+  final Future<void> Function()? beforeLogout;
   Future<bool>? _logoutInFlight;
   bool _signingIn = false;
 
@@ -404,6 +406,9 @@ class AuthController {
       });
 
   Future<bool> _performLogout() async {
+    try {
+      await beforeLogout?.call().timeout(const Duration(seconds: 5));
+    } catch (_) {}
     _accountSession.invalidate();
     final userId = currentUser?.id ?? 0;
     try {

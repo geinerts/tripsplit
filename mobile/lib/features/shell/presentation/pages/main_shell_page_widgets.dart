@@ -29,6 +29,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
       ),
       body: _isWorkspaceOpen
           ? WorkspacePage(
+              liveLocationController: widget.liveLocationController,
               key: ValueKey('workspace-${_openedTrip!.id}'),
               trip: _openedTrip!,
               workspaceController: widget.workspaceController,

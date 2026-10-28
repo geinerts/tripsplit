@@ -184,8 +184,16 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                             child: Center(child: CircularProgressIndicator()),
                           );
                         }
-                        final details = detailsSnapshot.data;
-                        if (detailsSnapshot.hasError || details == null) {
+                        final error = detailsSnapshot.error;
+                        // Withheld details use the same empty state as missing methods.
+                        // Only actual load failures should offer a retry.
+                        final notShared =
+                            error is ApiException && error.statusCode == 404;
+                        final details = notShared
+                            ? const PaymentDetails()
+                            : detailsSnapshot.data;
+                        if ((detailsSnapshot.hasError && !notShared) ||
+                            details == null) {
                           return UserProfileSectionCard(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
