@@ -23,7 +23,7 @@ function json_out(array $payload, int $status = 200): void { throw new Invitatio
 function table_name(string $key): string { return 'trip_' . $key; }
 function db(): PDO { return $GLOBALS['pdo']; }
 function require_post(): void {}
-function read_json(): array { return $GLOBALS['body']; }
+function read_json(?int $maxBytesOverride = null): array { $GLOBALS['json_limit'] = $maxBytesOverride; return $GLOBALS['body']; }
 function bearer_access_token_from_header(): string { return 'synthetic-auth'; }
 function resolve_user_id_from_access_token(string $token): int { return $GLOBALS['actor']; }
 function fetch_me_row_by_id(PDO $pdo, int $id): ?array {

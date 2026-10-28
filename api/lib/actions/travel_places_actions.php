@@ -26,7 +26,9 @@ function travel_place_photo_action(): void
 function save_travel_place_action(): void
 {
     require_post(); $me=get_me(); $pdo=db(); require_travel_places_schema($pdo);
-    $body=read_json(); $place=validate_travel_place($body); $user=(int)$me['id'];
+    // Authenticated photo submissions need room for 512 KiB base64 + visit metadata.
+    // Other JSON actions retain their normal (64 KiB) limit.
+    $body=read_json(720_896); $place=validate_travel_place($body); $user=(int)$me['id'];
     $id=$body['id'] ?? null;
     if ($id!==null && (!is_int($id) || $id<1)) json_out(['ok'=>false,'error'=>'Invalid visit.'],400);
     $tripId=$body['trip_id'] ?? null;

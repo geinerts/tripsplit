@@ -72,15 +72,17 @@ function last_json_body(): array
     return is_array($value) ? $value : [];
 }
 
-function read_json(): array
+function read_json(?int $maxBytesOverride = null): array
 {
     $contentLength = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
-    $maxBytes = max_json_body_bytes();
+    $maxBytes = $maxBytesOverride === null
+        ? max_json_body_bytes()
+        : min(1_048_576, max(4_096, $maxBytesOverride));
     if ($contentLength > $maxBytes) {
         json_out(['ok' => false, 'error' => 'Request body is too large.'], 413);
     }
 
-    $raw = file_get_contents('php://input');
+    $raw = file_get_contents('php://input', false, null, 0, $maxBytes + 1);
     if ($raw === false || $raw === '') {
         cache_last_json_body([]);
         return [];

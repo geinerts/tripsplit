@@ -24,6 +24,7 @@ final class TravelPlacesTest extends TestCase
   $r=json_decode($output,true,512,JSON_THROW_ON_ERROR);
   self::assertSame(409,$r['unmigrated']['status']);
   self::assertSame(200,$r['saved']['status']);
+  self::assertSame(720_896,$r['save_json_limit']);
   self::assertSame($r['saved']['body']['place']['id'],$r['duplicate']['body']['place']['id']);
   self::assertCount(2,$r['own']['body']['places']);
   self::assertSame('2026-10-02',$r['own']['body']['places'][0]['visited_on']);

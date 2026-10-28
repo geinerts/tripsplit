@@ -16,6 +16,7 @@ $pdo->exec('CREATE TABLE trip_travel_places (id INTEGER PRIMARY KEY AUTOINCREMEN
 $place = ['city'=>'Lisbon','region'=>'Lisbon','country'=>'Portugal','country_code'=>'PT',
  'latitude'=>38.7223,'longitude'=>-9.1393,'visited_on'=>'2026-10-01','user_id'=>2];
 $r['saved'] = invitation_call('save_travel_place_action',1,$place);
+$r['save_json_limit'] = $GLOBALS['json_limit'];
 $id = $r['saved']['body']['place']['id'];
 $r['duplicate'] = invitation_call('save_travel_place_action',1,$place);
 $r['second_visit'] = invitation_call('save_travel_place_action',1,array_replace($place,['visited_on'=>'2026-10-02']));
