@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/../../helpers/helper_live_location.php';
 
 function balances_action(): void
 {
@@ -159,6 +160,7 @@ function end_trip_action(): void
             $tripUpdate->execute(['trip_id' => $tripId]);
         }
 
+        clear_live_locations($pdo, null, $tripId);
         $deleteSettlements = $pdo->prepare('DELETE FROM ' . $settlementsTable . ' WHERE trip_id = :trip_id');
         $deleteSettlements->execute(['trip_id' => $tripId]);
 

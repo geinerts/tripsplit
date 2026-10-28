@@ -123,10 +123,17 @@ final class RefreshTokenSecurityTest extends TestCase
         $revoke->expects(self::once())->method('execute')->with(['token_hash' => hash('sha256', $plain)]);
         $revoke->method('rowCount')->willReturn(1);
         $pdo = $this->createMock(PDO::class);
-        $pdo->method('prepare')->willReturnCallback(function (string $sql) use ($schema, $revoke): PDOStatement {
+        $owner = $this->createMock(PDOStatement::class);
+        $owner->expects(self::once())->method('execute')->with(['hash' => hash('sha256', $plain)]);
+        $owner->method('fetchColumn')->willReturn(7);
+        $clear = $this->createMock(PDOStatement::class);
+        $clear->expects(self::once())->method('execute')->with(['id' => 7]);
+        $pdo->method('prepare')->willReturnCallback(function (string $sql) use ($schema, $revoke, $owner, $clear): PDOStatement {
             if (str_contains($sql, 'information_schema')) {
                 return $schema;
             }
+            if ($sql === 'SELECT user_id FROM trip_refresh_tokens WHERE token_hash=:hash AND revoked_at IS NULL AND expires_at>CURRENT_TIMESTAMP') return $owner;
+            if ($sql === 'DELETE FROM trip_live_locations WHERE user_id=:id') return $clear;
             self::assertStringContainsString('WHERE token_hash = :token_hash', $sql);
             self::assertStringContainsString('COALESCE(revoked_at, CURRENT_TIMESTAMP)', $sql);
             return $revoke;

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/helper_live_location.php';
 
 function auth_access_token_secret(): string
 {
@@ -419,6 +420,13 @@ function revoke_refresh_token(PDO $pdo, string $refreshToken): bool
     ensure_refresh_tokens_table_available($pdo);
 
     $table = table_name('refresh_tokens');
+    $userId = 0;
+    if (live_location_available($pdo)) {
+        // Replaying an already revoked/expired token must not stop a later share.
+        $owner = $pdo->prepare('SELECT user_id FROM ' . $table . ' WHERE token_hash=:hash AND revoked_at IS NULL AND expires_at>CURRENT_TIMESTAMP');
+        $owner->execute(['hash'=>hash('sha256',$refreshToken)]);
+        $userId = (int)$owner->fetchColumn();
+    }
     $revoke = $pdo->prepare(
         'UPDATE ' . $table . '
          SET revoked_at = COALESCE(revoked_at, CURRENT_TIMESTAMP),
@@ -426,5 +434,6 @@ function revoke_refresh_token(PDO $pdo, string $refreshToken): bool
          WHERE token_hash = :token_hash'
     );
     $revoke->execute(['token_hash' => hash('sha256', $refreshToken)]);
+    if ($userId > 0) clear_live_locations($pdo, $userId);
     return $revoke->rowCount() > 0;
 }

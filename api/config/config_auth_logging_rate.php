@@ -113,6 +113,10 @@ function is_sensitive_query_key_for_error_log(string $key): bool
         'new_password',
         'current_password',
         'secret',
+        'latitude',
+        'longitude',
+        'accuracy_m',
+        'observed_at',
         'code',
     ];
     if (in_array($normalized, $exact, true)) {

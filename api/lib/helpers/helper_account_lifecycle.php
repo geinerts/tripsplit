@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/helper_live_location.php';
 
 function sql_alias_prefix(string $alias): string
 {
@@ -459,6 +460,7 @@ function app_base_url(): string
 
 function revoke_refresh_tokens_for_user(PDO $pdo, int $userId): void
 {
+    clear_live_locations($pdo, $userId);
     if ($userId <= 0 || !function_exists('refresh_tokens_table_available')) {
         return;
     }

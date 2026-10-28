@@ -1,0 +1,65 @@
+<?php
+declare(strict_types=1);
+require __DIR__.'/trip_invitations.php';
+require __DIR__.'/../../lib/actions/live_location_actions.php';
+$pdo=invitation_test_setup(false);
+$pdo->exec('PRAGMA foreign_keys=ON');
+$pdo->exec('INSERT INTO trip_trips(id,name,created_by,trip_mode,status) VALUES (1,"Group",1,"group","active"),(2,"Other",3,"group","active"),(3,"Solo",1,"solo","active")');
+$pdo->exec('INSERT INTO trip_trip_members(trip_id,user_id,role) VALUES (1,1,"owner"),(1,2,"member"),(2,3,"owner"),(3,1,"owner")');
+$_SERVER['HTTP_X_TRIP_ID']='1';
+$GLOBALS['assertions']=0;
+function check(bool $value,string $name): void { invitation_expect($value,$name); }
+check(invitation_call('list_trip_live_locations_action',1)['status']===409,'missing schema is explicit');
+$pdo->exec('CREATE TABLE trip_live_locations (trip_id INTEGER,user_id INTEGER,session_token TEXT,expires_at TEXT,latitude REAL,longitude REAL,accuracy_m REAL,observed_at TEXT,updated_at TEXT,
+ PRIMARY KEY(trip_id,user_id),FOREIGN KEY(trip_id,user_id) REFERENCES trip_trip_members(trip_id,user_id) ON DELETE CASCADE)');
+$fix=['latitude'=>38.72,'longitude'=>-9.14,'accuracy_m'=>12.5,'observed_at'=>time()];
+$start=['minutes'=>60]+$fix;
+check(invitation_call('list_trip_live_locations_action',3)['status']===403,'non-member cannot view');
+check(invitation_call('start_trip_live_location_action',3,$start)['status']===403,'non-member cannot publish');
+check(invitation_call('list_trip_live_locations_action',1)['body']['members']===[],'nothing before opt-in');
+foreach ([['minutes'=>0],['minutes'=>999],['minutes'=>'60'],['latitude'=>91],['longitude'=>-181],['latitude'=>'38.72'],['accuracy_m'=>-1],['observed_at'=>time()-180]] as $bad) {
+ check(invitation_call('start_trip_live_location_action',1,array_replace($start,$bad))['status']===400,'invalid input');
+}
+$r=invitation_call('start_trip_live_location_action',1,$start+['user_id'=>2]);
+check($r['status']===200,'start'); $token=$r['body']['session_token']; $expires=$r['body']['expires_at'];
+check(abs($expires-time()-3600)<3,'one hour server deadline');
+$read=invitation_call('list_trip_live_locations_action',2)['body'];
+check(count($read['members'])===1 && $read['members'][0]['user_id']===1,'current account only');
+check(!isset($read['members'][0]['session_token']) && $read['own_expires_at']===null,'tokens and own consent private');
+$update=$fix+['session_token'=>$token];
+check(invitation_call('update_trip_live_location_action',2,$update)['status']===409,'cannot publish for another member');
+check(invitation_call('update_trip_live_location_action',1,array_replace($update,['latitude'=>39]))['status']===200,'update');
+check((float)$pdo->query('SELECT latitude FROM trip_live_locations')->fetchColumn()===39.0,'last fix changed');
+check(strtotime($pdo->query('SELECT expires_at FROM trip_live_locations')->fetchColumn().' UTC')===$expires,'update never extends consent');
+$renew=invitation_call('start_trip_live_location_action',1,['minutes'=>15]+$fix);
+check($renew['body']['session_token']!==$token,'renew rotates token');
+check(invitation_call('update_trip_live_location_action',1,$update)['status']===409,'old requests cannot revive/overwrite new consent');
+$update['session_token']=$renew['body']['session_token'];
+invitation_call('stop_trip_live_location_action',2,['trip_id'=>1,'user_id'=>1]);
+check((int)$pdo->query('SELECT COUNT(*) FROM trip_live_locations')->fetchColumn()===1,'stop only own share');
+invitation_call('stop_trip_live_location_action',1,['trip_id'=>1]);
+check(invitation_call('update_trip_live_location_action',1,$update)['status']===409,'stopped session stays stopped');
+check(invitation_call('list_trip_live_locations_action',2)['body']['members']===[],'stop hides location');
+$r=invitation_call('start_trip_live_location_action',1,$start);
+$pdo->exec('UPDATE trip_live_locations SET expires_at="2000-01-01 00:00:00"');
+check(invitation_call('update_trip_live_location_action',1,$fix+['session_token'=>$r['body']['session_token']])['status']===409,'expired update rejected');
+check(invitation_call('list_trip_live_locations_action',2)['body']['members']===[],'expired hidden');
+check((int)$pdo->query('SELECT COUNT(*) FROM trip_live_locations')->fetchColumn()===0,'expired data erased');
+invitation_call('start_trip_live_location_action',1,$start);
+$pdo->exec('UPDATE trip_live_locations SET observed_at="2000-01-01 00:00:00"');
+check(invitation_call('list_trip_live_locations_action',2)['body']['members']===[],'stale not live');
+check($pdo->query('SELECT latitude FROM trip_live_locations')->fetchColumn()===null,'stale coordinates erased');
+invitation_call('start_trip_live_location_action',2,$start);
+$pdo->exec('DELETE FROM trip_trip_members WHERE trip_id=1 AND user_id=2');
+check((int)$pdo->query('SELECT COUNT(*) FROM trip_live_locations WHERE user_id=2')->fetchColumn()===0,'membership deletion cascades consent');
+check(invitation_call('list_trip_live_locations_action',2)['status']===403,'removed viewer denied');
+$pdo->exec('UPDATE trip_trips SET status="archived" WHERE id=1');
+check(invitation_call('list_trip_live_locations_action',1)['status']===409,'closed group denied');
+check(invitation_call('stop_trip_live_location_action',1,['trip_id'=>1])['status']===200,'stop works after closing');
+$_SERVER['HTTP_X_TRIP_ID']='3';
+check(invitation_call('start_trip_live_location_action',1,$start)['status']===409,'solo excluded');
+$_SERVER['HTTP_X_TRIP_ID']='2';
+invitation_call('start_trip_live_location_action',3,$start);
+clear_live_locations($pdo,3);
+check((int)$pdo->query('SELECT COUNT(*) FROM trip_live_locations')->fetchColumn()===0,'logout/account revocation cleanup');
+echo json_encode(['assertions'=>$GLOBALS['assertions']]);
