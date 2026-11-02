@@ -3,14 +3,16 @@ title = "Splyto Gitleaks Configuration"
 [extend]
 useDefault = true
 
-[[allowlists]]
-description = "Dependency lockfile checksums that look like tokens but are not secrets."
+[allowlist]
+description = "Dependency checksums and exact localization identifiers, not credentials. Compatible with the CI scanner."
 paths = [
   '''mobile/ios/Podfile\.lock$''',
   '''mobile/pubspec\.lock$''',
 ]
 
-[[allowlists]]
-description = "Exact localization message identifier in translation review metadata, not a credential."
-regexTarget = "match"
-regexes = ['''key": "percentSplitMustBe100"''']
+regexTarget = "secret"
+regexes = [
+  '''^percentSplitMustBe100$''',
+  # Finnish 'salasana' (password) makes the following ARB key match the Asana rule.
+  '''^profileEditBankTransferIbanSwift$''',
+]
