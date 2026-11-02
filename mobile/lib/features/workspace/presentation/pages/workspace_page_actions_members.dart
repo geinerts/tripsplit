@@ -251,8 +251,6 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
               )
               .toList();
         },
-        loadLink: () =>
-            widget.tripsController.createTripInviteLink(tripId: widget.trip.id),
         loadPending: () => widget.tripsController.listPendingInvitations(
           tripId: widget.trip.id,
         ),

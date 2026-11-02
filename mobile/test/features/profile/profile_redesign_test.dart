@@ -126,11 +126,7 @@ Future<void> _mount(
   final language = AppLocaleController();
   await theme.setThemeMode(dark ? ThemeMode.dark : ThemeMode.light);
   await language.setMode(
-    locale == 'lv'
-        ? AppLocaleMode.latvian
-        : locale == 'es'
-        ? AppLocaleMode.spanish
-        : AppLocaleMode.english,
+    AppLocaleMode.values.firstWhere((mode) => mode.languageCode == locale),
   );
   addTearDown(theme.dispose);
   addTearDown(language.dispose);
@@ -231,7 +227,9 @@ void main() {
     )..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'))).load();
   });
   for (final dark in [false, true]) {
-    for (final locale in ['en', 'lv', 'es']) {
+    for (final locale in AppLocalizations.supportedLocales.map(
+      (locale) => locale.languageCode,
+    )) {
       testWidgets('profile settings 320px 200% $locale dark=$dark', (
         tester,
       ) async {
@@ -262,20 +260,24 @@ void main() {
         await _back(tester);
         commands.requestCloseEditMode();
         await tester.pumpAndSettle();
-        for (final label in [
-          t.profileChangePassword,
-          t.profileAccountSettings,
-        ]) {
+        for (final label in [t.profileChangePassword, t.accountDeleteTitle]) {
           await _tap(tester, label);
           expect(tester.takeException(), isNull);
-          commands.requestCloseEditMode();
-          await tester.pumpAndSettle();
+          if (label == t.accountDeleteTitle) {
+            await _back(tester);
+          } else {
+            commands.requestCloseEditMode();
+            await tester.pumpAndSettle();
+          }
         }
         await _tap(tester, t.profileContactUs);
         expect(tester.takeException(), isNull);
         await _back(tester);
         await _tap(tester, t.profilePrivacyPolicy);
         expect(find.byType(PrivacyPolicyPage), findsOneWidget);
+        if (!['en', 'lv', 'es'].contains(locale)) {
+          expect(find.text(t.privacyEnglishFallback), findsOneWidget);
+        }
         expect(
           find.byKey(const ValueKey('privacy-draft-notice')),
           findsOneWidget,
@@ -380,7 +382,7 @@ void main() {
       Brightness.dark,
     );
     await _tap(tester, _t(tester).profileLanguage);
-    await _tap(tester, _t(tester).languageLatvian);
+    await _tap(tester, 'Latviešu');
     expect(
       Localizations.localeOf(
         tester.element(find.byType(ProfilePage)),
@@ -554,12 +556,16 @@ void main() {
         await tester.pumpAndSettle();
         for (final item in [
           (t.profileChangePassword, 'password'),
-          (t.profileAccountSettings, 'account'),
+          (t.accountDeleteTitle, 'account'),
         ]) {
           await _tap(tester, item.$1);
           await _capture(tester, key, '$prefix-${item.$2}');
-          commands.requestCloseEditMode();
-          await tester.pumpAndSettle();
+          if (item.$1 == t.accountDeleteTitle) {
+            await _back(tester);
+          } else {
+            commands.requestCloseEditMode();
+            await tester.pumpAndSettle();
+          }
         }
       });
     }

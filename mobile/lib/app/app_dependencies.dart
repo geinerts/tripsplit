@@ -145,16 +145,7 @@ class AppDependencies {
       deviceTokenStore: tokenStore,
       nativeBridge: PushNativeBridge(),
       registrationStore: PushRegistrationStore(),
-      localeCodeProvider: () {
-        switch (localeController.mode) {
-          case AppLocaleMode.latvian:
-            return 'lv';
-          case AppLocaleMode.spanish:
-            return 'es';
-          case AppLocaleMode.english:
-            return 'en';
-        }
-      },
+      localeCodeProvider: () => localeController.effectiveLocale.languageCode,
     );
     final inviteDeepLinkController = InviteDeepLinkController();
 

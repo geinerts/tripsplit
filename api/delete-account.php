@@ -92,6 +92,7 @@ require_once __DIR__ . '/web_security_headers.php';
   <?php else: ?>
     <h1>Delete account permanently</h1>
     <p>This action removes account access permanently and anonymizes your profile data. It cannot be undone.</p>
+    <p>Shared trip and expense records are kept for other members. Your account remains active until you confirm below.</p>
     <div class="danger-note">Type <strong>DELETE</strong> below to confirm.</div>
 
     <label for="confirm">Confirmation</label>

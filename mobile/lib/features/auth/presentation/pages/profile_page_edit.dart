@@ -1,23 +1,6 @@
 part of 'profile_page.dart';
 
 extension _ProfilePageEditFlow on _ProfilePageState {
-  void _openDeactivateAccountPage() {
-    if (_isLoading || _isSubmitting) {
-      return;
-    }
-    _updateState(() {
-      _isEditMode = true;
-      _editSession += 1;
-      _isDeactivateAccountPage = true;
-      _isChangePasswordPage = false;
-      _deactivateDraftPassword = '';
-      _activeEditField = null;
-      _editErrorText = null;
-      _errorText = null;
-    });
-    widget.onEditModeChanged?.call(true);
-  }
-
   void _openChangePasswordPage() {
     if (_isLoading || _isSubmitting) {
       return;
@@ -32,7 +15,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     _updateState(() {
       _isEditMode = true;
       _editSession += 1;
-      _isDeactivateAccountPage = false;
       _isChangePasswordPage = true;
       _draftCurrentPassword = '';
       _draftPassword = '';
@@ -52,9 +34,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     _updateState(() {
       _isEditMode = true;
       _editSession += 1;
-      _isDeactivateAccountPage = false;
       _isChangePasswordPage = false;
-      _deactivateDraftPassword = '';
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
       _draftBankCountryCode = _initialBankCountryCode;
@@ -79,9 +59,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     _updateState(() {
       _isEditMode = false;
       _draftCurrentPassword = '';
-      _isDeactivateAccountPage = false;
       _isChangePasswordPage = false;
-      _deactivateDraftPassword = '';
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
       _draftBankCountryCode = _initialBankCountryCode;
@@ -103,124 +81,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
 
   void _handleEditBackNavigation() {
     _closeEditMode();
-  }
-
-  void _onDeactivatePasswordChanged(String value) {
-    _deactivateDraftPassword = value;
-    if (_editErrorText != null) {
-      _updateState(() {
-        _editErrorText = null;
-      });
-    }
-  }
-
-  Future<void> _onDeactivateAccountPressed() async {
-    if (_isSubmitting || _isLoading) {
-      return;
-    }
-    final password = _deactivateDraftPassword;
-
-    _updateState(() {
-      _isSubmitting = true;
-      _editErrorText = null;
-    });
-    try {
-      await widget.controller.deactivateAccount(password: password);
-      if (!mounted) {
-        return;
-      }
-      await widget.controller.logout();
-      if (!mounted) {
-        return;
-      }
-      _showSnack(
-        context.l10n.profileEditDeactivatedReactivationLinkEmailRestoreAccess,
-      );
-      Navigator.of(
-        context,
-      ).pushNamedAndRemoveUntil(AppRouter.authIntro, (route) => false);
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _editErrorText = error.message;
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _editErrorText = context.l10n.profileEditCouldNotDeactivateTryAgain;
-      });
-    } finally {
-      if (mounted) {
-        _updateState(() {
-          _isSubmitting = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _onSendDeactivationLinkPressed() async {
-    if (_isSubmitting || _isLoading) return;
-    _updateState(() {
-      _isSubmitting = true;
-      _editErrorText = null;
-    });
-    try {
-      await widget.controller.requestDeactivationLink();
-      if (!mounted) return;
-      _showSnack(context.l10n.deactivationEmailSent);
-    } on ApiException catch (error) {
-      if (!mounted) return;
-      _updateState(() => _editErrorText = error.message);
-    } catch (_) {
-      if (!mounted) return;
-      _updateState(() => _editErrorText = context.l10n.requestFailedTryAgain);
-    } finally {
-      if (mounted) _updateState(() => _isSubmitting = false);
-    }
-  }
-
-  Future<void> _onSendDeletionLinkPressed() async {
-    if (_isSubmitting || _isLoading) {
-      return;
-    }
-    final password = _deactivateDraftPassword;
-
-    _updateState(() {
-      _isSubmitting = true;
-      _editErrorText = null;
-    });
-    try {
-      await widget.controller.requestAccountDeletionLink(password: password);
-      if (!mounted) {
-        return;
-      }
-      _showSnack(context.l10n.profileEditDeletionLinkSentEmail);
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _editErrorText = error.message;
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _editErrorText =
-            context.l10n.profileEditCouldNotSendDeletionLinkTryAgain;
-      });
-    } finally {
-      if (mounted) {
-        _updateState(() {
-          _isSubmitting = false;
-        });
-      }
-    }
   }
 
   void _startInlineFieldEdit(_ProfileEditField field) {
@@ -331,9 +191,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   }
 
   Widget _buildInlineEditProfilePage(BuildContext context) {
-    if (_isDeactivateAccountPage) {
-      return _buildDeactivateAccountPage(context);
-    }
     if (_isChangePasswordPage) {
       return _buildChangePasswordPage(context);
     }
@@ -397,93 +254,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDeactivateAccountPage(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        key: ValueKey('deactivate-page-$_editSession'),
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.l10n.profileDeactivateAccount,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            context.l10n.deactivationConfirmationMethods,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 14),
-          TextFormField(
-            key: ValueKey('deactivate-password-$_editSession'),
-            initialValue: _deactivateDraftPassword,
-            textInputAction: TextInputAction.done,
-            obscureText: true,
-            decoration: InputDecoration(
-              labelText: context.l10n.passwordLabel,
-              hintText: context.l10n.profileEditCurrentPassword,
-            ),
-            onChanged: _onDeactivatePasswordChanged,
-            onFieldSubmitted: (_) => unawaited(_onDeactivateAccountPressed()),
-          ),
-          if (_editErrorText != null) ...[
-            const SizedBox(height: 10),
-            Text(
-              _editErrorText!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.error,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: _isSubmitting ? null : _onDeactivateAccountPressed,
-              icon: const Icon(Icons.person_off),
-              style: FilledButton.styleFrom(
-                backgroundColor: colorScheme.error,
-                foregroundColor: colorScheme.onError,
-              ),
-              label: Text(context.l10n.profileDeactivateAccount),
-            ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: _isSubmitting ? null : _onSendDeactivationLinkPressed,
-              icon: const Icon(Icons.mail_outline),
-              label: Text(context.l10n.sendDeactivationEmail),
-            ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: _isSubmitting ? null : _onSendDeletionLinkPressed,
-              icon: const Icon(Icons.mark_email_read_outlined),
-              label: Text(context.l10n.profileEditSendDeletionLinkEmail),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Center(
-            child: TextButton(
-              onPressed: _closeEditMode,
-              child: Text(context.l10n.profileEditBackProfile),
-            ),
-          ),
         ],
       ),
     );
@@ -599,17 +369,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
               }
             },
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: _isSubmitting
-                  ? null
-                  : () => Navigator.of(
-                      context,
-                    ).pushNamed(AppRouter.forgotPassword, arguments: email),
-              child: Text(t.profilePasswordByEmail),
-            ),
-          ),
+          const SizedBox(height: 10),
           TextFormField(
             key: ValueKey('change-password-$_editSession'),
             initialValue: _draftPassword,

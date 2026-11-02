@@ -55,7 +55,10 @@ abstract class AuthRemoteDataSource {
 
   Future<void> deactivateAccount({required String password});
 
-  Future<void> requestAccountDeletionLink({required String password});
+  Future<void> requestAccountDeletionLink({
+    required String password,
+    List<String> reasonCodes = const [],
+  });
 
   Future<NotificationPreferencesModel> getNotificationPreferences();
 
@@ -328,11 +331,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> requestAccountDeletionLink({required String password}) async {
+  Future<void> requestAccountDeletionLink({
+    required String password,
+    List<String> reasonCodes = const [],
+  }) async {
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('request_account_deletion_link'),
       method: HttpMethod.post,
-      body: <String, dynamic>{'password': password},
+      body: <String, dynamic>{
+        'password': password,
+        if (reasonCodes.isNotEmpty) 'reason_codes': reasonCodes,
+      },
     );
   }
 

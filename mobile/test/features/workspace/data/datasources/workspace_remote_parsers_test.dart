@@ -2,6 +2,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/features/workspace/data/datasources/workspace_remote_parsers.dart';
 
 void main() {
+  test('notification actor photos survive parsing and read-state changes', () {
+    final item = WorkspaceRemoteParsers.parseNotification({
+      'id': 1,
+      'trip_id': 0,
+      'type': 'friend_invite_accepted',
+      'actor_user_id': 42,
+      'actor_avatar_url': 'https://example.test/avatar.jpg',
+      'actor_avatar_thumb_url': 'https://example.test/thumb.jpg',
+    }).copyWith(isRead: true);
+    expect(item.actorUserId, 42);
+    expect(item.actorAvatarUrl, 'https://example.test/avatar.jpg');
+    expect(item.actorAvatarThumbUrl, 'https://example.test/thumb.jpg');
+    expect(item.isRead, isTrue);
+    final legacy = WorkspaceRemoteParsers.parseNotification({'id': 2});
+    expect(legacy.actorUserId, isNull);
+    expect(legacy.actorAvatarUrl, isNull);
+    expect(legacy.actorAvatarThumbUrl, isNull);
+  });
+
   group('WorkspaceRemoteParsers.parseTripStatus', () {
     test('normalizes allowed statuses and defaults unknown to active', () {
       expect(WorkspaceRemoteParsers.parseTripStatus('active'), 'active');

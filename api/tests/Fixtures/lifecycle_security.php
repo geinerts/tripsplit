@@ -3,6 +3,8 @@ declare(strict_types=1);
 if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
 require __DIR__.'/lifecycle_harness.php';
 $pdo=credentials_test_db(); reset_lifecycle_schema($pdo);
+$pdo->exec('DROP TABLE IF EXISTS trip_account_deletion_reason_counts');
+$pdo->exec('CREATE TABLE trip_account_deletion_reason_counts (reason_code VARCHAR(32) PRIMARY KEY, request_count BIGINT NOT NULL)');
 [$script,$action,$scenario]=$argv;
 seed_lifecycle_user($pdo,$action,str_contains($scenario,'social') || $scenario==='identity_failure');
 $accessToken = create_access_token_for_user(1, 1);
@@ -53,6 +55,9 @@ if ($scenario==='malformed') $requestBody['token']='not-a-proof';
 if ($scenario==='newline') $requestBody['token'].="\n";
 if ($scenario==='request_wrong_password' || $scenario==='request_social_wrong_password') $requestBody['password']='wrong';
 if ($scenario==='request_missing_password') $requestBody['password']='';
+if ($request && $action === 'delete') {
+    $requestBody['reason_codes'] = ['not_using', 'technical_issue', 'not_using', '<invalid>', 42];
+}
 $handler=$request ? ($action==='delete'?'request_account_deletion_link_action':'request_reactivation_link_action')
     : ($action==='delete'?'confirm_account_deletion_action':'confirm_reactivation_action');
 $failure=false; $second=null;
@@ -76,4 +81,5 @@ echo json_encode(['response'=>$response,'second'=>$second,'failure'=>$failure,'u
     'push'=>(int)($after['push_tokens'][0]['is_active']??0),'proofs'=>$ownerProofs,
     'friends'=>count(array_filter($after['friends']??[],fn($r)=>(int)$r['user_a_id']===1 || (int)$r['user_b_id']===1)),
     'identities'=>count(array_filter($after['user_identities']??[],fn($r)=>(int)$r['user_id']===1)),
+    'feedback'=>$pdo->query('SELECT * FROM trip_account_deletion_reason_counts ORDER BY reason_code')->fetchAll(),
     'mail'=>count($mail),'recipients'=>array_column($mail,'to'),'mail_body'=>$mail[0]['body']??null],JSON_THROW_ON_ERROR);

@@ -27,6 +27,7 @@ class AppLocalizationsLv extends AppLocalizations {
       locale: localeName,
       other: '$count dalībnieki',
       one: '$count dalībnieks',
+      zero: '$count dalībnieku',
     );
     return '$_temp0';
   }
@@ -140,6 +141,7 @@ class AppLocalizationsLv extends AppLocalizations {
       locale: localeName,
       other: 'Nosūtīti $count uzaicinājumi.',
       one: 'Nosūtīts $count uzaicinājums.',
+      zero: 'Nosūtīti $count uzaicinājumu.',
     );
     return '$_temp0';
   }
@@ -166,7 +168,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get tripInvitationBody => 'Tev ir ceļojuma uzaicinājums. Atver to, lai atbildētu.';
 
   @override
-  String get allCaughtUp => 'Viss nokārtots';
+  String get allCaughtUp => 'Viss apskatīts';
 
   @override
   String get allFilter => 'Visi';
@@ -289,7 +291,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get dateLabel => 'Datums';
 
   @override
-  String get dateMustMatchFormat => 'Datumam jāatbilst formātam GGGG-MM-DD.';
+  String get dateMustMatchFormat => 'Datumam jāatbilst formātam YYYY-MM-DD.';
 
   @override
   String get dateUnknown => 'Datums nav zināms';
@@ -327,7 +329,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get emailAddressLabel => 'E-pasta adrese';
 
   @override
-  String get emailHint => 'tu@example.com';
+  String get emailHint => 'you@example.com';
 
   @override
   String get emailLabel => 'E-pasts';
@@ -361,7 +363,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get expenseAdded => 'Izdevums pievienots.';
 
   @override
-  String get expenseBreakdownSubtitle => 'Kā šo dalībnieku ietekmē katrs izdevums.';
+  String get expenseBreakdownSubtitle => 'Kā katrs izdevums ietekmē šo dalībnieku.';
 
   @override
   String get expenseBreakdownTitle => 'Izdevumu sadalījums';
@@ -412,6 +414,7 @@ class AppLocalizationsLv extends AppLocalizations {
       locale: localeName,
       other: '$count izdevumi',
       one: '$count izdevums',
+      zero: '$count izdevumu',
     );
     return '$_temp0';
   }
@@ -501,7 +504,7 @@ class AppLocalizationsLv extends AppLocalizations {
   }
 
   @override
-  String get generateTurnAction => 'Izlozēt kārtu';
+  String get generateTurnAction => 'Izlozēt nākamo dalībnieku';
 
   @override
   String get hasAccountQuestion => 'Jau ir konts?';
@@ -575,7 +578,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get settlementNotReceivedAction => 'Es to nesaņēmu';
 
   @override
-  String get settlementNotReceivedConfirmTitle => 'Ziņot, ka nav saņemts?';
+  String get settlementNotReceivedConfirmTitle => 'Ziņot, ka maksājums nav saņemts?';
 
   @override
   String get settlementNotReceivedConfirmText => 'Pārskaitījums atgriezīsies gaidīšanas statusā, un maksātājs saņems paziņojumu.';
@@ -687,7 +690,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get navRandom => 'Izloze';
 
   @override
-  String get netLabel => 'Neto';
+  String get netLabel => 'Neto atlikums';
 
   @override
   String get newPasswordLabel => 'Jaunā parole';
@@ -801,7 +804,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get noSettlementRowsYet => 'Norēķinu rindu vēl nav.';
 
   @override
-  String get noSettlements => 'Norēķinu nav';
+  String get noSettlements => 'Nav norēķinu';
 
   @override
   String get noTransferNeededForFilter => 'Izvēlētajam filtram pārskaitījumi nav nepieciešami.';
@@ -842,7 +845,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get notificationsTitle => 'Paziņojumi';
 
   @override
-  String get notificationFriendInviteTitle => 'Drauga uzaicinājums';
+  String get notificationFriendInviteTitle => 'Draudzības uzaicinājums';
 
   @override
   String notificationFriendInviteBody(Object name) {
@@ -853,7 +856,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get notificationFriendInviteBodyGeneric => 'Tu saņēmi drauga uzaicinājumu.';
 
   @override
-  String get notificationFriendInviteAcceptedTitle => 'Uzaicinājums apstiprināts';
+  String get notificationFriendInviteAcceptedTitle => 'Uzaicinājums pieņemts';
 
   @override
   String notificationFriendInviteAcceptedBody(Object name) {
@@ -1021,6 +1024,7 @@ class AppLocalizationsLv extends AppLocalizations {
       locale: localeName,
       other: '$count neapstrādātas izmaiņas',
       one: '$count neapstrādāta izmaiņa',
+      zero: '$count neapstrādātu izmaiņu',
     );
     return 'Bezsaistes rinda: $_temp0';
   }
@@ -1130,7 +1134,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get pickAtLeastOneParticipant => 'Izvēlies vismaz vienu dalībnieku.';
 
   @override
-  String get pickMembersGenerateTurn => 'Izvēlies dalībniekus un izlozē kārtu.';
+  String get pickMembersGenerateTurn => 'Izvēlies dalībniekus un izlozē nākamo personu.';
 
   @override
   String pickedCycleCompleted(Object name) {
@@ -1221,7 +1225,7 @@ class AppLocalizationsLv extends AppLocalizations {
   }
 
   @override
-  String get receiptFallbackName => 'ceks';
+  String get receiptFallbackName => 'čeks';
 
   @override
   String get receiptLinkInvalid => 'Čeka saite nav derīga.';
@@ -1328,7 +1332,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String settlementCountLabel(Object count) {
-    return '$count norēķini';
+    return 'Norēķini: $count';
   }
 
   @override
@@ -1390,7 +1394,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get sharesLabel => 'Daļas';
 
   @override
-  String get sharesMustBePositiveIntegers => 'Daļām jābūt pozitīviem veseliem skaitļiem.';
+  String get sharesMustBePositiveIntegers => 'Daļu skaitam jābūt pozitīvam veselam skaitlim.';
 
   @override
   String sharesWithValue(Object value) {
@@ -1470,7 +1474,7 @@ class AppLocalizationsLv extends AppLocalizations {
   }
 
   @override
-  String get suggestedTransferDirections => 'Ieteikto pārskaitījumu virzieni';
+  String get suggestedTransferDirections => 'Ieteiktie maksājumu virzieni';
 
   @override
   String get suggestedTransferFromExpense => 'Ieteikts pārskaitījums no izdevuma';
@@ -1482,6 +1486,7 @@ class AppLocalizationsLv extends AppLocalizations {
       locale: localeName,
       other: '$count ieteiktās pārskaitījuma rindas',
       one: '$count ieteiktā pārskaitījuma rinda',
+      zero: '$count ieteikto pārskaitījumu rindu',
     );
     return '$_temp0';
   }
@@ -1493,10 +1498,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get suggestedTransfersTitle => 'Ieteiktie pārskaitījumi';
 
   @override
-  String get summarySettledUp => 'Viss norēķināts';
+  String get summarySettledUp => 'Norēķināts';
 
   @override
-  String get summaryYouAreOwed => 'Tev ir jāsaņem';
+  String get summaryYouAreOwed => 'Tev ir parādā';
 
   @override
   String get summaryYouOwe => 'Tev jāmaksā';
@@ -1530,7 +1535,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String toDirection(Object name) {
-    return 'Uz $name';
+    return 'Saņēmējs: $name';
   }
 
   @override
@@ -1630,6 +1635,7 @@ class AppLocalizationsLv extends AppLocalizations {
       locale: localeName,
       other: '$count nelasīti atjauninājumi',
       one: '$count nelasīts atjauninājums',
+      zero: '$count nelasītu atjauninājumu',
     );
     return '$_temp0';
   }
@@ -1682,7 +1688,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get youLabel => 'Tu';
 
   @override
-  String get youSettledForExpense => 'Tu šo izdevumu esi nokārtojis.';
+  String get youSettledForExpense => 'Tu esi norēķinājies par savu daļu šajā izdevumā.';
 
   @override
   String youShouldPay(Object amount) {
@@ -1770,7 +1776,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get authIntroOr => 'VAI';
 
   @override
-  String get authGoogleSignDidNotReturnIdToken => 'Google pieslēgšanās neatgrieza id token.';
+  String get authGoogleSignDidNotReturnIdToken => 'Google pieteikšanās neatgrieza identitātes marķieri.';
 
   @override
   String get authAppleSignAvailableIosDevices => 'Apple pieslēgšanās ir pieejama iOS ierīcēs.';
@@ -1779,7 +1785,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get authAppleSignNotAvailableDevice => 'Apple pieslēgšanās šajā ierīcē nav pieejama.';
 
   @override
-  String get authAppleSignDidNotReturnIdentityToken => 'Apple pieslēgšanās neatgrieza identitātes tokenu.';
+  String get authAppleSignDidNotReturnIdentityToken => 'Apple pieteikšanās neatgrieza identitātes marķieri.';
 
   @override
   String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Konts ir deaktivēts. Ievadi e-pastu, lai pieprasītu reaktivācijas saiti.';
@@ -2157,13 +2163,13 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileEditHolderNameTakenProfileFullName => 'Konta turētāja vārds tiek ņemts no profila pilnā vārda.';
 
   @override
-  String get profileEditRevolutMeUsername => 'revolut.me/lietotajs';
+  String get profileEditRevolutMeUsername => 'revolut.me/username';
 
   @override
   String get profileEditRevtag => 'Revtag';
 
   @override
-  String get profileEditUsername => '@lietotajs';
+  String get profileEditUsername => '@username';
 
   @override
   String get profileEditPaypalMeUsernameUsername => 'paypal.me/lietotajs vai lietotajs';
@@ -2542,10 +2548,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspaceOwesToTheGroup => 'Parādā grupai';
 
   @override
-  String get workspaceGetsBackFromGroup => 'Jāsaņem no grupas';
+  String get workspaceGetsBackFromGroup => 'Jāsaņem nauda no grupas';
 
   @override
-  String get workspaceShowingTop4ByBalanceDifference => 'Parādīti 4 lielākie bilances ieraksti.';
+  String get workspaceShowingTop4ByBalanceDifference => 'Rādīti 4 dalībnieki ar lielāko atlikumu starpību.';
 
   @override
   String get workspaceOpenFlow => 'Detaļas';
@@ -2570,7 +2576,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String workspacePaymentSToMarkAsSentToConfirmAsReceived(Object arg1, Object arg2) {
-    return '$arg1 maksājums(-i) jāatzīmē kā nosūtīts, $arg2 jāapstiprina kā saņemts.';
+    return 'Maksājumi, kas jāatzīmē kā nosūtīti: $arg1; jāapstiprina kā saņemti: $arg2.';
   }
 
   @override
@@ -2592,7 +2598,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspaceFinishButtonUnlocksOnceEveryoneMarksReady => 'Poga aktivizēsies, kad visi atzīmēs gatavību.';
 
   @override
-  String get workspaceGetsBackFromTheGroup => 'Jāsaņem no grupas';
+  String get workspaceGetsBackFromTheGroup => 'Jāsaņem nauda no grupas';
 
   @override
   String get workspaceSettledWithTheGroup => 'Norēķināts ar grupu';
@@ -2645,7 +2651,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspaceNoInternetExpenseSavedWithoutReceiptImage => 'Nav interneta. Izdevums tiks saglabāts bez čeka attēla.';
 
   @override
-  String get workspaceRandomPicker => 'Nejaušā izvēle';
+  String get workspaceRandomPicker => 'Izloze';
 
   @override
   String get workspaceCurrency => 'Valūta';
@@ -2678,7 +2684,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspacePercentageSplitMustTotal100 => 'Procentu sadalei jāsummējas līdz 100%.';
 
   @override
-  String get workspaceSharesMustBeGreaterThan0ForAllParticipants => 'Daļām jābūt lielākām par 0 visiem dalībniekiem.';
+  String get workspaceSharesMustBeGreaterThan0ForAllParticipants => 'Katram dalībniekam daļu skaitam jābūt lielākam par 0.';
 
   @override
   String get workspaceTotalAmount => 'Kopējā summa';
@@ -2763,10 +2769,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspaceLoadingCommonTrips => 'Ielādē kopīgos ceļojumus…';
 
   @override
-  String get workspaceNoCommonTripsFoundYet => 'Vēl nav kopīgu ceļojumu.';
+  String get workspaceNoCommonTripsFoundYet => 'Kopīgi ceļojumi vēl nav atrasti.';
 
   @override
-  String get workspaceCouldNotLoadAllCommonTripsShowingCurrentOne => 'Neizdevās ielādēt visus kopīgos tripus. Rādu pašreizējo.';
+  String get workspaceCouldNotLoadAllCommonTripsShowingCurrentOne => 'Neizdevās ielādēt visus kopīgos ceļojumus. Tiek rādīts pašreizējais ceļojums.';
 
   @override
   String get workspaceMembers => 'dalībnieki';
@@ -2871,7 +2877,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String workspaceWaitingForMemberSToMarkReady(Object arg1) {
-    return '$arg1 dalībnieks(-i) vēl nav atzīmējuši gatavību.';
+    return 'Dalībnieki, kuri vēl nav atzīmējuši gatavību: $arg1.';
   }
 
   @override
@@ -2955,7 +2961,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get friendsThisFriendHasNotAddedPayoutDetailsYet => 'Šis draugs vēl nav pievienojis izmaksu datus.';
 
   @override
-  String get friendsCouldNotLoadCommonTripsRightNow => 'Šobrīd neizdevās ielādēt kopīgos tripus.';
+  String get friendsCouldNotLoadCommonTripsRightNow => 'Pašlaik neizdevās ielādēt kopīgos ceļojumus.';
 
   @override
   String get friendsFinished => 'Pabeigts';
@@ -2967,7 +2973,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String friendsMembers(Object arg1) {
-    return '$arg1 dalībnieki';
+    return 'Dalībnieki: $arg1';
   }
 
   @override
@@ -3143,20 +3149,20 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String analyticsMembers(Object arg1, Object arg2, Object arg3, Object arg4) {
-    return '$arg1 • $arg2 dalībnieki • $arg3 • $arg4';
+    return '$arg1 • Dalībnieki: $arg2 • $arg3 • $arg4';
   }
 
   @override
   String get analyticsDailySpending => 'Dienas tēriņi';
 
   @override
-  String get analyticsMyDaily => 'Mans dienas';
+  String get analyticsMyDaily => 'Mani dienas izdevumi';
 
   @override
-  String get analyticsGroupDaily => 'Grupas dienas';
+  String get analyticsGroupDaily => 'Grupas dienas izdevumi';
 
   @override
-  String get analyticsByMember => 'Pa dalībniekiem';
+  String get analyticsByMember => 'Pēc dalībnieka';
 
   @override
   String get analyticsShowLess => 'Rādīt mazāk';
@@ -3298,7 +3304,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String paymentCancelRecordText(Object arg1, Object arg2) {
-    return 'Atcelt $arg1 maksājuma atzīmi lietotājam $arg2?';
+    return 'Atcelt ierakstu par tavu $arg1 maksājumu personai $arg2?';
   }
 
   @override
@@ -3394,7 +3400,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String paymentRequestDeclineText(Object arg1, Object arg2) {
-    return 'Noraidīt $arg1 pieprasījumu no $arg2? Viņš saņems paziņojumu.';
+    return 'Noraidīt $arg2 maksājuma pieprasījumu par $arg1? Šī persona saņems paziņojumu.';
   }
 
   @override
@@ -3545,7 +3551,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get workspacePersonalTotal => 'Kopā iztērēts';
 
   @override
-  String get workspaceBalanceEven => 'Tava bilance ir līdzsvarā';
+  String get workspaceBalanceEven => 'Tavs atlikums ir izlīdzināts';
 
   @override
   String workspaceBalanceOwe(String amount) {
@@ -3784,7 +3790,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get analyticsYourCategories => 'Tavi izdevumi pa kategorijām';
 
   @override
-  String get analyticsLargestShares => 'Tavas lielākās izdevumu daļas';
+  String get analyticsLargestShares => 'Manas lielākās izdevumu daļas';
 
   @override
   String get analyticsLargestExpenses => 'Lielākie izdevumi';
@@ -3809,7 +3815,14 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String analyticsExpenseCount(int count) {
-    return '$count izdevumi';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count izdevumi',
+      one: '$count izdevums',
+      zero: '$count izdevumu',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -3898,7 +3911,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String expenseSplitAllocated(String amount) {
-    return 'Sadalīti visi $amount';
+    return 'Visa summa $amount sadalīta';
   }
 
   @override
@@ -3908,14 +3921,14 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String expenseSplitOver(String amount) {
-    return 'Par $amount pārsniegta kopsumma';
+    return 'Par $amount vairāk nekā kopsumma';
   }
 
   @override
   String get profilePaymentSharingTitle => 'Rādīt maksājumu metodes manos ceļojumos';
 
   @override
-  String get profilePaymentSharingDescription => 'Atļaut apstiprinātajiem dalībniekiem redzēt manas maksājumu metodes ceļojumos, kurus izveidoju vai kuriem pievienojos. Attiecas uz esošajiem un turpmākajiem ceļojumiem. Izslēdzot jauna piekļuve tiek liegta.';
+  String get profilePaymentSharingDescription => 'Atļaut apstiprinātajiem dalībniekiem redzēt manas maksājumu metodes ceļojumos, kurus izveidoju vai kuriem pievienojos. Attiecas uz esošajiem un turpmākajiem ceļojumiem. Kopīgošanu vari izslēgt jebkurā brīdī, lai liegtu turpmāku piekļuvi.';
 
   @override
   String get memberPaymentDetailsNotShared => 'Maksājumu metodes nav kopīgotas vai pašlaik nav pieejamas.';
@@ -3954,7 +3967,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get settleWhoPaysWhom => 'Kurš kam maksā';
 
   @override
-  String get settlePreviewCaption => 'Priekšskatījums · galīgās summas pēc noslēgšanas';
+  String get settlePreviewCaption => 'Priekšskatījums · gala summas pēc ceļojuma noslēgšanas';
 
   @override
   String get settleOpenPaymentCaption => 'Atver maksājumu, lai skatītu detaļas un pieejamās darbības.';
@@ -4088,13 +4101,15 @@ class AppLocalizationsLv extends AppLocalizations {
       countries,
       locale: localeName,
       other: '$countries valstis',
-      one: '1 valsts',
+      one: '$countries valsts',
+      zero: '$countries valstu',
     );
     String _temp1 = intl.Intl.pluralLogic(
       cities,
       locale: localeName,
       other: '$cities pilsētas',
-      one: '1 pilsēta',
+      one: '$cities pilsēta',
+      zero: '$cities pilsētu',
     );
     return '$_temp0 · $_temp1';
   }
@@ -4105,7 +4120,8 @@ class AppLocalizationsLv extends AppLocalizations {
       count,
       locale: localeName,
       other: '$count apmeklējumi',
-      one: '1 apmeklējums',
+      one: '$count apmeklējums',
+      zero: '$count apmeklējumu',
     );
     return '$_temp0';
   }
@@ -4147,7 +4163,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get travelRemovePhoto => 'Noņemt bildi';
 
   @override
-  String get travelPhotoError => 'Neizdevās sagatavot bildi. Izvēlies citu.';
+  String get travelPhotoError => 'Neizdevās sagatavot šo attēlu. Lūdzu, izvēlies citu.';
 
   @override
   String get travelEditVisit => 'Labot apmeklējumu';
@@ -4195,16 +4211,19 @@ class AppLocalizationsLv extends AppLocalizations {
   String get liveStopPending => 'Atjaunošana apturēta. Gaidām internetu, lai noņemtu pēdējo lokāciju; bez atjauninājumiem tā pazūd no kartes 2 minūšu laikā.';
 
   @override
-  String get liveSharing => 'kopīgo';
+  String get liveSharing => 'kopīgo atrašanās vietu';
 
   @override
   String get liveUnavailable => 'Šī dzīvā karte nav pieejama. Atgriezies ceļojumā un atsvaidzini.';
 
   @override
+  String get liveMapLoadError => 'Karti neizdevās ielādēt. Pārbaudi savienojumu un atver karti vēlreiz.';
+
+  @override
   String get liveLoadError => 'Neizdevās atsvaidzināt lokācijas. Redzami tikai nesenie atjauninājumi.';
 
   @override
-  String get liveFit => 'Parādīt visus';
+  String get liveFit => 'Rādīt visus kartē';
 
   @override
   String get liveEmpty => 'Pagaidām neviens nekopīgo aktuālu lokāciju.';
@@ -4229,4 +4248,162 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get livePrivateUntilShared => 'Tava lokācija ir privāta, līdz pats izvēlies to kopīgot.';
+
+  @override
+  String get activityEventExpenseCreated => 'pievienoja izdevumu';
+
+  @override
+  String get activityEventExpenseUpdated => 'atjaunoja izdevumu';
+
+  @override
+  String get activityEventExpenseDeleted => 'izdzēsa izdevumu';
+
+  @override
+  String get activityEventTripCreated => 'izveidoja ceļojumu';
+
+  @override
+  String get activityEventTripUpdated => 'atjaunoja ceļojuma detaļas';
+
+  @override
+  String get activityEventTripMembersAdded => 'pievienoja dalībniekus';
+
+  @override
+  String activityEventTripMembersInvited(int count) {
+    return 'nosūtīja uzaicinājumus: $count';
+  }
+
+  @override
+  String get activityEventTripMemberJoined => 'pievienojās ceļojumam';
+
+  @override
+  String get activityEventTripInvitationDeclined => 'noraidīja ceļojuma uzaicinājumu';
+
+  @override
+  String get activityEventTripInvitationRevoked => 'atsauca ceļojuma uzaicinājumu';
+
+  @override
+  String activityEventTripMemberRemoved(String name) {
+    return 'noņēma $name no ceļojuma';
+  }
+
+  @override
+  String get activityEventTripMemberLeft => 'pameta ceļojumu';
+
+  @override
+  String activityEventTripMemberRoleUpdated(String name, String role) {
+    return 'nomainīja $name lomu uz $role';
+  }
+
+  @override
+  String get activityEventTripMemberReady => 'atzīmēja gatavību norēķiniem';
+
+  @override
+  String get activityEventTripMemberNotReady => 'noņēma gatavību norēķiniem';
+
+  @override
+  String get activityEventTripAllMembersReady => 'Visi dalībnieki ir gatavi norēķiniem';
+
+  @override
+  String get activityEventTripFinished => 'pabeidza ceļojumu';
+
+  @override
+  String get activityEventSettlementMarkedSent => 'atzīmēja pārskaitījumu kā nosūtītu';
+
+  @override
+  String get activityEventSettlementConfirmed => 'apstiprināja pārskaitījumu';
+
+  @override
+  String get activityEventSettlementSentCancelled => 'atcēla nosūtīšanas statusu';
+
+  @override
+  String get activityEventSettlementNotReceived => 'atzīmēja, ka pārskaitījums nav saņemts';
+
+  @override
+  String get activityEventSettlementReminderSent => 'nosūtīja norēķina atgādinājumu';
+
+  @override
+  String get activityEventPaymentMarkedSent => 'atzīmēja maksājumu kā nosūtītu';
+
+  @override
+  String get activityEventPaymentRequested => 'pieprasīja maksājumu';
+
+  @override
+  String get activityEventPaymentRequestMarkedSent => 'atzīmēja pieprasīto maksājumu kā nosūtītu';
+
+  @override
+  String get activityEventPaymentRequestCancelled => 'atcēla maksājuma pieprasījumu';
+
+  @override
+  String get activityEventPaymentRequestDeclined => 'noraidīja maksājuma pieprasījumu';
+
+  @override
+  String get activityEventPaymentConfirmed => 'apstiprināja maksājumu';
+
+  @override
+  String get activityEventPaymentCancelled => 'atcēla maksājuma ierakstu';
+
+  @override
+  String get activityEventPaymentNotReceived => 'atzīmēja maksājumu kā nesaņemtu';
+
+  @override
+  String get activityEventUnknown => 'veica izmaiņas';
+
+  @override
+  String get privacyEnglishFallback => 'Privātuma politika pašlaik ir pieejama angļu valodā.';
+
+  @override
+  String get activityRoleAdmin => 'Administrators';
+
+  @override
+  String get accountDeleteTitle => 'Dzēst kontu';
+
+  @override
+  String get accountDeleteIntro => 'Dzēšanu apstiprināsi e-pastā. Pēc apstiprināšanas to nevar atsaukt.';
+
+  @override
+  String get accountDeleteConsequences => 'Dzēšana ir neatgriezeniska. Tavs profils tiks anonimizēts un piekļuve kontam pārtraukta. Kopīgo ceļojumu un izdevumu ieraksti saglabāsies pārējiem dalībniekiem.';
+
+  @override
+  String get accountDeleteReasonsTitle => 'Ko mēs varējām izdarīt labāk?';
+
+  @override
+  String get accountDeleteReasonsHint => 'Iemesls (nav obligāti)';
+
+  @override
+  String get accountDeleteReasonNotUsing => 'Maniem ceļojumiem Splyto vairs nav vajadzīgs';
+
+  @override
+  String get accountDeleteReasonAnotherWay => 'Kopīgos izdevumus pārvaldu citā veidā';
+
+  @override
+  String get accountDeleteReasonComplicated => 'Lietošana man šķiet pārāk sarežģīta';
+
+  @override
+  String get accountDeleteReasonTechnical => 'Saskāros ar kļūdām vai tehniskām problēmām';
+
+  @override
+  String get accountDeleteReasonPrivacy => 'Vēlos dzēst sava konta datus';
+
+  @override
+  String get accountDeleteReasonOther => 'Vēlos dzēst kontu cita iemesla dēļ';
+
+  @override
+  String get accountDeleteEmailStep => 'Nākamajā solī dzēšanu apstiprināsi e-pastā.';
+
+  @override
+  String get accountDeletePasswordHint => 'Ievadi pašreizējo Splyto paroli, lai saņemtu apstiprinājuma e-pastu. Tavs konts joprojām ir aktīvs.';
+
+  @override
+  String get accountDeleteInboxTitle => 'Atlicis apstiprināt e-pastā';
+
+  @override
+  String accountDeleteSentBody(String email) {
+    return 'Apstiprinājuma saite nosūtīta uz $email.';
+  }
+
+  @override
+  String get accountDeleteSentHint => 'Konts paliek aktīvs, līdz apstiprini dzēšanu.';
+
+  @override
+  String get accountDeleteSending => 'Sūta apstiprinājuma e-pastu';
 }

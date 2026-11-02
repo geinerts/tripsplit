@@ -8,6 +8,7 @@ import 'package:tripsplit/l10n/app_localizations.dart';
 
 import 'app_dependencies.dart';
 import 'locale/app_locale_scope.dart';
+import 'locale/app_locale_controller.dart';
 import 'router/app_router.dart';
 import 'theme/theme_mode_scope.dart';
 import 'theme/app_theme.dart';
@@ -28,7 +29,15 @@ class TripSplitApp extends StatefulWidget {
   State<TripSplitApp> createState() => _TripSplitAppState();
 }
 
-class _TripSplitAppState extends State<TripSplitApp> {
+class _TripSplitAppState extends State<TripSplitApp>
+    with WidgetsBindingObserver {
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    if (widget.dependencies.localeController.mode == AppLocaleMode.system) {
+      _handleLocaleChanged();
+    }
+  }
+
   void _handleLocaleChanged() {
     if (widget.dependencies.authController.currentUser == null) {
       return;
@@ -39,6 +48,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     LicenseRegistry.addLicense(() async* {
       yield LicenseEntryWithLineBreaks(const [
         'Inter',
@@ -52,6 +62,7 @@ class _TripSplitAppState extends State<TripSplitApp> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     widget.dependencies.localeController.removeListener(_handleLocaleChanged);
     unawaited(widget.dependencies.inviteDeepLinkController.dispose());
     super.dispose();
@@ -77,6 +88,8 @@ class _TripSplitAppState extends State<TripSplitApp> {
               darkTheme: AppTheme.dark(),
               themeMode: themeController.themeMode,
               locale: localeController.locale,
+              localeListResolutionCallback: (locales, _) =>
+                  AppLocaleController.resolveDeviceLocale(locales),
               builder: (context, child) {
                 if (child == null) {
                   return const SizedBox.shrink();

@@ -258,6 +258,13 @@ class WorkspaceRemoteParsers {
       id: _toInt(item['id']),
       tripId: _toInt(item['trip_id']),
       tripName: tripName,
+      actorUserId: item['actor_user_id'] == null
+          ? null
+          : _toInt(item['actor_user_id']),
+      actorAvatarUrl: MediaUrlResolver.normalize(item['actor_avatar_url']),
+      actorAvatarThumbUrl: MediaUrlResolver.normalize(
+        item['actor_avatar_thumb_url'],
+      ),
       inviteToken: item['type'] == 'trip_invitation' && item['payload'] is Map
           ? _toNullableString((item['payload'] as Map)['invite_token'])
           : null,

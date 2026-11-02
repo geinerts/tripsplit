@@ -4,6 +4,9 @@ class WorkspaceNotification {
     required this.tripId,
     this.tripName,
     this.inviteToken,
+    this.actorUserId,
+    this.actorAvatarUrl,
+    this.actorAvatarThumbUrl,
     required this.type,
     required this.title,
     required this.body,
@@ -16,6 +19,9 @@ class WorkspaceNotification {
     tripId: tripId,
     tripName: tripName,
     inviteToken: inviteToken,
+    actorUserId: actorUserId,
+    actorAvatarUrl: actorAvatarUrl,
+    actorAvatarThumbUrl: actorAvatarThumbUrl,
     type: type,
     title: title,
     body: body,
@@ -27,6 +33,9 @@ class WorkspaceNotification {
   final int tripId;
   final String? tripName;
   final String? inviteToken;
+  final int? actorUserId;
+  final String? actorAvatarUrl;
+  final String? actorAvatarThumbUrl;
   final String type;
   final String title;
   final String body;

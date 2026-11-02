@@ -8,6 +8,7 @@ class AppSettingsRow extends StatelessWidget {
     super.key,
     required this.title,
     this.icon,
+    this.leading,
     this.subtitle,
     this.value,
     this.trailing,
@@ -18,6 +19,7 @@ class AppSettingsRow extends StatelessWidget {
   });
   final String title;
   final IconData? icon;
+  final Widget? leading;
   final String? subtitle, value;
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -49,12 +51,13 @@ class AppSettingsRow extends StatelessWidget {
                       MediaQuery.textScalerOf(context).scale(16) > 22;
                   return Row(
                     children: [
-                      if (icon != null) ...[
-                        Icon(
-                          icon,
-                          size: 24,
-                          color: destructive ? color : muted,
-                        ),
+                      if (leading != null || icon != null) ...[
+                        leading ??
+                            Icon(
+                              icon,
+                              size: 24,
+                              color: destructive ? color : muted,
+                            ),
                         const SizedBox(width: 16),
                       ],
                       Expanded(

@@ -33,6 +33,7 @@ import '../../../subscriptions/presentation/widgets/premium_status_tile.dart';
 import '../../domain/entities/notification_preferences.dart';
 import '../controllers/auth_controller.dart';
 import '../widgets/privacy_policy_page.dart';
+import '../widgets/account_deletion_page.dart';
 
 part 'profile_page_actions.dart';
 part 'profile_page_edit.dart';
@@ -128,8 +129,6 @@ class _ProfilePageState extends State<ProfilePage> {
   String _draftPassword = '';
   String _draftCurrentPassword = '';
   String _draftRepeatPassword = '';
-  String _deactivateDraftPassword = '';
-  bool _isDeactivateAccountPage = false;
   bool _inAppExpenseUpdatesEnabled = true;
   bool _inAppFriendInvitesEnabled = true;
   bool _inAppTripUpdatesEnabled = true;

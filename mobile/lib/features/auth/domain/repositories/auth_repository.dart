@@ -51,7 +51,10 @@ abstract class AuthRepository {
 
   Future<void> deactivateAccount({required String password});
 
-  Future<void> requestAccountDeletionLink({required String password});
+  Future<void> requestAccountDeletionLink({
+    required String password,
+    List<String> reasonCodes = const [],
+  });
 
   Future<NotificationPreferences> getNotificationPreferences();
 

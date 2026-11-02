@@ -36,6 +36,9 @@ function enforce_rate_limit(...$args): void {}
 function trips_currency_column_available(PDO $pdo): bool { return true; }
 function users_name_columns_available(PDO $pdo): bool { return true; }
 function users_account_status_column_available(PDO $pdo): bool { return true; }
+function users_active_filter_sql(PDO $pdo, string $alias = 'u'): string {
+    return ' AND ' . ($alias !== '' ? $alias . '.' : '') . 'account_status = "active"';
+}
 function default_trip_currency_code(): string { return 'EUR'; }
 function normalize_currency_code($code): string { return (string) $code; }
 function normalize_me_name_value($name): ?string { return $name ?: null; }
@@ -77,7 +80,7 @@ function invitation_test_setup(bool $mysql, bool $migrated = true): PDO {
     }
     if ($mysql) $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
     $id = $mysql ? 'INT UNSIGNED PRIMARY KEY AUTO_INCREMENT' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    $pdo->exec('CREATE TABLE trip_users (id ' . $id . ', nickname VARCHAR(64), first_name VARCHAR(64), last_name VARCHAR(64), account_status VARCHAR(20))');
+    $pdo->exec('CREATE TABLE trip_users (id ' . $id . ', nickname VARCHAR(64), first_name VARCHAR(64), last_name VARCHAR(64), account_status VARCHAR(20), avatar_path VARCHAR(255))');
     $pdo->exec('CREATE TABLE trip_trips (id ' . $id . ', name VARCHAR(120), created_by INT UNSIGNED,
         trip_mode VARCHAR(10) DEFAULT "group", currency_code VARCHAR(3), status VARCHAR(20) DEFAULT "active",
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ended_at TIMESTAMP NULL, archived_at TIMESTAMP NULL)');

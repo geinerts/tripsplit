@@ -7,29 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
-import 'package:tripsplit/features/trips/presentation/widgets/join_trip_invite_page.dart';
 import 'package:tripsplit/features/trips/presentation/widgets/trip_invite_members_page.dart';
 import 'package:tripsplit/features/trips/domain/entities/trip_user.dart';
-import 'package:tripsplit/features/trips/domain/entities/trip_invite_link.dart';
 import 'package:tripsplit/features/trips/domain/entities/pending_trip_invitation.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
 
-const link = TripInviteLink(
-  tripId: 1,
-  inviteUrl: 'https://splyto.app/?invite=lisbon-abcdefghij',
-  inviteToken: 'abcdefghij',
-  expiresAt: '2026-11-01 12:00:00',
-  expiresInSeconds: 86400,
-);
-
 class _Harness {
   Object? result;
-  bool closed = false, failFriends = false, failLink = false;
-  Completer<TripInviteLink>? pendingLink;
-  int linkCalls = 0, friendCalls = 0;
+  bool closed = false, failFriends = false;
+  Completer<List<TripUser>>? pendingFriends;
+  int friendCalls = 0;
   Future<void> mount(
     WidgetTester tester, {
-    bool join = false,
     String locale = 'en',
     bool dark = false,
     double scale = 1,
@@ -58,38 +47,29 @@ class _Harness {
               onPressed: () async {
                 result = await Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => join
-                        ? const JoinTripInvitePage()
-                        : TripInviteMembersPage(
-                            tripName:
-                                'A long trip name with several destinations',
-                            loadFriends: () async {
-                              friendCalls++;
-                              if (failFriends) throw Exception('Offline');
-                              return const [
-                                TripUser(
-                                  id: 8,
-                                  nickname: 'Anna with a very long family name',
-                                ),
-                              ];
-                            },
-                            loadLink: () async {
-                              linkCalls++;
-                              if (pendingLink != null) {
-                                return pendingLink!.future;
-                              }
-                              if (failLink) throw Exception('Offline');
-                              return link;
-                            },
-                            loadPending: () async => [
-                              const PendingTripInvitation(
-                                id: 5,
-                                userId: 9,
-                                name: 'Daniel with a long family name',
-                              ),
-                            ],
-                            revoke: (_) async {},
+                    builder: (_) => TripInviteMembersPage(
+                      tripName: 'A long trip name with several destinations',
+                      loadFriends: () async {
+                        friendCalls++;
+                        if (pendingFriends != null)
+                          return pendingFriends!.future;
+                        if (failFriends) throw Exception('Offline');
+                        return const [
+                          TripUser(
+                            id: 8,
+                            nickname: 'Anna with a very long family name',
                           ),
+                        ];
+                      },
+                      loadPending: () async => [
+                        const PendingTripInvitation(
+                          id: 5,
+                          userId: 9,
+                          name: 'Daniel with a long family name',
+                        ),
+                      ],
+                      revoke: (_) async {},
+                    ),
                   ),
                 );
                 closed = true;
@@ -192,139 +172,61 @@ void main() {
     }
   });
 
-  String clipboard = '';
-  String? copied;
-  setUp(() {
-    clipboard = '';
-    copied = null;
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, (call) async {
-          if (call.method == 'Clipboard.getData') return {'text': clipboard};
-          if (call.method == 'Clipboard.setData') {
-            copied = (call.arguments as Map)['text'] as String;
-          }
-          return null;
-        });
-  });
-  tearDown(
-    () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(SystemChannels.platform, null),
-  );
   for (final locale in ['en', 'lv', 'es']) {
     for (final dark in [false, true]) {
-      for (final join in [false, true]) {
-        testWidgets('invitation 320px 200% $locale dark=$dark join=$join', (
-          tester,
-        ) async {
-          final h = _Harness();
-          await h.mount(
-            tester,
-            join: join,
-            locale: locale,
-            dark: dark,
-            scale: 2,
-          );
-          expect(tester.takeException(), isNull);
-          if (join) {
-            await tester.ensureVisible(
-              find.byKey(const ValueKey('join-trip-input')),
-            );
-            await tester.pumpAndSettle();
-            await tester.tap(find.byKey(const ValueKey('join-trip-input')));
-            tester.view.viewInsets = const FakeViewPadding(bottom: 300);
-            addTearDown(tester.view.resetViewInsets);
-            await tester.pumpAndSettle();
-            expect(
-              tester
-                  .getRect(find.byKey(const ValueKey('join-trip-submit')))
-                  .bottom,
-              lessThanOrEqualTo(544),
-            );
-          } else {
-            await visible(
-              tester,
-              find.byKey(const ValueKey('invite-friend-8')),
-            );
-            await tester.tap(find.byKey(const ValueKey('invite-friend-8')));
-            await tester.pumpAndSettle();
-            expect(
-              tester
-                  .widget<CheckboxListTile>(
-                    find.byKey(const ValueKey('invite-friend-8')),
-                  )
-                  .value,
-              isTrue,
-            );
-          }
-          expect(tester.takeException(), isNull);
-          await tester.tap(
-            find
-                .byTooltip(
-                  MaterialLocalizations.of(
-                    tester.element(find.byType(Scaffold).last),
-                  ).closeButtonTooltip,
-                )
-                .first,
-          );
-          await tester.pumpAndSettle();
-          expect(h.closed, isTrue);
-          expect(h.result, isNull);
-        });
-      }
+      testWidgets('friend invitation 320px 200% $locale dark=$dark', (
+        tester,
+      ) async {
+        final h = _Harness();
+        await h.mount(tester, locale: locale, dark: dark, scale: 2);
+        expect(tester.takeException(), isNull);
+        await visible(tester, find.byKey(const ValueKey('invite-friend-8')));
+        await tester.tap(find.byKey(const ValueKey('invite-friend-8')));
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<CheckboxListTile>(
+                find.byKey(const ValueKey('invite-friend-8')),
+              )
+              .value,
+          isTrue,
+        );
+        expect(find.byType(SelectableText), findsNothing);
+        expect(tester.takeException(), isNull);
+        await tester.tap(
+          find
+              .byTooltip(
+                MaterialLocalizations.of(
+                  tester.element(find.byType(Scaffold).last),
+                ).closeButtonTooltip,
+              )
+              .first,
+        );
+        await tester.pumpAndSettle();
+        expect(h.closed, isTrue);
+        expect(h.result, isNull);
+      });
     }
   }
-  testWidgets('join validates and paste submits the exact parsed token once', (
-    tester,
-  ) async {
-    final h = _Harness();
-    await h.mount(tester, join: true);
-    await tester.tap(find.byKey(const ValueKey('join-trip-submit')));
-    await tester.pumpAndSettle();
-    expect(h.closed, isFalse);
-    await tester.tap(find.text('Paste'));
-    await tester.pumpAndSettle();
-    expect(find.text('Clipboard is empty.'), findsOneWidget);
-    await tester.enterText(
-      find.byKey(const ValueKey('join-trip-input')),
-      'https://splyto.app/?invite=%',
-    );
-    await tester.tap(find.byKey(const ValueKey('join-trip-submit')));
-    await tester.pumpAndSettle();
-    expect(h.closed, isFalse);
-    expect(tester.takeException(), isNull);
-    clipboard = 'https://splyto.app/?invite=abcdefghij';
-    await tester.tap(find.text('Paste'));
-    await tester.pumpAndSettle();
-    final save = tester
-        .widget<FilledButton>(find.byKey(const ValueKey('join-trip-submit')))
-        .onPressed!;
-    save();
-    save();
-    await tester.pumpAndSettle();
-    expect(h.result, 'abcdefghij');
-    expect(find.text('Open'), findsOneWidget);
-  });
   testWidgets(
-    'link and friends retry independently; copy and selection preserve exact values',
+    'friends retry and selected friends submit once without link controls',
     (tester) async {
-      final h = _Harness()
-        ..failLink = true
-        ..failFriends = true;
+      final h = _Harness()..failFriends = true;
       await h.mount(tester);
       expect(find.byKey(const ValueKey('invite-link-copy')), findsNothing);
-      h.failLink = false;
-      await tester.tap(find.byKey(const ValueKey('invite-link-retry')));
-      await tester.pumpAndSettle();
-      expect(h.linkCalls, 2);
-      expect(h.friendCalls, 1);
-      await tester.tap(find.byKey(const ValueKey('invite-link-copy')));
-      await tester.pumpAndSettle();
-      expect(copied, link.inviteUrl);
+      expect(find.byKey(const ValueKey('invite-link-retry')), findsNothing);
+      expect(
+        tester
+            .widget<ElevatedButton>(
+              find.byKey(const ValueKey('invite-members-submit')),
+            )
+            .onPressed,
+        isNull,
+      );
       h.failFriends = false;
       await visible(tester, find.byKey(const ValueKey('invite-friends-retry')));
       await tester.tap(find.byKey(const ValueKey('invite-friends-retry')));
       await tester.pumpAndSettle();
-      expect(h.linkCalls, 2);
       expect(h.friendCalls, 2);
       await visible(tester, find.byKey(const ValueKey('invite-friend-8')));
       await tester.tap(find.byKey(const ValueKey('invite-friend-8')));
@@ -341,15 +243,15 @@ void main() {
       expect(find.text('Open'), findsOneWidget);
     },
   );
-  testWidgets('closing before invite link response ignores late completion', (
+  testWidgets('closing before friends response ignores late completion', (
     tester,
   ) async {
-    final pending = Completer<TripInviteLink>();
-    final h = _Harness()..pendingLink = pending;
+    final pending = Completer<List<TripUser>>();
+    final h = _Harness()..pendingFriends = pending;
     await h.mount(tester, settle: false);
     await tester.tap(find.byTooltip('Close').first);
     await tester.pumpAndSettle();
-    pending.complete(link);
+    pending.complete(const [TripUser(id: 8, nickname: 'Anna')]);
     await tester.pumpAndSettle();
     expect(h.closed, isTrue);
     expect(h.result, isNull);

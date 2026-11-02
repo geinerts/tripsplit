@@ -106,6 +106,9 @@ class WorkspaceSnapshotCodec {
               'type': item.type,
               'title': item.title,
               'body': item.body,
+              'actor_user_id': item.actorUserId,
+              'actor_avatar_url': item.actorAvatarUrl,
+              'actor_avatar_thumb_url': item.actorAvatarThumbUrl,
               'is_read': item.isRead,
               'created_at': item.createdAt,
             },
@@ -344,6 +347,9 @@ class WorkspaceSnapshotCodec {
                 type: (item['type'] as String? ?? 'info').trim(),
                 title: (item['title'] as String? ?? '').trim(),
                 body: (item['body'] as String? ?? '').trim(),
+                actorUserId: (item['actor_user_id'] as num?)?.toInt(),
+                actorAvatarUrl: item['actor_avatar_url'] as String?,
+                actorAvatarThumbUrl: item['actor_avatar_thumb_url'] as String?,
                 isRead:
                     item['is_read'] == true ||
                     (item['is_read'] as num?)?.toInt() == 1,

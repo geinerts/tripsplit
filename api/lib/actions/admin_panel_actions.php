@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../helpers/helper_travel_places.php';
+require_once __DIR__ . '/../helpers/helper_account_deletion_feedback.php';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Admin Panel v2 Actions
@@ -488,6 +489,8 @@ function admin_panel_dashboard_action(): void
         LIMIT 5
     ");
     $stats['recent_incidents'] = $stmt->fetchAll();
+
+    $stats['account_deletion_feedback'] = account_deletion_feedback_summary($pdo);
 
     json_out(['ok' => true, 'stats' => $stats]);
 }

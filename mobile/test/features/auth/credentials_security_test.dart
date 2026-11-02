@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tripsplit/app/router/app_router.dart';
 import 'package:tripsplit/core/auth/account_data_session.dart';
 import 'package:tripsplit/core/auth/auth_session_store.dart';
 import 'package:tripsplit/core/auth/current_user_store.dart';
@@ -144,9 +143,20 @@ class ControllerHarness {
 class ProfileController extends Fake implements AuthController {
   String? submittedCurrentPassword;
   String? submittedPassword;
+  int deletionEmails = 0;
+  List<String>? deletionReasons;
   int deactivationEmails = 0;
   int deactivations = 0;
   int logouts = 0;
+  @override
+  Future<void> requestAccountDeletionLink({
+    required String password,
+    List<String> reasonCodes = const [],
+  }) async {
+    deletionEmails++;
+    deletionReasons = reasonCodes;
+  }
+
   @override
   Future<void> requestDeactivationLink() async {
     deactivationEmails++;
@@ -267,7 +277,7 @@ void main() {
   });
 
   testWidgets(
-    'deactivation email does not deactivate or log out before confirmation',
+    'profile offers only deletion and keeps the session until email confirmation',
     (tester) async {
       final controller = ProfileController();
       await tester.pumpWidget(
@@ -279,23 +289,24 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Account settings'), 300);
+      await tester.scrollUntilVisible(find.text('Delete account'), 300);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Account settings'));
+      await tester.ensureVisible(find.text('Delete account'));
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Send deactivation link'));
+      await tester.tap(find.text('Delete account'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Send deactivation link'));
+      expect(find.text('Deactivate account'), findsNothing);
+      expect(find.text('Send deactivation link'), findsNothing);
+      final submit = find.byKey(const ValueKey('account-delete-submit'));
+      await tester.ensureVisible(submit);
+      await tester.tap(submit);
       await tester.pumpAndSettle();
-      expect(controller.deactivationEmails, 1);
+      expect(controller.deletionEmails, 1);
+      expect(controller.deletionReasons, isEmpty);
+      expect(controller.deactivationEmails, 0);
       expect(controller.deactivations, 0);
       expect(controller.logouts, 0);
-      expect(
-        find.text(
-          'Check your email to confirm deactivation. Your account is still active.',
-        ),
-        findsOneWidget,
-      );
+      expect(find.text('One last step in your inbox'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },
   );
@@ -330,6 +341,24 @@ void main() {
       await h.controller.requestDeactivationLink();
       expect(h.api.path, contains('request_deactivation_link'));
       expect(h.api.body, isEmpty);
+      expect(await h.store.readAccountOwner(), 1);
+      expect(h.loggedOut, 0);
+    },
+  );
+  test(
+    'deletion request preserves password and reason codes without logging out',
+    () async {
+      final h = ControllerHarness();
+      await h.saveSession(1);
+      await h.controller.requestAccountDeletionLink(
+        password: ' Password-123 ',
+        reasonCodes: ['technical_issue', 'privacy'],
+      );
+      expect(h.api.path, contains('request_account_deletion_link'));
+      expect(h.api.body, {
+        'password': ' Password-123 ',
+        'reason_codes': ['technical_issue', 'privacy'],
+      });
       expect(await h.store.readAccountOwner(), 1);
       expect(h.loggedOut, 0);
     },
@@ -408,7 +437,7 @@ void main() {
     expect(h.loggedOut, 0);
   });
   testWidgets(
-    'password screen requires current password and provides recovery',
+    'password screen requires current password without email setup action',
     (tester) async {
       final controller = ProfileController();
       await tester.pumpWidget(
@@ -416,10 +445,6 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: const Locale('en'),
-          routes: {
-            AppRouter.forgotPassword: (_) =>
-                const Scaffold(body: Text('Recovery screen')),
-          },
           home: ProfilePage(controller: controller, showBottomNav: false),
         ),
       );
@@ -429,7 +454,7 @@ void main() {
       await tester.tap(find.text('Change password'));
       await tester.pumpAndSettle();
       expect(find.text('Current password'), findsOneWidget);
-      expect(find.text('Set password by email'), findsOneWidget);
+      expect(find.text('Set password by email'), findsNothing);
       final fields = find.byType(TextFormField);
       expect(fields, findsNWidgets(3));
       await tester.enterText(fields.at(1), 'New-password-123');
@@ -480,37 +505,4 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
-  testWidgets('profile opens email setup without filling any password fields', (
-    tester,
-  ) async {
-    String? requestedEmail;
-    await tester.pumpWidget(
-      MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: const Locale('en'),
-        routes: {
-          AppRouter.forgotPassword: (context) {
-            requestedEmail =
-                ModalRoute.of(context)!.settings.arguments as String;
-            return const Scaffold(body: Text('Email setup screen'));
-          },
-        },
-        home: ProfilePage(
-          controller: ProfileController(),
-          showBottomNav: false,
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Change password'), 300);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Change password'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Set password by email'));
-    await tester.pumpAndSettle();
-    expect(requestedEmail, user.email);
-    expect(find.text('Email setup screen'), findsOneWidget);
-    expect(tester.takeException(), isNull);
-  });
 }

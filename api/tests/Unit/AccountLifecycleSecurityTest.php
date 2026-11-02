@@ -33,6 +33,7 @@ final class AccountLifecycleSecurityTest extends TestCase
     {
         $r=$this->scenario($action,$scenario);self::assertSame($status,$r['response']['status']);
         self::assertTrue($r['unchanged']);self::assertSame(0,$r['mail']);
+        self::assertSame([], $r['feedback']);
     }
     public static function confirmations(): iterable
     {
@@ -58,6 +59,9 @@ final class AccountLifecycleSecurityTest extends TestCase
     public function test_request_is_non_mutating_and_preserves_prior_links(string $action,string $scenario): void
     {
         $r=$this->scenario($action,$scenario);
+        $hasFeedback = $action === 'delete' && !in_array($scenario, ['request_limit', 'request_mail_failure'], true);
+        self::assertSame($hasFeedback ? ['not_using', 'technical_issue'] : [], array_column($r['feedback'], 'reason_code'));
+        foreach ($r['feedback'] as $row) self::assertSame(1, (int) $row['request_count']);
         self::assertSame($action==='delete'&&$scenario==='request_mail_failure'?503:200,$r['response']['status']);
         self::assertSame($action==='delete'?'active':'deactivated',$r['user']['account_status']);
         self::assertSame(2,$r['sessions']);self::assertSame(1,$r['push']);

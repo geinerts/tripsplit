@@ -9,3 +9,8 @@ paths = [
   '''mobile/ios/Podfile\.lock$''',
   '''mobile/pubspec\.lock$''',
 ]
+
+[[allowlists]]
+description = "Exact localization message identifier in translation review metadata, not a credential."
+regexTarget = "match"
+regexes = ['''key": "percentSplitMustBe100"''']

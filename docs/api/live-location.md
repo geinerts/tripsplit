@@ -64,14 +64,41 @@ The bundled EN/LV/ES policies and website describe this separate feature.
 
 ## Basemap
 
-The live map uses flutter_map and HTTPS OpenStreetMap raster tiles with persistent native
-HTTP caching, visible attribution and a Splyto User-Agent. Tiles reveal IP/network metadata
-and requested map area to the tile provider, never Splyto names/session tokens. No bulk
-prefetch. Public OSM tiles have no SLA; monitor usage and select a production tile provider
-before large-scale release. `LIVE_MAP_TILE_URL` is a compile-time override; changing provider
-also requires its attribution/privacy/terms to be updated, not just replacing a URL.
-References: https://operations.osmfoundation.org/policies/tiles/ and
-https://developer.apple.com/documentation/corelocation/cllocationmanager/allowsbackgroundlocationupdates
+Configured iOS/Android builds use the official `mapbox_maps_flutter` SDK and Mapbox
+Standard, with day/night lighting following the app theme. Markers remain native map
+annotations with profile photos/initials and a selected member's accuracy area. The
+Mapbox location puck is disabled: GPS access, consent, expiry and server polling stay
+in the existing Splyto live-location controller.
+
+Pass a public `pk.` token via `MAPBOX_ACCESS_TOKEN` in an ignored
+`mobile/config/env/*.local.json` and `--dart-define-from-file`. Never commit tokens.
+Before a direct Xcode archive, run `flutter build ios --config-only --release` with
+that same define file. No secret/download token is required by the current SDK.
+Without configuration (and for offline widget tests), the existing flutter_map/OSM
+renderer remains available. `LIVE_MAP_TILE_URL` applies only to that fallback.
+
+Keep the native Mapbox logo and attribution control unobstructed: the control also
+provides the SDK's telemetry opt-out. Participant identifiers/photos are not uploaded
+to Mapbox; marker images/coordinates are supplied locally to the native renderer.
+Map requests expose IP/network metadata and the viewed area, and SDK telemetry is
+subject to Mapbox's privacy policy. Updated EN/LV/ES policies explain both providers.
+
+Verified on iPhone 17 Pro simulator with a local public token (2026-10-28): actual
+Mapbox Standard tile loading, live day/night theme changes, three demo markers,
+multi-member camera fit, selected accuracy area, and no GPS prompt on map entry.
+iOS annotation PNG decoding uses screen scale, so marker size compensates for
+Retina density. Do not initialise the SDK location component even to disable it:
+its default puck is already off; accessing it can initialise iOS location services.
+
+Still verify photo avatars, marker taps/movement, attribution/telemetry menu and
+network recovery on physical iOS and Android devices before release. Maps require
+network access; sharing's existing stop/offline behaviour remains unchanged.
+
+References:
+- https://docs.mapbox.com/flutter/maps/guides/install/
+- https://docs.mapbox.com/flutter/maps/guides/#telemetry-opt-out
+- https://www.mapbox.com/legal/privacy
+- https://operations.osmfoundation.org/policies/tiles/
 
 ## Deployment and verification
 

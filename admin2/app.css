@@ -586,6 +586,23 @@ select.form-input { cursor: pointer; }
 }
 
 /* ── Dashboard two-col grid ────────────────────────────────────────────────── */
+.deletion-period, .deletion-note, .deletion-percent { color: var(--fg-dim); font-size: 12px; }
+.deletion-feedback-body { display: flex; align-items: center; gap: 24px; padding: 24px 18px 12px; }
+.deletion-donut { position: relative; width: 180px; flex: 0 0 180px; }
+.deletion-donut > svg { display: block; width: 100%; }
+.deletion-donut-total { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.deletion-donut-total strong { font-size: 24px; font-variant-numeric: tabular-nums; }
+.deletion-donut-total span { font-size: 11px; color: var(--fg-dim); }
+.deletion-legend { list-style: none; padding: 0; margin: 0; flex: 1; min-width: 0; }
+.deletion-legend li { display: grid; grid-template-columns: 10px 1fr auto 46px; align-items: center; gap: 10px; padding: 9px 0; font-size: 13px; }
+.deletion-legend strong, .deletion-percent { text-align: right; font-variant-numeric: tabular-nums; }
+.deletion-note { margin: 0; padding: 12px 18px 18px; line-height: 1.5; }
+.deletion-empty { margin: 0; padding: 8px 18px; color: var(--fg-dim); text-align: center; }
+@media (max-width: 1150px) {
+  .deletion-feedback-body { flex-direction: column; gap: 12px; }
+  .deletion-legend { width: 100%; }
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr;

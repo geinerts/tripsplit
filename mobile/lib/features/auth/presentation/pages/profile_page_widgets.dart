@@ -285,8 +285,9 @@ extension _ProfilePageWidgets on _ProfilePageState {
         const Divider(height: 1),
         _buildProfileSectionTile(
           context: context,
-          title: context.l10n.profileAccountSettings,
-          icon: Icons.manage_accounts_outlined,
+          title: context.l10n.accountDeleteTitle,
+          icon: Icons.person_remove_outlined,
+          isDanger: true,
           subtitle: '',
           onTap: _isBusy ? null : _openDangerZone,
         ),
@@ -592,6 +593,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
     final mode =
         controller?.themeMode ??
         (AppDesign.isDark(context) ? ThemeMode.dark : ThemeMode.light);
+    if (mode == ThemeMode.system) return t.themeModeSystem;
     if (mode == ThemeMode.light) return t.themeModeLight;
     return t.themeModeDark;
   }
@@ -600,10 +602,8 @@ extension _ProfilePageWidgets on _ProfilePageState {
     final t = context.l10n;
     final controller = AppLocaleScope.maybeOf(context);
     final mode = controller?.mode;
-    if (mode == AppLocaleMode.english) return t.languageEnglish;
-    if (mode == AppLocaleMode.latvian) return t.languageLatvian;
-    if (mode == AppLocaleMode.spanish) return t.languageSpanish;
-    return t.languageEnglish;
+    if (mode == AppLocaleMode.system) return t.languageSystem;
+    return mode?.nativeName ?? t.languageEnglish;
   }
 
   void _openRateHint() {
@@ -614,7 +614,20 @@ extension _ProfilePageWidgets on _ProfilePageState {
     if (_isBusy) {
       return;
     }
-    _openDeactivateAccountPage();
+    unawaited(
+      Navigator.of(context).push<void>(
+        AppFormPageRoute(
+          builder: (_) => AccountDeletionPage(
+            email: _user?.email ?? '',
+            onRequest: (password, reasons) =>
+                widget.controller.requestAccountDeletionLink(
+                  password: password,
+                  reasonCodes: reasons,
+                ),
+          ),
+        ),
+      ),
+    );
   }
 
   bool get _isBusy => _isSubmitting || _isLoading;

@@ -1,0 +1,1863 @@
+{
+  "@@locale": "nl",
+  "homeFirstTrip": "Je eerste reis",
+  "homeYourShareAllTrips": "Jouw aandeel in alle reizen",
+  "homeAllTime": "Altijd",
+  "homeSolo": "Solo",
+  "homePeople": "{count, plural, one{{count} persoon} other{{count} personen}}",
+  "homeTripActions": "Reisacties: {name}",
+  "homeNoActiveTrips": "Geen actieve reizen",
+  "homeNoArchivedTrips": "Geen gearchiveerde reizen",
+  "homeLoadingTrips": "Je reizen laden",
+  "homeLoadErrorTitle": "Je reizen konden niet worden geladen",
+  "homeLoadErrorBody": "Probeer het over een momentje nog eens.",
+  "homeOfflineTitle": "Je bent offline",
+  "homeOfflineNoData": "Je reizen zijn nog niet beschikbaar op dit apparaat.",
+  "homeOfflineCached": "Offline. Opgeslagen reizen weergeven.",
+  "homeRefreshError": "Kan niet vernieuwen. Toont eerder geladen reizen.",
+  "@homePeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@homeTripActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentShareDetailsConsent": "Mijn opgeslagen betaalgegevens delen met {arg1}",
+  "paymentShareDetailsScope": "Alleen zolang dit verzoek in afwachting is van betaling. Het annuleren van het verzoek beëindigt de toegang.",
+  "paymentDetailsUnavailable": "Betalingsgegevens zijn niet beschikbaar. Maak verbinding met het internet en controleer of het verzoek nog openstaat.",
+  "paymentDetailsRetry": "Probeer het opnieuw",
+  "tripModeSolo": "Alleen ik",
+  "tripModeGroup": "Met anderen",
+  "premiumFree": "Gratis",
+  "premiumStatusUnavailable": "Status van het plan niet beschikbaar",
+  "premiumGrantedUntil": "Premium verleend tot {date}",
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumBillingNotActive": "Geen actief abonnement",
+  "premiumRefreshStatus": "De status van het plan vernieuwen",
+  "@addedMembersCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownConfirmedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSentCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSuggestedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@createdByLine": {
+    "placeholders": {
+      "creator": {},
+      "date": {}
+    }
+  },
+  "@currentEmailLabel": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "@directlyExplainedByExpenses": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@exactAmountWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@exactSplitMustMatchTotal": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@expenseIdDate": {
+    "placeholders": {
+      "date": {},
+      "id": {}
+    }
+  },
+  "@expenseImpactLine": {
+    "placeholders": {
+      "date": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@expenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@expensesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@forParticipants": {
+    "placeholders": {
+      "participants": {}
+    }
+  },
+  "@fromDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@fromToLine": {
+    "placeholders": {
+      "from": {},
+      "to": {}
+    }
+  },
+  "@helloUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@memberToPaySummary": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {},
+      "waiting": {}
+    }
+  },
+  "@moreCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@noExpensesByUserYet": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@noteMustBeMaxChars": {
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "@offlineQueuePendingChanges": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@paidOwesLine": {
+    "placeholders": {
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@payerName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@percentWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@pickedCycleCompleted": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@pickedUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@queueAddExpenseAmount": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@queueDeleteExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queueUpdateExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queuedChangesTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@queuedCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@randomCycleDrawLeft": {
+    "placeholders": {
+      "cycleNo": {},
+      "drawNo": {},
+      "remaining": {}
+    }
+  },
+  "@selectedFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementConfirmedProgress": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {}
+    }
+  },
+  "@settlementCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@settlementImpactWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@sharesWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitLabelValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitModeEqual": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeExact": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModePercent": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeShares": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@statusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@suggestedTransferRows": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@toDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripCreated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripStatusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@tripWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@unreadUpdates": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@userIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@userPaidOwesNetLine": {
+    "placeholders": {
+      "net": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@userWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@whoOwesWhatWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@youShouldPay": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@youShouldReceive": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountSectionTitle": "Account",
+  "activeStatus": "Actief",
+  "activeTripPlural": "actieve reizen",
+  "activeTripSingle": "actieve reis",
+  "activeTrips": "Actieve reizen",
+  "activitiesComingSoon": "Het gedeelte ‘Activiteiten’ volgt binnenkort.",
+  "addAction": "Toevoegen",
+  "addExpenseTitle": "Uitgave toevoegen",
+  "addExpensesAction": "Uitgaven toevoegen",
+  "addMembersAction": "Leden toevoegen",
+  "addTripMembersTitle": "Nodig reisdeelnemers uit",
+  "addedMembersCount": "{count, plural, one{{count} uitnodiging verstuurd} other{{count} uitnodigingen verstuurd}}.",
+  "tripInvitationDeclined": "Uitnodiging voor de reis afgewezen.",
+  "tripInviteAction": "Uitnodigen",
+  "tripInvitationsPending": "In afwachting van een reactie",
+  "tripInvitationsRetry": "Uitnodigingen zijn niet beschikbaar. Probeer het opnieuw",
+  "tripInvitationRevoke": "Uitnodiging annuleren",
+  "tripInvitationRevokeFailed": "Uitnodiging kon niet worden geannuleerd. Probeer het opnieuw.",
+  "tripInvitationBody": "Je bent uitgenodigd voor een reis. Open de uitnodiging om te reageren.",
+  "allCaughtUp": "Alles bijgewerkt",
+  "allFilter": "Alle",
+  "allMembersLabel": "Alle leden",
+  "allPaymentsConfirmed": "Alle betalingen worden bevestigd.",
+  "allTrips": "Alle reizen",
+  "amountHint": "12.50",
+  "amountLabel": "Bedrag",
+  "amountMustBeGreaterThanZero": "Het bedrag moet groter zijn dan 0.",
+  "appearance": "Uiterlijk",
+  "archivedStatus": "Gearchiveerd",
+  "authSubtitleLogin": "Deel reiskosten met vrienden",
+  "authSubtitleRegister": "Maak een account aan en begin met het splitsen van reizen",
+  "breakdownConfirmedCount": "bevestigd: {count}",
+  "breakdownPendingCount": "in behandeling: {count}",
+  "breakdownSentCount": "verzonden: {count}",
+  "breakdownSuggestedCount": "voorgesteld: {count}",
+  "cancelAction": "Annuleren",
+  "changeEmailWithPasswordHelper": "Voer je wachtwoord in om je e-mailadres te wijzigen.",
+  "chooseReceiptFile": "Kies een ontvangstbewijsbestand",
+  "completeAccountSetupDescription": "Stel je e-mailadres en wachtwoord in om je account aan te maken.",
+  "completeAccountSetupTitle": "Voltooi de accountinstellingen",
+  "confirmReceivedAction": "Ontvangst bevestigen",
+  "confirmedAllSettlementsArchived": "Alle afrekeningen bevestigd. Reis gearchiveerd.",
+  "confirmedAsReceived": "Ontvangst bevestigd.",
+  "confirmedLabel": "Bevestigd",
+  "couldNotOpenReceiptLink": "De link naar de ontvangstbevestiging kon niet worden geopend.",
+  "createAction": "Aanmaken",
+  "createFirstTripHint": "Maak je eerste reis aan om aan de slag te gaan.",
+  "createNewTripTitle": "Maak een nieuwe reis aan",
+  "createTripAction": "Reis aanmaken",
+  "createTripFirst": "Maak eerst een reis aan.",
+  "createdByLine": "{date}  -  Aangemaakt door {creator}",
+  "creatorMustFinishTripFirst": "De reisorganisator moet de reis afronden om de afrekening te kunnen bevestigen.",
+  "currentEmailLabel": "Huidige e-mail: {email}",
+  "currentReceiptAttached": "Het huidige ontvangstbewijs is bijgevoegd.",
+  "dateFormatHint": "YYYY-MM-DD",
+  "dateLabel": "Datum",
+  "dateMustMatchFormat": "De datum moet in de notatie YYYY-MM-DD worden opgegeven.",
+  "dateUnknown": "Datum onbekend",
+  "deleteAction": "Verwijderen",
+  "deleteExpenseConfirmQuestion": "Deze uitgave verwijderen?",
+  "deleteExpenseTitle": "Uitgave verwijderen",
+  "editExpenseConfirmTitle": "Wijzigingen in uitgaven opslaan?",
+  "editExpenseConfirmText": "Hierdoor worden de saldi voor iedereen in de reis bijgewerkt.",
+  "directlyExplainedByExpenses": "Direct uitgelegd aan de hand van uitgaven: {amount}",
+  "doneStatus": "Klaar",
+  "editAction": "Bewerken",
+  "editExpenseTitle": "Uitgaven bewerken",
+  "emailAddressLabel": "E-mailadres",
+  "emailHint": "you@example.com",
+  "emailLabel": "E-mail",
+  "emailRequired": "Een e-mailadres is verplicht.",
+  "enterValidExactAmounts": "Voer voor alle deelnemers geldige, exacte bedragen in.",
+  "enterValidPercentages": "Voer geldige percentages in voor alle deelnemers.",
+  "equalSplitLabel": "Gelijk verdelen",
+  "exactAmountWithValue": "Nauwkeurig: {value}",
+  "exactAmountsLabel": "Exacte bedragen",
+  "exactSplitMustMatchTotal": "De exacte verdeling moet in totaal {amount} opleveren.",
+  "expenseAdded": "Kosten toegevoegd.",
+  "expenseBreakdownSubtitle": "Hoe dit lid door elke uitgave wordt beïnvloed.",
+  "expenseBreakdownTitle": "Uitsplitsing van uitgaven",
+  "expenseDeleted": "Uitgave verwijderd.",
+  "expenseIdDate": "Uitgave #{id}  -  {date}",
+  "expenseImpactLine": "{date}  -  Betaald {paid}  -  Schuldig {owes}",
+  "expenseReactionsTitle": "Reacties",
+  "expenseCommentsTitle": "Opmerkingen",
+  "expenseNoComments": "Nog geen reacties.",
+  "expenseAddCommentHint": "Voeg een opmerking toe...",
+  "expenseCommentSend": "Verzenden",
+  "expenseDeleteCommentTitle": "Reactie verwijderen?",
+  "expenseUpdated": "Uitgaven bijgewerkt.",
+  "expenseWithId": "Uitgave #{id}",
+  "expensesCount": "{count, plural, one{{count} uitgave} other{{count} uitgaven}}",
+  "expensesLabel": "Onkosten",
+  "failedToCreateTrip": "Het aanmaken van de reis is mislukt.",
+  "failedToLoadUsersDirectory": "Het laden van de gebruikerslijst is mislukt.",
+  "filterSettlementByMemberSubtitle": "Filter afrekeningen op deelnemer",
+  "finishSoloTripConfirmationText": "Deze reis afronden en naar je archief verplaatsen? Je uitgaven blijven beschikbaar om in te zien.",
+  "soloTripArchived": "Reis voltooid en gearchiveerd.",
+  "finishTripSyncPending": "Synchroniseer je nog niet opgeslagen wijzigingen voordat je deze reis afrondt.",
+  "finishTripAction": "Reis beëindigen",
+  "finishTripConfirmationText": "Deze reis afronden en de afrekening starten?",
+  "finishTripStartSettlementsAction": "Afrekeningen afronden en starten",
+  "finishTripTitle": "Reis beëindigen",
+  "forParticipants": "Voor: {participants}",
+  "forgotPassword": "Wachtwoord vergeten?",
+  "profilePasswordByEmail": "Wachtwoord instellen via e-mail",
+  "sendDeactivationEmail": "Stuur een deactiveringslink",
+  "deactivationEmailSent": "Controleer je e-mail om de deactivering te bevestigen. Je account is nog steeds actief.",
+  "deactivationConfirmationMethods": "Bevestig de deactivering met je wachtwoord of via een link in een e-mail. Je reizen en uitgaven blijven behouden.",
+  "passwordEmailBackToProfile": "Terug naar profiel",
+  "forgotPasswordSubtitle": "Voer je e-mailadres in en we sturen je een link om je wachtwoord opnieuw in te stellen.",
+  "forgotPasswordSuccessMessage": "Als er een account met dit e-mailadres bestaat, hebben we een link voor het opnieuw instellen van het wachtwoord verzonden.",
+  "forgotPasswordTitle": "Wachtwoord opnieuw instellen",
+  "friendsProgressSubtitle": "Elk lid en de status van zijn of haar bevestiging.",
+  "friendsProgressTitle": "Vrienden vorderen",
+  "friendsSectionComingSoon": "De sectie ‘Vrienden’ komt binnenkort beschikbaar.",
+  "fromDirection": "Van {name}",
+  "fromToLine": "{from} tot {to}",
+  "generateTurnAction": "Volgende persoon loten",
+  "hasAccountQuestion": "Heb je al een account?",
+  "helloUser": "Hallo, {name}!",
+  "iSentAction": "Ik heb verzonden",
+  "invalidEmailFormat": "Ongeldig e-mailformaat.",
+  "languageAction": "Taal",
+  "languageEnglish": "Engels",
+  "languageLatvian": "Lets",
+  "languageSpanish": "Spaans",
+  "languageSystem": "Systeem",
+  "languageSystemSubtitle": "Apparaattaal gebruiken",
+  "leaveEmptyKeepPasswordHelper": "Laat leeg om het huidige wachtwoord te behouden.",
+  "logInButton": "Inloggen",
+  "logOutButton": "Uitloggen",
+  "logoutFromDeviceQuestion": "Uitloggen op dit apparaat?",
+  "logoutRevocationUnconfirmed": "Uitgelogd op dit apparaat. Het intrekken van de serversessie kon niet worden bevestigd.",
+  "markedAsSent": "Gemarkeerd als verzonden.",
+  "markSettlementSentConfirmTitle": "Overboeking markeren als verzonden?",
+  "markSettlementSentConfirmText": "Gebruik dit pas nadat je de betaling daadwerkelijk hebt verzonden. De ontvanger wordt gevraagd om te bevestigen.",
+  "settlementCancelSentAction": "Markeer als niet verzonden",
+  "settlementCancelSentConfirmTitle": "De status ‘verzonden’ annuleren?",
+  "settlementCancelSentConfirmText": "Hierdoor wordt de overboeking weer op ‘in behandeling’ gezet en ontvangt de ontvanger hiervan een melding.",
+  "settlementSentCancelled": "De overboeking is teruggezet naar ‘in behandeling’.",
+  "settlementNotReceivedAction": "Ik heb dit niet ontvangen",
+  "settlementNotReceivedConfirmTitle": "Niet-ontvangen betaling melden?",
+  "settlementNotReceivedConfirmText": "Hierdoor wordt de overboeking weer naar ‘in behandeling’ gezet en wordt de betaler hiervan op de hoogte gesteld.",
+  "settlementMarkedNotReceived": "Gemarkeerd als niet ontvangen.",
+  "confirmSettlementReceivedConfirmTitle": "Bevestiging ontvangen?",
+  "confirmSettlementReceivedConfirmText": "Bevestig pas nadat het geld op je rekening zichtbaar is. Deze handeling kan de afwikkeling voltooien.",
+  "memberSummariesSubtitle": "Huidige saldi voor beide partijen.",
+  "memberSummariesTitle": "Overzichten van leden",
+  "memberToPaySummary": "Om te betalen {total}  -  bevestigd {confirmed}  -  in afwachting {waiting}",
+  "membersImpactSubtitle": "Geschatte financiële impact per deelnemer.",
+  "membersImpactTitle": "Invloed van leden",
+  "membersIncludedInExpense": "Inbegrepen leden",
+  "membersLabel": "Leden",
+  "moreCount": "+ {count} meer",
+  "myFilter": "Mijn",
+  "myImpactTitle": "Mijn impact",
+  "firstNameHint": "Je voornaam",
+  "firstNameLabel": "Voornaam",
+  "firstNameLengthValidation": "De voornaam moet 2-64 tekens lang zijn.",
+  "fullNameHelper": "Gebruik voor- en achternaam in één veld.",
+  "fullNameHint": "bijv. Anna Ozolina",
+  "fullNameLabel": "Volledige naam",
+  "fullNameValidation": "Voer voor- en achternaam in (minimaal 2 tekens per naam).",
+  "lastNameHint": "Je achternaam",
+  "lastNameLabel": "Achternaam",
+  "lastNameLengthValidation": "De achternaam moet uit 2 tot 64 tekens bestaan.",
+  "nameHint": "Je naam",
+  "nameLabel": "Naam",
+  "nameLengthValidation": "De naam moet uit minimaal 2 tekens bestaan.",
+  "navActivities": "Statistieken",
+  "navAddTrip": "Reis toevoegen",
+  "navBalances": "Saldi",
+  "navExpenses": "Uitgaven",
+  "navFriends": "Vrienden",
+  "navHome": "Home",
+  "navProfile": "Profiel",
+  "navRandom": "Willekeurig",
+  "netLabel": "Nettosaldo",
+  "newPasswordLabel": "Nieuw wachtwoord",
+  "nicknameHint": "Hoe vrienden je zullen zien",
+  "nicknameLabel": "Bijnaam",
+  "nicknameLengthValidation": "Een bijnaam moet uit minimaal 2 tekens bestaan.",
+  "noAccountQuestion": "Nog geen account?",
+  "noBalancesYet": "Er zijn nog geen saldi.",
+  "noChangesToSave": "Geen wijzigingen om op te slaan.",
+  "noDirectExpenseLink": "Er is geen directe link voor een enkele uitgave gevonden. Deze afrekening wordt berekend op basis van het volledige reissaldo.",
+  "noExpenseImpactForMember": "Geen financiële gevolgen voor dit lid.",
+  "noExpensesByUserYet": "{name} heeft nog geen uitgaven.",
+  "noExpensesYet": "Nog geen uitgaven.",
+  "noExtraUsersToAdd": "Er hoeven geen extra gebruikers te worden toegevoegd.",
+  "noInternetDeleteQueued": "Geen internet. Uit wachtrij verwijderd.",
+  "noInternetExpenseQueued": "Geen internet. Uitgave in de wachtrij geplaatst.",
+  "noInternetUpdateQueued": "Geen internet. Update in de wachtrij.",
+  "noMatchingRows": "Geen overeenkomende rijen.",
+  "noMembersFound": "Er zijn geen leden gevonden.",
+  "noNewMembersAdded": "Deze personen zijn al lid of hebben uitstaande uitnodigingen.",
+  "noNotePlaceholder": "Geen opmerking",
+  "notificationsToday": "Vandaag",
+  "notificationsEmptyBody": "Updates over reizen, uitgaven en vrienden verschijnen hier.",
+  "notificationsCached": "Offline — weergeven van opgeslagen meldingen.",
+  "notificationsRefreshFailed": "Kan niet vernieuwen. Eerder geladen meldingen worden weergegeven.",
+  "notificationsJustNow": "Zojuist",
+  "notificationsMinutesAgo": "{count} min geleden",
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsHoursAgo": "{count} uur geleden",
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsUnread": "Ongelezen",
+  "noNotificationsYet": "Nog geen meldingen.",
+  "noParticipantData": "Geen deelnemersgegevens.",
+  "noParticipantsSelected": "Er zijn geen deelnemers geselecteerd.",
+  "noPaymentRowsInTrip": "Geen betalingsregels in deze reis.",
+  "noPaymentsNeeded": "Er zijn geen betalingen nodig.",
+  "noPicksYet": "Nog geen selecties.",
+  "noSettlementActivityForMember": "Geen afrekeningsactiviteit voor dit lid.",
+  "noSettlementRowsYet": "Nog geen afrekeningsregels.",
+  "noSettlements": "Geen verrekeningen",
+  "noTransferNeededForFilter": "Geen overboeking nodig voor het geselecteerde filter.",
+  "noTransferRowsToShow": "Er zijn geen overboekingsregels om weer te geven.",
+  "noTripDataLoaded": "Er zijn geen reisgegevens geladen.",
+  "noTripsYet": "Nog geen reizen.",
+  "noUsersFoundYet": "Er zijn nog geen gebruikers gevonden.",
+  "notSetValue": "Niet ingesteld",
+  "notYetConfirmedTitle": "Nog niet bevestigd",
+  "noteHint": "Diner, taxi, kaartjes...",
+  "noteLabel": "Opmerking",
+  "noteMustBeMaxChars": "De notitie mag maximaal {max} tekens bevatten.",
+  "notificationFallbackTitle": "Kennisgeving",
+  "notificationsTitle": "Meldingen",
+  "notificationFriendInviteTitle": "Vriendschapsverzoek",
+  "notificationFriendInviteBody": "{name} heeft je een uitnodiging gestuurd om vrienden te worden.",
+  "notificationFriendInviteBodyGeneric": "Je hebt een uitnodiging van een vriend ontvangen.",
+  "notificationFriendInviteAcceptedTitle": "Uitnodiging geaccepteerd",
+  "notificationFriendInviteAcceptedBody": "{name} heeft je vriendschapsverzoek geaccepteerd.",
+  "notificationFriendInviteAcceptedBodyGeneric": "Je uitnodiging is geaccepteerd.",
+  "notificationFriendInviteRejectedTitle": "Uitnodiging afgewezen",
+  "notificationFriendInviteRejectedBody": "{name} heeft je vriendschapsverzoek afgewezen.",
+  "notificationFriendInviteRejectedBodyGeneric": "Je uitnodiging aan een vriend is afgewezen.",
+  "notificationTripAddedTitle": "Toegevoegd aan reis",
+  "notificationTripAddedBody": "{name} heeft je toegevoegd aan de reis \"{trip}\".",
+  "notificationTripAddedBodyNoActor": "Je bent toegevoegd aan de reis \"{trip}\".",
+  "notificationTripAddedBodyGeneric": "Je bent toegevoegd aan een reis.",
+  "notificationExpenseAddedTitle": "Nieuwe uitgave toegevoegd",
+  "notificationExpenseAddedBodyWithTrip": "{name} heeft een uitgave van {amount} toegevoegd aan \"{trip}\".",
+  "notificationExpenseAddedBodyWithNote": "{name} heeft een uitgave van {amount} toegevoegd: {note}",
+  "notificationExpenseAddedBodyGeneric": "Er is een nieuwe uitgave toegevoegd.",
+  "notificationTripFinishedTitle": "Reis voltooid",
+  "notificationTripFinishedBodySettlementsReady": "{name} heeft \"{trip}\" voltooid. De afrekeningen zijn klaar.",
+  "notificationTripFinishedBodyArchived": "{name} heeft \"{trip}\" voltooid. De reis is gearchiveerd.",
+  "notificationTripFinishedBodyNoActor": "\"{trip}\" is voltooid.",
+  "notificationTripFinishedBodyGeneric": "De reisstatus is bijgewerkt.",
+  "notificationMemberReadyToSettleTitle": "Lid gemarkeerd als gereed",
+  "notificationMemberReadyToSettleBody": "{name} is klaar om deel te nemen aan \"{trip}\".",
+  "notificationMemberReadyToSettleBodyNoActor": "Een deelnemer is klaar om deel te nemen aan \"{trip}\".",
+  "notificationMemberReadyToSettleBodyGeneric": "Een deelnemer is klaar om af te rekenen.",
+  "notificationTripReadyToSettleTitle": "Alle deelnemers zijn klaar",
+  "notificationTripReadyToSettleBody": "Alle leden zijn gemarkeerd als ‘klaar’ in ‘{trip}’. Je kunt beginnen met de afrekeningen.",
+  "notificationTripReadyToSettleBodyGeneric": "Alle deelnemers zijn klaar. U kunt beginnen met de afrekeningen.",
+  "notificationSettlementReminderTitle": "Herinnering aan afrekening",
+  "notificationSettlementReminderBodyMarkSent": "{actor} herinnerde {target} eraan om {amount} als verzonden te markeren.",
+  "notificationSettlementReminderBodyConfirm": "{actor} herinnerde {target} eraan om de ontvangst van {amount} te bevestigen.",
+  "notificationSettlementReminderBodyGeneric": "Je hebt een herinnering voor de afrekening ontvangen.",
+  "notificationPaymentReminderTitle": "Betalingsherinnering",
+  "notificationPaymentReminderBody": "Herinnering: markeer {amount} als verzonden naar {target} in \"{trip}\".",
+  "notificationPaymentReminderBodyGeneric": "Herinnering: markeer de betaling alstublieft als verzonden.",
+  "notificationConfirmationReminderTitle": "Herinnering aan bevestiging",
+  "notificationConfirmationReminderBody": "Herinnering: bevestig alstublieft de ontvangst van {amount} van {payer} in \"{trip}\".",
+  "notificationConfirmationReminderBodyGeneric": "Herinnering: bevestig alstublieft de ontvangst van de betaling.",
+  "notificationSettlementSentTitle": "Overschrijving gemarkeerd als verzonden",
+  "notificationSettlementSentBody": "{name} heeft {amount} gemarkeerd als naar jou verzonden.",
+  "notificationSettlementSentBodyGeneric": "Een overschrijving is gemarkeerd als verzonden.",
+  "notificationSettlementConfirmedTitle": "Overschrijving bevestigd",
+  "notificationSettlementConfirmedBody": "{name} heeft de ontvangst van {amount} van jou bevestigd.",
+  "notificationSettlementConfirmedBodyGeneric": "Een overboeking is bevestigd.",
+  "offlineQueuePendingChanges": "Offlinewachtrij: {count, plural, one{{count} wijziging in behandeling} other{{count} wijzigingen in behandeling}}",
+  "syncAllSynced": "Alles gesynchroniseerd",
+  "syncChangesWaiting": "{count} wachten op synchronisatie",
+  "syncFailedTapToRetry": "Synchronisatie mislukt, tik om het opnieuw te proberen",
+  "offlineQueueStatus": "Offline wachtrij",
+  "offlineStatus": "Offline",
+  "onlineStatus": "Online",
+  "onlyCreatorCanFinishTrip": "Alleen de reisorganisator kan de reis beëindigen.",
+  "openLabel": "Open",
+  "openReceiptAction": "Bon openen",
+  "openSettlements": "Verrekeningen openen",
+  "overviewTitle": "Overzicht",
+  "owesLabel": "Verschuldigd",
+  "paidByLabel": "Betaald door",
+  "paidLabel": "Betaald",
+  "paidOwesLine": "Betaald {paid} -  Schuldig {owes}",
+  "participantsEmptyMeansAll": "Deelnemers (leeg = alle leden)",
+  "participantsTitle": "Deelnemers",
+  "passwordLabel": "Wachtwoord",
+  "passwordComplexityHelper": "Gebruik ten minste 1 hoofdletter, 1 cijfer en 1 symbool.",
+  "passwordComplexityValidation": "Het wachtwoord moet 1 hoofdletter, 1 cijfer en 1 symbool bevatten.",
+  "passwordMinLength": "Het wachtwoord moet uit minimaal 8 tekens bestaan.",
+  "passwordMinLengthShort": "Het wachtwoord moet uit minimaal 6 tekens bestaan.",
+  "passwordResetComingSoon": "Wachtwoord opnieuw instellen volgt binnenkort.",
+  "passwordsDoNotMatch": "De wachtwoorden komen niet overeen.",
+  "payerName": "{name} (betaler)",
+  "pendingLabel": "In afwachting",
+  "pendingPaymentsSubtitle": "Betalingen wachten nog op volledige bevestiging.",
+  "percentLabel": "Procent",
+  "percentSplitMustBe100": "Het percentage van de verdeling moet in totaal precies 100% bedragen.",
+  "percentWithValue": "{value}",
+  "percentagesLabel": "Percentages",
+  "pickAtLeastOneParticipant": "Kies ten minste één deelnemer.",
+  "pickMembersGenerateTurn": "Kies deelnemers en loot de volgende persoon.",
+  "pickedCycleCompleted": "{name}, geselecteerd. Cyclus voltooid.",
+  "pickedUser": "{name}, gekozen.",
+  "profileRefreshCachedData": "Profiel kon niet worden vernieuwd. Er worden gegevens uit de cache weergegeven.",
+  "profileTitle": "Profiel",
+  "profileUpdated": "Profiel bijgewerkt.",
+  "uploadAvatarAction": "Avatar uploaden",
+  "takePhotoAction": "Neem een foto.",
+  "chooseFromLibraryAction": "Kies uit de bibliotheek",
+  "removeAvatarAction": "Avatar verwijderen",
+  "avatarUpdatedMessage": "Avatar bijgewerkt.",
+  "avatarRemovedMessage": "Avatar verwijderd.",
+  "avatarFileTooLarge": "Het avatarbestand is te groot (max. 5 MB).",
+  "avatarPickFailed": "De afbeelding van de avatar kon niet worden geladen.",
+  "queueAddExpense": "Uitgave toevoegen",
+  "queueAddExpenseAmount": "In de wachtrij: uitgave toevoegen {amount}",
+  "queueDeleteExpense": "Uitgave verwijderen",
+  "queueDeleteExpenseWithId": "In de wachtrij: uitgave #{id} verwijderen",
+  "queuePendingStatus": "In de wachtrij",
+  "queueUpdateExpense": "Uitgaven bijwerken",
+  "queueUpdateExpenseWithId": "In de wachtrij: uitgave #{id} bijwerken",
+  "queuedChange": "Wijzigingen in de wachtrij",
+  "queuedChangesTitle": "Wijzigingen in de wachtrij ({count})",
+  "queuedCountLabel": "In de wachtrij ({count})",
+  "randomCycleDrawLeft": "Cyclus {cycleNo}, tekening {drawNo} - {remaining} over",
+  "receiptFallbackName": "bon",
+  "receiptLinkInvalid": "De link naar de ontvangstbevestiging is ongeldig.",
+  "receiptOptionalLabel": "Bon (optioneel)",
+  "recentPicksTitle": "Recente lotingen",
+  "reloadProfile": "Profiel opnieuw laden",
+  "rememberMe": "Onthoud mij",
+  "removeCurrentReceipt": "Huidige ontvangstbewijs verwijderen",
+  "repeatNewPasswordLabel": "Herhaal het nieuwe wachtwoord",
+  "repeatPasswordLabel": "Wachtwoord herhalen",
+  "requestFailedTryAgain": "Het verzoek is mislukt. Probeer het opnieuw.",
+  "retryAction": "Opnieuw proberen",
+  "rowsLabel": "Rijen",
+  "backToLoginAction": "Terug naar inloggen",
+  "saveAction": "Opslaan",
+  "saveCredentialsButton": "Inloggegevens opslaan",
+  "saveProfileButton": "Profiel opslaan",
+  "sendResetLinkButton": "Resetlink verzenden",
+  "searchUsersHint": "Zoek mensen op naam of e-mailadres",
+  "selectedPeopleLabel": "Geselecteerde personen",
+  "noSearchMatches": "Er zijn geen overeenkomende gebruikers gevonden.",
+  "savingButton": "Bezig met opslaan...",
+  "selectAtLeastTwoMembers": "Selecteer ten minste twee deelnemers.",
+  "selectMembersHint": "Leden selecteren",
+  "selectedFileLabel": "Geselecteerd: {name}",
+  "selectedLabel": "Geselecteerd",
+  "selectedUserFallback": "Geselecteerde gebruiker",
+  "settings": "Instellingen",
+  "settleUpAction": "Afrekenen",
+  "settledLabel": "Vereffend",
+  "settledStatus": "Vereffend",
+  "settlementActivitySubtitle": "Overboekingen die aan dit lid zijn gekoppeld.",
+  "settlementActivityTitle": "Afwikkelingsactiviteit",
+  "settlementCompletedTitle": "Afwikkeling voltooid",
+  "settlementConfirmedProgress": "{confirmed}{total} bevestigd",
+  "settlementCountLabel": "Verrekeningen: {count}",
+  "settlementImpactTitle": "Gevolgen voor de afwikkeling",
+  "settlementImpactWithFilter": "Gevolgen voor de afwikkeling: {name}",
+  "settlementInProgress": "Afwikkeling aan de gang",
+  "settlementInProgressTitle": "Afwikkeling aan de gang",
+  "settlementLabel": "Verrekening",
+  "settlementOverviewArchivedSubtitle": "Reis gearchiveerd. Alle afrekeningen voltooid.",
+  "settlementOverviewInProgressSubtitle": "Houd afrekeningsbevestigingen bij.",
+  "settlementOverviewPreviewSubtitle": "Bekijk een voorbeeld van de overboekingen voor wanneer de reis is afgelopen.",
+  "settlementPreview": "Voorbeeld van de afrekening",
+  "settlementPreviewTitle": "Voorbeeld van de afrekening",
+  "settlementProgressTripArchived": "Reis gearchiveerd",
+  "settlementWithId": "Afrekening #{id}",
+  "settlements": "Verrekeningen",
+  "settlementsAlreadyCompletedSubtitle": "Afrekeningen zijn reeds voltooid.",
+  "settlementsDone": "Afwikkelingen voltooid",
+  "settlingStatus": "Afrekenen",
+  "shareUnit": "aandeel",
+  "sharesLabel": "Aandelen",
+  "sharesMustBePositiveIntegers": "Het aantal aandelen moet een positief geheel getal zijn.",
+  "sharesWithValue": "Aandelen: {value}",
+  "showActiveTrips": "Actieve reizen weergeven",
+  "signUpButton": "Registreren",
+  "splitBreakdownSubtitle": "Hoe de kosten worden verdeeld",
+  "splitBreakdownTitle": "Uitsplitsing",
+  "splitHintEqual": "Verdeel het bedrag gelijkmatig over de geselecteerde deelnemers.",
+  "splitHintExact": "Voer voor elke deelnemer het exacte bedrag in. Het totaal moet overeenkomen met het eindbedrag.",
+  "splitHintPercent": "Voer voor elke deelnemer een percentage in. Het totaal moet 100% zijn.",
+  "splitHintShares": "Voer het aantal deelgenoten in (1, 2, 3...). De kosten worden evenredig verdeeld.",
+  "splitLabel": "Splitsen",
+  "splitLabelValue": "Split: {value}",
+  "splitModeEqual": "Gelijke verdeling ({target})",
+  "splitModeExact": "Exacte bedragen ({target})",
+  "splitModeLabel": "Split-modus",
+  "splitModePercent": "Percentages ({target})",
+  "splitModeShares": "Aandelen ({target})",
+  "statusConfirmed": "Bevestigd",
+  "statusPending": "In afwachting",
+  "statusSent": "Verzonden",
+  "statusSuggested": "Voorgesteld",
+  "statusWithValue": "Status: {status}",
+  "suggestedTransferDirections": "Voorgestelde betaalrichtingen",
+  "suggestedTransferFromExpense": "Voorgestelde overboeking vanuit onkosten",
+  "suggestedTransferRows": "{count, plural, one{{count} voorgestelde overschrijving} other{{count} voorgestelde overschrijvingen}}",
+  "suggestedTransfersSubtitle": "Verwachte betaler -> ontvanger-rijen.",
+  "suggestedTransfersTitle": "Voorgestelde overboekingen",
+  "summarySettledUp": "Vereffend",
+  "summaryYouAreOwed": "Anderen zijn je geld schuldig",
+  "summaryYouOwe": "Je bent verschuldigd",
+  "syncAction": "Synchroniseren",
+  "syncNowAction": "Nu synchroniseren",
+  "syncingStatus": "Synchroniseren",
+  "tapToViewDetails": "Tik om details te bekijken",
+  "themeModeDark": "Donker",
+  "themeModeDarkSubtitle": "Zacht donker (niet puur zwart)",
+  "themeModeLight": "Licht",
+  "themeModeSystem": "Systeem",
+  "themeModeSystemSubtitle": "Gebruik de uiterlijke vorm van het apparaat",
+  "toDirection": "Aan {name}",
+  "totalLabel": "Totaal",
+  "travelerFallbackName": "Reiziger",
+  "tripAlreadyClosed": "Reis is al afgesloten.",
+  "tripArchivedReadOnly": "De reis wordt gearchiveerd. Alleen-lezenmodus.",
+  "tripClosedExpenseEditingDisabled": "De reis is afgesloten. Het bewerken van onkosten is uitgeschakeld.",
+  "tripClosedExpensesReadOnly": "De reis is afgesloten. Uitgaven zijn alleen-lezen.",
+  "tripClosedRandomDisabled": "De reis is afgesloten. De willekeurige loting is uitgeschakeld.",
+  "tripCreated": "Reis „{name}“ aangemaakt.",
+  "tripFinished": "Reis voltooid.",
+  "tripFinishedCompleteSettlements": "De reis is voltooid. Rond de afrekeningen af.",
+  "tripFinishedSettlementStarted": "Reis voltooid. Afrekening gestart.",
+  "tripFullySettledArchived": "Reis volledig afgewikkeld en gearchiveerd.",
+  "tripNameHint": "Skireis naar Oostenrijk",
+  "tripNameLabel": "Reisnaam",
+  "tripNameLengthValidation": "De naam van de reis moet uit minimaal 2 tekens bestaan.",
+  "tripSnapshotTitle": "Reisoverzicht",
+  "tripTitleShort": "Reis",
+  "tripStatusWithValue": "Reisstatus: {status}",
+  "tripWithId": "Reis #{id}",
+  "unexpectedErrorLoadingProfile": "Onverwachte fout bij het laden van het profiel",
+  "unexpectedErrorLoadingTripData": "Onverwachte fout bij het laden van reisgegevens",
+  "unexpectedErrorLoadingTrips": "Onverwachte fout bij het laden van reizen",
+  "unexpectedErrorSavingChanges": "Onverwachte fout bij het opslaan van wijzigingen",
+  "unexpectedErrorSavingCredentials": "Onverwachte fout bij het opslaan van inloggegevens",
+  "unexpectedErrorUpdatingProfile": "Onverwachte fout bij het bijwerken van het profiel",
+  "unknownError": "Onbekende fout",
+  "unknownLabel": "Onbekend",
+  "unreadLabel": "Ongelezen",
+  "unreadUpdates": "{count, plural, one{{count} ongelezen update} other{{count} ongelezen updates}}",
+  "missingTripRouteArgument": "Argument voor reisroute ontbreekt.",
+  "userIdLabel": "Gebruikers-ID: {id}",
+  "userPaidOwesNetLine": "Betaald {paid}  -  Verschuldigd {owes}  -  Netto {net}",
+  "userWithId": "Gebruiker {id}",
+  "valueLabel": "Waarde",
+  "viewAllTrips": "Bekijk alle reizen",
+  "viewByPersonTitle": "Weergave per persoon",
+  "whoOwesWhatSubtitle": "Wie heeft betaald en wie is nog iets verschuldigd.",
+  "whoOwesWhatTitle": "Wie is wat verschuldigd?",
+  "whoOwesWhatWithFilter": "Wie is wat verschuldigd: {name}",
+  "whyPaymentExistsSubtitle": "Uitgavenregels die bijdragen aan deze overboeking.",
+  "whyPaymentExistsTitle": "Waarom deze betaling bestaat",
+  "youLabel": "Je",
+  "youSettledForExpense": "Je hebt jouw deel van deze uitgave vereffend.",
+  "youShouldPay": "Je moet betalen. {amount}",
+  "youShouldReceive": "U moet {amount}",
+  "yourShare": "Jouw aandeel",
+  "yourTrips": "Je reizen",
+  "authIntroSplitSmarter": "Slimmer verdelen.",
+  "authIntroTravelFree": "Reis vrijuit.",
+  "authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo": "Houd gedeelde kosten in verschillende valuta bij en reken direct af – geen ongemakkelijke schuldbriefjes.",
+  "authIntroPlanTogether": "Plan samen.",
+  "authIntroPayClearly": "Betaal op een duidelijke manier.",
+  "authIntroCreateTripsSecondsAddFriendsKeepEveryExpense": "Maak in enkele seconden reizen aan, voeg vrienden toe en houd elke uitgave voor iedereen transparant.",
+  "authIntroSettleFast": "Regel het snel.",
+  "authIntroStayFriends": "Blijf vrienden.",
+  "authIntroFromSharedDinnersFullTripsSplytoKeepsBalances": "Van gezamenlijke etentjes tot complete reizen: Splyto zorgt voor een eerlijke en zorgeloze afrekening.",
+  "authIntroAppleSignFailedPleaseTryAgain": "Inloggen via Apple is mislukt. Probeer het opnieuw.",
+  "authIntroGoogleSignFailedPleaseTryAgain": "Inloggen via Google is mislukt. Probeer het opnieuw.",
+  "authIntroCreateAccount": "Maak je account aan.",
+  "authIntroChooseSign": "Kies hoe je je wilt aanmelden.",
+  "authIntroContinueGoogle": "Doorgaan met Google",
+  "authIntroContinueApple": "Ga verder met Apple",
+  "authIntroBack": "Terug",
+  "authIntroSplitSettled": "Verdeling afgerond",
+  "authIntroParis3Friends": "Parijs · 3 vrienden",
+  "authIntroGetStarted": "Aan de slag",
+  "authIntroAlreadyHaveAccount": "Heb je al een account? ",
+  "authIntroSignIn": "Inloggen",
+  "authIntroSignUpWithEmail": "Meld je aan met je e-mailadres",
+  "authIntroOr": "OF",
+  "authGoogleSignDidNotReturnIdToken": "Google Sign-In heeft geen ID-token geretourneerd.",
+  "authAppleSignAvailableIosDevices": "Inloggen via Apple is beschikbaar op iOS-apparaten.",
+  "authAppleSignNotAvailableDevice": "Inloggen via Apple is niet beschikbaar op dit apparaat.",
+  "authAppleSignDidNotReturnIdentityToken": "Apple Sign-in heeft geen identiteitstoken geretourneerd.",
+  "authAccountDeactivatedEnterEmailRequestReactivationLink": "Het account is gedeactiveerd. Voer je e-mailadres in om een link voor heractivering aan te vragen.",
+  "authAccountDeactivated": "Het account is gedeactiveerd",
+  "authSendReactivationLinkEmail": "Een reactiveringslink sturen naar {email}?",
+  "authCancel": "Annuleren",
+  "authSendLink": "Link verzenden",
+  "authReactivationLinkSentCheckEmail": "Reactiveringslink verzonden. Controleer je e-mail.",
+  "authCouldNotSendReactivationLinkPleaseTryAgain": "De reactiveringslink kon niet worden verzonden. Probeer het nogmaals.",
+  "authEmailNotVerifiedEnterEmailRequestVerificationLink": "Het e-mailadres is niet geverifieerd. Voer je e-mailadres in om een verificatielink aan te vragen.",
+  "authEmailNotVerified": "E-mailadres niet geverifieerd",
+  "authSendVerificationLinkEmail": "Verificatielink verzenden naar {email}?",
+  "authVerificationLinkSentCheckEmail": "Verificatielink verzonden. Controleer je e-mail.",
+  "authCouldNotSendVerificationLinkPleaseTryAgain": "De verificatielink kon niet worden verzonden. Probeer het opnieuw.",
+  "authVerificationEmailSentPleaseVerifyEmailBeforeLogging": "Er is een verificatie-e-mail verzonden. Verifieer je e-mailadres voordat je inlogt.",
+  "authVerifyEmail": "Verifieer je e-mailadres",
+  "authEmailLabel": "E-mail:",
+  "authClose": "Sluiten",
+  "authResendLink": "Link opnieuw verzenden",
+  "profileAppSettingsSectionTitle": "APP-INSTELLINGEN",
+  "profileAccountSettings": "Accountinstellingen",
+  "profileChangePhoto": "Profielfoto wijzigen",
+  "profileAppearance": "Uiterlijk",
+  "profileThemeDisplayMode": "Thema & weergavemodus",
+  "profileLanguage": "Taal",
+  "profileDisplayLanguage": "Weergavetaal",
+  "profileNotificationsSectionHeading": "MELDINGEN",
+  "profileAppBanners": "Banners in de app",
+  "profileShowNewNotificationBannersInsideApp": "Toon nieuwe meldingsbanners in de app",
+  "profilePushNotificationsTitle": "Pushmeldingen",
+  "profilePhoneNotificationsExpensesFriendsTripsSettlements": "Meldingen op de telefoon voor uitgaven, vrienden, reizen en afrekeningen",
+  "profileSupportSectionHeading": "ONDERSTEUNING",
+  "profileContactUs": "Neem contact met ons op",
+  "profileReportBugSuggestion": "Fout melden / Suggestie",
+  "profileRateSplyto": "Beoordeel Splyto",
+  "profileLeaveStoreRating": "Geef een beoordeling voor de winkel",
+  "profileSecuritySectionHeading": "BEVEILIGING",
+  "profileChangePassword": "Wachtwoord wijzigen",
+  "profileUpdateAccountPassword": "Wachtwoord van het account bijwerken",
+  "profileDangerZoneSectionHeading": "GEVAARZONE",
+  "profileDeactivateAccount": "Account deactiveren",
+  "profileManageAccountAccess": "Beheer de toegang tot het account",
+  "profileMadeWithLabel": "Gemaakt met",
+  "profileStoreRatingActionWillConnectedNextStep": "De beoordelingsfunctie wordt in de volgende stap gekoppeld.",
+  "profileFailedSaveNotificationSettings": "Het opslaan van de meldingsinstellingen is mislukt.",
+  "profilePushNotificationsSectionTitle": "PUSH-MELDINGEN",
+  "profileInAppBannersSectionTitle": "BANNERS IN DE APP",
+  "profileInAppTripMemberAddedTitle": "Deelnemer toegevoegd aan reis",
+  "profileInAppAutoSettlementReminderTitle": "Automatische herinnering voor afrekening",
+  "profileExpenseUpdates": "Uitgavenupdates",
+  "profileExpenseAddedBannersInsideApp": "Banners voor toegevoegde onkosten binnen de app",
+  "profileExpenseAddedNotificationsPhone": "Meldingen over toegevoegde uitgaven op de telefoon",
+  "profileFriendInvites": "Vriend uitnodigen",
+  "profileFriendInvitesBannersInsideApp": "Banners voor vriendschapsverzoeken en reacties in de app",
+  "profileFriendRequestResponseNotifications": "Meldingen over vriendschapsverzoeken en reacties daarop",
+  "profileTripUpdates": "Reisupdates",
+  "profileTripUpdatesBannersInsideApp": "Banners over de levenscyclus van de reis en de status van deelnemers in de app",
+  "profileTripLifecycleMemberStatusChanges": "Verloop van de reis en wijzigingen in de status van deelnemers",
+  "profileSettlementUpdates": "Updates over de afrekening",
+  "profileSettlementUpdatesBannersInsideApp": "Banners voor ‘verzonden’ en ‘bevestigde betaling’ in de app",
+  "profileMarkedSentConfirmedPaymentUpdates": "Als verzonden gemarkeerde en bevestigde betalingsupdates",
+  "profileScreenshotSizeMust8Mb": "De grootte van de schermafbeelding mag maximaal 8 MB bedragen",
+  "profileFeedbackSendTitle": "Feedback versturen",
+  "profileFeedbackTypeLabel": "Type",
+  "profileFeedbackTypeBug": "Bug",
+  "profileFeedbackTypeSuggestion": "Suggestie",
+  "profileDescribeIssueSuggestion": "Beschrijf het probleem of de suggestie",
+  "profilePickingImage": "Afbeelding wordt geselecteerd...",
+  "profileAttachScreenshot": "Voeg een screenshot toe",
+  "profileChangeScreenshot": "Screenshot wijzigen",
+  "profileRemoveImage": "Afbeelding verwijderen",
+  "profileTipAttachScreenshotFasterBugTriage": "Tip: voeg een screenshot toe voor een snellere bugtriage",
+  "profileAddDetailsAttachScreenshotBeforeSending": "Voeg details toe of voeg een screenshot toe voordat je het bericht verstuurt",
+  "profileSendAction": "Verzenden",
+  "profileThanksFeedbackSent": "Bedankt! Feedback verzonden",
+  "profileFailedSendFeedback": "Het verzenden van feedback is mislukt",
+  "profileCouldNotOpenWebsite": "De website kon niet worden geopend.",
+  "profileOpenWebsiteQuestion": "Website openen?",
+  "profileOpenPortfolioAction": "Open portfolio.egm.lv",
+  "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Dit afbeeldingsformaat wordt op dit apparaat niet ondersteund. Kies JPG of PNG.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "Een geldig e-mailadres voor je account is vereist om je wachtwoord te wijzigen. Neem contact op met de ondersteuning als je e-mailadres ontbreekt of onjuist is.",
+  "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Account gedeactiveerd. Gebruik de reactiveringslink in de e-mail om de toegang te herstellen.",
+  "profileEditCouldNotDeactivateTryAgain": "Het account kon niet worden gedeactiveerd. Probeer het opnieuw.",
+  "profileEditDeletionLinkSentEmail": "De verwijderingslink is naar je e-mailadres verzonden.",
+  "profileEditCouldNotSendDeletionLinkTryAgain": "De verwijderingslink kon niet worden verzonden. Probeer het opnieuw.",
+  "profileEditEnterCurrentPasswordChangeEmail": "Voer het huidige wachtwoord in om het e-mailadres te wijzigen.",
+  "profileEditVerificationWasSentNewEmailSecurityNoticeWas": "Er is een verificatiebericht verzonden naar het nieuwe e-mailadres. Er is een beveiligingsmelding verzonden naar je huidige e-mailadres.",
+  "profileEditCouldNotStartEmailChangeRightNowTry": "Het wijzigen van het e-mailadres kon op dit moment niet worden gestart. Probeer het opnieuw.",
+  "profileEditOverviewCurrency": "Overzicht valuta",
+  "profileEditPaymentMethod": "Betaalmethode",
+  "profileEditBankTransferRevolutPaypalMe": "Bankoverschrijving, Revolut, PayPal.me",
+  "profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword": "Je kunt de toegang tot het account deactiveren of een e-maillink aanvragen om het account definitief te verwijderen. Een wachtwoord is optioneel voor Google-/Apple-accounts.",
+  "profileEditEnterPasswordOptionalGoogleApple": "Voer je wachtwoord in (optioneel voor Google/Apple)",
+  "profileEditSendDeletionLinkEmail": "Verzend een verwijderingslink naar e-mail",
+  "profileEditBackProfile": "Terug naar profiel",
+  "profileEditSetValidEmailProfileChangingPassword": "Stel een geldig e-mailadres in je profiel in voordat je het wachtwoord wijzigt.",
+  "profileEditPasswordUpdated": "Wachtwoord bijgewerkt.",
+  "profileEditFailedUpdatePassword": "Het bijwerken van het wachtwoord is mislukt.",
+  "profileEditEmail": "Account: {email}",
+  "profileEditPrimary": "Primair",
+  "profileEditSearchCurrency": "Zoek valuta",
+  "profileEditNoCurrenciesFound": "Geen valuta's gevonden",
+  "profileEditOverviewTotalsConvertedCurrency": "De totalen in het overzicht worden omgerekend naar deze valuta.",
+  "profileEditPaymentInfoUpdated": "Betalingsgegevens bijgewerkt.",
+  "profileEditCouldNotSavePaymentInfoTryAgain": "Betalingsgegevens konden niet worden opgeslagen. Probeer het opnieuw.",
+  "profileEditCurrentPassword": "Huidig wachtwoord",
+  "profileEditBankTransferIbanSwift": "Bankoverschrijving (IBAN / SWIFT)",
+  "profileEditIbanSwift": "IBAN + SWIFT",
+  "profileEditRevtagRevolutMe": "Revtag / revolut.me",
+  "profileEditPaypalMeLink": "paypal.me-link",
+  "profileEditChoosePaymentMethod": "Kies een betaalmethode",
+  "profileEditTapChange": "Tik om te wijzigen",
+  "profileEditUkTransfersSortCode6DigitsNumber8": "Voor overschrijvingen in het Verenigd Koninkrijk moet de sortcode uit 6 cijfers bestaan en het rekeningnummer uit 8 cijfers.",
+  "profileEditPaymentInfo": "Betalingsgegevens",
+  "profileEditSaveDetails": "Gegevens opslaan",
+  "profileEditBankRegion": "Bankregio",
+  "profileEditEurope": "Europa",
+  "profileEditSortCode": "Sorteercode",
+  "profileEditExample112233": "Voorbeeld: 112233",
+  "profileEditNumber": "Rekeningnummer",
+  "profileEdit8Digits": "8 cijfers",
+  "profileEditUkDomesticTransfersSortCodeNumber": "Gebruik voor binnenlandse overschrijvingen in het VK de sort code + rekeningnummer.",
+  "profileEditExampleLv80bank0000435195001": "Voorbeeld: LV80BANK0000435195001",
+  "profileEdit811Chars": "8 of 11 tekens",
+  "profileEditHolderNameTakenProfileFullName": "De naam van de rekeninghouder wordt overgenomen uit de volledige naam in het profiel.",
+  "profileEditRevolutMeUsername": "revolut.me/username",
+  "profileEditRevtag": "Revtag",
+  "profileEditUsername": "@username",
+  "profileEditPaypalMeUsernameUsername": "paypal.me/username of gebruikersnaam",
+  "profileEditRevolut": "Revolut",
+  "profileEditPaypalMe": "PayPal.me",
+  "profileEditWise": "Wise",
+  "profileEditWisePayUsername": "wise.com/pay/me/username",
+  "profileEditUk": "VK",
+  "profileEditIbanLabel": "IBAN",
+  "profileEditBicSwiftLabel": "BIC / SWIFT",
+  "profileEditRevolutMe": "Revolut.me",
+  "imageCropperAdjustAvatar": "Pas de avatar aan",
+  "imageCropperAdjustTripImage": "Pas de reisfoto aan",
+  "copyAction": "Kopiëren",
+  "currencyNameEur": "Euro",
+  "currencyNameGbp": "Brits pond",
+  "currencyNameChf": "Zwitserse frank",
+  "currencyNameNok": "Noorse kroon",
+  "currencyNameSek": "Zweedse kroon",
+  "currencyNameDkk": "Deense kroon",
+  "currencyNamePln": "Poolse zloty",
+  "currencyNameCzk": "Tsjechische kroon",
+  "currencyNameHuf": "Hongaarse forint",
+  "currencyNameRon": "Roemeense leu",
+  "currencyNameBgn": "Bulgaarse lev",
+  "currencyNameIsk": "IJslandse kroon",
+  "currencyNameAll": "Albanese lek",
+  "currencyNameBam": "Bosnië en Herzegovina Mark",
+  "currencyNameByn": "Wit-Russische roebel",
+  "currencyNameMdl": "Moldavische leu",
+  "currencyNameMkd": "Macedonische denar",
+  "currencyNameRsd": "Servische dinar",
+  "currencyNameUah": "Oekraïense hryvnia",
+  "currencyNameGel": "Georgische lari",
+  "currencyNameTry": "Turkse lira",
+  "currencyNameUsd": "Amerikaanse dollar",
+  "currencyNameJpy": "Japanse yen",
+  "currencyNameCny": "Chinese yuan",
+  "currencyNameCad": "Canadese dollar",
+  "currencyNameAud": "Australische dollar",
+  "expenseCategoryFood": "Eten",
+  "expenseCategoryGroceries": "Boodschappen",
+  "expenseCategoryFuel": "Brandstof",
+  "expenseCategoryTransport": "Vervoer",
+  "expenseCategoryAccommodation": "Accommodatie",
+  "expenseCategoryActivities": "Activiteiten",
+  "expenseCategoryTickets": "Tickets",
+  "expenseCategoryShopping": "Winkelen",
+  "expenseCategoryParty": "Feest",
+  "expenseCategoryParking": "Parkeren",
+  "expenseCategoryOther": "Overig",
+  "shellTripAlreadyInListOpened": "De reis staat al in je lijst. We hebben deze voor je geopend.",
+  "shellJoinedTripFromInviteLink": "Deelname aan de reis via de uitnodigingslink.",
+  "shellFailedToOpenInviteLink": "Het openen van de uitnodigingslink is mislukt.",
+  "shellFailedToOpenFriendLink": "Kan de vriendlink niet openen.",
+  "shellTripInviteTitle": "Uitnodiging voor een reis",
+  "shellNoAction": "Nee",
+  "shellYesAction": "Ja",
+  "shellOnlyTripCreatorCanDelete": "Alleen de aanmaker van de reis kan deze reis verwijderen.",
+  "shellOnlyActiveTripsCanDelete": "Alleen actieve reizen kunnen worden verwijderd.",
+  "shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded": "\"{tripLabel}\" verwijderen? Dit is alleen toegestaan voordat er uitgaven zijn toegevoegd.",
+  "shellTripDeleted": "Reis verwijderd.",
+  "shellFailedToDeleteTrip": "Het verwijderen van de reis is mislukt.",
+  "shellFailedToLoadNotifications": "Het laden van meldingen is mislukt.",
+  "shellNewNotificationTitle": "Nieuwe melding: {title}",
+  "shellFailedToUpdateNotifications": "Meldingen konden niet worden bijgewerkt.",
+  "shellMarkAllAsReadAction": "Alles als gelezen markeren",
+  "shellNewSection": "Nieuw",
+  "shellEarlierSection": "Eerder",
+  "shellShowMoreEarlierAction": "Meer eerdere resultaten weergeven",
+  "shellLoadingMore": "Meer laden...",
+  "shellLoadMoreNotificationsAction": "Meer meldingen laden",
+  "shellTripNoLongerAvailable": "Deze reis is niet langer beschikbaar.",
+  "shellFailedToOpenTrip": "Het openen van de reis is mislukt.",
+  "shellYesterday": "Gisteren",
+  "shellInviteAlreadyMemberOpenTripNow": "Je bent al lid van \"{tripName}\". Wil je deze reis nu openen?\n\nUitgenodigd door: {inviterName}",
+  "shellInviteJoinTripQuestion": "Wil je deelnemen aan reis \"{tripName}\"?\n\nUitgenodigd door: {inviterName}",
+  "tripsSelectedImage": "Geselecteerde afbeelding: {arg1}",
+  "tripsTripImageAlreadySet": "Reisafbeelding is al ingesteld.",
+  "tripsTripCreatedButImageUploadFailed": "Reis aangemaakt, maar het uploaden van de afbeelding is mislukt.",
+  "tripsTripCreatedButImageUploadFailedWithReason": "Reis aangemaakt, maar het uploaden van de afbeelding is mislukt: {arg1}",
+  "@tripsTripCreatedButImageUploadFailedWithReason": {
+    "placeholders": {
+      "arg1": {}
+    }
+  },
+  "tripsJoinTripViaInvite": "Deel aan de reis via een uitnodiging",
+  "tripsTotalTrips": "Totaal aantal reizen",
+  "tripsTotalSpent": "Totaal uitgegeven",
+  "tripsMixedCurrencies": "Gemengde valuta’s",
+  "tripsShowActive": "Toon actief",
+  "tripsSeeAll": "Alles bekijken",
+  "tripsGridView": "Rasterweergave",
+  "tripsListView": "Lijstweergave",
+  "tripsAddNewTrip": "Nieuwe reis toevoegen",
+  "tripsLoadMore": "Meer laden",
+  "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "\"{arg1}\" verwijderen? Dit is alleen toegestaan voordat er uitgaven zijn toegevoegd.",
+  "tripsTripDates": "Reisdata",
+  "tripsFrom": "Van",
+  "tripsSelectDate": "Selecteer datum",
+  "tripsTo": "Om",
+  "tripsMainCurrency": "Hoofdvaluta",
+  "tripsPleaseSelectTripPeriodFromAndToDates": "Selecteer de reisperiode (begin- en einddatum).",
+  "tripsTripEndDateMustBeOnOrAfterStartDate": "De einddatum van de reis moet op of na de startdatum liggen.",
+  "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "Het formaat van de reisperiode is ongeldig. Kies alstublieft opnieuw een datum.",
+  "tripsYouAreAlreadyAMemberOfThisTrip": "Je bent al lid van deze reis.",
+  "tripsJoinedTripSuccessfully": "Je bent succesvol toegevoegd aan de reis.",
+  "tripsFailedToJoinTripFromInvite": "Het is niet gelukt om via de uitnodiging deel te nemen aan de reis.",
+  "tripsJoinTrip": "Deel aan de reis",
+  "tripsPasteInviteLinkOrInviteToken": "Plak de uitnodigingslink of het uitnodigingstoken.",
+  "tripsHttpsInviteNorthSeaAbc123def4": "https://.../?invite=north-sea-abc123def4",
+  "tripsEnterAValidInviteLinkOrToken": "Voer een geldige uitnodigingslink of token in.",
+  "tripsClipboardIsEmpty": "Het klembord is leeg.",
+  "tripsPaste": "Plakken",
+  "tripsJoin": "Deelnemen",
+  "workspaceTripMembers": "Reisdeelnemers",
+  "workspaceFailedToLoadFriends": "Het laden van vrienden is mislukt.",
+  "workspaceFailedToGenerateInviteLink": "Het genereren van de uitnodigingslink is mislukt.",
+  "workspaceInviteLink": "Uitnodigingslink",
+  "workspaceGeneratingInviteLink": "Uitnodigingslink wordt gegenereerd...",
+  "workspaceInviteLinkUnavailable": "Uitnodigingslink niet beschikbaar.",
+  "workspaceCopyInviteLink": "Kopieer uitnodigingslink",
+  "workspaceInviteLinkCopied": "Uitnodigingslink gekopieerd.",
+  "workspaceExpiresUtc": "Vervalt: {arg1} UTC",
+  "workspaceNoFriendsAvailableAddFriendsFirst": "Er zijn geen vrienden beschikbaar. Voeg eerst vrienden toe.",
+  "workspaceSettle": "Afrekenen",
+  "workspaceOwesToTheGroup": "Is verschuldigd aan de groep",
+  "workspaceGetsBackFromGroup": "Krijgt geld terug van de groep",
+  "workspaceShowingTop4ByBalanceDifference": "Weergave van de top 4 op basis van saldo-verschil.",
+  "workspaceOpenFlow": "Details",
+  "workspaceFriend": "Vriend",
+  "workspaceSettlementTransfer": "Overboeking",
+  "workspaceCompleted": "Voltooid",
+  "workspaceWaitingForConfirmation": "Wachten op bevestiging",
+  "workspaceWaitingForPayment": "Wachten op betaling",
+  "workspaceActionNeeded": "Noodzakelijke actie",
+  "workspacePaymentSToMarkAsSentToConfirmAsReceived": "Betalingen om als verzonden te markeren: {arg1}; om als ontvangen te bevestigen: {arg2}.",
+  "workspaceReadyToSettle": "Klaar om af te rekenen",
+  "workspaceAllMembersAreReadyYouCanStartSettlements": "Alle deelnemers zijn klaar. U kunt beginnen met de afrekeningen.",
+  "workspaceWaitingForEveryoneToMarkReady": "Wachten tot iedereen aangeeft dat hij/zij klaar is.",
+  "workspaceIMReady": "Ik ben er klaar voor",
+  "workspaceConfirmThatYouAddedAllYourExpenses": "Controleer of je al je uitgaven hebt toegevoegd.",
+  "workspaceFinishButtonUnlocksOnceEveryoneMarksReady": "De knop ‘Voltooien’ wordt ontgrendeld zodra iedereen aangeeft klaar te zijn.",
+  "workspaceGetsBackFromTheGroup": "Krijgt geld terug van de groep",
+  "workspaceSettledWithTheGroup": "Afgesproken met de groep",
+  "workspaceTotalPaid": "Totaal betaald",
+  "workspaceTotalOwes": "Totaal verschuldigd",
+  "workspaceTransactionHistory": "Transactiegeschiedenis",
+  "workspaceNoTransactionsYetForThisMember": "Nog geen transacties voor dit lid.",
+  "workspaceSettlements": "Afrekeningen: {arg1}",
+  "workspaceAllMembersMustMarkReadyBeforeStartingSettlements": "Alle deelnemers moeten aangeven dat ze klaar zijn voordat de afrekeningen kunnen beginnen.",
+  "workspaceYouMarkedYourselfReadyToSettle": "Je hebt aangegeven dat je klaar bent om af te rekenen.",
+  "workspaceReadyToSettleMarkRemoved": "De markering ‘Klaar voor afrekening’ is verwijderd.",
+  "workspaceReminderSent": "Herinnering verzonden.",
+  "workspaceInviteLinkOrAddFromFriends": "Uitnodigingslink of toevoegen via vrienden",
+  "workspaceOnlyTripCreatorCanEditThisTrip": "Alleen de reisorganisator kan deze reis bewerken.",
+  "workspaceTripUpdated": "Reis bijgewerkt.",
+  "workspaceFailedToUpdateTrip": "Het bijwerken van de reis is mislukt.",
+  "workspaceNoMembersSelectedYet": "Er zijn nog geen leden geselecteerd.",
+  "workspaceNoInternetExpenseSavedWithoutReceiptImage": "Geen internet. De uitgave wordt opgeslagen zonder afbeelding van de bon.",
+  "workspaceRandomPicker": "Willekeurige selectie",
+  "workspaceCurrency": "Valuta",
+  "workspaceCategory": "Categorie",
+  "workspaceCustomCategory": "Aangepaste categorie",
+  "workspaceCategoryName": "Categorienaam",
+  "workspaceApartmentRentParkingEtc": "Huur van een appartement, parkeren, enz.",
+  "workspaceEnterACustomCategory": "Voer een aangepaste categorie in.",
+  "workspacePickAnExpenseCategory": "Kies een onkostencategorie.",
+  "workspaceCategoryMustBeAtLeast2Characters": "De categorie moet uit minimaal 2 tekens bestaan.",
+  "workspaceCategoryMustBeUpTo64Characters": "De categorie mag maximaal 64 tekens bevatten.",
+  "workspacePercentageSplitMustTotal100": "Het totaal van de procentuele verdeling moet 100% bedragen.",
+  "workspaceSharesMustBeGreaterThan0ForAllParticipants": "Het aantal aandelen moet voor elke deelnemer groter zijn dan 0.",
+  "workspaceTotalAmount": "Totaalbedrag",
+  "workspaceOriginal": "Origineel",
+  "workspaceTotalCost": "Totale kosten",
+  "workspaceStarted": "Gestart {arg1}",
+  "workspaceEnded": "Beëindigd {arg1}",
+  "workspaceArchivedTrip": "Gearchiveerde reis",
+  "workspaceActiveTrip": "Actieve reis",
+  "workspaceMemberProfile": "Ledenprofiel",
+  "workspaceTripOwner": "Reisorganisator",
+  "workspaceMember": "Lid",
+  "workspaceReadyForSettlement": "Klaar voor afrekening",
+  "workspaceNotReadyForSettlement": "Nog niet klaar voor afwikkeling",
+  "workspaceBankDetails": "Bankgegevens",
+  "workspaceIbanAndPayoutDetailsWillBeAddedHereInA": "IBAN- en uitbetalingsgegevens worden hier in een volgende update toegevoegd.",
+  "workspacePaymentDetails": "Betalingsgegevens",
+  "workspaceThisMemberHasNotAddedPayoutDetailsYet": "Dit lid heeft nog geen uitbetalingsgegevens toegevoegd.",
+  "workspaceBankTransfer": "Bankoverschrijving",
+  "workspaceHolder": "Houder",
+  "workspaceCouldNotOpenPaymentLink": "De betalingslink kon niet worden geopend.",
+  "workspaceTripActivity": "Reisactiviteit",
+  "workspacePaidExpenses": "Betaalde uitgaven",
+  "workspacePaidTotal": "Betaald totaalbedrag",
+  "workspaceInvolvedIn": "Betrokken bij",
+  "workspaceCurrentTrip": "Huidige reis",
+  "workspaceCommonTrips": "Gezamenlijke reizen",
+  "workspaceLoadingCommonTrips": "Gezamenlijke reizen laden…",
+  "workspaceNoCommonTripsFoundYet": "Nog geen gezamenlijke reizen gevonden.",
+  "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "Niet alle gezamenlijke reizen konden worden geladen. De huidige reis wordt getoond.",
+  "workspaceMembers": "leden",
+  "workspaceExpense": "Onkosten",
+  "workspacePaid": "betaald",
+  "workspaceLoadingMoreExpenses": "Meer uitgaven worden geladen...",
+  "workspaceScrollDownToLoadMore": "Scroll naar beneden om meer te laden",
+  "workspaceTripFinished": "Reis voltooid",
+  "workspaceSettlementsAreUnlockedForThisTrip": "De afrekeningen zijn voor deze reis ontgrendeld.",
+  "workspaceFinishTripToStartSettlements": "Rond de reis af om de afrekening te starten.",
+  "workspaceMarkedTransferAsSent": "{arg1} heeft de overboeking gemarkeerd als verzonden.",
+  "workspaceWaitingForToMarkAsPaid": "Wachten tot {arg1} de betaling als betaald markeert.",
+  "workspaceConfirmedReceivingThePayment": "{arg1} heeft de ontvangst van de betaling bevestigd.",
+  "workspaceWaitingForToConfirm": "Wachten op bevestiging van {arg1}.",
+  "workspaceAllTripSettlementsAreFullyCompleted": "Alle afrekeningen van de reis zijn volledig afgerond.",
+  "workspaceFinalStateAfterAllTransfersAreConfirmed": "Eindstatus nadat alle overboekingen zijn bevestigd.",
+  "workspaceSettlementFlow": "Afwikkelingsproces",
+  "workspaceActions": "Acties",
+  "workspaceQuickPay": "Snel betalen",
+  "workspacePayWithRevolut": "Betaal met Revolut",
+  "workspacePayWithPaypal": "Betaal met PayPal",
+  "workspacePayWithWise": "Betaal met Wise",
+  "workspaceTransferIsConfirmed": "De overboeking is bevestigd.",
+  "workspaceWaitingForTheOtherMemberToCompleteTheNextStep": "Wachten tot het andere lid de volgende stap voltooit.",
+  "workspaceSendReminder": "Herinnering versturen",
+  "workspaceInProgress": "In uitvoering",
+  "workspaceTimeUnknown": "Tijd onbekend",
+  "workspaceRemind": "Herinnering",
+  "workspaceYourPosition": "Uw standpunt",
+  "workspaceRecentActivity": "Recente activiteit",
+  "workspaceNoRecentActivityYet": "Nog geen recente activiteit.",
+  "workspaceAddAtLeastOneMemberToStartSplittingExpenses": "Voeg ten minste één deelnemer toe om te beginnen met het delen van de kosten.",
+  "workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses": "Geef aan dat je klaar bent om af te rekenen nadat je al je uitgaven hebt toegevoegd.",
+  "workspaceWaitingForMemberSToMarkReady": "Deelnemers die nog niet klaar zijn: {arg1}.",
+  "workspaceAllMembersAreReadyYouCanFinishTheTripAnd": "Alle deelnemers zijn klaar. Je kunt de reis afronden en beginnen met de afrekening.",
+  "workspaceAllMembersAreReadyWaitingForTheTripOwnerTo": "Alle deelnemers zijn klaar. Wachten op de reisorganisator om de afrekening te starten.",
+  "workspaceSettlementInProgressConfirmed": "Afwikkeling bezig: {arg1}/{arg2} bevestigd.",
+  "workspaceNoActionsPendingThisTripIsSettled": "Er zijn geen acties in behandeling. Deze reis is afgerond.",
+  "workspaceNoActionsNeededRightNow": "Er zijn op dit moment geen acties nodig.",
+  "workspaceYouShouldReceive": "U zou {arg1} moeten ontvangen.",
+  "workspaceYouShouldPay": "Je moet {arg1} betalen.",
+  "workspaceYouAreCurrentlySettledInThisTrip": "Je bent momenteel ingeschreven voor deze reis.",
+  "workspaceUnknownTime": "Onbekende tijd",
+  "workspaceJustNow": "Zojuist",
+  "workspaceMinAgo": "{arg1} min geleden",
+  "workspaceHAgo": "{arg1} uur geleden",
+  "workspaceDAgo": "{arg1} d geleden",
+  "friendsRemoveFriend": "Vriend verwijderen",
+  "friendsRemoveThisFriend": "Deze vriend verwijderen?",
+  "friendsWillBeRemovedFromYourFriendsListYouCanAdd": "{arg1} wordt uit je vriendenlijst verwijderd. Je kunt deze persoon later weer toevoegen.",
+  "friendsContinue": "Ga verder",
+  "friendsFriendRemoved": "Vriend verwijderd.",
+  "friendsCouldNotRemoveFriend": "Kon vriend niet verwijderen.",
+  "friendsFriendProfile": "Vriendprofiel",
+  "friendsMoreActions": "Meer acties",
+  "friendsThisFriendHasNotAddedPayoutDetailsYet": "Deze vriend heeft nog geen uitbetalingsgegevens toegevoegd.",
+  "friendsCouldNotLoadCommonTripsRightNow": "De gezamenlijke reizen konden nu niet worden geladen.",
+  "friendsFinished": "Klaar",
+  "friendsTrip": "Reis #{arg1}",
+  "friendsMembers": "Leden: {arg1}",
+  "friendsNoDate": "Geen datum",
+  "friendsIncomingRequests": "BINNENKOMENDE VERZOEKEN",
+  "friendsSentInvites": "VERZONDEN UITNODIGINGEN",
+  "friendsMyFriends": "MIJN VRIENDEN",
+  "friendsRequests": "Verzoeken",
+  "friendsIncoming": "Inkomend",
+  "friendsIncomingRequestSubtitle": "wil vrienden worden",
+  "friendsOutgoingInviteSubtitle": "Uitnodiging verzonden",
+  "friendsNoPendingActivity": "Geen vriendschapsverzoeken",
+  "friendsInviteSentTo": "Uitnodiging verzonden naar {arg1}.",
+  "friendsNoIncomingRequests": "Geen inkomende verzoeken",
+  "friendsDecline": "Weigeren",
+  "friendsAccept": "Accepteren",
+  "friendsNoSentInvites": "Geen verzonden uitnodigingen",
+  "friendsNoFriendsYet": "Nog geen vrienden",
+  "friendsScrollDownToLoadMoreFriends": "Scroll naar beneden om meer vrienden te laden.",
+  "friendsUser": "Gebruiker",
+  "friendsSearchUsers": "Gebruikers zoeken",
+  "friendsFindByNameOrEmailAndSendInvite": "Zoek op naam of e-mailadres en verstuur een uitnodiging",
+  "friendsScanQr": "Scan QR-code",
+  "friendsScanAnotherUserToAddFriend": "Scan een andere gebruiker om een vriend toe te voegen",
+  "friendsMyQr": "Mijn QR",
+  "friendsShowOrShareYourQrCode": "Toon of deel je QR-code",
+  "friendsScanFriendQrTitle": "Scan de QR-code van een vriend",
+  "friendsPlaceFriendQrInsideFrame": "Plaats de QR-code van een vriend in het kader",
+  "friendsHoldFriendQrInsideFrame": "Houd de QR-code binnen het kader",
+  "friendsConfirmAddFriendTitle": "{arg1}toevoegen als vriend?",
+  "friendsConfirmSendFriendInviteText": "{arg1} ontvangt je vriendschapsverzoek.",
+  "friendsConfirmAcceptFriendRequestText": "{arg1}'s vriendschapsverzoek accepteren?",
+  "friendsMyFriendQrTitle": "My Friend QR",
+  "friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode": "Scan deze QR-code of deel de link om mij toe te voegen op Splyto.",
+  "friendsAddMeOnTripSplitFriends": "Voeg me toe op Splyto.",
+  "friendsTripSplitFriendCode": "Splyto-vriendenlink",
+  "shareAction": "Delen",
+  "friendsQrCodeIsNotAValidFriendCode": "Een QR-code is geen geldige vriendcode.",
+  "friendsYouCannotAddYourself": "Je kunt jezelf niet toevoegen.",
+  "friendsThisUserIsAlreadyInYourFriendsList": "Deze gebruiker staat al in je vriendenlijst.",
+  "friendsInviteToThisUserIsAlreadySent": "De uitnodiging naar deze gebruiker is al verzonden.",
+  "friendsFriendRequestProcessed": "Vriendschapsverzoek verwerkt.",
+  "friendsFailedToProcessFriendQr": "Het verwerken van de QR-code van een vriend is mislukt.",
+  "friendsCouldNotLoadYourUserProfile": "Je gebruikersprofiel kon niet worden geladen.",
+  "friendsMyProfile": "Mijn profiel",
+  "friendsUnexpectedErrorLoadingFriends": "Onverwachte fout bij het laden van vrienden.",
+  "friendsFriendAdded": "Vriend toegevoegd.",
+  "friendsRequestDeclined": "Verzoek afgewezen.",
+  "friendsFailedToUpdateRequest": "Het bijwerken van het verzoek is mislukt.",
+  "friendsCancelInvite": "Uitnodiging annuleren",
+  "friendsCancelInviteTo": "Uitnodiging voor {arg1} annuleren?",
+  "friendsKeep": "Behouden",
+  "friendsInviteToCancelled": "Uitnodiging voor {arg1} geannuleerd.",
+  "friendsFailedToCancelInvite": "Het annuleren van de uitnodiging is mislukt.",
+  "analyticsOther": "Overige",
+  "analyticsSelectATripForAnalytics": "Selecteer een reis voor analyses",
+  "analyticsMembers": "{arg1} • Leden: {arg2} • {arg3} • {arg4}",
+  "analyticsDailySpending": "Dagelijkse uitgaven",
+  "analyticsMyDaily": "Mijn dagelijkse uitgaven",
+  "analyticsGroupDaily": "Dagelijkse groepsuitgaven",
+  "analyticsByMember": "Per deelnemer",
+  "analyticsShowLess": "Minder weergeven",
+  "analyticsByCategory": "Per categorie",
+  "analyticsQuickInsights": "Snelle inzichten",
+  "analyticsBiggestExpense": "Grootste uitgave: {arg1} ({arg2})",
+  "analyticsTopSpender": "Grootste spender: {arg1} ({arg2})",
+  "analyticsHighestGroupDay": "Dag met de meeste groepsdeelnemers: {arg1} ({arg2})",
+  "analyticsNoDates": "Geen datums",
+  "friendsSearchFailedTryAgain": "Zoeken mislukt. Probeer het opnieuw.",
+  "friendsFailedToSendInvite": "Het verzenden van de uitnodiging is mislukt.",
+  "friendsAddFriend": "Vriend toevoegen",
+  "friendsSearchByNameOrEmail": "Zoeken op naam of e-mailadres",
+  "friendsTypeAtLeast2CharactersToSearch": "Typ minimaal 2 tekens om te zoeken.",
+  "friendsNoUsersFound": "Geen gebruikers gevonden",
+  "friendsInviteAction": "Uitnodigen",
+  "workspacePaidForGroup": "Betaald voor groep",
+  "workspacePaidForGroupDate": "Betaald voor groep • {arg1}",
+  "workspaceShareOfExpense": "Kostenverdeling",
+  "workspaceShareOfExpenseDate": "Kostenverdeling • {arg1}",
+  "paymentHolderNameCopied": "Naam van de houder gekopieerd.",
+  "paymentIbanCopied": "IBAN gekopieerd.",
+  "paymentSwiftCopied": "SWIFT gekopieerd.",
+  "paymentRevtagCopied": "Revtag gekopieerd.",
+  "paymentCouldNotCopyToClipboard": "Kon niet naar het klembord kopiëren.",
+  "paymentCopied": "Gekopieerd.",
+  "paymentRequestAction": "Betaling aanvragen",
+  "paymentRecordAction": "Betaling vastleggen",
+  "paymentRequestSheetTitle": "Betaling aanvragen",
+  "paymentRecordSheetTitle": "Betaling vastleggen",
+  "paymentRequestSheetBody": "Vraag {arg1} om een bedrag te betalen dat hij/zij je op dit moment verschuldigd is.",
+  "paymentRecordSheetBody": "Gebruik dit nadat je {arg1} buiten Splyto hebt betaald. Zij zullen de ontvangst bevestigen.",
+  "paymentMaxAmount": "Maximaal {arg1}",
+  "paymentNoteHint": "Bankoverschrijving, Revolut, contant geld...",
+  "paymentAmountPositiveError": "Het bedrag moet groter zijn dan nul.",
+  "paymentAmountTooHighError": "Het bedrag mag niet hoger zijn dan het openstaande saldo.",
+  "paymentRequestCreated": "Betalingsverzoek verzonden.",
+  "paymentRecordedWaiting": "Betaling geregistreerd. In afwachting van bevestiging.",
+  "paymentConfirmTitle": "Bevestig betaling",
+  "paymentConfirmText": "Bevestig dat je {arg1} van {arg2} hebt ontvangen.",
+  "paymentConfirmedMessage": "Betaling bevestigd.",
+  "paymentCancelRecordTitle": "Betalingsgegevens annuleren",
+  "paymentCancelRecordText": "De registratie van je betaling van {arg1} aan {arg2} annuleren?",
+  "paymentRecordCancelled": "Betalingsvermelding geannuleerd.",
+  "paymentNotReceivedTitle": "Betaling niet ontvangen",
+  "paymentNotReceivedText": "De betaling van {arg1} van {arg2} markeren als niet ontvangen?",
+  "paymentMarkedNotReceived": "Betaling gemarkeerd als niet ontvangen.",
+  "paymentActivityTitle": "Betalingsactiviteit",
+  "paymentOpenRequestsCount": "Openstaande betaalverzoeken: {arg1}",
+  "paymentAwaitingConfirmationCount": "Betalingen die op bevestiging wachten: {arg1}",
+  "paymentRecordedPaymentsTitle": "Geregistreerde betalingen",
+  "paymentRequestedFrom": "{arg1} heeft een betaling aangevraagd bij {arg2}",
+  "paymentPaidTo": "{arg1} heeft {arg2} betaald",
+  "paymentRequestPendingStatus": "Betaling aangevraagd",
+  "paymentAwaitingConfirmationStatus": "In afwachting van bevestiging",
+  "paymentReviewRequestAction": "Beoordelingsverzoek",
+  "paymentViewDetailsAction": "Betalingsgegevens",
+  "paymentMarkPaidAction": "Ik heb betaald",
+  "paymentDeclineAction": "Weigeren",
+  "paymentRequestReviewTitle": "Betalingsverzoek",
+  "paymentRequestReviewBody": "{arg1} heeft {arg2} bij je aangevraagd. Betaal buiten Splyto om en markeer het vervolgens als betaald.",
+  "paymentRequestMarkPaidConfirmTitle": "Verzoek als betaald markeren?",
+  "paymentRequestMarkPaidConfirmText": "Bevestig pas nadat je {arg1} hebt betaald aan {arg2} buiten Splyto.",
+  "paymentRequestMarkedPaid": "Gemarkeerd als betaald. In afwachting van bevestiging.",
+  "paymentRequestCancelTitle": "Betalingsverzoek annuleren?",
+  "paymentRequestCancelText": "Je betaalverzoek van {arg1} aan {arg2} annuleren?",
+  "paymentRequestCancelled": "Betalingsverzoek geannuleerd.",
+  "paymentRequestDeclineTitle": "Betalingsverzoek afwijzen?",
+  "paymentRequestDeclineText": "Het betaalverzoek van {arg2} voor {arg1} afwijzen? Deze persoon krijgt een melding.",
+  "paymentRequestDeclined": "Betalingsverzoek afgewezen.",
+  "paymentPendingBeforeFinish": "Los openstaande betalingsverzoeken en onbevestigde betalingen op vóór de definitieve afrekening.",
+  "paymentFinishBlockedByPending": "De voltooiing wordt ontgrendeld nadat betalingsverzoeken en onbevestigde betalingen zijn afgehandeld.",
+  "notificationPaymentRequestedTitle": "Betaling aangevraagd",
+  "notificationPaymentRequestedBody": "{arg1} heeft {arg2} bij u aangevraagd.",
+  "notificationPaymentRequestedBodyGeneric": "Je hebt een betalingsverzoek ontvangen.",
+  "notificationPaymentRequestSentTitle": "Gevraagde betaling verzonden",
+  "notificationPaymentRequestSentBody": "{arg1} heeft je {arg2}-betalingsverzoek gemarkeerd als betaald.",
+  "notificationPaymentRequestSentBodyGeneric": "Je betalingsverzoek is gemarkeerd als betaald.",
+  "notificationPaymentRequestCancelledTitle": "Betalingsverzoek geannuleerd",
+  "notificationPaymentRequestCancelledBody": "{arg1} heeft het betalingsverzoek van {arg2} geannuleerd.",
+  "notificationPaymentRequestCancelledBodyGeneric": "Een betalingsverzoek is geannuleerd.",
+  "notificationPaymentRequestDeclinedTitle": "Betalingsverzoek afgewezen",
+  "notificationPaymentRequestDeclinedBody": "{arg1} heeft je {arg2}-betalingsverzoek afgewezen.",
+  "notificationPaymentRequestDeclinedBodyGeneric": "Uw betalingsverzoek is afgewezen.",
+  "notificationPaymentSentTitle": "Betaling gemarkeerd als verzonden",
+  "notificationPaymentSentBody": "{arg1} heeft {arg2} gemarkeerd als aan jou betaald.",
+  "notificationPaymentSentBodyGeneric": "Er is een betaling gemarkeerd als naar jou verzonden.",
+  "notificationPaymentConfirmedTitle": "Betaling bevestigd",
+  "notificationPaymentConfirmedBody": "{arg1} heeft de ontvangst van {arg2} van jou bevestigd.",
+  "notificationPaymentConfirmedBodyGeneric": "Uw betaling is bevestigd.",
+  "notificationPaymentCancelledTitle": "Betaling geannuleerd",
+  "notificationPaymentCancelledBody": "{arg1} heeft de {arg2}-betalingsmarkering geannuleerd.",
+  "notificationPaymentCancelledBodyGeneric": "Een betalingsmarkering is geannuleerd.",
+  "notificationPaymentNotReceivedTitle": "Betaling niet ontvangen",
+  "notificationPaymentNotReceivedBody": "{arg1} heeft de {arg2}-betaling gemarkeerd als niet ontvangen.",
+  "notificationPaymentNotReceivedBodyGeneric": "Een betaling is gemarkeerd als niet ontvangen.",
+  "quickStartTitle": "Snel aan de slag",
+  "quickStartCreateTitle": "Maak een reis aan",
+  "quickStartCreateBody": "Kies een naam en valuta. Houd je eigen uitgaven bij of deel de kosten met een groep.",
+  "quickStartInviteTitle": "Reis samen of alleen",
+  "quickStartInviteBody": "Nodig vrienden uit om je reis te delen, of begin zelf een persoonlijke reis.",
+  "quickStartExpenseTitle": "Voeg je eerste uitgave toe",
+  "quickStartExpenseBody": "Voer het bedrag in, kies wie er heeft betaald en verdeel de kosten. Je saldi blijven up-to-date.",
+  "quickStartNext": "Volgende",
+  "quickStartBack": "Terug",
+  "quickStartSkip": "Overslaan",
+  "quickStartCreateAction": "Reis aanmaken",
+  "quickStartClose": "Sluit Snelstart",
+  "quickStartSubtitle": "Bekijk hoe reizen en onkosten werken",
+  "quickStartStep": "Stap {step} van {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Totaal van de reis",
+  "workspacePersonalTotal": "Totaal uitgegeven",
+  "workspaceBalanceEven": "Je saldo is vereffend",
+  "workspaceBalanceOwe": "Je bent {amount} verschuldigd",
+  "workspaceBalanceReceive": "Je krijgt {amount} terug",
+  "workspaceMemberCount": "Leden: {count}",
+  "workspaceSearchExpenses": "Uitgaven zoeken",
+  "workspaceClearSearch": "Zoek",
+  "workspaceSearchLoadedHint": "De zoekfunctie omvat geladen uitgaven. Laad meer om oudere uitgaven mee te nemen.",
+  "workspaceNoExpenseMatches": "Geen overeenkomende uitgaven",
+  "workspaceNoExpenseMatchesBody": "Probeer een andere zoekopdracht of wis deze om alle geladen uitgaven te zien.",
+  "workspaceEmptyPersonalExpenses": "Voeg je eerste uitgave toe om je uitgaven bij te houden.",
+  "workspaceEmptyGroupExpenses": "Voeg je eerste gedeelde uitgave toe om het aandeel van iedereen te zien.",
+  "workspaceLoadMoreExpenses": "Meer uitgaven laden",
+  "workspaceOriginalExpenseAmount": "Oorspronkelijk bedrag: {amount}",
+  "workspaceCommentCount": "Opmerkingen: {count}",
+  "workspaceExpenseActions": "Acties met betrekking tot uitgaven",
+  "workspaceLoadErrorTitle": "Deze reis kon niet worden geladen",
+  "workspaceCachedWarning": "Weergave van opgeslagen gegevens. Deze kunnen verouderd zijn.",
+  "workspaceActivityTab": "Activiteit",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Reis wordt geladen",
+  "workspaceRefreshFailed": "Vernieuwen mislukt",
+  "expenseDetailsTitle": "Uitgavendetails",
+  "expenseQuickCategories": "Snelle categorieën",
+  "expenseReceiptRead": "Ontvangstbevestiging gelezen en formulier bijgewerkt.",
+  "expenseReceiptNoData": "Kassabon bijgevoegd. Er is geen duidelijk bedrag, datum of handelaar gevonden.",
+  "expenseReceiptScanFailed": "Ontvangstbewijs geselecteerd. Automatisch inlezen is mislukt; controleer de velden handmatig.",
+  "expenseReceiptOffline": "De ontvangstbevestiging wordt geüpload wanneer je opslaat. Voor automatisch inlezen is een verbinding vereist.",
+  "expenseReadingReceipt": "Bon wordt uitgelezen…",
+  "expenseCommentsLoadFailed": "Reacties konden niet worden geladen. Probeer het opnieuw.",
+  "expenseReplyAction": "Reageren",
+  "expenseReplyHint": "Schrijf een antwoord…",
+  "expenseReplyTo": "Beantwoord aan {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Saldi worden weergegeven nadat uitgaven zijn toegevoegd.",
+  "balanceAfterPayments": "Saldi omvatten bevestigde betalingen.",
+  "balanceExpenseShare": "Kostenverdeling",
+  "balanceHistoryScope": "Geüploade uitgaven en bevestigde betalingen. Deze lijst bevat mogelijk niet de volledige reisgeschiedenis.",
+  "balancePaymentTo": "Betaling aan {name}",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Betaling van {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Markeer iedereen als ‘klaar’ voordat je begint met de eindafrekening.",
+  "settlementEmptyClosed": "Er zijn geen overboekingen vermeld voor deze reis.",
+  "settlementConfirmedCount": "{count} van {total} overboekingen bevestigd",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "{count} van {total} leden zijn klaar",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Klaar",
+  "settlementMemberNotReady": "Nog niet klaar",
+  "settlementSuggested": "Voorgestelde overboeking",
+  "activityLoadFailed": "De activiteit kon niet worden vernieuwd. Eventuele zichtbare vermeldingen zijn mogelijk verouderd.",
+  "activityMember": "Reisdeelnemer",
+  "friendsEmptyBody": "Zoek een vriend op naam of e-mailadres, of gebruik een QR-code.",
+  "friendsDeclineAction": "Weigeren",
+  "friendsLoading": "Vrienden worden geladen",
+  "friendsCommonTripsCount": "Gedeelde reizen: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "Gebaseerd op ingevoerde uitgaven; dit dekt mogelijk niet de gehele reis.",
+  "sharedTripsLoadedLimit": "Er worden maximaal 20 gedeelde reizen weergegeven.",
+  "memberRemoveTitle": "Lid verwijderen?",
+  "memberRemoveBody": "{name} uit deze reis verwijderen? Dit is alleen mogelijk als er geen uitgaven, afrekeningen of saldi zijn.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Verwijderen uit de reis",
+  "memberRemoved": "{name} is uit de reis verwijderd.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Nog niet toegevoegd",
+  "friendRelationshipLabel": "Vriend",
+  "sharedTripsEmptyBody": "Reizen waaraan jullie beiden deelnemen, verschijnen hier.",
+  "analyticsAllTrips": "Alle reizen",
+  "analyticsByTrip": "Per reis",
+  "analyticsYourSpending": "Je uitgaven",
+  "analyticsActiveArchived": "Actieve en gearchiveerde reizen",
+  "analyticsTrips": "Reizen",
+  "analyticsAveragePerTrip": "Gemiddelde per reis",
+  "analyticsPaidByMember": "Betaald door lid",
+  "analyticsYouPaid": "Je hebt betaald.",
+  "analyticsYouGetBack": "Je krijgt terug",
+  "analyticsYouOwe": "Je bent verschuldigd",
+  "analyticsParticipants": "Deelnemers",
+  "analyticsYourCategories": "Uw uitgaven per categorie",
+  "analyticsLargestShares": "Mijn grootste kostenaandelen",
+  "analyticsLargestExpenses": "Grootste uitgaven",
+  "analyticsSpendingByTrip": "Uw uitgaven per reis",
+  "analyticsEmptyTitle": "Nog geen uitgaven",
+  "analyticsEmptyBody": "Je uitgaven verschijnen hier wanneer je uitgaven aan een reis toevoegt.",
+  "analyticsPeriodEmptyBody": "Er zijn geen kosten verbonden aan deze weergave. Probeer een andere reis of periode.",
+  "analyticsLoadFailed": "Het volledige uitgavenoverzicht kon niet worden geladen. Probeer het opnieuw.",
+  "analyticsLastLoaded": "Het laat het laatst succesvol geladen rapport zien.",
+  "analyticsExpenseCount": "{count, plural, one{{count} uitgave} other{{count} uitgaven}}",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Reisopties",
+  "editTripAction": "Reis bewerken",
+  "deleteTripAction": "Reis verwijderen",
+  "inviteTripMembersAction": "Leden uitnodigen",
+  "tripCoverPhoto": "Omslagfoto",
+  "tripInviteLaterHint": "Je kunt mensen uitnodigen nadat je de reis hebt aangemaakt.",
+  "inviteClipboardFailed": "Toegang tot het klembord is niet mogelijk. Probeer het opnieuw.",
+  "friendInviteToTrip": "Uitnodigen voor een reis",
+  "friendChooseTrip": "Kies een reis",
+  "friendNoInvitableTrips": "Er zijn geen beschikbare reizen. Je kunt vrienden uitnodigen voor actieve groepsreizen die je beheert, tenzij ze al lid zijn of een uitstaande uitnodiging hebben.",
+  "friendTripInviteSent": "Uitnodiging verzonden.",
+  "friendTripUnavailable": "Deze reis is niet langer beschikbaar voor deze actie. Vernieuw de pagina en probeer het opnieuw.",
+  "friendTripActionFailed": "Deze actie kon niet worden voltooid. Probeer het opnieuw.",
+  "profileContactDescription": "Heb je een probleem, een suggestie of een vraag over Splyto? Stuur ons een e-mail — we helpen je graag verder.",
+  "profileContactEmailAction": "Schrijf een e-mail",
+  "profileContactEmailUnavailable": "De e-mailapp kon niet worden geopend. Kopieer het adres en stuur ons een e-mail vanuit je eigen e-mailapp.",
+  "profilePrivacyPolicy": "Privacybeleid",
+  "privacyLoadFailed": "Het privacybeleid kon niet worden geladen. Probeer het opnieuw.",
+  "addReceiptAction": "Ontvangstbewijs toevoegen",
+  "receiptPickFailed": "Het ontvangstbewijs kon niet worden geladen. Probeer het opnieuw.",
+  "receiptPhotoAccessDenied": "Geef Splyto in de Instellingen toegang tot de camera of fotobibliotheek en probeer het vervolgens opnieuw.",
+  "receiptPhotoLabel": "Foto van de bon",
+  "replaceReceiptAction": "Vervang 'ontvangstbewijs'",
+  "removeReceiptAction": "Ontvangstbewijs verwijderen",
+  "restoreReceiptAction": "Vorige ontvangstbewijs herstellen",
+  "expenseSplitBetween": "Verdeling tussen",
+  "expenseEditParticipants": "Kies deelnemers",
+  "expenseCustomSplit": "Aangepaste verdeling",
+  "expenseSplitAllocated": "Alle {amount} verdeeld",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "Nog {amount} te verdelen",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "{amount} boven het totaal",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Betaalmethoden delen met mijn reizen",
+  "profilePaymentSharingDescription": "Geef geaccepteerde deelnemers van reizen die ik aanmaak of waaraan ik deelneem toegang tot mijn betaalmethoden. Dit geldt voor huidige en toekomstige reizen. Je kunt dit op elk moment uitschakelen om verdere toegang te voorkomen.",
+  "memberPaymentDetailsNotShared": "Betaalmethoden worden niet gedeeld of zijn momenteel niet beschikbaar.",
+  "homeTripInvitations": "Uitnodigingen voor reizen",
+  "homeNoTripInvitations": "Geen uitstaande reisuitnodigingen",
+  "homeInvitationsLoadFailed": "Uitnodigingen konden niet worden geladen. Probeer het nogmaals.",
+  "homeInvitationResponseFailed": "De uitnodiging kon niet worden beantwoord. Probeer het nogmaals.",
+  "homeTripShareFailed": "De reis kon niet worden gedeeld. Probeer het opnieuw.",
+  "settleStillToReceive": "Nog te ontvangen",
+  "settleStillToPay": "Nog te betalen",
+  "settleEstimateCaption": "Schatting op basis van huidige uitgaven. Bedragen kunnen veranderen totdat de reis is afgelopen.",
+  "settleOutstandingCaption": "In afwachting van betaling of bevestiging.",
+  "settleWaitingForYou": "We wachten tot je aangeeft dat je klaar bent.",
+  "settleWhoPaysWhom": "Wie betaalt wie?",
+  "settlePreviewCaption": "Voorbeeld · afgerond wanneer de reis eindigt",
+  "settleOpenPaymentCaption": "Open een betaling om de details en beschikbare acties te bekijken.",
+  "tripBudgetEnable": "Stel een budget vast",
+  "tripBudgetSoloHint": "Optioneel uitgavendoel voor deze reis.",
+  "tripBudgetGroupHint": "Eén gedeeld budget voor de hele groep.",
+  "tripBudgetAmount": "Budgetbedrag",
+  "tripBudgetInvalid": "Voer een bedrag in van 0,01 tot 999999999,99, met maximaal twee decimalen.",
+  "tripBudgetTitle": "Reisbudget",
+  "tripBudgetGroupTitle": "Groepsbudget",
+  "tripBudgetRemaining": "Resterend",
+  "tripBudgetOver": "Boven het budget",
+  "tripBudgetSpent": "Uitgegeven",
+  "tripBudgetLimit": "Budget",
+  "travelMapTitle": "Mijn reiskaart",
+  "travelMapSubtitle": "Bezochte plaatsen, speciaal voor jou.",
+  "travelMapHere": "Ik ben hier al",
+  "travelMapAdd": "Plaats toevoegen",
+  "travelMapSearch": "Zoek stad en land",
+  "travelMapSearchAction": "Zoeken",
+  "travelMapSearchHint": "Bijvoorbeeld: Lissabon, Portugal",
+  "travelMapEmpty": "Je volgende herinnering begint hier",
+  "travelMapEmptyBody": "Voeg een stad toe die je hebt bezocht, of check in op de plek waar je nu bent.",
+  "travelMapConfirm": "Dit bezoek opslaan?",
+  "travelMapConfirmBody": "Controleer de stad en de datum voordat je deze op je privékkaart opslaat.",
+  "travelMapDate": "Bezoekdatum",
+  "travelMapSave": "Opslaan op mijn kaart",
+  "travelMapCancel": "Annuleren",
+  "travelMapClose": "Sluiten",
+  "travelMapNoResults": "Er is geen stad gevonden. Probeer het land aan je zoekopdracht toe te voegen.",
+  "travelMapLookupError": "De stad kon niet worden gevonden. Controleer je verbinding of voeg handmatig een plaats toe.",
+  "travelMapDenied": "Toegang tot locatie is uitgeschakeld. Je kunt nog steeds handmatig een stad toevoegen.",
+  "travelMapDisabled": "Schakel locatiediensten in of voeg handmatig een stad toe.",
+  "travelMapError": "Je reiskaart kon niet worden geladen. Probeer het nog eens.",
+  "travelMapSaveError": "Het bezoek kon niet worden opgeslagen. Probeer het opnieuw.",
+  "travelMapUnavailable": "De reiskaart heeft een serverupdate nodig.",
+  "travelMapOffline": "Offline · opgeslagen plaatsen weergeven",
+  "travelMapRetry": "Opnieuw proberen",
+  "travelMapDelete": "Bezoek verwijderen",
+  "travelMapDeleteConfirm": "Wil je dit bezoek van je privékkaart verwijderen?",
+  "travelMapFit": "Alle plaatsen weergeven",
+  "travelMapSaved": "Bezoek opgeslagen",
+  "travelMapVisited": "Bezocht",
+  "travelMapLimit": "Je kaart heeft 1.000 bezoeken bereikt. Verwijder een oud bezoek voordat je een nieuw toevoegt.",
+  "travelMapCounts": "{countries, plural, one{{countries} land} other{{countries} landen}} · {cities, plural, one{{cities} stad} other{{cities} steden}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{{count} bezoek} other{{count} bezoeken}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Bestemmingen (optioneel)",
+  "travelAddDestination": "Bestemming toevoegen",
+  "travelRemoveDestination": "Bestemming verwijderen",
+  "travelFromTrip": "Vanuit een reis",
+  "travelChooseTrip": "Kies een reis",
+  "travelNoTrips": "Er zijn nog geen reizen beschikbaar. Je kunt handmatig een locatie toevoegen.",
+  "travelAddToMap": "Toevoegen aan mijn kaart",
+  "travelTripConfirm": "Sla alleen plaatsen op die je daadwerkelijk hebt bezocht. Dit voegt een persoonlijke herinnering toe aan je kaart.",
+  "travelVisitTitle": "Titel (optioneel)",
+  "travelAddPhoto": "Voeg een foto toe",
+  "travelChangePhoto": "Foto wijzigen",
+  "travelRemovePhoto": "Foto verwijderen",
+  "travelPhotoError": "Deze foto kon niet worden voorbereid. Kies er een andere.",
+  "travelEditVisit": "Bezoek bewerken",
+  "travelOpenTrip": "Reis starten",
+  "travelPreviousVisit": "Vorige bezoek",
+  "travelNextVisit": "Volgend bezoek",
+  "travelDuplicate": "Dit bezoek staat al op je kaart.",
+  "liveMapTitle": "Livekaart",
+  "liveShareTitle": "Deel mijn locatie",
+  "liveConsent": "Deel je exacte locatie alleen met geaccepteerde deelnemers van deze reis, gedurende de periode die je kiest. Het delen gaat op de achtergrond door en je kunt het op elk moment stoppen.",
+  "liveBackgroundNote": "Updates kunnen worden onderbroken zonder internetverbinding of als je de app geforceerd sluit. Alleen de meest recente locatie wordt bewaard; er wordt geen routegeschiedenis vastgelegd.",
+  "liveStart": "Begin met delen",
+  "liveStop": "Deel niet langer",
+  "liveNotification": "Je locatie wordt gedeeld met je reis. Open Splyto om het delen te stoppen.",
+  "livePermissionError": "Sta locatietoegang toe in de instellingen van je telefoon om je locatie te delen.",
+  "liveStartError": "Het delen kon niet worden gestart. Controleer de toegang tot de locatie, de internetverbinding en de datum en tijd van je telefoon.",
+  "liveStopPending": "Updates zijn gestopt. We wachten op internetverbinding om je laatste locatie te verwijderen; deze verdwijnt binnen 2 minuten van de kaart als er geen updates plaatsvinden.",
+  "liveSharing": "deelt locatie",
+  "liveUnavailable": "Deze livekaart is niet beschikbaar. Ga terug naar de reis en vernieuw de pagina.",
+  "liveMapLoadError": "De kaart kon niet worden geladen. Controleer je verbinding en open de kaart opnieuw.",
+  "liveLoadError": "Locaties konden niet worden vernieuwd. Alleen recente updates worden weergegeven.",
+  "liveFit": "Iedereen op de kaart tonen",
+  "liveEmpty": "Niemand deelt op dit moment een recente locatie.",
+  "liveRecent": "Zojuist bijgewerkt",
+  "liveLastKnown": "Laatst bijgewerkt",
+  "liveAccuracy": "Nauwkeurigheid",
+  "liveUntil": "Delen tot",
+  "liveOtherSession": "Gestart in een andere sessie. Je kunt het hier stoppen.",
+  "liveUpdatesPaused": "Updates zijn gepauzeerd. Controleer de toegang tot de locatie en de internetverbinding.",
+  "livePrivateUntilShared": "Je locatie blijft privé totdat je ervoor kiest deze te delen.",
+  "activityEventExpenseCreated": "een uitgave toegevoegd",
+  "activityEventExpenseUpdated": "een uitgave bijgewerkt",
+  "activityEventExpenseDeleted": "een uitgave verwijderd",
+  "activityEventTripCreated": "heeft de reis aangemaakt",
+  "activityEventTripUpdated": "bijgewerkte reisgegevens",
+  "activityEventTripMembersAdded": "toegevoegde deelnemers",
+  "activityEventTripMembersInvited": "Verzonden uitnodigingen: {count}",
+  "@activityEventTripMembersInvited": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityEventTripMemberJoined": "heeft zich bij de reis aangesloten",
+  "activityEventTripInvitationDeclined": "de reisuitnodiging afgewezen",
+  "activityEventTripInvitationRevoked": "een reisuitnodiging geannuleerd",
+  "activityEventTripMemberRemoved": "{name} uit de reis verwijderd",
+  "@activityEventTripMemberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberLeft": "de reis verlaten",
+  "activityEventTripMemberRoleUpdated": "de rol van {name} gewijzigd in {role}",
+  "@activityEventTripMemberRoleUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberReady": "gemarkeerd als klaar voor afrekening",
+  "activityEventTripMemberNotReady": "gemarkeerd als niet gereed",
+  "activityEventTripAllMembersReady": "Alle deelnemers zijn klaar om af te rekenen",
+  "activityEventTripFinished": "de reis is voltooid",
+  "activityEventSettlementMarkedSent": "een overschrijving gemarkeerd als verzonden",
+  "activityEventSettlementConfirmed": "een overschrijving bevestigd",
+  "activityEventSettlementSentCancelled": "status ‘verzonden en geannuleerd’",
+  "activityEventSettlementNotReceived": "een overboeking gemarkeerd als niet ontvangen",
+  "activityEventSettlementReminderSent": "een betalingsherinnering verzonden",
+  "activityEventPaymentMarkedSent": "een betaling geregistreerd",
+  "activityEventPaymentRequested": "een betaling aangevraagd",
+  "activityEventPaymentRequestMarkedSent": "een aangevraagde betaling gemarkeerd als verzonden",
+  "activityEventPaymentRequestCancelled": "een betalingsverzoek geannuleerd",
+  "activityEventPaymentRequestDeclined": "een betalingsverzoek afgewezen",
+  "activityEventPaymentConfirmed": "een betaling bevestigd",
+  "activityEventPaymentCancelled": "een betalingsrecord geannuleerd",
+  "activityEventPaymentNotReceived": "een betaling gemarkeerd als niet ontvangen",
+  "activityEventUnknown": "een wijziging aangebracht",
+  "privacyEnglishFallback": "Het privacybeleid is momenteel beschikbaar in het Engels.",
+  "activityRoleAdmin": "Beheerder",
+  "accountDeleteTitle": "Account verwijderen",
+  "accountDeleteIntro": "Bevestig de verwijdering via e-mail. Na bevestiging kan dit niet ongedaan worden gemaakt.",
+  "accountDeleteConsequences": "Verwijdering is definitief. Je profiel wordt geanonimiseerd en de toegang tot je account wordt ingetrokken. Gedeelde reis- en onkostendossiers blijven bewaard voor andere leden.",
+  "accountDeleteReasonsTitle": "Wat hadden we beter kunnen doen?",
+  "accountDeleteReasonsHint": "Reden (optioneel)",
+  "accountDeleteReasonNotUsing": "Ik heb Splyto niet langer nodig voor mijn reizen",
+  "accountDeleteReasonAnotherWay": "Ik beheer gedeelde uitgaven op een andere manier",
+  "accountDeleteReasonComplicated": "Het kost te veel moeite om dingen voor elkaar te krijgen",
+  "accountDeleteReasonTechnical": "Ik ben bugs of technische problemen tegengekomen",
+  "accountDeleteReasonPrivacy": "Ik wil mijn accountgegevens liever verwijderen",
+  "accountDeleteReasonOther": "Ik vertrek om een andere reden",
+  "accountDeleteEmailStep": "De volgende stap is bevestiging per e-mail.",
+  "accountDeletePasswordHint": "Voer je huidige Splyto-wachtwoord in om de bevestigingsmail aan te vragen. Je account is nog steeds actief.",
+  "accountDeleteInboxTitle": "Nog één laatste stap in je inbox",
+  "accountDeleteSentBody": "Bevestigingslink verzonden naar {email}.",
+  "accountDeleteSentHint": "Je account blijft actief totdat je de verwijdering bevestigt.",
+  "accountDeleteSending": "Bevestigingsmail versturen",
+  "@accountDeleteSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  }
+}

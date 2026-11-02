@@ -1,0 +1,1863 @@
+{
+  "@@locale": "uk",
+  "homeFirstTrip": "Ваша перша подорож",
+  "homeYourShareAllTrips": "Твоя частка в усіх подорожах",
+  "homeAllTime": "За весь час",
+  "homeSolo": "Самостійно",
+  "homePeople": "{count, plural, one{{count} особа} few{{count} особи} many{{count} осіб} other{{count} осіб}}",
+  "homeTripActions": "Дії під час поїздки: {name}",
+  "homeNoActiveTrips": "Немає активних подорожей",
+  "homeNoArchivedTrips": "Немає подорожей в архіві",
+  "homeLoadingTrips": "Завантаження ваших поїздок",
+  "homeLoadErrorTitle": "Не вдалося завантажити ваші поїздки",
+  "homeLoadErrorBody": "Будь ласка, спробуйте ще раз через хвилину.",
+  "homeOfflineTitle": "Ви перебуваєте в режимі офлайн",
+  "homeOfflineNoData": "Ваші поїздки ще не доступні на цьому пристрої.",
+  "homeOfflineCached": "Офлайн. Відображення збережених поїздок.",
+  "homeRefreshError": "Не вдалося оновити. Відображаються раніше завантажені поїздки.",
+  "@homePeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@homeTripActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentShareDetailsConsent": "Поділитися моїми збереженими платіжними реквізитами з {arg1}",
+  "paymentShareDetailsScope": "Лише доти, доки цей запит очікує на оплату. Скасування запиту припиняє доступ.",
+  "paymentDetailsUnavailable": "Реквізити платежу недоступні. Підключіться до Інтернету та перевірте, чи запит досі відкритий.",
+  "paymentDetailsRetry": "Спробуйте ще раз",
+  "tripModeSolo": "Лише я",
+  "tripModeGroup": "З іншими",
+  "premiumFree": "Безкоштовно",
+  "premiumStatusUnavailable": "Статус плану недоступний",
+  "premiumGrantedUntil": "Преміум-доступ надано до {date}",
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumBillingNotActive": "Відсутність активної передплати",
+  "premiumRefreshStatus": "Оновити статус плану",
+  "@addedMembersCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownConfirmedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSentCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSuggestedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@createdByLine": {
+    "placeholders": {
+      "creator": {},
+      "date": {}
+    }
+  },
+  "@currentEmailLabel": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "@directlyExplainedByExpenses": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@exactAmountWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@exactSplitMustMatchTotal": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@expenseIdDate": {
+    "placeholders": {
+      "date": {},
+      "id": {}
+    }
+  },
+  "@expenseImpactLine": {
+    "placeholders": {
+      "date": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@expenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@expensesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@forParticipants": {
+    "placeholders": {
+      "participants": {}
+    }
+  },
+  "@fromDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@fromToLine": {
+    "placeholders": {
+      "from": {},
+      "to": {}
+    }
+  },
+  "@helloUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@memberToPaySummary": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {},
+      "waiting": {}
+    }
+  },
+  "@moreCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@noExpensesByUserYet": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@noteMustBeMaxChars": {
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "@offlineQueuePendingChanges": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@paidOwesLine": {
+    "placeholders": {
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@payerName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@percentWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@pickedCycleCompleted": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@pickedUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@queueAddExpenseAmount": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@queueDeleteExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queueUpdateExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queuedChangesTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@queuedCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@randomCycleDrawLeft": {
+    "placeholders": {
+      "cycleNo": {},
+      "drawNo": {},
+      "remaining": {}
+    }
+  },
+  "@selectedFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementConfirmedProgress": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {}
+    }
+  },
+  "@settlementCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@settlementImpactWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@sharesWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitLabelValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitModeEqual": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeExact": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModePercent": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeShares": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@statusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@suggestedTransferRows": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@toDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripCreated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripStatusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@tripWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@unreadUpdates": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@userIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@userPaidOwesNetLine": {
+    "placeholders": {
+      "net": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@userWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@whoOwesWhatWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@youShouldPay": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@youShouldReceive": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountSectionTitle": "Обліковий запис",
+  "activeStatus": "Активний",
+  "activeTripPlural": "активні поїздки",
+  "activeTripSingle": "активна подорож",
+  "activeTrips": "Активні поїздки",
+  "activitiesComingSoon": "Розділ «Активності» з’явиться найближчим часом.",
+  "addAction": "Додати",
+  "addExpenseTitle": "Додати витрати",
+  "addExpensesAction": "Додати витрати",
+  "addMembersAction": "Додати учасників",
+  "addTripMembersTitle": "Запрошуйте учасників поїздки",
+  "addedMembersCount": "{count, plural, one{{count} надіслане запрошення} few{{count} надіслані запрошення} many{{count} надісланих запрошень} other{{count} надісланих запрошень}}.",
+  "tripInvitationDeclined": "Запрошення на поїздку відхилено.",
+  "tripInviteAction": "Запросити",
+  "tripInvitationsPending": "Очікуємо на відповідь",
+  "tripInvitationsRetry": "Запрошення недоступні. Спробуйте ще раз",
+  "tripInvitationRevoke": "Скасувати запрошення",
+  "tripInvitationRevokeFailed": "Не вдалося скасувати запрошення. Спробуйте ще раз.",
+  "tripInvitationBody": "Вас запросили до поїздки. Відкрийте запрошення, щоб відповісти.",
+  "allCaughtUp": "Усе переглянуто",
+  "allFilter": "Усі",
+  "allMembersLabel": "Усі учасники",
+  "allPaymentsConfirmed": "Усі платежі підтверджуються.",
+  "allTrips": "Усі поїздки",
+  "amountHint": "12.50",
+  "amountLabel": "Сума",
+  "amountMustBeGreaterThanZero": "Сума повинна бути більшою за 0.",
+  "appearance": "Зовнішній вигляд",
+  "archivedStatus": "Архів",
+  "authSubtitleLogin": "Розділяйте витрати на подорож із друзями",
+  "authSubtitleRegister": "Створіть обліковий запис і почніть ділити витрати на поїздки",
+  "breakdownConfirmedCount": "підтверджено: {count}",
+  "breakdownPendingCount": "у процесі розгляду: {count}",
+  "breakdownSentCount": "надіслано: {count}",
+  "breakdownSuggestedCount": "рекомендовано: {count}",
+  "cancelAction": "Скасувати",
+  "changeEmailWithPasswordHelper": "Введіть свій пароль, щоб змінити електронну адресу.",
+  "chooseReceiptFile": "Виберіть файл квитанції",
+  "completeAccountSetupDescription": "Вкажіть свою електронну адресу та пароль, щоб завершити реєстрацію облікового запису.",
+  "completeAccountSetupTitle": "Завершіть налаштування облікового запису",
+  "confirmReceivedAction": "Підтвердити отримання",
+  "confirmedAllSettlementsArchived": "Усі розрахунки підтверджено. Подорож архівується.",
+  "confirmedAsReceived": "Отримано та підтверджено.",
+  "confirmedLabel": "Підтверджено",
+  "couldNotOpenReceiptLink": "Не вдалося відкрити посилання на квитанцію.",
+  "createAction": "Створити",
+  "createFirstTripHint": "Створіть свою першу поїздку, щоб розпочати.",
+  "createNewTripTitle": "Створити нову подорож",
+  "createTripAction": "Створити поїздку",
+  "createTripFirst": "Спочатку створіть поїздку.",
+  "createdByLine": "{date} -  Створено {creator}",
+  "creatorMustFinishTripFirst": "Організатор поїздки повинен завершити поїздку, щоб розпочати підтвердження розрахунків.",
+  "currentEmailLabel": "Поточна електронна адреса: {email}",
+  "currentReceiptAttached": "Поточний квитанцію додано.",
+  "dateFormatHint": "YYYY-MM-DD",
+  "dateLabel": "Дата",
+  "dateMustMatchFormat": "Дата повинна відповідати формату YYYY-MM-DD.",
+  "dateUnknown": "Дата невідома",
+  "deleteAction": "Видалити",
+  "deleteExpenseConfirmQuestion": "Видалити цю витрату?",
+  "deleteExpenseTitle": "Видалити витрати",
+  "editExpenseConfirmTitle": "Зберегти зміни у витратах?",
+  "editExpenseConfirmText": "Це оновить залишки на рахунках усіх учасників поїздки.",
+  "directlyExplainedByExpenses": "Пряме пояснення витрат: {amount}",
+  "doneStatus": "Готово",
+  "editAction": "Редагувати",
+  "editExpenseTitle": "Редагування витрат",
+  "emailAddressLabel": "Адреса електронної пошти",
+  "emailHint": "you@example.com",
+  "emailLabel": "Веб-сайт",
+  "emailRequired": "Електронна адреса є обов’язковою.",
+  "enterValidExactAmounts": "Введіть дійсні точні суми для всіх учасників.",
+  "enterValidPercentages": "Введіть дійсні відсотки для всіх учасників.",
+  "equalSplitLabel": "Порівну",
+  "exactAmountWithValue": "Точно: {value}",
+  "exactAmountsLabel": "Точні суми",
+  "exactSplitMustMatchTotal": "Точна сума розподілу повинна дорівнювати {amount}.",
+  "expenseAdded": "Додано витрату.",
+  "expenseBreakdownSubtitle": "Як кожна витрата впливає на цього учасника.",
+  "expenseBreakdownTitle": "Розподіл витрат",
+  "expenseDeleted": "Витрата видалена.",
+  "expenseIdDate": "Витрата № {id}  -  {date}",
+  "expenseImpactLine": "{date}  -  Оплачено {paid}  -  Заборгувано {owes}",
+  "expenseReactionsTitle": "Реакції",
+  "expenseCommentsTitle": "Коментарі",
+  "expenseNoComments": "Поки що коментарів немає.",
+  "expenseAddCommentHint": "Додати коментар...",
+  "expenseCommentSend": "Надіслати",
+  "expenseDeleteCommentTitle": "Видалити коментар?",
+  "expenseUpdated": "Витрати оновлено.",
+  "expenseWithId": "Витрата № {id}",
+  "expensesCount": "{count, plural, one{{count} витрата} few{{count} витрати} many{{count} витрат} other{{count} витрат}}",
+  "expensesLabel": "Витрати",
+  "failedToCreateTrip": "Не вдалося створити поїздку.",
+  "failedToLoadUsersDirectory": "Не вдалося завантажити каталог користувачів.",
+  "filterSettlementByMemberSubtitle": "Фільтруйте розрахунки за учасниками",
+  "finishSoloTripConfirmationText": "Завершити цю поїздку та перемістити її до архіву? Ваші витрати залишаться доступними для перегляду.",
+  "soloTripArchived": "Подорож завершена та архівується.",
+  "finishTripSyncPending": "Синхронізуйте свої зміни, що очікують на затвердження, перед завершенням цієї подорожі.",
+  "finishTripAction": "Завершити поїздку",
+  "finishTripConfirmationText": "Завершити цю поїздку та розпочати розрахунки?",
+  "finishTripStartSettlementsAction": "Завершення та початок розрахунків",
+  "finishTripTitle": "Завершити поїздку",
+  "forParticipants": "Для: {participants}",
+  "forgotPassword": "Забули пароль?",
+  "profilePasswordByEmail": "Встановити пароль електронною поштою",
+  "sendDeactivationEmail": "Надіслати посилання на деактивацію",
+  "deactivationEmailSent": "Перевірте свою електронну пошту, щоб підтвердити деактивацію. Ваш обліковий запис залишається активним.",
+  "deactivationConfirmationMethods": "Підтвердьте деактивацію за допомогою пароля або посилання в електронному листі. Ваші поїздки та витрати залишаться збереженими.",
+  "passwordEmailBackToProfile": "Назад до профілю",
+  "forgotPasswordSubtitle": "Введіть свою електронну адресу, і ми надішлемо посилання для скидання пароля.",
+  "forgotPasswordSuccessMessage": "Якщо обліковий запис із цією електронною адресою вже існує, ми надіслали посилання для скидання пароля.",
+  "forgotPasswordTitle": "Скинути пароль",
+  "friendsProgressSubtitle": "Кожен учасник та його статус підтвердження.",
+  "friendsProgressTitle": "Прогрес друзів",
+  "friendsSectionComingSoon": "Розділ «Друзі» з’явиться незабаром.",
+  "fromDirection": "Від {name}",
+  "fromToLine": "{from} до {to}",
+  "generateTurnAction": "Обрати наступну людину жеребкуванням",
+  "hasAccountQuestion": "У вас уже є обліковий запис?",
+  "helloUser": "Привіт, {name}!",
+  "iSentAction": "Я надіслав",
+  "invalidEmailFormat": "Неправильний формат електронної адреси.",
+  "languageAction": "Мова",
+  "languageEnglish": "Англійська",
+  "languageLatvian": "Латвійська",
+  "languageSpanish": "Іспанська",
+  "languageSystem": "Системна",
+  "languageSystemSubtitle": "Використовувати мову пристрою",
+  "leaveEmptyKeepPasswordHelper": "Залиште поле порожнім, щоб зберегти поточний пароль.",
+  "logInButton": "Увійти",
+  "logOutButton": "Вийти",
+  "logoutFromDeviceQuestion": "Вийти з цього пристрою?",
+  "logoutRevocationUnconfirmed": "Вийшли з облікового запису на цьому пристрої. Не вдалося підтвердити скасування сеансу на сервері.",
+  "markedAsSent": "Позначено як надіслано.",
+  "markSettlementSentConfirmTitle": "Позначити переказ як надісланий?",
+  "markSettlementSentConfirmText": "Використовуйте цю функцію лише після того, як ви фактично надіслали платіж. Одержувача буде запропоновано підтвердити платіж.",
+  "settlementCancelSentAction": "Позначити як не надіслане",
+  "settlementCancelSentConfirmTitle": "Скасувати статус «відправлено»?",
+  "settlementCancelSentConfirmText": "Це поверне переказ у статус «очікує на обробку» та сповістить одержувача.",
+  "settlementSentCancelled": "Передача повернулася до статусу «очікує на затвердження».",
+  "settlementNotReceivedAction": "Я цього не отримав",
+  "settlementNotReceivedConfirmTitle": "Повідомити про неотриманий платіж?",
+  "settlementNotReceivedConfirmText": "Це поверне переказ у статус «очікує на обробку» та повідомить про це платника.",
+  "settlementMarkedNotReceived": "Позначено як «не отримано».",
+  "confirmSettlementReceivedConfirmTitle": "Чи підтвердили отримання?",
+  "confirmSettlementReceivedConfirmText": "Підтверджуйте лише після того, як гроші з’являться на вашому рахунку. Ця дія може завершити розрахунок.",
+  "memberSummariesSubtitle": "Поточний стан балансу для обох сторін.",
+  "memberSummariesTitle": "Короткі відомості про учасників",
+  "memberToPaySummary": "Оплатити {total}  -  підтверджено {confirmed}  -  очікує {waiting}",
+  "membersImpactSubtitle": "Орієнтовний вплив на оплату на одного учасника.",
+  "membersImpactTitle": "Вплив учасників",
+  "membersIncludedInExpense": "Учасники, що включені",
+  "membersLabel": "Учасники",
+  "moreCount": "+ ще {count}",
+  "myFilter": "Мій",
+  "myImpactTitle": "Мій вплив",
+  "firstNameHint": "Ваше ім’я",
+  "firstNameLabel": "Ім'я",
+  "firstNameLengthValidation": "Ім’я має містити від 2 до 64 символів.",
+  "fullNameHelper": "Вкажіть ім’я та прізвище в одному полі.",
+  "fullNameHint": "Наприклад: Анна Озоліна",
+  "fullNameLabel": "Повне ім’я",
+  "fullNameValidation": "Введіть ім’я та прізвище (щонайменше по 2 символи в кожному).",
+  "lastNameHint": "Ваше прізвище",
+  "lastNameLabel": "Ім'я",
+  "lastNameLengthValidation": "Прізвище має містити від 2 до 64 символів.",
+  "nameHint": "Ваше ім’я",
+  "nameLabel": "Ім'я",
+  "nameLengthValidation": "Ім’я має містити щонайменше 2 символи.",
+  "navActivities": "Статистика",
+  "navAddTrip": "Додати поїздку",
+  "navBalances": "Баланси",
+  "navExpenses": "Витрати",
+  "navFriends": "Друзі",
+  "navHome": "Головна",
+  "navProfile": "Профіль",
+  "navRandom": "Випадкове",
+  "netLabel": "Чистий баланс",
+  "newPasswordLabel": "Новий пароль",
+  "nicknameHint": "Як вас бачитимуть друзі",
+  "nicknameLabel": "Прізвисько",
+  "nicknameLengthValidation": "Прізвисько має складатися щонайменше з 2 символів.",
+  "noAccountQuestion": "Ще немає облікового запису?",
+  "noBalancesYet": "Поки що немає балансів.",
+  "noChangesToSave": "Зміни не збережено.",
+  "noDirectExpenseLink": "Прямого посилання на окрему витрату не знайдено. Ця сума розраховується на основі загального балансу поїздки.",
+  "noExpenseImpactForMember": "Цей учасник не несе жодних витрат.",
+  "noExpensesByUserYet": "{name} поки що не має витрат.",
+  "noExpensesYet": "Витрат поки що немає.",
+  "noExtraUsersToAdd": "Не потрібно додавати додаткових користувачів.",
+  "noInternetDeleteQueued": "Немає інтернету. Видалити з черги.",
+  "noInternetExpenseQueued": "Немає інтернету. Витрати поставлені в чергу.",
+  "noInternetUpdateQueued": "Відсутність інтернету. Оновлення в черзі.",
+  "noMatchingRows": "Відповідних записів не знайдено.",
+  "noMembersFound": "Учасників не знайдено.",
+  "noNewMembersAdded": "Ці особи вже є учасниками або мають запрошення, що очікують на підтвердження.",
+  "noNotePlaceholder": "Без приміток",
+  "notificationsToday": "Сьогодні",
+  "notificationsEmptyBody": "Тут з’являтимуться оновлення щодо поїздок, витрат та друзів.",
+  "notificationsCached": "Офлайн — відображення збережених сповіщень.",
+  "notificationsRefreshFailed": "Не вдалося оновити. Відображаються раніше завантажені сповіщення.",
+  "notificationsJustNow": "Саме зараз",
+  "notificationsMinutesAgo": "{count} хв тому",
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsHoursAgo": "{count} год тому",
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsUnread": "Непрочитано",
+  "noNotificationsYet": "Поки що повідомлень немає.",
+  "noParticipantData": "Дані учасників не збираються.",
+  "noParticipantsSelected": "Учасники не обрані.",
+  "noPaymentRowsInTrip": "У цій поїздці немає рядків про платежі.",
+  "noPaymentsNeeded": "Платежі не потрібні.",
+  "noPicksYet": "Поки що немає виборів.",
+  "noSettlementActivityForMember": "Для цього учасника немає операцій з розрахунками.",
+  "noSettlementRowsYet": "Поки що немає рядків щодо розрахунків.",
+  "noSettlements": "Немає розрахунків",
+  "noTransferNeededForFilter": "Для обраного фільтра переказ не потрібен.",
+  "noTransferRowsToShow": "Немає переказів для відображення.",
+  "noTripDataLoaded": "Дані про поїздку не завантажено.",
+  "noTripsYet": "Поїздок ще немає.",
+  "noUsersFoundYet": "Поки що користувачів не знайдено.",
+  "notSetValue": "Не встановлено",
+  "notYetConfirmedTitle": "Ще не підтверджено",
+  "noteHint": "Вечеря, таксі, квитки...",
+  "noteLabel": "Примітка",
+  "noteMustBeMaxChars": "Примітка має містити не більше {max} символів.",
+  "notificationFallbackTitle": "Повідомлення",
+  "notificationsTitle": "Повідомлення",
+  "notificationFriendInviteTitle": "Запит у друзі",
+  "notificationFriendInviteBody": "{name} надіслав вам запрошення в друзі.",
+  "notificationFriendInviteBodyGeneric": "Ви отримали запрошення від друга.",
+  "notificationFriendInviteAcceptedTitle": "Запрошення прийнято",
+  "notificationFriendInviteAcceptedBody": "{name} прийняв ваше запрошення у друзі.",
+  "notificationFriendInviteAcceptedBodyGeneric": "Ваше запрошення друга було прийнято.",
+  "notificationFriendInviteRejectedTitle": "Запрошення відхилено",
+  "notificationFriendInviteRejectedBody": "{name} відхилив ваше запрошення у друзі.",
+  "notificationFriendInviteRejectedBodyGeneric": "Ваше запрошення друга було відхилено.",
+  "notificationTripAddedTitle": "Додано до поїздки",
+  "notificationTripAddedBody": "{name} додав вас до поїздки «{trip}».",
+  "notificationTripAddedBodyNoActor": "Вас додано до поїздки «{trip}».",
+  "notificationTripAddedBodyGeneric": "Вас додано до поїздки.",
+  "notificationExpenseAddedTitle": "Додано новий вид витрат",
+  "notificationExpenseAddedBodyWithTrip": "{name} додав витрату на суму {amount} у «{trip}».",
+  "notificationExpenseAddedBodyWithNote": "{name} додав витрату на суму {amount}: {note}",
+  "notificationExpenseAddedBodyGeneric": "Було додано нову статтю витрат.",
+  "notificationTripFinishedTitle": "Подорож завершено",
+  "notificationTripFinishedBodySettlementsReady": "{name} завершив(ла) «{trip}». Розрахунки готові.",
+  "notificationTripFinishedBodyArchived": "{name} завершив(ла) «{trip}». Подорож архівується.",
+  "notificationTripFinishedBodyNoActor": "«{trip}» завершено.",
+  "notificationTripFinishedBodyGeneric": "Статус поїздки оновлено.",
+  "notificationMemberReadyToSettleTitle": "Учасник позначений як готовий",
+  "notificationMemberReadyToSettleBody": "{name} готовий до участі в «{trip}».",
+  "notificationMemberReadyToSettleBodyNoActor": "Учасник готовий до участі в «{trip}».",
+  "notificationMemberReadyToSettleBodyGeneric": "Учасник готовий до розрахунку.",
+  "notificationTripReadyToSettleTitle": "Усі учасники готові",
+  "notificationTripReadyToSettleBody": "Усі учасники, позначені як «готові» у «{trip}». Ви можете розпочати розрахунки.",
+  "notificationTripReadyToSettleBodyGeneric": "Усі учасники готові. Ви можете розпочати розрахунки.",
+  "notificationSettlementReminderTitle": "Нагадування про розрахунок",
+  "notificationSettlementReminderBodyMarkSent": "{actor} нагадав {target} позначити {amount} як відправлене.",
+  "notificationSettlementReminderBodyConfirm": "{actor} нагадав {target} підтвердити отримання {amount}.",
+  "notificationSettlementReminderBodyGeneric": "Ви отримали нагадування про розрахунок.",
+  "notificationPaymentReminderTitle": "Нагадування про оплату",
+  "notificationPaymentReminderBody": "Нагадування: будь ласка, позначте {amount} як надіслане {target} у «{trip}».",
+  "notificationPaymentReminderBodyGeneric": "Нагадування: будь ласка, позначте платіж як відправлений.",
+  "notificationConfirmationReminderTitle": "Нагадування про підтвердження",
+  "notificationConfirmationReminderBody": "Нагадування: будь ласка, підтвердьте отримання {amount} від {payer} у «{trip}».",
+  "notificationConfirmationReminderBodyGeneric": "Нагадування: будь ласка, підтвердьте отримання платежу.",
+  "notificationSettlementSentTitle": "Переказ позначено як надісланий",
+  "notificationSettlementSentBody": "{name} позначив {amount} як надісланий вам.",
+  "notificationSettlementSentBodyGeneric": "Переказ було позначено як надісланий.",
+  "notificationSettlementConfirmedTitle": "Переказ підтверджено",
+  "notificationSettlementConfirmedBody": "{name} підтвердив отримання від вас {amount}.",
+  "notificationSettlementConfirmedBodyGeneric": "Переказ підтверджено.",
+  "offlineQueuePendingChanges": "Черга офлайн: {count, plural, one{{count} зміна в очікуванні} few{{count} зміни в очікуванні} many{{count} змін в очікуванні} other{{count} змін в очікуванні}}",
+  "syncAllSynced": "Усе синхронізовано",
+  "syncChangesWaiting": "{count} очікують на синхронізацію",
+  "syncFailedTapToRetry": "Синхронізація не вдалася, натисніть, щоб спробувати ще раз",
+  "offlineQueueStatus": "Черга в автономному режимі",
+  "offlineStatus": "Офлайн",
+  "onlineStatus": "Онлайн",
+  "onlyCreatorCanFinishTrip": "Лише організатор поїздки може завершити поїздку.",
+  "openLabel": "Відкрити",
+  "openReceiptAction": "Відкрити чек",
+  "openSettlements": "Відкрити розрахунки",
+  "overviewTitle": "Огляд",
+  "owesLabel": "Борг",
+  "paidByLabel": "Оплачується",
+  "paidLabel": "Платний",
+  "paidOwesLine": "Оплачено {paid}  -  Заборгував {owes}",
+  "participantsEmptyMeansAll": "Учасники (порожнє поле = усі учасники)",
+  "participantsTitle": "Учасники",
+  "passwordLabel": "Логін",
+  "passwordComplexityHelper": "Використовуйте щонайменше 1 велику літеру, 1 цифру та 1 символ.",
+  "passwordComplexityValidation": "Пароль повинен містити 1 велику літеру, 1 цифру та 1 символ.",
+  "passwordMinLength": "Пароль повинен містити щонайменше 8 символів.",
+  "passwordMinLengthShort": "Пароль повинен складатися щонайменше з 6 символів.",
+  "passwordResetComingSoon": "Функція скидання пароля з’явиться найближчим часом.",
+  "passwordsDoNotMatch": "Паролі не збігаються.",
+  "payerName": "{name} (платник)",
+  "pendingLabel": "Очікує",
+  "pendingPaymentsSubtitle": "Платежі все ще очікують на повне підтвердження.",
+  "percentLabel": "Відсоток",
+  "percentSplitMustBe100": "Сума відсотків розподілу повинна дорівнювати точно 100%.",
+  "percentWithValue": "{value}",
+  "percentagesLabel": "Відсотки",
+  "pickAtLeastOneParticipant": "Оберіть принаймні одного учасника.",
+  "pickMembersGenerateTurn": "Обери учасників і визнач наступну людину жеребкуванням.",
+  "pickedCycleCompleted": "Вибрано {name}. Цикл завершено.",
+  "pickedUser": "Вибрано {name}.",
+  "profileRefreshCachedData": "Не вдалося оновити профіль. Відображаються дані з кешу.",
+  "profileTitle": "Профіль",
+  "profileUpdated": "Профіль оновлено.",
+  "uploadAvatarAction": "Завантажити аватар",
+  "takePhotoAction": "Візьміть картину",
+  "chooseFromLibraryAction": "Виберіть із бібліотеки",
+  "removeAvatarAction": "Видалити аватар",
+  "avatarUpdatedMessage": "Оновлено аватар.",
+  "avatarRemovedMessage": "Аватар видалено.",
+  "avatarFileTooLarge": "Файл аватара занадто великий (максимум 5 МБ).",
+  "avatarPickFailed": "Не вдалося завантажити зображення аватара.",
+  "queueAddExpense": "Додати витрати",
+  "queueAddExpenseAmount": "У черзі: додати витрату {amount}",
+  "queueDeleteExpense": "Видалити витрати",
+  "queueDeleteExpenseWithId": "У черзі: видалити витрату № {id}",
+  "queuePendingStatus": "У черзі на розгляд",
+  "queueUpdateExpense": "Оновити витрати",
+  "queueUpdateExpenseWithId": "У черзі: оновлення витрат №{id}",
+  "queuedChange": "Зміни в черзі",
+  "queuedChangesTitle": "Зміни в черзі ({count})",
+  "queuedCountLabel": "У черзі ({count})",
+  "randomCycleDrawLeft": "Цикл {cycleNo}, витяг {drawNo} — залишилося {remaining}",
+  "receiptFallbackName": "чек",
+  "receiptLinkInvalid": "Посилання на квитанцію недійсне.",
+  "receiptOptionalLabel": "Чек (необов’язково)",
+  "recentPicksTitle": "Останні жеребкування",
+  "reloadProfile": "Оновити профіль",
+  "rememberMe": "Запам’ятати мене",
+  "removeCurrentReceipt": "Видалити поточний квитанцію",
+  "repeatNewPasswordLabel": "Повторіть новий пароль",
+  "repeatPasswordLabel": "Повторіть пароль",
+  "requestFailedTryAgain": "Запит не вдався. Спробуйте ще раз.",
+  "retryAction": "Спробуйте ще раз",
+  "rowsLabel": "Рядки",
+  "backToLoginAction": "Повернутися до входу",
+  "saveAction": "Зберегти",
+  "saveCredentialsButton": "Збереження облікових даних",
+  "saveProfileButton": "Зберегти профіль",
+  "sendResetLinkButton": "Надіслати посилання для скидання",
+  "searchUsersHint": "Пошук людей за іменем або електронною поштою",
+  "selectedPeopleLabel": "Вибрані особи",
+  "noSearchMatches": "Не знайдено відповідних користувачів.",
+  "savingButton": "Зберігання...",
+  "selectAtLeastTwoMembers": "Оберіть щонайменше двох учасників.",
+  "selectMembersHint": "Вибрати учасників",
+  "selectedFileLabel": "Вибрано: {name}",
+  "selectedLabel": "Вибрані",
+  "selectedUserFallback": "Вибраний користувач",
+  "settings": "Налаштування",
+  "settleUpAction": "Розрахуватися",
+  "settledLabel": "Розраховано",
+  "settledStatus": "Розраховано",
+  "settlementActivitySubtitle": "Перекази, пов’язані з цим учасником.",
+  "settlementActivityTitle": "Розрахункова діяльність",
+  "settlementCompletedTitle": "Розрахунок завершено",
+  "settlementConfirmedProgress": "{confirmed} / {total} підтверджено",
+  "settlementCountLabel": "Розрахунки: {count}",
+  "settlementImpactTitle": "Вплив на розрахунки",
+  "settlementImpactWithFilter": "Вплив на врегулювання: {name}",
+  "settlementInProgress": "Розрахунок триває",
+  "settlementInProgressTitle": "Розрахунок триває",
+  "settlementLabel": "Розрахунок",
+  "settlementOverviewArchivedSubtitle": "Подорож архівується. Усі розрахунки завершено.",
+  "settlementOverviewInProgressSubtitle": "Відстежуйте підтвердження розрахунків.",
+  "settlementOverviewPreviewSubtitle": "Перегляд переказів після завершення поїздки.",
+  "settlementPreview": "Попередній перегляд розрахунків",
+  "settlementPreviewTitle": "Попередній перегляд розрахунків",
+  "settlementProgressTripArchived": "Подорож архівується",
+  "settlementWithId": "Розрахунок № {id}",
+  "settlements": "Розрахунки",
+  "settlementsAlreadyCompletedSubtitle": "Розрахунки вже завершено.",
+  "settlementsDone": "Розрахунки здійснено",
+  "settlingStatus": "Розрахунки",
+  "shareUnit": "частка",
+  "sharesLabel": "Частки",
+  "sharesMustBePositiveIntegers": "Кількість часток має бути додатним цілим числом.",
+  "sharesWithValue": "Частки: {value}",
+  "showActiveTrips": "Показати активні поїздки",
+  "signUpButton": "Зареєструватися",
+  "splitBreakdownSubtitle": "Як розподіляються витрати",
+  "splitBreakdownTitle": "Розбивка витрат",
+  "splitHintEqual": "Розподіліть суму рівномірно між обраними учасниками.",
+  "splitHintExact": "Введіть точну суму для кожного учасника. Сума повинна збігатися із загальною сумою.",
+  "splitHintPercent": "Введіть відсоток для кожного учасника. Сума повинна становити 100%.",
+  "splitHintShares": "Введіть кількість учасників, з якими ділитеся (1, 2, 3...). Вартість розподіляється пропорційно.",
+  "splitLabel": "Розсилка",
+  "splitLabelValue": "Split: {value}",
+  "splitModeEqual": "Рівний розподіл ({target})",
+  "splitModeExact": "Точні суми ({target})",
+  "splitModeLabel": "Режим «Split»",
+  "splitModePercent": "Відсотки ({target})",
+  "splitModeShares": "Частки ({target})",
+  "statusConfirmed": "Підтверджено",
+  "statusPending": "Очікує",
+  "statusSent": "Сент",
+  "statusSuggested": "Смоктати",
+  "statusWithValue": "Статус: {status}",
+  "suggestedTransferDirections": "Запропоновані напрямки платежів",
+  "suggestedTransferFromExpense": "Пропонований переказ з рахунку витрат",
+  "suggestedTransferRows": "{count, plural, one{{count} запропонований переказ} few{{count} запропоновані перекази} many{{count} запропонованих переказів} other{{count} запропонованих переказів}}",
+  "suggestedTransfersSubtitle": "Очікувані рядки «платник» — «одержувач».",
+  "suggestedTransfersTitle": "Рекомендовані перекази",
+  "summarySettledUp": "Розраховано",
+  "summaryYouAreOwed": "Тобі винні",
+  "summaryYouOwe": "Твій борг",
+  "syncAction": "Синхронізація",
+  "syncNowAction": "Синхронізувати зараз",
+  "syncingStatus": "Синхронізація",
+  "tapToViewDetails": "Натисніть, щоб переглянути деталі",
+  "themeModeDark": "Темна",
+  "themeModeDarkSubtitle": "М’який темний (не чистий чорний)",
+  "themeModeLight": "Світла",
+  "themeModeSystem": "Системна",
+  "themeModeSystemSubtitle": "Використовуйте зовнішній вигляд пристрою",
+  "toDirection": "До {name}",
+  "totalLabel": "Разом",
+  "travelerFallbackName": "Мандрівник",
+  "tripAlreadyClosed": "Подорож уже завершена.",
+  "tripArchivedReadOnly": "Подорож архівується. Режим «тільки для читання».",
+  "tripClosedExpenseEditingDisabled": "Подорож завершена. Редагування витрат вимкнено.",
+  "tripClosedExpensesReadOnly": "Подорож завершена. Витрати доступні лише для перегляду.",
+  "tripClosedRandomDisabled": "Подорож завершена. Випадковий розіграш вимкнено.",
+  "tripCreated": "Подорож «{name}» створено.",
+  "tripFinished": "Подорож завершено.",
+  "tripFinishedCompleteSettlements": "Подорож завершена. Здійсніть розрахунки.",
+  "tripFinishedSettlementStarted": "Подорож завершено. Розрахунок розпочато.",
+  "tripFullySettledArchived": "Подорож повністю оплачена та архівується.",
+  "tripNameHint": "Лижна поїздка до Австрії",
+  "tripNameLabel": "Назва поїздки",
+  "tripNameLengthValidation": "Назва поїздки повинна містити щонайменше 2 символи.",
+  "tripSnapshotTitle": "Знімок поїздки",
+  "tripTitleShort": "Подорож",
+  "tripStatusWithValue": "Статус поїздки: {status}",
+  "tripWithId": "Подорож № {id}",
+  "unexpectedErrorLoadingProfile": "Сталася несподівана помилка під час завантаження профілю",
+  "unexpectedErrorLoadingTripData": "Сталася несподівана помилка під час завантаження даних про поїздку",
+  "unexpectedErrorLoadingTrips": "Несподівана помилка під час завантаження поїздок",
+  "unexpectedErrorSavingChanges": "Несподівана помилка під час збереження змін",
+  "unexpectedErrorSavingCredentials": "Несподівана помилка під час збереження облікових даних",
+  "unexpectedErrorUpdatingProfile": "Несподівана помилка під час оновлення профілю",
+  "unknownError": "Невідома помилка",
+  "unknownLabel": "Невідомо",
+  "unreadLabel": "Непрочитано",
+  "unreadUpdates": "{count, plural, one{{count} непрочитане оновлення} few{{count} непрочитані оновлення} many{{count} непрочитаних оновлень} other{{count} непрочитаних оновлень}}",
+  "missingTripRouteArgument": "Відсутній аргумент маршруту поїздки.",
+  "userIdLabel": "Ідентифікатор користувача: {id}",
+  "userPaidOwesNetLine": "Оплачено {paid}  -  Заборгувано {owes}  -  Чисто {net}",
+  "userWithId": "Користувач {id}",
+  "valueLabel": "Цінність",
+  "viewAllTrips": "Переглянути всі поїздки",
+  "viewByPersonTitle": "Перегляд за особою",
+  "whoOwesWhatSubtitle": "Хто заплатив, а хто винен.",
+  "whoOwesWhatTitle": "Хто кому що винен",
+  "whoOwesWhatWithFilter": "Хто кому винен: {name}",
+  "whyPaymentExistsSubtitle": "Рядки витрат, що стосуються цього переказу.",
+  "whyPaymentExistsTitle": "Навіщо існує цей платіж",
+  "youLabel": "Ви",
+  "youSettledForExpense": "Ти вже розрахувався за свою частку цієї витрати.",
+  "youShouldPay": "Ви повинні платити {amount}",
+  "youShouldReceive": "Ви повинні отримувати {amount}",
+  "yourShare": "Ваше повідомлення",
+  "yourTrips": "Ваші поїздки",
+  "authIntroSplitSmarter": "Розподіляйте витрати розумніше.",
+  "authIntroTravelFree": "Подорожуйте вільно.",
+  "authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo": "Відстежуйте спільні витрати в різних валютах і миттєво розраховуйтеся — без незручних боргових розписок.",
+  "authIntroPlanTogether": "Плануйте разом.",
+  "authIntroPayClearly": "Платіть чітко.",
+  "authIntroCreateTripsSecondsAddFriendsKeepEveryExpense": "Створюйте поїздки за лічені секунди, додавайте друзів і забезпечуйте прозорість усіх витрат для всіх учасників.",
+  "authIntroSettleFast": "Дійте швидко.",
+  "authIntroStayFriends": "Залишаймося друзями.",
+  "authIntroFromSharedDinnersFullTripsSplytoKeepsBalances": "Від спільних вечерь до повноцінних подорожей — Splyto забезпечує справедливий розподіл витрат і позбавляє вас стресу.",
+  "authIntroAppleSignFailedPleaseTryAgain": "Не вдалося увійти через Apple. Спробуйте ще раз.",
+  "authIntroGoogleSignFailedPleaseTryAgain": "Не вдалося увійти через Google. Спробуйте ще раз.",
+  "authIntroCreateAccount": "Створіть свій обліковий запис.",
+  "authIntroChooseSign": "Оберіть спосіб реєстрації.",
+  "authIntroContinueGoogle": "Продовжити з Google",
+  "authIntroContinueApple": "Продовжити з Apple",
+  "authIntroBack": "Назад",
+  "authIntroSplitSettled": "Розподіл оплати",
+  "authIntroParis3Friends": "Париж · 3 друзі",
+  "authIntroGetStarted": "Почніть роботу",
+  "authIntroAlreadyHaveAccount": "У вас уже є обліковий запис? ",
+  "authIntroSignIn": "Увійти",
+  "authIntroSignUpWithEmail": "Зареєструйтеся за допомогою електронної пошти",
+  "authIntroOr": "АБО",
+  "authGoogleSignDidNotReturnIdToken": "Вхід через Google не повернув ідентифікаційний токен.",
+  "authAppleSignAvailableIosDevices": "На пристроях iOS доступний вхід через Apple.",
+  "authAppleSignNotAvailableDevice": "Вхід через Apple на цьому пристрої недоступний.",
+  "authAppleSignDidNotReturnIdentityToken": "Система входу Apple не повернула токен ідентифікації.",
+  "authAccountDeactivatedEnterEmailRequestReactivationLink": "Акаунт деактивовано. Введіть свою електронну адресу, щоб отримати посилання для поновлення доступу.",
+  "authAccountDeactivated": "Акаунт деактивовано",
+  "authSendReactivationLinkEmail": "Надіслати посилання для поновлення доступу на {email}?",
+  "authCancel": "Скасувати",
+  "authSendLink": "Надіслати посилання",
+  "authReactivationLinkSentCheckEmail": "Надіслано посилання для поновлення доступу. Перевірте свою електронну пошту.",
+  "authCouldNotSendReactivationLinkPleaseTryAgain": "Не вдалося надіслати посилання для поновлення доступу. Спробуйте ще раз.",
+  "authEmailNotVerifiedEnterEmailRequestVerificationLink": "Електронна адреса не підтверджена. Введіть свою електронну адресу, щоб отримати посилання для підтвердження.",
+  "authEmailNotVerified": "Електронна адреса не підтверджена",
+  "authSendVerificationLinkEmail": "Надіслати посилання для підтвердження на {email}?",
+  "authVerificationLinkSentCheckEmail": "Надіслано посилання для підтвердження. Перевірте свою електронну пошту.",
+  "authCouldNotSendVerificationLinkPleaseTryAgain": "Не вдалося надіслати посилання для підтвердження. Спробуйте ще раз.",
+  "authVerificationEmailSentPleaseVerifyEmailBeforeLogging": "Надіслано електронний лист для підтвердження. Будь ласка, підтвердьте свою електронну адресу перед входом у систему.",
+  "authVerifyEmail": "Підтвердьте свою електронну адресу",
+  "authEmailLabel": "Електронна пошта:",
+  "authClose": "Закрити",
+  "authResendLink": "Надіслати посилання ще раз",
+  "profileAppSettingsSectionTitle": "НАЛАШТУВАННЯ ДОДАТКА",
+  "profileAccountSettings": "Налаштування облікового запису",
+  "profileChangePhoto": "Змінити фото профілю",
+  "profileAppearance": "Зовнішній вигляд",
+  "profileThemeDisplayMode": "Тема та режим відображення",
+  "profileLanguage": "Мова",
+  "profileDisplayLanguage": "Мова інтерфейсу",
+  "profileNotificationsSectionHeading": "ПОВІДОМЛЕННЯ",
+  "profileAppBanners": "Банери в додатку",
+  "profileShowNewNotificationBannersInsideApp": "Показувати нові банери сповіщень усередині додатка",
+  "profilePushNotificationsTitle": "Push-повідомлення",
+  "profilePhoneNotificationsExpensesFriendsTripsSettlements": "Телефонні сповіщення про витрати, друзів, поїздки та розрахунки",
+  "profileSupportSectionHeading": "ПІДТРИМКА",
+  "profileContactUs": "Зв’яжіться з нами",
+  "profileReportBugSuggestion": "Повідомити про помилку / Надіслати пропозицію",
+  "profileRateSplyto": "Оцініть Splyto",
+  "profileLeaveStoreRating": "Залиште оцінку магазину",
+  "profileSecuritySectionHeading": "БЕЗПЕКА",
+  "profileChangePassword": "Змінити пароль",
+  "profileUpdateAccountPassword": "Оновити пароль облікового запису",
+  "profileDangerZoneSectionHeading": "ЗОНА НЕБЕЗПЕКИ",
+  "profileDeactivateAccount": "Деактивувати обліковий запис",
+  "profileManageAccountAccess": "Управління доступом до облікового запису",
+  "profileMadeWithLabel": "Створено за допомогою",
+  "profileStoreRatingActionWillConnectedNextStep": "Функція оцінки поїздки буде підключена на наступному етапі.",
+  "profileFailedSaveNotificationSettings": "Не вдалося зберегти налаштування сповіщень.",
+  "profilePushNotificationsSectionTitle": "ПОВІДОМЛЕННЯ PUSH",
+  "profileInAppBannersSectionTitle": "БАНЕРИ В ДОДАТКУ",
+  "profileInAppTripMemberAddedTitle": "Учасник доданий до поїздки",
+  "profileInAppAutoSettlementReminderTitle": "Автоматичне нагадування про розрахунок",
+  "profileExpenseUpdates": "Оновлення інформації про витрати",
+  "profileExpenseAddedBannersInsideApp": "Додано банери про витрати всередині додатка",
+  "profileExpenseAddedNotificationsPhone": "Повідомлення про додані витрати на телефон",
+  "profileFriendInvites": "Запрошення від друзів",
+  "profileFriendInvitesBannersInsideApp": "Банери запитів на додавання в друзі та відповідей на них у додатку",
+  "profileFriendRequestResponseNotifications": "Сповіщення про запити на додавання в друзі та відповіді на них",
+  "profileTripUpdates": "Оновлення про поїздку",
+  "profileTripUpdatesBannersInsideApp": "Банери про життєвий цикл поїздки та статус учасників у додатку",
+  "profileTripLifecycleMemberStatusChanges": "Життєвий цикл поїздки та зміни статусу учасників",
+  "profileSettlementUpdates": "Оновлення щодо розрахунків",
+  "profileSettlementUpdatesBannersInsideApp": "Позначені банери про відправлення та підтвердження платежу всередині додатка",
+  "profileMarkedSentConfirmedPaymentUpdates": "Позначені як надіслані та підтверджені оновлення про платежі",
+  "profileScreenshotSizeMust8Mb": "Розмір скріншоту не повинен перевищувати 8 МБ",
+  "profileFeedbackSendTitle": "Надіслати відгук",
+  "profileFeedbackTypeLabel": "Тип",
+  "profileFeedbackTypeBug": "Помилка",
+  "profileFeedbackTypeSuggestion": "Рекомендація",
+  "profileDescribeIssueSuggestion": "Опишіть проблему або пропозицію",
+  "profilePickingImage": "Вибір зображення...",
+  "profileAttachScreenshot": "Додайте скріншот",
+  "profileChangeScreenshot": "Змінити знімок екрана",
+  "profileRemoveImage": "Видалити зображення",
+  "profileTipAttachScreenshotFasterBugTriage": "Порада: додайте скріншот для швидшого аналізу помилок",
+  "profileAddDetailsAttachScreenshotBeforeSending": "Перед надсиланням додайте деталі або вкладіть скріншот",
+  "profileSendAction": "Надіслати",
+  "profileThanksFeedbackSent": "Дякуємо! Відгук надіслано",
+  "profileFailedSendFeedback": "Не вдалося надіслати відгук",
+  "profileCouldNotOpenWebsite": "Не вдалося відкрити веб-сайт.",
+  "profileOpenWebsiteQuestion": "Відкрити веб-сайт?",
+  "profileOpenPortfolioAction": "Відкрийте portfolio.egm.lv",
+  "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Цей формат зображення не підтримується на цьому пристрої. Будь ласка, виберіть JPG або PNG.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "Для зміни пароля необхідна дійсна електронна адреса облікового запису. Зверніться до служби підтримки, якщо ваша електронна адреса відсутня або вказана неправильно.",
+  "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Акаунт деактивовано. Скористайтеся посиланням на поновлення, надісланим електронною поштою, щоб відновити доступ.",
+  "profileEditCouldNotDeactivateTryAgain": "Не вдалося деактивувати обліковий запис. Спробуйте ще раз.",
+  "profileEditDeletionLinkSentEmail": "Посилання на видалення надіслано на вашу електронну пошту.",
+  "profileEditCouldNotSendDeletionLinkTryAgain": "Не вдалося надіслати посилання на видалення. Спробуйте ще раз.",
+  "profileEditEnterCurrentPasswordChangeEmail": "Введіть поточний пароль, щоб змінити електронну адресу.",
+  "profileEditVerificationWasSentNewEmailSecurityNoticeWas": "Підтвердження було надіслано на нову електронну адресу. Повідомлення про безпеку було надіслано на вашу поточну електронну адресу.",
+  "profileEditCouldNotStartEmailChangeRightNowTry": "Наразі не вдалося розпочати зміну адреси електронної пошти. Спробуйте ще раз.",
+  "profileEditOverviewCurrency": "Огляд валюти",
+  "profileEditPaymentMethod": "Спосіб оплати",
+  "profileEditBankTransferRevolutPaypalMe": "Банківський переказ, Revolut, PayPal.me",
+  "profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword": "Ви можете деактивувати доступ до облікового запису або надіслати запит на посилання електронною поштою для остаточного видалення облікового запису. Пароль є необов’язковим для облікових записів Google/Apple.",
+  "profileEditEnterPasswordOptionalGoogleApple": "Введіть свій пароль (не обов’язково для Google/Apple)",
+  "profileEditSendDeletionLinkEmail": "Надіслати посилання на видалення на електронну пошту",
+  "profileEditBackProfile": "Назад до профілю",
+  "profileEditSetValidEmailProfileChangingPassword": "Перед зміною пароля вкажіть у профілі дійсну адресу електронної пошти.",
+  "profileEditPasswordUpdated": "Оновлено пароль.",
+  "profileEditFailedUpdatePassword": "Не вдалося оновити пароль.",
+  "profileEditEmail": "Обліковий запис: {email}",
+  "profileEditPrimary": "Основне",
+  "profileEditSearchCurrency": "Пошук валюти",
+  "profileEditNoCurrenciesFound": "Валюти не знайдено",
+  "profileEditOverviewTotalsConvertedCurrency": "Загальні суми в огляді перераховуються у цю валюту.",
+  "profileEditPaymentInfoUpdated": "Інформація про платежі оновлена.",
+  "profileEditCouldNotSavePaymentInfoTryAgain": "Не вдалося зберегти платіжну інформацію. Спробуйте ще раз.",
+  "profileEditCurrentPassword": "Поточний пароль",
+  "profileEditBankTransferIbanSwift": "Банківський переказ (IBAN / SWIFT)",
+  "profileEditIbanSwift": "IBAN + SWIFT",
+  "profileEditRevtagRevolutMe": "Revtag / revolut.me",
+  "profileEditPaypalMeLink": "посилання paypal.me",
+  "profileEditChoosePaymentMethod": "Оберіть спосіб оплати",
+  "profileEditTapChange": "Натисніть, щоб змінити",
+  "profileEditUkTransfersSortCode6DigitsNumber8": "Для переказів у Великобританії код банку повинен складатися з 6 цифр, а номер рахунку — з 8 цифр.",
+  "profileEditPaymentInfo": "Інформація про оплату",
+  "profileEditSaveDetails": "Зберегти деталі",
+  "profileEditBankRegion": "Банківський регіон",
+  "profileEditEurope": "Європа",
+  "profileEditSortCode": "Код банку",
+  "profileEditExample112233": "Приклад: 112233",
+  "profileEditNumber": "Номер рахунку",
+  "profileEdit8Digits": "8 цифр",
+  "profileEditUkDomesticTransfersSortCodeNumber": "Для внутрішніх переказів у Великій Британії використовуйте сорт-код + номер рахунку.",
+  "profileEditExampleLv80bank0000435195001": "Приклад: LV80BANK0000435195001",
+  "profileEdit811Chars": "8 або 11 символів",
+  "profileEditHolderNameTakenProfileFullName": "Ім’я власника рахунку береться з повного імені в профілі.",
+  "profileEditRevolutMeUsername": "revolut.me/username",
+  "profileEditRevtag": "Revtag",
+  "profileEditUsername": "@username",
+  "profileEditPaypalMeUsernameUsername": "paypal.me/username або ім’я користувача",
+  "profileEditRevolut": "Revolut",
+  "profileEditPaypalMe": "PayPal.me",
+  "profileEditWise": "Wise",
+  "profileEditWisePayUsername": "wise.com/pay/me/username",
+  "profileEditUk": "Велика Британія",
+  "profileEditIbanLabel": "IBAN",
+  "profileEditBicSwiftLabel": "BIC / SWIFT",
+  "profileEditRevolutMe": "Revolut.me",
+  "imageCropperAdjustAvatar": "Налаштуйте аватар",
+  "imageCropperAdjustTripImage": "Налаштуйте зображення поїздки",
+  "copyAction": "Зареєструватися",
+  "currencyNameEur": "Євро",
+  "currencyNameGbp": "Британський фунт",
+  "currencyNameChf": "Швейцарський франк",
+  "currencyNameNok": "Норвезька крона",
+  "currencyNameSek": "Шведська крона",
+  "currencyNameDkk": "Данська крона",
+  "currencyNamePln": "Польський злотий",
+  "currencyNameCzk": "Чеська крона",
+  "currencyNameHuf": "Угорський форинт",
+  "currencyNameRon": "Румунський лей",
+  "currencyNameBgn": "Болгарський лев",
+  "currencyNameIsk": "Ісландська крона",
+  "currencyNameAll": "Албанський лек",
+  "currencyNameBam": "Боснія і Герцеговина Марк",
+  "currencyNameByn": "Білоруський рубль",
+  "currencyNameMdl": "Молдовський лей",
+  "currencyNameMkd": "Македонський денар",
+  "currencyNameRsd": "Сербський динар",
+  "currencyNameUah": "Українська гривня",
+  "currencyNameGel": "Грузинський ларі",
+  "currencyNameTry": "Турецька ліра",
+  "currencyNameUsd": "Долар США",
+  "currencyNameJpy": "Японська ієна",
+  "currencyNameCny": "Китайський юань",
+  "currencyNameCad": "Канадський долар",
+  "currencyNameAud": "Австралійський долар",
+  "expenseCategoryFood": "Харчування",
+  "expenseCategoryGroceries": "Продукти",
+  "expenseCategoryFuel": "Пальне",
+  "expenseCategoryTransport": "Транспорт",
+  "expenseCategoryAccommodation": "Проживання",
+  "expenseCategoryActivities": "Дозвілля",
+  "expenseCategoryTickets": "Квитки",
+  "expenseCategoryShopping": "Покупки",
+  "expenseCategoryParty": "Вечірки",
+  "expenseCategoryParking": "Паркування",
+  "expenseCategoryOther": "Інше",
+  "shellTripAlreadyInListOpened": "Подорож уже є у вашому списку. Ми відкрили її для вас.",
+  "shellJoinedTripFromInviteLink": "Приєднався до поїздки за посиланням із запрошенням.",
+  "shellFailedToOpenInviteLink": "Не вдалося відкрити посилання на запрошення.",
+  "shellFailedToOpenFriendLink": "Не вдалося відкрити посилання друга.",
+  "shellTripInviteTitle": "Запрошення на поїздку",
+  "shellNoAction": "Ні",
+  "shellYesAction": "Так",
+  "shellOnlyTripCreatorCanDelete": "Видалити цю подорож може лише її організатор.",
+  "shellOnlyActiveTripsCanDelete": "Видалити можна лише активні поїздки.",
+  "shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded": "Видалити «{tripLabel}»? Це дозволено лише до додавання будь-яких витрат.",
+  "shellTripDeleted": "Подорож видалено.",
+  "shellFailedToDeleteTrip": "Не вдалося видалити поїздку.",
+  "shellFailedToLoadNotifications": "Не вдалося завантажити сповіщення.",
+  "shellNewNotificationTitle": "Нове повідомлення: {title}",
+  "shellFailedToUpdateNotifications": "Не вдалося оновити сповіщення.",
+  "shellMarkAllAsReadAction": "Позначити все як прочитане",
+  "shellNewSection": "Нове",
+  "shellEarlierSection": "Раніше",
+  "shellShowMoreEarlierAction": "Показати більше попередніх",
+  "shellLoadingMore": "Завантажується ще...",
+  "shellLoadMoreNotificationsAction": "Завантажити більше сповіщень",
+  "shellTripNoLongerAvailable": "Ця поїздка більше не доступна.",
+  "shellFailedToOpenTrip": "Не вдалося відкрити поїздку.",
+  "shellYesterday": "Вчора",
+  "shellInviteAlreadyMemberOpenTripNow": "Ви вже є учасником поїздки «{tripName}». Відкрити цю поїздку зараз?\n\nЗапросив: {inviterName}",
+  "shellInviteJoinTripQuestion": "Чи хочете ви приєднатися до поїздки «{tripName}»?\n\nЗапросив: {inviterName}",
+  "tripsSelectedImage": "Вибране зображення: {arg1}",
+  "tripsTripImageAlreadySet": "Зображення поїздки вже встановлено.",
+  "tripsTripCreatedButImageUploadFailed": "Подорож створено, але завантаження зображення не вдалося.",
+  "tripsTripCreatedButImageUploadFailedWithReason": "Подорож створено, але завантаження зображення не вдалося: {arg1}",
+  "@tripsTripCreatedButImageUploadFailedWithReason": {
+    "placeholders": {
+      "arg1": {}
+    }
+  },
+  "tripsJoinTripViaInvite": "Приєднатися до поїздки за запрошенням",
+  "tripsTotalTrips": "Загальна кількість поїздок",
+  "tripsTotalSpent": "Загальна сума витрат",
+  "tripsMixedCurrencies": "Змішані валюти",
+  "tripsShowActive": "Показати активні",
+  "tripsSeeAll": "Переглянути все",
+  "tripsGridView": "Вигляд у вигляді сітки",
+  "tripsListView": "Перегляд у вигляді списку",
+  "tripsAddNewTrip": "Додати нову поїздку",
+  "tripsLoadMore": "Завантажити більше",
+  "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "Видалити «{arg1}»? Це дозволено лише до додавання будь-яких витрат.",
+  "tripsTripDates": "Дати поїздки",
+  "tripsFrom": "Від",
+  "tripsSelectDate": "Виберіть дату",
+  "tripsTo": "До",
+  "tripsMainCurrency": "Основна валюта",
+  "tripsPleaseSelectTripPeriodFromAndToDates": "Будь ласка, виберіть період поїздки (дати початку та закінчення).",
+  "tripsTripEndDateMustBeOnOrAfterStartDate": "Дата закінчення поїздки має бути не раніше дати початку.",
+  "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "Формат періоду поїздки є недійсним. Будь ласка, виберіть дати ще раз.",
+  "tripsYouAreAlreadyAMemberOfThisTrip": "Ви вже є учасником цієї подорожі.",
+  "tripsJoinedTripSuccessfully": "Ви успішно приєдналися до поїздки.",
+  "tripsFailedToJoinTripFromInvite": "Не вдалося приєднатися до поїздки за запрошенням.",
+  "tripsJoinTrip": "Приєднатися до поїздки",
+  "tripsPasteInviteLinkOrInviteToken": "Вставте посилання на запрошення або токен запрошення.",
+  "tripsHttpsInviteNorthSeaAbc123def4": "https://.../?invite=north-sea-abc123def4",
+  "tripsEnterAValidInviteLinkOrToken": "Введіть дійсне посилання на запрошення або токен.",
+  "tripsClipboardIsEmpty": "Буфер обміну порожній.",
+  "tripsPaste": "Вставити",
+  "tripsJoin": "Приєднатися",
+  "workspaceTripMembers": "Учасники поїздки",
+  "workspaceFailedToLoadFriends": "Не вдалося завантажити друзів.",
+  "workspaceFailedToGenerateInviteLink": "Не вдалося створити посилання на запрошення.",
+  "workspaceInviteLink": "Посилання для запрошення",
+  "workspaceGeneratingInviteLink": "Створюється посилання для запрошення...",
+  "workspaceInviteLinkUnavailable": "Посилання для запрошення недоступне.",
+  "workspaceCopyInviteLink": "Скопіювати посилання на запрошення",
+  "workspaceInviteLinkCopied": "Посилання на запрошення скопійовано.",
+  "workspaceExpiresUtc": "Термін дії: {arg1} UTC",
+  "workspaceNoFriendsAvailableAddFriendsFirst": "Друзів немає. Спочатку додайте друзів.",
+  "workspaceSettle": "Підсумок",
+  "workspaceOwesToTheGroup": "Заборгованість перед групою",
+  "workspaceGetsBackFromGroup": "Має отримати гроші від групи",
+  "workspaceShowingTop4ByBalanceDifference": "Показ 4 найкращих за різницею в балансі.",
+  "workspaceOpenFlow": "Деталі",
+  "workspaceFriend": "Друг",
+  "workspaceSettlementTransfer": "Переказ коштів",
+  "workspaceCompleted": "Завершено",
+  "workspaceWaitingForConfirmation": "Очікування підтвердження",
+  "workspaceWaitingForPayment": "Очікування платежу",
+  "workspaceActionNeeded": "Необхідні дії",
+  "workspacePaymentSToMarkAsSentToConfirmAsReceived": "Платежі, які потрібно позначити як надіслані: {arg1}; підтвердити як отримані: {arg2}.",
+  "workspaceReadyToSettle": "Готові до розрахунку",
+  "workspaceAllMembersAreReadyYouCanStartSettlements": "Усі учасники готові. Ви можете розпочати розрахунки.",
+  "workspaceWaitingForEveryoneToMarkReady": "Очікування, поки всі позначать себе як готові.",
+  "workspaceIMReady": "Я готовий",
+  "workspaceConfirmThatYouAddedAllYourExpenses": "Переконайтеся, що ви додали всі свої витрати.",
+  "workspaceFinishButtonUnlocksOnceEveryoneMarksReady": "Кнопка «Завершити» стає активною, коли всі позначать, що готові.",
+  "workspaceGetsBackFromTheGroup": "Має отримати гроші від групи",
+  "workspaceSettledWithTheGroup": "Узгоджено з групою",
+  "workspaceTotalPaid": "Загальна сума оплати",
+  "workspaceTotalOwes": "Загальна сума заборгованості",
+  "workspaceTransactionHistory": "Історія транзакцій",
+  "workspaceNoTransactionsYetForThisMember": "Для цього учасника ще немає транзакцій.",
+  "workspaceSettlements": "Розрахунки: {arg1}",
+  "workspaceAllMembersMustMarkReadyBeforeStartingSettlements": "Усі учасники повинні позначити себе як «готові» перед початком розрахунків.",
+  "workspaceYouMarkedYourselfReadyToSettle": "Ви позначили себе як готового до розрахунку.",
+  "workspaceReadyToSettleMarkRemoved": "Позначку готовності до розрахунків знято.",
+  "workspaceReminderSent": "Надіслано нагадування.",
+  "workspaceInviteLinkOrAddFromFriends": "Посилання на запрошення або додавання з друзів",
+  "workspaceOnlyTripCreatorCanEditThisTrip": "Редагувати цю поїздку може лише її організатор.",
+  "workspaceTripUpdated": "Подорож оновлено.",
+  "workspaceFailedToUpdateTrip": "Не вдалося оновити поїздку.",
+  "workspaceNoMembersSelectedYet": "Учасники ще не обрані.",
+  "workspaceNoInternetExpenseSavedWithoutReceiptImage": "Відсутність інтернету. Витрати будуть збережені без зображення квитанції.",
+  "workspaceRandomPicker": "Випадковий вибір",
+  "workspaceCurrency": "Валюта",
+  "workspaceCategory": "Категорія",
+  "workspaceCustomCategory": "Категорія «Налаштування»",
+  "workspaceCategoryName": "Назва категорії",
+  "workspaceApartmentRentParkingEtc": "Оренда квартири, паркування тощо.",
+  "workspaceEnterACustomCategory": "Введіть власну категорію.",
+  "workspacePickAnExpenseCategory": "Оберіть категорію витрат.",
+  "workspaceCategoryMustBeAtLeast2Characters": "Категорія повинна містити щонайменше 2 символи.",
+  "workspaceCategoryMustBeUpTo64Characters": "Категорія повинна містити не більше 64 символів.",
+  "workspacePercentageSplitMustTotal100": "Сума відсоткових часток повинна становити 100%.",
+  "workspaceSharesMustBeGreaterThan0ForAllParticipants": "Кількість часток має бути більшою за 0 для кожного учасника.",
+  "workspaceTotalAmount": "Загальна сума",
+  "workspaceOriginal": "Оригінал",
+  "workspaceTotalCost": "Загальна вартість",
+  "workspaceStarted": "Запущено {arg1}",
+  "workspaceEnded": "Завершено {arg1}",
+  "workspaceArchivedTrip": "Архів поїздки",
+  "workspaceActiveTrip": "Активна подорож",
+  "workspaceMemberProfile": "Профіль учасника",
+  "workspaceTripOwner": "Організатор поїздки",
+  "workspaceMember": "Учасник",
+  "workspaceReadyForSettlement": "Готові до розрахунку",
+  "workspaceNotReadyForSettlement": "Не готові до розрахунку",
+  "workspaceBankDetails": "Банківські реквізити",
+  "workspaceIbanAndPayoutDetailsWillBeAddedHereInA": "Реквізити IBAN та реквізити для виплат будуть додані сюди в наступному оновленні.",
+  "workspacePaymentDetails": "Реквізити платежу",
+  "workspaceThisMemberHasNotAddedPayoutDetailsYet": "Цей учасник ще не додав реквізити для виплати.",
+  "workspaceBankTransfer": "Банківський переказ",
+  "workspaceHolder": "Власник",
+  "workspaceCouldNotOpenPaymentLink": "Не вдалося відкрити посилання на оплату.",
+  "workspaceTripActivity": "Активність у поїздці",
+  "workspacePaidExpenses": "Оплачені витрати",
+  "workspacePaidTotal": "Загальна сума до сплати",
+  "workspaceInvolvedIn": "Залучені до",
+  "workspaceCurrentTrip": "Поточна подорож",
+  "workspaceCommonTrips": "Спільні подорожі",
+  "workspaceLoadingCommonTrips": "Завантаження спільних подорожей…",
+  "workspaceNoCommonTripsFoundYet": "Спільних подорожей поки не знайдено.",
+  "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "Не вдалося завантажити всі спільні подорожі. Показано поточну подорож.",
+  "workspaceMembers": "учасники",
+  "workspaceExpense": "Витрати",
+  "workspacePaid": "оплачено",
+  "workspaceLoadingMoreExpenses": "Завантажуються інші витрати...",
+  "workspaceScrollDownToLoadMore": "Прокрутіть вниз, щоб завантажити більше",
+  "workspaceTripFinished": "Подорож завершено",
+  "workspaceSettlementsAreUnlockedForThisTrip": "Розрахунки для цієї поїздки розблоковано.",
+  "workspaceFinishTripToStartSettlements": "Завершіть поїздку, щоб розпочати розрахунки.",
+  "workspaceMarkedTransferAsSent": "{arg1} позначив переказ як надісланий.",
+  "workspaceWaitingForToMarkAsPaid": "Очікуємо, поки {arg1} позначить платіж як оплачений.",
+  "workspaceConfirmedReceivingThePayment": "{arg1} підтвердив отримання платежу.",
+  "workspaceWaitingForToConfirm": "Очікуємо на підтвердження від {arg1}.",
+  "workspaceAllTripSettlementsAreFullyCompleted": "Усі розрахунки за поїздку повністю завершені.",
+  "workspaceFinalStateAfterAllTransfersAreConfirmed": "Кінцевий стан після підтвердження всіх переказів.",
+  "workspaceSettlementFlow": "Процес розрахунків",
+  "workspaceActions": "Дії",
+  "workspaceQuickPay": "Швидка оплата",
+  "workspacePayWithRevolut": "Оплата через Revolut",
+  "workspacePayWithPaypal": "Оплата через PayPal",
+  "workspacePayWithWise": "Оплата через Wise",
+  "workspaceTransferIsConfirmed": "Переказ підтверджено.",
+  "workspaceWaitingForTheOtherMemberToCompleteTheNextStep": "Очікування, поки інший учасник виконає наступний крок.",
+  "workspaceSendReminder": "Надіслати нагадування",
+  "workspaceInProgress": "У процесі",
+  "workspaceTimeUnknown": "Час невідомий",
+  "workspaceRemind": "Нагадування",
+  "workspaceYourPosition": "Ваша позиція",
+  "workspaceRecentActivity": "Останні дії",
+  "workspaceNoRecentActivityYet": "Поки що немає останніх дій.",
+  "workspaceAddAtLeastOneMemberToStartSplittingExpenses": "Додайте хоча б одного учасника, щоб почати розподіл витрат.",
+  "workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses": "Позначте себе як готового до розрахунку після додавання всіх своїх витрат.",
+  "workspaceWaitingForMemberSToMarkReady": "Учасники, які ще не позначили готовність: {arg1}.",
+  "workspaceAllMembersAreReadyYouCanFinishTheTripAnd": "Усі учасники готові. Ви можете завершити поїздку та розпочати розрахунки.",
+  "workspaceAllMembersAreReadyWaitingForTheTripOwnerTo": "Усі учасники готові. Чекаємо, поки організатор поїздки розпочне розрахунки.",
+  "workspaceSettlementInProgressConfirmed": "Розрахунок триває: {arg1}/{arg2} підтверджено.",
+  "workspaceNoActionsPendingThisTripIsSettled": "Дій, що очікують на виконання, немає. Ця поїздка завершена.",
+  "workspaceNoActionsNeededRightNow": "Наразі ніяких дій не потрібно.",
+  "workspaceYouShouldReceive": "Ви повинні отримати {arg1}.",
+  "workspaceYouShouldPay": "Ви повинні сплатити {arg1}.",
+  "workspaceYouAreCurrentlySettledInThisTrip": "Наразі ви зареєстровані в цій поїздці.",
+  "workspaceUnknownTime": "Невідомий час",
+  "workspaceJustNow": "Саме зараз",
+  "workspaceMinAgo": "{arg1} хв тому",
+  "workspaceHAgo": "{arg1} год тому",
+  "workspaceDAgo": "{arg1} дн. тому",
+  "friendsRemoveFriend": "Видалити друга",
+  "friendsRemoveThisFriend": "Видалити цього друга?",
+  "friendsWillBeRemovedFromYourFriendsListYouCanAdd": "{arg1} буде видалено зі списку ваших друзів. Ви зможете додати цю особу знову пізніше.",
+  "friendsContinue": "Продовжити",
+  "friendsFriendRemoved": "Друг видалено.",
+  "friendsCouldNotRemoveFriend": "Не вдалося видалити друга.",
+  "friendsFriendProfile": "Профіль друга",
+  "friendsMoreActions": "Більше дій",
+  "friendsThisFriendHasNotAddedPayoutDetailsYet": "Цей друг ще не додав реквізити для виплати.",
+  "friendsCouldNotLoadCommonTripsRightNow": "Наразі не вдалося завантажити спільні подорожі.",
+  "friendsFinished": "Завершено",
+  "friendsTrip": "Подорож № {arg1}",
+  "friendsMembers": "Учасники: {arg1}",
+  "friendsNoDate": "Без дати",
+  "friendsIncomingRequests": "ВХІДНІ ЗАПИТИ",
+  "friendsSentInvites": "НАДІСЛАНІ ЗАПРОШЕННЯ",
+  "friendsMyFriends": "МОЇ ДРУЗІ",
+  "friendsRequests": "Запити",
+  "friendsIncoming": "Вхідні повідомлення",
+  "friendsIncomingRequestSubtitle": "хоче подружитися",
+  "friendsOutgoingInviteSubtitle": "Запрошення надіслано",
+  "friendsNoPendingActivity": "Жодних запитів на додавання в друзі",
+  "friendsInviteSentTo": "Запрошення надіслано {arg1}.",
+  "friendsNoIncomingRequests": "Відсутність вхідних запитів",
+  "friendsDecline": "Відхилити",
+  "friendsAccept": "Прийняти",
+  "friendsNoSentInvites": "Не надсилайте запрошення",
+  "friendsNoFriendsYet": "Поки що немає друзів",
+  "friendsScrollDownToLoadMoreFriends": "Прокрутіть вниз, щоб завантажити більше друзів.",
+  "friendsUser": "Користувач",
+  "friendsSearchUsers": "Пошук користувачів",
+  "friendsFindByNameOrEmailAndSendInvite": "Знайдіть за іменем або електронною адресою та надішліть запрошення",
+  "friendsScanQr": "Відскануйте QR-код",
+  "friendsScanAnotherUserToAddFriend": "Відскануйте іншого користувача, щоб додати його в друзі",
+  "friendsMyQr": "Мій QR-код",
+  "friendsShowOrShareYourQrCode": "Покажіть або поділіться своїм QR-кодом",
+  "friendsScanFriendQrTitle": "Відскануйте QR-код друга",
+  "friendsPlaceFriendQrInsideFrame": "Розмістіть QR-код друга всередині рамки",
+  "friendsHoldFriendQrInsideFrame": "Тримайте QR-код у кадрі",
+  "friendsConfirmAddFriendTitle": "Додати {arg1} у друзі?",
+  "friendsConfirmSendFriendInviteText": "{arg1} отримає ваш запит на додавання в друзі.",
+  "friendsConfirmAcceptFriendRequestText": "Прийняти запит на дружбу від {arg1}?",
+  "friendsMyFriendQrTitle": "My Friend QR",
+  "friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode": "Відскануйте цей QR-код або поділіться посиланням, щоб додати мене в Splyto.",
+  "friendsAddMeOnTripSplitFriends": "Додайте мене в Splyto.",
+  "friendsTripSplitFriendCode": "Посилання на друга у Splyto",
+  "shareAction": "Поділитися",
+  "friendsQrCodeIsNotAValidFriendCode": "QR-код не є дійсним кодом друга.",
+  "friendsYouCannotAddYourself": "Ви не можете додати себе.",
+  "friendsThisUserIsAlreadyInYourFriendsList": "Цей користувач уже є у вашому списку друзів.",
+  "friendsInviteToThisUserIsAlreadySent": "Запрошення цьому користувачеві вже надіслано.",
+  "friendsFriendRequestProcessed": "Запит на додавання в друзі оброблено.",
+  "friendsFailedToProcessFriendQr": "Не вдалося обробити QR-код друга.",
+  "friendsCouldNotLoadYourUserProfile": "Не вдалося завантажити ваш профіль користувача.",
+  "friendsMyProfile": "Мій профіль",
+  "friendsUnexpectedErrorLoadingFriends": "Сталася несподівана помилка під час завантаження друзів.",
+  "friendsFriendAdded": "Друг додано.",
+  "friendsRequestDeclined": "Запит відхилено.",
+  "friendsFailedToUpdateRequest": "Не вдалося оновити запит.",
+  "friendsCancelInvite": "Скасувати запрошення",
+  "friendsCancelInviteTo": "Скасувати запрошення для {arg1}?",
+  "friendsKeep": "Залишити",
+  "friendsInviteToCancelled": "Запрошення до {arg1} скасовано.",
+  "friendsFailedToCancelInvite": "Не вдалося скасувати запрошення.",
+  "analyticsOther": "Інше",
+  "analyticsSelectATripForAnalytics": "Виберіть поїздку для аналітики",
+  "analyticsMembers": "{arg1} • Учасники: {arg2} • {arg3} • {arg4}",
+  "analyticsDailySpending": "Щоденні витрати",
+  "analyticsMyDaily": "Мої щоденні витрати",
+  "analyticsGroupDaily": "Щоденні витрати групи",
+  "analyticsByMember": "За учасником",
+  "analyticsShowLess": "Показати менше",
+  "analyticsByCategory": "За категоріями",
+  "analyticsQuickInsights": "Короткі висновки",
+  "analyticsBiggestExpense": "Найбільші витрати: {arg1} ({arg2})",
+  "analyticsTopSpender": "Найбільший витратник: {arg1} ({arg2})",
+  "analyticsHighestGroupDay": "Найкращий день групи: {arg1} ({arg2})",
+  "analyticsNoDates": "Без дат",
+  "friendsSearchFailedTryAgain": "Пошук не вдався. Спробуйте ще раз.",
+  "friendsFailedToSendInvite": "Не вдалося надіслати запрошення.",
+  "friendsAddFriend": "Додати в друзі",
+  "friendsSearchByNameOrEmail": "Пошук за іменем або електронною адресою",
+  "friendsTypeAtLeast2CharactersToSearch": "Для пошуку введіть щонайменше 2 символи.",
+  "friendsNoUsersFound": "Користувачів не знайдено",
+  "friendsInviteAction": "Запросити",
+  "workspacePaidForGroup": "Оплачено за групу",
+  "workspacePaidForGroupDate": "Оплачено для групи • {arg1}",
+  "workspaceShareOfExpense": "Розподіл витрат",
+  "workspaceShareOfExpenseDate": "Розподіл витрат • {arg1}",
+  "paymentHolderNameCopied": "Ім’я власника скопійовано.",
+  "paymentIbanCopied": "IBAN скопійовано.",
+  "paymentSwiftCopied": "Копія з SWIFT.",
+  "paymentRevtagCopied": "Revtag скопійовано.",
+  "paymentCouldNotCopyToClipboard": "Не вдалося скопіювати в буфер обміну.",
+  "paymentCopied": "Скопійовано.",
+  "paymentRequestAction": "Запит на оплату",
+  "paymentRecordAction": "Реєстрація платежу",
+  "paymentRequestSheetTitle": "Запит на оплату",
+  "paymentRecordSheetTitle": "Реєстрація платежу",
+  "paymentRequestSheetBody": "Попросіть {arg1} сплатити суму, яку він/вона наразі вам заборгував/заборгувала.",
+  "paymentRecordSheetBody": "Використовуйте це після того, як ви сплатили {arg1} поза межами Splyto. Вони підтвердять його отримання.",
+  "paymentMaxAmount": "Максимум {arg1}",
+  "paymentNoteHint": "Банківський переказ, Revolut, готівка...",
+  "paymentAmountPositiveError": "Сума повинна бути більшою за нуль.",
+  "paymentAmountTooHighError": "Сума не може перевищувати залишок заборгованості.",
+  "paymentRequestCreated": "Запит на оплату надіслано.",
+  "paymentRecordedWaiting": "Платіж зареєстровано. Очікуємо на підтвердження.",
+  "paymentConfirmTitle": "Підтвердження платежу",
+  "paymentConfirmText": "Підтвердьте, що ви отримали {arg1} від {arg2}.",
+  "paymentConfirmedMessage": "Платіж підтверджено.",
+  "paymentCancelRecordTitle": "Скасувати запис про платіж",
+  "paymentCancelRecordText": "Скасувати запис твого платежу на суму {arg1} для {arg2}?",
+  "paymentRecordCancelled": "Запис про платіж скасовано.",
+  "paymentNotReceivedTitle": "Платіж не отримано",
+  "paymentNotReceivedText": "Позначити платіж {arg1} від {arg2} як не отриманий?",
+  "paymentMarkedNotReceived": "Платіж позначено як не отриманий.",
+  "paymentActivityTitle": "Платіжна діяльність",
+  "paymentOpenRequestsCount": "Відкриті запити на оплату: {arg1}",
+  "paymentAwaitingConfirmationCount": "Платежі, що очікують підтвердження: {arg1}",
+  "paymentRecordedPaymentsTitle": "Зареєстровані платежі",
+  "paymentRequestedFrom": "{arg1} запросив платіж від {arg2}",
+  "paymentPaidTo": "{arg1} сплатив кошти користувачу {arg2}",
+  "paymentRequestPendingStatus": "Запит на оплату",
+  "paymentAwaitingConfirmationStatus": "Очікується підтвердження",
+  "paymentReviewRequestAction": "Переглянути запит",
+  "paymentViewDetailsAction": "Реквізити платежу",
+  "paymentMarkPaidAction": "Я сплатив",
+  "paymentDeclineAction": "Відхилити",
+  "paymentRequestReviewTitle": "Запит на оплату",
+  "paymentRequestReviewBody": "{arg1} попросив у вас {arg2}. Сплатіть поза межами Splyto, а потім позначте платіж як здійснений.",
+  "paymentRequestMarkPaidConfirmTitle": "Позначити запит як оплачений?",
+  "paymentRequestMarkPaidConfirmText": "Підтверджуй лише після того, як сплатиш суму {arg1} користувачу {arg2} поза межами Splyto.",
+  "paymentRequestMarkedPaid": "Позначено як оплачене. Очікується підтвердження.",
+  "paymentRequestCancelTitle": "Скасувати запит на оплату?",
+  "paymentRequestCancelText": "Скасувати ваш запит {arg1} до {arg2}?",
+  "paymentRequestCancelled": "Запит на оплату скасовано.",
+  "paymentRequestDeclineTitle": "Відхилити запит на оплату?",
+  "paymentRequestDeclineText": "Відхилити запит на оплату суми {arg1} від {arg2}? Ця людина отримає сповіщення.",
+  "paymentRequestDeclined": "Запит на оплату відхилено.",
+  "paymentPendingBeforeFinish": "Вирішуйте відкриті запити на оплату та непідтверджені платежі до остаточного розрахунку.",
+  "paymentFinishBlockedByPending": "Завершення розблоковується після вирішення питань щодо запитів на оплату та непідтверджених платежів.",
+  "notificationPaymentRequestedTitle": "Запит на оплату",
+  "notificationPaymentRequestedBody": "{arg1} попросив у вас {arg2}.",
+  "notificationPaymentRequestedBodyGeneric": "Ви отримали запит на оплату.",
+  "notificationPaymentRequestSentTitle": "Запитаний платіж надіслано",
+  "notificationPaymentRequestSentBody": "{arg1} позначив ваш запит на оплату {arg2} як оплачений.",
+  "notificationPaymentRequestSentBodyGeneric": "Ваш запит на оплату було позначено як оплачений.",
+  "notificationPaymentRequestCancelledTitle": "Запит на оплату скасовано",
+  "notificationPaymentRequestCancelledBody": "{arg1} скасував запит на оплату {arg2}.",
+  "notificationPaymentRequestCancelledBodyGeneric": "Запит на оплату було скасовано.",
+  "notificationPaymentRequestDeclinedTitle": "Запит на оплату відхилено",
+  "notificationPaymentRequestDeclinedBody": "{arg1} відхилив ваш запит на оплату {arg2}.",
+  "notificationPaymentRequestDeclinedBodyGeneric": "Ваш запит на оплату було відхилено.",
+  "notificationPaymentSentTitle": "Платіж позначено як надісланий",
+  "notificationPaymentSentBody": "{arg1} позначив {arg2} як оплачений вам.",
+  "notificationPaymentSentBodyGeneric": "Платіж було позначено як надісланий вам.",
+  "notificationPaymentConfirmedTitle": "Платіж підтверджено",
+  "notificationPaymentConfirmedBody": "{arg1} підтвердив отримання {arg2} від вас.",
+  "notificationPaymentConfirmedBodyGeneric": "Ваш платіж було підтверджено.",
+  "notificationPaymentCancelledTitle": "Платіж скасовано",
+  "notificationPaymentCancelledBody": "{arg1} скасував позначку про оплату {arg2}.",
+  "notificationPaymentCancelledBodyGeneric": "Позначка про платіж була скасована.",
+  "notificationPaymentNotReceivedTitle": "Платіж не отримано",
+  "notificationPaymentNotReceivedBody": "{arg1} позначив платіж {arg2} як не отриманий.",
+  "notificationPaymentNotReceivedBodyGeneric": "Платіж було позначено як не отриманий.",
+  "quickStartTitle": "Швидкий старт",
+  "quickStartCreateTitle": "Створити поїздку",
+  "quickStartCreateBody": "Оберіть назву та валюту. Ведіть власні витрати або діліться витратами з групою.",
+  "quickStartInviteTitle": "Подорожуйте разом або самостійно",
+  "quickStartInviteBody": "Запрошуйте друзів долучитися до вашої подорожі або розпочніть особисту подорож самостійно.",
+  "quickStartExpenseTitle": "Додайте свою першу витрату",
+  "quickStartExpenseBody": "Введіть суму, виберіть, хто заплатив, і розділіть витрати. Ваші залишки на рахунках завжди актуальні.",
+  "quickStartNext": "Далі",
+  "quickStartBack": "Назад",
+  "quickStartSkip": "Пропустити",
+  "quickStartCreateAction": "Створити поїздку",
+  "quickStartClose": "Закрити «Швидкий старт»",
+  "quickStartSubtitle": "Дізнайтеся, як працюють поїздки та витрати",
+  "quickStartStep": "Крок {step} із {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Загальна вартість поїздки",
+  "workspacePersonalTotal": "Загальна сума витрат",
+  "workspaceBalanceEven": "Твій баланс вирівняно",
+  "workspaceBalanceOwe": "Ти винен {amount}",
+  "workspaceBalanceReceive": "Тобі повернуть {amount}",
+  "workspaceMemberCount": "Учасники: {count}",
+  "workspaceSearchExpenses": "Пошук витрат",
+  "workspaceClearSearch": "Чіткий пошук",
+  "workspaceSearchLoadedHint": "Пошук охоплює завантажені витрати. Завантажте більше, щоб включити старіші витрати.",
+  "workspaceNoExpenseMatches": "Немає відповідних витрат",
+  "workspaceNoExpenseMatchesBody": "Спробуйте інший пошук або очистіть його, щоб переглянути всі завантажені витрати.",
+  "workspaceEmptyPersonalExpenses": "Додайте свою першу витрату, щоб почати відстежувати свої витрати.",
+  "workspaceEmptyGroupExpenses": "Додайте свою першу спільну витрату, щоб побачити частку кожного учасника.",
+  "workspaceLoadMoreExpenses": "Завантажити більше витрат",
+  "workspaceOriginalExpenseAmount": "Початкова сума: {amount}",
+  "workspaceCommentCount": "Коментарі: {count}",
+  "workspaceExpenseActions": "Дії, пов’язані з витратами",
+  "workspaceLoadErrorTitle": "Не вдалося завантажити цю поїздку",
+  "workspaceCachedWarning": "Відображення збережених даних. Вони можуть бути застарілими.",
+  "workspaceActivityTab": "Активність",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Завантаження поїздки",
+  "workspaceRefreshFailed": "Оновлення не вдалося",
+  "expenseDetailsTitle": "Деталі витрат",
+  "expenseQuickCategories": "Короткі категорії",
+  "expenseReceiptRead": "Квитанцію прочитано, форму оновлено.",
+  "expenseReceiptNoData": "Квитанція додається. Не виявлено чіткої суми, дати або продавця.",
+  "expenseReceiptScanFailed": "Вибрано квитанцію. Автоматичне зчитування не вдалося; перевірте поля вручну.",
+  "expenseReceiptOffline": "Квитанція завантажиться під час збереження. Для автоматичного зчитування необхідне підключення до Інтернету.",
+  "expenseReadingReceipt": "Зчитування чека…",
+  "expenseCommentsLoadFailed": "Не вдалося завантажити коментарі. Спробуйте ще раз.",
+  "expenseReplyAction": "Відповісти",
+  "expenseReplyHint": "Напишіть відповідь…",
+  "expenseReplyTo": "Відповісти {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Суми на рахунках відображаються після додавання витрат.",
+  "balanceAfterPayments": "Залишки на рахунках включають підтверджені платежі.",
+  "balanceExpenseShare": "Розподіл витрат",
+  "balanceHistoryScope": "Завантажені витрати та підтверджені платежі. Цей перелік може не містити повну історію поїздки.",
+  "balancePaymentTo": "Платіж на ім’я {name}",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Платіж від {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Перед початком остаточних розрахунків позначте всіх як готових.",
+  "settlementEmptyClosed": "Для цієї поїздки перекази не вказані.",
+  "settlementConfirmedCount": "{count} із {total} переказів підтверджено",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "{count} із {total} учасників готові",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Готово",
+  "settlementMemberNotReady": "Не готово",
+  "settlementSuggested": "Рекомендований переказ",
+  "activityLoadFailed": "Не вдалося оновити активність. Будь-які видимі записи можуть бути застарілими.",
+  "activityMember": "Учасник поїздки",
+  "friendsEmptyBody": "Знайдіть друга за іменем або електронною адресою, або скористайтеся QR-кодом.",
+  "friendsDeclineAction": "Відхилити",
+  "friendsLoading": "Завантаження друзів",
+  "friendsCommonTripsCount": "Спільні поїздки: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "На основі завантажених витрат; це може не охоплювати всю подорож.",
+  "sharedTripsLoadedLimit": "Відображається до 20 спільних поїздок.",
+  "memberRemoveTitle": "Видалити учасника?",
+  "memberRemoveBody": "Видалити {name} з цієї поїздки? Це можливо лише в тому випадку, якщо у нього немає витрат, розрахунків або залишків на рахунку.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Видалити з поїздки",
+  "memberRemoved": "{name} видалено з поїздки.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Ще не додано",
+  "friendRelationshipLabel": "Друг",
+  "sharedTripsEmptyBody": "Подорожі, до яких ви обидва приєднаєтеся, з’являться тут.",
+  "analyticsAllTrips": "Усі поїздки",
+  "analyticsByTrip": "За поїздкою",
+  "analyticsYourSpending": "Твої витрати",
+  "analyticsActiveArchived": "Активні та архівні поїздки",
+  "analyticsTrips": "Подорожі",
+  "analyticsAveragePerTrip": "Середній показник за поїздку",
+  "analyticsPaidByMember": "Оплата здійснюється учасником",
+  "analyticsYouPaid": "Ви платите",
+  "analyticsYouGetBack": "Тобі повернуть",
+  "analyticsYouOwe": "Твій борг",
+  "analyticsParticipants": "Учасники",
+  "analyticsYourCategories": "Ваші витрати за категоріями",
+  "analyticsLargestShares": "Мої найбільші частки витрат",
+  "analyticsLargestExpenses": "Найбільші витрати",
+  "analyticsSpendingByTrip": "Ваші витрати за поїздкою",
+  "analyticsEmptyTitle": "Поки що витрат немає",
+  "analyticsEmptyBody": "Ваші витрати з’являться тут, коли ви додасте витрати до поїздки.",
+  "analyticsPeriodEmptyBody": "Для цього перегляду витрат немає. Спробуйте іншу поїздку або період.",
+  "analyticsLoadFailed": "Не вдалося завантажити повний звіт про витрати. Спробуйте ще раз.",
+  "analyticsLastLoaded": "Відображення останнього успішно завантаженого звіту.",
+  "analyticsExpenseCount": "{count, plural, one{{count} витрата} few{{count} витрати} many{{count} витрат} other{{count} витрат}}",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Параметри поїздки",
+  "editTripAction": "Редагувати поїздку",
+  "deleteTripAction": "Видалити поїздку",
+  "inviteTripMembersAction": "Запрошувати учасників",
+  "tripCoverPhoto": "Фото на обкладинці",
+  "tripInviteLaterHint": "Ви можете запрошувати людей після створення поїздки.",
+  "inviteClipboardFailed": "Не вдалося отримати доступ до буфера обміну. Спробуйте ще раз.",
+  "friendInviteToTrip": "Запросити до поїздки",
+  "friendChooseTrip": "Оберіть поїздку",
+  "friendNoInvitableTrips": "Подорожей немає. Ви можете запрошувати друзів до активних групових подорожей, якими ви керуєте, якщо вони ще не є учасниками або не мають запрошення, що очікує на підтвердження.",
+  "friendTripInviteSent": "Запрошення надіслано.",
+  "friendTripUnavailable": "Ця поїздка більше не доступна для цієї дії. Оновіть сторінку та спробуйте ще раз.",
+  "friendTripActionFailed": "Не вдалося виконати цю дію. Спробуйте ще раз.",
+  "profileContactDescription": "Маєте проблему, пропозицію чи запитання щодо Splyto? Напишіть нам — ми з радістю допоможемо.",
+  "profileContactEmailAction": "Напишіть електронного листа",
+  "profileContactEmailUnavailable": "Не вдалося відкрити додаток електронної пошти. Скопіюйте адресу та напишіть нам із вашого додатка електронної пошти.",
+  "profilePrivacyPolicy": "Політика конфіденційності",
+  "privacyLoadFailed": "Не вдалося завантажити політику конфіденційності. Спробуйте ще раз.",
+  "addReceiptAction": "Додати квитанцію",
+  "receiptPickFailed": "Не вдалося завантажити квитанцію. Спробуйте ще раз.",
+  "receiptPhotoAccessDenied": "Надайте Splyto доступ до камери або фотогалереї в налаштуваннях, а потім спробуйте ще раз.",
+  "receiptPhotoLabel": "Фото чека",
+  "replaceReceiptAction": "Замінити квитанцію",
+  "removeReceiptAction": "Видалити квитанцію",
+  "restoreReceiptAction": "Відновити попередню квитанцію",
+  "expenseSplitBetween": "Розділіть між",
+  "expenseEditParticipants": "Виберіть учасників",
+  "expenseCustomSplit": "Індивідуальний розподіл витрат",
+  "expenseSplitAllocated": "Усю суму {amount} розподілено",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "Залишилося розділити {amount}",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "На {amount} більше за загальну суму",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Поділитися способами оплати з моїми поїздками",
+  "profilePaymentSharingDescription": "Дозволити схваленим учасникам подорожей, які я створюю або до яких приєднуюся, бачити мої способи оплати. Це стосується поточних і майбутніх подорожей. Можна будь-коли вимкнути цей доступ, щоб припинити подальший перегляд.",
+  "memberPaymentDetailsNotShared": "Інформація про способи оплати не передається або наразі недоступна.",
+  "homeTripInvitations": "Запрошення на поїздку",
+  "homeNoTripInvitations": "Немає очікуючих запрошень на поїздку",
+  "homeInvitationsLoadFailed": "Не вдалося завантажити запрошення. Спробуйте ще раз.",
+  "homeInvitationResponseFailed": "Не вдалося відповісти на запрошення. Спробуйте ще раз.",
+  "homeTripShareFailed": "Не вдалося поділитися поїздкою. Спробуйте ще раз.",
+  "settleStillToReceive": "Ще належить отримати",
+  "settleStillToPay": "Ще потрібно сплатити",
+  "settleEstimateCaption": "Оцінка базується на поточних витратах. Суми можуть змінюватися до закінчення поїздки.",
+  "settleOutstandingCaption": "Очікується оплата або підтвердження.",
+  "settleWaitingForYou": "Чекаємо, поки ви позначите, що готові.",
+  "settleWhoPaysWhom": "Хто кому платить",
+  "settlePreviewCaption": "Попередній перегляд · завершується після закінчення поїздки",
+  "settleOpenPaymentCaption": "Відкрийте платіж, щоб переглянути деталі та доступні дії.",
+  "tripBudgetEnable": "Встановіть бюджет",
+  "tripBudgetSoloHint": "Необов’язкова ціль витрат для цієї подорожі.",
+  "tripBudgetGroupHint": "Один спільний бюджет для всієї групи.",
+  "tripBudgetAmount": "Сума бюджету",
+  "tripBudgetInvalid": "Введіть суму від 0,01 до 999999999,99 з точністю до двох знаків після коми.",
+  "tripBudgetTitle": "Бюджет поїздки",
+  "tripBudgetGroupTitle": "Бюджет групи",
+  "tripBudgetRemaining": "Решта",
+  "tripBudgetOver": "Перевищення бюджету",
+  "tripBudgetSpent": "Витрачено",
+  "tripBudgetLimit": "Бюджет",
+  "travelMapTitle": "Моя карта подорожі",
+  "travelMapSubtitle": "Відвідані місця — спеціально для вас.",
+  "travelMapHere": "Я вже тут",
+  "travelMapAdd": "Додати місце",
+  "travelMapSearch": "Пошук міста та країни",
+  "travelMapSearchAction": "Пошук",
+  "travelMapSearchHint": "Наприклад, Лісабон, Португалія",
+  "travelMapEmpty": "Ваші наступні спогади починаються тут",
+  "travelMapEmptyBody": "Додайте місто, яке ви відвідали, або позначте, де ви перебуваєте зараз.",
+  "travelMapConfirm": "Зберегти цей візит?",
+  "travelMapConfirmBody": "Перевірте місто та дату, перш ніж додавати їх до своєї приватної карти.",
+  "travelMapDate": "Дата відвідування",
+  "travelMapSave": "Зберегти на моїй карті",
+  "travelMapCancel": "Скасувати",
+  "travelMapClose": "Закрити",
+  "travelMapNoResults": "Місто не знайдено. Спробуйте додати країну до пошуку.",
+  "travelMapLookupError": "Не вдалося знайти місто. Перевірте з’єднання або додайте місце вручну.",
+  "travelMapDenied": "Доступ до місцезнаходження вимкнено. Ви все одно можете вручну додати місто.",
+  "travelMapDisabled": "Увімкніть служби визначення місцезнаходження або додайте місто вручну.",
+  "travelMapError": "Не вдалося завантажити карту вашої подорожі. Спробуйте ще раз.",
+  "travelMapSaveError": "Не вдалося зберегти візит. Спробуйте ще раз.",
+  "travelMapUnavailable": "Карта подорожі потребує оновлення сервера.",
+  "travelMapOffline": "Офлайн · відображення збережених місць",
+  "travelMapRetry": "Спробуйте ще раз",
+  "travelMapDelete": "Видалити візит",
+  "travelMapDeleteConfirm": "Видалити цей візит із вашої приватної карти?",
+  "travelMapFit": "Показати всі місця",
+  "travelMapSaved": "Відвідати збережене",
+  "travelMapVisited": "Відвідано",
+  "travelMapLimit": "Ваша карта досягла 1 000 відвідувань. Видаліть старе відвідування, перш ніж додавати нове.",
+  "travelMapCounts": "{countries, plural, one{{countries} країна} few{{countries} країни} many{{countries} країн} other{{countries} країн}} · {cities, plural, one{{cities} місто} few{{cities} міста} many{{cities} міст} other{{cities} міст}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{{count} відвідування} few{{count} відвідування} many{{count} відвідувань} other{{count} відвідувань}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Пункти призначення (необов’язково)",
+  "travelAddDestination": "Додати пункт призначення",
+  "travelRemoveDestination": "Видалити пункт призначення",
+  "travelFromTrip": "З поїздки",
+  "travelChooseTrip": "Оберіть поїздку",
+  "travelNoTrips": "Подорожей поки що немає. Ви можете додати місце вручну.",
+  "travelAddToMap": "Додати на мою карту",
+  "travelTripConfirm": "Зберігайте лише ті місця, які ви насправді відвідали. Це додає особисті спогади до вашої карти.",
+  "travelVisitTitle": "Заголовок (необов’язково)",
+  "travelAddPhoto": "Додайте фото",
+  "travelChangePhoto": "Змінити фото",
+  "travelRemovePhoto": "Видалити фото",
+  "travelPhotoError": "Не вдалося підготувати це фото. Будь ласка, виберіть інше.",
+  "travelEditVisit": "Редагувати візит",
+  "travelOpenTrip": "Відкрита подорож",
+  "travelPreviousVisit": "Попереднє відвідування",
+  "travelNextVisit": "Наступний візит",
+  "travelDuplicate": "Ця поїздка вже позначена на вашій карті.",
+  "liveMapTitle": "Карта в режимі реального часу",
+  "liveShareTitle": "Поділитися моїм місцезнаходженням",
+  "liveConsent": "Ділися своїм точним місцезнаходженням лише зі схваленими учасниками цієї подорожі протягом обраного тобою часу. Передавання триває у фоновому режимі, і його можна зупинити будь-коли.",
+  "liveBackgroundNote": "Оновлення можуть призупинятися без інтернету або якщо ви примусово закриєте додаток. Зберігається лише останнє місцезнаходження; історія маршруту не записується.",
+  "liveStart": "Почати обмін даними",
+  "liveStop": "Припинити обмін даними",
+  "liveNotification": "Ваше місцезнаходження передається учасникам вашої подорожі. Відкрийте Splyto, щоб припинити передачу даних.",
+  "livePermissionError": "Дозволь доступ до геолокації в налаштуваннях телефону, щоб ділитися своїм місцезнаходженням.",
+  "liveStartError": "Не вдалося розпочати обмін даними. Перевірте доступ до даних про місцезнаходження, підключення до Інтернету, а також дату та час на вашому телефоні.",
+  "liveStopPending": "Оновлення зупинено. Очікується підключення до Інтернету для видалення вашого останнього місцезнаходження; воно зникне з карти протягом 2 хвилин без оновлень.",
+  "liveSharing": "ділиться місцезнаходженням",
+  "liveUnavailable": "Ця карта в режимі реального часу недоступна. Поверніться до поїздки та оновіть сторінку.",
+  "liveMapLoadError": "Карту не вдалося завантажити. Перевірте з’єднання та спробуйте відкрити карту ще раз.",
+  "liveLoadError": "Не вдалося оновити дані про місцезнаходження. Показано лише останні оновлення.",
+  "liveFit": "Показати всіх на карті",
+  "liveEmpty": "Наразі ніхто ще не ділиться даними про своє поточне місцезнаходження.",
+  "liveRecent": "Щойно оновлено",
+  "liveLastKnown": "Останнє оновлення",
+  "liveAccuracy": "Точність",
+  "liveUntil": "Поділитися до",
+  "liveOtherSession": "Процес розпочато в іншому сеансі. Ви можете зупинити його тут.",
+  "liveUpdatesPaused": "Оновлення призупинено. Перевірте доступ до місцезнаходження та інтернет-з’єднання.",
+  "livePrivateUntilShared": "Ваше місцезнаходження залишається конфіденційним, доки ви не вирішите поділитися ним.",
+  "activityEventExpenseCreated": "додано витрату",
+  "activityEventExpenseUpdated": "оновлено витрати",
+  "activityEventExpenseDeleted": "видалено витрату",
+  "activityEventTripCreated": "створив поїздку",
+  "activityEventTripUpdated": "оновлені деталі поїздки",
+  "activityEventTripMembersAdded": "додані учасники",
+  "activityEventTripMembersInvited": "Надіслано запрошень: {count}",
+  "@activityEventTripMembersInvited": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityEventTripMemberJoined": "приєднався до поїздки",
+  "activityEventTripInvitationDeclined": "відхилив запрошення на поїздку",
+  "activityEventTripInvitationRevoked": "скасував запрошення на поїздку",
+  "activityEventTripMemberRemoved": "вилучено {name} з поїздки",
+  "@activityEventTripMemberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberLeft": "вийшов із поїздки",
+  "activityEventTripMemberRoleUpdated": "змінено роль {name} на {role}",
+  "@activityEventTripMemberRoleUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberReady": "позначено як готове до розрахунку",
+  "activityEventTripMemberNotReady": "позначено як «не готово»",
+  "activityEventTripAllMembersReady": "Усі учасники готові до розрахунку",
+  "activityEventTripFinished": "подорож завершено",
+  "activityEventSettlementMarkedSent": "позначив переказ як надісланий",
+  "activityEventSettlementConfirmed": "підтверджено переказ",
+  "activityEventSettlementSentCancelled": "статус «скасовано», «надіслано»",
+  "activityEventSettlementNotReceived": "позначив переказ як не отриманий",
+  "activityEventSettlementReminderSent": "надіслано нагадування про розрахунок",
+  "activityEventPaymentMarkedSent": "зареєстрував платіж",
+  "activityEventPaymentRequested": "запросив платіж",
+  "activityEventPaymentRequestMarkedSent": "позначив запитуваний платіж як надісланий",
+  "activityEventPaymentRequestCancelled": "скасовано запит на оплату",
+  "activityEventPaymentRequestDeclined": "відхилив запит на оплату",
+  "activityEventPaymentConfirmed": "підтвердив платіж",
+  "activityEventPaymentCancelled": "скасовано запис про платіж",
+  "activityEventPaymentNotReceived": "позначив платіж як не отриманий",
+  "activityEventUnknown": "внесено зміну",
+  "privacyEnglishFallback": "Політика конфіденційності наразі доступна англійською мовою.",
+  "activityRoleAdmin": "Адміністратор",
+  "accountDeleteTitle": "Видалити обліковий запис",
+  "accountDeleteIntro": "Підтвердь видалення через електронну пошту. Після підтвердження його неможливо скасувати.",
+  "accountDeleteConsequences": "Видалення є остаточним. Ваш профіль анонімізується, а доступ до облікового запису скасовується. Записи про спільні поїздки та витрати зберігаються для інших учасників.",
+  "accountDeleteReasonsTitle": "Що ми могли б зробити краще?",
+  "accountDeleteReasonsHint": "Причина (необов’язково)",
+  "accountDeleteReasonNotUsing": "Мені більше не потрібен Splyto для моїх поїздок",
+  "accountDeleteReasonAnotherWay": "Я керую спільними витратами іншим способом",
+  "accountDeleteReasonComplicated": "Щоб щось зробити, потрібно докласти занадто багато зусиль",
+  "accountDeleteReasonTechnical": "Я зіткнувся з помилками або технічними проблемами",
+  "accountDeleteReasonPrivacy": "Я волів би видалити дані свого облікового запису",
+  "accountDeleteReasonOther": "Хочу видалити обліковий запис з іншої причини",
+  "accountDeleteEmailStep": "Наступним кроком є підтвердження електронною поштою.",
+  "accountDeletePasswordHint": "Введіть свій поточний пароль Splyto, щоб отримати електронний лист із підтвердженням. Ваш обліковий запис досі активний.",
+  "accountDeleteInboxTitle": "Останній крок у вашій поштовій скриньці",
+  "accountDeleteSentBody": "Посилання для підтвердження надіслано на {email}.",
+  "accountDeleteSentHint": "Твій обліковий запис залишається активним, доки ти не підтвердиш видалення.",
+  "accountDeleteSending": "Надсилання електронного листа з підтвердженням",
+  "@accountDeleteSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  }
+}

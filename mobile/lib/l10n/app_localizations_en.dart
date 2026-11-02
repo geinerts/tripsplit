@@ -3809,7 +3809,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String analyticsExpenseCount(int count) {
-    return '$count expenses';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count expenses',
+      one: '$count expense',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -4201,6 +4207,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get liveUnavailable => 'This live map is unavailable. Return to the trip and refresh.';
 
   @override
+  String get liveMapLoadError => 'The map could not load. Check your connection and reopen the map.';
+
+  @override
   String get liveLoadError => 'Could not refresh locations. Only recent updates are shown.';
 
   @override
@@ -4229,4 +4238,162 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get livePrivateUntilShared => 'Your location stays private until you choose to share it.';
+
+  @override
+  String get activityEventExpenseCreated => 'added an expense';
+
+  @override
+  String get activityEventExpenseUpdated => 'updated an expense';
+
+  @override
+  String get activityEventExpenseDeleted => 'deleted an expense';
+
+  @override
+  String get activityEventTripCreated => 'created the trip';
+
+  @override
+  String get activityEventTripUpdated => 'updated trip details';
+
+  @override
+  String get activityEventTripMembersAdded => 'added members';
+
+  @override
+  String activityEventTripMembersInvited(int count) {
+    return 'sent invitations: $count';
+  }
+
+  @override
+  String get activityEventTripMemberJoined => 'joined the trip';
+
+  @override
+  String get activityEventTripInvitationDeclined => 'declined the trip invitation';
+
+  @override
+  String get activityEventTripInvitationRevoked => 'cancelled a trip invitation';
+
+  @override
+  String activityEventTripMemberRemoved(String name) {
+    return 'removed $name from the trip';
+  }
+
+  @override
+  String get activityEventTripMemberLeft => 'left the trip';
+
+  @override
+  String activityEventTripMemberRoleUpdated(String name, String role) {
+    return 'changed the role of $name to $role';
+  }
+
+  @override
+  String get activityEventTripMemberReady => 'marked ready to settle';
+
+  @override
+  String get activityEventTripMemberNotReady => 'marked not ready';
+
+  @override
+  String get activityEventTripAllMembersReady => 'All members are ready to settle';
+
+  @override
+  String get activityEventTripFinished => 'finished the trip';
+
+  @override
+  String get activityEventSettlementMarkedSent => 'marked a transfer as sent';
+
+  @override
+  String get activityEventSettlementConfirmed => 'confirmed a transfer';
+
+  @override
+  String get activityEventSettlementSentCancelled => 'cancelled sent status';
+
+  @override
+  String get activityEventSettlementNotReceived => 'marked a transfer as not received';
+
+  @override
+  String get activityEventSettlementReminderSent => 'sent a settlement reminder';
+
+  @override
+  String get activityEventPaymentMarkedSent => 'recorded a payment';
+
+  @override
+  String get activityEventPaymentRequested => 'requested a payment';
+
+  @override
+  String get activityEventPaymentRequestMarkedSent => 'marked a requested payment as sent';
+
+  @override
+  String get activityEventPaymentRequestCancelled => 'cancelled a payment request';
+
+  @override
+  String get activityEventPaymentRequestDeclined => 'declined a payment request';
+
+  @override
+  String get activityEventPaymentConfirmed => 'confirmed a payment';
+
+  @override
+  String get activityEventPaymentCancelled => 'cancelled a payment record';
+
+  @override
+  String get activityEventPaymentNotReceived => 'marked a payment as not received';
+
+  @override
+  String get activityEventUnknown => 'made a change';
+
+  @override
+  String get privacyEnglishFallback => 'The privacy policy is currently available in English.';
+
+  @override
+  String get activityRoleAdmin => 'Admin';
+
+  @override
+  String get accountDeleteTitle => 'Delete account';
+
+  @override
+  String get accountDeleteIntro => 'Confirm deletion by email. Once confirmed, it cannot be undone.';
+
+  @override
+  String get accountDeleteConsequences => 'Deletion is permanent. Your profile is anonymised and account access is removed. Shared trip and expense records are kept for other members.';
+
+  @override
+  String get accountDeleteReasonsTitle => 'What could we have done better?';
+
+  @override
+  String get accountDeleteReasonsHint => 'Reason (optional)';
+
+  @override
+  String get accountDeleteReasonNotUsing => 'I no longer need Splyto for my trips';
+
+  @override
+  String get accountDeleteReasonAnotherWay => 'I manage shared expenses another way';
+
+  @override
+  String get accountDeleteReasonComplicated => 'It takes too much effort to get things done';
+
+  @override
+  String get accountDeleteReasonTechnical => 'I’ve run into bugs or technical problems';
+
+  @override
+  String get accountDeleteReasonPrivacy => 'I’d prefer to remove my account details';
+
+  @override
+  String get accountDeleteReasonOther => 'I’m leaving for a different reason';
+
+  @override
+  String get accountDeleteEmailStep => 'The next step is confirmation by email.';
+
+  @override
+  String get accountDeletePasswordHint => 'Enter your current Splyto password to request the confirmation email. Your account is still active.';
+
+  @override
+  String get accountDeleteInboxTitle => 'One last step in your inbox';
+
+  @override
+  String accountDeleteSentBody(String email) {
+    return 'Confirmation link sent to $email.';
+  }
+
+  @override
+  String get accountDeleteSentHint => 'Your account stays active until you confirm deletion.';
+
+  @override
+  String get accountDeleteSending => 'Sending confirmation email';
 }

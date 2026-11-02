@@ -1,0 +1,1863 @@
+{
+  "@@locale": "sv",
+  "homeFirstTrip": "Din första resa",
+  "homeYourShareAllTrips": "Din andel av alla resor",
+  "homeAllTime": "Hela perioden",
+  "homeSolo": "Solo",
+  "homePeople": "{count, plural, one{{count} person} other{{count} personer}}",
+  "homeTripActions": "Reserelaterade åtgärder: {name}",
+  "homeNoActiveTrips": "Inga aktiva resor",
+  "homeNoArchivedTrips": "Inga arkiverade resor",
+  "homeLoadingTrips": "Laddar dina resor",
+  "homeLoadErrorTitle": "Det gick inte att ladda dina resor",
+  "homeLoadErrorBody": "Vänligen försök igen om en stund.",
+  "homeOfflineTitle": "Du är offline",
+  "homeOfflineNoData": "Dina resor är ännu inte tillgängliga på den här enheten.",
+  "homeOfflineCached": "Offline. Visar sparade resor.",
+  "homeRefreshError": "Det gick inte att uppdatera. Visar tidigare laddade resor.",
+  "@homePeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@homeTripActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentShareDetailsConsent": "Dela mina sparade betalningsuppgifter med {arg1}",
+  "paymentShareDetailsScope": "Endast så länge denna begäran väntar på betalning. Om begäran avbryts upphör åtkomsten.",
+  "paymentDetailsUnavailable": "Betalningsuppgifterna är inte tillgängliga. Anslut till internet och kontrollera att begäran fortfarande är öppen.",
+  "paymentDetailsRetry": "Försök igen",
+  "tripModeSolo": "Bara jag",
+  "tripModeGroup": "Med andra",
+  "premiumFree": "Gratis",
+  "premiumStatusUnavailable": "Planstatus ej tillgänglig",
+  "premiumGrantedUntil": "Premium beviljat till och med {date}",
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumBillingNotActive": "Inget aktivt abonnemang",
+  "premiumRefreshStatus": "Uppdatera planens status",
+  "@addedMembersCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownConfirmedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSentCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSuggestedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@createdByLine": {
+    "placeholders": {
+      "creator": {},
+      "date": {}
+    }
+  },
+  "@currentEmailLabel": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "@directlyExplainedByExpenses": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@exactAmountWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@exactSplitMustMatchTotal": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@expenseIdDate": {
+    "placeholders": {
+      "date": {},
+      "id": {}
+    }
+  },
+  "@expenseImpactLine": {
+    "placeholders": {
+      "date": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@expenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@expensesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@forParticipants": {
+    "placeholders": {
+      "participants": {}
+    }
+  },
+  "@fromDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@fromToLine": {
+    "placeholders": {
+      "from": {},
+      "to": {}
+    }
+  },
+  "@helloUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@memberToPaySummary": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {},
+      "waiting": {}
+    }
+  },
+  "@moreCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@noExpensesByUserYet": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@noteMustBeMaxChars": {
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "@offlineQueuePendingChanges": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@paidOwesLine": {
+    "placeholders": {
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@payerName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@percentWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@pickedCycleCompleted": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@pickedUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@queueAddExpenseAmount": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@queueDeleteExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queueUpdateExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queuedChangesTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@queuedCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@randomCycleDrawLeft": {
+    "placeholders": {
+      "cycleNo": {},
+      "drawNo": {},
+      "remaining": {}
+    }
+  },
+  "@selectedFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementConfirmedProgress": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {}
+    }
+  },
+  "@settlementCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@settlementImpactWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@sharesWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitLabelValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitModeEqual": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeExact": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModePercent": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeShares": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@statusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@suggestedTransferRows": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@toDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripCreated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripStatusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@tripWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@unreadUpdates": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@userIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@userPaidOwesNetLine": {
+    "placeholders": {
+      "net": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@userWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@whoOwesWhatWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@youShouldPay": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@youShouldReceive": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountSectionTitle": "Konto",
+  "activeStatus": "Aktiv",
+  "activeTripPlural": "aktiva resor",
+  "activeTripSingle": "aktiv resa",
+  "activeTrips": "Aktiva resor",
+  "activitiesComingSoon": "Avsnittet om aktiviteter kommer snart.",
+  "addAction": "Lägg till",
+  "addExpenseTitle": "Lägg till utgift",
+  "addExpensesAction": "Lägg till utgifter",
+  "addMembersAction": "Lägg till deltagare",
+  "addTripMembersTitle": "Bjud in resedeltagare",
+  "addedMembersCount": "{count, plural, one{{count} inbjudan skickad} other{{count} inbjudningar skickade}}.",
+  "tripInvitationDeclined": "Reseinbjudan avvisad.",
+  "tripInviteAction": "Bjud in",
+  "tripInvitationsPending": "Väntar på svar",
+  "tripInvitationsRetry": "Inbjudningar är inte tillgängliga. Försök igen",
+  "tripInvitationRevoke": "Avbryt inbjudan",
+  "tripInvitationRevokeFailed": "Det gick inte att avboka inbjudan. Försök igen.",
+  "tripInvitationBody": "Du har blivit inbjuden till en resa. Öppna inbjudan för att svara.",
+  "allCaughtUp": "Allt är uppdaterat",
+  "allFilter": "Alla",
+  "allMembersLabel": "Alla deltagare",
+  "allPaymentsConfirmed": "Alla betalningar bekräftas.",
+  "allTrips": "Alla resor",
+  "amountHint": "12.50",
+  "amountLabel": "Belopp",
+  "amountMustBeGreaterThanZero": "Beloppet måste vara större än 0.",
+  "appearance": "Utseende",
+  "archivedStatus": "Arkiverat",
+  "authSubtitleLogin": "Dela resekostnader med vänner",
+  "authSubtitleRegister": "Skapa ett konto och börja dela resekostnader",
+  "breakdownConfirmedCount": "bekräftade: {count}",
+  "breakdownPendingCount": "väntar på: {count}",
+  "breakdownSentCount": "skickat: {count}",
+  "breakdownSuggestedCount": "förslag: {count}",
+  "cancelAction": "Avbryt",
+  "changeEmailWithPasswordHelper": "Ange ditt lösenord för att ändra e-postadress.",
+  "chooseReceiptFile": "Välj kvittensfil",
+  "completeAccountSetupDescription": "Ange din e-postadress och ditt lösenord för att slutföra ditt konto.",
+  "completeAccountSetupTitle": "Slutför kontoinställningarna",
+  "confirmReceivedAction": "Bekräfta mottagandet",
+  "confirmedAllSettlementsArchived": "Alla avräkningar bekräftade. Resan arkiverad.",
+  "confirmedAsReceived": "Bekräftat som mottaget.",
+  "confirmedLabel": "Bekräftad",
+  "couldNotOpenReceiptLink": "Det gick inte att öppna länken till kvittot.",
+  "createAction": "Skapa",
+  "createFirstTripHint": "Skapa din första resa för att komma igång.",
+  "createNewTripTitle": "Skapa ny resa",
+  "createTripAction": "Skapa resa",
+  "createTripFirst": "Skapa först en resa.",
+  "createdByLine": "{date}  -  Skapad av {creator}",
+  "creatorMustFinishTripFirst": "Resans skapare måste avsluta resan för att påbörja bekräftelsen av avräkningen.",
+  "currentEmailLabel": "Aktuell e-postadress: {email}",
+  "currentReceiptAttached": "Aktuellt kvitto bifogas.",
+  "dateFormatHint": "YYYY-MM-DD",
+  "dateLabel": "Datum",
+  "dateMustMatchFormat": "Datumet måste anges i formatet YYYY-MM-DD.",
+  "dateUnknown": "Datum okänt",
+  "deleteAction": "Ta bort",
+  "deleteExpenseConfirmQuestion": "Ska denna utgift raderas?",
+  "deleteExpenseTitle": "Ta bort utgift",
+  "editExpenseConfirmTitle": "Spara ändringar i utgifterna?",
+  "editExpenseConfirmText": "Detta kommer att uppdatera saldon för alla i resan.",
+  "directlyExplainedByExpenses": "Förklaras direkt genom utgifter: {amount}",
+  "doneStatus": "Klart",
+  "editAction": "Redigera",
+  "editExpenseTitle": "Redigera utgift",
+  "emailAddressLabel": "E-postadress",
+  "emailHint": "you@example.com",
+  "emailLabel": "E-post",
+  "emailRequired": "E-postadress krävs.",
+  "enterValidExactAmounts": "Ange giltiga och exakta belopp för alla deltagare.",
+  "enterValidPercentages": "Ange giltiga procentandelar för alla deltagare.",
+  "equalSplitLabel": "Dela lika",
+  "exactAmountWithValue": "Exakt: {value}",
+  "exactAmountsLabel": "Exakta belopp",
+  "exactSplitMustMatchTotal": "Den exakta fördelningen måste summera till {amount}.",
+  "expenseAdded": "Utgift tillagd.",
+  "expenseBreakdownSubtitle": "Hur denna medlem påverkas av varje utgift.",
+  "expenseBreakdownTitle": "Kostnadsfördelning",
+  "expenseDeleted": "Utgiften har raderats.",
+  "expenseIdDate": "Utgift nr {id}  -  {date}",
+  "expenseImpactLine": "{date}  -  Betalt {paid}  -  Skyldig {owes}",
+  "expenseReactionsTitle": "Reaktioner",
+  "expenseCommentsTitle": "Kommentarer",
+  "expenseNoComments": "Inga kommentarer ännu.",
+  "expenseAddCommentHint": "Lägg till en kommentar...",
+  "expenseCommentSend": "Skicka",
+  "expenseDeleteCommentTitle": "Ta bort kommentar?",
+  "expenseUpdated": "Utgifter uppdaterade.",
+  "expenseWithId": "Utgift nr {id}",
+  "expensesCount": "{count, plural, one{{count} utgift} other{{count} utgifter}}",
+  "expensesLabel": "Utgifter",
+  "failedToCreateTrip": "Det gick inte att skapa resan.",
+  "failedToLoadUsersDirectory": "Det gick inte att ladda användarkatalogen.",
+  "filterSettlementByMemberSubtitle": "Filtrera avräkningar efter medlem",
+  "finishSoloTripConfirmationText": "Vill du avsluta denna resa och flytta den till ditt arkiv? Dina utgifter kommer fortfarande att vara tillgängliga att se.",
+  "soloTripArchived": "Resan är avslutad och arkiverad.",
+  "finishTripSyncPending": "Synkronisera dina väntande ändringar innan du avslutar denna resa.",
+  "finishTripAction": "Avsluta resan",
+  "finishTripConfirmationText": "Avsluta denna resa och påbörja avräkningen?",
+  "finishTripStartSettlementsAction": "Avsluta och påbörja avräkningar",
+  "finishTripTitle": "Avsluta resan",
+  "forParticipants": "För: {participants}",
+  "forgotPassword": "Har du glömt lösenordet?",
+  "profilePasswordByEmail": "Ställ in lösenord via e-post",
+  "sendDeactivationEmail": "Skicka inaktiveringslänk",
+  "deactivationEmailSent": "Kontrollera din e-post för att bekräfta avaktiveringen. Ditt konto är fortfarande aktivt.",
+  "deactivationConfirmationMethods": "Bekräfta avaktiveringen med ditt lösenord eller via en länk i e-postmeddelandet. Dina resor och utgifter kommer att finnas kvar.",
+  "passwordEmailBackToProfile": "Tillbaka till profilen",
+  "forgotPasswordSubtitle": "Ange din e-postadress så skickar vi en länk för att återställa lösenordet.",
+  "forgotPasswordSuccessMessage": "Om det finns ett konto med den här e-postadressen har vi skickat en länk för att återställa lösenordet.",
+  "forgotPasswordTitle": "Återställ lösenord",
+  "friendsProgressSubtitle": "Varje medlem och dennes bekräftelsestatus.",
+  "friendsProgressTitle": "Vännernas framsteg",
+  "friendsSectionComingSoon": "Avsnittet ”Vänner” kommer snart.",
+  "fromDirection": "Från {name}",
+  "fromToLine": "{from} till {to}",
+  "generateTurnAction": "Lotta nästa person",
+  "hasAccountQuestion": "Har du redan ett konto?",
+  "helloUser": "Hej, {name}!",
+  "iSentAction": "Jag skickade",
+  "invalidEmailFormat": "Ogiltigt e-postformat.",
+  "languageAction": "Språk",
+  "languageEnglish": "Engelska",
+  "languageLatvian": "Lettiska",
+  "languageSpanish": "Spanska",
+  "languageSystem": "System",
+  "languageSystemSubtitle": "Använd enhetens språk",
+  "leaveEmptyKeepPasswordHelper": "Lämna fältet tomt för att behålla det nuvarande lösenordet.",
+  "logInButton": "Logga in",
+  "logOutButton": "Logga ut",
+  "logoutFromDeviceQuestion": "Logga ut från den här enheten?",
+  "logoutRevocationUnconfirmed": "Utloggad på den här enheten. Återkallandet av serversessionen kunde inte bekräftas.",
+  "markedAsSent": "Markerad som skickad.",
+  "markSettlementSentConfirmTitle": "Markera överföringen som skickad?",
+  "markSettlementSentConfirmText": "Använd detta först efter att du faktiskt har skickat betalningen. Mottagaren kommer att ombes att bekräfta.",
+  "settlementCancelSentAction": "Markera som ej skickat",
+  "settlementCancelSentConfirmTitle": "Avbryta statusen ”skickad”?",
+  "settlementCancelSentConfirmText": "Detta kommer att återföra överföringen till väntande status och meddela mottagaren.",
+  "settlementSentCancelled": "Överföringen har återförts till vänteläge.",
+  "settlementNotReceivedAction": "Jag har inte fått detta",
+  "settlementNotReceivedConfirmTitle": "Anmäla att betalningen inte kommit fram?",
+  "settlementNotReceivedConfirmText": "Detta kommer att återföra överföringen till väntande status och meddela betalaren.",
+  "settlementMarkedNotReceived": "Markerad som ej mottagen.",
+  "confirmSettlementReceivedConfirmTitle": "Bekräftar du mottagandet?",
+  "confirmSettlementReceivedConfirmText": "Bekräfta först när pengarna syns på ditt konto. Denna åtgärd kan slutföra avräkningen.",
+  "memberSummariesSubtitle": "Aktuellt saldotillstånd för båda parter.",
+  "memberSummariesTitle": "Medlemsöversikter",
+  "memberToPaySummary": "För att betala {total}  -  bekräftad {confirmed}  -  väntar {waiting}",
+  "membersImpactSubtitle": "Uppskattad betalningspåverkan per medlem.",
+  "membersImpactTitle": "Medlemmarnas inverkan",
+  "membersIncludedInExpense": "Medlemmar som ingår",
+  "membersLabel": "Medlemmar",
+  "moreCount": "+ {count} fler",
+  "myFilter": "Min",
+  "myImpactTitle": "Min påverkan",
+  "firstNameHint": "Ditt förnamn",
+  "firstNameLabel": "Förnamn",
+  "firstNameLengthValidation": "Förnamnet måste bestå av 2–64 tecken.",
+  "fullNameHelper": "Ange för- och efternamn i ett fält.",
+  "fullNameHint": "t.ex. Anna Ozolina",
+  "fullNameLabel": "Fullständigt namn",
+  "fullNameValidation": "Ange för- och efternamn (minst 2 tecken vardera).",
+  "lastNameHint": "Ditt efternamn",
+  "lastNameLabel": "efternamn",
+  "lastNameLengthValidation": "Efternamnet måste bestå av 2–64 tecken.",
+  "nameHint": "Ditt namn",
+  "nameLabel": "Namnnamn",
+  "nameLengthValidation": "Namnet måste bestå av minst 2 tecken.",
+  "navActivities": "Statistik",
+  "navAddTrip": "Lägg till resa",
+  "navBalances": "Saldon",
+  "navExpenses": "Utgifter",
+  "navFriends": "Vänner",
+  "navHome": "Hem",
+  "navProfile": "Profil",
+  "navRandom": "Slumpmässigt",
+  "netLabel": "Nettosaldo",
+  "newPasswordLabel": "Nytt lösenord",
+  "nicknameHint": "Hur dina vänner ser dig",
+  "nicknameLabel": "Smeknamn",
+  "nicknameLengthValidation": "Smeknamnet måste bestå av minst 2 tecken.",
+  "noAccountQuestion": "Har du inget konto ännu?",
+  "noBalancesYet": "Inga saldon ännu.",
+  "noChangesToSave": "Inga ändringar att spara.",
+  "noDirectExpenseLink": "Ingen direkt länk till en enskild utgift hittades. Denna avräkning beräknas utifrån resans totala saldo.",
+  "noExpenseImpactForMember": "Ingen kostnad för denna medlem.",
+  "noExpensesByUserYet": "Inga utgifter för {name} ännu.",
+  "noExpensesYet": "Inga utgifter ännu.",
+  "noExtraUsersToAdd": "Inga ytterligare användare att lägga till.",
+  "noInternetDeleteQueued": "Inget internet. Ta bort från kö.",
+  "noInternetExpenseQueued": "Inget internet. Utgiften i kö.",
+  "noInternetUpdateQueued": "Inget internet. Uppdatering i kö.",
+  "noMatchingRows": "Inga matchande rader.",
+  "noMembersFound": "Inga medlemmar hittades.",
+  "noNewMembersAdded": "Dessa personer är redan medlemmar eller har inbjudningar som väntar på svar.",
+  "noNotePlaceholder": "Ingen anmärkning",
+  "notificationsToday": "Idag",
+  "notificationsEmptyBody": "Uppdateringar om resor, utgifter och vänner kommer att visas här.",
+  "notificationsCached": "Offline – visar sparade meddelanden.",
+  "notificationsRefreshFailed": "Det gick inte att uppdatera. Tidigare laddade aviseringar visas.",
+  "notificationsJustNow": "Just nu",
+  "notificationsMinutesAgo": "För {count} min sedan",
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsHoursAgo": "För {count} h sedan",
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsUnread": "Oläst",
+  "noNotificationsYet": "Inga meddelanden ännu.",
+  "noParticipantData": "Inga deltagaruppgifter.",
+  "noParticipantsSelected": "Inga deltagare har valts ut.",
+  "noPaymentRowsInTrip": "Inga betalningsrader för denna resa.",
+  "noPaymentsNeeded": "Inga betalningar krävs.",
+  "noPicksYet": "Inga val ännu.",
+  "noSettlementActivityForMember": "Ingen avräkningsaktivitet för denna medlem.",
+  "noSettlementRowsYet": "Inga avräkningsrader ännu.",
+  "noSettlements": "Inga avräkningar",
+  "noTransferNeededForFilter": "Ingen överföring krävs för det valda filtret.",
+  "noTransferRowsToShow": "Inga överföringsrader att visa.",
+  "noTripDataLoaded": "Inga resedata har laddats.",
+  "noTripsYet": "Inga resor ännu.",
+  "noUsersFoundYet": "Inga användare hittades ännu.",
+  "notSetValue": "Ej angivet",
+  "notYetConfirmedTitle": "Ännu inte bekräftat",
+  "noteHint": "Middag, taxi, biljetter...",
+  "noteLabel": "Observera",
+  "noteMustBeMaxChars": "Anteckningen får innehålla högst {max} tecken.",
+  "notificationFallbackTitle": "Meddelande",
+  "notificationsTitle": "Meddelanden",
+  "notificationFriendInviteTitle": "Vänförfrågan",
+  "notificationFriendInviteBody": "{name} har skickat en vänförfrågan till dig.",
+  "notificationFriendInviteBodyGeneric": "Du har fått en inbjudan att bli vän.",
+  "notificationFriendInviteAcceptedTitle": "Inbjudan accepterad",
+  "notificationFriendInviteAcceptedBody": "{name} har accepterat din vänförfrågan.",
+  "notificationFriendInviteAcceptedBodyGeneric": "Din inbjudan till en vän har godkänts.",
+  "notificationFriendInviteRejectedTitle": "Inbjudan avböjd",
+  "notificationFriendInviteRejectedBody": "{name} har avböjt din vänförfrågan.",
+  "notificationFriendInviteRejectedBodyGeneric": "Din inbjudan till en vän har avvisats.",
+  "notificationTripAddedTitle": "Lagt till i resan",
+  "notificationTripAddedBody": "{name} har lagt till dig i resan ”{trip}”.",
+  "notificationTripAddedBodyNoActor": "Du har lagts till i resan ”{trip}”.",
+  "notificationTripAddedBodyGeneric": "Du har lagts till i en resa.",
+  "notificationExpenseAddedTitle": "Ny utgift tillagd",
+  "notificationExpenseAddedBodyWithTrip": "{name} har lagt till en utgift på {amount} i ”{trip}”.",
+  "notificationExpenseAddedBodyWithNote": "{name} har lagt till en utgift på {amount}: {note}",
+  "notificationExpenseAddedBodyGeneric": "En ny utgift har lagts till.",
+  "notificationTripFinishedTitle": "Resan är avslutad",
+  "notificationTripFinishedBodySettlementsReady": "{name} har avslutat ”{trip}”. Avräkningarna är klara.",
+  "notificationTripFinishedBodyArchived": "{name} har avslutat ”{trip}”. Resan är arkiverad.",
+  "notificationTripFinishedBodyNoActor": "”{trip}” är klart.",
+  "notificationTripFinishedBodyGeneric": "Resestatusen har uppdaterats.",
+  "notificationMemberReadyToSettleTitle": "Medlem markerad som redo",
+  "notificationMemberReadyToSettleBody": "{name} är redo att delta i ”{trip}”.",
+  "notificationMemberReadyToSettleBodyNoActor": "En medlem är redo att delta i ”{trip}”.",
+  "notificationMemberReadyToSettleBodyGeneric": "En medlem är redo att betala.",
+  "notificationTripReadyToSettleTitle": "Alla deltagare är redo",
+  "notificationTripReadyToSettleBody": "Alla deltagare är markerade som redo i ”{trip}”. Du kan påbörja avräkningen.",
+  "notificationTripReadyToSettleBodyGeneric": "Alla deltagare är redo. Du kan påbörja avräkningen.",
+  "notificationSettlementReminderTitle": "Påminnelse om betalning",
+  "notificationSettlementReminderBodyMarkSent": "{actor} påminde {target} om att markera {amount} som skickat.",
+  "notificationSettlementReminderBodyConfirm": "{actor} påminde {target} om att bekräfta mottagandet av {amount}.",
+  "notificationSettlementReminderBodyGeneric": "Du har fått en påminnelse om betalning.",
+  "notificationPaymentReminderTitle": "Betalningspåminnelse",
+  "notificationPaymentReminderBody": "Påminnelse: markera {amount} som skickat till {target} i ”{trip}”.",
+  "notificationPaymentReminderBodyGeneric": "Påminnelse: markera gärna betalningen som skickad.",
+  "notificationConfirmationReminderTitle": "Påminnelse om bekräftelse",
+  "notificationConfirmationReminderBody": "Påminnelse: bekräfta mottagandet av {amount} från {payer} i ”{trip}”.",
+  "notificationConfirmationReminderBodyGeneric": "Påminnelse: bekräfta gärna att du har mottagit betalningen.",
+  "notificationSettlementSentTitle": "Överföring markerad som skickad",
+  "notificationSettlementSentBody": "{name} har markerat {amount} som skickat till dig.",
+  "notificationSettlementSentBodyGeneric": "En överföring har markerats som skickad.",
+  "notificationSettlementConfirmedTitle": "Överföring bekräftad",
+  "notificationSettlementConfirmedBody": "{name} har bekräftat mottagandet av {amount} från dig.",
+  "notificationSettlementConfirmedBodyGeneric": "En överföring har bekräftats.",
+  "offlineQueuePendingChanges": "Offlinekö: {count, plural, one{{count} väntande ändring} other{{count} väntande ändringar}}",
+  "syncAllSynced": "Allt synkroniserat",
+  "syncChangesWaiting": "{count} väntar på synkronisering",
+  "syncFailedTapToRetry": "Synkroniseringen misslyckades, tryck för att försöka igen",
+  "offlineQueueStatus": "Offlinekö",
+  "offlineStatus": "Offline",
+  "onlineStatus": "Online",
+  "onlyCreatorCanFinishTrip": "Endast resans skapare kan avsluta resan.",
+  "openLabel": "Öppna",
+  "openReceiptAction": "Öppna kvitto",
+  "openSettlements": "Öppna avräkningar",
+  "overviewTitle": "Översikt",
+  "owesLabel": "Är skyldig",
+  "paidByLabel": "Betalas av",
+  "paidLabel": "Betalt",
+  "paidOwesLine": "Betalt {paid} -  Skyldig {owes}",
+  "participantsEmptyMeansAll": "Deltagare (tomt = alla medlemmar)",
+  "participantsTitle": "Deltagare",
+  "passwordLabel": "Lösenord",
+  "passwordComplexityHelper": "Använd minst 1 versal, 1 siffra och 1 symbol.",
+  "passwordComplexityValidation": "Lösenordet måste innehålla 1 versal, 1 siffra och 1 symbol.",
+  "passwordMinLength": "Lösenordet måste bestå av minst 8 tecken.",
+  "passwordMinLengthShort": "Lösenordet måste bestå av minst 6 tecken.",
+  "passwordResetComingSoon": "Återställning av lösenord kommer snart.",
+  "passwordsDoNotMatch": "Lösenorden stämmer inte överens.",
+  "payerName": "{name} (betalare)",
+  "pendingLabel": "Väntar",
+  "pendingPaymentsSubtitle": "Betalningar väntar fortfarande på fullständig bekräftelse.",
+  "percentLabel": "Procent",
+  "percentSplitMustBe100": "Procentfördelningen måste summera till exakt 100 %.",
+  "percentWithValue": "{value}",
+  "percentagesLabel": "Procentandelar",
+  "pickAtLeastOneParticipant": "Välj minst en deltagare.",
+  "pickMembersGenerateTurn": "Välj deltagare och lotta nästa person.",
+  "pickedCycleCompleted": "{name} har valts. Cykeln är avslutad.",
+  "pickedUser": "{name} har valts.",
+  "profileRefreshCachedData": "Det gick inte att uppdatera profilen. Visar cachade data.",
+  "profileTitle": "Profil",
+  "profileUpdated": "Profilen har uppdaterats.",
+  "uploadAvatarAction": "Ladda upp avatar",
+  "takePhotoAction": "Ta en bild",
+  "chooseFromLibraryAction": "Välj från biblioteket",
+  "removeAvatarAction": "Ta bort avatar",
+  "avatarUpdatedMessage": "Avatar uppdaterad.",
+  "avatarRemovedMessage": "Avatar borttagen.",
+  "avatarFileTooLarge": "Avatarfilen är för stor (max 5 MB).",
+  "avatarPickFailed": "Det gick inte att ladda avatarbilden.",
+  "queueAddExpense": "Lägg till utgift",
+  "queueAddExpenseAmount": "I kö: lägg till utgift {amount}",
+  "queueDeleteExpense": "Ta bort utgift",
+  "queueDeleteExpenseWithId": "I kö: ta bort utgift nr {id}",
+  "queuePendingStatus": "Kö väntar",
+  "queueUpdateExpense": "Uppdatera utgifter",
+  "queueUpdateExpenseWithId": "I kö: uppdatera utgift nr {id}",
+  "queuedChange": "Ändringar i kö",
+  "queuedChangesTitle": "Ändringar i kö ({count})",
+  "queuedCountLabel": "I kö ({count})",
+  "randomCycleDrawLeft": "Cykel {cycleNo}, dra {drawNo} – {remaining} kvar",
+  "receiptFallbackName": "kvitto",
+  "receiptLinkInvalid": "Länken till kvittot är ogiltig.",
+  "receiptOptionalLabel": "Kvitto (valfritt)",
+  "recentPicksTitle": "Senaste lottningar",
+  "reloadProfile": "Uppdatera profilen",
+  "rememberMe": "Kom ihåg mig",
+  "removeCurrentReceipt": "Ta bort nuvarande kvitto",
+  "repeatNewPasswordLabel": "Upprepa nytt lösenord",
+  "repeatPasswordLabel": "Upprepa lösenord",
+  "requestFailedTryAgain": "Begäran misslyckades. Försök igen.",
+  "retryAction": "Försök igen",
+  "rowsLabel": "Rader",
+  "backToLoginAction": "Tillbaka till inloggning",
+  "saveAction": "Spara",
+  "saveCredentialsButton": "Spara inloggningsuppgifter",
+  "saveProfileButton": "Spara profil",
+  "sendResetLinkButton": "Skicka återställningslänk",
+  "searchUsersHint": "Sök efter personer efter namn eller e-postadress",
+  "selectedPeopleLabel": "Utvalda personer",
+  "noSearchMatches": "Inga matchande användare hittades.",
+  "savingButton": "Sparar...",
+  "selectAtLeastTwoMembers": "Välj minst två deltagare.",
+  "selectMembersHint": "Välj deltagare",
+  "selectedFileLabel": "Vald: {name}",
+  "selectedLabel": "Utvalda",
+  "selectedUserFallback": "Vald användare",
+  "settings": "Inställningar",
+  "settleUpAction": "Gör upp",
+  "settledLabel": "Reglerat",
+  "settledStatus": "Reglerat",
+  "settlementActivitySubtitle": "Överföringar kopplade till denna medlem.",
+  "settlementActivityTitle": "Avräkningsaktivitet",
+  "settlementCompletedTitle": "Avräkningen är slutförd",
+  "settlementConfirmedProgress": "{confirmed} / {total} bekräftade",
+  "settlementCountLabel": "Avräkningar: {count}",
+  "settlementImpactTitle": "Konsekvenser för avräkningen",
+  "settlementImpactWithFilter": "Konsekvenser för avräkningen: {name}",
+  "settlementInProgress": "Avräkning pågår",
+  "settlementInProgressTitle": "Avräkning pågår",
+  "settlementLabel": "Avräkning",
+  "settlementOverviewArchivedSubtitle": "Resan har arkiverats. Alla avräkningar är slutförda.",
+  "settlementOverviewInProgressSubtitle": "Spåra bekräftelser av betalningar.",
+  "settlementOverviewPreviewSubtitle": "Förhandsgranska överföringar för när resan avslutas.",
+  "settlementPreview": "Förhandsgranskning av avräkningen",
+  "settlementPreviewTitle": "Förhandsgranskning av avräkningen",
+  "settlementProgressTripArchived": "Resan arkiverad",
+  "settlementWithId": "Avräkning nr {id}",
+  "settlements": "Avräkningar",
+  "settlementsAlreadyCompletedSubtitle": "Avräkningar redan genomförda.",
+  "settlementsDone": "Avräkningar genomförda",
+  "settlingStatus": "Avräkning",
+  "shareUnit": "andel",
+  "sharesLabel": "Andelar",
+  "sharesMustBePositiveIntegers": "Antalet andelar måste vara ett positivt heltal.",
+  "sharesWithValue": "Andelar: {value}",
+  "showActiveTrips": "Visa aktiva resor",
+  "signUpButton": "Registrera dig",
+  "splitBreakdownSubtitle": "Hur kostnaden fördelas",
+  "splitBreakdownTitle": "Uppdelning av kostnader",
+  "splitHintEqual": "Dela lika mellan de valda deltagarna.",
+  "splitHintExact": "Ange exakt belopp för varje deltagare. Summan måste stämma överens med totalbeloppet.",
+  "splitHintPercent": "Ange procentandel för varje deltagare. Summan måste vara 100 %.",
+  "splitHintShares": "Ange delningsenheter (1, 2, 3...). Kostnaden delas proportionellt.",
+  "splitLabel": "Split",
+  "splitLabelValue": "Split: {value}",
+  "splitModeEqual": "Jämn fördelning ({target})",
+  "splitModeExact": "Exakta belopp ({target})",
+  "splitModeLabel": "Delat läge",
+  "splitModePercent": "Procenttal ({target})",
+  "splitModeShares": "Andelar ({target})",
+  "statusConfirmed": "Bekräftad",
+  "statusPending": "Väntar",
+  "statusSent": "Sent",
+  "statusSuggested": "Föreslagen",
+  "statusWithValue": "Status: {status}",
+  "suggestedTransferDirections": "Föreslagna betalningsriktningar",
+  "suggestedTransferFromExpense": "Föreslagen överföring från utgifter",
+  "suggestedTransferRows": "{count, plural, one{{count} föreslagen överföring} other{{count} föreslagna överföringar}}",
+  "suggestedTransfersSubtitle": "Förväntade rader för betalare -> mottagare.",
+  "suggestedTransfersTitle": "Föreslagna överföringar",
+  "summarySettledUp": "Reglerat",
+  "summaryYouAreOwed": "Andra är skyldiga dig",
+  "summaryYouOwe": "Du är skyldig",
+  "syncAction": "Synkronisering",
+  "syncNowAction": "Synkronisera nu",
+  "syncingStatus": "Synkronisering",
+  "tapToViewDetails": "Tryck för att visa detaljer",
+  "themeModeDark": "Mörkt",
+  "themeModeDarkSubtitle": "Mjuk mörk färg (inte helt svart)",
+  "themeModeLight": "Ljust",
+  "themeModeSystem": "System",
+  "themeModeSystemSubtitle": "Använd enhetens utseende",
+  "toDirection": "Till {name}",
+  "totalLabel": "Totalt",
+  "travelerFallbackName": "Resenär",
+  "tripAlreadyClosed": "Resan är redan avslutad.",
+  "tripArchivedReadOnly": "Resan arkiveras. Skrivskyddat läge.",
+  "tripClosedExpenseEditingDisabled": "Resan är avslutad. Redigering av utgifter är inaktiverad.",
+  "tripClosedExpensesReadOnly": "Resan är avslutad. Utgifterna är skrivskyddade.",
+  "tripClosedRandomDisabled": "Resan är avslutad. Slumpmässig lottning är inaktiverad.",
+  "tripCreated": "Resan ”{name}” har skapats.",
+  "tripFinished": "Resan är avslutad.",
+  "tripFinishedCompleteSettlements": "Resan är avslutad. Slutför avräkningen.",
+  "tripFinishedSettlementStarted": "Resan är avslutad. Avräkningen har påbörjats.",
+  "tripFullySettledArchived": "Resan är helt avslutad och arkiverad.",
+  "tripNameHint": "Skidresa till Österrike",
+  "tripNameLabel": "Resans namn",
+  "tripNameLengthValidation": "Resans namn måste bestå av minst 2 tecken.",
+  "tripSnapshotTitle": "Resöversikt",
+  "tripTitleShort": "Resan",
+  "tripStatusWithValue": "Resestatus: {status}",
+  "tripWithId": "Resan nr {id}",
+  "unexpectedErrorLoadingProfile": "Oväntat fel vid inläsning av profil",
+  "unexpectedErrorLoadingTripData": "Oväntat fel vid inläsning av resedata",
+  "unexpectedErrorLoadingTrips": "Oväntat fel vid inläsning av resor",
+  "unexpectedErrorSavingChanges": "Oväntat fel vid sparande av ändringar",
+  "unexpectedErrorSavingCredentials": "Oväntat fel vid sparande av inloggningsuppgifter",
+  "unexpectedErrorUpdatingProfile": "Oväntat fel vid uppdatering av profil",
+  "unknownError": "Okänt fel",
+  "unknownLabel": "Okänt",
+  "unreadLabel": "Oläst",
+  "unreadUpdates": "{count, plural, one{{count} oläst uppdatering} other{{count} olästa uppdateringar}}",
+  "missingTripRouteArgument": "Argumentet för resrutten saknas.",
+  "userIdLabel": "Användar-ID: {id}",
+  "userPaidOwesNetLine": "Betalt {paid}  -  Skyldig {owes}  -  Netto {net}",
+  "userWithId": "Användare {id}",
+  "valueLabel": "Värde",
+  "viewAllTrips": "Visa alla resor",
+  "viewByPersonTitle": "Visa per person",
+  "whoOwesWhatSubtitle": "Vem som har betalat och vem som är skyldig.",
+  "whoOwesWhatTitle": "Vem är skyldig vad",
+  "whoOwesWhatWithFilter": "Vem är skyldig vad: {name}",
+  "whyPaymentExistsSubtitle": "Utgiftsrader som ingår i denna överföring.",
+  "whyPaymentExistsTitle": "Varför denna betalning finns",
+  "youLabel": "Du",
+  "youSettledForExpense": "Du har reglerat din del av den här utgiften.",
+  "youShouldPay": "Du bör betala {amount}",
+  "youShouldReceive": "Du bör ta emot {amount}",
+  "yourShare": "Din aktie",
+  "yourTrips": "Dina resor",
+  "authIntroSplitSmarter": "Dela upp på ett smartare sätt.",
+  "authIntroTravelFree": "Res fritt.",
+  "authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo": "Spåra delade kostnader i olika valutor och gör upp räkningen direkt – inga besvärliga skuldsedlar.",
+  "authIntroPlanTogether": "Planera tillsammans.",
+  "authIntroPayClearly": "Betala tydligt.",
+  "authIntroCreateTripsSecondsAddFriendsKeepEveryExpense": "Skapa resor på några sekunder, lägg till vänner och se till att alla utgifter är transparenta för alla.",
+  "authIntroSettleFast": "Avsluta snabbt.",
+  "authIntroStayFriends": "Håll kontakten.",
+  "authIntroFromSharedDinnersFullTripsSplytoKeepsBalances": "Från gemensamma middagar till hela resor – Splyto ser till att avräkningen blir rättvis och stressfri.",
+  "authIntroAppleSignFailedPleaseTryAgain": "Inloggning via Apple misslyckades. Försök igen.",
+  "authIntroGoogleSignFailedPleaseTryAgain": "Inloggningen via Google misslyckades. Försök igen.",
+  "authIntroCreateAccount": "Skapa ditt konto.",
+  "authIntroChooseSign": "Välj hur du vill registrera dig.",
+  "authIntroContinueGoogle": "Fortsätt med Google",
+  "authIntroContinueApple": "Fortsätt med Apple",
+  "authIntroBack": "Tillbaka",
+  "authIntroSplitSettled": "Delad betalning",
+  "authIntroParis3Friends": "Paris · 3 vänner",
+  "authIntroGetStarted": "Kom igång",
+  "authIntroAlreadyHaveAccount": "Har du redan ett konto? ",
+  "authIntroSignIn": "Logga in",
+  "authIntroSignUpWithEmail": "Registrera dig med e-post",
+  "authIntroOr": "ELLER",
+  "authGoogleSignDidNotReturnIdToken": "Inloggningen via Google returnerade inte något ID-token.",
+  "authAppleSignAvailableIosDevices": "Apple-inloggning är tillgänglig på iOS-enheter.",
+  "authAppleSignNotAvailableDevice": "Apple-inloggning är inte tillgänglig på den här enheten.",
+  "authAppleSignDidNotReturnIdentityToken": "Apple-inloggningen returnerade inte någon identitetstoken.",
+  "authAccountDeactivatedEnterEmailRequestReactivationLink": "Kontot är inaktiverat. Ange din e-postadress för att begära en länk för återaktivering.",
+  "authAccountDeactivated": "Konton avaktiveras",
+  "authSendReactivationLinkEmail": "Skicka en återaktiveringslänk till {email}?",
+  "authCancel": "Avbryt",
+  "authSendLink": "Skicka länk",
+  "authReactivationLinkSentCheckEmail": "Länk för återaktivering har skickats. Kontrollera din e-post.",
+  "authCouldNotSendReactivationLinkPleaseTryAgain": "Det gick inte att skicka länken för återaktivering. Försök igen.",
+  "authEmailNotVerifiedEnterEmailRequestVerificationLink": "E-postadressen är inte verifierad. Ange din e-postadress för att begära en verifieringslänk.",
+  "authEmailNotVerified": "E-postadressen är inte verifierad",
+  "authSendVerificationLinkEmail": "Skicka verifieringslänk till {email}?",
+  "authVerificationLinkSentCheckEmail": "Verifieringslänk har skickats. Kontrollera din e-post.",
+  "authCouldNotSendVerificationLinkPleaseTryAgain": "Det gick inte att skicka verifieringslänken. Försök igen.",
+  "authVerificationEmailSentPleaseVerifyEmailBeforeLogging": "Verifieringsmejl har skickats. Verifiera din e-postadress innan du loggar in.",
+  "authVerifyEmail": "Verifiera din e-postadress",
+  "authEmailLabel": "E-post:",
+  "authClose": "Stäng",
+  "authResendLink": "Skicka länken på nytt",
+  "profileAppSettingsSectionTitle": "APP-INSTÄLLNINGAR",
+  "profileAccountSettings": "Kontoinställningar",
+  "profileChangePhoto": "Ändra profilbild",
+  "profileAppearance": "Utseende",
+  "profileThemeDisplayMode": "Tema och visningsläge",
+  "profileLanguage": "Språk",
+  "profileDisplayLanguage": "Visningsspråk",
+  "profileNotificationsSectionHeading": "MEDDELANDEN",
+  "profileAppBanners": "Banners i appen",
+  "profileShowNewNotificationBannersInsideApp": "Visa nya meddelandebannrar i appen",
+  "profilePushNotificationsTitle": "Push-meddelanden",
+  "profilePhoneNotificationsExpensesFriendsTripsSettlements": "Telefonaviseringar för utgifter, vänner, resor och avräkningar",
+  "profileSupportSectionHeading": "SUPPORT",
+  "profileContactUs": "Kontakta oss",
+  "profileReportBugSuggestion": "Rapportera fel / Förslag",
+  "profileRateSplyto": "Betygsätt Splyto",
+  "profileLeaveStoreRating": "Lämna ett betyg på butiken",
+  "profileSecuritySectionHeading": "SÄKERHET",
+  "profileChangePassword": "Ändra lösenord",
+  "profileUpdateAccountPassword": "Uppdatera kontots lösenord",
+  "profileDangerZoneSectionHeading": "FARZON",
+  "profileDeactivateAccount": "Inaktivera konto",
+  "profileManageAccountAccess": "Hantera åtkomst till kontot",
+  "profileMadeWithLabel": "Skapad med",
+  "profileStoreRatingActionWillConnectedNextStep": "Funktionen för att lämna betyg kommer att kopplas in i nästa steg.",
+  "profileFailedSaveNotificationSettings": "Det gick inte att spara meddelandeinställningarna.",
+  "profilePushNotificationsSectionTitle": "PUSH-MEDDELANDEN",
+  "profileInAppBannersSectionTitle": "BANNER I APPEN",
+  "profileInAppTripMemberAddedTitle": "Medlem tillagd till resan",
+  "profileInAppAutoSettlementReminderTitle": "Automatisk påminnelse om avräkning",
+  "profileExpenseUpdates": "Uppdateringar av utgifter",
+  "profileExpenseAddedBannersInsideApp": "Banners för tillagda utgifter i appen",
+  "profileExpenseAddedNotificationsPhone": "Meddelanden om tillagda utgifter till telefonen",
+  "profileFriendInvites": "Väninbjudningar",
+  "profileFriendInvitesBannersInsideApp": "Banners för vänförfrågningar och svar i appen",
+  "profileFriendRequestResponseNotifications": "Meddelanden om vänförfrågningar och svar",
+  "profileTripUpdates": "Resuppdateringar",
+  "profileTripUpdatesBannersInsideApp": "Banners om resans livscykel och deltagarnas status i appen",
+  "profileTripLifecycleMemberStatusChanges": "Resans livscykel och förändringar i deltagarnas status",
+  "profileSettlementUpdates": "Uppdateringar om avräkning",
+  "profileSettlementUpdatesBannersInsideApp": "Markerade banners för skickade och bekräftade betalningar i appen",
+  "profileMarkedSentConfirmedPaymentUpdates": "Uppdateringar om skickade och bekräftade betalningar",
+  "profileScreenshotSizeMust8Mb": "Skärmdumpens storlek får vara högst 8 MB",
+  "profileFeedbackSendTitle": "Skicka feedback",
+  "profileFeedbackTypeLabel": "Typ",
+  "profileFeedbackTypeBug": "Bug",
+  "profileFeedbackTypeSuggestion": "Förslag",
+  "profileDescribeIssueSuggestion": "Beskriv problem eller förslag",
+  "profilePickingImage": "Väljer bild...",
+  "profileAttachScreenshot": "Bifoga skärmdump",
+  "profileChangeScreenshot": "Ändra skärmdump",
+  "profileRemoveImage": "Ta bort bild",
+  "profileTipAttachScreenshotFasterBugTriage": "Tips: bifoga en skärmdump för snabbare felsökning",
+  "profileAddDetailsAttachScreenshotBeforeSending": "Lägg till detaljer eller bifoga en skärmdump innan du skickar",
+  "profileSendAction": "Skicka",
+  "profileThanksFeedbackSent": "Tack! Feedback skickad",
+  "profileFailedSendFeedback": "Det gick inte att skicka feedback",
+  "profileCouldNotOpenWebsite": "Det gick inte att öppna webbplatsen.",
+  "profileOpenWebsiteQuestion": "Öppna webbplatsen?",
+  "profileOpenPortfolioAction": "Öppna portfolio.egm.lv",
+  "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Detta bildformat stöds inte på den här enheten. Välj JPG eller PNG.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "En giltig e-postadress för kontot krävs för att ändra ditt lösenord. Kontakta supporten om din e-postadress saknas eller är felaktig.",
+  "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Kontot har inaktiverats. Använd återaktiveringslänken i e-postmeddelandet för att återställa åtkomsten.",
+  "profileEditCouldNotDeactivateTryAgain": "Det gick inte att inaktivera kontot. Försök igen.",
+  "profileEditDeletionLinkSentEmail": "En länk för borttagning har skickats till din e-postadress.",
+  "profileEditCouldNotSendDeletionLinkTryAgain": "Det gick inte att skicka länken för borttagning. Försök igen.",
+  "profileEditEnterCurrentPasswordChangeEmail": "Ange ditt nuvarande lösenord för att ändra e-postadress.",
+  "profileEditVerificationWasSentNewEmailSecurityNoticeWas": "Verifieringsmeddelandet har skickats till den nya e-postadressen. Säkerhetsmeddelandet har skickats till din nuvarande e-postadress.",
+  "profileEditCouldNotStartEmailChangeRightNowTry": "Det gick inte att starta ändringen av e-postadressen just nu. Försök igen.",
+  "profileEditOverviewCurrency": "Översikt över valuta",
+  "profileEditPaymentMethod": "Betalningssätt",
+  "profileEditBankTransferRevolutPaypalMe": "Banköverföring, Revolut, PayPal.me",
+  "profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword": "Du kan inaktivera åtkomsten till kontot eller begära en länk via e-post för att permanent radera kontot. Lösenord är valfritt för Google-/Apple-konton.",
+  "profileEditEnterPasswordOptionalGoogleApple": "Ange ditt lösenord (valfritt för Google/Apple)",
+  "profileEditSendDeletionLinkEmail": "Skicka en länk för radering till e-post",
+  "profileEditBackProfile": "Tillbaka till profilen",
+  "profileEditSetValidEmailProfileChangingPassword": "Ange en giltig e-postadress i profilen innan du byter lösenord.",
+  "profileEditPasswordUpdated": "Lösenordet har uppdaterats.",
+  "profileEditFailedUpdatePassword": "Det gick inte att uppdatera lösenordet.",
+  "profileEditEmail": "Konto: {email}",
+  "profileEditPrimary": "Primär",
+  "profileEditSearchCurrency": "Sök valuta",
+  "profileEditNoCurrenciesFound": "Inga valutor hittades",
+  "profileEditOverviewTotalsConvertedCurrency": "Översiktssummorna omräknas till denna valuta.",
+  "profileEditPaymentInfoUpdated": "Betalningsinformation uppdaterad.",
+  "profileEditCouldNotSavePaymentInfoTryAgain": "Det gick inte att spara betalningsuppgifterna. Försök igen.",
+  "profileEditCurrentPassword": "Nuvarande lösenord",
+  "profileEditBankTransferIbanSwift": "Banköverföring (IBAN / SWIFT)",
+  "profileEditIbanSwift": "IBAN + SWIFT",
+  "profileEditRevtagRevolutMe": "Revtag / revolut.me",
+  "profileEditPaypalMeLink": "paypal.me-länk",
+  "profileEditChoosePaymentMethod": "Välj betalningssätt",
+  "profileEditTapChange": "Tryck för att ändra",
+  "profileEditUkTransfersSortCode6DigitsNumber8": "För överföringar i Storbritannien måste sorteringskoden bestå av 6 siffror och kontonumret av 8 siffror.",
+  "profileEditPaymentInfo": "Betalningsinformation",
+  "profileEditSaveDetails": "Spara uppgifter",
+  "profileEditBankRegion": "Bankregion",
+  "profileEditEurope": "Europa",
+  "profileEditSortCode": "Bankkod",
+  "profileEditExample112233": "Exempel: 112233",
+  "profileEditNumber": "Kontonummer",
+  "profileEdit8Digits": "8 siffror",
+  "profileEditUkDomesticTransfersSortCodeNumber": "För inhemska överföringar i Storbritannien använder du sort code + kontonummer.",
+  "profileEditExampleLv80bank0000435195001": "Exempel: LV80BANK0000435195001",
+  "profileEdit811Chars": "8 eller 11 tecken",
+  "profileEditHolderNameTakenProfileFullName": "Kontoinnehavarens namn hämtas från det fullständiga namnet i profilen.",
+  "profileEditRevolutMeUsername": "revolut.me/username",
+  "profileEditRevtag": "Revtag",
+  "profileEditUsername": "@username",
+  "profileEditPaypalMeUsernameUsername": "paypal.me/username eller användarnamn",
+  "profileEditRevolut": "Revolut",
+  "profileEditPaypalMe": "PayPal.me",
+  "profileEditWise": "Wise",
+  "profileEditWisePayUsername": "wise.com/pay/me/username",
+  "profileEditUk": "Storbritannien",
+  "profileEditIbanLabel": "IBAN",
+  "profileEditBicSwiftLabel": "BIC / SWIFT",
+  "profileEditRevolutMe": "Revolut.me",
+  "imageCropperAdjustAvatar": "Justera avataren",
+  "imageCropperAdjustTripImage": "Justera resebilden",
+  "copyAction": "Kopiera",
+  "currencyNameEur": "Euro",
+  "currencyNameGbp": "Brittiska pund",
+  "currencyNameChf": "Schweizisk franc",
+  "currencyNameNok": "Norska kronor",
+  "currencyNameSek": "Svenska kronor",
+  "currencyNameDkk": "Dansk krona",
+  "currencyNamePln": "Polska zloty",
+  "currencyNameCzk": "Tjeckisk koruna",
+  "currencyNameHuf": "Ungersk forint",
+  "currencyNameRon": "Rumänsk leu",
+  "currencyNameBgn": "Bulgarisk lev",
+  "currencyNameIsk": "Isländsk krona",
+  "currencyNameAll": "Albansk lek",
+  "currencyNameBam": "Bosnien och Hercegovina Mark",
+  "currencyNameByn": "Vitrysk rubel",
+  "currencyNameMdl": "Moldavisk leu",
+  "currencyNameMkd": "Makedonsk denar",
+  "currencyNameRsd": "Serbisk dinar",
+  "currencyNameUah": "Ukrainsk hryvnia",
+  "currencyNameGel": "Georgiska lari",
+  "currencyNameTry": "Turkisk lira",
+  "currencyNameUsd": "Amerikanska dollar",
+  "currencyNameJpy": "Japanska yen",
+  "currencyNameCny": "Kinesisk yuan",
+  "currencyNameCad": "Kanadensisk dollar",
+  "currencyNameAud": "Australisk dollar",
+  "expenseCategoryFood": "Mat",
+  "expenseCategoryGroceries": "Livsmedel",
+  "expenseCategoryFuel": "Bränsle",
+  "expenseCategoryTransport": "Transport",
+  "expenseCategoryAccommodation": "Boende",
+  "expenseCategoryActivities": "Aktiviteter",
+  "expenseCategoryTickets": "Biljetter",
+  "expenseCategoryShopping": "Shopping",
+  "expenseCategoryParty": "Fest",
+  "expenseCategoryParking": "Parkering",
+  "expenseCategoryOther": "Övrigt",
+  "shellTripAlreadyInListOpened": "Resan finns redan i din lista. Vi har öppnat den åt dig.",
+  "shellJoinedTripFromInviteLink": "Anslöt sig till resan via inbjudningslänken.",
+  "shellFailedToOpenInviteLink": "Det gick inte att öppna inbjudningslänken.",
+  "shellFailedToOpenFriendLink": "Det gick inte att öppna vänlänken.",
+  "shellTripInviteTitle": "Reseinbjudan",
+  "shellNoAction": "Nej",
+  "shellYesAction": "Ja",
+  "shellOnlyTripCreatorCanDelete": "Endast resans skapare kan radera denna resa.",
+  "shellOnlyActiveTripsCanDelete": "Endast aktiva resor kan raderas.",
+  "shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded": "Ta bort ”{tripLabel}”? Detta är endast tillåtet innan några utgifter har lagts till.",
+  "shellTripDeleted": "Resan har raderats.",
+  "shellFailedToDeleteTrip": "Det gick inte att radera resan.",
+  "shellFailedToLoadNotifications": "Det gick inte att ladda aviseringarna.",
+  "shellNewNotificationTitle": "Nytt meddelande: {title}",
+  "shellFailedToUpdateNotifications": "Det gick inte att uppdatera aviseringarna.",
+  "shellMarkAllAsReadAction": "Markera alla som lästa",
+  "shellNewSection": "Ny",
+  "shellEarlierSection": "Tidigare",
+  "shellShowMoreEarlierAction": "Visa fler tidigare",
+  "shellLoadingMore": "Laddar mer...",
+  "shellLoadMoreNotificationsAction": "Ladda fler meddelanden",
+  "shellTripNoLongerAvailable": "Denna resa är inte längre tillgänglig.",
+  "shellFailedToOpenTrip": "Det gick inte att öppna resan.",
+  "shellYesterday": "Igår",
+  "shellInviteAlreadyMemberOpenTripNow": "Du är redan medlem i ”{tripName}”. Vill du öppna denna resa nu?\n\nInbjuden av: {inviterName}",
+  "shellInviteJoinTripQuestion": "Vill du delta i resan ”{tripName}”?\n\nInbjuden av: {inviterName}",
+  "tripsSelectedImage": "Valad bild: {arg1}",
+  "tripsTripImageAlreadySet": "Resebild redan inställd.",
+  "tripsTripCreatedButImageUploadFailed": "Resan har skapats, men bilduppladdningen misslyckades.",
+  "tripsTripCreatedButImageUploadFailedWithReason": "Resan har skapats, men bilduppladdningen misslyckades: {arg1}",
+  "@tripsTripCreatedButImageUploadFailedWithReason": {
+    "placeholders": {
+      "arg1": {}
+    }
+  },
+  "tripsJoinTripViaInvite": "Gå med i resan via inbjudan",
+  "tripsTotalTrips": "Totalt antal resor",
+  "tripsTotalSpent": "Totalt spenderat",
+  "tripsMixedCurrencies": "Blandade valutor",
+  "tripsShowActive": "Visa aktiva",
+  "tripsSeeAll": "Visa alla",
+  "tripsGridView": "Rutnätsvy",
+  "tripsListView": "Listvy",
+  "tripsAddNewTrip": "Lägg till ny resa",
+  "tripsLoadMore": "Ladda mer",
+  "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "Ta bort ”{arg1}”? Detta är endast tillåtet innan några utgifter har lagts till.",
+  "tripsTripDates": "Resedatum",
+  "tripsFrom": "Från",
+  "tripsSelectDate": "Välj datum",
+  "tripsTo": "Till",
+  "tripsMainCurrency": "Huvudvaluta",
+  "tripsPleaseSelectTripPeriodFromAndToDates": "Välj reseperiod (start- och slutdatum).",
+  "tripsTripEndDateMustBeOnOrAfterStartDate": "Resans slutdatum måste vara på eller efter startdatumet.",
+  "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "Formatet för resans tidsperiod är ogiltigt. Välj datum på nytt.",
+  "tripsYouAreAlreadyAMemberOfThisTrip": "Du är redan medlem i denna resa.",
+  "tripsJoinedTripSuccessfully": "Du har anslutit dig till resan.",
+  "tripsFailedToJoinTripFromInvite": "Det gick inte att ansluta sig till resan från inbjudan.",
+  "tripsJoinTrip": "Gå med i resan",
+  "tripsPasteInviteLinkOrInviteToken": "Klistra in inbjudningslänken eller inbjudningstoken.",
+  "tripsHttpsInviteNorthSeaAbc123def4": "https://.../?invite=north-sea-abc123def4",
+  "tripsEnterAValidInviteLinkOrToken": "Ange en giltig inbjudningslänk eller ett giltigt token.",
+  "tripsClipboardIsEmpty": "Urklipp är tomt.",
+  "tripsPaste": "Klistra in",
+  "tripsJoin": "Gå med",
+  "workspaceTripMembers": "Resedeltagare",
+  "workspaceFailedToLoadFriends": "Det gick inte att ladda vänner.",
+  "workspaceFailedToGenerateInviteLink": "Det gick inte att skapa en inbjudningslänk.",
+  "workspaceInviteLink": "Inbjudningslänk",
+  "workspaceGeneratingInviteLink": "Skapar inbjudningslänk...",
+  "workspaceInviteLinkUnavailable": "Inbjudningslänken är inte tillgänglig.",
+  "workspaceCopyInviteLink": "Kopiera inbjudningslänken",
+  "workspaceInviteLinkCopied": "Inbjudningslänken har kopierats.",
+  "workspaceExpiresUtc": "Giltighetstid: {arg1} UTC",
+  "workspaceNoFriendsAvailableAddFriendsFirst": "Inga vänner tillgängliga. Lägg till vänner först.",
+  "workspaceSettle": "Avsluta",
+  "workspaceOwesToTheGroup": "Skyldig gruppen",
+  "workspaceGetsBackFromGroup": "Ska få pengar tillbaka från gruppen",
+  "workspaceShowingTop4ByBalanceDifference": "Visar de 4 bästa efter saldoskillnad.",
+  "workspaceOpenFlow": "Detaljer",
+  "workspaceFriend": "Vän",
+  "workspaceSettlementTransfer": "Överföring av betalning",
+  "workspaceCompleted": "Slutfört",
+  "workspaceWaitingForConfirmation": "Väntar på bekräftelse",
+  "workspaceWaitingForPayment": "Väntar på betalning",
+  "workspaceActionNeeded": "Åtgärd krävs",
+  "workspacePaymentSToMarkAsSentToConfirmAsReceived": "Betalningar att markera som skickade: {arg1}; att bekräfta som mottagna: {arg2}.",
+  "workspaceReadyToSettle": "Redo att reglera",
+  "workspaceAllMembersAreReadyYouCanStartSettlements": "Alla deltagare är redo. Du kan påbörja avräkningen.",
+  "workspaceWaitingForEveryoneToMarkReady": "Väntar på att alla ska markera sig som redo.",
+  "workspaceIMReady": "Jag är redo",
+  "workspaceConfirmThatYouAddedAllYourExpenses": "Kontrollera att du har lagt till alla dina utgifter.",
+  "workspaceFinishButtonUnlocksOnceEveryoneMarksReady": "Knappen ”Avsluta” låses upp när alla har markerat att de är redo.",
+  "workspaceGetsBackFromTheGroup": "Ska få pengar tillbaka från gruppen",
+  "workspaceSettledWithTheGroup": "Överenskommet med gruppen",
+  "workspaceTotalPaid": "Totalt betalt",
+  "workspaceTotalOwes": "Totalt belopp att betala",
+  "workspaceTransactionHistory": "Transaktionshistorik",
+  "workspaceNoTransactionsYetForThisMember": "Inga transaktioner ännu för denna medlem.",
+  "workspaceSettlements": "Avräkningar: {arg1}",
+  "workspaceAllMembersMustMarkReadyBeforeStartingSettlements": "Alla deltagare måste markera sig som redo innan avräkningen påbörjas.",
+  "workspaceYouMarkedYourselfReadyToSettle": "Du har markerat dig själv som redo att betala.",
+  "workspaceReadyToSettleMarkRemoved": "Markeringen ”Redo att reglera” har tagits bort.",
+  "workspaceReminderSent": "Påminnelse skickad.",
+  "workspaceInviteLinkOrAddFromFriends": "Inbjudningslänk eller lägg till från vänner",
+  "workspaceOnlyTripCreatorCanEditThisTrip": "Endast resans skapare kan redigera denna resa.",
+  "workspaceTripUpdated": "Resan har uppdaterats.",
+  "workspaceFailedToUpdateTrip": "Det gick inte att uppdatera resan.",
+  "workspaceNoMembersSelectedYet": "Inga medlemmar har valts ut ännu.",
+  "workspaceNoInternetExpenseSavedWithoutReceiptImage": "Inget internet. Utgiften sparas utan bild på kvittot.",
+  "workspaceRandomPicker": "Slumpval",
+  "workspaceCurrency": "Valuta",
+  "workspaceCategory": "Kategori",
+  "workspaceCustomCategory": "Anpassad kategori",
+  "workspaceCategoryName": "Kategorinamn",
+  "workspaceApartmentRentParkingEtc": "Hyra för lägenhet, parkering m.m.",
+  "workspaceEnterACustomCategory": "Ange en anpassad kategori.",
+  "workspacePickAnExpenseCategory": "Välj en utgiftskategori.",
+  "workspaceCategoryMustBeAtLeast2Characters": "Kategorin måste bestå av minst 2 tecken.",
+  "workspaceCategoryMustBeUpTo64Characters": "Kategorin får innehålla upp till 64 tecken.",
+  "workspacePercentageSplitMustTotal100": "Procentfördelningen måste summera till 100 %.",
+  "workspaceSharesMustBeGreaterThan0ForAllParticipants": "Antalet andelar måste vara större än 0 för varje deltagare.",
+  "workspaceTotalAmount": "Totalt belopp",
+  "workspaceOriginal": "Original",
+  "workspaceTotalCost": "Total kostnad",
+  "workspaceStarted": "Startad {arg1}",
+  "workspaceEnded": "Avslutad {arg1}",
+  "workspaceArchivedTrip": "Arkiverad resa",
+  "workspaceActiveTrip": "Aktiv resa",
+  "workspaceMemberProfile": "Medlemsprofil",
+  "workspaceTripOwner": "Resans ägare",
+  "workspaceMember": "Medlem",
+  "workspaceReadyForSettlement": "Redo för avräkning",
+  "workspaceNotReadyForSettlement": "Inte redo för avräkning",
+  "workspaceBankDetails": "Bankuppgifter",
+  "workspaceIbanAndPayoutDetailsWillBeAddedHereInA": "IBAN och utbetalningsuppgifter kommer att läggas till här i en kommande uppdatering.",
+  "workspacePaymentDetails": "Betalningsuppgifter",
+  "workspaceThisMemberHasNotAddedPayoutDetailsYet": "Denna medlem har ännu inte lagt till utbetalningsuppgifter.",
+  "workspaceBankTransfer": "Banköverföring",
+  "workspaceHolder": "Innehavare",
+  "workspaceCouldNotOpenPaymentLink": "Det gick inte att öppna betalningslänken.",
+  "workspaceTripActivity": "Resaktivitet",
+  "workspacePaidExpenses": "Betalda utgifter",
+  "workspacePaidTotal": "Betalt totalbelopp",
+  "workspaceInvolvedIn": "Inblandad i",
+  "workspaceCurrentTrip": "Aktuell resa",
+  "workspaceCommonTrips": "Gemensamma resor",
+  "workspaceLoadingCommonTrips": "Laddar gemensamma resor…",
+  "workspaceNoCommonTripsFoundYet": "Inga gemensamma resor hittades ännu.",
+  "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "Alla gemensamma resor kunde inte laddas. Den aktuella resan visas.",
+  "workspaceMembers": "medlemmar",
+  "workspaceExpense": "Utgifter",
+  "workspacePaid": "betald",
+  "workspaceLoadingMoreExpenses": "Laddar fler utgifter...",
+  "workspaceScrollDownToLoadMore": "Bläddra nedåt för att ladda mer",
+  "workspaceTripFinished": "Resan är avslutad",
+  "workspaceSettlementsAreUnlockedForThisTrip": "Betalningar är aktiverade för denna resa.",
+  "workspaceFinishTripToStartSettlements": "Avsluta resan för att påbörja avräkningen.",
+  "workspaceMarkedTransferAsSent": "{arg1} har markerat överföringen som skickad.",
+  "workspaceWaitingForToMarkAsPaid": "Väntar på att {arg1} ska markera som betalt.",
+  "workspaceConfirmedReceivingThePayment": "{arg1} har bekräftat mottagandet av betalningen.",
+  "workspaceWaitingForToConfirm": "Väntar på att {arg1} ska bekräfta.",
+  "workspaceAllTripSettlementsAreFullyCompleted": "Alla reseräkningar är fullständigt avslutade.",
+  "workspaceFinalStateAfterAllTransfersAreConfirmed": "Slutligt tillstånd efter att alla överföringar har bekräftats.",
+  "workspaceSettlementFlow": "Betalningsflöde",
+  "workspaceActions": "Åtgärder",
+  "workspaceQuickPay": "Snabbutbetalning",
+  "workspacePayWithRevolut": "Betala med Revolut",
+  "workspacePayWithPaypal": "Betala med PayPal",
+  "workspacePayWithWise": "Betala med Wise",
+  "workspaceTransferIsConfirmed": "Överföringen är bekräftad.",
+  "workspaceWaitingForTheOtherMemberToCompleteTheNextStep": "Väntar på att den andra deltagaren ska slutföra nästa steg.",
+  "workspaceSendReminder": "Skicka påminnelse",
+  "workspaceInProgress": "Pågår",
+  "workspaceTimeUnknown": "Tid okänd",
+  "workspaceRemind": "Påminnelse",
+  "workspaceYourPosition": "Din ståndpunkt",
+  "workspaceRecentActivity": "Senaste aktivitet",
+  "workspaceNoRecentActivityYet": "Ingen aktivitet på senare tid ännu.",
+  "workspaceAddAtLeastOneMemberToStartSplittingExpenses": "Lägg till minst en deltagare för att börja dela på utgifterna.",
+  "workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses": "Markera dig som redo att göra upp räkningen efter att du har lagt till alla dina utgifter.",
+  "workspaceWaitingForMemberSToMarkReady": "Deltagare som inte är redo än: {arg1}.",
+  "workspaceAllMembersAreReadyYouCanFinishTheTripAnd": "Alla deltagare är redo. Du kan avsluta resan och påbörja avräkningen.",
+  "workspaceAllMembersAreReadyWaitingForTheTripOwnerTo": "Alla deltagare är redo. Väntar på att resans arrangör ska påbörja avräkningen.",
+  "workspaceSettlementInProgressConfirmed": "Avräkning pågår: {arg1}/{arg2} bekräftat.",
+  "workspaceNoActionsPendingThisTripIsSettled": "Inga åtgärder väntar. Denna resa är avslutad.",
+  "workspaceNoActionsNeededRightNow": "Inga åtgärder behövs just nu.",
+  "workspaceYouShouldReceive": "Du bör få {arg1}.",
+  "workspaceYouShouldPay": "Du bör betala {arg1}.",
+  "workspaceYouAreCurrentlySettledInThisTrip": "Du är för närvarande anmäld till denna resa.",
+  "workspaceUnknownTime": "Okänd tid",
+  "workspaceJustNow": "Just nu",
+  "workspaceMinAgo": "För {arg1} min sedan",
+  "workspaceHAgo": "För {arg1} h sedan",
+  "workspaceDAgo": "För {arg1} d sedan",
+  "friendsRemoveFriend": "Ta bort vän",
+  "friendsRemoveThisFriend": "Ta bort denna vän?",
+  "friendsWillBeRemovedFromYourFriendsListYouCanAdd": "{arg1} kommer att tas bort från din vänlista. Du kan lägga till dem igen senare.",
+  "friendsContinue": "Fortsätt",
+  "friendsFriendRemoved": "Vän borttagen.",
+  "friendsCouldNotRemoveFriend": "Det gick inte att ta bort en vän.",
+  "friendsFriendProfile": "Vänprofil",
+  "friendsMoreActions": "Fler åtgärder",
+  "friendsThisFriendHasNotAddedPayoutDetailsYet": "Den här vännen har ännu inte lagt till utbetalningsuppgifter.",
+  "friendsCouldNotLoadCommonTripsRightNow": "Det gick inte att ladda gemensamma resor just nu.",
+  "friendsFinished": "Klart",
+  "friendsTrip": "Resa nr {arg1}",
+  "friendsMembers": "Medlemmar: {arg1}",
+  "friendsNoDate": "Inget datum",
+  "friendsIncomingRequests": "INKOMMANDE FÖRFRÅGNINGAR",
+  "friendsSentInvites": "SKICKADE INBJUDNINGAR",
+  "friendsMyFriends": "MINA VÄNNER",
+  "friendsRequests": "Förfrågningar",
+  "friendsIncoming": "Inkommande",
+  "friendsIncomingRequestSubtitle": "vill bli vänner",
+  "friendsOutgoingInviteSubtitle": "Inbjudan skickad",
+  "friendsNoPendingActivity": "Inga vänförfrågningar",
+  "friendsInviteSentTo": "Inbjudan skickad till {arg1}.",
+  "friendsNoIncomingRequests": "Inga inkommande förfrågningar",
+  "friendsDecline": "Avvisa",
+  "friendsAccept": "Godkänn",
+  "friendsNoSentInvites": "Inga skickade inbjudningar",
+  "friendsNoFriendsYet": "Inga vänner ännu",
+  "friendsScrollDownToLoadMoreFriends": "Bläddra nedåt för att ladda fler vänner.",
+  "friendsUser": "Användare",
+  "friendsSearchUsers": "Sök efter användare",
+  "friendsFindByNameOrEmailAndSendInvite": "Sök efter namn eller e-postadress och skicka en inbjudan",
+  "friendsScanQr": "Skanna QR-koden",
+  "friendsScanAnotherUserToAddFriend": "Skanna en annan användare för att lägga till en vän",
+  "friendsMyQr": "Min QR",
+  "friendsShowOrShareYourQrCode": "Visa eller dela din QR-kod",
+  "friendsScanFriendQrTitle": "Skanna väns QR-kod",
+  "friendsPlaceFriendQrInsideFrame": "Placera vännens QR-kod inuti ramen",
+  "friendsHoldFriendQrInsideFrame": "Håll QR-koden inom ramen",
+  "friendsConfirmAddFriendTitle": "Vill du lägga till {arg1} som vän?",
+  "friendsConfirmSendFriendInviteText": "{arg1} kommer att få din vänförfrågan.",
+  "friendsConfirmAcceptFriendRequestText": "Ska {arg1}s vänförfrågan godkännas?",
+  "friendsMyFriendQrTitle": "My Friend QR",
+  "friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode": "Skanna denna QR-kod eller dela länken för att lägga till mig på Splyto.",
+  "friendsAddMeOnTripSplitFriends": "Lägg till mig på Splyto.",
+  "friendsTripSplitFriendCode": "Splyto-vänlänk",
+  "shareAction": "Dela",
+  "friendsQrCodeIsNotAValidFriendCode": "En QR-kod är inte en giltig vänkod.",
+  "friendsYouCannotAddYourself": "Du kan inte lägga till dig själv.",
+  "friendsThisUserIsAlreadyInYourFriendsList": "Den här användaren finns redan i din vänlista.",
+  "friendsInviteToThisUserIsAlreadySent": "Inbjudan till denna användare har redan skickats.",
+  "friendsFriendRequestProcessed": "Vänförfrågan behandlad.",
+  "friendsFailedToProcessFriendQr": "Det gick inte att bearbeta vänens QR-kod.",
+  "friendsCouldNotLoadYourUserProfile": "Det gick inte att ladda din användarprofil.",
+  "friendsMyProfile": "Min profil",
+  "friendsUnexpectedErrorLoadingFriends": "Oväntat fel vid inläsning av vänner.",
+  "friendsFriendAdded": "Vän tillagd.",
+  "friendsRequestDeclined": "Begäran avslagen.",
+  "friendsFailedToUpdateRequest": "Det gick inte att uppdatera begäran.",
+  "friendsCancelInvite": "Avbryt inbjudan",
+  "friendsCancelInviteTo": "Avbryta inbjudan till {arg1}?",
+  "friendsKeep": "Behåll",
+  "friendsInviteToCancelled": "Inbjudan till {arg1} har avbrutits.",
+  "friendsFailedToCancelInvite": "Det gick inte att avboka inbjudan.",
+  "analyticsOther": "Övrigt",
+  "analyticsSelectATripForAnalytics": "Välj en resa för analys",
+  "analyticsMembers": "{arg1} • Medlemmar: {arg2} • {arg3} • {arg4}",
+  "analyticsDailySpending": "Dagliga utgifter",
+  "analyticsMyDaily": "Mina dagliga utgifter",
+  "analyticsGroupDaily": "Gruppens dagliga utgifter",
+  "analyticsByMember": "Per deltagare",
+  "analyticsShowLess": "Visa mindre",
+  "analyticsByCategory": "Efter kategori",
+  "analyticsQuickInsights": "Snabba insikter",
+  "analyticsBiggestExpense": "Största utgiften: {arg1} ({arg2})",
+  "analyticsTopSpender": "Största utgiftsansvarig: {arg1} ({arg2})",
+  "analyticsHighestGroupDay": "Gruppens högsta dag: {arg1} ({arg2})",
+  "analyticsNoDates": "Inga datum",
+  "friendsSearchFailedTryAgain": "Sökningen misslyckades. Försök igen.",
+  "friendsFailedToSendInvite": "Det gick inte att skicka inbjudan.",
+  "friendsAddFriend": "Lägg till vän",
+  "friendsSearchByNameOrEmail": "Sök efter namn eller e-postadress",
+  "friendsTypeAtLeast2CharactersToSearch": "Skriv minst 2 tecken för att söka.",
+  "friendsNoUsersFound": "Inga användare hittades",
+  "friendsInviteAction": "Bjud in",
+  "workspacePaidForGroup": "Betalt för gruppen",
+  "workspacePaidForGroupDate": "Betalt för gruppen • {arg1}",
+  "workspaceShareOfExpense": "Kostnadsdelning",
+  "workspaceShareOfExpenseDate": "Kostnadsdelning • {arg1}",
+  "paymentHolderNameCopied": "Innehavarens namn har kopierats.",
+  "paymentIbanCopied": "IBAN har kopierats.",
+  "paymentSwiftCopied": "SWIFT kopierat.",
+  "paymentRevtagCopied": "Revtag kopierad.",
+  "paymentCouldNotCopyToClipboard": "Det gick inte att kopiera till urklipp.",
+  "paymentCopied": "Kopierat.",
+  "paymentRequestAction": "Begär betalning",
+  "paymentRecordAction": "Registrera betalning",
+  "paymentRequestSheetTitle": "Begär betalning",
+  "paymentRecordSheetTitle": "Registrera betalning",
+  "paymentRequestSheetBody": "Be {arg1} att betala ett belopp som hen för närvarande är skyldig dig.",
+  "paymentRecordSheetBody": "Använd detta efter att du har betalat {arg1} utanför Splyto. De kommer att bekräfta mottagandet.",
+  "paymentMaxAmount": "Maximalt {arg1}",
+  "paymentNoteHint": "Banköverföring, Revolut, kontanter...",
+  "paymentAmountPositiveError": "Beloppet måste vara större än noll.",
+  "paymentAmountTooHighError": "Beloppet får inte överstiga det utestående saldot.",
+  "paymentRequestCreated": "Betalningsförfrågan skickad.",
+  "paymentRecordedWaiting": "Betalning registrerad. Väntar på bekräftelse.",
+  "paymentConfirmTitle": "Bekräfta betalning",
+  "paymentConfirmText": "Bekräfta att du har mottagit {arg1} från {arg2}.",
+  "paymentConfirmedMessage": "Betalning bekräftad.",
+  "paymentCancelRecordTitle": "Avbryt betalningsregistrering",
+  "paymentCancelRecordText": "Avbryta registreringen av din betalning på {arg1} till {arg2}?",
+  "paymentRecordCancelled": "Betalningsposten har annullerats.",
+  "paymentNotReceivedTitle": "Betalning ej mottagen",
+  "paymentNotReceivedText": "Markera betalningen {arg1} från {arg2} som ej mottagen?",
+  "paymentMarkedNotReceived": "Betalningen har markerats som ej mottagen.",
+  "paymentActivityTitle": "Betalningsaktivitet",
+  "paymentOpenRequestsCount": "Öppna betalningsbegäranden: {arg1}",
+  "paymentAwaitingConfirmationCount": "Betalningar som väntar på bekräftelse: {arg1}",
+  "paymentRecordedPaymentsTitle": "Registrerade betalningar",
+  "paymentRequestedFrom": "{arg1} begärde betalning från {arg2}",
+  "paymentPaidTo": "{arg1} betalade {arg2}",
+  "paymentRequestPendingStatus": "Betalning begärs",
+  "paymentAwaitingConfirmationStatus": "Väntar på bekräftelse",
+  "paymentReviewRequestAction": "Granska begäran",
+  "paymentViewDetailsAction": "Betalningsuppgifter",
+  "paymentMarkPaidAction": "Jag har betalat",
+  "paymentDeclineAction": "Avvisa",
+  "paymentRequestReviewTitle": "Betalningsförfrågan",
+  "paymentRequestReviewBody": "{arg1} har begärt {arg2} från dig. Betala utanför Splyto och markera sedan betalningen som genomförd.",
+  "paymentRequestMarkPaidConfirmTitle": "Markera begäran som betald?",
+  "paymentRequestMarkPaidConfirmText": "Bekräfta först efter att du har betalat {arg1} till {arg2} utanför Splyto.",
+  "paymentRequestMarkedPaid": "Markerad som betald. Väntar på bekräftelse.",
+  "paymentRequestCancelTitle": "Avbryta betalningsbegäran?",
+  "paymentRequestCancelText": "Vill du avbryta din {arg1}-förfrågan till {arg2}?",
+  "paymentRequestCancelled": "Betalningsförfrågan avbruten.",
+  "paymentRequestDeclineTitle": "Avvisa betalningsförfrågan?",
+  "paymentRequestDeclineText": "Avböja betalningsbegäran på {arg1} från {arg2}? Personen får ett meddelande.",
+  "paymentRequestDeclined": "Betalningsförfrågan avvisad.",
+  "paymentPendingBeforeFinish": "Lös öppna betalningsförfrågningar och obekräftade betalningar innan den slutliga avräkningen.",
+  "paymentFinishBlockedByPending": "Avslutningen låses upp efter att betalningsförfrågningar och obekräftade betalningar har lösts.",
+  "notificationPaymentRequestedTitle": "Betalning begärs",
+  "notificationPaymentRequestedBody": "{arg1} har begärt {arg2} från dig.",
+  "notificationPaymentRequestedBodyGeneric": "Du har fått en betalningsförfrågan.",
+  "notificationPaymentRequestSentTitle": "Begärd betalning skickad",
+  "notificationPaymentRequestSentBody": "{arg1} har markerat din {arg2}-betalningsförfrågan som betald.",
+  "notificationPaymentRequestSentBodyGeneric": "Din betalningsförfrågan har markerats som betald.",
+  "notificationPaymentRequestCancelledTitle": "Betalningsförfrågan avbruten",
+  "notificationPaymentRequestCancelledBody": "{arg1} har avbrutit betalningsförfrågan för {arg2}.",
+  "notificationPaymentRequestCancelledBodyGeneric": "En betalningsförfrågan har avbrutits.",
+  "notificationPaymentRequestDeclinedTitle": "Betalningsförfrågan avvisad",
+  "notificationPaymentRequestDeclinedBody": "{arg1} har avvisat din {arg2}-betalningsförfrågan.",
+  "notificationPaymentRequestDeclinedBodyGeneric": "Din betalningsförfrågan har avvisats.",
+  "notificationPaymentSentTitle": "Betalning markerad som skickad",
+  "notificationPaymentSentBody": "{arg1} har markerat {arg2} som betalt till dig.",
+  "notificationPaymentSentBodyGeneric": "En betalning har markerats som skickad till dig.",
+  "notificationPaymentConfirmedTitle": "Betalning bekräftad",
+  "notificationPaymentConfirmedBody": "{arg1} har bekräftat mottagandet av {arg2} från dig.",
+  "notificationPaymentConfirmedBodyGeneric": "Din betalning har bekräftats.",
+  "notificationPaymentCancelledTitle": "Betalningen har avbrutits",
+  "notificationPaymentCancelledBody": "{arg1} har avmarkerat betalningen för {arg2}.",
+  "notificationPaymentCancelledBodyGeneric": "En betalningsmarkering har avbrutits.",
+  "notificationPaymentNotReceivedTitle": "Betalning ej mottagen",
+  "notificationPaymentNotReceivedBody": "{arg1} har markerat betalningen {arg2} som ej mottagen.",
+  "notificationPaymentNotReceivedBodyGeneric": "En betalning har markerats som ej mottagen.",
+  "quickStartTitle": "Snabbstart",
+  "quickStartCreateTitle": "Skapa en resa",
+  "quickStartCreateBody": "Välj ett namn och en valuta. Håll dina egna utgifter eller dela kostnaderna med en grupp.",
+  "quickStartInviteTitle": "Res tillsammans eller på egen hand",
+  "quickStartInviteBody": "Bjud in vänner att dela din resa, eller starta en personlig resa på egen hand.",
+  "quickStartExpenseTitle": "Lägg till din första utgift",
+  "quickStartExpenseBody": "Ange beloppet, välj vem som har betalat och dela upp kostnaden. Dina saldon hålls uppdaterade.",
+  "quickStartNext": "Nästa",
+  "quickStartBack": "Tillbaka",
+  "quickStartSkip": "Hoppa över",
+  "quickStartCreateAction": "Skapa resa",
+  "quickStartClose": "Stäng snabbstart",
+  "quickStartSubtitle": "Se hur resor och utgifter fungerar",
+  "quickStartStep": "Steg {step} av {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Resans totalsumma",
+  "workspacePersonalTotal": "Totalt spenderat",
+  "workspaceBalanceEven": "Ditt saldo är balanserat",
+  "workspaceBalanceOwe": "Du är skyldig {amount}",
+  "workspaceBalanceReceive": "Du får tillbaka {amount}",
+  "workspaceMemberCount": "Medlemmar: {count}",
+  "workspaceSearchExpenses": "Sök efter utgifter",
+  "workspaceClearSearch": "Töm sökningen",
+  "workspaceSearchLoadedHint": "Sökningen omfattar inlagda utgifter. Lägg till fler för att inkludera äldre utgifter.",
+  "workspaceNoExpenseMatches": "Inga matchande utgifter",
+  "workspaceNoExpenseMatchesBody": "Prova en annan sökning eller rensa sökningen för att se alla inlästa utgifter.",
+  "workspaceEmptyPersonalExpenses": "Lägg till din första utgift för att börja spåra dina utgifter.",
+  "workspaceEmptyGroupExpenses": "Lägg till din första delade utgift för att se allas andel.",
+  "workspaceLoadMoreExpenses": "Ladda fler utgifter",
+  "workspaceOriginalExpenseAmount": "Ursprungligt belopp: {amount}",
+  "workspaceCommentCount": "Kommentarer: {count}",
+  "workspaceExpenseActions": "Åtgärder rörande utgifter",
+  "workspaceLoadErrorTitle": "Det gick inte att ladda denna resa",
+  "workspaceCachedWarning": "Visning av sparade uppgifter. Dessa kan vara inaktuella.",
+  "workspaceActivityTab": "Aktivitet",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Laddar resa",
+  "workspaceRefreshFailed": "Uppdateringen misslyckades",
+  "expenseDetailsTitle": "Uppgifter om utgifter",
+  "expenseQuickCategories": "Snabbkategorier",
+  "expenseReceiptRead": "Kvittot har lästs och formuläret har uppdaterats.",
+  "expenseReceiptNoData": "Kvitto bifogat. Inget tydligt belopp, datum eller försäljare kunde hittas.",
+  "expenseReceiptScanFailed": "Kvitto valt. Automatisk avläsning misslyckades; kontrollera fälten manuellt.",
+  "expenseReceiptOffline": "Kvittot laddas upp när du sparar. Automatisk avläsning kräver en internetanslutning.",
+  "expenseReadingReceipt": "Läser kvittot…",
+  "expenseCommentsLoadFailed": "Det gick inte att ladda kommentarerna. Försök igen.",
+  "expenseReplyAction": "Svara",
+  "expenseReplyHint": "Skriv ett svar…",
+  "expenseReplyTo": "Svara till {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Saldon visas efter att utgifter har lagts till.",
+  "balanceAfterPayments": "Saldo inkluderar bekräftade betalningar.",
+  "balanceExpenseShare": "Kostnadsdelning",
+  "balanceHistoryScope": "Inlagda utgifter och bekräftade betalningar. Denna lista innehåller eventuellt inte hela resehistoriken.",
+  "balancePaymentTo": "Betalning till {name}",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Betalning från {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Markera alla som redo innan du påbörjar slutavräkningen.",
+  "settlementEmptyClosed": "Inga överföringar anges för denna resa.",
+  "settlementConfirmedCount": "{count} av {total} överföringar bekräftade",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "{count} av {total} medlemmar är redo",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Klar",
+  "settlementMemberNotReady": "Inte redo",
+  "settlementSuggested": "Föreslagen överföring",
+  "activityLoadFailed": "Det gick inte att uppdatera aktiviteten. Eventuella synliga poster kan vara inaktuella.",
+  "activityMember": "Resedeltagare",
+  "friendsEmptyBody": "Hitta en vän via namn eller e-post, eller använd en QR-kod.",
+  "friendsDeclineAction": "Avvisa",
+  "friendsLoading": "Laddar vänner",
+  "friendsCommonTripsCount": "Delade resor: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "Baserat på inlagda utgifter; detta täcker eventuellt inte hela resan.",
+  "sharedTripsLoadedLimit": "Visar upp till 20 delade resor.",
+  "memberRemoveTitle": "Ta bort medlem?",
+  "memberRemoveBody": "Ta bort {name} från denna resa? Detta är endast möjligt om personen inte har några utgifter, avräkningar eller saldon.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Ta bort från resan",
+  "memberRemoved": "{name} har tagits bort från resan.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Har inte lagts till ännu",
+  "friendRelationshipLabel": "Vän",
+  "sharedTripsEmptyBody": "Resor som ni båda deltar i kommer att visas här.",
+  "analyticsAllTrips": "Alla resor",
+  "analyticsByTrip": "Per resa",
+  "analyticsYourSpending": "Dina utgifter",
+  "analyticsActiveArchived": "Aktiva och arkiverade resor",
+  "analyticsTrips": "Resor",
+  "analyticsAveragePerTrip": "Genomsnitt per resa",
+  "analyticsPaidByMember": "Betalas av medlemmen",
+  "analyticsYouPaid": "Du betalade",
+  "analyticsYouGetBack": "Du får tillbaka",
+  "analyticsYouOwe": "Du är skyldig",
+  "analyticsParticipants": "Deltagare",
+  "analyticsYourCategories": "Dina utgifter per kategori",
+  "analyticsLargestShares": "Mina största kostnadsandelar",
+  "analyticsLargestExpenses": "Största utgifterna",
+  "analyticsSpendingByTrip": "Dina utgifter per resa",
+  "analyticsEmptyTitle": "Inga utgifter ännu",
+  "analyticsEmptyBody": "Dina utgifter visas här när du lägger till utgifter till en resa.",
+  "analyticsPeriodEmptyBody": "Det finns inga kostnader för denna vy. Prova en annan resa eller period.",
+  "analyticsLoadFailed": "Det gick inte att ladda hela utgiftsrapporten. Försök igen.",
+  "analyticsLastLoaded": "Visar den senaste rapporten som laddats in utan problem.",
+  "analyticsExpenseCount": "{count, plural, one{{count} utgift} other{{count} utgifter}}",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Resalternativ",
+  "editTripAction": "Redigera resa",
+  "deleteTripAction": "Ta bort resa",
+  "inviteTripMembersAction": "Bjud in deltagare",
+  "tripCoverPhoto": "Omslagsbild",
+  "tripInviteLaterHint": "Du kan bjuda in personer efter att du har skapat resan.",
+  "inviteClipboardFailed": "Det gick inte att komma åt urklipp. Försök igen.",
+  "friendInviteToTrip": "Bjud in till resa",
+  "friendChooseTrip": "Välj en resa",
+  "friendNoInvitableTrips": "Inga tillgängliga resor. Du kan bjuda in vänner till aktiva gruppresor som du administrerar, såvida de inte redan är medlemmar eller har en väntande inbjudan.",
+  "friendTripInviteSent": "Inbjudan skickad.",
+  "friendTripUnavailable": "Denna resa är inte längre tillgänglig för denna åtgärd. Uppdatera och försök igen.",
+  "friendTripActionFailed": "Det gick inte att slutföra denna åtgärd. Försök igen.",
+  "profileContactDescription": "Har du ett problem, ett förslag eller en fråga om Splyto? Skicka ett e-postmeddelande till oss – vi hjälper dig gärna.",
+  "profileContactEmailAction": "Skriv ett e-postmeddelande",
+  "profileContactEmailUnavailable": "Det gick inte att öppna e-postappen. Kopiera adressen och skriv till oss från din e-postapp.",
+  "profilePrivacyPolicy": "Integritetspolicy",
+  "privacyLoadFailed": "Det gick inte att ladda integritetspolicyn. Försök igen.",
+  "addReceiptAction": "Lägg till kvitto",
+  "receiptPickFailed": "Det gick inte att ladda kvittot. Försök igen.",
+  "receiptPhotoAccessDenied": "Bevilja Splyto åtkomst till kameran eller fotobiblioteket i Inställningar och försök sedan igen.",
+  "receiptPhotoLabel": "Foto av kvittot",
+  "replaceReceiptAction": "Ersätt kvitto",
+  "removeReceiptAction": "Ta bort kvittot",
+  "restoreReceiptAction": "Återställ tidigare kvitto",
+  "expenseSplitBetween": "Uppdelning mellan",
+  "expenseEditParticipants": "Välj deltagare",
+  "expenseCustomSplit": "Anpassad fördelning",
+  "expenseSplitAllocated": "Hela {amount} fördelat",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "{amount} kvar att dela",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "{amount} över totalbeloppet",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Dela betalningsmetoder med mina resor",
+  "profilePaymentSharingDescription": "Låt godkända deltagare i resor som jag skapar eller går med i se mina betalningsmetoder. Detta gäller både nuvarande och framtida resor. Du kan när som helst stänga av delningen för att förhindra fortsatt åtkomst.",
+  "memberPaymentDetailsNotShared": "Betalningsmetoder delas inte eller är för närvarande otillgängliga.",
+  "homeTripInvitations": "Reseinbjudningar",
+  "homeNoTripInvitations": "Inga väntande reseinbjudningar",
+  "homeInvitationsLoadFailed": "Det gick inte att ladda inbjudningarna. Försök igen.",
+  "homeInvitationResponseFailed": "Det gick inte att svara på inbjudan. Försök igen.",
+  "homeTripShareFailed": "Det gick inte att dela resan. Försök igen.",
+  "settleStillToReceive": "Återstår att ta emot",
+  "settleStillToPay": "Återstår att betala",
+  "settleEstimateCaption": "Uppskattning baserad på aktuella utgifter. Beloppen kan ändras fram till resans slut.",
+  "settleOutstandingCaption": "Väntar på betalning eller bekräftelse.",
+  "settleWaitingForYou": "Väntar på att du ska markera dig som redo.",
+  "settleWhoPaysWhom": "Vem betalar vem?",
+  "settlePreviewCaption": "Förhandsgranskning · slutförs när resan avslutas",
+  "settleOpenPaymentCaption": "Öppna en betalning för att se detaljer och tillgängliga åtgärder.",
+  "tripBudgetEnable": "Ställ in en budget",
+  "tripBudgetSoloHint": "Valfritt utgiftsmål för denna resa.",
+  "tripBudgetGroupHint": "En gemensam budget för hela gruppen.",
+  "tripBudgetAmount": "Budgetbelopp",
+  "tripBudgetInvalid": "Ange ett belopp mellan 0,01 och 999999999,99, med upp till två decimaler.",
+  "tripBudgetTitle": "Resebudget",
+  "tripBudgetGroupTitle": "Gruppbudget",
+  "tripBudgetRemaining": "Återstående",
+  "tripBudgetOver": "Överskrider budgeten",
+  "tripBudgetSpent": "Spent",
+  "tripBudgetLimit": "Budget",
+  "travelMapTitle": "Min resekarta",
+  "travelMapSubtitle": "Besökta platser, bara för dig.",
+  "travelMapHere": "Jag har varit här",
+  "travelMapAdd": "Lägg till plats",
+  "travelMapSearch": "Sök efter stad och land",
+  "travelMapSearchAction": "Sök",
+  "travelMapSearchHint": "Till exempel Lissabon, Portugal",
+  "travelMapEmpty": "Ditt nästa minne börjar här",
+  "travelMapEmptyBody": "Lägg till en stad du har besökt, eller checka in där du befinner dig just nu.",
+  "travelMapConfirm": "Spara detta besök?",
+  "travelMapConfirmBody": "Kontrollera staden och datumet innan du sparar det på din privata karta.",
+  "travelMapDate": "Besöksdatum",
+  "travelMapSave": "Spara på min karta",
+  "travelMapCancel": "Avbryt",
+  "travelMapClose": "Stäng",
+  "travelMapNoResults": "Ingen stad hittades. Försök att lägga till landet i din sökning.",
+  "travelMapLookupError": "Det gick inte att hitta staden. Kontrollera din anslutning eller lägg till en plats manuellt.",
+  "travelMapDenied": "Åtkomst till platsinformation är avstängd. Du kan fortfarande lägga till en stad manuellt.",
+  "travelMapDisabled": "Aktivera platstjänster eller lägg till en stad manuellt.",
+  "travelMapError": "Det gick inte att ladda din resekarta. Försök igen.",
+  "travelMapSaveError": "Det gick inte att spara besöket. Försök igen.",
+  "travelMapUnavailable": "Resekartan behöver en serveruppdatering.",
+  "travelMapOffline": "Offline · visar sparade platser",
+  "travelMapRetry": "Försök igen",
+  "travelMapDelete": "Ta bort besök",
+  "travelMapDeleteConfirm": "Vill du ta bort detta besök från din privata karta?",
+  "travelMapFit": "Visa alla platser",
+  "travelMapSaved": "Besök sparade",
+  "travelMapVisited": "Besökta",
+  "travelMapLimit": "Din karta har nått 1 000 besök. Ta bort ett gammalt besök innan du lägger till ett nytt.",
+  "travelMapCounts": "{countries, plural, one{{countries} land} other{{countries} länder}} · {cities, plural, one{{cities} stad} other{{cities} städer}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{{count} besök} other{{count} besök}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Resmål (valfritt)",
+  "travelAddDestination": "Lägg till destination",
+  "travelRemoveDestination": "Ta bort destination",
+  "travelFromTrip": "Från en resa",
+  "travelChooseTrip": "Välj en resa",
+  "travelNoTrips": "Inga resor tillgängliga ännu. Du kan lägga till en plats manuellt.",
+  "travelAddToMap": "Lägg till på min karta",
+  "travelTripConfirm": "Spara endast platser som du faktiskt har besökt. Detta lägger till ett privat minne på din karta.",
+  "travelVisitTitle": "Titel (valfritt)",
+  "travelAddPhoto": "Lägg till en bild",
+  "travelChangePhoto": "Ändra foto",
+  "travelRemovePhoto": "Ta bort foto",
+  "travelPhotoError": "Det gick inte att förbereda den här bilden. Välj en annan.",
+  "travelEditVisit": "Redigera besök",
+  "travelOpenTrip": "Öppen resa",
+  "travelPreviousVisit": "Tidigare besök",
+  "travelNextVisit": "Nästa besök",
+  "travelDuplicate": "Detta besök finns redan på din karta.",
+  "liveMapTitle": "Karta i realtid",
+  "liveShareTitle": "Dela min position",
+  "liveConsent": "Dela din exakta plats endast med godkända deltagare i den här resan under den tid du väljer. Delningen fortsätter i bakgrunden och du kan stoppa den när som helst.",
+  "liveBackgroundNote": "Uppdateringar kan pausas utan internet eller om du tvingar appen att stängas. Endast den senaste positionen sparas; ingen ruttlogg registreras.",
+  "liveStart": "Börja dela",
+  "liveStop": "Sluta dela",
+  "liveNotification": "Din position delas med din resa. Öppna Splyto för att avbryta delningen.",
+  "livePermissionError": "Tillåt platsåtkomst i telefonens inställningar för att dela din plats.",
+  "liveStartError": "Det gick inte att starta delningen. Kontrollera åtkomsten till platsinformation, internetanslutningen samt datum och tid på din telefon.",
+  "liveStopPending": "Uppdateringarna har avbrutits. Väntar på internetanslutning för att ta bort din senaste position; den försvinner från kartan inom 2 minuter utan uppdateringar.",
+  "liveSharing": "delar plats",
+  "liveUnavailable": "Denna realtidskarta är inte tillgänglig. Gå tillbaka till resan och uppdatera.",
+  "liveMapLoadError": "Kartan kunde inte laddas. Kontrollera din anslutning och öppna kartan igen.",
+  "liveLoadError": "Det gick inte att uppdatera positionerna. Endast de senaste uppdateringarna visas.",
+  "liveFit": "Visa alla på kartan",
+  "liveEmpty": "Ingen delar sin aktuella position ännu.",
+  "liveRecent": "Nyss uppdaterad",
+  "liveLastKnown": "Senast uppdaterad",
+  "liveAccuracy": "Noggrannhet",
+  "liveUntil": "Dela tills",
+  "liveOtherSession": "Startades i en annan session. Du kan stoppa den här.",
+  "liveUpdatesPaused": "Uppdateringar pausade. Kontrollera åtkomst till platsinformation och internet.",
+  "livePrivateUntilShared": "Din position förblir privat tills du väljer att dela den.",
+  "activityEventExpenseCreated": "lagt till en utgift",
+  "activityEventExpenseUpdated": "uppdaterade en utgift",
+  "activityEventExpenseDeleted": "raderade en utgift",
+  "activityEventTripCreated": "skapade resan",
+  "activityEventTripUpdated": "uppdaterade resedetaljer",
+  "activityEventTripMembersAdded": "tillagda deltagare",
+  "activityEventTripMembersInvited": "skickade inbjudningar: {count}",
+  "@activityEventTripMembersInvited": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityEventTripMemberJoined": "har anslutit sig till resan",
+  "activityEventTripInvitationDeclined": "avböjde reseinbjudan",
+  "activityEventTripInvitationRevoked": "avbokade en reseinbjudan",
+  "activityEventTripMemberRemoved": "{name} har tagits bort från resan",
+  "@activityEventTripMemberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberLeft": "lämnade resan",
+  "activityEventTripMemberRoleUpdated": "ändrade rollen för {name} till {role}",
+  "@activityEventTripMemberRoleUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberReady": "markerad som redo för avräkning",
+  "activityEventTripMemberNotReady": "markerad som inte redo",
+  "activityEventTripAllMembersReady": "Alla deltagare är redo att reglera",
+  "activityEventTripFinished": "resan avslutad",
+  "activityEventSettlementMarkedSent": "markerade en överföring som skickad",
+  "activityEventSettlementConfirmed": "bekräftat en överföring",
+  "activityEventSettlementSentCancelled": "status ”avbruten” eller ”skickad”",
+  "activityEventSettlementNotReceived": "markerade en överföring som ej mottagen",
+  "activityEventSettlementReminderSent": "skickade en påminnelse om betalning",
+  "activityEventPaymentMarkedSent": "registrerade en betalning",
+  "activityEventPaymentRequested": "begärde en betalning",
+  "activityEventPaymentRequestMarkedSent": "markerade en begärd betalning som skickad",
+  "activityEventPaymentRequestCancelled": "avbröt en betalningsförfrågan",
+  "activityEventPaymentRequestDeclined": "avvisade en betalningsförfrågan",
+  "activityEventPaymentConfirmed": "bekräftat en betalning",
+  "activityEventPaymentCancelled": "avbrutit en betalningspost",
+  "activityEventPaymentNotReceived": "markerade en betalning som ej mottagen",
+  "activityEventUnknown": "gjorde en ändring",
+  "privacyEnglishFallback": "Integritetspolicyn finns för närvarande på engelska.",
+  "activityRoleAdmin": "Admin",
+  "accountDeleteTitle": "Ta bort konto",
+  "accountDeleteIntro": "Bekräfta raderingen via e-post. Efter bekräftelsen går den inte att ångra.",
+  "accountDeleteConsequences": "Radering är permanent. Din profil anonymiseras och åtkomsten till kontot tas bort. Delade rese- och utgiftsuppgifter sparas för andra medlemmar.",
+  "accountDeleteReasonsTitle": "Vad kunde vi ha gjort bättre?",
+  "accountDeleteReasonsHint": "Anledning (valfritt)",
+  "accountDeleteReasonNotUsing": "Jag behöver inte längre Splyto för mina resor",
+  "accountDeleteReasonAnotherWay": "Jag hanterar delade utgifter på ett annat sätt",
+  "accountDeleteReasonComplicated": "Det kräver för mycket ansträngning att få saker gjorda",
+  "accountDeleteReasonTechnical": "Jag har stött på buggar eller tekniska problem",
+  "accountDeleteReasonPrivacy": "Jag vill helst ta bort mina kontouppgifter",
+  "accountDeleteReasonOther": "Jag lämnar av en annan anledning",
+  "accountDeleteEmailStep": "Nästa steg är bekräftelse via e-post.",
+  "accountDeletePasswordHint": "Ange ditt nuvarande Splyto-lösenord för att begära bekräftelsemejlet. Ditt konto är fortfarande aktivt.",
+  "accountDeleteInboxTitle": "Ett sista steg i din inkorg",
+  "accountDeleteSentBody": "Bekräftelselänk skickad till {email}.",
+  "accountDeleteSentHint": "Ditt konto förblir aktivt tills du bekräftar raderingen.",
+  "accountDeleteSending": "Skicka bekräftelsemejl",
+  "@accountDeleteSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  }
+}

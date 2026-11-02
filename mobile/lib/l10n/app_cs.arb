@@ -1,0 +1,1863 @@
+{
+  "@@locale": "cs",
+  "homeFirstTrip": "Váš první výlet",
+  "homeYourShareAllTrips": "Tvůj podíl na všech cestách",
+  "homeAllTime": "Celé období",
+  "homeSolo": "Sólo",
+  "homePeople": "{count, plural, one{{count} osoba} few{{count} osoby} other{{count} osob}}",
+  "homeTripActions": "Akce související s cestou: {name}",
+  "homeNoActiveTrips": "Žádné aktivní cesty",
+  "homeNoArchivedTrips": "Žádné archivované cesty",
+  "homeLoadingTrips": "Načítání vašich výletů",
+  "homeLoadErrorTitle": "Nelze načíst vaše výlety",
+  "homeLoadErrorBody": "Zkuste to prosím za chvíli znovu.",
+  "homeOfflineTitle": "Jste offline",
+  "homeOfflineNoData": "Vaše cesty na tomto zařízení zatím nejsou k dispozici.",
+  "homeOfflineCached": "Offline. Zobrazení uložených výletů.",
+  "homeRefreshError": "Nedařilo se aktualizovat. Zobrazují se dříve načtené cesty.",
+  "@homePeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@homeTripActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentShareDetailsConsent": "Sdílet moje uložené platební údaje s {arg1}",
+  "paymentShareDetailsScope": "Pouze po dobu, kdy tato žádost čeká na platbu. Zrušením žádosti se přístup ukončí.",
+  "paymentDetailsUnavailable": "Údaje o platbě nejsou k dispozici. Připojte se k internetu a zkontrolujte, zda je žádost stále otevřená.",
+  "paymentDetailsRetry": "Zkuste to znovu",
+  "tripModeSolo": "Jen já",
+  "tripModeGroup": "S ostatními",
+  "premiumFree": "Zdarma",
+  "premiumStatusUnavailable": "Stav plánu není k dispozici",
+  "premiumGrantedUntil": "Prémiové členství uděleno do {date}",
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumBillingNotActive": "Žádné aktivní předplatné",
+  "premiumRefreshStatus": "Aktualizovat stav plánu",
+  "@addedMembersCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownConfirmedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSentCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSuggestedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@createdByLine": {
+    "placeholders": {
+      "creator": {},
+      "date": {}
+    }
+  },
+  "@currentEmailLabel": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "@directlyExplainedByExpenses": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@exactAmountWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@exactSplitMustMatchTotal": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@expenseIdDate": {
+    "placeholders": {
+      "date": {},
+      "id": {}
+    }
+  },
+  "@expenseImpactLine": {
+    "placeholders": {
+      "date": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@expenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@expensesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@forParticipants": {
+    "placeholders": {
+      "participants": {}
+    }
+  },
+  "@fromDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@fromToLine": {
+    "placeholders": {
+      "from": {},
+      "to": {}
+    }
+  },
+  "@helloUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@memberToPaySummary": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {},
+      "waiting": {}
+    }
+  },
+  "@moreCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@noExpensesByUserYet": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@noteMustBeMaxChars": {
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "@offlineQueuePendingChanges": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@paidOwesLine": {
+    "placeholders": {
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@payerName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@percentWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@pickedCycleCompleted": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@pickedUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@queueAddExpenseAmount": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@queueDeleteExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queueUpdateExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queuedChangesTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@queuedCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@randomCycleDrawLeft": {
+    "placeholders": {
+      "cycleNo": {},
+      "drawNo": {},
+      "remaining": {}
+    }
+  },
+  "@selectedFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementConfirmedProgress": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {}
+    }
+  },
+  "@settlementCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@settlementImpactWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@sharesWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitLabelValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitModeEqual": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeExact": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModePercent": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeShares": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@statusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@suggestedTransferRows": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@toDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripCreated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripStatusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@tripWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@unreadUpdates": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@userIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@userPaidOwesNetLine": {
+    "placeholders": {
+      "net": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@userWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@whoOwesWhatWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@youShouldPay": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@youShouldReceive": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountSectionTitle": "Účet",
+  "activeStatus": "Aktivní",
+  "activeTripPlural": "aktivní výlety",
+  "activeTripSingle": "aktivní výlet",
+  "activeTrips": "Aktivní výlety",
+  "activitiesComingSoon": "Sekce „Aktivity“ bude brzy k dispozici.",
+  "addAction": "Přidat",
+  "addExpenseTitle": "Přidat výdaj",
+  "addExpensesAction": "Přidat výdaje",
+  "addMembersAction": "Přidat členy",
+  "addTripMembersTitle": "Pozvěte účastníky cesty",
+  "addedMembersCount": "{count, plural, one{{count} odeslaná pozvánka} few{{count} odeslané pozvánky} other{{count} odeslaných pozvánek}}.",
+  "tripInvitationDeclined": "Pozvánka na výlet byla odmítnuta.",
+  "tripInviteAction": "Pozvat",
+  "tripInvitationsPending": "Čekáme na odpověď",
+  "tripInvitationsRetry": "Pozvánky nejsou k dispozici. Zkuste to znovu",
+  "tripInvitationRevoke": "Zrušit pozvánku",
+  "tripInvitationRevokeFailed": "Pozvánku se nepodařilo zrušit. Zkuste to znovu.",
+  "tripInvitationBody": "Byli jste pozváni na výlet. Otevřete pozvánku a odpovězte.",
+  "allCaughtUp": "Vše je aktuální",
+  "allFilter": "Vše",
+  "allMembersLabel": "Všichni členové",
+  "allPaymentsConfirmed": "Všechny platby jsou potvrzeny.",
+  "allTrips": "Všechny výlety",
+  "amountHint": "12.50",
+  "amountLabel": "Částka",
+  "amountMustBeGreaterThanZero": "Částka musí být větší než 0.",
+  "appearance": "Vzhled",
+  "archivedStatus": "Archivováno",
+  "authSubtitleLogin": "Rozdělte si cestovní výdaje s přáteli",
+  "authSubtitleRegister": "Vytvořte si účet a začněte sdílet náklady na cesty",
+  "breakdownConfirmedCount": "potvrzeno: {count}",
+  "breakdownPendingCount": "čeká na schválení: {count}",
+  "breakdownSentCount": "odesláno: {count}",
+  "breakdownSuggestedCount": "navrhováno: {count}",
+  "cancelAction": "Zrušit",
+  "changeEmailWithPasswordHelper": "Zadejte své heslo pro změnu e-mailové adresy.",
+  "chooseReceiptFile": "Vyberte soubor s potvrzením",
+  "completeAccountSetupDescription": "Zadejte svou e-mailovou adresu a heslo, abyste dokončili registraci účtu.",
+  "completeAccountSetupTitle": "Dokončete nastavení účtu",
+  "confirmReceivedAction": "Potvrdit přijetí",
+  "confirmedAllSettlementsArchived": "Všechny platby potvrzeny. Výlet archivován.",
+  "confirmedAsReceived": "Potvrzeno jako přijato.",
+  "confirmedLabel": "Potvrzeno",
+  "couldNotOpenReceiptLink": "Nelze otevřít odkaz na potvrzení.",
+  "createAction": "Vytvořit",
+  "createFirstTripHint": "Vytvořte si svůj první výlet a začněte.",
+  "createNewTripTitle": "Vytvořit nový výlet",
+  "createTripAction": "Vytvořit výlet",
+  "createTripFirst": "Nejprve vytvořte výlet.",
+  "createdByLine": "{date} -  Vytvořil {creator}",
+  "creatorMustFinishTripFirst": "Organizátor cesty musí cestu dokončit, aby mohl zahájit potvrzení vyúčtování.",
+  "currentEmailLabel": "Aktuální e-mail: {email}",
+  "currentReceiptAttached": "Aktuální potvrzení je přiloženo.",
+  "dateFormatHint": "YYYY-MM-DD",
+  "dateLabel": "Datum",
+  "dateMustMatchFormat": "Datum musí být ve formátu YYYY-MM-DD.",
+  "dateUnknown": "Datum neznámé",
+  "deleteAction": "Smazat",
+  "deleteExpenseConfirmQuestion": "Smazat tento výdaj?",
+  "deleteExpenseTitle": "Smazat výdaj",
+  "editExpenseConfirmTitle": "Uložit změny výdajů?",
+  "editExpenseConfirmText": "Tím se aktualizují zůstatky u všech účastníků cesty.",
+  "directlyExplainedByExpenses": "Přímo vysvětleno na příkladu výdajů: {amount}",
+  "doneStatus": "Hotovo",
+  "editAction": "Upravit",
+  "editExpenseTitle": "Upravit výdaj",
+  "emailAddressLabel": "E-mailová adresa",
+  "emailHint": "you@example.com",
+  "emailLabel": "E-mail",
+  "emailRequired": "E-mailová adresa je povinná.",
+  "enterValidExactAmounts": "Zadejte platné a přesné částky pro všechny účastníky.",
+  "enterValidPercentages": "Zadejte platné procentní podíly pro všechny účastníky.",
+  "equalSplitLabel": "Rovnoměrné rozdělení",
+  "exactAmountWithValue": "Přesně: {value}",
+  "exactAmountsLabel": "Přesné částky",
+  "exactSplitMustMatchTotal": "Přesný rozpis musí v součtu činit {amount}.",
+  "expenseAdded": "Výdaj přidaný.",
+  "expenseBreakdownSubtitle": "Jak se jednotlivé výdaje dotýkají tohoto člena.",
+  "expenseBreakdownTitle": "Rozpis výdajů",
+  "expenseDeleted": "Výdaj smazán.",
+  "expenseIdDate": "Výdaj č. {id}  -  {date}",
+  "expenseImpactLine": "{date}  -  Zaplaceno {paid}  -  Dluží {owes}",
+  "expenseReactionsTitle": "Reakce",
+  "expenseCommentsTitle": "Komentáře",
+  "expenseNoComments": "Zatím žádné komentáře.",
+  "expenseAddCommentHint": "Přidat komentář...",
+  "expenseCommentSend": "Odeslat",
+  "expenseDeleteCommentTitle": "Smazat komentář?",
+  "expenseUpdated": "Výdaje aktualizovány.",
+  "expenseWithId": "Výdaj č. {id}",
+  "expensesCount": "{count, plural, one{{count} výdaj} few{{count} výdaje} other{{count} výdajů}}",
+  "expensesLabel": "Výdaje",
+  "failedToCreateTrip": "Vytvoření cesty se nezdařilo.",
+  "failedToLoadUsersDirectory": "Nepodařilo se načíst adresář uživatelů.",
+  "filterSettlementByMemberSubtitle": "Filtrování vyúčtování podle účastníků",
+  "finishSoloTripConfirmationText": "Chcete tuto cestu dokončit a přesunout do archivu? Vaše výdaje zůstanou k nahlédnutí.",
+  "soloTripArchived": "Cesta byla dokončena a archivována.",
+  "finishTripSyncPending": "Před dokončením této cesty synchronizujte své čekající změny.",
+  "finishTripAction": "Dokončit výlet",
+  "finishTripConfirmationText": "Dokončit tuto cestu a zahájit vyúčtování?",
+  "finishTripStartSettlementsAction": "Dokončete a zahajte vyúčtování",
+  "finishTripTitle": "Dokončit výlet",
+  "forParticipants": "Pro: {participants}",
+  "forgotPassword": "Zapomněli jste heslo?",
+  "profilePasswordByEmail": "Nastavení hesla e-mailem",
+  "sendDeactivationEmail": "Odeslat odkaz na deaktivaci",
+  "deactivationEmailSent": "Zkontrolujte si e-mail a potvrďte deaktivaci. Váš účet je stále aktivní.",
+  "deactivationConfirmationMethods": "Deaktivaci potvrďte pomocí hesla nebo odkazu v e-mailu. Vaše cesty a výdaje zůstanou zachovány.",
+  "passwordEmailBackToProfile": "Zpět na profil",
+  "forgotPasswordSubtitle": "Zadejte svůj e-mail a my vám zašleme odkaz pro obnovení hesla.",
+  "forgotPasswordSuccessMessage": "Pokud existuje účet s touto e-mailovou adresou, zaslali jsme vám odkaz pro obnovení hesla.",
+  "forgotPasswordTitle": "Obnovit heslo",
+  "friendsProgressSubtitle": "Každý člen a jeho stav potvrzení.",
+  "friendsProgressTitle": "Pokrok přátel",
+  "friendsSectionComingSoon": "Sekce „Přátelé“ bude brzy k dispozici.",
+  "fromDirection": "Od {name}",
+  "fromToLine": "{from} až {to}",
+  "generateTurnAction": "Vylosovat další osobu",
+  "hasAccountQuestion": "Už máte účet?",
+  "helloUser": "Ahoj, {name}!",
+  "iSentAction": "Poslal jsem",
+  "invalidEmailFormat": "Neplatný formát e-mailu.",
+  "languageAction": "Jazyk",
+  "languageEnglish": "Angličtina",
+  "languageLatvian": "Lotyšština",
+  "languageSpanish": "Španělština",
+  "languageSystem": "Systém",
+  "languageSystemSubtitle": "Použít jazyk zařízení",
+  "leaveEmptyKeepPasswordHelper": "Nechte pole prázdné, chcete-li zachovat stávající heslo.",
+  "logInButton": "Přihlásit se",
+  "logOutButton": "Odhlásit se",
+  "logoutFromDeviceQuestion": "Odhlásit se z tohoto zařízení?",
+  "logoutRevocationUnconfirmed": "Z tohoto zařízení ses odhlásil(a). Zrušení relace na serveru se nepodařilo potvrdit.",
+  "markedAsSent": "Označeno jako odeslané.",
+  "markSettlementSentConfirmTitle": "Označit převod jako odeslaný?",
+  "markSettlementSentConfirmText": "Tuto funkci použijte až poté, co jste platbu skutečně odeslali. Příjemce bude vyzván k potvrzení.",
+  "settlementCancelSentAction": "Označit jako neodeslané",
+  "settlementCancelSentConfirmTitle": "Zrušit odeslaný status?",
+  "settlementCancelSentConfirmText": "Tím se převod vrátí do stavu „čekající“ a příjemce bude o tom informován.",
+  "settlementSentCancelled": "Převod byl vrácen do stavu „čeká na zpracování“.",
+  "settlementNotReceivedAction": "Toto jsem neobdržel",
+  "settlementNotReceivedConfirmTitle": "Nahlásit nepřijatou platbu?",
+  "settlementNotReceivedConfirmText": "Tím se převod vrátí do stavu „čekající“ a plátce bude o tom informován.",
+  "settlementMarkedNotReceived": "Označeno jako nepřijaté.",
+  "confirmSettlementReceivedConfirmTitle": "Potvrzujete přijetí?",
+  "confirmSettlementReceivedConfirmText": "Potvrďte až poté, co se peníze objeví na vašem účtu. Tímto krokem může být vypořádání dokončeno.",
+  "memberSummariesSubtitle": "Aktuální stav zůstatku pro obě strany.",
+  "memberSummariesTitle": "Přehledy členů",
+  "memberToPaySummary": "Zaplatit {total}  -  potvrzeno {confirmed}  -  čeká se {waiting}",
+  "membersImpactSubtitle": "Odhadovaný dopad na platbu na jednoho člena.",
+  "membersImpactTitle": "Vliv členů",
+  "membersIncludedInExpense": "Zahrnutí členů",
+  "membersLabel": "Členové",
+  "moreCount": "+dalších {count}",
+  "myFilter": "Moje",
+  "myImpactTitle": "Můj dopad",
+  "firstNameHint": "Vaše křestní jméno",
+  "firstNameLabel": "Jméno",
+  "firstNameLengthValidation": "Křestní jméno musí mít 2–64 znaků.",
+  "fullNameHelper": "Jméno a příjmení uveďte v jednom poli.",
+  "fullNameHint": "např. Anna Ozolina",
+  "fullNameLabel": "Celé jméno",
+  "fullNameValidation": "Zadejte jméno a příjmení (minimálně 2 znaky v každém poli).",
+  "lastNameHint": "Vaše příjmení",
+  "lastNameLabel": "Jméno",
+  "lastNameLengthValidation": "Příjmení musí mít 2–64 znaků.",
+  "nameHint": "Vaše jméno",
+  "nameLabel": "Název",
+  "nameLengthValidation": "Jméno musí mít alespoň 2 znaky.",
+  "navActivities": "Statistiky",
+  "navAddTrip": "Přidat výlet",
+  "navBalances": "Zůstatky",
+  "navExpenses": "Výdaje",
+  "navFriends": "Přátelé",
+  "navHome": "Domů",
+  "navProfile": "Profil",
+  "navRandom": "Náhodné",
+  "netLabel": "Čistý zůstatek",
+  "newPasswordLabel": "Nové heslo",
+  "nicknameHint": "Jak vás uvidí vaši přátelé",
+  "nicknameLabel": "Přezdívka",
+  "nicknameLengthValidation": "Přezdívka musí mít alespoň 2 znaky.",
+  "noAccountQuestion": "Ještě nemáte účet?",
+  "noBalancesYet": "Zatím žádné zůstatky.",
+  "noChangesToSave": "Žádné změny k uložení.",
+  "noDirectExpenseLink": "Nebyl nalezen žádný přímý odkaz na jednotlivé výdaje. Tato úhrada se vypočítává z celkové částky za výlet.",
+  "noExpenseImpactForMember": "Pro tohoto člena to nemá žádný finanční dopad.",
+  "noExpensesByUserYet": "{name} zatím nemá žádné výdaje.",
+  "noExpensesYet": "Zatím žádné výdaje.",
+  "noExtraUsersToAdd": "Není třeba přidávat žádné další uživatele.",
+  "noInternetDeleteQueued": "Žádné připojení k internetu. Smazat položky ve frontě.",
+  "noInternetExpenseQueued": "Žádné připojení k internetu. Výdaj zařazen do fronty.",
+  "noInternetUpdateQueued": "Žádné připojení k internetu. Aktualizace zařazena do fronty.",
+  "noMatchingRows": "Žádné shodné řádky.",
+  "noMembersFound": "Nebyli nalezeni žádní členové.",
+  "noNewMembersAdded": "Tito lidé již jsou členy nebo mají nevyřízené pozvánky.",
+  "noNotePlaceholder": "Žádná poznámka",
+  "notificationsToday": "Dnes",
+  "notificationsEmptyBody": "Zde se budou zobrazovat aktualizace týkající se výletů, výdajů a přátel.",
+  "notificationsCached": "Offline — zobrazení uložených oznámení.",
+  "notificationsRefreshFailed": "Nedařilo se aktualizovat. Zobrazují se dříve načtené oznámení.",
+  "notificationsJustNow": "Právě teď",
+  "notificationsMinutesAgo": "Před {count} min",
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsHoursAgo": "Před {count} h",
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsUnread": "Nepřečteno",
+  "noNotificationsYet": "Zatím žádná oznámení.",
+  "noParticipantData": "Žádné údaje o účastnících.",
+  "noParticipantsSelected": "Nebyli vybráni žádní účastníci.",
+  "noPaymentRowsInTrip": "V této cestě nejsou žádné platební řádky.",
+  "noPaymentsNeeded": "Žádné platby nejsou nutné.",
+  "noPicksYet": "Zatím žádné výběry.",
+  "noSettlementActivityForMember": "U tohoto člena nedochází k žádným platebním transakcím.",
+  "noSettlementRowsYet": "Zatím žádné řádky vyúčtování.",
+  "noSettlements": "Žádná vyrovnání",
+  "noTransferNeededForFilter": "Pro vybraný filtr není nutný žádný převod.",
+  "noTransferRowsToShow": "Nezobrazují se žádné řádky s převody.",
+  "noTripDataLoaded": "Nebyly načteny žádné údaje o cestě.",
+  "noTripsYet": "Zatím žádné výlety.",
+  "noUsersFoundYet": "Zatím nebyli nalezeni žádní uživatelé.",
+  "notSetValue": "Není nastaveno",
+  "notYetConfirmedTitle": "Zatím nepotvrzeno",
+  "noteHint": "Večeře, taxi, vstupenky...",
+  "noteLabel": "Poznámka",
+  "noteMustBeMaxChars": "Poznámka smí mít maximálně {max} znaků.",
+  "notificationFallbackTitle": "Oznámení",
+  "notificationsTitle": "Oznámení",
+  "notificationFriendInviteTitle": "Žádost o přátelství",
+  "notificationFriendInviteBody": "{name} vám poslal pozvánku k přátelství.",
+  "notificationFriendInviteBodyGeneric": "Obdrželi jste pozvánku k přátelství.",
+  "notificationFriendInviteAcceptedTitle": "Pozvánka přijata",
+  "notificationFriendInviteAcceptedBody": "{name} přijal/a vaši pozvánku k přátelství.",
+  "notificationFriendInviteAcceptedBodyGeneric": "Vaše pozvánka pro přítele byla přijata.",
+  "notificationFriendInviteRejectedTitle": "Pozvánka odmítnuta",
+  "notificationFriendInviteRejectedBody": "{name} odmítl/a vaši pozvánku k přátelství.",
+  "notificationFriendInviteRejectedBodyGeneric": "Vaše pozvánka pro přítele byla odmítnuta.",
+  "notificationTripAddedTitle": "Přidáno k výletu",
+  "notificationTripAddedBody": "{name} vás přidal do výletu „{trip}“.",
+  "notificationTripAddedBodyNoActor": "Byl/a jste přidán/a do výletu „{trip}“.",
+  "notificationTripAddedBodyGeneric": "Byl/a jsi přidán/a do výletu.",
+  "notificationExpenseAddedTitle": "Přidán nový výdaj",
+  "notificationExpenseAddedBodyWithTrip": "{name} přidal výdaj ve výši {amount} v rámci „{trip}“.",
+  "notificationExpenseAddedBodyWithNote": "{name} přidal výdaj ve výši {amount}: {note}",
+  "notificationExpenseAddedBodyGeneric": "Byla přidána nová výdajová položka.",
+  "notificationTripFinishedTitle": "Cesta skončila",
+  "notificationTripFinishedBodySettlementsReady": "{name} dokončil/a „{trip}“. Vyúčtování jsou připravena.",
+  "notificationTripFinishedBodyArchived": "{name} dokončil/a „{trip}“. Cesta je archivována.",
+  "notificationTripFinishedBodyNoActor": "„{trip}“ bylo dokončeno.",
+  "notificationTripFinishedBodyGeneric": "Stav cesty byl aktualizován.",
+  "notificationMemberReadyToSettleTitle": "Člen označený jako připravený",
+  "notificationMemberReadyToSettleBody": "{name} je připraven/a k účasti na „{trip}“.",
+  "notificationMemberReadyToSettleBodyNoActor": "Člen je připraven k vyúčtování v „{trip}“.",
+  "notificationMemberReadyToSettleBodyGeneric": "Člen je připraven k vypořádání.",
+  "notificationTripReadyToSettleTitle": "Všichni členové jsou připraveni",
+  "notificationTripReadyToSettleBody": "Všichni členové jsou v „{trip}“ označeni jako připravení. Můžete zahájit vyúčtování.",
+  "notificationTripReadyToSettleBodyGeneric": "Všichni členové jsou připraveni. Můžete zahájit vyúčtování.",
+  "notificationSettlementReminderTitle": "Upomínka k vyúčtování",
+  "notificationSettlementReminderBodyMarkSent": "{actor} připomněl {target}, aby označil {amount} jako odeslané.",
+  "notificationSettlementReminderBodyConfirm": "{actor} připomněl {target}, aby potvrdil přijetí částky {amount}.",
+  "notificationSettlementReminderBodyGeneric": "Obdrželi jste upomínku k vyúčtování.",
+  "notificationPaymentReminderTitle": "Upomínka k platbě",
+  "notificationPaymentReminderBody": "Připomenutí: v položce „{trip}“ prosím označte částku {amount} jako odeslanou na {target}.",
+  "notificationPaymentReminderBodyGeneric": "Připomenutí: označte prosím platbu jako odeslanou.",
+  "notificationConfirmationReminderTitle": "Připomenutí potvrzení",
+  "notificationConfirmationReminderBody": "Připomenutí: potvrďte prosím přijetí částky {amount} od {payer} v rámci „{trip}“.",
+  "notificationConfirmationReminderBodyGeneric": "Připomenutí: potvrďte prosím přijetí platby.",
+  "notificationSettlementSentTitle": "Převod označen jako odeslaný",
+  "notificationSettlementSentBody": "{name} označil částku {amount} jako odeslanou vám.",
+  "notificationSettlementSentBodyGeneric": "Převod byl označen jako odeslaný.",
+  "notificationSettlementConfirmedTitle": "Převod potvrzen",
+  "notificationSettlementConfirmedBody": "{name} potvrdil, že od vás obdržel částku {amount}.",
+  "notificationSettlementConfirmedBodyGeneric": "Převod byl potvrzen.",
+  "offlineQueuePendingChanges": "Offline fronta: {count, plural, one{{count} čekající změna} few{{count} čekající změny} other{{count} čekajících změn}}",
+  "syncAllSynced": "Vše synchronizováno",
+  "syncChangesWaiting": "{count} čeká na synchronizaci",
+  "syncFailedTapToRetry": "Synchronizace se nezdařila, klepnutím zkusit znovu",
+  "offlineQueueStatus": "Offline fronta",
+  "offlineStatus": "Offline",
+  "onlineStatus": "Online",
+  "onlyCreatorCanFinishTrip": "Výlet může ukončit pouze jeho organizátor.",
+  "openLabel": "Otevřít",
+  "openReceiptAction": "Otevřít účtenku",
+  "openSettlements": "Otevřít vyrovnání",
+  "overviewTitle": "Přehled",
+  "owesLabel": "Dluží",
+  "paidByLabel": "Platí",
+  "paidLabel": "Placené",
+  "paidOwesLine": "Zaplaceno {paid} -  Dluží {owes}",
+  "participantsEmptyMeansAll": "Účastníci (prázdné = všichni členové)",
+  "participantsTitle": "Účastníci",
+  "passwordLabel": "Heslo",
+  "passwordComplexityHelper": "Použijte alespoň 1 velké písmeno, 1 číslici a 1 symbol.",
+  "passwordComplexityValidation": "Heslo musí obsahovat 1 velké písmeno, 1 číslici a 1 symbol.",
+  "passwordMinLength": "Heslo musí mít alespoň 8 znaků.",
+  "passwordMinLengthShort": "Heslo musí mít alespoň 6 znaků.",
+  "passwordResetComingSoon": "Obnovení hesla bude brzy k dispozici.",
+  "passwordsDoNotMatch": "Hesla se neshodují.",
+  "payerName": "{name} (plátce)",
+  "pendingLabel": "Čeká",
+  "pendingPaymentsSubtitle": "Platby stále čekají na úplné potvrzení.",
+  "percentLabel": "Procenta",
+  "percentSplitMustBe100": "Součet procentuálních podílů musí činit přesně 100 %.",
+  "percentWithValue": "{value}",
+  "percentagesLabel": "Procenta",
+  "pickAtLeastOneParticipant": "Vyberte alespoň jednoho účastníka.",
+  "pickMembersGenerateTurn": "Vyber účastníky a vylosuj další osobu.",
+  "pickedCycleCompleted": "Vybrán {name}. Cyklus dokončen.",
+  "pickedUser": "Vybrán {name}.",
+  "profileRefreshCachedData": "Nepodařilo se aktualizovat profil. Zobrazují se data z mezipaměti.",
+  "profileTitle": "Profil",
+  "profileUpdated": "Profil aktualizován.",
+  "uploadAvatarAction": "Nahrát avatar",
+  "takePhotoAction": "Vyfoť to.",
+  "chooseFromLibraryAction": "Vyberte z knihovny",
+  "removeAvatarAction": "Odstranit avatar",
+  "avatarUpdatedMessage": "Aktualizován avatar.",
+  "avatarRemovedMessage": "Avatar byl odstraněn.",
+  "avatarFileTooLarge": "Soubor s avatarem je příliš velký (max. 5 MB).",
+  "avatarPickFailed": "Nepodařilo se načíst obrázek avatara.",
+  "queueAddExpense": "Přidat výdaj",
+  "queueAddExpenseAmount": "Ve frontě: přidat výdaj {amount}",
+  "queueDeleteExpense": "Smazat výdaj",
+  "queueDeleteExpenseWithId": "Ve frontě: smazat výdaj č. {id}",
+  "queuePendingStatus": "Čekající ve frontě",
+  "queueUpdateExpense": "Aktualizovat výdaje",
+  "queueUpdateExpenseWithId": "Ve frontě: aktualizace výdaje č. {id}",
+  "queuedChange": "Změny ve frontě",
+  "queuedChangesTitle": "Změny ve frontě ({count})",
+  "queuedCountLabel": "Ve frontě ({count})",
+  "randomCycleDrawLeft": "Cyklus {cycleNo}, čerpání {drawNo} – zbývá {remaining}",
+  "receiptFallbackName": "účtenka",
+  "receiptLinkInvalid": "Odkaz na potvrzení je neplatný.",
+  "receiptOptionalLabel": "Účtenka (nepovinné)",
+  "recentPicksTitle": "Poslední losování",
+  "reloadProfile": "Obnovit profil",
+  "rememberMe": "Zapamatovat si mě",
+  "removeCurrentReceipt": "Odstranit aktuální potvrzení",
+  "repeatNewPasswordLabel": "Zadejte nové heslo znovu",
+  "repeatPasswordLabel": "Zadejte heslo znovu",
+  "requestFailedTryAgain": "Žádost se nezdařila. Zkuste to znovu.",
+  "retryAction": "Zkuste to znovu",
+  "rowsLabel": "Řádky",
+  "backToLoginAction": "Zpět k přihlášení",
+  "saveAction": "Uložit",
+  "saveCredentialsButton": "Uložení přihlašovacích údajů",
+  "saveProfileButton": "Uložit profil",
+  "sendResetLinkButton": "Odeslat odkaz pro resetování",
+  "searchUsersHint": "Vyhledávejte osoby podle jména nebo e-mailu",
+  "selectedPeopleLabel": "Vybrané osoby",
+  "noSearchMatches": "Nebyli nalezeni žádní odpovídající uživatelé.",
+  "savingButton": "Ukládání...",
+  "selectAtLeastTwoMembers": "Vyberte alespoň dva členy.",
+  "selectMembersHint": "Vybrat členy",
+  "selectedFileLabel": "Vybráno: {name}",
+  "selectedLabel": "Vybrané",
+  "selectedUserFallback": "Vybraný uživatel",
+  "settings": "Nastavení",
+  "settleUpAction": "Vyrovnat dluhy",
+  "settledLabel": "Vyrovnáno",
+  "settledStatus": "Vyrovnáno",
+  "settlementActivitySubtitle": "Převody spojené s tímto členem.",
+  "settlementActivityTitle": "Účtování",
+  "settlementCompletedTitle": "Vypořádání dokončeno",
+  "settlementConfirmedProgress": "{confirmed} / {total} potvrzeno",
+  "settlementCountLabel": "Vyrovnání: {count}",
+  "settlementImpactTitle": "Dopad na vypořádání",
+  "settlementImpactWithFilter": "Dopad na vypořádání: {name}",
+  "settlementInProgress": "Probíhá vypořádání",
+  "settlementInProgressTitle": "Probíhá vypořádání",
+  "settlementLabel": "Vyrovnání",
+  "settlementOverviewArchivedSubtitle": "Cesta archivována. Všechny vyúčtování dokončeny.",
+  "settlementOverviewInProgressSubtitle": "Sledujte potvrzení o vypořádání.",
+  "settlementOverviewPreviewSubtitle": "Zobrazte náhled převodů po skončení cesty.",
+  "settlementPreview": "Náhled vyúčtování",
+  "settlementPreviewTitle": "Náhled vyúčtování",
+  "settlementProgressTripArchived": "Cesta archivována",
+  "settlementWithId": "Vyúčtování č. {id}",
+  "settlements": "Vyrovnání",
+  "settlementsAlreadyCompletedSubtitle": "Vyúčtování již byla dokončena.",
+  "settlementsDone": "Provedené vyúčtování",
+  "settlingStatus": "Vypořádání",
+  "shareUnit": "podíl",
+  "sharesLabel": "Podíly",
+  "sharesMustBePositiveIntegers": "Počet podílů musí být kladné celé číslo.",
+  "sharesWithValue": "Podíly: {value}",
+  "showActiveTrips": "Zobrazit aktivní výlety",
+  "signUpButton": "Zaregistrovat se",
+  "splitBreakdownSubtitle": "Jak se rozdělují výdaje",
+  "splitBreakdownTitle": "Rozpis rozdělení",
+  "splitHintEqual": "Rozdělte částku rovným dílem mezi vybrané účastníky.",
+  "splitHintExact": "Zadejte přesnou částku pro každého účastníka. Součet se musí shodovat s celkovou částkou.",
+  "splitHintPercent": "Zadejte procentuální podíl pro každého účastníka. Součet musí činit 100 %.",
+  "splitHintShares": "Zadejte počet sdílených jednotek (1, 2, 3...). Náklady se rozdělí proporcionálně.",
+  "splitLabel": "Rozdělit",
+  "splitLabelValue": "Split: {value}",
+  "splitModeEqual": "Rovnoměrné rozdělení ({target})",
+  "splitModeExact": "Přesné částky ({target})",
+  "splitModeLabel": "Režim rozdělení",
+  "splitModePercent": "Procenta ({target})",
+  "splitModeShares": "Podíly ({target})",
+  "statusConfirmed": "Potvrzeno",
+  "statusPending": "Čeká",
+  "statusSent": "Odesláno",
+  "statusSuggested": "Navrženo",
+  "statusWithValue": "Stav: {status}",
+  "suggestedTransferDirections": "Navržené směry plateb",
+  "suggestedTransferFromExpense": "Navrhovaný převod z výdajů",
+  "suggestedTransferRows": "{count, plural, one{{count} navržený převod} few{{count} navržené převody} other{{count} navržených převodů}}",
+  "suggestedTransfersSubtitle": "Očekávané řádky plátce -> příjemce.",
+  "suggestedTransfersTitle": "Doporučené převody",
+  "summarySettledUp": "Vyrovnáno",
+  "summaryYouAreOwed": "Ostatní ti dluží",
+  "summaryYouOwe": "Dlužíš",
+  "syncAction": "Synchronizace",
+  "syncNowAction": "Synchronizovat nyní",
+  "syncingStatus": "Synchronizace",
+  "tapToViewDetails": "Klepnutím zobrazíte podrobnosti",
+  "themeModeDark": "Tmavý",
+  "themeModeDarkSubtitle": "Jemná tmavá barva (ne čistě černá)",
+  "themeModeLight": "Světlý",
+  "themeModeSystem": "Systém",
+  "themeModeSystemSubtitle": "Používejte vzhled zařízení",
+  "toDirection": "Příjemce: {name}",
+  "totalLabel": "Celkem",
+  "travelerFallbackName": "Cestující",
+  "tripAlreadyClosed": "Cesta již byla ukončena.",
+  "tripArchivedReadOnly": "Cesta je archivována. Režim pouze pro čtení.",
+  "tripClosedExpenseEditingDisabled": "Cesta je uzavřena. Úpravy výdajů jsou deaktivovány.",
+  "tripClosedExpensesReadOnly": "Cesta je uzavřena. Výdaje jsou pouze pro čtení.",
+  "tripClosedRandomDisabled": "Výlet je uzavřen. Náhodné losování je deaktivováno.",
+  "tripCreated": "Cesta „{name}“ byla vytvořena.",
+  "tripFinished": "Cesta skončila.",
+  "tripFinishedCompleteSettlements": "Cesta je ukončena. Proveďte vyúčtování.",
+  "tripFinishedSettlementStarted": "Cesta skončila. Zahájeno vyúčtování.",
+  "tripFullySettledArchived": "Cesta je zcela vypořádána a archivována.",
+  "tripNameHint": "Lyžařský výlet do Rakouska",
+  "tripNameLabel": "Název výletu",
+  "tripNameLengthValidation": "Název cesty musí mít alespoň 2 znaky.",
+  "tripSnapshotTitle": "Snímek cesty",
+  "tripTitleShort": "Výlet",
+  "tripStatusWithValue": "Stav cesty: {status}",
+  "tripWithId": "Cesta č. {id}",
+  "unexpectedErrorLoadingProfile": "Došlo k neočekávané chybě při načítání profilu",
+  "unexpectedErrorLoadingTripData": "Došlo k neočekávané chybě při načítání údajů o cestě",
+  "unexpectedErrorLoadingTrips": "Došlo k neočekávané chybě při načítání výletů",
+  "unexpectedErrorSavingChanges": "Neočekávaná chyba při ukládání změn",
+  "unexpectedErrorSavingCredentials": "Neočekávaná chyba při ukládání přihlašovacích údajů",
+  "unexpectedErrorUpdatingProfile": "Neočekávaná chyba při aktualizaci profilu",
+  "unknownError": "Neznámá chyba",
+  "unknownLabel": "Neznámé",
+  "unreadLabel": "Nepřečteno",
+  "unreadUpdates": "{count, plural, one{{count} nepřečtená aktualizace} few{{count} nepřečtené aktualizace} other{{count} nepřečtených aktualizací}}",
+  "missingTripRouteArgument": "Chybí argument trasy cesty.",
+  "userIdLabel": "ID uživatele: {id}",
+  "userPaidOwesNetLine": "Zaplaceno {paid}  -  Dluží {owes}  -  Čistá částka {net}",
+  "userWithId": "Uživatel {id}",
+  "valueLabel": "Hodnota",
+  "viewAllTrips": "Zobrazit všechny výlety",
+  "viewByPersonTitle": "Zobrazení podle osoby",
+  "whoOwesWhatSubtitle": "Kdo zaplatil a kdo dluží.",
+  "whoOwesWhatTitle": "Kdo komu co dluží",
+  "whoOwesWhatWithFilter": "Kdo komu dluží: {name}",
+  "whyPaymentExistsSubtitle": "Řádky výdajů, které se na tento převod vztahují.",
+  "whyPaymentExistsTitle": "Proč tato platba existuje",
+  "youLabel": "Vy",
+  "youSettledForExpense": "Svůj podíl na tomto výdaji už máš vyrovnaný.",
+  "youShouldPay": "Měl bys zaplatit. {amount}",
+  "youShouldReceive": "Měli byste dostávat {amount}",
+  "yourShare": "Tvůj podíl.",
+  "yourTrips": "Vaše výlety",
+  "authIntroSplitSmarter": "Dělejte si účty chytřeji.",
+  "authIntroTravelFree": "Cestujte svobodně.",
+  "authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo": "Sledujte sdílené náklady v různých měnách a vyúčtujte je okamžitě – žádné trapné dlužní úpisy.",
+  "authIntroPlanTogether": "Plánujte společně.",
+  "authIntroPayClearly": "Platby provádějte jasně.",
+  "authIntroCreateTripsSecondsAddFriendsKeepEveryExpense": "Vytvářejte výlety během několika sekund, přidávejte přátele a zajistěte, aby všechny výdaje byly pro všechny transparentní.",
+  "authIntroSettleFast": "Vyřizujte věci rychle.",
+  "authIntroStayFriends": "Zůstaňme přáteli.",
+  "authIntroFromSharedDinnersFullTripsSplytoKeepsBalances": "Od společných večeří až po celé výlety – Splyto zajišťuje spravedlivé vyúčtování bez stresu.",
+  "authIntroAppleSignFailedPleaseTryAgain": "Přihlášení přes Apple se nezdařilo. Zkuste to prosím znovu.",
+  "authIntroGoogleSignFailedPleaseTryAgain": "Přihlášení přes Google se nezdařilo. Zkuste to prosím znovu.",
+  "authIntroCreateAccount": "Vytvořte si účet.",
+  "authIntroChooseSign": "Vyberte si, jak se chcete zaregistrovat.",
+  "authIntroContinueGoogle": "Pokračovat s Google",
+  "authIntroContinueApple": "Pokračovat s Apple",
+  "authIntroBack": "Zpět",
+  "authIntroSplitSettled": "Rozdělení vypořádáno",
+  "authIntroParis3Friends": "Paříž · 3 přátelé",
+  "authIntroGetStarted": "Začínáme",
+  "authIntroAlreadyHaveAccount": "Už máte účet? ",
+  "authIntroSignIn": "Přihlásit se",
+  "authIntroSignUpWithEmail": "Zaregistrujte se pomocí e-mailu",
+  "authIntroOr": "NEBO",
+  "authGoogleSignDidNotReturnIdToken": "Přihlášení přes Google nevrátilo identifikační token.",
+  "authAppleSignAvailableIosDevices": "Přihlášení přes Apple je k dispozici na zařízeních s iOS.",
+  "authAppleSignNotAvailableDevice": "Přihlášení přes Apple není na tomto zařízení k dispozici.",
+  "authAppleSignDidNotReturnIdentityToken": "Přihlášení přes Apple nevrátilo identifikační token.",
+  "authAccountDeactivatedEnterEmailRequestReactivationLink": "Účet je deaktivován. Zadejte svou e-mailovou adresu a požádejte o odkaz k opětovné aktivaci.",
+  "authAccountDeactivated": "Účet je deaktivován",
+  "authSendReactivationLinkEmail": "Odeslat odkaz k opětovné aktivaci na {email}?",
+  "authCancel": "Zrušit",
+  "authSendLink": "Odeslat odkaz",
+  "authReactivationLinkSentCheckEmail": "Odkáz na opětovnou aktivaci byl odeslán. Zkontrolujte si e-mail.",
+  "authCouldNotSendReactivationLinkPleaseTryAgain": "Nepodařilo se odeslat odkaz pro opětovnou aktivaci. Zkuste to prosím znovu.",
+  "authEmailNotVerifiedEnterEmailRequestVerificationLink": "E-mailová adresa není ověřena. Zadejte svou e-mailovou adresu a vyžádejte si ověřovací odkaz.",
+  "authEmailNotVerified": "E-mail nebyl ověřen",
+  "authSendVerificationLinkEmail": "Odeslat ověřovací odkaz na {email}?",
+  "authVerificationLinkSentCheckEmail": "Ověřovací odkaz byl odeslán. Zkontrolujte si e-mail.",
+  "authCouldNotSendVerificationLinkPleaseTryAgain": "Nepodařilo se odeslat ověřovací odkaz. Zkuste to prosím znovu.",
+  "authVerificationEmailSentPleaseVerifyEmailBeforeLogging": "Byl odeslán ověřovací e-mail. Před přihlášením si prosím ověřte svou e-mailovou adresu.",
+  "authVerifyEmail": "Ověřte svou e-mailovou adresu",
+  "authEmailLabel": "E-mail:",
+  "authClose": "Zavřít",
+  "authResendLink": "Znovu odeslat odkaz",
+  "profileAppSettingsSectionTitle": "NASTAVENÍ APLIKACE",
+  "profileAccountSettings": "Nastavení účtu",
+  "profileChangePhoto": "Změnit profilovou fotku",
+  "profileAppearance": "Vzhled",
+  "profileThemeDisplayMode": "Téma a režim zobrazení",
+  "profileLanguage": "Jazyk",
+  "profileDisplayLanguage": "Jazyk zobrazení",
+  "profileNotificationsSectionHeading": "OZNÁMENÍ",
+  "profileAppBanners": "Bannery v aplikaci",
+  "profileShowNewNotificationBannersInsideApp": "Zobrazovat nové oznamovací pruhy uvnitř aplikace",
+  "profilePushNotificationsTitle": "Push notifikace",
+  "profilePhoneNotificationsExpensesFriendsTripsSettlements": "Telefonní oznámení týkající se výdajů, přátel, výletů a vyúčtování",
+  "profileSupportSectionHeading": "PODPORA",
+  "profileContactUs": "Kontaktujte nás",
+  "profileReportBugSuggestion": "Nahlásit chybu / Návrh",
+  "profileRateSplyto": "Ohodnoťte Splyto",
+  "profileLeaveStoreRating": "Zanechte hodnocení obchodu",
+  "profileSecuritySectionHeading": "BEZPEČNOST",
+  "profileChangePassword": "Změnit heslo",
+  "profileUpdateAccountPassword": "Aktualizujte heslo k účtu",
+  "profileDangerZoneSectionHeading": "NEBEZPEČNÁ ZÓNA",
+  "profileDeactivateAccount": "Deaktivovat účet",
+  "profileManageAccountAccess": "Správa přístupu k účtu",
+  "profileMadeWithLabel": "Vytvořeno pomocí",
+  "profileStoreRatingActionWillConnectedNextStep": "Funkce hodnocení v obchodě bude propojena v dalším kroku.",
+  "profileFailedSaveNotificationSettings": "Nepodařilo se uložit nastavení oznámení.",
+  "profilePushNotificationsSectionTitle": "PUSHOVÁ OZNÁMENÍ",
+  "profileInAppBannersSectionTitle": "BANNERY V APLIKACI",
+  "profileInAppTripMemberAddedTitle": "Člen přidaný do výletu",
+  "profileInAppAutoSettlementReminderTitle": "Automatická upomínka k vyúčtování",
+  "profileExpenseUpdates": "Aktualizace výdajů",
+  "profileExpenseAddedBannersInsideApp": "Bannery s přidanými výdaji uvnitř aplikace",
+  "profileExpenseAddedNotificationsPhone": "Oznámení o přidaných výdajích do telefonu",
+  "profileFriendInvites": "Pozvánka od přítele",
+  "profileFriendInvitesBannersInsideApp": "Bannery s žádostmi o přátelství a odpověďmi v aplikaci",
+  "profileFriendRequestResponseNotifications": "Oznámení o žádostech o přátelství a odpovědích na ně",
+  "profileTripUpdates": "Aktualizace výletu",
+  "profileTripUpdatesBannersInsideApp": "Bannery s informacemi o průběhu cesty a stavu členů v aplikaci",
+  "profileTripLifecycleMemberStatusChanges": "Životní cyklus výletu a změny stavu členů",
+  "profileSettlementUpdates": "Aktualizace vyúčtování",
+  "profileSettlementUpdatesBannersInsideApp": "Označené bannery „odesláno“ a „potvrzeno“ v aplikaci",
+  "profileMarkedSentConfirmedPaymentUpdates": "Označené odeslané a potvrzené aktualizace plateb",
+  "profileScreenshotSizeMust8Mb": "Velikost snímku obrazovky nesmí přesáhnout 8 MB",
+  "profileFeedbackSendTitle": "Poslat zpětnou vazbu",
+  "profileFeedbackTypeLabel": "Typ",
+  "profileFeedbackTypeBug": "Chyba",
+  "profileFeedbackTypeSuggestion": "Doporučení",
+  "profileDescribeIssueSuggestion": "Popište problém nebo návrh",
+  "profilePickingImage": "Vybírání obrázku...",
+  "profileAttachScreenshot": "Přiložte snímek obrazovky",
+  "profileChangeScreenshot": "Změnit snímek obrazovky",
+  "profileRemoveImage": "Odstranit obrázek",
+  "profileTipAttachScreenshotFasterBugTriage": "Tip: přiložte snímek obrazovky pro rychlejší vyhodnocení chyby",
+  "profileAddDetailsAttachScreenshotBeforeSending": "Před odesláním doplňte podrobnosti nebo přiložte snímek obrazovky",
+  "profileSendAction": "Odeslat",
+  "profileThanksFeedbackSent": "Děkujeme! Zpětná vazba odeslána",
+  "profileFailedSendFeedback": "Nepodařilo se odeslat zpětnou vazbu",
+  "profileCouldNotOpenWebsite": "Nelze otevřít webovou stránku.",
+  "profileOpenWebsiteQuestion": "Otevřít webovou stránku?",
+  "profileOpenPortfolioAction": "Otevřete portfolio.egm.lv",
+  "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Tento formát obrázku není na tomto zařízení podporován. Vyberte prosím formát JPG nebo PNG.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "Ke změně hesla je nutná platná e-mailová adresa účtu. Pokud vám e-mailová adresa chybí nebo je nesprávná, obraťte se na podporu.",
+  "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Účet byl deaktivován. Pro obnovení přístupu použijte odkaz na reaktivaci z e-mailu.",
+  "profileEditCouldNotDeactivateTryAgain": "Nepodařilo se deaktivovat účet. Zkuste to prosím znovu.",
+  "profileEditDeletionLinkSentEmail": "Odkaz pro smazání byl zaslán na váš e-mail.",
+  "profileEditCouldNotSendDeletionLinkTryAgain": "Nepodařilo se odeslat odkaz pro smazání. Zkuste to prosím znovu.",
+  "profileEditEnterCurrentPasswordChangeEmail": "Pro změnu e-mailové adresy zadejte aktuální heslo.",
+  "profileEditVerificationWasSentNewEmailSecurityNoticeWas": "Ověřovací e-mail byl odeslán na novou e-mailovou adresu. Bezpečnostní upozornění bylo odesláno na vaši aktuální e-mailovou adresu.",
+  "profileEditCouldNotStartEmailChangeRightNowTry": "Změnu e-mailové adresy se momentálně nepodařilo spustit. Zkuste to prosím znovu.",
+  "profileEditOverviewCurrency": "Přehled měn",
+  "profileEditPaymentMethod": "Způsob platby",
+  "profileEditBankTransferRevolutPaypalMe": "Bankovní převod, Revolut, PayPal.me",
+  "profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword": "Můžete deaktivovat přístup k účtu nebo požádat o odkaz v e-mailu k trvalému smazání účtu. Heslo je u účtů Google/Apple volitelné.",
+  "profileEditEnterPasswordOptionalGoogleApple": "Zadejte své heslo (volitelné pro Google/Apple)",
+  "profileEditSendDeletionLinkEmail": "Odeslat odkaz na smazání na e-mail",
+  "profileEditBackProfile": "Zpět na profil",
+  "profileEditSetValidEmailProfileChangingPassword": "Před změnou hesla zadejte do profilu platnou e-mailovou adresu.",
+  "profileEditPasswordUpdated": "Heslo bylo aktualizováno.",
+  "profileEditFailedUpdatePassword": "Aktualizace hesla se nezdařila.",
+  "profileEditEmail": "Účet: {email}",
+  "profileEditPrimary": "Hlavní",
+  "profileEditSearchCurrency": "Vyhledávání měny",
+  "profileEditNoCurrenciesFound": "Nebyly nalezeny žádné měny",
+  "profileEditOverviewTotalsConvertedCurrency": "Souhrnné částky v přehledu jsou přepočítány na tuto měnu.",
+  "profileEditPaymentInfoUpdated": "Informace o platbách byly aktualizovány.",
+  "profileEditCouldNotSavePaymentInfoTryAgain": "Nepodařilo se uložit platební údaje. Zkuste to prosím znovu.",
+  "profileEditCurrentPassword": "Aktuální heslo",
+  "profileEditBankTransferIbanSwift": "Bankovní převod (IBAN / SWIFT)",
+  "profileEditIbanSwift": "IBAN + SWIFT",
+  "profileEditRevtagRevolutMe": "Revtag / revolut.me",
+  "profileEditPaypalMeLink": "odkaz paypal.me",
+  "profileEditChoosePaymentMethod": "Vyberte způsob platby",
+  "profileEditTapChange": "Klepnutím změňte",
+  "profileEditUkTransfersSortCode6DigitsNumber8": "U převodů ve Velké Británii musí mít kód banky 6 číslic a číslo účtu 8 číslic.",
+  "profileEditPaymentInfo": "Informace o platbách",
+  "profileEditSaveDetails": "Uložit podrobnosti",
+  "profileEditBankRegion": "Bankovní region",
+  "profileEditEurope": "Evropa",
+  "profileEditSortCode": "Kód banky",
+  "profileEditExample112233": "Příklad: 112233",
+  "profileEditNumber": "Číslo účtu",
+  "profileEdit8Digits": "8 číslic",
+  "profileEditUkDomesticTransfersSortCodeNumber": "Pro vnitrostátní převody ve Velké Británii použijte kód banky (sort code) + číslo účtu.",
+  "profileEditExampleLv80bank0000435195001": "Příklad: LV80BANK0000435195001",
+  "profileEdit811Chars": "8 nebo 11 znaků",
+  "profileEditHolderNameTakenProfileFullName": "Jméno držitele účtu se přebírá z celého jména v profilu.",
+  "profileEditRevolutMeUsername": "revolut.me/username",
+  "profileEditRevtag": "Revtag",
+  "profileEditUsername": "@username",
+  "profileEditPaypalMeUsernameUsername": "paypal.me/username nebo uživatelské jméno",
+  "profileEditRevolut": "Revolut",
+  "profileEditPaypalMe": "PayPal.me",
+  "profileEditWise": "Wise",
+  "profileEditWisePayUsername": "wise.com/pay/me/username",
+  "profileEditUk": "UK",
+  "profileEditIbanLabel": "IBAN",
+  "profileEditBicSwiftLabel": "BIC / SWIFT",
+  "profileEditRevolutMe": "Revolut.me",
+  "imageCropperAdjustAvatar": "Upravte avatar",
+  "imageCropperAdjustTripImage": "Upravte obrázek výletu",
+  "copyAction": "Kopírovat",
+  "currencyNameEur": "Euro",
+  "currencyNameGbp": "Britská libra",
+  "currencyNameChf": "Švýcarský frank",
+  "currencyNameNok": "Norská koruna",
+  "currencyNameSek": "Švédská koruna",
+  "currencyNameDkk": "Dánská koruna",
+  "currencyNamePln": "Polský zlotý",
+  "currencyNameCzk": "Česká koruna",
+  "currencyNameHuf": "Maďarský forint",
+  "currencyNameRon": "Rumunský leu",
+  "currencyNameBgn": "Bulharský lev",
+  "currencyNameIsk": "Islandská koruna",
+  "currencyNameAll": "Albánský lek",
+  "currencyNameBam": "Bosna a Hercegovina Marka",
+  "currencyNameByn": "Běloruský rubl",
+  "currencyNameMdl": "Moldavský leu",
+  "currencyNameMkd": "Makedonský denár",
+  "currencyNameRsd": "Srbský dinár",
+  "currencyNameUah": "Ukrajinská hřivna",
+  "currencyNameGel": "Gruzínský lari",
+  "currencyNameTry": "Turecká lira",
+  "currencyNameUsd": "Americký dolar",
+  "currencyNameJpy": "Japonský jen",
+  "currencyNameCny": "Čínský jüan",
+  "currencyNameCad": "Kanadský dolar",
+  "currencyNameAud": "Australský dolar",
+  "expenseCategoryFood": "Jídlo",
+  "expenseCategoryGroceries": "Potraviny",
+  "expenseCategoryFuel": "Palivo",
+  "expenseCategoryTransport": "Doprava",
+  "expenseCategoryAccommodation": "Ubytování",
+  "expenseCategoryActivities": "Aktivity",
+  "expenseCategoryTickets": "Vstupenky",
+  "expenseCategoryShopping": "Nákupy",
+  "expenseCategoryParty": "Večírek",
+  "expenseCategoryParking": "Parkování",
+  "expenseCategoryOther": "Ostatní",
+  "shellTripAlreadyInListOpened": "Výlet již máte ve svém seznamu. Otevřeli jsme jej za vás.",
+  "shellJoinedTripFromInviteLink": "Připojil se k výletu přes pozvánkový odkaz.",
+  "shellFailedToOpenInviteLink": "Nepodařilo se otevřít odkaz s pozvánkou.",
+  "shellFailedToOpenFriendLink": "Nepodařilo se otevřít odkaz na přítele.",
+  "shellTripInviteTitle": "Pozvánka na výlet",
+  "shellNoAction": "Ne",
+  "shellYesAction": "Ano",
+  "shellOnlyTripCreatorCanDelete": "Tuto cestu může smazat pouze její tvůrce.",
+  "shellOnlyActiveTripsCanDelete": "Smazat lze pouze aktivní výlety.",
+  "shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded": "Smazat „{tripLabel}“? To je povoleno pouze před přidáním jakýchkoli výdajů.",
+  "shellTripDeleted": "Cesta byla smazána.",
+  "shellFailedToDeleteTrip": "Vymazání cesty se nezdařilo.",
+  "shellFailedToLoadNotifications": "Nepodařilo se načíst oznámení.",
+  "shellNewNotificationTitle": "Nové oznámení: {title}",
+  "shellFailedToUpdateNotifications": "Nepodařilo se aktualizovat oznámení.",
+  "shellMarkAllAsReadAction": "Označit vše jako přečtené",
+  "shellNewSection": "Nové",
+  "shellEarlierSection": "Dříve",
+  "shellShowMoreEarlierAction": "Zobrazit více dřívějších",
+  "shellLoadingMore": "Načítání dalších...",
+  "shellLoadMoreNotificationsAction": "Načíst další oznámení",
+  "shellTripNoLongerAvailable": "Tato cesta již není k dispozici.",
+  "shellFailedToOpenTrip": "Nepodařilo se otevřít výlet.",
+  "shellYesterday": "Včera",
+  "shellInviteAlreadyMemberOpenTripNow": "Již jste členem výletu „{tripName}“. Chcete tento výlet otevřít nyní?\n\nPozval vás: {inviterName}",
+  "shellInviteJoinTripQuestion": "Chcete se připojit k výletu „{tripName}“?\n\nPozval vás: {inviterName}",
+  "tripsSelectedImage": "Vybraný obrázek: {arg1}",
+  "tripsTripImageAlreadySet": "Obrázek výletu je již nastaven.",
+  "tripsTripCreatedButImageUploadFailed": "Cesta byla vytvořena, ale nahrání obrázku se nezdařilo.",
+  "tripsTripCreatedButImageUploadFailedWithReason": "Cesta byla vytvořena, ale nahrání obrázku se nezdařilo: {arg1}",
+  "@tripsTripCreatedButImageUploadFailedWithReason": {
+    "placeholders": {
+      "arg1": {}
+    }
+  },
+  "tripsJoinTripViaInvite": "Připojte se k výletu na základě pozvánky",
+  "tripsTotalTrips": "Celkový počet výletů",
+  "tripsTotalSpent": "Celková částka utracená",
+  "tripsMixedCurrencies": "Smíšené měny",
+  "tripsShowActive": "Zobrazit aktivní",
+  "tripsSeeAll": "Zobrazit vše",
+  "tripsGridView": "Zobrazení v mřížce",
+  "tripsListView": "Zobrazení seznamu",
+  "tripsAddNewTrip": "Přidat nový výlet",
+  "tripsLoadMore": "Načíst více",
+  "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "Odstranit „{arg1}“? To je povoleno pouze před přidáním jakýchkoli výdajů.",
+  "tripsTripDates": "Termíny výletu",
+  "tripsFrom": "Od",
+  "tripsSelectDate": "Vyberte datum",
+  "tripsTo": "K",
+  "tripsMainCurrency": "Hlavní měna",
+  "tripsPleaseSelectTripPeriodFromAndToDates": "Vyberte prosím období cesty (datum od a do).",
+  "tripsTripEndDateMustBeOnOrAfterStartDate": "Datum ukončení cesty musí být stejné jako datum zahájení nebo pozdější.",
+  "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "Formát období cesty je neplatný. Zvolte prosím data znovu.",
+  "tripsYouAreAlreadyAMemberOfThisTrip": "Již jste členem této cesty.",
+  "tripsJoinedTripSuccessfully": "Účast na výletu byla úspěšně potvrzena.",
+  "tripsFailedToJoinTripFromInvite": "Nepodařilo se připojit k výletu z pozvánky.",
+  "tripsJoinTrip": "Připojit se k výletu",
+  "tripsPasteInviteLinkOrInviteToken": "Vložte odkaz na pozvánku nebo token pozvánky.",
+  "tripsHttpsInviteNorthSeaAbc123def4": "https://.../?invite=north-sea-abc123def4",
+  "tripsEnterAValidInviteLinkOrToken": "Zadejte platný pozvánkový odkaz nebo token.",
+  "tripsClipboardIsEmpty": "Schránka je prázdná.",
+  "tripsPaste": "Vložit",
+  "tripsJoin": "Připojit se",
+  "workspaceTripMembers": "Účastníci cesty",
+  "workspaceFailedToLoadFriends": "Načtení přátel se nezdařilo.",
+  "workspaceFailedToGenerateInviteLink": "Nepodařilo se vygenerovat odkaz na pozvánku.",
+  "workspaceInviteLink": "Odkaz pro pozvání",
+  "workspaceGeneratingInviteLink": "Vytváření pozvánkového odkazu...",
+  "workspaceInviteLinkUnavailable": "Odkaz pro pozvání není k dispozici.",
+  "workspaceCopyInviteLink": "Zkopírujte odkaz na pozvánku",
+  "workspaceInviteLinkCopied": "Odkaz na pozvánku zkopírován.",
+  "workspaceExpiresUtc": "Platnost vyprší: {arg1} UTC",
+  "workspaceNoFriendsAvailableAddFriendsFirst": "Žádní přátelé k dispozici. Nejprve si přidejte přátele.",
+  "workspaceSettle": "Vypořádání",
+  "workspaceOwesToTheGroup": "Dluží skupině",
+  "workspaceGetsBackFromGroup": "Má dostat peníze od skupiny",
+  "workspaceShowingTop4ByBalanceDifference": "Zobrazuje 4 nejvýznamnější položky podle rozdílu zůstatku.",
+  "workspaceOpenFlow": "Podrobnosti",
+  "workspaceFriend": "Přítel",
+  "workspaceSettlementTransfer": "Převod vyúčtování",
+  "workspaceCompleted": "Dokončeno",
+  "workspaceWaitingForConfirmation": "Čekání na potvrzení",
+  "workspaceWaitingForPayment": "Čekání na platbu",
+  "workspaceActionNeeded": "Potřebné kroky",
+  "workspacePaymentSToMarkAsSentToConfirmAsReceived": "Platby k označení jako odeslané: {arg1}; k potvrzení jako přijaté: {arg2}.",
+  "workspaceReadyToSettle": "Připraveni k vypořádání",
+  "workspaceAllMembersAreReadyYouCanStartSettlements": "Všichni členové jsou připraveni. Můžete zahájit vyúčtování.",
+  "workspaceWaitingForEveryoneToMarkReady": "Čeká se, až všichni označí, že jsou připraveni.",
+  "workspaceIMReady": "Jsem připraven",
+  "workspaceConfirmThatYouAddedAllYourExpenses": "Ověřte, zda jste zadali všechny své výdaje.",
+  "workspaceFinishButtonUnlocksOnceEveryoneMarksReady": "Tlačítko „Dokončit“ se odemkne, jakmile všichni označí, že jsou připraveni.",
+  "workspaceGetsBackFromTheGroup": "Má dostat peníze od skupiny",
+  "workspaceSettledWithTheGroup": "Dohodnuto se skupinou",
+  "workspaceTotalPaid": "Celková zaplacená částka",
+  "workspaceTotalOwes": "Celková dlužná částka",
+  "workspaceTransactionHistory": "Historie transakcí",
+  "workspaceNoTransactionsYetForThisMember": "U tohoto člena zatím nebyly provedeny žádné transakce.",
+  "workspaceSettlements": "Vyúčtování: {arg1}",
+  "workspaceAllMembersMustMarkReadyBeforeStartingSettlements": "Všichni členové musí před zahájením vyúčtování označit, že jsou připraveni.",
+  "workspaceYouMarkedYourselfReadyToSettle": "Označili jste se jako připraveni k vypořádání.",
+  "workspaceReadyToSettleMarkRemoved": "Označení „Připraveno k vypořádání“ bylo odstraněno.",
+  "workspaceReminderSent": "Byla odeslána upomínka.",
+  "workspaceInviteLinkOrAddFromFriends": "Pozvánkový odkaz nebo přidání z přátel",
+  "workspaceOnlyTripCreatorCanEditThisTrip": "Tuto cestu může upravovat pouze její tvůrce.",
+  "workspaceTripUpdated": "Cesta aktualizována.",
+  "workspaceFailedToUpdateTrip": "Aktualizace cesty se nezdařila.",
+  "workspaceNoMembersSelectedYet": "Zatím nebyli vybráni žádní členové.",
+  "workspaceNoInternetExpenseSavedWithoutReceiptImage": "Bez připojení k internetu. Výdaj bude uložen bez snímku účtenky.",
+  "workspaceRandomPicker": "Náhodný výběr",
+  "workspaceCurrency": "Měna",
+  "workspaceCategory": "Kategorie",
+  "workspaceCustomCategory": "Vlastní kategorie",
+  "workspaceCategoryName": "Název kategorie",
+  "workspaceApartmentRentParkingEtc": "Nájem bytu, parkování atd.",
+  "workspaceEnterACustomCategory": "Zadejte vlastní kategorii.",
+  "workspacePickAnExpenseCategory": "Vyberte kategorii výdajů.",
+  "workspaceCategoryMustBeAtLeast2Characters": "Kategorie musí mít alespoň 2 znaky.",
+  "workspaceCategoryMustBeUpTo64Characters": "Název kategorie musí mít maximálně 64 znaků.",
+  "workspacePercentageSplitMustTotal100": "Součet procentuálních podílů musí činit 100 %.",
+  "workspaceSharesMustBeGreaterThan0ForAllParticipants": "Počet podílů musí být u každého účastníka větší než 0.",
+  "workspaceTotalAmount": "Celková částka",
+  "workspaceOriginal": "Originál",
+  "workspaceTotalCost": "Celkové náklady",
+  "workspaceStarted": "Spuštěno {arg1}",
+  "workspaceEnded": "Ukončeno {arg1}",
+  "workspaceArchivedTrip": "Archivovaná cesta",
+  "workspaceActiveTrip": "Aktivní výlet",
+  "workspaceMemberProfile": "Profil člena",
+  "workspaceTripOwner": "Organizátor cesty",
+  "workspaceMember": "Člen",
+  "workspaceReadyForSettlement": "Připraveno k vyúčtování",
+  "workspaceNotReadyForSettlement": "Není připraveno k vypořádání",
+  "workspaceBankDetails": "Bankovní údaje",
+  "workspaceIbanAndPayoutDetailsWillBeAddedHereInA": "Údaje o čísle IBAN a výplatě budou přidány v příští aktualizaci.",
+  "workspacePaymentDetails": "Údaje o platbě",
+  "workspaceThisMemberHasNotAddedPayoutDetailsYet": "Tento člen zatím nezadal údaje pro výplatu.",
+  "workspaceBankTransfer": "Bankovní převod",
+  "workspaceHolder": "Držitel",
+  "workspaceCouldNotOpenPaymentLink": "Nelze otevřít odkaz na platbu.",
+  "workspaceTripActivity": "Aktivita výletu",
+  "workspacePaidExpenses": "Proplacené výdaje",
+  "workspacePaidTotal": "Celková zaplacená částka",
+  "workspaceInvolvedIn": "Zapojeno do",
+  "workspaceCurrentTrip": "Aktuální výlet",
+  "workspaceCommonTrips": "Společné cesty",
+  "workspaceLoadingCommonTrips": "Načítání společných cest…",
+  "workspaceNoCommonTripsFoundYet": "Zatím nebyly nalezeny žádné společné cesty.",
+  "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "Nepodařilo se načíst všechny společné cesty. Zobrazuje se aktuální cesta.",
+  "workspaceMembers": "členové",
+  "workspaceExpense": "Výdaje",
+  "workspacePaid": "placené",
+  "workspaceLoadingMoreExpenses": "Načítání dalších výdajů...",
+  "workspaceScrollDownToLoadMore": "Přejděte dolů a načtěte další informace",
+  "workspaceTripFinished": "Cesta skončila",
+  "workspaceSettlementsAreUnlockedForThisTrip": "Pro tuto cestu jsou odemčeny vyúčtování.",
+  "workspaceFinishTripToStartSettlements": "Dokončete výlet, abyste mohli zahájit vyúčtování.",
+  "workspaceMarkedTransferAsSent": "{arg1} označil převod jako odeslaný.",
+  "workspaceWaitingForToMarkAsPaid": "Čeká se na označení {arg1} jako zaplacené.",
+  "workspaceConfirmedReceivingThePayment": "{arg1} potvrdil přijetí platby.",
+  "workspaceWaitingForToConfirm": "Čeká se na potvrzení od {arg1}.",
+  "workspaceAllTripSettlementsAreFullyCompleted": "Všechny vyúčtování výletů jsou zcela dokončeny.",
+  "workspaceFinalStateAfterAllTransfersAreConfirmed": "Konečný stav po potvrzení všech převodů.",
+  "workspaceSettlementFlow": "Průběh vypořádání",
+  "workspaceActions": "Akce",
+  "workspaceQuickPay": "Rychlá platba",
+  "workspacePayWithRevolut": "Plaťte přes Revolut",
+  "workspacePayWithPaypal": "Plaťte přes PayPal",
+  "workspacePayWithWise": "Plaťte přes Wise",
+  "workspaceTransferIsConfirmed": "Převod je potvrzen.",
+  "workspaceWaitingForTheOtherMemberToCompleteTheNextStep": "Čeká se, až druhý člen dokončí další krok.",
+  "workspaceSendReminder": "Odeslat připomenutí",
+  "workspaceInProgress": "Probíhá",
+  "workspaceTimeUnknown": "Čas neznámý",
+  "workspaceRemind": "Připomenutí",
+  "workspaceYourPosition": "Vaše pozice",
+  "workspaceRecentActivity": "Nedávná aktivita",
+  "workspaceNoRecentActivityYet": "Zatím žádná nedávná aktivita.",
+  "workspaceAddAtLeastOneMemberToStartSplittingExpenses": "Přidejte alespoň jednoho člena, abyste mohli začít rozdělovat výdaje.",
+  "workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses": "Po přidání všech výdajů se označte jako připravený k vyúčtování.",
+  "workspaceWaitingForMemberSToMarkReady": "Účastníci, kteří ještě nejsou připraveni: {arg1}.",
+  "workspaceAllMembersAreReadyYouCanFinishTheTripAnd": "Všichni členové jsou připraveni. Můžete výlet ukončit a zahájit vyúčtování.",
+  "workspaceAllMembersAreReadyWaitingForTheTripOwnerTo": "Všichni členové jsou připraveni. Čeká se na organizátora cesty, aby zahájil vyúčtování.",
+  "workspaceSettlementInProgressConfirmed": "Probíhá vypořádání: {arg1} / {arg2} potvrzeno.",
+  "workspaceNoActionsPendingThisTripIsSettled": "Žádné nevyřízené akce. Tato cesta je vyřízena.",
+  "workspaceNoActionsNeededRightNow": "V tuto chvíli není třeba podnikat žádné kroky.",
+  "workspaceYouShouldReceive": "Měli byste obdržet {arg1}.",
+  "workspaceYouShouldPay": "Měli byste zaplatit {arg1}.",
+  "workspaceYouAreCurrentlySettledInThisTrip": "V současné době jste zařazeni do této cesty.",
+  "workspaceUnknownTime": "Neznámý čas",
+  "workspaceJustNow": "Právě teď",
+  "workspaceMinAgo": "Před {arg1} min",
+  "workspaceHAgo": "Před {arg1} h",
+  "workspaceDAgo": "Před {arg1} d",
+  "friendsRemoveFriend": "Odstranit přítele",
+  "friendsRemoveThisFriend": "Odstranit tohoto přítele?",
+  "friendsWillBeRemovedFromYourFriendsListYouCanAdd": "{arg1} bude odstraněn z vašeho seznamu přátel. Později jej můžete přidat znovu.",
+  "friendsContinue": "Pokračovat",
+  "friendsFriendRemoved": "Přítel byl odstraněn.",
+  "friendsCouldNotRemoveFriend": "Nepodařilo se odstranit přítele.",
+  "friendsFriendProfile": "Profil přítele",
+  "friendsMoreActions": "Další akce",
+  "friendsThisFriendHasNotAddedPayoutDetailsYet": "Tento přítel ještě nezadal údaje pro výplatu.",
+  "friendsCouldNotLoadCommonTripsRightNow": "Společné cesty se nyní nepodařilo načíst.",
+  "friendsFinished": "Dokončeno",
+  "friendsTrip": "Výlet č. {arg1}",
+  "friendsMembers": "Členové: {arg1}",
+  "friendsNoDate": "Žádné datum",
+  "friendsIncomingRequests": "PŘICHÁZEJÍCÍ ŽÁDOSTI",
+  "friendsSentInvites": "ODESLANÉ POZVÁNKY",
+  "friendsMyFriends": "MOJI PŘÁTELÉ",
+  "friendsRequests": "Žádosti",
+  "friendsIncoming": "Příchozí",
+  "friendsIncomingRequestSubtitle": "chce být přáteli",
+  "friendsOutgoingInviteSubtitle": "Pozvánka odeslána",
+  "friendsNoPendingActivity": "Žádné žádosti o přátelství",
+  "friendsInviteSentTo": "Pozvánka odeslána {arg1}.",
+  "friendsNoIncomingRequests": "Žádné příchozí žádosti",
+  "friendsDecline": "Odmítnout",
+  "friendsAccept": "Přijmout",
+  "friendsNoSentInvites": "Žádné odeslané pozvánky",
+  "friendsNoFriendsYet": "Zatím žádní přátelé",
+  "friendsScrollDownToLoadMoreFriends": "Přejděte dolů a načtěte další přátele.",
+  "friendsUser": "Uživatel",
+  "friendsSearchUsers": "Vyhledávání uživatelů",
+  "friendsFindByNameOrEmailAndSendInvite": "Vyhledejte podle jména nebo e-mailu a odešlete pozvánku",
+  "friendsScanQr": "Naskenujte QR kód",
+  "friendsScanAnotherUserToAddFriend": "Naskenujte jiného uživatele a přidejte si ho jako přítele",
+  "friendsMyQr": "Můj QR",
+  "friendsShowOrShareYourQrCode": "Zobrazte nebo sdílejte svůj QR kód",
+  "friendsScanFriendQrTitle": "Naskenujte QR kód přítele",
+  "friendsPlaceFriendQrInsideFrame": "Umístěte QR kód přítele do rámečku",
+  "friendsHoldFriendQrInsideFrame": "Držte QR kód uvnitř rámečku",
+  "friendsConfirmAddFriendTitle": "Přidat {arg1} jako přítele?",
+  "friendsConfirmSendFriendInviteText": "{arg1} obdrží vaši žádost o přátelství.",
+  "friendsConfirmAcceptFriendRequestText": "Přijmout žádost o přátelství od {arg1}?",
+  "friendsMyFriendQrTitle": "My Friend QR",
+  "friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode": "Naskenujte tento QR kód nebo sdílejte odkaz, abyste mě přidali na Splyto.",
+  "friendsAddMeOnTripSplitFriends": "Přidejte si mě na Splyto.",
+  "friendsTripSplitFriendCode": "Odkaz na přítele ve Splyto",
+  "shareAction": "Sdílet",
+  "friendsQrCodeIsNotAValidFriendCode": "QR kód není platným kódem pro přidání do seznamu přátel.",
+  "friendsYouCannotAddYourself": "Nemůžete přidat sami sebe.",
+  "friendsThisUserIsAlreadyInYourFriendsList": "Tento uživatel je již ve vašem seznamu přátel.",
+  "friendsInviteToThisUserIsAlreadySent": "Pozvánka tomuto uživateli již byla odeslána.",
+  "friendsFriendRequestProcessed": "Žádost o přátelství byla zpracována.",
+  "friendsFailedToProcessFriendQr": "Zpracování QR kódu přítele se nezdařilo.",
+  "friendsCouldNotLoadYourUserProfile": "Nepodařilo se načíst váš uživatelský profil.",
+  "friendsMyProfile": "Můj profil",
+  "friendsUnexpectedErrorLoadingFriends": "Došlo k neočekávané chybě při načítání přátel.",
+  "friendsFriendAdded": "Přidán přítel.",
+  "friendsRequestDeclined": "Žádost zamítnuta.",
+  "friendsFailedToUpdateRequest": "Aktualizaci žádosti se nepodařilo provést.",
+  "friendsCancelInvite": "Zrušit pozvánku",
+  "friendsCancelInviteTo": "Zrušit pozvánku pro {arg1}?",
+  "friendsKeep": "Ponechat",
+  "friendsInviteToCancelled": "Pozvánka na {arg1} byla zrušena.",
+  "friendsFailedToCancelInvite": "Zrušení pozvánky se nezdařilo.",
+  "analyticsOther": "Ostatní",
+  "analyticsSelectATripForAnalytics": "Vyberte výlet pro analýzu",
+  "analyticsMembers": "{arg1} • Členové: {arg2} • {arg3} • {arg4}",
+  "analyticsDailySpending": "Denní výdaje",
+  "analyticsMyDaily": "Moje denní výdaje",
+  "analyticsGroupDaily": "Denní výdaje skupiny",
+  "analyticsByMember": "Podle účastníka",
+  "analyticsShowLess": "Zobrazit méně",
+  "analyticsByCategory": "Podle kategorie",
+  "analyticsQuickInsights": "Stručné informace",
+  "analyticsBiggestExpense": "Největší výdaj: {arg1} ({arg2})",
+  "analyticsTopSpender": "Největší utráceč: {arg1} ({arg2})",
+  "analyticsHighestGroupDay": "Nejvyšší denní počet členů ve skupině: {arg1} ({arg2})",
+  "analyticsNoDates": "Žádná data",
+  "friendsSearchFailedTryAgain": "Vyhledávání se nezdařilo. Zkuste to znovu.",
+  "friendsFailedToSendInvite": "Odeslání pozvánky se nezdařilo.",
+  "friendsAddFriend": "Přidat přítele",
+  "friendsSearchByNameOrEmail": "Vyhledávání podle jména nebo e-mailu",
+  "friendsTypeAtLeast2CharactersToSearch": "Pro vyhledávání zadejte alespoň 2 znaky.",
+  "friendsNoUsersFound": "Nebyli nalezeni žádní uživatelé",
+  "friendsInviteAction": "Pozvat",
+  "workspacePaidForGroup": "Placená skupina",
+  "workspacePaidForGroupDate": "Zaplaceno za skupinu • {arg1}",
+  "workspaceShareOfExpense": "Rozdělení nákladů",
+  "workspaceShareOfExpenseDate": "Rozdělení nákladů • {arg1}",
+  "paymentHolderNameCopied": "Jméno držitele zkopírováno.",
+  "paymentIbanCopied": "IBAN zkopírován.",
+  "paymentSwiftCopied": "SWIFT zkopírováno.",
+  "paymentRevtagCopied": "Revtag zkopírován.",
+  "paymentCouldNotCopyToClipboard": "Nelze zkopírovat do schránky.",
+  "paymentCopied": "Zkopírováno.",
+  "paymentRequestAction": "Žádost o platbu",
+  "paymentRecordAction": "Zaznamenat platbu",
+  "paymentRequestSheetTitle": "Žádost o platbu",
+  "paymentRecordSheetTitle": "Zaznamenat platbu",
+  "paymentRequestSheetBody": "Požádejte {arg1}, aby zaplatil částku, kterou vám v současné době dluží.",
+  "paymentRecordSheetBody": "Tuto funkci použijte poté, co jste zaplatili {arg1} mimo Splyto. Ten potvrdí její přijetí.",
+  "paymentMaxAmount": "Maximálně {arg1}",
+  "paymentNoteHint": "Bankovní převod, Revolut, hotovost...",
+  "paymentAmountPositiveError": "Částka musí být větší než nula.",
+  "paymentAmountTooHighError": "Částka nesmí být vyšší než nesplacený zůstatek.",
+  "paymentRequestCreated": "Žádost o platbu odeslána.",
+  "paymentRecordedWaiting": "Platba zaznamenána. Čeká se na potvrzení.",
+  "paymentConfirmTitle": "Potvrďte platbu",
+  "paymentConfirmText": "Potvrďte, že jste obdrželi {arg1} od {arg2}.",
+  "paymentConfirmedMessage": "Platba potvrzena.",
+  "paymentCancelRecordTitle": "Zrušit záznam o platbě",
+  "paymentCancelRecordText": "Zrušit záznam tvé platby ve výši {arg1} osobě {arg2}?",
+  "paymentRecordCancelled": "Záznam o platbě byl zrušen.",
+  "paymentNotReceivedTitle": "Platba nebyla přijata",
+  "paymentNotReceivedText": "Označit platbu {arg1} od {arg2} jako nepřijatou?",
+  "paymentMarkedNotReceived": "Platba označena jako nepřijatá.",
+  "paymentActivityTitle": "Platební činnost",
+  "paymentOpenRequestsCount": "Otevřené žádosti o platbu: {arg1}",
+  "paymentAwaitingConfirmationCount": "Platby čekající na potvrzení: {arg1}",
+  "paymentRecordedPaymentsTitle": "Zaznamenané platby",
+  "paymentRequestedFrom": "{arg1} požádal o platbu od {arg2}",
+  "paymentPaidTo": "{arg1} zaplatil {arg2}",
+  "paymentRequestPendingStatus": "Žádost o platbu",
+  "paymentAwaitingConfirmationStatus": "Čeká se na potvrzení",
+  "paymentReviewRequestAction": "Žádost o přezkoumání",
+  "paymentViewDetailsAction": "Údaje o platbě",
+  "paymentMarkPaidAction": "Zaplatil jsem",
+  "paymentDeclineAction": "Odmítnout",
+  "paymentRequestReviewTitle": "Žádost o platbu",
+  "paymentRequestReviewBody": "{arg1} vás požádal o {arg2}. Proveďte platbu mimo Splyto a poté ji označte jako zaplacenou.",
+  "paymentRequestMarkPaidConfirmTitle": "Označit žádost jako zaplacenou?",
+  "paymentRequestMarkPaidConfirmText": "Potvrď až poté, co mimo Splyto zaplatíš osobě {arg2} částku {arg1}.",
+  "paymentRequestMarkedPaid": "Označeno jako zaplacené. Čeká se na potvrzení.",
+  "paymentRequestCancelTitle": "Zrušit žádost o platbu?",
+  "paymentRequestCancelText": "Chcete zrušit svou žádost {arg1} adresovanou {arg2}?",
+  "paymentRequestCancelled": "Žádost o platbu byla zrušena.",
+  "paymentRequestDeclineTitle": "Odmítnout žádost o platbu?",
+  "paymentRequestDeclineText": "Odmítnout žádost o platbu ve výši {arg1} od osoby {arg2}? Tato osoba dostane oznámení.",
+  "paymentRequestDeclined": "Žádost o platbu byla zamítnuta.",
+  "paymentPendingBeforeFinish": "Vyřešte otevřené platební žádosti a nepotvrzené platby před konečným vyúčtováním.",
+  "paymentFinishBlockedByPending": "Dokončení se odemkne až po vyřešení žádostí o platbu a nepotvrzených plateb.",
+  "notificationPaymentRequestedTitle": "Žádost o platbu",
+  "notificationPaymentRequestedBody": "{arg1} vás požádal o {arg2}.",
+  "notificationPaymentRequestedBodyGeneric": "Obdrželi jste žádost o platbu.",
+  "notificationPaymentRequestSentTitle": "Požadovaná platba odeslána",
+  "notificationPaymentRequestSentBody": "{arg1} označil vaši žádost o platbu {arg2} jako uhrazenou.",
+  "notificationPaymentRequestSentBodyGeneric": "Vaše žádost o platbu byla označena jako uhrazená.",
+  "notificationPaymentRequestCancelledTitle": "Žádost o platbu byla zrušena",
+  "notificationPaymentRequestCancelledBody": "{arg1} zrušil žádost o platbu {arg2}.",
+  "notificationPaymentRequestCancelledBodyGeneric": "Žádost o platbu byla zrušena.",
+  "notificationPaymentRequestDeclinedTitle": "Žádost o platbu byla zamítnuta",
+  "notificationPaymentRequestDeclinedBody": "{arg1} odmítl vaši žádost o platbu {arg2}.",
+  "notificationPaymentRequestDeclinedBodyGeneric": "Vaše žádost o platbu byla zamítnuta.",
+  "notificationPaymentSentTitle": "Platba označena jako odeslaná",
+  "notificationPaymentSentBody": "{arg1} označil {arg2} jako zaplacené vám.",
+  "notificationPaymentSentBodyGeneric": "Byla vám označena platba jako odeslaná.",
+  "notificationPaymentConfirmedTitle": "Platba potvrzena",
+  "notificationPaymentConfirmedBody": "{arg1} potvrdil, že od vás obdržel {arg2}.",
+  "notificationPaymentConfirmedBodyGeneric": "Vaše platba byla potvrzena.",
+  "notificationPaymentCancelledTitle": "Platba zrušena",
+  "notificationPaymentCancelledBody": "{arg1} zrušil označení platby {arg2}.",
+  "notificationPaymentCancelledBodyGeneric": "Značka platby byla zrušena.",
+  "notificationPaymentNotReceivedTitle": "Platba nebyla přijata",
+  "notificationPaymentNotReceivedBody": "{arg1} označil platbu {arg2} jako nepřijatou.",
+  "notificationPaymentNotReceivedBodyGeneric": "Platba byla označena jako nepřijatá.",
+  "quickStartTitle": "Rychlý start",
+  "quickStartCreateTitle": "Vytvořte výlet",
+  "quickStartCreateBody": "Vyberte si název a měnu. Hraďte si výdaje sami nebo se o náklady podělte se skupinou.",
+  "quickStartInviteTitle": "Cestujte společně nebo sami",
+  "quickStartInviteBody": "Pozvěte přátele, aby se k vaší cestě připojili, nebo si sami založte vlastní cestu.",
+  "quickStartExpenseTitle": "Přidejte svůj první výdaj",
+  "quickStartExpenseBody": "Zadejte částku, vyberte, kdo zaplatil, a rozdělte náklady. Vaše zůstatky zůstávají aktuální.",
+  "quickStartNext": "Další",
+  "quickStartBack": "Zpět",
+  "quickStartSkip": "Přeskočit",
+  "quickStartCreateAction": "Vytvořit výlet",
+  "quickStartClose": "Zavřít Rychlý start",
+  "quickStartSubtitle": "Podívejte se, jak fungují výlety a výdaje",
+  "quickStartStep": "Krok {step} z {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Celková částka za výlet",
+  "workspacePersonalTotal": "Celková částka utracená",
+  "workspaceBalanceEven": "Tvůj zůstatek je vyrovnaný",
+  "workspaceBalanceOwe": "Dlužíš {amount}",
+  "workspaceBalanceReceive": "Dostaneš zpět {amount}",
+  "workspaceMemberCount": "Členové: {count}",
+  "workspaceSearchExpenses": "Vyhledávání výdajů",
+  "workspaceClearSearch": "Čisté vyhledávání",
+  "workspaceSearchLoadedHint": "Vyhledávání zahrnuje načtené výdaje. Načtěte další, chcete-li zahrnout starší výdaje.",
+  "workspaceNoExpenseMatches": "Žádné odpovídající výdaje",
+  "workspaceNoExpenseMatchesBody": "Zkuste jiné vyhledávání nebo vymažte vyhledávání, abyste viděli všechny načtené výdaje.",
+  "workspaceEmptyPersonalExpenses": "Přidejte svůj první výdaj a začněte sledovat své výdaje.",
+  "workspaceEmptyGroupExpenses": "Přidejte svůj první sdílený výdaj, abyste viděli podíl každého účastníka.",
+  "workspaceLoadMoreExpenses": "Načíst další výdaje",
+  "workspaceOriginalExpenseAmount": "Původní částka: {amount}",
+  "workspaceCommentCount": "Komentáře: {count}",
+  "workspaceExpenseActions": "Úkony související s výdaji",
+  "workspaceLoadErrorTitle": "Tento výlet se nepodařilo načíst",
+  "workspaceCachedWarning": "Zobrazení uložených údajů. Mohou být zastaralé.",
+  "workspaceActivityTab": "Aktivita",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Načítání cesty",
+  "workspaceRefreshFailed": "Obnovení se nezdařilo",
+  "expenseDetailsTitle": "Podrobnosti o výdajích",
+  "expenseQuickCategories": "Rychlé kategorie",
+  "expenseReceiptRead": "Potvrzení přečteno a formulář aktualizován.",
+  "expenseReceiptNoData": "Účtenka v příloze. Nebylo nalezeno žádné jasné údaje o částce, datu ani obchodníkovi.",
+  "expenseReceiptScanFailed": "Byla vybrána účtenka. Automatické načtení se nezdařilo; zkontrolujte pole ručně.",
+  "expenseReceiptOffline": "Potvrzení se nahraje při uložení. Automatické načítání vyžaduje připojení k internetu.",
+  "expenseReadingReceipt": "Načítání účtenky…",
+  "expenseCommentsLoadFailed": "Nepodařilo se načíst komentáře. Zkuste to znovu.",
+  "expenseReplyAction": "Odpovědět",
+  "expenseReplyHint": "Napište odpověď…",
+  "expenseReplyTo": "Odpovězte {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Zůstatky se zobrazí po přidání výdajů.",
+  "balanceAfterPayments": "Zůstatky zahrnují potvrzené platby.",
+  "balanceExpenseShare": "Sdílení výdajů",
+  "balanceHistoryScope": "Nahrané výdaje a potvrzené platby. Tento seznam nemusí obsahovat celou historii cesty.",
+  "balancePaymentTo": "Platba pro {name}",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Platba od {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Před zahájením konečného vyúčtování označte všechny účastníky jako připravené.",
+  "settlementEmptyClosed": "U této cesty nejsou uvedeny žádné převody.",
+  "settlementConfirmedCount": "{count} z {total} převodů potvrzeno",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "{count} z {total} členů je připraveno",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Hotovo",
+  "settlementMemberNotReady": "Není připraveno",
+  "settlementSuggested": "Doporučený převod",
+  "activityLoadFailed": "Nelze aktualizovat aktivitu. Veškeré zobrazené záznamy mohou být zastaralé.",
+  "activityMember": "Účastník cesty",
+  "friendsEmptyBody": "Vyhledejte přítele podle jména nebo e-mailu, případně použijte QR kód.",
+  "friendsDeclineAction": "Odmítnout",
+  "friendsLoading": "Načítání přátel",
+  "friendsCommonTripsCount": "Sdílené výlety: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "Na základě zadaných výdajů; nemusí to pokrývat celou cestu.",
+  "sharedTripsLoadedLimit": "Zobrazuje se až 20 sdílených výletů.",
+  "memberRemoveTitle": "Odstranit člena?",
+  "memberRemoveBody": "Odstranit {name} z této cesty? To je možné pouze v případě, že nemá žádné výdaje, vyúčtování ani zůstatky.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Odstranit z cesty",
+  "memberRemoved": "{name} byl/a odstraněn/a z cesty.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Zatím nepřidáno",
+  "friendRelationshipLabel": "Přítel",
+  "sharedTripsEmptyBody": "Zde se zobrazí výlety, ke kterým se oba připojíte.",
+  "analyticsAllTrips": "Všechny výlety",
+  "analyticsByTrip": "Podle cesty",
+  "analyticsYourSpending": "Tvoje výdaje",
+  "analyticsActiveArchived": "Aktivní a archivované výlety",
+  "analyticsTrips": "Výlety",
+  "analyticsAveragePerTrip": "Průměr na jednu cestu",
+  "analyticsPaidByMember": "Hradí člen",
+  "analyticsYouPaid": "Zaplatil jsi.",
+  "analyticsYouGetBack": "Dostaneš zpět",
+  "analyticsYouOwe": "Dlužíš",
+  "analyticsParticipants": "Účastníci",
+  "analyticsYourCategories": "Vaše výdaje podle kategorií",
+  "analyticsLargestShares": "Moje největší podíly na výdajích",
+  "analyticsLargestExpenses": "Největší výdaje",
+  "analyticsSpendingByTrip": "Vaše výdaje podle cesty",
+  "analyticsEmptyTitle": "Zatím žádné výdaje",
+  "analyticsEmptyBody": "Vaše výdaje se zde zobrazí, jakmile k cestě přidáte výdaje.",
+  "analyticsPeriodEmptyBody": "Pro tento pohled nejsou žádné výdaje. Zkuste jiný výlet nebo období.",
+  "analyticsLoadFailed": "Nepodařilo se načíst kompletní přehled výdajů. Zkuste to prosím znovu.",
+  "analyticsLastLoaded": "Zobrazuje se poslední úspěšně načtená zpráva.",
+  "analyticsExpenseCount": "{count, plural, one{{count} výdaj} few{{count} výdaje} other{{count} výdajů}}",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Možnosti cesty",
+  "editTripAction": "Upravit výlet",
+  "deleteTripAction": "Odstranit výlet",
+  "inviteTripMembersAction": "Pozvěte členy",
+  "tripCoverPhoto": "Úvodní fotografie",
+  "tripInviteLaterHint": "Lidi můžete pozvat až po vytvoření výletu.",
+  "inviteClipboardFailed": "Nelze získat přístup ke schránce. Zkuste to znovu.",
+  "friendInviteToTrip": "Pozvat na výlet",
+  "friendChooseTrip": "Vyberte výlet",
+  "friendNoInvitableTrips": "Žádné dostupné výlety. Můžete pozvat přátele do aktivních skupinových výletů, které spravujete, pokud již nejsou členy nebo nemají pozvánku v čekání.",
+  "friendTripInviteSent": "Pozvánka odeslána.",
+  "friendTripUnavailable": "Tento výlet již není pro tuto akci k dispozici. Obnovte stránku a zkuste to znovu.",
+  "friendTripActionFailed": "Tuto akci nebylo možné dokončit. Zkuste to znovu.",
+  "profileContactDescription": "Máte problém, návrh nebo dotaz ohledně Splyto? Napište nám e-mail – rádi vám pomůžeme.",
+  "profileContactEmailAction": "Napište e-mail",
+  "profileContactEmailUnavailable": "Nepodařilo se otevřít e-mailovou aplikaci. Zkopírujte adresu a napište nám ze své e-mailové aplikace.",
+  "profilePrivacyPolicy": "Zásady ochrany osobních údajů",
+  "privacyLoadFailed": "Nepodařilo se načíst zásady ochrany osobních údajů. Zkuste to prosím znovu.",
+  "addReceiptAction": "Přidat účtenku",
+  "receiptPickFailed": "Nepodařilo se načíst účtenku. Zkuste to prosím znovu.",
+  "receiptPhotoAccessDenied": "V nastaveních povolte aplikaci Splyto přístup k fotoaparátu nebo knihovně fotografií a zkuste to znovu.",
+  "receiptPhotoLabel": "Fotografie účtenky",
+  "replaceReceiptAction": "Nahraďte potvrzení",
+  "removeReceiptAction": "Odstranit potvrzení",
+  "restoreReceiptAction": "Obnovit předchozí potvrzení",
+  "expenseSplitBetween": "Rozdělení mezi",
+  "expenseEditParticipants": "Vyberte účastníky",
+  "expenseCustomSplit": "Vlastní rozdělení",
+  "expenseSplitAllocated": "Celá částka {amount} rozdělena",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "Zbývá rozdělit {amount}",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "{amount} nad celkovou částku",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Sdílet platební metody s mými výlety",
+  "profilePaymentSharingDescription": "Umožnit schváleným účastníkům cest, které vytvářím nebo ke kterým se připojuji, zobrazit moje platební metody. Platí to pro současné i budoucí cesty. Sdílení můžeš kdykoli vypnout a zabránit tak dalšímu přístupu.",
+  "memberPaymentDetailsNotShared": "Způsoby platby nejsou sdíleny nebo nejsou v současné době k dispozici.",
+  "homeTripInvitations": "Pozvánky na výlet",
+  "homeNoTripInvitations": "Žádné nevyřízené pozvánky na výlet",
+  "homeInvitationsLoadFailed": "Nepodařilo se načíst pozvánky. Zkuste to prosím znovu.",
+  "homeInvitationResponseFailed": "Nebylo možné odpovědět na pozvánku. Zkuste to prosím znovu.",
+  "homeTripShareFailed": "Cestu se nepodařilo sdílet. Zkuste to prosím znovu.",
+  "settleStillToReceive": "Zbývá obdržet",
+  "settleStillToPay": "Ještě k zaplacení",
+  "settleEstimateCaption": "Odhad vychází z aktuálních výdajů. Částky se mohou měnit až do konce cesty.",
+  "settleOutstandingCaption": "Čeká se na platbu nebo potvrzení.",
+  "settleWaitingForYou": "Čekáme, až označíte, že jste připraveni.",
+  "settleWhoPaysWhom": "Kdo komu platí",
+  "settlePreviewCaption": "Náhled · dokončeno po skončení cesty",
+  "settleOpenPaymentCaption": "Otevřete platbu, abyste si prohlédli podrobnosti a dostupné akce.",
+  "tripBudgetEnable": "Stanovte rozpočet",
+  "tripBudgetSoloHint": "Volitelný cíl výdajů pro tuto cestu.",
+  "tripBudgetGroupHint": "Jeden sdílený rozpočet pro celou skupinu.",
+  "tripBudgetAmount": "Výše rozpočtu",
+  "tripBudgetInvalid": "Zadejte částku od 0,01 do 999999999,99 s maximálně dvěma desetinnými místy.",
+  "tripBudgetTitle": "Rozpočet cesty",
+  "tripBudgetGroupTitle": "Skupinový rozpočet",
+  "tripBudgetRemaining": "Zbývající",
+  "tripBudgetOver": "Překročení rozpočtu",
+  "tripBudgetSpent": "Utraceno",
+  "tripBudgetLimit": "Rozpočet",
+  "travelMapTitle": "Moje cestovní mapa",
+  "travelMapSubtitle": "Navštívená místa, jen pro vás.",
+  "travelMapHere": "Už jsem tu byl",
+  "travelMapAdd": "Přidat místo",
+  "travelMapSearch": "Vyhledat město a zemi",
+  "travelMapSearchAction": "Vyhledávání",
+  "travelMapSearchHint": "Například Lisabon, Portugalsko",
+  "travelMapEmpty": "Vaše další vzpomínka začíná právě zde",
+  "travelMapEmptyBody": "Přidejte město, které jste navštívili, nebo se přihlaste tam, kde právě jste.",
+  "travelMapConfirm": "Uložit tuto návštěvu?",
+  "travelMapConfirmBody": "Před uložením do své soukromé mapy zkontrolujte město a datum.",
+  "travelMapDate": "Datum návštěvy",
+  "travelMapSave": "Uložit na mou mapu",
+  "travelMapCancel": "Zrušit",
+  "travelMapClose": "Zavřít",
+  "travelMapNoResults": "Nebylo nalezeno žádné město. Zkuste do vyhledávání přidat zemi.",
+  "travelMapLookupError": "Město nebylo nalezeno. Zkontrolujte připojení nebo místo přidejte ručně.",
+  "travelMapDenied": "Přístup k poloze je vypnutý. Město můžete i nadále přidat ručně.",
+  "travelMapDisabled": "Zapněte služby určování polohy nebo ručně přidejte město.",
+  "travelMapError": "Nepodařilo se načíst vaši cestovní mapu. Zkuste to prosím znovu.",
+  "travelMapSaveError": "Návštěvu se nepodařilo uložit. Zkuste to prosím znovu.",
+  "travelMapUnavailable": "Cestovní mapa vyžaduje aktualizaci serveru.",
+  "travelMapOffline": "Offline · zobrazení uložených míst",
+  "travelMapRetry": "Zkuste to znovu",
+  "travelMapDelete": "Odstranit návštěvu",
+  "travelMapDeleteConfirm": "Chcete tuto návštěvu odstranit ze své soukromé mapy?",
+  "travelMapFit": "Zobrazit všechna místa",
+  "travelMapSaved": "Navštivte uložené",
+  "travelMapVisited": "Navštívené",
+  "travelMapLimit": "Vaše mapa dosáhla 1 000 návštěv. Před přidáním další návštěvy odstraňte starou.",
+  "travelMapCounts": "{countries, plural, one{{countries} země} few{{countries} země} other{{countries} zemí}} · {cities, plural, one{{cities} město} few{{cities} města} other{{cities} měst}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{{count} návštěva} few{{count} návštěvy} other{{count} návštěv}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Cíle (volitelné)",
+  "travelAddDestination": "Přidat cíl",
+  "travelRemoveDestination": "Odebrat cíl",
+  "travelFromTrip": "Z výletu",
+  "travelChooseTrip": "Vyberte výlet",
+  "travelNoTrips": "Zatím nejsou k dispozici žádné výlety. Místo můžete přidat ručně.",
+  "travelAddToMap": "Přidat na mou mapu",
+  "travelTripConfirm": "Ukládejte pouze místa, která jste skutečně navštívili. Tím na své mapě vytvoříte soukromou vzpomínku.",
+  "travelVisitTitle": "Název (volitelné)",
+  "travelAddPhoto": "Přidejte fotografii",
+  "travelChangePhoto": "Změnit fotografii",
+  "travelRemovePhoto": "Odstranit fotografii",
+  "travelPhotoError": "Tuto fotografii se nepodařilo připravit. Vyberte prosím jinou.",
+  "travelEditVisit": "Upravit návštěvu",
+  "travelOpenTrip": "Otevřít výlet",
+  "travelPreviousVisit": "Předchozí návštěva",
+  "travelNextVisit": "Příští návštěva",
+  "travelDuplicate": "Tato návštěva je již na vaší mapě.",
+  "liveMapTitle": "Mapa v reálném čase",
+  "liveShareTitle": "Sdílet mou polohu",
+  "liveConsent": "Sdílej svou přesnou polohu pouze se schválenými účastníky této cesty po dobu, kterou si zvolíš. Sdílení pokračuje na pozadí a můžeš ho kdykoli ukončit.",
+  "liveBackgroundNote": "Aktualizace se mohou pozastavit bez připojení k internetu nebo pokud aplikaci násilně ukončíte. Uchovává se pouze poslední poloha; historie trasy se nezaznamenává.",
+  "liveStart": "Začít sdílet",
+  "liveStop": "Zastavit sdílení",
+  "liveNotification": "Vaše poloha je sdílená s účastníky vaší cesty. Chcete-li sdílení zastavit, otevřete aplikaci Splyto.",
+  "livePermissionError": "Povol přístup k poloze v nastavení telefonu, abys mohl(a) sdílet svou polohu.",
+  "liveStartError": "Sdílení se nepodařilo spustit. Zkontrolujte přístup k poloze, připojení k internetu a datum a čas ve vašem telefonu.",
+  "liveStopPending": "Aktualizace byly zastaveny. Čeká se na připojení k internetu, aby byla odstraněna vaše poslední poloha; bez aktualizací zmizí z mapy do 2 minut.",
+  "liveSharing": "sdílí polohu",
+  "liveUnavailable": "Tato živá mapa není k dispozici. Vraťte se k výletu a obnovte stránku.",
+  "liveMapLoadError": "Mapu se nepodařilo načíst. Zkontrolujte připojení a mapu znovu otevřete.",
+  "liveLoadError": "Nepodařilo se aktualizovat polohy. Zobrazují se pouze nejnovější aktualizace.",
+  "liveFit": "Zobrazit všechny na mapě",
+  "liveEmpty": "Zatím nikdo nesdílí svou aktuální polohu.",
+  "liveRecent": "Právě aktualizováno",
+  "liveLastKnown": "Poslední aktualizace",
+  "liveAccuracy": "Přesnost",
+  "liveUntil": "Sdílení do",
+  "liveOtherSession": "Spuštěno v jiné relaci. Zde jej můžete zastavit.",
+  "liveUpdatesPaused": "Aktualizace pozastaveny. Zkontrolujte přístup k poloze a připojení k internetu.",
+  "livePrivateUntilShared": "Vaše poloha zůstává soukromá, dokud se nerozhodnete ji sdílet.",
+  "activityEventExpenseCreated": "přidána výdajová položka",
+  "activityEventExpenseUpdated": "aktualizoval výdaj",
+  "activityEventExpenseDeleted": "smazal výdaj",
+  "activityEventTripCreated": "vytvořil výlet",
+  "activityEventTripUpdated": "aktualizované podrobnosti o cestě",
+  "activityEventTripMembersAdded": "přidaní členové",
+  "activityEventTripMembersInvited": "odeslané pozvánky: {count}",
+  "@activityEventTripMembersInvited": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityEventTripMemberJoined": "připojil se k výletu",
+  "activityEventTripInvitationDeclined": "odmítl pozvání na výlet",
+  "activityEventTripInvitationRevoked": "zrušil pozvánku na výlet",
+  "activityEventTripMemberRemoved": "{name} byl/a odstraněn/a z cesty",
+  "@activityEventTripMemberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberLeft": "opustil výlet",
+  "activityEventTripMemberRoleUpdated": "změnil roli {name} na {role}",
+  "@activityEventTripMemberRoleUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberReady": "označeno jako připraveno k vypořádání",
+  "activityEventTripMemberNotReady": "označeno jako „není připraveno“",
+  "activityEventTripAllMembersReady": "Všichni členové jsou připraveni k vyúčtování",
+  "activityEventTripFinished": "cesta skončila",
+  "activityEventSettlementMarkedSent": "označil převod jako odeslaný",
+  "activityEventSettlementConfirmed": "potvrzen převod",
+  "activityEventSettlementSentCancelled": "zrušeno odesláno stav",
+  "activityEventSettlementNotReceived": "označil převod jako nepřijatý",
+  "activityEventSettlementReminderSent": "odeslal upomínku k vyúčtování",
+  "activityEventPaymentMarkedSent": "zaznamenal platbu",
+  "activityEventPaymentRequested": "požádal o platbu",
+  "activityEventPaymentRequestMarkedSent": "označil požadovanou platbu jako odeslanou",
+  "activityEventPaymentRequestCancelled": "zrušil žádost o platbu",
+  "activityEventPaymentRequestDeclined": "zamítl žádost o platbu",
+  "activityEventPaymentConfirmed": "potvrdil platbu",
+  "activityEventPaymentCancelled": "zrušen záznam o platbě",
+  "activityEventPaymentNotReceived": "označil platbu jako nepřijatou",
+  "activityEventUnknown": "provedena změna",
+  "privacyEnglishFallback": "Zásady ochrany osobních údajů jsou zatím dostupné v angličtině.",
+  "activityRoleAdmin": "Správce",
+  "accountDeleteTitle": "Smazat účet",
+  "accountDeleteIntro": "Potvrď smazání e-mailem. Po potvrzení ho nelze vrátit zpět.",
+  "accountDeleteConsequences": "Vymazání je trvalé. Váš profil je anonymizován a přístup k účtu je zrušen. Sdílené záznamy o cestách a výdajích jsou uchovávány pro ostatní členy.",
+  "accountDeleteReasonsTitle": "Co jsme mohli udělat lépe?",
+  "accountDeleteReasonsHint": "Důvod (nepovinné)",
+  "accountDeleteReasonNotUsing": "Pro své výlety již Splyto nepotřebuji",
+  "accountDeleteReasonAnotherWay": "Sdílené výdaje spravuji jiným způsobem",
+  "accountDeleteReasonComplicated": "Vyřízení věcí vyžaduje příliš mnoho úsilí",
+  "accountDeleteReasonTechnical": "Narazil jsem na chyby nebo technické problémy",
+  "accountDeleteReasonPrivacy": "Raději bych odstranil údaje o svém účtu",
+  "accountDeleteReasonOther": "Odcházím z jiného důvodu",
+  "accountDeleteEmailStep": "Dalším krokem je potvrzení e-mailem.",
+  "accountDeletePasswordHint": "Zadejte své aktuální heslo ke Splyto a požádejte o potvrzovací e-mail. Váš účet je stále aktivní.",
+  "accountDeleteInboxTitle": "Ještě jeden poslední krok ve vaší doručené poště",
+  "accountDeleteSentBody": "Potvrzovací odkaz byl odeslán na {email}.",
+  "accountDeleteSentHint": "Tvůj účet zůstává aktivní, dokud nepotvrdíš smazání.",
+  "accountDeleteSending": "Odeslání potvrzovacího e-mailu",
+  "@accountDeleteSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  }
+}

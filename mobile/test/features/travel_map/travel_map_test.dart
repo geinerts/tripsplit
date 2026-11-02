@@ -22,6 +22,7 @@ import 'package:tripsplit/features/travel_map/data/travel_places_repository.dart
 import 'package:tripsplit/features/travel_map/domain/travel_place.dart';
 import 'package:tripsplit/features/travel_map/presentation/travel_map_page.dart';
 import 'package:tripsplit/features/travel_map/presentation/travel_map_canvas.dart';
+import 'package:tripsplit/features/travel_map/presentation/travel_map_overlay.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
 
 const lisbon = TravelPlace(
@@ -189,6 +190,64 @@ Future<void> open(
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
+  testWidgets(
+    'native overlay follows projected pins and preserves visit actions',
+    (tester) async {
+      TravelPlace? selected;
+      var pixel = const Offset(150, 200);
+      var edits = 0;
+      late StateSetter update;
+      final older = TravelPlace.fromJson({
+        ...lisbon.toJson(),
+        'id': 4,
+        'title': 'Earlier visit',
+      });
+      await tester.pumpWidget(
+        app(
+          Scaffold(
+            body: StatefulBuilder(
+              builder: (context, setState) {
+                update = setState;
+                return TravelMapOverlay(
+                  positions: {'lisbon': pixel},
+                  places: [lisbon, older],
+                  selected: selected,
+                  showPins: true,
+                  onSelect: (p) => setState(() => selected = p),
+                  onDelete: (_) {},
+                  onFit: () {},
+                  onEdit: (_) => edits++,
+                );
+              },
+            ),
+          ),
+        ),
+      );
+      expect(find.byKey(const ValueKey('travel-pin-4')), findsNothing);
+      expect(
+        tester.getCenter(find.byKey(const ValueKey('travel-pin-1'))),
+        pixel,
+      );
+      await tester.tap(find.byKey(const ValueKey('travel-pin-1')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('travel-place-popup')), findsOneWidget);
+      await tester.tap(find.byTooltip('Next visit'));
+      await tester.pumpAndSettle();
+      expect(find.text('Earlier visit'), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('travel-edit-visit')));
+      expect(edits, 1);
+      update(() => pixel = const Offset(210, 180));
+      await tester.pumpAndSettle();
+      expect(
+        tester.getCenter(find.byKey(const ValueKey('travel-pin-1'))),
+        pixel,
+      );
+      await tester.tap(find.byTooltip('Close'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('travel-place-popup')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
   test(
     'cache belongs to account and is used only for network failure',
     () async {

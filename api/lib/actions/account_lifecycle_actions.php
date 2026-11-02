@@ -1,5 +1,7 @@
 <?php
 declare(strict_types=1);
+
+require_once __DIR__ . '/../helpers/helper_account_deletion_feedback.php';
 require_once __DIR__ . '/../helpers/helper_travel_places.php';
 
 require_once __DIR__ . '/../helpers/helper_account_action_proofs.php';
@@ -195,6 +197,9 @@ function request_account_lifecycle_link(string $action): void
             if ($action === 'delete') {
                 json_out(['ok' => false, 'error' => 'Could not send the confirmation email. Try again later.'], 503);
             }
+        }
+        if ($sent && $action === 'delete') {
+            record_account_deletion_feedback($pdo, account_deletion_reason_codes($body['reason_codes'] ?? []));
         }
     }
     json_out(['ok' => true]);

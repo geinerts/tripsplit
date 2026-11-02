@@ -30,7 +30,8 @@ if ($type === 'trip' || $type === 'invite') {
     $isValid = (bool) ($tripMeta['valid'] ?? false);
     $tripName = $isValid ? trim((string) $tripMeta['trip_name']) : 'Splyto trip';
     $imagePath = $isValid ? trim((string) $tripMeta['image_path']) : '';
-    share_output_png(share_render_trip_card($tripName, $imagePath), 0);
+    $format = ($_GET['format'] ?? '') === 'jpeg' ? 'jpeg' : 'png';
+    share_output_image(share_render_trip_card($tripName, $imagePath), 0, $format);
 }
 
 share_output_png(share_render_fallback_card('Splyto', 'Open the link in the app.'), 60);

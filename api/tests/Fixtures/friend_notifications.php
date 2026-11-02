@@ -19,6 +19,8 @@ function require_post(): void {}
 function read_json(): array { return $GLOBALS['body']; }
 function client_ip_address(): string { return '192.0.2.1'; }
 function enforce_rate_limit(...$args): void {}
+function avatar_public_url(?string $path): ?string { return $path ? 'https://example.test/' . $path : null; }
+function avatar_thumb_public_url(?string $path): ?string { return $path ? 'https://example.test/thumb/' . $path : null; }
 function users_name_columns_available(PDO $pdo): bool { return false; }
 function users_active_filter_sql(...$args): string { return ''; }
 function normalize_me_name_value($value): ?string { return $value ?: null; }
@@ -107,5 +109,32 @@ if ($mysql) {
     check(count(inbox(3)['notifications'])===1 && inbox(3)['unread_count']===1);
     $pdo->exec(file_get_contents($migration));
     check(count(inbox(2)['notifications'])===1 && count(inbox(3)['notifications'])===1);
+}
+// History uses the actor's current photo, not the recipient's photo.
+$pdo->exec("UPDATE trip_users SET avatar_path='one.jpg' WHERE id=1");
+$pdo->exec("UPDATE trip_users SET avatar_path='two.jpg' WHERE id=2");
+$photo=inbox(2)['notifications'][0];
+check($photo['actor_user_id']===1);
+check($photo['actor_avatar_url']==='https://example.test/one.jpg');
+check($photo['actor_avatar_thumb_url']==='https://example.test/thumb/one.jpg');
+check(inbox(1)['notifications'][0]['actor_avatar_url']==='https://example.test/two.jpg');
+$pdo->exec("UPDATE trip_users SET avatar_path='updated.jpg' WHERE id=1");
+check(inbox(2)['notifications'][0]['actor_avatar_url']==='https://example.test/updated.jpg');
+$pdo->exec("UPDATE trip_users SET avatar_path=NULL WHERE id=1");
+check(inbox(2)['notifications'][0]['actor_avatar_url']===null);
+$types = ['trip_finished'=>'ended_by_user_id', 'trip_invitation'=>'invited_by_user_id',
+    'member_ready_to_settle'=>'user_id', 'expense_added'=>'paid_by_user_id',
+    'settlement_reminder'=>'reminded_by_user_id', 'payment_requested'=>'to_user_id',
+    'payment_sent'=>'from_user_id', 'payment_confirmed'=>'to_user_id',
+    'payment_request_declined'=>'from_user_id'];
+foreach ($types as $type=>$key) {
+    $items=notifications_with_actor_avatars($pdo, [['type'=>$type, 'payload'=>[$key=>2]]]);
+    check($items[0]['actor_user_id']===2 && $items[0]['actor_avatar_url']==='https://example.test/two.jpg');
+}
+foreach ([['type'=>'trip_ready_to_settle', 'payload'=>['user_id'=>2]],
+          ['type'=>'trip_finished', 'payload'=>null],
+          ['type'=>'trip_finished', 'payload'=>['ended_by_user_id'=>999]],
+          ['type'=>'trip_finished', 'payload'=>['ended_by_user_id'=>'invalid']]] as $item) {
+    check(notifications_with_actor_avatars($pdo, [$item])[0]['actor_avatar_url']===null);
 }
 echo json_encode(['assertions'=>$assertions]);

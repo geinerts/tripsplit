@@ -11,6 +11,8 @@ import '../data/travel_location_service.dart';
 import '../data/travel_places_repository.dart';
 import '../domain/travel_place.dart';
 import 'travel_map_canvas.dart';
+import 'mapbox_travel_map.dart';
+import '../../../core/maps/mapbox_config.dart';
 import 'travel_place_sheet.dart';
 
 class TravelMapPage extends StatefulWidget {
@@ -31,6 +33,7 @@ class TravelMapPage extends StatefulWidget {
 
 class _TravelMapPageState extends State<TravelMapPage> {
   final _map = MapController();
+  final _nativeMap = GlobalKey<MapboxTravelMapState>();
   late final AccountDataLease _owner = widget.repository.capture();
   late final TravelLocationService _locations =
       widget.locations ?? NativeTravelLocationService();
@@ -62,6 +65,10 @@ class _TravelMapPageState extends State<TravelMapPage> {
   });
   void _fit() {
     if (!_ready || !_current) return;
+    if (mapboxAvailable) {
+      _nativeMap.currentState?.fitPlaces();
+      return;
+    }
     if (_places.isEmpty) return;
     if (_places.length == 1) {
       _map.move(_places.first.point, 4);
@@ -172,7 +179,13 @@ class _TravelMapPageState extends State<TravelMapPage> {
         _selected = saved;
         _offline = false;
       });
-      if (_ready) _map.move(saved.point, 4.5);
+      if (_ready) {
+        if (mapboxAvailable) {
+          _nativeMap.currentState?.focusPlace(saved);
+        } else {
+          _map.move(saved.point, 4.5);
+        }
+      }
       _notice(context.l10n.travelMapSaved);
     } on TravelLocationError catch (error) {
       if (!mounted || !_current) return;
@@ -404,6 +417,7 @@ class _TravelMapPageState extends State<TravelMapPage> {
                   if (_shapes != null)
                     Positioned.fill(
                       child: TravelMapCanvas(
+                        nativeKey: _nativeMap,
                         controller: _map,
                         shapes: _shapes!,
                         places: _places,

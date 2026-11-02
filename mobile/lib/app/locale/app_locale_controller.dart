@@ -1,20 +1,57 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum AppLocaleMode { english, latvian, spanish }
+import '../../l10n/app_localizations.dart';
+
+enum AppLocaleMode {
+  system(null, '', ''),
+  english('en', 'English', '🇬🇧'),
+  german('de', 'Deutsch', '🇩🇪'),
+  spanish('es', 'Español', '🇪🇸'),
+  french('fr', 'Français', '🇫🇷'),
+  italian('it', 'Italiano', '🇮🇹'),
+  portuguese('pt', 'Português', '🇵🇹'),
+  polish('pl', 'Polski', '🇵🇱'),
+  dutch('nl', 'Nederlands', '🇳🇱'),
+  swedish('sv', 'Svenska', '🇸🇪'),
+  danish('da', 'Dansk', '🇩🇰'),
+  norwegian('nb', 'Norsk bokmål', '🇳🇴'),
+  finnish('fi', 'Suomi', '🇫🇮'),
+  czech('cs', 'Čeština', '🇨🇿'),
+  ukrainian('uk', 'Українська', '🇺🇦'),
+  latvian('lv', 'Latviešu', '🇱🇻');
+
+  const AppLocaleMode(this.languageCode, this.nativeName, this.flag);
+  final String? languageCode;
+  final String nativeName;
+  final String flag;
+}
 
 class AppLocaleController extends ChangeNotifier {
   AppLocaleController();
 
   static const String _prefKey = 'app.locale';
 
-  AppLocaleMode _mode = AppLocaleMode.english;
+  AppLocaleMode _mode = AppLocaleMode.system;
   Locale? _locale;
 
   AppLocaleMode get mode => _mode;
 
-  /// Active locale used by the app.
+  /// Explicit override; null lets MaterialApp follow the device.
   Locale? get locale => _locale;
+
+  Locale get effectiveLocale =>
+      _locale ??
+      resolveDeviceLocale(WidgetsBinding.instance.platformDispatcher.locales);
+
+  static Locale resolveDeviceLocale(List<Locale>? locales) {
+    final deviceLanguage = locales?.firstOrNull?.languageCode.toLowerCase();
+    final language = deviceLanguage == 'no' ? 'nb' : deviceLanguage;
+    for (final supported in AppLocalizations.supportedLocales) {
+      if (supported.languageCode == language) return supported;
+    }
+    return const Locale('en');
+  }
 
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -35,44 +72,24 @@ class AppLocaleController extends ChangeNotifier {
     await prefs.setString(_prefKey, _encodeMode(mode));
   }
 
-  static String _encodeMode(AppLocaleMode mode) {
-    switch (mode) {
-      case AppLocaleMode.english:
-        return 'en';
-      case AppLocaleMode.latvian:
-        return 'lv';
-      case AppLocaleMode.spanish:
-        return 'es';
-    }
-  }
+  static String _encodeMode(AppLocaleMode mode) =>
+      mode.languageCode ?? 'system';
 
   static AppLocaleMode _decodeMode(String? raw) {
-    switch ((raw ?? '').trim().toLowerCase()) {
-      case 'en':
-      case 'english':
-        return AppLocaleMode.english;
-      case 'lv':
-      case 'latvian':
-        return AppLocaleMode.latvian;
-      case 'es':
-      case 'spanish':
-      case 'espanol':
-      case 'español':
-        return AppLocaleMode.spanish;
-      default:
-        // Legacy "system" falls back to explicit English default.
-        return AppLocaleMode.english;
-    }
+    final value = (raw ?? '').trim().toLowerCase();
+    final code = switch (value) {
+      'english' => 'en',
+      'latvian' => 'lv',
+      'spanish' || 'espanol' || 'español' => 'es',
+      'no' => 'nb',
+      _ => value,
+    };
+    return AppLocaleMode.values.firstWhere(
+      (mode) => mode.languageCode == code,
+      orElse: () => AppLocaleMode.system,
+    );
   }
 
-  static Locale? _modeToLocale(AppLocaleMode mode) {
-    switch (mode) {
-      case AppLocaleMode.english:
-        return const Locale('en');
-      case AppLocaleMode.latvian:
-        return const Locale('lv');
-      case AppLocaleMode.spanish:
-        return const Locale('es');
-    }
-  }
+  static Locale? _modeToLocale(AppLocaleMode mode) =>
+      mode.languageCode == null ? null : Locale(mode.languageCode!);
 }

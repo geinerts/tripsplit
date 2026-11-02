@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../domain/entities/trip_user.dart';
-import '../../domain/entities/trip_invite_link.dart';
 import '../../domain/entities/pending_trip_invitation.dart';
 import 'pending_trip_invitations.dart';
 
@@ -13,13 +10,11 @@ class TripInviteMembersPage extends StatefulWidget {
     super.key,
     required this.tripName,
     required this.loadFriends,
-    required this.loadLink,
     required this.loadPending,
     required this.revoke,
   });
   final String tripName;
   final Future<List<TripUser>> Function() loadFriends;
-  final Future<TripInviteLink> Function() loadLink;
   final Future<List<PendingTripInvitation>> Function() loadPending;
   final Future<void> Function(int) revoke;
   @override
@@ -29,15 +24,12 @@ class TripInviteMembersPage extends StatefulWidget {
 class _TripInviteMembersPageState extends State<TripInviteMembersPage> {
   List<TripUser> _friends = [];
   final _selected = <int>{};
-  TripInviteLink? _link;
-  bool _friendsLoading = false, _linkLoading = false, _friendsFailed = false;
-  bool _copying = false, _submitted = false;
-  String? _linkError;
+  bool _friendsLoading = false, _friendsFailed = false;
+  bool _submitted = false;
   @override
   void initState() {
     super.initState();
     _loadFriends();
-    _loadLink();
   }
 
   Future<void> _loadFriends() async {
@@ -53,54 +45,6 @@ class _TripInviteMembersPageState extends State<TripInviteMembersPage> {
       if (mounted) setState(() => _friendsFailed = true);
     } finally {
       if (mounted) setState(() => _friendsLoading = false);
-    }
-  }
-
-  Future<void> _loadLink() async {
-    if (_linkLoading) return;
-    setState(() {
-      _linkLoading = true;
-      _linkError = null;
-      _link = null;
-    });
-    try {
-      final link = await widget.loadLink();
-      if (link.inviteUrl.trim().isEmpty) {
-        throw StateError('Empty invitation link');
-      }
-      if (mounted) setState(() => _link = link);
-    } catch (error) {
-      if (mounted) {
-        setState(
-          () => _linkError =
-              error is ApiException && error.message.trim().isNotEmpty
-              ? error.message
-              : context.l10n.workspaceFailedToGenerateInviteLink,
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _linkLoading = false);
-    }
-  }
-
-  Future<void> _copy() async {
-    if (_copying || _link == null) return;
-    setState(() => _copying = true);
-    try {
-      await Clipboard.setData(ClipboardData(text: _link!.inviteUrl.trim()));
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.workspaceInviteLinkCopied)),
-        );
-      }
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.l10n.inviteClipboardFailed)),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _copying = false);
     }
   }
 
@@ -148,52 +92,6 @@ class _TripInviteMembersPageState extends State<TripInviteMembersPage> {
               key: const ValueKey('invite-members-list'),
               padding: const EdgeInsets.symmetric(horizontal: 20),
               children: [
-                Text(
-                  t.workspaceInviteLink,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 12),
-                if (_linkLoading)
-                  const LinearProgressIndicator()
-                else if (_linkError != null) ...[
-                  Text(
-                    _linkError!,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton.icon(
-                      key: const ValueKey('invite-link-retry'),
-                      onPressed: _loadLink,
-                      icon: const Icon(Icons.refresh),
-                      label: Text(t.retryAction),
-                    ),
-                  ),
-                ] else if (_link != null) ...[
-                  SelectableText(
-                    _link!.inviteUrl.trim(),
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton.icon(
-                      key: const ValueKey('invite-link-copy'),
-                      onPressed: _copying ? null : _copy,
-                      icon: const Icon(Icons.copy_outlined),
-                      label: Text(t.workspaceCopyInviteLink),
-                    ),
-                  ),
-                  if (_link!.expiresAt != null)
-                    Text(
-                      t.workspaceExpiresUtc(_link!.expiresAt!),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                ],
-                const SizedBox(height: 16),
-                const Divider(height: 1),
-                const SizedBox(height: 16),
                 PendingTripInvitations(
                   load: widget.loadPending,
                   revoke: widget.revoke,

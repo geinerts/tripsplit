@@ -425,38 +425,6 @@ void main() {
     }
   });
 
-  testWidgets('invitation review join', (tester) async {
-    if (!const bool.fromEnvironment('INVITATION_PREVIEWS')) return;
-    for (final dark in [false, true]) {
-      final key = GlobalKey();
-      await _pump(
-        tester,
-        _Trips(),
-        brightness: dark ? Brightness.dark : Brightness.light,
-        boundary: key,
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Join trip via invite'));
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
-      await tester.runAsync(() async {
-        final image =
-            await (key.currentContext!.findRenderObject()!
-                    as RenderRepaintBoundary)
-                .toImage();
-        final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-        final file = File(
-          '../output/design/invitations/${dark ? 'dark' : 'light'}-join.png',
-        );
-        await file.parent.create(recursive: true);
-        await file.writeAsBytes(bytes!.buffer.asUint8List());
-        image.dispose();
-      });
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pumpAndSettle();
-    }
-  });
-
   setUp(() => SharedPreferences.setMockInitialValues({}));
   setUpAll(() async {
     await (FontLoader('packages/cupertino_icons/CupertinoIcons')..addFont(
@@ -472,7 +440,7 @@ void main() {
   });
 
   testWidgets(
-    'first load is not empty; genuine empty has create and join only',
+    'first load is not empty; genuine empty offers trip creation without link entry',
     (tester) async {
       final trips = _Trips()..pending = Completer<List<Trip>>();
       await _pump(tester, trips);
@@ -702,15 +670,22 @@ void main() {
     });
   }
 
-  testWidgets('empty Home join action still opens invite entry', (
-    tester,
-  ) async {
-    await _pump(tester, _Trips());
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Join trip via invite'));
-    await tester.pumpAndSettle();
-    expect(find.byType(TextField), findsOneWidget);
-  });
+  for (final hasTrips in [false, true]) {
+    testWidgets(
+      'Home has invitations and create without link entry: $hasTrips',
+      (tester) async {
+        await _pump(tester, _Trips()..trips = hasTrips ? [_trip(1)] : []);
+        await tester.pumpAndSettle();
+        expect(find.byIcon(Icons.link), findsNothing);
+        expect(find.text('Join trip via invite'), findsNothing);
+        expect(
+          find.byKey(const ValueKey('home-trip-invitations')),
+          findsOneWidget,
+        );
+        expect(find.byKey(const ValueKey('home-create-trip')), findsOneWidget);
+      },
+    );
+  }
 
   testWidgets('home controls have named 48px tap targets', (tester) async {
     final handle = tester.ensureSemantics();

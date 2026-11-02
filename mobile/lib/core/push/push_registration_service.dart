@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../auth/device_token_store.dart';
 import '../network/api_client.dart';
 import '../network/api_endpoints.dart';
@@ -27,6 +28,7 @@ class PushRegistrationService {
   final PushRegistrationStore _registrationStore;
   final String Function() _localeCodeProvider;
   String? _verifiedTokenInSession;
+  String? _verifiedLocaleInSession;
 
   Future<bool> syncRegistration() async {
     if (!_supportsPushRegistration) {
@@ -38,18 +40,20 @@ class PushRegistrationService {
       return false;
     }
 
+    final localeCode = _normalizeLocaleCode(_localeCodeProvider());
     final previousToken = await _registrationStore.readRegisteredToken();
     // Always verify current token with backend at least once per app session.
     // This recovers from server-side token deactivation (for example after
     // migrations, manual cleanup, or stale-token invalidation) while still
     // avoiding repeated register calls in the same app run.
-    if (previousToken == pushToken && _verifiedTokenInSession == pushToken) {
+    if (previousToken == pushToken &&
+        _verifiedTokenInSession == pushToken &&
+        _verifiedLocaleInSession == localeCode) {
       return true;
     }
 
     final deviceUid = await _deviceTokenStore.getOrCreateToken();
     final appBundle = await _loadBundleId();
-    final localeCode = _normalizeLocaleCode(_localeCodeProvider());
 
     await _apiClient.request(
       path: ApiEndpoints.legacyAction('register_push_token'),
@@ -66,6 +70,7 @@ class PushRegistrationService {
 
     await _registrationStore.writeRegisteredToken(pushToken);
     _verifiedTokenInSession = pushToken;
+    _verifiedLocaleInSession = localeCode;
     return true;
   }
 
@@ -91,6 +96,7 @@ class PushRegistrationService {
       // Clear local marker even if request fails; next login will re-register.
       await _registrationStore.writeRegisteredToken(null);
       _verifiedTokenInSession = null;
+      _verifiedLocaleInSession = null;
     }
   }
 
@@ -126,13 +132,12 @@ class PushRegistrationService {
   }
 
   String _normalizeLocaleCode(String raw) {
-    final normalized = raw.trim().toLowerCase();
-    if (normalized == 'lv') {
-      return 'lv';
-    }
-    if (normalized == 'es') {
-      return 'es';
-    }
-    return 'en';
+    final language = raw.trim().toLowerCase().split(RegExp('[-_]')).first;
+    final normalized = language == 'no' ? 'nb' : language;
+    return AppLocalizations.supportedLocales.any(
+          (locale) => locale.languageCode == normalized,
+        )
+        ? normalized
+        : 'en';
   }
 }

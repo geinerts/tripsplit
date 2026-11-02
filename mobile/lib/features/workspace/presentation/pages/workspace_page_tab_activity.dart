@@ -185,250 +185,88 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     BuildContext context,
     WorkspaceActivityEvent event,
   ) {
-    final language = Localizations.localeOf(context).languageCode;
-
-    String en(String fallback) => fallback;
-
+    final t = context.l10n;
     switch (event.eventType.trim().toLowerCase()) {
       case 'expense.created':
-        if (language == 'lv') {
-          return 'pievienoja izdevumu';
-        }
-        if (language == 'es') {
-          return 'añadió un gasto';
-        }
-        return en('added an expense');
+        return t.activityEventExpenseCreated;
       case 'expense.updated':
-        if (language == 'lv') {
-          return 'atjaunoja izdevumu';
-        }
-        if (language == 'es') {
-          return 'actualizó un gasto';
-        }
-        return en('updated an expense');
+        return t.activityEventExpenseUpdated;
       case 'expense.deleted':
-        if (language == 'lv') {
-          return 'izdzēsa izdevumu';
-        }
-        if (language == 'es') {
-          return 'eliminó un gasto';
-        }
-        return en('deleted an expense');
+        return t.activityEventExpenseDeleted;
       case 'trip.created':
-        if (language == 'lv') {
-          return 'izveidoja ceļojumu';
-        }
-        if (language == 'es') {
-          return 'creó el viaje';
-        }
-        return en('created the trip');
+        return t.activityEventTripCreated;
       case 'trip.updated':
-        if (language == 'lv') {
-          return 'atjaunoja ceļojuma detaļas';
-        }
-        if (language == 'es') {
-          return 'actualizó el viaje';
-        }
-        return en('updated trip details');
+        return t.activityEventTripUpdated;
       case 'trip.members_added':
         final count = _payloadInt(event, 'members_added_count');
-        if (language == 'lv') {
-          return count > 0
-              ? 'pievienoja $count dalībnieku(s)'
-              : 'pievienoja dalībniekus';
-        }
-        if (language == 'es') {
-          return count > 0 ? 'añadió $count miembro(s)' : 'añadió miembros';
-        }
-        return en(count > 0 ? 'added $count member(s)' : 'added members');
+        return count > 0
+            ? '${t.activityEventTripMembersAdded}: $count'
+            : t.activityEventTripMembersAdded;
       case 'trip.members_invited':
-        final invitedCount = _payloadInt(event, 'members_invited_count');
-        if (language == 'lv') return 'nosūtīja $invitedCount uzaicinājumu(s)';
-        if (language == 'es') return 'envió $invitedCount invitación(es)';
-        return en('sent $invitedCount invitation(s)');
+        return t.activityEventTripMembersInvited(
+          _payloadInt(event, 'members_invited_count'),
+        );
       case 'trip.member_joined':
-        if (language == 'lv') return 'pievienojās ceļojumam';
-        if (language == 'es') return 'se unió al viaje';
-        return en('joined the trip');
+        return t.activityEventTripMemberJoined;
       case 'trip.invitation_declined':
-        if (language == 'lv') return 'noraidīja ceļojuma uzaicinājumu';
-        if (language == 'es') return 'rechazó la invitación al viaje';
-        return en('declined the trip invitation');
+        return t.activityEventTripInvitationDeclined;
       case 'trip.invitation_revoked':
-        if (language == 'lv') return 'atsauca ceļojuma uzaicinājumu';
-        if (language == 'es') return 'canceló una invitación al viaje';
-        return en('cancelled a trip invitation');
+        return t.activityEventTripInvitationRevoked;
       case 'trip.member_removed':
-        final name = _payloadString(event, 'removed_user_name') ?? '';
-        if (language == 'lv') {
-          return 'noņēma ${name.isEmpty ? 'dalībnieku' : name} no ceļojuma';
-        }
-        if (language == 'es') {
-          return 'quitó a ${name.isEmpty ? 'un miembro' : name} del viaje';
-        }
-        return en('removed ${name.isEmpty ? 'a member' : name}');
+        return t.activityEventTripMemberRemoved(
+          (_payloadString(event, 'removed_user_name') ?? '').isEmpty
+              ? t.activityMember
+              : _payloadString(event, 'removed_user_name')!,
+        );
       case 'trip.member_left':
-        if (language == 'lv') {
-          return 'pameta ceļojumu';
-        }
-        if (language == 'es') {
-          return 'salió del viaje';
-        }
-        return en('left the trip');
+        return t.activityEventTripMemberLeft;
       case 'trip.member_role_updated':
-        final name = _payloadString(event, 'target_user_name') ?? '';
-        final role = _payloadString(event, 'role') ?? 'member';
-        if (language == 'lv') {
-          return 'nomainīja ${name.isEmpty ? 'dalībnieka' : name} lomu uz $role';
-        }
-        if (language == 'es') {
-          return 'cambió el rol de ${name.isEmpty ? 'un miembro' : name} a $role';
-        }
-        return en('changed ${name.isEmpty ? 'a member' : name} to $role');
+        return t.activityEventTripMemberRoleUpdated(
+          (_payloadString(event, 'target_user_name') ?? '').isEmpty
+              ? t.activityMember
+              : _payloadString(event, 'target_user_name')!,
+          switch (_payloadString(event, 'role')) {
+            'owner' => t.workspaceTripOwner,
+            'admin' => t.activityRoleAdmin,
+            _ => t.workspaceMember,
+          },
+        );
       case 'trip.member_ready':
-        if (language == 'lv') {
-          return 'atzīmēja gatavību norēķiniem';
-        }
-        if (language == 'es') {
-          return 'marcó que está listo para liquidar';
-        }
-        return en('marked ready to settle');
+        return t.activityEventTripMemberReady;
       case 'trip.member_not_ready':
-        if (language == 'lv') {
-          return 'noņēma gatavību norēķiniem';
-        }
-        if (language == 'es') {
-          return 'quitó su estado listo';
-        }
-        return en('marked not ready');
+        return t.activityEventTripMemberNotReady;
       case 'trip.all_members_ready':
-        if (language == 'lv') {
-          return 'Visi dalībnieki ir gatavi norēķiniem';
-        }
-        if (language == 'es') {
-          return 'Todos los miembros están listos para liquidar';
-        }
-        return en('All members are ready to settle');
+        return t.activityEventTripAllMembersReady;
       case 'trip.finished':
-        if (language == 'lv') {
-          return 'pabeidza ceļojumu';
-        }
-        if (language == 'es') {
-          return 'finalizó el viaje';
-        }
-        return en('finished the trip');
+        return t.activityEventTripFinished;
       case 'settlement.marked_sent':
-        if (language == 'lv') {
-          return 'atzīmēja pārskaitījumu kā nosūtītu';
-        }
-        if (language == 'es') {
-          return 'marcó la transferencia como enviada';
-        }
-        return en('marked a transfer as sent');
+        return t.activityEventSettlementMarkedSent;
       case 'settlement.confirmed':
-        if (language == 'lv') {
-          return 'apstiprināja pārskaitījumu';
-        }
-        if (language == 'es') {
-          return 'confirmó la transferencia';
-        }
-        return en('confirmed a transfer');
+        return t.activityEventSettlementConfirmed;
       case 'settlement.sent_cancelled':
-        if (language == 'lv') {
-          return 'atcēla nosūtīšanas statusu';
-        }
-        if (language == 'es') {
-          return 'canceló el estado enviado';
-        }
-        return en('cancelled sent status');
+        return t.activityEventSettlementSentCancelled;
       case 'settlement.not_received':
-        if (language == 'lv') {
-          return 'atzīmēja, ka pārskaitījums nav saņemts';
-        }
-        if (language == 'es') {
-          return 'marcó la transferencia como no recibida';
-        }
-        return en('marked a transfer as not received');
+        return t.activityEventSettlementNotReceived;
       case 'settlement.reminder_sent':
-        if (language == 'lv') {
-          return 'nosūtīja norēķina atgādinājumu';
-        }
-        if (language == 'es') {
-          return 'envió un recordatorio';
-        }
-        return en('sent a settlement reminder');
+        return t.activityEventSettlementReminderSent;
       case 'payment.marked_sent':
-        if (language == 'lv') {
-          return 'atzīmēja maksājumu kā nosūtītu';
-        }
-        if (language == 'es') {
-          return 'marcó un pago como enviado';
-        }
-        return en('recorded a payment');
+        return t.activityEventPaymentMarkedSent;
       case 'payment.requested':
-        if (language == 'lv') {
-          return 'pieprasīja maksājumu';
-        }
-        if (language == 'es') {
-          return 'solicitó un pago';
-        }
-        return en('requested a payment');
+        return t.activityEventPaymentRequested;
       case 'payment.request_marked_sent':
-        if (language == 'lv') {
-          return 'atzīmēja pieprasīto maksājumu kā nosūtītu';
-        }
-        if (language == 'es') {
-          return 'marcó el pago solicitado como enviado';
-        }
-        return en('marked a requested payment as sent');
+        return t.activityEventPaymentRequestMarkedSent;
       case 'payment.request_cancelled':
-        if (language == 'lv') {
-          return 'atcēla maksājuma pieprasījumu';
-        }
-        if (language == 'es') {
-          return 'canceló una solicitud de pago';
-        }
-        return en('cancelled a payment request');
+        return t.activityEventPaymentRequestCancelled;
       case 'payment.request_declined':
-        if (language == 'lv') {
-          return 'noraidīja maksājuma pieprasījumu';
-        }
-        if (language == 'es') {
-          return 'rechazó una solicitud de pago';
-        }
-        return en('declined a payment request');
+        return t.activityEventPaymentRequestDeclined;
       case 'payment.confirmed':
-        if (language == 'lv') {
-          return 'apstiprināja maksājumu';
-        }
-        if (language == 'es') {
-          return 'confirmó un pago';
-        }
-        return en('confirmed a payment');
+        return t.activityEventPaymentConfirmed;
       case 'payment.cancelled':
-        if (language == 'lv') {
-          return 'atcēla maksājuma ierakstu';
-        }
-        if (language == 'es') {
-          return 'canceló un pago';
-        }
-        return en('cancelled a payment record');
+        return t.activityEventPaymentCancelled;
       case 'payment.not_received':
-        if (language == 'lv') {
-          return 'atzīmēja maksājumu kā nesaņemtu';
-        }
-        if (language == 'es') {
-          return 'marcó un pago como no recibido';
-        }
-        return en('marked a payment as not received');
+        return t.activityEventPaymentNotReceived;
       default:
-        if (language == 'lv') {
-          return 'veica izmaiņas';
-        }
-        if (language == 'es') {
-          return 'hizo un cambio';
-        }
-        return en('made a change');
+        return t.activityEventUnknown;
     }
   }
 

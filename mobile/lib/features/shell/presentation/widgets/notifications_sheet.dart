@@ -230,6 +230,22 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
     return MaterialLocalizations.of(context).formatShortDate(date);
   }
 
+  Widget _avatarFallback(WorkspaceNotification item, String? initials) =>
+      initials != null && initials.isNotEmpty
+      ? Text(
+          initials,
+          textScaler: TextScaler.noScaling,
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        )
+      : Icon(
+          item.type.contains('friend')
+              ? Icons.person_outline
+              : item.type == 'expense_added'
+              ? Icons.receipt_long_outlined
+              : Icons.notifications_none,
+          size: 22,
+        );
+
   Widget _tile(WorkspaceNotification item) {
     final localized = localizeWorkspaceNotification(context, item);
     final actor = notificationActorName(item);
@@ -240,6 +256,9 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
         .map((s) => s.characters.first)
         .join()
         .toUpperCase();
+    final avatarUrl = (item.actorAvatarThumbUrl ?? '').trim().isNotEmpty
+        ? item.actorAvatarThumbUrl!.trim()
+        : (item.actorAvatarUrl ?? '').trim();
     final unread = !item.isRead && !_readIds.contains(item.id);
     final meta = [
       if (item.tripId > 0 && (item.tripName ?? '').trim().isNotEmpty)
@@ -267,22 +286,18 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                   foregroundColor: Theme.of(
                     context,
                   ).colorScheme.onPrimaryContainer,
-                  child: initials != null && initials.isNotEmpty
-                      ? Text(
-                          initials,
-                          textScaler: TextScaler.noScaling,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
+                  child: avatarUrl.isEmpty
+                      ? _avatarFallback(item, initials)
+                      : ClipOval(
+                          child: Image.network(
+                            avatarUrl,
+                            key: ValueKey('notification-avatar-${item.id}'),
+                            width: 40,
+                            height: 40,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) =>
+                                _avatarFallback(item, initials),
                           ),
-                        )
-                      : Icon(
-                          item.type.contains('friend')
-                              ? Icons.person_outline
-                              : item.type == 'expense_added'
-                              ? Icons.receipt_long_outlined
-                              : Icons.notifications_none,
-                          size: 22,
                         ),
                 ),
               ),

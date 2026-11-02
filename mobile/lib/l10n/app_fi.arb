@@ -1,0 +1,1863 @@
+{
+  "@@locale": "fi",
+  "homeFirstTrip": "Ensimmäinen matkasi",
+  "homeYourShareAllTrips": "Oma osuutesi kaikista matkoista",
+  "homeAllTime": "Koko ajalta",
+  "homeSolo": "Yksin",
+  "homePeople": "{count, plural, one{{count} henkilö} other{{count} henkilöä}}",
+  "homeTripActions": "Matkan toiminnot: {name}",
+  "homeNoActiveTrips": "Ei aktiivisia matkoja",
+  "homeNoArchivedTrips": "Ei arkistoituja matkoja",
+  "homeLoadingTrips": "Matkojen lataaminen",
+  "homeLoadErrorTitle": "Matkojasi ei voitu ladata",
+  "homeLoadErrorBody": "Yritä uudelleen hetken kuluttua.",
+  "homeOfflineTitle": "Olet offline-tilassa",
+  "homeOfflineNoData": "Matkojasi ei ole vielä saatavilla tällä laitteella.",
+  "homeOfflineCached": "Offline-tilassa. Tallennettujen matkojen näyttäminen.",
+  "homeRefreshError": "Päivitystä ei voitu suorittaa. Näytetään aiemmin ladatut matkat.",
+  "@homePeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@homeTripActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentShareDetailsConsent": "Jaa tallennetut maksutietoni henkilölle {arg1}",
+  "paymentShareDetailsScope": "Vain niin kauan kuin tämä pyyntö odottaa maksua. Pyynnön peruuttaminen lopettaa käyttöoikeuden.",
+  "paymentDetailsUnavailable": "Maksutietoja ei ole saatavilla. Yhdistä internetiin ja tarkista, onko pyyntö edelleen avoinna.",
+  "paymentDetailsRetry": "Yritä uudelleen",
+  "tripModeSolo": "Vain minä",
+  "tripModeGroup": "Muiden kanssa",
+  "premiumFree": "Ilmainen",
+  "premiumStatusUnavailable": "Suunnitelman tila ei saatavilla",
+  "premiumGrantedUntil": "Premium-oikeudet myönnetty päivään {date} asti",
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumBillingNotActive": "Ei aktiivista tilausta",
+  "premiumRefreshStatus": "Päivitä suunnitelman tila",
+  "@addedMembersCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownConfirmedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSentCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSuggestedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@createdByLine": {
+    "placeholders": {
+      "creator": {},
+      "date": {}
+    }
+  },
+  "@currentEmailLabel": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "@directlyExplainedByExpenses": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@exactAmountWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@exactSplitMustMatchTotal": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@expenseIdDate": {
+    "placeholders": {
+      "date": {},
+      "id": {}
+    }
+  },
+  "@expenseImpactLine": {
+    "placeholders": {
+      "date": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@expenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@expensesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@forParticipants": {
+    "placeholders": {
+      "participants": {}
+    }
+  },
+  "@fromDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@fromToLine": {
+    "placeholders": {
+      "from": {},
+      "to": {}
+    }
+  },
+  "@helloUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@memberToPaySummary": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {},
+      "waiting": {}
+    }
+  },
+  "@moreCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@noExpensesByUserYet": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@noteMustBeMaxChars": {
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "@offlineQueuePendingChanges": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@paidOwesLine": {
+    "placeholders": {
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@payerName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@percentWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@pickedCycleCompleted": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@pickedUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@queueAddExpenseAmount": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@queueDeleteExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queueUpdateExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queuedChangesTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@queuedCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@randomCycleDrawLeft": {
+    "placeholders": {
+      "cycleNo": {},
+      "drawNo": {},
+      "remaining": {}
+    }
+  },
+  "@selectedFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementConfirmedProgress": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {}
+    }
+  },
+  "@settlementCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@settlementImpactWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@sharesWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitLabelValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitModeEqual": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeExact": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModePercent": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeShares": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@statusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@suggestedTransferRows": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@toDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripCreated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripStatusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@tripWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@unreadUpdates": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@userIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@userPaidOwesNetLine": {
+    "placeholders": {
+      "net": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@userWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@whoOwesWhatWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@youShouldPay": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@youShouldReceive": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountSectionTitle": "Tili",
+  "activeStatus": "Aktiivinen",
+  "activeTripPlural": "aktiiviset matkat",
+  "activeTripSingle": "aktiivinen matka",
+  "activeTrips": "Aktiiviset matkat",
+  "activitiesComingSoon": "Toiminto-osio tulossa pian.",
+  "addAction": "Lisää",
+  "addExpenseTitle": "Lisää kulu",
+  "addExpensesAction": "Lisää kuluja",
+  "addMembersAction": "Lisää jäseniä",
+  "addTripMembersTitle": "Kutsu matkan jäseniä",
+  "addedMembersCount": "{count, plural, one{{count} lähetetty kutsu} other{{count} lähetettyä kutsua}}.",
+  "tripInvitationDeclined": "Matkakutsu hylätty.",
+  "tripInviteAction": "Kutsu",
+  "tripInvitationsPending": "Odotan vastausta",
+  "tripInvitationsRetry": "Kutsuja ei ole saatavilla. Yritä uudelleen",
+  "tripInvitationRevoke": "Peruuta kutsu",
+  "tripInvitationRevokeFailed": "Kutsua ei voitu peruuttaa. Yritä uudelleen.",
+  "tripInvitationBody": "Sinut on kutsuttu matkalle. Avaa kutsu vastataksesi siihen.",
+  "allCaughtUp": "Kaikki ajan tasalla",
+  "allFilter": "Kaikki",
+  "allMembersLabel": "Kaikki jäsenet",
+  "allPaymentsConfirmed": "Kaikki maksut vahvistetaan.",
+  "allTrips": "Kaikki matkat",
+  "amountHint": "12.50",
+  "amountLabel": "Summa",
+  "amountMustBeGreaterThanZero": "Summan on oltava suurempi kuin 0.",
+  "appearance": "Ulkoasu",
+  "archivedStatus": "Arkistoitu",
+  "authSubtitleLogin": "Jaa matkakulut ystävien kanssa",
+  "authSubtitleRegister": "Luo tili ja aloita matkojen jakaminen",
+  "breakdownConfirmedCount": "vahvistettu: {count}",
+  "breakdownPendingCount": "odottaa hyväksyntää: {count}",
+  "breakdownSentCount": "lähetetty: {count}",
+  "breakdownSuggestedCount": "ehdotus: {count}",
+  "cancelAction": "Peruuta",
+  "changeEmailWithPasswordHelper": "Syötä salasanasi vaihtaaksesi sähköpostiosoitetta.",
+  "chooseReceiptFile": "Valitse kuittitiedosto",
+  "completeAccountSetupDescription": "Määritä sähköpostiosoitteesi ja salasanasi tilisi luomiseksi.",
+  "completeAccountSetupTitle": "Tilin perustaminen valmis",
+  "confirmReceivedAction": "Vahvista vastaanotto",
+  "confirmedAllSettlementsArchived": "Kaikki maksut vahvistettu. Matka arkistoitu.",
+  "confirmedAsReceived": "Vahvistettu vastaanotetuksi.",
+  "confirmedLabel": "Vahvistettu",
+  "couldNotOpenReceiptLink": "Kuitin linkkiä ei voitu avata.",
+  "createAction": "Luo",
+  "createFirstTripHint": "Luo ensimmäinen matkasi päästäksesi alkuun.",
+  "createNewTripTitle": "Luo uusi matka",
+  "createTripAction": "Luo matka",
+  "createTripFirst": "Luo ensin matka.",
+  "createdByLine": "{date} -  Luonut {creator}",
+  "creatorMustFinishTripFirst": "Matkan luojan on saatava matka päätökseen, jotta maksujen vahvistaminen voi alkaa.",
+  "currentEmailLabel": "Nykyinen sähköpostiosoite: {email}",
+  "currentReceiptAttached": "Liitteenä on nykyinen kuitti.",
+  "dateFormatHint": "YYYY-MM-DD",
+  "dateLabel": "Päivämäärä",
+  "dateMustMatchFormat": "Päivämäärän on oltava muodossa YYYY-MM-DD.",
+  "dateUnknown": "Päivämäärä tuntematon",
+  "deleteAction": "Poista",
+  "deleteExpenseConfirmQuestion": "Poistetaanko tämä kulu?",
+  "deleteExpenseTitle": "Poista kulu",
+  "editExpenseConfirmTitle": "Tallennetaanko kulujen muutokset?",
+  "editExpenseConfirmText": "Tämä päivittää kaikkien matkan osallistujien saldot.",
+  "directlyExplainedByExpenses": "Selitetään suoraan kuluilla: {amount}",
+  "doneStatus": "Valmis",
+  "editAction": "Muokkaa",
+  "editExpenseTitle": "Muokkaa kuluja",
+  "emailAddressLabel": "Sähköpostiosoite",
+  "emailHint": "you@example.com",
+  "emailLabel": "Sähköposti",
+  "emailRequired": "Sähköpostiosoite on pakollinen.",
+  "enterValidExactAmounts": "Syötä kaikkien osallistujien osalta voimassa olevat ja tarkat summat.",
+  "enterValidPercentages": "Syötä kelvolliset prosenttiosuudet kaikille osallistujille.",
+  "equalSplitLabel": "Jaa tasan",
+  "exactAmountWithValue": "Tarkka: {value}",
+  "exactAmountsLabel": "Tarkat summat",
+  "exactSplitMustMatchTotal": "Tarkka jakosumman on oltava yhteensä {amount}.",
+  "expenseAdded": "Kulu lisätty.",
+  "expenseBreakdownSubtitle": "Miten kukin kulu vaikuttaa tähän jäseneen.",
+  "expenseBreakdownTitle": "Kulujen erittely",
+  "expenseDeleted": "Kulu poistettu.",
+  "expenseIdDate": "Kulu nro {id}  -  {date}",
+  "expenseImpactLine": "{date}  -  Maksettu {paid}  -  Velkaa {owes}",
+  "expenseReactionsTitle": "Reaktiot",
+  "expenseCommentsTitle": "Kommentit",
+  "expenseNoComments": "Ei vielä kommentteja.",
+  "expenseAddCommentHint": "Lisää kommentti...",
+  "expenseCommentSend": "Lähetä",
+  "expenseDeleteCommentTitle": "Poista kommentti?",
+  "expenseUpdated": "Kulut päivitetty.",
+  "expenseWithId": "Kulu nro {id}",
+  "expensesCount": "{count, plural, one{{count} kulu} other{{count} kulua}}",
+  "expensesLabel": "Kulut",
+  "failedToCreateTrip": "Matkan luominen epäonnistui.",
+  "failedToLoadUsersDirectory": "Käyttäjähakemiston lataaminen epäonnistui.",
+  "filterSettlementByMemberSubtitle": "Suodata maksut jäsenittäin",
+  "finishSoloTripConfirmationText": "Haluatko lopettaa tämän matkan ja siirtää sen arkistoosi? Kulusi pysyvät näkyvissä.",
+  "soloTripArchived": "Matka on päättynyt ja arkistoitu.",
+  "finishTripSyncPending": "Synkronoi odottavat muutokset ennen tämän matkan päättymistä.",
+  "finishTripAction": "Lopeta matka",
+  "finishTripConfirmationText": "Lopetetaanko tämä matka ja aloitetaanko maksujen selvitys?",
+  "finishTripStartSettlementsAction": "Lopeta ja aloita tilitykset",
+  "finishTripTitle": "Lopeta matka",
+  "forParticipants": "Vastaanottajat: {participants}",
+  "forgotPassword": "Unohditko salasanasi?",
+  "profilePasswordByEmail": "Aseta salasana sähköpostitse",
+  "sendDeactivationEmail": "Lähetä deaktivointilinkki",
+  "deactivationEmailSent": "Tarkista sähköpostisi vahvistaaksesi tilin deaktivoinnin. Tilisi on edelleen aktiivinen.",
+  "deactivationConfirmationMethods": "Vahvista deaktivointi salasanallasi tai sähköpostilinkillä. Matkasi ja kulusi säilyvät.",
+  "passwordEmailBackToProfile": "Takaisin profiiliin",
+  "forgotPasswordSubtitle": "Syötä sähköpostiosoitteesi, niin lähetämme sinulle linkin salasanan nollaamiseen.",
+  "forgotPasswordSuccessMessage": "Jos tällä sähköpostiosoitteella on tili, olemme lähettäneet salasanan nollauslinkin.",
+  "forgotPasswordTitle": "Nollaa salasana",
+  "friendsProgressSubtitle": "Jokainen jäsen ja hänen vahvistustilansa.",
+  "friendsProgressTitle": "Ystävien edistyminen",
+  "friendsSectionComingSoon": "Ystävät-osio tulossa pian.",
+  "fromDirection": "Lähettäjä: {name}",
+  "fromToLine": "{from} to {to}",
+  "generateTurnAction": "Arvo seuraava henkilö",
+  "hasAccountQuestion": "Onko sinulla jo tili?",
+  "helloUser": "Hei, {name}!",
+  "iSentAction": "Lähetin",
+  "invalidEmailFormat": "Sähköpostiosoitteen muoto on virheellinen.",
+  "languageAction": "Kieli",
+  "languageEnglish": "Englanti",
+  "languageLatvian": "Latvia",
+  "languageSpanish": "Espanja",
+  "languageSystem": "Järjestelmä",
+  "languageSystemSubtitle": "Käytä laitteen kieltä",
+  "leaveEmptyKeepPasswordHelper": "Jätä kenttä tyhjäksi, jos haluat säilyttää nykyisen salasanan.",
+  "logInButton": "Kirjaudu sisään",
+  "logOutButton": "Kirjaudu ulos",
+  "logoutFromDeviceQuestion": "Kirjaudutko ulos tästä laitteesta?",
+  "logoutRevocationUnconfirmed": "Kirjautuminen tältä laitteelta on päättynyt. Palvelimen istunnon peruuttamista ei voitu vahvistaa.",
+  "markedAsSent": "Merkitty lähetetyksi.",
+  "markSettlementSentConfirmTitle": "Merkitäänkö siirto lähetetyksi?",
+  "markSettlementSentConfirmText": "Käytä tätä vasta, kun olet tosiasiallisesti lähettänyt maksun. Vastaanottajaa pyydetään vahvistamaan se.",
+  "settlementCancelSentAction": "Merkitse lähettämättömäksi",
+  "settlementCancelSentConfirmTitle": "Peruuta lähetetty tila?",
+  "settlementCancelSentConfirmText": "Tämä siirtää siirron takaisin odottavaan tilaan ja ilmoittaa asiasta vastaanottajalle.",
+  "settlementSentCancelled": "Siirto palautettiin odottavaan tilaan.",
+  "settlementNotReceivedAction": "En ole saanut tätä",
+  "settlementNotReceivedConfirmTitle": "Ilmoitetaanko puuttuvasta maksusta?",
+  "settlementNotReceivedConfirmText": "Tämä siirtää siirron takaisin odottavaan tilaan ja ilmoittaa asiasta maksajalle.",
+  "settlementMarkedNotReceived": "Merkitty vastaanottamattomaksi.",
+  "confirmSettlementReceivedConfirmTitle": "Onko vastaanotto vahvistettu?",
+  "confirmSettlementReceivedConfirmText": "Vahvista vasta, kun rahat näkyvät tililläsi. Tämä toiminto saattaa saattaa maksun loppuun.",
+  "memberSummariesSubtitle": "Kummankin osapuolen nykyinen saldotilanne.",
+  "memberSummariesTitle": "Jäsenten yhteenvedot",
+  "memberToPaySummary": "Maksettava summa {total}  -  vahvistettu {confirmed}  -  odottaa {waiting}",
+  "membersImpactSubtitle": "Arvioitu maksun vaikutus jäsentä kohden.",
+  "membersImpactTitle": "Jäsenten vaikutus",
+  "membersIncludedInExpense": "Mukana olevat jäsenet",
+  "membersLabel": "Jäsenet",
+  "moreCount": "+ {count} lisää",
+  "myFilter": "Oma",
+  "myImpactTitle": "Vaikutukseni",
+  "firstNameHint": "Etunimesi",
+  "firstNameLabel": "Etunimi",
+  "firstNameLengthValidation": "Etunimen on oltava 2–64 merkkiä pitkä.",
+  "fullNameHelper": "Käytä etu- ja sukunimeä yhdessä kentässä.",
+  "fullNameHint": "esim. Anna Ozolina",
+  "fullNameLabel": "Koko nimi",
+  "fullNameValidation": "Syötä etu- ja sukunimi (vähintään 2 merkkiä kumpikin).",
+  "lastNameHint": "Sukunimesi",
+  "lastNameLabel": "Sukunimi",
+  "lastNameLengthValidation": "Sukunimen on oltava 2–64 merkkiä pitkä.",
+  "nameHint": "Nimesi",
+  "nameLabel": "Nimi",
+  "nameLengthValidation": "Nimen on oltava vähintään 2 merkkiä pitkä.",
+  "navActivities": "Tilastot",
+  "navAddTrip": "Lisää matka",
+  "navBalances": "Saldot",
+  "navExpenses": "Kulut",
+  "navFriends": "Ystävät",
+  "navHome": "Koti",
+  "navProfile": "Profiili",
+  "navRandom": "Satunnainen",
+  "netLabel": "Nettosaldo",
+  "newPasswordLabel": "Uusi salasana",
+  "nicknameHint": "Miten ystävät näkevät sinut",
+  "nicknameLabel": "Lempinimi",
+  "nicknameLengthValidation": "Lempinimen on oltava vähintään 2 merkkiä pitkä.",
+  "noAccountQuestion": "Eikö sinulla ole vielä tiliä?",
+  "noBalancesYet": "Saldoja ei ole vielä.",
+  "noChangesToSave": "Ei muutoksia tallennettavaksi.",
+  "noDirectExpenseLink": "Suoraa yksittäisen kulun linkkiä ei löytynyt. Tämä maksu lasketaan matkan kokonaissaldosta.",
+  "noExpenseImpactForMember": "Tästä ei aiheudu kustannuksia kyseiselle jäsenelle.",
+  "noExpensesByUserYet": "{name}:lle ei ole vielä kuluja.",
+  "noExpensesYet": "Kuluja ei ole vielä.",
+  "noExtraUsersToAdd": "Lisäkäyttäjiä ei tarvitse lisätä.",
+  "noInternetDeleteQueued": "Ei internetiä. Poista jonosta.",
+  "noInternetExpenseQueued": "Ei internetiä. Kulu jonossa.",
+  "noInternetUpdateQueued": "Ei internet-yhteyttä. Päivitys jonossa.",
+  "noMatchingRows": "Ei vastaavia rivejä.",
+  "noMembersFound": "Jäseniä ei löytynyt.",
+  "noNewMembersAdded": "Nämä henkilöt ovat jo jäseniä tai heillä on odottavia kutsuja.",
+  "noNotePlaceholder": "Ei huomautuksia",
+  "notificationsToday": "Tänään",
+  "notificationsEmptyBody": "Täältä näkyvät päivitykset matkoista, kuluista ja ystävistä.",
+  "notificationsCached": "Offline — tallennettujen ilmoitusten näyttäminen.",
+  "notificationsRefreshFailed": "Päivitystä ei voitu suorittaa. Näytetään aiemmin ladatut ilmoitukset.",
+  "notificationsJustNow": "Juuri nyt",
+  "notificationsMinutesAgo": "{count} min sitten",
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsHoursAgo": "{count} h sitten",
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsUnread": "Lukematon",
+  "noNotificationsYet": "Ilmoituksia ei ole vielä.",
+  "noParticipantData": "Ei osallistujatietoja.",
+  "noParticipantsSelected": "Osallistujia ei ole valittu.",
+  "noPaymentRowsInTrip": "Tällä matkalla ei ole maksurivejä.",
+  "noPaymentsNeeded": "Maksuja ei tarvita.",
+  "noPicksYet": "Ei valintoja vielä.",
+  "noSettlementActivityForMember": "Tälle jäsenelle ei ole maksutapahtumia.",
+  "noSettlementRowsYet": "Maksurivejä ei ole vielä.",
+  "noSettlements": "Ei velkojen tasauksia",
+  "noTransferNeededForFilter": "Valitulle suodattimelle ei tarvita siirtoa.",
+  "noTransferRowsToShow": "Näytettäviä tilisiirtoja ei ole.",
+  "noTripDataLoaded": "Matkan tietoja ei ole ladattu.",
+  "noTripsYet": "Matkanne eivät ole vielä alkaneet.",
+  "noUsersFoundYet": "Käyttäjiä ei vielä löytynyt.",
+  "notSetValue": "Ei määritetty",
+  "notYetConfirmedTitle": "Ei vielä vahvistettu",
+  "noteHint": "Illallinen, taksi, liput...",
+  "noteLabel": "Huomautus",
+  "noteMustBeMaxChars": "Muistiinpanon pituus saa olla enintään {max} merkkiä.",
+  "notificationFallbackTitle": "Ilmoitus",
+  "notificationsTitle": "Ilmoitukset",
+  "notificationFriendInviteTitle": "Kaveripyyntö",
+  "notificationFriendInviteBody": "{name} on lähettänyt sinulle ystäväkutsun.",
+  "notificationFriendInviteBodyGeneric": "Olet saanut ystäväkutsun.",
+  "notificationFriendInviteAcceptedTitle": "Kutsu hyväksytty",
+  "notificationFriendInviteAcceptedBody": "{name} on hyväksynyt ystäväkutsusi.",
+  "notificationFriendInviteAcceptedBodyGeneric": "Ystäväsi kutsu on hyväksytty.",
+  "notificationFriendInviteRejectedTitle": "Kutsu hylätty",
+  "notificationFriendInviteRejectedBody": "{name} on hylännyt ystäväkutsusi.",
+  "notificationFriendInviteRejectedBodyGeneric": "Ystäväsi kutsu hylättiin.",
+  "notificationTripAddedTitle": "Lisätty matkaan",
+  "notificationTripAddedBody": "{name} lisäsi sinut matkalle ”{trip}”.",
+  "notificationTripAddedBodyNoActor": "Sinut on lisätty matkalle ”{trip}”.",
+  "notificationTripAddedBodyGeneric": "Sinut on lisätty matkalle.",
+  "notificationExpenseAddedTitle": "Uusi kulu lisätty",
+  "notificationExpenseAddedBodyWithTrip": "{name} lisäsi {amount}:n suuruisen kulun matkaan ”{trip}”.",
+  "notificationExpenseAddedBodyWithNote": "{name} lisäsi kulun, jonka summa on {amount}: {note}",
+  "notificationExpenseAddedBodyGeneric": "Uusi kulu on lisätty.",
+  "notificationTripFinishedTitle": "Matka päättynyt",
+  "notificationTripFinishedBodySettlementsReady": "{name} on suorittanut matkan ”{trip}”. Maksut ovat valmiina.",
+  "notificationTripFinishedBodyArchived": "{name} on suorittanut matkan ”{trip}”. Matka on arkistoitu.",
+  "notificationTripFinishedBodyNoActor": "”{trip}” on valmis.",
+  "notificationTripFinishedBodyGeneric": "Matkan tila on päivitetty.",
+  "notificationMemberReadyToSettleTitle": "Jäsen merkitty valmiiksi",
+  "notificationMemberReadyToSettleBody": "{name} on valmis osallistumaan matkaan ”{trip}”.",
+  "notificationMemberReadyToSettleBodyNoActor": "Jäsen on valmis osallistumaan matkaan ”{trip}”.",
+  "notificationMemberReadyToSettleBodyGeneric": "Jäsen on valmis suorittamaan maksun.",
+  "notificationTripReadyToSettleTitle": "Kaikki jäsenet ovat valmiina",
+  "notificationTripReadyToSettleBody": "Kaikki jäsenet on merkitty valmiiksi matkassa ”{trip}”. Voit aloittaa maksujen selvityksen.",
+  "notificationTripReadyToSettleBodyGeneric": "Kaikki jäsenet ovat valmiina. Voit aloittaa maksujen käsittelyn.",
+  "notificationSettlementReminderTitle": "Maksumuistutus",
+  "notificationSettlementReminderBodyMarkSent": "{actor} muistutti {target}:ta merkitsemään {amount} lähetetyksi.",
+  "notificationSettlementReminderBodyConfirm": "{actor} muistutti {target}:ta vahvistamaan {amount}:n vastaanottamisen.",
+  "notificationSettlementReminderBodyGeneric": "Olet saanut maksumuistutuksen.",
+  "notificationPaymentReminderTitle": "Maksumuistutus",
+  "notificationPaymentReminderBody": "Muistutus: merkitse {amount} lähetetyksi kohteeseen {target} kohdassa ”{trip}”.",
+  "notificationPaymentReminderBodyGeneric": "Muistutus: merkitse maksu lähetetyksi.",
+  "notificationConfirmationReminderTitle": "Vahvistusmuistutus",
+  "notificationConfirmationReminderBody": "Muistutus: vahvista, että olet vastaanottanut {amount} summan {payer}:ltä matkan ”{trip}” yhteydessä.",
+  "notificationConfirmationReminderBodyGeneric": "Muistutus: vahvista maksun vastaanottaminen.",
+  "notificationSettlementSentTitle": "Tilisiirto merkitty lähetetyksi",
+  "notificationSettlementSentBody": "{name} merkitsi {amount}:n sinulle lähetetyksi.",
+  "notificationSettlementSentBodyGeneric": "Siirto merkittiin lähetetyksi.",
+  "notificationSettlementConfirmedTitle": "Tilisiirto vahvistettu",
+  "notificationSettlementConfirmedBody": "{name} on vahvistanut vastaanottaneensa sinulta {amount}.",
+  "notificationSettlementConfirmedBodyGeneric": "Siirto on vahvistettu.",
+  "offlineQueuePendingChanges": "Offline-jono: {count, plural, one{{count} odottava muutos} other{{count} odottavaa muutosta}}",
+  "syncAllSynced": "Kaikki synkronoitu",
+  "syncChangesWaiting": "{count} odottaa synkronointia",
+  "syncFailedTapToRetry": "Synkronointi epäonnistui, napauta yrittääksesi uudelleen",
+  "offlineQueueStatus": "Offline-jono",
+  "offlineStatus": "Offline",
+  "onlineStatus": "Verkossa",
+  "onlyCreatorCanFinishTrip": "Vain matkan luoja voi päättää matkan.",
+  "openLabel": "Avaa",
+  "openReceiptAction": "Avaa kuitti",
+  "openSettlements": "Avaa velkojen tasaukset",
+  "overviewTitle": "Yleiskatsaus",
+  "owesLabel": "Velkaa",
+  "paidByLabel": "Maksaja",
+  "paidLabel": "Maksettu",
+  "paidOwesLine": "Maksettu {paid}  -  Velkaa {owes}",
+  "participantsEmptyMeansAll": "Osallistujat (tyhjä = kaikki jäsenet)",
+  "participantsTitle": "Osallistujat",
+  "passwordLabel": "Salasana",
+  "passwordComplexityHelper": "Käytä vähintään yhtä isoa kirjainta, yhtä numeroa ja yhtä symbolia.",
+  "passwordComplexityValidation": "Salasanan on sisällettävä 1 iso kirjain, 1 numero ja 1 erikoismerkki.",
+  "passwordMinLength": "Salasanan on oltava vähintään 8 merkkiä pitkä.",
+  "passwordMinLengthShort": "Salasanan on oltava vähintään 6 merkkiä pitkä.",
+  "passwordResetComingSoon": "Salasanan nollaus tulossa pian.",
+  "passwordsDoNotMatch": "Salasanat eivät täsmää.",
+  "payerName": "{name} (maksaja)",
+  "pendingLabel": "Odottaa",
+  "pendingPaymentsSubtitle": "Maksut odottavat edelleen lopullista vahvistusta.",
+  "percentLabel": "Prosentti",
+  "percentSplitMustBe100": "Jakosuhteiden summan on oltava tarkalleen 100 %.",
+  "percentWithValue": "{value}",
+  "percentagesLabel": "Prosenttiosuudet",
+  "pickAtLeastOneParticipant": "Valitse vähintään yksi osallistuja.",
+  "pickMembersGenerateTurn": "Valitse osallistujat ja arvo seuraava henkilö.",
+  "pickedCycleCompleted": "{name} valittu. Sykli valmis.",
+  "pickedUser": "{name} valittu.",
+  "profileRefreshCachedData": "Profiilia ei voitu päivittää. Näytetään välimuistissa olevia tietoja.",
+  "profileTitle": "Profiili",
+  "profileUpdated": "Profiili päivitetty.",
+  "uploadAvatarAction": "Lataa avatar",
+  "takePhotoAction": "Ota kuva",
+  "chooseFromLibraryAction": "Valitse kirjastosta",
+  "removeAvatarAction": "Poista avatar",
+  "avatarUpdatedMessage": "Avatar päivitetty.",
+  "avatarRemovedMessage": "Avatar poistettu.",
+  "avatarFileTooLarge": "Avatar-tiedosto on liian suuri (enintään 5 Mt).",
+  "avatarPickFailed": "Avatar-kuvaa ei voitu ladata.",
+  "queueAddExpense": "Lisää kulu",
+  "queueAddExpenseAmount": "Jonossa: lisää kulu {amount}",
+  "queueDeleteExpense": "Poista kulu",
+  "queueDeleteExpenseWithId": "Jonossa: poista kulu #{id}",
+  "queuePendingStatus": "Jono odottaa",
+  "queueUpdateExpense": "Päivitä kulut",
+  "queueUpdateExpenseWithId": "Jonossa: päivitä kulu #{id}",
+  "queuedChange": "Jonossa oleva muutos",
+  "queuedChangesTitle": "Jonossa olevat muutokset ({count})",
+  "queuedCountLabel": "Jonossa ({count})",
+  "randomCycleDrawLeft": "Sykli {cycleNo}, piirrä {drawNo} – jäljellä {remaining}",
+  "receiptFallbackName": "kuitti",
+  "receiptLinkInvalid": "Kuitilinkki on virheellinen.",
+  "receiptOptionalLabel": "Kuitti (valinnainen)",
+  "recentPicksTitle": "Viimeisimmät arvonnat",
+  "reloadProfile": "Päivitä profiili",
+  "rememberMe": "Muista minut",
+  "removeCurrentReceipt": "Poista nykyinen kuitti",
+  "repeatNewPasswordLabel": "Toista uusi salasana",
+  "repeatPasswordLabel": "Toista salasana",
+  "requestFailedTryAgain": "Pyyntö epäonnistui. Yritä uudelleen.",
+  "retryAction": "Yritä uudelleen",
+  "rowsLabel": "Rivit",
+  "backToLoginAction": "Takaisin kirjautumissivulle",
+  "saveAction": "Tallenna",
+  "saveCredentialsButton": "Tallenna tunnistetiedot",
+  "saveProfileButton": "Tallenna profiili",
+  "sendResetLinkButton": "Lähetä nollauslinkki",
+  "searchUsersHint": "Hae henkilöitä nimen tai sähköpostiosoitteen perusteella",
+  "selectedPeopleLabel": "Valitut henkilöt",
+  "noSearchMatches": "Vastaavia käyttäjiä ei löytynyt.",
+  "savingButton": "Tallennetaan...",
+  "selectAtLeastTwoMembers": "Valitse vähintään kaksi jäsentä.",
+  "selectMembersHint": "Valitse jäsenet",
+  "selectedFileLabel": "Valittu: {name}",
+  "selectedLabel": "Valittu",
+  "selectedUserFallback": "Valittu käyttäjä",
+  "settings": "Asetukset",
+  "settleUpAction": "Tasaa velat",
+  "settledLabel": "Tasattu",
+  "settledStatus": "Tasattu",
+  "settlementActivitySubtitle": "Tähän jäseneen liittyvät siirrot.",
+  "settlementActivityTitle": "Maksujen käsittely",
+  "settlementCompletedTitle": "Maksu suoritettu",
+  "settlementConfirmedProgress": "{confirmed} / {total} vahvistettu",
+  "settlementCountLabel": "Velkojen tasaukset: {count}",
+  "settlementImpactTitle": "Vaikutus maksuliikenteeseen",
+  "settlementImpactWithFilter": "Vaikutus sovitteluun: {name}",
+  "settlementInProgress": "Maksun käsittely käynnissä",
+  "settlementInProgressTitle": "Maksun käsittely käynnissä",
+  "settlementLabel": "Velkojen tasaus",
+  "settlementOverviewArchivedSubtitle": "Matka on arkistoitu. Kaikki maksut on suoritettu.",
+  "settlementOverviewInProgressSubtitle": "Seuraa maksuvahvistuksia.",
+  "settlementOverviewPreviewSubtitle": "Esikatsele siirrot matkan päättymistä varten.",
+  "settlementPreview": "Maksun ennakkonäkymä",
+  "settlementPreviewTitle": "Maksun ennakkonäkymä",
+  "settlementProgressTripArchived": "Matka arkistoitu",
+  "settlementWithId": "Maksutapahtuma nro {id}",
+  "settlements": "Velkojen tasaukset",
+  "settlementsAlreadyCompletedSubtitle": "Maksut on jo suoritettu.",
+  "settlementsDone": "Maksut suoritettu",
+  "settlingStatus": "Maksujen selvittäminen",
+  "shareUnit": "osuus",
+  "sharesLabel": "Osuudet",
+  "sharesMustBePositiveIntegers": "Osuuksien määrän on oltava positiivinen kokonaisluku.",
+  "sharesWithValue": "Osuudet: {value}",
+  "showActiveTrips": "Näytä aktiiviset matkat",
+  "signUpButton": "Rekisteröidy",
+  "splitBreakdownSubtitle": "Kulujen jakautuminen",
+  "splitBreakdownTitle": "Jakautumisen erittely",
+  "splitHintEqual": "Jaa summa tasan valittujen osallistujien kesken.",
+  "splitHintExact": "Syötä jokaiselle osallistujalle tarkka summa. Summan on vastattava kokonaissummaa.",
+  "splitHintPercent": "Syötä prosenttiosuus jokaiselle osallistujalle. Summan on oltava 100 %.",
+  "splitHintShares": "Syötä jakoyksiköt (1, 2, 3...). Kustannukset jaetaan suhteellisesti.",
+  "splitLabel": "Jaa",
+  "splitLabelValue": "Split: {value}",
+  "splitModeEqual": "Tasa-arvoinen jako ({target})",
+  "splitModeExact": "Tarkat summat ({target})",
+  "splitModeLabel": "Jaettu tila",
+  "splitModePercent": "Prosenttiosuudet ({target})",
+  "splitModeShares": "Osuudet ({target})",
+  "statusConfirmed": "Vahvistettu",
+  "statusPending": "Odottaa",
+  "statusSent": "Lähetetty",
+  "statusSuggested": "Ehdotettu",
+  "statusWithValue": "Tila: {status}",
+  "suggestedTransferDirections": "Ehdotetut maksusuunnat",
+  "suggestedTransferFromExpense": "Ehdotettu siirto kuluista",
+  "suggestedTransferRows": "{count, plural, one{{count} ehdotettu tilisiirto} other{{count} ehdotettua tilisiirtoa}}",
+  "suggestedTransfersSubtitle": "Odotetut maksaja- ja vastaanottajarivit.",
+  "suggestedTransfersTitle": "Ehdotetut siirrot",
+  "summarySettledUp": "Tasattu",
+  "summaryYouAreOwed": "Muut ovat sinulle velkaa",
+  "summaryYouOwe": "Olet velkaa",
+  "syncAction": "Synkronointi",
+  "syncNowAction": "Synkronoi nyt",
+  "syncingStatus": "Synkronointi",
+  "tapToViewDetails": "Napauta nähdäksesi yksityiskohdat",
+  "themeModeDark": "Tumma",
+  "themeModeDarkSubtitle": "Pehmeä tumma (ei puhdasta mustaa)",
+  "themeModeLight": "Vaalea",
+  "themeModeSystem": "Järjestelmä",
+  "themeModeSystemSubtitle": "Käytä laitteen ulkoasua",
+  "toDirection": "{name}:lle",
+  "totalLabel": "Yhteensä",
+  "travelerFallbackName": "Matkustaja",
+  "tripAlreadyClosed": "Matka on jo päättynyt.",
+  "tripArchivedReadOnly": "Matka arkistoidaan. Vain luku -tila.",
+  "tripClosedExpenseEditingDisabled": "Matka on päättynyt. Kulujen muokkaus on poistettu käytöstä.",
+  "tripClosedExpensesReadOnly": "Matka on päättynyt. Kulut ovat vain luku -tilassa.",
+  "tripClosedRandomDisabled": "Matka on päättynyt. Satunnaisarvonta on pois käytöstä.",
+  "tripCreated": "Matka ”{name}” luotu.",
+  "tripFinished": "Matka on päättynyt.",
+  "tripFinishedCompleteSettlements": "Matka on päättynyt. Hoida maksut.",
+  "tripFinishedSettlementStarted": "Matka on päättynyt. Velkojen tasaus on alkanut.",
+  "tripFullySettledArchived": "Matka on kokonaan maksettu ja arkistoitu.",
+  "tripNameHint": "Hiihtomatka Itävaltaan",
+  "tripNameLabel": "Matkan nimi",
+  "tripNameLengthValidation": "Matkan nimen on oltava vähintään 2 merkkiä pitkä.",
+  "tripSnapshotTitle": "Matkan tilannekatsaus",
+  "tripTitleShort": "Matka",
+  "tripStatusWithValue": "Matkan tila: {status}",
+  "tripWithId": "Matka nro {id}",
+  "unexpectedErrorLoadingProfile": "Odottamaton virhe profiilin lataamisessa",
+  "unexpectedErrorLoadingTripData": "Odottamaton virhe matkatietojen lataamisessa",
+  "unexpectedErrorLoadingTrips": "Odottamaton virhe matkojen lataamisessa",
+  "unexpectedErrorSavingChanges": "Odottamaton virhe muutosten tallennuksessa",
+  "unexpectedErrorSavingCredentials": "Odottamaton virhe tunnistetietojen tallennuksessa",
+  "unexpectedErrorUpdatingProfile": "Odottamaton virhe profiilin päivittämisessä",
+  "unknownError": "Tuntematon virhe",
+  "unknownLabel": "Tuntematon",
+  "unreadLabel": "Lukematon",
+  "unreadUpdates": "{count, plural, one{{count} lukematon päivitys} other{{count} lukematonta päivitystä}}",
+  "missingTripRouteArgument": "Matkan reittiparametri puuttuu.",
+  "userIdLabel": "Käyttäjätunnus: {id}",
+  "userPaidOwesNetLine": "Maksettu {paid}  -  Velkaa {owes}  -  Netto {net}",
+  "userWithId": "Käyttäjä {id}",
+  "valueLabel": "Arvo",
+  "viewAllTrips": "Näytä kaikki matkat",
+  "viewByPersonTitle": "Näytä henkilön mukaan",
+  "whoOwesWhatSubtitle": "Kuka maksoi ja kuka on velkaa.",
+  "whoOwesWhatTitle": "Kuka on velkaa mitäkin",
+  "whoOwesWhatWithFilter": "Kuka on velkaa mitäkin: {name}",
+  "whyPaymentExistsSubtitle": "Tähän siirtoon vaikuttavat kulurivit.",
+  "whyPaymentExistsTitle": "Miksi tämä maksu on olemassa",
+  "youLabel": "Sinä",
+  "youSettledForExpense": "Olet maksanut osuutesi tästä kulusta.",
+  "youShouldPay": "Sinun pitäisi maksaa. {amount}",
+  "youShouldReceive": "Sinun tulee saada {amount}",
+  "yourShare": "Oma osuus",
+  "yourTrips": "Matkanne",
+  "authIntroSplitSmarter": "Jaa älykkäämmin.",
+  "authIntroTravelFree": "Matkusta vapaasti.",
+  "authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo": "Seuraa jaettavia kustannuksia eri valuutoissa ja selvitä tilit välittömästi – ilman hankalia velkakirjoja.",
+  "authIntroPlanTogether": "Suunnittele yhdessä.",
+  "authIntroPayClearly": "Maksaminen on tehtävä selkeästi.",
+  "authIntroCreateTripsSecondsAddFriendsKeepEveryExpense": "Luo matkoja sekunneissa, lisää ystäviä ja pidä kaikki kulut läpinäkyvinä kaikille.",
+  "authIntroSettleFast": "Hoida asia nopeasti.",
+  "authIntroStayFriends": "Pysytään ystävinä.",
+  "authIntroFromSharedDinnersFullTripsSplytoKeepsBalances": "Yhteisistä illallisista kokonaisiin matkoihin – Splyto pitää tilit tasapainossa ja huolehtii stressittömästä kokemuksesta.",
+  "authIntroAppleSignFailedPleaseTryAgain": "Apple-kirjautuminen epäonnistui. Yritä uudelleen.",
+  "authIntroGoogleSignFailedPleaseTryAgain": "Google-kirjautuminen epäonnistui. Yritä uudelleen.",
+  "authIntroCreateAccount": "Luo tili.",
+  "authIntroChooseSign": "Valitse, miten haluat rekisteröityä.",
+  "authIntroContinueGoogle": "Jatka Googlen avulla",
+  "authIntroContinueApple": "Jatka Apple-palvelussa",
+  "authIntroBack": "Takaisin",
+  "authIntroSplitSettled": "Jako vahvistettu",
+  "authIntroParis3Friends": "Pariisi · 3 ystävää",
+  "authIntroGetStarted": "Aloita",
+  "authIntroAlreadyHaveAccount": "Onko sinulla jo tili? ",
+  "authIntroSignIn": "Kirjaudu sisään",
+  "authIntroSignUpWithEmail": "Rekisteröidy sähköpostilla",
+  "authIntroOr": "TAI",
+  "authGoogleSignDidNotReturnIdToken": "Google-kirjautuminen ei palauttanut tunnistetunnusta.",
+  "authAppleSignAvailableIosDevices": "Apple-kirjautuminen on käytettävissä iOS-laitteilla.",
+  "authAppleSignNotAvailableDevice": "Apple-kirjautuminen ei ole käytettävissä tällä laitteella.",
+  "authAppleSignDidNotReturnIdentityToken": "Apple-kirjautuminen ei palauttanut tunnistustunnusta.",
+  "authAccountDeactivatedEnterEmailRequestReactivationLink": "Tili on deaktivoitu. Syötä sähköpostiosoitteesi pyytääksesi uudelleenaktivointilinkin.",
+  "authAccountDeactivated": "Tili on deaktivoitu",
+  "authSendReactivationLinkEmail": "Lähetetäänkö uudelleenaktivointilinkki osoitteeseen {email}?",
+  "authCancel": "Peruuta",
+  "authSendLink": "Lähetä linkki",
+  "authReactivationLinkSentCheckEmail": "Uudelleenkäynnistyslinkki on lähetetty. Tarkista sähköpostisi.",
+  "authCouldNotSendReactivationLinkPleaseTryAgain": "Uudelleenkäynnistyslinkkiä ei voitu lähettää. Yritä uudelleen.",
+  "authEmailNotVerifiedEnterEmailRequestVerificationLink": "Sähköpostiosoitetta ei ole vahvistettu. Syötä sähköpostiosoitteesi pyytääksesi vahvistuslinkin.",
+  "authEmailNotVerified": "Sähköpostiosoitetta ei ole vahvistettu",
+  "authSendVerificationLinkEmail": "Lähetetäänkö vahvistuslinkki osoitteeseen {email}?",
+  "authVerificationLinkSentCheckEmail": "Vahvistuslinkki on lähetetty. Tarkista sähköpostisi.",
+  "authCouldNotSendVerificationLinkPleaseTryAgain": "Vahvistuslinkkiä ei voitu lähettää. Yritä uudelleen.",
+  "authVerificationEmailSentPleaseVerifyEmailBeforeLogging": "Vahvistussähköposti on lähetetty. Vahvista sähköpostiosoitteesi ennen kirjautumista.",
+  "authVerifyEmail": "Vahvista sähköpostiosoitteesi",
+  "authEmailLabel": "Sähköposti:",
+  "authClose": "Sulje",
+  "authResendLink": "Lähetä linkki uudelleen",
+  "profileAppSettingsSectionTitle": "SOVELLUKSEN ASETUKSET",
+  "profileAccountSettings": "Tilin asetukset",
+  "profileChangePhoto": "Vaihda profiilikuva",
+  "profileAppearance": "Ulkoasu",
+  "profileThemeDisplayMode": "Teema ja näyttötila",
+  "profileLanguage": "Kieli",
+  "profileDisplayLanguage": "Näytön kieli",
+  "profileNotificationsSectionHeading": "ILMOITUKSET",
+  "profileAppBanners": "Sovelluksen sisäiset bannerit",
+  "profileShowNewNotificationBannersInsideApp": "Näytä uudet ilmoitusbannerit sovelluksen sisällä",
+  "profilePushNotificationsTitle": "Push-ilmoitukset",
+  "profilePhoneNotificationsExpensesFriendsTripsSettlements": "Puhelimen ilmoitukset kuluista, ystävistä, matkoista ja tilityksistä",
+  "profileSupportSectionHeading": "TUKI",
+  "profileContactUs": "Ota yhteyttä",
+  "profileReportBugSuggestion": "Ilmoita virheestä / Ehdotus",
+  "profileRateSplyto": "Arvostele Splyto",
+  "profileLeaveStoreRating": "Jätä arvostelu kaupasta",
+  "profileSecuritySectionHeading": "TURVALLISUUS",
+  "profileChangePassword": "Vaihda salasana",
+  "profileUpdateAccountPassword": "Päivitä tilin salasana",
+  "profileDangerZoneSectionHeading": "VAARALUOKKA",
+  "profileDeactivateAccount": "Poista tili käytöstä",
+  "profileManageAccountAccess": "Hallitse tilin käyttöoikeuksia",
+  "profileMadeWithLabel": "Toteutettu",
+  "profileStoreRatingActionWillConnectedNextStep": "Arvostelutoiminto liitetään mukaan seuraavassa vaiheessa.",
+  "profileFailedSaveNotificationSettings": "Ilmoitusasetusten tallentaminen epäonnistui.",
+  "profilePushNotificationsSectionTitle": "PUSH-ILMOITUKSET",
+  "profileInAppBannersSectionTitle": "SOVELLUKSEN SISÄISET BANNERIT",
+  "profileInAppTripMemberAddedTitle": "Jäsen lisätty matkalle",
+  "profileInAppAutoSettlementReminderTitle": "Automaattinen maksumuistutus",
+  "profileExpenseUpdates": "Kulujen päivitykset",
+  "profileExpenseAddedBannersInsideApp": "Sovelluksen sisällä näkyvät kulujen lisäysbannerit",
+  "profileExpenseAddedNotificationsPhone": "Kulujen lisäysilmoitukset puhelimeen",
+  "profileFriendInvites": "Ystävä kutsuu",
+  "profileFriendInvitesBannersInsideApp": "Ystäväpyyntö- ja vastausbannerit sovelluksen sisällä",
+  "profileFriendRequestResponseNotifications": "Ystäväpyyntö- ja vastausilmoitukset",
+  "profileTripUpdates": "Matkan päivitykset",
+  "profileTripUpdatesBannersInsideApp": "Matkan elinkaaren ja jäsenten tilan bannerit sovelluksen sisällä",
+  "profileTripLifecycleMemberStatusChanges": "Matkan elinkaari ja jäsenen tilan muutokset",
+  "profileSettlementUpdates": "Maksujen käsittelyn päivitykset",
+  "profileSettlementUpdatesBannersInsideApp": "Sovelluksen sisällä näkyvät lähetetyt ja vahvistetut maksubannerit",
+  "profileMarkedSentConfirmedPaymentUpdates": "Merkitty lähetetyiksi ja vahvistetuiksi maksupäivitykset",
+  "profileScreenshotSizeMust8Mb": "Kuvakaappauksen koon on oltava enintään 8 Mt",
+  "profileFeedbackSendTitle": "Lähetä palautetta",
+  "profileFeedbackTypeLabel": "Kirjoita",
+  "profileFeedbackTypeBug": "Virhe",
+  "profileFeedbackTypeSuggestion": "Ehdotus",
+  "profileDescribeIssueSuggestion": "Kuvaile ongelma tai ehdotus",
+  "profilePickingImage": "Valitaan kuvaa...",
+  "profileAttachScreenshot": "Liitä kuvakaappaus",
+  "profileChangeScreenshot": "Vaihda kuvakaappaus",
+  "profileRemoveImage": "Poista kuva",
+  "profileTipAttachScreenshotFasterBugTriage": "Vinkki: liitä kuvakaappaus, jotta virheiden luokittelu sujuu nopeammin",
+  "profileAddDetailsAttachScreenshotBeforeSending": "Lisää yksityiskohdat tai liitä kuvakaappaus ennen lähettämistä",
+  "profileSendAction": "Lähetä",
+  "profileThanksFeedbackSent": "Kiitos! Palaute lähetetty",
+  "profileFailedSendFeedback": "Palautteen lähettäminen epäonnistui",
+  "profileCouldNotOpenWebsite": "Verkkosivustoa ei voitu avata.",
+  "profileOpenWebsiteQuestion": "Avaa verkkosivusto?",
+  "profileOpenPortfolioAction": "Avaa portfolio.egm.lv",
+  "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Tätä kuvamuotoa ei tueta tällä laitteella. Valitse JPG tai PNG.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "Salasanan vaihtamiseen tarvitaan voimassa oleva tilin sähköpostiosoite. Ota yhteyttä tukeen, jos sähköpostiosoitteesi puuttuu tai on virheellinen.",
+  "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Tili on deaktivoitu. Palauta käyttöoikeus sähköpostissa olevan uudelleenaktivointilinkin avulla.",
+  "profileEditCouldNotDeactivateTryAgain": "Tiliä ei voitu poistaa käytöstä. Yritä uudelleen.",
+  "profileEditDeletionLinkSentEmail": "Poistolinkki on lähetetty sähköpostiisi.",
+  "profileEditCouldNotSendDeletionLinkTryAgain": "Poistolinkkiä ei voitu lähettää. Yritä uudelleen.",
+  "profileEditEnterCurrentPasswordChangeEmail": "Syötä nykyinen salasana, jos haluat muuttaa sähköpostiosoitetta.",
+  "profileEditVerificationWasSentNewEmailSecurityNoticeWas": "Vahvistus on lähetetty uuteen sähköpostiosoitteeseen. Turvallisuusilmoitus on lähetetty nykyiseen sähköpostiosoitteeseesi.",
+  "profileEditCouldNotStartEmailChangeRightNowTry": "Sähköpostiosoitteen muutosta ei voitu aloittaa juuri nyt. Yritä uudelleen.",
+  "profileEditOverviewCurrency": "Yleiskatsaus valuutasta",
+  "profileEditPaymentMethod": "Maksutapa",
+  "profileEditBankTransferRevolutPaypalMe": "Pankkisiirto, Revolut, PayPal.me",
+  "profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword": "Voit poistaa tilin käytöstä tai pyytää sähköpostilinkin tilin pysyvää poistamista varten. Salasana on valinnainen Google- ja Apple-tileillä.",
+  "profileEditEnterPasswordOptionalGoogleApple": "Syötä salasanasi (valinnainen Google/Apple)",
+  "profileEditSendDeletionLinkEmail": "Lähetä poistolinkki sähköpostitse",
+  "profileEditBackProfile": "Takaisin profiiliin",
+  "profileEditSetValidEmailProfileChangingPassword": "Määritä profiiliin voimassa oleva sähköpostiosoite ennen salasanan vaihtamista.",
+  "profileEditPasswordUpdated": "Salasana päivitetty.",
+  "profileEditFailedUpdatePassword": "Salasanan päivitys epäonnistui.",
+  "profileEditEmail": "Tili: {email}",
+  "profileEditPrimary": "Ensisijainen",
+  "profileEditSearchCurrency": "Hae valuutta",
+  "profileEditNoCurrenciesFound": "Valuuttoja ei löytynyt",
+  "profileEditOverviewTotalsConvertedCurrency": "Yhteenvetoluvut muunnetaan tähän valuuttaan.",
+  "profileEditPaymentInfoUpdated": "Maksutiedot päivitetty.",
+  "profileEditCouldNotSavePaymentInfoTryAgain": "Maksutietoja ei voitu tallentaa. Yritä uudelleen.",
+  "profileEditCurrentPassword": "Nykyinen salasana",
+  "profileEditBankTransferIbanSwift": "Pankkisiirto (IBAN / SWIFT)",
+  "profileEditIbanSwift": "IBAN + SWIFT",
+  "profileEditRevtagRevolutMe": "Revtag / revolut.me",
+  "profileEditPaypalMeLink": "paypal.me-linkki",
+  "profileEditChoosePaymentMethod": "Valitse maksutapa",
+  "profileEditTapChange": "Napauta muuttaaksesi",
+  "profileEditUkTransfersSortCode6DigitsNumber8": "Yhdistyneessä kuningaskunnassa suoritettavissa tilisiirroissa pankkitunnuksen on oltava 6-numeroinen ja tilinumero 8-numeroinen.",
+  "profileEditPaymentInfo": "Maksutiedot",
+  "profileEditSaveDetails": "Tallenna tiedot",
+  "profileEditBankRegion": "Pankkialue",
+  "profileEditEurope": "Eurooppa",
+  "profileEditSortCode": "Pankkitunnus",
+  "profileEditExample112233": "Esimerkki: 112233",
+  "profileEditNumber": "Tilinumero",
+  "profileEdit8Digits": "8 numeroa",
+  "profileEditUkDomesticTransfersSortCodeNumber": "Yhdistyneen kuningaskunnan kotimaisissa tilisiirroissa käytä pankkitunnusta (sort code) ja tilinumeroa.",
+  "profileEditExampleLv80bank0000435195001": "Esimerkki: LV80BANK0000435195001",
+  "profileEdit811Chars": "8 tai 11 merkkiä",
+  "profileEditHolderNameTakenProfileFullName": "Tilin haltijan nimi otetaan profiilin täydestä nimestä.",
+  "profileEditRevolutMeUsername": "revolut.me/username",
+  "profileEditRevtag": "Revtag",
+  "profileEditUsername": "@username",
+  "profileEditPaypalMeUsernameUsername": "paypal.me/username tai käyttäjätunnus",
+  "profileEditRevolut": "Revolut",
+  "profileEditPaypalMe": "PayPal.me",
+  "profileEditWise": "Wise",
+  "profileEditWisePayUsername": "wise.com/pay/me/username",
+  "profileEditUk": "Iso-Britannia",
+  "profileEditIbanLabel": "IBAN",
+  "profileEditBicSwiftLabel": "BIC / SWIFT",
+  "profileEditRevolutMe": "Revolut.me",
+  "imageCropperAdjustAvatar": "Muokkaa avataria",
+  "imageCropperAdjustTripImage": "Mukauta matkan kuvaa",
+  "copyAction": "Kopioi",
+  "currencyNameEur": "Euro",
+  "currencyNameGbp": "Ison-Britannian punta",
+  "currencyNameChf": "Sveitsin frangi",
+  "currencyNameNok": "Norjan kruunu",
+  "currencyNameSek": "Ruotsin kruunu",
+  "currencyNameDkk": "Tanskan kruunu",
+  "currencyNamePln": "Puolan zloty",
+  "currencyNameCzk": "Tšekin kruunu",
+  "currencyNameHuf": "Unkarin forintti",
+  "currencyNameRon": "Romanian leu",
+  "currencyNameBgn": "Bulgarian levi",
+  "currencyNameIsk": "Islantilainen kruunu",
+  "currencyNameAll": "Albanian lek",
+  "currencyNameBam": "Bosnia ja Hertsegovina Mark",
+  "currencyNameByn": "Valkovenäjän rupla",
+  "currencyNameMdl": "Moldovan leu",
+  "currencyNameMkd": "Makedonian denar",
+  "currencyNameRsd": "Serbian dinaari",
+  "currencyNameUah": "Ukrainan hryvnia",
+  "currencyNameGel": "Georgian lari",
+  "currencyNameTry": "Turkin liira",
+  "currencyNameUsd": "Yhdysvaltain dollari",
+  "currencyNameJpy": "Japanin jeni",
+  "currencyNameCny": "Kiinan juan",
+  "currencyNameCad": "Kanadan dollari",
+  "currencyNameAud": "Australian dollari",
+  "expenseCategoryFood": "Ruoka",
+  "expenseCategoryGroceries": "Ruokaostokset",
+  "expenseCategoryFuel": "Polttoaine",
+  "expenseCategoryTransport": "Liikenne",
+  "expenseCategoryAccommodation": "Majoitus",
+  "expenseCategoryActivities": "Aktiviteetit",
+  "expenseCategoryTickets": "Liput",
+  "expenseCategoryShopping": "Ostokset",
+  "expenseCategoryParty": "Juhlat",
+  "expenseCategoryParking": "Pysäköinti",
+  "expenseCategoryOther": "Muu",
+  "shellTripAlreadyInListOpened": "Matka on jo luettelossasi. Avasimme sen sinulle.",
+  "shellJoinedTripFromInviteLink": "Liityin matkaan kutsulinkin kautta.",
+  "shellFailedToOpenInviteLink": "Kutsulinkin avaaminen epäonnistui.",
+  "shellFailedToOpenFriendLink": "Ystävälinkin avaaminen epäonnistui.",
+  "shellTripInviteTitle": "Matkakutsu",
+  "shellNoAction": "Ei",
+  "shellYesAction": "Kyllä",
+  "shellOnlyTripCreatorCanDelete": "Vain matkan luoja voi poistaa tämän matkan.",
+  "shellOnlyActiveTripsCanDelete": "Vain aktiiviset matkat voidaan poistaa.",
+  "shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded": "Poistaako ”{tripLabel}”? Tämä on sallittua vain ennen kuin kuluja on lisätty.",
+  "shellTripDeleted": "Matka on poistettu.",
+  "shellFailedToDeleteTrip": "Matkan poistaminen epäonnistui.",
+  "shellFailedToLoadNotifications": "Ilmoitusten lataaminen epäonnistui.",
+  "shellNewNotificationTitle": "Uusi ilmoitus: {title}",
+  "shellFailedToUpdateNotifications": "Ilmoitusten päivittäminen epäonnistui.",
+  "shellMarkAllAsReadAction": "Merkitse kaikki luetuiksi",
+  "shellNewSection": "Uusi",
+  "shellEarlierSection": "Aiemmin",
+  "shellShowMoreEarlierAction": "Näytä lisää aikaisempia",
+  "shellLoadingMore": "Ladataan lisää...",
+  "shellLoadMoreNotificationsAction": "Lataa lisää ilmoituksia",
+  "shellTripNoLongerAvailable": "Tämä matka ei ole enää saatavilla.",
+  "shellFailedToOpenTrip": "Matkan avaaminen epäonnistui.",
+  "shellYesterday": "Eilen",
+  "shellInviteAlreadyMemberOpenTripNow": "Olet jo jäsenenä matkalla ”{tripName}”. Haluatko avata tämän matkan nyt?\n\nKutsunut: {inviterName}",
+  "shellInviteJoinTripQuestion": "Haluatko liittyä matkaan ”{tripName}”?\n\nKutsunut: {inviterName}",
+  "tripsSelectedImage": "Valittu kuva: {arg1}",
+  "tripsTripImageAlreadySet": "Matkan kuva on jo asetettu.",
+  "tripsTripCreatedButImageUploadFailed": "Matka luotu, mutta kuvan lataus epäonnistui.",
+  "tripsTripCreatedButImageUploadFailedWithReason": "Matka luotu, mutta kuvan lataus epäonnistui: {arg1}",
+  "@tripsTripCreatedButImageUploadFailedWithReason": {
+    "placeholders": {
+      "arg1": {}
+    }
+  },
+  "tripsJoinTripViaInvite": "Liity matkalle kutsun kautta",
+  "tripsTotalTrips": "Matkien kokonaismäärä",
+  "tripsTotalSpent": "Kokonaiskulut",
+  "tripsMixedCurrencies": "Eri valuutat",
+  "tripsShowActive": "Näytä aktiiviset",
+  "tripsSeeAll": "Katso kaikki",
+  "tripsGridView": "Ruudukkonäkymä",
+  "tripsListView": "Luettelonäkymä",
+  "tripsAddNewTrip": "Lisää uusi matka",
+  "tripsLoadMore": "Lataa lisää",
+  "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "Poistaako ”{arg1}”? Tämä on sallittua vain ennen kuin kuluja on lisätty.",
+  "tripsTripDates": "Matkan päivämäärät",
+  "tripsFrom": "Lähde:",
+  "tripsSelectDate": "Valitse päivämäärä",
+  "tripsTo": "To",
+  "tripsMainCurrency": "Päävaluutta",
+  "tripsPleaseSelectTripPeriodFromAndToDates": "Valitse matkan ajankohta (alkamis- ja päättymispäivämäärät).",
+  "tripsTripEndDateMustBeOnOrAfterStartDate": "Matkan päättymispäivän on oltava alkamispäivänä tai sen jälkeen.",
+  "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "Matkan keston muoto on virheellinen. Valitse päivämäärät uudelleen.",
+  "tripsYouAreAlreadyAMemberOfThisTrip": "Olet jo tämän matkan jäsen.",
+  "tripsJoinedTripSuccessfully": "Liityit matkaan onnistuneesti.",
+  "tripsFailedToJoinTripFromInvite": "Matkan liittymistä kutsusta ei onnistunut.",
+  "tripsJoinTrip": "Liity matkalle",
+  "tripsPasteInviteLinkOrInviteToken": "Liitä kutsulinkki tai kutsutunnus.",
+  "tripsHttpsInviteNorthSeaAbc123def4": "https://.../?invite=north-sea-abc123def4",
+  "tripsEnterAValidInviteLinkOrToken": "Syötä kelvollinen kutsulinkki tai tunnus.",
+  "tripsClipboardIsEmpty": "Leikepöytä on tyhjä.",
+  "tripsPaste": "Liitä",
+  "tripsJoin": "Liity mukaan",
+  "workspaceTripMembers": "Matkan osallistujat",
+  "workspaceFailedToLoadFriends": "Ystävien lataaminen epäonnistui.",
+  "workspaceFailedToGenerateInviteLink": "Kutsulinkin luominen epäonnistui.",
+  "workspaceInviteLink": "Kutsulinkki",
+  "workspaceGeneratingInviteLink": "Kutsulinkkiä luodaan...",
+  "workspaceInviteLinkUnavailable": "Kutsulinkki ei ole käytettävissä.",
+  "workspaceCopyInviteLink": "Kopioi kutsulinkki",
+  "workspaceInviteLinkCopied": "Kutsulinkki kopioitu.",
+  "workspaceExpiresUtc": "Vanhenee: {arg1} UTC",
+  "workspaceNoFriendsAvailableAddFriendsFirst": "Ystäviä ei ole saatavilla. Lisää ensin ystäviä.",
+  "workspaceSettle": "Selvitä",
+  "workspaceOwesToTheGroup": "Velka ryhmälle",
+  "workspaceGetsBackFromGroup": "Saa rahaa takaisin ryhmältä",
+  "workspaceShowingTop4ByBalanceDifference": "Näytetään 4 parasta saldon eron mukaan.",
+  "workspaceOpenFlow": "Yksityiskohdat",
+  "workspaceFriend": "Ystävä",
+  "workspaceSettlementTransfer": "Maksun siirto",
+  "workspaceCompleted": "Valmis",
+  "workspaceWaitingForConfirmation": "Odotetaan vahvistusta",
+  "workspaceWaitingForPayment": "Maksua odotetaan",
+  "workspaceActionNeeded": "Toimenpide vaaditaan",
+  "workspacePaymentSToMarkAsSentToConfirmAsReceived": "Lähetetyiksi merkittäviä maksuja: {arg1}; vastaanotetuiksi vahvistettavia maksuja: {arg2}.",
+  "workspaceReadyToSettle": "Valmis maksamaan",
+  "workspaceAllMembersAreReadyYouCanStartSettlements": "Kaikki jäsenet ovat valmiina. Voit aloittaa maksujen käsittelyn.",
+  "workspaceWaitingForEveryoneToMarkReady": "Odotetaan, että kaikki merkitsevät olevansa valmiina.",
+  "workspaceIMReady": "Olen valmis",
+  "workspaceConfirmThatYouAddedAllYourExpenses": "Varmista, että olet lisännyt kaikki kulusi.",
+  "workspaceFinishButtonUnlocksOnceEveryoneMarksReady": "Lopeta-painike avautuu, kun kaikki ovat merkinneet olevansa valmiita.",
+  "workspaceGetsBackFromTheGroup": "Saa rahaa takaisin ryhmältä",
+  "workspaceSettledWithTheGroup": "Sovittu ryhmän kanssa",
+  "workspaceTotalPaid": "Maksettu yhteensä",
+  "workspaceTotalOwes": "Velkasumma",
+  "workspaceTransactionHistory": "Tapahtumahistoria",
+  "workspaceNoTransactionsYetForThisMember": "Tälle jäsenelle ei ole vielä tehty tapahtumia.",
+  "workspaceSettlements": "Maksut: {arg1}",
+  "workspaceAllMembersMustMarkReadyBeforeStartingSettlements": "Kaikkien jäsenten on merkittävä olevansa valmiina ennen maksujen selvittämisen aloittamista.",
+  "workspaceYouMarkedYourselfReadyToSettle": "Olet merkinnyt itsesi valmiiksi maksamaan.",
+  "workspaceReadyToSettleMarkRemoved": "Merkintä ”valmis maksettavaksi” on poistettu.",
+  "workspaceReminderSent": "Muistutus lähetetty.",
+  "workspaceInviteLinkOrAddFromFriends": "Kutsu linkillä tai lisää ystävien joukosta",
+  "workspaceOnlyTripCreatorCanEditThisTrip": "Vain matkan luoja voi muokata tätä matkaa.",
+  "workspaceTripUpdated": "Matka päivitetty.",
+  "workspaceFailedToUpdateTrip": "Matkan päivittäminen epäonnistui.",
+  "workspaceNoMembersSelectedYet": "Jäseniä ei ole vielä valittu.",
+  "workspaceNoInternetExpenseSavedWithoutReceiptImage": "Ei internetiä. Kulu tallennetaan ilman kuittikuvaa.",
+  "workspaceRandomPicker": "Arvonta",
+  "workspaceCurrency": "Valuutta",
+  "workspaceCategory": "Luokka",
+  "workspaceCustomCategory": "Mukautettu luokka",
+  "workspaceCategoryName": "Luokan nimi",
+  "workspaceApartmentRentParkingEtc": "Asunnon vuokra, pysäköinti jne.",
+  "workspaceEnterACustomCategory": "Syötä mukautettu luokka.",
+  "workspacePickAnExpenseCategory": "Valitse kululuokka.",
+  "workspaceCategoryMustBeAtLeast2Characters": "Luokan on oltava vähintään 2 merkkiä pitkä.",
+  "workspaceCategoryMustBeUpTo64Characters": "Luokan pituus saa olla enintään 64 merkkiä.",
+  "workspacePercentageSplitMustTotal100": "Prosentuaalisen jaon summan on oltava 100 %.",
+  "workspaceSharesMustBeGreaterThan0ForAllParticipants": "Jokaisen osallistujan osuuksien määrän on oltava suurempi kuin 0.",
+  "workspaceTotalAmount": "Kokonaissumma",
+  "workspaceOriginal": "Alkuperäinen",
+  "workspaceTotalCost": "Kokonaiskustannukset",
+  "workspaceStarted": "Käynnistetty {arg1}",
+  "workspaceEnded": "Päättynyt {arg1}",
+  "workspaceArchivedTrip": "Arkistoitu matka",
+  "workspaceActiveTrip": "Aktiivinen matka",
+  "workspaceMemberProfile": "Jäsenprofiili",
+  "workspaceTripOwner": "Matkan järjestäjä",
+  "workspaceMember": "Jäsen",
+  "workspaceReadyForSettlement": "Valmis maksamiseen",
+  "workspaceNotReadyForSettlement": "Ei valmis sovitteluun",
+  "workspaceBankDetails": "Pankkitiedot",
+  "workspaceIbanAndPayoutDetailsWillBeAddedHereInA": "IBAN-numero ja maksutiedot lisätään tähän seuraavassa päivityksessä.",
+  "workspacePaymentDetails": "Maksutiedot",
+  "workspaceThisMemberHasNotAddedPayoutDetailsYet": "Tämä jäsen ei ole vielä lisännyt maksutietoja.",
+  "workspaceBankTransfer": "Pankkisiirto",
+  "workspaceHolder": "Holder",
+  "workspaceCouldNotOpenPaymentLink": "Maksulinkkiä ei voitu avata.",
+  "workspaceTripActivity": "Matkan toiminta",
+  "workspacePaidExpenses": "Maksetut kulut",
+  "workspacePaidTotal": "Maksettu kokonaissumma",
+  "workspaceInvolvedIn": "Osallistuu",
+  "workspaceCurrentTrip": "Nykyinen matka",
+  "workspaceCommonTrips": "Yhteiset matkat",
+  "workspaceLoadingCommonTrips": "Ladataan yhteisiä matkoja…",
+  "workspaceNoCommonTripsFoundYet": "Yhteisiä matkoja ei vielä löytynyt.",
+  "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "Kaikkia yhteisiä matkoja ei voitu ladata. Näytetään nykyinen matka.",
+  "workspaceMembers": "jäsenet",
+  "workspaceExpense": "Kulut",
+  "workspacePaid": "maksettu",
+  "workspaceLoadingMoreExpenses": "Ladataan lisää kuluja...",
+  "workspaceScrollDownToLoadMore": "Vieritä alaspäin ladataksesi lisää",
+  "workspaceTripFinished": "Matka päättynyt",
+  "workspaceSettlementsAreUnlockedForThisTrip": "Maksut on avattu tälle matkalle.",
+  "workspaceFinishTripToStartSettlements": "Lopeta matka, jotta maksujen selvitys voi alkaa.",
+  "workspaceMarkedTransferAsSent": "{arg1} merkitsi siirron lähetetyksi.",
+  "workspaceWaitingForToMarkAsPaid": "Odotetaan, että {arg1} merkitsee maksun suoritetuksi.",
+  "workspaceConfirmedReceivingThePayment": "{arg1} on vahvistanut maksun vastaanottamisen.",
+  "workspaceWaitingForToConfirm": "Odotetaan {arg1}:n vahvistusta.",
+  "workspaceAllTripSettlementsAreFullyCompleted": "Kaikki matkan maksut on suoritettu kokonaan.",
+  "workspaceFinalStateAfterAllTransfersAreConfirmed": "Lopullinen tila, kun kaikki siirrot on vahvistettu.",
+  "workspaceSettlementFlow": "Maksun käsittelyprosessi",
+  "workspaceActions": "Toiminnot",
+  "workspaceQuickPay": "Pikamaksu",
+  "workspacePayWithRevolut": "Maksa Revolutilla",
+  "workspacePayWithPaypal": "Maksa PayPalilla",
+  "workspacePayWithWise": "Maksa Wise-palvelulla",
+  "workspaceTransferIsConfirmed": "Siirto on vahvistettu.",
+  "workspaceWaitingForTheOtherMemberToCompleteTheNextStep": "Odotetaan, että toinen jäsen suorittaa seuraavan vaiheen.",
+  "workspaceSendReminder": "Lähetä muistutus",
+  "workspaceInProgress": "Käynnissä",
+  "workspaceTimeUnknown": "Aika tuntematon",
+  "workspaceRemind": "Muistutus",
+  "workspaceYourPosition": "Sinun kantasi",
+  "workspaceRecentActivity": "Viimeaikainen toiminta",
+  "workspaceNoRecentActivityYet": "Ei vielä viimeaikaista toimintaa.",
+  "workspaceAddAtLeastOneMemberToStartSplittingExpenses": "Lisää vähintään yksi jäsen, jotta voit aloittaa kulujen jakamisen.",
+  "workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses": "Merkitse itsesi valmiiksi maksamaan, kun olet lisännyt kaikki kulusi.",
+  "workspaceWaitingForMemberSToMarkReady": "Osallistujat, jotka eivät vielä ole valmiita: {arg1}.",
+  "workspaceAllMembersAreReadyYouCanFinishTheTripAnd": "Kaikki jäsenet ovat valmiina. Voit päättää matkan ja aloittaa maksujen selvityksen.",
+  "workspaceAllMembersAreReadyWaitingForTheTripOwnerTo": "Kaikki jäsenet ovat valmiina. Odotetaan matkan järjestäjän aloittavan maksujen käsittelyn.",
+  "workspaceSettlementInProgressConfirmed": "Maksun käsittely käynnissä: {arg1} / {arg2} vahvistettu.",
+  "workspaceNoActionsPendingThisTripIsSettled": "Ei odottavia toimia. Tämä matka on selvitetty.",
+  "workspaceNoActionsNeededRightNow": "Tällä hetkellä ei tarvita mitään toimia.",
+  "workspaceYouShouldReceive": "Sinun pitäisi saada {arg1}.",
+  "workspaceYouShouldPay": "Sinun tulisi maksaa {arg1}.",
+  "workspaceYouAreCurrentlySettledInThisTrip": "Olet tällä hetkellä mukana tässä matkassa.",
+  "workspaceUnknownTime": "Tuntematon aika",
+  "workspaceJustNow": "Juuri nyt",
+  "workspaceMinAgo": "{arg1} min sitten",
+  "workspaceHAgo": "{arg1} h sitten",
+  "workspaceDAgo": "{arg1} pv sitten",
+  "friendsRemoveFriend": "Poista ystävä",
+  "friendsRemoveThisFriend": "Poistetaanko tämä ystävä?",
+  "friendsWillBeRemovedFromYourFriendsListYouCanAdd": "{arg1} poistetaan ystäväluettelostasi. Voit lisätä hänet uudelleen myöhemmin.",
+  "friendsContinue": "Jatka",
+  "friendsFriendRemoved": "Ystävä poistettu.",
+  "friendsCouldNotRemoveFriend": "Ystävää ei voitu poistaa.",
+  "friendsFriendProfile": "Ystävän profiili",
+  "friendsMoreActions": "Lisää toimintoja",
+  "friendsThisFriendHasNotAddedPayoutDetailsYet": "Tämä ystävä ei ole vielä lisännyt maksutietoja.",
+  "friendsCouldNotLoadCommonTripsRightNow": "Yhteisiä matkoja ei voitu ladata juuri nyt.",
+  "friendsFinished": "Valmis",
+  "friendsTrip": "Matka #{arg1}",
+  "friendsMembers": "Jäsenet: {arg1}",
+  "friendsNoDate": "Ei päivämäärää",
+  "friendsIncomingRequests": "SAAPUVAT PYYNNÖT",
+  "friendsSentInvites": "LÄHETETYT KUTSUT",
+  "friendsMyFriends": "YSTÄVÄNI",
+  "friendsRequests": "Pyynnöt",
+  "friendsIncoming": "Saapuvat",
+  "friendsIncomingRequestSubtitle": "haluaa olla ystävä",
+  "friendsOutgoingInviteSubtitle": "Kutsu lähetetty",
+  "friendsNoPendingActivity": "Ei ystäväpyyntöjä",
+  "friendsInviteSentTo": "Kutsu lähetetty {arg1}:lle.",
+  "friendsNoIncomingRequests": "Ei saapuvia pyyntöjä",
+  "friendsDecline": "Hylkää",
+  "friendsAccept": "Hyväksy",
+  "friendsNoSentInvites": "Ei lähetettyjä kutsuja",
+  "friendsNoFriendsYet": "Ei vielä ystäviä",
+  "friendsScrollDownToLoadMoreFriends": "Vieritä alaspäin ladataksesi lisää ystäviä.",
+  "friendsUser": "Käyttäjä",
+  "friendsSearchUsers": "Käyttäjien haku",
+  "friendsFindByNameOrEmailAndSendInvite": "Etsi nimen tai sähköpostiosoitteen perusteella ja lähetä kutsu",
+  "friendsScanQr": "Skannaa QR-koodi",
+  "friendsScanAnotherUserToAddFriend": "Skannaa toinen käyttäjä lisätäksesi hänet ystäväksi",
+  "friendsMyQr": "Oma QR-koodi",
+  "friendsShowOrShareYourQrCode": "Näytä tai jaa QR-koodisi",
+  "friendsScanFriendQrTitle": "Skannaa ystävän QR-koodi",
+  "friendsPlaceFriendQrInsideFrame": "Sijoita ystävän QR-koodi kehyksen sisään",
+  "friendsHoldFriendQrInsideFrame": "Pidä QR-koodi kehyksen sisällä",
+  "friendsConfirmAddFriendTitle": "Lisätäänkö {arg1} ystäväksi?",
+  "friendsConfirmSendFriendInviteText": "{arg1} saa ystäväpyyntösi.",
+  "friendsConfirmAcceptFriendRequestText": "Hyväksytkö {arg1}:n ystäväpyynnön?",
+  "friendsMyFriendQrTitle": "My Friend QR",
+  "friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode": "Skannaa tämä QR-koodi tai jaa linkki lisätäksesi minut Splytoon.",
+  "friendsAddMeOnTripSplitFriends": "Lisää minut Splytoon.",
+  "friendsTripSplitFriendCode": "Splyto-ystävälinkki",
+  "shareAction": "Jaa",
+  "friendsQrCodeIsNotAValidFriendCode": "QR-koodi ei ole kelvollinen ystäväkoodi.",
+  "friendsYouCannotAddYourself": "Et voi lisätä itseäsi.",
+  "friendsThisUserIsAlreadyInYourFriendsList": "Tämä käyttäjä on jo ystäväluettelossasi.",
+  "friendsInviteToThisUserIsAlreadySent": "Kutsu tälle käyttäjälle on jo lähetetty.",
+  "friendsFriendRequestProcessed": "Ystäväpyyntö käsitelty.",
+  "friendsFailedToProcessFriendQr": "Ystävän QR-koodin käsittely epäonnistui.",
+  "friendsCouldNotLoadYourUserProfile": "Käyttäjäprofiiliasi ei voitu ladata.",
+  "friendsMyProfile": "Oma profiili",
+  "friendsUnexpectedErrorLoadingFriends": "Ystävien lataamisessa tapahtui odottamaton virhe.",
+  "friendsFriendAdded": "Ystävä lisätty.",
+  "friendsRequestDeclined": "Pyyntö hylätty.",
+  "friendsFailedToUpdateRequest": "Pyynnön päivittäminen epäonnistui.",
+  "friendsCancelInvite": "Peruuta kutsu",
+  "friendsCancelInviteTo": "Peruutetaanko kutsu {arg1}:lle?",
+  "friendsKeep": "Säilytä",
+  "friendsInviteToCancelled": "Kutsu {arg1}:een peruutettu.",
+  "friendsFailedToCancelInvite": "Kutsun peruuttaminen epäonnistui.",
+  "analyticsOther": "Muu",
+  "analyticsSelectATripForAnalytics": "Valitse matka analytiikkaa varten",
+  "analyticsMembers": "{arg1} • Jäsenet: {arg2} • {arg3} • {arg4}",
+  "analyticsDailySpending": "Päivittäiset menot",
+  "analyticsMyDaily": "Päivittäiset kuluni",
+  "analyticsGroupDaily": "Ryhmän päivittäiset kulut",
+  "analyticsByMember": "Osallistujittain",
+  "analyticsShowLess": "Näytä vähemmän",
+  "analyticsByCategory": "Luokittain",
+  "analyticsQuickInsights": "Pikakatsaus",
+  "analyticsBiggestExpense": "Suurin kulu: {arg1} ({arg2})",
+  "analyticsTopSpender": "Eniten kuluttanut: {arg1} ({arg2})",
+  "analyticsHighestGroupDay": "Ryhmän ennätyspäivä: {arg1} ({arg2})",
+  "analyticsNoDates": "Ei päivämääriä",
+  "friendsSearchFailedTryAgain": "Haku epäonnistui. Yritä uudelleen.",
+  "friendsFailedToSendInvite": "Kutsun lähettäminen epäonnistui.",
+  "friendsAddFriend": "Lisää ystävä",
+  "friendsSearchByNameOrEmail": "Hae nimen tai sähköpostiosoitteen perusteella",
+  "friendsTypeAtLeast2CharactersToSearch": "Kirjoita hakua varten vähintään 2 merkkiä.",
+  "friendsNoUsersFound": "Käyttäjiä ei löytynyt",
+  "friendsInviteAction": "Kutsu",
+  "workspacePaidForGroup": "Maksettu ryhmä",
+  "workspacePaidForGroupDate": "Maksettu ryhmä • {arg1}",
+  "workspaceShareOfExpense": "Kustannusten jakaminen",
+  "workspaceShareOfExpenseDate": "Kustannusten jakaminen • {arg1}",
+  "paymentHolderNameCopied": "Käyttäjän nimi kopioitu.",
+  "paymentIbanCopied": "IBAN kopioitu.",
+  "paymentSwiftCopied": "SWIFT kopioitu.",
+  "paymentRevtagCopied": "Revtag kopioitu.",
+  "paymentCouldNotCopyToClipboard": "Kopiointi leikepöydälle epäonnistui.",
+  "paymentCopied": "Kopioitu.",
+  "paymentRequestAction": "Pyydä maksua",
+  "paymentRecordAction": "Tallenna maksu",
+  "paymentRequestSheetTitle": "Pyydä maksua",
+  "paymentRecordSheetTitle": "Tallenna maksu",
+  "paymentRequestSheetBody": "Pyydä {arg1}:tä maksamaan summa, jonka hän on sinulle tällä hetkellä velkaa.",
+  "paymentRecordSheetBody": "Käytä tätä, kun olet maksanut {arg1}:lle Splyton ulkopuolella. He vahvistavat maksun vastaanottamisen.",
+  "paymentMaxAmount": "Enintään {arg1}",
+  "paymentNoteHint": "Pankkisiirto, Revolut, käteinen...",
+  "paymentAmountPositiveError": "Summan on oltava suurempi kuin nolla.",
+  "paymentAmountTooHighError": "Summa ei voi olla suurempi kuin maksamaton saldo.",
+  "paymentRequestCreated": "Maksupyyntö lähetetty.",
+  "paymentRecordedWaiting": "Maksu kirjattu. Odotetaan vahvistusta.",
+  "paymentConfirmTitle": "Vahvista maksu",
+  "paymentConfirmText": "Vahvista, että olet vastaanottanut maksun, jonka summa on {arg1} ja lähettäjä {arg2}.",
+  "paymentConfirmedMessage": "Maksu vahvistettu.",
+  "paymentCancelRecordTitle": "Peruuta maksutietue",
+  "paymentCancelRecordText": "Perutaanko merkintä maksustasi, jonka summa on {arg1} ja saaja {arg2}?",
+  "paymentRecordCancelled": "Maksutapahtuma peruutettu.",
+  "paymentNotReceivedTitle": "Maksua ei ole vastaanotettu",
+  "paymentNotReceivedText": "Merkitäänkö {arg1}-maksu {arg2}:lta vastaanottamattomaksi?",
+  "paymentMarkedNotReceived": "Maksu on merkitty vastaanottamattomaksi.",
+  "paymentActivityTitle": "Maksutoiminta",
+  "paymentOpenRequestsCount": "Avoimet maksupyynnöt: {arg1}",
+  "paymentAwaitingConfirmationCount": "Vahvistusta odottavat maksut: {arg1}",
+  "paymentRecordedPaymentsTitle": "Kirjatut maksut",
+  "paymentRequestedFrom": "{arg1} pyysi maksua {arg2}:lta",
+  "paymentPaidTo": "{arg1} maksoi henkilölle {arg2}",
+  "paymentRequestPendingStatus": "Maksua pyydetty",
+  "paymentAwaitingConfirmationStatus": "Odottaa vahvistusta",
+  "paymentReviewRequestAction": "Tarkista pyyntö",
+  "paymentViewDetailsAction": "Maksutiedot",
+  "paymentMarkPaidAction": "Olen maksanut",
+  "paymentDeclineAction": "Hylkää",
+  "paymentRequestReviewTitle": "Maksupyyntö",
+  "paymentRequestReviewBody": "{arg1} pyysi sinulta {arg2}. Maksa Splyton ulkopuolella ja merkitse maksu sitten maksetuksi.",
+  "paymentRequestMarkPaidConfirmTitle": "Merkitäänkö pyyntö maksetuksi?",
+  "paymentRequestMarkPaidConfirmText": "Vahvista vasta, kun olet maksanut {arg1}:n {arg2}:lle Splyton ulkopuolella.",
+  "paymentRequestMarkedPaid": "Merkitty maksetuksi. Odotetaan vahvistusta.",
+  "paymentRequestCancelTitle": "Peruuta maksupyyntö?",
+  "paymentRequestCancelText": "Haluatko peruuttaa {arg1}-pyyntösi {arg2}:lle?",
+  "paymentRequestCancelled": "Maksupyyntö peruutettu.",
+  "paymentRequestDeclineTitle": "Hylätä maksupyyntö?",
+  "paymentRequestDeclineText": "Hylätäänkö henkilön {arg2} lähettämä maksupyyntö, jonka summa on {arg1}? Hänelle lähetetään ilmoitus.",
+  "paymentRequestDeclined": "Maksupyyntö hylätty.",
+  "paymentPendingBeforeFinish": "Selvitä avoimet maksupyynnöt ja vahvistamattomat maksut ennen lopullista tilitystä.",
+  "paymentFinishBlockedByPending": "Maali avautuu, kun maksupyynnöt ja vahvistamattomat maksut on ratkaistu.",
+  "notificationPaymentRequestedTitle": "Maksua pyydetty",
+  "notificationPaymentRequestedBody": "{arg1} pyysi sinulta {arg2}.",
+  "notificationPaymentRequestedBodyGeneric": "Olet saanut maksupyynnön.",
+  "notificationPaymentRequestSentTitle": "Pyydetty maksu lähetetty",
+  "notificationPaymentRequestSentBody": "{arg1} merkitsi {arg2}-maksupyyntösi maksetuksi.",
+  "notificationPaymentRequestSentBodyGeneric": "Maksupyyntösi on merkitty maksetuksi.",
+  "notificationPaymentRequestCancelledTitle": "Maksupyyntö peruutettu",
+  "notificationPaymentRequestCancelledBody": "{arg1} peruutti {arg2}-maksupyynnön.",
+  "notificationPaymentRequestCancelledBodyGeneric": "Maksupyyntö peruutettiin.",
+  "notificationPaymentRequestDeclinedTitle": "Maksupyyntö hylätty",
+  "notificationPaymentRequestDeclinedBody": "{arg1} on hylännyt {arg2}-maksupyyntösi.",
+  "notificationPaymentRequestDeclinedBodyGeneric": "Maksupyyntösi hylättiin.",
+  "notificationPaymentSentTitle": "Maksu merkitty lähetetyksi",
+  "notificationPaymentSentBody": "{arg1} merkitsi {arg2}:n sinulle maksetuksi.",
+  "notificationPaymentSentBodyGeneric": "Maksu on merkitty sinulle lähetetyksi.",
+  "notificationPaymentConfirmedTitle": "Maksu vahvistettu",
+  "notificationPaymentConfirmedBody": "{arg1} on vahvistanut vastaanottaneensa {arg2} sinulta.",
+  "notificationPaymentConfirmedBodyGeneric": "Maksusi on vahvistettu.",
+  "notificationPaymentCancelledTitle": "Maksu peruutettu",
+  "notificationPaymentCancelledBody": "{arg1} peruutti {arg2}-maksumerkinnän.",
+  "notificationPaymentCancelledBodyGeneric": "Maksumerkintä peruutettiin.",
+  "notificationPaymentNotReceivedTitle": "Maksua ei ole vastaanotettu",
+  "notificationPaymentNotReceivedBody": "{arg1} merkitsi {arg2}-maksun vastaanottamattomaksi.",
+  "notificationPaymentNotReceivedBodyGeneric": "Maksu on merkitty vastaanottamattomaksi.",
+  "quickStartTitle": "Pikaopas",
+  "quickStartCreateTitle": "Luo matka",
+  "quickStartCreateBody": "Valitse nimi ja valuutta. Hoida omat kulusi itse tai jaa kustannukset ryhmän kanssa.",
+  "quickStartInviteTitle": "Matkusta yhdessä tai yksin",
+  "quickStartInviteBody": "Kutsu ystäviä mukaan matkallesi tai aloita henkilökohtainen matka yksin.",
+  "quickStartExpenseTitle": "Lisää ensimmäinen kulusi",
+  "quickStartExpenseBody": "Syötä summa, valitse maksaja ja jaa kustannukset. Saldojesi tiedot pysyvät ajan tasalla.",
+  "quickStartNext": "Seuraava",
+  "quickStartBack": "Takaisin",
+  "quickStartSkip": "Ohita",
+  "quickStartCreateAction": "Luo matka",
+  "quickStartClose": "Sulje Pikaopas",
+  "quickStartSubtitle": "Katso, miten matkat ja kulut toimivat",
+  "quickStartStep": "Vaihe {step} / {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Matkan kokonaissumma",
+  "workspacePersonalTotal": "Kokonaiskulut",
+  "workspaceBalanceEven": "Saldosi on tasattu",
+  "workspaceBalanceOwe": "Olet velkaa {amount}",
+  "workspaceBalanceReceive": "Saat takaisin {amount}",
+  "workspaceMemberCount": "Jäsenet: {count}",
+  "workspaceSearchExpenses": "Hae kuluja",
+  "workspaceClearSearch": "Selkeä haku",
+  "workspaceSearchLoadedHint": "Haku kattaa ladatut kulut. Lataa lisää, jos haluat sisällyttää vanhempia kuluja.",
+  "workspaceNoExpenseMatches": "Ei vastaavia kuluja",
+  "workspaceNoExpenseMatchesBody": "Kokeile toista hakua tai tyhjennä haku nähdäksesi kaikki ladatut kulut.",
+  "workspaceEmptyPersonalExpenses": "Lisää ensimmäinen kulusi aloittaaksesi kulujen seurannan.",
+  "workspaceEmptyGroupExpenses": "Lisää ensimmäinen jaettu kulusi nähdäksesi kaikkien osuudet.",
+  "workspaceLoadMoreExpenses": "Lataa lisää kuluja",
+  "workspaceOriginalExpenseAmount": "Alkuperäinen summa: {amount}",
+  "workspaceCommentCount": "Kommentit: {count}",
+  "workspaceExpenseActions": "Kulujen käsittely",
+  "workspaceLoadErrorTitle": "Tätä matkaa ei voitu ladata",
+  "workspaceCachedWarning": "Tallennettujen tietojen näyttäminen. Tiedot voivat olla vanhentuneita.",
+  "workspaceActivityTab": "Toiminta",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Matkan lataaminen",
+  "workspaceRefreshFailed": "Päivitys epäonnistui",
+  "expenseDetailsTitle": "Kulutiedot",
+  "expenseQuickCategories": "Pikaluokat",
+  "expenseReceiptRead": "Kuitin lukeminen ja lomakkeen päivittäminen.",
+  "expenseReceiptNoData": "Kuitti liitteenä. Selkeää summaa, päivämäärää tai kauppiasta ei löytynyt.",
+  "expenseReceiptScanFailed": "Kuitta valittu. Automaattinen lukeminen epäonnistui; tarkista kentät manuaalisesti.",
+  "expenseReceiptOffline": "Kuitti ladataan, kun tallennat. Automaattinen lukeminen edellyttää verkkoyhteyttä.",
+  "expenseReadingReceipt": "Luetaan kuittia…",
+  "expenseCommentsLoadFailed": "Kommentteja ei voitu ladata. Yritä uudelleen.",
+  "expenseReplyAction": "Vastaa",
+  "expenseReplyHint": "Kirjoita vastaus…",
+  "expenseReplyTo": "Vastaa {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Saldot näkyvät, kun kulut on lisätty.",
+  "balanceAfterPayments": "Saldot sisältävät vahvistetut maksut.",
+  "balanceExpenseShare": "Kulujen jakaminen",
+  "balanceHistoryScope": "Kirjatut kulut ja vahvistetut maksut. Tämä luettelo ei välttämättä sisällä koko matkahistoriaa.",
+  "balancePaymentTo": "Maksu {name}:lle",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Maksu lähettäjältä {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Merkitse kaikki valmiiksi ennen lopullisten tilitysten aloittamista.",
+  "settlementEmptyClosed": "Tälle matkalle ei ole lueteltu yhtään rahansiirtoa.",
+  "settlementConfirmedCount": "{count} / {total} siirtoa vahvistettu",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "{count} / {total} jäsentä valmiina",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Valmis",
+  "settlementMemberNotReady": "Ei valmis",
+  "settlementSuggested": "Ehdotettu siirto",
+  "activityLoadFailed": "Toimintaa ei voitu päivittää. Näkyvät merkinnät voivat olla vanhentuneita.",
+  "activityMember": "Matkan osallistuja",
+  "friendsEmptyBody": "Etsi ystävä nimen tai sähköpostiosoitteen perusteella tai käytä QR-koodia.",
+  "friendsDeclineAction": "Hylkää",
+  "friendsLoading": "Ystävien lataaminen",
+  "friendsCommonTripsCount": "Jaetut matkat: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "Perustuu syötettyihin kuluihin; tämä ei välttämättä kata koko matkaa.",
+  "sharedTripsLoadedLimit": "Näytetään enintään 20 jaettua matkaa.",
+  "memberRemoveTitle": "Poistetaanko jäsen?",
+  "memberRemoveBody": "Poistetaanko {name} tästä matkasta? Tämä on mahdollista vain, jos hänellä ei ole kuluja, tilityksiä tai saldoja.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Poista matkalta",
+  "memberRemoved": "{name} on poistettu matkalta.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Ei vielä lisätty",
+  "friendRelationshipLabel": "Ystävä",
+  "sharedTripsEmptyBody": "Matkanne, joihin molemmat osallistutte, näkyvät tässä.",
+  "analyticsAllTrips": "Kaikki matkat",
+  "analyticsByTrip": "Matkan mukaan",
+  "analyticsYourSpending": "Omat kulut",
+  "analyticsActiveArchived": "Aktiiviset ja arkistoidut matkat",
+  "analyticsTrips": "Matkan",
+  "analyticsAveragePerTrip": "Keskimääräinen matkaa kohti",
+  "analyticsPaidByMember": "Jäsen maksaa",
+  "analyticsYouPaid": "Sinä maksoit.",
+  "analyticsYouGetBack": "Saat takaisin",
+  "analyticsYouOwe": "Olet velkaa",
+  "analyticsParticipants": "Osallistujat",
+  "analyticsYourCategories": "Kulutuksesi luokittain",
+  "analyticsLargestShares": "Suurimmat kuluosuuteni",
+  "analyticsLargestExpenses": "Suurimmat kulut",
+  "analyticsSpendingByTrip": "Kulut matkaa kohden",
+  "analyticsEmptyTitle": "Ei vielä kuluja",
+  "analyticsEmptyBody": "Kulut näkyvät tässä, kun lisäät kuluja matkaan.",
+  "analyticsPeriodEmptyBody": "Tätä näkymää ei veloiteta. Kokeile toista matkaa tai ajanjaksoa.",
+  "analyticsLoadFailed": "Koko kuluraporttia ei voitu ladata. Yritä uudelleen.",
+  "analyticsLastLoaded": "Näytetään viimeisin onnistuneesti ladattu raportti.",
+  "analyticsExpenseCount": "{count, plural, one{{count} kulu} other{{count} kulua}}",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Matka-asetukset",
+  "editTripAction": "Muokkaa matkaa",
+  "deleteTripAction": "Poista matka",
+  "inviteTripMembersAction": "Kutsu jäseniä",
+  "tripCoverPhoto": "Kansikuva",
+  "tripInviteLaterHint": "Voit kutsua ihmisiä matkan luomisen jälkeen.",
+  "inviteClipboardFailed": "Leikepöytää ei voitu käyttää. Yritä uudelleen.",
+  "friendInviteToTrip": "Kutsu matkalle",
+  "friendChooseTrip": "Valitse matka",
+  "friendNoInvitableTrips": "Käytettävissä olevia matkoja ei ole. Voit kutsua ystäviä hallinnoimiisi aktiivisiin ryhmämatkoihin, elleivät he ole jo jäseniä tai heillä ole odottavaa kutsua.",
+  "friendTripInviteSent": "Kutsu lähetetty.",
+  "friendTripUnavailable": "Tätä matkaa ei voi enää käyttää tähän toimintoon. Päivitä sivu ja yritä uudelleen.",
+  "friendTripActionFailed": "Toimintoa ei voitu suorittaa. Yritä uudelleen.",
+  "profileContactDescription": "Onko sinulla ongelma, ehdotus tai kysymys Splytosta? Lähetä meille sähköpostia – autamme mielellämme.",
+  "profileContactEmailAction": "Kirjoita sähköpostiviesti",
+  "profileContactEmailUnavailable": "Sähköpostisovellusta ei voitu avata. Kopioi osoite ja kirjoita meille sähköpostisovelluksestasi.",
+  "profilePrivacyPolicy": "Tietosuojakäytäntö",
+  "privacyLoadFailed": "Tietosuojakäytäntöä ei voitu ladata. Yritä uudelleen.",
+  "addReceiptAction": "Lisää kuitti",
+  "receiptPickFailed": "Kuittia ei voitu ladata. Yritä uudelleen.",
+  "receiptPhotoAccessDenied": "Salli Splytolle pääsy kameraan tai valokuvakirjastoon Asetuksissa ja yritä sitten uudelleen.",
+  "receiptPhotoLabel": "Kuitin kuva",
+  "replaceReceiptAction": "Korvaa kuitti",
+  "removeReceiptAction": "Poista kuitti",
+  "restoreReceiptAction": "Palauta edellinen kuitti",
+  "expenseSplitBetween": "Jaa seuraavasti",
+  "expenseEditParticipants": "Valitse osallistujat",
+  "expenseCustomSplit": "Mukautettu jakaminen",
+  "expenseSplitAllocated": "Koko {amount} jaettu",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "Jäljellä jaettava summa: {amount}",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "{amount} yli kokonaissumman",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Jaa maksutavat matkoilleni",
+  "profilePaymentSharingDescription": "Salli luomieni matkojen ja niiden matkojen, joihin liityn, hyväksyttyjen osallistujien nähdä maksutapani. Tämä koskee nykyisiä ja tulevia matkoja. Voit poistaa jakamisen käytöstä milloin tahansa estääksesi tietojen katselun jatkossa.",
+  "memberPaymentDetailsNotShared": "Maksutapoja ei jaeta tai ne eivät ole tällä hetkellä käytettävissä.",
+  "homeTripInvitations": "Matkakutsut",
+  "homeNoTripInvitations": "Ei odottavia matkakutsuja",
+  "homeInvitationsLoadFailed": "Kutsuja ei voitu ladata. Yritä uudelleen.",
+  "homeInvitationResponseFailed": "Kutsuun ei voitu vastata. Yritä uudelleen.",
+  "homeTripShareFailed": "Matkaa ei voitu jakaa. Yritä uudelleen.",
+  "settleStillToReceive": "Vielä saamatta",
+  "settleStillToPay": "Vielä maksamatta",
+  "settleEstimateCaption": "Arvio perustuu nykyisiin kuluihin. Summat voivat muuttua ennen matkan päättymistä.",
+  "settleOutstandingCaption": "Odotetaan maksua tai vahvistusta.",
+  "settleWaitingForYou": "Odotamme, että merkitset olevasi valmis.",
+  "settleWhoPaysWhom": "Kuka maksaa kenelle",
+  "settlePreviewCaption": "Esikatselu · viimeistellään matkan päättyessä",
+  "settleOpenPaymentCaption": "Avaa maksu nähdäksesi yksityiskohdat ja käytettävissä olevat toiminnot.",
+  "tripBudgetEnable": "Aseta budjetti",
+  "tripBudgetSoloHint": "Valinnainen kulutustavoite tälle matkalle.",
+  "tripBudgetGroupHint": "Yksi jaettu budjetti koko ryhmälle.",
+  "tripBudgetAmount": "Budjetin määrä",
+  "tripBudgetInvalid": "Syötä summa väliltä 0,01–999999999,99, enintään kahden desimaalin tarkkuudella.",
+  "tripBudgetTitle": "Matkan budjetti",
+  "tripBudgetGroupTitle": "Ryhmän budjetti",
+  "tripBudgetRemaining": "Jäljellä",
+  "tripBudgetOver": "Yli budjetin",
+  "tripBudgetSpent": "Käytetty",
+  "tripBudgetLimit": "Budjetti",
+  "travelMapTitle": "Matkakarttani",
+  "travelMapSubtitle": "Käydyt paikat, juuri sinulle.",
+  "travelMapHere": "Olen ollut täällä",
+  "travelMapAdd": "Lisää paikka",
+  "travelMapSearch": "Hae kaupunki ja maa",
+  "travelMapSearchAction": "Haku",
+  "travelMapSearchHint": "Esimerkiksi Lissabon, Portugali",
+  "travelMapEmpty": "Seuraava muistosi alkaa tästä",
+  "travelMapEmptyBody": "Lisää kaupunki, jossa olet käynyt, tai kirjaudu sisään nykyiseen sijaintiisi.",
+  "travelMapConfirm": "Tallennetaanko tämä vierailu?",
+  "travelMapConfirmBody": "Tarkista kaupunki ja päivämäärä ennen kuin tallennat ne yksityiselle kartallesi.",
+  "travelMapDate": "Vierailupäivä",
+  "travelMapSave": "Tallenna kartalleni",
+  "travelMapCancel": "Peruuta",
+  "travelMapClose": "Sulje",
+  "travelMapNoResults": "Kaupunkia ei löytynyt. Kokeile lisätä maata hakuun.",
+  "travelMapLookupError": "Kaupunkia ei löytynyt. Tarkista yhteytesi tai lisää paikka manuaalisesti.",
+  "travelMapDenied": "Sijainnin käyttöoikeus on pois päältä. Voit silti lisätä kaupungin manuaalisesti.",
+  "travelMapDisabled": "Ota sijaintipalvelut käyttöön tai lisää kaupunki manuaalisesti.",
+  "travelMapError": "Matkakarttaa ei voitu ladata. Yritä uudelleen.",
+  "travelMapSaveError": "Vierailua ei voitu tallentaa. Yritä uudelleen.",
+  "travelMapUnavailable": "Matkakartta vaatii palvelinpäivityksen.",
+  "travelMapOffline": "Offline · tallennettujen paikkojen näyttäminen",
+  "travelMapRetry": "Yritä uudelleen",
+  "travelMapDelete": "Poista vierailu",
+  "travelMapDeleteConfirm": "Poistetaanko tämä vierailu yksityiseltä kartaltasi?",
+  "travelMapFit": "Näytä kaikki paikat",
+  "travelMapSaved": "Käy tallennetussa",
+  "travelMapVisited": "Käyty",
+  "travelMapLimit": "Karttasi on saavuttanut 1 000 käyntiä. Poista vanha käynti ennen uuden lisäämistä.",
+  "travelMapCounts": "{countries, plural, one{{countries} maa} other{{countries} maata}} · {cities, plural, one{{cities} kaupunki} other{{cities} kaupunkia}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{{count} vierailu} other{{count} vierailua}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Kohteet (valinnainen)",
+  "travelAddDestination": "Lisää määränpää",
+  "travelRemoveDestination": "Poista määränpää",
+  "travelFromTrip": "Matkan näkökulmasta",
+  "travelChooseTrip": "Valitse matka",
+  "travelNoTrips": "Matkoja ei ole vielä saatavilla. Voit lisätä paikan manuaalisesti.",
+  "travelAddToMap": "Lisää kartalleni",
+  "travelTripConfirm": "Tallenna vain paikat, joissa olet todella käynyt. Tämä lisää yksityisen muiston kartallesi.",
+  "travelVisitTitle": "Otsikko (valinnainen)",
+  "travelAddPhoto": "Lisää valokuva",
+  "travelChangePhoto": "Vaihda valokuva",
+  "travelRemovePhoto": "Poista valokuva",
+  "travelPhotoError": "Tätä valokuvaa ei voitu valmistella. Valitse toinen.",
+  "travelEditVisit": "Muokkaa vierailua",
+  "travelOpenTrip": "Avoin matka",
+  "travelPreviousVisit": "Edellinen vierailu",
+  "travelNextVisit": "Seuraava vierailu",
+  "travelDuplicate": "Tämä vierailu on jo kartallasi.",
+  "liveMapTitle": "Reaaliaikainen kartta",
+  "liveShareTitle": "Jaa sijaintini",
+  "liveConsent": "Jaa tarkka sijaintisi vain tämän matkan hyväksytyille osallistujille valitsemaksesi ajaksi. Jakaminen jatkuu taustalla, ja voit lopettaa sen milloin tahansa.",
+  "liveBackgroundNote": "Päivitykset voivat keskeytyä ilman internetyhteyttä tai jos suljet sovelluksen pakotetusti. Vain viimeisin sijainti tallennetaan; reittihistoriaa ei tallenneta.",
+  "liveStart": "Aloita jakaminen",
+  "liveStop": "Lopeta jakaminen",
+  "liveNotification": "Sijaintisi jaetaan matkaseurueellesi. Avaa Splyto lopettaaksesi jakamisen.",
+  "livePermissionError": "Salli sijainnin käyttö puhelimen asetuksissa, jotta voit jakaa sijaintisi.",
+  "liveStartError": "Jakamista ei voitu aloittaa. Tarkista sijainnin käyttöoikeudet, internetyhteys sekä puhelimesi päivämäärä ja kellonaika.",
+  "liveStopPending": "Päivitykset on keskeytetty. Odotetaan internetyhteyttä viimeisen sijaintisi poistamiseksi; se katoaa kartalta 2 minuutin kuluessa ilman päivityksiä.",
+  "liveSharing": "jakaa sijaintia",
+  "liveUnavailable": "Tätä reaaliaikaista karttaa ei ole saatavilla. Palaa matkaan ja päivitä sivu.",
+  "liveMapLoadError": "Karttaa ei voitu ladata. Tarkista verkkoyhteytesi ja avaa kartta uudelleen.",
+  "liveLoadError": "Sijainteja ei voitu päivittää. Vain viimeisimmät päivitykset näytetään.",
+  "liveFit": "Näytä kaikki kartalla",
+  "liveEmpty": "Kukaan ei vielä jaa viimeaikaista sijaintiaan.",
+  "liveRecent": "Juuri päivitetty",
+  "liveLastKnown": "Viimeksi päivitetty",
+  "liveAccuracy": "Tarkkuus",
+  "liveUntil": "Jakaminen kestää",
+  "liveOtherSession": "Aloitettu toisessa istunnossa. Voit lopettaa sen täällä.",
+  "liveUpdatesPaused": "Päivitykset keskeytetty. Tarkista sijainnin käyttöoikeudet ja internetyhteys.",
+  "livePrivateUntilShared": "Sijaintisi pysyy yksityisenä, kunnes päätät jakaa sen.",
+  "activityEventExpenseCreated": "lisätty kulu",
+  "activityEventExpenseUpdated": "päivitetty kulu",
+  "activityEventExpenseDeleted": "kustannus poistettu",
+  "activityEventTripCreated": "loi matkan",
+  "activityEventTripUpdated": "päivitetyt matkatiedot",
+  "activityEventTripMembersAdded": "lisätyt jäsenet",
+  "activityEventTripMembersInvited": "lähetetyt kutsut: {count}",
+  "@activityEventTripMembersInvited": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityEventTripMemberJoined": "liittyi matkaan",
+  "activityEventTripInvitationDeclined": "hylkäsi matkakutsun",
+  "activityEventTripInvitationRevoked": "matkakutsun peruuttaminen",
+  "activityEventTripMemberRemoved": "{name} on poistettu matkalta",
+  "@activityEventTripMemberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberLeft": "poistui matkalta",
+  "activityEventTripMemberRoleUpdated": "{name}:n rooli muutettiin rooliksi {role}",
+  "@activityEventTripMemberRoleUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberReady": "merkitty valmiiksi maksettavaksi",
+  "activityEventTripMemberNotReady": "merkitty ei valmis",
+  "activityEventTripAllMembersReady": "Kaikki jäsenet ovat valmiita maksamaan",
+  "activityEventTripFinished": "matka päättynyt",
+  "activityEventSettlementMarkedSent": "merkitsi siirron lähetetyksi",
+  "activityEventSettlementConfirmed": "vahvisti siirron",
+  "activityEventSettlementSentCancelled": "peruutettu lähetetty tila",
+  "activityEventSettlementNotReceived": "merkitsi siirron vastaanottamattomaksi",
+  "activityEventSettlementReminderSent": "lähetti maksumuistutuksen",
+  "activityEventPaymentMarkedSent": "kirjasi maksun",
+  "activityEventPaymentRequested": "pyysi maksua",
+  "activityEventPaymentRequestMarkedSent": "merkitsi pyydetyn maksun lähetetyksi",
+  "activityEventPaymentRequestCancelled": "peruutti maksupyynnön",
+  "activityEventPaymentRequestDeclined": "hylkäsi maksupyynnön",
+  "activityEventPaymentConfirmed": "vahvisti maksun",
+  "activityEventPaymentCancelled": "peruutettu maksutapahtuma",
+  "activityEventPaymentNotReceived": "merkitsi maksun vastaanottamattomaksi",
+  "activityEventUnknown": "tehty muutos",
+  "privacyEnglishFallback": "Tietosuojakäytäntö on tällä hetkellä saatavilla englanniksi.",
+  "activityRoleAdmin": "Järjestelmänvalvoja",
+  "accountDeleteTitle": "Poista tili",
+  "accountDeleteIntro": "Vahvista poistaminen sähköpostitse. Vahvistuksen jälkeen sitä ei voi perua.",
+  "accountDeleteConsequences": "Poisto on lopullinen. Profiilisi anonymisoidaan ja pääsy tilillesi poistetaan. Jaetut matka- ja kulutiedot säilytetään muiden jäsenten käyttöön.",
+  "accountDeleteReasonsTitle": "Mitä olisimme voineet tehdä paremmin?",
+  "accountDeleteReasonsHint": "Syy (vapaaehtoinen)",
+  "accountDeleteReasonNotUsing": "En enää tarvitse Splytoa matkoillani",
+  "accountDeleteReasonAnotherWay": "Hallinnoin jaettuja kuluja toisella tavalla",
+  "accountDeleteReasonComplicated": "Asioiden hoitaminen vaatii liikaa vaivaa",
+  "accountDeleteReasonTechnical": "Olen kohdannut virheitä tai teknisiä ongelmia",
+  "accountDeleteReasonPrivacy": "Haluaisin poistaa tilitietoni",
+  "accountDeleteReasonOther": "Haluan poistaa tilini muusta syystä",
+  "accountDeleteEmailStep": "Seuraava vaihe on vahvistus sähköpostitse.",
+  "accountDeletePasswordHint": "Syötä nykyinen Splyto-salasanasi pyytääksesi vahvistussähköpostia. Tilisi on edelleen aktiivinen.",
+  "accountDeleteInboxTitle": "Vielä yksi vaihe sähköpostilaatikossasi",
+  "accountDeleteSentBody": "Vahvistuslinkki lähetetty osoitteeseen {email}.",
+  "accountDeleteSentHint": "Tilisi pysyy aktiivisena, kunnes vahvistat poistamisen.",
+  "accountDeleteSending": "Vahvistussähköpostin lähettäminen",
+  "@accountDeleteSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  }
+}

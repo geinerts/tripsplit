@@ -5,9 +5,21 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_cs.dart';
+import 'app_localizations_da.dart';
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
+import 'app_localizations_fi.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_it.dart';
 import 'app_localizations_lv.dart';
+import 'app_localizations_nb.dart';
+import 'app_localizations_nl.dart';
+import 'app_localizations_pl.dart';
+import 'app_localizations_pt.dart';
+import 'app_localizations_sv.dart';
+import 'app_localizations_uk.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,9 +104,21 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('cs'),
+    Locale('da'),
+    Locale('de'),
     Locale('en'),
     Locale('es'),
-    Locale('lv')
+    Locale('fi'),
+    Locale('fr'),
+    Locale('it'),
+    Locale('lv'),
+    Locale('nb'),
+    Locale('nl'),
+    Locale('pl'),
+    Locale('pt'),
+    Locale('sv'),
+    Locale('uk')
   ];
 
   /// No description provided for @homeFirstTrip.
@@ -6982,7 +7006,7 @@ abstract class AppLocalizations {
   /// No description provided for @analyticsExpenseCount.
   ///
   /// In en, this message translates to:
-  /// **'{count} expenses'**
+  /// **'{count, plural, one{{count} expense} other{{count} expenses}}'**
   String analyticsExpenseCount(int count);
 
   /// No description provided for @tripOptionsTitle.
@@ -7705,6 +7729,12 @@ abstract class AppLocalizations {
   /// **'This live map is unavailable. Return to the trip and refresh.'**
   String get liveUnavailable;
 
+  /// No description provided for @liveMapLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'The map could not load. Check your connection and reopen the map.'**
+  String get liveMapLoadError;
+
   /// No description provided for @liveLoadError.
   ///
   /// In en, this message translates to:
@@ -7764,6 +7794,306 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your location stays private until you choose to share it.'**
   String get livePrivateUntilShared;
+
+  /// No description provided for @activityEventExpenseCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'added an expense'**
+  String get activityEventExpenseCreated;
+
+  /// No description provided for @activityEventExpenseUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'updated an expense'**
+  String get activityEventExpenseUpdated;
+
+  /// No description provided for @activityEventExpenseDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'deleted an expense'**
+  String get activityEventExpenseDeleted;
+
+  /// No description provided for @activityEventTripCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'created the trip'**
+  String get activityEventTripCreated;
+
+  /// No description provided for @activityEventTripUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'updated trip details'**
+  String get activityEventTripUpdated;
+
+  /// No description provided for @activityEventTripMembersAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'added members'**
+  String get activityEventTripMembersAdded;
+
+  /// No description provided for @activityEventTripMembersInvited.
+  ///
+  /// In en, this message translates to:
+  /// **'sent invitations: {count}'**
+  String activityEventTripMembersInvited(int count);
+
+  /// No description provided for @activityEventTripMemberJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'joined the trip'**
+  String get activityEventTripMemberJoined;
+
+  /// No description provided for @activityEventTripInvitationDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'declined the trip invitation'**
+  String get activityEventTripInvitationDeclined;
+
+  /// No description provided for @activityEventTripInvitationRevoked.
+  ///
+  /// In en, this message translates to:
+  /// **'cancelled a trip invitation'**
+  String get activityEventTripInvitationRevoked;
+
+  /// No description provided for @activityEventTripMemberRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'removed {name} from the trip'**
+  String activityEventTripMemberRemoved(String name);
+
+  /// No description provided for @activityEventTripMemberLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'left the trip'**
+  String get activityEventTripMemberLeft;
+
+  /// No description provided for @activityEventTripMemberRoleUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'changed the role of {name} to {role}'**
+  String activityEventTripMemberRoleUpdated(String name, String role);
+
+  /// No description provided for @activityEventTripMemberReady.
+  ///
+  /// In en, this message translates to:
+  /// **'marked ready to settle'**
+  String get activityEventTripMemberReady;
+
+  /// No description provided for @activityEventTripMemberNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'marked not ready'**
+  String get activityEventTripMemberNotReady;
+
+  /// No description provided for @activityEventTripAllMembersReady.
+  ///
+  /// In en, this message translates to:
+  /// **'All members are ready to settle'**
+  String get activityEventTripAllMembersReady;
+
+  /// No description provided for @activityEventTripFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'finished the trip'**
+  String get activityEventTripFinished;
+
+  /// No description provided for @activityEventSettlementMarkedSent.
+  ///
+  /// In en, this message translates to:
+  /// **'marked a transfer as sent'**
+  String get activityEventSettlementMarkedSent;
+
+  /// No description provided for @activityEventSettlementConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'confirmed a transfer'**
+  String get activityEventSettlementConfirmed;
+
+  /// No description provided for @activityEventSettlementSentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'cancelled sent status'**
+  String get activityEventSettlementSentCancelled;
+
+  /// No description provided for @activityEventSettlementNotReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'marked a transfer as not received'**
+  String get activityEventSettlementNotReceived;
+
+  /// No description provided for @activityEventSettlementReminderSent.
+  ///
+  /// In en, this message translates to:
+  /// **'sent a settlement reminder'**
+  String get activityEventSettlementReminderSent;
+
+  /// No description provided for @activityEventPaymentMarkedSent.
+  ///
+  /// In en, this message translates to:
+  /// **'recorded a payment'**
+  String get activityEventPaymentMarkedSent;
+
+  /// No description provided for @activityEventPaymentRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'requested a payment'**
+  String get activityEventPaymentRequested;
+
+  /// No description provided for @activityEventPaymentRequestMarkedSent.
+  ///
+  /// In en, this message translates to:
+  /// **'marked a requested payment as sent'**
+  String get activityEventPaymentRequestMarkedSent;
+
+  /// No description provided for @activityEventPaymentRequestCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'cancelled a payment request'**
+  String get activityEventPaymentRequestCancelled;
+
+  /// No description provided for @activityEventPaymentRequestDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'declined a payment request'**
+  String get activityEventPaymentRequestDeclined;
+
+  /// No description provided for @activityEventPaymentConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'confirmed a payment'**
+  String get activityEventPaymentConfirmed;
+
+  /// No description provided for @activityEventPaymentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'cancelled a payment record'**
+  String get activityEventPaymentCancelled;
+
+  /// No description provided for @activityEventPaymentNotReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'marked a payment as not received'**
+  String get activityEventPaymentNotReceived;
+
+  /// No description provided for @activityEventUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'made a change'**
+  String get activityEventUnknown;
+
+  /// No description provided for @privacyEnglishFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The privacy policy is currently available in English.'**
+  String get privacyEnglishFallback;
+
+  /// No description provided for @activityRoleAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get activityRoleAdmin;
+
+  /// No description provided for @accountDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get accountDeleteTitle;
+
+  /// No description provided for @accountDeleteIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm deletion by email. Once confirmed, it cannot be undone.'**
+  String get accountDeleteIntro;
+
+  /// No description provided for @accountDeleteConsequences.
+  ///
+  /// In en, this message translates to:
+  /// **'Deletion is permanent. Your profile is anonymised and account access is removed. Shared trip and expense records are kept for other members.'**
+  String get accountDeleteConsequences;
+
+  /// No description provided for @accountDeleteReasonsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What could we have done better?'**
+  String get accountDeleteReasonsTitle;
+
+  /// No description provided for @accountDeleteReasonsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason (optional)'**
+  String get accountDeleteReasonsHint;
+
+  /// No description provided for @accountDeleteReasonNotUsing.
+  ///
+  /// In en, this message translates to:
+  /// **'I no longer need Splyto for my trips'**
+  String get accountDeleteReasonNotUsing;
+
+  /// No description provided for @accountDeleteReasonAnotherWay.
+  ///
+  /// In en, this message translates to:
+  /// **'I manage shared expenses another way'**
+  String get accountDeleteReasonAnotherWay;
+
+  /// No description provided for @accountDeleteReasonComplicated.
+  ///
+  /// In en, this message translates to:
+  /// **'It takes too much effort to get things done'**
+  String get accountDeleteReasonComplicated;
+
+  /// No description provided for @accountDeleteReasonTechnical.
+  ///
+  /// In en, this message translates to:
+  /// **'I’ve run into bugs or technical problems'**
+  String get accountDeleteReasonTechnical;
+
+  /// No description provided for @accountDeleteReasonPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'I’d prefer to remove my account details'**
+  String get accountDeleteReasonPrivacy;
+
+  /// No description provided for @accountDeleteReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'I’m leaving for a different reason'**
+  String get accountDeleteReasonOther;
+
+  /// No description provided for @accountDeleteEmailStep.
+  ///
+  /// In en, this message translates to:
+  /// **'The next step is confirmation by email.'**
+  String get accountDeleteEmailStep;
+
+  /// No description provided for @accountDeletePasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your current Splyto password to request the confirmation email. Your account is still active.'**
+  String get accountDeletePasswordHint;
+
+  /// No description provided for @accountDeleteInboxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One last step in your inbox'**
+  String get accountDeleteInboxTitle;
+
+  /// No description provided for @accountDeleteSentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmation link sent to {email}.'**
+  String accountDeleteSentBody(String email);
+
+  /// No description provided for @accountDeleteSentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account stays active until you confirm deletion.'**
+  String get accountDeleteSentHint;
+
+  /// No description provided for @accountDeleteSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending confirmation email'**
+  String get accountDeleteSending;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -7775,7 +8105,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'es', 'lv'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'it', 'lv', 'nb', 'nl', 'pl', 'pt', 'sv', 'uk'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -7786,9 +8116,21 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
 
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'cs': return AppLocalizationsCs();
+    case 'da': return AppLocalizationsDa();
+    case 'de': return AppLocalizationsDe();
     case 'en': return AppLocalizationsEn();
     case 'es': return AppLocalizationsEs();
+    case 'fi': return AppLocalizationsFi();
+    case 'fr': return AppLocalizationsFr();
+    case 'it': return AppLocalizationsIt();
     case 'lv': return AppLocalizationsLv();
+    case 'nb': return AppLocalizationsNb();
+    case 'nl': return AppLocalizationsNl();
+    case 'pl': return AppLocalizationsPl();
+    case 'pt': return AppLocalizationsPt();
+    case 'sv': return AppLocalizationsSv();
+    case 'uk': return AppLocalizationsUk();
   }
 
   throw FlutterError(

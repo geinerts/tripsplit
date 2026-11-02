@@ -21,6 +21,17 @@ Future<void> showThemeModePicker(BuildContext context) async {
         title: t.profileAppearance,
         children: [
           AppSettingsRow(
+            icon: Icons.brightness_auto_outlined,
+            title: t.themeModeSystem,
+            subtitle: t.themeModeSystemSubtitle,
+            selected: current == ThemeMode.system,
+            chevron: false,
+            onTap: () async {
+              await controller.setThemeMode(ThemeMode.system);
+              if (sheetContext.mounted) Navigator.of(sheetContext).pop();
+            },
+          ),
+          AppSettingsRow(
             icon: Icons.light_mode_outlined,
             title: t.themeModeLight,
             selected: current == ThemeMode.light,

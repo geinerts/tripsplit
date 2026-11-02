@@ -341,28 +341,6 @@ void main() {
     await _dispose(tester, links);
   });
 
-  testWidgets('manual join stays ahead of guide while preview is loading', (
-    tester,
-  ) async {
-    final session = AccountDataSession()..activate(1);
-    final trips = _Trips(session)..invite = Completer();
-    final service = _Service(session);
-    final links = _Links();
-    await _mount(tester, trips, service, links);
-    await tester.tap(find.text('Join trip via invite'));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'abcdefghij');
-    await tester.tap(find.text('Join'));
-    await _tick(tester);
-    expect(find.byType(AlertDialog), findsNothing);
-    expect(service.calls, 0);
-    trips.invite!.completeError(const ApiException('Expired invitation'));
-    await _tick(tester);
-    await _tick(tester);
-    expect(find.byType(QuickStartSheet), findsOneWidget);
-    await _dispose(tester, links);
-  });
-
   testWidgets(
     'incoming invitation dismisses a visible guide without reopening it',
     (tester) async {

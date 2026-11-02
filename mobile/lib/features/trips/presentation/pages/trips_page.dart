@@ -1,4 +1,3 @@
-import '../widgets/join_trip_invite_page.dart';
 import '../widgets/trip_invitation_dialog.dart';
 import '../widgets/received_trip_invitations_sheet.dart';
 import '../../domain/entities/received_trip_invitation.dart';
@@ -116,7 +115,6 @@ class _TripsPageState extends State<TripsPage> {
   int _loadGeneration = 0;
   bool _openCreateAfterLoad = false;
   bool _isCreateTripDialogOpen = false;
-  bool _isJoiningTrip = false;
   int _handledCreateTripRequestCount = 0;
   int _handledRefreshRequestCount = 0;
   int _handledInvitationsRefreshCount = 0;
@@ -143,7 +141,6 @@ class _TripsPageState extends State<TripsPage> {
     widget.onInteractionStateChanged?.call(
       _isMutating ||
           _isCreateTripDialogOpen ||
-          _isJoiningTrip ||
           _invitationSheetOpen ||
           _sharingTripId != null,
     );

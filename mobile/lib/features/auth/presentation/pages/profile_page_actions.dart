@@ -201,8 +201,6 @@ extension _ProfilePageActions on _ProfilePageState {
     _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
     _draftPassword = '';
     _draftRepeatPassword = '';
-    _deactivateDraftPassword = '';
-    _isDeactivateAccountPage = false;
     _isChangePasswordPage = false;
     _editErrorText = null;
   }

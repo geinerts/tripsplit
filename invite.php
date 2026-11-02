@@ -14,8 +14,9 @@ $pageInvite = trim($rawInvite) !== '' ? trim($rawInvite) : ($inviteCode ?? '');
 $pageUrl = share_absolute_url('/invite', $pageInvite !== '' ? ['invite' => $pageInvite] : []);
 $imageUrl = share_absolute_url('/share-image.php', [
     'type' => 'trip',
+    'format' => 'jpeg',
     'invite' => $pageInvite,
-    'v' => $hasInvite ? 'trip4-' . substr(hash('sha256', $inviteCode), 0, 12) : 'trip4-missing',
+    'v' => $hasInvite ? 'trip5-' . substr(hash('sha256', $inviteCode), 0, 12) : 'trip5-missing',
 ]);
 $inviteForApp = $pageInvite !== '' ? $pageInvite : ($inviteCode ?? '');
 $isValid = (bool) ($tripMeta['valid'] ?? false);
@@ -32,7 +33,7 @@ share_send_html_headers(0);
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><?= share_html($title) ?></title>
   <meta name="description" content="<?= share_html($description) ?>" />
-  <?= share_open_graph_tags($title, $description, $pageUrl, $imageUrl) ?>
+  <?= share_open_graph_tags($title, $description, $pageUrl, $imageUrl, 'image/jpeg') ?>
   <style>
     :root {
       --bg: #040607;

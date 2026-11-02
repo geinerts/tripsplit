@@ -374,7 +374,7 @@ function workspace_load_trip_notifications(
 
     return [
         'unread_count' => $unreadCount < 0 ? 0 : $unreadCount,
-        'notifications' => $notifications,
+        'notifications' => notifications_with_actor_avatars($pdo, $notifications),
     ];
 }
 

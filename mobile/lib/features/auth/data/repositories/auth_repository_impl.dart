@@ -113,8 +113,14 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> requestAccountDeletionLink({required String password}) {
-    return _remote.requestAccountDeletionLink(password: password);
+  Future<void> requestAccountDeletionLink({
+    required String password,
+    List<String> reasonCodes = const [],
+  }) {
+    return _remote.requestAccountDeletionLink(
+      password: password,
+      reasonCodes: reasonCodes,
+    );
   }
 
   @override

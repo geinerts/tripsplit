@@ -371,6 +371,54 @@ async function pollIncidents() {
 
 // ── View: Dashboard ───────────────────────────────────────────────────────────
 
+// Anonymous selections from deletion requests, not completed deletions.
+function renderDeletionFeedback(feedback) {
+  const definitions = [
+    ['not_using', 'No longer needed for trips', '#00BED4'],
+    ['another_way', 'Using another way to split expenses', '#DD2684'],
+    ['too_complicated', 'Too complicated to use', '#A58AE5'],
+    ['technical_issue', 'Bugs or technical issues', '#F0AC57'],
+    ['privacy', 'Wants account details removed', '#57B487'],
+    ['other', 'Another reason', '#8294AE'],
+  ];
+  const available = feedback?.available === true && Array.isArray(feedback.reasons);
+  const rows = definitions.map(([code, label, color]) => {
+    const value = feedback?.reasons?.find?.(row => row.code === code)?.count;
+    return {code, label, color, count: Number.isSafeInteger(value) && value > 0 ? value : 0};
+  });
+  const total = rows.reduce((sum, row) => sum + row.count, 0);
+  let offset = 0;
+  const segments = total ? rows.filter(row => row.count).map(row => {
+    const portion = row.count / total * 100;
+    const circle = `<circle cx="60" cy="60" r="46" pathLength="100" fill="none"
+      stroke="${row.color}" stroke-width="16" stroke-dasharray="${portion} ${100 - portion}"
+      stroke-dashoffset="${-offset}" transform="rotate(-90 60 60)"/>`;
+    offset += portion;
+    return circle;
+  }).join('') : '';
+  return `<section class="table-card deletion-feedback" aria-labelledby="deletion-feedback-title">
+    <div class="table-card-header">
+      <div class="table-card-title" id="deletion-feedback-title">Account deletion reasons</div>
+      <span class="deletion-period">All time</span>
+    </div>
+    ${!available ? '<div class="empty-state" role="status">Reason statistics are unavailable. Check the feedback migration and try refreshing.</div>' : `
+      <div class="deletion-feedback-body">
+        <div class="deletion-donut" aria-hidden="true">
+          <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="var(--border)" stroke-width="16"/>${segments}</svg>
+          <div class="deletion-donut-total"><strong>${total.toLocaleString('en')}</strong><span>selections</span></div>
+        </div>
+        <ul class="deletion-legend">
+          ${rows.map(row => `<li><svg width="10" height="10" aria-hidden="true"><circle cx="5" cy="5" r="5" fill="${row.color}"/></svg>
+            <span>${row.label}</span><strong>${row.count.toLocaleString('en')}</strong>
+            <span class="deletion-percent">${total ? (row.count / total * 100).toFixed(1) : '0.0'}%</span></li>`).join('')}
+        </ul>
+      </div>
+      ${!total ? '<p class="deletion-empty" role="status">No reasons collected yet.</p>' : ''}
+      <p class="deletion-note">Anonymous selections from deletion requests. Multiple reasons are allowed; these are not confirmed deletions.</p>
+    `}
+  </section>`;
+}
+
 registerView('dashboard', {
   title: 'Dashboard',
   async render() {
@@ -473,8 +521,9 @@ registerView('dashboard', {
       <!-- Two-col grid -->
       <div class="dashboard-grid">
 
-        <!-- Left: incidents + activity -->
+        <!-- Left: deletion feedback + incidents + activity -->
         <div>
+          ${renderDeletionFeedback(s.account_deletion_feedback)}
           <div class="table-card">
             <div class="table-card-header">
               <div class="table-card-title">🚨 Open Incidents</div>

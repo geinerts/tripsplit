@@ -215,7 +215,8 @@ function share_open_graph_tags(
     string $title,
     string $description,
     string $url,
-    string $imageUrl
+    string $imageUrl,
+    string $imageMime = 'image/png'
 ): string {
     $safeTitle = share_html($title);
     $safeDescription = share_html($description);
@@ -229,7 +230,7 @@ function share_open_graph_tags(
         '<meta property="og:url" content="' . $safeUrl . '" />',
         '<meta property="og:image" content="' . $safeImage . '" />',
         '<meta property="og:image:secure_url" content="' . $safeImage . '" />',
-        '<meta property="og:image:type" content="image/png" />',
+        '<meta property="og:image:type" content="' . ($imageMime === 'image/jpeg' ? 'image/jpeg' : 'image/png') . '" />',
         '<meta property="og:image:width" content="1200" />',
         '<meta property="og:image:height" content="630" />',
         '<meta name="twitter:card" content="summary_large_image" />',
@@ -242,12 +243,43 @@ function share_open_graph_tags(
 
 function share_output_png($image, int $maxAgeSeconds = 300): void
 {
-    header('Content-Type: image/png');
+    share_output_image($image, $maxAgeSeconds, 'png');
+}
+
+function share_encode_image($image, string $format = 'png'): string
+{
+    // Opaque RGB avoids carrying a redundant alpha channel in every preview.
+    $opaque = imagecreatetruecolor(imagesx($image), imagesy($image));
+    imagefill($opaque, 0, 0, imagecolorallocate($opaque, 4, 6, 7));
+    imagecopy($opaque, $image, 0, 0, 0, 0, imagesx($image), imagesy($image));
+    imagesavealpha($opaque, false);
+    // Baseline JPEG: do not introduce a progressively sharpening image ourselves.
+    imageinterlace($opaque, false);
+    ob_start();
+    try {
+        $ok = $format === 'jpeg'
+            ? imagejpeg($opaque, null, 90)
+            : imagepng($opaque, null, 6);
+        $bytes = ob_get_contents();
+    } finally {
+        ob_end_clean();
+    }
+    if (!$ok || !is_string($bytes) || $bytes === '') {
+        throw new RuntimeException('Could not encode share preview.');
+    }
+    return $bytes;
+}
+
+function share_output_image($image, int $maxAgeSeconds = 300, string $format = 'png'): void
+{
+    $bytes = share_encode_image($image, $format);
+    header('Content-Type: ' . ($format === 'jpeg' ? 'image/jpeg' : 'image/png'));
+    header('Content-Length: ' . strlen($bytes));
     header($maxAgeSeconds <= 0
         ? 'Cache-Control: no-store'
         : 'Cache-Control: public, max-age=' . max(60, $maxAgeSeconds));
     header('X-Content-Type-Options: nosniff');
-    imagepng($image);
+    echo $bytes;
     exit;
 }
 

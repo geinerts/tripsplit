@@ -341,6 +341,64 @@ function require_locked_trip_member(PDO $pdo, int $tripId, int $userId): void
     }
 }
 
+/** Resolve the person represented by each event, never the notification recipient. */
+function notification_actor_user_id(array $notification): ?int
+{
+    $payload = $notification['payload'] ?? null;
+    if (!is_array($payload)) return null;
+    $key = match ($notification['type'] ?? '') {
+        'friend_invite', 'friend_invite_received', 'friend_invite_accepted',
+        'settlement_sent', 'settlement_sent_cancelled', 'payment_sent',
+        'payment_cancelled', 'payment_request_sent', 'payment_request_declined' => 'from_user_id',
+        'settlement_confirmed', 'settlement_not_received', 'payment_requested',
+        'payment_confirmed', 'payment_not_received', 'payment_request_cancelled' => 'to_user_id',
+        'trip_invitation' => 'invited_by_user_id',
+        'trip_finished' => 'ended_by_user_id',
+        'trip_member_removed' => 'removed_by_user_id',
+        'member_ready_to_settle' => 'user_id',
+        'expense_added' => 'paid_by_user_id',
+        'settlement_reminder' => 'reminded_by_user_id',
+        default => null,
+    };
+    if ($key === null) return null;
+    $id = filter_var($payload[$key] ?? null, FILTER_VALIDATE_INT);
+    return $id !== false && $id > 0 ? $id : null;
+}
+
+/** Add current profile photos in one query, including for historical notifications. */
+function notifications_with_actor_avatars(PDO $pdo, array $notifications): array
+{
+    $ids = [];
+    foreach ($notifications as $notification) {
+        $id = notification_actor_user_id($notification);
+        if ($id !== null) $ids[$id] = $id;
+    }
+    $avatars = [];
+    if ($ids) {
+        $stmt = $pdo->prepare('SELECT id, avatar_path FROM ' . table_name('users') . '
+            WHERE id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')'
+            . users_active_filter_sql($pdo, ''));
+        $stmt->execute(array_values($ids));
+        foreach ($stmt->fetchAll() as $user) {
+            $path = trim((string) ($user['avatar_path'] ?? ''));
+            if ($path !== '') {
+                $avatars[(int) $user['id']] = [
+                    'actor_avatar_url' => avatar_public_url($path),
+                    'actor_avatar_thumb_url' => avatar_thumb_public_url($path),
+                ];
+            }
+        }
+    }
+    foreach ($notifications as &$notification) {
+        $id = notification_actor_user_id($notification);
+        $notification['actor_user_id'] = $id;
+        $notification['actor_avatar_url'] = $id !== null ? ($avatars[$id]['actor_avatar_url'] ?? null) : null;
+        $notification['actor_avatar_thumb_url'] = $id !== null ? ($avatars[$id]['actor_avatar_thumb_url'] ?? null) : null;
+    }
+    unset($notification);
+    return $notifications;
+}
+
 function create_user_notification(
     PDO $pdo,
     int $tripId,

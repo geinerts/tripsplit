@@ -84,11 +84,6 @@ extension _TripsPageWidgets on _TripsPageState {
       icon: const Icon(Icons.add),
       label: Text(context.l10n.createTripAction),
     ),
-    secondary: TextButton.icon(
-      onPressed: _isMutating ? null : _onJoinTripPressed,
-      icon: const Icon(Icons.link),
-      label: Text(context.l10n.tripsJoinTripViaInvite),
-    ),
   );
 
   Widget _centeredState(
@@ -97,7 +92,6 @@ extension _TripsPageWidgets on _TripsPageState {
     required String title,
     String? message,
     required Widget primary,
-    Widget? secondary,
   }) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
     child: Center(
@@ -128,10 +122,6 @@ extension _TripsPageWidgets on _TripsPageState {
             ],
             const SizedBox(height: 24),
             SizedBox(width: double.infinity, child: primary),
-            if (secondary != null) ...[
-              const SizedBox(height: 8),
-              SizedBox(width: double.infinity, child: secondary),
-            ],
           ],
         ),
       ),
@@ -250,11 +240,6 @@ extension _TripsPageWidgets on _TripsPageState {
             color: Theme.of(context).colorScheme.primary,
           ),
         ),
-      ),
-      IconButton(
-        tooltip: context.l10n.tripsJoinTripViaInvite,
-        onPressed: _isMutating ? null : _onJoinTripPressed,
-        icon: const Icon(Icons.link),
       ),
       IconButton(
         key: const ValueKey('home-create-trip'),

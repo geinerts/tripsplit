@@ -22,57 +22,34 @@ Future<void> showAppLocalePicker(BuildContext context) async {
         title: t.profileLanguage,
         children: [
           AppSettingsRow(
-            icon: Icons.translate_outlined,
-            title: t.languageEnglish,
-            subtitle: _nativeLanguageName(AppLocaleMode.english),
-            selected: current == AppLocaleMode.english,
+            icon: Icons.phone_iphone,
+            title: t.languageSystem,
+            subtitle: t.languageSystemSubtitle,
+            selected: current == AppLocaleMode.system,
             chevron: false,
             onTap: () async {
-              await controller.setMode(AppLocaleMode.english);
-              if (sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
+              await controller.setMode(AppLocaleMode.system);
+              if (sheetContext.mounted) Navigator.of(sheetContext).pop();
             },
           ),
-          AppSettingsRow(
-            icon: Icons.translate,
-            title: t.languageLatvian,
-            subtitle: _nativeLanguageName(AppLocaleMode.latvian),
-            selected: current == AppLocaleMode.latvian,
-            chevron: false,
-            onTap: () async {
-              await controller.setMode(AppLocaleMode.latvian);
-              if (sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          ),
-          AppSettingsRow(
-            icon: Icons.translate_rounded,
-            title: t.languageSpanish,
-            subtitle: _nativeLanguageName(AppLocaleMode.spanish),
-            selected: current == AppLocaleMode.spanish,
-            chevron: false,
-            onTap: () async {
-              await controller.setMode(AppLocaleMode.spanish);
-              if (sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          ),
+          for (final mode in AppLocaleMode.values.where(
+            (mode) => mode != AppLocaleMode.system,
+          ))
+            AppSettingsRow(
+              key: ValueKey('language-${mode.languageCode}'),
+              leading: ExcludeSemantics(
+                child: Text(mode.flag, style: const TextStyle(fontSize: 24)),
+              ),
+              title: mode.nativeName,
+              selected: current == mode,
+              chevron: false,
+              onTap: () async {
+                await controller.setMode(mode);
+                if (sheetContext.mounted) Navigator.of(sheetContext).pop();
+              },
+            ),
         ],
       );
     },
   );
-}
-
-String _nativeLanguageName(AppLocaleMode mode) {
-  switch (mode) {
-    case AppLocaleMode.english:
-      return 'English';
-    case AppLocaleMode.latvian:
-      return 'Latviešu';
-    case AppLocaleMode.spanish:
-      return 'Español';
-  }
 }

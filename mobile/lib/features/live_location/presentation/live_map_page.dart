@@ -10,6 +10,7 @@ import '../../workspace/domain/entities/workspace_user.dart';
 import '../data/live_location_device.dart';
 import '../domain/live_location.dart';
 import 'live_location_controller.dart';
+import 'mapbox_live_map.dart';
 
 class LiveMapPage extends StatefulWidget {
   const LiveMapPage({
@@ -31,6 +32,8 @@ class LiveMapPage extends StatefulWidget {
 
 class _LiveMapPageState extends State<LiveMapPage> with WidgetsBindingObserver {
   final _map = MapController();
+  final _mapboxKey = GlobalKey<MapboxLiveMapState>();
+  bool get _usesMapbox => widget.showTiles && mapboxLiveMapAvailable;
   late final AccountDataLease _lease;
   Timer? _poll;
   LiveMapSnapshot? _snapshot;
@@ -108,6 +111,10 @@ class _LiveMapPageState extends State<LiveMapPage> with WidgetsBindingObserver {
   }
 
   void _fit() {
+    if (_usesMapbox) {
+      unawaited(_mapboxKey.currentState?.fitMembers());
+      return;
+    }
     final members = _members;
     if (!_ready || members.isEmpty) return;
     _fitted = true;
@@ -340,107 +347,123 @@ class _LiveMapPageState extends State<LiveMapPage> with WidgetsBindingObserver {
                       borderRadius: BorderRadius.circular(22),
                       child: Stack(
                         children: [
-                          FlutterMap(
-                            mapController: _map,
-                            options: MapOptions(
-                              initialCenter: const LatLng(48, 9),
-                              initialZoom: 3,
-                              minZoom: 2,
-                              maxZoom: 18,
-                              interactionOptions: const InteractionOptions(
-                                flags:
-                                    InteractiveFlag.all &
-                                    ~InteractiveFlag.rotate,
+                          if (_usesMapbox)
+                            MapboxLiveMap(
+                              key: _mapboxKey,
+                              members: members,
+                              users: widget.users,
+                              serverNow: _serverNow,
+                              selected: _selected,
+                              onSelect: (id) => setState(() => _selected = id),
+                            )
+                          else
+                            FlutterMap(
+                              mapController: _map,
+                              options: MapOptions(
+                                initialCenter: const LatLng(48, 9),
+                                initialZoom: 3,
+                                minZoom: 2,
+                                maxZoom: 18,
+                                interactionOptions: const InteractionOptions(
+                                  flags:
+                                      InteractiveFlag.all &
+                                      ~InteractiveFlag.rotate,
+                                ),
+                                onMapReady: () {
+                                  _ready = true;
+                                  if (_members.isNotEmpty) _fit();
+                                },
+                                onTap: (_, point) =>
+                                    setState(() => _selected = null),
                               ),
-                              onMapReady: () {
-                                _ready = true;
-                                if (_members.isNotEmpty) _fit();
-                              },
-                              onTap: (_, point) =>
-                                  setState(() => _selected = null),
-                            ),
-                            children: [
-                              if (widget.showTiles)
-                                TileLayer(
-                                  urlTemplate: const String.fromEnvironment(
-                                    'LIVE_MAP_TILE_URL',
-                                    defaultValue:
-                                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                  ),
-                                  userAgentPackageName: 'eu.splyto.app',
-                                  maxNativeZoom: 19,
-                                  tileProvider: NetworkTileProvider(
-                                    headers: {
-                                      'User-Agent':
-                                          'Splyto/1.0 (+https://splyto.eu; info@splyto.eu)',
-                                    },
-                                  ),
-                                ),
-                              if (selected != null)
-                                CircleLayer(
-                                  circles: [
-                                    CircleMarker(
-                                      point: selected.point,
-                                      radius: selected.accuracy.clamp(5, 2000),
-                                      useRadiusInMeter: true,
-                                      color: colors.primary.withValues(
-                                        alpha: .12,
-                                      ),
-                                      borderColor: colors.primary.withValues(
-                                        alpha: .4,
-                                      ),
-                                      borderStrokeWidth: 1,
+                              children: [
+                                if (widget.showTiles)
+                                  TileLayer(
+                                    urlTemplate: const String.fromEnvironment(
+                                      'LIVE_MAP_TILE_URL',
+                                      defaultValue:
+                                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                                     ),
-                                  ],
-                                ),
-                              MarkerLayer(
-                                markers: [
-                                  for (final member in members)
-                                    Marker(
-                                      point: member.point,
-                                      width: 56,
-                                      height: 56,
-                                      child: Semantics(
-                                        label: member.name,
-                                        button: true,
-                                        child: GestureDetector(
-                                          key: ValueKey(
-                                            'live-member-${member.userId}',
-                                          ),
-                                          onTap: () => setState(
-                                            () => _selected = member.userId,
-                                          ),
-                                          child: Center(
-                                            child: Container(
-                                              padding: const EdgeInsets.all(3),
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color:
-                                                    _serverNow
-                                                            .difference(
-                                                              member.observedAt,
-                                                            )
-                                                            .inSeconds <
-                                                        30
-                                                    ? colors.primary
-                                                    : colors.outline,
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color: Colors.black26,
-                                                    blurRadius: 6,
-                                                  ),
-                                                ],
+                                    userAgentPackageName: 'eu.splyto.app',
+                                    maxNativeZoom: 19,
+                                    tileProvider: NetworkTileProvider(
+                                      headers: {
+                                        'User-Agent':
+                                            'Splyto/1.0 (+https://splyto.eu; info@splyto.eu)',
+                                      },
+                                    ),
+                                  ),
+                                if (selected != null)
+                                  CircleLayer(
+                                    circles: [
+                                      CircleMarker(
+                                        point: selected.point,
+                                        radius: selected.accuracy.clamp(
+                                          5,
+                                          2000,
+                                        ),
+                                        useRadiusInMeter: true,
+                                        color: colors.primary.withValues(
+                                          alpha: .12,
+                                        ),
+                                        borderColor: colors.primary.withValues(
+                                          alpha: .4,
+                                        ),
+                                        borderStrokeWidth: 1,
+                                      ),
+                                    ],
+                                  ),
+                                MarkerLayer(
+                                  markers: [
+                                    for (final member in members)
+                                      Marker(
+                                        point: member.point,
+                                        width: 56,
+                                        height: 56,
+                                        child: Semantics(
+                                          label: member.name,
+                                          button: true,
+                                          child: GestureDetector(
+                                            key: ValueKey(
+                                              'live-member-${member.userId}',
+                                            ),
+                                            onTap: () => setState(
+                                              () => _selected = member.userId,
+                                            ),
+                                            child: Center(
+                                              child: Container(
+                                                padding: const EdgeInsets.all(
+                                                  3,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color:
+                                                      _serverNow
+                                                              .difference(
+                                                                member
+                                                                    .observedAt,
+                                                              )
+                                                              .inSeconds <
+                                                          30
+                                                      ? colors.primary
+                                                      : colors.outline,
+                                                  boxShadow: const [
+                                                    BoxShadow(
+                                                      color: Colors.black26,
+                                                      blurRadius: 6,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: _avatar(member),
                                               ),
-                                              child: _avatar(member),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           Positioned(
                             right: 10,
                             top: 10,
@@ -466,28 +489,29 @@ class _LiveMapPageState extends State<LiveMapPage> with WidgetsBindingObserver {
                                 ),
                               ),
                             ),
-                          Positioned(
-                            right: 4,
-                            bottom: 0,
-                            child: Material(
-                              color: colors.surface.withValues(alpha: .92),
-                              child: InkWell(
-                                onTap: () => launchUrl(
-                                  Uri.parse(
-                                    'https://www.openstreetmap.org/copyright',
+                          if (!_usesMapbox)
+                            Positioned(
+                              right: 4,
+                              bottom: 0,
+                              child: Material(
+                                color: colors.surface.withValues(alpha: .92),
+                                child: InkWell(
+                                  onTap: () => launchUrl(
+                                    Uri.parse(
+                                      'https://www.openstreetmap.org/copyright',
+                                    ),
+                                    mode: LaunchMode.externalApplication,
                                   ),
-                                  mode: LaunchMode.externalApplication,
-                                ),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(6),
-                                  child: Text(
-                                    '© OpenStreetMap contributors',
-                                    style: TextStyle(fontSize: 10),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(6),
+                                    child: Text(
+                                      '© OpenStreetMap contributors',
+                                      style: TextStyle(fontSize: 10),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
                           if (selected != null)
                             Positioned(
                               left: 12,

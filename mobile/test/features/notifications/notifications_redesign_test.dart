@@ -20,10 +20,14 @@ WorkspaceNotification _item(
   int tripId = 0,
   String? token,
   String? body,
+  String? avatar,
+  String? thumbnail,
 }) => WorkspaceNotification(
   id: id,
   tripId: tripId,
   inviteToken: token,
+  actorAvatarUrl: avatar,
+  actorAvatarThumbUrl: thumbnail,
   tripName: tripId > 0 ? 'Lisbon getaway' : null,
   type: type,
   title: 'Invite accepted',
@@ -158,6 +162,58 @@ Future<void> _tap(WidgetTester tester, String text) async {
 }
 
 void main() {
+  testWidgets('notification photos prefer thumbnails and fall back to initials', (
+    tester,
+  ) async {
+    final controller = _Workspace()
+      ..inbox = _page([
+        _item(
+          1,
+          avatar: 'https://example.test/full.jpg',
+          thumbnail: 'https://example.test/thumb.jpg',
+        ),
+        _item(2, avatar: 'https://example.test/full-only.jpg'),
+        _item(3),
+        _item(4, type: 'trip_ready_to_settle', body: 'All members are ready.'),
+      ]);
+    await _mount(tester, controller);
+    final thumb = tester.widget<Image>(
+      find.byKey(const ValueKey('notification-avatar-1')),
+    );
+    final full = tester.widget<Image>(
+      find.byKey(const ValueKey('notification-avatar-2')),
+    );
+    expect((thumb.image as NetworkImage).url, 'https://example.test/thumb.jpg');
+    expect(
+      (full.image as NetworkImage).url,
+      'https://example.test/full-only.jpg',
+    );
+    expect(thumb.fit, BoxFit.cover);
+    expect(thumb.width, 40);
+    expect(find.byKey(const ValueKey('notification-avatar-3')), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('notification-3')),
+        matching: find.text('AP'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.byIcon(Icons.notifications_none), findsOneWidget);
+    // Flutter's test HTTP client rejects image loads; the fallback remains usable.
+    await tester.runAsync(() async {
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('notification-1')),
+        matching: find.text('AP'),
+      ),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   test('known server actor only and timestamp parsing', () {
     expect(notificationActorName(_item(1)), 'Anna Parker');
     expect(

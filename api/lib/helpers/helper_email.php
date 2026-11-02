@@ -381,7 +381,7 @@ function build_account_delete_email(string $deleteUrl, string $firstName): strin
         <tr><td align="center">
           <table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
             <tr>
-              <td style="background:linear-gradient(135deg,#ffd6d6,#ef4444);padding:32px;text-align:center;">
+              <td style="background:linear-gradient(135deg,#e8f8fb,#fdf0f7);padding:32px;text-align:center;">
                 {$logo}
               </td>
             </tr>
@@ -389,14 +389,18 @@ function build_account_delete_email(string $deleteUrl, string $firstName): strin
               <td style="padding:40px 36px;">
                 <h2 style="margin:0 0 16px;font-size:22px;color:#111827;">Confirm permanent deletion</h2>
                 <p style="margin:0 0 24px;font-size:15px;color:#4b5563;line-height:1.6;">
-                  Hi {$name}, this action permanently deletes your account access and anonymizes your profile data.
-                  This cannot be undone.
+                  Hi {$name}, you asked to close your Splyto account. Your account is still active.
+                  Open the link below and confirm on the next page to permanently remove access and anonymize your profile.
+                  Shared trip and expense records are kept for other members. Confirmed deletion cannot be undone.
+                </p>
+                <p style="margin:0 0 24px;font-size:14px;color:#4b5563;line-height:1.6;">
+                  This link can be used once. If you changed your mind or did not request this, simply ignore this email.
                 </p>
                 <table cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
                   <tr>
                     <td style="background:#dc2626;border-radius:10px;">
                       <a href="{$url}" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">
-                        Delete account permanently
+                        Review account deletion
                       </a>
                     </td>
                   </tr>

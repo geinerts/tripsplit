@@ -19,6 +19,9 @@ const inbox = WorkspaceNotificationsInbox(
       type: 'friend_invite_received',
       title: 'Invite',
       body: 'Invitation',
+      actorUserId: 42,
+      actorAvatarUrl: 'https://example.test/avatar.jpg',
+      actorAvatarThumbUrl: 'https://example.test/avatar-thumb.jpg',
       isRead: false,
       createdAt: '2026-10-23 12:00:00',
     ),
@@ -68,6 +71,15 @@ void main() {
       expect(cached.isCached, isTrue);
       expect(cached.unreadCount, 0);
       expect(cached.notifications.single.isRead, isTrue);
+      expect(cached.notifications.single.actorUserId, 42);
+      expect(
+        cached.notifications.single.actorAvatarUrl,
+        inbox.notifications.single.actorAvatarUrl,
+      );
+      expect(
+        cached.notifications.single.actorAvatarThumbUrl,
+        inbox.notifications.single.actorAvatarThumbUrl,
+      );
     },
   );
   test(

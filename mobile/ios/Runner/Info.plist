@@ -8,6 +8,24 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>de</string>
+		<string>es</string>
+		<string>fr</string>
+		<string>it</string>
+		<string>pt</string>
+		<string>pl</string>
+		<string>nl</string>
+		<string>sv</string>
+		<string>da</string>
+		<string>nb</string>
+		<string>fi</string>
+		<string>cs</string>
+		<string>uk</string>
+		<string>lv</string>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>Splyto</string>
 	<key>CFBundleExecutable</key>

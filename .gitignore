@@ -11,6 +11,8 @@ api/config.local.php
 .DS_Store
 .vscode/
 .idea/
+.codex/
+.agents/
 
 # Logs and runtime artifacts
 *.log

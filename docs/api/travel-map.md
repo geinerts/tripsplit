@@ -1,10 +1,18 @@
 # Private travel map
 
-Profile → My travel map shows a bundled Natural Earth overview with visited
-countries highlighted and one check marker per city. Markers have a 24-pixel
-visual inside a 48-pixel touch target. Bundled country labels appear at overview
-zoom levels; major city labels appear when zoomed in (starting at zoom 4.3).
-Labels avoid one another and visit markers, without external tile requests. Selecting a marker opens a
+Profile → My travel map uses native Mapbox on configured iOS/Android builds,
+with calm Light/Dark styles following the app theme. Country and city labels
+remain; POI, transit, airport, building and road labels are hidden. Visited
+countries are softly tinted using bundled Natural Earth outlines, fading out
+between zoom 3 and 4.5 so coarse geometry does not obscure city detail. One
+24-pixel check per city sits inside a 48-pixel Flutter touch target. Markers and
+popups follow camera projection; visit records/photos are never uploaded to
+Mapbox. The native logo/attribution and telemetry opt-out remain accessible.
+No GPS component is initialised when opening the map.
+
+Without a public token or on unsupported platforms, the existing bundled
+Natural Earth map is used, including its offline country/city labels.
+Selecting a marker opens a
 small card with city, country/region and latest visit date. There is no persistent
 list below the map. Repeated dates in the same city are separate visits; the card
 pages between visits and allows editing or removing the displayed visit after confirmation.
@@ -20,8 +28,10 @@ action when the linked trip is still accessible.
   available. No background updates, location stream or group/live sharing.
 - The API receives only the confirmed city centre, not the device's measured
   position. City search/reverse-geocoding uses the device platform's geocoder;
-  the map geometry itself makes no tile/network requests. Search terms may go
-  to the platform provider. No external map API keys are required.
+  the configured Mapbox basemap makes tile/network requests and requires the
+  shared public build token (see mobile/README.md). Search terms may go to the
+  platform provider; city search does not use Mapbox Search/Geocoding. Offline
+  Mapbox coverage depends on its previously cached resources.
 - This first version is an overview of cities, not a street/navigation map.
   Native search/location target iOS and Android. Native provider availability,
   connectivity and rate limits can affect lookups; errors keep the form open.
@@ -106,3 +116,12 @@ backup retention still applies. Logout clears local account storage.
 Tests also cover accepted membership, unauthorized trip imports, private photo
 access, cover-copy independence, image validation, repeat imports, membership
 revocation, photo versioning, explicit confirmation and repeated-city paging.
+
+## Mapbox renderer verification
+
+The shared popup and native marker overlay are covered by Flutter widget tests
+(tap targets, repeated visits, editing, projected position changes and closing).
+iPhone 17 Pro simulator checks use synthetic Lisbon/Riga/Rome/Madrid visits:
+dark/light basemaps, all-place framing, theme changes and zoomed city labels.
+No production visits or live coordinates are used in this preview. Native
+Android visual/gesture checks remain a device QA task.

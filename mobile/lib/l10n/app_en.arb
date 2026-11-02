@@ -1602,7 +1602,7 @@
   "analyticsPeriodEmptyBody": "There are no expenses for this view. Try another trip or period.",
   "analyticsLoadFailed": "Could not load the complete spending report. Please try again.",
   "analyticsLastLoaded": "Showing the last successfully loaded report.",
-  "analyticsExpenseCount": "{count} expenses",
+  "analyticsExpenseCount": "{count, plural, one{{count} expense} other{{count} expenses}}",
   "@analyticsExpenseCount": {
     "placeholders": {
       "count": {
@@ -1768,6 +1768,7 @@
   "liveStopPending": "Updates stopped. Waiting for internet to remove your last location; it disappears from the map within 2 minutes without updates.",
   "liveSharing": "sharing",
   "liveUnavailable": "This live map is unavailable. Return to the trip and refresh.",
+  "liveMapLoadError": "The map could not load. Check your connection and reopen the map.",
   "liveLoadError": "Could not refresh locations. Only recent updates are shown.",
   "liveFit": "Show everyone",
   "liveEmpty": "Nobody is sharing a recent location yet.",
@@ -1777,5 +1778,86 @@
   "liveUntil": "Sharing until",
   "liveOtherSession": "Started in another session. You can stop it here.",
   "liveUpdatesPaused": "Updates paused. Check location access and internet.",
-  "livePrivateUntilShared": "Your location stays private until you choose to share it."
+  "livePrivateUntilShared": "Your location stays private until you choose to share it.",
+  "activityEventExpenseCreated": "added an expense",
+  "activityEventExpenseUpdated": "updated an expense",
+  "activityEventExpenseDeleted": "deleted an expense",
+  "activityEventTripCreated": "created the trip",
+  "activityEventTripUpdated": "updated trip details",
+  "activityEventTripMembersAdded": "added members",
+  "activityEventTripMembersInvited": "sent invitations: {count}",
+  "@activityEventTripMembersInvited": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityEventTripMemberJoined": "joined the trip",
+  "activityEventTripInvitationDeclined": "declined the trip invitation",
+  "activityEventTripInvitationRevoked": "cancelled a trip invitation",
+  "activityEventTripMemberRemoved": "removed {name} from the trip",
+  "@activityEventTripMemberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberLeft": "left the trip",
+  "activityEventTripMemberRoleUpdated": "changed the role of {name} to {role}",
+  "@activityEventTripMemberRoleUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberReady": "marked ready to settle",
+  "activityEventTripMemberNotReady": "marked not ready",
+  "activityEventTripAllMembersReady": "All members are ready to settle",
+  "activityEventTripFinished": "finished the trip",
+  "activityEventSettlementMarkedSent": "marked a transfer as sent",
+  "activityEventSettlementConfirmed": "confirmed a transfer",
+  "activityEventSettlementSentCancelled": "cancelled sent status",
+  "activityEventSettlementNotReceived": "marked a transfer as not received",
+  "activityEventSettlementReminderSent": "sent a settlement reminder",
+  "activityEventPaymentMarkedSent": "recorded a payment",
+  "activityEventPaymentRequested": "requested a payment",
+  "activityEventPaymentRequestMarkedSent": "marked a requested payment as sent",
+  "activityEventPaymentRequestCancelled": "cancelled a payment request",
+  "activityEventPaymentRequestDeclined": "declined a payment request",
+  "activityEventPaymentConfirmed": "confirmed a payment",
+  "activityEventPaymentCancelled": "cancelled a payment record",
+  "activityEventPaymentNotReceived": "marked a payment as not received",
+  "activityEventUnknown": "made a change",
+  "privacyEnglishFallback": "The privacy policy is currently available in English.",
+  "activityRoleAdmin": "Admin",
+  "accountDeleteTitle": "Delete account",
+  "accountDeleteIntro": "Confirm deletion by email. Once confirmed, it cannot be undone.",
+  "accountDeleteConsequences": "Deletion is permanent. Your profile is anonymised and account access is removed. Shared trip and expense records are kept for other members.",
+  "accountDeleteReasonsTitle": "What could we have done better?",
+  "accountDeleteReasonsHint": "Reason (optional)",
+  "accountDeleteReasonNotUsing": "I no longer need Splyto for my trips",
+  "accountDeleteReasonAnotherWay": "I manage shared expenses another way",
+  "accountDeleteReasonComplicated": "It takes too much effort to get things done",
+  "accountDeleteReasonTechnical": "I’ve run into bugs or technical problems",
+  "accountDeleteReasonPrivacy": "I’d prefer to remove my account details",
+  "accountDeleteReasonOther": "I’m leaving for a different reason",
+  "accountDeleteEmailStep": "The next step is confirmation by email.",
+  "accountDeletePasswordHint": "Enter your current Splyto password to request the confirmation email. Your account is still active.",
+  "accountDeleteInboxTitle": "One last step in your inbox",
+  "accountDeleteSentBody": "Confirmation link sent to {email}.",
+  "accountDeleteSentHint": "Your account stays active until you confirm deletion.",
+  "accountDeleteSending": "Sending confirmation email",
+  "@accountDeleteSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  }
 }

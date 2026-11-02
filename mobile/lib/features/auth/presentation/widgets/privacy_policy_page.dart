@@ -75,6 +75,11 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          if (_language !=
+                              Localizations.localeOf(context).languageCode) ...[
+                            Text(t.privacyEnglishFallback),
+                            const SizedBox(height: 16),
+                          ],
                           Text(t.privacyLoadFailed),
                           const SizedBox(height: 12),
                           TextButton(
@@ -107,6 +112,11 @@ class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
                           32,
                         ),
                         children: [
+                          if (_language !=
+                              Localizations.localeOf(context).languageCode) ...[
+                            Text(t.privacyEnglishFallback),
+                            const SizedBox(height: 16),
+                          ],
                           Text(
                             policy['updated'] as String,
                             style: Theme.of(context).textTheme.bodySmall,

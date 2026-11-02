@@ -116,7 +116,7 @@ function list_notifications_action(): void
         'ok' => true,
         'trip' => build_trip_payload($trip),
         'unread_count' => $unreadCount,
-        'notifications' => $notifications,
+        'notifications' => notifications_with_actor_avatars($pdo, $notifications),
         'pagination' => [
             'mode' => $hasCursor ? 'cursor' : 'offset',
             'limit' => $limit,
@@ -324,7 +324,7 @@ function load_global_notifications_page(
     }
 
     return [
-        'items' => $items,
+        'items' => notifications_with_actor_avatars($pdo, $items),
         'has_more' => $hasMore,
         'next_cursor' => $nextCursor !== '' ? $nextCursor : null,
         'unread_notifications_count' => $unreadNotificationsCount,

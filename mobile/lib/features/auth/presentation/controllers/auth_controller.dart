@@ -205,8 +205,14 @@ class AuthController {
     return _deactivateAccountUseCase.call(password: password);
   }
 
-  Future<void> requestAccountDeletionLink({required String password}) {
-    return _requestAccountDeletionLinkUseCase.call(password: password);
+  Future<void> requestAccountDeletionLink({
+    required String password,
+    List<String> reasonCodes = const [],
+  }) {
+    return _requestAccountDeletionLinkUseCase.call(
+      password: password,
+      reasonCodes: reasonCodes,
+    );
   }
 
   Future<NotificationPreferences> loadNotificationPreferences() async {

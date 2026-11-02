@@ -1,0 +1,1863 @@
+{
+  "@@locale": "nb",
+  "homeFirstTrip": "Din første tur",
+  "homeYourShareAllTrips": "Din andel av alle reiser",
+  "homeAllTime": "Hele perioden",
+  "homeSolo": "Solo",
+  "homePeople": "{count, plural, one{{count} person} other{{count} personer}}",
+  "homeTripActions": "Reisehandlinger: {name}",
+  "homeNoActiveTrips": "Ingen aktive reiser",
+  "homeNoArchivedTrips": "Ingen arkiverte reiser",
+  "homeLoadingTrips": "Laster inn turene dine",
+  "homeLoadErrorTitle": "Kunne ikke laste inn turene dine",
+  "homeLoadErrorBody": "Prøv igjen om et øyeblikk.",
+  "homeOfflineTitle": "Du er frakoblet",
+  "homeOfflineNoData": "Turene dine er ikke tilgjengelige på denne enheten ennå.",
+  "homeOfflineCached": "Offline. Viser lagrede turer.",
+  "homeRefreshError": "Kunne ikke oppdatere. Viser tidligere lastede turer.",
+  "@homePeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@homeTripActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentShareDetailsConsent": "Del mine lagrede betalingsopplysninger med {arg1}",
+  "paymentShareDetailsScope": "Kun mens denne forespørselen venter på betaling. Å avbryte forespørselen avslutter tilgangen.",
+  "paymentDetailsUnavailable": "Betalingsopplysningene er ikke tilgjengelige. Koble deg til internett og sjekk om forespørselen fortsatt er åpen.",
+  "paymentDetailsRetry": "Prøv på nytt",
+  "tripModeSolo": "Bare meg",
+  "tripModeGroup": "Med andre",
+  "premiumFree": "Gratis",
+  "premiumStatusUnavailable": "Planstatus utilgjengelig",
+  "premiumGrantedUntil": "Premium-tilgang gitt frem til {date}",
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumBillingNotActive": "Ingen aktivt abonnement",
+  "premiumRefreshStatus": "Oppdater planstatus",
+  "@addedMembersCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownConfirmedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSentCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSuggestedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@createdByLine": {
+    "placeholders": {
+      "creator": {},
+      "date": {}
+    }
+  },
+  "@currentEmailLabel": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "@directlyExplainedByExpenses": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@exactAmountWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@exactSplitMustMatchTotal": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@expenseIdDate": {
+    "placeholders": {
+      "date": {},
+      "id": {}
+    }
+  },
+  "@expenseImpactLine": {
+    "placeholders": {
+      "date": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@expenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@expensesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@forParticipants": {
+    "placeholders": {
+      "participants": {}
+    }
+  },
+  "@fromDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@fromToLine": {
+    "placeholders": {
+      "from": {},
+      "to": {}
+    }
+  },
+  "@helloUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@memberToPaySummary": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {},
+      "waiting": {}
+    }
+  },
+  "@moreCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@noExpensesByUserYet": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@noteMustBeMaxChars": {
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "@offlineQueuePendingChanges": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@paidOwesLine": {
+    "placeholders": {
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@payerName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@percentWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@pickedCycleCompleted": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@pickedUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@queueAddExpenseAmount": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@queueDeleteExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queueUpdateExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queuedChangesTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@queuedCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@randomCycleDrawLeft": {
+    "placeholders": {
+      "cycleNo": {},
+      "drawNo": {},
+      "remaining": {}
+    }
+  },
+  "@selectedFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementConfirmedProgress": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {}
+    }
+  },
+  "@settlementCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@settlementImpactWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@sharesWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitLabelValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitModeEqual": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeExact": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModePercent": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeShares": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@statusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@suggestedTransferRows": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@toDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripCreated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripStatusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@tripWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@unreadUpdates": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@userIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@userPaidOwesNetLine": {
+    "placeholders": {
+      "net": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@userWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@whoOwesWhatWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@youShouldPay": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@youShouldReceive": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountSectionTitle": "Konto",
+  "activeStatus": "Aktiv",
+  "activeTripPlural": "aktive turer",
+  "activeTripSingle": "aktiv tur",
+  "activeTrips": "Aktive turer",
+  "activitiesComingSoon": "Aktivitetsdelen kommer snart.",
+  "addAction": "Legg til",
+  "addExpenseTitle": "Legg til utgift",
+  "addExpensesAction": "Legg til utgifter",
+  "addMembersAction": "Legg til medlemmer",
+  "addTripMembersTitle": "Inviter reisedeltakere",
+  "addedMembersCount": "{count, plural, one{{count} invitasjon sendt} other{{count} invitasjoner sendt}}.",
+  "tripInvitationDeclined": "Reiseinvitasjon avvist.",
+  "tripInviteAction": "Inviter",
+  "tripInvitationsPending": "Venter på svar",
+  "tripInvitationsRetry": "Invitasjoner er ikke tilgjengelige. Prøv på nytt",
+  "tripInvitationRevoke": "Avbryt invitasjon",
+  "tripInvitationRevokeFailed": "Kunne ikke avbryte invitasjonen. Prøv på nytt.",
+  "tripInvitationBody": "Du har blitt invitert til en tur. Åpne invitasjonen for å svare.",
+  "allCaughtUp": "Alt er oppdatert",
+  "allFilter": "Alle",
+  "allMembersLabel": "Alle medlemmer",
+  "allPaymentsConfirmed": "Alle betalinger blir bekreftet.",
+  "allTrips": "Alle turer",
+  "amountHint": "12.50",
+  "amountLabel": "Beløp",
+  "amountMustBeGreaterThanZero": "Beløpet må være større enn 0.",
+  "appearance": "Utseende",
+  "archivedStatus": "Arkivert",
+  "authSubtitleLogin": "Del reisekostnader med venner",
+  "authSubtitleRegister": "Opprett konto og begynn å dele reisekostnader",
+  "breakdownConfirmedCount": "bekreftet: {count}",
+  "breakdownPendingCount": "ventende: {count}",
+  "breakdownSentCount": "sendt: {count}",
+  "breakdownSuggestedCount": "foreslått: {count}",
+  "cancelAction": "Avbryt",
+  "changeEmailWithPasswordHelper": "Skriv inn passordet ditt for å endre e-postadresse.",
+  "chooseReceiptFile": "Velg kvitteringsfil",
+  "completeAccountSetupDescription": "Angi e-postadresse og passord for å fullføre kontoen din.",
+  "completeAccountSetupTitle": "Fullfør kontooppsettet",
+  "confirmReceivedAction": "Bekreft mottak",
+  "confirmedAllSettlementsArchived": "Alle oppgjør bekreftet. Turen arkivert.",
+  "confirmedAsReceived": "Bekreftet mottatt.",
+  "confirmedLabel": "Bekreftet",
+  "couldNotOpenReceiptLink": "Kunne ikke åpne kvitteringslenken.",
+  "createAction": "Opprett",
+  "createFirstTripHint": "Opprett din første tur for å komme i gang.",
+  "createNewTripTitle": "Opprett ny tur",
+  "createTripAction": "Opprett tur",
+  "createTripFirst": "Opprett en tur først.",
+  "createdByLine": "{date} - Opprettet av {creator}",
+  "creatorMustFinishTripFirst": "Reiseoppretteren må fullføre reisen for å starte bekreftelsen av oppgjøret.",
+  "currentEmailLabel": "Gjeldende e-postadresse: {email}",
+  "currentReceiptAttached": "Gjeldende kvittering er vedlagt.",
+  "dateFormatHint": "YYYY-MM-DD",
+  "dateLabel": "Dato",
+  "dateMustMatchFormat": "Datoen må være i formatet YYYY-MM-DD.",
+  "dateUnknown": "Dato ukjent",
+  "deleteAction": "Slett",
+  "deleteExpenseConfirmQuestion": "Slette denne utgiften?",
+  "deleteExpenseTitle": "Slett utgift",
+  "editExpenseConfirmTitle": "Lagre endringer i utgiftene?",
+  "editExpenseConfirmText": "Dette vil oppdatere saldoene for alle på turen.",
+  "directlyExplainedByExpenses": "Forklart direkte ved utgifter: {amount}",
+  "doneStatus": "Ferdig",
+  "editAction": "Rediger",
+  "editExpenseTitle": "Rediger utgift",
+  "emailAddressLabel": "E-postadresse",
+  "emailHint": "you@example.com",
+  "emailLabel": "E-post",
+  "emailRequired": "E-postadresse er påkrevd.",
+  "enterValidExactAmounts": "Angi gyldige, nøyaktige beløp for alle deltakere.",
+  "enterValidPercentages": "Angi gyldige prosentandeler for alle deltakere.",
+  "equalSplitLabel": "Del likt",
+  "exactAmountWithValue": "Nøyaktig: {value}",
+  "exactAmountsLabel": "Nøyaktige beløp",
+  "exactSplitMustMatchTotal": "Den nøyaktige fordelingen må til sammen utgjøre {amount}.",
+  "expenseAdded": "Utgift lagt til.",
+  "expenseBreakdownSubtitle": "Hvordan dette medlemmet påvirkes av hver utgift.",
+  "expenseBreakdownTitle": "Utgiftsoversikt",
+  "expenseDeleted": "Utgiften er slettet.",
+  "expenseIdDate": "Utgift nr. {id}  -  {date}",
+  "expenseImpactLine": "{date}  -  Betalt {paid}  -  Skylder {owes}",
+  "expenseReactionsTitle": "Reaksjoner",
+  "expenseCommentsTitle": "Kommentarer",
+  "expenseNoComments": "Ingen kommentarer ennå.",
+  "expenseAddCommentHint": "Legg til en kommentar...",
+  "expenseCommentSend": "Send",
+  "expenseDeleteCommentTitle": "Slette kommentar?",
+  "expenseUpdated": "Utgiftsopplysningene er oppdatert.",
+  "expenseWithId": "Utgift nr. {id}",
+  "expensesCount": "{count, plural, one{{count} utgift} other{{count} utgifter}}",
+  "expensesLabel": "Utgifter",
+  "failedToCreateTrip": "Det lyktes ikke å opprette turen.",
+  "failedToLoadUsersDirectory": "Kunne ikke laste inn brukerkatalogen.",
+  "filterSettlementByMemberSubtitle": "Filtrer oppgjør etter medlem",
+  "finishSoloTripConfirmationText": "Vil du avslutte denne turen og flytte den til arkivet ditt? Utgiftene dine vil fortsatt være tilgjengelige for visning.",
+  "soloTripArchived": "Turen er fullført og arkivert.",
+  "finishTripSyncPending": "Synkroniser de ventende endringene dine før du avslutter denne turen.",
+  "finishTripAction": "Avslutt tur",
+  "finishTripConfirmationText": "Fullføre denne turen og starte oppgjør?",
+  "finishTripStartSettlementsAction": "Fullfør og start oppgjør",
+  "finishTripTitle": "Avslutt tur",
+  "forParticipants": "For: {participants}",
+  "forgotPassword": "Glemt passord?",
+  "profilePasswordByEmail": "Angi passord via e-post",
+  "sendDeactivationEmail": "Send deaktiveringslenke",
+  "deactivationEmailSent": "Sjekk e-posten din for å bekrefte deaktivering. Kontoen din er fortsatt aktiv.",
+  "deactivationConfirmationMethods": "Bekreft deaktivering med passordet ditt eller en e-postlenke. Turene og utgiftene dine vil forbli.",
+  "passwordEmailBackToProfile": "Tilbake til profilen",
+  "forgotPasswordSubtitle": "Skriv inn e-postadressen din, så sender vi deg en lenke for å tilbakestille passordet.",
+  "forgotPasswordSuccessMessage": "Hvis det finnes en konto med denne e-postadressen, har vi sendt en lenke for å tilbakestille passordet.",
+  "forgotPasswordTitle": "Tilbakestill passord",
+  "friendsProgressSubtitle": "Hvert medlem og dets bekreftelsesstatus.",
+  "friendsProgressTitle": "Venners fremgang",
+  "friendsSectionComingSoon": "«Venner»-delen kommer snart.",
+  "fromDirection": "Fra {name}",
+  "fromToLine": "{from} til {to}",
+  "generateTurnAction": "Trekk neste person",
+  "hasAccountQuestion": "Har du allerede en konto?",
+  "helloUser": "Hei, {name}!",
+  "iSentAction": "Jeg sendte",
+  "invalidEmailFormat": "Ugyldig e-postformat.",
+  "languageAction": "Språk",
+  "languageEnglish": "Engelsk",
+  "languageLatvian": "Lettisk",
+  "languageSpanish": "Spansk",
+  "languageSystem": "System",
+  "languageSystemSubtitle": "Bruk enhetens språk",
+  "leaveEmptyKeepPasswordHelper": "La feltet stå tomt for å beholde gjeldende passord.",
+  "logInButton": "Logg inn",
+  "logOutButton": "Logg ut",
+  "logoutFromDeviceQuestion": "Logg av fra denne enheten?",
+  "logoutRevocationUnconfirmed": "Logget ut på denne enheten. Det var ikke mulig å bekrefte opphevelsen av serversesjonen.",
+  "markedAsSent": "Merkes som sendt.",
+  "markSettlementSentConfirmTitle": "Merk overføringen som sendt?",
+  "markSettlementSentConfirmText": "Bruk dette først etter at du faktisk har sendt betalingen. Mottakeren vil bli bedt om å bekrefte.",
+  "settlementCancelSentAction": "Merk som ikke sendt",
+  "settlementCancelSentConfirmTitle": "Avbryte «sendt»-status?",
+  "settlementCancelSentConfirmText": "Dette vil føre til at overføringen igjen blir satt til «ventende» og at mottakeren blir varslet.",
+  "settlementSentCancelled": "Overføringen er flyttet tilbake til «ventende».",
+  "settlementNotReceivedAction": "Jeg har ikke mottatt dette",
+  "settlementNotReceivedConfirmTitle": "Melde fra om at betalingen ikke er mottatt?",
+  "settlementNotReceivedConfirmText": "Dette vil flytte overføringen tilbake til «ventende» og varsle betaleren.",
+  "settlementMarkedNotReceived": "Merkes som ikke mottatt.",
+  "confirmSettlementReceivedConfirmTitle": "Bekreftet mottatt?",
+  "confirmSettlementReceivedConfirmText": "Bekreft først etter at pengene er synlige på kontoen din. Denne handlingen kan fullføre oppgjøret.",
+  "memberSummariesSubtitle": "Gjeldende saldostatus for begge parter.",
+  "memberSummariesTitle": "Medlemsoversikter",
+  "memberToPaySummary": "For å betale {total}  -  bekreftet {confirmed}  -  venter {waiting}",
+  "membersImpactSubtitle": "Anslått betalingspåvirkning per medlem.",
+  "membersImpactTitle": "Medlemmers innflytelse",
+  "membersIncludedInExpense": "Medlemmer inkludert",
+  "membersLabel": "Medlemmer",
+  "moreCount": "+ {count} flere",
+  "myFilter": "Min",
+  "myImpactTitle": "Min innvirkning",
+  "firstNameHint": "Fornavnet ditt",
+  "firstNameLabel": "Fornavn",
+  "firstNameLengthValidation": "Fornavnet må bestå av 2–64 tegn.",
+  "fullNameHelper": "Bruk for- og etternavn i ett felt.",
+  "fullNameHint": "f.eks. Anna Ozolina",
+  "fullNameLabel": "Fullt navn",
+  "fullNameValidation": "Skriv inn for- og etternavn (minst 2 tegn hver).",
+  "lastNameHint": "Etternavnet ditt",
+  "lastNameLabel": "Etternavn",
+  "lastNameLengthValidation": "Etternavnet må bestå av 2–64 tegn.",
+  "nameHint": "Ditt navn",
+  "nameLabel": "Navn",
+  "nameLengthValidation": "Navnet må bestå av minst 2 tegn.",
+  "navActivities": "Statistikk",
+  "navAddTrip": "Legg til tur",
+  "navBalances": "Saldoer",
+  "navExpenses": "Utgifter",
+  "navFriends": "Venner",
+  "navHome": "Hjem",
+  "navProfile": "Profil",
+  "navRandom": "Tilfeldig",
+  "netLabel": "Nettosaldo",
+  "newPasswordLabel": "Nytt passord",
+  "nicknameHint": "Slik vil vennene dine se deg",
+  "nicknameLabel": "Kallenavn",
+  "nicknameLengthValidation": "Kallenavnet må bestå av minst 2 tegn.",
+  "noAccountQuestion": "Har du ikke konto ennå?",
+  "noBalancesYet": "Ingen saldoer ennå.",
+  "noChangesToSave": "Ingen endringer å lagre.",
+  "noDirectExpenseLink": "Det ble ikke funnet noen direkte lenke for enkeltutgifter. Dette oppgjøret beregnes ut fra den totale reisebalansen.",
+  "noExpenseImpactForMember": "Ingen kostnadsmessige konsekvenser for dette medlemmet.",
+  "noExpensesByUserYet": "Ingen utgifter for {name} ennå.",
+  "noExpensesYet": "Ingen utgifter ennå.",
+  "noExtraUsersToAdd": "Ingen ekstra brukere å legge til.",
+  "noInternetDeleteQueued": "Ingen internettforbindelse. Slett i kø.",
+  "noInternetExpenseQueued": "Ingen internettforbindelse. Utgiften står i kø.",
+  "noInternetUpdateQueued": "Ingen internettforbindelse. Oppdatering i kø.",
+  "noMatchingRows": "Ingen samsvarende rader.",
+  "noMembersFound": "Ingen medlemmer funnet.",
+  "noNewMembersAdded": "Disse personene er allerede medlemmer eller har invitasjoner som venter på svar.",
+  "noNotePlaceholder": "Ingen merknad",
+  "notificationsToday": "I dag",
+  "notificationsEmptyBody": "Oppdateringer om turer, utgifter og venner vil vises her.",
+  "notificationsCached": "Offline – viser lagrede varsler.",
+  "notificationsRefreshFailed": "Kunne ikke oppdatere. Tidligere lastede varsler vises.",
+  "notificationsJustNow": "Akkurat nå",
+  "notificationsMinutesAgo": "For {count} min siden",
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsHoursAgo": "For {count} t siden",
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsUnread": "Ulest",
+  "noNotificationsYet": "Ingen varsler ennå.",
+  "noParticipantData": "Ingen deltakerdata.",
+  "noParticipantsSelected": "Ingen deltakere valgt.",
+  "noPaymentRowsInTrip": "Ingen betalingslinjer i denne turen.",
+  "noPaymentsNeeded": "Ingen betalinger nødvendig.",
+  "noPicksYet": "Ingen valg ennå.",
+  "noSettlementActivityForMember": "Ingen avregningsaktivitet for dette medlemmet.",
+  "noSettlementRowsYet": "Ingen avregningslinjer ennå.",
+  "noSettlements": "Ingen oppgjør",
+  "noTransferNeededForFilter": "Ingen overføring nødvendig for det valgte filteret.",
+  "noTransferRowsToShow": "Ingen overføringslinjer å vise.",
+  "noTripDataLoaded": "Ingen reisedata lastet inn.",
+  "noTripsYet": "Ingen turer ennå.",
+  "noUsersFoundYet": "Ingen brukere funnet ennå.",
+  "notSetValue": "Ikke angitt",
+  "notYetConfirmedTitle": "Ikke bekreftet ennå",
+  "noteHint": "Middag, taxi, billetter...",
+  "noteLabel": "Merknad",
+  "noteMustBeMaxChars": "Merknaden må være på maksimalt {max} tegn.",
+  "notificationFallbackTitle": "Varsel",
+  "notificationsTitle": "Varsler",
+  "notificationFriendInviteTitle": "Venneforespørsel",
+  "notificationFriendInviteBody": "{name} har sendt deg en venninvitasjon.",
+  "notificationFriendInviteBodyGeneric": "Du har mottatt en venninvitasjon.",
+  "notificationFriendInviteAcceptedTitle": "Invitasjon godtatt",
+  "notificationFriendInviteAcceptedBody": "{name} har akseptert venninvitasjonen din.",
+  "notificationFriendInviteAcceptedBodyGeneric": "Invitasjonen din til vennen din ble akseptert.",
+  "notificationFriendInviteRejectedTitle": "Invitasjon avslått",
+  "notificationFriendInviteRejectedBody": "{name} har avvist vennskapsinvitasjonen din.",
+  "notificationFriendInviteRejectedBodyGeneric": "Invitasjonen din til vennen din ble avvist.",
+  "notificationTripAddedTitle": "Lagt til i turen",
+  "notificationTripAddedBody": "{name} har lagt deg til i turen «{trip}».",
+  "notificationTripAddedBodyNoActor": "Du ble lagt til i turen «{trip}».",
+  "notificationTripAddedBodyGeneric": "Du ble lagt til i en tur.",
+  "notificationExpenseAddedTitle": "Ny utgift lagt til",
+  "notificationExpenseAddedBodyWithTrip": "{name} har lagt til en utgift på {amount} i «{trip}».",
+  "notificationExpenseAddedBodyWithNote": "{name} har lagt til en utgift på {amount}: {note}",
+  "notificationExpenseAddedBodyGeneric": "En ny utgift ble lagt til.",
+  "notificationTripFinishedTitle": "Turen er avsluttet",
+  "notificationTripFinishedBodySettlementsReady": "{name} har fullført «{trip}». Oppgjørene er klare.",
+  "notificationTripFinishedBodyArchived": "{name} har fullført «{trip}». Turen er arkivert.",
+  "notificationTripFinishedBodyNoActor": "«{trip}» ble fullført.",
+  "notificationTripFinishedBodyGeneric": "Reisestatusen ble oppdatert.",
+  "notificationMemberReadyToSettleTitle": "Medlem merket som klar",
+  "notificationMemberReadyToSettleBody": "{name} er klar til å delta i «{trip}».",
+  "notificationMemberReadyToSettleBodyNoActor": "Et medlem er klar til å delta i «{trip}».",
+  "notificationMemberReadyToSettleBodyGeneric": "Et medlem er klar til å betale.",
+  "notificationTripReadyToSettleTitle": "Alle medlemmer er klare",
+  "notificationTripReadyToSettleBody": "Alle medlemmer er merket som klare i «{trip}». Du kan starte oppgjørene.",
+  "notificationTripReadyToSettleBodyGeneric": "Alle medlemmer er klare. Du kan starte oppgjørene.",
+  "notificationSettlementReminderTitle": "Påminnelse om oppgjør",
+  "notificationSettlementReminderBodyMarkSent": "{actor} minnet {target} om å merke {amount} som sendt.",
+  "notificationSettlementReminderBodyConfirm": "{actor} minnet {target} om å bekrefte mottak av {amount}.",
+  "notificationSettlementReminderBodyGeneric": "Du har mottatt en påminnelse om oppgjør.",
+  "notificationPaymentReminderTitle": "Betalingspåminnelse",
+  "notificationPaymentReminderBody": "Påminnelse: Merk {amount} som sendt til {target} i «{trip}».",
+  "notificationPaymentReminderBodyGeneric": "Påminnelse: Merk betalingen som sendt.",
+  "notificationConfirmationReminderTitle": "Påminnelse om bekreftelse",
+  "notificationConfirmationReminderBody": "Påminnelse: Vennligst bekreft mottak av {amount} fra {payer} i «{trip}».",
+  "notificationConfirmationReminderBodyGeneric": "Påminnelse: Vennligst bekreft mottak av betalingen.",
+  "notificationSettlementSentTitle": "Overføring merket som sendt",
+  "notificationSettlementSentBody": "{name} har merket {amount} som sendt til deg.",
+  "notificationSettlementSentBodyGeneric": "En overføring ble merket som sendt.",
+  "notificationSettlementConfirmedTitle": "Overføring bekreftet",
+  "notificationSettlementConfirmedBody": "{name} har bekreftet mottak av {amount} fra deg.",
+  "notificationSettlementConfirmedBodyGeneric": "En overføring ble bekreftet.",
+  "offlineQueuePendingChanges": "Frakoblet kø: {count, plural, one{{count} ventende endring} other{{count} ventende endringer}}",
+  "syncAllSynced": "Alt synkronisert",
+  "syncChangesWaiting": "{count} venter på synkronisering",
+  "syncFailedTapToRetry": "Synkroniseringen mislyktes, trykk for å prøve på nytt",
+  "offlineQueueStatus": "Offline kø",
+  "offlineStatus": "Offline",
+  "onlineStatus": "Online",
+  "onlyCreatorCanFinishTrip": "Kun turarrangøren kan avslutte turen.",
+  "openLabel": "Åpne",
+  "openReceiptAction": "Åpne kvittering",
+  "openSettlements": "Åpne oppgjør",
+  "overviewTitle": "Oversikt",
+  "owesLabel": "Skylder",
+  "paidByLabel": "Betalt av",
+  "paidLabel": "Betalt",
+  "paidOwesLine": "Betalt {paid}  -  Skylder {owes}",
+  "participantsEmptyMeansAll": "Deltakere (tomt felt = alle medlemmer)",
+  "participantsTitle": "Deltakere",
+  "passwordLabel": "Passord",
+  "passwordComplexityHelper": "Bruk minst 1 stor bokstav, 1 tall og 1 symbol.",
+  "passwordComplexityValidation": "Passordet må inneholde 1 stor bokstav, 1 tall og 1 symbol.",
+  "passwordMinLength": "Passordet må bestå av minst 8 tegn.",
+  "passwordMinLengthShort": "Passordet må bestå av minst 6 tegn.",
+  "passwordResetComingSoon": "Tilbakestilling av passord kommer snart.",
+  "passwordsDoNotMatch": "Passordene stemmer ikke overens.",
+  "payerName": "{name} (betaler)",
+  "pendingLabel": "Venter",
+  "pendingPaymentsSubtitle": "Betalinger som fortsatt venter på full bekreftelse.",
+  "percentLabel": "Prosent",
+  "percentSplitMustBe100": "Prosentfordelingen må til sammen utgjøre nøyaktig 100 %.",
+  "percentWithValue": "{value}",
+  "percentagesLabel": "Prosentandeler",
+  "pickAtLeastOneParticipant": "Velg minst én deltaker.",
+  "pickMembersGenerateTurn": "Velg deltakere og trekk neste person.",
+  "pickedCycleCompleted": "{name} valgt. Syklus fullført.",
+  "pickedUser": "{name} valgt.",
+  "profileRefreshCachedData": "Kunne ikke oppdatere profilen. Viser data fra hurtigbufferen.",
+  "profileTitle": "Profil",
+  "profileUpdated": "Profilen er oppdatert.",
+  "uploadAvatarAction": "Last opp avatar",
+  "takePhotoAction": "Ta et bilde",
+  "chooseFromLibraryAction": "Velg fra biblioteket",
+  "removeAvatarAction": "Fjern avatar",
+  "avatarUpdatedMessage": "Avatar oppdatert.",
+  "avatarRemovedMessage": "Avatar fjernet.",
+  "avatarFileTooLarge": "Avatarfilen er for stor (maks. 5 MB).",
+  "avatarPickFailed": "Kunne ikke laste inn avatarbildet.",
+  "queueAddExpense": "Legg til utgift",
+  "queueAddExpenseAmount": "I kø: legg til utgift {amount}",
+  "queueDeleteExpense": "Slett utgift",
+  "queueDeleteExpenseWithId": "I kø: slett utgift nr. {id}",
+  "queuePendingStatus": "Kø med ventende oppgaver",
+  "queueUpdateExpense": "Oppdater utgifter",
+  "queueUpdateExpenseWithId": "I kø: oppdater utgift nr. {id}",
+  "queuedChange": "Endring i kø",
+  "queuedChangesTitle": "Endringer i køen ({count})",
+  "queuedCountLabel": "I kø ({count})",
+  "randomCycleDrawLeft": "Syklus {cycleNo}, trekk {drawNo} – {remaining} igjen",
+  "receiptFallbackName": "kvittering",
+  "receiptLinkInvalid": "Kvitteringslenken er ugyldig.",
+  "receiptOptionalLabel": "Kvittering (valgfritt)",
+  "recentPicksTitle": "Siste trekninger",
+  "reloadProfile": "Oppdater profil",
+  "rememberMe": "Husk meg",
+  "removeCurrentReceipt": "Fjern gjeldende kvittering",
+  "repeatNewPasswordLabel": "Gjenta nytt passord",
+  "repeatPasswordLabel": "Gjenta passord",
+  "requestFailedTryAgain": "Forespørselen mislyktes. Prøv på nytt.",
+  "retryAction": "Prøv på nytt",
+  "rowsLabel": "Rader",
+  "backToLoginAction": "Tilbake til pålogging",
+  "saveAction": "Lagre",
+  "saveCredentialsButton": "Lagre påloggingsopplysninger",
+  "saveProfileButton": "Lagre profil",
+  "sendResetLinkButton": "Send tilbakestillingslenke",
+  "searchUsersHint": "Søk etter personer etter navn eller e-postadresse",
+  "selectedPeopleLabel": "Utvalgte personer",
+  "noSearchMatches": "Ingen matchende brukere funnet.",
+  "savingButton": "Lagrer...",
+  "selectAtLeastTwoMembers": "Velg minst to medlemmer.",
+  "selectMembersHint": "Velg medlemmer",
+  "selectedFileLabel": "Valgt: {name}",
+  "selectedLabel": "Valgt",
+  "selectedUserFallback": "Valgt bruker",
+  "settings": "Innstillinger",
+  "settleUpAction": "Gjør opp",
+  "settledLabel": "Gjort opp",
+  "settledStatus": "Gjort opp",
+  "settlementActivitySubtitle": "Overføringer knyttet til dette medlemmet.",
+  "settlementActivityTitle": "Oppgjørsaktivitet",
+  "settlementCompletedTitle": "Oppgjøret er fullført",
+  "settlementConfirmedProgress": "{confirmed} / {total} bekreftet",
+  "settlementCountLabel": "Oppgjør: {count}",
+  "settlementImpactTitle": "Konsekvenser for oppgjør",
+  "settlementImpactWithFilter": "Konsekvenser for avregning: {name}",
+  "settlementInProgress": "Oppgjør pågår",
+  "settlementInProgressTitle": "Oppgjør pågår",
+  "settlementLabel": "Oppgjør",
+  "settlementOverviewArchivedSubtitle": "Turen er arkivert. Alle oppgjør er fullført.",
+  "settlementOverviewInProgressSubtitle": "Spor bekreftelser på oppgjør.",
+  "settlementOverviewPreviewSubtitle": "Forhåndsvisning av overføringer når turen er ferdig.",
+  "settlementPreview": "Forhåndsvisning av oppgjør",
+  "settlementPreviewTitle": "Forhåndsvisning av oppgjør",
+  "settlementProgressTripArchived": "Turen er arkivert",
+  "settlementWithId": "Oppgjør nr. {id}",
+  "settlements": "Oppgjør",
+  "settlementsAlreadyCompletedSubtitle": "Oppgjørene er allerede fullført.",
+  "settlementsDone": "Oppgjør utført",
+  "settlingStatus": "Oppgjør",
+  "shareUnit": "andel",
+  "sharesLabel": "Andeler",
+  "sharesMustBePositiveIntegers": "Antall andeler må være et positivt heltall.",
+  "sharesWithValue": "Andeler: {value}",
+  "showActiveTrips": "Vis aktive turer",
+  "signUpButton": "Registrer deg",
+  "splitBreakdownSubtitle": "Hvordan utgiften fordeles",
+  "splitBreakdownTitle": "Fordeling av kostnader",
+  "splitHintEqual": "Del likt mellom de valgte deltakerne.",
+  "splitHintExact": "Angi nøyaktig beløp for hver deltaker. Summen må stemme overens med totalbeløpet.",
+  "splitHintPercent": "Angi prosentandel for hver deltaker. Summen må være 100 %.",
+  "splitHintShares": "Angi delingsenheter (1, 2, 3...). Kostnaden deles proporsjonalt.",
+  "splitLabel": "Split",
+  "splitLabelValue": "Split: {value}",
+  "splitModeEqual": "Lik fordeling ({target})",
+  "splitModeExact": "Eksakte beløp ({target})",
+  "splitModeLabel": "Delt modus",
+  "splitModePercent": "Prosentandeler ({target})",
+  "splitModeShares": "Andeler ({target})",
+  "statusConfirmed": "Bekreftet",
+  "statusPending": "Venter",
+  "statusSent": "Sendt",
+  "statusSuggested": "Foreslått",
+  "statusWithValue": "Status: {status}",
+  "suggestedTransferDirections": "Foreslåtte betalingsretninger",
+  "suggestedTransferFromExpense": "Foreslått overføring fra utgifter",
+  "suggestedTransferRows": "{count, plural, one{{count} foreslått overføring} other{{count} foreslåtte overføringer}}",
+  "suggestedTransfersSubtitle": "Forventede rader for betaler -> mottaker.",
+  "suggestedTransfersTitle": "Foreslåtte overføringer",
+  "summarySettledUp": "Gjort opp",
+  "summaryYouAreOwed": "Andre skylder deg",
+  "summaryYouOwe": "Du skylder",
+  "syncAction": "Synkronisering",
+  "syncNowAction": "Synkroniser nå",
+  "syncingStatus": "Synkronisering",
+  "tapToViewDetails": "Trykk for å se detaljer",
+  "themeModeDark": "Mørk",
+  "themeModeDarkSubtitle": "Myk mørk farge (ikke ren svart)",
+  "themeModeLight": "Lys",
+  "themeModeSystem": "System",
+  "themeModeSystemSubtitle": "Bruk utseendet på enheten",
+  "toDirection": "Til {name}",
+  "totalLabel": "Totalt",
+  "travelerFallbackName": "Reisende",
+  "tripAlreadyClosed": "Turen er allerede avsluttet.",
+  "tripArchivedReadOnly": "Turen er arkivert. Skrivebeskyttet modus.",
+  "tripClosedExpenseEditingDisabled": "Turen er avsluttet. Redigering av utgifter er deaktivert.",
+  "tripClosedExpensesReadOnly": "Turen er avsluttet. Utgiftene er skrivebeskyttet.",
+  "tripClosedRandomDisabled": "Turen er avsluttet. Tilfeldig trekning er deaktivert.",
+  "tripCreated": "Turen «{name}» er opprettet.",
+  "tripFinished": "Turen er avsluttet.",
+  "tripFinishedCompleteSettlements": "Turen er avsluttet. Fullfør oppgjørene.",
+  "tripFinishedSettlementStarted": "Turen er avsluttet. Oppgjøret er startet.",
+  "tripFullySettledArchived": "Turen er fullstendig avregnet og arkivert.",
+  "tripNameHint": "Skitur til Østerrike",
+  "tripNameLabel": "Turenavn",
+  "tripNameLengthValidation": "Turenavnet må bestå av minst 2 tegn.",
+  "tripSnapshotTitle": "Reiseoversikt",
+  "tripTitleShort": "Reise",
+  "tripStatusWithValue": "Reisestatus: {status}",
+  "tripWithId": "Tur nr. {id}",
+  "unexpectedErrorLoadingProfile": "Uventet feil ved innlasting av profil",
+  "unexpectedErrorLoadingTripData": "Uventet feil ved innlasting av reisedata",
+  "unexpectedErrorLoadingTrips": "Uventet feil ved innlasting av turer",
+  "unexpectedErrorSavingChanges": "Uventet feil ved lagring av endringer",
+  "unexpectedErrorSavingCredentials": "Uventet feil ved lagring av påloggingsopplysninger",
+  "unexpectedErrorUpdatingProfile": "Uventet feil ved oppdatering av profil",
+  "unknownError": "Ukjent feil",
+  "unknownLabel": "Ukjent",
+  "unreadLabel": "Ulest",
+  "unreadUpdates": "{count, plural, one{{count} ulest oppdatering} other{{count} uleste oppdateringer}}",
+  "missingTripRouteArgument": "Manglende argument for reiserute.",
+  "userIdLabel": "Bruker-ID: {id}",
+  "userPaidOwesNetLine": "Betalt {paid}  -  Skylder {owes}  -  Netto {net}",
+  "userWithId": "Bruker {id}",
+  "valueLabel": "Verdi",
+  "viewAllTrips": "Vis alle turer",
+  "viewByPersonTitle": "Visning per person",
+  "whoOwesWhatSubtitle": "Hvem har betalt, og hvem skylder penger.",
+  "whoOwesWhatTitle": "Hvem skylder hva",
+  "whoOwesWhatWithFilter": "Hvem skylder hva: {name}",
+  "whyPaymentExistsSubtitle": "Utgiftslinjer som inngår i denne overføringen.",
+  "whyPaymentExistsTitle": "Hvorfor denne betalingen finnes",
+  "youLabel": "Du",
+  "youSettledForExpense": "Du har gjort opp din del av denne utgiften.",
+  "youShouldPay": "Du bør betale {amount}",
+  "youShouldReceive": "Du bør motta {amount}",
+  "yourShare": "Din andel",
+  "yourTrips": "Turene dine",
+  "authIntroSplitSmarter": "Del smartere.",
+  "authIntroTravelFree": "Reis fritt.",
+  "authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo": "Spor delte kostnader på tvers av valutaer og gjør opp regningen umiddelbart – uten pinlige gjeldsbrev.",
+  "authIntroPlanTogether": "Planlegg sammen.",
+  "authIntroPayClearly": "Betal tydelig.",
+  "authIntroCreateTripsSecondsAddFriendsKeepEveryExpense": "Opprett turer på få sekunder, legg til venner og sørg for at alle utgifter er gjennomsiktige for alle.",
+  "authIntroSettleFast": "Avslutt raskt.",
+  "authIntroStayFriends": "La oss forbli venner.",
+  "authIntroFromSharedDinnersFullTripsSplytoKeepsBalances": "Fra felles middager til hele turer sørger Splyto for at regnskapet blir rettferdig og stressfritt.",
+  "authIntroAppleSignFailedPleaseTryAgain": "Apple-pålogging mislyktes. Prøv på nytt.",
+  "authIntroGoogleSignFailedPleaseTryAgain": "Google-pålogging mislyktes. Prøv på nytt.",
+  "authIntroCreateAccount": "Opprett din konto.",
+  "authIntroChooseSign": "Velg hvordan du ønsker å registrere deg.",
+  "authIntroContinueGoogle": "Fortsett med Google",
+  "authIntroContinueApple": "Fortsett med Apple",
+  "authIntroBack": "Tilbake",
+  "authIntroSplitSettled": "Deling avregnet",
+  "authIntroParis3Friends": "Paris · 3 venner",
+  "authIntroGetStarted": "Kom i gang",
+  "authIntroAlreadyHaveAccount": "Har du allerede en konto? ",
+  "authIntroSignIn": "Logg inn",
+  "authIntroSignUpWithEmail": "Registrer deg med e-post",
+  "authIntroOr": "ELLER",
+  "authGoogleSignDidNotReturnIdToken": "Google-påloggingen returnerte ikke et ID-token.",
+  "authAppleSignAvailableIosDevices": "Apple-pålogging er tilgjengelig på iOS-enheter.",
+  "authAppleSignNotAvailableDevice": "Apple-pålogging er ikke tilgjengelig på denne enheten.",
+  "authAppleSignDidNotReturnIdentityToken": "Apple-påloggingen returnerte ikke et identitetstoken.",
+  "authAccountDeactivatedEnterEmailRequestReactivationLink": "Kontoen er deaktivert. Skriv inn e-postadressen din for å be om en lenke for å aktivere kontoen på nytt.",
+  "authAccountDeactivated": "Kontoen er deaktivert",
+  "authSendReactivationLinkEmail": "Sende en reaktiveringslenke til {email}?",
+  "authCancel": "Avbryt",
+  "authSendLink": "Send lenke",
+  "authReactivationLinkSentCheckEmail": "Reaktiveringslenke sendt. Sjekk e-posten din.",
+  "authCouldNotSendReactivationLinkPleaseTryAgain": "Kunne ikke sende reaktiveringslenken. Prøv på nytt.",
+  "authEmailNotVerifiedEnterEmailRequestVerificationLink": "E-postadressen er ikke bekreftet. Skriv inn e-postadressen din for å be om en bekreftelseslenke.",
+  "authEmailNotVerified": "E-postadresse ikke bekreftet",
+  "authSendVerificationLinkEmail": "Sende bekreftelseslenke til {email}?",
+  "authVerificationLinkSentCheckEmail": "Bekreftelseskobling sendt. Sjekk e-posten din.",
+  "authCouldNotSendVerificationLinkPleaseTryAgain": "Det var ikke mulig å sende bekreftelseslenken. Prøv på nytt.",
+  "authVerificationEmailSentPleaseVerifyEmailBeforeLogging": "Bekreftelses-e-post sendt. Vennligst bekreft e-postadressen din før du logger inn.",
+  "authVerifyEmail": "Bekreft e-postadressen din",
+  "authEmailLabel": "E-post:",
+  "authClose": "Lukk",
+  "authResendLink": "Send lenken på nytt",
+  "profileAppSettingsSectionTitle": "APP-INNSTILLINGER",
+  "profileAccountSettings": "Kontoinnstillinger",
+  "profileChangePhoto": "Endre profilbilde",
+  "profileAppearance": "Utseende",
+  "profileThemeDisplayMode": "Tema og visningsmodus",
+  "profileLanguage": "Språk",
+  "profileDisplayLanguage": "Visningsspråk",
+  "profileNotificationsSectionHeading": "VARSELER",
+  "profileAppBanners": "Bannere i appen",
+  "profileShowNewNotificationBannersInsideApp": "Vis nye varselbannere inne i appen",
+  "profilePushNotificationsTitle": "Push-varsler",
+  "profilePhoneNotificationsExpensesFriendsTripsSettlements": "Telefonvarsler for utgifter, venner, turer og oppgjør",
+  "profileSupportSectionHeading": "STØTTE",
+  "profileContactUs": "Kontakt oss",
+  "profileReportBugSuggestion": "Rapporter feil / Forslag",
+  "profileRateSplyto": "Vurder Splyto",
+  "profileLeaveStoreRating": "Gi en vurdering av butikken",
+  "profileSecuritySectionHeading": "SIKKERHET",
+  "profileChangePassword": "Endre passord",
+  "profileUpdateAccountPassword": "Oppdater kontopassordet",
+  "profileDangerZoneSectionHeading": "FAREZONE",
+  "profileDeactivateAccount": "Deaktiver konto",
+  "profileManageAccountAccess": "Administrer tilgang til kontoen",
+  "profileMadeWithLabel": "Laget med",
+  "profileStoreRatingActionWillConnectedNextStep": "Handlingen «Lagre vurdering» vil bli koblet til i neste trinn.",
+  "profileFailedSaveNotificationSettings": "Det gikk ikke an å lagre varslingsinnstillingene.",
+  "profilePushNotificationsSectionTitle": "PUSH-VARSELER",
+  "profileInAppBannersSectionTitle": "BANNERE I APPEN",
+  "profileInAppTripMemberAddedTitle": "Medlem lagt til i turen",
+  "profileInAppAutoSettlementReminderTitle": "Automatisk påminnelse om oppgjør",
+  "profileExpenseUpdates": "Oppdateringer av utgifter",
+  "profileExpenseAddedBannersInsideApp": "Bannere for lagt til utgifter inne i appen",
+  "profileExpenseAddedNotificationsPhone": "Varsler om lagt til utgifter på telefonen",
+  "profileFriendInvites": "Venn inviterer",
+  "profileFriendInvitesBannersInsideApp": "Bannere for venneforespørsler og svar inne i appen",
+  "profileFriendRequestResponseNotifications": "Varsler om venneforespørsler og svar",
+  "profileTripUpdates": "Reiseoppdateringer",
+  "profileTripUpdatesBannersInsideApp": "Bannere for turens livssyklus og medlemsstatus inne i appen",
+  "profileTripLifecycleMemberStatusChanges": "Reisens livssyklus og endringer i medlemsstatus",
+  "profileSettlementUpdates": "Oppdateringer om oppgjør",
+  "profileSettlementUpdatesBannersInsideApp": "Merkede bannere for «sendt» og «bekreftet betaling» inne i appen",
+  "profileMarkedSentConfirmedPaymentUpdates": "Merkede sendte og bekreftede betalingsoppdateringer",
+  "profileScreenshotSizeMust8Mb": "Skjermbildet må være på maksimalt 8 MB",
+  "profileFeedbackSendTitle": "Send tilbakemelding",
+  "profileFeedbackTypeLabel": "Type",
+  "profileFeedbackTypeBug": "Feil",
+  "profileFeedbackTypeSuggestion": "Forslag",
+  "profileDescribeIssueSuggestion": "Beskriv problem eller forslag",
+  "profilePickingImage": "Henter bilde...",
+  "profileAttachScreenshot": "Legg ved skjermbilde",
+  "profileChangeScreenshot": "Endre skjermbilde",
+  "profileRemoveImage": "Fjern bilde",
+  "profileTipAttachScreenshotFasterBugTriage": "Tips: legg ved skjermbilde for raskere feilsøking",
+  "profileAddDetailsAttachScreenshotBeforeSending": "Legg til detaljer eller legg ved skjermbilde før du sender",
+  "profileSendAction": "Send",
+  "profileThanksFeedbackSent": "Takk! Tilbakemelding sendt",
+  "profileFailedSendFeedback": "Kunne ikke sende tilbakemelding",
+  "profileCouldNotOpenWebsite": "Kunne ikke åpne nettstedet.",
+  "profileOpenWebsiteQuestion": "Åpne nettstedet?",
+  "profileOpenPortfolioAction": "Åpne portfolio.egm.lv",
+  "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Dette bildeformatet støttes ikke på denne enheten. Velg JPG eller PNG.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "En gyldig e-postadresse for kontoen er nødvendig for å endre passordet ditt. Kontakt kundestøtte hvis e-postadressen din mangler eller er feil.",
+  "profileEditDeactivatedReactivationLinkEmailRestoreAccess": "Kontoen er deaktivert. Bruk reaktiveringslenken i e-posten for å gjenopprette tilgangen.",
+  "profileEditCouldNotDeactivateTryAgain": "Kunne ikke deaktivere kontoen. Prøv på nytt.",
+  "profileEditDeletionLinkSentEmail": "Slettingslenke sendt til e-postadressen din.",
+  "profileEditCouldNotSendDeletionLinkTryAgain": "Det var ikke mulig å sende slettingslenken. Prøv på nytt.",
+  "profileEditEnterCurrentPasswordChangeEmail": "Skriv inn gjeldende passord for å endre e-postadresse.",
+  "profileEditVerificationWasSentNewEmailSecurityNoticeWas": "Bekreftelsen ble sendt til den nye e-postadressen. Sikkerhetsmeldingen ble sendt til din nåværende e-postadresse.",
+  "profileEditCouldNotStartEmailChangeRightNowTry": "Kunne ikke starte endringen av e-postadressen akkurat nå. Prøv igjen.",
+  "profileEditOverviewCurrency": "Oversikt over valuta",
+  "profileEditPaymentMethod": "Betalingsmåte",
+  "profileEditBankTransferRevolutPaypalMe": "Bankoverføring, Revolut, PayPal.me",
+  "profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword": "Du kan deaktivere tilgangen til kontoen eller be om en e-postlenke for å slette kontoen permanent. Passord er valgfritt for Google-/Apple-kontoer.",
+  "profileEditEnterPasswordOptionalGoogleApple": "Skriv inn passordet ditt (valgfritt for Google/Apple)",
+  "profileEditSendDeletionLinkEmail": "Send slettingslenke til e-post",
+  "profileEditBackProfile": "Tilbake til profilen",
+  "profileEditSetValidEmailProfileChangingPassword": "Angi en gyldig e-postadresse i profilen før du endrer passord.",
+  "profileEditPasswordUpdated": "Passord oppdatert.",
+  "profileEditFailedUpdatePassword": "Det gikk ikke an å oppdatere passordet.",
+  "profileEditEmail": "Konto: {email}",
+  "profileEditPrimary": "Primær",
+  "profileEditSearchCurrency": "Søk etter valuta",
+  "profileEditNoCurrenciesFound": "Ingen valutaer funnet",
+  "profileEditOverviewTotalsConvertedCurrency": "Oversiktsbeløpene konverteres til denne valutaen.",
+  "profileEditPaymentInfoUpdated": "Betalingsinformasjon oppdatert.",
+  "profileEditCouldNotSavePaymentInfoTryAgain": "Kunne ikke lagre betalingsinformasjon. Prøv på nytt.",
+  "profileEditCurrentPassword": "Gjeldende passord",
+  "profileEditBankTransferIbanSwift": "Bankoverføring (IBAN / SWIFT)",
+  "profileEditIbanSwift": "IBAN + SWIFT",
+  "profileEditRevtagRevolutMe": "Revtag / revolut.me",
+  "profileEditPaypalMeLink": "paypal.me-lenke",
+  "profileEditChoosePaymentMethod": "Velg betalingsmåte",
+  "profileEditTapChange": "Trykk for å endre",
+  "profileEditUkTransfersSortCode6DigitsNumber8": "For overføringer i Storbritannia må sorteringskoden være på 6 siffer og kontonummeret på 8 siffer.",
+  "profileEditPaymentInfo": "Betalingsinformasjon",
+  "profileEditSaveDetails": "Lagre opplysninger",
+  "profileEditBankRegion": "Bankregion",
+  "profileEditEurope": "Europa",
+  "profileEditSortCode": "Bankkode",
+  "profileEditExample112233": "Eksempel: 112233",
+  "profileEditNumber": "Kontonummer",
+  "profileEdit8Digits": "8 siffer",
+  "profileEditUkDomesticTransfersSortCodeNumber": "For innenlandske overføringer i Storbritannia bruker du sort code + kontonummer.",
+  "profileEditExampleLv80bank0000435195001": "Eksempel: LV80BANK0000435195001",
+  "profileEdit811Chars": "8 eller 11 tegn",
+  "profileEditHolderNameTakenProfileFullName": "Navnet på kontoinnehaveren hentes fra det fulle navnet i profilen.",
+  "profileEditRevolutMeUsername": "revolut.me/username",
+  "profileEditRevtag": "Revtag",
+  "profileEditUsername": "@username",
+  "profileEditPaypalMeUsernameUsername": "paypal.me/username eller brukernavn",
+  "profileEditRevolut": "Revolut",
+  "profileEditPaypalMe": "PayPal.me",
+  "profileEditWise": "Wise",
+  "profileEditWisePayUsername": "wise.com/pay/me/username",
+  "profileEditUk": "Storbritannia",
+  "profileEditIbanLabel": "IBAN",
+  "profileEditBicSwiftLabel": "BIC / SWIFT",
+  "profileEditRevolutMe": "Revolut.me",
+  "imageCropperAdjustAvatar": "Juster avatar",
+  "imageCropperAdjustTripImage": "Juster reisebilde",
+  "copyAction": "Kopier",
+  "currencyNameEur": "Euro",
+  "currencyNameGbp": "Britisk pund",
+  "currencyNameChf": "Sveitsisk franc",
+  "currencyNameNok": "Norske kroner",
+  "currencyNameSek": "Svensk krone",
+  "currencyNameDkk": "Dansk krone",
+  "currencyNamePln": "Polsk zloty",
+  "currencyNameCzk": "Tsjekkisk koruna",
+  "currencyNameHuf": "Ungarsk forint",
+  "currencyNameRon": "Rumensk leu",
+  "currencyNameBgn": "Bulgarsk lev",
+  "currencyNameIsk": "Islandsk krone",
+  "currencyNameAll": "Albansk lek",
+  "currencyNameBam": "Bosnia-Hercegovina Mark",
+  "currencyNameByn": "Hviterussisk rubel",
+  "currencyNameMdl": "Moldovsk leu",
+  "currencyNameMkd": "Makedonsk denar",
+  "currencyNameRsd": "Serbisk dinar",
+  "currencyNameUah": "Ukrainsk hryvnia",
+  "currencyNameGel": "Georgisk lari",
+  "currencyNameTry": "Tyrkisk lira",
+  "currencyNameUsd": "Amerikanske dollar",
+  "currencyNameJpy": "Japanske yen",
+  "currencyNameCny": "Kinesisk yuan",
+  "currencyNameCad": "Kanadisk dollar",
+  "currencyNameAud": "Australske dollar",
+  "expenseCategoryFood": "Mat",
+  "expenseCategoryGroceries": "Dagligvarer",
+  "expenseCategoryFuel": "Drivstoff",
+  "expenseCategoryTransport": "Transport",
+  "expenseCategoryAccommodation": "Overnatting",
+  "expenseCategoryActivities": "Aktiviteter",
+  "expenseCategoryTickets": "Billetter",
+  "expenseCategoryShopping": "Shopping",
+  "expenseCategoryParty": "Fest",
+  "expenseCategoryParking": "Parkering",
+  "expenseCategoryOther": "Annet",
+  "shellTripAlreadyInListOpened": "Turen er allerede på listen din. Vi har åpnet den for deg.",
+  "shellJoinedTripFromInviteLink": "Deltatt i turen via invitasjonslenken.",
+  "shellFailedToOpenInviteLink": "Det lyktes ikke å åpne invitasjonslenken.",
+  "shellFailedToOpenFriendLink": "Det lyktes ikke å åpne vennelinken.",
+  "shellTripInviteTitle": "Reiseinvitasjon",
+  "shellNoAction": "Nei",
+  "shellYesAction": "Ja",
+  "shellOnlyTripCreatorCanDelete": "Kun turarrangøren kan slette denne turen.",
+  "shellOnlyActiveTripsCanDelete": "Bare aktive turer kan slettes.",
+  "shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded": "Slette «{tripLabel}»? Dette er kun tillatt før utgifter legges til.",
+  "shellTripDeleted": "Turen er slettet.",
+  "shellFailedToDeleteTrip": "Det lyktes ikke å slette turen.",
+  "shellFailedToLoadNotifications": "Kunne ikke laste inn varsler.",
+  "shellNewNotificationTitle": "Ny varsling: {title}",
+  "shellFailedToUpdateNotifications": "Kunne ikke oppdatere varslinger.",
+  "shellMarkAllAsReadAction": "Merk alt som lest",
+  "shellNewSection": "Ny",
+  "shellEarlierSection": "Tidligere",
+  "shellShowMoreEarlierAction": "Vis flere tidligere",
+  "shellLoadingMore": "Laster inn mer...",
+  "shellLoadMoreNotificationsAction": "Last inn flere varsler",
+  "shellTripNoLongerAvailable": "Denne turen er ikke lenger tilgjengelig.",
+  "shellFailedToOpenTrip": "Kunne ikke åpne turen.",
+  "shellYesterday": "I går",
+  "shellInviteAlreadyMemberOpenTripNow": "Du er allerede medlem av «{tripName}». Vil du åpne denne turen nå?\n\nInvitert av: {inviterName}",
+  "shellInviteJoinTripQuestion": "Vil du bli med på turen «{tripName}»?\n\nInvitert av: {inviterName}",
+  "tripsSelectedImage": "Valgt bilde: {arg1}",
+  "tripsTripImageAlreadySet": "Turbilde er allerede angitt.",
+  "tripsTripCreatedButImageUploadFailed": "Turen er opprettet, men bildeopplastingen mislyktes.",
+  "tripsTripCreatedButImageUploadFailedWithReason": "Turen er opprettet, men bildeopplastingen mislyktes: {arg1}",
+  "@tripsTripCreatedButImageUploadFailedWithReason": {
+    "placeholders": {
+      "arg1": {}
+    }
+  },
+  "tripsJoinTripViaInvite": "Bli med på turen via invitasjon",
+  "tripsTotalTrips": "Totalt antall turer",
+  "tripsTotalSpent": "Totalt brukt",
+  "tripsMixedCurrencies": "Blandede valutaer",
+  "tripsShowActive": "Vis aktiv",
+  "tripsSeeAll": "Se alt",
+  "tripsGridView": "Rutenettvisning",
+  "tripsListView": "Listevisning",
+  "tripsAddNewTrip": "Legg til ny tur",
+  "tripsLoadMore": "Last inn mer",
+  "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "Slette «{arg1}»? Dette er kun tillatt før utgifter legges til.",
+  "tripsTripDates": "Reisedatoer",
+  "tripsFrom": "Fra",
+  "tripsSelectDate": "Velg dato",
+  "tripsTo": "Til",
+  "tripsMainCurrency": "Hovedvaluta",
+  "tripsPleaseSelectTripPeriodFromAndToDates": "Vennligst velg reiseperiode (start- og sluttdato).",
+  "tripsTripEndDateMustBeOnOrAfterStartDate": "Reisens sluttdato må være på eller etter startdatoen.",
+  "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "Formatet for reiseperioden er ugyldig. Vennligst velg datoer på nytt.",
+  "tripsYouAreAlreadyAMemberOfThisTrip": "Du er allerede medlem av denne turen.",
+  "tripsJoinedTripSuccessfully": "Du har blitt med på turen.",
+  "tripsFailedToJoinTripFromInvite": "Det lyktes ikke å bli med på turen fra invitasjonen.",
+  "tripsJoinTrip": "Bli med på turen",
+  "tripsPasteInviteLinkOrInviteToken": "Lim inn invitasjonslenken eller invitasjonstokenet.",
+  "tripsHttpsInviteNorthSeaAbc123def4": "https://.../?invite=north-sea-abc123def4",
+  "tripsEnterAValidInviteLinkOrToken": "Skriv inn en gyldig invitasjonslenke eller et gyldig token.",
+  "tripsClipboardIsEmpty": "Utklippstavlen er tom.",
+  "tripsPaste": "Lim inn",
+  "tripsJoin": "Bli med",
+  "workspaceTripMembers": "Reisedeltakere",
+  "workspaceFailedToLoadFriends": "Kunne ikke laste inn venner.",
+  "workspaceFailedToGenerateInviteLink": "Det lyktes ikke å generere invitasjonslenken.",
+  "workspaceInviteLink": "Invitasjonslenke",
+  "workspaceGeneratingInviteLink": "Genererer invitasjonslenke...",
+  "workspaceInviteLinkUnavailable": "Invitasjonslenken er ikke tilgjengelig.",
+  "workspaceCopyInviteLink": "Kopier invitasjonslenke",
+  "workspaceInviteLinkCopied": "Invitasjonslenken er kopiert.",
+  "workspaceExpiresUtc": "Utløper: {arg1} UTC",
+  "workspaceNoFriendsAvailableAddFriendsFirst": "Ingen venner tilgjengelig. Legg til venner først.",
+  "workspaceSettle": "Avregning",
+  "workspaceOwesToTheGroup": "Skylder gruppen",
+  "workspaceGetsBackFromGroup": "Skal få penger tilbake fra gruppen",
+  "workspaceShowingTop4ByBalanceDifference": "Viser de 4 øverste etter saldoforskjell.",
+  "workspaceOpenFlow": "Detaljer",
+  "workspaceFriend": "Venn",
+  "workspaceSettlementTransfer": "Overføring av oppgjør",
+  "workspaceCompleted": "Fullført",
+  "workspaceWaitingForConfirmation": "Venter på bekreftelse",
+  "workspaceWaitingForPayment": "Venter på betaling",
+  "workspaceActionNeeded": "Tiltak som må iverksettes",
+  "workspacePaymentSToMarkAsSentToConfirmAsReceived": "Betalinger som skal merkes som sendt: {arg1}; bekreftes som mottatt: {arg2}.",
+  "workspaceReadyToSettle": "Klar til å gjøre opp",
+  "workspaceAllMembersAreReadyYouCanStartSettlements": "Alle medlemmer er klare. Du kan starte oppgjørene.",
+  "workspaceWaitingForEveryoneToMarkReady": "Venter på at alle skal merke seg som klare.",
+  "workspaceIMReady": "Jeg er klar",
+  "workspaceConfirmThatYouAddedAllYourExpenses": "Bekreft at du har lagt til alle utgiftene dine.",
+  "workspaceFinishButtonUnlocksOnceEveryoneMarksReady": "«Fullfør»-knappen blir tilgjengelig når alle har merket seg som klare.",
+  "workspaceGetsBackFromTheGroup": "Skal få penger tilbake fra gruppen",
+  "workspaceSettledWithTheGroup": "Avtalt med gruppen",
+  "workspaceTotalPaid": "Totalt betalt",
+  "workspaceTotalOwes": "Totalt skyldig",
+  "workspaceTransactionHistory": "Transaksjonshistorikk",
+  "workspaceNoTransactionsYetForThisMember": "Ingen transaksjoner ennå for dette medlemmet.",
+  "workspaceSettlements": "Oppgjør: {arg1}",
+  "workspaceAllMembersMustMarkReadyBeforeStartingSettlements": "Alle medlemmer må merke seg som klare før avregningene starter.",
+  "workspaceYouMarkedYourselfReadyToSettle": "Du har merket deg selv som klar til å betale.",
+  "workspaceReadyToSettleMarkRemoved": "«Klar til oppgjør»-merket er fjernet.",
+  "workspaceReminderSent": "Påminnelse sendt.",
+  "workspaceInviteLinkOrAddFromFriends": "Invitasjonslenke eller legg til fra venner",
+  "workspaceOnlyTripCreatorCanEditThisTrip": "Bare turarrangøren kan redigere denne turen.",
+  "workspaceTripUpdated": "Turen er oppdatert.",
+  "workspaceFailedToUpdateTrip": "Kunne ikke oppdatere turen.",
+  "workspaceNoMembersSelectedYet": "Ingen medlemmer er valgt ennå.",
+  "workspaceNoInternetExpenseSavedWithoutReceiptImage": "Ingen internettilgang. Utgiften lagres uten bilde av kvitteringen.",
+  "workspaceRandomPicker": "Tilfeldig valg",
+  "workspaceCurrency": "Valuta",
+  "workspaceCategory": "Kategori",
+  "workspaceCustomCategory": "Egendefinert kategori",
+  "workspaceCategoryName": "Kategorinavn",
+  "workspaceApartmentRentParkingEtc": "Leie av leilighet, parkering osv.",
+  "workspaceEnterACustomCategory": "Angi en egendefinert kategori.",
+  "workspacePickAnExpenseCategory": "Velg en utgiftskategori.",
+  "workspaceCategoryMustBeAtLeast2Characters": "Kategorien må bestå av minst 2 tegn.",
+  "workspaceCategoryMustBeUpTo64Characters": "Kategorien må være på opptil 64 tegn.",
+  "workspacePercentageSplitMustTotal100": "Prosentfordelingen må til sammen utgjøre 100 %.",
+  "workspaceSharesMustBeGreaterThan0ForAllParticipants": "Antall andeler må være større enn 0 for hver deltaker.",
+  "workspaceTotalAmount": "Totalt beløp",
+  "workspaceOriginal": "Original",
+  "workspaceTotalCost": "Totalkostnad",
+  "workspaceStarted": "Startet {arg1}",
+  "workspaceEnded": "Avsluttet {arg1}",
+  "workspaceArchivedTrip": "Arkivert tur",
+  "workspaceActiveTrip": "Aktiv tur",
+  "workspaceMemberProfile": "Medlemsprofil",
+  "workspaceTripOwner": "Tureier",
+  "workspaceMember": "Medlem",
+  "workspaceReadyForSettlement": "Klar for oppgjør",
+  "workspaceNotReadyForSettlement": "Ikke klar for oppgjør",
+  "workspaceBankDetails": "Bankopplysninger",
+  "workspaceIbanAndPayoutDetailsWillBeAddedHereInA": "IBAN og utbetalingsopplysninger vil bli lagt til her i en kommende oppdatering.",
+  "workspacePaymentDetails": "Betalingsopplysninger",
+  "workspaceThisMemberHasNotAddedPayoutDetailsYet": "Dette medlemmet har ikke lagt til utbetalingsopplysninger ennå.",
+  "workspaceBankTransfer": "Bankoverføring",
+  "workspaceHolder": "Innehaver",
+  "workspaceCouldNotOpenPaymentLink": "Kunne ikke åpne betalingslenken.",
+  "workspaceTripActivity": "Tureaktivitet",
+  "workspacePaidExpenses": "Betalte utgifter",
+  "workspacePaidTotal": "Betalt totalbeløp",
+  "workspaceInvolvedIn": "Involvert i",
+  "workspaceCurrentTrip": "Gjeldende tur",
+  "workspaceCommonTrips": "Felles reiser",
+  "workspaceLoadingCommonTrips": "Laster felles reiser…",
+  "workspaceNoCommonTripsFoundYet": "Ingen felles reiser funnet ennå.",
+  "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "Ikke alle felles reiser kunne lastes. Den aktuelle reisen vises.",
+  "workspaceMembers": "medlemmer",
+  "workspaceExpense": "Utgifter",
+  "workspacePaid": "betalt",
+  "workspaceLoadingMoreExpenses": "Laster inn flere utgifter...",
+  "workspaceScrollDownToLoadMore": "Rull ned for å laste inn mer",
+  "workspaceTripFinished": "Turen er avsluttet",
+  "workspaceSettlementsAreUnlockedForThisTrip": "Oppgjør er aktivert for denne turen.",
+  "workspaceFinishTripToStartSettlements": "Fullfør turen for å starte oppgjørene.",
+  "workspaceMarkedTransferAsSent": "{arg1} har merket overføringen som sendt.",
+  "workspaceWaitingForToMarkAsPaid": "Venter på at {arg1} skal merke som betalt.",
+  "workspaceConfirmedReceivingThePayment": "{arg1} har bekreftet mottak av betalingen.",
+  "workspaceWaitingForToConfirm": "Venter på at {arg1} skal bekrefte.",
+  "workspaceAllTripSettlementsAreFullyCompleted": "Alle reiseoppgjør er fullstendig gjennomført.",
+  "workspaceFinalStateAfterAllTransfersAreConfirmed": "Endelig status etter at alle overføringer er bekreftet.",
+  "workspaceSettlementFlow": "Oppgjørsflyt",
+  "workspaceActions": "Handlinger",
+  "workspaceQuickPay": "Hurtigbetaling",
+  "workspacePayWithRevolut": "Betal med Revolut",
+  "workspacePayWithPaypal": "Betal med PayPal",
+  "workspacePayWithWise": "Betal med Wise",
+  "workspaceTransferIsConfirmed": "Overføringen er bekreftet.",
+  "workspaceWaitingForTheOtherMemberToCompleteTheNextStep": "Venter på at det andre medlemmet skal fullføre neste trinn.",
+  "workspaceSendReminder": "Send påminnelse",
+  "workspaceInProgress": "Pågår",
+  "workspaceTimeUnknown": "Tid ukjent",
+  "workspaceRemind": "Påminnelse",
+  "workspaceYourPosition": "Din posisjon",
+  "workspaceRecentActivity": "Nylig aktivitet",
+  "workspaceNoRecentActivityYet": "Ingen nylig aktivitet ennå.",
+  "workspaceAddAtLeastOneMemberToStartSplittingExpenses": "Legg til minst ett medlem for å begynne å dele utgiftene.",
+  "workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses": "Merk deg som klar til å gjøre opp etter at du har lagt til alle utgiftene dine.",
+  "workspaceWaitingForMemberSToMarkReady": "Deltakere som ikke er klare ennå: {arg1}.",
+  "workspaceAllMembersAreReadyYouCanFinishTheTripAnd": "Alle medlemmene er klare. Du kan avslutte turen og starte oppgjøret.",
+  "workspaceAllMembersAreReadyWaitingForTheTripOwnerTo": "Alle medlemmene er klare. Venter på at turarrangøren skal starte oppgjøret.",
+  "workspaceSettlementInProgressConfirmed": "Oppgjør pågår: {arg1}/{arg2} bekreftet.",
+  "workspaceNoActionsPendingThisTripIsSettled": "Ingen ventende handlinger. Denne turen er avsluttet.",
+  "workspaceNoActionsNeededRightNow": "Ingen tiltak er nødvendig akkurat nå.",
+  "workspaceYouShouldReceive": "Du bør motta {arg1}.",
+  "workspaceYouShouldPay": "Du bør betale {arg1}.",
+  "workspaceYouAreCurrentlySettledInThisTrip": "Du er for øyeblikket registrert på denne turen.",
+  "workspaceUnknownTime": "Ukjent tidspunkt",
+  "workspaceJustNow": "Akkurat nå",
+  "workspaceMinAgo": "For {arg1} min siden",
+  "workspaceHAgo": "For {arg1} t siden",
+  "workspaceDAgo": "For {arg1} d siden",
+  "friendsRemoveFriend": "Fjern venn",
+  "friendsRemoveThisFriend": "Fjerne denne vennen?",
+  "friendsWillBeRemovedFromYourFriendsListYouCanAdd": "{arg1} vil bli fjernet fra vennelisten din. Du kan legge dem til igjen senere.",
+  "friendsContinue": "Fortsett",
+  "friendsFriendRemoved": "Vennen er fjernet.",
+  "friendsCouldNotRemoveFriend": "Kunne ikke fjerne venn.",
+  "friendsFriendProfile": "Venneprofil",
+  "friendsMoreActions": "Flere handlinger",
+  "friendsThisFriendHasNotAddedPayoutDetailsYet": "Denne vennen har ikke lagt til utbetalingsopplysninger ennå.",
+  "friendsCouldNotLoadCommonTripsRightNow": "Kunne ikke laste felles reiser akkurat nå.",
+  "friendsFinished": "Ferdig",
+  "friendsTrip": "Tur nr. {arg1}",
+  "friendsMembers": "Medlemmer: {arg1}",
+  "friendsNoDate": "Ingen dato",
+  "friendsIncomingRequests": "INNKOMMENDE FORESPØRSLER",
+  "friendsSentInvites": "SENDTE INVITASJONER",
+  "friendsMyFriends": "MINE VENNER",
+  "friendsRequests": "Forespørsler",
+  "friendsIncoming": "Innkommende",
+  "friendsIncomingRequestSubtitle": "vil være venner",
+  "friendsOutgoingInviteSubtitle": "Invitasjon sendt",
+  "friendsNoPendingActivity": "Ingen venneforespørsler",
+  "friendsInviteSentTo": "Invitasjon sendt til {arg1}.",
+  "friendsNoIncomingRequests": "Ingen innkommende forespørsler",
+  "friendsDecline": "Avslå",
+  "friendsAccept": "Godta",
+  "friendsNoSentInvites": "Ingen sendte invitasjoner",
+  "friendsNoFriendsYet": "Ingen venner ennå",
+  "friendsScrollDownToLoadMoreFriends": "Rull ned for å laste inn flere venner.",
+  "friendsUser": "Bruker",
+  "friendsSearchUsers": "Søk etter brukere",
+  "friendsFindByNameOrEmailAndSendInvite": "Søk etter navn eller e-post og send invitasjon",
+  "friendsScanQr": "Skann QR-koden",
+  "friendsScanAnotherUserToAddFriend": "Skann en annen bruker for å legge til en venn",
+  "friendsMyQr": "Min QR",
+  "friendsShowOrShareYourQrCode": "Vis eller del QR-koden din",
+  "friendsScanFriendQrTitle": "Skann vennens QR-kode",
+  "friendsPlaceFriendQrInsideFrame": "Plasser vennens QR-kode inne i rammen",
+  "friendsHoldFriendQrInsideFrame": "Hold QR-koden innenfor rammen",
+  "friendsConfirmAddFriendTitle": "Vil du legge til {arg1} som venn?",
+  "friendsConfirmSendFriendInviteText": "{arg1} vil motta vennforespørselen din.",
+  "friendsConfirmAcceptFriendRequestText": "Godta {arg1}s venneforespørsel?",
+  "friendsMyFriendQrTitle": "My Friend QR",
+  "friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode": "Skann denne QR-koden eller del lenken for å legge meg til på Splyto.",
+  "friendsAddMeOnTripSplitFriends": "Legg meg til på Splyto.",
+  "friendsTripSplitFriendCode": "Splyto-vennelink",
+  "shareAction": "Del",
+  "friendsQrCodeIsNotAValidFriendCode": "QR-koden er ikke en gyldig vennkode.",
+  "friendsYouCannotAddYourself": "Du kan ikke legge til deg selv.",
+  "friendsThisUserIsAlreadyInYourFriendsList": "Denne brukeren er allerede på vennelisten din.",
+  "friendsInviteToThisUserIsAlreadySent": "Invitasjonen til denne brukeren er allerede sendt.",
+  "friendsFriendRequestProcessed": "Vennforespørsel behandlet.",
+  "friendsFailedToProcessFriendQr": "Kunne ikke behandle vennens QR-kode.",
+  "friendsCouldNotLoadYourUserProfile": "Kunne ikke laste inn brukerprofilen din.",
+  "friendsMyProfile": "Min profil",
+  "friendsUnexpectedErrorLoadingFriends": "Uventet feil ved innlasting av venner.",
+  "friendsFriendAdded": "Venn lagt til.",
+  "friendsRequestDeclined": "Forespørsel avvist.",
+  "friendsFailedToUpdateRequest": "Kunne ikke oppdatere forespørselen.",
+  "friendsCancelInvite": "Avbryt invitasjon",
+  "friendsCancelInviteTo": "Avbryte invitasjonen til {arg1}?",
+  "friendsKeep": "Behold",
+  "friendsInviteToCancelled": "Invitasjonen til {arg1} er kansellert.",
+  "friendsFailedToCancelInvite": "Det lyktes ikke å avbryte invitasjonen.",
+  "analyticsOther": "Annet",
+  "analyticsSelectATripForAnalytics": "Velg en tur for analyse",
+  "analyticsMembers": "{arg1} • Medlemmer: {arg2} • {arg3} • {arg4}",
+  "analyticsDailySpending": "Daglige utgifter",
+  "analyticsMyDaily": "Mine daglige utgifter",
+  "analyticsGroupDaily": "Gruppens daglige utgifter",
+  "analyticsByMember": "Per deltaker",
+  "analyticsShowLess": "Vis mindre",
+  "analyticsByCategory": "Etter kategori",
+  "analyticsQuickInsights": "Raske innsikter",
+  "analyticsBiggestExpense": "Største utgift: {arg1} ({arg2})",
+  "analyticsTopSpender": "Største forbruker: {arg1} ({arg2})",
+  "analyticsHighestGroupDay": "Gruppens beste dag: {arg1} ({arg2})",
+  "analyticsNoDates": "Ingen datoer",
+  "friendsSearchFailedTryAgain": "Søket mislyktes. Prøv på nytt.",
+  "friendsFailedToSendInvite": "Det lyktes ikke å sende invitasjonen.",
+  "friendsAddFriend": "Legg til venn",
+  "friendsSearchByNameOrEmail": "Søk etter navn eller e-postadresse",
+  "friendsTypeAtLeast2CharactersToSearch": "Skriv inn minst 2 tegn for å søke.",
+  "friendsNoUsersFound": "Ingen brukere funnet",
+  "friendsInviteAction": "Inviter",
+  "workspacePaidForGroup": "Betalt for gruppen",
+  "workspacePaidForGroupDate": "Betalt for gruppen • {arg1}",
+  "workspaceShareOfExpense": "Deling av utgifter",
+  "workspaceShareOfExpenseDate": "Utgiftsdeling • {arg1}",
+  "paymentHolderNameCopied": "Innehaverens navn er kopiert.",
+  "paymentIbanCopied": "IBAN kopiert.",
+  "paymentSwiftCopied": "SWIFT kopiert.",
+  "paymentRevtagCopied": "Revtag kopiert.",
+  "paymentCouldNotCopyToClipboard": "Kunne ikke kopiere til utklippstavlen.",
+  "paymentCopied": "Kopiert.",
+  "paymentRequestAction": "Be om betaling",
+  "paymentRecordAction": "Registrer betaling",
+  "paymentRequestSheetTitle": "Be om betaling",
+  "paymentRecordSheetTitle": "Registrer betaling",
+  "paymentRequestSheetBody": "Be {arg1} om å betale et beløp de for øyeblikket skylder deg.",
+  "paymentRecordSheetBody": "Bruk dette etter at du har betalt {arg1} utenfor Splyto. De vil bekrefte at de har mottatt beløpet.",
+  "paymentMaxAmount": "Maksimum {arg1}",
+  "paymentNoteHint": "Bankoverføring, Revolut, kontanter...",
+  "paymentAmountPositiveError": "Beløpet må være større enn null.",
+  "paymentAmountTooHighError": "Beløpet kan ikke være høyere enn den utestående saldoen.",
+  "paymentRequestCreated": "Betalingsforespørsel sendt.",
+  "paymentRecordedWaiting": "Betaling registrert. Venter på bekreftelse.",
+  "paymentConfirmTitle": "Bekreft betaling",
+  "paymentConfirmText": "Bekreft at du har mottatt {arg1} fra {arg2}.",
+  "paymentConfirmedMessage": "Betaling bekreftet.",
+  "paymentCancelRecordTitle": "Avbryt betalingsregistrering",
+  "paymentCancelRecordText": "Avbryte registreringen av betalingen din på {arg1} til {arg2}?",
+  "paymentRecordCancelled": "Betalingsoppføring kansellert.",
+  "paymentNotReceivedTitle": "Betaling ikke mottatt",
+  "paymentNotReceivedText": "Merk {arg1}-betalingen fra {arg2} som ikke mottatt?",
+  "paymentMarkedNotReceived": "Betaling merket som ikke mottatt.",
+  "paymentActivityTitle": "Betalingsaktivitet",
+  "paymentOpenRequestsCount": "Åpne betalingsforespørsler: {arg1}",
+  "paymentAwaitingConfirmationCount": "Betalinger som venter på bekreftelse: {arg1}",
+  "paymentRecordedPaymentsTitle": "Registrerte betalinger",
+  "paymentRequestedFrom": "{arg1} har bedt om betaling fra {arg2}",
+  "paymentPaidTo": "{arg1} betalte {arg2}",
+  "paymentRequestPendingStatus": "Betaling forespurt",
+  "paymentAwaitingConfirmationStatus": "Venter på bekreftelse",
+  "paymentReviewRequestAction": "Gjennomgå forespørsel",
+  "paymentViewDetailsAction": "Betalingsopplysninger",
+  "paymentMarkPaidAction": "Jeg har betalt",
+  "paymentDeclineAction": "Avslå",
+  "paymentRequestReviewTitle": "Betalingsforespørsel",
+  "paymentRequestReviewBody": "{arg1} har bedt deg om {arg2}. Betal utenfor Splyto, og merk deretter betalingen som betalt.",
+  "paymentRequestMarkPaidConfirmTitle": "Merk forespørselen som betalt?",
+  "paymentRequestMarkPaidConfirmText": "Bekreft først etter at du har betalt {arg1} til {arg2} utenfor Splyto.",
+  "paymentRequestMarkedPaid": "Merkes som betalt. Venter på bekreftelse.",
+  "paymentRequestCancelTitle": "Avbryte betalingsforespørsel?",
+  "paymentRequestCancelText": "Vil du avbryte din {arg1}-forespørsel til {arg2}?",
+  "paymentRequestCancelled": "Betalingsforespørsel avbrutt.",
+  "paymentRequestDeclineTitle": "Avslå betalingsforespørsel?",
+  "paymentRequestDeclineText": "Avslå betalingsforespørselen på {arg1} fra {arg2}? Personen får et varsel.",
+  "paymentRequestDeclined": "Betalingsforespørsel avvist.",
+  "paymentPendingBeforeFinish": "Avklar åpne betalingsforespørsler og ubekreftede betalinger før endelig oppgjør.",
+  "paymentFinishBlockedByPending": "Fullføring låses opp etter at betalingsforespørsler og ubekreftede betalinger er løst.",
+  "notificationPaymentRequestedTitle": "Betaling forespurt",
+  "notificationPaymentRequestedBody": "{arg1} har bedt deg om {arg2}.",
+  "notificationPaymentRequestedBodyGeneric": "Du har mottatt en betalingsforespørsel.",
+  "notificationPaymentRequestSentTitle": "Forespurt betaling sendt",
+  "notificationPaymentRequestSentBody": "{arg1} har merket din {arg2}-betalingsforespørsel som betalt.",
+  "notificationPaymentRequestSentBodyGeneric": "Betalingsforespørselen din ble merket som betalt.",
+  "notificationPaymentRequestCancelledTitle": "Betalingsforespørsel avbrutt",
+  "notificationPaymentRequestCancelledBody": "{arg1} har kansellert betalingsforespørselen fra {arg2}.",
+  "notificationPaymentRequestCancelledBodyGeneric": "En betalingsforespørsel ble kansellert.",
+  "notificationPaymentRequestDeclinedTitle": "Betalingsforespørsel avvist",
+  "notificationPaymentRequestDeclinedBody": "{arg1} har avvist din {arg2}-betalingsforespørsel.",
+  "notificationPaymentRequestDeclinedBodyGeneric": "Betalingsforespørselen din ble avslått.",
+  "notificationPaymentSentTitle": "Betaling merket som sendt",
+  "notificationPaymentSentBody": "{arg1} har merket {arg2} som betalt til deg.",
+  "notificationPaymentSentBodyGeneric": "En betaling ble merket som sendt til deg.",
+  "notificationPaymentConfirmedTitle": "Betaling bekreftet",
+  "notificationPaymentConfirmedBody": "{arg1} har bekreftet mottak av {arg2} fra deg.",
+  "notificationPaymentConfirmedBodyGeneric": "Betalingen din er bekreftet.",
+  "notificationPaymentCancelledTitle": "Betaling kansellert",
+  "notificationPaymentCancelledBody": "{arg1} har kansellert betalingsmerket for {arg2}.",
+  "notificationPaymentCancelledBodyGeneric": "En betalingsmarkering ble kansellert.",
+  "notificationPaymentNotReceivedTitle": "Betaling ikke mottatt",
+  "notificationPaymentNotReceivedBody": "{arg1} har merket {arg2}-betalingen som ikke mottatt.",
+  "notificationPaymentNotReceivedBodyGeneric": "En betaling ble merket som ikke mottatt.",
+  "quickStartTitle": "Hurtigstart",
+  "quickStartCreateTitle": "Opprett en tur",
+  "quickStartCreateBody": "Velg et navn og en valuta. Hold orden på dine egne utgifter, eller del kostnadene med en gruppe.",
+  "quickStartInviteTitle": "Reis sammen eller alene",
+  "quickStartInviteBody": "Inviter venner til å være med på turen din, eller start en personlig tur på egen hånd.",
+  "quickStartExpenseTitle": "Legg til din første utgift",
+  "quickStartExpenseBody": "Skriv inn beløpet, velg hvem som har betalt, og del kostnaden. Saldoene dine holdes oppdatert.",
+  "quickStartNext": "Neste",
+  "quickStartBack": "Tilbake",
+  "quickStartSkip": "Hopp over",
+  "quickStartCreateAction": "Opprett tur",
+  "quickStartClose": "Lukk hurtigstart",
+  "quickStartSubtitle": "Se hvordan turer og utgifter fungerer",
+  "quickStartStep": "Trinn {step} av {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Totalsum for turen",
+  "workspacePersonalTotal": "Totalt brukt",
+  "workspaceBalanceEven": "Saldoen din er i balanse",
+  "workspaceBalanceOwe": "Du skylder {amount}",
+  "workspaceBalanceReceive": "Du får tilbake {amount}",
+  "workspaceMemberCount": "Medlemmer: {count}",
+  "workspaceSearchExpenses": "Søk etter utgifter",
+  "workspaceClearSearch": "Tydelig søk",
+  "workspaceSearchLoadedHint": "Søket omfatter registrerte utgifter. Legg til flere for å inkludere eldre utgifter.",
+  "workspaceNoExpenseMatches": "Ingen samsvarende utgifter",
+  "workspaceNoExpenseMatchesBody": "Prøv et nytt søk eller tøm søket for å se alle innlastede utgifter.",
+  "workspaceEmptyPersonalExpenses": "Legg til din første utgift for å begynne å spore utgiftene dine.",
+  "workspaceEmptyGroupExpenses": "Legg til din første delte utgift for å se alles andel.",
+  "workspaceLoadMoreExpenses": "Last inn flere utgifter",
+  "workspaceOriginalExpenseAmount": "Opprinnelig beløp: {amount}",
+  "workspaceCommentCount": "Kommentarer: {count}",
+  "workspaceExpenseActions": "Utgiftshandlinger",
+  "workspaceLoadErrorTitle": "Kunne ikke laste inn denne turen",
+  "workspaceCachedWarning": "Viser lagrede data. Disse kan være utdaterte.",
+  "workspaceActivityTab": "Aktivitet",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Laster inn tur",
+  "workspaceRefreshFailed": "Oppdatering mislyktes",
+  "expenseDetailsTitle": "Utgiftsdetaljer",
+  "expenseQuickCategories": "Hurtigkategorier",
+  "expenseReceiptRead": "Kvittering lest og skjema oppdatert.",
+  "expenseReceiptNoData": "Kvittering vedlagt. Det er ikke angitt noe klart beløp, dato eller forhandler.",
+  "expenseReceiptScanFailed": "Kvittering valgt. Automatisk avlesning mislyktes; sjekk feltene manuelt.",
+  "expenseReceiptOffline": "Kvitteringen lastes opp når du lagrer. Automatisk avlesning krever en internettforbindelse.",
+  "expenseReadingReceipt": "Leser kvitteringen…",
+  "expenseCommentsLoadFailed": "Kunne ikke laste inn kommentarer. Prøv igjen.",
+  "expenseReplyAction": "Svar",
+  "expenseReplyHint": "Skriv et svar…",
+  "expenseReplyTo": "Svar til {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Saldoer vises etter at utgifter er lagt til.",
+  "balanceAfterPayments": "Saldoene inkluderer bekreftede betalinger.",
+  "balanceExpenseShare": "Utgiftsdeling",
+  "balanceHistoryScope": "Lagt inn utgifter og bekreftede betalinger. Denne listen inneholder kanskje ikke hele reisehistorikken.",
+  "balancePaymentTo": "Betaling til {name}",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Betaling fra {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Merk alle som klare før du starter sluttoppgjøret.",
+  "settlementEmptyClosed": "Det er ingen overføringer oppført for denne turen.",
+  "settlementConfirmedCount": "{count} av {total} overføringer bekreftet",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "{count} av {total} medlemmer er klare",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Klar",
+  "settlementMemberNotReady": "Ikke klar",
+  "settlementSuggested": "Foreslått overføring",
+  "activityLoadFailed": "Kunne ikke oppdatere aktiviteten. Eventuelle synlige oppføringer kan være utdaterte.",
+  "activityMember": "Reisedeltaker",
+  "friendsEmptyBody": "Finn en venn ved navn eller e-post, eller bruk en QR-kode.",
+  "friendsDeclineAction": "Avslå",
+  "friendsLoading": "Laster inn venner",
+  "friendsCommonTripsCount": "Delte turer: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "Basert på registrerte utgifter; dette dekker kanskje ikke hele turen.",
+  "sharedTripsLoadedLimit": "Viser opptil 20 delte turer.",
+  "memberRemoveTitle": "Fjerne medlem?",
+  "memberRemoveBody": "Fjerne {name} fra denne turen? Dette er kun mulig hvis vedkommende ikke har utgifter, oppgjør eller saldoer.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Fjern fra turen",
+  "memberRemoved": "{name} er fjernet fra turen.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Ikke lagt til ennå",
+  "friendRelationshipLabel": "Venn",
+  "sharedTripsEmptyBody": "Turer dere begge deltar på, vises her.",
+  "analyticsAllTrips": "Alle turer",
+  "analyticsByTrip": "Per tur",
+  "analyticsYourSpending": "Dine utgifter",
+  "analyticsActiveArchived": "Aktive og arkiverte turer",
+  "analyticsTrips": "Reiser",
+  "analyticsAveragePerTrip": "Gjennomsnitt per tur",
+  "analyticsPaidByMember": "Betalt av medlem",
+  "analyticsYouPaid": "Du betalte",
+  "analyticsYouGetBack": "Du får tilbake",
+  "analyticsYouOwe": "Du skylder",
+  "analyticsParticipants": "Deltakere",
+  "analyticsYourCategories": "Utgiftene dine etter kategori",
+  "analyticsLargestShares": "Mine største utgiftsandeler",
+  "analyticsLargestExpenses": "Største utgifter",
+  "analyticsSpendingByTrip": "Dine utgifter per tur",
+  "analyticsEmptyTitle": "Ingen utgifter ennå",
+  "analyticsEmptyBody": "Utgiftene dine vises her når du legger til utgifter til en reise.",
+  "analyticsPeriodEmptyBody": "Det er ingen kostnader for denne visningen. Prøv en annen tur eller periode.",
+  "analyticsLoadFailed": "Det var ikke mulig å laste inn hele utgiftsrapporten. Prøv på nytt.",
+  "analyticsLastLoaded": "Viser den siste rapporten som ble lastet inn uten feil.",
+  "analyticsExpenseCount": "{count, plural, one{{count} utgift} other{{count} utgifter}}",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Turalternativer",
+  "editTripAction": "Rediger tur",
+  "deleteTripAction": "Slett tur",
+  "inviteTripMembersAction": "Inviter medlemmer",
+  "tripCoverPhoto": "Forsidebilde",
+  "tripInviteLaterHint": "Du kan invitere personer etter at du har opprettet turen.",
+  "inviteClipboardFailed": "Kunne ikke få tilgang til utklippstavlen. Prøv på nytt.",
+  "friendInviteToTrip": "Inviter til tur",
+  "friendChooseTrip": "Velg en tur",
+  "friendNoInvitableTrips": "Ingen tilgjengelige turer. Du kan invitere venner til aktive gruppeturer du administrerer, med mindre de allerede er medlemmer eller har en invitasjon som venter på godkjenning.",
+  "friendTripInviteSent": "Invitasjon sendt.",
+  "friendTripUnavailable": "Denne turen er ikke lenger tilgjengelig for denne handlingen. Oppdater og prøv på nytt.",
+  "friendTripActionFailed": "Kunne ikke fullføre denne handlingen. Prøv på nytt.",
+  "profileContactDescription": "Har du et problem, et forslag eller et spørsmål om Splyto? Send oss en e-post – vi hjelper deg gjerne.",
+  "profileContactEmailAction": "Skriv en e-post",
+  "profileContactEmailUnavailable": "Kunne ikke åpne en e-postapp. Kopier adressen og skriv til oss fra e-postappen din.",
+  "profilePrivacyPolicy": "Personvernerklæring",
+  "privacyLoadFailed": "Det var ikke mulig å laste inn personvernerklæringen. Prøv på nytt.",
+  "addReceiptAction": "Legg til kvittering",
+  "receiptPickFailed": "Det gikk ikke an å laste inn kvitteringen. Prøv på nytt.",
+  "receiptPhotoAccessDenied": "Gi Splyto tilgang til kameraet eller bildebiblioteket i Innstillinger, og prøv deretter på nytt.",
+  "receiptPhotoLabel": "Bilde av kvittering",
+  "replaceReceiptAction": "Erstatt kvittering",
+  "removeReceiptAction": "Fjern kvittering",
+  "restoreReceiptAction": "Gjenopprett forrige kvittering",
+  "expenseSplitBetween": "Fordel mellom",
+  "expenseEditParticipants": "Velg deltakere",
+  "expenseCustomSplit": "Tilpasset fordeling",
+  "expenseSplitAllocated": "Hele {amount} fordelt",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "{amount} igjen å dele",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "{amount} over totalbeløpet",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Del betalingsmåter med turene mine",
+  "profilePaymentSharingDescription": "La godkjente deltakere på reiser jeg oppretter eller blir med på, se betalingsmetodene mine. Dette gjelder både nåværende og fremtidige reiser. Du kan når som helst slå av delingen for å hindre videre tilgang.",
+  "memberPaymentDetailsNotShared": "Betalingsmetoder deles ikke eller er foreløpig utilgjengelige.",
+  "homeTripInvitations": "Reiseinvitasjoner",
+  "homeNoTripInvitations": "Ingen ventende turinvitasjoner",
+  "homeInvitationsLoadFailed": "Kunne ikke laste inn invitasjoner. Prøv på nytt.",
+  "homeInvitationResponseFailed": "Kunne ikke svare på invitasjonen. Prøv igjen.",
+  "homeTripShareFailed": "Kunne ikke dele turen. Prøv på nytt.",
+  "settleStillToReceive": "Gjenstår å motta",
+  "settleStillToPay": "Gjenstår å betale",
+  "settleEstimateCaption": "Estimat basert på nåværende utgifter. Beløpene kan endres frem til turen er avsluttet.",
+  "settleOutstandingCaption": "Venter på betaling eller bekreftelse.",
+  "settleWaitingForYou": "Venter på at du skal merke deg som klar.",
+  "settleWhoPaysWhom": "Hvem betaler hvem",
+  "settlePreviewCaption": "Forhåndsvisning · fullført når turen avsluttes",
+  "settleOpenPaymentCaption": "Åpne en betaling for å se detaljer og tilgjengelige handlinger.",
+  "tripBudgetEnable": "Sett et budsjett",
+  "tripBudgetSoloHint": "Valgfritt utgiftsmål for denne turen.",
+  "tripBudgetGroupHint": "Ett felles budsjett for hele gruppen.",
+  "tripBudgetAmount": "Budsjettbeløp",
+  "tripBudgetInvalid": "Angi et beløp mellom 0,01 og 999999999,99, med opptil to desimaler.",
+  "tripBudgetTitle": "Turbudsjett",
+  "tripBudgetGroupTitle": "Gruppebudsjett",
+  "tripBudgetRemaining": "Gjenværende",
+  "tripBudgetOver": "Over budsjett",
+  "tripBudgetSpent": "Brukt",
+  "tripBudgetLimit": "Budsjett",
+  "travelMapTitle": "Mitt reisekart",
+  "travelMapSubtitle": "Steder du har besøkt, bare for deg.",
+  "travelMapHere": "Jeg har vært her",
+  "travelMapAdd": "Legg til sted",
+  "travelMapSearch": "Søk etter by og land",
+  "travelMapSearchAction": "Søk",
+  "travelMapSearchHint": "For eksempel Lisboa, Portugal",
+  "travelMapEmpty": "Ditt neste minne starter her",
+  "travelMapEmptyBody": "Legg til en by du har besøkt, eller sjekk inn der du er nå.",
+  "travelMapConfirm": "Lagre dette besøket?",
+  "travelMapConfirmBody": "Sjekk byen og datoen før du lagrer den på ditt private kart.",
+  "travelMapDate": "Besøksdato",
+  "travelMapSave": "Lagre på kartet mitt",
+  "travelMapCancel": "Avbryt",
+  "travelMapClose": "Lukk",
+  "travelMapNoResults": "Ingen by funnet. Prøv å legge til landet i søket.",
+  "travelMapLookupError": "Kunne ikke finne byen. Sjekk nettforbindelsen din eller legg til et sted manuelt.",
+  "travelMapDenied": "Tilgang til posisjon er deaktivert. Du kan fortsatt legge til en by manuelt.",
+  "travelMapDisabled": "Slå på posisjonstjenester, eller legg til en by manuelt.",
+  "travelMapError": "Det gikk ikke an å laste inn reisekartet ditt. Prøv på nytt.",
+  "travelMapSaveError": "Kunne ikke lagre besøket. Prøv på nytt.",
+  "travelMapUnavailable": "Reisekartet trenger en serveroppdatering.",
+  "travelMapOffline": "Offline · viser lagrede steder",
+  "travelMapRetry": "Prøv på nytt",
+  "travelMapDelete": "Fjern besøk",
+  "travelMapDeleteConfirm": "Vil du fjerne dette besøket fra ditt private kart?",
+  "travelMapFit": "Vis alle steder",
+  "travelMapSaved": "Besøk lagret",
+  "travelMapVisited": "Besøkt",
+  "travelMapLimit": "Kartet ditt har nådd 1 000 besøk. Fjern et gammelt besøk før du legger til et nytt.",
+  "travelMapCounts": "{countries, plural, one{{countries} land} other{{countries} land}} · {cities, plural, one{{cities} by} other{{cities} byer}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{{count} besøk} other{{count} besøk}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Reisemål (valgfritt)",
+  "travelAddDestination": "Legg til destinasjon",
+  "travelRemoveDestination": "Fjern destinasjon",
+  "travelFromTrip": "Fra en tur",
+  "travelChooseTrip": "Velg en tur",
+  "travelNoTrips": "Ingen turer tilgjengelig ennå. Du kan legge til et sted manuelt.",
+  "travelAddToMap": "Legg til på kartet mitt",
+  "travelTripConfirm": "Lagre kun steder du faktisk har besøkt. Dette legger til et privat minne på kartet ditt.",
+  "travelVisitTitle": "Tittel (valgfritt)",
+  "travelAddPhoto": "Legg til et bilde",
+  "travelChangePhoto": "Endre bilde",
+  "travelRemovePhoto": "Fjern bilde",
+  "travelPhotoError": "Kunne ikke forberede dette bildet. Vennligst velg et annet.",
+  "travelEditVisit": "Rediger besøk",
+  "travelOpenTrip": "Åpne tur",
+  "travelPreviousVisit": "Forrige besøk",
+  "travelNextVisit": "Neste besøk",
+  "travelDuplicate": "Dette besøket er allerede på kartet ditt.",
+  "liveMapTitle": "Live-kart",
+  "liveShareTitle": "Del min posisjon",
+  "liveConsent": "Del den nøyaktige posisjonen din bare med godkjente deltakere på denne reisen, i tidsrommet du velger. Delingen fortsetter i bakgrunnen, og du kan stoppe den når som helst.",
+  "liveBackgroundNote": "Oppdateringer kan pause uten internett eller hvis du tvinger appen til å lukkes. Kun den siste posisjonen lagres; ingen rutehistorikk registreres.",
+  "liveStart": "Begynn å dele",
+  "liveStop": "Stopp delingen",
+  "liveNotification": "Din posisjon deles med reisefølget ditt. Åpne Splyto for å stoppe delingen.",
+  "livePermissionError": "Tillat tilgang til posisjonen din i telefonens innstillinger for å dele den.",
+  "liveStartError": "Kunne ikke starte delingen. Sjekk tilgang til posisjon, internett og dato og klokkeslett på telefonen din.",
+  "liveStopPending": "Oppdateringer er stoppet. Venter på internettforbindelse for å fjerne din siste posisjon; den forsvinner fra kartet innen 2 minutter uten oppdateringer.",
+  "liveSharing": "deler posisjon",
+  "liveUnavailable": "Dette sanntidskartet er ikke tilgjengelig. Gå tilbake til turen og oppdater.",
+  "liveMapLoadError": "Kartet kunne ikke lastes inn. Sjekk nettforbindelsen din og åpne kartet på nytt.",
+  "liveLoadError": "Kunne ikke oppdatere posisjoner. Kun de siste oppdateringene vises.",
+  "liveFit": "Vis alle på kartet",
+  "liveEmpty": "Ingen deler sin siste posisjon ennå.",
+  "liveRecent": "Nettopp oppdatert",
+  "liveLastKnown": "Sist oppdatert",
+  "liveAccuracy": "Nøyaktighet",
+  "liveUntil": "Deling inntil",
+  "liveOtherSession": "Startet i en annen økt. Du kan stoppe den her.",
+  "liveUpdatesPaused": "Oppdateringer er satt på pause. Sjekk tilgang til posisjon og internett.",
+  "livePrivateUntilShared": "Posisjonen din forblir privat inntil du velger å dele den.",
+  "activityEventExpenseCreated": "lagt til en utgift",
+  "activityEventExpenseUpdated": "oppdatert en utgift",
+  "activityEventExpenseDeleted": "slettet en utgift",
+  "activityEventTripCreated": "opprettet turen",
+  "activityEventTripUpdated": "oppdaterte reisedetaljer",
+  "activityEventTripMembersAdded": "tilføyde medlemmer",
+  "activityEventTripMembersInvited": "sendte invitasjoner: {count}",
+  "@activityEventTripMembersInvited": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityEventTripMemberJoined": "har sluttet seg til turen",
+  "activityEventTripInvitationDeclined": "avviste turinvitasjonen",
+  "activityEventTripInvitationRevoked": "avlyst en turinvitasjon",
+  "activityEventTripMemberRemoved": "{name} har blitt fjernet fra turen",
+  "@activityEventTripMemberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberLeft": "forlot turen",
+  "activityEventTripMemberRoleUpdated": "endret rollen til {name} til {role}",
+  "@activityEventTripMemberRoleUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberReady": "merket som klar til oppgjør",
+  "activityEventTripMemberNotReady": "merket som ikke klar",
+  "activityEventTripAllMembersReady": "Alle medlemmer er klare til å gjøre opp",
+  "activityEventTripFinished": "turen er fullført",
+  "activityEventSettlementMarkedSent": "merket en overføring som sendt",
+  "activityEventSettlementConfirmed": "bekreftet en overføring",
+  "activityEventSettlementSentCancelled": "avbrutt sendt status",
+  "activityEventSettlementNotReceived": "merket en overføring som ikke mottatt",
+  "activityEventSettlementReminderSent": "sendt en påminnelse om oppgjør",
+  "activityEventPaymentMarkedSent": "registrert en betaling",
+  "activityEventPaymentRequested": "ba om en betaling",
+  "activityEventPaymentRequestMarkedSent": "merket en forespurt betaling som sendt",
+  "activityEventPaymentRequestCancelled": "avbrutt en betalingsforespørsel",
+  "activityEventPaymentRequestDeclined": "avviste en betalingsforespørsel",
+  "activityEventPaymentConfirmed": "bekreftet en betaling",
+  "activityEventPaymentCancelled": "avbrutt en betalingspost",
+  "activityEventPaymentNotReceived": "merket en betaling som ikke mottatt",
+  "activityEventUnknown": "gjort en endring",
+  "privacyEnglishFallback": "Personvernerklæringen er foreløpig tilgjengelig på engelsk.",
+  "activityRoleAdmin": "Admin",
+  "accountDeleteTitle": "Slett konto",
+  "accountDeleteIntro": "Bekreft slettingen via e-post. Etter bekreftelsen kan den ikke angres.",
+  "accountDeleteConsequences": "Sletting er permanent. Profilen din blir anonymisert, og tilgangen til kontoen fjernes. Delte reise- og utgiftsoppføringer beholdes for andre medlemmer.",
+  "accountDeleteReasonsTitle": "Hva kunne vi ha gjort bedre?",
+  "accountDeleteReasonsHint": "Årsak (valgfritt)",
+  "accountDeleteReasonNotUsing": "Jeg trenger ikke lenger Splyto til turene mine",
+  "accountDeleteReasonAnotherWay": "Jeg administrerer delte utgifter på en annen måte",
+  "accountDeleteReasonComplicated": "Det krever for mye innsats å få ting gjort",
+  "accountDeleteReasonTechnical": "Jeg har støtt på feil eller tekniske problemer",
+  "accountDeleteReasonPrivacy": "Jeg vil helst slette kontoopplysningene mine",
+  "accountDeleteReasonOther": "Jeg vil slette kontoen min av en annen grunn",
+  "accountDeleteEmailStep": "Neste trinn er bekreftelse via e-post.",
+  "accountDeletePasswordHint": "Skriv inn ditt nåværende Splyto-passord for å be om bekreftelses-e-posten. Kontoen din er fortsatt aktiv.",
+  "accountDeleteInboxTitle": "Ett siste trinn i innboksen din",
+  "accountDeleteSentBody": "Bekreftelseslenke sendt til {email}.",
+  "accountDeleteSentHint": "Kontoen din forblir aktiv til du bekrefter slettingen.",
+  "accountDeleteSending": "Sende bekreftelses-e-post",
+  "@accountDeleteSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  }
+}
