@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/web_security_headers.php';
+require_once __DIR__ . '/lib/web/splyto_web_page.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,53 +18,12 @@ require_once __DIR__ . '/web_security_headers.php';
       window.history.replaceState(null, document.title, cleanUrl);
     })();
   </script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh;
-      background: #f4f4f5;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 40px 36px;
-      width: 100%; max-width: 420px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    }
-    .logo {
-      margin-bottom: 28px;
-      text-align: center;
-    }
-    .logo img {
-      display: block;
-      margin: 0 auto;
-      width: 188px;
-      max-width: 100%;
-      height: auto;
-    }
-    h1 { font-size: 20px; color: #111827; margin-bottom: 8px; }
-    p  { font-size: 14px; color: #6b7280; margin-bottom: 20px; line-height: 1.5; }
-    button {
-      width: 100%; padding: 14px;
-      background: linear-gradient(135deg, #57B487, #2D7A5E);
-      border: none; border-radius: 12px;
-      font-size: 15px; font-weight: 600; color: #fff;
-      cursor: pointer; margin-top: 4px;
-      transition: opacity .2s;
-    }
-    button:hover { opacity: .9; }
-    button:disabled { opacity: .6; cursor: not-allowed; }
-    .msg { margin-top: 16px; padding: 12px 16px; border-radius: 10px; font-size: 14px; text-align: center; display: none; }
-    .msg.success { background: #ecfdf5; color: #065f46; display: block; }
-    .msg.error   { background: #fef2f2; color: #991b1b; display: block; }
-  </style>
+  <?= splyto_web_page_styles() ?>
 </head>
 <body>
-<div class="card">
-  <div class="logo"><img src="/mobile/assets/branding/logo_full.png" alt="Splyto"></div>
+<main class="card">
+  <?= splyto_web_page_header() ?>
+  <div class="content">
 
   <?php
   $token = strtolower(trim((string) ($_GET['token'] ?? '')));
@@ -72,11 +32,11 @@ require_once __DIR__ . '/web_security_headers.php';
     <h1>Invalid link</h1>
     <p>This verification link is invalid or expired. Request a new one from the app.</p>
   <?php else: ?>
-    <h1>Verify email</h1>
-    <p>Click below to verify your email and activate your account.</p>
+    <h1 id="title">Verify email</h1>
+    <p id="intro">Click below to verify your email and activate your account.</p>
 
-    <button id="btn">Verify email</button>
-    <div class="msg" id="msg"></div>
+    <button class="btn" id="btn">Verify email</button>
+    <div class="msg" id="msg" role="status" aria-live="polite"></div>
 
     <script>
       const token = <?= json_encode($token, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
@@ -98,8 +58,10 @@ require_once __DIR__ . '/web_security_headers.php';
           const data = await res.json();
           if (data.ok) {
             msg.className = 'msg success';
-            msg.textContent = 'Email verified. You can now log in to Splyto.';
-            btn.style.display = 'none';
+            msg.textContent = 'You can now log in to Splyto.';
+            document.getElementById('title').textContent = 'Email verified';
+            document.getElementById('intro').hidden = true;
+            btn.hidden = true;
             return;
           }
           msg.className = 'msg error';
@@ -115,6 +77,7 @@ require_once __DIR__ . '/web_security_headers.php';
       });
     </script>
   <?php endif; ?>
-</div>
+  </div>
+</main>
 </body>
 </html>

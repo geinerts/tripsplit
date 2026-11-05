@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/web_security_headers.php';
+require_once __DIR__ . '/lib/web/splyto_web_page.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,71 +18,12 @@ require_once __DIR__ . '/web_security_headers.php';
       window.history.replaceState(null, document.title, cleanUrl);
     })();
   </script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh;
-      background: #f4f4f5;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 40px 36px;
-      width: 100%; max-width: 440px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      border: 1px solid #fee2e2;
-    }
-    .logo {
-      margin-bottom: 28px;
-      text-align: center;
-    }
-    .logo img {
-      display: block;
-      margin: 0 auto;
-      width: 188px;
-      max-width: 100%;
-      height: auto;
-    }
-    h1 { font-size: 20px; color: #111827; margin-bottom: 8px; }
-    p  { font-size: 14px; color: #6b7280; margin-bottom: 16px; line-height: 1.5; }
-    .danger-note {
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #fff1f2;
-      color: #9f1239;
-      font-size: 13px;
-      margin-bottom: 16px;
-      border: 1px solid #fecdd3;
-    }
-    label { display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px; }
-    input[type=text] {
-      width: 100%; padding: 12px 14px; border: 1.5px solid #e5e7eb;
-      border-radius: 10px; font-size: 15px; outline: none;
-      transition: border-color .2s;
-      margin-bottom: 12px;
-    }
-    input[type=text]:focus { border-color: #ef4444; }
-    button {
-      width: 100%; padding: 14px;
-      background: #dc2626;
-      border: none; border-radius: 12px;
-      font-size: 15px; font-weight: 600; color: #fff;
-      cursor: pointer; margin-top: 4px;
-      transition: opacity .2s;
-    }
-    button:hover { opacity: .9; }
-    button:disabled { opacity: .6; cursor: not-allowed; }
-    .msg { margin-top: 16px; padding: 12px 16px; border-radius: 10px; font-size: 14px; text-align: center; display: none; }
-    .msg.success { background: #ecfdf5; color: #065f46; display: block; }
-    .msg.error   { background: #fef2f2; color: #991b1b; display: block; }
-  </style>
+  <?= splyto_web_page_styles() ?>
 </head>
 <body>
-<div class="card">
-  <div class="logo"><img src="/mobile/assets/branding/logo_full.png" alt="Splyto"></div>
+<main class="card">
+  <?= splyto_web_page_header() ?>
+  <div class="content">
 
   <?php
   $token = is_string($_GET['token'] ?? null) ? $_GET['token'] : '';
@@ -90,15 +32,18 @@ require_once __DIR__ . '/web_security_headers.php';
     <h1>Invalid link</h1>
     <p>This account deletion link is invalid or expired. Request a new one from the app profile page.</p>
   <?php else: ?>
-    <h1>Delete account permanently</h1>
-    <p>This action removes account access permanently and anonymizes your profile data. It cannot be undone.</p>
-    <p>Shared trip and expense records are kept for other members. Your account remains active until you confirm below.</p>
-    <div class="danger-note">Type <strong>DELETE</strong> below to confirm.</div>
-
-    <label for="confirm">Confirmation</label>
-    <input type="text" id="confirm" placeholder="Type DELETE">
-    <button id="btn" disabled>Delete account</button>
-    <div class="msg" id="msg"></div>
+    <h1 id="title">Delete account permanently</h1>
+    <div id="request">
+      <p>This action removes account access permanently and anonymizes your profile data. It cannot be undone.</p>
+      <p>Shared trip and expense records are kept for other members. Your account remains active until you confirm below.</p>
+      <div class="note">Type <strong>DELETE</strong> below to confirm.</div>
+      <div class="field">
+        <label for="confirm">Confirmation</label>
+        <input type="text" id="confirm" placeholder="DELETE" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false">
+      </div>
+    </div>
+    <button class="btn btn-danger" id="btn" disabled>Delete account</button>
+    <div class="msg" id="msg" role="status" aria-live="polite"></div>
 
     <script>
       let token = <?= json_encode($token, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
@@ -129,9 +74,10 @@ require_once __DIR__ . '/web_security_headers.php';
           if (res.ok && data.ok) {
             token = '';
             msg.className = 'msg success';
-            msg.textContent = 'Account deleted successfully.';
-            btn.style.display = 'none';
-            input.style.display = 'none';
+            msg.textContent = 'Your account has been deleted. You can close this page.';
+            document.getElementById('title').textContent = 'Account deleted';
+            document.getElementById('request').hidden = true;
+            btn.hidden = true;
             return;
           }
           msg.className = 'msg error';
@@ -149,6 +95,7 @@ require_once __DIR__ . '/web_security_headers.php';
       });
     </script>
   <?php endif; ?>
-</div>
+  </div>
+</main>
 </body>
 </html>
