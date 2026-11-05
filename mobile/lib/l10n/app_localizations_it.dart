@@ -476,6 +476,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Se esiste un account con questo indirizzo e-mail, abbiamo inviato un link per reimpostare la password.';
 
   @override
+  String get passwordResetSentTitle => 'Controlla la posta in arrivo';
+
+  @override
+  String get passwordResetSentHint => 'Il link è valido per 1 ora. Se non vedi l’e-mail, controlla la cartella spam.';
+
+  @override
   String get forgotPasswordTitle => 'Reimposta password';
 
   @override

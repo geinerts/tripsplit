@@ -466,6 +466,8 @@
   "passwordEmailBackToProfile": "Назад до профілю",
   "forgotPasswordSubtitle": "Введіть свою електронну адресу, і ми надішлемо посилання для скидання пароля.",
   "forgotPasswordSuccessMessage": "Якщо обліковий запис із цією електронною адресою вже існує, ми надіслали посилання для скидання пароля.",
+  "passwordResetSentTitle": "Перевірте вхідні",
+  "passwordResetSentHint": "Посилання дійсне 1 годину. Якщо ви не бачите листа, перевірте папку «Спам».",
   "forgotPasswordTitle": "Скинути пароль",
   "friendsProgressSubtitle": "Кожен учасник та його статус підтвердження.",
   "friendsProgressTitle": "Прогрес друзів",

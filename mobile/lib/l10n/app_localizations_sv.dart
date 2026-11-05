@@ -476,6 +476,12 @@ class AppLocalizationsSv extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Om det finns ett konto med den här e-postadressen har vi skickat en länk för att återställa lösenordet.';
 
   @override
+  String get passwordResetSentTitle => 'Kolla din inkorg';
+
+  @override
+  String get passwordResetSentHint => 'Länken är giltig i 1 timme. Hittar du inte e-postmeddelandet, titta i skräppostmappen.';
+
+  @override
   String get forgotPasswordTitle => 'Återställ lösenord';
 
   @override

@@ -476,6 +476,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Falls ein Konto mit dieser E-Mail-Adresse existiert, haben wir einen Link zum Zurücksetzen des Passworts gesendet.';
 
   @override
+  String get passwordResetSentTitle => 'Prüfe dein Postfach';
+
+  @override
+  String get passwordResetSentHint => 'Der Link ist 1 Stunde gültig. Falls du die E-Mail nicht findest, schau im Spam-Ordner nach.';
+
+  @override
   String get forgotPasswordTitle => 'Passwort zurücksetzen';
 
   @override

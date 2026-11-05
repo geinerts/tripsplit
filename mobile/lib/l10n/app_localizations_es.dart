@@ -476,6 +476,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Si existe una cuenta con este correo electrónico, le hemos enviado un enlace para restablecer la contraseña.';
 
   @override
+  String get passwordResetSentTitle => 'Revisa tu bandeja de entrada';
+
+  @override
+  String get passwordResetSentHint => 'El enlace es válido durante 1 hora. Si no ves el correo, revisa la carpeta de spam.';
+
+  @override
   String get forgotPasswordTitle => 'Restablecer contraseña';
 
   @override

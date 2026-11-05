@@ -943,6 +943,18 @@ abstract class AppLocalizations {
   /// **'If an account with this email exists, we have sent a password reset link.'**
   String get forgotPasswordSuccessMessage;
 
+  /// No description provided for @passwordResetSentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your inbox'**
+  String get passwordResetSentTitle;
+
+  /// No description provided for @passwordResetSentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The link is valid for 1 hour. If you don\'t see the email, check your spam folder.'**
+  String get passwordResetSentHint;
+
   /// No description provided for @forgotPasswordTitle.
   ///
   /// In en, this message translates to:

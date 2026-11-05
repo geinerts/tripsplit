@@ -476,6 +476,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'If an account with this email exists, we have sent a password reset link.';
 
   @override
+  String get passwordResetSentTitle => 'Check your inbox';
+
+  @override
+  String get passwordResetSentHint => 'The link is valid for 1 hour. If you don\'t see the email, check your spam folder.';
+
+  @override
   String get forgotPasswordTitle => 'Reset password';
 
   @override

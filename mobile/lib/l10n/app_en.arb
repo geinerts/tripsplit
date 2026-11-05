@@ -466,6 +466,8 @@
   "passwordEmailBackToProfile": "Back to profile",
   "forgotPasswordSubtitle": "Enter your email and we will send a password reset link.",
   "forgotPasswordSuccessMessage": "If an account with this email exists, we have sent a password reset link.",
+  "passwordResetSentTitle": "Check your inbox",
+  "passwordResetSentHint": "The link is valid for 1 hour. If you don't see the email, check your spam folder.",
   "forgotPasswordTitle": "Reset password",
   "friendsProgressSubtitle": "Each member and their confirmation state.",
   "friendsProgressTitle": "Friends progress",

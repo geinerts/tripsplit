@@ -482,6 +482,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Jeśli istnieje konto z tym adresem e-mail, wysłaliśmy link do zresetowania hasła.';
 
   @override
+  String get passwordResetSentTitle => 'Sprawdź skrzynkę odbiorczą';
+
+  @override
+  String get passwordResetSentHint => 'Link jest ważny przez 1 godzinę. Jeśli nie widzisz wiadomości, sprawdź folder spam.';
+
+  @override
   String get forgotPasswordTitle => 'Zresetuj hasło';
 
   @override

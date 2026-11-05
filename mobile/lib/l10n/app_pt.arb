@@ -466,6 +466,8 @@
   "passwordEmailBackToProfile": "Voltar ao perfil",
   "forgotPasswordSubtitle": "Introduza o seu e-mail e enviar-lhe-emos um link para redefinir a palavra-passe.",
   "forgotPasswordSuccessMessage": "Se existir uma conta com este endereço de e-mail, enviámos-lhe um link para redefinir a palavra-passe.",
+  "passwordResetSentTitle": "Verifique a sua caixa de entrada",
+  "passwordResetSentHint": "A ligação é válida durante 1 hora. Se não vir o e-mail, verifique a pasta de spam.",
   "forgotPasswordTitle": "Reiniciar palavra-passe",
   "friendsProgressSubtitle": "Cada membro e o seu estado de confirmação.",
   "friendsProgressTitle": "Progresso dos amigos",

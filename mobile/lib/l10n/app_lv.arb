@@ -452,6 +452,8 @@
   "passwordEmailBackToProfile": "Atpakaļ uz profilu",
   "forgotPasswordSubtitle": "Ievadi savu e-pastu, un mēs nosūtīsim paroles atiestatīšanas saiti.",
   "forgotPasswordSuccessMessage": "Ja konts ar šo e-pastu eksistē, paroles atiestatīšanas saite ir nosūtīta.",
+  "passwordResetSentTitle": "Pārbaudi savu pastkasti",
+  "passwordResetSentHint": "Saite ir derīga 1 stundu. Ja neredzi e-pastu, pārbaudi surogātpasta mapi.",
   "forgotPasswordTitle": "Atiestatīt paroli",
   "friendsProgressSubtitle": "Katrs dalībnieks un viņa apstiprinājumu statuss.",
   "friendsProgressTitle": "Draugu progress",

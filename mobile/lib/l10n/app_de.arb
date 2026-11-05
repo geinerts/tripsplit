@@ -466,6 +466,8 @@
   "passwordEmailBackToProfile": "Zurück zum Profil",
   "forgotPasswordSubtitle": "Gib deine E-Mail-Adresse ein, dann senden wir dir einen Link zum Zurücksetzen des Passworts.",
   "forgotPasswordSuccessMessage": "Falls ein Konto mit dieser E-Mail-Adresse existiert, haben wir einen Link zum Zurücksetzen des Passworts gesendet.",
+  "passwordResetSentTitle": "Prüfe dein Postfach",
+  "passwordResetSentHint": "Der Link ist 1 Stunde gültig. Falls du die E-Mail nicht findest, schau im Spam-Ordner nach.",
   "forgotPasswordTitle": "Passwort zurücksetzen",
   "friendsProgressSubtitle": "Jedes Mitglied und dessen Bestätigungsstatus.",
   "friendsProgressTitle": "Fortschritte der Freunde",

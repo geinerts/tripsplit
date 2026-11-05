@@ -476,6 +476,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Se existir uma conta com este endereço de e-mail, enviámos-lhe um link para redefinir a palavra-passe.';
 
   @override
+  String get passwordResetSentTitle => 'Verifique a sua caixa de entrada';
+
+  @override
+  String get passwordResetSentHint => 'A ligação é válida durante 1 hora. Se não vir o e-mail, verifique a pasta de spam.';
+
+  @override
   String get forgotPasswordTitle => 'Reiniciar palavra-passe';
 
   @override

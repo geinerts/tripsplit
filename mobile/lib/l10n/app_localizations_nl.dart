@@ -476,6 +476,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Als er een account met dit e-mailadres bestaat, hebben we een link voor het opnieuw instellen van het wachtwoord verzonden.';
 
   @override
+  String get passwordResetSentTitle => 'Controleer je inbox';
+
+  @override
+  String get passwordResetSentHint => 'De link is 1 uur geldig. Zie je de e-mail niet, kijk dan in je spammap.';
+
+  @override
   String get forgotPasswordTitle => 'Wachtwoord opnieuw instellen';
 
   @override

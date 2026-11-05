@@ -466,6 +466,8 @@
   "passwordEmailBackToProfile": "Tilbage til profil",
   "forgotPasswordSubtitle": "Indtast din e-mailadresse, så sender vi et link til nulstilling af adgangskode.",
   "forgotPasswordSuccessMessage": "Hvis der findes en konto med denne e-mailadresse, har vi sendt et link til nulstilling af adgangskode.",
+  "passwordResetSentTitle": "Tjek din indbakke",
+  "passwordResetSentHint": "Linket er gyldigt i 1 time. Kan du ikke finde e-mailen, så tjek din spam-mappe.",
   "forgotPasswordTitle": "Nulstil adgangskode",
   "friendsProgressSubtitle": "Hvert medlem og dets bekræftelsesstatus.",
   "friendsProgressTitle": "Venernes fremskridt",

@@ -466,6 +466,8 @@
   "passwordEmailBackToProfile": "Takaisin profiiliin",
   "forgotPasswordSubtitle": "Syötä sähköpostiosoitteesi, niin lähetämme sinulle linkin salasanan nollaamiseen.",
   "forgotPasswordSuccessMessage": "Jos tällä sähköpostiosoitteella on tili, olemme lähettäneet salasanan nollauslinkin.",
+  "passwordResetSentTitle": "Tarkista saapuneet",
+  "passwordResetSentHint": "Linkki on voimassa 1 tunnin. Jos et näe viestiä, tarkista roskapostikansio.",
   "forgotPasswordTitle": "Nollaa salasana",
   "friendsProgressSubtitle": "Jokainen jäsen ja hänen vahvistustilansa.",
   "friendsProgressTitle": "Ystävien edistyminen",

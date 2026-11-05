@@ -476,6 +476,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Si un compte associé à cette adresse e-mail existe, nous vous avons envoyé un lien pour réinitialiser votre mot de passe.';
 
   @override
+  String get passwordResetSentTitle => 'Consultez votre boîte de réception';
+
+  @override
+  String get passwordResetSentHint => 'Le lien est valable 1 heure. Si vous ne voyez pas l’e-mail, vérifiez votre dossier de spam.';
+
+  @override
   String get forgotPasswordTitle => 'Réinitialiser le mot de passe';
 
   @override

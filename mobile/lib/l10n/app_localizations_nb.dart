@@ -476,6 +476,12 @@ class AppLocalizationsNb extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Hvis det finnes en konto med denne e-postadressen, har vi sendt en lenke for å tilbakestille passordet.';
 
   @override
+  String get passwordResetSentTitle => 'Sjekk innboksen din';
+
+  @override
+  String get passwordResetSentHint => 'Lenken er gyldig i 1 time. Hvis du ikke ser e-posten, sjekk søppelpostmappen.';
+
+  @override
   String get forgotPasswordTitle => 'Tilbakestill passord';
 
   @override

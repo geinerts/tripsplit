@@ -4,7 +4,7 @@ import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_scaffold.dart';
-import '../../../../core/ui/splyto_illustration.dart';
+import '../../../../core/ui/email_sent_view.dart';
 
 class AccountDeletionPage extends StatefulWidget {
   const AccountDeletionPage({
@@ -131,34 +131,25 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                   children: [
                     if (_sent) ...[
                       const SizedBox(height: 24),
-                      const SplytoEmailSentIllustration(),
-                      const SizedBox(height: 24),
-                    ],
-                    Semantics(
-                      header: true,
-                      child: Text(
-                        _sent
-                            ? t.accountDeleteInboxTitle
-                            : t.accountDeleteTitle,
-                        style: theme.textTheme.headlineLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
+                      EmailSentView(
+                        title: t.accountDeleteInboxTitle,
+                        message: t.accountDeleteSentBody(widget.email),
+                        hint: t.accountDeleteSentHint,
+                      ),
+                    ] else ...[
+                      Semantics(
+                        header: true,
+                        child: Text(
+                          t.accountDeleteTitle,
+                          style: theme.textTheme.headlineLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      _sent
-                          ? t.accountDeleteSentBody(widget.email)
-                          : t.accountDeleteIntro,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: colors.onSurfaceVariant,
-                      ),
-                    ),
-                    if (_sent) ...[
                       const SizedBox(height: 16),
                       Text(
-                        t.accountDeleteSentHint,
-                        style: theme.textTheme.bodyMedium?.copyWith(
+                        t.accountDeleteIntro,
+                        style: theme.textTheme.bodyLarge?.copyWith(
                           color: colors.onSurfaceVariant,
                         ),
                       ),
@@ -247,21 +238,21 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                         : _sent
                         ? () => Navigator.of(context).pop()
                         : _send,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: _sent
-                          ? colors.primary
-                          : AppDesign.destructiveColor(context),
-                      foregroundColor: _sent
-                          ? colors.onPrimary
-                          : colors.onError,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 18,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
+                    style: _sent
+                        ? emailSentButtonStyle(context)
+                        : FilledButton.styleFrom(
+                            backgroundColor: AppDesign.destructiveColor(
+                              context,
+                            ),
+                            foregroundColor: colors.onError,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 18,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                          ),
                     child: _sending
                         ? SizedBox(
                             width: 24,

@@ -479,6 +479,12 @@ class AppLocalizationsLv extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Ja konts ar šo e-pastu eksistē, paroles atiestatīšanas saite ir nosūtīta.';
 
   @override
+  String get passwordResetSentTitle => 'Pārbaudi savu pastkasti';
+
+  @override
+  String get passwordResetSentHint => 'Saite ir derīga 1 stundu. Ja neredzi e-pastu, pārbaudi surogātpasta mapi.';
+
+  @override
   String get forgotPasswordTitle => 'Atiestatīt paroli';
 
   @override

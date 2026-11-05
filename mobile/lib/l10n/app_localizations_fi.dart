@@ -476,6 +476,12 @@ class AppLocalizationsFi extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Jos tällä sähköpostiosoitteella on tili, olemme lähettäneet salasanan nollauslinkin.';
 
   @override
+  String get passwordResetSentTitle => 'Tarkista saapuneet';
+
+  @override
+  String get passwordResetSentHint => 'Linkki on voimassa 1 tunnin. Jos et näe viestiä, tarkista roskapostikansio.';
+
+  @override
   String get forgotPasswordTitle => 'Nollaa salasana';
 
   @override

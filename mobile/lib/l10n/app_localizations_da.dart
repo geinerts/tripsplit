@@ -476,6 +476,12 @@ class AppLocalizationsDa extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Hvis der findes en konto med denne e-mailadresse, har vi sendt et link til nulstilling af adgangskode.';
 
   @override
+  String get passwordResetSentTitle => 'Tjek din indbakke';
+
+  @override
+  String get passwordResetSentHint => 'Linket er gyldigt i 1 time. Kan du ikke finde e-mailen, så tjek din spam-mappe.';
+
+  @override
   String get forgotPasswordTitle => 'Nulstil adgangskode';
 
   @override

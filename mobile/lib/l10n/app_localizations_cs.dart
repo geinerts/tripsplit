@@ -479,6 +479,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Pokud existuje účet s touto e-mailovou adresou, zaslali jsme vám odkaz pro obnovení hesla.';
 
   @override
+  String get passwordResetSentTitle => 'Zkontrolujte doručenou poštu';
+
+  @override
+  String get passwordResetSentHint => 'Odkaz platí 1 hodinu. Pokud e-mail nevidíte, zkontrolujte složku spam.';
+
+  @override
   String get forgotPasswordTitle => 'Obnovit heslo';
 
   @override

@@ -466,6 +466,8 @@
   "passwordEmailBackToProfile": "Tillbaka till profilen",
   "forgotPasswordSubtitle": "Ange din e-postadress så skickar vi en länk för att återställa lösenordet.",
   "forgotPasswordSuccessMessage": "Om det finns ett konto med den här e-postadressen har vi skickat en länk för att återställa lösenordet.",
+  "passwordResetSentTitle": "Kolla din inkorg",
+  "passwordResetSentHint": "Länken är giltig i 1 timme. Hittar du inte e-postmeddelandet, titta i skräppostmappen.",
   "forgotPasswordTitle": "Återställ lösenord",
   "friendsProgressSubtitle": "Varje medlem och dennes bekräftelsestatus.",
   "friendsProgressTitle": "Vännernas framsteg",

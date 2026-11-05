@@ -466,6 +466,8 @@
   "passwordEmailBackToProfile": "Zpět na profil",
   "forgotPasswordSubtitle": "Zadejte svůj e-mail a my vám zašleme odkaz pro obnovení hesla.",
   "forgotPasswordSuccessMessage": "Pokud existuje účet s touto e-mailovou adresou, zaslali jsme vám odkaz pro obnovení hesla.",
+  "passwordResetSentTitle": "Zkontrolujte doručenou poštu",
+  "passwordResetSentHint": "Odkaz platí 1 hodinu. Pokud e-mail nevidíte, zkontrolujte složku spam.",
   "forgotPasswordTitle": "Obnovit heslo",
   "friendsProgressSubtitle": "Každý člen a jeho stav potvrzení.",
   "friendsProgressTitle": "Pokrok přátel",

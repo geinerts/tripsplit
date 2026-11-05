@@ -452,6 +452,8 @@
   "passwordEmailBackToProfile": "Volver al perfil",
   "forgotPasswordSubtitle": "Ingrese su correo electrónico y le enviaremos un enlace para restablecer su contraseña.",
   "forgotPasswordSuccessMessage": "Si existe una cuenta con este correo electrónico, le hemos enviado un enlace para restablecer la contraseña.",
+  "passwordResetSentTitle": "Revisa tu bandeja de entrada",
+  "passwordResetSentHint": "El enlace es válido durante 1 hora. Si no ves el correo, revisa la carpeta de spam.",
   "forgotPasswordTitle": "Restablecer contraseña",
   "friendsProgressSubtitle": "Cada miembro y su estado de confirmación.",
   "friendsProgressTitle": "Progreso de amigos",

@@ -5,7 +5,7 @@ import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/responsive.dart';
-import '../../../../core/ui/splyto_illustration.dart';
+import '../../../../core/ui/email_sent_view.dart';
 import '../controllers/auth_controller.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -135,24 +135,24 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: responsive.pageMaxWidth),
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(
-                horizontalPadding,
-                18,
-                horizontalPadding,
-                24,
-              ),
-              children: [
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: _isSubmitted
-                        ? _buildSuccessBody(context)
-                        : _buildRequestForm(context),
+            child: _isSubmitted
+                ? _buildSentBody(context, horizontalPadding)
+                : ListView(
+                    padding: EdgeInsets.fromLTRB(
+                      horizontalPadding,
+                      18,
+                      horizontalPadding,
+                      24,
+                    ),
+                    children: [
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(18),
+                          child: _buildRequestForm(context),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
@@ -260,26 +260,42 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     );
   }
 
-  Widget _buildSuccessBody(BuildContext context) {
+  Widget _buildSentBody(BuildContext context, double horizontalPadding) {
     final t = context.l10n;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Center(child: SplytoEmailSentIllustration()),
-        const SizedBox(height: 16),
-        Text(
-          t.forgotPasswordSuccessMessage,
-          style: Theme.of(context).textTheme.bodyLarge,
+        Expanded(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(
+              horizontalPadding,
+              48,
+              horizontalPadding,
+              24,
+            ),
+            child: EmailSentView(
+              title: t.passwordResetSentTitle,
+              message: t.forgotPasswordSuccessMessage,
+              hint: t.passwordResetSentHint,
+            ),
+          ),
         ),
-        const SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              widget.initialEmail == null
-                  ? t.backToLoginAction
-                  : t.passwordEmailBackToProfile,
+        Padding(
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            12,
+            horizontalPadding,
+            20,
+          ),
+          child: SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: emailSentButtonStyle(context),
+              child: Text(
+                widget.initialEmail == null
+                    ? t.backToLoginAction
+                    : t.passwordEmailBackToProfile,
+              ),
             ),
           ),
         ),

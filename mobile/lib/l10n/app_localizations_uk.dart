@@ -482,6 +482,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get forgotPasswordSuccessMessage => 'Якщо обліковий запис із цією електронною адресою вже існує, ми надіслали посилання для скидання пароля.';
 
   @override
+  String get passwordResetSentTitle => 'Перевірте вхідні';
+
+  @override
+  String get passwordResetSentHint => 'Посилання дійсне 1 годину. Якщо ви не бачите листа, перевірте папку «Спам».';
+
+  @override
   String get forgotPasswordTitle => 'Скинути пароль';
 
   @override
