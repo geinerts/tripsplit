@@ -470,6 +470,7 @@ Future<bool> showAppConfirmationDialog({
   required String confirmLabel,
   required String cancelLabel,
   IconData icon = Icons.help_outline_rounded,
+  Widget? illustration,
   bool destructive = false,
 }) async {
   final result = await showDialog<bool>(
@@ -485,6 +486,10 @@ Future<bool> showAppConfirmationDialog({
           child: AppActionSheet(
             title: title,
             children: [
+              if (illustration != null) ...[
+                Center(child: illustration),
+                const SizedBox(height: 16),
+              ],
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(

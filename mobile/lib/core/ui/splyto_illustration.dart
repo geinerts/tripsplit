@@ -31,6 +31,26 @@ class SplytoIllustration extends StatelessWidget {
   );
 }
 
+/// Branded artwork shown wherever the app reports that an email was sent
+/// (password reset, email verification, account deletion confirmation).
+class SplytoEmailSentIllustration extends StatelessWidget {
+  const SplytoEmailSentIllustration({
+    super.key,
+    this.width = 144,
+    this.height = 110,
+  });
+
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) => SplytoIllustration(
+    'assets/branding/splyto_empty_trip_invitations.svg',
+    width: width,
+    height: height,
+  );
+}
+
 class _DarkIllustrationColors extends ColorMapper {
   const _DarkIllustrationColors();
 

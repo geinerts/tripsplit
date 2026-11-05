@@ -5,6 +5,7 @@ import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/responsive.dart';
+import '../../../../core/ui/splyto_illustration.dart';
 import '../controllers/auth_controller.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -261,16 +262,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Widget _buildSuccessBody(BuildContext context) {
     final t = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          Icons.mark_email_read_outlined,
-          size: 38,
-          color: colorScheme.primary,
-        ),
-        const SizedBox(height: 12),
+        const Center(child: SplytoEmailSentIllustration()),
+        const SizedBox(height: 16),
         Text(
           t.forgotPasswordSuccessMessage,
           style: Theme.of(context).textTheme.bodyLarge,

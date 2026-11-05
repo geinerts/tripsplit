@@ -18,6 +18,7 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_background.dart';
 import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/responsive.dart';
+import '../../../../core/ui/splyto_illustration.dart';
 import '../../../../core/ui/test_keys.dart';
 import '../../domain/entities/auth_user.dart';
 import '../controllers/auth_controller.dart';

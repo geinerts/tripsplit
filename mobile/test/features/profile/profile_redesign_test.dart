@@ -18,6 +18,7 @@ import 'package:tripsplit/features/auth/domain/entities/notification_preferences
 import 'package:tripsplit/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:tripsplit/features/auth/presentation/pages/profile_page.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
+import 'package:tripsplit/core/ui/splyto_illustration.dart';
 
 class _Auth implements AuthController {
   AuthUser user = AuthUserModel.fromLegacyMap({
@@ -321,6 +322,7 @@ void main() {
       expect(auth.profiles, isEmpty);
       expect(auth.logoutCalls, 0);
       expect(find.text(t.forgotPasswordSuccessMessage), findsOneWidget);
+      expect(find.byType(SplytoEmailSentIllustration), findsOneWidget);
     });
   }
 
@@ -338,6 +340,7 @@ void main() {
     await _tap(tester, t.authSendLink);
     expect(auth.passwordEmails.length, 2);
     expect(find.text(t.forgotPasswordSuccessMessage), findsOneWidget);
+    expect(find.byType(SplytoEmailSentIllustration), findsOneWidget);
     expect(auth.profiles, isEmpty);
   });
 

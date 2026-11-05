@@ -315,6 +315,7 @@ extension _LoginPageActions on _LoginPageState {
       confirmLabel: context.l10nEn.authSendLink,
       cancelLabel: context.l10nEn.authCancel,
       icon: Icons.verified_user_outlined,
+      illustration: const SplytoEmailSentIllustration(),
     );
 
     if (!mounted || !shouldSend) {
@@ -372,6 +373,7 @@ extension _LoginPageActions on _LoginPageState {
       confirmLabel: context.l10nEn.authResendLink,
       cancelLabel: context.l10nEn.authClose,
       icon: Icons.outgoing_mail,
+      illustration: const SplytoEmailSentIllustration(),
     );
 
     if (!mounted || !shouldResend || email.isEmpty) {

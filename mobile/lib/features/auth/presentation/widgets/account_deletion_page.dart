@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_scaffold.dart';
+import '../../../../core/ui/splyto_illustration.dart';
 
 class AccountDeletionPage extends StatefulWidget {
   const AccountDeletionPage({
@@ -131,12 +131,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                   children: [
                     if (_sent) ...[
                       const SizedBox(height: 24),
-                      SvgPicture.asset(
-                        'assets/branding/splyto_empty_trip_invitations.svg',
-                        width: 144,
-                        height: 110,
-                        excludeFromSemantics: true,
-                      ),
+                      const SplytoEmailSentIllustration(),
                       const SizedBox(height: 24),
                     ],
                     Semantics(
