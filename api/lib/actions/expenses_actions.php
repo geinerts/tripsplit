@@ -634,6 +634,7 @@ function add_expense_action(): void
             'category' => $category,
             'split_mode' => $splitMode,
             'participants_count' => count($participantRows),
+            'note' => $note,
         ]);
         json_out($responsePayload);
     } catch (Throwable $error) {
@@ -877,6 +878,7 @@ function update_expense_action(): void
             'split_mode' => $splitMode,
             'participants_count' => count($participantRows),
             'receipt_changed' => $oldReceiptPath !== $nextReceiptPath,
+            'note' => $note,
         ]);
         json_out($responsePayload);
     } catch (Throwable $error) {
@@ -935,7 +937,7 @@ function delete_expense_action(): void
         : '\'' . $tripCurrencyCode . '\' AS currency_code, amount AS source_amount';
 
     $ownerStmt = $pdo->prepare(
-        'SELECT id, trip_id, paid_by, amount, category, split_mode, receipt_path, ' . $currencySelect . '
+        'SELECT id, trip_id, paid_by, amount, category, note, split_mode, receipt_path, ' . $currencySelect . '
          FROM ' . $expensesTable . '
          WHERE id = :id
          LIMIT 1'
@@ -977,6 +979,7 @@ function delete_expense_action(): void
         'source_amount_cents' => decimal_to_cents($expense['source_amount'] ?? 0),
         'category' => trim((string) ($expense['category'] ?? '')),
         'split_mode' => trim((string) ($expense['split_mode'] ?? '')),
+        'note' => trim((string) ($expense['note'] ?? '')),
     ]);
     json_out($responsePayload);
 }

@@ -45,11 +45,13 @@ function normalize_me_name_value($name): ?string { return $name ?: null; }
 function combine_full_name($first, $last): ?string { return trim($first . ' ' . $last) ?: null; }
 function me_display_name(array $user): string { return $user['nickname']; }
 function push_should_queue_notification_type(string $type): bool { return false; }
-function app_event(...$args): void {}
+function app_event(PDO $pdo, ...$args): void { $GLOBALS['app_events'][] = $args; }
 if (!function_exists('compute_trip_balance_data')) {
     function compute_trip_balance_data(PDO $pdo, int $id): array { return ['stats'=>[]]; }
 }
-function trip_payments_table_available(PDO $pdo): bool { return true; }
+if (!function_exists('trip_payments_table_available')) {
+    function trip_payments_table_available(PDO $pdo): bool { return true; }
+}
 
 // Real handlers, membership/role checks, notification SQL and transactions.
 // SQLite only adapts MySQL syntax; the identical scenarios also run on MySQL.

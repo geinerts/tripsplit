@@ -7759,6 +7759,12 @@ abstract class AppLocalizations {
   /// **'deleted an expense'**
   String get activityEventExpenseDeleted;
 
+  /// No description provided for @activityEventExpenseCommentAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'commented on an expense'**
+  String get activityEventExpenseCommentAdded;
+
   /// No description provided for @activityEventTripCreated.
   ///
   /// In en, this message translates to:
@@ -7770,6 +7776,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'updated trip details'**
   String get activityEventTripUpdated;
+
+  /// No description provided for @activityEventTripRenamed.
+  ///
+  /// In en, this message translates to:
+  /// **'renamed the trip'**
+  String get activityEventTripRenamed;
+
+  /// No description provided for @activityEventTripCurrencyChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'changed the trip currency'**
+  String get activityEventTripCurrencyChanged;
+
+  /// No description provided for @activityEventTripPhotoChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'changed the trip photo'**
+  String get activityEventTripPhotoChanged;
+
+  /// No description provided for @activityEventTripBudgetChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'changed the trip budget'**
+  String get activityEventTripBudgetChanged;
+
+  /// No description provided for @activityEventTripDestinationsChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'changed the trip destinations'**
+  String get activityEventTripDestinationsChanged;
 
   /// No description provided for @activityEventTripMembersAdded.
   ///
@@ -7842,6 +7878,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'finished the trip'**
   String get activityEventTripFinished;
+
+  /// No description provided for @activityEventTripSettled.
+  ///
+  /// In en, this message translates to:
+  /// **'All transfers are confirmed, the trip is settled'**
+  String get activityEventTripSettled;
 
   /// No description provided for @activityEventSettlementMarkedSent.
   ///

@@ -4230,10 +4230,28 @@ class AppLocalizationsLv extends AppLocalizations {
   String get activityEventExpenseDeleted => 'izdzēsa izdevumu';
 
   @override
+  String get activityEventExpenseCommentAdded => 'komentēja izdevumu';
+
+  @override
   String get activityEventTripCreated => 'izveidoja ceļojumu';
 
   @override
   String get activityEventTripUpdated => 'atjaunoja ceļojuma detaļas';
+
+  @override
+  String get activityEventTripRenamed => 'pārdēvēja ceļojumu';
+
+  @override
+  String get activityEventTripCurrencyChanged => 'nomainīja ceļojuma valūtu';
+
+  @override
+  String get activityEventTripPhotoChanged => 'nomainīja ceļojuma attēlu';
+
+  @override
+  String get activityEventTripBudgetChanged => 'mainīja ceļojuma budžetu';
+
+  @override
+  String get activityEventTripDestinationsChanged => 'mainīja ceļojuma galamērķus';
 
   @override
   String get activityEventTripMembersAdded => 'pievienoja dalībniekus';
@@ -4276,6 +4294,9 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get activityEventTripFinished => 'pabeidza ceļojumu';
+
+  @override
+  String get activityEventTripSettled => 'Visi pārskaitījumi ir apstiprināti, norēķini pabeigti';
 
   @override
   String get activityEventSettlementMarkedSent => 'atzīmēja pārskaitījumu kā nosūtītu';

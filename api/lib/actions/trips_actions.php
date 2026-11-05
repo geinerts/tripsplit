@@ -827,12 +827,19 @@ function update_trip_action(): void
     $countStmt->execute(['trip_id' => $tripId]);
     $membersCount = (int) ($countStmt->fetchColumn() ?: 0);
 
-    app_event($pdo, (int) $me['id'], 'trip.updated', 'trip', $tripId, $tripId, [
+    $tripChanges = [
         'name_changed' => $hasName && $nextName !== (string) ($trip['name'] ?? ''),
         'currency_changed' => $hasCurrencyCode
             && $nextCurrencyCode !== normalize_currency_code($trip['currency_code'] ?? default_trip_currency_code()),
         'image_changed' => ($hasImagePath || $removeImage) && $oldImagePath !== $nextImagePath,
-    ]);
+        'budget_changed' => $hasBudget
+            && $budgetCents !== (isset($trip['budget_cents']) ? (int) $trip['budget_cents'] : null),
+        'destinations_changed' => $destinationsJson !== null
+            && json_decode($destinationsJson, true) !== (json_decode((string) ($trip['destinations_json'] ?? ''), true) ?? []),
+    ];
+    if (in_array(true, $tripChanges, true)) {
+        app_event($pdo, (int) $me['id'], 'trip.updated', 'trip', $tripId, $tripId, $tripChanges);
+    }
 
     json_out([
         'ok' => true,

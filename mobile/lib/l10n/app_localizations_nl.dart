@@ -4220,10 +4220,28 @@ class AppLocalizationsNl extends AppLocalizations {
   String get activityEventExpenseDeleted => 'een uitgave verwijderd';
 
   @override
+  String get activityEventExpenseCommentAdded => 'heeft gereageerd op een uitgave';
+
+  @override
   String get activityEventTripCreated => 'heeft de reis aangemaakt';
 
   @override
   String get activityEventTripUpdated => 'bijgewerkte reisgegevens';
+
+  @override
+  String get activityEventTripRenamed => 'heeft de reis hernoemd';
+
+  @override
+  String get activityEventTripCurrencyChanged => 'heeft de reisvaluta gewijzigd';
+
+  @override
+  String get activityEventTripPhotoChanged => 'heeft de reisfoto gewijzigd';
+
+  @override
+  String get activityEventTripBudgetChanged => 'heeft het reisbudget gewijzigd';
+
+  @override
+  String get activityEventTripDestinationsChanged => 'heeft de reisbestemmingen gewijzigd';
 
   @override
   String get activityEventTripMembersAdded => 'toegevoegde deelnemers';
@@ -4266,6 +4284,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get activityEventTripFinished => 'de reis is voltooid';
+
+  @override
+  String get activityEventTripSettled => 'Alle overschrijvingen zijn bevestigd, de reis is afgerekend';
 
   @override
   String get activityEventSettlementMarkedSent => 'een overschrijving gemarkeerd als verzonden';

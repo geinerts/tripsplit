@@ -4240,10 +4240,28 @@ class AppLocalizationsUk extends AppLocalizations {
   String get activityEventExpenseDeleted => 'видалено витрату';
 
   @override
+  String get activityEventExpenseCommentAdded => 'додано коментар до витрати';
+
+  @override
   String get activityEventTripCreated => 'створив поїздку';
 
   @override
   String get activityEventTripUpdated => 'оновлені деталі поїздки';
+
+  @override
+  String get activityEventTripRenamed => 'змінено назву поїздки';
+
+  @override
+  String get activityEventTripCurrencyChanged => 'змінено валюту поїздки';
+
+  @override
+  String get activityEventTripPhotoChanged => 'змінено фото поїздки';
+
+  @override
+  String get activityEventTripBudgetChanged => 'змінено бюджет поїздки';
+
+  @override
+  String get activityEventTripDestinationsChanged => 'змінено напрямки поїздки';
 
   @override
   String get activityEventTripMembersAdded => 'додані учасники';
@@ -4286,6 +4304,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get activityEventTripFinished => 'подорож завершено';
+
+  @override
+  String get activityEventTripSettled => 'Усі перекази підтверджено, поїздку розраховано';
 
   @override
   String get activityEventSettlementMarkedSent => 'позначив переказ як надісланий';

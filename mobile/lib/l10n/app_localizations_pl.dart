@@ -4240,10 +4240,28 @@ class AppLocalizationsPl extends AppLocalizations {
   String get activityEventExpenseDeleted => 'usunięto wydatek';
 
   @override
+  String get activityEventExpenseCommentAdded => 'dodano komentarz do wydatku';
+
+  @override
   String get activityEventTripCreated => 'utworzono wycieczkę';
 
   @override
   String get activityEventTripUpdated => 'zaktualizowane szczegóły wycieczki';
+
+  @override
+  String get activityEventTripRenamed => 'zmieniono nazwę wycieczki';
+
+  @override
+  String get activityEventTripCurrencyChanged => 'zmieniono walutę wycieczki';
+
+  @override
+  String get activityEventTripPhotoChanged => 'zmieniono zdjęcie wycieczki';
+
+  @override
+  String get activityEventTripBudgetChanged => 'zmieniono budżet wycieczki';
+
+  @override
+  String get activityEventTripDestinationsChanged => 'zmieniono cele wycieczki';
 
   @override
   String get activityEventTripMembersAdded => 'dodani członkowie';
@@ -4286,6 +4304,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get activityEventTripFinished => 'zakończono wycieczkę';
+
+  @override
+  String get activityEventTripSettled => 'Wszystkie przelewy potwierdzone, wycieczka rozliczona';
 
   @override
   String get activityEventSettlementMarkedSent => 'oznaczył przelew jako wysłany';

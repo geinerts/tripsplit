@@ -4220,10 +4220,28 @@ class AppLocalizationsDa extends AppLocalizations {
   String get activityEventExpenseDeleted => 'slettet en udgift';
 
   @override
+  String get activityEventExpenseCommentAdded => 'kommenterede en udgift';
+
+  @override
   String get activityEventTripCreated => 'oprettede turen';
 
   @override
   String get activityEventTripUpdated => 'opdaterede rejseoplysninger';
+
+  @override
+  String get activityEventTripRenamed => 'omdøbte turen';
+
+  @override
+  String get activityEventTripCurrencyChanged => 'ændrede turens valuta';
+
+  @override
+  String get activityEventTripPhotoChanged => 'ændrede turens billede';
+
+  @override
+  String get activityEventTripBudgetChanged => 'ændrede turens budget';
+
+  @override
+  String get activityEventTripDestinationsChanged => 'ændrede turens destinationer';
 
   @override
   String get activityEventTripMembersAdded => 'tilføjede medlemmer';
@@ -4266,6 +4284,9 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get activityEventTripFinished => 'Turen er afsluttet';
+
+  @override
+  String get activityEventTripSettled => 'Alle overførsler er bekræftet, turen er afregnet';
 
   @override
   String get activityEventSettlementMarkedSent => 'markeret en overførsel som sendt';

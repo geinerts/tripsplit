@@ -4220,10 +4220,28 @@ class AppLocalizationsSv extends AppLocalizations {
   String get activityEventExpenseDeleted => 'raderade en utgift';
 
   @override
+  String get activityEventExpenseCommentAdded => 'kommenterade en utgift';
+
+  @override
   String get activityEventTripCreated => 'skapade resan';
 
   @override
   String get activityEventTripUpdated => 'uppdaterade resedetaljer';
+
+  @override
+  String get activityEventTripRenamed => 'bytte namn på resan';
+
+  @override
+  String get activityEventTripCurrencyChanged => 'ändrade resans valuta';
+
+  @override
+  String get activityEventTripPhotoChanged => 'ändrade resans foto';
+
+  @override
+  String get activityEventTripBudgetChanged => 'ändrade resans budget';
+
+  @override
+  String get activityEventTripDestinationsChanged => 'ändrade resans resmål';
 
   @override
   String get activityEventTripMembersAdded => 'tillagda deltagare';
@@ -4266,6 +4284,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get activityEventTripFinished => 'resan avslutad';
+
+  @override
+  String get activityEventTripSettled => 'Alla överföringar är bekräftade, resan är reglerad';
 
   @override
   String get activityEventSettlementMarkedSent => 'markerade en överföring som skickad';

@@ -1143,6 +1143,9 @@ function confirm_settlement_received_action(): void
         'amount_cents' => (int) ($row['amount_cents'] ?? 0),
         'all_settled' => ($stored['progress']['all_settled'] ?? false) === true,
     ]);
+    if ($confirmedNow && ($stored['progress']['all_settled'] ?? false) === true) {
+        app_event($pdo, (int) $me['id'], 'trip.settled', 'trip', $tripId, $tripId);
+    }
     json_out([
         'ok' => true,
         'trip' => build_trip_payload($trip),

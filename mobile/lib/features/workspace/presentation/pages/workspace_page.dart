@@ -49,6 +49,7 @@ import '../../../trips/domain/entities/trip_user.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../../trips/presentation/widgets/trip_invite_members_page.dart';
 import '../utils/expense_math.dart';
+import '../utils/workspace_activity_icons.dart';
 import '../../domain/entities/balance_item.dart';
 import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_reaction.dart';

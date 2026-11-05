@@ -4220,10 +4220,28 @@ class AppLocalizationsEs extends AppLocalizations {
   String get activityEventExpenseDeleted => 'eliminó un gasto';
 
   @override
+  String get activityEventExpenseCommentAdded => 'comentó un gasto';
+
+  @override
   String get activityEventTripCreated => 'creó el viaje';
 
   @override
   String get activityEventTripUpdated => 'actualizó el viaje';
+
+  @override
+  String get activityEventTripRenamed => 'cambió el nombre del viaje';
+
+  @override
+  String get activityEventTripCurrencyChanged => 'cambió la moneda del viaje';
+
+  @override
+  String get activityEventTripPhotoChanged => 'cambió la foto del viaje';
+
+  @override
+  String get activityEventTripBudgetChanged => 'cambió el presupuesto del viaje';
+
+  @override
+  String get activityEventTripDestinationsChanged => 'cambió los destinos del viaje';
 
   @override
   String get activityEventTripMembersAdded => 'añadió miembros';
@@ -4266,6 +4284,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get activityEventTripFinished => 'finalizó el viaje';
+
+  @override
+  String get activityEventTripSettled => 'Todas las transferencias están confirmadas y el viaje está liquidado';
 
   @override
   String get activityEventSettlementMarkedSent => 'marcó la transferencia como enviada';

@@ -3822,6 +3822,80 @@ void main() {
     },
   );
 
+  testWidgets('activity rows name each event and show its own icon', (
+    tester,
+  ) async {
+    WorkspaceActivityEvent event(
+      int id,
+      String type, [
+      Map<String, dynamic> payload = const {},
+    ]) => WorkspaceActivityEvent(
+      id: id,
+      tripId: 1,
+      actorUserId: 7,
+      actorName: 'Matiss',
+      eventType: type,
+      payload: payload,
+      createdAt: '2026-10-21 10:30:00',
+    );
+    final controller = _Workspace()
+      ..activity = [
+        event(1, 'trip.settled'),
+        event(2, 'expense.comment_added', {'note': 'Breakfast'}),
+        event(3, 'trip.all_members_ready'),
+        event(4, 'trip.updated', {
+          'name_changed': true,
+          'image_changed': false,
+        }),
+        event(5, 'trip.updated', {
+          'name_changed': true,
+          'budget_changed': true,
+        }),
+        event(6, 'settlement.reminder_sent'),
+      ];
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    await _selectTab(tester, t.workspaceActivityTab);
+
+    Future<void> expectRow(int id, String text, IconData icon) async {
+      final row = find.byKey(ValueKey('activity-row-$id'));
+      await tester.scrollUntilVisible(
+        row,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(row, findsOneWidget);
+      expect(
+        find.descendant(
+          of: row,
+          matching: find.textContaining(text, findRichText: true),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: row, matching: find.byIcon(icon)),
+        findsOneWidget,
+      );
+    }
+
+    await expectRow(1, t.activityEventTripSettled, Icons.task_alt_rounded);
+    await expectRow(
+      2,
+      '${t.activityEventExpenseCommentAdded} Breakfast',
+      Icons.chat_bubble_outline_rounded,
+    );
+    await expectRow(
+      3,
+      t.activityEventTripAllMembersReady,
+      Icons.done_all_rounded,
+    );
+    await expectRow(4, t.activityEventTripRenamed, Icons.edit_rounded);
+    await expectRow(5, t.activityEventTripUpdated, Icons.edit_rounded);
+    expect(find.byKey(const ValueKey('activity-row-6')), findsNothing);
+    await disposePage(tester);
+  });
+
   testWidgets(
     'activity refresh error retains entries, denial clears protected content',
     (tester) async {

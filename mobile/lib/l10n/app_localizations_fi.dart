@@ -4220,10 +4220,28 @@ class AppLocalizationsFi extends AppLocalizations {
   String get activityEventExpenseDeleted => 'kustannus poistettu';
 
   @override
+  String get activityEventExpenseCommentAdded => 'kommentoi kulua';
+
+  @override
   String get activityEventTripCreated => 'loi matkan';
 
   @override
   String get activityEventTripUpdated => 'päivitetyt matkatiedot';
+
+  @override
+  String get activityEventTripRenamed => 'nimesi matkan uudelleen';
+
+  @override
+  String get activityEventTripCurrencyChanged => 'vaihtoi matkan valuutan';
+
+  @override
+  String get activityEventTripPhotoChanged => 'vaihtoi matkan kuvan';
+
+  @override
+  String get activityEventTripBudgetChanged => 'muutti matkan budjettia';
+
+  @override
+  String get activityEventTripDestinationsChanged => 'muutti matkan kohteita';
 
   @override
   String get activityEventTripMembersAdded => 'lisätyt jäsenet';
@@ -4266,6 +4284,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get activityEventTripFinished => 'matka päättynyt';
+
+  @override
+  String get activityEventTripSettled => 'Kaikki siirrot on vahvistettu, matka on maksettu';
 
   @override
   String get activityEventSettlementMarkedSent => 'merkitsi siirron lähetetyksi';

@@ -4230,10 +4230,28 @@ class AppLocalizationsCs extends AppLocalizations {
   String get activityEventExpenseDeleted => 'smazal výdaj';
 
   @override
+  String get activityEventExpenseCommentAdded => 'přidán komentář k výdaji';
+
+  @override
   String get activityEventTripCreated => 'vytvořil výlet';
 
   @override
   String get activityEventTripUpdated => 'aktualizované podrobnosti o cestě';
+
+  @override
+  String get activityEventTripRenamed => 'změněn název cesty';
+
+  @override
+  String get activityEventTripCurrencyChanged => 'změněna měna cesty';
+
+  @override
+  String get activityEventTripPhotoChanged => 'změněna fotka cesty';
+
+  @override
+  String get activityEventTripBudgetChanged => 'změněn rozpočet cesty';
+
+  @override
+  String get activityEventTripDestinationsChanged => 'změněny destinace cesty';
 
   @override
   String get activityEventTripMembersAdded => 'přidaní členové';
@@ -4276,6 +4294,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get activityEventTripFinished => 'cesta skončila';
+
+  @override
+  String get activityEventTripSettled => 'Všechny převody jsou potvrzeny, cesta je vyúčtována';
 
   @override
   String get activityEventSettlementMarkedSent => 'označil převod jako odeslaný';

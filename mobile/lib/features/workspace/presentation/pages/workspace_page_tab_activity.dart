@@ -159,7 +159,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
           const SizedBox(width: 8),
           ExcludeSemantics(
             child: Icon(
-              _activityIcon(event.eventType),
+              workspaceActivityIcon(event.eventType),
               size: 20,
               color: _isDestructiveActivity(event.eventType)
                   ? theme.colorScheme.error
@@ -173,7 +173,6 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
 
   bool _isVisibleTripActivityEvent(WorkspaceActivityEvent event) {
     switch (event.eventType.trim().toLowerCase()) {
-      case 'trip.all_members_ready':
       case 'settlement.reminder_sent':
         return false;
       default:
@@ -193,10 +192,12 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         return t.activityEventExpenseUpdated;
       case 'expense.deleted':
         return t.activityEventExpenseDeleted;
+      case 'expense.comment_added':
+        return t.activityEventExpenseCommentAdded;
       case 'trip.created':
         return t.activityEventTripCreated;
       case 'trip.updated':
-        return t.activityEventTripUpdated;
+        return _tripUpdatedText(context, event);
       case 'trip.members_added':
         final count = _payloadInt(event, 'members_added_count');
         return count > 0
@@ -239,6 +240,8 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         return t.activityEventTripAllMembersReady;
       case 'trip.finished':
         return t.activityEventTripFinished;
+      case 'trip.settled':
+        return t.activityEventTripSettled;
       case 'settlement.marked_sent':
         return t.activityEventSettlementMarkedSent;
       case 'settlement.confirmed':
@@ -268,6 +271,23 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
       default:
         return t.activityEventUnknown;
     }
+  }
+
+  /// Names the change when exactly one trip detail changed.
+  String _tripUpdatedText(BuildContext context, WorkspaceActivityEvent event) {
+    final t = context.l10n;
+    final specific = <String>[
+      if (event.payload['name_changed'] == true) t.activityEventTripRenamed,
+      if (event.payload['currency_changed'] == true)
+        t.activityEventTripCurrencyChanged,
+      if (event.payload['image_changed'] == true)
+        t.activityEventTripPhotoChanged,
+      if (event.payload['budget_changed'] == true)
+        t.activityEventTripBudgetChanged,
+      if (event.payload['destinations_changed'] == true)
+        t.activityEventTripDestinationsChanged,
+    ];
+    return specific.length == 1 ? specific.single : t.activityEventTripUpdated;
   }
 
   List<String> _activityMeta(
@@ -380,29 +400,6 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     final hour = moment.hour.toString().padLeft(2, '0');
     final minute = moment.minute.toString().padLeft(2, '0');
     return '$day.$month $hour:$minute';
-  }
-
-  IconData _activityIcon(String type) {
-    final normalized = type.trim().toLowerCase();
-    if (normalized.contains('expense')) {
-      return Icons.receipt_long_rounded;
-    }
-    if (normalized.contains('settlement')) {
-      return Icons.payments_rounded;
-    }
-    if (normalized.contains('payment')) {
-      return Icons.account_balance_wallet_rounded;
-    }
-    if (normalized.contains('ready')) {
-      return Icons.verified_rounded;
-    }
-    if (normalized.contains('member')) {
-      return Icons.group_add_rounded;
-    }
-    if (normalized.contains('finished')) {
-      return Icons.flag_rounded;
-    }
-    return Icons.history_rounded;
   }
 
   bool _isDestructiveActivity(String type) {

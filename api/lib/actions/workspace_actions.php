@@ -433,10 +433,7 @@ function list_trip_activity_action(): void
           AND e.event_type IN (\'expense.created\', \'expense.updated\')
          LEFT JOIN ' . $usersTable . ' u ON u.id = COALESCE(ex.paid_by, e.user_id)
          WHERE e.trip_id = :trip_id
-           AND e.event_type NOT IN (
-               \'trip.all_members_ready\',
-               \'settlement.reminder_sent\'
-           )
+           AND e.event_type <> \'settlement.reminder_sent\'
          ORDER BY e.id DESC
          LIMIT ' . $rowLimit . ' OFFSET ' . $offset
     );

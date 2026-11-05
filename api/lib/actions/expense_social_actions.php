@@ -13,7 +13,7 @@ function get_expense_for_trip(PDO $pdo, int $expenseId, int $tripId): array
 {
     $expensesTable = table_name('expenses');
     $stmt = $pdo->prepare(
-        'SELECT id FROM ' . $expensesTable . '
+        'SELECT id, note FROM ' . $expensesTable . '
          WHERE id = :id AND trip_id = :trip_id
          LIMIT 1'
     );
@@ -431,7 +431,7 @@ function add_expense_comment_action(): void
     }
     ensure_text_has_no_links($commentBody, 'Comment');
 
-    get_expense_for_trip($pdo, $expenseId, $tripId);
+    $expense = get_expense_for_trip($pdo, $expenseId, $tripId);
     $parentComment = null;
     if ($parentCommentId > 0) {
         $parentComment = get_comment_for_trip_expense(
@@ -470,6 +470,11 @@ function add_expense_comment_action(): void
         'body'       => $commentBody,
     ]);
     $commentId = (int) $pdo->lastInsertId();
+
+    app_event($pdo, $userId, 'expense.comment_added', 'expense', $expenseId, $tripId, [
+        'comment_id' => $commentId,
+        'note' => trim((string) ($expense['note'] ?? '')),
+    ]);
 
     $nickStmt = $pdo->prepare(
         'SELECT nickname FROM ' . $usersTable . ' WHERE id = :id LIMIT 1'
