@@ -1,8 +1,6 @@
 part of 'profile_page.dart';
 
 extension _ProfilePageActions on _ProfilePageState {
-  static final Uri _portfolioUri = Uri.parse('https://portfolio.egm.lv');
-
   Future<void> _loadAppVersion() async {
     try {
       final info = await PackageInfo.fromPlatform();
@@ -22,59 +20,6 @@ extension _ProfilePageActions on _ProfilePageState {
       _updateState(() {
         _appVersionLabel = '—';
       });
-    }
-  }
-
-  Future<void> _openPortfolioUrl() async {
-    final opened = await launchUrl(
-      _portfolioUri,
-      mode: LaunchMode.externalApplication,
-    );
-    if (!opened && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.profileCouldNotOpenWebsite)),
-      );
-    }
-  }
-
-  Future<void> _onFooterVersionTap() async {
-    await _openPortfolioUrl();
-  }
-
-  Future<void> _onFooterLogoTap() async {
-    if (!mounted) {
-      return;
-    }
-    final shouldOpen = await showAppBottomSheet<bool>(
-      context: context,
-      builder: (sheetContext) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 4, 18, 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  context.l10n.profileOpenWebsiteQuestion,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-            ),
-            AppActionSheetTile(
-              icon: Icons.open_in_new_rounded,
-              title: context.l10n.profileOpenPortfolioAction,
-              subtitle: 'portfolio.egm.lv',
-              onTap: () => Navigator.of(sheetContext).pop(true),
-            ),
-          ],
-        );
-      },
-    );
-    if (shouldOpen == true) {
-      await _openPortfolioUrl();
     }
   }
 

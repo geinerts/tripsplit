@@ -123,7 +123,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
             _buildProfileSettingsPanel(context),
             const SizedBox(height: 12),
             _buildProfileLogoutCard(context),
-            const SizedBox(height: 16),
+            const SizedBox(height: 36),
             _buildProfileFooter(context),
           ],
         ],
@@ -215,54 +215,17 @@ extension _ProfilePageWidgets on _ProfilePageState {
   );
 
   Widget _buildProfileFooter(BuildContext context) {
-    final muted = AppDesign.mutedColor(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Column(
-        children: [
-          Text(
-            context.l10n.profileMadeWithLabel,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: muted,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 2),
-          InkWell(
-            borderRadius: BorderRadius.circular(8),
-            onTap: _onFooterLogoTap,
-            child: Transform.translate(
-              offset: const Offset(-3, 0),
-              child: SizedBox(
-                width: 54,
-                child: SvgPicture.asset(
-                  'assets/branding/egmlogo.svg',
-                  fit: BoxFit.contain,
-                  alignment: Alignment.center,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          InkWell(
-            borderRadius: BorderRadius.circular(8),
-            onTap: _onFooterVersionTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              child: Text(
-                'v$_appVersionLabel',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: muted.withValues(alpha: 0.92),
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.2,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ),
-          ),
-        ],
+    return Center(
+      child: Text(
+        'v$_appVersionLabel',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          fontSize: 11,
+          color: AppDesign.mutedColor(context).withValues(alpha: 0.92),
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.2,
+          decoration: TextDecoration.none,
+        ),
       ),
     );
   }
