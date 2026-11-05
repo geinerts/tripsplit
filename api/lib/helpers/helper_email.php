@@ -135,9 +135,9 @@ function build_account_email_template(
             <tr><td style="padding:0;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td width="76%" height="3" bgcolor="#008576" style="height:3px;font-size:0;line-height:0;">&nbsp;</td>
-                  <td width="16%" height="3" bgcolor="#00B8CF" style="height:3px;font-size:0;line-height:0;">&nbsp;</td>
-                  <td width="8%" height="3" bgcolor="#E51B88" style="height:3px;font-size:0;line-height:0;">&nbsp;</td>
+                  <td width="76%" height="3" bgcolor="#008576" style="height:3px;font-size:0;line-height:0;background-color:#008576;background-image:linear-gradient(#008576,#008576);">&nbsp;</td>
+                  <td width="16%" height="3" bgcolor="#00B8CF" style="height:3px;font-size:0;line-height:0;background-color:#00B8CF;background-image:linear-gradient(#00B8CF,#00B8CF);">&nbsp;</td>
+                  <td width="8%" height="3" bgcolor="#E51B88" style="height:3px;font-size:0;line-height:0;background-color:#E51B88;background-image:linear-gradient(#E51B88,#E51B88);">&nbsp;</td>
                 </tr>
               </table>
             </td></tr>
