@@ -7,14 +7,14 @@ define('APP_BASE_URL', 'https://splyto.eu');
 require __DIR__ . '/../api/lib/helpers/helper_email.php';
 $directory = __DIR__ . '/../output/design/account-emails';
 if (!is_dir($directory)) { mkdir($directory, 0755, true); }
-copy(__DIR__ . '/../mobile/assets/branding/logo_full.png', $directory . '/logo.png');
+copy(__DIR__ . '/../email-logo.png', $directory . '/logo.png');
 $previews = [
     'password' => build_password_reset_email('https://splyto.eu/reset-password?token=preview-only', 'Matiss'),
     'deletion' => build_account_delete_email('https://splyto.eu/delete-account?token=preview-only', 'Matiss'),
     'verification' => build_email_verification_email('https://splyto.eu/verify-email?token=preview-only', 'Matiss', 7),
 ];
 foreach ($previews as $name => $html) {
-    $html = str_replace('https://splyto.eu/mobile/assets/branding/logo_full.png', 'logo.png', $html);
+    $html = str_replace('https://splyto.eu/email-logo.png', 'logo.png', $html);
     file_put_contents($directory . '/' . $name . '.html', $html);
 }
 file_put_contents($directory . '/index.html', <<<'HTML'

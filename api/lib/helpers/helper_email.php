@@ -61,7 +61,7 @@ function build_email_brand_logo_html(): string
     $baseUrl = defined('PUBLIC_BASE_URL') ? trim(PUBLIC_BASE_URL) : '';
     if ($baseUrl === '') { $baseUrl = defined('APP_BASE_URL') ? trim(APP_BASE_URL) : ''; }
     if ($baseUrl === '') { $baseUrl = 'https://splyto.eu'; }
-    $logoUrl = email_template_escape(rtrim($baseUrl, '/') . '/mobile/assets/branding/logo_full.png');
+    $logoUrl = email_template_escape(rtrim($baseUrl, '/') . '/email-logo.png');
     return '<img src="' . $logoUrl . '" alt="Splyto" width="156" height="62" '
         . 'style="display:block;border:0;outline:none;text-decoration:none;width:156px;height:62px;">';
 }
