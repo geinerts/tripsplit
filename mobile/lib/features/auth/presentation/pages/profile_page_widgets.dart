@@ -254,13 +254,6 @@ extension _ProfilePageWidgets on _ProfilePageState {
             ),
             _buildProfileSectionTile(
               context: context,
-              title: context.l10n.profilePrivacyPolicy,
-              icon: Icons.privacy_tip_outlined,
-              subtitle: '',
-              onTap: _isBusy ? null : _openPrivacyPolicy,
-            ),
-            _buildProfileSectionTile(
-              context: context,
               title: context.l10n.profileRateSplyto,
               icon: Icons.star_outline_rounded,
               subtitle: '',
@@ -275,7 +268,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
           children: [
             _buildProfileSectionTile(
               context: context,
-              title: context.l10n.profileChangePassword,
+              title: _passwordActionTitle,
               icon: Icons.lock_outline_rounded,
               subtitle: '',
               onTap: _isBusy ? null : _openChangePasswordDialog,

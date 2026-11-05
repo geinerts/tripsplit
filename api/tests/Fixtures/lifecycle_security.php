@@ -18,7 +18,7 @@ seed_lifecycle_proof($pdo,'delete','e',2);
 if ($scenario==='legacy') $pdo->exec('UPDATE trip_account_action_tokens SET credential_state_hash=NULL WHERE user_id=1');
 if ($scenario==='expired') $pdo->exec("UPDATE trip_account_action_tokens SET expires_at='2000-01-01' WHERE user_id=1");
 if ($scenario==='used') $pdo->exec('UPDATE trip_account_action_tokens SET used_at=UTC_TIMESTAMP() WHERE user_id=1');
-if ($scenario==='wrong_purpose') $pdo->exec("UPDATE trip_account_action_tokens SET action='deactivate' WHERE user_id=1");
+if ($scenario==='wrong_purpose') $pdo->exec("UPDATE trip_account_action_tokens SET action='reactivate' WHERE user_id=1");
 if ($scenario==='wrong_user') $pdo->exec('UPDATE trip_account_action_tokens SET user_id=2 WHERE user_id=1');
 if ($scenario==='changed_email') $pdo->exec("UPDATE trip_users SET email='changed@example.invalid' WHERE id=1");
 if ($scenario==='changed_password') $pdo->exec("UPDATE trip_users SET password_hash='changed' WHERE id=1");
@@ -26,7 +26,7 @@ if ($scenario==='changed_epoch') $pdo->exec("UPDATE trip_users SET deactivated_a
 if ($scenario==='changed_verification') $pdo->exec("UPDATE trip_users SET email_verified_at='2026-02-01' WHERE id=1");
 if (str_ends_with($scenario,'unverified')) $pdo->exec('UPDATE trip_users SET email_verified_at=NULL WHERE id=1');
 if (str_ends_with($scenario,'guest')) $pdo->exec('UPDATE trip_users SET credentials_required=1 WHERE id=1');
-if (str_ends_with($scenario,'wrong_status')) $pdo->exec("UPDATE trip_users SET account_status='".($action==='delete'?'deactivated':'active')."' WHERE id=1");
+if (str_ends_with($scenario,'wrong_status')) $pdo->exec("UPDATE trip_users SET account_status='deactivated' WHERE id=1");
 if (str_ends_with($scenario,'deleted')) $pdo->exec("UPDATE trip_users SET account_status='deleted',deleted_at=UTC_TIMESTAMP() WHERE id=1");
 if ($scenario==='missing_schema') $pdo->exec('ALTER TABLE trip_account_action_tokens DROP COLUMN credential_state_hash');
 if ($scenario==='missing_sessions') $pdo->exec('DROP TABLE trip_refresh_tokens');
@@ -55,11 +55,10 @@ if ($scenario==='malformed') $requestBody['token']='not-a-proof';
 if ($scenario==='newline') $requestBody['token'].="\n";
 if ($scenario==='request_wrong_password' || $scenario==='request_social_wrong_password') $requestBody['password']='wrong';
 if ($scenario==='request_missing_password') $requestBody['password']='';
-if ($request && $action === 'delete') {
+if ($request) {
     $requestBody['reason_codes'] = ['not_using', 'technical_issue', 'not_using', '<invalid>', 42];
 }
-$handler=$request ? ($action==='delete'?'request_account_deletion_link_action':'request_reactivation_link_action')
-    : ($action==='delete'?'confirm_account_deletion_action':'confirm_reactivation_action');
+$handler=$request ? 'request_account_deletion_link_action' : 'confirm_account_deletion_action';
 $failure=false; $second=null;
 try {
     $response=credential_test_response($handler);

@@ -52,15 +52,9 @@ The handler tests use synthetic delivery/limit adapters. A separate runner execu
 real MySQL limiter SQL at all five recovery thresholds and verifies missing storage fails
 closed. Reset fixtures apply the actual credential-state migration to a minimal old table.
 
-Deactivation adds 29 tests (279 assertions), then 15 four-worker races (60 requests):
-concurrent email requests and same/different-link confirmation. Tests cover password and
-email ownership, purpose/state/expiry, request-only session preservation, failure rollback,
-mail failure and retired email-change compatibility. Its real migration is applied to a
-minimal old account-action table. Mail and handler rate-limit calls remain test adapters.
-
-Deletion/reactivation adds 77 tests (734 assertions), six schema-contract cases using the
-real table mapper, and 35 four-worker races (140 requests). Covers single-use state-bound
-proofs, request cooldowns, rollback and deletion racing deactivation. Synthetic fixtures
+Account deletion links are covered by AccountLifecycleSecurityTest, six schema-contract cases
+using the real table mapper, and four-worker races. Covers single-use state-bound
+proofs, request cooldowns and rollback (deactivation/reactivation were removed 2026-11-05). Synthetic fixtures
 also include friendship/provider rows and payment profile fields; no real data is mounted.
 
 Stop/remove only this disposable test environment afterward:

@@ -1,4 +1,13 @@
-# Deletion and reactivation confirmation links
+# Account deletion confirmation links
+
+> **Update 2026-11-05:** self-service deactivation, email reactivation and email change were
+> removed (actions `deactivate_account`, `request_deactivation_link`, `confirm_deactivation`,
+> `request_reactivation_link`, `confirm_reactivation`, `request_email_change`,
+> `confirm_email_change`, `cancel_email_change`; pages `deactivate-account.php`,
+> `reactivate-account.php`, `confirm-email-change.php`, `cancel-email-change.php`). Only
+> deletion links remain; sections below that describe reactivation are historical. The
+> `deactivated` account status stays for administrative suspension and unverified-email
+> cleanup; such accounts must contact support. Database tables and migrations are unchanged.
 
 Local implementation and verification: 2026-10-05. Not deployed or pushed in this batch.
 This completes the scoped link-hardening work, not the whole account-erasure or session audit.
@@ -58,8 +67,8 @@ Schema checks use unquoted metadata names from the real quoted table-name helper
 Old deletion/reactivation links with NULL state bindings are intentionally rejected; users
 must request a new email. Do not synthesize bindings for previously issued links.
 
-Deploy the updated Nginx private-upload snippet BEFORE sending new links: it allows all
-three lifecycle confirmation paths and disables their origin access logs. Cloudflare,
+Deploy the updated Nginx private-upload snippet BEFORE sending new links: it allows the
+deletion confirmation path and disables their origin access logs. Cloudflare,
 email-provider logs and other observability retention require separate verification.
 No production configuration or migrations were changed during this local work.
 

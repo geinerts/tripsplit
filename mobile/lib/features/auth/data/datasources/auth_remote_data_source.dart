@@ -49,12 +49,6 @@ abstract class AuthRemoteDataSource {
 
   Future<void> requestEmailVerificationLink({required String email});
 
-  Future<void> requestReactivationLink({required String email});
-
-  Future<void> requestDeactivationLink();
-
-  Future<void> deactivateAccount({required String password});
-
   Future<void> requestAccountDeletionLink({
     required String password,
     List<String> reasonCodes = const [],
@@ -300,33 +294,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       path: ApiEndpoints.legacyAction('request_email_verification_link'),
       method: HttpMethod.post,
       body: <String, dynamic>{'email': email},
-    );
-  }
-
-  @override
-  Future<void> requestReactivationLink({required String email}) async {
-    await _apiClient.request(
-      path: ApiEndpoints.legacyAction('request_reactivation_link'),
-      method: HttpMethod.post,
-      body: <String, dynamic>{'email': email},
-    );
-  }
-
-  @override
-  Future<void> requestDeactivationLink() async {
-    await _apiClient.request(
-      path: ApiEndpoints.legacyAction('request_deactivation_link'),
-      method: HttpMethod.post,
-      body: <String, dynamic>{},
-    );
-  }
-
-  @override
-  Future<void> deactivateAccount({required String password}) async {
-    await _apiClient.request(
-      path: ApiEndpoints.legacyAction('deactivate_account'),
-      method: HttpMethod.post,
-      body: <String, dynamic>{'password': password},
     );
   }
 

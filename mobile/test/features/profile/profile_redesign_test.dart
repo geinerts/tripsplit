@@ -17,21 +17,7 @@ import 'package:tripsplit/features/auth/domain/entities/auth_user.dart';
 import 'package:tripsplit/features/auth/domain/entities/notification_preferences.dart';
 import 'package:tripsplit/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:tripsplit/features/auth/presentation/pages/profile_page.dart';
-import 'package:tripsplit/features/auth/presentation/widgets/privacy_policy_page.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
-
-final _privacyAssets = <String, String>{};
-
-class _PolicyAssetBundle extends CachingAssetBundle {
-  @override
-  Future<ByteData> load(String key) => rootBundle.load(key);
-
-  @override
-  Future<String> loadString(String key, {bool cache = true}) async {
-    return _privacyAssets[key] ??
-        await rootBundle.loadString(key, cache: cache);
-  }
-}
 
 class _Auth implements AuthController {
   AuthUser user = AuthUserModel.fromLegacyMap({
@@ -40,6 +26,7 @@ class _Auth implements AuthController {
     'first_name': 'Matiss',
     'last_name': 'Geinerts',
     'email': 'matiss@example.com',
+    'has_password': true,
     'preferred_currency_code': 'EUR',
     'premium_access': {
       'schema_version': 1,
@@ -59,6 +46,13 @@ class _Auth implements AuthController {
   final updates = <Map<Symbol, dynamic>>[];
   final profiles = <Map<Symbol, dynamic>>[];
   int logoutCalls = 0, feedbackCalls = 0;
+  final passwordEmails = <String>[];
+  @override
+  Future<void> requestPasswordReset({required String email}) async {
+    passwordEmails.add(email);
+    if (error != null) throw error!;
+  }
+
   @override
   AuthUser? get currentUser => user;
   @override
@@ -151,10 +145,7 @@ Future<void> _mount(
                 data: MediaQuery.of(
                   context,
                 ).copyWith(textScaler: TextScaler.linear(scale)),
-                child: DefaultAssetBundle(
-                  bundle: _PolicyAssetBundle(),
-                  child: child!,
-                ),
+                child: child!,
               ),
             ),
           ),
@@ -214,11 +205,6 @@ Future<void> _capture(WidgetTester tester, GlobalKey key, String name) async {
 void main() {
   setUpAll(() async {
     WidgetController.hitTestWarningShouldBeFatal = true;
-    // Load shared assets outside individual tests' fake-async zones.
-    for (final language in ['en', 'lv', 'es']) {
-      final key = 'assets/legal/privacy_$language.json';
-      _privacyAssets[key] = await rootBundle.loadString(key);
-    }
     await (FontLoader(
       'Inter',
     )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
@@ -273,29 +259,7 @@ void main() {
         await _tap(tester, t.profileContactUs);
         expect(tester.takeException(), isNull);
         await _back(tester);
-        await _tap(tester, t.profilePrivacyPolicy);
-        expect(find.byType(PrivacyPolicyPage), findsOneWidget);
-        if (!['en', 'lv', 'es'].contains(locale)) {
-          expect(find.text(t.privacyEnglishFallback), findsOneWidget);
-        }
-        expect(
-          find.byKey(const ValueKey('privacy-draft-notice')),
-          findsOneWidget,
-        );
-        expect(tester.takeException(), isNull);
-        await tester.scrollUntilVisible(
-          find.byKey(const ValueKey('privacy-security')),
-          600,
-          scrollable: find
-              .descendant(
-                of: find.byKey(const ValueKey('privacy-policy-content')),
-                matching: find.byType(Scrollable),
-              )
-              .first,
-          maxScrolls: 150,
-        );
-        expect(tester.takeException(), isNull);
-        await _back(tester);
+        expect(find.text(t.profilePrivacyPolicy), findsNothing);
         expect(find.byType(ProfilePage), findsOneWidget);
       });
     }
@@ -331,6 +295,66 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.widget<Switch>(find.byType(Switch).first).value, false);
   });
+  for (final status in <bool?>[false, null]) {
+    testWidgets('password setup for status $status uses email proof', (
+      tester,
+    ) async {
+      final auth = _Auth();
+      auth.user = auth.user.copyWith(
+        hasPassword: status,
+        clearPasswordStatus: status == null,
+      );
+      await _mount(tester, auth);
+      final t = AppLocalizations.of(tester.element(find.byType(ProfilePage)))!;
+      await _tap(
+        tester,
+        status == false ? t.profileSetPassword : t.profileManagePassword,
+      );
+      expect(find.byType(TextFormField), findsOneWidget);
+      expect(
+        tester.widget<TextFormField>(find.byType(TextFormField)).initialValue,
+        'matiss@example.com',
+      );
+      expect(find.text('Current password'), findsNothing);
+      await _tap(tester, t.authSendLink);
+      expect(auth.passwordEmails, ['matiss@example.com']);
+      expect(auth.profiles, isEmpty);
+      expect(auth.logoutCalls, 0);
+      expect(find.text(t.forgotPasswordSuccessMessage), findsOneWidget);
+    });
+  }
+
+  testWidgets('password email failure can retry without changing credentials', (
+    tester,
+  ) async {
+    final auth = _Auth()..error = const ApiException('Try later');
+    auth.user = auth.user.copyWith(hasPassword: false);
+    await _mount(tester, auth);
+    final t = AppLocalizations.of(tester.element(find.byType(ProfilePage)))!;
+    await _tap(tester, t.profileSetPassword);
+    await _tap(tester, t.authSendLink);
+    expect(find.text('Try later'), findsOneWidget);
+    auth.error = null;
+    await _tap(tester, t.authSendLink);
+    expect(auth.passwordEmails.length, 2);
+    expect(find.text(t.forgotPasswordSuccessMessage), findsOneWidget);
+    expect(auth.profiles, isEmpty);
+  });
+
+  testWidgets('stale password setup cannot send after account switch', (
+    tester,
+  ) async {
+    final auth = _Auth();
+    auth.user = auth.user.copyWith(hasPassword: false);
+    await _mount(tester, auth);
+    final t = AppLocalizations.of(tester.element(find.byType(ProfilePage)))!;
+    await _tap(tester, t.profileSetPassword);
+    auth.user = auth.user.copyWith(id: 2);
+    await _tap(tester, t.authSendLink);
+    expect(auth.passwordEmails, isEmpty);
+    expect(auth.user.hasPassword, isNull);
+  });
+
   testWidgets('password validation preserves fields on API failure', (
     tester,
   ) async {
@@ -538,7 +562,6 @@ void main() {
           (t.profileAppBanners, 'in-app'),
           (t.profilePushNotificationsTitle, 'push'),
           (t.profileContactUs, 'feedback'),
-          (t.profilePrivacyPolicy, 'privacy'),
         ]) {
           await _tap(tester, item.$1);
           await _capture(tester, key, '$prefix-${item.$2}');

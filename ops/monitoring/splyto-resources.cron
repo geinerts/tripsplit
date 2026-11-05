@@ -1,0 +1,3 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+* * * * * root umask 077; /usr/bin/python3 /var/www/splyto/scripts/monitor_resources.py >> /var/log/splyto_resources.log 2>&1

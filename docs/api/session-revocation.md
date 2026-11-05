@@ -7,9 +7,9 @@ are unchanged; existing clients can exchange a still-valid refresh token.
 
 ## Security events
 
-- Password reset, password change, credential enrollment, deactivation, deletion
-  and reactivation revoke the existing refresh rows, invalidating their access
-  tokens as well. Reactivation never resurrects these rows.
+- Password reset, password change, credential enrollment and deletion
+  revoke the existing refresh rows, invalidating their access
+  tokens as well.
 - Password change issues a replacement session inside the same transaction.
 - Logout invalidates access bound to the submitted refresh row. Session-limit
   eviction also invalidates access belonging to the evicted row.
@@ -39,10 +39,10 @@ all auth callers together; do not roll back to code accepting unbound tokens.
 Unauthenticated users and invalidated refresh sessions must sign in again.
 Missing/unreadable session storage denies access rather than trusting a token.
 
-Tests cover reset, deactivation/reactivation, password change, logout, rotation,
+Tests cover reset, deletion, password change, logout, rotation,
 replay, expiry, wrong owner, legacy-token refresh and session-limit eviction.
 The isolated MySQL suite races password login and refresh against real reset
-and deactivation handlers. No production user is changed by these tests.
+and deletion handlers. No production user is changed by these tests.
 
 This does not retroactively cancel requests that already passed authorization,
 erase offline data on an unreachable device, or revoke independent provider

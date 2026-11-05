@@ -461,16 +461,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get forgotPassword => 'Zapomněli jste heslo?';
 
   @override
+  String get profileSetPassword => 'Nastavit heslo';
+
+  @override
+  String get profileManagePassword => 'Nastavit nebo změnit heslo';
+
+  @override
   String get profilePasswordByEmail => 'Nastavení hesla e-mailem';
-
-  @override
-  String get sendDeactivationEmail => 'Odeslat odkaz na deaktivaci';
-
-  @override
-  String get deactivationEmailSent => 'Zkontrolujte si e-mail a potvrďte deaktivaci. Váš účet je stále aktivní.';
-
-  @override
-  String get deactivationConfirmationMethods => 'Deaktivaci potvrďte pomocí hesla nebo odkazu v e-mailu. Vaše cesty a výdaje zůstanou zachovány.';
 
   @override
   String get passwordEmailBackToProfile => 'Zpět na profil';
@@ -1788,27 +1785,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get authAppleSignDidNotReturnIdentityToken => 'Přihlášení přes Apple nevrátilo identifikační token.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Účet je deaktivován. Zadejte svou e-mailovou adresu a požádejte o odkaz k opětovné aktivaci.';
-
-  @override
-  String get authAccountDeactivated => 'Účet je deaktivován';
-
-  @override
-  String authSendReactivationLinkEmail(Object email) {
-    return 'Odeslat odkaz k opětovné aktivaci na $email?';
-  }
-
-  @override
   String get authCancel => 'Zrušit';
 
   @override
   String get authSendLink => 'Odeslat odkaz';
-
-  @override
-  String get authReactivationLinkSentCheckEmail => 'Odkáz na opětovnou aktivaci byl odeslán. Zkontrolujte si e-mail.';
-
-  @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Nepodařilo se odeslat odkaz pro opětovnou aktivaci. Zkuste to prosím znovu.';
 
   @override
   String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'E-mailová adresa není ověřena. Zadejte svou e-mailovou adresu a vyžádejte si ověřovací odkaz.';
@@ -1904,9 +1884,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get profileDangerZoneSectionHeading => 'NEBEZPEČNÁ ZÓNA';
-
-  @override
-  String get profileDeactivateAccount => 'Deaktivovat účet';
 
   @override
   String get profileManageAccountAccess => 'Správa přístupu k účtu';
@@ -2029,12 +2006,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get profileEditSetValidEmailEditProfileChangingPassword => 'Ke změně hesla je nutná platná e-mailová adresa účtu. Pokud vám e-mailová adresa chybí nebo je nesprávná, obraťte se na podporu.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Účet byl deaktivován. Pro obnovení přístupu použijte odkaz na reaktivaci z e-mailu.';
-
-  @override
-  String get profileEditCouldNotDeactivateTryAgain => 'Nepodařilo se deaktivovat účet. Zkuste to prosím znovu.';
-
-  @override
   String get profileEditDeletionLinkSentEmail => 'Odkaz pro smazání byl zaslán na váš e-mail.';
 
   @override
@@ -2047,9 +2018,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Ověřovací e-mail byl odeslán na novou e-mailovou adresu. Bezpečnostní upozornění bylo odesláno na vaši aktuální e-mailovou adresu.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Změnu e-mailové adresy se momentálně nepodařilo spustit. Zkuste to prosím znovu.';
-
-  @override
   String get profileEditOverviewCurrency => 'Přehled měn';
 
   @override
@@ -2057,9 +2025,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get profileEditBankTransferRevolutPaypalMe => 'Bankovní převod, Revolut, PayPal.me';
-
-  @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'Můžete deaktivovat přístup k účtu nebo požádat o odkaz v e-mailu k trvalému smazání účtu. Heslo je u účtů Google/Apple volitelné.';
 
   @override
   String get profileEditEnterPasswordOptionalGoogleApple => 'Zadejte své heslo (volitelné pro Google/Apple)';
@@ -4406,4 +4371,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get accountDeleteSending => 'Odeslání potvrzovacího e-mailu';
+
+  @override
+  String get friendsShowMore => 'Zobrazit více';
 }

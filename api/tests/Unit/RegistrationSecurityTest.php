@@ -53,6 +53,7 @@ final class RegistrationSecurityTest extends TestCase
             $result = $this->runScenario('new_guest', $hasNames);
             self::assertSame(200, $result['response']['status']);
             self::assertSame(2, $result['response']['payload']['me']['id']);
+            self::assertFalse($result['has_password']);
             self::assertSame([2], $result['auth_issued']);
             self::assertSame([2], $result['event_users']);
             self::assertSame(2, $result['user_count']);
@@ -72,6 +73,7 @@ final class RegistrationSecurityTest extends TestCase
                 self::assertArrayNotHasKey('auth', $result['response']['payload']);
                 self::assertArrayNotHasKey('me', $result['response']['payload']);
                 self::assertTrue($result['new_password_matches']);
+                self::assertTrue($result['has_password']);
                 self::assertFalse($result['new_email_verified']);
                 self::assertSame([], $result['auth_issued']);
                 self::assertSame([2], $result['mail_users']);

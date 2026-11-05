@@ -29,6 +29,8 @@ $pdo->exec('CREATE TABLE trip_user_identities (id ' . $id . ', user_id INT NOT N
     provider VARCHAR(10), provider_subject ' . $subject . ', email VARCHAR(255), email_verified INT,
     payload_json TEXT, last_login_at DATETIME, UNIQUE(provider, provider_subject), UNIQUE(user_id, provider))');
 seed_credential_user($pdo, $scenario === 'inactive' ? 'inactive' : 'established');
+if ($scenario === 'linked_password_set') { record_user_password_capability($pdo, 1, true); }
+if ($scenario === 'linked_placeholder') { record_user_password_capability($pdo, 1, false); }
 if ($scenario === 'linked_unverified') {
     $pdo->exec('UPDATE trip_users SET email_verified_at = NULL WHERE id = 1');
 }

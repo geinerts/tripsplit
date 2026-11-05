@@ -7,7 +7,7 @@ final class SessionRevocationSecurityTest extends TestCase
 {
     public static function scenarios(): iterable
     {
-        foreach (['reset','deactivate','reactivate','logout','rotate','expired','wrong_owner',
+        foreach (['reset','delete','logout','rotate','expired','wrong_owner',
             'legacy','password_change','stale_sensitive_request','session_limit'] as $scenario) yield [$scenario];
     }
     #[DataProvider('scenarios')]
@@ -26,6 +26,5 @@ final class SessionRevocationSecurityTest extends TestCase
         if (array_key_exists('refresh',$r)) self::assertNull($r['refresh']);
         if (array_key_exists('replay',$r)) self::assertNull($r['replay']);
         if (isset($r['new_access'])) self::assertSame(1,$r['new_access']);
-        if (isset($r['reactivated'])) self::assertSame(200,$r['reactivated']);
     }
 }

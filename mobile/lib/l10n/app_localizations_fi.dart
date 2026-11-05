@@ -458,16 +458,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get forgotPassword => 'Unohditko salasanasi?';
 
   @override
+  String get profileSetPassword => 'Aseta salasana';
+
+  @override
+  String get profileManagePassword => 'Aseta tai vaihda salasana';
+
+  @override
   String get profilePasswordByEmail => 'Aseta salasana sähköpostitse';
-
-  @override
-  String get sendDeactivationEmail => 'Lähetä deaktivointilinkki';
-
-  @override
-  String get deactivationEmailSent => 'Tarkista sähköpostisi vahvistaaksesi tilin deaktivoinnin. Tilisi on edelleen aktiivinen.';
-
-  @override
-  String get deactivationConfirmationMethods => 'Vahvista deaktivointi salasanallasi tai sähköpostilinkillä. Matkasi ja kulusi säilyvät.';
 
   @override
   String get passwordEmailBackToProfile => 'Takaisin profiiliin';
@@ -1782,27 +1779,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get authAppleSignDidNotReturnIdentityToken => 'Apple-kirjautuminen ei palauttanut tunnistustunnusta.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Tili on deaktivoitu. Syötä sähköpostiosoitteesi pyytääksesi uudelleenaktivointilinkin.';
-
-  @override
-  String get authAccountDeactivated => 'Tili on deaktivoitu';
-
-  @override
-  String authSendReactivationLinkEmail(Object email) {
-    return 'Lähetetäänkö uudelleenaktivointilinkki osoitteeseen $email?';
-  }
-
-  @override
   String get authCancel => 'Peruuta';
 
   @override
   String get authSendLink => 'Lähetä linkki';
-
-  @override
-  String get authReactivationLinkSentCheckEmail => 'Uudelleenkäynnistyslinkki on lähetetty. Tarkista sähköpostisi.';
-
-  @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Uudelleenkäynnistyslinkkiä ei voitu lähettää. Yritä uudelleen.';
 
   @override
   String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'Sähköpostiosoitetta ei ole vahvistettu. Syötä sähköpostiosoitteesi pyytääksesi vahvistuslinkin.';
@@ -1898,9 +1878,6 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get profileDangerZoneSectionHeading => 'VAARALUOKKA';
-
-  @override
-  String get profileDeactivateAccount => 'Poista tili käytöstä';
 
   @override
   String get profileManageAccountAccess => 'Hallitse tilin käyttöoikeuksia';
@@ -2023,12 +2000,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get profileEditSetValidEmailEditProfileChangingPassword => 'Salasanan vaihtamiseen tarvitaan voimassa oleva tilin sähköpostiosoite. Ota yhteyttä tukeen, jos sähköpostiosoitteesi puuttuu tai on virheellinen.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Tili on deaktivoitu. Palauta käyttöoikeus sähköpostissa olevan uudelleenaktivointilinkin avulla.';
-
-  @override
-  String get profileEditCouldNotDeactivateTryAgain => 'Tiliä ei voitu poistaa käytöstä. Yritä uudelleen.';
-
-  @override
   String get profileEditDeletionLinkSentEmail => 'Poistolinkki on lähetetty sähköpostiisi.';
 
   @override
@@ -2041,9 +2012,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Vahvistus on lähetetty uuteen sähköpostiosoitteeseen. Turvallisuusilmoitus on lähetetty nykyiseen sähköpostiosoitteeseesi.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Sähköpostiosoitteen muutosta ei voitu aloittaa juuri nyt. Yritä uudelleen.';
-
-  @override
   String get profileEditOverviewCurrency => 'Yleiskatsaus valuutasta';
 
   @override
@@ -2051,9 +2019,6 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get profileEditBankTransferRevolutPaypalMe => 'Pankkisiirto, Revolut, PayPal.me';
-
-  @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'Voit poistaa tilin käytöstä tai pyytää sähköpostilinkin tilin pysyvää poistamista varten. Salasana on valinnainen Google- ja Apple-tileillä.';
 
   @override
   String get profileEditEnterPasswordOptionalGoogleApple => 'Syötä salasanasi (valinnainen Google/Apple)';
@@ -4396,4 +4361,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get accountDeleteSending => 'Vahvistussähköpostin lähettäminen';
+
+  @override
+  String get friendsShowMore => 'Näytä lisää';
 }

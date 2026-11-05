@@ -98,21 +98,6 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> requestReactivationLink({required String email}) {
-    return _remote.requestReactivationLink(email: email);
-  }
-
-  @override
-  Future<void> requestDeactivationLink() {
-    return _remote.requestDeactivationLink();
-  }
-
-  @override
-  Future<void> deactivateAccount({required String password}) {
-    return _remote.deactivateAccount(password: password);
-  }
-
-  @override
   Future<void> requestAccountDeletionLink({
     required String password,
     List<String> reasonCodes = const [],

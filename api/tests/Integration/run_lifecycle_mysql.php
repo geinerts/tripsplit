@@ -8,14 +8,12 @@ if(!is_resource($p)||proc_close($p)!==0)throw new RuntimeException('Lifecycle re
 function assert_lifecycle_race(bool $ok,string $message): void
 { if(!$ok)throw new RuntimeException($message); }
 $cases=[];
-foreach(['delete','reactivate']as $action)foreach(['request','same_link','different_links']as $mode)$cases[]=[$action,$mode];
-$cases[]=['delete','cross_action'];
+foreach(['request','same_link','different_links']as $mode)$cases[]=['delete',$mode];
 for($round=1;$round<=5;$round++)foreach($cases as [$action,$mode]){
     reset_lifecycle_schema($pdo);seed_lifecycle_user($pdo,$action,true);
     if($mode!=='request'){
         seed_lifecycle_proof($pdo,$action);
-        if($mode==='cross_action')seed_deactivation_proof($pdo,'b');
-        else seed_lifecycle_proof($pdo,$action,'b');
+        seed_lifecycle_proof($pdo,$action,'b');
     }
     seed_lifecycle_proof($pdo,'delete','e',2);
     $other=unrelated_lifecycle_rows(lifecycle_snapshot($pdo));$workers=[];
@@ -44,9 +42,8 @@ for($round=1;$round<=5;$round++)foreach($cases as [$action,$mode]){
         assert_lifecycle_race(array_sum(array_column($results,'mail'))===($mode==='request'?1:0),'Duplicate email');
         $snapshot=lifecycle_snapshot($pdo);
         assert_lifecycle_race(unrelated_lifecycle_rows($snapshot)===$other,'Other account affected');
-        $expected=$mode==='request'?($action==='delete'?'active':'deactivated'):($action==='delete'?'deleted':'active');
-        assert_lifecycle_race($mode==='cross_action'?in_array($snapshot['users'][0]['account_status'],['deleted','deactivated'],true)
-            :$snapshot['users'][0]['account_status']===$expected,'Unexpected account status');
+        $expected=$mode==='request'?'active':'deleted';
+        assert_lifecycle_race($snapshot['users'][0]['account_status']===$expected,'Unexpected account status');
         $sessions=count(array_filter($snapshot['refresh_tokens'],fn($r)=>(int)$r['user_id']===1&&$r['revoked_at']===null));
         assert_lifecycle_race($sessions===($mode==='request'?2:0),'Wrong refresh state');
         assert_lifecycle_race((int)$snapshot['push_tokens'][0]['is_active']===($mode==='request'?1:0),'Wrong push state');

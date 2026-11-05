@@ -3,7 +3,6 @@ declare(strict_types=1);
 if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
 define('DB_TABLE_PREFIX', 'synthetic_');
 require __DIR__ . '/../../config/config_db.php';
-require __DIR__ . '/../../lib/actions/account_deactivation_actions.php';
 require __DIR__ . '/../../lib/actions/password_reset_actions.php';
 require __DIR__ . '/../../lib/helpers/helper_account_action_proofs.php';
 
@@ -31,11 +30,9 @@ function users_deleted_at_column_available(PDO $pdo): bool { return true; }
 function json_out(array $body, int $status = 200): void { throw new RuntimeException('Response', $status); }
 
 $lifecycle = ($argv[1] ?? '') === 'lifecycle';
-$deactivate = ($argv[1] ?? '') === 'deactivation' || $lifecycle;
-$db = new SchemaDatabase($deactivate ? 'synthetic_account_action_tokens' : 'synthetic_password_resets', ($argv[2] ?? '') === 'available');
+$db = new SchemaDatabase($lifecycle ? 'synthetic_account_action_tokens' : 'synthetic_password_resets', ($argv[2] ?? '') === 'available');
 try {
     if ($lifecycle) ensure_account_action_proof_schema($db);
-    elseif ($deactivate) ensure_deactivation_link_schema($db);
     else ensure_password_reset_security_schema($db);
     echo '200';
 } catch (RuntimeException $e) { echo (string) $e->getCode(); }

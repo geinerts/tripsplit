@@ -46,7 +46,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
         return null;
       }
       if (source == _ReceiptSource.files) {
-        final file = await _pickReceiptFile();
+        final file = await _pickReceiptFile(pickerContext);
         return mounted &&
                 pickerContext.mounted &&
                 account == widget.authController.currentUser?.id
@@ -76,6 +76,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
         return null;
       }
       final prepared = await _prepareReceiptForUpload(
+        pickerContext: pickerContext,
         fileName: photo.name.trim().isEmpty ? 'receipt.jpg' : photo.name,
         bytes: bytes,
       );
@@ -102,7 +103,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
     return null;
   }
 
-  Future<_PickedFile?> _pickReceiptFile() async {
+  Future<_PickedFile?> _pickReceiptFile(BuildContext pickerContext) async {
     final receiptFallbackName = context.l10n.receiptFallbackName;
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -118,7 +119,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
       withData: true,
     );
 
-    if (result == null || result.files.isEmpty) {
+    if (!pickerContext.mounted || result == null || result.files.isEmpty) {
       return null;
     }
 
@@ -129,6 +130,7 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
     final bytesFromPicker = file.bytes;
     if (bytesFromPicker != null && bytesFromPicker.isNotEmpty) {
       return _prepareReceiptForUpload(
+        pickerContext: pickerContext,
         fileName: fileName,
         bytes: bytesFromPicker,
       );
@@ -140,23 +142,30 @@ extension _WorkspacePageDialogsHelpers on _WorkspacePageState {
     }
 
     final bytesFromDisk = await File(path).readAsBytes();
-    if (bytesFromDisk.isEmpty) {
+    if (!pickerContext.mounted || bytesFromDisk.isEmpty) {
       return null;
     }
 
-    return _prepareReceiptForUpload(fileName: fileName, bytes: bytesFromDisk);
+    return _prepareReceiptForUpload(
+      pickerContext: pickerContext,
+      fileName: fileName,
+      bytes: bytesFromDisk,
+    );
   }
 
   Future<_PickedFile?> _prepareReceiptForUpload({
+    required BuildContext pickerContext,
     required String fileName,
     required Uint8List bytes,
   }) async {
     try {
-      final prepared = await ReceiptImagePreparer.prepare(
+      if (!mounted || !pickerContext.mounted) return null;
+      final prepared = await ReceiptImageEditor.cropAndPrepare(
+        context: pickerContext,
         fileName: fileName,
         bytes: bytes,
       );
-      if (!mounted) return null;
+      if (!mounted || prepared == null) return null;
       return _PickedFile(fileName: prepared.fileName, bytes: prepared.bytes);
     } catch (_) {
       if (mounted) {

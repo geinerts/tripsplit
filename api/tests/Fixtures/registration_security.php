@@ -26,6 +26,7 @@ if (getenv('SPLYTO_ISOLATED_MYSQL') === '1') {
     device_token TEXT NOT NULL UNIQUE)');
 }
 
+$pdo->exec('ALTER TABLE trip_users ADD COLUMN has_password TINYINT NULL DEFAULT NULL');
 require __DIR__ . '/registration_harness.php';
 
 $victimToken = str_repeat('a', 64);
@@ -66,6 +67,7 @@ try {
     $after = fetch_me_row_by_id($pdo, 1);
     $created = fetch_me_row_by_id($pdo, 2);
     $result = [
+        'has_password' => user_password_capability($pdo, 2),
         'response' => $response, 'first_response' => $firstResponse,
         'existing_unchanged' => $before === $after,
         'user_count' => (int) $pdo->query('SELECT COUNT(*) FROM trip_users')->fetchColumn(),

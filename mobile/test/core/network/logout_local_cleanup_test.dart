@@ -24,9 +24,6 @@ import 'package:tripsplit/features/auth/domain/usecases/update_profile_use_case.
 import 'package:tripsplit/features/auth/domain/usecases/get_me_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/forgot_password_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/request_email_verification_link_use_case.dart';
-import 'package:tripsplit/features/auth/domain/usecases/request_reactivation_link_use_case.dart';
-import 'package:tripsplit/features/auth/domain/usecases/request_deactivation_link_use_case.dart';
-import 'package:tripsplit/features/auth/domain/usecases/deactivate_account_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/request_account_deletion_link_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/get_notification_preferences_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/update_notification_preferences_use_case.dart';
@@ -94,9 +91,6 @@ void main() {
         GetMeUseCase(repository),
         ForgotPasswordUseCase(repository),
         RequestEmailVerificationLinkUseCase(repository),
-        RequestReactivationLinkUseCase(repository),
-        RequestDeactivationLinkUseCase(repository),
-        DeactivateAccountUseCase(repository),
         RequestAccountDeletionLinkUseCase(repository),
         GetNotificationPreferencesUseCase(repository),
         UpdateNotificationPreferencesUseCase(repository),

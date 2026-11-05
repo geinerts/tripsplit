@@ -12,10 +12,14 @@ class ForgotPasswordPage extends StatefulWidget {
     super.key,
     required this.controller,
     this.initialEmail,
+    this.accountId,
+    this.hasPassword,
   });
 
   final AuthController controller;
   final String? initialEmail;
+  final int? accountId;
+  final bool? hasPassword;
 
   @override
   State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
@@ -59,6 +63,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       return;
     }
 
+    if (widget.accountId != null &&
+        widget.controller.currentUser?.id != widget.accountId) {
+      Navigator.of(context).pop();
+      return;
+    }
     FocusScope.of(context).unfocus();
     setState(() {
       _isSubmitting = true;
@@ -70,6 +79,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         email: _emailController.text.trim().toLowerCase(),
       );
       if (!mounted) {
+        return;
+      }
+      if (widget.accountId != null &&
+          widget.controller.currentUser?.id != widget.accountId) {
+        Navigator.of(context).pop();
         return;
       }
       setState(() {
@@ -107,9 +121,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return AppPageScaffold(
       appBar: AppBar(
         title: Text(
-          widget.initialEmail == null
-              ? t.forgotPasswordTitle
-              : t.profilePasswordByEmail,
+          widget.accountId != null
+              ? (widget.hasPassword == false
+                    ? t.profileSetPassword
+                    : t.profileManagePassword)
+              : (widget.initialEmail == null
+                    ? t.forgotPasswordTitle
+                    : t.profilePasswordByEmail),
         ),
       ),
       body: SafeArea(
@@ -158,6 +176,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           const SizedBox(height: 8),
           TextFormField(
             controller: _emailController,
+            readOnly: widget.accountId != null,
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.done,
             autocorrect: false,
@@ -227,7 +247,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       height: 18,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(t.sendResetLinkButton),
+                  : Text(
+                      widget.accountId == null
+                          ? t.sendResetLinkButton
+                          : t.authSendLink,
+                    ),
             ),
           ),
         ],

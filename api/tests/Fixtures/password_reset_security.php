@@ -69,7 +69,7 @@ foreach ($mail as $message) {
     parse_str((string) parse_url($message['body'], PHP_URL_QUERY), $query);
     $plainTokenStored = $plainTokenStored || str_contains(json_encode($storedTokens), $query['token'] ?? 'MISSING');
 }
-echo json_encode(['response' => $response, 'second' => $second, 'failed' => $failed,
+echo json_encode(['has_password' => user_password_capability($pdo, 1), 'response' => $response, 'second' => $second, 'failed' => $failed,
     'unchanged' => $before === $after, 'transaction_open' => $pdo->inTransaction(),
     'password_changed' => password_verify(' New-password-456! ', $user['password_hash']),
     'email_unchanged' => $user['email'] === $userBefore['email'],

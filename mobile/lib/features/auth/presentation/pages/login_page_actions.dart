@@ -78,10 +78,6 @@ extension _LoginPageActions on _LoginPageState {
         await _handleEmailNotVerifiedLogin(_emailController.text.trim());
         return;
       }
-      if (_mode == _AuthMode.login && _isAccountDeactivatedError(error)) {
-        await _handleDeactivatedLogin(_emailController.text.trim());
-        return;
-      }
       _updateState(() {
         _errorText = error.message;
       });
@@ -119,14 +115,11 @@ extension _LoginPageActions on _LoginPageState {
       _errorText = null;
     });
 
-    var socialEmail = '';
     try {
       final credential = switch (provider) {
         _SocialAuthProvider.google => await _signInWithGoogle(),
         _SocialAuthProvider.apple => await _signInWithApple(),
       };
-      socialEmail = (credential.email ?? '').trim();
-
       final user = await widget.controller.loginWithSocial(
         provider: provider.value,
         idToken: credential.idToken,
@@ -141,13 +134,6 @@ extension _LoginPageActions on _LoginPageState {
       // User cancelled sign-in flow — keep form unchanged.
     } on ApiException catch (error) {
       if (!mounted) {
-        return;
-      }
-      if (_isAccountDeactivatedError(error)) {
-        final fallbackEmail = socialEmail.isNotEmpty
-            ? socialEmail
-            : _emailController.text.trim();
-        await _handleDeactivatedLogin(fallbackEmail);
         return;
       }
       _updateState(() {
@@ -297,15 +283,6 @@ extension _LoginPageActions on _LoginPageState {
     messenger.showSnackBar(SnackBar(content: Text(message)));
   }
 
-  bool _isAccountDeactivatedError(ApiException error) {
-    final code = error.code?.trim().toUpperCase();
-    if (code == 'ACCOUNT_DEACTIVATED') {
-      return true;
-    }
-    final message = error.message.toLowerCase();
-    return message.contains('deactivated');
-  }
-
   bool _isEmailNotVerifiedError(ApiException error) {
     final code = error.code?.trim().toUpperCase();
     if (code == 'EMAIL_NOT_VERIFIED') {
@@ -318,54 +295,6 @@ extension _LoginPageActions on _LoginPageState {
   bool _isEmailVerificationRequiredError(ApiException error) {
     final code = error.code?.trim().toUpperCase();
     return code == 'EMAIL_VERIFICATION_REQUIRED';
-  }
-
-  Future<void> _handleDeactivatedLogin(String rawEmail) async {
-    final email = rawEmail.trim().toLowerCase();
-    if (email.isEmpty) {
-      _updateState(() {
-        _errorText = context
-            .l10n
-            .authAccountDeactivatedEnterEmailRequestReactivationLink;
-      });
-      return;
-    }
-
-    final shouldSend = await showAppConfirmationDialog(
-      context: context,
-      title: context.l10nEn.authAccountDeactivated,
-      message: context.l10nEn.authSendReactivationLinkEmail(email),
-      confirmLabel: context.l10nEn.authSendLink,
-      cancelLabel: context.l10nEn.authCancel,
-      icon: Icons.mark_email_read_outlined,
-    );
-
-    if (!mounted || !shouldSend) {
-      return;
-    }
-
-    try {
-      await widget.controller.requestReactivationLink(email: email);
-      if (!mounted) {
-        return;
-      }
-      _showSnack(context.l10nEn.authReactivationLinkSentCheckEmail);
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _errorText = error.message;
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _errorText =
-            context.l10nEn.authCouldNotSendReactivationLinkPleaseTryAgain;
-      });
-    }
   }
 
   Future<void> _handleEmailNotVerifiedLogin(String rawEmail) async {

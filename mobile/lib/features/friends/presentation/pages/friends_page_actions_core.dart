@@ -6,6 +6,7 @@ extension _FriendsPageActionsCore on _FriendsPageState {
       return;
     }
     _handledRefreshRequestCount = controller.refreshRequestCount;
+    _handledSearchRequestCount = controller.searchRequestCount;
     controller.addListener(_onCommandControllerChanged);
   }
 
@@ -17,6 +18,10 @@ extension _FriendsPageActionsCore on _FriendsPageState {
     final controller = widget.commandController;
     if (controller == null) {
       return;
+    }
+    if (controller.searchRequestCount != _handledSearchRequestCount) {
+      _handledSearchRequestCount = controller.searchRequestCount;
+      unawaited(_openFriendSearch());
     }
     if (controller.refreshRequestCount == _handledRefreshRequestCount) {
       return;
@@ -318,11 +323,7 @@ extension _FriendsPageActionsCore on _FriendsPageState {
           : context.l10n.workspaceFailedToLoadFriends;
       if (denied) {
         _loadGeneration++;
-        _searchGeneration++;
         _snapshot = null;
-        _friendSearchDebounce?.cancel();
-        _friendSearchResults = [];
-        _isSearchingUsers = false;
         _friendsHasMore = _pendingReceivedHasMore = _pendingSentHasMore = false;
         _isLoading = _isLoadingMoreFriends = _isLoadingMorePendingReceived =
             _isLoadingMorePendingSent = false;

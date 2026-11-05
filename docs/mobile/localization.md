@@ -43,9 +43,10 @@ engine agreement and passing tests do not guarantee linguistic accuracy.
 Portuguese uses DeepL's Portugal variant plus contextual terminology corrections.
 No translation service or models are bundled with the app or used at runtime.
 
-The privacy policy retains the existing English, Latvian and Spanish texts.
-Other app languages explicitly explain that the policy is displayed in English;
-unreviewed machine-translated legal paragraphs are not shipped. Map place names
+The bundled Privacy policy screen is temporarily removed pending the website
+version. The English, Latvian and Spanish drafts remain in
+`mobile/assets/legal/` as source material, but are not bundled with the app.
+Map place names
 are supplied by the map provider/offline map dataset independently of the app's
 message catalogs. Native OS permission descriptions have separate iOS/Android
 resource localization and are not generated from ARB files.

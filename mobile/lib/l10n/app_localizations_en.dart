@@ -458,16 +458,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPassword => 'Forgot password?';
 
   @override
+  String get profileSetPassword => 'Set password';
+
+  @override
+  String get profileManagePassword => 'Set or change password';
+
+  @override
   String get profilePasswordByEmail => 'Set password by email';
-
-  @override
-  String get sendDeactivationEmail => 'Send deactivation link';
-
-  @override
-  String get deactivationEmailSent => 'Check your email to confirm deactivation. Your account is still active.';
-
-  @override
-  String get deactivationConfirmationMethods => 'Confirm deactivation with your password or an email link. Your trips and expenses will remain.';
 
   @override
   String get passwordEmailBackToProfile => 'Back to profile';
@@ -1782,27 +1779,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authAppleSignDidNotReturnIdentityToken => 'Apple sign-in did not return an identity token.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Account is deactivated. Enter your email to request a reactivation link.';
-
-  @override
-  String get authAccountDeactivated => 'Account is deactivated';
-
-  @override
-  String authSendReactivationLinkEmail(Object email) {
-    return 'Send a reactivation link to $email?';
-  }
-
-  @override
   String get authCancel => 'Cancel';
 
   @override
   String get authSendLink => 'Send link';
-
-  @override
-  String get authReactivationLinkSentCheckEmail => 'Reactivation link sent. Check your email.';
-
-  @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Could not send reactivation link. Please try again.';
 
   @override
   String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'Email is not verified. Enter your email to request verification link.';
@@ -1898,9 +1878,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileDangerZoneSectionHeading => 'DANGER ZONE';
-
-  @override
-  String get profileDeactivateAccount => 'Deactivate account';
 
   @override
   String get profileManageAccountAccess => 'Manage account access';
@@ -2023,12 +2000,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEditSetValidEmailEditProfileChangingPassword => 'A valid account email is required to change your password. Contact support if your email is missing or incorrect.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Account deactivated. Use reactivation link from email to restore access.';
-
-  @override
-  String get profileEditCouldNotDeactivateTryAgain => 'Could not deactivate account. Please try again.';
-
-  @override
   String get profileEditDeletionLinkSentEmail => 'Deletion link sent to your email.';
 
   @override
@@ -2041,9 +2012,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Verification was sent to the new email. Security notice was sent to your current email.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Could not start email change right now. Please try again.';
-
-  @override
   String get profileEditOverviewCurrency => 'Overview currency';
 
   @override
@@ -2051,9 +2019,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileEditBankTransferRevolutPaypalMe => 'Bank transfer, Revolut, PayPal.me';
-
-  @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'You can deactivate account access or request an email link to permanently delete the account. Password is optional for Google/Apple accounts.';
 
   @override
   String get profileEditEnterPasswordOptionalGoogleApple => 'Enter your password (optional for Google/Apple)';
@@ -4396,4 +4361,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountDeleteSending => 'Sending confirmation email';
+
+  @override
+  String get friendsShowMore => 'Show more';
 }

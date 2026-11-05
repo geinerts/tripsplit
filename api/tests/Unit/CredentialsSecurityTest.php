@@ -40,6 +40,21 @@ final class CredentialsSecurityTest extends TestCase
         self::assertSame(0, $result['mail_count']);
         self::assertArrayNotHasKey('auth', $result['response']['payload']);
     }
+    public function test_password_login_resolves_unknown_status_only_after_valid_proof(): void
+    {
+        $success = $this->scenario('login_success');
+        self::assertSame(200, $success['response']['status']);
+        self::assertTrue($success['has_password']);
+        self::assertTrue($success['response']['payload']['me']['has_password']);
+        foreach (['login_wrong', 'login_rollback'] as $scenario) {
+            $result = $this->scenario($scenario);
+            self::assertGreaterThanOrEqual(400, $result['response']['status']);
+            self::assertNull($result['has_password']);
+            self::assertTrue($result['user_unchanged']);
+            self::assertTrue($result['sessions_unchanged']);
+        }
+    }
+
     public function test_guest_enrollment_requires_verification_and_revokes_guest_sessions(): void
     {
         foreach (['enroll_success', 'enroll_mail_failure'] as $scenario) {
@@ -49,6 +64,7 @@ final class CredentialsSecurityTest extends TestCase
             self::assertSame($scenario === 'enroll_success', $result['response']['payload']['verification_email_sent']);
             self::assertArrayNotHasKey('auth', $result['response']['payload']);
             self::assertTrue($result['new_password_matches']);
+            self::assertTrue($result['has_password']);
             self::assertFalse($result['verified']);
             self::assertSame(2, $result['old_sessions_revoked']);
             self::assertSame(0, $result['active_sessions']);
@@ -71,6 +87,7 @@ final class CredentialsSecurityTest extends TestCase
         $result = $this->scenario('password_success');
         self::assertSame(200, $result['response']['status']);
         self::assertTrue($result['new_password_matches']);
+        self::assertTrue($result['has_password']);
         self::assertSame('owner@example.invalid', $result['email']);
         self::assertTrue($result['verified']);
         self::assertSame(2, $result['old_sessions_revoked']);
@@ -87,7 +104,6 @@ final class CredentialsSecurityTest extends TestCase
             self::assertTrue($result['user_unchanged']);
             self::assertTrue($result['sessions_unchanged']);
             self::assertSame(0, $result['mail_count']);
-            self::assertFalse($result['email_change_consumed']);
         }
     }
     public function test_missing_session_storage_fails_closed(): void
@@ -95,18 +111,6 @@ final class CredentialsSecurityTest extends TestCase
         $result = $this->scenario('missing_sessions');
         self::assertSame(401, $result['response']['status']);
         self::assertTrue($result['user_unchanged']);
-    }
-    public function test_removed_email_change_routes_reject_old_clients_and_valid_pending_links(): void
-    {
-        foreach (['email_success', 'email_request', 'email_cancel'] as $scenario) {
-            $r = $this->scenario($scenario);
-            self::assertSame(410, $r['response']['status']);
-            self::assertSame('EMAIL_CHANGE_UNAVAILABLE', $r['response']['payload']['code']);
-            self::assertTrue($r['user_unchanged']);
-            self::assertTrue($r['sessions_unchanged']);
-            self::assertFalse($r['email_change_consumed']);
-            self::assertSame(0, $r['mail_count']);
-        }
     }
     public function test_ordinary_profile_updates_do_not_revoke_sessions(): void
     {

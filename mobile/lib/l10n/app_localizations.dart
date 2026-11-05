@@ -907,29 +907,23 @@ abstract class AppLocalizations {
   /// **'Forgot password?'**
   String get forgotPassword;
 
+  /// No description provided for @profileSetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Set password'**
+  String get profileSetPassword;
+
+  /// No description provided for @profileManagePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Set or change password'**
+  String get profileManagePassword;
+
   /// No description provided for @profilePasswordByEmail.
   ///
   /// In en, this message translates to:
   /// **'Set password by email'**
   String get profilePasswordByEmail;
-
-  /// No description provided for @sendDeactivationEmail.
-  ///
-  /// In en, this message translates to:
-  /// **'Send deactivation link'**
-  String get sendDeactivationEmail;
-
-  /// No description provided for @deactivationEmailSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Check your email to confirm deactivation. Your account is still active.'**
-  String get deactivationEmailSent;
-
-  /// No description provided for @deactivationConfirmationMethods.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm deactivation with your password or an email link. Your trips and expenses will remain.'**
-  String get deactivationConfirmationMethods;
 
   /// No description provided for @passwordEmailBackToProfile.
   ///
@@ -3259,24 +3253,6 @@ abstract class AppLocalizations {
   /// **'Apple sign-in did not return an identity token.'**
   String get authAppleSignDidNotReturnIdentityToken;
 
-  /// No description provided for @authAccountDeactivatedEnterEmailRequestReactivationLink.
-  ///
-  /// In en, this message translates to:
-  /// **'Account is deactivated. Enter your email to request a reactivation link.'**
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink;
-
-  /// No description provided for @authAccountDeactivated.
-  ///
-  /// In en, this message translates to:
-  /// **'Account is deactivated'**
-  String get authAccountDeactivated;
-
-  /// No description provided for @authSendReactivationLinkEmail.
-  ///
-  /// In en, this message translates to:
-  /// **'Send a reactivation link to {email}?'**
-  String authSendReactivationLinkEmail(Object email);
-
   /// No description provided for @authCancel.
   ///
   /// In en, this message translates to:
@@ -3288,18 +3264,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Send link'**
   String get authSendLink;
-
-  /// No description provided for @authReactivationLinkSentCheckEmail.
-  ///
-  /// In en, this message translates to:
-  /// **'Reactivation link sent. Check your email.'**
-  String get authReactivationLinkSentCheckEmail;
-
-  /// No description provided for @authCouldNotSendReactivationLinkPleaseTryAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not send reactivation link. Please try again.'**
-  String get authCouldNotSendReactivationLinkPleaseTryAgain;
 
   /// No description provided for @authEmailNotVerifiedEnterEmailRequestVerificationLink.
   ///
@@ -3486,12 +3450,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'DANGER ZONE'**
   String get profileDangerZoneSectionHeading;
-
-  /// No description provided for @profileDeactivateAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Deactivate account'**
-  String get profileDeactivateAccount;
 
   /// No description provided for @profileManageAccountAccess.
   ///
@@ -3733,18 +3691,6 @@ abstract class AppLocalizations {
   /// **'A valid account email is required to change your password. Contact support if your email is missing or incorrect.'**
   String get profileEditSetValidEmailEditProfileChangingPassword;
 
-  /// No description provided for @profileEditDeactivatedReactivationLinkEmailRestoreAccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Account deactivated. Use reactivation link from email to restore access.'**
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess;
-
-  /// No description provided for @profileEditCouldNotDeactivateTryAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not deactivate account. Please try again.'**
-  String get profileEditCouldNotDeactivateTryAgain;
-
   /// No description provided for @profileEditDeletionLinkSentEmail.
   ///
   /// In en, this message translates to:
@@ -3769,12 +3715,6 @@ abstract class AppLocalizations {
   /// **'Verification was sent to the new email. Security notice was sent to your current email.'**
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas;
 
-  /// No description provided for @profileEditCouldNotStartEmailChangeRightNowTry.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not start email change right now. Please try again.'**
-  String get profileEditCouldNotStartEmailChangeRightNowTry;
-
   /// No description provided for @profileEditOverviewCurrency.
   ///
   /// In en, this message translates to:
@@ -3792,12 +3732,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bank transfer, Revolut, PayPal.me'**
   String get profileEditBankTransferRevolutPaypalMe;
-
-  /// No description provided for @profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword.
-  ///
-  /// In en, this message translates to:
-  /// **'You can deactivate account access or request an email link to permanently delete the account. Password is optional for Google/Apple accounts.'**
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword;
 
   /// No description provided for @profileEditEnterPasswordOptionalGoogleApple.
   ///
@@ -8094,6 +8028,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sending confirmation email'**
   String get accountDeleteSending;
+
+  /// No description provided for @friendsShowMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more'**
+  String get friendsShowMore;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

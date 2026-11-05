@@ -7,7 +7,6 @@ require __DIR__ . '/../bootstrap.php';
 require __DIR__ . '/isolated_mysql.php';
 require __DIR__ . '/../../lib/actions/auth_actions.php';
 require __DIR__ . '/../../lib/actions/email_verification_actions.php';
-require __DIR__ . '/../../lib/actions/email_change_actions.php';
 
 foreach (['AUTH_ACCESS_TOKEN_SECRET' => str_repeat('synthetic-credentials-only-', 3),
     'AUTH_ACCESS_TOKEN_TTL_SEC' => 900, 'AUTH_REFRESH_TOKEN_TTL_SEC' => 2592000,
@@ -60,8 +59,9 @@ function reset_credentials_test_schema(PDO $pdo): void
             credentials_required INTEGER DEFAULT 1, email_verified_at TEXT,
             account_status TEXT DEFAULT \'active\', device_token TEXT UNIQUE)');
     }
+    $pdo->exec('ALTER TABLE trip_users ADD COLUMN has_password TINYINT NULL DEFAULT NULL');
     $id = $mysql ? 'INT UNSIGNED PRIMARY KEY AUTO_INCREMENT' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    foreach (['refresh_tokens', 'email_verification_tokens', 'email_change_requests'] as $table) {
+    foreach (['refresh_tokens', 'email_verification_tokens'] as $table) {
         $pdo->exec('DROP TABLE IF EXISTS trip_' . $table);
     }
     $pdo->exec('CREATE TABLE trip_refresh_tokens (id ' . $id . ', user_id INT NOT NULL,
@@ -69,10 +69,6 @@ function reset_credentials_test_schema(PDO $pdo): void
         user_agent VARCHAR(255), ip_address VARCHAR(45), last_used_at DATETIME)');
     $pdo->exec('CREATE TABLE trip_email_verification_tokens (id ' . $id . ', user_id INT,
         email VARCHAR(255), token_hash VARCHAR(64) UNIQUE, expires_at DATETIME, used_at DATETIME NULL)');
-    $pdo->exec('CREATE TABLE trip_email_change_requests (id ' . $id . ', user_id INT,
-        old_email VARCHAR(255), new_email VARCHAR(255), verify_token_hash VARCHAR(64) UNIQUE,
-        cancel_token_hash VARCHAR(64) UNIQUE, expires_at DATETIME, consumed_at DATETIME NULL,
-        verified_at DATETIME NULL, cancelled_at DATETIME NULL)');
 }
 
 $requestBody = $mail = $rates = [];
@@ -95,11 +91,10 @@ function fetch_me_row_by_id(PDO $pdo, int $id): ?array {
     return $stmt->fetch() ?: null;
 }
 function build_me_payload(array $user, ?PDO $pdo = null): array {
-    return ['id' => (int) $user['id'], 'email' => $user['email']];
+    return ['id' => (int) $user['id'], 'email' => $user['email'],
+        'has_password' => user_password_capability($pdo, (int) $user['id'])];
 }
 function build_email_verification_email(string $url, ...$args): string { return $url; }
-function build_email_change_verification_email(string $url, ...$args): string { return $url; }
-function build_email_change_security_email(string $url, ...$args): string { return $url; }
 function send_email_via_resend(string $to, string $subject, string $html): bool {
     $GLOBALS['mail'][] = ['to' => $to, 'body' => $html];
     return $GLOBALS['mailSucceeds'];
@@ -125,6 +120,7 @@ function seed_credential_user(PDO $pdo, string $state = 'established'): void {
             $state === 'inactive' ? 'deactivated' : 'active']);
     $pdo->prepare('INSERT INTO trip_users (nickname, email, credentials_required, device_token)
         VALUES (?, ?, 1, ?)')->execute(['Unrelated', 'other@example.invalid', str_repeat('b', 64)]);
+    if ($state === 'social') { record_user_password_capability($pdo, 1, false); }
     foreach ([1, 1, 2] as $index => $userId) {
         $pdo->prepare('INSERT INTO trip_refresh_tokens (user_id, token_hash, expires_at)
             VALUES (?, ?, ?)')->execute([$userId, hash('sha256', str_repeat((string) ($index + 1), 96)),

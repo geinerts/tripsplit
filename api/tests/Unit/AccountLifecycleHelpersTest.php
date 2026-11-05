@@ -35,14 +35,9 @@ final class AccountLifecycleHelpersTest extends TestCase
         self::assertNotEmpty((string) $payload['error']);
     }
 
-    public function test_normalize_account_action_and_ttl_values(): void
+    public function test_account_action_ttl_value(): void
     {
-        self::assertSame('reactivate', normalize_account_action('reactivate'));
-        self::assertSame('delete', normalize_account_action('delete'));
-        self::assertSame('', normalize_account_action('invalid'));
-
-        self::assertSame(86400, account_action_ttl_seconds('reactivate'));
-        self::assertSame(3600, account_action_ttl_seconds('delete'));
+        self::assertSame(3600, account_action_ttl_seconds());
     }
 
     public function test_email_verification_helpers_for_unverified_user(): void

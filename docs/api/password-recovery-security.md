@@ -52,11 +52,13 @@ Sign in again using the new password or the previously linked provider.
 
 ## Mobile behavior
 
-Profile -> Change password -> Set password by email opens the existing recovery screen
-with the current email prefilled, no current-password requirement, localized labels and
-Back to profile on success. Requesting the link preserves the current session. The ordinary
-login-screen recovery entry stays available. The new label applies to all account types;
-we do not guess whether a legacy social account also has a real user-chosen password.
+Profile shows Set password for `has_password: false`, Set or change password for
+unknown, and Change password for true (see `credential-security.md`). Setup opens
+the existing recovery screen with the account email read-only, no current password,
+localized labels and Back to profile on success. Account switches prevent stale requests.
+Requesting a link preserves the session; successful confirmation revokes old sessions.
+The ordinary login-screen recovery entry stays available. Legacy accounts stay unknown
+until a chosen password is saved or verified; social membership alone is not evidence.
 
 ## Rollout
 
@@ -86,6 +88,6 @@ No production deployment or migration was performed for this implementation.
   Concurrent login/refresh vs reset, other pending email/account-action proofs, durable
   asynchronous delivery/timing protection and failure monitoring remain SEC-05 work.
 - A subsequent local batch removed email changes and the social deactivation exemption,
-  adding operation-bound email deactivation confirmation; see `account-deactivation-security.md`.
+  (self-service deactivation was later removed too); see `account-lifecycle-link-security.md`.
   Review deletion/reactivation's existing emailed proofs separately. Additional provider
   linking and native provider reauthentication are deferred, not silently enabled.

@@ -18,12 +18,12 @@ import 'package:tripsplit/core/push/push_registration_service.dart';
 import 'package:tripsplit/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:tripsplit/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:tripsplit/features/auth/domain/entities/auth_user.dart';
+import 'package:tripsplit/features/auth/data/models/auth_user_model.dart';
 import 'package:tripsplit/features/auth/domain/entities/notification_preferences.dart';
 import 'package:tripsplit/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:tripsplit/features/auth/presentation/pages/profile_page.dart';
 import 'package:tripsplit/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
-import 'package:tripsplit/features/auth/domain/usecases/deactivate_account_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/forgot_password_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/get_me_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/get_notification_preferences_use_case.dart';
@@ -31,9 +31,7 @@ import 'package:tripsplit/features/auth/domain/usecases/login_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/logout_session_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/register_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/request_account_deletion_link_use_case.dart';
-import 'package:tripsplit/features/auth/domain/usecases/request_deactivation_link_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/request_email_verification_link_use_case.dart';
-import 'package:tripsplit/features/auth/domain/usecases/request_reactivation_link_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/set_credentials_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/social_login_use_case.dart';
 import 'package:tripsplit/features/auth/domain/usecases/update_notification_preferences_use_case.dart';
@@ -44,6 +42,7 @@ const user = AuthUser(
   nickname: 'Synthetic Owner',
   email: 'owner@example.invalid',
   needsCredentials: false,
+  hasPassword: true,
 );
 
 class RecordingApi extends Fake implements ApiClient {
@@ -110,9 +109,6 @@ class ControllerHarness {
       GetMeUseCase(repo),
       ForgotPasswordUseCase(repo),
       RequestEmailVerificationLinkUseCase(repo),
-      RequestReactivationLinkUseCase(repo),
-      RequestDeactivationLinkUseCase(repo),
-      DeactivateAccountUseCase(repo),
       RequestAccountDeletionLinkUseCase(repo),
       GetNotificationPreferencesUseCase(repo),
       UpdateNotificationPreferencesUseCase(repo),
@@ -145,8 +141,6 @@ class ProfileController extends Fake implements AuthController {
   String? submittedPassword;
   int deletionEmails = 0;
   List<String>? deletionReasons;
-  int deactivationEmails = 0;
-  int deactivations = 0;
   int logouts = 0;
   @override
   Future<void> requestAccountDeletionLink({
@@ -155,16 +149,6 @@ class ProfileController extends Fake implements AuthController {
   }) async {
     deletionEmails++;
     deletionReasons = reasonCodes;
-  }
-
-  @override
-  Future<void> requestDeactivationLink() async {
-    deactivationEmails++;
-  }
-
-  @override
-  Future<void> deactivateAccount({required String password}) async {
-    deactivations++;
   }
 
   @override
@@ -210,6 +194,32 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     FlutterSecureStorage.setMockInitialValues({});
   });
+
+  test(
+    'password capability survives cache but never leaks across accounts',
+    () async {
+      final store = CurrentUserStore();
+      for (final status in <bool?>[true, false, null]) {
+        final account = AuthUserModel.fromLegacyMap({
+          'id': 1,
+          'nickname': 'Owner',
+          'has_password': status,
+        });
+        expect(account.hasPassword, status);
+        await store.write(account);
+        expect((await store.read())?.hasPassword, status);
+        expect(account.copyWith(nickname: 'Updated').hasPassword, status);
+        expect(account.copyWith(id: 2).hasPassword, isNull);
+      }
+      for (final value in ['true', 'false', 1, 0]) {
+        expect(
+          AuthUserModel.fromLegacyMap({'has_password': value}).hasPassword,
+          isNull,
+        );
+      }
+      expect(AuthUserModel.fromLegacyMap({}).hasPassword, isNull);
+    },
+  );
 
   test(
     'profile payment consent sends real booleans and reads server state',
@@ -295,16 +305,12 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Delete account'));
       await tester.pumpAndSettle();
-      expect(find.text('Deactivate account'), findsNothing);
-      expect(find.text('Send deactivation link'), findsNothing);
       final submit = find.byKey(const ValueKey('account-delete-submit'));
       await tester.ensureVisible(submit);
       await tester.tap(submit);
       await tester.pumpAndSettle();
       expect(controller.deletionEmails, 1);
       expect(controller.deletionReasons, isEmpty);
-      expect(controller.deactivationEmails, 0);
-      expect(controller.deactivations, 0);
       expect(controller.logouts, 0);
       expect(find.text('One last step in your inbox'), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -333,18 +339,6 @@ void main() {
     await h.controller.updateProfile(firstName: 'Synthetic', lastName: 'Owner');
     expect(h.api.body, {'first_name': 'Synthetic', 'last_name': 'Owner'});
   });
-  test(
-    'deactivation email request sends no password and preserves session',
-    () async {
-      final h = ControllerHarness();
-      await h.saveSession(1);
-      await h.controller.requestDeactivationLink();
-      expect(h.api.path, contains('request_deactivation_link'));
-      expect(h.api.body, isEmpty);
-      expect(await h.store.readAccountOwner(), 1);
-      expect(h.loggedOut, 0);
-    },
-  );
   test(
     'deletion request preserves password and reason codes without logging out',
     () async {

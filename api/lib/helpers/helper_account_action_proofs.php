@@ -14,20 +14,19 @@ function ensure_account_action_proof_schema(PDO $pdo): void
     }
 }
 
-function account_action_proof_state(array $user, string $action): string
+function account_action_proof_state(array $user): string
 {
     return hash('sha256', json_encode([
-        'account-action-v1', $action, (int) $user['id'], (string) $user['email'],
+        'account-action-v1', 'delete', (int) $user['id'], (string) $user['email'],
         (string) $user['password_hash'], (int) $user['credentials_required'],
         (string) $user['email_verified_at'], (string) $user['account_status'],
         (string) ($user['deactivated_at'] ?? ''), (string) ($user['deleted_at'] ?? ''),
     ], JSON_THROW_ON_ERROR));
 }
 
-function account_action_user_is_eligible(array $user, string $action): bool
+function account_action_user_is_eligible(array $user): bool
 {
-    return in_array($action, ['delete', 'reactivate'], true)
-        && (string) ($user['account_status'] ?? '') === ($action === 'delete' ? 'active' : 'deactivated')
+    return (string) ($user['account_status'] ?? '') === 'active'
         && (int) ($user['credentials_required'] ?? 1) === 0
         && !empty($user['email_verified_at']) && !empty($user['email'])
         && empty($user['deleted_at']);
@@ -43,11 +42,12 @@ function lock_account_action_user(PDO $pdo, int $id): ?array
 }
 
 // The caller holds the user lock for both cooldown evaluation and proof creation.
-function create_account_action_link_token(PDO $pdo, array $user, string $action): ?array
+function create_account_action_link_token(PDO $pdo, array $user): ?array
 {
-    if (!$pdo->inTransaction() || !account_action_user_is_eligible($user, $action)) {
+    if (!$pdo->inTransaction() || !account_action_user_is_eligible($user)) {
         throw new RuntimeException('Account proof requires a locked eligible user.');
     }
+    $action = 'delete';
     $table = table_name('account_action_tokens');
     $stmt = $pdo->prepare('SELECT created_at FROM ' . $table . '
         WHERE user_id = :id AND action = :action AND created_at > :cutoff
@@ -58,13 +58,13 @@ function create_account_action_link_token(PDO $pdo, array $user, string $action)
         return null;
     }
     $token = bin2hex(random_bytes(32));
-    $ttl = min(account_action_ttl_seconds($action), $action === 'delete' ? 3600 : 86400);
+    $ttl = min(account_action_ttl_seconds(), 3600);
     $expires = gmdate('Y-m-d H:i:s', time() + $ttl);
     $pdo->prepare('INSERT INTO ' . $table . '
         (user_id, action, token_hash, credential_state_hash, expires_at)
         VALUES (:id, :action, :hash, :state, :expires)')->execute([
             'id' => $user['id'], 'action' => $action, 'hash' => hash('sha256', $token),
-            'state' => account_action_proof_state($user, $action), 'expires' => $expires,
+            'state' => account_action_proof_state($user), 'expires' => $expires,
         ]);
     return ['id' => (int) $pdo->lastInsertId(), 'token' => $token, 'expires_at' => $expires];
 }

@@ -385,7 +385,6 @@ class LegacyApiClient implements ApiClient {
       'register_proof',
       'forgot_password',
       'request_email_verification_link',
-      'request_reactivation_link',
     }.contains(action);
   }
 

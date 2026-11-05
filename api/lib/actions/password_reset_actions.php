@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_password_capability.php';
+
 function ensure_password_reset_security_schema(PDO $pdo): void
 {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.columns
@@ -146,6 +148,7 @@ function reset_password_action(): void
             ->execute(['hash' => $hash, 'id' => $userId]);
         $pdo->prepare('UPDATE ' . $resets . ' SET used_at = UTC_TIMESTAMP()
             WHERE user_id = :id AND used_at IS NULL')->execute(['id' => $userId]);
+        record_user_password_capability($pdo, $userId, true);
         revoke_refresh_tokens_for_user($pdo, $userId);
         $pdo->commit();
     } catch (Throwable $error) {

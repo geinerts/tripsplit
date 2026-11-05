@@ -5,7 +5,7 @@ $pdo=isolated_test_mysql();
 $p=proc_open([PHP_BINARY,'vendor/bin/phpunit','--do-not-cache-result','--filter','SessionRevocationSecurityTest'],[STDIN,STDOUT,STDERR],$pipes);
 if(!is_resource($p)||proc_close($p)!==0)throw new RuntimeException('Session regressions failed');
 function check_session_race(bool $ok,string $message): void { if(!$ok)throw new RuntimeException($message); }
-for($round=1;$round<=6;$round++)foreach(['reset','deactivate'] as $event) {
+for($round=1;$round<=6;$round++)foreach(['reset','delete'] as $event) {
     reset_session_schema($pdo);
     $other=$pdo->query('SELECT * FROM trip_refresh_tokens WHERE user_id=2')->fetchAll();
     $workers=[];

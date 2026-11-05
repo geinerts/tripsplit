@@ -19,7 +19,7 @@ final class AccountLifecycleSecurityTest extends TestCase
     }
     public static function denied(): iterable
     {
-        foreach(['delete','reactivate'] as $action) {
+        foreach(['delete'] as $action) {
             foreach(['legacy','expired','used','wrong_purpose','wrong_user','changed_email','changed_password',
                 'changed_epoch','changed_verification','unverified','guest','wrong_status','deleted','malformed','newline'] as $s) yield [$action,$s,400];
             foreach(['missing_schema','missing_sessions'] as $s) yield [$action,$s,503];
@@ -37,7 +37,7 @@ final class AccountLifecycleSecurityTest extends TestCase
     }
     public static function confirmations(): iterable
     {
-        foreach(['delete','reactivate'] as $a) foreach(['confirm','confirm_social','replay','old_link_after_new_state'] as $s) yield [$a,$s];
+        foreach(['delete'] as $a) foreach(['confirm','confirm_social','replay','old_link_after_new_state'] as $s) yield [$a,$s];
     }
     #[DataProvider('confirmations')]
     public function test_confirmation_consumes_all_proofs_and_revokes_owner_access(string $action,string $scenario): void
@@ -46,24 +46,22 @@ final class AccountLifecycleSecurityTest extends TestCase
         self::assertSame(0,$r['sessions']);self::assertSame(0,$r['push']);self::assertSame(0,$r['mail']);
         foreach($r['proofs'] as $proof)self::assertNotNull($proof['used_at']);
         if($scenario==='old_link_after_new_state'){self::assertSame(400,$r['second']['status']);return;}
-        self::assertSame($action==='delete'?'deleted':'active',$r['user']['account_status']);
-        if($action==='delete') {
-            foreach(['email','password_hash','email_verified_at','avatar_path','bank_iban','wise_pay_link'] as $field)self::assertNull($r['user'][$field]);
-            self::assertSame(0,$r['friends']);self::assertSame(0,$r['identities']);
-        }
+        self::assertSame('deleted',$r['user']['account_status']);
+        foreach(['email','password_hash','email_verified_at','avatar_path','bank_iban','wise_pay_link'] as $field)self::assertNull($r['user'][$field]);
+        self::assertSame(0,$r['friends']);self::assertSame(0,$r['identities']);
         if($scenario==='replay')self::assertSame(400,$r['second']['status']);
     }
     public static function requests(): iterable
-    { foreach(['delete','reactivate'] as $a)foreach(['request','request_social','request_cooldown','request_prior','request_limit','request_mail_failure'] as $s)yield[$a,$s]; }
+    { foreach(['delete'] as $a)foreach(['request','request_social','request_cooldown','request_prior','request_limit','request_mail_failure'] as $s)yield[$a,$s]; }
     #[DataProvider('requests')]
     public function test_request_is_non_mutating_and_preserves_prior_links(string $action,string $scenario): void
     {
         $r=$this->scenario($action,$scenario);
-        $hasFeedback = $action === 'delete' && !in_array($scenario, ['request_limit', 'request_mail_failure'], true);
+        $hasFeedback = !in_array($scenario, ['request_limit', 'request_mail_failure'], true);
         self::assertSame($hasFeedback ? ['not_using', 'technical_issue'] : [], array_column($r['feedback'], 'reason_code'));
         foreach ($r['feedback'] as $row) self::assertSame(1, (int) $row['request_count']);
-        self::assertSame($action==='delete'&&$scenario==='request_mail_failure'?503:200,$r['response']['status']);
-        self::assertSame($action==='delete'?'active':'deactivated',$r['user']['account_status']);
+        self::assertSame($scenario==='request_mail_failure'?503:200,$r['response']['status']);
+        self::assertSame('active',$r['user']['account_status']);
         self::assertSame(2,$r['sessions']);self::assertSame(1,$r['push']);
         if($scenario==='request_limit'){self::assertSame(0,$r['mail']);self::assertTrue($r['unchanged']);return;}
         self::assertSame(1,$r['mail']);self::assertSame(['owner@example.invalid'],$r['recipients']);
@@ -74,17 +72,9 @@ final class AccountLifecycleSecurityTest extends TestCase
         if($scenario==='request_mail_failure'){self::assertNotNull($new['used_at']);self::assertNull($r['proofs'][0]['used_at']);}
         else foreach($r['proofs'] as $p)self::assertNull($p['used_at']);
     }
-    public static function hiddenAccounts(): iterable
-    { foreach(['request_unknown','request_unverified','request_guest','request_wrong_status','request_deleted'] as $s)yield[$s]; }
-    #[DataProvider('hiddenAccounts')]
-    public function test_reactivation_does_not_reveal_ineligible_accounts(string $scenario): void
-    {
-        $r=$this->scenario('reactivate',$scenario);self::assertSame(['status'=>200,'payload'=>['ok'=>true]],$r['response']);
-        self::assertTrue($r['unchanged']);self::assertSame(0,$r['mail']);
-    }
     public static function failures(): iterable
     {
-        foreach(['delete','reactivate'] as $a)foreach(['session_failure','proof_failure','push_failure','user_failure'] as $s)yield[$a,$s];
+        foreach(['delete'] as $a)foreach(['session_failure','proof_failure','push_failure','user_failure'] as $s)yield[$a,$s];
         yield ['delete','friend_failure'];yield ['delete','identity_failure'];
     }
     #[DataProvider('failures')]

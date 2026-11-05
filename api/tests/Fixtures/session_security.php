@@ -9,14 +9,8 @@ $scenario = $argv[1];
 $result = ['before' => resolve_user_id_from_access_token($accessToken)];
 switch ($scenario) {
     case 'reset':
-    case 'deactivate':
-    case 'reactivate':
-        $result['response'] = session_event($scenario === 'reset' ? 'reset' : 'deactivate');
-        if ($scenario === 'reactivate') {
-            seed_lifecycle_proof($pdo, 'reactivate', 'd');
-            $requestBody = ['token' => str_repeat('d', 64)];
-            $result['reactivated'] = credential_test_response('confirm_reactivation_action')['status'];
-        }
+    case 'delete':
+        $result['response'] = session_event($scenario === 'reset' ? 'reset' : 'delete');
         $result['refresh'] = rotate_refresh_token($pdo, str_repeat('1', 96));
         break;
     case 'logout':

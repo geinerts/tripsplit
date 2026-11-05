@@ -458,16 +458,13 @@ class AppLocalizationsSv extends AppLocalizations {
   String get forgotPassword => 'Har du glömt lösenordet?';
 
   @override
+  String get profileSetPassword => 'Ange lösenord';
+
+  @override
+  String get profileManagePassword => 'Ange eller ändra lösenord';
+
+  @override
   String get profilePasswordByEmail => 'Ställ in lösenord via e-post';
-
-  @override
-  String get sendDeactivationEmail => 'Skicka inaktiveringslänk';
-
-  @override
-  String get deactivationEmailSent => 'Kontrollera din e-post för att bekräfta avaktiveringen. Ditt konto är fortfarande aktivt.';
-
-  @override
-  String get deactivationConfirmationMethods => 'Bekräfta avaktiveringen med ditt lösenord eller via en länk i e-postmeddelandet. Dina resor och utgifter kommer att finnas kvar.';
 
   @override
   String get passwordEmailBackToProfile => 'Tillbaka till profilen';
@@ -1782,27 +1779,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get authAppleSignDidNotReturnIdentityToken => 'Apple-inloggningen returnerade inte någon identitetstoken.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Kontot är inaktiverat. Ange din e-postadress för att begära en länk för återaktivering.';
-
-  @override
-  String get authAccountDeactivated => 'Konton avaktiveras';
-
-  @override
-  String authSendReactivationLinkEmail(Object email) {
-    return 'Skicka en återaktiveringslänk till $email?';
-  }
-
-  @override
   String get authCancel => 'Avbryt';
 
   @override
   String get authSendLink => 'Skicka länk';
-
-  @override
-  String get authReactivationLinkSentCheckEmail => 'Länk för återaktivering har skickats. Kontrollera din e-post.';
-
-  @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Det gick inte att skicka länken för återaktivering. Försök igen.';
 
   @override
   String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'E-postadressen är inte verifierad. Ange din e-postadress för att begära en verifieringslänk.';
@@ -1898,9 +1878,6 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get profileDangerZoneSectionHeading => 'FARZON';
-
-  @override
-  String get profileDeactivateAccount => 'Inaktivera konto';
 
   @override
   String get profileManageAccountAccess => 'Hantera åtkomst till kontot';
@@ -2023,12 +2000,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get profileEditSetValidEmailEditProfileChangingPassword => 'En giltig e-postadress för kontot krävs för att ändra ditt lösenord. Kontakta supporten om din e-postadress saknas eller är felaktig.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Kontot har inaktiverats. Använd återaktiveringslänken i e-postmeddelandet för att återställa åtkomsten.';
-
-  @override
-  String get profileEditCouldNotDeactivateTryAgain => 'Det gick inte att inaktivera kontot. Försök igen.';
-
-  @override
   String get profileEditDeletionLinkSentEmail => 'En länk för borttagning har skickats till din e-postadress.';
 
   @override
@@ -2041,9 +2012,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Verifieringsmeddelandet har skickats till den nya e-postadressen. Säkerhetsmeddelandet har skickats till din nuvarande e-postadress.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Det gick inte att starta ändringen av e-postadressen just nu. Försök igen.';
-
-  @override
   String get profileEditOverviewCurrency => 'Översikt över valuta';
 
   @override
@@ -2051,9 +2019,6 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get profileEditBankTransferRevolutPaypalMe => 'Banköverföring, Revolut, PayPal.me';
-
-  @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'Du kan inaktivera åtkomsten till kontot eller begära en länk via e-post för att permanent radera kontot. Lösenord är valfritt för Google-/Apple-konton.';
 
   @override
   String get profileEditEnterPasswordOptionalGoogleApple => 'Ange ditt lösenord (valfritt för Google/Apple)';
@@ -4396,4 +4361,7 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get accountDeleteSending => 'Skicka bekräftelsemejl';
+
+  @override
+  String get friendsShowMore => 'Visa fler';
 }

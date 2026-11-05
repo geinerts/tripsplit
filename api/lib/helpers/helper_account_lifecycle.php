@@ -201,7 +201,7 @@ function user_account_block_error_payload(array $row): array
     return [
         'ok' => false,
         'code' => 'ACCOUNT_DEACTIVATED',
-        'error' => 'Account is deactivated. Request a reactivation link by email.',
+        'error' => 'Account is deactivated. Contact support@splyto.eu.',
     ];
 }
 
@@ -238,12 +238,6 @@ function email_verification_cleanup_batch_limit(): int
         return 2000;
     }
     return $limit;
-}
-
-function email_change_token_ttl_seconds(): int
-{
-    $ttl = (int) EMAIL_CHANGE_TOKEN_TTL_SEC;
-    return $ttl > 300 ? $ttl : 86_400;
 }
 
 function user_has_email_credentials(array $row): bool
@@ -343,46 +337,6 @@ function ensure_email_verification_tokens_table_available(PDO $pdo): void
     ], 503);
 }
 
-function email_change_requests_table_available(PDO $pdo): bool
-{
-    static $cached = null;
-    if (is_bool($cached)) {
-        return $cached;
-    }
-
-    $table = DB_TABLE_PREFIX . 'email_change_requests';
-    if (!preg_match('/^[A-Za-z0-9_]+$/', $table)) {
-        $cached = false;
-        return $cached;
-    }
-
-    try {
-        $stmt = $pdo->prepare(
-            'SELECT COUNT(1)
-             FROM information_schema.tables
-             WHERE table_schema = DATABASE()
-               AND table_name = :table_name'
-        );
-        $stmt->execute(['table_name' => $table]);
-        $cached = ((int) ($stmt->fetchColumn() ?: 0)) >= 1;
-    } catch (Throwable $error) {
-        $cached = false;
-    }
-
-    return $cached;
-}
-
-function ensure_email_change_requests_table_available(PDO $pdo): void
-{
-    if (email_change_requests_table_available($pdo)) {
-        return;
-    }
-    json_out([
-        'ok' => false,
-        'error' => 'Email change request storage is not initialized. Run migration.',
-    ], 503);
-}
-
 function account_action_tokens_table_available(PDO $pdo): bool
 {
     static $cached = null;
@@ -423,30 +377,10 @@ function ensure_account_action_tokens_table_available(PDO $pdo): void
     ], 503);
 }
 
-function account_action_ttl_seconds(string $action): int
+function account_action_ttl_seconds(): int
 {
-    $normalized = normalize_account_action($action);
-    if ($normalized === 'reactivate') {
-        $ttl = (int) ACCOUNT_REACTIVATION_TOKEN_TTL_SEC;
-        return $ttl > 300 ? $ttl : 86_400;
-    }
-    if ($normalized === 'delete') {
-        $ttl = (int) ACCOUNT_DELETION_TOKEN_TTL_SEC;
-        return $ttl > 300 ? $ttl : 3_600;
-    }
-    return 3_600;
-}
-
-function normalize_account_action(string $action): string
-{
-    $normalized = strtolower(trim($action));
-    if ($normalized === 'reactivate') {
-        return 'reactivate';
-    }
-    if ($normalized === 'delete') {
-        return 'delete';
-    }
-    return '';
+    $ttl = (int) ACCOUNT_DELETION_TOKEN_TTL_SEC;
+    return $ttl > 300 ? $ttl : 3_600;
 }
 
 function app_base_url(): string

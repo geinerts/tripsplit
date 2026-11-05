@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/helper_password_capability.php';
+
 require_once __DIR__ . '/helper_profile_payment_sharing.php';
 
 require_once __DIR__ . '/helper_subscription.php';
@@ -253,6 +255,7 @@ function build_me_payload(array $user, ?PDO $pdo = null): array
         'email_verified' => $emailVerified,
         'email_verification_required' => $emailVerificationRequired,
         'needs_credentials' => $needsCredentials,
+        'has_password' => $pdo === null ? null : user_password_capability($pdo, (int) $user['id']),
         'account_status' => $accountStatus,
         'deactivated_at' => $accountStatus === 'active'
             ? null

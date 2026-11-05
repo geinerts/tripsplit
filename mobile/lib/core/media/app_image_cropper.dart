@@ -86,4 +86,38 @@ class AppImageCropper {
     }
     return XFile(cropped.path);
   }
+
+  /// Receipts can be tall or wide: keep the frame free, with rotation available.
+  static Future<XFile?> cropReceipt({
+    required BuildContext context,
+    required XFile source,
+  }) async {
+    final scheme = Theme.of(context).colorScheme;
+    final cropped = await _cropper.cropImage(
+      sourcePath: source.path,
+      compressQuality: 100,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: context.l10n.receiptPhotoLabel,
+          toolbarColor: scheme.surface,
+          toolbarWidgetColor: scheme.onSurface,
+          activeControlsWidgetColor: scheme.primary,
+          cropFrameColor: scheme.primary,
+          lockAspectRatio: false,
+          initAspectRatio: CropAspectRatioPreset.original,
+        ),
+        IOSUiSettings(
+          title: '',
+          doneButtonTitle: context.l10n.saveAction,
+          cancelButtonTitle: context.l10n.cancelAction,
+          hidesNavigationBar: true,
+          aspectRatioPickerButtonHidden: true,
+          aspectRatioLockEnabled: false,
+          rotateButtonsHidden: false,
+          resetButtonHidden: false,
+        ),
+      ],
+    );
+    return cropped == null ? null : XFile(cropped.path);
+  }
 }

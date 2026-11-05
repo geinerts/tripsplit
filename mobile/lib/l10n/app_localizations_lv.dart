@@ -461,16 +461,13 @@ class AppLocalizationsLv extends AppLocalizations {
   String get forgotPassword => 'Aizmirsi paroli?';
 
   @override
+  String get profileSetPassword => 'Iestatīt paroli';
+
+  @override
+  String get profileManagePassword => 'Iestatīt vai mainīt paroli';
+
+  @override
   String get profilePasswordByEmail => 'Iestatīt paroli pa e-pastu';
-
-  @override
-  String get sendDeactivationEmail => 'Nosūtīt deaktivizēšanas saiti';
-
-  @override
-  String get deactivationEmailSent => 'Apstiprini deaktivizēšanu e-pastā. Tavs konts vēl ir aktīvs.';
-
-  @override
-  String get deactivationConfirmationMethods => 'Apstiprini deaktivizēšanu ar paroli vai e-pasta saiti. Ceļojumi un izdevumi saglabāsies.';
 
   @override
   String get passwordEmailBackToProfile => 'Atpakaļ uz profilu';
@@ -1788,27 +1785,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get authAppleSignDidNotReturnIdentityToken => 'Apple pieteikšanās neatgrieza identitātes marķieri.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Konts ir deaktivēts. Ievadi e-pastu, lai pieprasītu reaktivācijas saiti.';
-
-  @override
-  String get authAccountDeactivated => 'Konts ir deaktivēts';
-
-  @override
-  String authSendReactivationLinkEmail(Object email) {
-    return 'Nosūtīt reaktivācijas saiti uz $email?';
-  }
-
-  @override
   String get authCancel => 'Atcelt';
 
   @override
   String get authSendLink => 'Sūtīt saiti';
-
-  @override
-  String get authReactivationLinkSentCheckEmail => 'Reaktivācijas saite nosūtīta. Pārbaudi e-pastu.';
-
-  @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Neizdevās nosūtīt reaktivācijas saiti. Mēģini vēlreiz.';
 
   @override
   String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'E-pasts nav verificēts. Ievadi e-pastu, lai pieprasītu verifikācijas saiti.';
@@ -1904,9 +1884,6 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get profileDangerZoneSectionHeading => 'BĪSTAMĀ ZONA';
-
-  @override
-  String get profileDeactivateAccount => 'Deaktivēt kontu';
 
   @override
   String get profileManageAccountAccess => 'Pārvaldīt konta piekļuvi';
@@ -2029,12 +2006,6 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileEditSetValidEmailEditProfileChangingPassword => 'Paroles maiņai nepieciešama derīga konta e-pasta adrese. Ja tās trūkst vai tā ir nepareiza, sazinies ar atbalstu.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Konts deaktivēts. Lai atjaunotu piekļuvi, izmanto reaktivācijas saiti e-pastā.';
-
-  @override
-  String get profileEditCouldNotDeactivateTryAgain => 'Neizdevās deaktivēt kontu. Mēģini vēlreiz.';
-
-  @override
   String get profileEditDeletionLinkSentEmail => 'Dzēšanas saite nosūtīta uz tavu e-pastu.';
 
   @override
@@ -2047,9 +2018,6 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Verifikācijas saite nosūtīta uz jauno e-pastu. Drošības paziņojums nosūtīts uz pašreizējo e-pastu.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Neizdevās sākt e-pasta maiņu. Mēģini vēlreiz.';
-
-  @override
   String get profileEditOverviewCurrency => 'Pārskata valūta';
 
   @override
@@ -2057,9 +2025,6 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get profileEditBankTransferRevolutPaypalMe => 'Bankas pārskaitījums, Revolut, PayPal.me';
-
-  @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'Vari deaktivēt konta piekļuvi vai pieprasīt e-pasta saiti neatgriezeniskai konta dzēšanai. Google/Apple kontiem parole nav obligāta.';
 
   @override
   String get profileEditEnterPasswordOptionalGoogleApple => 'Ievadi paroli (Google/Apple nav obligāti)';
@@ -4406,4 +4371,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get accountDeleteSending => 'Sūta apstiprinājuma e-pastu';
+
+  @override
+  String get friendsShowMore => 'Rādīt vairāk';
 }

@@ -32,8 +32,8 @@ import '../../../quick_start/presentation/quick_start_sheet.dart';
 import '../../../subscriptions/presentation/widgets/premium_status_tile.dart';
 import '../../domain/entities/notification_preferences.dart';
 import '../controllers/auth_controller.dart';
-import '../widgets/privacy_policy_page.dart';
 import '../widgets/account_deletion_page.dart';
+import 'forgot_password_page.dart';
 
 part 'profile_page_actions.dart';
 part 'profile_page_edit.dart';

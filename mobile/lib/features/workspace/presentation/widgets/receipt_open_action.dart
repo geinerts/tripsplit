@@ -68,7 +68,7 @@ class _ReceiptOpenActionState extends State<ReceiptOpenAction> {
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
-            if (!_busy) const Icon(Icons.open_in_new, size: 20),
+            if (!_busy) const Icon(Icons.chevron_right, size: 20),
           ],
         ),
       ),

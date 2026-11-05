@@ -47,8 +47,6 @@ extension _FriendsPageWidgets on _FriendsPageState {
                         const SizedBox(height: 16),
                       ],
                       if (snapshot != null) ...[
-                        _buildFriendSearchField(snapshot),
-                        const SizedBox(height: 8),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Row(
@@ -75,7 +73,6 @@ extension _FriendsPageWidgets on _FriendsPageState {
                             ],
                           ),
                         ),
-                        _buildInlineSearchResults(snapshot),
                         if (_sectionCountRequests(snapshot) > 0) ...[
                           const SizedBox(height: 8),
                           _buildSectionHeadingRow(
@@ -121,133 +118,6 @@ extension _FriendsPageWidgets on _FriendsPageState {
       ),
     );
   }
-
-  Widget _buildFriendSearchField(FriendsSnapshot snapshot) => TextField(
-    key: const ValueKey('friends-search'),
-    controller: _searchController,
-    focusNode: _searchFocusNode,
-    textInputAction: TextInputAction.search,
-    onChanged: (value) => _onFriendSearchChanged(snapshot, value),
-    decoration: InputDecoration(
-      hintText: context.l10n.friendsSearchByNameOrEmail,
-      fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
-      prefixIcon: const Icon(Icons.search_rounded),
-      suffixIcon: _friendSearchQuery.isEmpty
-          ? null
-          : IconButton(
-              tooltip: context.l10n.workspaceClearSearch,
-              onPressed: () => _clearInlineFriendSearch(),
-              icon: const Icon(Icons.close_rounded),
-            ),
-    ),
-  );
-
-  Widget _buildInlineSearchResults(FriendsSnapshot snapshot) {
-    if (_friendSearchQuery.isEmpty) {
-      return const SizedBox.shrink();
-    }
-    if (_friendSearchQuery.length < 2) {
-      return Text(context.l10n.friendsTypeAtLeast2CharactersToSearch);
-    }
-    return Padding(
-      padding: const EdgeInsets.only(top: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (_isSearchingUsers)
-            const LinearProgressIndicator()
-          else if (_friendSearchError != null) ...[
-            Text(
-              _friendSearchError!,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-            TextButton(
-              onPressed: () =>
-                  _performInlineFriendSearch(snapshot, _friendSearchQuery),
-              child: Text(context.l10n.retryAction),
-            ),
-          ] else if (_friendSearchResults.isEmpty)
-            Text(context.l10n.friendsNoUsersFound)
-          else
-            for (final user in _friendSearchResults)
-              _buildInlineSearchUserRow(snapshot, user),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInlineSearchUserRow(
-    FriendsSnapshot snapshot,
-    FriendUser user,
-  ) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        LayoutBuilder(
-          builder: (context, constraints) => Row(
-            children: [
-              ExcludeSemantics(
-                child: MediaQuery.withClampedTextScaling(
-                  maxScaleFactor: 1,
-                  child: _userAvatar(user, size: 40),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  _friendPrimaryName(user),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              const SizedBox(width: 12),
-              if (MediaQuery.textScalerOf(context).scale(14) > 21)
-                IconButton.filled(
-                  tooltip: context.l10n.friendsInviteAction,
-                  constraints: const BoxConstraints(
-                    minWidth: 48,
-                    minHeight: 48,
-                  ),
-                  onPressed: _inlineInviteLoading.contains(user.id)
-                      ? null
-                      : () => unawaited(_sendInlineInvite(snapshot, user)),
-                  icon: const Icon(Icons.person_add_alt_1_outlined, size: 20),
-                )
-              else
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: constraints.maxWidth * .42,
-                  ),
-                  child: FilledButton.icon(
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(48, 36),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 8,
-                      ),
-                      textStyle: Theme.of(
-                        context,
-                      ).textTheme.labelMedium?.copyWith(fontSize: 14),
-                      tapTargetSize: MaterialTapTargetSize.padded,
-                      visualDensity: VisualDensity.standard,
-                    ),
-                    onPressed: _inlineInviteLoading.contains(user.id)
-                        ? null
-                        : () => unawaited(_sendInlineInvite(snapshot, user)),
-                    icon: const Icon(Icons.person_add_alt_1_outlined, size: 16),
-                    label: Text(
-                      context.l10n.friendsInviteAction,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-        const Divider(),
-      ],
-    ),
-  );
 
   Widget _qrAction(
     IconData icon,
@@ -460,7 +330,14 @@ extension _FriendsPageWidgets on _FriendsPageState {
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Icon(Icons.more_horiz_rounded),
+                IconButton(
+                  key: ValueKey('friend-more-${friend.id}'),
+                  tooltip: context.l10n.friendsMoreActions,
+                  onPressed: _friendActionLoading.contains(friend.id)
+                      ? null
+                      : () => unawaited(_openFriendListActions(friend)),
+                  icon: const Icon(Icons.more_horiz_rounded),
+                ),
               ],
             ),
           ),
@@ -490,145 +367,13 @@ extension _FriendsPageWidgets on _FriendsPageState {
         Text(context.l10n.friendsEmptyBody, textAlign: TextAlign.center),
         const SizedBox(height: 16),
         FilledButton.icon(
-          onPressed: () => _searchFocusNode.requestFocus(),
+          onPressed: () => unawaited(_openFriendSearch()),
           icon: const Icon(Icons.person_add_alt_1_outlined),
           label: Text(context.l10n.friendsAddFriend),
         ),
       ],
     ),
   );
-
-  void _onFriendSearchChanged(FriendsSnapshot snapshot, String rawValue) {
-    final query = rawValue.trim();
-    _searchGeneration++;
-    _friendSearchDebounce?.cancel();
-    _updateState(() {
-      _friendSearchQuery = query;
-      _friendSearchError = null;
-      _friendSearchResults = const <FriendUser>[];
-      _isSearchingUsers = query.length >= 2;
-    });
-    if (query.length < 2) {
-      _clearInlineFriendSearch(keepText: true);
-      return;
-    }
-    _friendSearchDebounce = Timer(
-      const Duration(milliseconds: 280),
-      () => unawaited(_performInlineFriendSearch(snapshot, query)),
-    );
-  }
-
-  Future<void> _performInlineFriendSearch(
-    FriendsSnapshot snapshot,
-    String query,
-  ) async {
-    final generation = ++_searchGeneration;
-    final normalizedQuery = query.trim();
-    if (normalizedQuery.length < 2) {
-      return;
-    }
-    _updateState(() {
-      _isSearchingUsers = true;
-      _friendSearchError = null;
-    });
-    try {
-      final users = await widget.controller.searchUsers(
-        query: normalizedQuery,
-        limit: 8,
-        excludeIds: _searchExcludeIds(_snapshot ?? snapshot),
-      );
-      if (!mounted ||
-          _friendSearchQuery != normalizedQuery ||
-          generation != _searchGeneration) {
-        return;
-      }
-      _updateState(() {
-        _friendSearchResults = users;
-        _isSearchingUsers = false;
-      });
-    } on ApiException catch (error) {
-      if (!mounted ||
-          _friendSearchQuery != normalizedQuery ||
-          generation != _searchGeneration) {
-        return;
-      }
-      if ([401, 403, 404].contains(error.statusCode) ||
-          error.code == 'account_changed') {
-        _handleFriendsLoadError(error);
-        return;
-      }
-      _updateState(() {
-        _friendSearchError = error.message;
-        _isSearchingUsers = false;
-      });
-    } catch (_) {
-      if (!mounted ||
-          _friendSearchQuery != normalizedQuery ||
-          generation != _searchGeneration) {
-        return;
-      }
-      _updateState(() {
-        _friendSearchError = context.l10n.friendsSearchFailedTryAgain;
-        _isSearchingUsers = false;
-      });
-    }
-  }
-
-  Future<void> _sendInlineInvite(
-    FriendsSnapshot snapshot,
-    FriendUser user,
-  ) async {
-    if (_inlineInviteLoading.contains(user.id)) {
-      return;
-    }
-    _updateState(() {
-      _inlineInviteLoading.add(user.id);
-    });
-    try {
-      await widget.controller.sendInvite(userId: user.id);
-      if (!mounted) {
-        return;
-      }
-      _showSnack(context.l10n.friendsInviteSentTo(user.preferredName));
-      _updateState(() {
-        _friendSearchResults = _friendSearchResults
-            .where((candidate) => candidate.id != user.id)
-            .toList(growable: false);
-      });
-      await _loadSnapshot(showLoader: false);
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _showSnack(error.message, isError: true);
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _showSnack(context.l10n.friendsFailedToSendInvite, isError: true);
-    } finally {
-      if (mounted) {
-        _updateState(() {
-          _inlineInviteLoading.remove(user.id);
-        });
-      }
-    }
-  }
-
-  void _clearInlineFriendSearch({bool keepText = false}) {
-    _searchGeneration++;
-    _friendSearchDebounce?.cancel();
-    _updateState(() {
-      if (!keepText) {
-        _searchController.clear();
-        _friendSearchQuery = '';
-      }
-      _isSearchingUsers = false;
-      _friendSearchError = null;
-      _friendSearchResults = const <FriendUser>[];
-      _inlineInviteLoading.clear();
-    });
-  }
 
   int _sectionCountRequests(FriendsSnapshot snapshot) {
     final received = _pendingReceivedTotalCount > 0
@@ -646,71 +391,8 @@ extension _FriendsPageWidgets on _FriendsPageState {
         : snapshot.friends.length;
   }
 
-  Widget _userAvatar(FriendUser user, {double size = 36}) {
-    final imageCacheSize = (size * MediaQuery.devicePixelRatioOf(context))
-        .round();
-    final display = _friendPrimaryName(user);
-    final initials = _friendInitials(display);
-    final avatarUrl = (user.avatarThumbUrl ?? user.avatarUrl)?.trim();
-
-    if (avatarUrl != null && avatarUrl.isNotEmpty) {
-      return ClipOval(
-        child: Image.network(
-          avatarUrl,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          filterQuality: FilterQuality.low,
-          gaplessPlayback: true,
-          cacheWidth: imageCacheSize,
-          cacheHeight: imageCacheSize,
-          errorBuilder: (context, error, stackTrace) =>
-              _avatarFallback(initials: initials, size: size, seed: user.id),
-        ),
-      );
-    }
-
-    return _avatarFallback(initials: initials, size: size, seed: user.id);
-  }
-
-  Widget _avatarFallback({
-    required String initials,
-    required double size,
-    required int seed,
-  }) {
-    final color = Theme.of(context).colorScheme.primaryContainer;
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-      alignment: Alignment.center,
-      child: Text(
-        initials,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
-          fontWeight: FontWeight.w600,
-          fontSize: size * 0.34,
-          height: 1,
-        ),
-      ),
-    );
-  }
-
-  String _friendInitials(String displayName) {
-    final parts = displayName
-        .trim()
-        .split(RegExp(r'\s+'))
-        .where((part) => part.isNotEmpty)
-        .toList(growable: false);
-    if (parts.isEmpty) {
-      return '?';
-    }
-    if (parts.length == 1) {
-      return parts.first.characters.first.toUpperCase();
-    }
-    return '${parts.first.characters.first}${parts.last.characters.first}'
-        .toUpperCase();
-  }
+  Widget _userAvatar(FriendUser user, {double size = 36}) =>
+      FriendAvatar(user: user, size: size);
 
   String _friendPrimaryName(FriendUser user) {
     final display = user.preferredName.trim();

@@ -10,7 +10,7 @@ function render(file, token) {
     path.join(root, 'api', file), JSON.stringify({ token })], { encoding: 'utf8' });
 }
 
-for (const file of ['delete-account.php', 'reactivate-account.php']) {
+for (const file of ['delete-account.php']) {
   test(`${file}: malformed tokens render no confirmation control`, () => {
     for (const token of ['', 'a'.repeat(64) + '\n', '<script>bad()</script>', ['a'.repeat(64)]]) {
       const html = render(file, token);

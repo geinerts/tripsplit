@@ -458,16 +458,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get forgotPassword => 'Wachtwoord vergeten?';
 
   @override
+  String get profileSetPassword => 'Wachtwoord instellen';
+
+  @override
+  String get profileManagePassword => 'Wachtwoord instellen of wijzigen';
+
+  @override
   String get profilePasswordByEmail => 'Wachtwoord instellen via e-mail';
-
-  @override
-  String get sendDeactivationEmail => 'Stuur een deactiveringslink';
-
-  @override
-  String get deactivationEmailSent => 'Controleer je e-mail om de deactivering te bevestigen. Je account is nog steeds actief.';
-
-  @override
-  String get deactivationConfirmationMethods => 'Bevestig de deactivering met je wachtwoord of via een link in een e-mail. Je reizen en uitgaven blijven behouden.';
 
   @override
   String get passwordEmailBackToProfile => 'Terug naar profiel';
@@ -1782,27 +1779,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get authAppleSignDidNotReturnIdentityToken => 'Apple Sign-in heeft geen identiteitstoken geretourneerd.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Het account is gedeactiveerd. Voer je e-mailadres in om een link voor heractivering aan te vragen.';
-
-  @override
-  String get authAccountDeactivated => 'Het account is gedeactiveerd';
-
-  @override
-  String authSendReactivationLinkEmail(Object email) {
-    return 'Een reactiveringslink sturen naar $email?';
-  }
-
-  @override
   String get authCancel => 'Annuleren';
 
   @override
   String get authSendLink => 'Link verzenden';
-
-  @override
-  String get authReactivationLinkSentCheckEmail => 'Reactiveringslink verzonden. Controleer je e-mail.';
-
-  @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'De reactiveringslink kon niet worden verzonden. Probeer het nogmaals.';
 
   @override
   String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'Het e-mailadres is niet geverifieerd. Voer je e-mailadres in om een verificatielink aan te vragen.';
@@ -1898,9 +1878,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get profileDangerZoneSectionHeading => 'GEVAARZONE';
-
-  @override
-  String get profileDeactivateAccount => 'Account deactiveren';
 
   @override
   String get profileManageAccountAccess => 'Beheer de toegang tot het account';
@@ -2023,12 +2000,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get profileEditSetValidEmailEditProfileChangingPassword => 'Een geldig e-mailadres voor je account is vereist om je wachtwoord te wijzigen. Neem contact op met de ondersteuning als je e-mailadres ontbreekt of onjuist is.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Account gedeactiveerd. Gebruik de reactiveringslink in de e-mail om de toegang te herstellen.';
-
-  @override
-  String get profileEditCouldNotDeactivateTryAgain => 'Het account kon niet worden gedeactiveerd. Probeer het opnieuw.';
-
-  @override
   String get profileEditDeletionLinkSentEmail => 'De verwijderingslink is naar je e-mailadres verzonden.';
 
   @override
@@ -2041,9 +2012,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Er is een verificatiebericht verzonden naar het nieuwe e-mailadres. Er is een beveiligingsmelding verzonden naar je huidige e-mailadres.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Het wijzigen van het e-mailadres kon op dit moment niet worden gestart. Probeer het opnieuw.';
-
-  @override
   String get profileEditOverviewCurrency => 'Overzicht valuta';
 
   @override
@@ -2051,9 +2019,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get profileEditBankTransferRevolutPaypalMe => 'Bankoverschrijving, Revolut, PayPal.me';
-
-  @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'Je kunt de toegang tot het account deactiveren of een e-maillink aanvragen om het account definitief te verwijderen. Een wachtwoord is optioneel voor Google-/Apple-accounts.';
 
   @override
   String get profileEditEnterPasswordOptionalGoogleApple => 'Voer je wachtwoord in (optioneel voor Google/Apple)';
@@ -4396,4 +4361,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get accountDeleteSending => 'Bevestigingsmail versturen';
+
+  @override
+  String get friendsShowMore => 'Meer tonen';
 }

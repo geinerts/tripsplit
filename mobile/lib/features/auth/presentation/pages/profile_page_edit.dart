@@ -1,6 +1,12 @@
 part of 'profile_page.dart';
 
 extension _ProfilePageEditFlow on _ProfilePageState {
+  String get _passwordActionTitle => switch (_user?.hasPassword) {
+    true => context.l10n.profileChangePassword,
+    false => context.l10n.profileSetPassword,
+    null => context.l10n.profileManagePassword,
+  };
+
   void _openChangePasswordPage() {
     if (_isLoading || _isSubmitting) {
       return;
@@ -9,6 +15,23 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     if (email.isEmpty || !_isValidEmail(email)) {
       _showSnack(
         context.l10n.profileEditSetValidEmailEditProfileChangingPassword,
+      );
+      return;
+    }
+    if (_user?.hasPassword != true) {
+      final user = _user;
+      if (user == null || widget.controller.currentUser?.id != user.id) {
+        return;
+      }
+      Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => ForgotPasswordPage(
+            controller: widget.controller,
+            initialEmail: email,
+            accountId: user.id,
+            hasPassword: user.hasPassword,
+          ),
+        ),
       );
       return;
     }

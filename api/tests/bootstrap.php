@@ -41,9 +41,6 @@ if (!defined('DB_TABLE_PREFIX')) {
 if (!defined('APP_BASE_URL')) {
     define('APP_BASE_URL', 'https://splyto.eu');
 }
-if (!defined('ACCOUNT_REACTIVATION_TOKEN_TTL_SEC')) {
-    define('ACCOUNT_REACTIVATION_TOKEN_TTL_SEC', 86400);
-}
 if (!defined('ACCOUNT_DELETION_TOKEN_TTL_SEC')) {
     define('ACCOUNT_DELETION_TOKEN_TTL_SEC', 3600);
 }
@@ -58,9 +55,6 @@ if (!defined('EMAIL_VERIFICATION_GRACE_DAYS')) {
 }
 if (!defined('EMAIL_VERIFICATION_CLEANUP_BATCH_LIMIT')) {
     define('EMAIL_VERIFICATION_CLEANUP_BATCH_LIMIT', 300);
-}
-if (!defined('EMAIL_CHANGE_TOKEN_TTL_SEC')) {
-    define('EMAIL_CHANGE_TOKEN_TTL_SEC', 86400);
 }
 if (!defined('ADMIN_TOTP_ENCRYPTION_KEY')) {
     define('ADMIN_TOTP_ENCRYPTION_KEY', str_repeat('test-key-', 8));

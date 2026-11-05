@@ -458,16 +458,13 @@ class AppLocalizationsNb extends AppLocalizations {
   String get forgotPassword => 'Glemt passord?';
 
   @override
+  String get profileSetPassword => 'Angi passord';
+
+  @override
+  String get profileManagePassword => 'Angi eller endre passord';
+
+  @override
   String get profilePasswordByEmail => 'Angi passord via e-post';
-
-  @override
-  String get sendDeactivationEmail => 'Send deaktiveringslenke';
-
-  @override
-  String get deactivationEmailSent => 'Sjekk e-posten din for å bekrefte deaktivering. Kontoen din er fortsatt aktiv.';
-
-  @override
-  String get deactivationConfirmationMethods => 'Bekreft deaktivering med passordet ditt eller en e-postlenke. Turene og utgiftene dine vil forbli.';
 
   @override
   String get passwordEmailBackToProfile => 'Tilbake til profilen';
@@ -1782,27 +1779,10 @@ class AppLocalizationsNb extends AppLocalizations {
   String get authAppleSignDidNotReturnIdentityToken => 'Apple-påloggingen returnerte ikke et identitetstoken.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Kontoen er deaktivert. Skriv inn e-postadressen din for å be om en lenke for å aktivere kontoen på nytt.';
-
-  @override
-  String get authAccountDeactivated => 'Kontoen er deaktivert';
-
-  @override
-  String authSendReactivationLinkEmail(Object email) {
-    return 'Sende en reaktiveringslenke til $email?';
-  }
-
-  @override
   String get authCancel => 'Avbryt';
 
   @override
   String get authSendLink => 'Send lenke';
-
-  @override
-  String get authReactivationLinkSentCheckEmail => 'Reaktiveringslenke sendt. Sjekk e-posten din.';
-
-  @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Kunne ikke sende reaktiveringslenken. Prøv på nytt.';
 
   @override
   String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'E-postadressen er ikke bekreftet. Skriv inn e-postadressen din for å be om en bekreftelseslenke.';
@@ -1898,9 +1878,6 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get profileDangerZoneSectionHeading => 'FAREZONE';
-
-  @override
-  String get profileDeactivateAccount => 'Deaktiver konto';
 
   @override
   String get profileManageAccountAccess => 'Administrer tilgang til kontoen';
@@ -2023,12 +2000,6 @@ class AppLocalizationsNb extends AppLocalizations {
   String get profileEditSetValidEmailEditProfileChangingPassword => 'En gyldig e-postadresse for kontoen er nødvendig for å endre passordet ditt. Kontakt kundestøtte hvis e-postadressen din mangler eller er feil.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Kontoen er deaktivert. Bruk reaktiveringslenken i e-posten for å gjenopprette tilgangen.';
-
-  @override
-  String get profileEditCouldNotDeactivateTryAgain => 'Kunne ikke deaktivere kontoen. Prøv på nytt.';
-
-  @override
   String get profileEditDeletionLinkSentEmail => 'Slettingslenke sendt til e-postadressen din.';
 
   @override
@@ -2041,9 +2012,6 @@ class AppLocalizationsNb extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Bekreftelsen ble sendt til den nye e-postadressen. Sikkerhetsmeldingen ble sendt til din nåværende e-postadresse.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Kunne ikke starte endringen av e-postadressen akkurat nå. Prøv igjen.';
-
-  @override
   String get profileEditOverviewCurrency => 'Oversikt over valuta';
 
   @override
@@ -2051,9 +2019,6 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get profileEditBankTransferRevolutPaypalMe => 'Bankoverføring, Revolut, PayPal.me';
-
-  @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'Du kan deaktivere tilgangen til kontoen eller be om en e-postlenke for å slette kontoen permanent. Passord er valgfritt for Google-/Apple-kontoer.';
 
   @override
   String get profileEditEnterPasswordOptionalGoogleApple => 'Skriv inn passordet ditt (valgfritt for Google/Apple)';
@@ -4396,4 +4361,7 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get accountDeleteSending => 'Sende bekreftelses-e-post';
+
+  @override
+  String get friendsShowMore => 'Vis flere';
 }

@@ -10,6 +10,7 @@ class AuthUser {
     required this.nickname,
     this.email,
     required this.needsCredentials,
+    this.hasPassword,
     this.bankCountryCode,
     this.bankAccountHolder,
     this.bankAccountNumber,
@@ -37,6 +38,10 @@ class AuthUser {
   final String nickname;
   final String? email;
   final bool needsCredentials;
+
+  /// Whether a chosen password is known; null for legacy or unknown state.
+  /// Presentation only: the server still requires password or email proof.
+  final bool? hasPassword;
   final String? bankCountryCode;
   final String? bankAccountHolder;
   final String? bankAccountNumber;
@@ -64,6 +69,8 @@ class AuthUser {
     String? nickname,
     String? email,
     bool? needsCredentials,
+    bool? hasPassword,
+    bool clearPasswordStatus = false,
     String? bankCountryCode,
     String? bankAccountHolder,
     String? bankAccountNumber,
@@ -94,6 +101,9 @@ class AuthUser {
       nickname: nickname ?? this.nickname,
       email: email ?? this.email,
       needsCredentials: needsCredentials ?? this.needsCredentials,
+      hasPassword: clearPasswordStatus || (id != null && id != this.id)
+          ? null
+          : (hasPassword ?? this.hasPassword),
       bankCountryCode: bankCountryCode ?? this.bankCountryCode,
       bankAccountHolder: bankAccountHolder ?? this.bankAccountHolder,
       bankAccountNumber: bankAccountNumber ?? this.bankAccountNumber,

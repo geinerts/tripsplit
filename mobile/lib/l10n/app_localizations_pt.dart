@@ -458,16 +458,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get forgotPassword => 'Esqueceu-se da palavra-passe?';
 
   @override
+  String get profileSetPassword => 'Definir palavra-passe';
+
+  @override
+  String get profileManagePassword => 'Definir ou alterar palavra-passe';
+
+  @override
   String get profilePasswordByEmail => 'Definir palavra-passe por e-mail';
-
-  @override
-  String get sendDeactivationEmail => 'Enviar link de desativação';
-
-  @override
-  String get deactivationEmailSent => 'Verifique o seu e-mail para confirmar a desativação. A sua conta continua ativa.';
-
-  @override
-  String get deactivationConfirmationMethods => 'Confirme a desativação com a sua palavra-passe ou através de um link por e-mail. As suas viagens e despesas permanecerão guardadas.';
 
   @override
   String get passwordEmailBackToProfile => 'Voltar ao perfil';
@@ -1782,27 +1779,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get authAppleSignDidNotReturnIdentityToken => 'O início de sessão da Apple não devolveu um token de identidade.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'A conta foi desativada. Introduza o seu e-mail para solicitar um link de reativação.';
-
-  @override
-  String get authAccountDeactivated => 'A conta está desativada';
-
-  @override
-  String authSendReactivationLinkEmail(Object email) {
-    return 'Enviar um link de reativação para $email?';
-  }
-
-  @override
   String get authCancel => 'Cancelar';
 
   @override
   String get authSendLink => 'Enviar link';
-
-  @override
-  String get authReactivationLinkSentCheckEmail => 'Link de reativação enviado. Verifique o seu e-mail.';
-
-  @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Não foi possível enviar o link de reativação. Por favor, tente novamente.';
 
   @override
   String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'O e-mail não está verificado. Introduza o seu e-mail para solicitar o link de verificação.';
@@ -1898,9 +1878,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get profileDangerZoneSectionHeading => 'ZONA DE PERIGO';
-
-  @override
-  String get profileDeactivateAccount => 'Desativar conta';
 
   @override
   String get profileManageAccountAccess => 'Gerir o acesso à conta';
@@ -2023,12 +2000,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profileEditSetValidEmailEditProfileChangingPassword => 'É necessário um endereço de e-mail válido da conta para alterar a sua palavra-passe. Contacte o apoio ao cliente se o seu e-mail estiver em falta ou estiver incorreto.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Conta desativada. Utilize o link de reativação do e-mail para restaurar o acesso.';
-
-  @override
-  String get profileEditCouldNotDeactivateTryAgain => 'Não foi possível desativar a conta. Por favor, tente novamente.';
-
-  @override
   String get profileEditDeletionLinkSentEmail => 'O link de eliminação foi enviado para o seu e-mail.';
 
   @override
@@ -2041,9 +2012,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Foi enviada uma mensagem de verificação para o novo endereço de e-mail. Foi enviado um aviso de segurança para o seu endereço de e-mail atual.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Não foi possível iniciar a alteração do e-mail neste momento. Por favor, tente novamente.';
-
-  @override
   String get profileEditOverviewCurrency => 'Visão geral da moeda';
 
   @override
@@ -2051,9 +2019,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get profileEditBankTransferRevolutPaypalMe => 'Transferência bancária, Revolut, PayPal.me';
-
-  @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'Pode desativar o acesso à conta ou solicitar um link por e-mail para eliminar definitivamente a conta. A palavra-passe é opcional para contas Google/Apple.';
 
   @override
   String get profileEditEnterPasswordOptionalGoogleApple => 'Introduza a sua palavra-passe (opcional para Google/Apple)';
@@ -4396,4 +4361,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get accountDeleteSending => 'Envio de e-mail de confirmação';
+
+  @override
+  String get friendsShowMore => 'Mostrar mais';
 }

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_password_capability.php';
+
 require_once __DIR__ . '/../helpers/helper_profile_payment_sharing.php';
 
 function register_proof_secret(): string
@@ -159,6 +161,9 @@ function register_action(): void
     $hasCredentials = ($emailRaw !== '' || $passwordRaw !== '');
 
     $values = ['nickname' => $legacyNickname, 'device_token' => $deviceToken];
+    if (users_password_capability_available($pdo)) {
+        $values['has_password'] = $hasCredentials ? 1 : 0;
+    }
     if ($hasNameColumns) {
         $values['first_name'] = $firstName;
         $values['last_name'] = $lastName;
@@ -341,6 +346,7 @@ function login_action(): void
             'id' => $id,
         ]);
 
+        record_user_password_capability($pdo, $id, true);
         $auth = issue_auth_payload($pdo, $id);
         $pdo->commit();
     } catch (Throwable $error) {
@@ -401,14 +407,17 @@ function refresh_session_action(): void
 
     $me = fetch_me_row_by_id($pdo, $userId);
     if (!$me) {
+        record_user_password_capability($pdo, $userId, true);
         revoke_refresh_tokens_for_user($pdo, $userId);
         json_out(['ok' => false, 'error' => 'User not found.'], 401);
     }
     if (user_requires_email_verification((array) $me)) {
+        record_user_password_capability($pdo, $userId, true);
         revoke_refresh_tokens_for_user($pdo, $userId);
         json_out(user_email_verification_block_error_payload((array) $me), 403);
     }
     if (!user_account_is_active((array) $me)) {
+        record_user_password_capability($pdo, $userId, true);
         revoke_refresh_tokens_for_user($pdo, $userId);
         json_out(user_account_block_error_payload((array) $me), 403);
     }
@@ -488,6 +497,7 @@ function set_credentials_action(): void
                  credentials_required = 0, email_verified_at = NULL
              WHERE id = :id'
         )->execute(['email' => $email, 'password_hash' => $passwordHash, 'id' => $userId]);
+        record_user_password_capability($pdo, $userId, true);
         revoke_refresh_tokens_for_user($pdo, $userId);
         $fresh = fetch_me_row_by_id($pdo, $userId);
         if (!$fresh) {
@@ -585,6 +595,7 @@ function change_profile_password(PDO $pdo, int $userId, array $body): void
         }
         $pdo->prepare('UPDATE ' . table_name('users') . ' SET password_hash = :hash WHERE id = :id')
             ->execute(['hash' => $hash, 'id' => $userId]);
+        record_user_password_capability($pdo, $userId, true);
         revoke_refresh_tokens_for_user($pdo, $userId);
         $auth = issue_auth_payload($pdo, $userId);
         $fresh = fetch_me_row_by_id($pdo, $userId);

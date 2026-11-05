@@ -34,6 +34,8 @@ import '../../../workspace/presentation/controllers/workspace_controller.dart';
 import '../controllers/friends_controller.dart';
 import '../controllers/friend_trip_actions.dart';
 import '../widgets/friend_trip_invite_page.dart';
+import '../widgets/friend_avatar.dart';
+import 'friend_search_page.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../../trips/domain/entities/trip.dart';
 
@@ -47,6 +49,14 @@ part 'friends_page_components.dart';
 
 class FriendsPageCommandController extends ChangeNotifier {
   int _refreshRequestCount = 0;
+  int _searchRequestCount = 0;
+
+  int get searchRequestCount => _searchRequestCount;
+
+  void requestSearch() {
+    _searchRequestCount++;
+    notifyListeners();
+  }
 
   int get refreshRequestCount => _refreshRequestCount;
 
@@ -85,21 +95,13 @@ class _FriendsPageState extends State<FriendsPage> {
   static const String _sectionPendingReceived = 'pending_received';
 
   int _loadGeneration = 0;
-  int _searchGeneration = 0;
   bool _isLoading = true;
   bool _isLoadingMoreFriends = false;
   bool _isLoadingMorePendingReceived = false;
   bool _isLoadingMorePendingSent = false;
   String? _errorText;
   FriendsSnapshot? _snapshot;
-  final TextEditingController _searchController = TextEditingController();
-  final FocusNode _searchFocusNode = FocusNode();
-  String _friendSearchQuery = '';
-  Timer? _friendSearchDebounce;
-  bool _isSearchingUsers = false;
-  String? _friendSearchError;
-  List<FriendUser> _friendSearchResults = const <FriendUser>[];
-  final Set<int> _inlineInviteLoading = <int>{};
+  final Set<int> _friendActionLoading = <int>{};
   int _friendsTotalCount = 0;
   int _pendingReceivedTotalCount = 0;
   int _pendingSentTotalCount = 0;
@@ -115,6 +117,8 @@ class _FriendsPageState extends State<FriendsPage> {
   final ScrollController _scrollController = ScrollController();
   final Set<int> _respondLoading = <int>{};
   int _handledRefreshRequestCount = 0;
+  int _handledSearchRequestCount = 0;
+  bool _searchPageOpen = false;
 
   @override
   void initState() {
@@ -137,9 +141,6 @@ class _FriendsPageState extends State<FriendsPage> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
-    _friendSearchDebounce?.cancel();
-    _searchController.dispose();
-    _searchFocusNode.dispose();
     _unbindCommandController(widget.commandController);
     super.dispose();
   }

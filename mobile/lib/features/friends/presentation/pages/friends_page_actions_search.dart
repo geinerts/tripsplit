@@ -1,17 +1,39 @@
 part of 'friends_page.dart';
 
 extension _FriendsPageActionsSearch on _FriendsPageState {
-  List<int> _searchExcludeIds(FriendsSnapshot snapshot) {
-    final ids = <int>{};
-    for (final friend in snapshot.friends) {
-      ids.add(friend.id);
+  Future<void> _openFriendSearch() async {
+    if (_searchPageOpen) return;
+    _searchPageOpen = true;
+    final accountId = widget.authController.currentUser?.id;
+    try {
+      await Navigator.of(context).push<void>(
+        AppPageRoute<void>(
+          builder: (_) => FriendSearchPage(
+            controller: widget.controller,
+            accountIsCurrent: () =>
+                mounted &&
+                accountId != null &&
+                widget.authController.currentUser?.id == accountId,
+            excludeIds: () {
+              final snapshot = _snapshot;
+              return {
+                ?accountId,
+                ...?snapshot?.friends.map((user) => user.id),
+                ...?snapshot?.pendingSent.map((request) => request.user.id),
+                ...?snapshot?.pendingReceived.map((request) => request.user.id),
+              };
+            },
+            onInvited: () async {
+              if (mounted &&
+                  widget.authController.currentUser?.id == accountId) {
+                await _loadSnapshot(showLoader: false);
+              }
+            },
+          ),
+        ),
+      );
+    } finally {
+      _searchPageOpen = false;
     }
-    for (final req in snapshot.pendingSent) {
-      ids.add(req.user.id);
-    }
-    for (final req in snapshot.pendingReceived) {
-      ids.add(req.user.id);
-    }
-    return ids.toList(growable: false);
   }
 }

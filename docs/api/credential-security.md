@@ -28,15 +28,14 @@ verification-token storage and refresh-token storage are required.
   commit together; write failures roll all of these back.
 - Enrollment and password-change attempts use existing IP/account rate-limit infrastructure
   under separate `credential_change_ip` / `credential_change_user` scopes, with login limits.
-- Owner subsequently removed email changes. `request_email_change`, `confirm_email_change`
-  and `cancel_email_change` return 410 without modifying users, sessions or pending requests.
-  Both legacy web links are retired too; profile email is read-only. See
-  `account-deactivation-security.md` for this follow-up and lifecycle confirmation.
+- Owner subsequently removed email changes entirely (2026-11-05: routes, web pages, email
+  templates and handlers deleted; unknown actions are now rejected by the router). Profile
+  email is read-only. See `account-lifecycle-link-security.md` for lifecycle confirmation.
 
 ## Mobile compatibility
 
-The profile password screen asks for the current password and offers password recovery,
-including for social users who do not know their generated placeholder password.
+The profile password screen asks for the current password only when `has_password`
+is true. False/unknown states use verified email setup/recovery (see capability below).
 Current password is passed unchanged through controller/use case/repository/data source.
 It is not saved to preferences, logs or offline queues by this flow.
 
@@ -79,3 +78,27 @@ rollout; never reopen session-only credential replacement for compatibility.
   Remaining lifecycle/session races, fixture-email shortcut removal (F11) and real social
   recovery E2E are separate gates; do not claim the entire account lifecycle is secure.
 - No deployment, migration, commit, push, TestFlight upload or production mail was performed.
+
+## Password capability (approved 2026-11-02)
+
+The private `me` payload adds `has_password`: `true`, `false`, or `null`.
+This is presentation metadata, never authorization to replace credentials.
+`true` means an explicitly chosen password was saved or successfully verified;
+`false` means a new social account has only a random placeholder (or a new guest
+has no password); `null` means unknown, including legacy accounts and servers
+without the optional column. Do not infer capability from a hash or provider link.
+
+Migration `2026-11-02-add-password-capability.sql` adds nullable `users.has_password`.
+Existing rows remain NULL; no credential hashes or provider identities are changed.
+New password registration/enrollment, successful password login/change, and
+email-confirmed reset record true. New social accounts record false. Returning
+social login preserves the recorded state unless an empty hash is replaced with
+an inaccessible placeholder. Credential mutation and capability writes share the
+existing transaction; registration includes the field in its INSERT.
+
+Mobile shows Change password for true, Set password for false, and Set or change
+password for unknown. False/unknown use the existing verified email reset flow,
+without a current-password field. Email proof expiry, rate limits, state binding,
+one-time use and session revocation are unchanged. Google/Apple links remain intact.
+A missing column degrades to unknown and the existing reset flow; it does not
+bypass reauthentication. Deployment/migration are separate from local implementation.

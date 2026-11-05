@@ -45,12 +45,6 @@ abstract class AuthRepository {
 
   Future<void> requestEmailVerificationLink({required String email});
 
-  Future<void> requestReactivationLink({required String email});
-
-  Future<void> requestDeactivationLink();
-
-  Future<void> deactivateAccount({required String password});
-
   Future<void> requestAccountDeletionLink({
     required String password,
     List<String> reasonCodes = const [],

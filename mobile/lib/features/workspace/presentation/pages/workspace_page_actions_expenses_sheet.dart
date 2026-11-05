@@ -320,8 +320,28 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                             }
                             return uri;
                           },
-                          open: (uri) =>
-                              launchUrl(uri, mode: LaunchMode.inAppBrowserView),
+                          open: (uri) async {
+                            final account =
+                                widget.authController.currentUser?.id;
+                            if (!mounted || account == null) return false;
+                            await Navigator.of(context).push<void>(
+                              AppFormPageRoute(
+                                builder: (_) => ReceiptViewerPage(
+                                  initialUri: uri,
+                                  isCurrentAccount: () =>
+                                      mounted &&
+                                      widget.authController.currentUser?.id ==
+                                          account,
+                                  reload: () =>
+                                      widget.workspaceController.loadReceiptUri(
+                                        tripId: widget.trip.id,
+                                        expenseId: expense.id,
+                                      ),
+                                ),
+                              ),
+                            );
+                            return true;
+                          },
                         ),
                       ],
                       if (expense.id > 0) ...[

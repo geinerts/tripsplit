@@ -18,6 +18,16 @@ extension _MainShellPageWidgets on _MainShellPageState {
             : null,
         title: _buildAppBarTitle(context, titleStyle),
         actions: [
+          if (!_isWorkspaceOpen &&
+              _selectedTabIndex == _MainShellPageState._tabFriends)
+            IconButton(
+              key: const ValueKey('friends-open-search'),
+              tooltip: context.l10n.friendsSearchUsers,
+              onPressed: _isLoggingOut
+                  ? null
+                  : _friendsCommandController.requestSearch,
+              icon: const Icon(Icons.search_rounded),
+            ),
           if (_canShowWorkspaceTripActions)
             IconButton(
               onPressed: _workspaceCommandController.requestOpenTripActions,

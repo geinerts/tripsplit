@@ -65,20 +65,20 @@ need their own end-to-end validation before rollout.
 Owner decision after this initial work: defer new provider linking/native step-up beyond
 the first beta. Use password proof or operation-bound verified email confirmation for
 sensitive actions instead. The password setup/recovery slice is now implemented locally;
-see `password-recovery-security.md`. Email changes have since been removed, and deactivation
-now requires password or email proof; see `account-deactivation-security.md`.
+see `password-recovery-security.md`. Email changes have since been removed, and self-service deactivation
+has also been removed; see `account-lifecycle-link-security.md`.
 The list below records design concerns, not a requirement to ship every provider feature.
 
-1. Durable password capability: social accounts currently contain a random placeholder
-   password hash. Its presence does not prove that the user has a Splyto password; linked
-   accounts may also have a real password. Preserve legacy mixed accounts during migration.
+1. Durable password capability implemented locally on 2026-11-02; see
+   `credential-security.md`. Nullable metadata preserves unknown legacy mixed accounts.
+   Pending production migration and real-device verification.
 2. Explicit provider linking (deferred) and fresh, purpose-bound proof before changing credentials or
    sensitive lifecycle settings. Bind proof to account/session/provider subject/operation,
    enforce expiry and atomic single use, test cancellation and wrong-account selection.
 3. The deactivation exemption is removed locally. Review deletion/reactivation proof
    handling and test the coordinated lifecycle before declaring this boundary complete.
-4. Separate native UI for password-based vs social-only accounts, optional password setup,
-   localized recovery, and end-to-end Apple/Google testing. Normal social login is not a
+4. Conditional profile UI and localized email password setup implemented locally on
+   2026-11-02; end-to-end Apple/Google testing remains. Normal social login is not a
    step-up method: it must not switch the current account during a sensitive action.
 5. SEC-05 recovery throttling, token atomicity, session revocation policy and race tests.
 

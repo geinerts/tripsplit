@@ -26,15 +26,12 @@ import '../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../features/auth/data/repositories/auth_repository_impl.dart';
 import '../features/auth/domain/usecases/get_me_use_case.dart';
 import '../features/auth/domain/usecases/get_notification_preferences_use_case.dart';
-import '../features/auth/domain/usecases/deactivate_account_use_case.dart';
 import '../features/auth/domain/usecases/forgot_password_use_case.dart';
 import '../features/auth/domain/usecases/login_use_case.dart';
 import '../features/auth/domain/usecases/logout_session_use_case.dart';
 import '../features/auth/domain/usecases/register_use_case.dart';
 import '../features/auth/domain/usecases/request_account_deletion_link_use_case.dart';
-import '../features/auth/domain/usecases/request_deactivation_link_use_case.dart';
 import '../features/auth/domain/usecases/request_email_verification_link_use_case.dart';
-import '../features/auth/domain/usecases/request_reactivation_link_use_case.dart';
 import '../features/auth/domain/usecases/set_credentials_use_case.dart';
 import '../features/auth/domain/usecases/social_login_use_case.dart';
 import '../features/auth/domain/usecases/update_notification_preferences_use_case.dart';
@@ -212,9 +209,6 @@ class AppDependencies {
       GetMeUseCase(authRepository),
       ForgotPasswordUseCase(authRepository),
       RequestEmailVerificationLinkUseCase(authRepository),
-      RequestReactivationLinkUseCase(authRepository),
-      RequestDeactivationLinkUseCase(authRepository),
-      DeactivateAccountUseCase(authRepository),
       RequestAccountDeletionLinkUseCase(authRepository),
       GetNotificationPreferencesUseCase(authRepository),
       UpdateNotificationPreferencesUseCase(authRepository),

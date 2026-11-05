@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_password_capability.php';
+
 function social_auth_random_device_token(): string
 {
     return bin2hex(random_bytes(32));
@@ -246,6 +248,7 @@ function social_auth_action(): void
                 }
 
                 $userId = (int) $pdo->lastInsertId();
+                record_user_password_capability($pdo, $userId, false);
                 $user = social_auth_select_user_by_id_for_update($pdo, $userId, $nameColumnsAvailable);
                 if (!$user) {
                     $pdo->rollBack();
@@ -303,6 +306,7 @@ function social_auth_action(): void
 
         $currentHash = trim((string) ($user['password_hash'] ?? ''));
         if ($currentHash === '') {
+            record_user_password_capability($pdo, $resolvedUserId, false);
             $userUpdateParts[] = 'password_hash = :password_hash';
             $userUpdateParams['password_hash'] = social_auth_placeholder_password_hash();
         }

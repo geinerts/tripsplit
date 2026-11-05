@@ -46,6 +46,7 @@ final class PasswordResetSecurityTest extends TestCase
         $r = $this->scenario($name);
         self::assertSame(200, $r['response']['status']);
         self::assertTrue($r['password_changed']);
+        self::assertTrue($r['has_password']);
         self::assertTrue($r['email_unchanged']);
         self::assertSame(0, $r['active_sessions']);
         self::assertSame(0, $r['active_resets']);

@@ -68,6 +68,26 @@ void main() {
           source: XFile(original.path),
         );
         expect(arguments!['ratio_x'], arguments!['ratio_y']);
+
+        resultPath = saved.path;
+        final receipt = await AppImageCropper.cropReceipt(
+          context: host,
+          source: XFile(original.path),
+        );
+        expect(await receipt!.readAsBytes(), [3, 4]);
+        expect(arguments!['ratio_x'], isNull);
+        expect(arguments!['ratio_y'], isNull);
+        expect(arguments!['android.lock_aspect_ratio'], isFalse);
+        expect(arguments!['ios.aspect_ratio_lock_enabled'], isFalse);
+        expect(arguments!['ios.rotate_button_hidden'], isFalse);
+        resultPath = null;
+        expect(
+          await AppImageCropper.cropReceipt(
+            context: host,
+            source: XFile(original.path),
+          ),
+          isNull,
+        );
       });
     },
   );

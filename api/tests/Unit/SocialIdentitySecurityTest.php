@@ -44,7 +44,7 @@ final class SocialIdentitySecurityTest extends TestCase
     {
         foreach (['apple', 'google'] as $provider) {
             foreach (['linked_verified', 'linked_false', 'linked_missing', 'linked_no_email',
-                'linked_changed_email', 'linked_unverified'] as $scenario) { yield "$provider/$scenario" => [$provider, $scenario]; }
+                'linked_changed_email', 'linked_unverified', 'linked_password_set', 'linked_placeholder'] as $scenario) { yield "$provider/$scenario" => [$provider, $scenario]; }
         }
     }
     #[DataProvider('returning')]
@@ -60,6 +60,9 @@ final class SocialIdentitySecurityTest extends TestCase
         }
         self::assertSame(200, $r['response']['status']);
         self::assertSame(1, $r['response']['payload']['me']['id']);
+        self::assertSame(match ($scenario) {
+            'linked_password_set' => true, 'linked_placeholder' => false, default => null,
+        }, $r['response']['payload']['me']['has_password']);
         self::assertSame('owner@example.invalid', $r['authenticated_email']);
         self::assertSame($scenario !== 'linked_unverified', $r['original_verified']);
         self::assertTrue($r['original_hash_unchanged']);
@@ -74,6 +77,7 @@ final class SocialIdentitySecurityTest extends TestCase
                 $r = $this->scenario($provider, $scenario);
                 self::assertSame(200, $r['response']['status']);
                 self::assertSame(3, $r['response']['payload']['me']['id']);
+                self::assertFalse($r['response']['payload']['me']['has_password']);
                 self::assertSame('new@example.invalid', $r['authenticated_email']);
                 self::assertTrue($r['authenticated_verified']);
                 self::assertSame('owner@example.invalid', $r['original_email']);

@@ -13,6 +13,7 @@ class AuthUserModel extends AuthUser {
     required super.nickname,
     super.email,
     required super.needsCredentials,
+    super.hasPassword,
     super.bankCountryCode,
     super.bankAccountHolder,
     super.bankAccountNumber,
@@ -81,6 +82,9 @@ class AuthUserModel extends AuthUser {
       nickname: map['nickname'] as String? ?? '',
       email: map['email'] as String?,
       needsCredentials: map['needs_credentials'] as bool? ?? false,
+      hasPassword: map['has_password'] is bool
+          ? map['has_password'] as bool
+          : null,
       bankCountryCode: (bankCountryCode == null || bankCountryCode.isEmpty)
           ? null
           : bankCountryCode,

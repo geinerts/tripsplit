@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS trip_users (
   nickname VARCHAR(32) NOT NULL,
   email VARCHAR(255) NULL,
   password_hash VARCHAR(255) NULL,
+  has_password TINYINT(1) NULL DEFAULT NULL,
   credentials_required TINYINT(1) NOT NULL DEFAULT 1,
   account_status ENUM('active', 'deactivated', 'deleted') NOT NULL DEFAULT 'active',
   email_verified_at TIMESTAMP NULL DEFAULT NULL,

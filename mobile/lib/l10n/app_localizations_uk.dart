@@ -464,16 +464,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get forgotPassword => 'Забули пароль?';
 
   @override
+  String get profileSetPassword => 'Установити пароль';
+
+  @override
+  String get profileManagePassword => 'Установити або змінити пароль';
+
+  @override
   String get profilePasswordByEmail => 'Встановити пароль електронною поштою';
-
-  @override
-  String get sendDeactivationEmail => 'Надіслати посилання на деактивацію';
-
-  @override
-  String get deactivationEmailSent => 'Перевірте свою електронну пошту, щоб підтвердити деактивацію. Ваш обліковий запис залишається активним.';
-
-  @override
-  String get deactivationConfirmationMethods => 'Підтвердьте деактивацію за допомогою пароля або посилання в електронному листі. Ваші поїздки та витрати залишаться збереженими.';
 
   @override
   String get passwordEmailBackToProfile => 'Назад до профілю';
@@ -1794,27 +1791,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get authAppleSignDidNotReturnIdentityToken => 'Система входу Apple не повернула токен ідентифікації.';
 
   @override
-  String get authAccountDeactivatedEnterEmailRequestReactivationLink => 'Акаунт деактивовано. Введіть свою електронну адресу, щоб отримати посилання для поновлення доступу.';
-
-  @override
-  String get authAccountDeactivated => 'Акаунт деактивовано';
-
-  @override
-  String authSendReactivationLinkEmail(Object email) {
-    return 'Надіслати посилання для поновлення доступу на $email?';
-  }
-
-  @override
   String get authCancel => 'Скасувати';
 
   @override
   String get authSendLink => 'Надіслати посилання';
-
-  @override
-  String get authReactivationLinkSentCheckEmail => 'Надіслано посилання для поновлення доступу. Перевірте свою електронну пошту.';
-
-  @override
-  String get authCouldNotSendReactivationLinkPleaseTryAgain => 'Не вдалося надіслати посилання для поновлення доступу. Спробуйте ще раз.';
 
   @override
   String get authEmailNotVerifiedEnterEmailRequestVerificationLink => 'Електронна адреса не підтверджена. Введіть свою електронну адресу, щоб отримати посилання для підтвердження.';
@@ -1910,9 +1890,6 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get profileDangerZoneSectionHeading => 'ЗОНА НЕБЕЗПЕКИ';
-
-  @override
-  String get profileDeactivateAccount => 'Деактивувати обліковий запис';
 
   @override
   String get profileManageAccountAccess => 'Управління доступом до облікового запису';
@@ -2035,12 +2012,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get profileEditSetValidEmailEditProfileChangingPassword => 'Для зміни пароля необхідна дійсна електронна адреса облікового запису. Зверніться до служби підтримки, якщо ваша електронна адреса відсутня або вказана неправильно.';
 
   @override
-  String get profileEditDeactivatedReactivationLinkEmailRestoreAccess => 'Акаунт деактивовано. Скористайтеся посиланням на поновлення, надісланим електронною поштою, щоб відновити доступ.';
-
-  @override
-  String get profileEditCouldNotDeactivateTryAgain => 'Не вдалося деактивувати обліковий запис. Спробуйте ще раз.';
-
-  @override
   String get profileEditDeletionLinkSentEmail => 'Посилання на видалення надіслано на вашу електронну пошту.';
 
   @override
@@ -2053,9 +2024,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get profileEditVerificationWasSentNewEmailSecurityNoticeWas => 'Підтвердження було надіслано на нову електронну адресу. Повідомлення про безпеку було надіслано на вашу поточну електронну адресу.';
 
   @override
-  String get profileEditCouldNotStartEmailChangeRightNowTry => 'Наразі не вдалося розпочати зміну адреси електронної пошти. Спробуйте ще раз.';
-
-  @override
   String get profileEditOverviewCurrency => 'Огляд валюти';
 
   @override
@@ -2063,9 +2031,6 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get profileEditBankTransferRevolutPaypalMe => 'Банківський переказ, Revolut, PayPal.me';
-
-  @override
-  String get profileEditDeactivateAccessRequestEmailLinkPermanentlyDeletePassword => 'Ви можете деактивувати доступ до облікового запису або надіслати запит на посилання електронною поштою для остаточного видалення облікового запису. Пароль є необов’язковим для облікових записів Google/Apple.';
 
   @override
   String get profileEditEnterPasswordOptionalGoogleApple => 'Введіть свій пароль (не обов’язково для Google/Apple)';
@@ -4416,4 +4381,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get accountDeleteSending => 'Надсилання електронного листа з підтвердженням';
+
+  @override
+  String get friendsShowMore => 'Показати більше';
 }

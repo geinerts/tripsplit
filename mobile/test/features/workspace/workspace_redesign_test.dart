@@ -3019,6 +3019,15 @@ void main() {
       );
       final messenger =
           TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      const cropChannel = MethodChannel('plugins.hunghd.vn/image_cropper');
+      var crops = 0;
+      messenger.setMockMethodCallHandler(cropChannel, (call) async {
+        crops++;
+        final output = File.fromUri(dir.uri.resolve('cropped.jpg'));
+        await output.writeAsBytes(receiptBytes);
+        return output.path;
+      });
+      addTearDown(() => messenger.setMockMethodCallHandler(cropChannel, null));
       Map<dynamic, dynamic>? photoArgs;
       messenger.setMockMethodCallHandler(photoChannel, (call) async {
         expect(call.method, 'pickImage');
@@ -3092,7 +3101,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(controller.receiptUploads.single.tripId, 1);
       expect(controller.receiptUploads.single.bytes, receiptBytes);
-      expect(controller.receiptUploads.single.fileName, 'receipt.png');
+      expect(controller.receiptUploads.single.fileName, 'receipt.jpg');
+      expect(crops, 1);
+      expect(file.existsSync(), isTrue);
       if (source == 'camera' || source == 'gallery') {
         expect(photoArgs!['source'], source == 'camera' ? 0 : 1);
       }
