@@ -3395,9 +3395,11 @@ void main() {
           : t.chooseReceiptFile;
       await tester.tap(find.text(label));
       await tester.pump(const Duration(milliseconds: 400));
+      // Cropping and reading the file take real time, which fake pumps cannot
+      // advance. A slow CI machine needs far longer than a developer laptop.
       for (
         var attempt = 0;
-        attempt < 20 && controller.receiptUploads.isEmpty;
+        attempt < 1000 && controller.receiptUploads.isEmpty;
         attempt++
       ) {
         await tester.runAsync(
@@ -3405,6 +3407,7 @@ void main() {
         );
         await tester.pump();
       }
+      expect(controller.receiptUploads, hasLength(1));
       await tester.pumpAndSettle();
       expect(controller.receiptUploads.single.tripId, 1);
       expect(controller.receiptUploads.single.bytes, receiptBytes);
