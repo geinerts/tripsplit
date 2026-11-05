@@ -51,6 +51,46 @@ final class AccountLifecycleSecurityTest extends TestCase
         self::assertSame(0,$r['friends']);self::assertSame(0,$r['identities']);
         if($scenario==='replay')self::assertSame(400,$r['second']['status']);
     }
+    public function test_confirmed_deletion_revokes_the_stored_apple_token_and_removes_it(): void
+    {
+        $r=$this->scenario('delete','confirm_social_token');
+        self::assertSame(200,$r['response']['status']);self::assertSame('deleted',$r['user']['account_status']);
+        self::assertSame(0,$r['identities']);
+        self::assertCount(1,$r['token_http']);$call=$r['token_http'][0];
+        self::assertSame('https://appleid.apple.com/auth/revoke',$call['url']);
+        self::assertSame('stored-refresh-token',$call['fields']['token']);
+        self::assertSame('refresh_token',$call['fields']['token_type_hint']);
+        self::assertSame('stored-client',$call['fields']['client_id']);
+        self::assertSame('stored-client',$call['jwt']['claims']['sub']);
+        self::assertSame(64,$call['jwt']['signature_bytes']);
+    }
+    public function test_confirmed_deletion_revokes_the_stored_google_token(): void
+    {
+        $r=$this->scenario('delete','confirm_social_token_google');
+        self::assertSame(200,$r['response']['status']);
+        self::assertCount(1,$r['token_http']);
+        self::assertSame('https://oauth2.googleapis.com/revoke',$r['token_http'][0]['url']);
+        self::assertSame(['token'=>'stored-refresh-token'],$r['token_http'][0]['fields']);
+    }
+    public static function revocationProblems(): iterable
+    {
+        foreach(['refused','throws','unreadable','unconfigured'] as $s) yield $s=>['confirm_social_token_'.$s];
+    }
+    #[DataProvider('revocationProblems')]
+    public function test_revocation_problems_never_block_deletion(string $scenario): void
+    {
+        $r=$this->scenario('delete',$scenario);
+        self::assertSame(200,$r['response']['status']);self::assertSame('deleted',$r['user']['account_status']);
+        self::assertSame(0,$r['identities']);self::assertSame(0,$r['sessions']);
+        if(in_array($scenario,['confirm_social_token_unreadable','confirm_social_token_unconfigured'],true)) {
+            self::assertSame([],$r['token_http']);
+        }
+    }
+    public function test_rejected_deletion_revokes_nothing(): void
+    {
+        $r=$this->scenario('delete','confirm_social_token_malformed');
+        self::assertSame(400,$r['response']['status']);self::assertSame([],$r['token_http']);
+    }
     public static function requests(): iterable
     { foreach(['delete'] as $a)foreach(['request','request_social','request_cooldown','request_prior','request_limit','request_mail_failure'] as $s)yield[$a,$s]; }
     #[DataProvider('requests')]

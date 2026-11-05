@@ -109,12 +109,14 @@ class AuthController {
     required String idToken,
     String? fullName,
     String? email,
+    String? authorizationCode,
   }) => _signIn(
     () => _socialLoginUseCase.call(
       provider: provider,
       idToken: idToken,
       fullName: fullName,
       email: email,
+      authorizationCode: authorizationCode,
     ),
   );
 

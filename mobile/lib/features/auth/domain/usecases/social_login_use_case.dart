@@ -11,12 +11,14 @@ class SocialLoginUseCase {
     required String idToken,
     String? fullName,
     String? email,
+    String? authorizationCode,
   }) {
     return _repository.loginWithSocial(
       provider: provider,
       idToken: idToken,
       fullName: fullName,
       email: email,
+      authorizationCode: authorizationCode,
     );
   }
 }

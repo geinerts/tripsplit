@@ -3,6 +3,7 @@ declare(strict_types=1);
 if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
 
 require __DIR__ . '/credentials_harness.php';
+require __DIR__ . '/social_token_stub.php';
 require __DIR__ . '/../../lib/helpers/helper_social_auth.php';
 require __DIR__ . '/../../lib/actions/auth_social_actions.php';
 define('SOCIAL_AUTH_ENABLED', true);
@@ -28,6 +29,11 @@ $subject = $mysql ? 'VARCHAR(191) CHARACTER SET ascii COLLATE ascii_general_ci' 
 $pdo->exec('CREATE TABLE trip_user_identities (id ' . $id . ', user_id INT NOT NULL,
     provider VARCHAR(10), provider_subject ' . $subject . ', email VARCHAR(255), email_verified INT,
     payload_json TEXT, last_login_at DATETIME, UNIQUE(provider, provider_subject), UNIQUE(user_id, provider))');
+$codeScenario = str_starts_with($scenario, 'linked_code') || str_starts_with($scenario, 'new_code');
+if ($codeScenario) {
+    $pdo->exec('ALTER TABLE trip_user_identities ADD COLUMN provider_token_enc TEXT NULL');
+    configure_social_token_test($scenario);
+}
 seed_credential_user($pdo, $scenario === 'inactive' ? 'inactive' : 'established');
 if ($scenario === 'linked_password_set') { record_user_password_capability($pdo, 1, true); }
 if ($scenario === 'linked_placeholder') { record_user_password_capability($pdo, 1, false); }
@@ -44,6 +50,10 @@ if ($scenario === 'provider_mismatch') {
     $pdo->prepare('INSERT INTO trip_user_identities (user_id, provider, provider_subject, email,
         email_verified, payload_json) VALUES (1, ?, ?, ?, 1, ?)')->execute([
             $provider === 'google' ? 'apple' : 'google', 'Opaque-Subject-A', 'owner@example.invalid', '{}']);
+}
+if ($scenario === 'linked_code_stored') {
+    $pdo->prepare('UPDATE trip_user_identities SET provider_token_enc = ?')
+        ->execute([social_token_seal('earlier-refresh-token', 'earlier-client')]);
 }
 $beforeUsers = $pdo->query('SELECT * FROM trip_users ORDER BY id')->fetchAll();
 $beforeIdentities = $pdo->query('SELECT * FROM trip_user_identities ORDER BY id')->fetchAll();
@@ -86,6 +96,9 @@ if (!openssl_sign($signed, $signature, $key, OPENSSL_ALGO_SHA256)) { throw new R
 if ($scenario === 'bad_signature') { $signature[0] = chr(ord($signature[0]) ^ 1); }
 $requestBody = ['provider' => $provider, 'id_token' => $signed . '.' . base64url_encode($signature),
     'email' => 'client-supplied@example.invalid', 'full_name' => 'Synthetic Person'];
+if ($codeScenario && $scenario !== 'linked_code_oversized') { $requestBody['authorization_code'] = 'synthetic-one-time-code'; }
+if ($scenario === 'linked_code_oversized') { $requestBody['authorization_code'] = str_repeat('x', 4097); }
+if ($scenario === 'linked_code_not_string') { $requestBody['authorization_code'] = ['synthetic']; }
 $response = credential_test_response('social_auth_action');
 $afterUsers = $pdo->query('SELECT * FROM trip_users ORDER BY id')->fetchAll();
 $afterIdentities = $pdo->query('SELECT * FROM trip_user_identities ORDER BY id')->fetchAll();
@@ -103,4 +116,9 @@ echo json_encode(['response' => $response, 'users_unchanged' => $beforeUsers ===
     'original_verified' => $afterUsers[0]['email_verified_at'] !== null,
     'original_hash_unchanged' => $beforeUsers[0]['password_hash'] === $afterUsers[0]['password_hash'],
     'other_unchanged' => $beforeUsers[1] === $afterUsers[1],
+    'token_http' => social_token_http_report(),
+    'stored_token' => $codeScenario ? array_map(static fn (array $row) => [
+        'raw' => $row['provider_token_enc'],
+        'opened' => $row['provider_token_enc'] === null ? null : social_token_open((string) $row['provider_token_enc']),
+    ], $afterIdentities) : [],
     'transaction_open' => $pdo->inTransaction()], JSON_THROW_ON_ERROR);

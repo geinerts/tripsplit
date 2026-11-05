@@ -48,11 +48,13 @@ class _SocialAuthCredential {
     required this.idToken,
     this.fullName,
     this.email,
+    this.authorizationCode,
   });
 
   final String idToken;
   final String? fullName;
   final String? email;
+  final String? authorizationCode;
 }
 
 class _SocialAuthCancelled implements Exception {}

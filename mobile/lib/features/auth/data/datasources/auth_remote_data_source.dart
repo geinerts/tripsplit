@@ -18,6 +18,7 @@ abstract class AuthRemoteDataSource {
     required String idToken,
     String? fullName,
     String? email,
+    String? authorizationCode,
   });
 
   Future<AuthUserModel> registerWithCredentials({
@@ -115,6 +116,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String idToken,
     String? fullName,
     String? email,
+    String? authorizationCode,
   }) async {
     final payload = <String, dynamic>{
       'provider': provider,
@@ -127,6 +129,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     final normalizedEmail = (email ?? '').trim().toLowerCase();
     if (normalizedEmail.isNotEmpty) {
       payload['email'] = normalizedEmail;
+    }
+    final normalizedCode = (authorizationCode ?? '').trim();
+    if (normalizedCode.isNotEmpty) {
+      payload['authorization_code'] = normalizedCode;
     }
 
     final response = await _apiClient.request(

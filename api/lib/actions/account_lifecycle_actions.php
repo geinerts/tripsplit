@@ -5,6 +5,7 @@ require_once __DIR__ . '/../helpers/helper_account_deletion_feedback.php';
 require_once __DIR__ . '/../helpers/helper_travel_places.php';
 
 require_once __DIR__ . '/../helpers/helper_account_action_proofs.php';
+require_once __DIR__ . '/../helpers/helper_social_tokens.php';
 
 function account_action_token_is_well_formed(string $token): bool
 {
@@ -84,6 +85,7 @@ function confirm_account_deletion_action(): void
     $lookup->execute(['hash' => $hash, 'action' => 'delete']);
     $userId = (int) $lookup->fetchColumn();
     $avatarPath = '';
+    $providerTokens = [];
     $pdo->beginTransaction();
     try {
         // Lock the user first, then the proof, avoiding opposite lock ordering.
@@ -103,6 +105,7 @@ function confirm_account_deletion_action(): void
         $pdo->prepare('DELETE FROM ' . table_name('friends')
             . ' WHERE user_a_id = :a OR user_b_id = :b')->execute(['a' => $userId, 'b' => $userId]);
         if (social_auth_identity_table_available($pdo)) {
+            $providerTokens = social_tokens_for_user($pdo, $userId);
             $pdo->prepare('DELETE FROM ' . table_name('user_identities') . ' WHERE user_id = :id')
                 ->execute(['id' => $userId]);
         }
@@ -121,6 +124,7 @@ function confirm_account_deletion_action(): void
         if ($pdo->inTransaction()) { $pdo->rollBack(); }
         throw $error;
     }
+    social_tokens_revoke($providerTokens);
     if ($avatarPath !== '') {
         try { delete_avatar_file($avatarPath); }
         catch (Throwable $error) { error_log('Account deletion avatar cleanup failed.'); }

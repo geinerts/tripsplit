@@ -336,6 +336,29 @@ void main() {
       expect(h.api.path, contains('update_profile'));
     },
   );
+  test(
+    'social login sends a one-time code only when the SDK provides it',
+    () async {
+      final api = RecordingApi();
+      final remote = AuthRemoteDataSourceImpl(api);
+      await remote.loginWithSocial(
+        provider: 'apple',
+        idToken: 'synthetic-id-token',
+        authorizationCode: ' synthetic-code ',
+      );
+      expect(api.path, contains('social_auth'));
+      expect(api.body?['authorization_code'], 'synthetic-code');
+      for (final missing in [null, '', '   ']) {
+        await remote.loginWithSocial(
+          provider: 'google',
+          idToken: 'synthetic-id-token',
+          authorizationCode: missing,
+        );
+        expect(api.body?.containsKey('authorization_code'), isFalse);
+      }
+    },
+  );
+
   test('ordinary profile change sends no credential fields', () async {
     final h = ControllerHarness();
     await h.controller.updateProfile(firstName: 'Synthetic', lastName: 'Owner');

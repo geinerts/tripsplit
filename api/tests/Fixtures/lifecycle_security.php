@@ -2,12 +2,28 @@
 declare(strict_types=1);
 if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
 require __DIR__.'/lifecycle_harness.php';
+require __DIR__.'/social_token_stub.php';
 $pdo=credentials_test_db(); reset_lifecycle_schema($pdo);
 $pdo->exec('DROP TABLE IF EXISTS trip_account_deletion_reason_counts');
 $pdo->exec('CREATE TABLE trip_account_deletion_reason_counts (reason_code VARCHAR(32) PRIMARY KEY, request_count BIGINT NOT NULL)');
 [$script,$action,$scenario]=$argv;
 seed_lifecycle_user($pdo,$action,str_contains($scenario,'social') || $scenario==='identity_failure');
 $accessToken = create_access_token_for_user(1, 1);
+if (str_starts_with($scenario,'confirm_social_token')) {
+    configure_social_token_test($scenario);
+    $pdo->exec('ALTER TABLE trip_user_identities ADD COLUMN provider_token_enc TEXT NULL');
+    if (str_contains($scenario,'google')) $pdo->exec("UPDATE trip_user_identities SET provider='google' WHERE id=1");
+    if (str_contains($scenario,'unreadable')) $pdo->exec("UPDATE trip_user_identities SET provider_token_enc='enc:v1:broken' WHERE id=1");
+    elseif (!str_contains($scenario,'unconfigured')) {
+        $pdo->prepare('UPDATE trip_user_identities SET provider_token_enc=? WHERE id=1')
+            ->execute([social_token_seal('stored-refresh-token','stored-client')]);
+    }
+    // An unrelated member's token must never be revoked.
+    if (defined('SOCIAL_TOKEN_ENCRYPTION_KEY')) {
+        $pdo->prepare('UPDATE trip_user_identities SET provider_token_enc=? WHERE id=2')
+            ->execute([social_token_seal('other-refresh-token','other-client')]);
+    }
+}
 $request=str_starts_with($scenario,'request');
 if (!$request || in_array($scenario,['request_prior','request_mail_failure','request_limit'],true)) {
     seed_lifecycle_proof($pdo,$action);
@@ -51,7 +67,7 @@ $before=scenario_snapshot($pdo,$scenario);
 $requestBody=$request ? ['email'=>$scenario==='request_unknown'?'unknown@example.invalid':'owner@example.invalid',
     'password'=>str_contains($scenario,'social')?'':' Current-password-123 ', 'recipient'=>'attacker@example.invalid']
     : ['token'=>str_repeat('a',64)];
-if ($scenario==='malformed') $requestBody['token']='not-a-proof';
+if ($scenario==='malformed' || $scenario==='confirm_social_token_malformed') $requestBody['token']='not-a-proof';
 if ($scenario==='newline') $requestBody['token'].="\n";
 if ($scenario==='request_wrong_password' || $scenario==='request_social_wrong_password') $requestBody['password']='wrong';
 if ($scenario==='request_missing_password') $requestBody['password']='';
@@ -73,7 +89,7 @@ try {
 } catch (PDOException $e) { $failure=true; $response=null; }
 $after=scenario_snapshot($pdo,$scenario);
 $ownerProofs=array_values(array_filter($after['account_action_tokens'],fn($r)=>(int)$r['user_id']===1));
-echo json_encode(['response'=>$response,'second'=>$second,'failure'=>$failure,'unchanged'=>$before===$after,
+echo json_encode(['token_http'=>social_token_http_report(),'response'=>$response,'second'=>$second,'failure'=>$failure,'unchanged'=>$before===$after,
     'other_unchanged'=>unrelated_lifecycle_rows($before)===unrelated_lifecycle_rows($after),
     'open'=>$pdo->inTransaction(),'user'=>$after['users'][0],
     'sessions'=>count(array_filter($after['refresh_tokens']??[],fn($r)=>(int)$r['user_id']===1 && $r['revoked_at']===null)),

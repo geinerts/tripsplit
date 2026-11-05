@@ -14,6 +14,7 @@ abstract class AuthRepository {
     required String idToken,
     String? fullName,
     String? email,
+    String? authorizationCode,
   });
 
   Future<AuthUser> registerWithCredentials({

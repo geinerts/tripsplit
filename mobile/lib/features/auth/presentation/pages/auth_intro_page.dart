@@ -39,11 +39,13 @@ class _IntroSocialCredential {
     required this.idToken,
     this.fullName,
     this.email,
+    this.authorizationCode,
   });
 
   final String idToken;
   final String? fullName;
   final String? email;
+  final String? authorizationCode;
 }
 
 class _IntroSocialCancelled implements Exception {}
@@ -197,6 +199,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
         idToken: credential.idToken,
         fullName: credential.fullName,
         email: credential.email,
+        authorizationCode: credential.authorizationCode,
       );
       if (!mounted) {
         return;
@@ -255,6 +258,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
         idToken: idToken,
         fullName: fullName.isEmpty ? null : fullName,
         email: email.isEmpty ? null : email,
+        authorizationCode: account.serverAuthCode,
       );
     } on PlatformException catch (error) {
       final combined = '${error.code} ${error.message ?? ''}'.toLowerCase();
@@ -301,6 +305,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
         idToken: idToken,
         fullName: fullName,
         email: email.isEmpty ? null : email,
+        authorizationCode: credential.authorizationCode,
       );
     } on SignInWithAppleAuthorizationException catch (error) {
       if (error.code == AuthorizationErrorCode.canceled) {

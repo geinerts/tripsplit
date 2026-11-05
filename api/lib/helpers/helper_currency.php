@@ -183,6 +183,37 @@ function fx_timeout_seconds(): int
     return $raw;
 }
 
+/**
+ * Posts a form and returns the status with any JSON object body. Never throws on
+ * an HTTP error status, because callers need to treat refusals as data.
+ *
+ * @return array{status:int,json:array}
+ */
+function http_post_form_assoc(string $url, array $fields, int $timeoutSeconds): array
+{
+    $ch = curl_init();
+    if ($ch === false) {
+        throw new RuntimeException('Failed to initialize HTTP client.');
+    }
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($fields));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeoutSeconds);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeoutSeconds);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept: application/json']);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'TripSplit/1.0');
+    $rawBody = curl_exec($ch);
+    if ($rawBody === false) {
+        curl_close($ch);
+        throw new RuntimeException('HTTP request failed.');
+    }
+    $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $json = json_decode((string) $rawBody, true);
+    return ['status' => $status, 'json' => is_array($json) ? $json : []];
+}
+
 function http_get_json_assoc(string $url, int $timeoutSeconds): array
 {
     $statusCode = 0;

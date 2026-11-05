@@ -125,6 +125,7 @@ extension _LoginPageActions on _LoginPageState {
         idToken: credential.idToken,
         fullName: credential.fullName,
         email: credential.email,
+        authorizationCode: credential.authorizationCode,
       );
       if (!mounted) {
         return;
@@ -189,6 +190,7 @@ extension _LoginPageActions on _LoginPageState {
         idToken: idToken,
         fullName: fullName.isEmpty ? null : fullName,
         email: email.isEmpty ? null : email,
+        authorizationCode: account.serverAuthCode,
       );
     } on PlatformException catch (error) {
       final combined = '${error.code} ${error.message ?? ''}'.toLowerCase();
@@ -233,6 +235,7 @@ extension _LoginPageActions on _LoginPageState {
         idToken: idToken,
         fullName: fullName,
         email: email.isEmpty ? null : email,
+        authorizationCode: credential.authorizationCode,
       );
     } on SignInWithAppleAuthorizationException catch (error) {
       if (error.code == AuthorizationErrorCode.canceled) {

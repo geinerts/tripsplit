@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../helpers/helper_password_capability.php';
+require_once __DIR__ . '/../helpers/helper_social_tokens.php';
 
 function social_auth_random_device_token(): string
 {
@@ -403,6 +404,15 @@ function social_auth_action(): void
         }
         throw $error;
     }
+
+    $authorizationCode = $body['authorization_code'] ?? '';
+    social_token_capture_on_login(
+        $pdo,
+        $userId,
+        $provider,
+        is_string($authorizationCode) ? trim($authorizationCode) : '',
+        (string) ($claims['audience'] ?? '')
+    );
 
     $me = fetch_me_row_by_id($pdo, $userId);
     if (!$me) {

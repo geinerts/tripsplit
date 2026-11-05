@@ -31,6 +31,9 @@ Errors (HTTP 409, without a new auth payload):
 Invalid tokens retain HTTP 401. An inactive account retains HTTP 403. The Flutter client
 has not gained dedicated localized handling for these new codes in this batch.
 
+Provider token storage and revocation on deletion is described in
+[social-token-revocation.md](social-token-revocation.md).
+
 ## Migration and compatibility
 
 `sql/migrations/2026-10-04-social-identity-subject-case.sql` changes only the subject

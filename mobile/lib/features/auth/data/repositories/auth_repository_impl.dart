@@ -27,12 +27,14 @@ class AuthRepositoryImpl implements AuthRepository {
     required String idToken,
     String? fullName,
     String? email,
+    String? authorizationCode,
   }) {
     return _remote.loginWithSocial(
       provider: provider,
       idToken: idToken,
       fullName: fullName,
       email: email,
+      authorizationCode: authorizationCode,
     );
   }
 
