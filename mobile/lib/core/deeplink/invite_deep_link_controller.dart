@@ -1,9 +1,26 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
+import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InviteDeepLinkParser {
   const InviteDeepLinkParser._();
+
+  /// Account links from emails (password reset, email verification, deletion
+  /// confirmation) are web pages. If the OS routes one to the app, it must be
+  /// handed back to the browser instead of being parsed as an invite.
+  static bool isWebOnlyAccountLink(Uri uri) {
+    if (uri.scheme != 'https' && uri.scheme != 'http') {
+      return false;
+    }
+    final host = uri.host.toLowerCase();
+    if (host != 'splyto.eu' && host != 'www.splyto.eu') {
+      return false;
+    }
+    final path = uri.path.toLowerCase();
+    return path == '/reset-password.php' || path.startsWith('/api/');
+  }
 
   static String? extractInviteCodeFromRaw(String rawInput) {
     final raw = rawInput.trim();
@@ -397,10 +414,19 @@ class FriendDeepLinkTarget {
 }
 
 class InviteDeepLinkController {
-  InviteDeepLinkController({AppLinks? appLinks})
-    : _appLinks = appLinks ?? AppLinks();
+  InviteDeepLinkController({
+    AppLinks? appLinks,
+    Future<bool> Function(Uri uri)? openInBrowser,
+  }) : _appLinks = appLinks ?? AppLinks(),
+       _openInBrowser = openInBrowser ?? _launchInBrowser;
 
   final AppLinks _appLinks;
+  final Future<bool> Function(Uri uri) _openInBrowser;
+
+  static Future<bool> _launchInBrowser(Uri uri) {
+    return launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   final StreamController<String> _inviteCodeController =
       StreamController<String>.broadcast();
   final StreamController<FriendDeepLinkTarget> _friendTargetController =
@@ -462,7 +488,14 @@ class InviteDeepLinkController {
     }
   }
 
+  @visibleForTesting
+  void handleIncomingUri(Uri uri) => _handleIncomingUri(uri);
+
   void _handleIncomingUri(Uri uri) {
+    if (InviteDeepLinkParser.isWebOnlyAccountLink(uri)) {
+      unawaited(_openInBrowser(uri).catchError((Object _) => false));
+      return;
+    }
     final inviteCode = InviteDeepLinkParser.extractInviteCodeFromUri(uri);
     if (inviteCode != null && inviteCode.isNotEmpty) {
       _pendingInviteCode = inviteCode;

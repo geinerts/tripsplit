@@ -5,6 +5,8 @@
       {
         "appID": "54RJ78MUJ6.eu.splyto.app",
         "paths": [
+          "NOT /reset-password.php",
+          "NOT /api/*",
           "/",
           "/*"
         ]
