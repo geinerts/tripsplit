@@ -61,9 +61,15 @@ function build_email_brand_logo_html(): string
     $baseUrl = defined('PUBLIC_BASE_URL') ? trim(PUBLIC_BASE_URL) : '';
     if ($baseUrl === '') { $baseUrl = defined('APP_BASE_URL') ? trim(APP_BASE_URL) : ''; }
     if ($baseUrl === '') { $baseUrl = 'https://splyto.eu'; }
-    $logoUrl = email_template_escape(rtrim($baseUrl, '/') . '/email-logo.png');
-    return '<img src="' . $logoUrl . '" alt="Splyto" width="156" height="62" '
-        . 'style="display:block;border:0;outline:none;text-decoration:none;width:156px;height:62px;">';
+    $base = rtrim($baseUrl, '/');
+    $light = email_template_escape($base . '/email-logo.png');
+    $dark = email_template_escape($base . '/email-logo-dark.png');
+    // The default logo carries its own white backing, so clients that auto-invert colors
+    // (Gmail) still show it. Clients honoring prefers-color-scheme swap to the light logo.
+    return '<img class="logo-light" src="' . $light . '" alt="Splyto" width="169" height="75" '
+        . 'style="display:block;border:0;outline:none;text-decoration:none;border-radius:12px;width:169px;height:75px;">'
+        . '<img class="logo-dark" src="' . $dark . '" alt="" width="156" height="62" '
+        . 'style="display:none;max-height:0;overflow:hidden;mso-hide:all;border:0;outline:none;margin-left:7px;width:156px;height:62px;">';
 }
 
 /** Shared, table-based account email. All supplied text and links are escaped here. */
@@ -94,29 +100,42 @@ function build_account_email_template(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light">
-  <meta name="supported-color-schemes" content="light">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
   <title>{$title}</title>
   <style>
     body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
     table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+    :root { color-scheme:light dark; supported-color-schemes:light dark; }
+    @media (prefers-color-scheme: dark) {
+      body, .bg-page { background-color:#0F1A22 !important; }
+      .card { background-color:#17232E !important; border-color:#26394A !important; }
+      .email-title, .t-strong { color:#FFFFFF !important; }
+      .t-body { color:#C3D0D6 !important; }
+      .t-muted { color:#8FA3AD !important; }
+      .notice { background-color:#122A35 !important; color:#C3D6DD !important; }
+      .footer-row { border-top-color:#26394A !important; }
+      .link { color:#4FD1C5 !important; }
+      .logo-light { display:none !important; max-height:0 !important; }
+      .logo-dark { display:block !important; max-height:none !important; }
+    }
     @media only screen and (max-width:600px) {
       .email-outer { padding:20px 12px !important; }
       .email-content { padding:28px 24px !important; }
-      .email-header { padding:26px 24px 22px !important; }
+      .email-header { padding:20px 17px 22px !important; }
       .email-title { font-size:28px !important; line-height:34px !important; }
     }
   </style>
 </head>
-<body style="margin:0;padding:0;width:100%;background-color:#F2F6F5;font-family:Arial,Helvetica,sans-serif;color:#193149;">
+<body class="bg-page" style="margin:0;padding:0;width:100%;background-color:#F2F6F5;font-family:Arial,Helvetica,sans-serif;color:#193149;">
   <div style="display:none;font-size:1px;line-height:1px;color:#F2F6F5;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">{$preheader}</div>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#F2F6F5">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#F2F6F5" class="bg-page">
     <tr><td class="email-outer" align="center" style="padding:40px 16px;">
       <!--[if mso]><table role="presentation" width="560"><tr><td><![endif]-->
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;">
-        <tr><td bgcolor="#FFFFFF" style="background-color:#FFFFFF;border:1px solid #DFE8E5;border-radius:20px;overflow:hidden;">
+        <tr><td class="card" bgcolor="#FFFFFF" style="background-color:#FFFFFF;border:1px solid #DFE8E5;border-radius:20px;overflow:hidden;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td class="email-header" style="padding:30px 36px 26px;">
+            <tr><td class="email-header" style="padding:23px 29px 19px;">
               {$logo}
             </td></tr>
             <tr><td style="padding:0 36px;">
@@ -131,26 +150,26 @@ function build_account_email_template(
             <tr><td class="email-content" style="padding:34px 36px 32px;">
               <p style="margin:0 0 14px;font-size:11px;line-height:16px;letter-spacing:2px;font-weight:bold;color:#008576;">YOUR SPLYTO ACCOUNT</p>
               <h1 class="email-title" style="margin:0 0 24px;font-size:32px;line-height:38px;letter-spacing:-0.8px;font-weight:700;color:#193149;">{$title}</h1>
-              <p style="margin:0 0 10px;font-size:16px;line-height:25px;font-weight:bold;color:#193149;">{$greeting}</p>
-              <p style="margin:0 0 26px;font-size:15px;line-height:25px;color:#53626B;">{$message}</p>
+              <p class="t-strong" style="margin:0 0 10px;font-size:16px;line-height:25px;font-weight:bold;color:#193149;">{$greeting}</p>
+              <p class="t-body" style="margin:0 0 26px;font-size:15px;line-height:25px;color:#53626B;">{$message}</p>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                <tr><td align="center" bgcolor="{$buttonColor}" style="background-color:{$buttonColor};border-radius:12px;mso-padding-alt:17px 20px;">
+                <tr><td align="center" bgcolor="{$buttonColor}" style="background-color:{$buttonColor};background-image:linear-gradient({$buttonColor},{$buttonColor});border-radius:12px;mso-padding-alt:17px 20px;">
                   <a href="{$url}" style="display:block;padding:17px 20px;border:1px solid {$buttonColor};border-radius:12px;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:22px;font-weight:bold;text-align:center;color:#FFFFFF;text-decoration:none;">{$actionLabel}</a>
                 </td></tr>
                 <tr><td height="24" style="height:24px;font-size:0;line-height:0;">&nbsp;</td></tr>
-                <tr><td bgcolor="#EAF8FA" style="background-color:#EAF8FA;border-left:3px solid #00B8CF;padding:16px 18px;font-size:13px;line-height:21px;color:#365361;">{$notice}</td></tr>
+                <tr><td class="notice" bgcolor="#EAF8FA" style="background-color:#EAF8FA;border-left:3px solid #00B8CF;padding:16px 18px;font-size:13px;line-height:21px;color:#365361;">{$notice}</td></tr>
               </table>
-              <p style="margin:26px 0 7px;font-size:12px;line-height:19px;color:#68777D;">Button not opening? Copy this link into your browser:</p>
-              <p style="margin:0;font-size:12px;line-height:19px;word-break:break-all;overflow-wrap:anywhere;"><a href="{$url}" style="color:#007A6D;text-decoration:underline;word-break:break-all;overflow-wrap:anywhere;">{$url}</a></p>
+              <p class="t-muted" style="margin:26px 0 7px;font-size:12px;line-height:19px;color:#68777D;">Button not opening? Copy this link into your browser:</p>
+              <p style="margin:0;font-size:12px;line-height:19px;word-break:break-all;overflow-wrap:anywhere;"><a class="link" href="{$url}" style="color:#007A6D;text-decoration:underline;word-break:break-all;overflow-wrap:anywhere;">{$url}</a></p>
             </td></tr>
-            <tr><td align="center" style="border-top:1px solid #E7EEEB;padding:20px 24px;">
-              <p style="margin:0;font-size:12px;line-height:20px;color:#68777D;">Need a hand? <a href="mailto:support@splyto.eu" style="color:#007A6D;text-decoration:none;">support@splyto.eu</a></p>
+            <tr><td class="footer-row" align="center" style="border-top:1px solid #E7EEEB;padding:20px 24px;">
+              <p class="t-muted" style="margin:0;font-size:12px;line-height:20px;color:#68777D;">Need a hand? <a class="link" href="mailto:support@splyto.eu" style="color:#007A6D;text-decoration:none;">support@splyto.eu</a></p>
             </td></tr>
           </table>
         </td></tr>
         <tr><td align="center" style="padding:22px 12px 0;">
-          <p style="margin:0;font-size:12px;line-height:20px;color:#68777D;">Splyto &middot; Settle fast. Stay friends.</p>
-          <p style="margin:4px 0 0;font-size:11px;line-height:18px;"><a href="https://splyto.eu" style="color:#68777D;text-decoration:none;">splyto.eu</a></p>
+          <p class="t-muted" style="margin:0;font-size:12px;line-height:20px;color:#68777D;">Splyto &middot; Settle fast. Stay friends.</p>
+          <p style="margin:4px 0 0;font-size:11px;line-height:18px;"><a class="t-muted" href="https://splyto.eu" style="color:#68777D;text-decoration:none;">splyto.eu</a></p>
         </td></tr>
       </table>
       <!--[if mso]></td></tr></table><![endif]-->
