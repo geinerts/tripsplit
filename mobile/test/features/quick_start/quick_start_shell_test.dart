@@ -372,6 +372,41 @@ void main() {
     await _dispose(tester, links);
   });
 
+  testWidgets('create from guide replayed on a profile sub-page reaches form', (
+    tester,
+  ) async {
+    final session = AccountDataSession()..activate(1);
+    final trips = _Trips(session);
+    final service = _Service(session)..eligible = false;
+    final links = _Links();
+    await _mount(tester, trips, service, links, tab: 4);
+    final profile = tester.element(find.byType(ProfilePage));
+    unawaited(
+      Navigator.of(profile).push<void>(
+        MaterialPageRoute(builder: (_) => const Scaffold(body: Text('Help'))),
+      ),
+    );
+    await tester.pumpAndSettle();
+    tester
+        .widget<ProfilePage>(find.byType(ProfilePage, skipOffstage: false))
+        .onQuickStartRequested!();
+    await tester.pumpAndSettle();
+    for (var i = 0; i < 2; i++) {
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(
+      find.descendant(
+        of: find.byType(QuickStartSheet),
+        matching: find.text('Create'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Help'), findsNothing);
+    expect(find.byKey(const ValueKey('create-trip-form')), findsOneWidget);
+    await _dispose(tester, links);
+  });
+
   testWidgets(
     'incoming invitation dismisses a visible guide without reopening it',
     (tester) async {

@@ -1908,6 +1908,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get profileSecuritySectionHeading => 'БЕЗПЕКА';
 
   @override
+  String get profileAccountAndSecurity => 'Обліковий запис і безпека';
+
+  @override
+  String get profileHelpTitle => 'Допомога';
+
+  @override
   String get profileChangePassword => 'Змінити пароль';
 
   @override
@@ -4250,124 +4256,124 @@ class AppLocalizationsUk extends AppLocalizations {
   String get livePrivateUntilShared => 'Ваше місцезнаходження залишається конфіденційним, доки ви не вирішите поділитися ним.';
 
   @override
-  String get activityEventExpenseCreated => 'додано витрату';
+  String get activityEventExpenseCreated => 'додав(-ла) витрату';
 
   @override
-  String get activityEventExpenseUpdated => 'оновлено витрати';
+  String get activityEventExpenseUpdated => 'оновив(-ла) витрату';
 
   @override
-  String get activityEventExpenseDeleted => 'видалено витрату';
+  String get activityEventExpenseDeleted => 'видалив(-ла) витрату';
 
   @override
-  String get activityEventExpenseCommentAdded => 'додано коментар до витрати';
+  String get activityEventExpenseCommentAdded => 'прокоментував(-ла) витрату';
 
   @override
-  String get activityEventTripCreated => 'створив поїздку';
+  String get activityEventTripCreated => 'створив(-ла) поїздку';
 
   @override
-  String get activityEventTripUpdated => 'оновлені деталі поїздки';
+  String get activityEventTripUpdated => 'оновив(-ла) деталі поїздки';
 
   @override
-  String get activityEventTripRenamed => 'змінено назву поїздки';
+  String get activityEventTripRenamed => 'змінив(-ла) назву поїздки';
 
   @override
-  String get activityEventTripCurrencyChanged => 'змінено валюту поїздки';
+  String get activityEventTripCurrencyChanged => 'змінив(-ла) валюту поїздки';
 
   @override
-  String get activityEventTripPhotoChanged => 'змінено фото поїздки';
+  String get activityEventTripPhotoChanged => 'змінив(-ла) фото поїздки';
 
   @override
-  String get activityEventTripBudgetChanged => 'змінено бюджет поїздки';
+  String get activityEventTripBudgetChanged => 'змінив(-ла) бюджет поїздки';
 
   @override
-  String get activityEventTripDestinationsChanged => 'змінено напрямки поїздки';
+  String get activityEventTripDestinationsChanged => 'змінив(-ла) напрямки поїздки';
 
   @override
-  String get activityEventTripMembersAdded => 'додані учасники';
+  String get activityEventTripMembersAdded => 'додав(-ла) учасників';
 
   @override
   String activityEventTripMembersInvited(int count) {
-    return 'Надіслано запрошень: $count';
+    return 'надіслав(-ла) запрошення: $count';
   }
 
   @override
-  String get activityEventTripMemberJoined => 'приєднався до поїздки';
+  String get activityEventTripMemberJoined => 'приєднався(-лась) до поїздки';
 
   @override
-  String get activityEventTripInvitationDeclined => 'відхилив запрошення на поїздку';
+  String get activityEventTripInvitationDeclined => 'відхилив(-ла) запрошення на поїздку';
 
   @override
-  String get activityEventTripInvitationRevoked => 'скасував запрошення на поїздку';
+  String get activityEventTripInvitationRevoked => 'скасував(-ла) запрошення на поїздку';
 
   @override
   String activityEventTripMemberRemoved(String name) {
-    return 'вилучено $name з поїздки';
+    return 'вилучив(-ла) $name з поїздки';
   }
 
   @override
-  String get activityEventTripMemberLeft => 'вийшов із поїздки';
+  String get activityEventTripMemberLeft => 'вийшов(-ла) із поїздки';
 
   @override
   String activityEventTripMemberRoleUpdated(String name, String role) {
-    return 'змінено роль $name на $role';
+    return 'змінив(-ла) роль $name на $role';
   }
 
   @override
-  String get activityEventTripMemberReady => 'позначено як готове до розрахунку';
+  String get activityEventTripMemberReady => 'підтвердив(-ла) готовність до розрахунку';
 
   @override
-  String get activityEventTripMemberNotReady => 'позначено як «не готово»';
+  String get activityEventTripMemberNotReady => 'скасував(-ла) готовність до розрахунку';
 
   @override
   String get activityEventTripAllMembersReady => 'Усі учасники готові до розрахунку';
 
   @override
-  String get activityEventTripFinished => 'подорож завершено';
+  String get activityEventTripFinished => 'завершив(-ла) поїздку';
 
   @override
   String get activityEventTripSettled => 'Усі перекази підтверджено, поїздку розраховано';
 
   @override
-  String get activityEventSettlementMarkedSent => 'позначив переказ як надісланий';
+  String get activityEventSettlementMarkedSent => 'позначив(-ла) переказ як надісланий';
 
   @override
-  String get activityEventSettlementConfirmed => 'підтверджено переказ';
+  String get activityEventSettlementConfirmed => 'підтвердив(-ла) переказ';
 
   @override
-  String get activityEventSettlementSentCancelled => 'статус «скасовано», «надіслано»';
+  String get activityEventSettlementSentCancelled => 'скасував(-ла) статус «надіслано»';
 
   @override
-  String get activityEventSettlementNotReceived => 'позначив переказ як не отриманий';
+  String get activityEventSettlementNotReceived => 'позначив(-ла) переказ як не отриманий';
 
   @override
-  String get activityEventSettlementReminderSent => 'надіслано нагадування про розрахунок';
+  String get activityEventSettlementReminderSent => 'надіслав(-ла) нагадування про розрахунок';
 
   @override
-  String get activityEventPaymentMarkedSent => 'зареєстрував платіж';
+  String get activityEventPaymentMarkedSent => 'зареєстрував(-ла) платіж';
 
   @override
-  String get activityEventPaymentRequested => 'запросив платіж';
+  String get activityEventPaymentRequested => 'запросив(-ла) платіж';
 
   @override
-  String get activityEventPaymentRequestMarkedSent => 'позначив запитуваний платіж як надісланий';
+  String get activityEventPaymentRequestMarkedSent => 'позначив(-ла) запитуваний платіж як надісланий';
 
   @override
-  String get activityEventPaymentRequestCancelled => 'скасовано запит на оплату';
+  String get activityEventPaymentRequestCancelled => 'скасував(-ла) запит на оплату';
 
   @override
-  String get activityEventPaymentRequestDeclined => 'відхилив запит на оплату';
+  String get activityEventPaymentRequestDeclined => 'відхилив(-ла) запит на оплату';
 
   @override
-  String get activityEventPaymentConfirmed => 'підтвердив платіж';
+  String get activityEventPaymentConfirmed => 'підтвердив(-ла) платіж';
 
   @override
-  String get activityEventPaymentCancelled => 'скасовано запис про платіж';
+  String get activityEventPaymentCancelled => 'скасував(-ла) запис про платіж';
 
   @override
-  String get activityEventPaymentNotReceived => 'позначив платіж як не отриманий';
+  String get activityEventPaymentNotReceived => 'позначив(-ла) платіж як не отриманий';
 
   @override
-  String get activityEventUnknown => 'внесено зміну';
+  String get activityEventUnknown => 'вніс(-ла) зміну';
 
   @override
   String get privacyEnglishFallback => 'Політика конфіденційності наразі доступна англійською мовою.';

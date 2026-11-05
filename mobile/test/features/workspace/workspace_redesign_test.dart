@@ -152,6 +152,7 @@ TripExpense expense(
   String currency = 'EUR',
   String splitMode = 'equal',
   String? receiptUrl,
+  String date = '2026-10-21',
 }) => TripExpense(
   id: id,
   amount: 24,
@@ -161,7 +162,7 @@ TripExpense expense(
   fxRateToTrip: .8,
   category: 'food',
   note: name ?? 'Breakfast $id',
-  expenseDate: '2026-10-21',
+  expenseDate: date,
   splitMode: splitMode,
   paidById: payer,
   paidByNickname: payer == 7 ? 'Matiss' : 'Anna',
@@ -2842,34 +2843,291 @@ void main() {
       commands.dispose();
     },
   );
-  testWidgets('balance amounts sit against the trailing chevron', (
+  testWidgets('balance rows stay on one line with a signed amount', (
     tester,
   ) async {
-    await _mount(tester, _Workspace());
+    final controller = _Workspace()
+      ..data = snapshot().copyWith(
+        balances: const [
+          BalanceItem(id: 7, nickname: 'Matiss', paid: 9, owed: 4, net: 5),
+          BalanceItem(id: 8, nickname: 'Anna', paid: 0, owed: 5, net: -5),
+          BalanceItem(id: 9, nickname: 'Igors', paid: 1, owed: 1, net: 0),
+        ],
+      );
+    await _mount(tester, controller);
     await tester.pumpAndSettle();
     await _selectTab(tester, 'Balances');
     final row = find.byKey(const ValueKey('balance-row-7'));
     await tester.scrollUntilVisible(
-      row,
+      find.byKey(const ValueKey('balance-row-9')),
       200,
       scrollable: find.byType(Scrollable).first,
     );
-    final amount = find.byKey(const ValueKey('balance-amount-7'));
-    final chevron = find.descendant(
-      of: row,
-      matching: find.byIcon(Icons.chevron_right),
+    String amount(int id) =>
+        tester.widget<Text>(find.byKey(ValueKey('balance-amount-$id'))).data!;
+    expect(amount(7), startsWith('+'));
+    expect(amount(8), startsWith('−'));
+    expect(amount(8), isNot(contains('-')));
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    expect(amount(9), t.settledLabel);
+    expect(find.text(t.workspaceGetsBackFromTheGroup), findsNothing);
+    expect(find.text(t.workspaceOwesToTheGroup), findsNothing);
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('balance-amount-8')))
+          .semanticsLabel,
+      contains(t.workspaceOwesToTheGroup),
     );
     expect(
-      tester.getTopRight(amount).dx,
-      closeTo(tester.getTopLeft(chevron).dx - 4, .1),
+      find.descendant(of: row, matching: find.byIcon(Icons.chevron_right)),
+      findsNothing,
     );
     expect(
-      tester.getTopRight(chevron).dx,
+      tester.getTopRight(find.byKey(const ValueKey('balance-amount-7'))).dx,
       closeTo(tester.getTopRight(row).dx, .1),
     );
+    final height = tester.getSize(row).height;
+    expect(height, greaterThanOrEqualTo(48));
+    expect(height, lessThanOrEqualTo(56));
     expect(tester.takeException(), isNull);
     await disposePage(tester);
   });
+
+  testWidgets('expense dates and split modes only show when they add meaning', (
+    tester,
+  ) async {
+    final controller = _Workspace()
+      ..data = snapshot(
+        expenses: [
+          expense(1, name: 'Dinner', date: '2026-10-21'),
+          expense(2, name: 'Taxi', date: '2026-10-21', splitMode: 'exact'),
+          expense(3, name: 'Museum', date: '2026-10-20'),
+        ],
+      );
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    final context = tester.element(find.byType(WorkspacePage));
+    final t = AppLocalizations.of(context)!;
+    final row = find.byKey(const ValueKey('expense-row-1'));
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('expense-row-3')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    String details(int id) => tester
+        .widgetList<Text>(
+          find.descendant(
+            of: find.byKey(ValueKey('expense-row-$id')),
+            matching: find.byType(Text),
+          ),
+        )
+        .map((text) => text.data ?? '')
+        .join(' | ');
+    expect(find.text(t.equalSplitLabel), findsNothing);
+    expect(details(1), isNot(contains(t.equalSplitLabel)));
+    expect(details(2), contains(t.exactAmountsLabel));
+    expect(details(3), contains('Oct 20'));
+    expect(details(1), isNot(contains('Oct 21')));
+    expect(find.text('Oct 21'), findsOneWidget);
+    expect(find.text('Oct 20'), findsNothing);
+    expect(
+      find.descendant(of: row, matching: find.byIcon(Icons.chevron_right)),
+      findsNothing,
+    );
+    final height = tester.getSize(row).height;
+    expect(height, greaterThanOrEqualTo(48));
+    expect(height, lessThanOrEqualTo(64));
+    expect(tester.takeException(), isNull);
+    await disposePage(tester);
+  });
+
+  testWidgets('activity sentence uses a first name unless it is ambiguous', (
+    tester,
+  ) async {
+    WorkspaceActivityEvent event(int id, int actor, String name, String type) =>
+        WorkspaceActivityEvent(
+          id: id,
+          tripId: 1,
+          actorUserId: actor,
+          actorName: name,
+          eventType: type,
+          payload: const {},
+          createdAt: '2026-10-21 10:30:00',
+        );
+    final controller = _Workspace()
+      ..activity = [
+        event(1, 7, 'Matiss Geinerts', 'payment.confirmed'),
+        event(2, 9, 'Matīss Geinerts', 'payment.requested'),
+        event(3, 8, 'Anna Ozola', 'trip.member_joined'),
+        event(4, 8, 'Anna Ozola', 'trip.settled'),
+      ];
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    await _selectTab(tester, t.workspaceActivityTab);
+    Future<String> sentence(int id) async {
+      final row = find.byKey(ValueKey('activity-row-$id'));
+      await tester.scrollUntilVisible(
+        row,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      return tester
+          .widget<RichText>(
+            find.descendant(of: row, matching: find.byType(RichText)).at(1),
+          )
+          .text
+          .toPlainText();
+    }
+
+    expect(
+      await sentence(1),
+      'Matiss Geinerts ${t.activityEventPaymentConfirmed}',
+    );
+    expect(
+      await sentence(2),
+      'Matīss Geinerts ${t.activityEventPaymentRequested}',
+    );
+    expect(await sentence(3), 'Anna ${t.activityEventTripMemberJoined}');
+    expect(await sentence(4), t.activityEventTripSettled);
+    expect(tester.takeException(), isNull);
+    await disposePage(tester);
+  });
+
+  for (final dark in [false, true]) {
+    testWidgets('compact lists fit 320px at 200% dark=$dark', (tester) async {
+      final controller = _Workspace()
+        ..data = snapshot(
+          expenses: [
+            expense(1, name: 'Dinner', date: '2026-10-21', splitMode: 'exact'),
+            expense(2, name: 'Taxi', date: '2026-10-20', currency: 'USD'),
+          ],
+        )
+        ..activity = [activityEvent(1), activityEvent(2)];
+      await _mount(
+        tester,
+        controller,
+        dark: dark,
+        locale: 'lv',
+        width: 320,
+        scale: 2,
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      final t = AppLocalizations.of(
+        tester.element(find.byType(WorkspacePage)),
+      )!;
+      for (final tab in [t.navBalances, t.workspaceActivityTab]) {
+        await _selectTab(tester, tab);
+        expect(tester.takeException(), isNull);
+      }
+      await disposePage(tester);
+    });
+  }
+
+  if (const bool.fromEnvironment('COMPACT_LIST_PREVIEWS')) {
+    for (final dark in [false, true]) {
+      testWidgets('capture compact lists dark=$dark', (tester) async {
+        final key = GlobalKey();
+        final controller = _Workspace()
+          ..data =
+              snapshot(
+                expenses: [
+                  expense(1, name: 'Dinner', date: '2026-10-21'),
+                  expense(
+                    2,
+                    name: 'Taxi',
+                    date: '2026-10-21',
+                    splitMode: 'exact',
+                  ),
+                  expense(3, name: 'Museum', date: '2026-10-20', payer: 8),
+                  expense(
+                    4,
+                    name: 'Train',
+                    date: '2026-10-19',
+                    currency: 'USD',
+                  ),
+                ],
+              ).copyWith(
+                balances: const [
+                  BalanceItem(
+                    id: 7,
+                    nickname: 'Matiss',
+                    paid: 9,
+                    owed: 4,
+                    net: 5,
+                  ),
+                  BalanceItem(
+                    id: 8,
+                    nickname: 'Anna',
+                    paid: 0,
+                    owed: 5,
+                    net: -5,
+                  ),
+                  BalanceItem(
+                    id: 9,
+                    nickname: 'Igors',
+                    paid: 1,
+                    owed: 1,
+                    net: 0,
+                  ),
+                ],
+              )
+          ..activity = [
+            activityEvent(1),
+            for (final item in [
+              (2, 'payment.request_marked_sent'),
+              (3, 'trip.member_joined'),
+              (4, 'trip.settled'),
+            ])
+              WorkspaceActivityEvent(
+                id: item.$1,
+                tripId: 1,
+                actorUserId: 8,
+                actorName: 'Anna Ozola',
+                eventType: item.$2,
+                payload: const {'amount_cents': 1666},
+                createdAt: '2026-10-21 10:30:00',
+              ),
+          ];
+        await _mount(tester, controller, dark: dark, boundary: key);
+        await tester.pumpAndSettle();
+        final t = AppLocalizations.of(
+          tester.element(find.byType(WorkspacePage)),
+        )!;
+        Future<void> capture(String name, Finder scrollTo) async {
+          await tester.scrollUntilVisible(
+            scrollTo,
+            200,
+            scrollable: find.byType(Scrollable).first,
+          );
+          await tester.pumpAndSettle();
+          await tester.runAsync(() async {
+            final image =
+                await (key.currentContext!.findRenderObject()
+                        as RenderRepaintBoundary)
+                    .toImage();
+            final bytes = await image.toByteData(
+              format: ui.ImageByteFormat.png,
+            );
+            final file = File(
+              '../output/design/compact-lists/${dark ? 'dark' : 'light'}-$name.png',
+            );
+            await file.parent.create(recursive: true);
+            await file.writeAsBytes(bytes!.buffer.asUint8List());
+            image.dispose();
+          });
+        }
+
+        await capture('expenses', find.byKey(const ValueKey('expense-row-4')));
+        await _selectTab(tester, 'Balances');
+        await capture('balances', find.byKey(const ValueKey('balance-row-9')));
+        await _selectTab(tester, t.workspaceActivityTab);
+        await capture('activity', find.byKey(const ValueKey('activity-row-4')));
+        await disposePage(tester);
+      });
+    }
+  }
 
   testWidgets('workspace photo preserves the crop frame', (tester) async {
     await _mount(

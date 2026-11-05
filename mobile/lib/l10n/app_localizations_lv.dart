@@ -1902,6 +1902,12 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileSecuritySectionHeading => 'DROŠĪBA';
 
   @override
+  String get profileAccountAndSecurity => 'Konts un drošība';
+
+  @override
+  String get profileHelpTitle => 'Palīdzība';
+
+  @override
   String get profileChangePassword => 'Mainīt paroli';
 
   @override

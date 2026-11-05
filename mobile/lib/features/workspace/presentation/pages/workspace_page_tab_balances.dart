@@ -40,7 +40,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 onTap: () =>
                     _openBalanceDetails(snapshot: snapshot, item: item),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final user = users[item.id];
@@ -49,16 +49,30 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                         item.id,
                         user,
                       );
+                      final settled = item.net.abs() < .005;
+                      final money = _balanceMoney(item.net.abs());
+                      final amountLabel = settled
+                          ? t.settledLabel
+                          : '${item.net < 0 ? '\u2212' : '+'}$money';
                       final stacked =
-                          constraints.maxWidth < 340 ||
+                          constraints.maxWidth < 300 ||
                           MediaQuery.textScalerOf(context).scale(16) > 21;
                       final amount = Text(
-                        '${item.net > .004 ? '+' : ''}${_balanceMoney(item.net)}',
+                        amountLabel,
                         key: ValueKey('balance-amount-${item.id}'),
                         textAlign: TextAlign.end,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: item.net.abs() < .005
-                              ? theme.colorScheme.onSurface
+                        // The row no longer spells the direction out, so
+                        // screen readers still need it next to the amount.
+                        semanticsLabel: settled
+                            ? _balanceDescription(item.net)
+                            : '$amountLabel, ${_balanceDescription(item.net)}',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontSize: 16,
+                          fontWeight: settled
+                              ? FontWeight.w400
+                              : FontWeight.w600,
+                          color: settled
+                              ? theme.colorScheme.onSurfaceVariant
                               : (item.net < 0
                                     ? theme.colorScheme.error
                                     : theme.colorScheme.primary),
@@ -66,13 +80,12 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                         ),
                       );
                       return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _largeMemberAvatar(
                             id: item.id,
                             name: name,
                             avatarUrl: user?.avatarThumbUrl ?? user?.avatarUrl,
-                            size: 44,
+                            size: 36,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -83,20 +96,16 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                                   name,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.titleMedium,
-                                ),
-                                Text(
-                                  _balanceDescription(item.net),
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontSize: 16,
+                                    color: settled
+                                        ? theme.colorScheme.onSurfaceVariant
+                                        : null,
                                   ),
                                 ),
                                 if (stacked) ...[
-                                  const SizedBox(height: 8),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: amount,
-                                  ),
+                                  const SizedBox(height: 2),
+                                  amount,
                                 ],
                               ],
                             ),
@@ -110,8 +119,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                               child: amount,
                             ),
                           ],
-                          const SizedBox(width: 4),
-                          const Icon(Icons.chevron_right, size: 20),
                         ],
                       );
                     },

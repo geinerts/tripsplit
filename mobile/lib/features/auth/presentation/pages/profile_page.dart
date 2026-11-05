@@ -39,6 +39,8 @@ part 'profile_page_actions.dart';
 part 'profile_page_edit.dart';
 part 'profile_page_in_app_notifications.dart';
 part 'profile_page_navigation.dart';
+part 'profile_page_notifications.dart';
+part 'profile_page_password.dart';
 part 'profile_page_push_notifications.dart';
 part 'profile_page_settings.dart';
 part 'profile_page_widgets.dart';
@@ -98,7 +100,6 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = true;
   bool _isSubmitting = false;
   bool _isEditMode = false;
-  bool _isChangePasswordPage = false;
   String? _errorText;
   String? _editErrorText;
   AuthUser? _user;
@@ -126,27 +127,6 @@ class _ProfilePageState extends State<ProfilePage> {
   String _draftPaypalMeLink = '';
   String _draftWisePayLink = '';
   String _draftPreferredCurrencyCode = AppCurrencyCatalog.defaultCode;
-  String _draftPassword = '';
-  String _draftCurrentPassword = '';
-  String _draftRepeatPassword = '';
-  bool _inAppExpenseUpdatesEnabled = true;
-  bool _inAppFriendInvitesEnabled = true;
-  bool _inAppTripUpdatesEnabled = true;
-  bool _inAppSettlementUpdatesEnabled = true;
-  bool get _inAppNotificationsEnabled =>
-      _inAppExpenseUpdatesEnabled ||
-      _inAppFriendInvitesEnabled ||
-      _inAppTripUpdatesEnabled ||
-      _inAppSettlementUpdatesEnabled;
-  bool _pushExpenseUpdatesEnabled = true;
-  bool _pushFriendInvitesEnabled = true;
-  bool _pushTripUpdatesEnabled = true;
-  bool _pushSettlementUpdatesEnabled = true;
-  bool get _pushNotificationsEnabled =>
-      _pushExpenseUpdatesEnabled ||
-      _pushFriendInvitesEnabled ||
-      _pushTripUpdatesEnabled ||
-      _pushSettlementUpdatesEnabled;
   _ProfileEditField? _activeEditField;
   int _editSession = 0;
   int _handledRefreshRequestCount = 0;

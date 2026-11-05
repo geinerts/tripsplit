@@ -1896,6 +1896,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileSecuritySectionHeading => 'SEGURIDAD';
 
   @override
+  String get profileAccountAndSecurity => 'Cuenta y seguridad';
+
+  @override
+  String get profileHelpTitle => 'Ayuda';
+
+  @override
   String get profileChangePassword => 'Cambiar la contraseña';
 
   @override
@@ -4293,10 +4299,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get activityEventTripMemberReady => 'marcó que está listo para liquidar';
+  String get activityEventTripMemberReady => 'indicó que ya puede liquidar';
 
   @override
-  String get activityEventTripMemberNotReady => 'marcó que aún no está listo';
+  String get activityEventTripMemberNotReady => 'indicó que aún no puede liquidar';
 
   @override
   String get activityEventTripAllMembersReady => 'Todos los miembros están listos para liquidar';

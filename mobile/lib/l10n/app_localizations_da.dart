@@ -1896,6 +1896,12 @@ class AppLocalizationsDa extends AppLocalizations {
   String get profileSecuritySectionHeading => 'SIKKERHED';
 
   @override
+  String get profileAccountAndSecurity => 'Konto og sikkerhed';
+
+  @override
+  String get profileHelpTitle => 'Hjælp';
+
+  @override
   String get profileChangePassword => 'Skift adgangskode';
 
   @override
@@ -4230,13 +4236,13 @@ class AppLocalizationsDa extends AppLocalizations {
   String get livePrivateUntilShared => 'Din position forbliver privat, indtil du vælger at dele den.';
 
   @override
-  String get activityEventExpenseCreated => 'tilføjet en udgift';
+  String get activityEventExpenseCreated => 'tilføjede en udgift';
 
   @override
-  String get activityEventExpenseUpdated => 'opdateret en udgift';
+  String get activityEventExpenseUpdated => 'opdaterede en udgift';
 
   @override
-  String get activityEventExpenseDeleted => 'slettet en udgift';
+  String get activityEventExpenseDeleted => 'slettede en udgift';
 
   @override
   String get activityEventExpenseCommentAdded => 'kommenterede en udgift';
@@ -4245,7 +4251,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get activityEventTripCreated => 'oprettede turen';
 
   @override
-  String get activityEventTripUpdated => 'opdaterede rejseoplysninger';
+  String get activityEventTripUpdated => 'opdaterede turens oplysninger';
 
   @override
   String get activityEventTripRenamed => 'omdøbte turen';
@@ -4271,17 +4277,17 @@ class AppLocalizationsDa extends AppLocalizations {
   }
 
   @override
-  String get activityEventTripMemberJoined => 'er tilmeldt turen';
+  String get activityEventTripMemberJoined => 'tilsluttede sig turen';
 
   @override
-  String get activityEventTripInvitationDeclined => 'afviste rejseinvitationen';
+  String get activityEventTripInvitationDeclined => 'afviste turinvitationen';
 
   @override
-  String get activityEventTripInvitationRevoked => 'Annulleret en rejseinvitation';
+  String get activityEventTripInvitationRevoked => 'annullerede en turinvitation';
 
   @override
   String activityEventTripMemberRemoved(String name) {
-    return '$name er fjernet fra turen';
+    return 'fjernede $name fra turen';
   }
 
   @override
@@ -4289,65 +4295,65 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String activityEventTripMemberRoleUpdated(String name, String role) {
-    return '${name}s rolle er ændret til $role';
+    return 'ændrede rollen for $name til $role';
   }
 
   @override
-  String get activityEventTripMemberReady => 'markeret som klar til afregning';
+  String get activityEventTripMemberReady => 'markerede sig som klar til afregning';
 
   @override
-  String get activityEventTripMemberNotReady => 'markeret som ikke klar';
+  String get activityEventTripMemberNotReady => 'markerede sig som ikke klar';
 
   @override
   String get activityEventTripAllMembersReady => 'Alle medlemmer er klar til at afregne';
 
   @override
-  String get activityEventTripFinished => 'Turen er afsluttet';
+  String get activityEventTripFinished => 'afsluttede turen';
 
   @override
   String get activityEventTripSettled => 'Alle overførsler er bekræftet, turen er afregnet';
 
   @override
-  String get activityEventSettlementMarkedSent => 'markeret en overførsel som sendt';
+  String get activityEventSettlementMarkedSent => 'markerede en overførsel som sendt';
 
   @override
-  String get activityEventSettlementConfirmed => 'bekræftet en overførsel';
+  String get activityEventSettlementConfirmed => 'bekræftede en overførsel';
 
   @override
-  String get activityEventSettlementSentCancelled => 'status »aflyst sendt«';
+  String get activityEventSettlementSentCancelled => 'annullerede status »sendt«';
 
   @override
-  String get activityEventSettlementNotReceived => 'markeret en overførsel som ikke modtaget';
+  String get activityEventSettlementNotReceived => 'markerede en overførsel som ikke modtaget';
 
   @override
-  String get activityEventSettlementReminderSent => 'sendt en påmindelse om afregning';
+  String get activityEventSettlementReminderSent => 'sendte en påmindelse om afregning';
 
   @override
-  String get activityEventPaymentMarkedSent => 'registreret en betaling';
+  String get activityEventPaymentMarkedSent => 'registrerede en betaling';
 
   @override
-  String get activityEventPaymentRequested => 'anmodet om en betaling';
+  String get activityEventPaymentRequested => 'anmodede om en betaling';
 
   @override
-  String get activityEventPaymentRequestMarkedSent => 'markeret en anmodet betaling som sendt';
+  String get activityEventPaymentRequestMarkedSent => 'markerede en anmodet betaling som sendt';
 
   @override
-  String get activityEventPaymentRequestCancelled => 'annulleret en betalingsanmodning';
+  String get activityEventPaymentRequestCancelled => 'annullerede en betalingsanmodning';
 
   @override
-  String get activityEventPaymentRequestDeclined => 'afvist en betalingsanmodning';
+  String get activityEventPaymentRequestDeclined => 'afviste en betalingsanmodning';
 
   @override
-  String get activityEventPaymentConfirmed => 'bekræftet en betaling';
+  String get activityEventPaymentConfirmed => 'bekræftede en betaling';
 
   @override
-  String get activityEventPaymentCancelled => 'annulleret en betalingspost';
+  String get activityEventPaymentCancelled => 'annullerede en betalingspost';
 
   @override
-  String get activityEventPaymentNotReceived => 'markeret en betaling som ikke modtaget';
+  String get activityEventPaymentNotReceived => 'markerede en betaling som ikke modtaget';
 
   @override
-  String get activityEventUnknown => 'har foretaget en ændring';
+  String get activityEventUnknown => 'foretog en ændring';
 
   @override
   String get privacyEnglishFallback => 'Privatlivspolitikken er i øjeblikket tilgængelig på engelsk.';

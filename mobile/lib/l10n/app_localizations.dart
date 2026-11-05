@@ -3475,6 +3475,18 @@ abstract class AppLocalizations {
   /// **'SECURITY'**
   String get profileSecuritySectionHeading;
 
+  /// No description provided for @profileAccountAndSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Account and security'**
+  String get profileAccountAndSecurity;
+
+  /// No description provided for @profileHelpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get profileHelpTitle;
+
   /// No description provided for @profileChangePassword.
   ///
   /// In en, this message translates to:

@@ -1896,6 +1896,12 @@ class AppLocalizationsSv extends AppLocalizations {
   String get profileSecuritySectionHeading => 'SÄKERHET';
 
   @override
+  String get profileAccountAndSecurity => 'Konto och säkerhet';
+
+  @override
+  String get profileHelpTitle => 'Hjälp';
+
+  @override
   String get profileChangePassword => 'Ändra lösenord';
 
   @override
@@ -4230,7 +4236,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get livePrivateUntilShared => 'Din position förblir privat tills du väljer att dela den.';
 
   @override
-  String get activityEventExpenseCreated => 'lagt till en utgift';
+  String get activityEventExpenseCreated => 'lade till en utgift';
 
   @override
   String get activityEventExpenseUpdated => 'uppdaterade en utgift';
@@ -4245,7 +4251,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get activityEventTripCreated => 'skapade resan';
 
   @override
-  String get activityEventTripUpdated => 'uppdaterade resedetaljer';
+  String get activityEventTripUpdated => 'uppdaterade resedetaljerna';
 
   @override
   String get activityEventTripRenamed => 'bytte namn på resan';
@@ -4263,7 +4269,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get activityEventTripDestinationsChanged => 'ändrade resans resmål';
 
   @override
-  String get activityEventTripMembersAdded => 'tillagda deltagare';
+  String get activityEventTripMembersAdded => 'lade till deltagare';
 
   @override
   String activityEventTripMembersInvited(int count) {
@@ -4271,17 +4277,17 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get activityEventTripMemberJoined => 'har anslutit sig till resan';
+  String get activityEventTripMemberJoined => 'anslöt sig till resan';
 
   @override
   String get activityEventTripInvitationDeclined => 'avböjde reseinbjudan';
 
   @override
-  String get activityEventTripInvitationRevoked => 'avbokade en reseinbjudan';
+  String get activityEventTripInvitationRevoked => 'avbröt en reseinbjudan';
 
   @override
   String activityEventTripMemberRemoved(String name) {
-    return '$name har tagits bort från resan';
+    return 'tog bort $name från resan';
   }
 
   @override
@@ -4293,16 +4299,16 @@ class AppLocalizationsSv extends AppLocalizations {
   }
 
   @override
-  String get activityEventTripMemberReady => 'markerad som redo för avräkning';
+  String get activityEventTripMemberReady => 'markerade sig som redo för avräkning';
 
   @override
-  String get activityEventTripMemberNotReady => 'markerad som inte redo';
+  String get activityEventTripMemberNotReady => 'markerade sig som inte redo';
 
   @override
   String get activityEventTripAllMembersReady => 'Alla deltagare är redo att reglera';
 
   @override
-  String get activityEventTripFinished => 'resan avslutad';
+  String get activityEventTripFinished => 'avslutade resan';
 
   @override
   String get activityEventTripSettled => 'Alla överföringar är bekräftade, resan är reglerad';
@@ -4311,10 +4317,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get activityEventSettlementMarkedSent => 'markerade en överföring som skickad';
 
   @override
-  String get activityEventSettlementConfirmed => 'bekräftat en överföring';
+  String get activityEventSettlementConfirmed => 'bekräftade en överföring';
 
   @override
-  String get activityEventSettlementSentCancelled => 'status ”avbruten” eller ”skickad”';
+  String get activityEventSettlementSentCancelled => 'avbröt statusen ”skickad”';
 
   @override
   String get activityEventSettlementNotReceived => 'markerade en överföring som ej mottagen';
@@ -4338,10 +4344,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get activityEventPaymentRequestDeclined => 'avvisade en betalningsförfrågan';
 
   @override
-  String get activityEventPaymentConfirmed => 'bekräftat en betalning';
+  String get activityEventPaymentConfirmed => 'bekräftade en betalning';
 
   @override
-  String get activityEventPaymentCancelled => 'avbrutit en betalningspost';
+  String get activityEventPaymentCancelled => 'avbröt en betalningspost';
 
   @override
   String get activityEventPaymentNotReceived => 'markerade en betalning som ej mottagen';

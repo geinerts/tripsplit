@@ -1902,6 +1902,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get profileSecuritySectionHeading => 'BEZPEČNOST';
 
   @override
+  String get profileAccountAndSecurity => 'Účet a zabezpečení';
+
+  @override
+  String get profileHelpTitle => 'Nápověda';
+
+  @override
   String get profileChangePassword => 'Změnit heslo';
 
   @override
@@ -4240,124 +4246,124 @@ class AppLocalizationsCs extends AppLocalizations {
   String get livePrivateUntilShared => 'Vaše poloha zůstává soukromá, dokud se nerozhodnete ji sdílet.';
 
   @override
-  String get activityEventExpenseCreated => 'přidána výdajová položka';
+  String get activityEventExpenseCreated => 'přidal(a) výdaj';
 
   @override
-  String get activityEventExpenseUpdated => 'aktualizoval výdaj';
+  String get activityEventExpenseUpdated => 'aktualizoval(a) výdaj';
 
   @override
-  String get activityEventExpenseDeleted => 'smazal výdaj';
+  String get activityEventExpenseDeleted => 'smazal(a) výdaj';
 
   @override
-  String get activityEventExpenseCommentAdded => 'přidán komentář k výdaji';
+  String get activityEventExpenseCommentAdded => 'okomentoval(a) výdaj';
 
   @override
-  String get activityEventTripCreated => 'vytvořil výlet';
+  String get activityEventTripCreated => 'vytvořil(a) cestu';
 
   @override
-  String get activityEventTripUpdated => 'aktualizované podrobnosti o cestě';
+  String get activityEventTripUpdated => 'aktualizoval(a) podrobnosti cesty';
 
   @override
-  String get activityEventTripRenamed => 'změněn název cesty';
+  String get activityEventTripRenamed => 'změnil(a) název cesty';
 
   @override
-  String get activityEventTripCurrencyChanged => 'změněna měna cesty';
+  String get activityEventTripCurrencyChanged => 'změnil(a) měnu cesty';
 
   @override
-  String get activityEventTripPhotoChanged => 'změněna fotka cesty';
+  String get activityEventTripPhotoChanged => 'změnil(a) fotku cesty';
 
   @override
-  String get activityEventTripBudgetChanged => 'změněn rozpočet cesty';
+  String get activityEventTripBudgetChanged => 'změnil(a) rozpočet cesty';
 
   @override
-  String get activityEventTripDestinationsChanged => 'změněny destinace cesty';
+  String get activityEventTripDestinationsChanged => 'změnil(a) destinace cesty';
 
   @override
-  String get activityEventTripMembersAdded => 'přidaní členové';
+  String get activityEventTripMembersAdded => 'přidal(a) členy';
 
   @override
   String activityEventTripMembersInvited(int count) {
-    return 'odeslané pozvánky: $count';
+    return 'odeslal(a) pozvánky: $count';
   }
 
   @override
-  String get activityEventTripMemberJoined => 'připojil se k výletu';
+  String get activityEventTripMemberJoined => 'se připojil(a) k cestě';
 
   @override
-  String get activityEventTripInvitationDeclined => 'odmítl pozvání na výlet';
+  String get activityEventTripInvitationDeclined => 'odmítl(a) pozvánku na cestu';
 
   @override
-  String get activityEventTripInvitationRevoked => 'zrušil pozvánku na výlet';
+  String get activityEventTripInvitationRevoked => 'zrušil(a) pozvánku na cestu';
 
   @override
   String activityEventTripMemberRemoved(String name) {
-    return '$name byl/a odstraněn/a z cesty';
+    return 'odebral(a) $name z cesty';
   }
 
   @override
-  String get activityEventTripMemberLeft => 'opustil výlet';
+  String get activityEventTripMemberLeft => 'opustil(a) cestu';
 
   @override
   String activityEventTripMemberRoleUpdated(String name, String role) {
-    return 'změnil roli $name na $role';
+    return 'změnil(a) roli $name na $role';
   }
 
   @override
-  String get activityEventTripMemberReady => 'označeno jako připraveno k vypořádání';
+  String get activityEventTripMemberReady => 'potvrdil(a) připravenost k vyúčtování';
 
   @override
-  String get activityEventTripMemberNotReady => 'označeno jako „není připraveno“';
+  String get activityEventTripMemberNotReady => 'zrušil(a) připravenost k vyúčtování';
 
   @override
   String get activityEventTripAllMembersReady => 'Všichni členové jsou připraveni k vyúčtování';
 
   @override
-  String get activityEventTripFinished => 'cesta skončila';
+  String get activityEventTripFinished => 'ukončil(a) cestu';
 
   @override
   String get activityEventTripSettled => 'Všechny převody jsou potvrzeny, cesta je vyúčtována';
 
   @override
-  String get activityEventSettlementMarkedSent => 'označil převod jako odeslaný';
+  String get activityEventSettlementMarkedSent => 'označil(a) převod jako odeslaný';
 
   @override
-  String get activityEventSettlementConfirmed => 'potvrzen převod';
+  String get activityEventSettlementConfirmed => 'potvrdil(a) převod';
 
   @override
-  String get activityEventSettlementSentCancelled => 'zrušeno odesláno stav';
+  String get activityEventSettlementSentCancelled => 'zrušil(a) stav „odesláno“';
 
   @override
-  String get activityEventSettlementNotReceived => 'označil převod jako nepřijatý';
+  String get activityEventSettlementNotReceived => 'označil(a) převod jako nepřijatý';
 
   @override
-  String get activityEventSettlementReminderSent => 'odeslal upomínku k vyúčtování';
+  String get activityEventSettlementReminderSent => 'odeslal(a) upomínku k vyúčtování';
 
   @override
-  String get activityEventPaymentMarkedSent => 'zaznamenal platbu';
+  String get activityEventPaymentMarkedSent => 'zaznamenal(a) platbu';
 
   @override
-  String get activityEventPaymentRequested => 'požádal o platbu';
+  String get activityEventPaymentRequested => 'požádal(a) o platbu';
 
   @override
-  String get activityEventPaymentRequestMarkedSent => 'označil požadovanou platbu jako odeslanou';
+  String get activityEventPaymentRequestMarkedSent => 'označil(a) požadovanou platbu jako odeslanou';
 
   @override
-  String get activityEventPaymentRequestCancelled => 'zrušil žádost o platbu';
+  String get activityEventPaymentRequestCancelled => 'zrušil(a) žádost o platbu';
 
   @override
-  String get activityEventPaymentRequestDeclined => 'zamítl žádost o platbu';
+  String get activityEventPaymentRequestDeclined => 'zamítl(a) žádost o platbu';
 
   @override
-  String get activityEventPaymentConfirmed => 'potvrdil platbu';
+  String get activityEventPaymentConfirmed => 'potvrdil(a) platbu';
 
   @override
-  String get activityEventPaymentCancelled => 'zrušen záznam o platbě';
+  String get activityEventPaymentCancelled => 'zrušil(a) záznam o platbě';
 
   @override
-  String get activityEventPaymentNotReceived => 'označil platbu jako nepřijatou';
+  String get activityEventPaymentNotReceived => 'označil(a) platbu jako nepřijatou';
 
   @override
-  String get activityEventUnknown => 'provedena změna';
+  String get activityEventUnknown => 'provedl(a) změnu';
 
   @override
   String get privacyEnglishFallback => 'Zásady ochrany osobních údajů jsou zatím dostupné v angličtině.';

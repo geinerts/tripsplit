@@ -35,18 +35,25 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       );
       return;
     }
-    _updateState(() {
-      _isEditMode = true;
-      _editSession += 1;
-      _isChangePasswordPage = true;
-      _draftCurrentPassword = '';
-      _draftPassword = '';
-      _draftRepeatPassword = '';
-      _activeEditField = null;
-      _editErrorText = null;
-      _errorText = null;
-    });
-    widget.onEditModeChanged?.call(true);
+    unawaited(
+      Navigator.of(context).push<void>(
+        AppFormPageRoute<void>(
+          builder: (_) => _ChangePasswordPage(
+            controller: widget.controller,
+            email: email,
+            onPasswordChanged: _onPasswordChanged,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onPasswordChanged(AuthUser updated) {
+    if (!mounted) {
+      return;
+    }
+    _updateState(() => _applyUser(updated));
+    _showSnack(context.l10n.profileEditPasswordUpdated);
   }
 
   void _openEditProfilePage() {
@@ -57,7 +64,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     _updateState(() {
       _isEditMode = true;
       _editSession += 1;
-      _isChangePasswordPage = false;
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
       _draftBankCountryCode = _initialBankCountryCode;
@@ -70,8 +76,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftPaypalMeLink = _initialPaypalMeLink;
       _draftWisePayLink = _initialWisePayLink;
       _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
-      _draftPassword = '';
-      _draftRepeatPassword = '';
       _editErrorText = null;
       _errorText = null;
     });
@@ -81,8 +85,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
   void _closeEditMode() {
     _updateState(() {
       _isEditMode = false;
-      _draftCurrentPassword = '';
-      _isChangePasswordPage = false;
       _activeEditField = null;
       _draftFullName = _fullNameController.text.trim();
       _draftBankCountryCode = _initialBankCountryCode;
@@ -96,8 +98,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       _draftWisePayLink = _initialWisePayLink;
       _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
       _editErrorText = null;
-      _draftPassword = '';
-      _draftRepeatPassword = '';
     });
     widget.onEditModeChanged?.call(false);
   }
@@ -129,24 +129,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
 
   void _onDraftFullNameChanged(String value) {
     _draftFullName = value;
-    if (_editErrorText != null) {
-      _updateState(() {
-        _editErrorText = null;
-      });
-    }
-  }
-
-  void _onDraftPasswordChanged(String value) {
-    _draftPassword = value;
-    if (_editErrorText != null) {
-      _updateState(() {
-        _editErrorText = null;
-      });
-    }
-  }
-
-  void _onDraftRepeatPasswordChanged(String value) {
-    _draftRepeatPassword = value;
     if (_editErrorText != null) {
       _updateState(() {
         _editErrorText = null;
@@ -208,16 +190,10 @@ extension _ProfilePageEditFlow on _ProfilePageState {
     _updateState(() {
       _activeEditField = null;
       _editErrorText = null;
-      _draftPassword = '';
-      _draftRepeatPassword = '';
     });
   }
 
   Widget _buildInlineEditProfilePage(BuildContext context) {
-    if (_isChangePasswordPage) {
-      return _buildChangePasswordPage(context);
-    }
-
     final t = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -277,185 +253,6 @@ extension _ProfilePageEditFlow on _ProfilePageState {
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-
-  Future<void> _onSubmitPasswordChange() async {
-    final t = context.l10n;
-    if (_isSubmitting || _isLoading) {
-      return;
-    }
-    final email = (_initialEmail ?? '').trim().toLowerCase();
-    if (email.isEmpty || !_isValidEmail(email)) {
-      _updateState(() {
-        _editErrorText =
-            context.l10n.profileEditSetValidEmailProfileChangingPassword;
-      });
-      return;
-    }
-    if (_draftCurrentPassword.isEmpty) {
-      _updateState(() {
-        _editErrorText = t.profileEditCurrentPassword;
-      });
-      return;
-    }
-    if (_draftPassword.length < 8) {
-      _updateState(() {
-        _editErrorText = t.passwordMinLength;
-      });
-      return;
-    }
-    if (_draftPassword != _draftRepeatPassword) {
-      _updateState(() {
-        _editErrorText = t.passwordsDoNotMatch;
-      });
-      return;
-    }
-
-    _updateState(() {
-      _isSubmitting = true;
-      _editErrorText = null;
-    });
-    try {
-      final updated = await widget.controller.updateProfile(
-        email: email,
-        password: _draftPassword,
-        currentPassword: _draftCurrentPassword,
-      );
-      if (!mounted) {
-        return;
-      }
-      _applyUser(updated);
-      _showSnack(context.l10n.profileEditPasswordUpdated);
-      _closeEditMode();
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _editErrorText = error.message;
-      });
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _editErrorText = context.l10n.profileEditFailedUpdatePassword;
-      });
-    } finally {
-      if (mounted) {
-        _updateState(() {
-          _isSubmitting = false;
-        });
-      }
-    }
-  }
-
-  Widget _buildChangePasswordPage(BuildContext context) {
-    final t = context.l10n;
-    final email = (_initialEmail ?? '').trim().toLowerCase();
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Column(
-        key: ValueKey('change-password-page-$_editSession'),
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.l10n.profileChangePassword,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            context.l10n.profileEditEmail(email),
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppDesign.mutedColor(context),
-            ),
-          ),
-          const SizedBox(height: 14),
-          TextFormField(
-            key: ValueKey('change-password-current-$_editSession'),
-            initialValue: _draftCurrentPassword,
-            textInputAction: TextInputAction.next,
-            obscureText: true,
-            autofillHints: const [AutofillHints.password],
-            decoration: InputDecoration(
-              labelText: t.profileEditCurrentPassword,
-            ),
-            onChanged: (value) {
-              _draftCurrentPassword = value;
-              if (_editErrorText != null) {
-                _updateState(() => _editErrorText = null);
-              }
-            },
-          ),
-          const SizedBox(height: 10),
-          TextFormField(
-            key: ValueKey('change-password-$_editSession'),
-            initialValue: _draftPassword,
-            textInputAction: TextInputAction.next,
-            obscureText: true,
-            autofillHints: const [AutofillHints.newPassword],
-            decoration: InputDecoration(
-              labelText: t.newPasswordLabel,
-              helperText: t.passwordMinLength,
-            ),
-            onChanged: _onDraftPasswordChanged,
-          ),
-          const SizedBox(height: 10),
-          TextFormField(
-            key: ValueKey('change-password-repeat-$_editSession'),
-            initialValue: _draftRepeatPassword,
-            textInputAction: TextInputAction.done,
-            obscureText: true,
-            autofillHints: const [AutofillHints.newPassword],
-            decoration: InputDecoration(labelText: t.repeatNewPasswordLabel),
-            onChanged: _onDraftRepeatPasswordChanged,
-            onFieldSubmitted: (_) {
-              unawaited(_onSubmitPasswordChange());
-            },
-          ),
-          if (_editErrorText != null) ...[
-            const SizedBox(height: 10),
-            Text(
-              _editErrorText!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: _isSubmitting ? null : _closeEditMode,
-                  child: Text(t.cancelAction),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: FilledButton(
-                  onPressed: _isSubmitting
-                      ? null
-                      : () {
-                          unawaited(_onSubmitPasswordChange());
-                        },
-                  child: _isSubmitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(t.saveAction),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );

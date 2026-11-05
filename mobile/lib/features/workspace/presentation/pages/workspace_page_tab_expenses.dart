@@ -42,22 +42,35 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextField(
-                controller: _expenseSearchController,
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  hintText: t.workspaceSearchExpenses,
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: query.isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: t.workspaceClearSearch,
-                          onPressed: _clearExpenseSearch,
-                          icon: const Icon(Icons.close),
-                        ),
-                ),
-                onChanged: (value) =>
-                    _updateState(() => _expenseSearchQuery = value),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _expenseSearchController,
+                      textInputAction: TextInputAction.search,
+                      decoration: InputDecoration(
+                        hintText: t.workspaceSearchExpenses,
+                        prefixIcon: const Icon(Icons.search),
+                        suffixIcon: query.isEmpty
+                            ? null
+                            : IconButton(
+                                tooltip: t.workspaceClearSearch,
+                                onPressed: _clearExpenseSearch,
+                                icon: const Icon(Icons.close),
+                              ),
+                      ),
+                      onChanged: (value) =>
+                          _updateState(() => _expenseSearchQuery = value),
+                    ),
+                  ),
+                  if (expenses.isNotEmpty &&
+                      _refreshError == null &&
+                      _pendingQueueCount == 0 &&
+                      !_workspaceOffline) ...[
+                    const SizedBox(width: 4),
+                    _buildSyncStatusBadge(context, compact: true),
+                  ],
+                ],
               ),
               if (query.isNotEmpty && _expensesHasMore)
                 Padding(
@@ -116,43 +129,40 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
             itemCount: expenses.length,
             itemBuilder: (context, index) {
               final expense = expenses[index];
-              final newDay =
-                  index == 0 ||
-                  expenses[index - 1].expenseDate != expense.expenseDate;
+              final sameDayBefore =
+                  index > 0 &&
+                  expenses[index - 1].expenseDate == expense.expenseDate;
+              final sameDayAfter =
+                  index + 1 < expenses.length &&
+                  expenses[index + 1].expenseDate == expense.expenseDate;
+              // A day earns a heading only when several expenses share it;
+              // a lone expense carries its date in its own row instead.
+              final showHeading = !sameDayBefore && sameDayAfter;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (newDay)
+                  if (showHeading)
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Semantics(
-                              header: true,
-                              child: Text(
-                                _formatDisplayDate(
+                      padding: const EdgeInsets.fromLTRB(0, 12, 0, 4),
+                      child: Semantics(
+                        header: true,
+                        child: Text(
+                          _formatDisplayDate(context, expense.expenseDate),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
                                   context,
-                                  expense.expenseDate,
-                                ),
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                    ),
+                                ).colorScheme.onSurfaceVariant,
                               ),
-                            ),
-                          ),
-                          if (index == 0 &&
-                              _refreshError == null &&
-                              _pendingQueueCount == 0 &&
-                              !_workspaceOffline)
-                            _buildSyncStatusBadge(context, compact: true),
-                        ],
+                        ),
                       ),
                     ),
-                  _buildExpenseRow(snapshot, expense, users[expense.paidById]),
+                  _buildExpenseRow(
+                    snapshot,
+                    expense,
+                    users[expense.paidById],
+                    showDate: !sameDayBefore && !sameDayAfter,
+                  ),
                   const Divider(height: 1),
                 ],
               );
@@ -192,8 +202,9 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
   Widget _buildExpenseRow(
     WorkspaceSnapshot snapshot,
     TripExpense expense,
-    WorkspaceUser? payer,
-  ) {
+    WorkspaceUser? payer, {
+    required bool showDate,
+  }) {
     final theme = Theme.of(context);
     final category = ExpenseCategoryCatalog.labelFor(
       expense.category,
@@ -201,6 +212,14 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     );
     final title = expense.note.trim().isEmpty ? category : expense.note.trim();
     final payerName = (payer?.preferredName ?? expense.paidByNickname).trim();
+    final details = [
+      if (showDate && expense.expenseDate.trim().isNotEmpty)
+        _formatDisplayDate(context, expense.expenseDate),
+      if (widget.trip.isSolo && expense.note.trim().isNotEmpty) category,
+      if (!widget.trip.isSolo) payerName,
+      if (!widget.trip.isSolo && !_isEqualSplitMode(expense.splitMode))
+        _splitModeShortLabel(context, expense.splitMode),
+    ].join(' · ');
     final amount = AppFormatters.displayCurrencyFromCents(
       context,
       (expense.amount * 100).round(),
@@ -222,16 +241,16 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                   _showExpenseQuickActions(snapshot: snapshot, expense: expense)
             : null,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: LayoutBuilder(
             builder: (context, constraints) {
               final stacked =
-                  constraints.maxWidth < 340 ||
+                  constraints.maxWidth < 300 ||
                   MediaQuery.textScalerOf(context).scale(16) > 21;
               final amountText = Text(
                 amount,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontSize: 20,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                   fontFeatures: const [FontFeature.tabularFigures()],
                 ),
@@ -244,14 +263,15 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                     children: [
                       ExcludeSemantics(
                         child: Container(
-                          width: 48,
-                          height: 48,
+                          width: 36,
+                          height: 36,
                           decoration: BoxDecoration(
                             color: theme.colorScheme.surfaceContainerLow,
-                            borderRadius: AppDesign.cardRadius,
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(
                             ExpenseCategoryCatalog.iconFor(expense.category),
+                            size: 18,
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
@@ -266,21 +286,19 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 17,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              widget.trip.isSolo
-                                  ? category
-                                  : '$payerName · ${_splitModeShortLabel(context, expense.splitMode)}',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
+                            if (details.isNotEmpty)
+                              Text(
+                                details,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
                               ),
-                            ),
                             if (stacked) ...[
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 2),
                               amountText,
                             ],
                           ],
@@ -295,13 +313,11 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                           child: amountText,
                         ),
                       ],
-                      const SizedBox(width: 4),
-                      const Icon(Icons.chevron_right, size: 20),
                     ],
                   ),
                   if (expense.expenseCurrencyCode != expense.tripCurrencyCode)
                     Padding(
-                      padding: const EdgeInsets.only(top: 8),
+                      padding: const EdgeInsets.only(top: 2, left: 48),
                       child: Text(
                         context.l10n.workspaceOriginalExpenseAmount(
                           AppFormatters.displayCurrencyFromCents(

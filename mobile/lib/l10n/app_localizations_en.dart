@@ -1896,6 +1896,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSecuritySectionHeading => 'SECURITY';
 
   @override
+  String get profileAccountAndSecurity => 'Account and security';
+
+  @override
+  String get profileHelpTitle => 'Help';
+
+  @override
   String get profileChangePassword => 'Change password';
 
   @override

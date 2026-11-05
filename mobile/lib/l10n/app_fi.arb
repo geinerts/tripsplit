@@ -902,6 +902,8 @@
   "profileRateSplyto": "Arvostele Splyto",
   "profileLeaveStoreRating": "Jätä arvostelu kaupasta",
   "profileSecuritySectionHeading": "TURVALLISUUS",
+  "profileAccountAndSecurity": "Tili ja turvallisuus",
+  "profileHelpTitle": "Ohje",
   "profileChangePassword": "Vaihda salasana",
   "profileUpdateAccountPassword": "Päivitä tilin salasana",
   "profileDangerZoneSectionHeading": "VAARALUOKKA",
@@ -1775,19 +1777,19 @@
   "liveOtherSession": "Aloitettu toisessa istunnossa. Voit lopettaa sen täällä.",
   "liveUpdatesPaused": "Päivitykset keskeytetty. Tarkista sijainnin käyttöoikeudet ja internetyhteys.",
   "livePrivateUntilShared": "Sijaintisi pysyy yksityisenä, kunnes päätät jakaa sen.",
-  "activityEventExpenseCreated": "lisätty kulu",
-  "activityEventExpenseUpdated": "päivitetty kulu",
-  "activityEventExpenseDeleted": "kustannus poistettu",
+  "activityEventExpenseCreated": "lisäsi kulun",
+  "activityEventExpenseUpdated": "päivitti kulun",
+  "activityEventExpenseDeleted": "poisti kulun",
   "activityEventExpenseCommentAdded": "kommentoi kulua",
   "activityEventTripCreated": "loi matkan",
-  "activityEventTripUpdated": "päivitetyt matkatiedot",
+  "activityEventTripUpdated": "päivitti matkan tiedot",
   "activityEventTripRenamed": "nimesi matkan uudelleen",
   "activityEventTripCurrencyChanged": "vaihtoi matkan valuutan",
   "activityEventTripPhotoChanged": "vaihtoi matkan kuvan",
   "activityEventTripBudgetChanged": "muutti matkan budjettia",
   "activityEventTripDestinationsChanged": "muutti matkan kohteita",
-  "activityEventTripMembersAdded": "lisätyt jäsenet",
-  "activityEventTripMembersInvited": "lähetetyt kutsut: {count}",
+  "activityEventTripMembersAdded": "lisäsi jäseniä",
+  "activityEventTripMembersInvited": "lähetti kutsuja: {count}",
   "@activityEventTripMembersInvited": {
     "placeholders": {
       "count": {
@@ -1797,8 +1799,8 @@
   },
   "activityEventTripMemberJoined": "liittyi matkaan",
   "activityEventTripInvitationDeclined": "hylkäsi matkakutsun",
-  "activityEventTripInvitationRevoked": "matkakutsun peruuttaminen",
-  "activityEventTripMemberRemoved": "{name} on poistettu matkalta",
+  "activityEventTripInvitationRevoked": "peruutti matkakutsun",
+  "activityEventTripMemberRemoved": "poisti käyttäjän {name} matkalta",
   "@activityEventTripMemberRemoved": {
     "placeholders": {
       "name": {
@@ -1807,7 +1809,7 @@
     }
   },
   "activityEventTripMemberLeft": "poistui matkalta",
-  "activityEventTripMemberRoleUpdated": "{name}:n rooli muutettiin rooliksi {role}",
+  "activityEventTripMemberRoleUpdated": "muutti käyttäjän {name} rooliksi {role}",
   "@activityEventTripMemberRoleUpdated": {
     "placeholders": {
       "name": {
@@ -1818,14 +1820,14 @@
       }
     }
   },
-  "activityEventTripMemberReady": "merkitty valmiiksi maksettavaksi",
-  "activityEventTripMemberNotReady": "merkitty ei valmis",
+  "activityEventTripMemberReady": "ilmoitti olevansa valmis maksamaan",
+  "activityEventTripMemberNotReady": "ilmoitti, ettei ole vielä valmis",
   "activityEventTripAllMembersReady": "Kaikki jäsenet ovat valmiita maksamaan",
-  "activityEventTripFinished": "matka päättynyt",
+  "activityEventTripFinished": "päätti matkan",
   "activityEventTripSettled": "Kaikki siirrot on vahvistettu, matka on maksettu",
   "activityEventSettlementMarkedSent": "merkitsi siirron lähetetyksi",
   "activityEventSettlementConfirmed": "vahvisti siirron",
-  "activityEventSettlementSentCancelled": "peruutettu lähetetty tila",
+  "activityEventSettlementSentCancelled": "peruutti lähetetty-tilan",
   "activityEventSettlementNotReceived": "merkitsi siirron vastaanottamattomaksi",
   "activityEventSettlementReminderSent": "lähetti maksumuistutuksen",
   "activityEventPaymentMarkedSent": "kirjasi maksun",
@@ -1834,9 +1836,9 @@
   "activityEventPaymentRequestCancelled": "peruutti maksupyynnön",
   "activityEventPaymentRequestDeclined": "hylkäsi maksupyynnön",
   "activityEventPaymentConfirmed": "vahvisti maksun",
-  "activityEventPaymentCancelled": "peruutettu maksutapahtuma",
+  "activityEventPaymentCancelled": "peruutti maksutapahtuman",
   "activityEventPaymentNotReceived": "merkitsi maksun vastaanottamattomaksi",
-  "activityEventUnknown": "tehty muutos",
+  "activityEventUnknown": "teki muutoksen",
   "privacyEnglishFallback": "Tietosuojakäytäntö on tällä hetkellä saatavilla englanniksi.",
   "activityRoleAdmin": "Järjestelmänvalvoja",
   "accountDeleteTitle": "Poista tili",

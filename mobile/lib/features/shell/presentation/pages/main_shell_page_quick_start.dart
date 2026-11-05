@@ -91,6 +91,12 @@ extension _MainShellQuickStart on _MainShellPageState {
       if (mounted &&
           userId == widget.authController.currentUser?.id &&
           create == true) {
+        // The guide can be replayed from a profile sub-page; creating a trip
+        // happens in the shell, so it must not stay hidden behind that page.
+        final shellRoute = ModalRoute.of(context);
+        Navigator.of(
+          context,
+        ).popUntil((route) => route.isFirst || route == shellRoute);
         _requestCreateTrip();
       }
     } finally {

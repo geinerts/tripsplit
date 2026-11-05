@@ -299,7 +299,9 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Delete account'), 300);
+      await tester.scrollUntilVisible(find.text('Account and security'), 300);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Account and security'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Delete account'));
       await tester.pumpAndSettle();
@@ -443,7 +445,9 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.text('Change password'), 300);
+      await tester.scrollUntilVisible(find.text('Account and security'), 300);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Account and security'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Change password'));
       await tester.pumpAndSettle();

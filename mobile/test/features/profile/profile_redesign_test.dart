@@ -109,6 +109,7 @@ Future<void> _mount(
   double width = 390,
   GlobalKey? boundary,
   ProfilePageCommandController? commands,
+  VoidCallback? onQuickStart,
 }) async {
   SharedPreferences.setMockInitialValues({});
   tester.view.physicalSize = Size(width, 844);
@@ -153,7 +154,7 @@ Future<void> _mount(
           home: ProfilePage(
             controller: auth,
             commandController: commands,
-            onQuickStartRequested: () {},
+            onQuickStartRequested: onQuickStart ?? () {},
           ),
         ),
       ),
@@ -162,8 +163,9 @@ Future<void> _mount(
   await tester.pumpAndSettle();
 }
 
-AppLocalizations _t(WidgetTester tester) =>
-    AppLocalizations.of(tester.element(find.byType(ProfilePage)))!;
+AppLocalizations _t(WidgetTester tester) => AppLocalizations.of(
+  tester.element(find.byType(ProfilePage, skipOffstage: false)),
+)!;
 Future<void> _tap(WidgetTester tester, String text) async {
   final target = find.text(text);
   if (target.evaluate().isEmpty) {
@@ -231,9 +233,13 @@ void main() {
           commands: commands,
         );
         final t = _t(tester);
+        for (final label in [t.profileAppearance, t.profileLanguage]) {
+          await _tap(tester, label);
+          expect(tester.takeException(), isNull);
+          await _back(tester);
+        }
+        await _tap(tester, t.notificationsTitle);
         for (final label in [
-          t.profileAppearance,
-          t.profileLanguage,
           t.profileAppBanners,
           t.profilePushNotificationsTitle,
         ]) {
@@ -241,35 +247,171 @@ void main() {
           expect(tester.takeException(), isNull);
           await _back(tester);
         }
+        expect(tester.takeException(), isNull);
+        await _back(tester);
         await _tap(tester, 'Matiss Geinerts');
         await _tap(tester, t.profileEditPaymentMethod);
         expect(tester.takeException(), isNull);
         await _back(tester);
         commands.requestCloseEditMode();
         await tester.pumpAndSettle();
+        await _tap(tester, t.profileAccountAndSecurity);
         for (final label in [t.profileChangePassword, t.accountDeleteTitle]) {
           await _tap(tester, label);
           expect(tester.takeException(), isNull);
-          if (label == t.accountDeleteTitle) {
-            await _back(tester);
-          } else {
-            commands.requestCloseEditMode();
-            await tester.pumpAndSettle();
-          }
+          await _back(tester);
+        }
+        expect(tester.takeException(), isNull);
+        await _back(tester);
+        await _tap(tester, t.profileHelpTitle);
+        for (final label in [t.quickStartTitle, t.profileRateSplyto]) {
+          expect(find.text(label), findsOneWidget);
         }
         await _tap(tester, t.profileContactUs);
         expect(tester.takeException(), isNull);
+        await _back(tester);
         await _back(tester);
         expect(find.text(t.profilePrivacyPolicy), findsNothing);
         expect(find.byType(ProfilePage), findsOneWidget);
       });
     }
   }
+  testWidgets('main level keeps rare and dangerous actions one level deeper', (
+    tester,
+  ) async {
+    await _mount(tester, _Auth());
+    final t = _t(tester);
+    for (final label in [
+      t.profileAppearance,
+      t.profileLanguage,
+      t.notificationsTitle,
+      t.profileAccountAndSecurity,
+      t.profileHelpTitle,
+      t.logOutButton,
+    ]) {
+      expect(find.text(label), findsOneWidget, reason: label);
+    }
+    for (final label in [
+      t.accountDeleteTitle,
+      t.profileChangePassword,
+      t.profileContactUs,
+      t.quickStartTitle,
+      t.profileRateSplyto,
+      t.profileAppBanners,
+      t.profilePushNotificationsTitle,
+    ]) {
+      expect(find.text(label), findsNothing, reason: label);
+    }
+    expect(find.byType(Switch), findsNothing);
+    final help = tester.getTopLeft(find.text(t.profileHelpTitle)).dy;
+    await tester.ensureVisible(find.text(t.logOutButton));
+    await tester.pumpAndSettle();
+    expect(
+      tester.getTopLeft(find.text(t.logOutButton)).dy,
+      greaterThan(tester.getTopLeft(find.text(t.profileHelpTitle)).dy),
+      reason: 'Help was at $help before scrolling',
+    );
+  });
+
+  testWidgets('delete account stays separated below the password action', (
+    tester,
+  ) async {
+    await _mount(tester, _Auth());
+    final t = _t(tester);
+    await _tap(tester, t.profileAccountAndSecurity);
+    final password = tester.getBottomLeft(find.text(t.profileChangePassword));
+    final delete = tester.getTopLeft(find.text(t.accountDeleteTitle));
+    expect(delete.dy - password.dy, greaterThan(200));
+    await _tap(tester, t.accountDeleteTitle);
+    expect(find.byKey(const ValueKey('account-delete-submit')), findsOneWidget);
+  });
+
+  testWidgets('help rows open the guide, contact sheet and rating hint', (
+    tester,
+  ) async {
+    var quickStarts = 0;
+    await _mount(tester, _Auth(), onQuickStart: () => quickStarts++);
+    final t = _t(tester);
+    await _tap(tester, t.profileHelpTitle);
+    await _tap(tester, t.quickStartTitle);
+    expect(quickStarts, 1);
+    await _tap(tester, t.profileRateSplyto);
+    expect(
+      find.text(t.profileStoreRatingActionWillConnectedNextStep),
+      findsOneWidget,
+    );
+    await _tap(tester, t.profileContactUs);
+    expect(find.text(t.profileContactDescription), findsOneWidget);
+  });
+
+  testWidgets('master push switch saves all, rolls back on failure', (
+    tester,
+  ) async {
+    final auth = _Auth();
+    await _mount(tester, auth);
+    final t = _t(tester);
+    await _tap(tester, t.notificationsTitle);
+    expect(auth.updates, isEmpty);
+    final push = find.byType(Switch).last;
+    expect(tester.widget<Switch>(push).value, true);
+    auth.error = const ApiException('Save failed');
+    await tester.tap(push);
+    await tester.pumpAndSettle();
+    expect(auth.updates.single[#pushTripUpdatesEnabled], false);
+    expect(tester.widget<Switch>(push).value, true);
+    expect(find.text('Save failed'), findsOneWidget);
+    auth.error = null;
+    await tester.tap(push);
+    await tester.pumpAndSettle();
+    expect(auth.updates.last[#pushExpenseAddedEnabled], false);
+    expect(auth.updates.last[#pushFriendInvitesEnabled], false);
+    expect(auth.updates.last[#pushSettlementUpdatesEnabled], false);
+    expect(auth.updates.last[#inAppBannerEnabled], isNull);
+    expect(tester.widget<Switch>(push).value, false);
+    expect(auth.prefs.pushTripUpdatesEnabled, false);
+  });
+
+  testWidgets('master in-app switch turns off banners and every in-app type', (
+    tester,
+  ) async {
+    final auth = _Auth();
+    await _mount(tester, auth);
+    await _tap(tester, _t(tester).notificationsTitle);
+    final inApp = find.byType(Switch).first;
+    await tester.tap(inApp);
+    await tester.pumpAndSettle();
+    final update = auth.updates.single;
+    expect(update[#inAppBannerEnabled], false);
+    expect(update[#inAppTripFinishedEnabled], false);
+    expect(update[#inAppSettlementConfirmedEnabled], false);
+    expect(update[#pushTripUpdatesEnabled], isNull);
+    expect(tester.widget<Switch>(inApp).value, false);
+  });
+
+  testWidgets('master switch shows changes made on the detail page', (
+    tester,
+  ) async {
+    final auth = _Auth();
+    await _mount(tester, auth);
+    final t = _t(tester);
+    await _tap(tester, t.notificationsTitle);
+    await _tap(tester, t.profilePushNotificationsTitle);
+    for (var i = 0; i < 4; i++) {
+      await tester.tap(find.byType(Switch).at(i));
+      await tester.pumpAndSettle();
+    }
+    expect(auth.updates.length, 4);
+    await _back(tester);
+    expect(find.text(t.profilePushNotificationsTitle), findsOneWidget);
+    expect(tester.widget<Switch>(find.byType(Switch).last).value, false);
+  });
+
   testWidgets(
     'push row opens details without toggling; failed save rolls back',
     (tester) async {
       final auth = _Auth();
       await _mount(tester, auth);
+      await _tap(tester, _t(tester).notificationsTitle);
       await _tap(tester, _t(tester).profilePushNotificationsTitle);
       expect(auth.updates, isEmpty);
       auth.error = const ApiException('Save failed');
@@ -285,6 +427,7 @@ void main() {
   ) async {
     final auth = _Auth()..pending = Completer<NotificationPreferences>();
     await _mount(tester, auth);
+    await _tap(tester, _t(tester).notificationsTitle);
     await _tap(tester, _t(tester).profileAppBanners);
     await tester.tap(find.byType(Switch).first);
     await tester.pump();
@@ -306,7 +449,8 @@ void main() {
         clearPasswordStatus: status == null,
       );
       await _mount(tester, auth);
-      final t = AppLocalizations.of(tester.element(find.byType(ProfilePage)))!;
+      final t = _t(tester);
+      await _tap(tester, t.profileAccountAndSecurity);
       await _tap(
         tester,
         status == false ? t.profileSetPassword : t.profileManagePassword,
@@ -332,7 +476,8 @@ void main() {
     final auth = _Auth()..error = const ApiException('Try later');
     auth.user = auth.user.copyWith(hasPassword: false);
     await _mount(tester, auth);
-    final t = AppLocalizations.of(tester.element(find.byType(ProfilePage)))!;
+    final t = _t(tester);
+    await _tap(tester, t.profileAccountAndSecurity);
     await _tap(tester, t.profileSetPassword);
     await _tap(tester, t.authSendLink);
     expect(find.text('Try later'), findsOneWidget);
@@ -350,7 +495,8 @@ void main() {
     final auth = _Auth();
     auth.user = auth.user.copyWith(hasPassword: false);
     await _mount(tester, auth);
-    final t = AppLocalizations.of(tester.element(find.byType(ProfilePage)))!;
+    final t = _t(tester);
+    await _tap(tester, t.profileAccountAndSecurity);
     await _tap(tester, t.profileSetPassword);
     auth.user = auth.user.copyWith(id: 2);
     await _tap(tester, t.authSendLink);
@@ -365,6 +511,7 @@ void main() {
       ..error = const ApiException('Incorrect current password');
     await _mount(tester, auth);
     final t = _t(tester);
+    await _tap(tester, t.profileAccountAndSecurity);
     await _tap(tester, t.profileChangePassword);
     await _tap(tester, t.saveAction);
     expect(auth.profiles, isEmpty);
@@ -377,6 +524,12 @@ void main() {
     expect(auth.profiles.single[#password], 'new-secret');
     expect(find.text('Incorrect current password'), findsOneWidget);
     expect(find.byType(TextFormField), findsNWidgets(3));
+    auth.error = null;
+    await _tap(tester, t.saveAction);
+    expect(auth.profiles.length, 2);
+    expect(find.byType(TextFormField), findsNothing);
+    expect(find.text(t.profileEditPasswordUpdated), findsOneWidget);
+    expect(find.text(t.profileAccountAndSecurity), findsOneWidget);
   });
   testWidgets('logout cancellation and contact sheet do not submit feedback', (
     tester,
@@ -388,6 +541,7 @@ void main() {
     await tester.tap(find.text(t.cancelAction));
     await tester.pumpAndSettle();
     expect(auth.logoutCalls, 0);
+    await _tap(tester, t.profileHelpTitle);
     await _tap(tester, t.profileContactUs);
     expect(find.text(t.profileContactDescription), findsOneWidget);
     expect(find.text(t.profileAttachScreenshot), findsNothing);
@@ -483,6 +637,7 @@ void main() {
     'contact address can be copied on a narrow screen with large text',
     (tester) async {
       await _mount(tester, _Auth(), width: 320, scale: 2, locale: 'lv');
+      await _tap(tester, _t(tester).profileHelpTitle);
       await _tap(tester, _t(tester).profileContactUs);
       String? copied;
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -530,6 +685,7 @@ void main() {
         ),
       );
       final t = _t(tester);
+      await _tap(tester, t.profileHelpTitle);
       await _tap(tester, t.profileContactUs);
       await _tap(tester, t.profileContactEmailAction);
       expect(calls.single.method, 'launch');
@@ -562,14 +718,28 @@ void main() {
         for (final item in [
           (t.profileAppearance, 'appearance'),
           (t.profileLanguage, 'language'),
-          (t.profileAppBanners, 'in-app'),
-          (t.profilePushNotificationsTitle, 'push'),
-          (t.profileContactUs, 'feedback'),
         ]) {
           await _tap(tester, item.$1);
           await _capture(tester, key, '$prefix-${item.$2}');
           await _back(tester);
         }
+        await _tap(tester, t.notificationsTitle);
+        await _capture(tester, key, '$prefix-notifications');
+        for (final item in [
+          (t.profileAppBanners, 'in-app'),
+          (t.profilePushNotificationsTitle, 'push'),
+        ]) {
+          await _tap(tester, item.$1);
+          await _capture(tester, key, '$prefix-${item.$2}');
+          await _back(tester);
+        }
+        await _back(tester);
+        await _tap(tester, t.profileHelpTitle);
+        await _capture(tester, key, '$prefix-help');
+        await _tap(tester, t.profileContactUs);
+        await _capture(tester, key, '$prefix-feedback');
+        await _back(tester);
+        await _back(tester);
         await _tap(tester, 'Matiss Geinerts');
         await _capture(tester, key, '$prefix-edit');
         await _tap(tester, t.profileEditPaymentMethod);
@@ -580,18 +750,15 @@ void main() {
         await _back(tester);
         commands.requestCloseEditMode();
         await tester.pumpAndSettle();
+        await _tap(tester, t.profileAccountAndSecurity);
+        await _capture(tester, key, '$prefix-account-security');
         for (final item in [
           (t.profileChangePassword, 'password'),
           (t.accountDeleteTitle, 'account'),
         ]) {
           await _tap(tester, item.$1);
           await _capture(tester, key, '$prefix-${item.$2}');
-          if (item.$1 == t.accountDeleteTitle) {
-            await _back(tester);
-          } else {
-            commands.requestCloseEditMode();
-            await tester.pumpAndSettle();
-          }
+          await _back(tester);
         }
       });
     }

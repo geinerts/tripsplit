@@ -122,6 +122,9 @@ CommentMentionQuery? findCommentMentionQuery(String text, int cursor) {
       : CommentMentionQuery(start: start, text: query);
 }
 
+/// [value] lowercased and without Latin diacritics, for comparing names.
+String foldMemberName(String value) => _foldForSearch(value);
+
 /// Names matching the query, by the start of the name or of any word in it.
 /// Latin diacritics are ignored, so `matiss` finds `Matīss`.
 List<CommentMentionCandidate> filterCommentMentionCandidates(

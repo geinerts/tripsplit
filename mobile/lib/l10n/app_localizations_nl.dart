@@ -1896,6 +1896,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get profileSecuritySectionHeading => 'BEVEILIGING';
 
   @override
+  String get profileAccountAndSecurity => 'Account en beveiliging';
+
+  @override
+  String get profileHelpTitle => 'Help';
+
+  @override
   String get profileChangePassword => 'Wachtwoord wijzigen';
 
   @override
@@ -4230,13 +4236,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get livePrivateUntilShared => 'Je locatie blijft privé totdat je ervoor kiest deze te delen.';
 
   @override
-  String get activityEventExpenseCreated => 'een uitgave toegevoegd';
+  String get activityEventExpenseCreated => 'heeft een uitgave toegevoegd';
 
   @override
-  String get activityEventExpenseUpdated => 'een uitgave bijgewerkt';
+  String get activityEventExpenseUpdated => 'heeft een uitgave bijgewerkt';
 
   @override
-  String get activityEventExpenseDeleted => 'een uitgave verwijderd';
+  String get activityEventExpenseDeleted => 'heeft een uitgave verwijderd';
 
   @override
   String get activityEventExpenseCommentAdded => 'heeft gereageerd op een uitgave';
@@ -4245,7 +4251,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get activityEventTripCreated => 'heeft de reis aangemaakt';
 
   @override
-  String get activityEventTripUpdated => 'bijgewerkte reisgegevens';
+  String get activityEventTripUpdated => 'heeft de reisgegevens bijgewerkt';
 
   @override
   String get activityEventTripRenamed => 'heeft de reis hernoemd';
@@ -4263,91 +4269,91 @@ class AppLocalizationsNl extends AppLocalizations {
   String get activityEventTripDestinationsChanged => 'heeft de reisbestemmingen gewijzigd';
 
   @override
-  String get activityEventTripMembersAdded => 'toegevoegde deelnemers';
+  String get activityEventTripMembersAdded => 'heeft deelnemers toegevoegd';
 
   @override
   String activityEventTripMembersInvited(int count) {
-    return 'Verzonden uitnodigingen: $count';
+    return 'heeft uitnodigingen verzonden: $count';
   }
 
   @override
   String get activityEventTripMemberJoined => 'heeft zich bij de reis aangesloten';
 
   @override
-  String get activityEventTripInvitationDeclined => 'de reisuitnodiging afgewezen';
+  String get activityEventTripInvitationDeclined => 'heeft de reisuitnodiging afgewezen';
 
   @override
-  String get activityEventTripInvitationRevoked => 'een reisuitnodiging geannuleerd';
+  String get activityEventTripInvitationRevoked => 'heeft een reisuitnodiging geannuleerd';
 
   @override
   String activityEventTripMemberRemoved(String name) {
-    return '$name uit de reis verwijderd';
+    return 'heeft $name uit de reis verwijderd';
   }
 
   @override
-  String get activityEventTripMemberLeft => 'de reis verlaten';
+  String get activityEventTripMemberLeft => 'heeft de reis verlaten';
 
   @override
   String activityEventTripMemberRoleUpdated(String name, String role) {
-    return 'de rol van $name gewijzigd in $role';
+    return 'heeft de rol van $name gewijzigd in $role';
   }
 
   @override
-  String get activityEventTripMemberReady => 'gemarkeerd als klaar voor afrekening';
+  String get activityEventTripMemberReady => 'heeft aangegeven klaar te zijn om af te rekenen';
 
   @override
-  String get activityEventTripMemberNotReady => 'gemarkeerd als niet gereed';
+  String get activityEventTripMemberNotReady => 'heeft aangegeven nog niet klaar te zijn';
 
   @override
   String get activityEventTripAllMembersReady => 'Alle deelnemers zijn klaar om af te rekenen';
 
   @override
-  String get activityEventTripFinished => 'de reis is voltooid';
+  String get activityEventTripFinished => 'heeft de reis voltooid';
 
   @override
   String get activityEventTripSettled => 'Alle overschrijvingen zijn bevestigd, de reis is afgerekend';
 
   @override
-  String get activityEventSettlementMarkedSent => 'een overschrijving gemarkeerd als verzonden';
+  String get activityEventSettlementMarkedSent => 'heeft een overschrijving gemarkeerd als verzonden';
 
   @override
-  String get activityEventSettlementConfirmed => 'een overschrijving bevestigd';
+  String get activityEventSettlementConfirmed => 'heeft een overschrijving bevestigd';
 
   @override
-  String get activityEventSettlementSentCancelled => 'status ‘verzonden en geannuleerd’';
+  String get activityEventSettlementSentCancelled => 'heeft de status ‘verzonden’ geannuleerd';
 
   @override
-  String get activityEventSettlementNotReceived => 'een overboeking gemarkeerd als niet ontvangen';
+  String get activityEventSettlementNotReceived => 'heeft een overschrijving gemarkeerd als niet ontvangen';
 
   @override
-  String get activityEventSettlementReminderSent => 'een betalingsherinnering verzonden';
+  String get activityEventSettlementReminderSent => 'heeft een betalingsherinnering verzonden';
 
   @override
-  String get activityEventPaymentMarkedSent => 'een betaling geregistreerd';
+  String get activityEventPaymentMarkedSent => 'heeft een betaling geregistreerd';
 
   @override
-  String get activityEventPaymentRequested => 'een betaling aangevraagd';
+  String get activityEventPaymentRequested => 'heeft een betaling aangevraagd';
 
   @override
-  String get activityEventPaymentRequestMarkedSent => 'een aangevraagde betaling gemarkeerd als verzonden';
+  String get activityEventPaymentRequestMarkedSent => 'heeft een aangevraagde betaling gemarkeerd als verzonden';
 
   @override
-  String get activityEventPaymentRequestCancelled => 'een betalingsverzoek geannuleerd';
+  String get activityEventPaymentRequestCancelled => 'heeft een betalingsverzoek geannuleerd';
 
   @override
-  String get activityEventPaymentRequestDeclined => 'een betalingsverzoek afgewezen';
+  String get activityEventPaymentRequestDeclined => 'heeft een betalingsverzoek afgewezen';
 
   @override
-  String get activityEventPaymentConfirmed => 'een betaling bevestigd';
+  String get activityEventPaymentConfirmed => 'heeft een betaling bevestigd';
 
   @override
-  String get activityEventPaymentCancelled => 'een betalingsrecord geannuleerd';
+  String get activityEventPaymentCancelled => 'heeft een betalingsrecord geannuleerd';
 
   @override
-  String get activityEventPaymentNotReceived => 'een betaling gemarkeerd als niet ontvangen';
+  String get activityEventPaymentNotReceived => 'heeft een betaling gemarkeerd als niet ontvangen';
 
   @override
-  String get activityEventUnknown => 'een wijziging aangebracht';
+  String get activityEventUnknown => 'heeft een wijziging aangebracht';
 
   @override
   String get privacyEnglishFallback => 'Het privacybeleid is momenteel beschikbaar in het Engels.';

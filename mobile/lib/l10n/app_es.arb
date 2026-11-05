@@ -888,6 +888,8 @@
   "profileRateSplyto": "Califica Splyto",
   "profileLeaveStoreRating": "Deja una calificación de tienda",
   "profileSecuritySectionHeading": "SEGURIDAD",
+  "profileAccountAndSecurity": "Cuenta y seguridad",
+  "profileHelpTitle": "Ayuda",
   "profileChangePassword": "Cambiar la contraseña",
   "profileUpdateAccountPassword": "Actualizar contraseña de cuenta",
   "profileDangerZoneSectionHeading": "ZONA DE PELIGRO",
@@ -1804,8 +1806,8 @@
       }
     }
   },
-  "activityEventTripMemberReady": "marcó que está listo para liquidar",
-  "activityEventTripMemberNotReady": "marcó que aún no está listo",
+  "activityEventTripMemberReady": "indicó que ya puede liquidar",
+  "activityEventTripMemberNotReady": "indicó que aún no puede liquidar",
   "activityEventTripAllMembersReady": "Todos los miembros están listos para liquidar",
   "activityEventTripFinished": "finalizó el viaje",
   "activityEventTripSettled": "Todas las transferencias están confirmadas y el viaje está liquidado",

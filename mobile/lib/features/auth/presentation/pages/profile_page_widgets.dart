@@ -131,41 +131,60 @@ extension _ProfilePageWidgets on _ProfilePageState {
     );
   }
 
-  Widget _buildProfileSectionHeading({
-    required BuildContext context,
-    required String title,
-    bool isDanger = false,
-  }) {
-    final color = isDanger
-        ? AppDesign.destructiveColor(context)
-        : AppDesign.mutedColor(context);
-    return Padding(
-      padding: EdgeInsets.zero,
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.9,
-          color: color,
-        ),
-      ),
-    );
-  }
-
   Widget _buildProfileSettingsPanel(BuildContext context) {
+    final t = context.l10n;
+    final rows = <Widget>[
+      _buildProfileSectionTile(
+        context: context,
+        title: t.profileAppearance,
+        icon: Icons.palette_outlined,
+        valueText: _currentAppearanceLabel(context),
+        subtitle: '',
+        onTap: _isBusy ? null : () => showThemeModePicker(context),
+      ),
+      _buildProfileSectionTile(
+        context: context,
+        title: t.profileLanguage,
+        icon: Icons.translate_outlined,
+        valueText: _currentLanguageLabel(context),
+        subtitle: '',
+        onTap: _isBusy ? null : () => showAppLocalePicker(context),
+      ),
+      _buildProfileSectionTile(
+        context: context,
+        title: t.notificationsTitle,
+        icon: Icons.notifications_none_rounded,
+        subtitle: '',
+        onTap: _isBusy ? null : _openNotificationSettings,
+      ),
+      _buildProfileSectionTile(
+        context: context,
+        title: t.profileAccountAndSecurity,
+        icon: Icons.shield_outlined,
+        subtitle: '',
+        onTap: _isBusy ? null : _openAccountAndSecurity,
+      ),
+      _buildProfileSectionTile(
+        context: context,
+        title: t.profileHelpTitle,
+        icon: Icons.help_outline,
+        subtitle: '',
+        onTap: _isBusy ? null : _openHelp,
+      ),
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (widget.onTravelMapRequested != null) ...[
           _buildProfileSectionTile(
             context: context,
-            title: context.l10n.travelMapTitle,
-            subtitle: context.l10n.travelMapSubtitle,
+            title: t.travelMapTitle,
+            subtitle: t.travelMapSubtitle,
             icon: Icons.travel_explore,
             onTap: _isBusy ? null : widget.onTravelMapRequested,
           ),
-          const SizedBox(height: 16),
+          const Divider(height: 1),
         ],
         PremiumStatusTile(
           access: _user?.premiumAccess,
@@ -173,152 +192,11 @@ extension _ProfilePageWidgets on _ProfilePageState {
               ? null
               : () => unawaited(_loadProfile()),
         ),
-        const SizedBox(height: 8),
-        _buildProfileSectionGroup(
-          context: context,
-          title: context.l10n.profileAppSettingsSectionTitle,
-          children: [
-            _buildProfileSectionTile(
-              context: context,
-              title: context.l10n.profileAppearance,
-              icon: Icons.palette_outlined,
-              valueText: _currentAppearanceLabel(context),
-              subtitle: '',
-              onTap: _isBusy ? null : () => showThemeModePicker(context),
-            ),
-            _buildProfileSectionTile(
-              context: context,
-              title: context.l10n.profileLanguage,
-              icon: Icons.translate_outlined,
-              valueText: _currentLanguageLabel(context),
-              subtitle: '',
-              onTap: _isBusy ? null : () => showAppLocalePicker(context),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        _buildProfileSectionGroup(
-          context: context,
-          title: context.l10n.profileNotificationsSectionHeading,
-          children: [
-            _buildProfileSwitchNavigationTile(
-              context: context,
-              title: context.l10n.profileAppBanners,
-              subtitle: context.l10n.profileShowNewNotificationBannersInsideApp,
-              icon: Icons.chat_bubble_outline_rounded,
-              value: _inAppNotificationsEnabled,
-              onTap: () {
-                unawaited(_openInAppNotificationSettingsPage());
-              },
-              onChanged: (value) {
-                unawaited(_setAllInAppNotificationsEnabled(value));
-              },
-            ),
-            _buildProfileSwitchNavigationTile(
-              context: context,
-              title: context.l10n.profilePushNotificationsTitle,
-              subtitle: context
-                  .l10n
-                  .profilePhoneNotificationsExpensesFriendsTripsSettlements,
-              icon: Icons.notifications_active_outlined,
-              value: _pushNotificationsEnabled,
-              onTap: () {
-                unawaited(_openPushNotificationSettingsPage());
-              },
-              onChanged: (value) {
-                unawaited(_setAllPushNotificationsEnabled(value));
-              },
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        _buildProfileSectionGroup(
-          context: context,
-          title: context.l10n.profileSupportSectionHeading,
-          children: [
-            _buildProfileSectionTile(
-              context: context,
-              title: context.l10n.quickStartTitle,
-              subtitle: '',
-              icon: Icons.help_outline,
-              onTap: _isBusy
-                  ? null
-                  : (widget.onQuickStartRequested ?? _openQuickStart),
-            ),
-            _buildProfileSectionTile(
-              context: context,
-              title: context.l10n.profileContactUs,
-              icon: Icons.support_agent_outlined,
-              subtitle: '',
-              onTap: _isBusy ? null : _openContactDialog,
-            ),
-            _buildProfileSectionTile(
-              context: context,
-              title: context.l10n.profileRateSplyto,
-              icon: Icons.star_outline_rounded,
-              subtitle: '',
-              onTap: _isBusy ? null : _openRateHint,
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        _buildProfileSectionGroup(
-          context: context,
-          title: context.l10n.profileSecuritySectionHeading,
-          children: [
-            _buildProfileSectionTile(
-              context: context,
-              title: _passwordActionTitle,
-              icon: Icons.lock_outline_rounded,
-              subtitle: '',
-              onTap: _isBusy ? null : _openChangePasswordDialog,
-            ),
-          ],
-        ),
         const Divider(height: 1),
-        _buildProfileSectionTile(
-          context: context,
-          title: context.l10n.accountDeleteTitle,
-          icon: Icons.person_remove_outlined,
-          isDanger: true,
-          subtitle: '',
-          onTap: _isBusy ? null : _openDangerZone,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProfileSectionGroup({
-    required BuildContext context,
-    required String title,
-    required List<Widget> children,
-    bool isDanger = false,
-  }) {
-    final content = <Widget>[];
-    for (var i = 0; i < children.length; i++) {
-      content.add(children[i]);
-      if (i < children.length - 1) {
-        content.add(
-          Divider(
-            height: 1,
-            indent: 0,
-            endIndent: 0,
-            color: AppDesign.cardStroke(context),
-          ),
-        );
-      }
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildProfileSectionHeading(
-          context: context,
-          title: title,
-          isDanger: isDanger,
-        ),
-        const SizedBox(height: 8),
-        ...content,
+        for (var i = 0; i < rows.length; i++) ...[
+          if (i > 0) Divider(height: 1, color: AppDesign.cardStroke(context)),
+          rows[i],
+        ],
       ],
     );
   }
@@ -557,29 +435,6 @@ extension _ProfilePageWidgets on _ProfilePageState {
     );
   }
 
-  Widget _buildProfileSwitchNavigationTile({
-    required BuildContext context,
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required bool value,
-    required VoidCallback onTap,
-    required ValueChanged<bool> onChanged,
-  }) => AppSettingsRow(
-    title: title,
-    icon: icon,
-    onTap: _isBusy ? null : onTap,
-    trailing: Semantics(
-      label: title,
-      child: Switch.adaptive(
-        value: value,
-        onChanged: _isBusy ? null : onChanged,
-        activeTrackColor: Theme.of(context).colorScheme.primary,
-        activeThumbColor: Theme.of(context).colorScheme.onPrimary,
-      ),
-    ),
-  );
-
   String _currentAppearanceLabel(BuildContext context) {
     final t = context.l10n;
     final controller = ThemeModeScope.maybeOf(context);
@@ -597,30 +452,6 @@ extension _ProfilePageWidgets on _ProfilePageState {
     final mode = controller?.mode;
     if (mode == AppLocaleMode.system) return t.languageSystem;
     return mode?.nativeName ?? t.languageEnglish;
-  }
-
-  void _openRateHint() {
-    _showSnack(context.l10n.profileStoreRatingActionWillConnectedNextStep);
-  }
-
-  void _openDangerZone() {
-    if (_isBusy) {
-      return;
-    }
-    unawaited(
-      Navigator.of(context).push<void>(
-        AppFormPageRoute(
-          builder: (_) => AccountDeletionPage(
-            email: _user?.email ?? '',
-            onRequest: (password, reasons) =>
-                widget.controller.requestAccountDeletionLink(
-                  password: password,
-                  reasonCodes: reasons,
-                ),
-          ),
-        ),
-      ),
-    );
   }
 
   bool get _isBusy => _isSubmitting || _isLoading;

@@ -1896,6 +1896,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get profileSecuritySectionHeading => 'SICHERHEIT';
 
   @override
+  String get profileAccountAndSecurity => 'Konto und Sicherheit';
+
+  @override
+  String get profileHelpTitle => 'Hilfe';
+
+  @override
   String get profileChangePassword => 'Passwort ändern';
 
   @override
@@ -4230,13 +4236,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get livePrivateUntilShared => 'Dein Standort bleibt privat, bis du dich entscheidest, ihn freizugeben.';
 
   @override
-  String get activityEventExpenseCreated => 'Eine Ausgabe hinzugefügt';
+  String get activityEventExpenseCreated => 'hat eine Ausgabe hinzugefügt';
 
   @override
-  String get activityEventExpenseUpdated => 'Eine Ausgabe aktualisiert';
+  String get activityEventExpenseUpdated => 'hat eine Ausgabe aktualisiert';
 
   @override
-  String get activityEventExpenseDeleted => 'Eine Ausgabe gelöscht';
+  String get activityEventExpenseDeleted => 'hat eine Ausgabe gelöscht';
 
   @override
   String get activityEventExpenseCommentAdded => 'hat eine Ausgabe kommentiert';
@@ -4245,7 +4251,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get activityEventTripCreated => 'hat die Reise erstellt';
 
   @override
-  String get activityEventTripUpdated => 'Aktualisierte Reisedetails';
+  String get activityEventTripUpdated => 'hat die Reisedetails aktualisiert';
 
   @override
   String get activityEventTripRenamed => 'hat die Reise umbenannt';
@@ -4263,25 +4269,25 @@ class AppLocalizationsDe extends AppLocalizations {
   String get activityEventTripDestinationsChanged => 'hat die Reiseziele geändert';
 
   @override
-  String get activityEventTripMembersAdded => 'hinzugefügte Mitglieder';
+  String get activityEventTripMembersAdded => 'hat Mitglieder hinzugefügt';
 
   @override
   String activityEventTripMembersInvited(int count) {
-    return 'Versendete Einladungen: $count';
+    return 'hat Einladungen versendet: $count';
   }
 
   @override
-  String get activityEventTripMemberJoined => 'der Reise beigetreten';
+  String get activityEventTripMemberJoined => 'ist der Reise beigetreten';
 
   @override
-  String get activityEventTripInvitationDeclined => 'Die Reiseeinladung abgelehnt';
+  String get activityEventTripInvitationDeclined => 'hat die Reiseeinladung abgelehnt';
 
   @override
-  String get activityEventTripInvitationRevoked => 'Eine Reiseeinladung storniert';
+  String get activityEventTripInvitationRevoked => 'hat eine Reiseeinladung storniert';
 
   @override
   String activityEventTripMemberRemoved(String name) {
-    return '$name wurde aus der Reise entfernt';
+    return 'hat $name aus der Reise entfernt';
   }
 
   @override
@@ -4289,65 +4295,65 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String activityEventTripMemberRoleUpdated(String name, String role) {
-    return 'Die Rolle von $name wurde in $role geändert';
+    return 'hat die Rolle von $name in $role geändert';
   }
 
   @override
-  String get activityEventTripMemberReady => 'als abrechnungsbereit markiert';
+  String get activityEventTripMemberReady => 'hat sich als abrechnungsbereit markiert';
 
   @override
-  String get activityEventTripMemberNotReady => 'als „noch nicht bereit“ markiert';
+  String get activityEventTripMemberNotReady => 'hat sich als noch nicht bereit markiert';
 
   @override
   String get activityEventTripAllMembersReady => 'Alle Teilnehmer sind bereit zur Abrechnung';
 
   @override
-  String get activityEventTripFinished => 'Reise beendet';
+  String get activityEventTripFinished => 'hat die Reise beendet';
 
   @override
   String get activityEventTripSettled => 'Alle Überweisungen sind bestätigt, die Reise ist abgerechnet';
 
   @override
-  String get activityEventSettlementMarkedSent => 'eine Überweisung als gesendet markiert';
+  String get activityEventSettlementMarkedSent => 'hat eine Überweisung als gesendet markiert';
 
   @override
-  String get activityEventSettlementConfirmed => 'Überweisung bestätigt';
+  String get activityEventSettlementConfirmed => 'hat eine Überweisung bestätigt';
 
   @override
-  String get activityEventSettlementSentCancelled => 'Status „gesendet“ wurde storniert';
+  String get activityEventSettlementSentCancelled => 'hat den Status „gesendet“ storniert';
 
   @override
-  String get activityEventSettlementNotReceived => 'eine Überweisung als nicht eingegangen markiert';
+  String get activityEventSettlementNotReceived => 'hat eine Überweisung als nicht eingegangen markiert';
 
   @override
-  String get activityEventSettlementReminderSent => 'eine Zahlungserinnerung gesendet';
+  String get activityEventSettlementReminderSent => 'hat eine Zahlungserinnerung gesendet';
 
   @override
-  String get activityEventPaymentMarkedSent => 'eine Zahlung verbucht';
+  String get activityEventPaymentMarkedSent => 'hat eine Zahlung verbucht';
 
   @override
-  String get activityEventPaymentRequested => 'eine Zahlung angefordert';
+  String get activityEventPaymentRequested => 'hat eine Zahlung angefordert';
 
   @override
-  String get activityEventPaymentRequestMarkedSent => 'eine angeforderte Zahlung als gesendet markiert';
+  String get activityEventPaymentRequestMarkedSent => 'hat eine angeforderte Zahlung als gesendet markiert';
 
   @override
-  String get activityEventPaymentRequestCancelled => 'eine Zahlungsanforderung storniert';
+  String get activityEventPaymentRequestCancelled => 'hat eine Zahlungsanforderung storniert';
 
   @override
-  String get activityEventPaymentRequestDeclined => 'Eine Zahlungsanfrage abgelehnt';
+  String get activityEventPaymentRequestDeclined => 'hat eine Zahlungsanforderung abgelehnt';
 
   @override
-  String get activityEventPaymentConfirmed => 'eine Zahlung bestätigt';
+  String get activityEventPaymentConfirmed => 'hat eine Zahlung bestätigt';
 
   @override
-  String get activityEventPaymentCancelled => 'einen Zahlungsbeleg storniert';
+  String get activityEventPaymentCancelled => 'hat einen Zahlungsbeleg storniert';
 
   @override
-  String get activityEventPaymentNotReceived => 'eine Zahlung als nicht eingegangen markiert';
+  String get activityEventPaymentNotReceived => 'hat eine Zahlung als nicht eingegangen markiert';
 
   @override
-  String get activityEventUnknown => 'Änderung vorgenommen';
+  String get activityEventUnknown => 'hat eine Änderung vorgenommen';
 
   @override
   String get privacyEnglishFallback => 'Die Datenschutzerklärung ist derzeit auf Englisch verfügbar.';

@@ -50,6 +50,7 @@ import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../../trips/presentation/widgets/trip_invite_members_page.dart';
 import '../utils/expense_math.dart';
 import '../utils/workspace_activity_icons.dart';
+import '../utils/workspace_member_short_names.dart';
 import '../../domain/entities/balance_item.dart';
 import '../../domain/entities/comment_mention_text.dart';
 import '../../domain/entities/expense_comment.dart';

@@ -43,6 +43,36 @@ void main() {
       }
     },
   );
+  test('activity events continue a sentence after the actor name', () {
+    // These two read as complete sentences and are shown without a name.
+    const standalone = {
+      'activityEventTripAllMembersReady',
+      'activityEventTripSettled',
+    };
+    for (final locale in AppLocalizations.supportedLocales) {
+      final catalog =
+          jsonDecode(
+                File(
+                  'lib/l10n/app_${locale.languageCode}.arb',
+                ).readAsStringSync(),
+              )
+              as Map<String, dynamic>;
+      for (final entry in catalog.entries) {
+        if (!entry.key.startsWith('activityEvent') ||
+            standalone.contains(entry.key)) {
+          continue;
+        }
+        final text = entry.value as String;
+        final first = text.characters.first;
+        expect(
+          first,
+          first.toLowerCase(),
+          reason: '$locale:${entry.key} starts like a standalone title: $text',
+        );
+      }
+    }
+  });
+
   test('Slavic counts use different forms for 1, 2 and 5', () async {
     for (final code in ['pl', 'uk', 'cs']) {
       final t = await AppLocalizations.delegate.load(Locale(code));

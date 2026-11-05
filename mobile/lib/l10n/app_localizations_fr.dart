@@ -1896,6 +1896,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileSecuritySectionHeading => 'SÉCURITÉ';
 
   @override
+  String get profileAccountAndSecurity => 'Compte et sécurité';
+
+  @override
+  String get profileHelpTitle => 'Aide';
+
+  @override
   String get profileChangePassword => 'Modifier le mot de passe';
 
   @override
@@ -4230,13 +4236,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get livePrivateUntilShared => 'Votre position reste privée jusqu’à ce que vous choisissiez de la partager.';
 
   @override
-  String get activityEventExpenseCreated => 'Ajout d’une dépense';
+  String get activityEventExpenseCreated => 'a ajouté une dépense';
 
   @override
-  String get activityEventExpenseUpdated => 'Mise à jour d’une dépense';
+  String get activityEventExpenseUpdated => 'a mis à jour une dépense';
 
   @override
-  String get activityEventExpenseDeleted => 'Une dépense a été supprimée';
+  String get activityEventExpenseDeleted => 'a supprimé une dépense';
 
   @override
   String get activityEventExpenseCommentAdded => 'a commenté une dépense';
@@ -4245,7 +4251,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activityEventTripCreated => 'a créé le voyage';
 
   @override
-  String get activityEventTripUpdated => 'Détails du voyage mis à jour';
+  String get activityEventTripUpdated => 'a mis à jour les détails du voyage';
 
   @override
   String get activityEventTripRenamed => 'a renommé le voyage';
@@ -4263,25 +4269,25 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activityEventTripDestinationsChanged => 'a modifié les destinations du voyage';
 
   @override
-  String get activityEventTripMembersAdded => 'membres ajoutés';
+  String get activityEventTripMembersAdded => 'a ajouté des participants';
 
   @override
   String activityEventTripMembersInvited(int count) {
-    return 'invitations envoyées : $count';
+    return 'a envoyé des invitations : $count';
   }
 
   @override
   String get activityEventTripMemberJoined => 'a rejoint le voyage';
 
   @override
-  String get activityEventTripInvitationDeclined => 'a refusé l\'invitation au voyage';
+  String get activityEventTripInvitationDeclined => 'a refusé l’invitation au voyage';
 
   @override
-  String get activityEventTripInvitationRevoked => 'annulation d’une invitation à un voyage';
+  String get activityEventTripInvitationRevoked => 'a annulé une invitation au voyage';
 
   @override
   String activityEventTripMemberRemoved(String name) {
-    return '$name a été retiré du voyage';
+    return 'a retiré $name du voyage';
   }
 
   @override
@@ -4293,16 +4299,16 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get activityEventTripMemberReady => 'marqué comme prêt à être réglé';
+  String get activityEventTripMemberReady => 'a indiqué être prêt(e) à régler';
 
   @override
-  String get activityEventTripMemberNotReady => 'marqué comme non prêt';
+  String get activityEventTripMemberNotReady => 'a indiqué ne pas être prêt(e)';
 
   @override
   String get activityEventTripAllMembersReady => 'Tous les participants sont prêts à régler leur part';
 
   @override
-  String get activityEventTripFinished => 'Le voyage est terminé';
+  String get activityEventTripFinished => 'a terminé le voyage';
 
   @override
   String get activityEventTripSettled => 'Tous les virements sont confirmés, le voyage est réglé';
@@ -4314,7 +4320,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activityEventSettlementConfirmed => 'a confirmé un virement';
 
   @override
-  String get activityEventSettlementSentCancelled => 'statut « envoyé puis annulé »';
+  String get activityEventSettlementSentCancelled => 'a annulé le statut « envoyé »';
 
   @override
   String get activityEventSettlementNotReceived => 'a marqué un virement comme non reçu';
@@ -4323,7 +4329,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activityEventSettlementReminderSent => 'a envoyé un rappel de règlement';
 
   @override
-  String get activityEventPaymentMarkedSent => 'enregistré un paiement';
+  String get activityEventPaymentMarkedSent => 'a enregistré un paiement';
 
   @override
   String get activityEventPaymentRequested => 'a demandé un paiement';
@@ -4341,13 +4347,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activityEventPaymentConfirmed => 'a confirmé un paiement';
 
   @override
-  String get activityEventPaymentCancelled => 'annulation d’un enregistrement de paiement';
+  String get activityEventPaymentCancelled => 'a annulé un enregistrement de paiement';
 
   @override
   String get activityEventPaymentNotReceived => 'a marqué un paiement comme non reçu';
 
   @override
-  String get activityEventUnknown => 'modification apportée';
+  String get activityEventUnknown => 'a apporté une modification';
 
   @override
   String get privacyEnglishFallback => 'La politique de confidentialité est actuellement disponible en anglais.';

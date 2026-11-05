@@ -1896,6 +1896,12 @@ class AppLocalizationsFi extends AppLocalizations {
   String get profileSecuritySectionHeading => 'TURVALLISUUS';
 
   @override
+  String get profileAccountAndSecurity => 'Tili ja turvallisuus';
+
+  @override
+  String get profileHelpTitle => 'Ohje';
+
+  @override
   String get profileChangePassword => 'Vaihda salasana';
 
   @override
@@ -4230,13 +4236,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get livePrivateUntilShared => 'Sijaintisi pysyy yksityisenä, kunnes päätät jakaa sen.';
 
   @override
-  String get activityEventExpenseCreated => 'lisätty kulu';
+  String get activityEventExpenseCreated => 'lisäsi kulun';
 
   @override
-  String get activityEventExpenseUpdated => 'päivitetty kulu';
+  String get activityEventExpenseUpdated => 'päivitti kulun';
 
   @override
-  String get activityEventExpenseDeleted => 'kustannus poistettu';
+  String get activityEventExpenseDeleted => 'poisti kulun';
 
   @override
   String get activityEventExpenseCommentAdded => 'kommentoi kulua';
@@ -4245,7 +4251,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get activityEventTripCreated => 'loi matkan';
 
   @override
-  String get activityEventTripUpdated => 'päivitetyt matkatiedot';
+  String get activityEventTripUpdated => 'päivitti matkan tiedot';
 
   @override
   String get activityEventTripRenamed => 'nimesi matkan uudelleen';
@@ -4263,11 +4269,11 @@ class AppLocalizationsFi extends AppLocalizations {
   String get activityEventTripDestinationsChanged => 'muutti matkan kohteita';
 
   @override
-  String get activityEventTripMembersAdded => 'lisätyt jäsenet';
+  String get activityEventTripMembersAdded => 'lisäsi jäseniä';
 
   @override
   String activityEventTripMembersInvited(int count) {
-    return 'lähetetyt kutsut: $count';
+    return 'lähetti kutsuja: $count';
   }
 
   @override
@@ -4277,11 +4283,11 @@ class AppLocalizationsFi extends AppLocalizations {
   String get activityEventTripInvitationDeclined => 'hylkäsi matkakutsun';
 
   @override
-  String get activityEventTripInvitationRevoked => 'matkakutsun peruuttaminen';
+  String get activityEventTripInvitationRevoked => 'peruutti matkakutsun';
 
   @override
   String activityEventTripMemberRemoved(String name) {
-    return '$name on poistettu matkalta';
+    return 'poisti käyttäjän $name matkalta';
   }
 
   @override
@@ -4289,20 +4295,20 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String activityEventTripMemberRoleUpdated(String name, String role) {
-    return '$name:n rooli muutettiin rooliksi $role';
+    return 'muutti käyttäjän $name rooliksi $role';
   }
 
   @override
-  String get activityEventTripMemberReady => 'merkitty valmiiksi maksettavaksi';
+  String get activityEventTripMemberReady => 'ilmoitti olevansa valmis maksamaan';
 
   @override
-  String get activityEventTripMemberNotReady => 'merkitty ei valmis';
+  String get activityEventTripMemberNotReady => 'ilmoitti, ettei ole vielä valmis';
 
   @override
   String get activityEventTripAllMembersReady => 'Kaikki jäsenet ovat valmiita maksamaan';
 
   @override
-  String get activityEventTripFinished => 'matka päättynyt';
+  String get activityEventTripFinished => 'päätti matkan';
 
   @override
   String get activityEventTripSettled => 'Kaikki siirrot on vahvistettu, matka on maksettu';
@@ -4314,7 +4320,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get activityEventSettlementConfirmed => 'vahvisti siirron';
 
   @override
-  String get activityEventSettlementSentCancelled => 'peruutettu lähetetty tila';
+  String get activityEventSettlementSentCancelled => 'peruutti lähetetty-tilan';
 
   @override
   String get activityEventSettlementNotReceived => 'merkitsi siirron vastaanottamattomaksi';
@@ -4341,13 +4347,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get activityEventPaymentConfirmed => 'vahvisti maksun';
 
   @override
-  String get activityEventPaymentCancelled => 'peruutettu maksutapahtuma';
+  String get activityEventPaymentCancelled => 'peruutti maksutapahtuman';
 
   @override
   String get activityEventPaymentNotReceived => 'merkitsi maksun vastaanottamattomaksi';
 
   @override
-  String get activityEventUnknown => 'tehty muutos';
+  String get activityEventUnknown => 'teki muutoksen';
 
   @override
   String get privacyEnglishFallback => 'Tietosuojakäytäntö on tällä hetkellä saatavilla englanniksi.';

@@ -6,6 +6,12 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
         .where(_isVisibleTripActivityEvent)
         .toList(growable: false);
     final t = context.l10n;
+    final shortNames = WorkspaceMemberShortNames([
+      for (final user in _snapshot?.users ?? const <WorkspaceUser>[])
+        (id: user.id, name: user.preferredName),
+      for (final event in events)
+        (id: event.actorUserId, name: event.actorName),
+    ]);
     return [
       if (_activityError != null)
         SliverPadding(
@@ -64,7 +70,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
                 children: [
                   if (day.isNotEmpty && day != previous)
                     Padding(
-                      padding: const EdgeInsets.only(top: 20, bottom: 12),
+                      padding: const EdgeInsets.only(top: 12, bottom: 4),
                       child: Semantics(
                         header: true,
                         child: Text(
@@ -73,7 +79,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
                         ),
                       ),
                     ),
-                  _buildActivityEventCard(event),
+                  _buildActivityEventCard(event, shortNames),
                 ],
               );
             },
@@ -100,7 +106,10 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     ];
   }
 
-  Widget _buildActivityEventCard(WorkspaceActivityEvent event) {
+  Widget _buildActivityEventCard(
+    WorkspaceActivityEvent event,
+    WorkspaceMemberShortNames shortNames,
+  ) {
     final theme = Theme.of(context);
     final actor = event.actorName.trim().isEmpty
         ? context.l10n.activityMember
@@ -109,7 +118,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     final note = _payloadString(event, 'note');
     return Padding(
       key: ValueKey('activity-row-${event.id}'),
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -117,17 +126,22 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
             id: event.actorUserId ?? event.id,
             name: actor,
             avatarUrl: event.actorAvatarThumbUrl ?? event.actorAvatarUrl,
-            size: 44,
+            size: 36,
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(actor, style: theme.textTheme.titleMedium),
                 Text.rich(
                   TextSpan(
                     children: [
+                      if (!_activityTextNamesItsOwnSubject(event.eventType))
+                        TextSpan(
+                          text:
+                              '${shortNames.labelFor(event.actorUserId, actor)} ',
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
                       TextSpan(
                         text:
                             '${_activityActionText(context, event)}${note != null && note.isNotEmpty ? ' ' : ''}',
@@ -143,9 +157,11 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
                         ),
                     ],
                   ),
-                  style: theme.textTheme.bodyLarge,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   [
                     ...meta,
@@ -160,7 +176,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
           ExcludeSemantics(
             child: Icon(
               workspaceActivityIcon(event.eventType),
-              size: 20,
+              size: 16,
               color: _isDestructiveActivity(event.eventType)
                   ? theme.colorScheme.error
                   : theme.colorScheme.onSurfaceVariant,
@@ -170,6 +186,13 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
       ),
     );
   }
+
+  /// These events read as complete sentences about the whole trip, so putting
+  /// the actor's name in front of them would produce nonsense.
+  bool _activityTextNamesItsOwnSubject(String eventType) => const {
+    'trip.all_members_ready',
+    'trip.settled',
+  }.contains(eventType.trim().toLowerCase());
 
   bool _isVisibleTripActivityEvent(WorkspaceActivityEvent event) {
     switch (event.eventType.trim().toLowerCase()) {

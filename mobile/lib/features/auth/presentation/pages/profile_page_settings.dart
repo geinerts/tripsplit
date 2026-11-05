@@ -50,8 +50,76 @@ extension _ProfilePageSettings on _ProfilePageState {
     }
   }
 
-  Future<void> _openChangePasswordDialog() async {
-    _openChangePasswordPage();
+  void _openNotificationSettings() {
+    if (_isBusy) {
+      return;
+    }
+    unawaited(
+      Navigator.of(context).push<void>(
+        AppPageRoute<void>(
+          builder: (_) =>
+              _ProfileNotificationSettingsPage(controller: widget.controller),
+        ),
+      ),
+    );
+  }
+
+  void _openAccountAndSecurity() {
+    if (_isBusy) {
+      return;
+    }
+    unawaited(
+      Navigator.of(context).push<void>(
+        AppPageRoute<void>(
+          builder: (_) => _ProfileAccountSecurityPage(
+            passwordTitle: _passwordActionTitle,
+            onPasswordTap: _openChangePasswordPage,
+            onDeleteAccountTap: _openDangerZone,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openHelp() {
+    if (_isBusy) {
+      return;
+    }
+    unawaited(
+      Navigator.of(context).push<void>(
+        AppPageRoute<void>(
+          builder: (_) => _ProfileHelpPage(
+            onQuickStartTap: widget.onQuickStartRequested ?? _openQuickStart,
+            onContactTap: _openContactDialog,
+            onRateTap: _openRateHint,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openRateHint() {
+    _showSnack(context.l10n.profileStoreRatingActionWillConnectedNextStep);
+  }
+
+  void _openDangerZone() {
+    if (_isBusy) {
+      return;
+    }
+    unawaited(
+      Navigator.of(context).push<void>(
+        AppFormPageRoute(
+          builder: (_) => AccountDeletionPage(
+            email: _user?.email ?? '',
+            onRequest: (password, reasons) =>
+                widget.controller.requestAccountDeletionLink(
+                  password: password,
+                  reasonCodes: reasons,
+                ),
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _openContactDialog() async {
@@ -133,6 +201,131 @@ extension _ProfilePageSettings on _ProfilePageState {
           },
         );
       },
+    );
+  }
+}
+
+/// Centers a profile sub-page and gives it the shared page gutters.
+class _ProfileSubpageBody extends StatelessWidget {
+  const _ProfileSubpageBody({required this.builder});
+
+  final Widget Function(EdgeInsets padding) builder;
+
+  @override
+  Widget build(BuildContext context) {
+    final gutter = context.responsive.pageHorizontalPadding;
+    return SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: context.responsive.pageMaxWidth,
+          ),
+          child: builder(EdgeInsets.fromLTRB(gutter, 12, gutter, 20)),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileAccountSecurityPage extends StatelessWidget {
+  const _ProfileAccountSecurityPage({
+    required this.passwordTitle,
+    required this.onPasswordTap,
+    required this.onDeleteAccountTap,
+  });
+
+  final String passwordTitle;
+  final VoidCallback onPasswordTap;
+  final VoidCallback onDeleteAccountTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.l10n;
+    return AppPageScaffold(
+      appBar: AppBar(title: Text(t.profileAccountAndSecurity)),
+      body: _ProfileSubpageBody(
+        builder: (padding) => LayoutBuilder(
+          builder: (context, viewport) => SingleChildScrollView(
+            padding: padding,
+            child: ConstrainedBox(
+              // The destructive action stays at the bottom of the screen and
+              // simply scrolls with the page when large text needs more room.
+              constraints: BoxConstraints(
+                minHeight: viewport.maxHeight - padding.vertical,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppSettingsRow(
+                    title: passwordTitle,
+                    icon: Icons.lock_outline_rounded,
+                    onTap: onPasswordTap,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32),
+                    child: Column(
+                      children: [
+                        const Divider(height: 1),
+                        AppSettingsRow(
+                          title: t.accountDeleteTitle,
+                          icon: Icons.person_remove_outlined,
+                          destructive: true,
+                          onTap: onDeleteAccountTap,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileHelpPage extends StatelessWidget {
+  const _ProfileHelpPage({
+    required this.onQuickStartTap,
+    required this.onContactTap,
+    required this.onRateTap,
+  });
+
+  final VoidCallback onQuickStartTap;
+  final VoidCallback onContactTap;
+  final VoidCallback onRateTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.l10n;
+    return AppPageScaffold(
+      appBar: AppBar(title: Text(t.profileHelpTitle)),
+      body: _ProfileSubpageBody(
+        builder: (padding) => ListView(
+          padding: padding,
+          children: [
+            AppSettingsRow(
+              title: t.quickStartTitle,
+              icon: Icons.help_outline,
+              onTap: onQuickStartTap,
+            ),
+            Divider(height: 1, color: AppDesign.cardStroke(context)),
+            AppSettingsRow(
+              title: t.profileContactUs,
+              icon: Icons.support_agent_outlined,
+              onTap: onContactTap,
+            ),
+            Divider(height: 1, color: AppDesign.cardStroke(context)),
+            AppSettingsRow(
+              title: t.profileRateSplyto,
+              icon: Icons.star_outline_rounded,
+              onTap: onRateTap,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

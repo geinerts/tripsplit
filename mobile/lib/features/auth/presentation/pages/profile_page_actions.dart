@@ -120,9 +120,8 @@ extension _ProfilePageActions on _ProfilePageState {
 
     try {
       final user = await widget.controller.loadCurrentUser();
-      NotificationPreferences prefs = widget.controller.notificationPreferences;
       try {
-        prefs = await widget.controller.loadNotificationPreferences();
+        await widget.controller.loadNotificationPreferences();
       } catch (_) {
         // Keep cached defaults/preferences if endpoint is unavailable.
       }
@@ -130,7 +129,6 @@ extension _ProfilePageActions on _ProfilePageState {
         return;
       }
       _applyUser(user);
-      _applyNotificationPreferences(prefs);
     } on ApiException catch (error) {
       final fallback = widget.controller.currentUser;
       if (!mounted) {
@@ -138,9 +136,6 @@ extension _ProfilePageActions on _ProfilePageState {
       }
       if (fallback != null) {
         _applyUser(fallback);
-        _applyNotificationPreferences(
-          widget.controller.notificationPreferences,
-        );
         _errorText = context.l10n.profileRefreshCachedData;
       } else {
         _errorText = error.message;
@@ -152,9 +147,6 @@ extension _ProfilePageActions on _ProfilePageState {
       }
       if (fallback != null) {
         _applyUser(fallback);
-        _applyNotificationPreferences(
-          widget.controller.notificationPreferences,
-        );
         _errorText = context.l10n.profileRefreshCachedData;
       } else {
         _errorText = context.l10n.unexpectedErrorLoadingProfile;
@@ -199,25 +191,7 @@ extension _ProfilePageActions on _ProfilePageState {
     _draftPaypalMeLink = _initialPaypalMeLink;
     _draftWisePayLink = _initialWisePayLink;
     _draftPreferredCurrencyCode = _initialPreferredCurrencyCode;
-    _draftPassword = '';
-    _draftRepeatPassword = '';
-    _isChangePasswordPage = false;
     _editErrorText = null;
-  }
-
-  void _applyNotificationPreferences(NotificationPreferences prefs) {
-    _inAppExpenseUpdatesEnabled =
-        prefs.inAppBannerEnabled && prefs.inAppExpenseAddedEnabled;
-    _inAppFriendInvitesEnabled =
-        prefs.inAppBannerEnabled && prefs.inAppFriendInvitesEnabled;
-    _inAppTripUpdatesEnabled =
-        prefs.inAppBannerEnabled && prefs.inAppTripUpdatesEnabled;
-    _inAppSettlementUpdatesEnabled =
-        prefs.inAppBannerEnabled && prefs.inAppSettlementUpdatesEnabled;
-    _pushExpenseUpdatesEnabled = prefs.pushExpenseAddedEnabled;
-    _pushFriendInvitesEnabled = prefs.pushFriendInvitesEnabled;
-    _pushTripUpdatesEnabled = prefs.pushTripUpdatesEnabled;
-    _pushSettlementUpdatesEnabled = prefs.pushSettlementUpdatesEnabled;
   }
 
   String _joinFullName(String? firstName, String? lastName) {
@@ -688,181 +662,6 @@ extension _ProfilePageActions on _ProfilePageState {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(context.l10n.avatarRemovedMessage)));
-  }
-
-  Future<void> _setNotificationPreferences({
-    bool? inAppBannerEnabled,
-    bool? inAppExpenseAddedEnabled,
-    bool? inAppFriendInvitesEnabled,
-    bool? inAppFriendInviteReceivedEnabled,
-    bool? inAppFriendInviteAcceptedEnabled,
-    bool? inAppTripUpdatesEnabled,
-    bool? inAppTripAddedEnabled,
-    bool? inAppTripMemberAddedEnabled,
-    bool? inAppTripFinishedEnabled,
-    bool? inAppMemberReadyToSettleEnabled,
-    bool? inAppTripReadyToSettleEnabled,
-    bool? inAppSettlementUpdatesEnabled,
-    bool? inAppSettlementReminderEnabled,
-    bool? inAppSettlementAutoReminderEnabled,
-    bool? inAppSettlementSentEnabled,
-    bool? inAppSettlementConfirmedEnabled,
-    bool? pushExpenseAddedEnabled,
-    bool? pushFriendInvitesEnabled,
-    bool? pushTripUpdatesEnabled,
-    bool? pushSettlementUpdatesEnabled,
-    required VoidCallback applyOptimistic,
-    required VoidCallback rollback,
-  }) async {
-    if (_isLoading || _isSubmitting) {
-      return;
-    }
-
-    _updateState(applyOptimistic);
-    try {
-      final prefs = await widget.controller.updateNotificationPreferences(
-        inAppBannerEnabled: inAppBannerEnabled,
-        inAppExpenseAddedEnabled: inAppExpenseAddedEnabled,
-        inAppFriendInvitesEnabled: inAppFriendInvitesEnabled,
-        inAppFriendInviteReceivedEnabled: inAppFriendInviteReceivedEnabled,
-        inAppFriendInviteAcceptedEnabled: inAppFriendInviteAcceptedEnabled,
-        inAppTripUpdatesEnabled: inAppTripUpdatesEnabled,
-        inAppTripAddedEnabled: inAppTripAddedEnabled,
-        inAppTripMemberAddedEnabled: inAppTripMemberAddedEnabled,
-        inAppTripFinishedEnabled: inAppTripFinishedEnabled,
-        inAppMemberReadyToSettleEnabled: inAppMemberReadyToSettleEnabled,
-        inAppTripReadyToSettleEnabled: inAppTripReadyToSettleEnabled,
-        inAppSettlementUpdatesEnabled: inAppSettlementUpdatesEnabled,
-        inAppSettlementReminderEnabled: inAppSettlementReminderEnabled,
-        inAppSettlementAutoReminderEnabled: inAppSettlementAutoReminderEnabled,
-        inAppSettlementSentEnabled: inAppSettlementSentEnabled,
-        inAppSettlementConfirmedEnabled: inAppSettlementConfirmedEnabled,
-        pushExpenseAddedEnabled: pushExpenseAddedEnabled,
-        pushFriendInvitesEnabled: pushFriendInvitesEnabled,
-        pushTripUpdatesEnabled: pushTripUpdatesEnabled,
-        pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
-      );
-      if (!mounted) {
-        return;
-      }
-      _updateState(() {
-        _applyNotificationPreferences(prefs);
-      });
-    } on ApiException catch (error) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(rollback);
-      _showSnack(
-        error.message.trim().isNotEmpty
-            ? error.message
-            : context.l10n.profileFailedSaveNotificationSettings,
-      );
-    } catch (_) {
-      if (!mounted) {
-        return;
-      }
-      _updateState(rollback);
-      _showSnack(context.l10n.profileFailedSaveNotificationSettings);
-    }
-  }
-
-  Future<void> _setAllInAppNotificationsEnabled(bool value) async {
-    final previousExpense = _inAppExpenseUpdatesEnabled;
-    final previousFriends = _inAppFriendInvitesEnabled;
-    final previousTrip = _inAppTripUpdatesEnabled;
-    final previousSettlement = _inAppSettlementUpdatesEnabled;
-    await _setNotificationPreferences(
-      inAppBannerEnabled: value,
-      inAppExpenseAddedEnabled: value,
-      inAppFriendInvitesEnabled: value,
-      inAppFriendInviteReceivedEnabled: value,
-      inAppFriendInviteAcceptedEnabled: value,
-      inAppTripUpdatesEnabled: value,
-      inAppTripAddedEnabled: value,
-      inAppTripMemberAddedEnabled: value,
-      inAppTripFinishedEnabled: value,
-      inAppMemberReadyToSettleEnabled: value,
-      inAppTripReadyToSettleEnabled: value,
-      inAppSettlementUpdatesEnabled: value,
-      inAppSettlementReminderEnabled: value,
-      inAppSettlementAutoReminderEnabled: value,
-      inAppSettlementSentEnabled: value,
-      inAppSettlementConfirmedEnabled: value,
-      applyOptimistic: () {
-        _inAppExpenseUpdatesEnabled = value;
-        _inAppFriendInvitesEnabled = value;
-        _inAppTripUpdatesEnabled = value;
-        _inAppSettlementUpdatesEnabled = value;
-      },
-      rollback: () {
-        _inAppExpenseUpdatesEnabled = previousExpense;
-        _inAppFriendInvitesEnabled = previousFriends;
-        _inAppTripUpdatesEnabled = previousTrip;
-        _inAppSettlementUpdatesEnabled = previousSettlement;
-      },
-    );
-  }
-
-  Future<void> _setAllPushNotificationsEnabled(bool value) async {
-    final previousExpense = _pushExpenseUpdatesEnabled;
-    final previousFriends = _pushFriendInvitesEnabled;
-    final previousTrip = _pushTripUpdatesEnabled;
-    final previousSettlement = _pushSettlementUpdatesEnabled;
-    await _setNotificationPreferences(
-      pushExpenseAddedEnabled: value,
-      pushFriendInvitesEnabled: value,
-      pushTripUpdatesEnabled: value,
-      pushSettlementUpdatesEnabled: value,
-      applyOptimistic: () {
-        _pushExpenseUpdatesEnabled = value;
-        _pushFriendInvitesEnabled = value;
-        _pushTripUpdatesEnabled = value;
-        _pushSettlementUpdatesEnabled = value;
-      },
-      rollback: () {
-        _pushExpenseUpdatesEnabled = previousExpense;
-        _pushFriendInvitesEnabled = previousFriends;
-        _pushTripUpdatesEnabled = previousTrip;
-        _pushSettlementUpdatesEnabled = previousSettlement;
-      },
-    );
-  }
-
-  Future<void> _openPushNotificationSettingsPage() async {
-    if (_isBusy) {
-      return;
-    }
-    await Navigator.of(context).push<void>(
-      AppPageRoute<void>(
-        builder: (_) =>
-            _PushNotificationSettingsPage(controller: widget.controller),
-      ),
-    );
-    if (!mounted) {
-      return;
-    }
-    _updateState(() {
-      _applyNotificationPreferences(widget.controller.notificationPreferences);
-    });
-  }
-
-  Future<void> _openInAppNotificationSettingsPage() async {
-    if (_isBusy) {
-      return;
-    }
-    await Navigator.of(context).push<void>(
-      AppPageRoute<void>(
-        builder: (_) =>
-            _InAppNotificationSettingsPage(controller: widget.controller),
-      ),
-    );
-    if (!mounted) {
-      return;
-    }
-    _updateState(() {
-      _applyNotificationPreferences(widget.controller.notificationPreferences);
-    });
   }
 
   void _showSnack(String message) {
