@@ -399,6 +399,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get expenseCommentSend => 'Wyślij';
 
   @override
+  String get expenseMentionNoMatches => 'Brak pasujących uczestników';
+
+  @override
+  String get expenseMentionMembersLabel => 'Uczestnicy wycieczki do oznaczenia';
+
+  @override
   String get expenseDeleteCommentTitle => 'Usunąć komentarz?';
 
   @override
@@ -914,6 +920,19 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get notificationExpenseAddedBodyGeneric => 'Dodano nowy wydatek.';
+
+  @override
+  String get notificationCommentMentionTitle => 'Oznaczono Cię w komentarzu';
+
+  @override
+  String notificationCommentMentionBody(Object name, Object note) {
+    return '$name oznaczył(a) Cię w komentarzu do „$note”.';
+  }
+
+  @override
+  String notificationCommentMentionBodyGeneric(Object name) {
+    return '$name oznaczył(a) Cię w komentarzu.';
+  }
 
   @override
   String get notificationTripFinishedTitle => 'Wycieczka zakończona';

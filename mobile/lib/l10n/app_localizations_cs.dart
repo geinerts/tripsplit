@@ -397,6 +397,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get expenseCommentSend => 'Odeslat';
 
   @override
+  String get expenseMentionNoMatches => 'Žádní odpovídající členové';
+
+  @override
+  String get expenseMentionMembersLabel => 'Členové výletu, které lze zmínit';
+
+  @override
   String get expenseDeleteCommentTitle => 'Smazat komentář?';
 
   @override
@@ -911,6 +917,19 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get notificationExpenseAddedBodyGeneric => 'Byla přidána nová výdajová položka.';
+
+  @override
+  String get notificationCommentMentionTitle => 'Někdo vás zmínil v komentáři';
+
+  @override
+  String notificationCommentMentionBody(Object name, Object note) {
+    return '$name vás zmínil v komentáři k „$note“.';
+  }
+
+  @override
+  String notificationCommentMentionBodyGeneric(Object name) {
+    return '$name vás zmínil v komentáři.';
+  }
 
   @override
   String get notificationTripFinishedTitle => 'Cesta skončila';

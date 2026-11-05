@@ -358,6 +358,7 @@ function notification_actor_user_id(array $notification): ?int
         'member_ready_to_settle' => 'user_id',
         'expense_added' => 'paid_by_user_id',
         'settlement_reminder' => 'reminded_by_user_id',
+        'expense_comment_mention' => 'mentioned_by_user_id',
         default => null,
     };
     if ($key === null) return null;

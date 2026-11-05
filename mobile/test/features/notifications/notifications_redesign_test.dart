@@ -429,6 +429,11 @@ void main() {
       for (final example in [
         ('expense_added', 'Anna added an expense of €42.00: Airport transfer'),
         ('expense_added', 'Anna added an expense of €42.00 in "Lisbon".'),
+        (
+          'expense_comment_mention',
+          'Anna mentioned you in a comment on "Taxi".',
+        ),
+        ('expense_comment_mention', 'Anna mentioned you in a comment.'),
         ('settlement_reminder', 'Anna reminded Daniel to mark €42.00 as sent.'),
         (
           'settlement_reminder',

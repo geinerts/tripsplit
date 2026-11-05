@@ -1,3 +1,5 @@
+import 'expense_comment_mention.dart';
+
 class ExpenseComment {
   const ExpenseComment({
     required this.id,
@@ -8,6 +10,7 @@ class ExpenseComment {
     this.parentCommentId,
     this.parentUserNickname,
     this.parentBody,
+    this.mentions = const <ExpenseCommentMention>[],
   });
 
   final int id;
@@ -18,4 +21,5 @@ class ExpenseComment {
   final int? parentCommentId;
   final String? parentUserNickname;
   final String? parentBody;
+  final List<ExpenseCommentMention> mentions;
 }

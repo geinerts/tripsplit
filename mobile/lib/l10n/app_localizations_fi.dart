@@ -395,6 +395,12 @@ class AppLocalizationsFi extends AppLocalizations {
   String get expenseCommentSend => 'Lähetä';
 
   @override
+  String get expenseMentionNoMatches => 'Ei vastaavia jäseniä';
+
+  @override
+  String get expenseMentionMembersLabel => 'Mainittavat matkan jäsenet';
+
+  @override
   String get expenseDeleteCommentTitle => 'Poista kommentti?';
 
   @override
@@ -908,6 +914,19 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get notificationExpenseAddedBodyGeneric => 'Uusi kulu on lisätty.';
+
+  @override
+  String get notificationCommentMentionTitle => 'Sinut mainittiin kommentissa';
+
+  @override
+  String notificationCommentMentionBody(Object name, Object note) {
+    return '$name mainitsi sinut kommentissa kohteeseen ”$note”.';
+  }
+
+  @override
+  String notificationCommentMentionBodyGeneric(Object name) {
+    return '$name mainitsi sinut kommentissa.';
+  }
 
   @override
   String get notificationTripFinishedTitle => 'Matka päättynyt';

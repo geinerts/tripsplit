@@ -399,6 +399,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get expenseCommentSend => 'Надіслати';
 
   @override
+  String get expenseMentionNoMatches => 'Немає відповідних учасників';
+
+  @override
+  String get expenseMentionMembersLabel => 'Учасники поїздки, яких можна згадати';
+
+  @override
   String get expenseDeleteCommentTitle => 'Видалити коментар?';
 
   @override
@@ -914,6 +920,19 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get notificationExpenseAddedBodyGeneric => 'Було додано нову статтю витрат.';
+
+  @override
+  String get notificationCommentMentionTitle => 'Вас згадали в коментарі';
+
+  @override
+  String notificationCommentMentionBody(Object name, Object note) {
+    return '$name згадав вас у коментарі до «$note».';
+  }
+
+  @override
+  String notificationCommentMentionBodyGeneric(Object name) {
+    return '$name згадав вас у коментарі.';
+  }
 
   @override
   String get notificationTripFinishedTitle => 'Подорож завершено';

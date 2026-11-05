@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_scaffold.dart';
+import '../../domain/entities/comment_mention_text.dart';
+import '../../domain/entities/expense_comment_mention.dart';
+import '../../domain/entities/workspace_user.dart';
+import 'comment_mention_input.dart';
 
 class WorkspaceInputPage extends StatelessWidget {
   const WorkspaceInputPage({
@@ -59,19 +63,40 @@ class WorkspaceInputPage extends StatelessWidget {
   );
 }
 
+class ExpenseCommentEditDraft {
+  const ExpenseCommentEditDraft(this.body, this.mentionedUserIds);
+  final String body;
+  final List<int> mentionedUserIds;
+}
+
 class EditExpenseCommentPage extends StatefulWidget {
-  const EditExpenseCommentPage({super.key, required this.initial});
+  const EditExpenseCommentPage({
+    super.key,
+    required this.initial,
+    this.members = const <WorkspaceUser>[],
+    this.mentions = const <ExpenseCommentMention>[],
+    this.currentUserId = 0,
+  });
   final String initial;
+  final List<WorkspaceUser> members;
+  final List<ExpenseCommentMention> mentions;
+  final int currentUserId;
   @override
   State<EditExpenseCommentPage> createState() => _EditExpenseCommentPageState();
 }
 
 class _EditExpenseCommentPageState extends State<EditExpenseCommentPage> {
-  late final _text = TextEditingController(text: widget.initial);
+  late final _text = CommentMentionTextController(
+    text: widget.initial,
+    members: widget.members,
+    existingMentions: widget.mentions,
+  );
+  final _focus = FocusNode();
   bool _submitted = false;
   @override
   void dispose() {
     _text.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -90,14 +115,21 @@ class _EditExpenseCommentPageState extends State<EditExpenseCommentPage> {
               : () {
                   if (_submitted) return;
                   setState(() => _submitted = true);
-                  Navigator.pop(context, value.text.trim());
+                  Navigator.pop(
+                    context,
+                    ExpenseCommentEditDraft(
+                      value.text.trim(),
+                      _text.mentionedUserIds,
+                    ),
+                  );
                 },
           children: [
             TextField(
               key: const ValueKey('comment-edit-input'),
               controller: _text,
+              focusNode: _focus,
               autofocus: true,
-              maxLength: 280,
+              maxLength: expenseCommentMaxLength,
               minLines: 4,
               maxLines: 8,
               textCapitalization: TextCapitalization.sentences,
@@ -106,6 +138,13 @@ class _EditExpenseCommentPageState extends State<EditExpenseCommentPage> {
                 labelText: context.l10n.expenseCommentsTitle,
                 hintText: context.l10n.expenseAddCommentHint,
               ),
+            ),
+            CommentMentionSuggestions(
+              controller: _text,
+              focusNode: _focus,
+              members: widget.members,
+              currentUserId: widget.currentUserId,
+              spaceBelow: false,
             ),
           ],
         ),

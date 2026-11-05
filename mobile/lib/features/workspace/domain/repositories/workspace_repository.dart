@@ -198,6 +198,7 @@ abstract class WorkspaceRepository {
     required int tripId,
     required String body,
     int? parentCommentId,
+    List<int> mentionedUserIds = const <int>[],
   });
 
   Future<ExpenseComment> updateExpenseComment({
@@ -205,6 +206,7 @@ abstract class WorkspaceRepository {
     required int expenseId,
     required int tripId,
     required String body,
+    List<int> mentionedUserIds = const <int>[],
   });
 
   Future<void> deleteExpenseComment({

@@ -395,6 +395,12 @@ class AppLocalizationsNb extends AppLocalizations {
   String get expenseCommentSend => 'Send';
 
   @override
+  String get expenseMentionNoMatches => 'Ingen samsvarende medlemmer';
+
+  @override
+  String get expenseMentionMembersLabel => 'Turmedlemmer du kan nevne';
+
+  @override
   String get expenseDeleteCommentTitle => 'Slette kommentar?';
 
   @override
@@ -908,6 +914,19 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get notificationExpenseAddedBodyGeneric => 'En ny utgift ble lagt til.';
+
+  @override
+  String get notificationCommentMentionTitle => 'Du ble nevnt i en kommentar';
+
+  @override
+  String notificationCommentMentionBody(Object name, Object note) {
+    return '$name nevnte deg i en kommentar til «$note».';
+  }
+
+  @override
+  String notificationCommentMentionBodyGeneric(Object name) {
+    return '$name nevnte deg i en kommentar.';
+  }
 
   @override
   String get notificationTripFinishedTitle => 'Turen er avsluttet';

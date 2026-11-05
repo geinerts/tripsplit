@@ -397,6 +397,12 @@ class AppLocalizationsLv extends AppLocalizations {
   String get expenseCommentSend => 'Nosūtīt';
 
   @override
+  String get expenseMentionNoMatches => 'Nav atbilstošu dalībnieku';
+
+  @override
+  String get expenseMentionMembersLabel => 'Ceļojuma dalībnieki, ko pieminēt';
+
+  @override
   String get expenseDeleteCommentTitle => 'Dzēst komentāru?';
 
   @override
@@ -911,6 +917,19 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get notificationExpenseAddedBodyGeneric => 'Pievienots jauns izdevums.';
+
+  @override
+  String get notificationCommentMentionTitle => 'Tevi pieminēja komentārā';
+
+  @override
+  String notificationCommentMentionBody(Object name, Object note) {
+    return '$name tevi pieminēja komentārā pie \"$note\".';
+  }
+
+  @override
+  String notificationCommentMentionBodyGeneric(Object name) {
+    return '$name tevi pieminēja komentārā.';
+  }
 
   @override
   String get notificationTripFinishedTitle => 'Ceļojums pabeigts';

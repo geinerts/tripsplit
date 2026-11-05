@@ -55,6 +55,241 @@ function get_comment_for_trip_expense(
 }
 
 // ---------------------------------------------------------------------------
+// Mentions: see docs/api/expense-comment-mentions.md
+// ---------------------------------------------------------------------------
+function expense_comment_mentions_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if (is_bool($cached)) {
+        return $cached;
+    }
+    try {
+        $cached = $pdo->query('SELECT 1 FROM ' . table_name('expense_comment_mentions') . ' LIMIT 1') !== false;
+    } catch (Throwable $error) {
+        $cached = false;
+    }
+    return $cached;
+}
+
+/** Normalize the request list to unique positive IDs; a bad value is ignored, not an error. */
+function normalize_mentioned_user_ids($raw): array
+{
+    if (!is_array($raw)) {
+        return [];
+    }
+    $ids = [];
+    foreach ($raw as $value) {
+        $id = is_int($value) || is_string($value) ? filter_var($value, FILTER_VALIDATE_INT) : false;
+        if ($id !== false && $id > 0) {
+            $ids[$id] = $id;
+        }
+    }
+    return array_slice(array_values($ids), 0, 50);
+}
+
+function expense_comment_mention_text(string $commentBody, array $names): ?string
+{
+    usort($names, static fn(string $a, string $b): int => str_length($b) <=> str_length($a));
+    foreach ($names as $name) {
+        $name = trim($name);
+        $pattern = '/(?<![\p{L}\p{N}_])@(' . preg_quote($name, '/') . ')(?![\p{L}\p{N}_])/iu';
+        if ($name !== '' && preg_match($pattern, $commentBody, $match) === 1) {
+            return $match[1];
+        }
+    }
+    return null;
+}
+
+/** @return array<int, array{text: string, active: bool}> */
+function load_expense_comment_mention_rows(PDO $pdo, int $commentId): array
+{
+    $stmt = $pdo->prepare(
+        'SELECT user_id, mention_text, is_active
+         FROM ' . table_name('expense_comment_mentions') . '
+         WHERE comment_id = :comment_id'
+    );
+    $stmt->execute(['comment_id' => $commentId]);
+    $rows = [];
+    foreach ($stmt->fetchAll() as $row) {
+        $rows[(int) $row['user_id']] = [
+            'text' => (string) $row['mention_text'],
+            'active' => (int) $row['is_active'] === 1,
+        ];
+    }
+    return $rows;
+}
+
+/**
+ * Keep only IDs of active trip members whose mention is really in the text.
+ *
+ * @return array<int, string> user ID => mention text as written in the body
+ */
+function resolve_expense_comment_mentions(
+    PDO $pdo,
+    int $tripId,
+    string $commentBody,
+    array $requestedIds,
+    array $existingRows = []
+): array {
+    if (!$requestedIds) {
+        return [];
+    }
+    $placeholders = implode(',', array_fill(0, count($requestedIds), '?'));
+    $nameSelect = users_name_columns_available($pdo)
+        ? 'u.first_name, u.last_name, '
+        : 'NULL AS first_name, NULL AS last_name, ';
+    $stmt = $pdo->prepare(
+        'SELECT u.id, ' . $nameSelect . 'u.nickname
+         FROM ' . table_name('trip_members') . ' tm
+         JOIN ' . table_name('users') . ' u ON u.id = tm.user_id
+         WHERE tm.trip_id = ? AND tm.user_id IN (' . $placeholders . ')'
+         . users_active_filter_sql($pdo, 'u')
+    );
+    $stmt->execute(array_merge([$tripId], $requestedIds));
+
+    $resolved = [];
+    foreach ($stmt->fetchAll() as $row) {
+        $userId = (int) $row['id'];
+        $fullName = combine_full_name(
+            normalize_me_name_value($row['first_name'] ?? null),
+            normalize_me_name_value($row['last_name'] ?? null)
+        );
+        $text = expense_comment_mention_text($commentBody, array_filter([
+            (string) $fullName,
+            (string) ($row['nickname'] ?? ''),
+            (string) ($existingRows[$userId]['text'] ?? ''),
+        ], static fn(string $name): bool => $name !== ''));
+        if ($text !== null) {
+            $resolved[$userId] = $text;
+        }
+    }
+    return $resolved;
+}
+
+/** Store the comment's mentions and notify only people who were never mentioned in it. */
+function save_expense_comment_mentions(
+    PDO $pdo,
+    int $tripId,
+    int $expenseId,
+    string $expenseNote,
+    int $commentId,
+    int $actorId,
+    string $commentBody,
+    array $requestedIds
+): void {
+    if (!expense_comment_mentions_available($pdo)) {
+        return;
+    }
+    // The comment is already saved, so a mention failure must not fail the request.
+    try {
+        $existing = load_expense_comment_mention_rows($pdo, $commentId);
+        $resolved = resolve_expense_comment_mentions($pdo, $tripId, $commentBody, $requestedIds, $existing);
+        $table = table_name('expense_comment_mentions');
+        $insert = $pdo->prepare(
+            'INSERT INTO ' . $table . ' (comment_id, user_id, mention_text, is_active)
+             VALUES (:comment_id, :user_id, :mention_text, 1)'
+        );
+        $update = $pdo->prepare(
+            'UPDATE ' . $table . ' SET mention_text = :mention_text, is_active = :is_active
+             WHERE comment_id = :comment_id AND user_id = :user_id'
+        );
+        foreach ($existing as $userId => $row) {
+            $update->execute([
+                'mention_text' => $resolved[$userId] ?? $row['text'],
+                'is_active' => isset($resolved[$userId]) ? 1 : 0,
+                'comment_id' => $commentId,
+                'user_id' => $userId,
+            ]);
+        }
+        $newUserIds = array_diff(array_keys($resolved), array_keys($existing));
+        foreach ($newUserIds as $userId) {
+            $insert->execute([
+                'comment_id' => $commentId,
+                'user_id' => $userId,
+                'mention_text' => $resolved[$userId],
+            ]);
+        }
+        notify_expense_comment_mentions($pdo, $tripId, $expenseId, $expenseNote, $commentId, $actorId, $newUserIds);
+    } catch (Throwable $error) {
+        log_api_exception($error, 'save_expense_comment_mentions');
+    }
+}
+
+function notify_expense_comment_mentions(
+    PDO $pdo,
+    int $tripId,
+    int $expenseId,
+    string $expenseNote,
+    int $commentId,
+    int $actorId,
+    array $userIds
+): void {
+    $userIds = array_diff($userIds, [$actorId]);
+    if (!$userIds) {
+        return;
+    }
+    $actorName = trip_member_label($pdo, $actorId);
+    $note = trim($expenseNote);
+    $notificationBody = $note !== ''
+        ? $actorName . ' mentioned you in a comment on "' . $note . '".'
+        : $actorName . ' mentioned you in a comment.';
+    foreach ($userIds as $userId) {
+        create_user_notification(
+            $pdo,
+            $tripId,
+            (int) $userId,
+            'expense_comment_mention',
+            'You were mentioned in a comment',
+            $notificationBody,
+            [
+                'trip_id' => $tripId,
+                'expense_id' => $expenseId,
+                'comment_id' => $commentId,
+                'mentioned_by_user_id' => $actorId,
+            ]
+        );
+    }
+}
+
+/** @return list<array{user_id: int, name: string}> */
+function expense_comment_mentions_payload(PDO $pdo, int $commentId): array
+{
+    if (!expense_comment_mentions_available($pdo)) {
+        return [];
+    }
+    $mentions = [];
+    foreach (load_expense_comment_mention_rows($pdo, $commentId) as $userId => $row) {
+        if ($row['active']) {
+            $mentions[] = ['user_id' => $userId, 'name' => $row['text']];
+        }
+    }
+    return $mentions;
+}
+
+/** @return array<int, list<array{user_id: int, name: string}>> comment ID => mentions */
+function expense_mentions_by_comment(PDO $pdo, int $expenseId): array
+{
+    if (!expense_comment_mentions_available($pdo)) {
+        return [];
+    }
+    $stmt = $pdo->prepare(
+        'SELECT m.comment_id, m.user_id, m.mention_text
+         FROM ' . table_name('expense_comment_mentions') . ' m
+         JOIN ' . table_name('expense_comments') . ' c ON c.id = m.comment_id
+         WHERE c.expense_id = :expense_id AND m.is_active = 1'
+    );
+    $stmt->execute(['expense_id' => $expenseId]);
+    $byComment = [];
+    foreach ($stmt->fetchAll() as $row) {
+        $byComment[(int) $row['comment_id']][] = [
+            'user_id' => (int) $row['user_id'],
+            'name' => (string) $row['mention_text'],
+        ];
+    }
+    return $byComment;
+}
+
+// ---------------------------------------------------------------------------
 // list_expense_comment_reactions  GET  ?trip_id=…&expense_id=…
 // ---------------------------------------------------------------------------
 function list_expense_comment_reactions_action(): void
@@ -361,9 +596,10 @@ function list_expense_comments_action(): void
          ORDER BY c.created_at ASC, c.id ASC'
     );
     $stmt->execute(['expense_id' => $expenseId]);
+    $mentionsByComment = expense_mentions_by_comment($pdo, $expenseId);
 
     $comments = array_map(
-        static function (array $row): array {
+        static function (array $row) use ($mentionsByComment): array {
             return [
                 'id'         => (int) $row['id'],
                 'user_id'    => (int) $row['user_id'],
@@ -379,6 +615,7 @@ function list_expense_comments_action(): void
                 'reply_to_body' => $row['reply_to_body'] !== null
                     ? (string) $row['reply_to_body']
                     : null,
+                'mentions' => $mentionsByComment[(int) $row['id']] ?? [],
             ];
         },
         $stmt->fetchAll()
@@ -389,7 +626,7 @@ function list_expense_comments_action(): void
 
 // ---------------------------------------------------------------------------
 // add_expense_comment  POST
-// Body: { trip_id, expense_id, body, parent_comment_id? }
+// Body: { trip_id, expense_id, body, parent_comment_id?, mentioned_user_ids? }
 // ---------------------------------------------------------------------------
 function add_expense_comment_action(): void
 {
@@ -476,6 +713,17 @@ function add_expense_comment_action(): void
         'note' => trim((string) ($expense['note'] ?? '')),
     ]);
 
+    save_expense_comment_mentions(
+        $pdo,
+        $tripId,
+        $expenseId,
+        (string) ($expense['note'] ?? ''),
+        $commentId,
+        $userId,
+        $commentBody,
+        normalize_mentioned_user_ids($body['mentioned_user_ids'] ?? [])
+    );
+
     $nickStmt = $pdo->prepare(
         'SELECT nickname FROM ' . $usersTable . ' WHERE id = :id LIMIT 1'
     );
@@ -490,6 +738,7 @@ function add_expense_comment_action(): void
             'user_id'    => $userId,
             'nickname'   => $nickname,
             'body'       => $commentBody,
+            'mentions'   => expense_comment_mentions_payload($pdo, $commentId),
             'created_at' => date('Y-m-d H:i:s'),
             'parent_comment_id' => $parentCommentId > 0 ? $parentCommentId : null,
             'reply_to_nickname' => is_array($parentComment)
@@ -504,7 +753,7 @@ function add_expense_comment_action(): void
 
 // ---------------------------------------------------------------------------
 // update_expense_comment  POST
-// Body: { trip_id, comment_id, expense_id?, body }
+// Body: { trip_id, comment_id, expense_id?, body, mentioned_user_ids? }
 // Only the comment author may edit their own comment.
 // ---------------------------------------------------------------------------
 function update_expense_comment_action(): void
@@ -581,6 +830,20 @@ function update_expense_comment_action(): void
         'id'   => $commentId,
     ]);
 
+    if (array_key_exists('mentioned_user_ids', $body)) {
+        $commentExpenseId = (int) ($comment['expense_id'] ?? 0);
+        save_expense_comment_mentions(
+            $pdo,
+            $tripId,
+            $commentExpenseId,
+            (string) (get_expense_for_trip($pdo, $commentExpenseId, $tripId)['note'] ?? ''),
+            $commentId,
+            $userId,
+            $commentBody,
+            normalize_mentioned_user_ids($body['mentioned_user_ids'])
+        );
+    }
+
     $parentCommentId = (int) ($comment['parent_comment_id'] ?? 0);
     $parentComment = null;
     if ($parentCommentId > 0) {
@@ -606,6 +869,7 @@ function update_expense_comment_action(): void
             'user_id'    => $userId,
             'nickname'   => $nickname,
             'body'       => $commentBody,
+            'mentions'   => expense_comment_mentions_payload($pdo, $commentId),
             'created_at' => (string) ($comment['created_at'] ?? ''),
             'parent_comment_id' => $parentCommentId > 0 ? $parentCommentId : null,
             'reply_to_nickname' => is_array($parentComment)

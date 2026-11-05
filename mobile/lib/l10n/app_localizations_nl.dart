@@ -395,6 +395,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get expenseCommentSend => 'Verzenden';
 
   @override
+  String get expenseMentionNoMatches => 'Geen overeenkomende leden';
+
+  @override
+  String get expenseMentionMembersLabel => 'Reisleden om te noemen';
+
+  @override
   String get expenseDeleteCommentTitle => 'Reactie verwijderen?';
 
   @override
@@ -908,6 +914,19 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get notificationExpenseAddedBodyGeneric => 'Er is een nieuwe uitgave toegevoegd.';
+
+  @override
+  String get notificationCommentMentionTitle => 'Je bent genoemd in een opmerking';
+
+  @override
+  String notificationCommentMentionBody(Object name, Object note) {
+    return '$name heeft je genoemd in een opmerking bij \"$note\".';
+  }
+
+  @override
+  String notificationCommentMentionBodyGeneric(Object name) {
+    return '$name heeft je genoemd in een opmerking.';
+  }
 
   @override
   String get notificationTripFinishedTitle => 'Reis voltooid';

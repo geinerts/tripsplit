@@ -805,6 +805,18 @@ abstract class AppLocalizations {
   /// **'Send'**
   String get expenseCommentSend;
 
+  /// No description provided for @expenseMentionNoMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching members'**
+  String get expenseMentionNoMatches;
+
+  /// No description provided for @expenseMentionMembersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip members to mention'**
+  String get expenseMentionMembersLabel;
+
   /// No description provided for @expenseDeleteCommentTitle.
   ///
   /// In en, this message translates to:
@@ -1746,6 +1758,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A new expense was added.'**
   String get notificationExpenseAddedBodyGeneric;
+
+  /// No description provided for @notificationCommentMentionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You were mentioned in a comment'**
+  String get notificationCommentMentionTitle;
+
+  /// No description provided for @notificationCommentMentionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} mentioned you in a comment on \"{note}\".'**
+  String notificationCommentMentionBody(Object name, Object note);
+
+  /// No description provided for @notificationCommentMentionBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} mentioned you in a comment.'**
+  String notificationCommentMentionBodyGeneric(Object name);
 
   /// No description provided for @notificationTripFinishedTitle.
   ///

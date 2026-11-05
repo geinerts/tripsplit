@@ -242,6 +242,8 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
               ? Icons.person_outline
               : item.type == 'expense_added'
               ? Icons.receipt_long_outlined
+              : item.type == 'expense_comment_mention'
+              ? Icons.alternate_email
               : Icons.notifications_none,
           size: 22,
         );

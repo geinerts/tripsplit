@@ -198,6 +198,7 @@ abstract class WorkspaceRemoteDataSource {
     required int tripId,
     required String body,
     int? parentCommentId,
+    List<int> mentionedUserIds = const <int>[],
   });
 
   Future<ExpenseComment> updateExpenseComment({
@@ -205,6 +206,7 @@ abstract class WorkspaceRemoteDataSource {
     required int expenseId,
     required int tripId,
     required String body,
+    List<int> mentionedUserIds = const <int>[],
   });
 
   Future<void> deleteExpenseComment({
@@ -646,12 +648,14 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required int tripId,
     required String body,
     int? parentCommentId,
+    List<int> mentionedUserIds = const <int>[],
   }) {
     return _mutationApi.addExpenseComment(
       expenseId: expenseId,
       tripId: tripId,
       body: body,
       parentCommentId: parentCommentId,
+      mentionedUserIds: mentionedUserIds,
     );
   }
 
@@ -661,12 +665,14 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required int expenseId,
     required int tripId,
     required String body,
+    List<int> mentionedUserIds = const <int>[],
   }) {
     return _mutationApi.updateExpenseComment(
       commentId: commentId,
       expenseId: expenseId,
       tripId: tripId,
       body: body,
+      mentionedUserIds: mentionedUserIds,
     );
   }
 

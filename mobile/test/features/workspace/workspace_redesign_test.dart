@@ -308,6 +308,7 @@ class _Workspace implements WorkspaceController {
   final commentReactionCalls = <(int, int, int, String)>[];
   final commentEditCalls = <(int, int, int, String)>[];
   final commentReplyCalls = <(int, int, int?, String)>[];
+  final commentMentionCalls = <List<int>>[];
   final commentDeleteCalls = <(int, int, int)>[];
   final paymentCalls = <(int, int, double, String)>[];
   final sentCalls = <(int, int)>[];
@@ -346,8 +347,10 @@ class _Workspace implements WorkspaceController {
     required int expenseId,
     required int tripId,
     required String body,
+    List<int> mentionedUserIds = const <int>[],
   }) async {
     commentEditCalls.add((tripId, expenseId, commentId, body));
+    commentMentionCalls.add(mentionedUserIds);
     final updated = ExpenseComment(
       id: commentId,
       userId: 7,
@@ -365,8 +368,10 @@ class _Workspace implements WorkspaceController {
     required int tripId,
     required String body,
     int? parentCommentId,
+    List<int> mentionedUserIds = const <int>[],
   }) async {
     commentReplyCalls.add((tripId, expenseId, parentCommentId, body));
+    commentMentionCalls.add(mentionedUserIds);
     final added = ExpenseComment(
       id: 12,
       userId: 7,
@@ -1825,6 +1830,50 @@ void main() {
       await disposePage(tester);
     },
   );
+  testWidgets('mention works in a reply and in an edit', (tester) async {
+    final option = find.byKey(const ValueKey('comment-mention-option-8'));
+    final controller = _Workspace()..comments = [comment(own: true)];
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    await openComment(tester, controller);
+    await tester.tap(find.text(t.expenseReplyAction));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-comment-input')),
+      '@An',
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('comment-mention-option-7')),
+      findsNothing,
+    );
+    await visibleTap(tester, option);
+    await tester.pumpAndSettle();
+    await visibleTap(tester, find.byTooltip(t.expenseCommentSend));
+    expect(controller.commentReplyCalls, [(1, 1, 11, '@Anna')]);
+    expect(controller.commentMentionCalls, [
+      [8],
+    ]);
+
+    await tester.longPress(find.text(controller.comments.first.body).first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Edit'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('comment-edit-input')),
+      'Ask @An',
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(option);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+    expect(controller.commentEditCalls, [(1, 1, 11, 'Ask @Anna')]);
+    expect(controller.commentMentionCalls.last, [8]);
+    expect(tester.takeException(), isNull);
+    await disposePage(tester);
+  });
   testWidgets('comment reply preserves parent and expense identifiers', (
     tester,
   ) async {

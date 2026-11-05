@@ -4,6 +4,7 @@ import '../../../../core/network/http_method.dart';
 import '../../../../core/network/legacy_receipt_uploader.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../domain/entities/expense_comment.dart';
+import '../../domain/entities/expense_comment_mention.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_split_value.dart';
@@ -478,6 +479,31 @@ class WorkspaceRemoteMutationApi {
     );
   }
 
+  ExpenseComment _expenseCommentFromJson(Map<String, dynamic> m) {
+    final rawMentions = m['mentions'];
+    return ExpenseComment(
+      id: (m['id'] as num?)?.toInt() ?? 0,
+      userId: (m['user_id'] as num?)?.toInt() ?? 0,
+      userNickname: m['nickname'] as String? ?? '',
+      body: m['body'] as String? ?? '',
+      createdAt: m['created_at'] as String? ?? '',
+      parentCommentId: (m['parent_comment_id'] as num?)?.toInt(),
+      parentUserNickname: m['reply_to_nickname'] as String?,
+      parentBody: m['reply_to_body'] as String?,
+      mentions: rawMentions is List
+          ? rawMentions
+                .whereType<Map<String, dynamic>>()
+                .map(
+                  (mention) => ExpenseCommentMention(
+                    userId: (mention['user_id'] as num?)?.toInt() ?? 0,
+                    name: mention['name'] as String? ?? '',
+                  ),
+                )
+                .toList(growable: false)
+          : const <ExpenseCommentMention>[],
+    );
+  }
+
   Future<List<ExpenseComment>> listExpenseComments({
     required int expenseId,
     required int tripId,
@@ -491,19 +517,7 @@ class WorkspaceRemoteMutationApi {
     final raw = response['comments'];
     if (raw is! List) return const [];
     return raw
-        .map((item) {
-          final m = item as Map<String, dynamic>;
-          return ExpenseComment(
-            id: (m['id'] as num?)?.toInt() ?? 0,
-            userId: (m['user_id'] as num?)?.toInt() ?? 0,
-            userNickname: m['nickname'] as String? ?? '',
-            body: m['body'] as String? ?? '',
-            createdAt: m['created_at'] as String? ?? '',
-            parentCommentId: (m['parent_comment_id'] as num?)?.toInt(),
-            parentUserNickname: m['reply_to_nickname'] as String?,
-            parentBody: m['reply_to_body'] as String?,
-          );
-        })
+        .map((item) => _expenseCommentFromJson(item as Map<String, dynamic>))
         .toList(growable: false);
   }
 
@@ -512,10 +526,14 @@ class WorkspaceRemoteMutationApi {
     required int tripId,
     required String body,
     int? parentCommentId,
+    List<int> mentionedUserIds = const <int>[],
   }) async {
     final payload = <String, dynamic>{'expense_id': expenseId, 'body': body};
     if ((parentCommentId ?? 0) > 0) {
       payload['parent_comment_id'] = parentCommentId;
+    }
+    if (mentionedUserIds.isNotEmpty) {
+      payload['mentioned_user_ids'] = mentionedUserIds;
     }
     final response = await _apiClient.request(
       path: ApiEndpoints.legacyAction('add_expense_comment'),
@@ -523,17 +541,7 @@ class WorkspaceRemoteMutationApi {
       headers: _tripHeaders(tripId),
       body: payload,
     );
-    final m = response['comment'] as Map<String, dynamic>;
-    return ExpenseComment(
-      id: (m['id'] as num?)?.toInt() ?? 0,
-      userId: (m['user_id'] as num?)?.toInt() ?? 0,
-      userNickname: m['nickname'] as String? ?? '',
-      body: m['body'] as String? ?? '',
-      createdAt: m['created_at'] as String? ?? '',
-      parentCommentId: (m['parent_comment_id'] as num?)?.toInt(),
-      parentUserNickname: m['reply_to_nickname'] as String?,
-      parentBody: m['reply_to_body'] as String?,
-    );
+    return _expenseCommentFromJson(response['comment'] as Map<String, dynamic>);
   }
 
   Future<ExpenseComment> updateExpenseComment({
@@ -541,6 +549,7 @@ class WorkspaceRemoteMutationApi {
     required int expenseId,
     required int tripId,
     required String body,
+    List<int> mentionedUserIds = const <int>[],
   }) async {
     final response = await _apiClient.request(
       path: ApiEndpoints.legacyAction('update_expense_comment'),
@@ -550,19 +559,10 @@ class WorkspaceRemoteMutationApi {
         'comment_id': commentId,
         'expense_id': expenseId,
         'body': body,
+        'mentioned_user_ids': mentionedUserIds,
       },
     );
-    final m = response['comment'] as Map<String, dynamic>;
-    return ExpenseComment(
-      id: (m['id'] as num?)?.toInt() ?? 0,
-      userId: (m['user_id'] as num?)?.toInt() ?? 0,
-      userNickname: m['nickname'] as String? ?? '',
-      body: m['body'] as String? ?? '',
-      createdAt: m['created_at'] as String? ?? '',
-      parentCommentId: (m['parent_comment_id'] as num?)?.toInt(),
-      parentUserNickname: m['reply_to_nickname'] as String?,
-      parentBody: m['reply_to_body'] as String?,
-    );
+    return _expenseCommentFromJson(response['comment'] as Map<String, dynamic>);
   }
 
   Future<void> deleteExpenseComment({

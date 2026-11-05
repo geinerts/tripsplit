@@ -395,6 +395,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get expenseCommentSend => 'Invia';
 
   @override
+  String get expenseMentionNoMatches => 'Nessun membro corrispondente';
+
+  @override
+  String get expenseMentionMembersLabel => 'Membri del viaggio da menzionare';
+
+  @override
   String get expenseDeleteCommentTitle => 'Eliminare il commento?';
 
   @override
@@ -908,6 +914,19 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get notificationExpenseAddedBodyGeneric => 'È stata aggiunta una nuova spesa.';
+
+  @override
+  String get notificationCommentMentionTitle => 'Sei stato menzionato in un commento';
+
+  @override
+  String notificationCommentMentionBody(Object name, Object note) {
+    return '$name ti ha menzionato in un commento su \"$note\".';
+  }
+
+  @override
+  String notificationCommentMentionBodyGeneric(Object name) {
+    return '$name ti ha menzionato in un commento.';
+  }
 
   @override
   String get notificationTripFinishedTitle => 'Viaggio terminato';

@@ -678,12 +678,14 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required int tripId,
     required String body,
     int? parentCommentId,
+    List<int> mentionedUserIds = const <int>[],
   }) {
     return _remote.addExpenseComment(
       expenseId: expenseId,
       tripId: tripId,
       body: body,
       parentCommentId: parentCommentId,
+      mentionedUserIds: mentionedUserIds,
     );
   }
 
@@ -693,12 +695,14 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required int expenseId,
     required int tripId,
     required String body,
+    List<int> mentionedUserIds = const <int>[],
   }) {
     return _remote.updateExpenseComment(
       commentId: commentId,
       expenseId: expenseId,
       tripId: tripId,
       body: body,
+      mentionedUserIds: mentionedUserIds,
     );
   }
 

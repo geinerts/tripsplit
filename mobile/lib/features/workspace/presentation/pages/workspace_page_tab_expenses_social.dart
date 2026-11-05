@@ -435,13 +435,24 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
   ExpenseComment? _replyTarget;
   bool _isSubmittingComment = false;
   final Set<int> _commentReactionBusyIds = <int>{};
-  final _commentController = TextEditingController();
+  late final _commentController = CommentMentionTextController(
+    members: widget.usersById.values,
+  );
   final _commentFocus = FocusNode();
+  final _composerKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void didUpdateWidget(covariant _ExpenseSocialSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.usersById != widget.usersById) {
+      _commentController.updateMembers(widget.usersById.values);
+    }
   }
 
   @override
@@ -599,8 +610,9 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  comment.body,
+                CommentBodyText(
+                  body: comment.body,
+                  mentions: comment.mentions,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
@@ -676,12 +688,17 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
   Future<void> _showEditCommentDialog(ExpenseComment comment) async {
     final initial = comment.body.trim();
     final edited = await Navigator.of(context, rootNavigator: true)
-        .push<String>(
+        .push<ExpenseCommentEditDraft>(
           AppFormPageRoute(
-            builder: (_) => EditExpenseCommentPage(initial: initial),
+            builder: (_) => EditExpenseCommentPage(
+              initial: initial,
+              members: widget.usersById.values.toList(growable: false),
+              mentions: comment.mentions,
+              currentUserId: widget.currentUserId,
+            ),
           ),
         );
-    final next = (edited ?? '').trim();
+    final next = (edited?.body ?? '').trim();
     if (next.isEmpty || next == initial || !mounted) {
       return;
     }
@@ -691,6 +708,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
         expenseId: widget.expenseId,
         tripId: widget.tripId,
         body: next,
+        mentionedUserIds: edited?.mentionedUserIds ?? const <int>[],
       );
       if (!mounted) return;
       final fresh = await widget.controller.listExpenseComments(
@@ -727,6 +745,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
         tripId: widget.tripId,
         body: body,
         parentCommentId: replyTarget?.id,
+        mentionedUserIds: _commentController.mentionedUserIds,
       );
       if (!mounted) return;
       _commentController.clear();
@@ -828,7 +847,21 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
           _buildReplyTargetHeader(isDark, colors),
           const SizedBox(height: 8),
         ],
-        _buildCommentInput(isDark, colors),
+        KeyedSubtree(
+          key: _composerKey,
+          child: Column(
+            children: [
+              CommentMentionSuggestions(
+                controller: _commentController,
+                focusNode: _commentFocus,
+                members: widget.usersById.values.toList(growable: false),
+                currentUserId: widget.currentUserId,
+                revealKey: _composerKey,
+              ),
+              _buildCommentInput(isDark, colors),
+            ],
+          ),
+        ),
         const SizedBox(height: 4),
       ],
     );
@@ -1002,7 +1035,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
             key: const ValueKey('expense-comment-input'),
             controller: _commentController,
             focusNode: _commentFocus,
-            maxLength: 280,
+            maxLength: expenseCommentMaxLength,
             maxLines: 4,
             minLines: 1,
             enabled: !_isSubmittingComment,
@@ -1169,8 +1202,9 @@ class _CommentTile extends StatelessWidget {
                     ),
                   ],
                   const SizedBox(height: 4),
-                  Text(
-                    comment.body,
+                  CommentBodyText(
+                    body: comment.body,
+                    mentions: comment.mentions,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: isDark ? null : AppDesign.lightForeground,
                     ),

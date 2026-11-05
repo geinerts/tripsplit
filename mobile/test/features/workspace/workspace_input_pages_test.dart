@@ -191,7 +191,9 @@ void main() {
       save();
       save();
       await tester.pumpAndSettle();
-      expect(h.result, 'Updated comment');
+      final draft = h.result! as ExpenseCommentEditDraft;
+      expect(draft.body, 'Updated comment');
+      expect(draft.mentionedUserIds, isEmpty);
       expect(find.text('Open'), findsOneWidget);
       expect(tester.takeException(), isNull);
     },

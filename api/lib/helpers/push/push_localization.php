@@ -63,6 +63,8 @@ function push_localized_notification_title(string $type, string $rawTitle, strin
             return push_locale_phrase($locale, 'trip_added_title');
         case 'expense_added':
             return push_locale_phrase($locale, 'expense_added_title');
+        case 'expense_comment_mention':
+            return push_locale_phrase($locale, 'comment_mention_title');
         case 'trip_finished':
             return push_locale_phrase($locale, 'trip_finished_title');
         case 'member_ready_to_settle':
@@ -161,6 +163,23 @@ function push_localized_notification_body(string $type, string $rawBody, string 
                 );
             }
             return push_locale_phrase($locale, 'expense_added_body_generic');
+        case 'expense_comment_mention':
+            if (preg_match('/^(.+?) mentioned you in a comment on "(.+)"\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'comment_mention_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'note' => trim((string) ($match[2] ?? '')),
+                    ]
+                );
+            }
+            if (preg_match('/^(.+?) mentioned you in a comment\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'comment_mention_body_generic'),
+                    ['name' => trim((string) ($match[1] ?? ''))]
+                );
+            }
+            return '';
         case 'trip_finished':
             if (preg_match('/^(.+?) finished "(.+?)"\. Settlements are ready\.$/u', $rawBody, $match) === 1) {
                 return push_locale_format(
