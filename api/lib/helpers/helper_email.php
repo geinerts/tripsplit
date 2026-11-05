@@ -61,15 +61,11 @@ function build_email_brand_logo_html(): string
     $baseUrl = defined('PUBLIC_BASE_URL') ? trim(PUBLIC_BASE_URL) : '';
     if ($baseUrl === '') { $baseUrl = defined('APP_BASE_URL') ? trim(APP_BASE_URL) : ''; }
     if ($baseUrl === '') { $baseUrl = 'https://splyto.eu'; }
-    $base = rtrim($baseUrl, '/');
-    $light = email_template_escape($base . '/email-logo-v2.png');
-    $dark = email_template_escape($base . '/email-logo-dark-v2.png');
-    // The default logo carries its own white backing, so clients that auto-invert colors
-    // (Gmail) still show it. Clients honoring prefers-color-scheme swap to the light logo.
-    return '<img class="logo-light" src="' . $light . '" alt="Splyto" width="169" height="75" '
-        . 'style="display:block;border:0;outline:none;text-decoration:none;border-radius:12px;width:169px;height:75px;">'
-        . '<img class="logo-dark" src="' . $dark . '" alt="" width="156" height="62" '
-        . 'style="display:none;max-height:0;overflow:hidden;mso-hide:all;border:0;outline:none;margin-left:7px;width:156px;height:62px;">';
+    $logoUrl = email_template_escape(rtrim($baseUrl, '/') . '/email-logo-dark-v2.png');
+    // Same light logo as the app's dark theme. It always sits on the fixed dark header band,
+    // so it stays legible whether or not the mail client re-colors the message.
+    return '<img src="' . $logoUrl . '" alt="Splyto" width="156" height="62" '
+        . 'style="display:block;border:0;outline:none;text-decoration:none;width:156px;height:62px;">';
 }
 
 /** Shared, table-based account email. All supplied text and links are escaped here. */
@@ -116,13 +112,11 @@ function build_account_email_template(
       .notice { background-color:#122A35 !important; color:#C3D6DD !important; }
       .footer-row { border-top-color:#26394A !important; }
       .link { color:#4FD1C5 !important; }
-      .logo-light { display:none !important; max-height:0 !important; }
-      .logo-dark { display:block !important; max-height:none !important; }
     }
     @media only screen and (max-width:600px) {
       .email-outer { padding:20px 12px !important; }
       .email-content { padding:28px 24px !important; }
-      .email-header { padding:20px 17px 22px !important; }
+      .email-header { padding:26px 24px 22px !important; }
       .email-title { font-size:28px !important; line-height:34px !important; }
     }
   </style>
@@ -135,10 +129,10 @@ function build_account_email_template(
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;">
         <tr><td class="card" bgcolor="#FFFFFF" style="background-color:#FFFFFF;border:1px solid #DFE8E5;border-radius:20px;overflow:hidden;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td class="email-header" style="padding:23px 29px 19px;">
+            <tr><td class="email-header" bgcolor="#15222E" style="padding:30px 36px 26px;background-color:#15222E;background-image:linear-gradient(#15222E,#15222E);">
               {$logo}
             </td></tr>
-            <tr><td style="padding:0 36px;">
+            <tr><td style="padding:0;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td width="76%" height="3" bgcolor="#008576" style="height:3px;font-size:0;line-height:0;">&nbsp;</td>
