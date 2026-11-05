@@ -62,8 +62,8 @@ function build_email_brand_logo_html(): string
     if ($baseUrl === '') { $baseUrl = defined('APP_BASE_URL') ? trim(APP_BASE_URL) : ''; }
     if ($baseUrl === '') { $baseUrl = 'https://splyto.eu'; }
     $base = rtrim($baseUrl, '/');
-    $light = email_template_escape($base . '/email-logo.png');
-    $dark = email_template_escape($base . '/email-logo-dark.png');
+    $light = email_template_escape($base . '/email-logo-v2.png');
+    $dark = email_template_escape($base . '/email-logo-dark-v2.png');
     // The default logo carries its own white backing, so clients that auto-invert colors
     // (Gmail) still show it. Clients honoring prefers-color-scheme swap to the light logo.
     return '<img class="logo-light" src="' . $light . '" alt="Splyto" width="169" height="75" '
