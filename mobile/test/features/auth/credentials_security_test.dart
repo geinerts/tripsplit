@@ -359,6 +359,17 @@ void main() {
     },
   );
 
+  test('a rejected session signs out once and leaves others alone', () async {
+    final h = ControllerHarness();
+    await h.saveSession(1);
+    expect(await h.controller.endInvalidatedSession(), isTrue);
+    expect(h.controller.currentUser, isNull);
+    expect(await h.store.readValidRefreshToken(), isNull);
+    expect(h.loggedOut, 1);
+    expect(await h.controller.endInvalidatedSession(), isFalse);
+    expect(h.loggedOut, 1);
+  });
+
   test('ordinary profile change sends no credential fields', () async {
     final h = ControllerHarness();
     await h.controller.updateProfile(firstName: 'Synthetic', lastName: 'Owner');

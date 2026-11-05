@@ -43,6 +43,11 @@ class LegacyApiClient implements ApiClient {
   bool _sessionRevoked = false;
   int _sessionGeneration = 0;
   final Set<Future<void>> _pendingAuthWrites = <Future<void>>{};
+  bool _sessionInvalidationReported = false;
+
+  /// Called once when the server rejects this session for good, for example
+  /// after the account was deleted. Network failures never trigger it.
+  Future<void> Function()? onSessionInvalidated;
 
   @override
   Future<Map<String, dynamic>> request({
@@ -154,8 +159,12 @@ class LegacyApiClient implements ApiClient {
 
       if (!ok || response.statusCode < 200 || response.statusCode >= 300) {
         final errorCode = _errorCode(payload);
-        if (_shouldClearAuthSessionForCode(errorCode)) {
+        final accountBlocked = _shouldClearAuthSessionForCode(errorCode);
+        if (accountBlocked) {
           await _authSessionStore.clear();
+          if (!_isPublicAuthRequest(path)) {
+            await _reportSessionInvalidated(generation);
+          }
         }
         final canRetry =
             allowRefreshRetry &&
@@ -175,6 +184,11 @@ class LegacyApiClient implements ApiClient {
               allowRefreshRetry: false,
             );
           }
+          // A kept refresh token means a temporary failure, such as no network.
+          final remaining = await _authSessionStore.readValidRefreshToken();
+          if (remaining == null || remaining.isEmpty) {
+            await _reportSessionInvalidated(generation);
+          }
         }
 
         trace.stop(success: false, statusCode: response.statusCode);
@@ -190,6 +204,7 @@ class LegacyApiClient implements ApiClient {
       _checkSessionGeneration(generation);
       if (payload['auth'] is Map) {
         _sessionRevoked = false;
+        _sessionInvalidationReported = false;
       }
       trace.stop(success: true, statusCode: response.statusCode);
       AppMonitoring.recordApiRequest(
@@ -402,6 +417,21 @@ class LegacyApiClient implements ApiClient {
     return next.whenComplete(() {
       _refreshInFlight = null;
     });
+  }
+
+  Future<void> _reportSessionInvalidated(int generation) async {
+    if (_sessionInvalidationReported ||
+        _sessionRevoked ||
+        _revocationInFlight != null ||
+        generation != _sessionGeneration) {
+      return;
+    }
+    _sessionInvalidationReported = true;
+    try {
+      await onSessionInvalidated?.call();
+    } catch (_) {
+      // The caller still receives the original API error.
+    }
   }
 
   void _checkSessionGeneration(int generation) {

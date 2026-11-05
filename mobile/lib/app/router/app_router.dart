@@ -17,6 +17,9 @@ class AppRouter {
   const AppRouter(this._dependencies);
 
   static const String shell = '/app';
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
   static const String authIntro = '/auth-intro';
   static const String authSignInChoice = '/auth-sign-in-choice';
   static const String login = '/login';

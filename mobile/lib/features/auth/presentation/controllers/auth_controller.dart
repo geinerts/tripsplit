@@ -392,6 +392,16 @@ class AuthController {
         _logoutInFlight = null;
       });
 
+  /// Signs out locally after the server rejected the session. Returns false when
+  /// nobody was signed in or a sign-in or logout is already changing the account.
+  Future<bool> endInvalidatedSession() async {
+    if (_signingIn || _logoutInFlight != null) return false;
+    final signedIn = currentUser ?? await _currentUserStore.read();
+    if (signedIn == null) return false;
+    await logout();
+    return true;
+  }
+
   Future<bool> _performLogout() async {
     try {
       await beforeLogout?.call().timeout(const Duration(seconds: 5));

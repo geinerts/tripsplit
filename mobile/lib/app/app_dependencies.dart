@@ -1,3 +1,4 @@
+import 'router/app_router.dart';
 import '../features/live_location/data/live_location_repository.dart';
 import '../features/live_location/data/live_location_device.dart';
 import '../features/live_location/presentation/live_location_controller.dart';
@@ -227,6 +228,14 @@ class AppDependencies {
       accountSession: accountSession,
       beforeLogout: liveLocationController.stopAll,
     );
+    apiClient.onSessionInvalidated = () async {
+      if (await authController.endInvalidatedSession()) {
+        await AppRouter.navigatorKey.currentState?.pushNamedAndRemoveUntil(
+          AppRouter.authIntro,
+          (route) => false,
+        );
+      }
+    };
 
     return AppDependencies(
       liveLocationController: liveLocationController,

@@ -82,6 +82,7 @@ class _TripSplitAppState extends State<TripSplitApp>
           animation: Listenable.merge([themeController, localeController]),
           builder: (context, _) {
             return MaterialApp(
+              navigatorKey: AppRouter.navigatorKey,
               title: 'Splyto',
               debugShowCheckedModeBanner: false,
               theme: AppTheme.light(),
