@@ -400,11 +400,28 @@ extension _ProfilePageActions on _ProfilePageState {
       await _onRemoveAvatarPressed();
       return;
     }
+    if (selected == _AvatarSourceOption.editCrop) {
+      await _editAvatarCrop();
+      return;
+    }
 
     final source = selected == _AvatarSourceOption.camera
         ? ImageSource.camera
         : ImageSource.gallery;
     await _pickAvatarFromSource(source);
+  }
+
+  Future<void> _editAvatarCrop() async {
+    final updated = await widget.controller.editAvatarCrop(
+      context,
+      context.l10n.imageCropperAdjustAvatar,
+    );
+    if (!mounted || updated == null) return;
+    _applyUser(updated);
+    _updateState(() {});
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.avatarUpdatedMessage)));
   }
 
   Future<_AvatarSourceOption?> _showAvatarActionSheet() async {
@@ -415,6 +432,13 @@ extension _ProfilePageActions on _ProfilePageState {
       context: context,
       cancelLabel: t.cancelAction,
       actions: [
+        if (hasAvatar &&
+            (widget.controller.currentUser?.avatarUrl ?? '').isNotEmpty)
+          AppPlatformAction(
+            value: _AvatarSourceOption.editCrop,
+            icon: Icons.crop_outlined,
+            title: t.imageCropEditAction,
+          ),
         AppPlatformAction(
           value: _AvatarSourceOption.camera,
           icon: Icons.photo_camera_outlined,
@@ -442,51 +466,19 @@ extension _ProfilePageActions on _ProfilePageState {
     }
 
     try {
-      final picker = ImagePicker();
-      final picked = await picker.pickImage(
-        source: source,
-        imageQuality: 94,
-        maxWidth: 2048,
-        maxHeight: 2048,
-      );
-      if (!mounted || picked == null) {
-        return;
-      }
-
-      final cropped = await AppImageCropper.cropAvatar(
+      final pick = await pickAndCropImage(
         context: context,
-        source: picked,
+        source: source,
+        title: context.l10n.imageCropperAdjustAvatar,
+        aspectRatio: 1,
+        maxEdge: 1024,
+        circular: true,
       );
-      if (!mounted || cropped == null) {
+      if (!mounted || pick == null) {
         return;
       }
 
-      final rawBytes = await cropped.readAsBytes();
-      final fallbackName = picked.name.trim().isEmpty
-          ? (source == ImageSource.camera
-                ? 'avatar_camera.jpg'
-                : 'avatar_gallery.jpg')
-          : picked.name.trim();
-      final incomingName = _fileNameFromPath(
-        cropped.path,
-        fallbackName: fallbackName,
-      );
-      final prepared = await _prepareAvatarForUpload(
-        rawBytes: rawBytes,
-        fileName: incomingName,
-      );
-      if (!mounted) {
-        return;
-      }
-      if (prepared == null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(context.l10n.avatarPickFailed)));
-        return;
-      }
-
-      final bytes = prepared.bytes;
-      final fileName = prepared.fileName;
+      final bytes = pick.bytes;
       if (bytes.length > _ProfilePageState._maxAvatarBytes) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.avatarFileTooLarge)),
@@ -495,8 +487,9 @@ extension _ProfilePageActions on _ProfilePageState {
       }
 
       final updated = await widget.controller.uploadAvatar(
-        fileName: fileName,
+        fileName: 'avatar.jpg',
         bytes: bytes,
+        cropSource: pick.source,
       );
       if (!mounted || updated == null) {
         return;
@@ -520,66 +513,6 @@ extension _ProfilePageActions on _ProfilePageState {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(context.l10n.avatarPickFailed)));
-    }
-  }
-
-  String _fileNameFromPath(String path, {required String fallbackName}) {
-    final normalized = path.trim();
-    if (normalized.isEmpty) {
-      return fallbackName;
-    }
-    final slashIndex = normalized.lastIndexOf('/');
-    final candidate = slashIndex >= 0
-        ? normalized.substring(slashIndex + 1)
-        : normalized;
-    final trimmed = candidate.trim();
-    if (trimmed.isEmpty) {
-      return fallbackName;
-    }
-    return trimmed;
-  }
-
-  Future<({Uint8List bytes, String fileName})?> _prepareAvatarForUpload({
-    required Uint8List rawBytes,
-    required String fileName,
-  }) async {
-    if (rawBytes.isEmpty) {
-      return null;
-    }
-
-    final originalName = fileName.trim().isEmpty ? 'avatar' : fileName.trim();
-    final lowered = originalName.toLowerCase();
-    final isDirectSupported =
-        lowered.endsWith('.jpg') ||
-        lowered.endsWith('.jpeg') ||
-        lowered.endsWith('.png') ||
-        lowered.endsWith('.webp');
-    if (isDirectSupported) {
-      return (bytes: rawBytes, fileName: originalName);
-    }
-
-    final pngBytes = await _tryTranscodeToPng(rawBytes);
-    if (pngBytes == null || pngBytes.isEmpty) {
-      _showSnack(
-        context.l10n.profileImageFormatNotSupportedDevicePleaseChooseJpg,
-      );
-      return null;
-    }
-
-    final dot = originalName.lastIndexOf('.');
-    final baseName = dot > 0 ? originalName.substring(0, dot) : originalName;
-    final safeBase = baseName.trim().isEmpty ? 'avatar' : baseName.trim();
-    return (bytes: pngBytes, fileName: '$safeBase.png');
-  }
-
-  Future<Uint8List?> _tryTranscodeToPng(Uint8List bytes) async {
-    try {
-      final codec = await ui.instantiateImageCodec(bytes);
-      final frame = await codec.getNextFrame();
-      final data = await frame.image.toByteData(format: ui.ImageByteFormat.png);
-      return data?.buffer.asUint8List();
-    } catch (_) {
-      return null;
     }
   }
 
@@ -619,4 +552,4 @@ extension _ProfilePageActions on _ProfilePageState {
   }
 }
 
-enum _AvatarSourceOption { camera, library, remove }
+enum _AvatarSourceOption { editCrop, camera, library, remove }

@@ -12,6 +12,7 @@ import '../../domain/entities/uploaded_trip_image.dart';
 import '../../domain/repositories/trips_repository.dart';
 import '../datasources/trips_remote_data_source.dart';
 import '../local/trips_local_store.dart';
+import '../../../../core/media/image_crop.dart';
 
 class TripsRepositoryImpl implements TripsRepository {
   TripsRepositoryImpl(this._remote, this._localStore);
@@ -100,11 +101,13 @@ class TripsRepositoryImpl implements TripsRepository {
     required int tripId,
     required String fileName,
     required Uint8List bytes,
+    ImageCropSourceUpload? cropSource,
   }) {
     return _remote.uploadTripImage(
       tripId: tripId,
       fileName: fileName,
       bytes: bytes,
+      cropSource: cropSource,
     );
   }
 

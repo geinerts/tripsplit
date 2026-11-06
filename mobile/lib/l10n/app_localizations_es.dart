@@ -2195,6 +2195,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Ajustar imagen del viaje';
 
   @override
+  String get imageCropEditAction => 'Editar recorte';
+
+  @override
+  String get imageCropZoomIn => 'Acercar';
+
+  @override
+  String get imageCropZoomOut => 'Alejar';
+
+  @override
+  String get imageCropZoomOnly => 'Solo se guardó la versión recortada de esta foto, así que solo puedes acercarla.';
+
+  @override
+  String get imageCropLoadFailed => 'No se pudo abrir esta foto.';
+
+  @override
+  String get imageCropSaveFailed => 'No se pudo guardar el nuevo recorte. Inténtalo de nuevo.';
+
+  @override
+  String get imageCropChanged => 'Esta foto ha cambiado entretanto. Cierra esta pantalla y vuelve a abrirla.';
+
+  @override
   String get copyAction => 'Copiar';
 
   @override

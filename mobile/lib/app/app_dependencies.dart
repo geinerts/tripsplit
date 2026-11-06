@@ -71,6 +71,8 @@ import '../features/workspace/data/datasources/workspace_remote_data_source.dart
 import '../features/workspace/data/local/workspace_local_store.dart';
 import '../features/workspace/data/repositories/workspace_repository_impl.dart';
 import '../features/workspace/presentation/controllers/workspace_controller.dart';
+import '../core/media/image_crop_service.dart';
+import '../core/network/legacy_image_source_uploader.dart';
 
 class AppDependencies {
   AppDependencies({
@@ -198,6 +200,8 @@ class AppDependencies {
       NativeLiveLocationDevice(),
       accountSession,
     );
+    final imageCropService = ImageCropService(apiClient);
+    tripsController.imageCropService = imageCropService;
     final authRemote = AuthRemoteDataSourceImpl(apiClient);
     final authRepository = AuthRepositoryImpl(authRemote);
     final authController = AuthController(
@@ -228,6 +232,7 @@ class AppDependencies {
       accountSession: accountSession,
       beforeLogout: liveLocationController.stopAll,
     );
+    authController.imageCropService = imageCropService;
     apiClient.onSessionInvalidated = () async {
       if (await authController.endInvalidatedSession()) {
         await AppRouter.navigatorKey.currentState?.pushNamedAndRemoveUntil(
@@ -243,6 +248,12 @@ class AppDependencies {
       travelPlacesRepository: ApiTravelPlacesRepository(
         apiClient,
         accountStorage,
+        cropService: imageCropService,
+        sourceUploader: LegacyTravelPhotoSourceUploader(
+          baseUrl: env.apiBaseUrl,
+          tokenStore: tokenStore,
+          authSessionStore: authSessionStore,
+        ),
       ),
       authController: authController,
       tripsController: tripsController,

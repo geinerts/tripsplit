@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/../helpers/helper_image_originals.php';
 
 require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
 require_once __DIR__ . '/../helpers/helper_trip_image_ownership.php';
@@ -219,7 +220,8 @@ function upload_trip_image_action(): void
         TRIP_IMAGES_MAX_BYTES,
         'Trip image size must be up to 8 MB.'
     );
-    $sourceSize = (int) $validated['size'];
+    $cropSource = image_source_from_request('trip', TRIP_IMAGES_MAX_BYTES);
+    $sourceSize = (int) $validated['size'] + (int) ($cropSource['size'] ?? 0);
 
     enforce_upload_daily_quota(
         $pdo,
@@ -246,6 +248,8 @@ function upload_trip_image_action(): void
     );
     $tripImagePath = bind_stored_trip_image_to_owner($stored, $tripId, $userId);
     $storedSize = (int) $stored['size'];
+    $hasCropSource = $cropSource !== null
+        && image_source_save($cropSource['image'], $cropSource['crop'], image_source_key('trip', $tripImagePath));
 
     json_out([
         'ok' => true,
@@ -253,6 +257,7 @@ function upload_trip_image_action(): void
         'image_url' => trip_image_public_url($tripImagePath),
         'image_thumb_url' => trip_image_thumb_public_url($tripImagePath),
         'size' => $storedSize > 0 ? $storedSize : $sourceSize,
+        'has_crop_source' => $hasCropSource,
     ]);
 }
 
@@ -287,7 +292,8 @@ function upload_avatar_action(): void
         AVATARS_MAX_BYTES,
         'Avatar size must be up to 5 MB.'
     );
-    $sourceSize = (int) $validated['size'];
+    $cropSource = image_source_from_request('avatar', TRIP_IMAGES_MAX_BYTES);
+    $sourceSize = (int) $validated['size'] + (int) ($cropSource['size'] ?? 0);
 
     enforce_upload_daily_quota(
         $pdo,
@@ -306,6 +312,8 @@ function upload_avatar_action(): void
     );
     $avatarPath = (string) $stored['path'];
     $storedSize = (int) $stored['size'];
+    $hasCropSource = $cropSource !== null
+        && image_source_save($cropSource['image'], $cropSource['crop'], image_source_key('avatar', $avatarPath));
 
     $fresh = fetch_me_row_by_id($pdo, $userId);
     if (!$fresh) {
@@ -341,6 +349,7 @@ function upload_avatar_action(): void
         'avatar_url' => avatar_public_url($avatarPath),
         'avatar_thumb_url' => avatar_thumb_public_url($avatarPath),
         'size' => $storedSize > 0 ? $storedSize : $sourceSize,
+        'has_crop_source' => $hasCropSource,
         'me' => build_me_payload($next, $pdo),
     ]);
 }

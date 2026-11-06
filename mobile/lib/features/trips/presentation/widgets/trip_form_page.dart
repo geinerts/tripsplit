@@ -14,8 +14,40 @@ import '../../../../core/ui/app_settings_widgets.dart';
 import '../../../../core/ui/app_currency_picker.dart';
 import '../../domain/entities/trip.dart';
 import '../../domain/entities/trip_user.dart';
+import '../../../../core/media/image_crop.dart';
+import '../../../../core/media/image_crop_editor_page.dart';
+import '../../../../core/media/image_crop_flow.dart';
+import '../../../../core/media/image_crop_service.dart';
+import '../../../../core/network/media_url_resolver.dart';
 
-typedef TripImageDraft = ({Uint8List bytes, String fileName});
+typedef TripImageDraft = ({
+  Uint8List bytes,
+  String fileName,
+  ImageCropSourceUpload? source,
+});
+
+/// Opens the crop editor for a saved cover. Returns the updated trip, or null if
+/// cancelled. The server saves it right away, so callers update what they show.
+Future<Trip?> editTripCoverCrop(
+  BuildContext context,
+  ImageCropService service,
+  Trip trip,
+) async {
+  final response = await service.edit(
+    context,
+    kind: ImageCropKind.trip,
+    title: context.l10n.imageCropperAdjustTripImage,
+    aspectRatio: AppImageCropper.tripAspectRatio,
+    tripId: trip.id,
+  );
+  if (response == null) return null;
+  return trip.withImage(
+    imageUrl: MediaUrlResolver.normalize(response['image_url'] as String?),
+    imageThumbUrl: MediaUrlResolver.normalize(
+      response['image_thumb_url'] as String?,
+    ),
+  );
+}
 
 class TripFormDraft {
   const TripFormDraft({
@@ -39,7 +71,7 @@ class TripFormDraft {
   final List<Map<String, dynamic>> destinations;
 }
 
-enum _ImageChoice { camera, library, remove }
+enum _ImageChoice { editCrop, camera, library, remove }
 
 /// Shared create/edit presentation; callers retain authorization and persistence.
 class TripFormPage extends StatefulWidget {
@@ -50,12 +82,16 @@ class TripFormPage extends StatefulWidget {
     this.budgetLoaded = false,
     this.budgetCents,
     required this.pickImage,
+    this.editImageCrop,
   });
   final Trip? trip;
   final bool budgetLoaded;
   final int? budgetCents;
   final Future<List<TripUser>> Function()? loadFriends;
   final Future<TripImageDraft?> Function(ImageSource source) pickImage;
+
+  /// Edits the saved cover's crop and returns its new address.
+  final Future<String?> Function()? editImageCrop;
   @override
   State<TripFormPage> createState() => _TripFormPageState();
 }
@@ -78,9 +114,14 @@ class _TripFormPageState extends State<TripFormPage> {
     ...?widget.trip?.destinations,
   ];
   bool get _editing => widget.trip != null;
+  String? _editedImage;
   String get _existingImage => _removeImage
       ? ''
-      : (widget.trip?.imageUrl ?? widget.trip?.imageThumbUrl ?? '').trim();
+      : (_editedImage ??
+                widget.trip?.imageUrl ??
+                widget.trip?.imageThumbUrl ??
+                '')
+            .trim();
 
   @override
   void initState() {
@@ -122,6 +163,43 @@ class _TripFormPageState extends State<TripFormPage> {
     }
   }
 
+  Future<void> _editCrop() async {
+    final draft = _image, source = draft?.source;
+    if (draft != null && source != null) {
+      final described = await describeImage(source.bytes);
+      if (!mounted) return;
+      final crop = await Navigator.of(context).push<ImageCropRect>(
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (_) => ImageCropEditorPage<ImageCropRect>(
+            title: context.l10n.imageCropperAdjustTripImage,
+            aspectRatio: AppImageCropper.tripAspectRatio,
+            load: () async => ImageCropSourceData(
+              bytes: described.bytes,
+              width: described.width,
+              height: described.height,
+              crop: source.crop,
+            ),
+            complete: (rect, _) async => rect,
+          ),
+        ),
+      );
+      if (crop == null) return;
+      final bytes = await renderImageCrop(source.bytes, crop, maxEdge: 2048);
+      if (!mounted) return;
+      setState(
+        () => _image = (
+          bytes: bytes,
+          fileName: draft.fileName,
+          source: ImageCropSourceUpload(bytes: source.bytes, crop: crop),
+        ),
+      );
+      return;
+    }
+    final url = await widget.editImageCrop?.call();
+    if (url != null && mounted) setState(() => _editedImage = url);
+  }
+
   Future<void> _pickImage() async {
     if (_picking) return;
     setState(() => _picking = true);
@@ -131,6 +209,15 @@ class _TripFormPageState extends State<TripFormPage> {
         context: context,
         cancelLabel: t.cancelAction,
         actions: [
+          if (_image?.source != null ||
+              (_image == null &&
+                  _existingImage.isNotEmpty &&
+                  widget.editImageCrop != null))
+            AppPlatformAction(
+              value: _ImageChoice.editCrop,
+              icon: Icons.crop_outlined,
+              title: t.imageCropEditAction,
+            ),
           AppPlatformAction(
             value: _ImageChoice.camera,
             icon: Icons.photo_camera_outlined,
@@ -151,6 +238,10 @@ class _TripFormPageState extends State<TripFormPage> {
         ],
       );
       if (!mounted || choice == null) return;
+      if (choice == _ImageChoice.editCrop) {
+        await _editCrop();
+        return;
+      }
       if (choice == _ImageChoice.remove) {
         setState(() {
           _image = null;

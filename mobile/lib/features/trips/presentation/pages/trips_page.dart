@@ -5,7 +5,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import '../widgets/trip_form_page.dart';
 import 'dart:async';
-import 'dart:ui' show ImageByteFormat, instantiateImageCodec;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +19,8 @@ import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/currency/app_currency.dart';
 import '../../../../core/media/app_image_cropper.dart';
+import '../../../../core/media/image_crop.dart';
+import '../../../../core/media/image_crop_flow.dart';
 import '../../../../core/perf/perf_monitor.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_components.dart';

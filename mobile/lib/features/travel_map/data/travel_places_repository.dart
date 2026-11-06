@@ -7,6 +7,10 @@ import '../../../core/network/api_client.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../../../core/network/http_method.dart';
 import '../domain/travel_place.dart';
+import 'package:flutter/widgets.dart' show BuildContext;
+import '../../../core/media/app_image_cropper.dart';
+import '../../../core/media/image_crop_service.dart';
+import '../../../core/network/legacy_image_source_uploader.dart';
 
 class TravelPlacesResult {
   const TravelPlacesResult(this.places, {this.offline = false});
@@ -23,13 +27,27 @@ abstract interface class TravelPlacesRepository {
     VisitDetails details = const VisitDetails(),
   });
   Future<Uint8List?> photo(TravelPlace place);
+
+  /// Opens the crop editor for a saved visit photo. Returns null when cancelled.
+  Future<TravelPlace?> editPhotoCrop(
+    BuildContext context,
+    TravelPlace place, {
+    required String title,
+  });
   Future<void> delete(int id);
 }
 
 class ApiTravelPlacesRepository implements TravelPlacesRepository {
-  ApiTravelPlacesRepository(this.api, this.storage);
+  ApiTravelPlacesRepository(
+    this.api,
+    this.storage, {
+    this.cropService,
+    this.sourceUploader,
+  });
   final ApiClient api;
   final AccountLocalStorage storage;
+  final ImageCropService? cropService;
+  final LegacyTravelPhotoSourceUploader? sourceUploader;
   static const cacheKey = 'travel_places_v1';
   @override
   AccountDataLease capture() => storage.session.capture();
@@ -103,8 +121,40 @@ class ApiTravelPlacesRepository implements TravelPlacesRepository {
     }
     final existing = await _cached() ?? [];
     await _cache([saved, ...existing.where((p) => p.id != saved.id)]);
+    final source = details.photoSource;
+    if (source != null && saved.hasPhoto) {
+      // The visit and its photo are saved. Without the original, only zooming is lost.
+      try {
+        await sourceUploader?.upload(placeId: saved.id, source: source);
+      } catch (_) {}
+    }
     return saved;
   });
+  @override
+  Future<TravelPlace?> editPhotoCrop(
+    BuildContext context,
+    TravelPlace place, {
+    required String title,
+  }) async {
+    final response = await cropService?.edit(
+      context,
+      kind: ImageCropKind.travel,
+      title: title,
+      aspectRatio: AppImageCropper.tripAspectRatio,
+      placeId: place.id,
+    );
+    if (response == null) return null;
+    return storage.session.run(() async {
+      final saved = TravelPlace.fromJson(
+        (response['place'] as Map).cast<String, dynamic>(),
+      );
+      await storage.update('travel_photo_${saved.id}', (_) => null);
+      final existing = await _cached() ?? const <TravelPlace>[];
+      await _cache([saved, ...existing.where((p) => p.id != saved.id)]);
+      return saved;
+    });
+  }
+
   @override
   Future<Uint8List?> photo(TravelPlace place) => storage.session.run(() async {
     if (!place.hasPhoto) return null;

@@ -128,6 +128,7 @@ extension _TripsPageActions on _TripsPageState {
               tripId: createdTrip.id,
               fileName: imageFileName,
               bytes: imageBytes,
+              cropSource: result.cropSource,
             );
             createdTrip = await widget.controller.updateTrip(
               tripId: createdTrip.id,
@@ -290,6 +291,7 @@ extension _TripsPageActions on _TripsPageState {
           tripId: trip.id,
           fileName: imageFileName,
           bytes: imageBytes,
+          cropSource: result.cropSource,
         );
         imagePath = uploaded.path;
       }

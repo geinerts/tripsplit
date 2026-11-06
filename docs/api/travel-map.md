@@ -102,7 +102,8 @@ has a separate private visit and may replace the photo from their gallery.
 The snapshot survives source-cover changes, leaving or deletion of a trip;
 leaving removes the Open trip link, not the person's existing private memory.
 
-Gallery photos are compressed client-side before upload. The authenticated
+Gallery photos are framed in the crop editor and compressed client-side before upload.
+See [editing the crop of saved images](image-crop-editing.md) for their private originals. The authenticated
 `save_travel_place` action permits a 704 KiB JSON body for base64 image data and
 metadata; other actions retain the default 64 KiB limit. The JSON reader checks
 both declared and actual body length and reads at most the limit plus one byte. Server validation

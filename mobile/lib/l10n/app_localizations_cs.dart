@@ -2201,6 +2201,27 @@ class AppLocalizationsCs extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Upravte obrázek výletu';
 
   @override
+  String get imageCropEditAction => 'Upravit oříznutí';
+
+  @override
+  String get imageCropZoomIn => 'Přiblížit';
+
+  @override
+  String get imageCropZoomOut => 'Oddálit';
+
+  @override
+  String get imageCropZoomOnly => 'Z této fotky se uložila jen oříznutá verze, takže ji můžete pouze přiblížit.';
+
+  @override
+  String get imageCropLoadFailed => 'Tuto fotku se nepodařilo otevřít.';
+
+  @override
+  String get imageCropSaveFailed => 'Nové oříznutí se nepodařilo uložit. Zkuste to znovu.';
+
+  @override
+  String get imageCropChanged => 'Tato fotka se mezitím změnila. Zavřete tuto obrazovku a otevřete ji znovu.';
+
+  @override
   String get copyAction => 'Kopírovat';
 
   @override

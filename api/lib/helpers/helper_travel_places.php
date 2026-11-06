@@ -88,6 +88,11 @@ function travel_trip_cover(array $trip): ?string
 function delete_user_travel_places(PDO $pdo, int $userId): void
 {
     if (travel_places_available($pdo)) {
+        $ids = $pdo->prepare('SELECT id FROM ' . table_name('travel_places') . ' WHERE user_id = :user');
+        $ids->execute(['user'=>$userId]);
+        foreach ($ids->fetchAll(PDO::FETCH_COLUMN) as $id) {
+            if (function_exists('image_source_delete')) image_source_delete(image_source_key('travel', (string)$id));
+        }
         $pdo->prepare('DELETE FROM ' . table_name('travel_places') . ' WHERE user_id = :user')
             ->execute(['user'=>$userId]);
     }

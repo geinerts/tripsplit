@@ -38,6 +38,7 @@ extension _TripsPageDialogs on _TripsPageState {
       dateTo: result.dateTo!,
       imageFileName: result.image?.fileName,
       imageBytes: result.image?.bytes,
+      cropSource: result.image?.source,
     );
   }
 }

@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import '../auth/auth_session_store.dart';
 import '../auth/device_token_store.dart';
 import '../errors/api_exception.dart';
+import '../media/image_crop.dart';
+import 'legacy_image_source_uploader.dart';
 import 'media_url_resolver.dart';
 
 class UploadedAvatar {
@@ -41,6 +43,7 @@ class LegacyAvatarUploader {
   Future<UploadedAvatar> uploadAvatar({
     required String fileName,
     required Uint8List bytes,
+    ImageCropSourceUpload? cropSource,
   }) async {
     final token = await _tokenStore.getOrCreateToken();
     final uri = Uri.parse(_baseUrl).resolve('api/api.php?action=upload_avatar');
@@ -51,6 +54,7 @@ class LegacyAvatarUploader {
       ..files.add(
         http.MultipartFile.fromBytes('avatar', bytes, filename: fileName),
       );
+    if (cropSource != null) addImageCropSource(request, cropSource);
     final accessToken = await _authSessionStore.readValidAccessToken();
     if (accessToken != null && accessToken.isNotEmpty) {
       request.headers['Authorization'] = 'Bearer $accessToken';

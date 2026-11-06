@@ -7,6 +7,17 @@ extension _TripsPageEditDialog on _TripsPageState {
         builder: (_) => TripFormPage(
           trip: trip,
           pickImage: _pickTripImageForUploadFromSource,
+          editImageCrop: widget.controller.imageCropService == null
+              ? null
+              : () async {
+                  final updated = await editTripCoverCrop(
+                    context,
+                    widget.controller.imageCropService!,
+                    trip,
+                  );
+                  if (updated != null && mounted) unawaited(_loadTrips());
+                  return updated?.imageUrl;
+                },
         ),
       ),
     );
@@ -17,6 +28,7 @@ extension _TripsPageEditDialog on _TripsPageState {
       destinations: result.destinations,
       imageFileName: result.image?.fileName,
       imageBytes: result.image?.bytes,
+      cropSource: result.image?.source,
       removeImage: result.removeImage,
     );
   }

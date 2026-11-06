@@ -2201,6 +2201,27 @@ class AppLocalizationsLv extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Pielāgot ceļojuma attēlu';
 
   @override
+  String get imageCropEditAction => 'Rediģēt kadrējumu';
+
+  @override
+  String get imageCropZoomIn => 'Pietuvināt';
+
+  @override
+  String get imageCropZoomOut => 'Attālināt';
+
+  @override
+  String get imageCropZoomOnly => 'Šai bildei saglabāta tikai nokadrētā versija, tāpēc to var tikai pietuvināt.';
+
+  @override
+  String get imageCropLoadFailed => 'Neizdevās atvērt šo bildi.';
+
+  @override
+  String get imageCropSaveFailed => 'Neizdevās saglabāt jauno kadrējumu. Mēģini vēlreiz.';
+
+  @override
+  String get imageCropChanged => 'Šī bilde pa to laiku ir mainīta. Aizver šo ekrānu un atver to vēlreiz.';
+
+  @override
   String get copyAction => 'Kopēt';
 
   @override

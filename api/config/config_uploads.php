@@ -536,11 +536,17 @@ function delete_receipt_file(?string $receiptPath): void
 function delete_avatar_file(?string $avatarPath): void
 {
     delete_upload_file($avatarPath, 'normalize_avatar_path', avatars_dir_abs());
+    if (function_exists('image_source_delete_for_file')) {
+        image_source_delete_for_file('avatar', $avatarPath);
+    }
 }
 
 function delete_trip_image_file(?string $tripImagePath): void
 {
     delete_upload_file($tripImagePath, 'normalize_trip_image_path', trip_images_dir_abs());
+    if (function_exists('image_source_delete_for_file')) {
+        image_source_delete_for_file('trip', $tripImagePath);
+    }
 }
 
 function delete_feedback_file(?string $feedbackPath): void

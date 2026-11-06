@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/media/app_image_cropper.dart';
 import '../domain/travel_place.dart';
 
 class TravelMapOverlay extends StatelessWidget {
@@ -94,8 +95,10 @@ class TravelMapOverlay extends StatelessWidget {
               }
               final width = math.min(270.0, size.maxWidth - 24);
               final scale = MediaQuery.textScalerOf(context).scale(14) / 14;
-              final estimate =
-                  (230.0 + (place.hasPhoto ? 90 : 0)) * scale.clamp(1.0, 1.6);
+              final photoHeight = place.hasPhoto
+                  ? (width - 22) / AppImageCropper.tripAspectRatio
+                  : 0.0;
+              final estimate = 230.0 * scale.clamp(1.0, 1.6) + photoHeight;
               final above = pixel.dy > estimate + 80;
               final top = (pixel.dy + 28).clamp(
                 60.0,

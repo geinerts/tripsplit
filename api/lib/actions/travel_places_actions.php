@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../helpers/helper_travel_places.php';
+require_once __DIR__ . '/../helpers/helper_image_originals.php';
 
 function list_travel_places_action(): void
 {
@@ -46,7 +47,7 @@ function save_travel_place_action(): void
         if ($decoded===false) json_out(['ok'=>false,'error'=>'Invalid photo.'],400);
         $photo=travel_photo_encode($decoded);
     }
-    $table=table_name('travel_places');
+    $table=table_name('travel_places'); $photoWritten=false;
     $pdo->beginTransaction();
     try {
         $lock=$pdo->prepare('SELECT id FROM '.table_name('users').' WHERE id=:user AND account_status="active" FOR UPDATE');
@@ -100,11 +101,14 @@ function save_travel_place_action(): void
                 $stmt->bindValue(':photo',$photo,$photo===null ? PDO::PARAM_NULL : PDO::PARAM_LOB);
                 $stmt->bindValue(':source',$photo===null ? null : (isset($body['photo_base64']) ? 'custom' : 'trip'));
                 $stmt->bindValue(':id',$id,PDO::PARAM_INT); $stmt->bindValue(':user',$user,PDO::PARAM_INT); $stmt->execute();
+                $photoWritten=true;
             }
         }
         $select=$pdo->prepare(travel_places_select($pdo).' WHERE p.id=:id AND p.user_id=:user');
         $select->execute(['id'=>$id,'user'=>$user]); $saved=$select->fetch();
         $pdo->commit();
+        // A replacement's own original arrives afterwards through upload_travel_photo_source.
+        if ($photoWritten) image_source_delete(image_source_key('travel',(string)$id));
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         throw $error;
@@ -121,5 +125,6 @@ function delete_travel_place_action(): void
     $stmt=$pdo->prepare('DELETE FROM '.table_name('travel_places').' WHERE id=:id AND user_id=:user');
     $stmt->execute(['id'=>$id,'user'=>(int)$me['id']]);
     if ($stmt->rowCount()!==1) json_out(['ok'=>false,'error'=>'Place not found.'],404);
+    image_source_delete(image_source_key('travel',(string)$id));
     json_out(['ok'=>true]);
 }

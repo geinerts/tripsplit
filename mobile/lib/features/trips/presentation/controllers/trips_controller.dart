@@ -26,6 +26,8 @@ import '../../domain/usecases/preview_trip_invite_use_case.dart';
 import '../../domain/usecases/remove_trip_member_use_case.dart';
 import '../../domain/usecases/update_trip_use_case.dart';
 import '../../domain/usecases/upload_trip_image_use_case.dart';
+import '../../../../core/media/image_crop.dart';
+import '../../../../core/media/image_crop_service.dart';
 
 class TripsController {
   TripsController(
@@ -61,6 +63,7 @@ class TripsController {
   final UpdateTripUseCase _updateTripUseCase;
   final UploadTripImageUseCase _uploadTripImageUseCase;
   final TripsLocalStore _localStore;
+  ImageCropService? imageCropService;
   AccountDataSession get accountSession => _localStore.storage.session;
   int? _cacheGeneration;
   List<Trip> _cachedTrips = const <Trip>[];
@@ -182,11 +185,13 @@ class TripsController {
     required int tripId,
     required String fileName,
     required Uint8List bytes,
+    ImageCropSourceUpload? cropSource,
   }) {
     return _uploadTripImageUseCase.call(
       tripId: tripId,
       fileName: fileName,
       bytes: bytes,
+      cropSource: cropSource,
     );
   }
 

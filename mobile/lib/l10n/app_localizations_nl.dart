@@ -2195,6 +2195,27 @@ class AppLocalizationsNl extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Pas de reisfoto aan';
 
   @override
+  String get imageCropEditAction => 'Uitsnede bewerken';
+
+  @override
+  String get imageCropZoomIn => 'Inzoomen';
+
+  @override
+  String get imageCropZoomOut => 'Uitzoomen';
+
+  @override
+  String get imageCropZoomOnly => 'Van deze foto is alleen de bijgesneden versie bewaard, dus je kunt alleen inzoomen.';
+
+  @override
+  String get imageCropLoadFailed => 'Deze foto kon niet worden geopend.';
+
+  @override
+  String get imageCropSaveFailed => 'De nieuwe uitsnede kon niet worden opgeslagen. Probeer het opnieuw.';
+
+  @override
+  String get imageCropChanged => 'Deze foto is intussen gewijzigd. Sluit dit scherm en open het opnieuw.';
+
+  @override
   String get copyAction => 'Kopiëren';
 
   @override

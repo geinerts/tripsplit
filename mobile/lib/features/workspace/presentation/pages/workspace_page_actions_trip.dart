@@ -808,6 +808,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
           tripId: widget.trip.id,
           fileName: imageFileName,
           bytes: imageBytes,
+          cropSource: result.cropSource,
         );
         if (!current()) return;
         imagePath = uploaded.path;
@@ -858,6 +859,17 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
   }
 
+  Future<String?> Function()? _editCoverCrop() {
+    final service = widget.tripsController.imageCropService;
+    if (service == null) return null;
+    return () async {
+      final updated = await editTripCoverCrop(context, service, _displayTrip);
+      if (updated == null || !mounted) return null;
+      _updateState(() => _editedTrip = updated);
+      return updated.imageUrl;
+    };
+  }
+
   Future<_EditTripResult?> _showEditTripDialog(Trip trip) async {
     final result = await Navigator.of(context).push<TripFormDraft>(
       AppFormPageRoute(
@@ -866,6 +878,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
           budgetLoaded: true,
           budgetCents: _tripBudgetCents,
           pickImage: _pickTripImageForUploadFromSource,
+          editImageCrop: _editCoverCrop(),
         ),
       ),
     );
@@ -876,6 +889,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
       destinations: result.destinations,
       imageFileName: result.image?.fileName,
       imageBytes: result.image?.bytes,
+      cropSource: result.image?.source,
       removeImage: result.removeImage,
     );
   }

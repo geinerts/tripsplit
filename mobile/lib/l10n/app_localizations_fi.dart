@@ -2195,6 +2195,27 @@ class AppLocalizationsFi extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Mukauta matkan kuvaa';
 
   @override
+  String get imageCropEditAction => 'Muokkaa rajausta';
+
+  @override
+  String get imageCropZoomIn => 'Lähennä';
+
+  @override
+  String get imageCropZoomOut => 'Loitonna';
+
+  @override
+  String get imageCropZoomOnly => 'Tästä kuvasta tallennettiin vain rajattu versio, joten voit vain lähentää sitä.';
+
+  @override
+  String get imageCropLoadFailed => 'Kuvaa ei voitu avata.';
+
+  @override
+  String get imageCropSaveFailed => 'Uutta rajausta ei voitu tallentaa. Yritä uudelleen.';
+
+  @override
+  String get imageCropChanged => 'Kuvaa on muutettu sillä välin. Sulje tämä näkymä ja avaa se uudelleen.';
+
+  @override
   String get copyAction => 'Kopioi';
 
   @override

@@ -322535,5 +322535,1475 @@
       "checked against currency conversion, budget and friends behaviour"
     ],
     "note": "Quick Start content update. Not native-speaker proofread."
+  },
+  "cs:imageCropEditAction": {
+    "locale": "cs",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Upravit oříznutí",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "cs:imageCropZoomIn": {
+    "locale": "cs",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Přiblížit",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "cs:imageCropZoomOut": {
+    "locale": "cs",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Oddálit",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "cs:imageCropZoomOnly": {
+    "locale": "cs",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Z této fotky se uložila jen oříznutá verze, takže ji můžete pouze přiblížit.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "cs:imageCropLoadFailed": {
+    "locale": "cs",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Tuto fotku se nepodařilo otevřít.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "cs:imageCropSaveFailed": {
+    "locale": "cs",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Nové oříznutí se nepodařilo uložit. Zkuste to znovu.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "cs:imageCropChanged": {
+    "locale": "cs",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Tato fotka se mezitím změnila. Zavřete tuto obrazovku a otevřete ji znovu.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "da:imageCropEditAction": {
+    "locale": "da",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Rediger beskæring",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "da:imageCropZoomIn": {
+    "locale": "da",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Zoom ind",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "da:imageCropZoomOut": {
+    "locale": "da",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Zoom ud",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "da:imageCropZoomOnly": {
+    "locale": "da",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Kun den beskårne version af billedet blev gemt, så du kan kun zoome ind.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "da:imageCropLoadFailed": {
+    "locale": "da",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Billedet kunne ikke åbnes.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "da:imageCropSaveFailed": {
+    "locale": "da",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Den nye beskæring kunne ikke gemmes. Prøv igen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "da:imageCropChanged": {
+    "locale": "da",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Billedet er blevet ændret i mellemtiden. Luk skærmen, og åbn den igen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "de:imageCropEditAction": {
+    "locale": "de",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Zuschnitt bearbeiten",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "de:imageCropZoomIn": {
+    "locale": "de",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Vergrößern",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "de:imageCropZoomOut": {
+    "locale": "de",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Verkleinern",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "de:imageCropZoomOnly": {
+    "locale": "de",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Von diesem Foto wurde nur die zugeschnittene Version gespeichert. Du kannst daher nur hineinzoomen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "de:imageCropLoadFailed": {
+    "locale": "de",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Dieses Foto konnte nicht geöffnet werden.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "de:imageCropSaveFailed": {
+    "locale": "de",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Der neue Zuschnitt konnte nicht gespeichert werden. Versuche es erneut.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "de:imageCropChanged": {
+    "locale": "de",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Dieses Foto wurde inzwischen geändert. Schließe diese Ansicht und öffne sie erneut.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "es:imageCropEditAction": {
+    "locale": "es",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Editar recorte",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "es:imageCropZoomIn": {
+    "locale": "es",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Acercar",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "es:imageCropZoomOut": {
+    "locale": "es",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Alejar",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "es:imageCropZoomOnly": {
+    "locale": "es",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Solo se guardó la versión recortada de esta foto, así que solo puedes acercarla.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "es:imageCropLoadFailed": {
+    "locale": "es",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "No se pudo abrir esta foto.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "es:imageCropSaveFailed": {
+    "locale": "es",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "No se pudo guardar el nuevo recorte. Inténtalo de nuevo.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "es:imageCropChanged": {
+    "locale": "es",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Esta foto ha cambiado entretanto. Cierra esta pantalla y vuelve a abrirla.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fi:imageCropEditAction": {
+    "locale": "fi",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Muokkaa rajausta",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fi:imageCropZoomIn": {
+    "locale": "fi",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Lähennä",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fi:imageCropZoomOut": {
+    "locale": "fi",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Loitonna",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fi:imageCropZoomOnly": {
+    "locale": "fi",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Tästä kuvasta tallennettiin vain rajattu versio, joten voit vain lähentää sitä.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fi:imageCropLoadFailed": {
+    "locale": "fi",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Kuvaa ei voitu avata.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fi:imageCropSaveFailed": {
+    "locale": "fi",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Uutta rajausta ei voitu tallentaa. Yritä uudelleen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fi:imageCropChanged": {
+    "locale": "fi",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Kuvaa on muutettu sillä välin. Sulje tämä näkymä ja avaa se uudelleen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fr:imageCropEditAction": {
+    "locale": "fr",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Modifier le cadrage",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fr:imageCropZoomIn": {
+    "locale": "fr",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Zoomer",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fr:imageCropZoomOut": {
+    "locale": "fr",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Dézoomer",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fr:imageCropZoomOnly": {
+    "locale": "fr",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Seule la version recadrée de cette photo a été enregistrée : vous pouvez uniquement zoomer.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fr:imageCropLoadFailed": {
+    "locale": "fr",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Impossible d'ouvrir cette photo.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fr:imageCropSaveFailed": {
+    "locale": "fr",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Impossible d'enregistrer le nouveau cadrage. Réessayez.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "fr:imageCropChanged": {
+    "locale": "fr",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Cette photo a été modifiée entre-temps. Fermez cet écran et rouvrez-le.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "it:imageCropEditAction": {
+    "locale": "it",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Modifica ritaglio",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "it:imageCropZoomIn": {
+    "locale": "it",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Ingrandisci",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "it:imageCropZoomOut": {
+    "locale": "it",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Riduci",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "it:imageCropZoomOnly": {
+    "locale": "it",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "È stata salvata solo la versione ritagliata di questa foto, quindi puoi solo ingrandirla.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "it:imageCropLoadFailed": {
+    "locale": "it",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Impossibile aprire questa foto.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "it:imageCropSaveFailed": {
+    "locale": "it",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Impossibile salvare il nuovo ritaglio. Riprova.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "it:imageCropChanged": {
+    "locale": "it",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Questa foto è stata modificata nel frattempo. Chiudi questa schermata e riaprila.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "lv:imageCropEditAction": {
+    "locale": "lv",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Rediģēt kadrējumu",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "lv:imageCropZoomIn": {
+    "locale": "lv",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Pietuvināt",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "lv:imageCropZoomOut": {
+    "locale": "lv",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Attālināt",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "lv:imageCropZoomOnly": {
+    "locale": "lv",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Šai bildei saglabāta tikai nokadrētā versija, tāpēc to var tikai pietuvināt.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "lv:imageCropLoadFailed": {
+    "locale": "lv",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Neizdevās atvērt šo bildi.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "lv:imageCropSaveFailed": {
+    "locale": "lv",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Neizdevās saglabāt jauno kadrējumu. Mēģini vēlreiz.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "lv:imageCropChanged": {
+    "locale": "lv",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Šī bilde pa to laiku ir mainīta. Aizver šo ekrānu un atver to vēlreiz.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nb:imageCropEditAction": {
+    "locale": "nb",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Rediger beskjæring",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nb:imageCropZoomIn": {
+    "locale": "nb",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Zoom inn",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nb:imageCropZoomOut": {
+    "locale": "nb",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Zoom ut",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nb:imageCropZoomOnly": {
+    "locale": "nb",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Bare den beskårne versjonen av bildet ble lagret, så du kan bare zoome inn.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nb:imageCropLoadFailed": {
+    "locale": "nb",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Kunne ikke åpne bildet.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nb:imageCropSaveFailed": {
+    "locale": "nb",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Kunne ikke lagre den nye beskjæringen. Prøv igjen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nb:imageCropChanged": {
+    "locale": "nb",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Bildet er endret i mellomtiden. Lukk denne skjermen og åpne den igjen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nl:imageCropEditAction": {
+    "locale": "nl",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Uitsnede bewerken",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nl:imageCropZoomIn": {
+    "locale": "nl",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Inzoomen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nl:imageCropZoomOut": {
+    "locale": "nl",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Uitzoomen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nl:imageCropZoomOnly": {
+    "locale": "nl",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Van deze foto is alleen de bijgesneden versie bewaard, dus je kunt alleen inzoomen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nl:imageCropLoadFailed": {
+    "locale": "nl",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Deze foto kon niet worden geopend.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nl:imageCropSaveFailed": {
+    "locale": "nl",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "De nieuwe uitsnede kon niet worden opgeslagen. Probeer het opnieuw.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "nl:imageCropChanged": {
+    "locale": "nl",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Deze foto is intussen gewijzigd. Sluit dit scherm en open het opnieuw.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pl:imageCropEditAction": {
+    "locale": "pl",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Edytuj kadrowanie",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pl:imageCropZoomIn": {
+    "locale": "pl",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Powiększ",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pl:imageCropZoomOut": {
+    "locale": "pl",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Pomniejsz",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pl:imageCropZoomOnly": {
+    "locale": "pl",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Zapisano tylko przyciętą wersję tego zdjęcia, więc możesz je tylko powiększyć.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pl:imageCropLoadFailed": {
+    "locale": "pl",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Nie udało się otworzyć tego zdjęcia.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pl:imageCropSaveFailed": {
+    "locale": "pl",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Nie udało się zapisać nowego kadrowania. Spróbuj ponownie.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pl:imageCropChanged": {
+    "locale": "pl",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "To zdjęcie zostało w międzyczasie zmienione. Zamknij ten ekran i otwórz go ponownie.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pt:imageCropEditAction": {
+    "locale": "pt",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Editar recorte",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pt:imageCropZoomIn": {
+    "locale": "pt",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Ampliar",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pt:imageCropZoomOut": {
+    "locale": "pt",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Reduzir",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pt:imageCropZoomOnly": {
+    "locale": "pt",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Só foi guardada a versão recortada desta fotografia, por isso só a pode ampliar.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pt:imageCropLoadFailed": {
+    "locale": "pt",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Não foi possível abrir esta fotografia.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pt:imageCropSaveFailed": {
+    "locale": "pt",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Não foi possível guardar o novo recorte. Tente novamente.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "pt:imageCropChanged": {
+    "locale": "pt",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Esta fotografia foi alterada entretanto. Feche este ecrã e abra-o novamente.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "sv:imageCropEditAction": {
+    "locale": "sv",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Redigera beskärning",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "sv:imageCropZoomIn": {
+    "locale": "sv",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Zooma in",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "sv:imageCropZoomOut": {
+    "locale": "sv",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Zooma ut",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "sv:imageCropZoomOnly": {
+    "locale": "sv",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Bara den beskurna versionen av bilden sparades, så du kan bara zooma in.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "sv:imageCropLoadFailed": {
+    "locale": "sv",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Det gick inte att öppna bilden.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "sv:imageCropSaveFailed": {
+    "locale": "sv",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Det gick inte att spara den nya beskärningen. Försök igen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "sv:imageCropChanged": {
+    "locale": "sv",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Bilden har ändrats under tiden. Stäng den här skärmen och öppna den igen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "uk:imageCropEditAction": {
+    "locale": "uk",
+    "key": "imageCropEditAction",
+    "source": "Edit crop",
+    "before": null,
+    "translation": "Редагувати кадрування",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "uk:imageCropZoomIn": {
+    "locale": "uk",
+    "key": "imageCropZoomIn",
+    "source": "Zoom in",
+    "before": null,
+    "translation": "Збільшити",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "uk:imageCropZoomOut": {
+    "locale": "uk",
+    "key": "imageCropZoomOut",
+    "source": "Zoom out",
+    "before": null,
+    "translation": "Зменшити",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "uk:imageCropZoomOnly": {
+    "locale": "uk",
+    "key": "imageCropZoomOnly",
+    "source": "Only the cropped version of this photo was saved, so you can only zoom in.",
+    "before": null,
+    "translation": "Збережено лише обрізану версію цього фото, тому його можна лише збільшити.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "uk:imageCropLoadFailed": {
+    "locale": "uk",
+    "key": "imageCropLoadFailed",
+    "source": "Couldn't open this photo.",
+    "before": null,
+    "translation": "Не вдалося відкрити це фото.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "uk:imageCropSaveFailed": {
+    "locale": "uk",
+    "key": "imageCropSaveFailed",
+    "source": "Couldn't save the new crop. Try again.",
+    "before": null,
+    "translation": "Не вдалося зберегти нове кадрування. Спробуйте ще раз.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "uk:imageCropChanged": {
+    "locale": "uk",
+    "key": "imageCropChanged",
+    "source": "This photo changed in the meantime. Close this screen and open it again.",
+    "before": null,
+    "translation": "Це фото тим часом змінилося. Закрийте цей екран і відкрийте його знову.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the crop editor and its error states"
+    ],
+    "note": "Crop editing feature. Not native-speaker proofread."
   }
 }

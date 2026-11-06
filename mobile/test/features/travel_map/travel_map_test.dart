@@ -24,6 +24,10 @@ import 'package:tripsplit/features/travel_map/presentation/travel_map_page.dart'
 import 'package:tripsplit/features/travel_map/presentation/travel_map_canvas.dart';
 import 'package:tripsplit/features/travel_map/presentation/travel_map_overlay.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
+import 'package:tripsplit/core/media/app_image_cropper.dart';
+import 'package:tripsplit/core/media/image_crop.dart';
+import 'package:tripsplit/core/media/image_crop_flow.dart';
+import 'package:tripsplit/features/travel_map/presentation/travel_visit_photo.dart';
 
 const lisbon = TravelPlace(
   id: 1,
@@ -68,6 +72,12 @@ class FakePlaces implements TravelPlacesRepository {
   Uint8List? photoBytes;
   @override
   Future<Uint8List?> photo(TravelPlace place) async => photoBytes;
+  @override
+  Future<TravelPlace?> editPhotoCrop(
+    BuildContext context,
+    TravelPlace place, {
+    required String title,
+  }) async => place;
   @override
   AccountDataLease capture() => session.capture();
   @override
@@ -450,7 +460,18 @@ void main() {
                     initial: lisbon,
                     existing: lisbon,
                     isCurrent: () => true,
-                    pickPhoto: () async => bytes,
+                    pickPhoto: (_) async => CroppedImagePick(
+                      bytes: bytes,
+                      source: ImageCropSourceUpload(
+                        bytes: bytes,
+                        crop: const ImageCropRect(
+                          x: 0,
+                          y: 0,
+                          width: 1,
+                          height: 1,
+                        ),
+                      ),
+                    ),
                     save: (place, date, details) async {
                       saved = details;
                       return lisbon;
@@ -468,7 +489,14 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('travel-visit-photo')));
       await tester.pumpAndSettle();
       expect(find.byType(Image), findsOneWidget);
+      // Same frame as the trip cover, so a copied cover keeps its crop.
+      final frame = tester.getSize(find.byType(TravelPhotoFrame));
+      expect(
+        frame.width / frame.height,
+        closeTo(AppImageCropper.tripAspectRatio, .01),
+      );
       expect(saved, isNull);
+      await tester.ensureVisible(find.text('Remove photo'));
       await tester.tap(find.text('Remove photo'));
       await tester.pumpAndSettle();
       expect(find.byType(Image), findsNothing);

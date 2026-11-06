@@ -44,6 +44,7 @@ class _EditTripResult {
     this.destinations = const [],
     this.imageFileName,
     this.imageBytes,
+    this.cropSource,
     this.removeImage = false,
   });
 
@@ -52,6 +53,7 @@ class _EditTripResult {
   final List<Map<String, dynamic>> destinations;
   final String? imageFileName;
   final Uint8List? imageBytes;
+  final ImageCropSourceUpload? cropSource;
   final bool removeImage;
 }
 

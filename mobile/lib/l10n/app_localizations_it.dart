@@ -2195,6 +2195,27 @@ class AppLocalizationsIt extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Modifica l’immagine del viaggio';
 
   @override
+  String get imageCropEditAction => 'Modifica ritaglio';
+
+  @override
+  String get imageCropZoomIn => 'Ingrandisci';
+
+  @override
+  String get imageCropZoomOut => 'Riduci';
+
+  @override
+  String get imageCropZoomOnly => 'È stata salvata solo la versione ritagliata di questa foto, quindi puoi solo ingrandirla.';
+
+  @override
+  String get imageCropLoadFailed => 'Impossibile aprire questa foto.';
+
+  @override
+  String get imageCropSaveFailed => 'Impossibile salvare il nuovo ritaglio. Riprova.';
+
+  @override
+  String get imageCropChanged => 'Questa foto è stata modificata nel frattempo. Chiudi questa schermata e riaprila.';
+
+  @override
   String get copyAction => 'Copia';
 
   @override

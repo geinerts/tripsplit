@@ -4069,6 +4069,48 @@ abstract class AppLocalizations {
   /// **'Adjust trip image'**
   String get imageCropperAdjustTripImage;
 
+  /// No description provided for @imageCropEditAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit crop'**
+  String get imageCropEditAction;
+
+  /// No description provided for @imageCropZoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get imageCropZoomIn;
+
+  /// No description provided for @imageCropZoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get imageCropZoomOut;
+
+  /// No description provided for @imageCropZoomOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the cropped version of this photo was saved, so you can only zoom in.'**
+  String get imageCropZoomOnly;
+
+  /// No description provided for @imageCropLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open this photo.'**
+  String get imageCropLoadFailed;
+
+  /// No description provided for @imageCropSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t save the new crop. Try again.'**
+  String get imageCropSaveFailed;
+
+  /// No description provided for @imageCropChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo changed in the meantime. Close this screen and open it again.'**
+  String get imageCropChanged;
+
   /// No description provided for @copyAction.
   ///
   /// In en, this message translates to:

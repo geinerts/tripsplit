@@ -61,6 +61,38 @@ class Trip {
   final int myOwedCents;
   final int myBalanceCents;
 
+  Trip withImage({required String? imageUrl, required String? imageThumbUrl}) =>
+      Trip(
+        id: id,
+        name: name,
+        budgetCents: budgetCents,
+        destinations: destinations,
+        tripMode: tripMode,
+        currencyCode: currencyCode,
+        status: status,
+        imageUrl: imageUrl,
+        imageThumbUrl: imageThumbUrl,
+        membersCount: membersCount,
+        createdAt: createdAt,
+        createdBy: createdBy,
+        currentUserRole: currentUserRole,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        endedAt: endedAt,
+        archivedAt: archivedAt,
+        settlementsTotal: settlementsTotal,
+        settlementsConfirmed: settlementsConfirmed,
+        settlementsPending: settlementsPending,
+        allSettled: allSettled,
+        readyToSettle: readyToSettle,
+        totalAmountCents: totalAmountCents,
+        myPaidCents: myPaidCents,
+        myPaidPreferredCents: myPaidPreferredCents,
+        preferredCurrencyCode: preferredCurrencyCode,
+        myOwedCents: myOwedCents,
+        myBalanceCents: myBalanceCents,
+      );
+
   bool get isActive => status == 'active';
   bool get isSettling => status == 'settling';
   bool get isArchived => status == 'archived';

@@ -2195,6 +2195,27 @@ class AppLocalizationsNb extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Juster reisebilde';
 
   @override
+  String get imageCropEditAction => 'Rediger beskjæring';
+
+  @override
+  String get imageCropZoomIn => 'Zoom inn';
+
+  @override
+  String get imageCropZoomOut => 'Zoom ut';
+
+  @override
+  String get imageCropZoomOnly => 'Bare den beskårne versjonen av bildet ble lagret, så du kan bare zoome inn.';
+
+  @override
+  String get imageCropLoadFailed => 'Kunne ikke åpne bildet.';
+
+  @override
+  String get imageCropSaveFailed => 'Kunne ikke lagre den nye beskjæringen. Prøv igjen.';
+
+  @override
+  String get imageCropChanged => 'Bildet er endret i mellomtiden. Lukk denne skjermen og åpne den igjen.';
+
+  @override
   String get copyAction => 'Kopier';
 
   @override

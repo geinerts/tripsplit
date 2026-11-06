@@ -28,6 +28,8 @@ class _Harness {
     bool settle = true,
     Future<List<TripUser>> Function()? load,
     Future<TripImageDraft?> Function(ImageSource)? pick,
+    Future<String?> Function()? editCrop,
+    String? imageUrl,
   }) async {
     tester.view.physicalSize = Size(width, 844);
     tester.view.devicePixelRatio = 1;
@@ -56,10 +58,12 @@ class _Harness {
                           ? TripModel.fromLegacyMap({
                               'id': 1,
                               'name': 'Lisbon getaway',
+                              'image_url': ?imageUrl,
                             })
                           : null,
                       loadFriends: load ?? () async => friends,
                       pickImage: pick ?? (_) async => null,
+                      editImageCrop: editCrop,
                     ),
                   ),
                 );
@@ -301,6 +305,49 @@ void main() {
     expect(find.text('Open'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  testWidgets('a saved cover offers crop editing and shows the new crop', (
+    tester,
+  ) async {
+    var edits = 0;
+    final h = _Harness();
+    await h.mount(
+      tester,
+      edit: true,
+      imageUrl: 'https://example.invalid/old.webp',
+      editCrop: () async {
+        edits++;
+        return 'https://example.invalid/new.webp';
+      },
+    );
+    await tester.tap(find.byKey(const ValueKey('trip-cover-picker')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.tap(find.text('Edit crop'));
+    await tester.pumpAndSettle();
+    expect(edits, 1);
+    final photo = find.byKey(const ValueKey('trip-cover-photo'));
+    expect(
+      (tester.widget<Image>(photo).image as NetworkImage).url,
+      'https://example.invalid/new.webp',
+    );
+    await tester.tap(find.byKey(const ValueKey('trip-form-submit')));
+    await tester.pumpAndSettle();
+    expect(h.result!.image, isNull);
+    expect(h.result!.removeImage, isFalse);
+  });
+
+  testWidgets('a cover without crop editing does not offer it', (tester) async {
+    await _Harness().mount(
+      tester,
+      edit: true,
+      imageUrl: 'https://example.invalid/old.webp',
+    );
+    await tester.tap(find.byKey(const ValueKey('trip-cover-picker')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text('Edit crop'), findsNothing);
+  });
+
   testWidgets(
     'image selection cancellation preserves selection and removal is explicit',
     (tester) async {
@@ -314,8 +361,9 @@ void main() {
       await h.mount(
         tester,
         edit: true,
-        pick: (_) async =>
-            ++calls == 1 ? (bytes: bytes, fileName: 'cover.png') : null,
+        pick: (_) async => ++calls == 1
+            ? (bytes: bytes, fileName: 'cover.png', source: null)
+            : null,
       );
       Future<void> choose() async {
         await tester.tap(find.byKey(const ValueKey('trip-cover-picker')));

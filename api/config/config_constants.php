@@ -21,6 +21,8 @@ define('AVATARS_REL_DIR', env_string('TRIP_AVATARS_REL_DIR', 'uploads/avatars'))
 define('AVATARS_MAX_BYTES', env_int('TRIP_AVATARS_MAX_BYTES', 5_242_880)); // 5 MB
 define('TRIP_IMAGES_REL_DIR', env_string('TRIP_IMAGES_REL_DIR', 'uploads/trips'));
 define('TRIP_IMAGES_MAX_BYTES', env_int('TRIP_IMAGES_MAX_BYTES', 8_388_608)); // 8 MB
+// Outside the web root. Empty keeps uploads working without crop editing.
+define('IMAGE_ORIGINALS_DIR', env_string('TRIP_IMAGE_ORIGINALS_DIR', ''));
 define('FEEDBACK_REL_DIR', env_string('TRIP_FEEDBACK_REL_DIR', 'uploads/feedback'));
 define('FEEDBACK_MAX_BYTES', env_int('TRIP_FEEDBACK_MAX_BYTES', 8_388_608)); // 8 MB
 define('UPLOAD_IMAGE_WEBP_QUALITY', env_int('TRIP_UPLOAD_IMAGE_WEBP_QUALITY', 84));

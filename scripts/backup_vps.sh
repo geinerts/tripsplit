@@ -59,6 +59,12 @@ for p in ".env" "api/.env" "uploads" "keys"; do
   fi
 done
 
+# Private image originals live outside the app directory.
+originals_dir="$(sed -n 's/^TRIP_IMAGE_ORIGINALS_DIR=//p' "$ENV_FILE" | tail -n 1 | tr -d "\"'")"
+if [[ -n "$originals_dir" && -d "$originals_dir" ]]; then
+  include_paths+=("$originals_dir")
+fi
+
 if (( ${#include_paths[@]} == 0 )); then
   echo "No app state paths found to archive (expected one of .env, api/.env, uploads, keys)." >&2
   exit 1

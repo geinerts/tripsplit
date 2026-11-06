@@ -2207,6 +2207,27 @@ class AppLocalizationsPl extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Dostosuj zdjęcie wycieczki';
 
   @override
+  String get imageCropEditAction => 'Edytuj kadrowanie';
+
+  @override
+  String get imageCropZoomIn => 'Powiększ';
+
+  @override
+  String get imageCropZoomOut => 'Pomniejsz';
+
+  @override
+  String get imageCropZoomOnly => 'Zapisano tylko przyciętą wersję tego zdjęcia, więc możesz je tylko powiększyć.';
+
+  @override
+  String get imageCropLoadFailed => 'Nie udało się otworzyć tego zdjęcia.';
+
+  @override
+  String get imageCropSaveFailed => 'Nie udało się zapisać nowego kadrowania. Spróbuj ponownie.';
+
+  @override
+  String get imageCropChanged => 'To zdjęcie zostało w międzyczasie zmienione. Zamknij ten ekran i otwórz go ponownie.';
+
+  @override
   String get copyAction => 'Kopiuj';
 
   @override

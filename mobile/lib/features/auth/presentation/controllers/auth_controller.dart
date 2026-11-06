@@ -26,6 +26,10 @@ import '../../domain/usecases/set_credentials_use_case.dart';
 import '../../domain/usecases/social_login_use_case.dart';
 import '../../domain/usecases/update_notification_preferences_use_case.dart';
 import '../../domain/usecases/update_profile_use_case.dart';
+import '../../../../core/media/image_crop.dart';
+import '../../../../core/media/image_crop_service.dart';
+import '../../../../core/network/media_url_resolver.dart';
+import 'package:flutter/widgets.dart' show BuildContext;
 
 class AuthController {
   AuthController(
@@ -72,6 +76,7 @@ class AuthController {
   final CurrentUserStore _currentUserStore;
   final UserAvatarStore _avatarStore;
   final LegacyAvatarUploader _avatarUploader;
+  ImageCropService? imageCropService;
   final LegacyFeedbackReporter _feedbackReporter;
   final PushRegistrationService _pushRegistrationService;
   final Future<void> Function() _onLoggedOut;
@@ -323,6 +328,7 @@ class AuthController {
   Future<AuthUser?> uploadAvatar({
     required String fileName,
     required Uint8List bytes,
+    ImageCropSourceUpload? cropSource,
   }) async {
     final generation = _accountSession.generation;
     final user = currentUser;
@@ -333,6 +339,7 @@ class AuthController {
     final uploaded = await _avatarUploader.uploadAvatar(
       fileName: fileName,
       bytes: bytes,
+      cropSource: cropSource,
     );
     final encoded = base64Encode(bytes);
     final merged = _mergeRemoteMe(user, uploaded.mePayload).copyWith(
@@ -345,6 +352,38 @@ class AuthController {
       userId: merged.id,
       avatarBase64: encoded,
     );
+    await _setCurrentUser(merged, generation);
+    return merged;
+  }
+
+  /// Opens the crop editor for the saved profile photo. Returns null when cancelled.
+  Future<AuthUser?> editAvatarCrop(BuildContext context, String title) async {
+    final generation = _accountSession.generation;
+    final user = currentUser;
+    final service = imageCropService;
+    if (user == null || user.id <= 0 || service == null) return null;
+    final response = await service.edit(
+      context,
+      kind: ImageCropKind.avatar,
+      title: title,
+      aspectRatio: 1,
+      circular: true,
+    );
+    if (response == null) return null;
+    final me = response['me'];
+    final merged =
+        _mergeRemoteMe(user, me is Map ? me.cast<String, dynamic>() : null)
+            .copyWith(clearAvatar: true)
+            .copyWith(
+              avatarUrl: MediaUrlResolver.normalize(
+                response['avatar_url'] as String?,
+              ),
+              avatarThumbUrl: MediaUrlResolver.normalize(
+                response['avatar_thumb_url'] as String?,
+              ),
+            );
+    // The stored copy holds the old crop; the new one loads from the server.
+    await _avatarStore.writeAvatarBase64(userId: merged.id, avatarBase64: null);
     await _setCurrentUser(merged, generation);
     return merged;
   }

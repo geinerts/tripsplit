@@ -8,6 +8,7 @@ import '../entities/pending_trip_invitation.dart';
 import '../entities/received_trip_invitation.dart';
 import '../entities/trip_user.dart';
 import '../entities/uploaded_trip_image.dart';
+import '../../../../core/media/image_crop.dart';
 
 abstract class TripsRepository {
   Future<List<Trip>> listTrips({bool allowOfflineCache = true});
@@ -39,6 +40,7 @@ abstract class TripsRepository {
     required int tripId,
     required String fileName,
     required Uint8List bytes,
+    ImageCropSourceUpload? cropSource,
   });
   Future<int> addTripMembers({
     required int tripId,

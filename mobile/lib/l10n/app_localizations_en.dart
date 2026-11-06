@@ -2195,6 +2195,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Adjust trip image';
 
   @override
+  String get imageCropEditAction => 'Edit crop';
+
+  @override
+  String get imageCropZoomIn => 'Zoom in';
+
+  @override
+  String get imageCropZoomOut => 'Zoom out';
+
+  @override
+  String get imageCropZoomOnly => 'Only the cropped version of this photo was saved, so you can only zoom in.';
+
+  @override
+  String get imageCropLoadFailed => 'Couldn\'t open this photo.';
+
+  @override
+  String get imageCropSaveFailed => 'Couldn\'t save the new crop. Try again.';
+
+  @override
+  String get imageCropChanged => 'This photo changed in the meantime. Close this screen and open it again.';
+
+  @override
   String get copyAction => 'Copy';
 
   @override

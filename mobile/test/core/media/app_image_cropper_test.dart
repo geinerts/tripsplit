@@ -10,7 +10,7 @@ import 'package:tripsplit/l10n/app_localizations.dart';
 void main() {
   const channel = MethodChannel('plugins.hunghd.vn/image_cropper');
   testWidgets(
-    'trip crop returns the saved file; cancellation never uses original',
+    'receipt crop returns the saved file; cancellation never uses original',
     (tester) async {
       final dir = Directory.systemTemp.createTempSync('splyto-crop-test-');
       addTearDown(() => dir.deleteSync(recursive: true));
@@ -41,34 +41,6 @@ void main() {
         ),
       );
       await tester.runAsync(() async {
-        final crop = await AppImageCropper.cropTripImage(
-          context: host,
-          source: XFile(original.path),
-        );
-        expect(crop!.path, saved.path);
-        expect(await crop.readAsBytes(), [3, 4]);
-        expect(arguments!['source_path'], original.path);
-        expect(
-          arguments!['ratio_x'] / arguments!['ratio_y'],
-          AppImageCropper.tripAspectRatio,
-        );
-        expect(arguments!['android.lock_aspect_ratio'], isTrue);
-        expect(arguments!['ios.aspect_ratio_lock_enabled'], isTrue);
-        resultPath = null;
-        expect(
-          await AppImageCropper.cropTripImage(
-            context: host,
-            source: XFile(original.path),
-          ),
-          isNull,
-        );
-        // Avatar cropping keeps its independent square frame.
-        await AppImageCropper.cropAvatar(
-          context: host,
-          source: XFile(original.path),
-        );
-        expect(arguments!['ratio_x'], arguments!['ratio_y']);
-
         resultPath = saved.path;
         final receipt = await AppImageCropper.cropReceipt(
           context: host,

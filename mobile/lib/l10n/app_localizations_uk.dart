@@ -2207,6 +2207,27 @@ class AppLocalizationsUk extends AppLocalizations {
   String get imageCropperAdjustTripImage => 'Налаштуйте зображення поїздки';
 
   @override
+  String get imageCropEditAction => 'Редагувати кадрування';
+
+  @override
+  String get imageCropZoomIn => 'Збільшити';
+
+  @override
+  String get imageCropZoomOut => 'Зменшити';
+
+  @override
+  String get imageCropZoomOnly => 'Збережено лише обрізану версію цього фото, тому його можна лише збільшити.';
+
+  @override
+  String get imageCropLoadFailed => 'Не вдалося відкрити це фото.';
+
+  @override
+  String get imageCropSaveFailed => 'Не вдалося зберегти нове кадрування. Спробуйте ще раз.';
+
+  @override
+  String get imageCropChanged => 'Це фото тим часом змінилося. Закрийте цей екран і відкрийте його знову.';
+
+  @override
   String get copyAction => 'Зареєструватися';
 
   @override

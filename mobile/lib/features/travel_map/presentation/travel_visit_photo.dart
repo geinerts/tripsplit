@@ -1,18 +1,37 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import '../../../core/media/app_image_cropper.dart';
 import '../data/travel_places_repository.dart';
 import '../domain/travel_place.dart';
+
+/// Shows a visit photo in the trip cover's frame, so a photo copied from a trip
+/// keeps the crop the trip has.
+class TravelPhotoFrame extends StatelessWidget {
+  const TravelPhotoFrame({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: BorderRadius.circular(12),
+    child: AspectRatio(
+      aspectRatio: AppImageCropper.tripAspectRatio,
+      child: ColoredBox(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        child: SizedBox.expand(child: child),
+      ),
+    ),
+  );
+}
 
 class TravelVisitPhoto extends StatefulWidget {
   const TravelVisitPhoto({
     super.key,
     required this.place,
     required this.repository,
-    this.height = 90,
   });
   final TravelPlace place;
   final TravelPlacesRepository repository;
-  final double height;
   @override
   State<TravelVisitPhoto> createState() => _TravelVisitPhotoState();
 }
@@ -29,44 +48,35 @@ class _TravelVisitPhotoState extends State<TravelVisitPhoto> {
   }
 
   @override
-  Widget build(BuildContext context) => ClipRRect(
-    borderRadius: BorderRadius.circular(12),
-    child: SizedBox(
-      height: widget.height,
-      width: double.infinity,
-      child: FutureBuilder<Uint8List?>(
-        future: _photo,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Image.memory(
-              snapshot.data!,
-              fit: BoxFit.cover,
-              errorBuilder: (_, _, _) =>
-                  const Icon(Icons.broken_image_outlined),
-            );
-          }
-          return ColoredBox(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            child: Center(
-              child: snapshot.connectionState == ConnectionState.waiting
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : IconButton(
-                      tooltip: MaterialLocalizations.of(
-                        context,
-                      ).refreshIndicatorSemanticLabel,
-                      onPressed: () => setState(
-                        () => _photo = widget.repository.photo(widget.place),
-                      ),
-                      icon: const Icon(Icons.refresh),
-                    ),
-            ),
+  Widget build(BuildContext context) => TravelPhotoFrame(
+    child: FutureBuilder<Uint8List?>(
+      future: _photo,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Image.memory(
+            snapshot.data!,
+            fit: BoxFit.cover,
+            errorBuilder: (_, _, _) => const Icon(Icons.broken_image_outlined),
           );
-        },
-      ),
+        }
+        return Center(
+          child: snapshot.connectionState == ConnectionState.waiting
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : IconButton(
+                  tooltip: MaterialLocalizations.of(
+                    context,
+                  ).refreshIndicatorSemanticLabel,
+                  onPressed: () => setState(
+                    () => _photo = widget.repository.photo(widget.place),
+                  ),
+                  icon: const Icon(Icons.refresh),
+                ),
+        );
+      },
     ),
   );
 }

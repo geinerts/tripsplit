@@ -12,6 +12,7 @@ import '../../domain/entities/received_trip_invitation.dart';
 import '../../domain/entities/uploaded_trip_image.dart';
 import '../models/trip_model.dart';
 import '../models/trip_user_model.dart';
+import '../../../../core/media/image_crop.dart';
 
 abstract class TripsRemoteDataSource {
   Future<List<TripModel>> listTrips();
@@ -43,6 +44,7 @@ abstract class TripsRemoteDataSource {
     required int tripId,
     required String fileName,
     required Uint8List bytes,
+    ImageCropSourceUpload? cropSource,
   });
   Future<int> addTripMembers({
     required int tripId,
@@ -197,11 +199,13 @@ class TripsRemoteDataSourceImpl implements TripsRemoteDataSource {
     required int tripId,
     required String fileName,
     required Uint8List bytes,
+    ImageCropSourceUpload? cropSource,
   }) async {
     final uploaded = await _tripImageUploader.uploadTripImage(
       tripId: tripId,
       fileName: fileName,
       bytes: bytes,
+      cropSource: cropSource,
     );
     return UploadedTripImageData(
       path: uploaded.imagePath,

@@ -2,11 +2,15 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../../trips/domain/entities/trip.dart';
 import '../data/travel_places_repository.dart';
-import '../data/travel_photo_picker.dart';
+import '../../../core/media/image_crop.dart';
+import '../../../core/media/image_crop_editor_page.dart';
+import '../../../core/media/image_crop_flow.dart';
+import 'travel_photo_pick.dart';
 import 'travel_visit_photo.dart';
 import 'package:intl/intl.dart';
 import '../../../core/l10n/l10n.dart';
 import '../../../core/errors/api_exception.dart';
+import '../../../core/media/app_image_cropper.dart';
 import '../data/travel_location_service.dart';
 import '../domain/travel_place.dart';
 
@@ -27,7 +31,7 @@ class TravelPlaceSheet extends StatefulWidget {
   final TravelPlace? existing;
   final Trip? trip;
   final TravelPlacesRepository? repository;
-  final Future<Uint8List?> Function() pickPhoto;
+  final Future<CroppedImagePick?> Function(BuildContext context) pickPhoto;
   final Future<TravelPlace> Function(PlaceCandidate, String, VisitDetails) save;
   final bool Function() isCurrent;
   @override
@@ -38,6 +42,7 @@ class _TravelPlaceSheetState extends State<TravelPlaceSheet> {
   final _query = TextEditingController();
   late final _title = TextEditingController(text: widget.existing?.title ?? '');
   Uint8List? _photo;
+  ImageCropSourceUpload? _photoSource;
   bool _picking = false, _removePhoto = false;
   @override
   void initState() {
@@ -53,14 +58,63 @@ class _TravelPlaceSheetState extends State<TravelPlaceSheet> {
     if (_picking || _saving) return;
     setState(() => _picking = true);
     try {
-      final photo = await widget.pickPhoto();
+      final pick = await widget.pickPhoto(context);
       if (!mounted || !widget.isCurrent()) return;
-      if (photo != null) {
+      if (pick != null) {
         setState(() {
-          _photo = photo;
+          _photo = pick.bytes;
+          _photoSource = pick.source;
           _removePhoto = false;
         });
       }
+    } catch (_) {
+      if (mounted) setState(() => _error = context.l10n.travelPhotoError);
+    } finally {
+      if (mounted) setState(() => _picking = false);
+    }
+  }
+
+  /// Moves the crop of the saved photo, or of a photo chosen but not saved yet.
+  Future<void> _editCrop() async {
+    if (_picking || _saving) return;
+    final title = context.l10n.imageCropEditAction;
+    final source = _photoSource;
+    setState(() => _picking = true);
+    try {
+      if (source != null) {
+        final described = await describeImage(source.bytes);
+        if (!mounted) return;
+        final crop = await Navigator.of(context).push<ImageCropRect>(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (_) => ImageCropEditorPage<ImageCropRect>(
+              title: title,
+              aspectRatio: AppImageCropper.tripAspectRatio,
+              load: () async => ImageCropSourceData(
+                bytes: described.bytes,
+                width: described.width,
+                height: described.height,
+                crop: source.crop,
+              ),
+              complete: (rect, _) async => rect,
+            ),
+          ),
+        );
+        if (crop == null) return;
+        final bytes = await renderImageCrop(source.bytes, crop, maxEdge: 1024);
+        if (!mounted) return;
+        setState(() {
+          _photo = bytes;
+          _photoSource = ImageCropSourceUpload(bytes: source.bytes, crop: crop);
+        });
+        return;
+      }
+      final updated = await widget.repository?.editPhotoCrop(
+        context,
+        widget.existing!,
+        title: title,
+      );
+      if (updated != null && mounted) Navigator.pop(context, updated);
     } catch (_) {
       if (mounted) setState(() => _error = context.l10n.travelPhotoError);
     } finally {
@@ -126,6 +180,7 @@ class _TravelPlaceSheetState extends State<TravelPlaceSheet> {
           tripId: widget.trip?.id,
           title: _title.text.trim(),
           photo: _photo,
+          photoSource: _photoSource,
           removePhoto: _removePhoto,
         ),
       );
@@ -332,32 +387,22 @@ class _TravelPlaceSheetState extends State<TravelPlaceSheet> {
                   const SizedBox(height: 12),
                   if (!_removePhoto) ...[
                     if (_photo != null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.memory(
-                          _photo!,
-                          height: 110,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
+                      TravelPhotoFrame(
+                        child: Image.memory(_photo!, fit: BoxFit.cover),
                       )
                     else if (widget.existing?.hasPhoto == true &&
                         widget.repository != null)
                       TravelVisitPhoto(
                         place: widget.existing!,
                         repository: widget.repository!,
-                        height: 110,
                       )
                     else if (widget.existing == null &&
                         (widget.trip?.imageThumbUrl ?? widget.trip?.imageUrl) !=
                             null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                      TravelPhotoFrame(
                         child: Image.network(
                           (widget.trip!.imageThumbUrl ??
                               widget.trip!.imageUrl)!,
-                          height: 110,
-                          width: double.infinity,
                           fit: BoxFit.cover,
                           errorBuilder: (_, _, _) => const SizedBox.shrink(),
                         ),
@@ -377,6 +422,16 @@ class _TravelPlaceSheetState extends State<TravelPlaceSheet> {
                         ),
                       ),
                       if (!_removePhoto &&
+                          (_photoSource != null ||
+                              (_photo == null &&
+                                  widget.existing?.hasPhoto == true &&
+                                  widget.repository != null)))
+                        TextButton(
+                          key: const ValueKey('travel-visit-edit-crop'),
+                          onPressed: _saving || _picking ? null : _editCrop,
+                          child: Text(t.imageCropEditAction),
+                        ),
+                      if (!_removePhoto &&
                           (_photo != null ||
                               widget.existing?.hasPhoto == true ||
                               (widget.existing == null &&
@@ -386,6 +441,7 @@ class _TravelPlaceSheetState extends State<TravelPlaceSheet> {
                               ? null
                               : () => setState(() {
                                   _photo = null;
+                                  _photoSource = null;
                                   _removePhoto = true;
                                 }),
                           child: Text(t.travelRemovePhoto),

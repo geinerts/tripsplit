@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:latlong2/latlong.dart';
+import '../../../core/media/image_crop.dart';
 
 class VisitDetails {
   const VisitDetails({
@@ -8,11 +9,15 @@ class VisitDetails {
     this.title = '',
     this.photo,
     this.removePhoto = false,
+    this.photoSource,
   });
   final int? id, tripId;
   final String title;
   final Uint8List? photo;
   final bool removePhoto;
+
+  /// The uncropped original of [photo], kept privately so its crop can be edited.
+  final ImageCropSourceUpload? photoSource;
 }
 
 class PlaceCandidate {

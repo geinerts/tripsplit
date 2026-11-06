@@ -49,6 +49,8 @@ import 'package:tripsplit/features/workspace/domain/entities/workspace_user.dart
 import 'package:tripsplit/features/workspace/presentation/controllers/workspace_controller.dart';
 import 'package:tripsplit/features/workspace/presentation/pages/workspace_page.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
+import 'package:tripsplit/core/media/image_crop.dart';
+import 'package:tripsplit/core/media/image_crop_service.dart';
 
 class _Auth implements AuthController {
   _Auth({this.revtag});
@@ -65,6 +67,9 @@ class _Auth implements AuthController {
 }
 
 class _Trips implements TripsController {
+  @override
+  ImageCropService? imageCropService;
+
   Uint8List? uploadedBytes;
   String? savedPath;
   bool failUpdate = false;
@@ -75,6 +80,7 @@ class _Trips implements TripsController {
     required int tripId,
     required String fileName,
     required Uint8List bytes,
+    ImageCropSourceUpload? cropSource,
   }) async {
     uploadedBytes = bytes;
     return const UploadedTripImageData(path: 'uploads/trips/cropped.webp');
@@ -2497,7 +2503,7 @@ void main() {
           currencyCode: 'EUR',
           tripMode: 'group',
           memberIds: [],
-          image: (bytes: croppedBytes, fileName: 'cropped.jpg'),
+          image: (bytes: croppedBytes, fileName: 'cropped.jpg', source: null),
         ),
       );
       expect(trips.uploadedBytes, croppedBytes);
