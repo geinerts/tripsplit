@@ -1751,6 +1751,33 @@
   "expenseSplitBetween": "Split between",
   "expenseEditParticipants": "Choose participants",
   "expenseCustomSplit": "Custom split",
+  "expenseAdjustmentsLabel": "Adjustments",
+  "expenseAdjustmentFieldLabel": "+ or −",
+  "expenseAdjustmentsHint": "Add or subtract for each person. The rest is split equally.",
+  "expenseAdjustmentsMustFit": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+  "expenseItemsLabel": "Items",
+  "expenseAddItem": "Add item",
+  "expenseRemoveItem": "Remove item",
+  "expenseItemName": "Item",
+  "expenseItemExtra": "Tax or tip",
+  "expenseItemExtraHint": "Shared in proportion to each person's items.",
+  "expenseItemsInvalid": "Each item needs a name, an amount and at least one person.",
+  "expenseItemsTotal": "Total from items: {total}",
+  "@expenseItemsTotal": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseItemsMustMatchTotal": "Items must add up to {total}.",
+  "@expenseItemsMustMatchTotal": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "expenseSplitAllocated": "All {amount} allocated",
   "@expenseSplitAllocated": {
     "placeholders": {

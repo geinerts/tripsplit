@@ -4244,6 +4244,49 @@ class AppLocalizationsNl extends AppLocalizations {
   String get expenseCustomSplit => 'Aangepaste verdeling';
 
   @override
+  String get expenseAdjustmentsLabel => 'Aanpassingen';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ of −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Tel op of trek af per persoon. De rest wordt gelijk verdeeld.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Aanpassingen mogen het totaal niet overschrijden en niemand kan minder dan nul schuldig zijn.';
+
+  @override
+  String get expenseItemsLabel => 'Items';
+
+  @override
+  String get expenseAddItem => 'Item toevoegen';
+
+  @override
+  String get expenseRemoveItem => 'Item verwijderen';
+
+  @override
+  String get expenseItemName => 'Item';
+
+  @override
+  String get expenseItemExtra => 'Belasting of fooi';
+
+  @override
+  String get expenseItemExtraHint => 'Verdeeld naar verhouding van ieders items.';
+
+  @override
+  String get expenseItemsInvalid => 'Elk item heeft een naam, een bedrag en minstens één persoon nodig.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Totaal van items: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Items moeten samen $total zijn.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Alle $amount verdeeld';
   }

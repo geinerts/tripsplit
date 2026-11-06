@@ -66,7 +66,16 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         ? <int>{}
         : existing.participants.map((p) => p.id).toSet();
     final rawSplitMode = (existing?.splitMode ?? 'equal').trim().toLowerCase();
-    final supportedSplitModes = <String>{'equal', 'exact', 'percent', 'shares'};
+    final supportedSplitModes = <String>{
+      'equal',
+      'exact',
+      'percent',
+      'shares',
+      'adjustment',
+      'itemized',
+    };
+    var itemDrafts = existing?.items ?? const <ExpenseItem>[];
+    var extraDraft = existing?.extraAmount ?? 0.0;
     final isLegacySplitMode = !supportedSplitModes.contains(rawSplitMode);
     var splitMode = isSolo
         ? 'equal'
@@ -83,7 +92,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         }
       }
       splitControllers.clear();
-      if (expense == null || mode == 'equal') {
+      if (expense == null || mode == 'equal' || mode == 'itemized') {
         return;
       }
       final legacyMode = !supportedSplitModes.contains(
@@ -143,6 +152,10 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                   return t.percentagesLabel;
                 case 'shares':
                   return t.sharesLabel;
+                case 'adjustment':
+                  return t.expenseAdjustmentsLabel;
+                case 'itemized':
+                  return t.expenseItemsLabel;
                 default:
                   return t.equalSplitLabel;
               }
@@ -156,6 +169,10 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                   return Icons.percent_rounded;
                 case 'shares':
                   return Icons.pie_chart_outline_rounded;
+                case 'adjustment':
+                  return Icons.exposure_rounded;
+                case 'itemized':
+                  return Icons.receipt_long_rounded;
                 default:
                   return Icons.balance_rounded;
               }
@@ -294,11 +311,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
 
                 Future<void> editSplit() async {
                   final amount = _parseAmount(amountController.text);
-                  if (!amount.isFinite || amount <= 0 || activeUsers.isEmpty) {
+                  if (activeUsers.isEmpty) {
                     setDialogState(() {
-                      errorText = activeUsers.isEmpty
-                          ? t.pickAtLeastOneParticipant
-                          : t.amountMustBeGreaterThanZero;
+                      errorText = t.pickAtLeastOneParticipant;
                     });
                     return;
                   }
@@ -309,7 +324,12 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                       users: activeUsers,
                       amount: amount,
                       currencyCode: selectedCurrencyCode,
-                      initialMode: splitMode,
+                      // Without an amount yet, the items are what add up to it.
+                      initialMode: splitMode == 'equal' && amount <= 0
+                          ? 'itemized'
+                          : splitMode,
+                      initialItems: itemDrafts,
+                      initialExtra: extraDraft,
                       initialValues: {
                         for (final entry in splitControllers.entries)
                           entry.key: entry.value.text,
@@ -320,6 +340,19 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                   if (!mounted || !context.mounted || result == null) return;
                   setDialogState(() {
                     splitMode = result.mode;
+                    if (result.mode == 'itemized') {
+                      itemDrafts = result.items;
+                      extraDraft = result.extra;
+                      final total = result.items.fold<double>(
+                        result.extra,
+                        (sum, item) => sum + item.amount,
+                      );
+                      amountController.text =
+                          AppCurrencyCatalog.amountInputText(
+                            total,
+                            selectedCurrencyCode,
+                          );
+                    }
                     for (final entry in result.values.entries) {
                       splitControllers
                           .putIfAbsent(entry.key, () => TextEditingController())
@@ -752,26 +785,34 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                           label: t.splitModeLabel,
                                           value: splitModeLabel(splitMode),
                                           icon: splitModeIcon(splitMode),
-                                          detail: activeUsers
-                                              .map((user) {
-                                                final raw =
-                                                    splitControllers[user.id]
-                                                        ?.text
-                                                        .trim() ??
-                                                    '';
-                                                final value = raw.isEmpty
-                                                    ? '—'
-                                                    : splitMode == 'exact'
-                                                    ? _formatMoney(
-                                                        context,
-                                                        _parseAmount(raw),
-                                                        currencyCode:
-                                                            selectedCurrencyCode,
-                                                      )
-                                                    : '$raw${splitMode == 'percent' ? '%' : ' ${t.shareUnit}'}';
-                                                return '${user.preferredName} $value';
-                                              })
-                                              .join(' · '),
+                                          detail: splitMode == 'itemized'
+                                              ? itemDrafts
+                                                    .map((item) => item.name)
+                                                    .join(' · ')
+                                              : activeUsers
+                                                    .map((user) {
+                                                      final raw =
+                                                          splitControllers[user
+                                                                  .id]
+                                                              ?.text
+                                                              .trim() ??
+                                                          '';
+                                                      final value = raw.isEmpty
+                                                          ? '—'
+                                                          : splitMode ==
+                                                                    'exact' ||
+                                                                splitMode ==
+                                                                    'adjustment'
+                                                          ? _formatMoney(
+                                                              context,
+                                                              _parseAmount(raw),
+                                                              currencyCode:
+                                                                  selectedCurrencyCode,
+                                                            )
+                                                          : '$raw${splitMode == 'percent' ? '%' : ' ${t.shareUnit}'}';
+                                                      return '${user.preferredName} $value';
+                                                    })
+                                                    .join(' · '),
                                           onTap: editSplit,
                                         ),
                                       const SizedBox(height: 18),
@@ -1238,6 +1279,64 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                   return;
                                                 }
                                               } else if (splitMode ==
+                                                  'adjustment') {
+                                                final adjustments =
+                                                    <int, int>{};
+                                                for (final userId
+                                                    in resolvedParticipants) {
+                                                  final value = _parseAmount(
+                                                    splitControllers[userId]
+                                                            ?.text ??
+                                                        '',
+                                                  );
+                                                  adjustments[userId] =
+                                                      (value * 100).round();
+                                                  splitValues.add(
+                                                    ExpenseSplitValue(
+                                                      userId: userId,
+                                                      value: value,
+                                                    ),
+                                                  );
+                                                }
+                                                if (adjustmentOwedCents(
+                                                      amountCents,
+                                                      resolvedParticipants,
+                                                      adjustments,
+                                                    ) ==
+                                                    null) {
+                                                  setDialogState(() {
+                                                    errorText = t
+                                                        .expenseAdjustmentsMustFit;
+                                                  });
+                                                  return;
+                                                }
+                                              } else if (splitMode ==
+                                                  'itemized') {
+                                                final itemsCents = itemDrafts
+                                                    .fold<int>(
+                                                      (extraDraft * 100)
+                                                          .round(),
+                                                      (sum, item) =>
+                                                          sum +
+                                                          (item.amount * 100)
+                                                              .round(),
+                                                    );
+                                                if (itemDrafts.isEmpty ||
+                                                    itemsCents != amountCents) {
+                                                  setDialogState(() {
+                                                    errorText = t
+                                                        .expenseItemsMustMatchTotal(
+                                                          _formatMoney(
+                                                            context,
+                                                            amount,
+                                                            currencyCode:
+                                                                selectedCurrencyCode,
+                                                          ),
+                                                        );
+                                                  });
+                                                  return;
+                                                }
+                                              } else if (splitMode ==
                                                   'shares') {
                                                 for (final userId
                                                     in resolvedParticipants) {
@@ -1276,9 +1375,24 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                               date: date,
                                               category: category,
                                               note: note,
-                                              participants: participants,
+                                              // Everyone named in the items is who pays.
+                                              participants:
+                                                  splitMode == 'itemized'
+                                                  ? ({
+                                                      for (final item
+                                                          in itemDrafts)
+                                                        ...item.participantIds,
+                                                    }.toList()..sort())
+                                                  : participants,
                                               splitMode: splitMode,
                                               splitValues: splitValues,
+                                              items: splitMode == 'itemized'
+                                                  ? itemDrafts
+                                                  : const [],
+                                              extraAmount:
+                                                  splitMode == 'itemized'
+                                                  ? extraDraft
+                                                  : 0,
                                               receiptFileBytes:
                                                   selectedReceiptBytes,
                                               receiptFileName:

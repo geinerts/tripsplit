@@ -4244,6 +4244,49 @@ class AppLocalizationsDe extends AppLocalizations {
   String get expenseCustomSplit => 'Individuelle Aufteilung';
 
   @override
+  String get expenseAdjustmentsLabel => 'Anpassungen';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ oder −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Für jede Person addieren oder abziehen. Der Rest wird gleichmäßig aufgeteilt.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Anpassungen dürfen die Summe nicht übersteigen, und niemand darf weniger als null schulden.';
+
+  @override
+  String get expenseItemsLabel => 'Positionen';
+
+  @override
+  String get expenseAddItem => 'Position hinzufügen';
+
+  @override
+  String get expenseRemoveItem => 'Position entfernen';
+
+  @override
+  String get expenseItemName => 'Position';
+
+  @override
+  String get expenseItemExtra => 'Steuer oder Trinkgeld';
+
+  @override
+  String get expenseItemExtraHint => 'Wird anteilig nach den Positionen jeder Person aufgeteilt.';
+
+  @override
+  String get expenseItemsInvalid => 'Jede Position braucht einen Namen, einen Betrag und mindestens eine Person.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Summe der Positionen: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Die Positionen müssen $total ergeben.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Gesamte $amount aufgeteilt';
   }

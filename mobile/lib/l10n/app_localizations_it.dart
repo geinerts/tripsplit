@@ -4244,6 +4244,49 @@ class AppLocalizationsIt extends AppLocalizations {
   String get expenseCustomSplit => 'Ripartizione personalizzata';
 
   @override
+  String get expenseAdjustmentsLabel => 'Rettifiche';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ o −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Aggiungi o togli per ogni persona. Il resto viene diviso in parti uguali.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Le rettifiche non possono superare il totale e nessuno può dovere meno di zero.';
+
+  @override
+  String get expenseItemsLabel => 'Voci';
+
+  @override
+  String get expenseAddItem => 'Aggiungi voce';
+
+  @override
+  String get expenseRemoveItem => 'Rimuovi voce';
+
+  @override
+  String get expenseItemName => 'Voce';
+
+  @override
+  String get expenseItemExtra => 'Tasse o mancia';
+
+  @override
+  String get expenseItemExtraHint => 'Diviso in proporzione alle voci di ciascuno.';
+
+  @override
+  String get expenseItemsInvalid => 'Ogni voce deve avere un nome, un importo e almeno una persona.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Totale delle voci: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Le voci devono sommare $total.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Tutti i $amount sono ripartiti';
   }

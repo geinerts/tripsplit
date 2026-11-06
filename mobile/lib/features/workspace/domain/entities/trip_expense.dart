@@ -1,3 +1,4 @@
+import 'expense_item.dart';
 import 'expense_participant.dart';
 
 class TripExpense {
@@ -17,6 +18,8 @@ class TripExpense {
     required this.receiptUrl,
     this.receiptThumbUrl,
     required this.participants,
+    this.items = const [],
+    this.extraAmount = 0,
   });
 
   final int id;
@@ -34,4 +37,6 @@ class TripExpense {
   final String? receiptUrl;
   final String? receiptThumbUrl;
   final List<ExpenseParticipant> participants;
+  final List<ExpenseItem> items;
+  final double extraAmount;
 }

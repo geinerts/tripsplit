@@ -4251,6 +4251,49 @@ class AppLocalizationsCs extends AppLocalizations {
   String get expenseCustomSplit => 'Vlastní rozdělení';
 
   @override
+  String get expenseAdjustmentsLabel => 'Úpravy';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ nebo −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Každé osobě přičtěte nebo odečtěte. Zbytek se rozdělí rovným dílem.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Úpravy nesmí překročit celkovou částku a nikdo nesmí dlužit méně než nula.';
+
+  @override
+  String get expenseItemsLabel => 'Položky';
+
+  @override
+  String get expenseAddItem => 'Přidat položku';
+
+  @override
+  String get expenseRemoveItem => 'Odebrat položku';
+
+  @override
+  String get expenseItemName => 'Položka';
+
+  @override
+  String get expenseItemExtra => 'Daň nebo spropitné';
+
+  @override
+  String get expenseItemExtraHint => 'Rozdělí se poměrně podle položek každé osoby.';
+
+  @override
+  String get expenseItemsInvalid => 'Každá položka potřebuje název, částku a alespoň jednu osobu.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Celkem z položek: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Položky musí dát dohromady $total.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Celá částka $amount rozdělena';
   }

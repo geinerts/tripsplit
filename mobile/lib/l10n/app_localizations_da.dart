@@ -4244,6 +4244,49 @@ class AppLocalizationsDa extends AppLocalizations {
   String get expenseCustomSplit => 'Brugerdefineret fordeling';
 
   @override
+  String get expenseAdjustmentsLabel => 'Justeringer';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ eller −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Læg til eller træk fra for hver person. Resten deles ligeligt.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Justeringer må ikke overstige totalen, og ingen kan skylde mindre end nul.';
+
+  @override
+  String get expenseItemsLabel => 'Varer';
+
+  @override
+  String get expenseAddItem => 'Tilføj vare';
+
+  @override
+  String get expenseRemoveItem => 'Fjern vare';
+
+  @override
+  String get expenseItemName => 'Vare';
+
+  @override
+  String get expenseItemExtra => 'Skat eller drikkepenge';
+
+  @override
+  String get expenseItemExtraHint => 'Deles i forhold til hver persons varer.';
+
+  @override
+  String get expenseItemsInvalid => 'Hver vare skal have et navn, et beløb og mindst én person.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'I alt fra varer: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Varerne skal give $total i alt.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Hele $amount fordelt';
   }

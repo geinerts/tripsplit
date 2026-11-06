@@ -1,4 +1,5 @@
 import '../../domain/entities/balance_item.dart';
+import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_participant.dart';
 import '../../domain/entities/payment_item.dart';
 import '../../domain/entities/payment_details.dart';
@@ -226,6 +227,8 @@ class WorkspaceRemoteParsers {
         item['receipt_thumb_url'] as String?,
       ),
       participants: participants,
+      items: ExpenseItem.listFromJson(item['items']),
+      extraAmount: (item['extra_amount'] as num?)?.toDouble() ?? 0,
     );
   }
 
@@ -361,7 +364,11 @@ class WorkspaceRemoteParsers {
 
   static String parseExpenseSplitMode(Object? raw) {
     final value = (raw as String? ?? '').trim().toLowerCase();
-    if (value == 'exact' || value == 'percent' || value == 'shares') {
+    if (value == 'exact' ||
+        value == 'percent' ||
+        value == 'shares' ||
+        value == 'adjustment' ||
+        value == 'itemized') {
       return value;
     }
     return 'equal';

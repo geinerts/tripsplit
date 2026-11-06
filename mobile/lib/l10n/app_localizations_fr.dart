@@ -4244,6 +4244,49 @@ class AppLocalizationsFr extends AppLocalizations {
   String get expenseCustomSplit => 'Répartition personnalisée';
 
   @override
+  String get expenseAdjustmentsLabel => 'Ajustements';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ ou −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Ajoutez ou retirez un montant pour chaque personne. Le reste est partagé à parts égales.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Les ajustements ne peuvent pas dépasser le total, et personne ne peut devoir moins de zéro.';
+
+  @override
+  String get expenseItemsLabel => 'Articles';
+
+  @override
+  String get expenseAddItem => 'Ajouter un article';
+
+  @override
+  String get expenseRemoveItem => 'Retirer l\'article';
+
+  @override
+  String get expenseItemName => 'Article';
+
+  @override
+  String get expenseItemExtra => 'Taxes ou pourboire';
+
+  @override
+  String get expenseItemExtraHint => 'Réparti proportionnellement aux articles de chacun.';
+
+  @override
+  String get expenseItemsInvalid => 'Chaque article doit avoir un nom, un montant et au moins une personne.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Total des articles : $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Les articles doivent totaliser $total.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'La totalité des $amount est répartie';
   }

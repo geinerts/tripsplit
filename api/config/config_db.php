@@ -38,6 +38,8 @@ function table_name(string $key): string
         'trip_members' => DB_TABLE_PREFIX . 'trip_members',
         'expenses' => DB_TABLE_PREFIX . 'expenses',
         'expense_participants' => DB_TABLE_PREFIX . 'expense_participants',
+        'expense_items' => DB_TABLE_PREFIX . 'expense_items',
+        'expense_item_participants' => DB_TABLE_PREFIX . 'expense_item_participants',
         'expense_reactions'    => DB_TABLE_PREFIX . 'expense_reactions',
         'expense_comment_reactions' => DB_TABLE_PREFIX . 'expense_comment_reactions',
         'expense_comments'     => DB_TABLE_PREFIX . 'expense_comments',

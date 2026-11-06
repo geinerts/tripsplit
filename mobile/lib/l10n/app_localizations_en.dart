@@ -4244,6 +4244,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expenseCustomSplit => 'Custom split';
 
   @override
+  String get expenseAdjustmentsLabel => 'Adjustments';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ or −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Add or subtract for each person. The rest is split equally.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Adjustments can\'t exceed the total, and nobody can owe less than zero.';
+
+  @override
+  String get expenseItemsLabel => 'Items';
+
+  @override
+  String get expenseAddItem => 'Add item';
+
+  @override
+  String get expenseRemoveItem => 'Remove item';
+
+  @override
+  String get expenseItemName => 'Item';
+
+  @override
+  String get expenseItemExtra => 'Tax or tip';
+
+  @override
+  String get expenseItemExtraHint => 'Shared in proportion to each person\'s items.';
+
+  @override
+  String get expenseItemsInvalid => 'Each item needs a name, an amount and at least one person.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Total from items: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Items must add up to $total.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'All $amount allocated';
   }

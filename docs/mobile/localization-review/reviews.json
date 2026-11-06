@@ -344991,5 +344991,2553 @@
       "catalog completeness and interpolation arguments"
     ],
     "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "lv:expenseAdjustmentsLabel": {
+    "locale": "lv",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Pielāgojumi",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseAdjustmentFieldLabel": {
+    "locale": "lv",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ vai −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseAdjustmentsHint": {
+    "locale": "lv",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Pieskaiti vai atņem katram cilvēkam. Pārējais sadalās vienādi.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseAdjustmentsMustFit": {
+    "locale": "lv",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Pielāgojumi nedrīkst pārsniegt kopsummu, un nevienam daļa nedrīkst būt mazāka par nulli.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseItemsLabel": {
+    "locale": "lv",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Pozīcijas",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseAddItem": {
+    "locale": "lv",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Pievienot pozīciju",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseRemoveItem": {
+    "locale": "lv",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Noņemt pozīciju",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseItemName": {
+    "locale": "lv",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Pozīcija",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseItemExtra": {
+    "locale": "lv",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Nodoklis vai dzeramnauda",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseItemExtraHint": {
+    "locale": "lv",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Sadalās proporcionāli katra cilvēka pozīcijām.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseItemsInvalid": {
+    "locale": "lv",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Katrai pozīcijai vajag nosaukumu, summu un vismaz vienu cilvēku.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseItemsTotal": {
+    "locale": "lv",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Kopā no pozīcijām: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:expenseItemsMustMatchTotal": {
+    "locale": "lv",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Pozīcijām kopā jābūt {total}.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseAdjustmentsLabel": {
+    "locale": "de",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Anpassungen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseAdjustmentFieldLabel": {
+    "locale": "de",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ oder −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseAdjustmentsHint": {
+    "locale": "de",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Für jede Person addieren oder abziehen. Der Rest wird gleichmäßig aufgeteilt.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseAdjustmentsMustFit": {
+    "locale": "de",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Anpassungen dürfen die Summe nicht übersteigen, und niemand darf weniger als null schulden.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseItemsLabel": {
+    "locale": "de",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Positionen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseAddItem": {
+    "locale": "de",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Position hinzufügen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseRemoveItem": {
+    "locale": "de",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Position entfernen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseItemName": {
+    "locale": "de",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Position",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseItemExtra": {
+    "locale": "de",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Steuer oder Trinkgeld",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseItemExtraHint": {
+    "locale": "de",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Wird anteilig nach den Positionen jeder Person aufgeteilt.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseItemsInvalid": {
+    "locale": "de",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Jede Position braucht einen Namen, einen Betrag und mindestens eine Person.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseItemsTotal": {
+    "locale": "de",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Summe der Positionen: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "de:expenseItemsMustMatchTotal": {
+    "locale": "de",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Die Positionen müssen {total} ergeben.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseAdjustmentsLabel": {
+    "locale": "es",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Ajustes",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseAdjustmentFieldLabel": {
+    "locale": "es",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ o −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseAdjustmentsHint": {
+    "locale": "es",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Suma o resta a cada persona. El resto se reparte a partes iguales.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseAdjustmentsMustFit": {
+    "locale": "es",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Los ajustes no pueden superar el total y nadie puede deber menos de cero.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseItemsLabel": {
+    "locale": "es",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Artículos",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseAddItem": {
+    "locale": "es",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Añadir artículo",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseRemoveItem": {
+    "locale": "es",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Quitar artículo",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseItemName": {
+    "locale": "es",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Artículo",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseItemExtra": {
+    "locale": "es",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Impuestos o propina",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseItemExtraHint": {
+    "locale": "es",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Se reparte en proporción a los artículos de cada persona.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseItemsInvalid": {
+    "locale": "es",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Cada artículo necesita un nombre, un importe y al menos una persona.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseItemsTotal": {
+    "locale": "es",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Total de artículos: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "es:expenseItemsMustMatchTotal": {
+    "locale": "es",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Los artículos deben sumar {total}.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseAdjustmentsLabel": {
+    "locale": "fr",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Ajustements",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseAdjustmentFieldLabel": {
+    "locale": "fr",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ ou −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseAdjustmentsHint": {
+    "locale": "fr",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Ajoutez ou retirez un montant pour chaque personne. Le reste est partagé à parts égales.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseAdjustmentsMustFit": {
+    "locale": "fr",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Les ajustements ne peuvent pas dépasser le total, et personne ne peut devoir moins de zéro.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseItemsLabel": {
+    "locale": "fr",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Articles",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseAddItem": {
+    "locale": "fr",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Ajouter un article",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseRemoveItem": {
+    "locale": "fr",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Retirer l'article",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseItemName": {
+    "locale": "fr",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Article",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseItemExtra": {
+    "locale": "fr",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Taxes ou pourboire",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseItemExtraHint": {
+    "locale": "fr",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Réparti proportionnellement aux articles de chacun.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseItemsInvalid": {
+    "locale": "fr",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Chaque article doit avoir un nom, un montant et au moins une personne.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseItemsTotal": {
+    "locale": "fr",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Total des articles : {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fr:expenseItemsMustMatchTotal": {
+    "locale": "fr",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Les articles doivent totaliser {total}.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseAdjustmentsLabel": {
+    "locale": "it",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Rettifiche",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseAdjustmentFieldLabel": {
+    "locale": "it",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ o −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseAdjustmentsHint": {
+    "locale": "it",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Aggiungi o togli per ogni persona. Il resto viene diviso in parti uguali.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseAdjustmentsMustFit": {
+    "locale": "it",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Le rettifiche non possono superare il totale e nessuno può dovere meno di zero.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseItemsLabel": {
+    "locale": "it",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Voci",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseAddItem": {
+    "locale": "it",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Aggiungi voce",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseRemoveItem": {
+    "locale": "it",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Rimuovi voce",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseItemName": {
+    "locale": "it",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Voce",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseItemExtra": {
+    "locale": "it",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Tasse o mancia",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseItemExtraHint": {
+    "locale": "it",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Diviso in proporzione alle voci di ciascuno.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseItemsInvalid": {
+    "locale": "it",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Ogni voce deve avere un nome, un importo e almeno una persona.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseItemsTotal": {
+    "locale": "it",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Totale delle voci: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "it:expenseItemsMustMatchTotal": {
+    "locale": "it",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Le voci devono sommare {total}.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseAdjustmentsLabel": {
+    "locale": "pt",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Ajustes",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseAdjustmentFieldLabel": {
+    "locale": "pt",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ ou −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseAdjustmentsHint": {
+    "locale": "pt",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Adiciona ou subtrai a cada pessoa. O resto é dividido em partes iguais.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseAdjustmentsMustFit": {
+    "locale": "pt",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Os ajustes não podem exceder o total e ninguém pode dever menos de zero.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseItemsLabel": {
+    "locale": "pt",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Artigos",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseAddItem": {
+    "locale": "pt",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Adicionar artigo",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseRemoveItem": {
+    "locale": "pt",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Remover artigo",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseItemName": {
+    "locale": "pt",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Artigo",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseItemExtra": {
+    "locale": "pt",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Impostos ou gorjeta",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseItemExtraHint": {
+    "locale": "pt",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Dividido em proporção aos artigos de cada pessoa.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseItemsInvalid": {
+    "locale": "pt",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Cada artigo precisa de um nome, um valor e pelo menos uma pessoa.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseItemsTotal": {
+    "locale": "pt",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Total dos artigos: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pt:expenseItemsMustMatchTotal": {
+    "locale": "pt",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Os artigos têm de somar {total}.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseAdjustmentsLabel": {
+    "locale": "pl",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Korekty",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseAdjustmentFieldLabel": {
+    "locale": "pl",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ lub −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseAdjustmentsHint": {
+    "locale": "pl",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Dodaj lub odejmij każdej osobie. Reszta dzieli się po równo.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseAdjustmentsMustFit": {
+    "locale": "pl",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Korekty nie mogą przekraczać sumy, a nikt nie może być winien mniej niż zero.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseItemsLabel": {
+    "locale": "pl",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Pozycje",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseAddItem": {
+    "locale": "pl",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Dodaj pozycję",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseRemoveItem": {
+    "locale": "pl",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Usuń pozycję",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseItemName": {
+    "locale": "pl",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Pozycja",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseItemExtra": {
+    "locale": "pl",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Podatek lub napiwek",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseItemExtraHint": {
+    "locale": "pl",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Dzielone proporcjonalnie do pozycji każdej osoby.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseItemsInvalid": {
+    "locale": "pl",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Każda pozycja wymaga nazwy, kwoty i co najmniej jednej osoby.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseItemsTotal": {
+    "locale": "pl",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Suma pozycji: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "pl:expenseItemsMustMatchTotal": {
+    "locale": "pl",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Pozycje muszą sumować się do {total}.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseAdjustmentsLabel": {
+    "locale": "nl",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Aanpassingen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseAdjustmentFieldLabel": {
+    "locale": "nl",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ of −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseAdjustmentsHint": {
+    "locale": "nl",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Tel op of trek af per persoon. De rest wordt gelijk verdeeld.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseAdjustmentsMustFit": {
+    "locale": "nl",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Aanpassingen mogen het totaal niet overschrijden en niemand kan minder dan nul schuldig zijn.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseItemsLabel": {
+    "locale": "nl",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Items",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseAddItem": {
+    "locale": "nl",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Item toevoegen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseRemoveItem": {
+    "locale": "nl",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Item verwijderen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseItemName": {
+    "locale": "nl",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Item",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseItemExtra": {
+    "locale": "nl",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Belasting of fooi",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseItemExtraHint": {
+    "locale": "nl",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Verdeeld naar verhouding van ieders items.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseItemsInvalid": {
+    "locale": "nl",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Elk item heeft een naam, een bedrag en minstens één persoon nodig.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseItemsTotal": {
+    "locale": "nl",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Totaal van items: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nl:expenseItemsMustMatchTotal": {
+    "locale": "nl",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Items moeten samen {total} zijn.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseAdjustmentsLabel": {
+    "locale": "sv",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Justeringar",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseAdjustmentFieldLabel": {
+    "locale": "sv",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ eller −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseAdjustmentsHint": {
+    "locale": "sv",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Lägg till eller dra av för varje person. Resten delas lika.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseAdjustmentsMustFit": {
+    "locale": "sv",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Justeringar får inte överstiga totalen, och ingen kan vara skyldig mindre än noll.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseItemsLabel": {
+    "locale": "sv",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Artiklar",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseAddItem": {
+    "locale": "sv",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Lägg till artikel",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseRemoveItem": {
+    "locale": "sv",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Ta bort artikel",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseItemName": {
+    "locale": "sv",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Artikel",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseItemExtra": {
+    "locale": "sv",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Skatt eller dricks",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseItemExtraHint": {
+    "locale": "sv",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Delas i proportion till varje persons artiklar.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseItemsInvalid": {
+    "locale": "sv",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Varje artikel behöver ett namn, ett belopp och minst en person.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseItemsTotal": {
+    "locale": "sv",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Summa av artiklar: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "sv:expenseItemsMustMatchTotal": {
+    "locale": "sv",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Artiklarna måste bli {total} totalt.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseAdjustmentsLabel": {
+    "locale": "da",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Justeringer",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseAdjustmentFieldLabel": {
+    "locale": "da",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ eller −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseAdjustmentsHint": {
+    "locale": "da",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Læg til eller træk fra for hver person. Resten deles ligeligt.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseAdjustmentsMustFit": {
+    "locale": "da",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Justeringer må ikke overstige totalen, og ingen kan skylde mindre end nul.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseItemsLabel": {
+    "locale": "da",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Varer",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseAddItem": {
+    "locale": "da",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Tilføj vare",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseRemoveItem": {
+    "locale": "da",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Fjern vare",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseItemName": {
+    "locale": "da",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Vare",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseItemExtra": {
+    "locale": "da",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Skat eller drikkepenge",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseItemExtraHint": {
+    "locale": "da",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Deles i forhold til hver persons varer.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseItemsInvalid": {
+    "locale": "da",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Hver vare skal have et navn, et beløb og mindst én person.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseItemsTotal": {
+    "locale": "da",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "I alt fra varer: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "da:expenseItemsMustMatchTotal": {
+    "locale": "da",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Varerne skal give {total} i alt.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseAdjustmentsLabel": {
+    "locale": "nb",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Justeringer",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseAdjustmentFieldLabel": {
+    "locale": "nb",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ eller −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseAdjustmentsHint": {
+    "locale": "nb",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Legg til eller trekk fra for hver person. Resten deles likt.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseAdjustmentsMustFit": {
+    "locale": "nb",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Justeringer kan ikke overstige totalen, og ingen kan skylde mindre enn null.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseItemsLabel": {
+    "locale": "nb",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Varer",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseAddItem": {
+    "locale": "nb",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Legg til vare",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseRemoveItem": {
+    "locale": "nb",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Fjern vare",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseItemName": {
+    "locale": "nb",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Vare",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseItemExtra": {
+    "locale": "nb",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Skatt eller tips",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseItemExtraHint": {
+    "locale": "nb",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Deles i forhold til hver persons varer.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseItemsInvalid": {
+    "locale": "nb",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Hver vare må ha et navn, et beløp og minst én person.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseItemsTotal": {
+    "locale": "nb",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Totalt fra varer: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "nb:expenseItemsMustMatchTotal": {
+    "locale": "nb",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Varene må bli {total} til sammen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseAdjustmentsLabel": {
+    "locale": "fi",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Oikaisut",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseAdjustmentFieldLabel": {
+    "locale": "fi",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ tai −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseAdjustmentsHint": {
+    "locale": "fi",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Lisää tai vähennä jokaiselle henkilölle. Loput jaetaan tasan.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseAdjustmentsMustFit": {
+    "locale": "fi",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Oikaisut eivät voi ylittää kokonaissummaa, eikä kenenkään osuus voi olla alle nollan.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseItemsLabel": {
+    "locale": "fi",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Tuotteet",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseAddItem": {
+    "locale": "fi",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Lisää tuote",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseRemoveItem": {
+    "locale": "fi",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Poista tuote",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseItemName": {
+    "locale": "fi",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Tuote",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseItemExtra": {
+    "locale": "fi",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Vero tai juomaraha",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseItemExtraHint": {
+    "locale": "fi",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Jaetaan suhteessa kunkin tuotteisiin.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseItemsInvalid": {
+    "locale": "fi",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Jokaisella tuotteella on oltava nimi, summa ja vähintään yksi henkilö.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseItemsTotal": {
+    "locale": "fi",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Tuotteet yhteensä: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "fi:expenseItemsMustMatchTotal": {
+    "locale": "fi",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Tuotteiden summan on oltava {total}.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseAdjustmentsLabel": {
+    "locale": "cs",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Úpravy",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseAdjustmentFieldLabel": {
+    "locale": "cs",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ nebo −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseAdjustmentsHint": {
+    "locale": "cs",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Každé osobě přičtěte nebo odečtěte. Zbytek se rozdělí rovným dílem.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseAdjustmentsMustFit": {
+    "locale": "cs",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Úpravy nesmí překročit celkovou částku a nikdo nesmí dlužit méně než nula.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseItemsLabel": {
+    "locale": "cs",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Položky",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseAddItem": {
+    "locale": "cs",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Přidat položku",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseRemoveItem": {
+    "locale": "cs",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Odebrat položku",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseItemName": {
+    "locale": "cs",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Položka",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseItemExtra": {
+    "locale": "cs",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Daň nebo spropitné",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseItemExtraHint": {
+    "locale": "cs",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Rozdělí se poměrně podle položek každé osoby.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseItemsInvalid": {
+    "locale": "cs",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Každá položka potřebuje název, částku a alespoň jednu osobu.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseItemsTotal": {
+    "locale": "cs",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Celkem z položek: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "cs:expenseItemsMustMatchTotal": {
+    "locale": "cs",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Položky musí dát dohromady {total}.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseAdjustmentsLabel": {
+    "locale": "uk",
+    "key": "expenseAdjustmentsLabel",
+    "source": "Adjustments",
+    "before": null,
+    "translation": "Коригування",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseAdjustmentFieldLabel": {
+    "locale": "uk",
+    "key": "expenseAdjustmentFieldLabel",
+    "source": "+ or −",
+    "before": null,
+    "translation": "+ або −",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseAdjustmentsHint": {
+    "locale": "uk",
+    "key": "expenseAdjustmentsHint",
+    "source": "Add or subtract for each person. The rest is split equally.",
+    "before": null,
+    "translation": "Додайте або відніміть для кожної людини. Решта ділиться порівну.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseAdjustmentsMustFit": {
+    "locale": "uk",
+    "key": "expenseAdjustmentsMustFit",
+    "source": "Adjustments can't exceed the total, and nobody can owe less than zero.",
+    "before": null,
+    "translation": "Коригування не можуть перевищувати загальну суму, і ніхто не може винити менше за нуль.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseItemsLabel": {
+    "locale": "uk",
+    "key": "expenseItemsLabel",
+    "source": "Items",
+    "before": null,
+    "translation": "Позиції",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseAddItem": {
+    "locale": "uk",
+    "key": "expenseAddItem",
+    "source": "Add item",
+    "before": null,
+    "translation": "Додати позицію",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseRemoveItem": {
+    "locale": "uk",
+    "key": "expenseRemoveItem",
+    "source": "Remove item",
+    "before": null,
+    "translation": "Вилучити позицію",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseItemName": {
+    "locale": "uk",
+    "key": "expenseItemName",
+    "source": "Item",
+    "before": null,
+    "translation": "Позиція",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseItemExtra": {
+    "locale": "uk",
+    "key": "expenseItemExtra",
+    "source": "Tax or tip",
+    "before": null,
+    "translation": "Податок або чайові",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseItemExtraHint": {
+    "locale": "uk",
+    "key": "expenseItemExtraHint",
+    "source": "Shared in proportion to each person's items.",
+    "before": null,
+    "translation": "Ділиться пропорційно позиціям кожної людини.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseItemsInvalid": {
+    "locale": "uk",
+    "key": "expenseItemsInvalid",
+    "source": "Each item needs a name, an amount and at least one person.",
+    "before": null,
+    "translation": "Кожна позиція повинна мати назву, суму й принаймні одну людину.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseItemsTotal": {
+    "locale": "uk",
+    "key": "expenseItemsTotal",
+    "source": "Total from items: {total}",
+    "before": null,
+    "translation": "Разом за позиціями: {total}",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "uk:expenseItemsMustMatchTotal": {
+    "locale": "uk",
+    "key": "expenseItemsMustMatchTotal",
+    "source": "Items must add up to {total}.",
+    "before": null,
+    "translation": "Сума позицій має становити {total}.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
   }
 }

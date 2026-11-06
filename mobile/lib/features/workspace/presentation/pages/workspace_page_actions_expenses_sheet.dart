@@ -34,6 +34,8 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
       'exact' => Icons.payments_outlined,
       'percent' => Icons.percent_rounded,
       'shares' => Icons.pie_chart_outline_rounded,
+      'adjustment' => Icons.exposure_rounded,
+      'itemized' => Icons.receipt_long_rounded,
       _ => Icons.drag_handle_rounded,
     };
     final categoryLabel = ExpenseCategoryCatalog.labelFor(
@@ -215,6 +217,18 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                             ),
                           ),
                         ),
+                        if (expense.items.isNotEmpty) ...[
+                          const SizedBox(height: 16),
+                          _ExpenseItemsSummary(
+                            expense: expense,
+                            nameFor: (id) {
+                              for (final person in participants) {
+                                if (person.id == id) return person.nickname;
+                              }
+                              return context.l10n.userWithId(id);
+                            },
+                          ),
+                        ],
                         const SizedBox(height: 20),
                         const Divider(),
                         const SizedBox(height: 16),
