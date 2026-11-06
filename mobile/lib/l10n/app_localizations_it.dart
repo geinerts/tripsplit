@@ -4761,4 +4761,210 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get friendsShowMore => 'Mostra altro';
+
+  @override
+  String get tripReportTitle => 'Resoconto del viaggio';
+
+  @override
+  String get tripReportDetailedTitle => 'Resoconto dettagliato del viaggio';
+
+  @override
+  String get tripReportDates => 'Date';
+
+  @override
+  String get tripReportDestinations => 'Destinazioni';
+
+  @override
+  String get tripReportTotalSpent => 'Totale speso';
+
+  @override
+  String get tripReportExpenses => 'Spese';
+
+  @override
+  String get tripReportYouPaid => 'Hai pagato';
+
+  @override
+  String get tripReportYourShare => 'La tua quota';
+
+  @override
+  String get tripReportYourBalance => 'Il tuo saldo';
+
+  @override
+  String get tripReportYourSettlements => 'I tuoi saldi';
+
+  @override
+  String tripReportYouPay(Object arg1) {
+    return 'Paghi $arg1';
+  }
+
+  @override
+  String tripReportPaysYou(Object arg1) {
+    return '$arg1 ti paga';
+  }
+
+  @override
+  String get tripReportStatus => 'Stato';
+
+  @override
+  String get tripReportStatusPending => 'In sospeso';
+
+  @override
+  String get tripReportStatusSent => 'Inviato';
+
+  @override
+  String get tripReportStatusConfirmed => 'Confermato';
+
+  @override
+  String get tripReportNoSettlements => 'Non hai nulla da saldare.';
+
+  @override
+  String get tripReportByCategory => 'Spese per categoria';
+
+  @override
+  String get tripReportCategory => 'Categoria';
+
+  @override
+  String get tripReportAmount => 'Importo';
+
+  @override
+  String get tripReportMembers => 'Membri';
+
+  @override
+  String get tripReportMember => 'Membro';
+
+  @override
+  String get tripReportPaid => 'Pagato';
+
+  @override
+  String get tripReportShare => 'Quota';
+
+  @override
+  String get tripReportBalance => 'Saldo';
+
+  @override
+  String get tripReportAllExpenses => 'Tutte le spese';
+
+  @override
+  String get tripReportDate => 'Data';
+
+  @override
+  String get tripReportDescription => 'Descrizione';
+
+  @override
+  String get tripReportPaidBy => 'Pagato da';
+
+  @override
+  String get tripReportOriginalAmount => 'Importo originale';
+
+  @override
+  String get tripReportCurrency => 'Valuta';
+
+  @override
+  String get tripReportRate => 'Tasso';
+
+  @override
+  String get tripReportPayments => 'Pagamenti';
+
+  @override
+  String get tripReportFrom => 'Da';
+
+  @override
+  String get tripReportTo => 'A';
+
+  @override
+  String get tripReportFooter => 'Creato con Splyto';
+
+  @override
+  String tripReportEmailSubject(Object arg1) {
+    return 'Il tuo resoconto del viaggio: $arg1';
+  }
+
+  @override
+  String get tripReportEmailTitle => 'Il tuo resoconto del viaggio è pronto';
+
+  @override
+  String tripReportEmailGreeting(Object arg1) {
+    return 'Ciao $arg1,';
+  }
+
+  @override
+  String tripReportEmailBody(Object arg1) {
+    return '$arg1 è terminato. Il tuo resoconto è allegato in PDF.';
+  }
+
+  @override
+  String get tripReportEmailOptOut => 'Puoi disattivare queste email in Profilo, sotto Notifiche.';
+
+  @override
+  String get tripReportEmailSetting => 'Resoconto del viaggio via email';
+
+  @override
+  String get tripReportEmailSettingSubtitle => 'Ricevi un riepilogo in PDF al termine di un viaggio.';
+
+  @override
+  String get tripExportAction => 'Esporta i dettagli del viaggio';
+
+  @override
+  String get tripExportPdf => 'PDF dettagliato';
+
+  @override
+  String get tripExportCsv => 'Foglio di calcolo (CSV)';
+
+  @override
+  String get tripExportFailed => 'Impossibile creare l\'esportazione. Riprova.';
+
+  @override
+  String get yearSummaryTitle => 'Il tuo anno in viaggio';
+
+  @override
+  String get yearSummarySubtitle => 'I tuoi viaggi, luoghi e spese dell\'anno.';
+
+  @override
+  String yearSummaryEmpty(Object arg1) {
+    return 'Nessun viaggio terminato nel $arg1.';
+  }
+
+  @override
+  String get yearSummaryLoadFailed => 'Impossibile caricare il tuo anno in viaggio.';
+
+  @override
+  String get yearSummaryTrips => 'Viaggi';
+
+  @override
+  String get yearSummaryDays => 'Giorni in viaggio';
+
+  @override
+  String get yearSummaryCountries => 'Paesi';
+
+  @override
+  String get yearSummaryCities => 'Città';
+
+  @override
+  String get yearSummarySpending => 'Le tue spese';
+
+  @override
+  String get yearSummaryBiggestTrip => 'Viaggio più grande';
+
+  @override
+  String get yearSummaryTopCategory => 'Categoria principale';
+
+  @override
+  String get yearSummaryTopCompanion => 'Più viaggi con';
+
+  @override
+  String yearSummaryTripsTogether(Object arg1) {
+    return 'Viaggi insieme: $arg1';
+  }
+
+  @override
+  String get yearSummaryPartial => 'Mancano alcuni importi perché il tasso di cambio non era disponibile.';
+
+  @override
+  String get yearSummaryShare => 'Condividi';
+
+  @override
+  String get yearSummaryShareFailed => 'Impossibile condividere l\'immagine.';
+
+  @override
+  String get yearSummaryRetry => 'Riprova';
 }

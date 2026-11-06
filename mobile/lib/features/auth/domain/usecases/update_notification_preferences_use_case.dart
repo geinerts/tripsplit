@@ -27,6 +27,7 @@ class UpdateNotificationPreferencesUseCase {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? emailTripReportEnabled,
   }) {
     return _repository.updateNotificationPreferences(
       inAppBannerEnabled: inAppBannerEnabled,
@@ -49,6 +50,7 @@ class UpdateNotificationPreferencesUseCase {
       pushFriendInvitesEnabled: pushFriendInvitesEnabled,
       pushTripUpdatesEnabled: pushTripUpdatesEnabled,
       pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
+      emailTripReportEnabled: emailTripReportEnabled,
     );
   }
 }

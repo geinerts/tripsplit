@@ -1,0 +1,11 @@
+[Unit]
+Description=Send Splyto trip report emails every minute
+
+[Timer]
+OnBootSec=60s
+OnUnitActiveSec=60s
+AccuracySec=5s
+Unit=splyto-trip-report-delivery.service
+
+[Install]
+WantedBy=timers.target

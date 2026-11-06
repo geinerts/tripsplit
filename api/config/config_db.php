@@ -58,6 +58,8 @@ function table_name(string $key): string
         'push_tokens' => DB_TABLE_PREFIX . 'user_push_tokens',
         'push_queue' => DB_TABLE_PREFIX . 'push_queue',
         'notification_preferences' => DB_TABLE_PREFIX . 'user_notification_preferences',
+        'report_deliveries' => DB_TABLE_PREFIX . 'report_deliveries',
+        'fx_rate_cache' => DB_TABLE_PREFIX . 'fx_rate_cache',
         'schema_migrations' => DB_TABLE_PREFIX . 'schema_migrations',
         'settlement_reminder_state' => DB_TABLE_PREFIX . 'settlement_reminder_state',
         'mutation_idempotency' => DB_TABLE_PREFIX . 'mutation_idempotency',

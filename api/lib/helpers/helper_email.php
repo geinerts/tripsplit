@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Resend email helper — sends transactional emails via Resend API.
  */
-function send_email_via_resend(string $to, string $subject, string $htmlBody): bool
+function send_email_via_resend(string $to, string $subject, string $htmlBody, array $attachments = []): bool
 {
     $apiKey = RESEND_API_KEY;
     $fromAddress = RESEND_FROM_ADDRESS;
@@ -14,12 +14,17 @@ function send_email_via_resend(string $to, string $subject, string $htmlBody): b
         return false;
     }
 
-    $payload = json_encode([
+    // Each attachment is ['filename' => string, 'content' => base64 string].
+    $message = [
         'from'    => $fromAddress,
         'to'      => [$to],
         'subject' => $subject,
         'html'    => $htmlBody,
-    ]);
+    ];
+    if ($attachments) {
+        $message['attachments'] = $attachments;
+    }
+    $payload = json_encode($message);
 
     $context = stream_context_create([
         'http' => [
@@ -30,7 +35,7 @@ function send_email_via_resend(string $to, string $subject, string $htmlBody): b
                 'Content-Length: ' . strlen($payload),
             ]),
             'content'       => $payload,
-            'timeout'       => 10,
+            'timeout'       => $attachments ? 30 : 10,
             'ignore_errors' => true,
         ],
     ]);

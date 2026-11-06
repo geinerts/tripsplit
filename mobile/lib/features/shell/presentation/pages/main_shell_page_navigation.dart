@@ -1,6 +1,18 @@
 part of 'main_shell_page.dart';
 
 extension _MainShellPageNavigation on _MainShellPageState {
+  void _openYearSummary() {
+    final repository = widget.tripReportsRepository;
+    if (repository == null) return;
+    unawaited(
+      Navigator.of(context).push<void>(
+        AppPageRoute<void>(
+          builder: (_) => YearSummaryPage(repository: repository),
+        ),
+      ),
+    );
+  }
+
   Future<void> _openTravelMap({int? tripId}) async {
     final repository = widget.travelPlacesRepository;
     if (repository == null) return;

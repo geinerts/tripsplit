@@ -86,6 +86,7 @@ class _Auth implements AuthController {
             i.namedArguments[#pushSettlementUpdatesEnabled],
         inAppBannerEnabled: i.namedArguments[#inAppBannerEnabled],
         inAppExpenseAddedEnabled: i.namedArguments[#inAppExpenseAddedEnabled],
+        emailTripReportEnabled: i.namedArguments[#emailTripReportEnabled],
       );
       return Future.value(prefs);
     }
@@ -402,7 +403,7 @@ void main() {
     final t = _t(tester);
     await _tap(tester, t.notificationsTitle);
     expect(auth.updates, isEmpty);
-    final push = find.byType(Switch).last;
+    final push = find.byType(Switch).at(1);
     expect(tester.widget<Switch>(push).value, true);
     auth.error = const ApiException('Save failed');
     await tester.tap(push);
@@ -419,6 +420,22 @@ void main() {
     expect(auth.updates.last[#inAppBannerEnabled], isNull);
     expect(tester.widget<Switch>(push).value, false);
     expect(auth.prefs.pushTripUpdatesEnabled, false);
+  });
+
+  testWidgets('trip report email switch saves only its own setting', (
+    tester,
+  ) async {
+    final auth = _Auth();
+    await _mount(tester, auth);
+    final t = _t(tester);
+    await _tap(tester, t.notificationsTitle);
+    final toggle = find.byKey(const ValueKey('email-trip-report-switch'));
+    expect(tester.widget<Switch>(toggle).value, true);
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
+    expect(auth.updates.single[#emailTripReportEnabled], false);
+    expect(auth.updates.single[#pushTripUpdatesEnabled], isNull);
+    expect(tester.widget<Switch>(toggle).value, false);
   });
 
   testWidgets('master in-app switch turns off banners and every in-app type', (
@@ -453,7 +470,7 @@ void main() {
     expect(auth.updates.length, 4);
     await _back(tester);
     expect(find.text(t.profilePushNotificationsTitle), findsOneWidget);
-    expect(tester.widget<Switch>(find.byType(Switch).last).value, false);
+    expect(tester.widget<Switch>(find.byType(Switch).at(1)).value, false);
   });
 
   testWidgets(

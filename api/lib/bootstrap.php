@@ -28,5 +28,6 @@ require_once __DIR__ . '/actions/workspace_actions.php';
 require_once __DIR__ . '/actions/admin_actions.php';
 require_once __DIR__ . '/actions/admin_panel_actions.php';
 require_once __DIR__ . '/actions/premium_actions.php';
+require_once __DIR__ . '/actions/trip_reports_actions.php';
 
 require_once __DIR__ . '/http/action_router.php';

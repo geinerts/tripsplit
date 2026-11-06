@@ -29,6 +29,22 @@ class PushRegistrationService {
   final String Function() _localeCodeProvider;
   String? _verifiedTokenInSession;
   String? _verifiedLocaleInSession;
+  String? _verifiedAccountLocaleInSession;
+
+  /// Tells the server the app language, which it uses for emailed reports.
+  /// Separate from the token, because accounts without push still get email.
+  Future<void> syncAccountLocale() async {
+    final localeCode = _normalizeLocaleCode(_localeCodeProvider());
+    if (_verifiedAccountLocaleInSession == localeCode) {
+      return;
+    }
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('set_account_locale'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{'locale': localeCode},
+    );
+    _verifiedAccountLocaleInSession = localeCode;
+  }
 
   Future<bool> syncRegistration() async {
     if (!_supportsPushRegistration) {
@@ -75,6 +91,7 @@ class PushRegistrationService {
   }
 
   Future<void> unregisterCurrentDevice() async {
+    _verifiedAccountLocaleInSession = null;
     if (!_supportsPushRegistration) {
       return;
     }

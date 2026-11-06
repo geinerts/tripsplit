@@ -24,7 +24,8 @@ Push catalogs are generated from those same messages. Run
 `python3 mobile/tool/export_push_locales.py` from the repository root after
 changing notification strings. Deploy `api/lib/helpers/push/push_localization.php`
 and the complete `api/lib/helpers/push/locales/` directory together. The new
-server catalogs are not deployed by generating them. The app re-registers its
+server catalogs are not deployed by generating them. The same tool also writes the trip
+report phrases to `api/lib/helpers/trip_report_locales/`. The app re-registers its
 push locale when language changes even if the push token stays the same.
 
 ## Translation review status

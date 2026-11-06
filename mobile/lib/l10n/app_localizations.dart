@@ -8820,6 +8820,390 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show more'**
   String get friendsShowMore;
+
+  /// No description provided for @tripReportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip report'**
+  String get tripReportTitle;
+
+  /// No description provided for @tripReportDetailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed trip report'**
+  String get tripReportDetailedTitle;
+
+  /// No description provided for @tripReportDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get tripReportDates;
+
+  /// No description provided for @tripReportDestinations.
+  ///
+  /// In en, this message translates to:
+  /// **'Destinations'**
+  String get tripReportDestinations;
+
+  /// No description provided for @tripReportTotalSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Total spent'**
+  String get tripReportTotalSpent;
+
+  /// No description provided for @tripReportExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get tripReportExpenses;
+
+  /// No description provided for @tripReportYouPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'You paid'**
+  String get tripReportYouPaid;
+
+  /// No description provided for @tripReportYourShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Your share'**
+  String get tripReportYourShare;
+
+  /// No description provided for @tripReportYourBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Your balance'**
+  String get tripReportYourBalance;
+
+  /// No description provided for @tripReportYourSettlements.
+  ///
+  /// In en, this message translates to:
+  /// **'Your settlements'**
+  String get tripReportYourSettlements;
+
+  /// No description provided for @tripReportYouPay.
+  ///
+  /// In en, this message translates to:
+  /// **'You pay {arg1}'**
+  String tripReportYouPay(Object arg1);
+
+  /// No description provided for @tripReportPaysYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} pays you'**
+  String tripReportPaysYou(Object arg1);
+
+  /// No description provided for @tripReportStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get tripReportStatus;
+
+  /// No description provided for @tripReportStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get tripReportStatusPending;
+
+  /// No description provided for @tripReportStatusSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get tripReportStatusSent;
+
+  /// No description provided for @tripReportStatusConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get tripReportStatusConfirmed;
+
+  /// No description provided for @tripReportNoSettlements.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing for you to settle.'**
+  String get tripReportNoSettlements;
+
+  /// No description provided for @tripReportByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending by category'**
+  String get tripReportByCategory;
+
+  /// No description provided for @tripReportCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get tripReportCategory;
+
+  /// No description provided for @tripReportAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get tripReportAmount;
+
+  /// No description provided for @tripReportMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get tripReportMembers;
+
+  /// No description provided for @tripReportMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get tripReportMember;
+
+  /// No description provided for @tripReportPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get tripReportPaid;
+
+  /// No description provided for @tripReportShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get tripReportShare;
+
+  /// No description provided for @tripReportBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance'**
+  String get tripReportBalance;
+
+  /// No description provided for @tripReportAllExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'All expenses'**
+  String get tripReportAllExpenses;
+
+  /// No description provided for @tripReportDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get tripReportDate;
+
+  /// No description provided for @tripReportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get tripReportDescription;
+
+  /// No description provided for @tripReportPaidBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid by'**
+  String get tripReportPaidBy;
+
+  /// No description provided for @tripReportOriginalAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Original amount'**
+  String get tripReportOriginalAmount;
+
+  /// No description provided for @tripReportCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get tripReportCurrency;
+
+  /// No description provided for @tripReportRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate'**
+  String get tripReportRate;
+
+  /// No description provided for @tripReportPayments.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get tripReportPayments;
+
+  /// No description provided for @tripReportFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get tripReportFrom;
+
+  /// No description provided for @tripReportTo.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get tripReportTo;
+
+  /// No description provided for @tripReportFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Created with Splyto'**
+  String get tripReportFooter;
+
+  /// No description provided for @tripReportEmailSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trip report: {arg1}'**
+  String tripReportEmailSubject(Object arg1);
+
+  /// No description provided for @tripReportEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trip report is ready'**
+  String get tripReportEmailTitle;
+
+  /// No description provided for @tripReportEmailGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi {arg1},'**
+  String tripReportEmailGreeting(Object arg1);
+
+  /// No description provided for @tripReportEmailBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{arg1} has finished. Your report is attached as a PDF.'**
+  String tripReportEmailBody(Object arg1);
+
+  /// No description provided for @tripReportEmailOptOut.
+  ///
+  /// In en, this message translates to:
+  /// **'You can turn these emails off in Profile, under Notifications.'**
+  String get tripReportEmailOptOut;
+
+  /// No description provided for @tripReportEmailSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip report by email'**
+  String get tripReportEmailSetting;
+
+  /// No description provided for @tripReportEmailSettingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a PDF summary when a trip finishes.'**
+  String get tripReportEmailSettingSubtitle;
+
+  /// No description provided for @tripExportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Export trip details'**
+  String get tripExportAction;
+
+  /// No description provided for @tripExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed PDF'**
+  String get tripExportPdf;
+
+  /// No description provided for @tripExportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Spreadsheet (CSV)'**
+  String get tripExportCsv;
+
+  /// No description provided for @tripExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t create the export. Try again.'**
+  String get tripExportFailed;
+
+  /// No description provided for @yearSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your year in travel'**
+  String get yearSummaryTitle;
+
+  /// No description provided for @yearSummarySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trips, places and spending for the year.'**
+  String get yearSummarySubtitle;
+
+  /// No description provided for @yearSummaryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No finished trips in {arg1}.'**
+  String yearSummaryEmpty(Object arg1);
+
+  /// No description provided for @yearSummaryLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load your year in travel.'**
+  String get yearSummaryLoadFailed;
+
+  /// No description provided for @yearSummaryTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Trips'**
+  String get yearSummaryTrips;
+
+  /// No description provided for @yearSummaryDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days away'**
+  String get yearSummaryDays;
+
+  /// No description provided for @yearSummaryCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'Countries'**
+  String get yearSummaryCountries;
+
+  /// No description provided for @yearSummaryCities.
+  ///
+  /// In en, this message translates to:
+  /// **'Cities'**
+  String get yearSummaryCities;
+
+  /// No description provided for @yearSummarySpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Your spending'**
+  String get yearSummarySpending;
+
+  /// No description provided for @yearSummaryBiggestTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest trip'**
+  String get yearSummaryBiggestTrip;
+
+  /// No description provided for @yearSummaryTopCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Top category'**
+  String get yearSummaryTopCategory;
+
+  /// No description provided for @yearSummaryTopCompanion.
+  ///
+  /// In en, this message translates to:
+  /// **'Most trips with'**
+  String get yearSummaryTopCompanion;
+
+  /// No description provided for @yearSummaryTripsTogether.
+  ///
+  /// In en, this message translates to:
+  /// **'Trips together: {arg1}'**
+  String yearSummaryTripsTogether(Object arg1);
+
+  /// No description provided for @yearSummaryPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Some amounts are missing because no exchange rate was available.'**
+  String get yearSummaryPartial;
+
+  /// No description provided for @yearSummaryShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get yearSummaryShare;
+
+  /// No description provided for @yearSummaryShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t share the image.'**
+  String get yearSummaryShareFailed;
+
+  /// No description provided for @yearSummaryRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get yearSummaryRetry;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

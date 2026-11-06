@@ -1,5 +1,8 @@
 import '../../../live_location/presentation/live_location_controller.dart';
 import '../../../travel_map/data/travel_places_repository.dart';
+import '../../../trip_reports/data/trip_reports_repository.dart';
+import '../../../trip_reports/presentation/trip_export_flow.dart';
+import '../../../trip_reports/presentation/year_summary_page.dart';
 import '../../../travel_map/presentation/travel_map_page.dart';
 import 'dart:async';
 import 'dart:typed_data';
@@ -59,6 +62,7 @@ class MainShellPage extends StatefulWidget {
     required this.inviteDeepLinkController,
     this.quickStartService,
     this.travelPlacesRepository,
+    this.tripReportsRepository,
     this.liveLocationController,
     this.initialTabIndex = 0,
     this.openCreateTripOnStart = false,
@@ -67,6 +71,7 @@ class MainShellPage extends StatefulWidget {
 
   final QuickStartService? quickStartService;
   final TravelPlacesRepository? travelPlacesRepository;
+  final TripReportsRepository? tripReportsRepository;
   final LiveLocationController? liveLocationController;
   final AuthController authController;
   final TripsController tripsController;

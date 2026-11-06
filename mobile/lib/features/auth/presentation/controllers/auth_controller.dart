@@ -228,6 +228,7 @@ class AuthController {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? emailTripReportEnabled,
   }) async {
     final prefs = await _updateNotificationPreferencesUseCase.call(
       inAppBannerEnabled: inAppBannerEnabled,
@@ -250,6 +251,7 @@ class AuthController {
       pushFriendInvitesEnabled: pushFriendInvitesEnabled,
       pushTripUpdatesEnabled: pushTripUpdatesEnabled,
       pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
+      emailTripReportEnabled: emailTripReportEnabled,
     );
     _notificationPreferences = prefs;
     return prefs;
@@ -476,6 +478,11 @@ class AuthController {
   }
 
   Future<void> _syncPushRegistration() async {
+    try {
+      await _pushRegistrationService.syncAccountLocale();
+    } catch (_) {
+      // Reports fall back to the last known language.
+    }
     try {
       await _pushRegistrationService.syncRegistration();
     } catch (_) {

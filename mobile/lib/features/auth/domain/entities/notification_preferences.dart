@@ -20,6 +20,7 @@ class NotificationPreferences {
     required this.pushFriendInvitesEnabled,
     required this.pushTripUpdatesEnabled,
     required this.pushSettlementUpdatesEnabled,
+    this.emailTripReportEnabled = true,
   });
 
   const NotificationPreferences.defaults()
@@ -42,7 +43,8 @@ class NotificationPreferences {
       pushExpenseAddedEnabled = true,
       pushFriendInvitesEnabled = true,
       pushTripUpdatesEnabled = true,
-      pushSettlementUpdatesEnabled = true;
+      pushSettlementUpdatesEnabled = true,
+      emailTripReportEnabled = true;
 
   final bool inAppBannerEnabled;
   final bool inAppExpenseAddedEnabled;
@@ -64,6 +66,7 @@ class NotificationPreferences {
   final bool pushFriendInvitesEnabled;
   final bool pushTripUpdatesEnabled;
   final bool pushSettlementUpdatesEnabled;
+  final bool emailTripReportEnabled;
 
   NotificationPreferences copyWith({
     bool? inAppBannerEnabled,
@@ -86,6 +89,7 @@ class NotificationPreferences {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? emailTripReportEnabled,
   }) {
     return NotificationPreferences(
       inAppBannerEnabled: inAppBannerEnabled ?? this.inAppBannerEnabled,
@@ -132,6 +136,8 @@ class NotificationPreferences {
           pushTripUpdatesEnabled ?? this.pushTripUpdatesEnabled,
       pushSettlementUpdatesEnabled:
           pushSettlementUpdatesEnabled ?? this.pushSettlementUpdatesEnabled,
+      emailTripReportEnabled:
+          emailTripReportEnabled ?? this.emailTripReportEnabled,
     );
   }
 }

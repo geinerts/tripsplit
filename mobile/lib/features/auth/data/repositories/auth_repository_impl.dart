@@ -137,6 +137,7 @@ class AuthRepositoryImpl implements AuthRepository {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? emailTripReportEnabled,
   }) {
     return _remote.updateNotificationPreferences(
       inAppBannerEnabled: inAppBannerEnabled,
@@ -159,6 +160,7 @@ class AuthRepositoryImpl implements AuthRepository {
       pushFriendInvitesEnabled: pushFriendInvitesEnabled,
       pushTripUpdatesEnabled: pushTripUpdatesEnabled,
       pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
+      emailTripReportEnabled: emailTripReportEnabled,
     );
   }
 }

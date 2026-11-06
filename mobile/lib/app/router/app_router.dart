@@ -74,6 +74,7 @@ class AppRouter {
           child: MainShellPage(
             quickStartService: _dependencies.quickStartService,
             travelPlacesRepository: _dependencies.travelPlacesRepository,
+            tripReportsRepository: _dependencies.tripReportsRepository,
             liveLocationController: _dependencies.liveLocationController,
             authController: _dependencies.authController,
             tripsController: _dependencies.tripsController,
@@ -90,6 +91,7 @@ class AppRouter {
         child: MainShellPage(
           quickStartService: _dependencies.quickStartService,
           travelPlacesRepository: _dependencies.travelPlacesRepository,
+          tripReportsRepository: _dependencies.tripReportsRepository,
           liveLocationController: _dependencies.liveLocationController,
           authController: _dependencies.authController,
           tripsController: _dependencies.tripsController,
@@ -107,6 +109,7 @@ class AppRouter {
           child: MainShellPage(
             quickStartService: _dependencies.quickStartService,
             travelPlacesRepository: _dependencies.travelPlacesRepository,
+            tripReportsRepository: _dependencies.tripReportsRepository,
             liveLocationController: _dependencies.liveLocationController,
             authController: _dependencies.authController,
             tripsController: _dependencies.tripsController,

@@ -4771,4 +4771,210 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get friendsShowMore => 'Zobrazit více';
+
+  @override
+  String get tripReportTitle => 'Zpráva z cesty';
+
+  @override
+  String get tripReportDetailedTitle => 'Podrobná zpráva z cesty';
+
+  @override
+  String get tripReportDates => 'Termín';
+
+  @override
+  String get tripReportDestinations => 'Cíle';
+
+  @override
+  String get tripReportTotalSpent => 'Celkem utraceno';
+
+  @override
+  String get tripReportExpenses => 'Výdaje';
+
+  @override
+  String get tripReportYouPaid => 'Zaplatili jste';
+
+  @override
+  String get tripReportYourShare => 'Váš podíl';
+
+  @override
+  String get tripReportYourBalance => 'Váš zůstatek';
+
+  @override
+  String get tripReportYourSettlements => 'Vaše vyrovnání';
+
+  @override
+  String tripReportYouPay(Object arg1) {
+    return 'Platíte: $arg1';
+  }
+
+  @override
+  String tripReportPaysYou(Object arg1) {
+    return '$arg1 platí vám';
+  }
+
+  @override
+  String get tripReportStatus => 'Stav';
+
+  @override
+  String get tripReportStatusPending => 'Čeká';
+
+  @override
+  String get tripReportStatusSent => 'Odesláno';
+
+  @override
+  String get tripReportStatusConfirmed => 'Potvrzeno';
+
+  @override
+  String get tripReportNoSettlements => 'Nemáte co vyrovnávat.';
+
+  @override
+  String get tripReportByCategory => 'Výdaje podle kategorií';
+
+  @override
+  String get tripReportCategory => 'Kategorie';
+
+  @override
+  String get tripReportAmount => 'Částka';
+
+  @override
+  String get tripReportMembers => 'Členové';
+
+  @override
+  String get tripReportMember => 'Člen';
+
+  @override
+  String get tripReportPaid => 'Zaplaceno';
+
+  @override
+  String get tripReportShare => 'Podíl';
+
+  @override
+  String get tripReportBalance => 'Zůstatek';
+
+  @override
+  String get tripReportAllExpenses => 'Všechny výdaje';
+
+  @override
+  String get tripReportDate => 'Datum';
+
+  @override
+  String get tripReportDescription => 'Popis';
+
+  @override
+  String get tripReportPaidBy => 'Zaplatil(a)';
+
+  @override
+  String get tripReportOriginalAmount => 'Původní částka';
+
+  @override
+  String get tripReportCurrency => 'Měna';
+
+  @override
+  String get tripReportRate => 'Kurz';
+
+  @override
+  String get tripReportPayments => 'Platby';
+
+  @override
+  String get tripReportFrom => 'Od';
+
+  @override
+  String get tripReportTo => 'Komu';
+
+  @override
+  String get tripReportFooter => 'Vytvořeno ve Splyto';
+
+  @override
+  String tripReportEmailSubject(Object arg1) {
+    return 'Vaše zpráva z cesty: $arg1';
+  }
+
+  @override
+  String get tripReportEmailTitle => 'Vaše zpráva z cesty je připravena';
+
+  @override
+  String tripReportEmailGreeting(Object arg1) {
+    return 'Dobrý den, $arg1,';
+  }
+
+  @override
+  String tripReportEmailBody(Object arg1) {
+    return 'Cesta $arg1 je dokončena. Zprávu najdete v příloze jako PDF.';
+  }
+
+  @override
+  String get tripReportEmailOptOut => 'Tyto e-maily můžete vypnout v Profilu v části Oznámení.';
+
+  @override
+  String get tripReportEmailSetting => 'Zpráva z cesty e-mailem';
+
+  @override
+  String get tripReportEmailSettingSubtitle => 'Po dokončení cesty dostanete souhrn v PDF.';
+
+  @override
+  String get tripExportAction => 'Exportovat podrobnosti cesty';
+
+  @override
+  String get tripExportPdf => 'Podrobné PDF';
+
+  @override
+  String get tripExportCsv => 'Tabulka (CSV)';
+
+  @override
+  String get tripExportFailed => 'Export se nepodařilo vytvořit. Zkuste to znovu.';
+
+  @override
+  String get yearSummaryTitle => 'Váš rok na cestách';
+
+  @override
+  String get yearSummarySubtitle => 'Vaše cesty, místa a výdaje za rok.';
+
+  @override
+  String yearSummaryEmpty(Object arg1) {
+    return 'V roce $arg1 nejsou žádné dokončené cesty.';
+  }
+
+  @override
+  String get yearSummaryLoadFailed => 'Váš rok na cestách se nepodařilo načíst.';
+
+  @override
+  String get yearSummaryTrips => 'Cesty';
+
+  @override
+  String get yearSummaryDays => 'Dny na cestách';
+
+  @override
+  String get yearSummaryCountries => 'Země';
+
+  @override
+  String get yearSummaryCities => 'Města';
+
+  @override
+  String get yearSummarySpending => 'Vaše výdaje';
+
+  @override
+  String get yearSummaryBiggestTrip => 'Největší cesta';
+
+  @override
+  String get yearSummaryTopCategory => 'Hlavní kategorie';
+
+  @override
+  String get yearSummaryTopCompanion => 'Nejvíc cest s';
+
+  @override
+  String yearSummaryTripsTogether(Object arg1) {
+    return 'Společné cesty: $arg1';
+  }
+
+  @override
+  String get yearSummaryPartial => 'Některé částky chybí, protože nebyl k dispozici směnný kurz.';
+
+  @override
+  String get yearSummaryShare => 'Sdílet';
+
+  @override
+  String get yearSummaryShareFailed => 'Obrázek se nepodařilo sdílet.';
+
+  @override
+  String get yearSummaryRetry => 'Zkusit znovu';
 }

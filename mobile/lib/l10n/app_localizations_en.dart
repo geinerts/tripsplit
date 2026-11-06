@@ -4761,4 +4761,210 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get friendsShowMore => 'Show more';
+
+  @override
+  String get tripReportTitle => 'Trip report';
+
+  @override
+  String get tripReportDetailedTitle => 'Detailed trip report';
+
+  @override
+  String get tripReportDates => 'Dates';
+
+  @override
+  String get tripReportDestinations => 'Destinations';
+
+  @override
+  String get tripReportTotalSpent => 'Total spent';
+
+  @override
+  String get tripReportExpenses => 'Expenses';
+
+  @override
+  String get tripReportYouPaid => 'You paid';
+
+  @override
+  String get tripReportYourShare => 'Your share';
+
+  @override
+  String get tripReportYourBalance => 'Your balance';
+
+  @override
+  String get tripReportYourSettlements => 'Your settlements';
+
+  @override
+  String tripReportYouPay(Object arg1) {
+    return 'You pay $arg1';
+  }
+
+  @override
+  String tripReportPaysYou(Object arg1) {
+    return '$arg1 pays you';
+  }
+
+  @override
+  String get tripReportStatus => 'Status';
+
+  @override
+  String get tripReportStatusPending => 'Pending';
+
+  @override
+  String get tripReportStatusSent => 'Sent';
+
+  @override
+  String get tripReportStatusConfirmed => 'Confirmed';
+
+  @override
+  String get tripReportNoSettlements => 'Nothing for you to settle.';
+
+  @override
+  String get tripReportByCategory => 'Spending by category';
+
+  @override
+  String get tripReportCategory => 'Category';
+
+  @override
+  String get tripReportAmount => 'Amount';
+
+  @override
+  String get tripReportMembers => 'Members';
+
+  @override
+  String get tripReportMember => 'Member';
+
+  @override
+  String get tripReportPaid => 'Paid';
+
+  @override
+  String get tripReportShare => 'Share';
+
+  @override
+  String get tripReportBalance => 'Balance';
+
+  @override
+  String get tripReportAllExpenses => 'All expenses';
+
+  @override
+  String get tripReportDate => 'Date';
+
+  @override
+  String get tripReportDescription => 'Description';
+
+  @override
+  String get tripReportPaidBy => 'Paid by';
+
+  @override
+  String get tripReportOriginalAmount => 'Original amount';
+
+  @override
+  String get tripReportCurrency => 'Currency';
+
+  @override
+  String get tripReportRate => 'Rate';
+
+  @override
+  String get tripReportPayments => 'Payments';
+
+  @override
+  String get tripReportFrom => 'From';
+
+  @override
+  String get tripReportTo => 'To';
+
+  @override
+  String get tripReportFooter => 'Created with Splyto';
+
+  @override
+  String tripReportEmailSubject(Object arg1) {
+    return 'Your trip report: $arg1';
+  }
+
+  @override
+  String get tripReportEmailTitle => 'Your trip report is ready';
+
+  @override
+  String tripReportEmailGreeting(Object arg1) {
+    return 'Hi $arg1,';
+  }
+
+  @override
+  String tripReportEmailBody(Object arg1) {
+    return '$arg1 has finished. Your report is attached as a PDF.';
+  }
+
+  @override
+  String get tripReportEmailOptOut => 'You can turn these emails off in Profile, under Notifications.';
+
+  @override
+  String get tripReportEmailSetting => 'Trip report by email';
+
+  @override
+  String get tripReportEmailSettingSubtitle => 'Get a PDF summary when a trip finishes.';
+
+  @override
+  String get tripExportAction => 'Export trip details';
+
+  @override
+  String get tripExportPdf => 'Detailed PDF';
+
+  @override
+  String get tripExportCsv => 'Spreadsheet (CSV)';
+
+  @override
+  String get tripExportFailed => 'Couldn\'t create the export. Try again.';
+
+  @override
+  String get yearSummaryTitle => 'Your year in travel';
+
+  @override
+  String get yearSummarySubtitle => 'Your trips, places and spending for the year.';
+
+  @override
+  String yearSummaryEmpty(Object arg1) {
+    return 'No finished trips in $arg1.';
+  }
+
+  @override
+  String get yearSummaryLoadFailed => 'Couldn\'t load your year in travel.';
+
+  @override
+  String get yearSummaryTrips => 'Trips';
+
+  @override
+  String get yearSummaryDays => 'Days away';
+
+  @override
+  String get yearSummaryCountries => 'Countries';
+
+  @override
+  String get yearSummaryCities => 'Cities';
+
+  @override
+  String get yearSummarySpending => 'Your spending';
+
+  @override
+  String get yearSummaryBiggestTrip => 'Biggest trip';
+
+  @override
+  String get yearSummaryTopCategory => 'Top category';
+
+  @override
+  String get yearSummaryTopCompanion => 'Most trips with';
+
+  @override
+  String yearSummaryTripsTogether(Object arg1) {
+    return 'Trips together: $arg1';
+  }
+
+  @override
+  String get yearSummaryPartial => 'Some amounts are missing because no exchange rate was available.';
+
+  @override
+  String get yearSummaryShare => 'Share';
+
+  @override
+  String get yearSummaryShareFailed => 'Couldn\'t share the image.';
+
+  @override
+  String get yearSummaryRetry => 'Try again';
 }

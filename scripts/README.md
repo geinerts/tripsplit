@@ -12,6 +12,7 @@ Available:
 - `backfill_legacy_expense_owed_cents.php` repairs legacy `trip_expense_participants.owed_cents` rows where per-expense sum does not match amount.
 - `run_settlement_reminders.php` emits automatic settlement reminders for overdue `pending/sent` settlements.
 - `run_push_delivery.php` processes queued push deliveries to APNs/FCM.
+- `run_trip_report_delivery.php` emails queued trip report PDFs.
 - `run_migrations.php` runs SQL migrations from `sql/migrations` and tracks applied files in `trip_schema_migrations`.
 - `vps_run_migrations.sh` runs `run_migrations.php` remotely on VPS over SSH.
 - Migrations and backups require separate protected operator credentials, never

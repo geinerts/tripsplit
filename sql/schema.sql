@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS trip_users (
   wise_pay_link VARCHAR(255) NULL,
   share_payment_details_with_trips TINYINT(1) NOT NULL DEFAULT 0,
   preferred_currency_code CHAR(3) NOT NULL DEFAULT 'EUR',
+  locale VARCHAR(8) CHARACTER SET ascii COLLATE ascii_general_ci NULL DEFAULT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY idx_trip_users_account_status (account_status, created_at, id),
@@ -347,6 +348,7 @@ CREATE TABLE IF NOT EXISTS trip_user_notification_preferences (
   push_friend_invites_enabled TINYINT(1) NOT NULL DEFAULT 1,
   push_trip_updates_enabled TINYINT(1) NOT NULL DEFAULT 1,
   push_settlement_updates_enabled TINYINT(1) NOT NULL DEFAULT 1,
+  email_trip_report_enabled TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id),
@@ -623,4 +625,30 @@ CREATE TABLE IF NOT EXISTS trip_random_draw_state (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (trip_id),
   CONSTRAINT fk_trip_random_draw_state_trip_id FOREIGN KEY (trip_id) REFERENCES trip_trips(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS trip_report_deliveries (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  trip_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  status ENUM('pending', 'sent', 'skipped', 'failed') NOT NULL DEFAULT 'pending',
+  attempts TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  next_attempt_at DATETIME NOT NULL,
+  created_at DATETIME NOT NULL,
+  finished_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_trip_report_delivery (trip_id, user_id),
+  KEY idx_trip_report_due (status, next_attempt_at),
+  KEY idx_trip_report_user (user_id),
+  KEY idx_trip_report_finished (finished_at),
+  CONSTRAINT fk_trip_report_trip FOREIGN KEY (trip_id) REFERENCES trip_trips(id) ON DELETE CASCADE,
+  CONSTRAINT fk_trip_report_user FOREIGN KEY (user_id) REFERENCES trip_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS trip_fx_rate_cache (
+  rate_date DATE NOT NULL,
+  from_currency CHAR(3) NOT NULL,
+  to_currency CHAR(3) NOT NULL,
+  rate DECIMAL(24,10) NOT NULL,
+  PRIMARY KEY (rate_date, from_currency, to_currency)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

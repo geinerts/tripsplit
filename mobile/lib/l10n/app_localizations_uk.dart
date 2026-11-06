@@ -4781,4 +4781,210 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get friendsShowMore => 'Показати більше';
+
+  @override
+  String get tripReportTitle => 'Звіт про подорож';
+
+  @override
+  String get tripReportDetailedTitle => 'Детальний звіт про подорож';
+
+  @override
+  String get tripReportDates => 'Дати';
+
+  @override
+  String get tripReportDestinations => 'Напрямки';
+
+  @override
+  String get tripReportTotalSpent => 'Усього витрачено';
+
+  @override
+  String get tripReportExpenses => 'Витрати';
+
+  @override
+  String get tripReportYouPaid => 'Ви сплатили';
+
+  @override
+  String get tripReportYourShare => 'Ваша частка';
+
+  @override
+  String get tripReportYourBalance => 'Ваш баланс';
+
+  @override
+  String get tripReportYourSettlements => 'Ваші розрахунки';
+
+  @override
+  String tripReportYouPay(Object arg1) {
+    return 'Ви платите: $arg1';
+  }
+
+  @override
+  String tripReportPaysYou(Object arg1) {
+    return '$arg1 платить вам';
+  }
+
+  @override
+  String get tripReportStatus => 'Статус';
+
+  @override
+  String get tripReportStatusPending => 'Очікує';
+
+  @override
+  String get tripReportStatusSent => 'Надіслано';
+
+  @override
+  String get tripReportStatusConfirmed => 'Підтверджено';
+
+  @override
+  String get tripReportNoSettlements => 'Вам нічого розраховувати.';
+
+  @override
+  String get tripReportByCategory => 'Витрати за категоріями';
+
+  @override
+  String get tripReportCategory => 'Категорія';
+
+  @override
+  String get tripReportAmount => 'Сума';
+
+  @override
+  String get tripReportMembers => 'Учасники';
+
+  @override
+  String get tripReportMember => 'Учасник';
+
+  @override
+  String get tripReportPaid => 'Сплачено';
+
+  @override
+  String get tripReportShare => 'Частка';
+
+  @override
+  String get tripReportBalance => 'Баланс';
+
+  @override
+  String get tripReportAllExpenses => 'Усі витрати';
+
+  @override
+  String get tripReportDate => 'Дата';
+
+  @override
+  String get tripReportDescription => 'Опис';
+
+  @override
+  String get tripReportPaidBy => 'Хто сплатив';
+
+  @override
+  String get tripReportOriginalAmount => 'Початкова сума';
+
+  @override
+  String get tripReportCurrency => 'Валюта';
+
+  @override
+  String get tripReportRate => 'Курс';
+
+  @override
+  String get tripReportPayments => 'Платежі';
+
+  @override
+  String get tripReportFrom => 'Від';
+
+  @override
+  String get tripReportTo => 'Кому';
+
+  @override
+  String get tripReportFooter => 'Створено в Splyto';
+
+  @override
+  String tripReportEmailSubject(Object arg1) {
+    return 'Ваш звіт про подорож: $arg1';
+  }
+
+  @override
+  String get tripReportEmailTitle => 'Ваш звіт про подорож готовий';
+
+  @override
+  String tripReportEmailGreeting(Object arg1) {
+    return 'Вітаємо, $arg1!';
+  }
+
+  @override
+  String tripReportEmailBody(Object arg1) {
+    return 'Подорож $arg1 завершено. Ваш звіт додано у форматі PDF.';
+  }
+
+  @override
+  String get tripReportEmailOptOut => 'Ці листи можна вимкнути в профілі, у розділі «Сповіщення».';
+
+  @override
+  String get tripReportEmailSetting => 'Звіт про подорож електронною поштою';
+
+  @override
+  String get tripReportEmailSettingSubtitle => 'Отримуйте PDF-підсумок після завершення подорожі.';
+
+  @override
+  String get tripExportAction => 'Експортувати деталі подорожі';
+
+  @override
+  String get tripExportPdf => 'Детальний PDF';
+
+  @override
+  String get tripExportCsv => 'Таблиця (CSV)';
+
+  @override
+  String get tripExportFailed => 'Не вдалося створити експорт. Спробуйте ще раз.';
+
+  @override
+  String get yearSummaryTitle => 'Ваш рік у подорожах';
+
+  @override
+  String get yearSummarySubtitle => 'Ваші подорожі, місця та витрати за рік.';
+
+  @override
+  String yearSummaryEmpty(Object arg1) {
+    return 'У $arg1 році немає завершених подорожей.';
+  }
+
+  @override
+  String get yearSummaryLoadFailed => 'Не вдалося завантажити ваш рік у подорожах.';
+
+  @override
+  String get yearSummaryTrips => 'Подорожі';
+
+  @override
+  String get yearSummaryDays => 'Днів у подорожах';
+
+  @override
+  String get yearSummaryCountries => 'Країни';
+
+  @override
+  String get yearSummaryCities => 'Міста';
+
+  @override
+  String get yearSummarySpending => 'Ваші витрати';
+
+  @override
+  String get yearSummaryBiggestTrip => 'Найбільша подорож';
+
+  @override
+  String get yearSummaryTopCategory => 'Основна категорія';
+
+  @override
+  String get yearSummaryTopCompanion => 'Найбільше подорожей з';
+
+  @override
+  String yearSummaryTripsTogether(Object arg1) {
+    return 'Спільні подорожі: $arg1';
+  }
+
+  @override
+  String get yearSummaryPartial => 'Деякі суми відсутні, бо обмінний курс був недоступний.';
+
+  @override
+  String get yearSummaryShare => 'Поділитися';
+
+  @override
+  String get yearSummaryShareFailed => 'Не вдалося поділитися зображенням.';
+
+  @override
+  String get yearSummaryRetry => 'Спробувати ще раз';
 }

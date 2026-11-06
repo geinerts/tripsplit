@@ -54,6 +54,13 @@ extension _MainShellPageWidgets on _MainShellPageState {
               onTravelMapRequested: widget.travelPlacesRepository == null
                   ? null
                   : () => _openTravelMap(tripId: _openedTrip!.id),
+              onExportTripRequested: widget.tripReportsRepository == null
+                  ? null
+                  : () => runTripExport(
+                      context,
+                      widget.tripReportsRepository!,
+                      tripId: _openedTrip!.id,
+                    ),
               onTripUpdated: (trip) {
                 if (_openedTrip?.id == trip.id) {
                   _updateState(() => _openedTrip = trip);
@@ -105,6 +112,9 @@ extension _MainShellPageWidgets on _MainShellPageState {
                   onTravelMapRequested: widget.travelPlacesRepository == null
                       ? null
                       : () => _openTravelMap(),
+                  onYearSummaryRequested: widget.tripReportsRepository == null
+                      ? null
+                      : _openYearSummary,
                   onEditModeChanged: _onProfileEditModeChanged,
                   commandController: _profileCommandController,
                 ),

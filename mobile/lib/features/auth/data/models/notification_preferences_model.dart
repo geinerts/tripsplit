@@ -22,6 +22,7 @@ class NotificationPreferencesModel extends NotificationPreferences {
     required super.pushFriendInvitesEnabled,
     required super.pushTripUpdatesEnabled,
     required super.pushSettlementUpdatesEnabled,
+    super.emailTripReportEnabled,
   });
 
   factory NotificationPreferencesModel.fromApiMap(Map<String, dynamic> map) {
@@ -152,6 +153,8 @@ class NotificationPreferencesModel extends NotificationPreferences {
           _readBool(push['settlement_updates']) ??
           _readBool(payload['push_settlement_updates_enabled']) ??
           true,
+      emailTripReportEnabled:
+          _readBool(payload['email_trip_report_enabled']) ?? true,
     );
   }
 

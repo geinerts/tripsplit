@@ -4761,4 +4761,210 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get friendsShowMore => 'Vis flere';
+
+  @override
+  String get tripReportTitle => 'Reiserapport';
+
+  @override
+  String get tripReportDetailedTitle => 'Detaljert reiserapport';
+
+  @override
+  String get tripReportDates => 'Datoer';
+
+  @override
+  String get tripReportDestinations => 'Reisemål';
+
+  @override
+  String get tripReportTotalSpent => 'Brukt totalt';
+
+  @override
+  String get tripReportExpenses => 'Utgifter';
+
+  @override
+  String get tripReportYouPaid => 'Du betalte';
+
+  @override
+  String get tripReportYourShare => 'Din andel';
+
+  @override
+  String get tripReportYourBalance => 'Din saldo';
+
+  @override
+  String get tripReportYourSettlements => 'Dine oppgjør';
+
+  @override
+  String tripReportYouPay(Object arg1) {
+    return 'Du betaler $arg1';
+  }
+
+  @override
+  String tripReportPaysYou(Object arg1) {
+    return '$arg1 betaler deg';
+  }
+
+  @override
+  String get tripReportStatus => 'Status';
+
+  @override
+  String get tripReportStatusPending => 'Venter';
+
+  @override
+  String get tripReportStatusSent => 'Sendt';
+
+  @override
+  String get tripReportStatusConfirmed => 'Bekreftet';
+
+  @override
+  String get tripReportNoSettlements => 'Du har ingenting å gjøre opp.';
+
+  @override
+  String get tripReportByCategory => 'Utgifter per kategori';
+
+  @override
+  String get tripReportCategory => 'Kategori';
+
+  @override
+  String get tripReportAmount => 'Beløp';
+
+  @override
+  String get tripReportMembers => 'Medlemmer';
+
+  @override
+  String get tripReportMember => 'Medlem';
+
+  @override
+  String get tripReportPaid => 'Betalt';
+
+  @override
+  String get tripReportShare => 'Andel';
+
+  @override
+  String get tripReportBalance => 'Saldo';
+
+  @override
+  String get tripReportAllExpenses => 'Alle utgifter';
+
+  @override
+  String get tripReportDate => 'Dato';
+
+  @override
+  String get tripReportDescription => 'Beskrivelse';
+
+  @override
+  String get tripReportPaidBy => 'Betalt av';
+
+  @override
+  String get tripReportOriginalAmount => 'Opprinnelig beløp';
+
+  @override
+  String get tripReportCurrency => 'Valuta';
+
+  @override
+  String get tripReportRate => 'Kurs';
+
+  @override
+  String get tripReportPayments => 'Betalinger';
+
+  @override
+  String get tripReportFrom => 'Fra';
+
+  @override
+  String get tripReportTo => 'Til';
+
+  @override
+  String get tripReportFooter => 'Laget med Splyto';
+
+  @override
+  String tripReportEmailSubject(Object arg1) {
+    return 'Din reiserapport: $arg1';
+  }
+
+  @override
+  String get tripReportEmailTitle => 'Reiserapporten din er klar';
+
+  @override
+  String tripReportEmailGreeting(Object arg1) {
+    return 'Hei $arg1,';
+  }
+
+  @override
+  String tripReportEmailBody(Object arg1) {
+    return '$arg1 er avsluttet. Rapporten din er vedlagt som pdf.';
+  }
+
+  @override
+  String get tripReportEmailOptOut => 'Du kan slå av disse e-postene i Profil, under Varsler.';
+
+  @override
+  String get tripReportEmailSetting => 'Reiserapport på e-post';
+
+  @override
+  String get tripReportEmailSettingSubtitle => 'Få et sammendrag som pdf når en reise avsluttes.';
+
+  @override
+  String get tripExportAction => 'Eksporter reisedetaljer';
+
+  @override
+  String get tripExportPdf => 'Detaljert pdf';
+
+  @override
+  String get tripExportCsv => 'Regneark (CSV)';
+
+  @override
+  String get tripExportFailed => 'Kunne ikke lage eksporten. Prøv igjen.';
+
+  @override
+  String get yearSummaryTitle => 'Ditt reiseår';
+
+  @override
+  String get yearSummarySubtitle => 'Reisene, stedene og utgiftene dine i løpet av året.';
+
+  @override
+  String yearSummaryEmpty(Object arg1) {
+    return 'Ingen avsluttede reiser i $arg1.';
+  }
+
+  @override
+  String get yearSummaryLoadFailed => 'Kunne ikke laste inn reiseåret ditt.';
+
+  @override
+  String get yearSummaryTrips => 'Reiser';
+
+  @override
+  String get yearSummaryDays => 'Dager på reise';
+
+  @override
+  String get yearSummaryCountries => 'Land';
+
+  @override
+  String get yearSummaryCities => 'Byer';
+
+  @override
+  String get yearSummarySpending => 'Utgiftene dine';
+
+  @override
+  String get yearSummaryBiggestTrip => 'Største reise';
+
+  @override
+  String get yearSummaryTopCategory => 'Toppkategori';
+
+  @override
+  String get yearSummaryTopCompanion => 'Flest reiser med';
+
+  @override
+  String yearSummaryTripsTogether(Object arg1) {
+    return 'Reiser sammen: $arg1';
+  }
+
+  @override
+  String get yearSummaryPartial => 'Noen beløp mangler fordi ingen valutakurs var tilgjengelig.';
+
+  @override
+  String get yearSummaryShare => 'Del';
+
+  @override
+  String get yearSummaryShareFailed => 'Kunne ikke dele bildet.';
+
+  @override
+  String get yearSummaryRetry => 'Prøv igjen';
 }

@@ -78,6 +78,7 @@ abstract class AuthRemoteDataSource {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? emailTripReportEnabled,
   });
 }
 
@@ -349,6 +350,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? emailTripReportEnabled,
   }) async {
     final inAppPayload = <String, dynamic>{};
     if (inAppExpenseAddedEnabled != null) {
@@ -421,6 +423,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
     if (pushPayload.isNotEmpty) {
       payload['push'] = pushPayload;
+    }
+    if (emailTripReportEnabled != null) {
+      payload['email_trip_report_enabled'] = emailTripReportEnabled;
     }
 
     final response = await _apiClient.request(

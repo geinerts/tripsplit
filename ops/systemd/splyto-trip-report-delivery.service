@@ -1,0 +1,14 @@
+[Unit]
+Description=Send queued Splyto trip report emails
+After=mysql.service
+
+[Service]
+Type=oneshot
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/splyto
+ExecStart=/usr/bin/php /var/www/splyto/scripts/run_trip_report_delivery.php
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true

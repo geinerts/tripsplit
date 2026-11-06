@@ -4761,4 +4761,210 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get friendsShowMore => 'Meer tonen';
+
+  @override
+  String get tripReportTitle => 'Reisrapport';
+
+  @override
+  String get tripReportDetailedTitle => 'Gedetailleerd reisrapport';
+
+  @override
+  String get tripReportDates => 'Data';
+
+  @override
+  String get tripReportDestinations => 'Bestemmingen';
+
+  @override
+  String get tripReportTotalSpent => 'Totaal uitgegeven';
+
+  @override
+  String get tripReportExpenses => 'Uitgaven';
+
+  @override
+  String get tripReportYouPaid => 'Jij betaalde';
+
+  @override
+  String get tripReportYourShare => 'Jouw deel';
+
+  @override
+  String get tripReportYourBalance => 'Jouw saldo';
+
+  @override
+  String get tripReportYourSettlements => 'Jouw afrekeningen';
+
+  @override
+  String tripReportYouPay(Object arg1) {
+    return 'Jij betaalt $arg1';
+  }
+
+  @override
+  String tripReportPaysYou(Object arg1) {
+    return '$arg1 betaalt jou';
+  }
+
+  @override
+  String get tripReportStatus => 'Status';
+
+  @override
+  String get tripReportStatusPending => 'Open';
+
+  @override
+  String get tripReportStatusSent => 'Verzonden';
+
+  @override
+  String get tripReportStatusConfirmed => 'Bevestigd';
+
+  @override
+  String get tripReportNoSettlements => 'Je hoeft niets af te rekenen.';
+
+  @override
+  String get tripReportByCategory => 'Uitgaven per categorie';
+
+  @override
+  String get tripReportCategory => 'Categorie';
+
+  @override
+  String get tripReportAmount => 'Bedrag';
+
+  @override
+  String get tripReportMembers => 'Leden';
+
+  @override
+  String get tripReportMember => 'Lid';
+
+  @override
+  String get tripReportPaid => 'Betaald';
+
+  @override
+  String get tripReportShare => 'Deel';
+
+  @override
+  String get tripReportBalance => 'Saldo';
+
+  @override
+  String get tripReportAllExpenses => 'Alle uitgaven';
+
+  @override
+  String get tripReportDate => 'Datum';
+
+  @override
+  String get tripReportDescription => 'Omschrijving';
+
+  @override
+  String get tripReportPaidBy => 'Betaald door';
+
+  @override
+  String get tripReportOriginalAmount => 'Oorspronkelijk bedrag';
+
+  @override
+  String get tripReportCurrency => 'Valuta';
+
+  @override
+  String get tripReportRate => 'Koers';
+
+  @override
+  String get tripReportPayments => 'Betalingen';
+
+  @override
+  String get tripReportFrom => 'Van';
+
+  @override
+  String get tripReportTo => 'Aan';
+
+  @override
+  String get tripReportFooter => 'Gemaakt met Splyto';
+
+  @override
+  String tripReportEmailSubject(Object arg1) {
+    return 'Je reisrapport: $arg1';
+  }
+
+  @override
+  String get tripReportEmailTitle => 'Je reisrapport staat klaar';
+
+  @override
+  String tripReportEmailGreeting(Object arg1) {
+    return 'Hallo $arg1,';
+  }
+
+  @override
+  String tripReportEmailBody(Object arg1) {
+    return '$arg1 is afgerond. Je rapport zit als pdf in de bijlage.';
+  }
+
+  @override
+  String get tripReportEmailOptOut => 'Je kunt deze e-mails uitzetten in Profiel, onder Meldingen.';
+
+  @override
+  String get tripReportEmailSetting => 'Reisrapport per e-mail';
+
+  @override
+  String get tripReportEmailSettingSubtitle => 'Ontvang een pdf-overzicht als een reis is afgerond.';
+
+  @override
+  String get tripExportAction => 'Reisdetails exporteren';
+
+  @override
+  String get tripExportPdf => 'Gedetailleerde pdf';
+
+  @override
+  String get tripExportCsv => 'Spreadsheet (CSV)';
+
+  @override
+  String get tripExportFailed => 'De export kon niet worden gemaakt. Probeer het opnieuw.';
+
+  @override
+  String get yearSummaryTitle => 'Jouw reisjaar';
+
+  @override
+  String get yearSummarySubtitle => 'Je reizen, plekken en uitgaven van het jaar.';
+
+  @override
+  String yearSummaryEmpty(Object arg1) {
+    return 'Geen afgeronde reizen in $arg1.';
+  }
+
+  @override
+  String get yearSummaryLoadFailed => 'Je reisjaar kon niet worden geladen.';
+
+  @override
+  String get yearSummaryTrips => 'Reizen';
+
+  @override
+  String get yearSummaryDays => 'Dagen op reis';
+
+  @override
+  String get yearSummaryCountries => 'Landen';
+
+  @override
+  String get yearSummaryCities => 'Steden';
+
+  @override
+  String get yearSummarySpending => 'Jouw uitgaven';
+
+  @override
+  String get yearSummaryBiggestTrip => 'Grootste reis';
+
+  @override
+  String get yearSummaryTopCategory => 'Topcategorie';
+
+  @override
+  String get yearSummaryTopCompanion => 'De meeste reizen met';
+
+  @override
+  String yearSummaryTripsTogether(Object arg1) {
+    return 'Reizen samen: $arg1';
+  }
+
+  @override
+  String get yearSummaryPartial => 'Sommige bedragen ontbreken omdat er geen wisselkoers beschikbaar was.';
+
+  @override
+  String get yearSummaryShare => 'Delen';
+
+  @override
+  String get yearSummaryShareFailed => 'De afbeelding kon niet worden gedeeld.';
+
+  @override
+  String get yearSummaryRetry => 'Opnieuw proberen';
 }

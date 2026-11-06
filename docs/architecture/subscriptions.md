@@ -4,6 +4,15 @@ Status: preview foundation and opt-in RevenueCat sandbox server verification,
 2026-09-23. No purchase UI, paywalls or commercial limit enforcement. No production
 deployment, applied migration or store product configuration is included.
 
+## First Premium features (2026-11-06)
+
+The detailed trip export and the year summary check `premium_access_for_user` on the server
+and return 403 `premium_required` otherwise. See [trip reports](../api/trip-reports.md). The
+check uses the requesting account's plan, since both are personal. `limits_enforced` stays
+false, and no limit is enforced. The free trip report email stays free. Premium sells the
+detailed format, not access to one's data: expense history stays visible in the app, and a
+copy of personal data stays available without Premium on request.
+
 ## Implemented
 
 - One server-side draft catalog (`helper_subscription.php`): Free allows one

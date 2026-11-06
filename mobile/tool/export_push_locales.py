@@ -73,10 +73,66 @@ KEYS = {'friend_invite_title': 'notificationFriendInviteTitle',
  'trip_invitation_title': 'homeTripInvitations',
  'trip_invitation_body': 'tripInvitationBody'}
 
+# Trip report PDF and email phrases. Placeholders stay {arg1}.
+REPORT_KEYS = {'title': 'tripReportTitle',
+ 'detailed_title': 'tripReportDetailedTitle',
+ 'dates': 'tripReportDates',
+ 'destinations': 'tripReportDestinations',
+ 'total_spent': 'tripReportTotalSpent',
+ 'expenses': 'tripReportExpenses',
+ 'you_paid': 'tripReportYouPaid',
+ 'your_share': 'tripReportYourShare',
+ 'your_balance': 'tripReportYourBalance',
+ 'your_settlements': 'tripReportYourSettlements',
+ 'you_pay': 'tripReportYouPay',
+ 'pays_you': 'tripReportPaysYou',
+ 'status': 'tripReportStatus',
+ 'status_pending': 'tripReportStatusPending',
+ 'status_sent': 'tripReportStatusSent',
+ 'status_confirmed': 'tripReportStatusConfirmed',
+ 'no_settlements': 'tripReportNoSettlements',
+ 'by_category': 'tripReportByCategory',
+ 'category': 'tripReportCategory',
+ 'amount': 'tripReportAmount',
+ 'members': 'tripReportMembers',
+ 'member': 'tripReportMember',
+ 'paid': 'tripReportPaid',
+ 'share': 'tripReportShare',
+ 'balance': 'tripReportBalance',
+ 'all_expenses': 'tripReportAllExpenses',
+ 'date': 'tripReportDate',
+ 'description': 'tripReportDescription',
+ 'paid_by': 'tripReportPaidBy',
+ 'original_amount': 'tripReportOriginalAmount',
+ 'currency': 'tripReportCurrency',
+ 'rate': 'tripReportRate',
+ 'payments': 'tripReportPayments',
+ 'from': 'tripReportFrom',
+ 'to': 'tripReportTo',
+ 'footer': 'tripReportFooter',
+ 'email_subject': 'tripReportEmailSubject',
+ 'email_title': 'tripReportEmailTitle',
+ 'email_greeting': 'tripReportEmailGreeting',
+ 'email_body': 'tripReportEmailBody',
+ 'email_opt_out': 'tripReportEmailOptOut',
+ 'category_food': 'expenseCategoryFood',
+ 'category_groceries': 'expenseCategoryGroceries',
+ 'category_fuel': 'expenseCategoryFuel',
+ 'category_transport': 'expenseCategoryTransport',
+ 'category_accommodation': 'expenseCategoryAccommodation',
+ 'category_activities': 'expenseCategoryActivities',
+ 'category_tickets': 'expenseCategoryTickets',
+ 'category_shopping': 'expenseCategoryShopping',
+ 'category_party': 'expenseCategoryParty',
+ 'category_parking': 'expenseCategoryParking',
+ 'category_other': 'expenseCategoryOther'}
+
 
 def export():
     destination = ROOT / 'api/lib/helpers/push/locales'
     destination.mkdir(exist_ok=True)
+    reports = ROOT / 'api/lib/helpers/trip_report_locales'
+    reports.mkdir(exist_ok=True)
     for path in sorted((ROOT / 'mobile/lib/l10n').glob('app_*.arb')):
         catalog = json.loads(path.read_text())
         phrases = {
@@ -85,6 +141,10 @@ def export():
         }
         (destination / (catalog['@@locale'] + '.json')).write_text(
             json.dumps(phrases, ensure_ascii=False, indent=2) + '\n'
+        )
+        report_phrases = {key: catalog[arb_key] for key, arb_key in REPORT_KEYS.items()}
+        (reports / (catalog['@@locale'] + '.json')).write_text(
+            json.dumps(report_phrases, ensure_ascii=False, indent=2) + '\n'
         )
 
 

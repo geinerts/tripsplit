@@ -4761,4 +4761,210 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get friendsShowMore => 'Näytä lisää';
+
+  @override
+  String get tripReportTitle => 'Matkaraportti';
+
+  @override
+  String get tripReportDetailedTitle => 'Yksityiskohtainen matkaraportti';
+
+  @override
+  String get tripReportDates => 'Päivät';
+
+  @override
+  String get tripReportDestinations => 'Kohteet';
+
+  @override
+  String get tripReportTotalSpent => 'Kulut yhteensä';
+
+  @override
+  String get tripReportExpenses => 'Kulut';
+
+  @override
+  String get tripReportYouPaid => 'Sinä maksoit';
+
+  @override
+  String get tripReportYourShare => 'Sinun osuutesi';
+
+  @override
+  String get tripReportYourBalance => 'Saldosi';
+
+  @override
+  String get tripReportYourSettlements => 'Sinun tilityksesi';
+
+  @override
+  String tripReportYouPay(Object arg1) {
+    return 'Maksat: $arg1';
+  }
+
+  @override
+  String tripReportPaysYou(Object arg1) {
+    return '$arg1 maksaa sinulle';
+  }
+
+  @override
+  String get tripReportStatus => 'Tila';
+
+  @override
+  String get tripReportStatusPending => 'Odottaa';
+
+  @override
+  String get tripReportStatusSent => 'Lähetetty';
+
+  @override
+  String get tripReportStatusConfirmed => 'Vahvistettu';
+
+  @override
+  String get tripReportNoSettlements => 'Sinulla ei ole mitään tilitettävää.';
+
+  @override
+  String get tripReportByCategory => 'Kulut luokittain';
+
+  @override
+  String get tripReportCategory => 'Luokka';
+
+  @override
+  String get tripReportAmount => 'Summa';
+
+  @override
+  String get tripReportMembers => 'Jäsenet';
+
+  @override
+  String get tripReportMember => 'Jäsen';
+
+  @override
+  String get tripReportPaid => 'Maksettu';
+
+  @override
+  String get tripReportShare => 'Osuus';
+
+  @override
+  String get tripReportBalance => 'Saldo';
+
+  @override
+  String get tripReportAllExpenses => 'Kaikki kulut';
+
+  @override
+  String get tripReportDate => 'Päivä';
+
+  @override
+  String get tripReportDescription => 'Kuvaus';
+
+  @override
+  String get tripReportPaidBy => 'Maksaja';
+
+  @override
+  String get tripReportOriginalAmount => 'Alkuperäinen summa';
+
+  @override
+  String get tripReportCurrency => 'Valuutta';
+
+  @override
+  String get tripReportRate => 'Kurssi';
+
+  @override
+  String get tripReportPayments => 'Maksut';
+
+  @override
+  String get tripReportFrom => 'Keneltä';
+
+  @override
+  String get tripReportTo => 'Kenelle';
+
+  @override
+  String get tripReportFooter => 'Luotu Splytolla';
+
+  @override
+  String tripReportEmailSubject(Object arg1) {
+    return 'Matkaraporttisi: $arg1';
+  }
+
+  @override
+  String get tripReportEmailTitle => 'Matkaraporttisi on valmis';
+
+  @override
+  String tripReportEmailGreeting(Object arg1) {
+    return 'Hei $arg1,';
+  }
+
+  @override
+  String tripReportEmailBody(Object arg1) {
+    return '$arg1 on päättynyt. Raporttisi on liitteenä PDF-tiedostona.';
+  }
+
+  @override
+  String get tripReportEmailOptOut => 'Voit poistaa nämä sähköpostit käytöstä kohdassa Profiili, Ilmoitukset.';
+
+  @override
+  String get tripReportEmailSetting => 'Matkaraportti sähköpostiin';
+
+  @override
+  String get tripReportEmailSettingSubtitle => 'Saat PDF-yhteenvedon, kun matka päättyy.';
+
+  @override
+  String get tripExportAction => 'Vie matkan tiedot';
+
+  @override
+  String get tripExportPdf => 'Yksityiskohtainen PDF';
+
+  @override
+  String get tripExportCsv => 'Taulukko (CSV)';
+
+  @override
+  String get tripExportFailed => 'Vientiä ei voitu luoda. Yritä uudelleen.';
+
+  @override
+  String get yearSummaryTitle => 'Matkavuotesi';
+
+  @override
+  String get yearSummarySubtitle => 'Vuoden matkasi, paikkasi ja kulusi.';
+
+  @override
+  String yearSummaryEmpty(Object arg1) {
+    return 'Ei päättyneitä matkoja vuonna $arg1.';
+  }
+
+  @override
+  String get yearSummaryLoadFailed => 'Matkavuottasi ei voitu ladata.';
+
+  @override
+  String get yearSummaryTrips => 'Matkat';
+
+  @override
+  String get yearSummaryDays => 'Matkapäivät';
+
+  @override
+  String get yearSummaryCountries => 'Maat';
+
+  @override
+  String get yearSummaryCities => 'Kaupungit';
+
+  @override
+  String get yearSummarySpending => 'Sinun kulusi';
+
+  @override
+  String get yearSummaryBiggestTrip => 'Suurin matka';
+
+  @override
+  String get yearSummaryTopCategory => 'Suurin luokka';
+
+  @override
+  String get yearSummaryTopCompanion => 'Eniten matkoja kanssa';
+
+  @override
+  String yearSummaryTripsTogether(Object arg1) {
+    return 'Yhteiset matkat: $arg1';
+  }
+
+  @override
+  String get yearSummaryPartial => 'Joitakin summia puuttuu, koska valuuttakurssia ei ollut saatavilla.';
+
+  @override
+  String get yearSummaryShare => 'Jaa';
+
+  @override
+  String get yearSummaryShareFailed => 'Kuvaa ei voitu jakaa.';
+
+  @override
+  String get yearSummaryRetry => 'Yritä uudelleen';
 }

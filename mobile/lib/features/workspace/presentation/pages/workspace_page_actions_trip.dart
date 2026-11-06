@@ -613,7 +613,16 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     final canManageMembers = _canEditMembers && !widget.trip.isSolo;
     final canFinishSolo = widget.trip.isSolo && _canEditMembers;
     final canDelete = _isTripActive && _isCurrentTripOwner();
+    final canExport =
+        widget.onExportTripRequested != null &&
+        widget
+                .authController
+                .currentUser
+                ?.premiumAccess
+                ?.offersPremiumFeatures ==
+            true;
     if (!canEdit &&
+        !canExport &&
         !canDelete &&
         !canManageMembers &&
         !canFinishSolo &&
@@ -641,6 +650,13 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
               icon: Icons.add_location_alt_outlined,
               title: t.travelAddToMap,
               onTap: () => Navigator.of(sheetContext).pop('map'),
+            ),
+          if (canExport)
+            AppPlainActionTile(
+              key: const ValueKey('trip-export'),
+              icon: Icons.file_download_outlined,
+              title: t.tripExportAction,
+              onTap: () => Navigator.of(sheetContext).pop('export'),
             ),
           if (canEdit)
             AppPlainActionTile(
@@ -698,6 +714,10 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
     if (choice == 'map') {
       await widget.onTravelMapRequested?.call();
+      return;
+    }
+    if (choice == 'export') {
+      await widget.onExportTripRequested?.call();
       return;
     }
     if (choice == 'edit') {

@@ -4771,4 +4771,210 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get friendsShowMore => 'Rādīt vairāk';
+
+  @override
+  String get tripReportTitle => 'Ceļojuma atskaite';
+
+  @override
+  String get tripReportDetailedTitle => 'Detalizēta ceļojuma atskaite';
+
+  @override
+  String get tripReportDates => 'Datumi';
+
+  @override
+  String get tripReportDestinations => 'Galamērķi';
+
+  @override
+  String get tripReportTotalSpent => 'Kopā iztērēts';
+
+  @override
+  String get tripReportExpenses => 'Izdevumi';
+
+  @override
+  String get tripReportYouPaid => 'Tu samaksāji';
+
+  @override
+  String get tripReportYourShare => 'Tava daļa';
+
+  @override
+  String get tripReportYourBalance => 'Tava bilance';
+
+  @override
+  String get tripReportYourSettlements => 'Tavi norēķini';
+
+  @override
+  String tripReportYouPay(Object arg1) {
+    return 'Tu maksā: $arg1';
+  }
+
+  @override
+  String tripReportPaysYou(Object arg1) {
+    return '$arg1 maksā tev';
+  }
+
+  @override
+  String get tripReportStatus => 'Statuss';
+
+  @override
+  String get tripReportStatusPending => 'Gaida';
+
+  @override
+  String get tripReportStatusSent => 'Nosūtīts';
+
+  @override
+  String get tripReportStatusConfirmed => 'Apstiprināts';
+
+  @override
+  String get tripReportNoSettlements => 'Tev nekas nav jānorēķinās.';
+
+  @override
+  String get tripReportByCategory => 'Izdevumi pa kategorijām';
+
+  @override
+  String get tripReportCategory => 'Kategorija';
+
+  @override
+  String get tripReportAmount => 'Summa';
+
+  @override
+  String get tripReportMembers => 'Dalībnieki';
+
+  @override
+  String get tripReportMember => 'Dalībnieks';
+
+  @override
+  String get tripReportPaid => 'Samaksāts';
+
+  @override
+  String get tripReportShare => 'Daļa';
+
+  @override
+  String get tripReportBalance => 'Bilance';
+
+  @override
+  String get tripReportAllExpenses => 'Visi izdevumi';
+
+  @override
+  String get tripReportDate => 'Datums';
+
+  @override
+  String get tripReportDescription => 'Apraksts';
+
+  @override
+  String get tripReportPaidBy => 'Samaksāja';
+
+  @override
+  String get tripReportOriginalAmount => 'Sākotnējā summa';
+
+  @override
+  String get tripReportCurrency => 'Valūta';
+
+  @override
+  String get tripReportRate => 'Kurss';
+
+  @override
+  String get tripReportPayments => 'Maksājumi';
+
+  @override
+  String get tripReportFrom => 'No';
+
+  @override
+  String get tripReportTo => 'Kam';
+
+  @override
+  String get tripReportFooter => 'Izveidots ar Splyto';
+
+  @override
+  String tripReportEmailSubject(Object arg1) {
+    return 'Tava ceļojuma atskaite: $arg1';
+  }
+
+  @override
+  String get tripReportEmailTitle => 'Tava ceļojuma atskaite ir gatava';
+
+  @override
+  String tripReportEmailGreeting(Object arg1) {
+    return 'Sveiks, $arg1!';
+  }
+
+  @override
+  String tripReportEmailBody(Object arg1) {
+    return 'Ceļojums $arg1 ir pabeigts. Tava atskaite ir pielikumā PDF formātā.';
+  }
+
+  @override
+  String get tripReportEmailOptOut => 'Šos e-pastus vari izslēgt sadaļā Profils, pie Paziņojumiem.';
+
+  @override
+  String get tripReportEmailSetting => 'Ceļojuma atskaite e-pastā';
+
+  @override
+  String get tripReportEmailSettingSubtitle => 'Saņem PDF kopsavilkumu, kad ceļojums ir pabeigts.';
+
+  @override
+  String get tripExportAction => 'Eksportēt ceļojuma detaļas';
+
+  @override
+  String get tripExportPdf => 'Detalizēts PDF';
+
+  @override
+  String get tripExportCsv => 'Izklājlapa (CSV)';
+
+  @override
+  String get tripExportFailed => 'Neizdevās izveidot eksportu. Mēģini vēlreiz.';
+
+  @override
+  String get yearSummaryTitle => 'Tavs ceļojumu gads';
+
+  @override
+  String get yearSummarySubtitle => 'Tavi gada ceļojumi, vietas un izdevumi.';
+
+  @override
+  String yearSummaryEmpty(Object arg1) {
+    return '$arg1. gadā nav pabeigtu ceļojumu.';
+  }
+
+  @override
+  String get yearSummaryLoadFailed => 'Neizdevās ielādēt tavu ceļojumu gadu.';
+
+  @override
+  String get yearSummaryTrips => 'Ceļojumi';
+
+  @override
+  String get yearSummaryDays => 'Dienas ceļā';
+
+  @override
+  String get yearSummaryCountries => 'Valstis';
+
+  @override
+  String get yearSummaryCities => 'Pilsētas';
+
+  @override
+  String get yearSummarySpending => 'Tavi izdevumi';
+
+  @override
+  String get yearSummaryBiggestTrip => 'Lielākais ceļojums';
+
+  @override
+  String get yearSummaryTopCategory => 'Galvenā kategorija';
+
+  @override
+  String get yearSummaryTopCompanion => 'Visvairāk ceļojumu ar';
+
+  @override
+  String yearSummaryTripsTogether(Object arg1) {
+    return 'Kopīgi ceļojumi: $arg1';
+  }
+
+  @override
+  String get yearSummaryPartial => 'Dažu summu trūkst, jo valūtas kurss nebija pieejams.';
+
+  @override
+  String get yearSummaryShare => 'Kopīgot';
+
+  @override
+  String get yearSummaryShareFailed => 'Neizdevās kopīgot attēlu.';
+
+  @override
+  String get yearSummaryRetry => 'Mēģināt vēlreiz';
 }

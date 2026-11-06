@@ -225,6 +225,10 @@ function end_trip_action(): void
             );
         }
 
+        if (function_exists('trip_report_enqueue')) {
+            trip_report_enqueue($pdo, $tripId, $memberIds);
+        }
+
         $pdo->commit();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {

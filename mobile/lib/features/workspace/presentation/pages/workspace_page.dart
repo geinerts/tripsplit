@@ -123,6 +123,7 @@ class WorkspacePage extends StatefulWidget {
     this.onExitRequested,
     this.onTripUpdated,
     this.onTravelMapRequested,
+    this.onExportTripRequested,
     this.liveLocationController,
   });
 
@@ -138,6 +139,7 @@ class WorkspacePage extends StatefulWidget {
   final VoidCallback? onExitRequested;
   final ValueChanged<Trip>? onTripUpdated;
   final Future<void> Function()? onTravelMapRequested;
+  final Future<void> Function()? onExportTripRequested;
   final LiveLocationController? liveLocationController;
 
   @override

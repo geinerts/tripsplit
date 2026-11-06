@@ -10,6 +10,12 @@ class PremiumAccess {
 
   bool get isFresh => _age.elapsed < _validFor;
   bool get isPremium => isFresh && plan == 'premium';
+
+  /// Whether to show Premium features. It stays true once the 5-minute display
+  /// freshness passes, since the server checks access on every request.
+  bool get offersPremiumFeatures =>
+      plan == 'premium' &&
+      (expiresAt == null || DateTime.now().toUtc().isBefore(expiresAt!));
   Duration get remainingFreshness {
     final remaining = _validFor - _age.elapsed;
     return remaining.isNegative ? Duration.zero : remaining;

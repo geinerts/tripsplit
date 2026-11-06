@@ -216,6 +216,38 @@ class _ProfileNotificationSettingsPageState
               ),
               onChanged: (value) => unawaited(_setAllPush(value)),
             ),
+            Divider(height: 1, color: AppDesign.cardStroke(context)),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: AppSettingsRow(
+                title: t.tripReportEmailSetting,
+                subtitle: t.tripReportEmailSettingSubtitle,
+                icon: Icons.picture_as_pdf_outlined,
+                chevron: false,
+                trailing: Semantics(
+                  label: t.tripReportEmailSetting,
+                  child: Switch.adaptive(
+                    key: const ValueKey('email-trip-report-switch'),
+                    value: _prefs.emailTripReportEnabled,
+                    onChanged: _isSaving
+                        ? null
+                        : (value) => unawaited(
+                            _save(
+                              optimistic: _prefs.copyWith(
+                                emailTripReportEnabled: value,
+                              ),
+                              request: () => widget.controller
+                                  .updateNotificationPreferences(
+                                    emailTripReportEnabled: value,
+                                  ),
+                            ),
+                          ),
+                    activeTrackColor: Theme.of(context).colorScheme.primary,
+                    activeThumbColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            ),
             if (_isSaving) ...[
               const SizedBox(height: 14),
               const Center(

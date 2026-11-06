@@ -70,6 +70,7 @@ class ProfilePage extends StatefulWidget {
     this.onProfileChanged,
     this.onQuickStartRequested,
     this.onTravelMapRequested,
+    this.onYearSummaryRequested,
     this.onEditModeChanged,
     this.commandController,
   });
@@ -80,6 +81,7 @@ class ProfilePage extends StatefulWidget {
   final VoidCallback? onProfileChanged;
   final VoidCallback? onQuickStartRequested;
   final VoidCallback? onTravelMapRequested;
+  final VoidCallback? onYearSummaryRequested;
   final ValueChanged<bool>? onEditModeChanged;
   final ProfilePageCommandController? commandController;
 

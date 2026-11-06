@@ -24,7 +24,22 @@ function notification_preferences_defaults(): array
         'push_friend_invites_enabled' => true,
         'push_trip_updates_enabled' => true,
         'push_settlement_updates_enabled' => true,
+        'email_trip_report_enabled' => true,
     ];
+}
+
+/** Separate from the main query so the server keeps working before the migration runs. */
+function load_email_trip_report_preference(PDO $pdo, int $userId): bool
+{
+    try {
+        $stmt = $pdo->prepare('SELECT email_trip_report_enabled FROM ' . table_name('notification_preferences')
+            . ' WHERE user_id = :user_id LIMIT 1');
+        $stmt->execute(['user_id' => $userId]);
+        $value = $stmt->fetchColumn();
+        return $value === false || (int) $value === 1;
+    } catch (PDOException $error) {
+        return true;
+    }
 }
 
 function notification_preferences_table_available(PDO $pdo): bool
@@ -159,6 +174,7 @@ function normalize_notification_preferences_patch(array $input): array
         'push_friend_invites_enabled' => 'push_friend_invites_enabled',
         'push_trip_updates_enabled' => 'push_trip_updates_enabled',
         'push_settlement_updates_enabled' => 'push_settlement_updates_enabled',
+        'email_trip_report_enabled' => 'email_trip_report_enabled',
     ];
     foreach ($flatMap as $inputKey => $targetKey) {
         if (!array_key_exists($inputKey, $input)) {
@@ -325,6 +341,7 @@ function load_user_notification_preferences(PDO $pdo, int $userId): array
         'push_friend_invites_enabled' => ((int) ($row['push_friend_invites_enabled'] ?? 1)) === 1,
         'push_trip_updates_enabled' => ((int) ($row['push_trip_updates_enabled'] ?? 1)) === 1,
         'push_settlement_updates_enabled' => ((int) ($row['push_settlement_updates_enabled'] ?? 1)) === 1,
+        'email_trip_report_enabled' => load_email_trip_report_preference($pdo, $userId),
     ];
     return $cache[$userId];
 }
@@ -525,6 +542,13 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
         'push_settlement_updates_enabled' => $next['push_settlement_updates_enabled'] ? 1 : 0,
     ]);
 
+    try {
+        $pdo->prepare('UPDATE ' . $table . ' SET email_trip_report_enabled = :enabled WHERE user_id = :user_id')
+            ->execute(['enabled' => ($next['email_trip_report_enabled'] ?? true) ? 1 : 0, 'user_id' => $userId]);
+    } catch (PDOException $error) {
+        $next['email_trip_report_enabled'] = true;
+    }
+
     $cache = &notification_preferences_runtime_cache();
     $cache[$userId] = $next;
     return $next;
@@ -557,6 +581,7 @@ function build_notification_preferences_payload(array $prefs): array
             'trip_updates' => (bool) ($prefs['push_trip_updates_enabled'] ?? true),
             'settlement_updates' => (bool) ($prefs['push_settlement_updates_enabled'] ?? true),
         ],
+        'email_trip_report_enabled' => (bool) ($prefs['email_trip_report_enabled'] ?? true),
     ];
 }
 

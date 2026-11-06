@@ -144,6 +144,17 @@ extension _ProfilePageWidgets on _ProfilePageState {
           ),
           divider(),
         ],
+        if (widget.onYearSummaryRequested != null &&
+            _user?.premiumAccess?.offersPremiumFeatures == true) ...[
+          _buildProfileSectionTile(
+            context: context,
+            title: t.yearSummaryTitle,
+            subtitle: t.yearSummarySubtitle,
+            icon: Icons.auto_awesome_outlined,
+            onTap: _isBusy ? null : widget.onYearSummaryRequested,
+          ),
+          divider(),
+        ],
         PremiumStatusTile(
           access: _user?.premiumAccess,
           onRefresh: _isLoading || _isBusy
