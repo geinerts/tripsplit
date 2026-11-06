@@ -16,7 +16,7 @@ import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_sheet.dart';
 import '../../domain/entities/auth_user.dart';
 import '../controllers/auth_controller.dart';
-import 'auth_background_layers.dart';
+import 'auth_intro_background.dart';
 import 'login_page.dart';
 
 enum AuthIntroStage { intro, choice }
@@ -366,28 +366,31 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppDesign.authCanvas,
+        backgroundColor: authIntroCanvas,
         resizeToAvoidBottomInset: false,
         body: MediaQuery.removeViewInsets(
           context: context,
           removeBottom: true,
           child: Stack(
             children: [
-              AuthBackgroundLayers(
+              AuthIntroBackground(
                 child: SafeArea(
                   maintainBottomViewPadding: true,
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final wide = constraints.maxWidth >= 700;
-                      final heroWidth = wide
-                          ? 340.0
-                          : constraints.maxWidth.clamp(0.0, 315.0);
-                      final heroViewportHeight = wide
-                          ? math.min(420.0, constraints.maxHeight - 40)
-                          : math.min(
-                              (heroWidth * .92).clamp(0.0, 300.0),
-                              math.max(0.0, constraints.maxHeight - 290),
-                            );
+                      final inIntro = _stage == AuthIntroStage.intro;
+                      // The logo sits low in this area, just above the text. The
+                      // sign-up choice needs the room, so the logo moves aside.
+                      final logoAreaHeight = math.min(
+                        constraints.maxHeight * (inIntro ? .44 : .16),
+                        math.max(
+                          0.0,
+                          constraints.maxHeight -
+                              (220 +
+                                  MediaQuery.textScalerOf(context).scale(110)),
+                        ),
+                      );
                       return Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1000),
@@ -397,30 +400,37 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
                               direction: wide ? Axis.horizontal : Axis.vertical,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                SizedBox(
+                                AnimatedContainer(
+                                  key: ValueKey('intro-logo-area-$wide'),
+                                  duration:
+                                      MediaQuery.disableAnimationsOf(context)
+                                      ? Duration.zero
+                                      : const Duration(milliseconds: 320),
+                                  curve: Curves.easeOutCubic,
                                   width: wide ? 340 : null,
-                                  height: wide ? null : heroViewportHeight + 10,
-                                  child: Center(
-                                    child: IgnorePointer(
-                                      child: RepaintBoundary(
-                                        child: _AuthIntroStaticHero(
-                                          heroWidth: heroWidth,
-                                          heroViewportHeight:
-                                              heroViewportHeight,
-                                          splitSettledLabel: context
-                                              .l10nEn
-                                              .authIntroSplitSettled,
-                                          paris3FriendsLabel: context
-                                              .l10nEn
-                                              .authIntroParis3Friends,
-                                        ),
+                                  height: wide ? null : logoAreaHeight,
+                                  alignment: wide
+                                      ? Alignment.center
+                                      : Alignment.bottomCenter,
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: inIntro || wide ? 300 : 150,
+                                    ),
+                                    child: AspectRatio(
+                                      aspectRatio: 1200 / 475,
+                                      child: Image.asset(
+                                        'assets/branding/logo_full_dark.png',
+                                        key: const ValueKey('auth-intro-logo'),
+                                        fit: BoxFit.contain,
+                                        filterQuality: FilterQuality.high,
+                                        semanticLabel: 'Splyto',
                                       ),
                                     ),
                                   ),
                                 ),
                                 SizedBox(
                                   width: wide ? 32 : 0,
-                                  height: wide ? 0 : 6,
+                                  height: wide ? 0 : 20,
                                 ),
                                 Expanded(
                                   child: PageView(
@@ -482,7 +492,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
     return KeyedSubtree(
       key: key,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
             child: PageView.builder(
@@ -604,52 +614,35 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
       builder: (context, constraints) {
         final isCompactHeight =
             constraints.maxHeight.isFinite && constraints.maxHeight < 132;
-        final titleSize = isCompactHeight ? 30.0 : 36.0;
-        final titleHeight = isCompactHeight ? 1.02 : 1.05;
-        final subtitleSize = isCompactHeight ? 13.0 : 14.0;
-        final subtitleHeight = isCompactHeight ? 1.35 : 1.65;
-        final gap = isCompactHeight ? 8.0 : 16.0;
+        final titleSize = isCompactHeight ? 26.0 : 30.0;
+        final subtitleSize = isCompactHeight ? 13.0 : 15.5;
+        final subtitleHeight = isCompactHeight ? 1.35 : 1.4;
+        final gap = isCompactHeight ? 6.0 : 10.0;
+        final titleStyle = Theme.of(context).textTheme.headlineMedium?.copyWith(
+          color: AppDesign.darkForeground,
+          fontSize: titleSize,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.9,
+          height: 1.08,
+        );
 
         return Align(
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '${slide.titleTop}\n',
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              color: AppDesign.darkForeground,
-                              fontSize: titleSize,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.9,
-                              height: titleHeight,
-                            ),
-                      ),
-                      TextSpan(
-                        text: slide.titleAccent,
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              color: AppDesign.authAccent,
-                              fontSize: titleSize,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.9,
-                              height: titleHeight,
-                            ),
-                      ),
-                    ],
-                  ),
+                Text(
+                  '${slide.titleTop}\n${slide.titleAccent}',
+                  textAlign: TextAlign.center,
+                  style: titleStyle,
                 ),
                 SizedBox(height: gap),
                 Text(
                   slide.subtitle,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: muted,
+                    color: AppDesign.darkForeground.withValues(alpha: .72),
                     fontSize: subtitleSize,
                     height: subtitleHeight,
                     fontWeight: FontWeight.w500,
@@ -668,7 +661,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.dark;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: List<Widget>.generate(total, (index) {
         final isActive = index == _pageIndex;
         return GestureDetector(
@@ -717,7 +710,7 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
-            foregroundColor: AppDesign.darkForeground,
+            foregroundColor: const Color(0xFF07211A),
             minimumSize: const Size.fromHeight(58),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
@@ -785,14 +778,11 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
             borderRadius: BorderRadius.circular(24),
           ),
         ),
-        icon: const Icon(
-          Icons.mail_outline_rounded,
-          color: AppDesign.darkForeground,
-        ),
+        icon: const Icon(Icons.mail_outline_rounded, color: Color(0xFF07211A)),
         label: Text(
           context.l10nEn.authIntroSignUpWithEmail,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: AppDesign.darkForeground,
+            color: const Color(0xFF07211A),
             fontWeight: FontWeight.w700,
             letterSpacing: 0.2,
           ),
@@ -906,299 +896,4 @@ class _IntroSlide {
   final String titleTop;
   final String titleAccent;
   final String subtitle;
-}
-
-class _AuthIntroStaticHero extends StatelessWidget {
-  const _AuthIntroStaticHero({
-    required this.heroWidth,
-    required this.heroViewportHeight,
-    required this.splitSettledLabel,
-    required this.paris3FriendsLabel,
-  });
-
-  final double heroWidth;
-  final double heroViewportHeight;
-  final String splitSettledLabel;
-  final String paris3FriendsLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: heroViewportHeight + 10,
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Transform.translate(
-          offset: const Offset(0, -14),
-          child: SizedBox(
-            width: heroWidth,
-            height: heroViewportHeight,
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: FittedBox(
-                fit: BoxFit.contain,
-                alignment: Alignment.topCenter,
-                child: SizedBox(
-                  width: 318,
-                  height: 430,
-                  child: _IntroHeroArt(
-                    splitSettledLabel: splitSettledLabel,
-                    paris3FriendsLabel: paris3FriendsLabel,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _IntroHeroArt extends StatelessWidget {
-  const _IntroHeroArt({
-    required this.splitSettledLabel,
-    required this.paris3FriendsLabel,
-  });
-
-  final String splitSettledLabel;
-  final String paris3FriendsLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final semantic =
-        Theme.of(context).extension<AppSemanticColors>() ??
-        AppSemanticColors.dark;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: CustomPaint(
-              size: const Size(300, 300),
-              painter: _IntroGlobePainter(),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 34,
-          right: 0,
-          child: _IntroPill(
-            label: 'EUR · USD · GBP · JPY',
-            background: semantic.cardGlassBackground.withValues(alpha: 0.22),
-            border: semantic.cardGlassBorder.withValues(alpha: 0.88),
-            textColor: AppDesign.darkForeground.withValues(alpha: 0.44),
-          ),
-        ),
-        Positioned(
-          top: 210,
-          left: 2,
-          child: _IntroPill(
-            label: splitSettledLabel,
-            background: semantic.statusActiveBackground,
-            border: semantic.statusActiveBorder,
-            textColor: semantic.statusActiveForeground,
-            leadingDot: true,
-          ),
-        ),
-        Positioned(
-          top: 258,
-          right: 2,
-          child: _IntroPill(
-            label: paris3FriendsLabel,
-            background: semantic.cardGlassBackground.withValues(alpha: 0.22),
-            border: semantic.cardGlassBorder.withValues(alpha: 0.88),
-            textColor: AppDesign.darkForeground.withValues(alpha: 0.40),
-          ),
-        ),
-        Positioned(
-          top: 332,
-          left: 0,
-          right: 0,
-          child: Center(
-            child: Transform.scale(
-              scaleX: 1.30,
-              scaleY: 1.25,
-              child: Image.asset(
-                'assets/branding/logo_full_dark.png',
-                width: 220,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _IntroPill extends StatelessWidget {
-  const _IntroPill({
-    required this.label,
-    required this.background,
-    required this.border,
-    required this.textColor,
-    this.leadingDot = false,
-  });
-
-  final String label;
-  final Color background;
-  final Color border;
-  final Color textColor;
-  final bool leadingDot;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: border, width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (leadingDot)
-            Container(
-              width: 9,
-              height: 9,
-              margin: const EdgeInsets.only(right: 10),
-              decoration: const BoxDecoration(
-                color: AppDesign.authAccentSoft,
-                shape: BoxShape.circle,
-              ),
-            ),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: textColor,
-              fontSize: 14.1,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _IntroGlobePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    const scale = 1.10;
-    canvas.save();
-    canvas.translate(center.dx, center.dy);
-    canvas.scale(scale, scale);
-    canvas.translate(-center.dx, -center.dy);
-
-    final strokeMain = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = AppDesign.authWireMain
-      ..strokeWidth = 1;
-    final strokeSoft = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = AppDesign.authWireSoft
-      ..strokeWidth = 0.8;
-
-    canvas.drawCircle(center, 136, strokeMain);
-    canvas.drawCircle(center, 110, strokeSoft);
-    canvas.drawCircle(center, 82, strokeSoft);
-
-    void drawEllipse(double rx, double ry, Paint paint) {
-      canvas.drawOval(
-        Rect.fromCenter(center: center, width: rx * 2, height: ry * 2),
-        paint,
-      );
-    }
-
-    drawEllipse(136, 38, strokeSoft);
-    drawEllipse(136, 82, strokeSoft);
-    drawEllipse(136, 120, strokeSoft);
-    drawEllipse(55, 136, strokeSoft);
-    drawEllipse(108, 136, strokeSoft);
-
-    canvas.drawLine(
-      Offset(14, center.dy),
-      Offset(size.width - 14, center.dy),
-      strokeMain..strokeWidth = 0.9,
-    );
-    canvas.drawLine(
-      Offset(center.dx, 14),
-      Offset(center.dx, size.height - 14),
-      strokeSoft..strokeWidth = 0.9,
-    );
-
-    final path = Path()
-      ..moveTo(75, 124)
-      ..quadraticBezierTo(124, 84, 150, 150)
-      ..quadraticBezierTo(176, 210, 238, 170);
-    _drawDashedPath(
-      canvas,
-      path,
-      dashLength: 7,
-      gapLength: 5,
-      paint: Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.2
-        ..strokeCap = StrokeCap.round
-        ..color = AppDesign.authDashedPath,
-    );
-
-    _drawPulse(canvas, const Offset(75, 124), AppDesign.authAccentStrong);
-    _drawPulse(canvas, const Offset(238, 170), AppDesign.authAccentMagenta);
-    canvas.drawCircle(
-      center,
-      3,
-      Paint()..color = AppDesign.darkForeground.withValues(alpha: 0.18),
-    );
-    canvas.restore();
-  }
-
-  void _drawPulse(Canvas canvas, Offset center, Color color) {
-    canvas.drawCircle(
-      center,
-      4.8,
-      Paint()..color = color.withValues(alpha: 0.95),
-    );
-    canvas.drawCircle(
-      center,
-      10,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.9
-        ..color = color.withValues(alpha: 0.28),
-    );
-    canvas.drawCircle(
-      center,
-      16,
-      Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 0.6
-        ..color = color.withValues(alpha: 0.10),
-    );
-  }
-
-  void _drawDashedPath(
-    Canvas canvas,
-    Path path, {
-    required double dashLength,
-    required double gapLength,
-    required Paint paint,
-  }) {
-    for (final metric in path.computeMetrics()) {
-      var distance = 0.0;
-      while (distance < metric.length) {
-        final next = math.min(distance + dashLength, metric.length);
-        final segment = metric.extractPath(distance, next);
-        canvas.drawPath(segment, paint);
-        distance = next + gapLength;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
