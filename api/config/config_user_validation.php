@@ -132,7 +132,7 @@ function validate_amount_cents($value): int
     }
 
     $amount = (float) $value;
-    if ($amount <= 0 || $amount > 99999999) {
+    if ($amount <= 0 || $amount > 9_999_999_999) {
         json_out(['ok' => false, 'error' => 'Amount out of range.'], 400);
     }
 

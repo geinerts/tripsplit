@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/currency/app_currency.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../domain/entities/comment_mention_text.dart';
@@ -165,8 +166,10 @@ class TripPaymentComposerPage extends StatefulWidget {
     required this.maxAmount,
     required this.maxAmountLabel,
     required this.isRequest,
+    this.currencyCode,
   });
   final String memberName, maxAmountLabel;
+  final String? currencyCode;
   final double maxAmount;
   final bool isRequest;
   @override
@@ -176,7 +179,10 @@ class TripPaymentComposerPage extends StatefulWidget {
 
 class _TripPaymentComposerPageState extends State<TripPaymentComposerPage> {
   late final _amount = TextEditingController(
-    text: widget.maxAmount.toStringAsFixed(2),
+    text: AppCurrencyCatalog.amountInputText(
+      widget.maxAmount,
+      widget.currencyCode,
+    ),
   );
   final _note = TextEditingController();
   bool _share = false, _submitted = false;

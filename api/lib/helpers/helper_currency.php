@@ -1,41 +1,16 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/helper_currency_catalog.php';
+
 function trip_supported_currency_codes(): array
 {
-    static $codes = null;
-    if (is_array($codes)) {
-        return $codes;
-    }
-
-    // Europe currencies + top 5 outside Europe.
-    $codes = [
-        // Europe
-        'EUR', 'GBP', 'CHF', 'NOK', 'SEK', 'DKK',
-        'PLN', 'CZK', 'HUF', 'RON', 'BGN', 'ISK',
-        'ALL', 'BAM', 'BYN', 'MDL', 'MKD', 'RSD',
-        'UAH', 'GEL', 'TRY',
-        // Outside Europe (top 5)
-        'USD', 'JPY', 'CNY', 'CAD', 'AUD',
-    ];
-
-    return $codes;
+    return TRIP_SUPPORTED_CURRENCY_CODES;
 }
 
 function fx_provider_supported_currency_codes(): array
 {
-    // Frankfurter-supported set (used for profile overview conversions).
-    static $codes = null;
-    if (is_array($codes)) {
-        return $codes;
-    }
-
-    $codes = [
-        'AUD', 'BGN', 'CAD', 'CHF', 'CNY', 'CZK', 'DKK', 'EUR',
-        'GBP', 'HUF', 'ISK', 'JPY', 'NOK', 'PLN', 'RON', 'SEK',
-        'TRY', 'USD',
-    ];
-    return $codes;
+    return TRIP_SUPPORTED_CURRENCY_CODES;
 }
 
 function currency_supported_by_fx_provider(string $code): bool
@@ -90,6 +65,9 @@ function normalize_currency_code_or_default($value): string
 function format_cents_with_currency(int $cents, string $currencyCode): string
 {
     $code = normalize_currency_code($currencyCode);
+    if (in_array($code, CURRENCY_CODES_WITHOUT_DECIMALS, true)) {
+        return $code . ' ' . number_format($cents / 100, 0, '.', '');
+    }
     return $code . ' ' . cents_to_decimal($cents);
 }
 
@@ -376,7 +354,8 @@ function convert_amount_to_trip_currency(
     }
 
     $convertedCents = (int) round($sourceAmountCents * $rate);
-    if ($convertedCents <= 0) {
+    // The amount column is DECIMAL(12,2).
+    if ($convertedCents <= 0 || $convertedCents > 999_999_999_999) {
         json_out(['ok' => false, 'error' => 'Converted amount is out of range.'], 400);
     }
 

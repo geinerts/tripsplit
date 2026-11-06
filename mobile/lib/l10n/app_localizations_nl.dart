@@ -2312,6 +2312,288 @@ class AppLocalizationsNl extends AppLocalizations {
   String get currencyNameAud => 'Australische dollar';
 
   @override
+  String get currencyNameRub => 'Russische roebel';
+
+  @override
+  String get currencyNameMxn => 'Mexicaanse peso';
+
+  @override
+  String get currencyNameBrl => 'Braziliaanse real';
+
+  @override
+  String get currencyNameArs => 'Argentijnse peso';
+
+  @override
+  String get currencyNameClp => 'Chileense peso';
+
+  @override
+  String get currencyNameCop => 'Colombiaanse peso';
+
+  @override
+  String get currencyNamePen => 'Peruaanse sol';
+
+  @override
+  String get currencyNameUyu => 'Uruguayaanse peso';
+
+  @override
+  String get currencyNameBob => 'Boliviaanse boliviano';
+
+  @override
+  String get currencyNamePyg => 'Paraguayaanse guarani';
+
+  @override
+  String get currencyNameCrc => 'Costa Ricaanse colon';
+
+  @override
+  String get currencyNameDop => 'Dominicaanse peso';
+
+  @override
+  String get currencyNameGtq => 'Guatemalteekse quetzal';
+
+  @override
+  String get currencyNamePab => 'Panamese balboa';
+
+  @override
+  String get currencyNameHnl => 'Hondurese lempira';
+
+  @override
+  String get currencyNameNio => 'Nicaraguaanse córdoba';
+
+  @override
+  String get currencyNameJmd => 'Jamaicaanse dollar';
+
+  @override
+  String get currencyNameBbd => 'Barbadaanse dollar';
+
+  @override
+  String get currencyNameBsd => 'Bahamaanse dollar';
+
+  @override
+  String get currencyNameTtd => 'Trinidad en Tobago-dollar';
+
+  @override
+  String get currencyNameXcd => 'Oost-Caribische dollar';
+
+  @override
+  String get currencyNameBzd => 'Belizaanse dollar';
+
+  @override
+  String get currencyNameAwg => 'Arubaanse gulden';
+
+  @override
+  String get currencyNameBmd => 'Bermuda-dollar';
+
+  @override
+  String get currencyNameKyd => 'Kaaimaneilandse dollar';
+
+  @override
+  String get currencyNameKrw => 'Zuid-Koreaanse won';
+
+  @override
+  String get currencyNameInr => 'Indiase roepie';
+
+  @override
+  String get currencyNameThb => 'Thaise baht';
+
+  @override
+  String get currencyNameVnd => 'Vietnamese dong';
+
+  @override
+  String get currencyNameIdr => 'Indonesische roepia';
+
+  @override
+  String get currencyNameMyr => 'Maleisische ringgit';
+
+  @override
+  String get currencyNameSgd => 'Singaporese dollar';
+
+  @override
+  String get currencyNamePhp => 'Filipijnse peso';
+
+  @override
+  String get currencyNameHkd => 'Hongkongse dollar';
+
+  @override
+  String get currencyNameTwd => 'Nieuwe Taiwanese dollar';
+
+  @override
+  String get currencyNameLkr => 'Sri Lankaanse roepie';
+
+  @override
+  String get currencyNameNpr => 'Nepalese roepie';
+
+  @override
+  String get currencyNameBdt => 'Bengalese taka';
+
+  @override
+  String get currencyNamePkr => 'Pakistaanse roepie';
+
+  @override
+  String get currencyNameKhr => 'Cambodjaanse riel';
+
+  @override
+  String get currencyNameLak => 'Laotiaanse kip';
+
+  @override
+  String get currencyNameMmk => 'Myanmarese kyat';
+
+  @override
+  String get currencyNameMnt => 'Mongoolse tugrik';
+
+  @override
+  String get currencyNameMop => 'Macause pataca';
+
+  @override
+  String get currencyNameBnd => 'Bruneise dollar';
+
+  @override
+  String get currencyNameMvr => 'Maldivische rufiyaa';
+
+  @override
+  String get currencyNameBtn => 'Bhutaanse ngultrum';
+
+  @override
+  String get currencyNameKzt => 'Kazachse tenge';
+
+  @override
+  String get currencyNameUzs => 'Oezbeekse sum';
+
+  @override
+  String get currencyNameKgs => 'Kirgizische som';
+
+  @override
+  String get currencyNameTjs => 'Tadzjiekse somoni';
+
+  @override
+  String get currencyNameAzn => 'Azerbeidzjaanse manat';
+
+  @override
+  String get currencyNameAmd => 'Armeense dram';
+
+  @override
+  String get currencyNameAed => 'Verenigde Arabische Emiraten-dirham';
+
+  @override
+  String get currencyNameSar => 'Saoedi-Arabische riyal';
+
+  @override
+  String get currencyNameQar => 'Qatarese rial';
+
+  @override
+  String get currencyNameOmr => 'Omaanse rial';
+
+  @override
+  String get currencyNameKwd => 'Koeweitse dinar';
+
+  @override
+  String get currencyNameBhd => 'Bahreinse dinar';
+
+  @override
+  String get currencyNameJod => 'Jordaanse dinar';
+
+  @override
+  String get currencyNameIls => 'Israëlische nieuwe shekel';
+
+  @override
+  String get currencyNameLbp => 'Libanees pond';
+
+  @override
+  String get currencyNameIqd => 'Iraakse dinar';
+
+  @override
+  String get currencyNameZar => 'Zuid-Afrikaanse rand';
+
+  @override
+  String get currencyNameEgp => 'Egyptisch pond';
+
+  @override
+  String get currencyNameMad => 'Marokkaanse dirham';
+
+  @override
+  String get currencyNameTnd => 'Tunesische dinar';
+
+  @override
+  String get currencyNameDzd => 'Algerijnse dinar';
+
+  @override
+  String get currencyNameKes => 'Keniaanse shilling';
+
+  @override
+  String get currencyNameTzs => 'Tanzaniaanse shilling';
+
+  @override
+  String get currencyNameUgx => 'Oegandese shilling';
+
+  @override
+  String get currencyNameRwf => 'Rwandese frank';
+
+  @override
+  String get currencyNameEtb => 'Ethiopische birr';
+
+  @override
+  String get currencyNameGhs => 'Ghanese cedi';
+
+  @override
+  String get currencyNameNgn => 'Nigeriaanse naira';
+
+  @override
+  String get currencyNameXof => 'CFA-franc BCEAO';
+
+  @override
+  String get currencyNameXaf => 'CFA-frank';
+
+  @override
+  String get currencyNameMur => 'Mauritiaanse roepie';
+
+  @override
+  String get currencyNameScr => 'Seychelse roepie';
+
+  @override
+  String get currencyNameNad => 'Namibische dollar';
+
+  @override
+  String get currencyNameBwp => 'Botswaanse pula';
+
+  @override
+  String get currencyNameZmw => 'Zambiaanse kwacha';
+
+  @override
+  String get currencyNameMzn => 'Mozambikaanse metical';
+
+  @override
+  String get currencyNameAoa => 'Angolese kwanza';
+
+  @override
+  String get currencyNameMga => 'Malagassische ariary';
+
+  @override
+  String get currencyNameCve => 'Kaapverdische escudo';
+
+  @override
+  String get currencyNameGmd => 'Gambiaanse dalasi';
+
+  @override
+  String get currencyNameNzd => 'Nieuw-Zeelandse dollar';
+
+  @override
+  String get currencyNameFjd => 'Fiji-dollar';
+
+  @override
+  String get currencyNameXpf => 'CFP-frank';
+
+  @override
+  String get currencyNameWst => 'Samoaanse tala';
+
+  @override
+  String get currencyNameVuv => 'Vanuatuaanse vatu';
+
+  @override
+  String get currencyNameTop => 'Tongaanse paʻanga';
+
+  @override
+  String get currencyNamePgk => 'Papoea-Nieuw-Guinese kina';
+
+  @override
   String get expenseCategoryFood => 'Eten';
 
   @override

@@ -615,6 +615,7 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 currencyCode: widget.trip.currencyCode,
               ),
               isRequest: isRequest,
+              currencyCode: widget.trip.currencyCode,
             ),
           ),
         );

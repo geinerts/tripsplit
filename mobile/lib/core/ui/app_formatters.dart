@@ -18,14 +18,14 @@ class AppFormatters {
         locale: localeTag,
         name: normalizedCode,
         symbol: symbol,
-        decimalDigits: 2,
+        decimalDigits: AppCurrencyCatalog.decimalDigitsForCode(normalizedCode),
       );
     } catch (_) {
       return NumberFormat.currency(
         locale: 'en_US',
         name: normalizedCode,
         symbol: symbol,
-        decimalDigits: 2,
+        decimalDigits: AppCurrencyCatalog.decimalDigitsForCode(normalizedCode),
       );
     }
   }
@@ -41,14 +41,14 @@ class AppFormatters {
         locale: localeTag,
         name: normalizedCode,
         symbol: '',
-        decimalDigits: 2,
+        decimalDigits: AppCurrencyCatalog.decimalDigitsForCode(normalizedCode),
       );
     } catch (_) {
       return NumberFormat.currency(
         locale: 'en_US',
         name: normalizedCode,
         symbol: '',
-        decimalDigits: 2,
+        decimalDigits: AppCurrencyCatalog.decimalDigitsForCode(normalizedCode),
       );
     }
   }

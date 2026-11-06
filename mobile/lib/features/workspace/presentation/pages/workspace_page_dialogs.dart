@@ -10,7 +10,12 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
     final isSolo = widget.trip.isSolo;
     final ownerId = widget.trip.createdBy ?? _currentUserId;
     final amountController = TextEditingController(
-      text: existing != null ? existing.originalAmount.toStringAsFixed(2) : '',
+      text: existing != null
+          ? AppCurrencyCatalog.amountInputText(
+              existing.originalAmount,
+              existing.expenseCurrencyCode,
+            )
+          : '',
     );
     final noteController = TextEditingController(text: existing?.note ?? '');
     final initialCategory = existing != null
@@ -422,8 +427,11 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                 ],
                                               ),
                                           keyboardType:
-                                              const TextInputType.numberWithOptions(
-                                                decimal: true,
+                                              TextInputType.numberWithOptions(
+                                                decimal:
+                                                    selectedCurrency
+                                                        .decimalDigits >
+                                                    0,
                                               ),
                                           decoration: InputDecoration(
                                             isDense: true,
