@@ -138,6 +138,7 @@ final class ImageCropTest extends TestCase
     {
         $r = $this->runFixture();
         self::assertSame([$r['orphan_expected']], $r['orphans']);
+        self::assertTrue($r['oversized_source_ignored']);
     }
 
     public function test_editing_still_works_when_storage_is_not_configured(): void

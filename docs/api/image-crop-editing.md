@@ -53,8 +53,8 @@ are unaffected.
 - `crop`: the JSON rectangle. Required when `source_image` is sent.
 
 The response adds `has_crop_source`. An invalid rectangle returns 400 before anything is
-stored. If the directory isn't configured, the upload still succeeds and the field is
-`false`. Without these fields the actions behave as before.
+stored. If the directory isn't configured, or the original is over a PHP upload limit,
+the upload still succeeds and the field is `false`. Without these fields the actions behave as before.
 
 New action, POST `upload_travel_photo_source` (multipart `source_image`, `crop`, `id`):
 `save_travel_place` keeps its 704 KiB JSON limit, which is too small for an original. The
@@ -140,8 +140,9 @@ before release.
 2. Deploy the backend before the app. No database migration is needed.
    `scripts/backup_vps.sh` includes the directory once it is configured.
 3. Add the weekly cleanup to cron.
-4. Check that PHP and nginx accept uploads of about 16 MB, since an upload can now carry
-   both images.
+4. Set PHP's `upload_max_filesize` to 8M and `post_max_size` to 12M, matching nginx's
+   12M limit, since an upload can now carry both images. PHP's defaults of 2M and 8M
+   would drop most originals.
 5. Release an app build with the new editor.
 
 ## Tests

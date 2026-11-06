@@ -8,7 +8,8 @@ declare(strict_types=1);
  */
 
 const IMAGE_SOURCE_MAX_EDGE = 2048;
-const IMAGE_SOURCE_MAX_PIXELS = 30_000_000;
+// Decoding uses about 4 bytes per pixel, and PHP has 128 MB per request.
+const IMAGE_SOURCE_MAX_PIXELS = 12_000_000;
 const IMAGE_SOURCE_WEBP_QUALITY = 86;
 const IMAGE_CROP_MIN_WIDTH = 320;
 const IMAGE_CROP_RATIO_TOLERANCE = 0.01;
@@ -157,6 +158,11 @@ function image_source_prepare(string $file, mixed $rawCrop, string $kind): array
 function image_source_from_request(string $kind, int $maxBytes): ?array
 {
     if (!isset($_FILES['source_image']) || !is_array($_FILES['source_image'])) {
+        return null;
+    }
+    // A file over a PHP limit must not cost the person the cropped image they also sent.
+    // Without the original, the image can still be zoomed later.
+    if ((int) ($_FILES['source_image']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
         return null;
     }
     $validated = validate_uploaded_image_file($_FILES['source_image'], $maxBytes, 'Photo is too large.');

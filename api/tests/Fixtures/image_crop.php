@@ -257,6 +257,11 @@ $r['orphans'] = image_originals_orphans($pdo);
 $r['orphan_expected'] = $orphanKey;
 foreach ([$orphanKey, $recentKey, $usedKey] as $cleanupKey) image_source_delete($cleanupKey);
 
+// An original over a PHP limit leaves the upload itself working.
+$_FILES['source_image'] = ['error' => UPLOAD_ERR_INI_SIZE, 'size' => 0, 'tmp_name' => '', 'name' => 'source.jpg'];
+$r['oversized_source_ignored'] = image_source_from_request('trip', 8388608) === null;
+unset($_FILES['source_image']);
+
 // Only the original bytes are kept, and only under the configured directory.
 $r['invalid_key_rejected'] = false;
 try { image_source_key('trip', '../../escape/.webp'); } catch (InvalidArgumentException) { $r['invalid_key_rejected'] = true; }
