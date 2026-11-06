@@ -6430,13 +6430,13 @@ abstract class AppLocalizations {
   /// No description provided for @quickStartCreateTitle.
   ///
   /// In en, this message translates to:
-  /// **'Create a trip'**
+  /// **'Solo or with friends'**
   String get quickStartCreateTitle;
 
   /// No description provided for @quickStartCreateBody.
   ///
   /// In en, this message translates to:
-  /// **'Pick a name and currency, then invite friends or keep the trip just for you.'**
+  /// **'Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.'**
   String get quickStartCreateBody;
 
   /// No description provided for @quickStartInviteTitle.
@@ -6454,13 +6454,13 @@ abstract class AppLocalizations {
   /// No description provided for @quickStartExpenseTitle.
   ///
   /// In en, this message translates to:
-  /// **'Add your first expense'**
+  /// **'Expenses in many currencies'**
   String get quickStartExpenseTitle;
 
   /// No description provided for @quickStartExpenseBody.
   ///
   /// In en, this message translates to:
-  /// **'Enter the amount, choose who paid and split the cost. Your balances stay up to date.'**
+  /// **'Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.'**
   String get quickStartExpenseBody;
 
   /// No description provided for @quickStartSettleTitle.
@@ -6478,13 +6478,13 @@ abstract class AppLocalizations {
   /// No description provided for @quickStartAnalyticsTitle.
   ///
   /// In en, this message translates to:
-  /// **'See where it goes'**
+  /// **'Budget and spending'**
   String get quickStartAnalyticsTitle;
 
   /// No description provided for @quickStartAnalyticsBody.
   ///
   /// In en, this message translates to:
-  /// **'Follow your spending by trip, category and day.'**
+  /// **'Set a budget for your trip or group, then see spending by category, trip and day.'**
   String get quickStartAnalyticsBody;
 
   /// No description provided for @quickStartMapTitle.

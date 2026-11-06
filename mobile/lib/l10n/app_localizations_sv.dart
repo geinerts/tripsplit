@@ -3494,10 +3494,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get quickStartTitle => 'Snabbstart';
 
   @override
-  String get quickStartCreateTitle => 'Skapa en resa';
+  String get quickStartCreateTitle => 'Själv eller med vänner';
 
   @override
-  String get quickStartCreateBody => 'Välj namn och valuta och bjud sedan in vänner eller behåll resan för dig själv.';
+  String get quickStartCreateBody => 'Skapa en resa för dig själv eller en grupp. Lägg till vänner med länk eller QR-kod och bjud in dem.';
 
   @override
   String get quickStartInviteTitle => 'Res tillsammans eller på egen hand';
@@ -3506,10 +3506,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get quickStartInviteBody => 'Bjud in vänner att dela din resa, eller starta en personlig resa på egen hand.';
 
   @override
-  String get quickStartExpenseTitle => 'Lägg till din första utgift';
+  String get quickStartExpenseTitle => 'Utgifter i många valutor';
 
   @override
-  String get quickStartExpenseBody => 'Ange beloppet, välj vem som har betalat och dela upp kostnaden. Dina saldon hålls uppdaterade.';
+  String get quickStartExpenseBody => 'Välj vem som betalade och hur det delas. Andra valutor räknas om till kursen på köpdatumet, även om du lägger till dem senare.';
 
   @override
   String get quickStartSettleTitle => 'Gör upp enkelt';
@@ -3518,10 +3518,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get quickStartSettleBody => 'Se vem som är skyldig vem, betala som du vill och bekräfta i appen.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Se vart pengarna går';
+  String get quickStartAnalyticsTitle => 'Budget och utgifter';
 
   @override
-  String get quickStartAnalyticsBody => 'Följ dina utgifter per resa, kategori och dag.';
+  String get quickStartAnalyticsBody => 'Ange en budget för resan eller gruppen och se utgifter per kategori, resa och dag.';
 
   @override
   String get quickStartMapTitle => 'Spara dina platser';

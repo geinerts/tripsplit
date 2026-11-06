@@ -18111,34 +18111,32 @@
   "cs:quickStartCreateTitle": {
     "locale": "cs",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
-    "before": "Vytvořit výlet",
-    "translation": "Vytvořte výlet",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Solo or with friends",
+    "before": "Vytvořte výlet",
+    "translation": "Sami nebo s přáteli",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "cs:quickStartCreateBody": {
     "locale": "cs",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Vyberte si název a měnu. Hraďte si výdaje sami nebo se o náklady podělte se skupinou.",
-    "translation": "Zvolte název a měnu a poté pozvěte přátele, nebo si výlet nechte jen pro sebe.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Zvolte název a měnu a poté pozvěte přátele, nebo si výlet nechte jen pro sebe.",
+    "translation": "Vytvořte výlet pro sebe nebo skupinu. Přidejte přátele odkazem nebo QR kódem a pozvěte je.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "cs:quickStartInviteTitle": {
     "locale": "cs",
@@ -18177,36 +18175,32 @@
   "cs:quickStartExpenseTitle": {
     "locale": "cs",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
-    "before": "Přidat svůj první výdaj",
-    "translation": "Přidejte svůj první výdaj",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Expenses in many currencies",
+    "before": "Přidejte svůj první výdaj",
+    "translation": "Výdaje v mnoha měnách",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "cs:quickStartExpenseBody": {
     "locale": "cs",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Zadejte částku, vyberte, kdo zaplatil a rozdělit náklady. Vaše zůstatky zůstávají aktuální.",
-    "translation": "Zadejte částku, vyberte, kdo zaplatil, a rozdělte náklady. Vaše zůstatky zůstávají aktuální.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Zadejte částku, vyberte, kdo zaplatil, a rozdělte náklady. Vaše zůstatky zůstávají aktuální.",
+    "translation": "Zvolte, kdo platil a jak se má částka rozdělit. Jiné měny se převádějí podle kurzu z data nákupu, i když je přidáte později.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "cs:quickStartNext": {
     "locale": "cs",
@@ -40734,34 +40728,32 @@
   "da:quickStartCreateTitle": {
     "locale": "da",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
+    "source": "Solo or with friends",
     "before": "Opret en tur",
-    "translation": "Opret en tur",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Alene eller med venner",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "da:quickStartCreateBody": {
     "locale": "da",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Vælg et navn og en valuta. Hold dine egne udgifter, eller del omkostningerne med en gruppe.",
-    "translation": "Vælg navn og valuta, og inviter derefter venner, eller behold turen for dig selv.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Vælg navn og valuta, og inviter derefter venner, eller behold turen for dig selv.",
+    "translation": "Opret en tur til dig selv eller en gruppe. Tilføj venner med link eller QR-kode, og inviter dem.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "da:quickStartInviteTitle": {
     "locale": "da",
@@ -40800,36 +40792,32 @@
   "da:quickStartExpenseTitle": {
     "locale": "da",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
+    "source": "Expenses in many currencies",
     "before": "Tilføj din første udgift",
-    "translation": "Tilføj din første udgift",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Udgifter i mange valutaer",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "da:quickStartExpenseBody": {
     "locale": "da",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Indtast beløbet, vælge, hvem der har betalt og opdele omkostningerne. Dine saldi holde sig ajour.",
-    "translation": "Indtast beløbet, vælg hvem der har betalt, og fordel udgiften. Jeres saldoer holdes opdateret.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Indtast beløbet, vælg hvem der har betalt, og fordel udgiften. Jeres saldoer holdes opdateret.",
+    "translation": "Vælg, hvem der betalte, og hvordan det deles. Andre valutaer omregnes til kursen på købsdatoen, også hvis du tilføjer dem senere.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "da:quickStartNext": {
     "locale": "da",
@@ -63410,34 +63398,32 @@
   "de:quickStartCreateTitle": {
     "locale": "de",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
-    "before": "Erstellen Sie eine Reise",
-    "translation": "Reise erstellen",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Solo or with friends",
+    "before": "Reise erstellen",
+    "translation": "Allein oder mit Freunden",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "de:quickStartCreateBody": {
     "locale": "de",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Wählen Sie einen Namen und eine Währung aus. Tragen Sie Ihre Ausgaben selbst oder teilen Sie sich die Kosten mit einer Gruppe.",
-    "translation": "Wählen Sie einen Namen und eine Währung. Laden Sie dann Freunde ein oder behalten Sie die Reise für sich.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Wählen Sie einen Namen und eine Währung. Laden Sie dann Freunde ein oder behalten Sie die Reise für sich.",
+    "translation": "Erstellen Sie eine Reise für sich oder eine Gruppe. Fügen Sie Freunde per Link oder QR-Code hinzu und laden Sie sie ein.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "de:quickStartInviteTitle": {
     "locale": "de",
@@ -63476,36 +63462,32 @@
   "de:quickStartExpenseTitle": {
     "locale": "de",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
-    "before": "Fügen Sie Ihre ersten Ausgaben",
-    "translation": "Fügen Sie Ihre erste Ausgabe hinzu",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Expenses in many currencies",
+    "before": "Fügen Sie Ihre erste Ausgabe hinzu",
+    "translation": "Ausgaben in vielen Währungen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "de:quickStartExpenseBody": {
     "locale": "de",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Geben Sie den Betrag ein, wählen Sie, wer bezahlt hat und teilen Sie die Kosten. Ihre Salden bleiben auf dem neuesten Stand.",
-    "translation": "Geben Sie den Betrag ein, wählen Sie aus, wer bezahlt hat, und teilen Sie die Kosten auf. Ihre Kontostände bleiben auf dem neuesten Stand.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Geben Sie den Betrag ein, wählen Sie aus, wer bezahlt hat, und teilen Sie die Kosten auf. Ihre Kontostände bleiben auf dem neuesten Stand.",
+    "translation": "Wählen Sie, wer gezahlt hat und wie geteilt wird. Andere Währungen werden zum Kurs des Kaufdatums umgerechnet, auch wenn Sie sie später eintragen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "de:quickStartNext": {
     "locale": "de",
@@ -85994,34 +85976,32 @@
   "es:quickStartCreateTitle": {
     "locale": "es",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
+    "source": "Solo or with friends",
     "before": "Crea un viaje",
-    "translation": "Crea un viaje",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "existing_translation_compared",
+    "translation": "Solo o con amigos",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "es:quickStartCreateBody": {
     "locale": "es",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Elige un nombre y una moneda. Registra tus gastos o comparte los costes en grupo.",
-    "translation": "Elige un nombre y una moneda, y luego invita a tus amigos o guarda el viaje solo para ti.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Elige un nombre y una moneda, y luego invita a tus amigos o guarda el viaje solo para ti.",
+    "translation": "Crea un viaje para ti o para un grupo. Añade amigos con un enlace o un código QR e invítalos.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "es:quickStartInviteTitle": {
     "locale": "es",
@@ -86060,36 +86040,32 @@
   "es:quickStartExpenseTitle": {
     "locale": "es",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
+    "source": "Expenses in many currencies",
     "before": "Añade tu primer gasto",
-    "translation": "Añade tu primer gasto",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "existing_translation_compared",
+    "translation": "Gastos en muchas monedas",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "es:quickStartExpenseBody": {
     "locale": "es",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
     "before": "Introduce el importe, elige quién pagó y reparte el coste. Tus saldos se actualizan.",
-    "translation": "Introduce el importe, elige quién pagó y reparte el coste. Tus saldos se actualizan.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "existing_translation_compared",
+    "translation": "Elige quién pagó y cómo dividir. Las otras monedas se convierten al tipo de la fecha de compra, aunque las añadas más tarde.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "es:quickStartNext": {
     "locale": "es",
@@ -108650,34 +108626,32 @@
   "fi:quickStartCreateTitle": {
     "locale": "fi",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
+    "source": "Solo or with friends",
     "before": "Luo matka",
-    "translation": "Luo matka",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Yksin tai ystävien kanssa",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fi:quickStartCreateBody": {
     "locale": "fi",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Valitse nimi ja valuutta. Hoida omat kulusi itse tai jaa kustannukset ryhmän kanssa.",
-    "translation": "Valitse nimi ja valuutta ja kutsu sitten ystäviä tai pidä matka omana tietonasi.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Valitse nimi ja valuutta ja kutsu sitten ystäviä tai pidä matka omana tietonasi.",
+    "translation": "Luo matka itsellesi tai ryhmälle. Lisää ystäviä linkillä tai QR-koodilla ja kutsu heidät mukaan.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fi:quickStartInviteTitle": {
     "locale": "fi",
@@ -108716,36 +108690,32 @@
   "fi:quickStartExpenseTitle": {
     "locale": "fi",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
+    "source": "Expenses in many currencies",
     "before": "Lisää ensimmäinen kulusi",
-    "translation": "Lisää ensimmäinen kulusi",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Kulut monissa valuutoissa",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fi:quickStartExpenseBody": {
     "locale": "fi",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Syötä määrä, valitse kuka maksoi ja jakaa kustannukset. Omat saldot pysyvät ajan tasalla.",
-    "translation": "Syötä summa, valitse maksaja ja jaa kustannukset. Saldojesi tiedot pysyvät ajan tasalla.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Syötä summa, valitse maksaja ja jaa kustannukset. Saldojesi tiedot pysyvät ajan tasalla.",
+    "translation": "Valitse, kuka maksoi ja miten kulu jaetaan. Muut valuutat muunnetaan ostopäivän kurssilla, vaikka lisäisit ne myöhemmin.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fi:quickStartNext": {
     "locale": "fi",
@@ -131309,34 +131279,32 @@
   "fr:quickStartCreateTitle": {
     "locale": "fr",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
+    "source": "Solo or with friends",
     "before": "Créer un voyage",
-    "translation": "Créer un voyage",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Seul ou entre amis",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fr:quickStartCreateBody": {
     "locale": "fr",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Choisissez un nom et une devise. Prenez en charge vos propres dépenses ou partagez les coûts avec un groupe.",
-    "translation": "Choisissez un nom et une devise, puis invitez vos amis ou gardez le voyage pour vous.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Choisissez un nom et une devise, puis invitez vos amis ou gardez le voyage pour vous.",
+    "translation": "Créez un voyage pour vous ou pour un groupe. Ajoutez des amis par lien ou code QR, puis invitez-les.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fr:quickStartInviteTitle": {
     "locale": "fr",
@@ -131375,36 +131343,32 @@
   "fr:quickStartExpenseTitle": {
     "locale": "fr",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
+    "source": "Expenses in many currencies",
     "before": "Ajoutez votre première dépense",
-    "translation": "Ajoutez votre première dépense",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Dépenses en plusieurs devises",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fr:quickStartExpenseBody": {
     "locale": "fr",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Entrez le montant, choisissez qui a payé et fractionnez le coût. Vos soldes restent à jour.",
-    "translation": "Saisissez le montant, choisissez qui a payé et répartissez les frais. Vos soldes restent à jour.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Saisissez le montant, choisissez qui a payé et répartissez les frais. Vos soldes restent à jour.",
+    "translation": "Choisissez qui a payé et comment partager. Les autres devises sont converties au taux de la date d’achat, même si vous les ajoutez plus tard.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fr:quickStartNext": {
     "locale": "fr",
@@ -153967,34 +153931,32 @@
   "it:quickStartCreateTitle": {
     "locale": "it",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
-    "before": "Creare un viaggio",
-    "translation": "Crea un viaggio",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Solo or with friends",
+    "before": "Crea un viaggio",
+    "translation": "Da solo o con gli amici",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "it:quickStartCreateBody": {
     "locale": "it",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Scegli un nome e una valuta. Gestisci le tue spese o condividi i costi con un gruppo.",
-    "translation": "Scegli un nome e una valuta, poi invita gli amici o tieni il viaggio solo per te.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Scegli un nome e una valuta, poi invita gli amici o tieni il viaggio solo per te.",
+    "translation": "Crea un viaggio per te o per un gruppo. Aggiungi amici con un link o un codice QR e invitali.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "it:quickStartInviteTitle": {
     "locale": "it",
@@ -154033,36 +153995,32 @@
   "it:quickStartExpenseTitle": {
     "locale": "it",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
-    "before": "Aggiungi le tue prime spese",
-    "translation": "Aggiungi la tua prima spesa",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Expenses in many currencies",
+    "before": "Aggiungi la tua prima spesa",
+    "translation": "Spese in molte valute",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "it:quickStartExpenseBody": {
     "locale": "it",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Inserire l'importo, scegliere chi ha pagato e dividere il costo.",
-    "translation": "Inserisci l’importo, scegli chi ha pagato e dividi il costo. I tuoi saldi rimangono aggiornati.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Inserisci l’importo, scegli chi ha pagato e dividi il costo. I tuoi saldi rimangono aggiornati.",
+    "translation": "Scegli chi ha pagato e come dividere. Le altre valute vengono convertite al cambio della data di acquisto, anche se le aggiungi dopo.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "it:quickStartNext": {
     "locale": "it",
@@ -176570,34 +176528,32 @@
   "lv:quickStartCreateTitle": {
     "locale": "lv",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
+    "source": "Solo or with friends",
     "before": "Izveido ceļojumu",
-    "translation": "Izveido ceļojumu",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "existing_translation_compared",
+    "translation": "Viens vai ar draugiem",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "lv:quickStartCreateBody": {
     "locale": "lv",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Izvēlies nosaukumu un valūtu. Uzskaiti savus izdevumus vai dali izmaksas ar grupu.",
-    "translation": "Izvēlies nosaukumu un valūtu, tad uzaicini draugus vai patur ceļojumu tikai sev.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Izvēlies nosaukumu un valūtu, tad uzaicini draugus vai patur ceļojumu tikai sev.",
+    "translation": "Izveido ceļojumu sev vai grupai. Pievieno draugus ar saiti vai QR kodu un uzaicini viņus.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "lv:quickStartInviteTitle": {
     "locale": "lv",
@@ -176636,36 +176592,32 @@
   "lv:quickStartExpenseTitle": {
     "locale": "lv",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
+    "source": "Expenses in many currencies",
     "before": "Pievieno pirmo izdevumu",
-    "translation": "Pievieno pirmo izdevumu",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "existing_translation_compared",
+    "translation": "Tēriņi dažādās valūtās",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "lv:quickStartExpenseBody": {
     "locale": "lv",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
     "before": "Ievadi summu, norādi maksātāju un sadali izmaksas. Splyto aprēķinās katra bilanci.",
-    "translation": "Ievadi summu, norādi maksātāju un sadali izmaksas. Splyto aprēķinās katra bilanci.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "existing_translation_compared",
+    "translation": "Norādi, kurš maksāja un kā dalīt. Citas valūtas tiek konvertētas pēc pirkuma dienas kursa, pat ja pievieno vēlāk.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "lv:quickStartNext": {
     "locale": "lv",
@@ -199189,34 +199141,32 @@
   "nb:quickStartCreateTitle": {
     "locale": "nb",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
-    "before": "Opprette en tur",
-    "translation": "Opprett en tur",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Solo or with friends",
+    "before": "Opprett en tur",
+    "translation": "Alene eller med venner",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nb:quickStartCreateBody": {
     "locale": "nb",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Velg et navn og en valuta. Hold orden på dine egne utgifter, eller del kostnadene med en gruppe.",
-    "translation": "Velg navn og valuta, og inviter deretter venner eller behold turen for deg selv.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Velg navn og valuta, og inviter deretter venner eller behold turen for deg selv.",
+    "translation": "Opprett en tur for deg selv eller en gruppe. Legg til venner med lenke eller QR-kode, og inviter dem.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nb:quickStartInviteTitle": {
     "locale": "nb",
@@ -199255,36 +199205,32 @@
   "nb:quickStartExpenseTitle": {
     "locale": "nb",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
+    "source": "Expenses in many currencies",
     "before": "Legg til din første utgift",
-    "translation": "Legg til din første utgift",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Utgifter i mange valutaer",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nb:quickStartExpenseBody": {
     "locale": "nb",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Skriv inn beløpet, velg hvem som betalte og delte kostnadene. Saldoene dine er oppdaterte.",
-    "translation": "Skriv inn beløpet, velg hvem som har betalt, og del kostnaden. Saldoene dine holdes oppdatert.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Skriv inn beløpet, velg hvem som har betalt, og del kostnaden. Saldoene dine holdes oppdatert.",
+    "translation": "Velg hvem som betalte og hvordan det deles. Andre valutaer regnes om til kursen på kjøpsdatoen, også hvis du legger dem til senere.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nb:quickStartNext": {
     "locale": "nb",
@@ -221834,34 +221780,32 @@
   "nl:quickStartCreateTitle": {
     "locale": "nl",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
-    "before": "Maak een reis",
-    "translation": "Maak een reis aan",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Solo or with friends",
+    "before": "Maak een reis aan",
+    "translation": "Alleen of met vrienden",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nl:quickStartCreateBody": {
     "locale": "nl",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Kies een naam en valuta. Houd je eigen uitgaven bij of deel de kosten met een groep.",
-    "translation": "Kies een naam en valuta en nodig daarna vrienden uit, of houd de reis voor jezelf.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Kies een naam en valuta en nodig daarna vrienden uit, of houd de reis voor jezelf.",
+    "translation": "Maak een reis voor jezelf of een groep. Voeg vrienden toe via een link of QR-code en nodig ze uit.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nl:quickStartInviteTitle": {
     "locale": "nl",
@@ -221900,36 +221844,32 @@
   "nl:quickStartExpenseTitle": {
     "locale": "nl",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
-    "before": "Voeg uw eerste uitgave toe",
-    "translation": "Voeg je eerste uitgave toe",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Expenses in many currencies",
+    "before": "Voeg je eerste uitgave toe",
+    "translation": "Uitgaven in veel valuta",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nl:quickStartExpenseBody": {
     "locale": "nl",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Voer het bedrag in, kies wie betaalde en deel de kosten. Uw saldi blijven up-to-date.",
-    "translation": "Voer het bedrag in, kies wie er heeft betaald en verdeel de kosten. Je saldi blijven up-to-date.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Voer het bedrag in, kies wie er heeft betaald en verdeel de kosten. Je saldi blijven up-to-date.",
+    "translation": "Kies wie betaald heeft en hoe je deelt. Andere valuta worden omgerekend tegen de koers van de aankoopdatum, ook als je ze later toevoegt.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nl:quickStartNext": {
     "locale": "nl",
@@ -244472,34 +244412,32 @@
   "pl:quickStartCreateTitle": {
     "locale": "pl",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
-    "before": "Utwórz podróż",
-    "translation": "Utwórz wycieczkę",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Solo or with friends",
+    "before": "Utwórz wycieczkę",
+    "translation": "Solo lub ze znajomymi",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pl:quickStartCreateBody": {
     "locale": "pl",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Wybierz nazwę i walutę. Pokrywaj własne wydatki lub dziel się kosztami z grupą.",
-    "translation": "Wybierz nazwę i walutę, a potem zaproś znajomych lub zachowaj wycieczkę tylko dla siebie.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Wybierz nazwę i walutę, a potem zaproś znajomych lub zachowaj wycieczkę tylko dla siebie.",
+    "translation": "Utwórz wycieczkę dla siebie lub grupy. Dodaj znajomych przez link lub kod QR i zaproś ich.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pl:quickStartInviteTitle": {
     "locale": "pl",
@@ -244538,36 +244476,32 @@
   "pl:quickStartExpenseTitle": {
     "locale": "pl",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
+    "source": "Expenses in many currencies",
     "before": "Dodaj swój pierwszy wydatek",
-    "translation": "Dodaj swój pierwszy wydatek",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Wydatki w wielu walutach",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pl:quickStartExpenseBody": {
     "locale": "pl",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Wprowadź kwotę, wybierz kto zapłacił i podziel koszt. Twoje salda pozostają na bieżąco.",
-    "translation": "Wprowadź kwotę, wybierz, kto zapłacił, i podziel koszty. Twoje salda są zawsze aktualne.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Wprowadź kwotę, wybierz, kto zapłacił, i podziel koszty. Twoje salda są zawsze aktualne.",
+    "translation": "Wybierz, kto zapłacił i jak podzielić. Inne waluty są przeliczane po kursie z dnia zakupu, nawet jeśli dodasz je później.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pl:quickStartNext": {
     "locale": "pl",
@@ -267101,34 +267035,32 @@
   "pt:quickStartCreateTitle": {
     "locale": "pt",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
+    "source": "Solo or with friends",
     "before": "Criar uma viagem",
-    "translation": "Criar uma viagem",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Sozinho ou com amigos",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pt:quickStartCreateBody": {
     "locale": "pt",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Escolha um nome e uma moeda. Assuma as suas próprias despesas ou partilhe os custos com um grupo.",
-    "translation": "Escolha um nome e uma moeda e depois convide amigos ou mantenha a viagem só para si.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Escolha um nome e uma moeda e depois convide amigos ou mantenha a viagem só para si.",
+    "translation": "Crie uma viagem para si ou para um grupo. Adicione amigos com uma ligação ou código QR e convide-os.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pt:quickStartInviteTitle": {
     "locale": "pt",
@@ -267167,36 +267099,32 @@
   "pt:quickStartExpenseTitle": {
     "locale": "pt",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
+    "source": "Expenses in many currencies",
     "before": "Adicione a sua primeira despesa",
-    "translation": "Adicione a sua primeira despesa",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Despesas em várias moedas",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pt:quickStartExpenseBody": {
     "locale": "pt",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Digite o valor, escolha quem pagou e divida o custo. Seus saldos permanecem atualizados.",
-    "translation": "Introduza o montante, escolha quem pagou e divida o custo. Os seus saldos mantêm-se atualizados.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Introduza o montante, escolha quem pagou e divida o custo. Os seus saldos mantêm-se atualizados.",
+    "translation": "Escolha quem pagou e como dividir. As outras moedas são convertidas à taxa da data de compra, mesmo que as adicione mais tarde.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pt:quickStartNext": {
     "locale": "pt",
@@ -289750,34 +289678,32 @@
   "sv:quickStartCreateTitle": {
     "locale": "sv",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
+    "source": "Solo or with friends",
     "before": "Skapa en resa",
-    "translation": "Skapa en resa",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "translation": "Själv eller med vänner",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "sv:quickStartCreateBody": {
     "locale": "sv",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Välj ett namn och en valuta. Håll dina egna utgifter eller dela kostnaderna med en grupp.",
-    "translation": "Välj namn och valuta och bjud sedan in vänner eller behåll resan för dig själv.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Välj namn och valuta och bjud sedan in vänner eller behåll resan för dig själv.",
+    "translation": "Skapa en resa för dig själv eller en grupp. Lägg till vänner med länk eller QR-kod och bjud in dem.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "sv:quickStartInviteTitle": {
     "locale": "sv",
@@ -289816,36 +289742,32 @@
   "sv:quickStartExpenseTitle": {
     "locale": "sv",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
-    "before": "Lägg till din första kostnad",
-    "translation": "Lägg till din första utgift",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Expenses in many currencies",
+    "before": "Lägg till din första utgift",
+    "translation": "Utgifter i många valutor",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "sv:quickStartExpenseBody": {
     "locale": "sv",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Ange beloppet, välj vem som betalade och dela kostnaden. Dina saldon stannar uppdaterade.",
-    "translation": "Ange beloppet, välj vem som har betalat och dela upp kostnaden. Dina saldon hålls uppdaterade.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Ange beloppet, välj vem som har betalat och dela upp kostnaden. Dina saldon hålls uppdaterade.",
+    "translation": "Välj vem som betalade och hur det delas. Andra valutor räknas om till kursen på köpdatumet, även om du lägger till dem senare.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "sv:quickStartNext": {
     "locale": "sv",
@@ -312444,34 +312366,32 @@
   "uk:quickStartCreateTitle": {
     "locale": "uk",
     "key": "quickStartCreateTitle",
-    "source": "Create a trip",
-    "before": "Створіть подорож",
-    "translation": "Створити поїздку",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Solo or with friends",
+    "before": "Створити поїздку",
+    "translation": "Самостійно або з друзями",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "uk:quickStartCreateBody": {
     "locale": "uk",
     "key": "quickStartCreateBody",
-    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
-    "before": "Оберіть назву та валюту. Ведіть власні витрати або діліться витратами з групою.",
-    "translation": "Виберіть назву та валюту, а потім запросіть друзів або залиште поїздку лише для себе.",
+    "source": "Create a trip for yourself or a group. Add friends with a link or QR code and invite them in.",
+    "before": "Виберіть назву та валюту, а потім запросіть друзів або залиште поїздку лише для себе.",
+    "translation": "Створіть поїздку для себе чи групи. Додайте друзів за посиланням або QR-кодом і запросіть їх.",
     "status": "ai_reviewed",
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against live location and travel map behaviour"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start rewrite. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "uk:quickStartInviteTitle": {
     "locale": "uk",
@@ -312510,37 +312430,32 @@
   "uk:quickStartExpenseTitle": {
     "locale": "uk",
     "key": "quickStartExpenseTitle",
-    "source": "Add your first expense",
-    "before": "Додати перший рахунок",
-    "translation": "Додайте свою першу витрату",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Expenses in many currencies",
+    "before": "Додайте свою першу витрату",
+    "translation": "Витрати в багатьох валютах",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "uk:quickStartExpenseBody": {
     "locale": "uk",
     "key": "quickStartExpenseBody",
-    "source": "Enter the amount, choose who paid and split the cost. Your balances stay up to date.",
-    "before": "Введіть номер мобільного, який Ви вказали при укладаннi договору з банком - для ідентифікації.",
-    "translation": "Введіть суму, виберіть, хто заплатив, і розділіть витрати. Ваші залишки на рахунках завжди актуальні.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Choose who paid and how to split. Other currencies convert at the rate from the purchase date, even if you add them later.",
+    "before": "Введіть суму, виберіть, хто заплатив, і розділіть витрати. Ваші залишки на рахунках завжди актуальні.",
+    "translation": "Виберіть, хто заплатив і як розділити. Інші валюти конвертуються за курсом на дату покупки, навіть якщо ви додасте їх пізніше.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording",
-      "second DeepL backtranslation of final wording"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "uk:quickStartNext": {
     "locale": "uk",
@@ -322204,421 +322119,421 @@
   "lv:quickStartAnalyticsTitle": {
     "locale": "lv",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Redzi, kur aiziet nauda",
+    "source": "Budget and spending",
+    "before": "Redzi, kur aiziet nauda",
+    "translation": "Budžets un tēriņi",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "lv:quickStartAnalyticsBody": {
     "locale": "lv",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Seko saviem tēriņiem pa ceļojumiem, kategorijām un dienām.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Seko saviem tēriņiem pa ceļojumiem, kategorijām un dienām.",
+    "translation": "Iestati budžetu sev vai grupai un redzi tēriņus pa kategorijām, ceļojumiem un dienām.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "de:quickStartAnalyticsTitle": {
     "locale": "de",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Ausgaben im Blick",
+    "source": "Budget and spending",
+    "before": "Ausgaben im Blick",
+    "translation": "Budget und Ausgaben",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "de:quickStartAnalyticsBody": {
     "locale": "de",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Verfolgen Sie Ihre Ausgaben nach Reise, Kategorie und Tag.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Verfolgen Sie Ihre Ausgaben nach Reise, Kategorie und Tag.",
+    "translation": "Legen Sie ein Budget für Ihre Reise oder Gruppe fest und sehen Sie Ausgaben nach Kategorie, Reise und Tag.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "es:quickStartAnalyticsTitle": {
     "locale": "es",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Mira en qué gastas",
+    "source": "Budget and spending",
+    "before": "Mira en qué gastas",
+    "translation": "Presupuesto y gastos",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "es:quickStartAnalyticsBody": {
     "locale": "es",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Sigue tus gastos por viaje, categoría y día.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Sigue tus gastos por viaje, categoría y día.",
+    "translation": "Fija un presupuesto para tu viaje o grupo y consulta los gastos por categoría, viaje y día.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fr:quickStartAnalyticsTitle": {
     "locale": "fr",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Suivez vos dépenses",
+    "source": "Budget and spending",
+    "before": "Suivez vos dépenses",
+    "translation": "Budget et dépenses",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fr:quickStartAnalyticsBody": {
     "locale": "fr",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Consultez vos dépenses par voyage, catégorie et jour.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Consultez vos dépenses par voyage, catégorie et jour.",
+    "translation": "Définissez un budget pour votre voyage ou votre groupe, puis consultez les dépenses par catégorie, voyage et jour.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "it:quickStartAnalyticsTitle": {
     "locale": "it",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Guarda dove vanno i soldi",
+    "source": "Budget and spending",
+    "before": "Guarda dove vanno i soldi",
+    "translation": "Budget e spese",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "it:quickStartAnalyticsBody": {
     "locale": "it",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Segui le tue spese per viaggio, categoria e giorno.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Segui le tue spese per viaggio, categoria e giorno.",
+    "translation": "Imposta un budget per il viaggio o il gruppo e guarda le spese per categoria, viaggio e giorno.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pt:quickStartAnalyticsTitle": {
     "locale": "pt",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Veja para onde vai o dinheiro",
+    "source": "Budget and spending",
+    "before": "Veja para onde vai o dinheiro",
+    "translation": "Orçamento e despesas",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pt:quickStartAnalyticsBody": {
     "locale": "pt",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Acompanhe as suas despesas por viagem, categoria e dia.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Acompanhe as suas despesas por viagem, categoria e dia.",
+    "translation": "Defina um orçamento para a sua viagem ou grupo e veja as despesas por categoria, viagem e dia.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pl:quickStartAnalyticsTitle": {
     "locale": "pl",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Zobacz, na co wydajesz",
+    "source": "Budget and spending",
+    "before": "Zobacz, na co wydajesz",
+    "translation": "Budżet i wydatki",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "pl:quickStartAnalyticsBody": {
     "locale": "pl",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Śledź swoje wydatki według wycieczek, kategorii i dni.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Śledź swoje wydatki według wycieczek, kategorii i dni.",
+    "translation": "Ustaw budżet wycieczki lub grupy i sprawdzaj wydatki według kategorii, wycieczek i dni.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nl:quickStartAnalyticsTitle": {
     "locale": "nl",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Zie waar je geld heen gaat",
+    "source": "Budget and spending",
+    "before": "Zie waar je geld heen gaat",
+    "translation": "Budget en uitgaven",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nl:quickStartAnalyticsBody": {
     "locale": "nl",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Volg je uitgaven per reis, categorie en dag.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Volg je uitgaven per reis, categorie en dag.",
+    "translation": "Stel een budget in voor je reis of groep en bekijk uitgaven per categorie, reis en dag.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "sv:quickStartAnalyticsTitle": {
     "locale": "sv",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Se vart pengarna går",
+    "source": "Budget and spending",
+    "before": "Se vart pengarna går",
+    "translation": "Budget och utgifter",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "sv:quickStartAnalyticsBody": {
     "locale": "sv",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Följ dina utgifter per resa, kategori och dag.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Följ dina utgifter per resa, kategori och dag.",
+    "translation": "Ange en budget för resan eller gruppen och se utgifter per kategori, resa och dag.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "da:quickStartAnalyticsTitle": {
     "locale": "da",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Se, hvor pengene går hen",
+    "source": "Budget and spending",
+    "before": "Se, hvor pengene går hen",
+    "translation": "Budget og udgifter",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "da:quickStartAnalyticsBody": {
     "locale": "da",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Følg dine udgifter pr. tur, kategori og dag.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Følg dine udgifter pr. tur, kategori og dag.",
+    "translation": "Sæt et budget for turen eller gruppen, og se udgifter pr. kategori, tur og dag.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nb:quickStartAnalyticsTitle": {
     "locale": "nb",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Se hvor pengene går",
+    "source": "Budget and spending",
+    "before": "Se hvor pengene går",
+    "translation": "Budsjett og utgifter",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "nb:quickStartAnalyticsBody": {
     "locale": "nb",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Følg utgiftene dine per tur, kategori og dag.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Følg utgiftene dine per tur, kategori og dag.",
+    "translation": "Sett et budsjett for turen eller gruppen, og se utgifter per kategori, tur og dag.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fi:quickStartAnalyticsTitle": {
     "locale": "fi",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Katso, mihin rahat menevät",
+    "source": "Budget and spending",
+    "before": "Katso, mihin rahat menevät",
+    "translation": "Budjetti ja kulut",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "fi:quickStartAnalyticsBody": {
     "locale": "fi",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Seuraa kulujasi matkoittain, luokittain ja päivittäin.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Seuraa kulujasi matkoittain, luokittain ja päivittäin.",
+    "translation": "Aseta budjetti matkalle tai ryhmälle ja katso kulut luokittain, matkoittain ja päivittäin.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "cs:quickStartAnalyticsTitle": {
     "locale": "cs",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Podívejte se, kam jdou peníze",
+    "source": "Budget and spending",
+    "before": "Podívejte se, kam jdou peníze",
+    "translation": "Rozpočet a výdaje",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "cs:quickStartAnalyticsBody": {
     "locale": "cs",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Sledujte své výdaje podle cest, kategorií a dnů.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Sledujte své výdaje podle cest, kategorií a dnů.",
+    "translation": "Nastavte rozpočet pro výlet nebo skupinu a sledujte výdaje podle kategorií, výletů a dnů.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "uk:quickStartAnalyticsTitle": {
     "locale": "uk",
     "key": "quickStartAnalyticsTitle",
-    "source": "See where it goes",
-    "before": null,
-    "translation": "Дивіться, на що йдуть гроші",
+    "source": "Budget and spending",
+    "before": "Дивіться, на що йдуть гроші",
+    "translation": "Бюджет і витрати",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   },
   "uk:quickStartAnalyticsBody": {
     "locale": "uk",
     "key": "quickStartAnalyticsBody",
-    "source": "Follow your spending by trip, category and day.",
-    "before": null,
-    "translation": "Стежте за витратами за поїздками, категоріями та днями.",
+    "source": "Set a budget for your trip or group, then see spending by category, trip and day.",
+    "before": "Стежте за витратами за поїздками, категоріями та днями.",
+    "translation": "Встановіть бюджет для поїздки чи групи й дивіться витрати за категоріями, поїздками та днями.",
     "status": "ai_reviewed",
     "date": "2026-11-06",
     "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "checked against analytics page content"
+      "checked against currency conversion, budget and friends behaviour"
     ],
-    "note": "Quick Start analytics slide. Not native-speaker proofread."
+    "note": "Quick Start content update. Not native-speaker proofread."
   }
 }

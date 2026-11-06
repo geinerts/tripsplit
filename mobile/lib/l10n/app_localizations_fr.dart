@@ -3494,10 +3494,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quickStartTitle => 'Démarrage rapide';
 
   @override
-  String get quickStartCreateTitle => 'Créer un voyage';
+  String get quickStartCreateTitle => 'Seul ou entre amis';
 
   @override
-  String get quickStartCreateBody => 'Choisissez un nom et une devise, puis invitez vos amis ou gardez le voyage pour vous.';
+  String get quickStartCreateBody => 'Créez un voyage pour vous ou pour un groupe. Ajoutez des amis par lien ou code QR, puis invitez-les.';
 
   @override
   String get quickStartInviteTitle => 'Voyager ensemble ou en solo';
@@ -3506,10 +3506,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quickStartInviteBody => 'Invitez des amis à partager votre voyage, ou lancez un voyage personnel tout seul.';
 
   @override
-  String get quickStartExpenseTitle => 'Ajoutez votre première dépense';
+  String get quickStartExpenseTitle => 'Dépenses en plusieurs devises';
 
   @override
-  String get quickStartExpenseBody => 'Saisissez le montant, choisissez qui a payé et répartissez les frais. Vos soldes restent à jour.';
+  String get quickStartExpenseBody => 'Choisissez qui a payé et comment partager. Les autres devises sont converties au taux de la date d’achat, même si vous les ajoutez plus tard.';
 
   @override
   String get quickStartSettleTitle => 'Réglez simplement';
@@ -3518,10 +3518,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quickStartSettleBody => 'Voyez qui doit quoi à qui, payez comme vous voulez et confirmez dans l’app.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Suivez vos dépenses';
+  String get quickStartAnalyticsTitle => 'Budget et dépenses';
 
   @override
-  String get quickStartAnalyticsBody => 'Consultez vos dépenses par voyage, catégorie et jour.';
+  String get quickStartAnalyticsBody => 'Définissez un budget pour votre voyage ou votre groupe, puis consultez les dépenses par catégorie, voyage et jour.';
 
   @override
   String get quickStartMapTitle => 'Gardez vos lieux';

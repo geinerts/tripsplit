@@ -243,7 +243,7 @@ void main() {
         expect(find.byType(QuickStartSheet), findsNothing);
         await tester.tap(find.text('Open'));
         await tester.pumpAndSettle();
-        expect(find.text('Create a trip'), findsOneWidget);
+        expect(find.text('Solo or with friends'), findsOneWidget);
         presenter.dismiss();
         await tester.pumpAndSettle();
       },

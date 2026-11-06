@@ -3506,10 +3506,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get quickStartTitle => 'Szybki start';
 
   @override
-  String get quickStartCreateTitle => 'Utwórz wycieczkę';
+  String get quickStartCreateTitle => 'Solo lub ze znajomymi';
 
   @override
-  String get quickStartCreateBody => 'Wybierz nazwę i walutę, a potem zaproś znajomych lub zachowaj wycieczkę tylko dla siebie.';
+  String get quickStartCreateBody => 'Utwórz wycieczkę dla siebie lub grupy. Dodaj znajomych przez link lub kod QR i zaproś ich.';
 
   @override
   String get quickStartInviteTitle => 'Podróżujcie razem lub samodzielnie';
@@ -3518,10 +3518,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get quickStartInviteBody => 'Zaproś znajomych, aby dołączyli do Twojej podróży, lub rozpocznij własną, prywatną podróż.';
 
   @override
-  String get quickStartExpenseTitle => 'Dodaj swój pierwszy wydatek';
+  String get quickStartExpenseTitle => 'Wydatki w wielu walutach';
 
   @override
-  String get quickStartExpenseBody => 'Wprowadź kwotę, wybierz, kto zapłacił, i podziel koszty. Twoje salda są zawsze aktualne.';
+  String get quickStartExpenseBody => 'Wybierz, kto zapłacił i jak podzielić. Inne waluty są przeliczane po kursie z dnia zakupu, nawet jeśli dodasz je później.';
 
   @override
   String get quickStartSettleTitle => 'Rozliczaj się łatwo';
@@ -3530,10 +3530,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get quickStartSettleBody => 'Zobacz, kto komu ile jest winien, zapłać w dogodny sposób i potwierdź to w aplikacji.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Zobacz, na co wydajesz';
+  String get quickStartAnalyticsTitle => 'Budżet i wydatki';
 
   @override
-  String get quickStartAnalyticsBody => 'Śledź swoje wydatki według wycieczek, kategorii i dni.';
+  String get quickStartAnalyticsBody => 'Ustaw budżet wycieczki lub grupy i sprawdzaj wydatki według kategorii, wycieczek i dni.';
 
   @override
   String get quickStartMapTitle => 'Zachowaj swoje miejsca';

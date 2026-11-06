@@ -3506,10 +3506,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get quickStartTitle => 'Швидкий старт';
 
   @override
-  String get quickStartCreateTitle => 'Створити поїздку';
+  String get quickStartCreateTitle => 'Самостійно або з друзями';
 
   @override
-  String get quickStartCreateBody => 'Виберіть назву та валюту, а потім запросіть друзів або залиште поїздку лише для себе.';
+  String get quickStartCreateBody => 'Створіть поїздку для себе чи групи. Додайте друзів за посиланням або QR-кодом і запросіть їх.';
 
   @override
   String get quickStartInviteTitle => 'Подорожуйте разом або самостійно';
@@ -3518,10 +3518,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get quickStartInviteBody => 'Запрошуйте друзів долучитися до вашої подорожі або розпочніть особисту подорож самостійно.';
 
   @override
-  String get quickStartExpenseTitle => 'Додайте свою першу витрату';
+  String get quickStartExpenseTitle => 'Витрати в багатьох валютах';
 
   @override
-  String get quickStartExpenseBody => 'Введіть суму, виберіть, хто заплатив, і розділіть витрати. Ваші залишки на рахунках завжди актуальні.';
+  String get quickStartExpenseBody => 'Виберіть, хто заплатив і як розділити. Інші валюти конвертуються за курсом на дату покупки, навіть якщо ви додасте їх пізніше.';
 
   @override
   String get quickStartSettleTitle => 'Розраховуйтеся просто';
@@ -3530,10 +3530,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get quickStartSettleBody => 'Дивіться, хто кому винен, платіть зручним способом і підтверджуйте це в застосунку.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Дивіться, на що йдуть гроші';
+  String get quickStartAnalyticsTitle => 'Бюджет і витрати';
 
   @override
-  String get quickStartAnalyticsBody => 'Стежте за витратами за поїздками, категоріями та днями.';
+  String get quickStartAnalyticsBody => 'Встановіть бюджет для поїздки чи групи й дивіться витрати за категоріями, поїздками та днями.';
 
   @override
   String get quickStartMapTitle => 'Зберігайте свої місця';

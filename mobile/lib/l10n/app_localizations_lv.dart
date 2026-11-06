@@ -3500,10 +3500,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get quickStartTitle => 'Īsā pamācība';
 
   @override
-  String get quickStartCreateTitle => 'Izveido ceļojumu';
+  String get quickStartCreateTitle => 'Viens vai ar draugiem';
 
   @override
-  String get quickStartCreateBody => 'Izvēlies nosaukumu un valūtu, tad uzaicini draugus vai patur ceļojumu tikai sev.';
+  String get quickStartCreateBody => 'Izveido ceļojumu sev vai grupai. Pievieno draugus ar saiti vai QR kodu un uzaicini viņus.';
 
   @override
   String get quickStartInviteTitle => 'Ceļo kopā vai vienatnē';
@@ -3512,10 +3512,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get quickStartInviteBody => 'Uzaicini draugus kopīgā ceļojumā vai sāc personīgo ceļojumu patstāvīgi.';
 
   @override
-  String get quickStartExpenseTitle => 'Pievieno pirmo izdevumu';
+  String get quickStartExpenseTitle => 'Tēriņi dažādās valūtās';
 
   @override
-  String get quickStartExpenseBody => 'Ievadi summu, norādi maksātāju un sadali izmaksas. Splyto aprēķinās katra bilanci.';
+  String get quickStartExpenseBody => 'Norādi, kurš maksāja un kā dalīt. Citas valūtas tiek konvertētas pēc pirkuma dienas kursa, pat ja pievieno vēlāk.';
 
   @override
   String get quickStartSettleTitle => 'Norēķinies vienkārši';
@@ -3524,10 +3524,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get quickStartSettleBody => 'Redzi, kurš kuram parādā, samaksā sev ērtā veidā un apstiprini to lietotnē.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Redzi, kur aiziet nauda';
+  String get quickStartAnalyticsTitle => 'Budžets un tēriņi';
 
   @override
-  String get quickStartAnalyticsBody => 'Seko saviem tēriņiem pa ceļojumiem, kategorijām un dienām.';
+  String get quickStartAnalyticsBody => 'Iestati budžetu sev vai grupai un redzi tēriņus pa kategorijām, ceļojumiem un dienām.';
 
   @override
   String get quickStartMapTitle => 'Saglabā savas vietas';

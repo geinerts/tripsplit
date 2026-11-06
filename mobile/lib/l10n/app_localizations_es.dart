@@ -3494,10 +3494,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get quickStartTitle => 'Guía rápida';
 
   @override
-  String get quickStartCreateTitle => 'Crea un viaje';
+  String get quickStartCreateTitle => 'Solo o con amigos';
 
   @override
-  String get quickStartCreateBody => 'Elige un nombre y una moneda, y luego invita a tus amigos o guarda el viaje solo para ti.';
+  String get quickStartCreateBody => 'Crea un viaje para ti o para un grupo. Añade amigos con un enlace o un código QR e invítalos.';
 
   @override
   String get quickStartInviteTitle => 'Viaja en grupo o por tu cuenta';
@@ -3506,10 +3506,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get quickStartInviteBody => 'Invita a tus amigos a un viaje en grupo o empieza un viaje personal por tu cuenta.';
 
   @override
-  String get quickStartExpenseTitle => 'Añade tu primer gasto';
+  String get quickStartExpenseTitle => 'Gastos en muchas monedas';
 
   @override
-  String get quickStartExpenseBody => 'Introduce el importe, elige quién pagó y reparte el coste. Tus saldos se actualizan.';
+  String get quickStartExpenseBody => 'Elige quién pagó y cómo dividir. Las otras monedas se convierten al tipo de la fecha de compra, aunque las añadas más tarde.';
 
   @override
   String get quickStartSettleTitle => 'Liquida sin complicaciones';
@@ -3518,10 +3518,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get quickStartSettleBody => 'Mira quién debe a quién, paga como prefieras y confírmalo en la app.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Mira en qué gastas';
+  String get quickStartAnalyticsTitle => 'Presupuesto y gastos';
 
   @override
-  String get quickStartAnalyticsBody => 'Sigue tus gastos por viaje, categoría y día.';
+  String get quickStartAnalyticsBody => 'Fija un presupuesto para tu viaje o grupo y consulta los gastos por categoría, viaje y día.';
 
   @override
   String get quickStartMapTitle => 'Guarda tus lugares';

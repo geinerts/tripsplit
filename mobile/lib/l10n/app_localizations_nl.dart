@@ -3494,10 +3494,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get quickStartTitle => 'Snel aan de slag';
 
   @override
-  String get quickStartCreateTitle => 'Maak een reis aan';
+  String get quickStartCreateTitle => 'Alleen of met vrienden';
 
   @override
-  String get quickStartCreateBody => 'Kies een naam en valuta en nodig daarna vrienden uit, of houd de reis voor jezelf.';
+  String get quickStartCreateBody => 'Maak een reis voor jezelf of een groep. Voeg vrienden toe via een link of QR-code en nodig ze uit.';
 
   @override
   String get quickStartInviteTitle => 'Reis samen of alleen';
@@ -3506,10 +3506,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get quickStartInviteBody => 'Nodig vrienden uit om je reis te delen, of begin zelf een persoonlijke reis.';
 
   @override
-  String get quickStartExpenseTitle => 'Voeg je eerste uitgave toe';
+  String get quickStartExpenseTitle => 'Uitgaven in veel valuta';
 
   @override
-  String get quickStartExpenseBody => 'Voer het bedrag in, kies wie er heeft betaald en verdeel de kosten. Je saldi blijven up-to-date.';
+  String get quickStartExpenseBody => 'Kies wie betaald heeft en hoe je deelt. Andere valuta worden omgerekend tegen de koers van de aankoopdatum, ook als je ze later toevoegt.';
 
   @override
   String get quickStartSettleTitle => 'Eenvoudig afrekenen';
@@ -3518,10 +3518,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get quickStartSettleBody => 'Zie wie wat aan wie schuldig is, betaal op je eigen manier en bevestig het in de app.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Zie waar je geld heen gaat';
+  String get quickStartAnalyticsTitle => 'Budget en uitgaven';
 
   @override
-  String get quickStartAnalyticsBody => 'Volg je uitgaven per reis, categorie en dag.';
+  String get quickStartAnalyticsBody => 'Stel een budget in voor je reis of groep en bekijk uitgaven per categorie, reis en dag.';
 
   @override
   String get quickStartMapTitle => 'Bewaar je plekken';

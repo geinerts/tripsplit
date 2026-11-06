@@ -3494,10 +3494,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get quickStartTitle => 'Início rápido';
 
   @override
-  String get quickStartCreateTitle => 'Criar uma viagem';
+  String get quickStartCreateTitle => 'Sozinho ou com amigos';
 
   @override
-  String get quickStartCreateBody => 'Escolha um nome e uma moeda e depois convide amigos ou mantenha a viagem só para si.';
+  String get quickStartCreateBody => 'Crie uma viagem para si ou para um grupo. Adicione amigos com uma ligação ou código QR e convide-os.';
 
   @override
   String get quickStartInviteTitle => 'Viajar em grupo ou sozinho';
@@ -3506,10 +3506,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get quickStartInviteBody => 'Convide amigos para partilhar a sua viagem ou inicie uma viagem pessoal por conta própria.';
 
   @override
-  String get quickStartExpenseTitle => 'Adicione a sua primeira despesa';
+  String get quickStartExpenseTitle => 'Despesas em várias moedas';
 
   @override
-  String get quickStartExpenseBody => 'Introduza o montante, escolha quem pagou e divida o custo. Os seus saldos mantêm-se atualizados.';
+  String get quickStartExpenseBody => 'Escolha quem pagou e como dividir. As outras moedas são convertidas à taxa da data de compra, mesmo que as adicione mais tarde.';
 
   @override
   String get quickStartSettleTitle => 'Acerte contas facilmente';
@@ -3518,10 +3518,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get quickStartSettleBody => 'Veja quem deve a quem, pague como preferir e confirme na app.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Veja para onde vai o dinheiro';
+  String get quickStartAnalyticsTitle => 'Orçamento e despesas';
 
   @override
-  String get quickStartAnalyticsBody => 'Acompanhe as suas despesas por viagem, categoria e dia.';
+  String get quickStartAnalyticsBody => 'Defina um orçamento para a sua viagem ou grupo e veja as despesas por categoria, viagem e dia.';
 
   @override
   String get quickStartMapTitle => 'Guarde os seus lugares';

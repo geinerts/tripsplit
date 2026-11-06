@@ -3494,10 +3494,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get quickStartTitle => 'Schnellstart';
 
   @override
-  String get quickStartCreateTitle => 'Reise erstellen';
+  String get quickStartCreateTitle => 'Allein oder mit Freunden';
 
   @override
-  String get quickStartCreateBody => 'Wählen Sie einen Namen und eine Währung. Laden Sie dann Freunde ein oder behalten Sie die Reise für sich.';
+  String get quickStartCreateBody => 'Erstellen Sie eine Reise für sich oder eine Gruppe. Fügen Sie Freunde per Link oder QR-Code hinzu und laden Sie sie ein.';
 
   @override
   String get quickStartInviteTitle => 'Gemeinsam oder alleine reisen';
@@ -3506,10 +3506,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get quickStartInviteBody => 'Lade Freunde ein, an deiner Reise teilzunehmen, oder starte ganz allein eine persönliche Reise.';
 
   @override
-  String get quickStartExpenseTitle => 'Fügen Sie Ihre erste Ausgabe hinzu';
+  String get quickStartExpenseTitle => 'Ausgaben in vielen Währungen';
 
   @override
-  String get quickStartExpenseBody => 'Geben Sie den Betrag ein, wählen Sie aus, wer bezahlt hat, und teilen Sie die Kosten auf. Ihre Kontostände bleiben auf dem neuesten Stand.';
+  String get quickStartExpenseBody => 'Wählen Sie, wer gezahlt hat und wie geteilt wird. Andere Währungen werden zum Kurs des Kaufdatums umgerechnet, auch wenn Sie sie später eintragen.';
 
   @override
   String get quickStartSettleTitle => 'Einfach abrechnen';
@@ -3518,10 +3518,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get quickStartSettleBody => 'Sehen Sie, wer wem etwas schuldet, zahlen Sie auf Ihre Weise und bestätigen Sie es in der App.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Ausgaben im Blick';
+  String get quickStartAnalyticsTitle => 'Budget und Ausgaben';
 
   @override
-  String get quickStartAnalyticsBody => 'Verfolgen Sie Ihre Ausgaben nach Reise, Kategorie und Tag.';
+  String get quickStartAnalyticsBody => 'Legen Sie ein Budget für Ihre Reise oder Gruppe fest und sehen Sie Ausgaben nach Kategorie, Reise und Tag.';
 
   @override
   String get quickStartMapTitle => 'Ihre Orte festhalten';

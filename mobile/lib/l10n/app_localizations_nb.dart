@@ -3494,10 +3494,10 @@ class AppLocalizationsNb extends AppLocalizations {
   String get quickStartTitle => 'Hurtigstart';
 
   @override
-  String get quickStartCreateTitle => 'Opprett en tur';
+  String get quickStartCreateTitle => 'Alene eller med venner';
 
   @override
-  String get quickStartCreateBody => 'Velg navn og valuta, og inviter deretter venner eller behold turen for deg selv.';
+  String get quickStartCreateBody => 'Opprett en tur for deg selv eller en gruppe. Legg til venner med lenke eller QR-kode, og inviter dem.';
 
   @override
   String get quickStartInviteTitle => 'Reis sammen eller alene';
@@ -3506,10 +3506,10 @@ class AppLocalizationsNb extends AppLocalizations {
   String get quickStartInviteBody => 'Inviter venner til å være med på turen din, eller start en personlig tur på egen hånd.';
 
   @override
-  String get quickStartExpenseTitle => 'Legg til din første utgift';
+  String get quickStartExpenseTitle => 'Utgifter i mange valutaer';
 
   @override
-  String get quickStartExpenseBody => 'Skriv inn beløpet, velg hvem som har betalt, og del kostnaden. Saldoene dine holdes oppdatert.';
+  String get quickStartExpenseBody => 'Velg hvem som betalte og hvordan det deles. Andre valutaer regnes om til kursen på kjøpsdatoen, også hvis du legger dem til senere.';
 
   @override
   String get quickStartSettleTitle => 'Gjør opp enkelt';
@@ -3518,10 +3518,10 @@ class AppLocalizationsNb extends AppLocalizations {
   String get quickStartSettleBody => 'Se hvem som skylder hvem, betal slik du vil, og bekreft det i appen.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Se hvor pengene går';
+  String get quickStartAnalyticsTitle => 'Budsjett og utgifter';
 
   @override
-  String get quickStartAnalyticsBody => 'Følg utgiftene dine per tur, kategori og dag.';
+  String get quickStartAnalyticsBody => 'Sett et budsjett for turen eller gruppen, og se utgifter per kategori, tur og dag.';
 
   @override
   String get quickStartMapTitle => 'Ta vare på stedene dine';

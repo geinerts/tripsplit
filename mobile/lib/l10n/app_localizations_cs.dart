@@ -3500,10 +3500,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get quickStartTitle => 'Rychlý start';
 
   @override
-  String get quickStartCreateTitle => 'Vytvořte výlet';
+  String get quickStartCreateTitle => 'Sami nebo s přáteli';
 
   @override
-  String get quickStartCreateBody => 'Zvolte název a měnu a poté pozvěte přátele, nebo si výlet nechte jen pro sebe.';
+  String get quickStartCreateBody => 'Vytvořte výlet pro sebe nebo skupinu. Přidejte přátele odkazem nebo QR kódem a pozvěte je.';
 
   @override
   String get quickStartInviteTitle => 'Cestujte společně nebo sami';
@@ -3512,10 +3512,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get quickStartInviteBody => 'Pozvěte přátele, aby se k vaší cestě připojili, nebo si sami založte vlastní cestu.';
 
   @override
-  String get quickStartExpenseTitle => 'Přidejte svůj první výdaj';
+  String get quickStartExpenseTitle => 'Výdaje v mnoha měnách';
 
   @override
-  String get quickStartExpenseBody => 'Zadejte částku, vyberte, kdo zaplatil, a rozdělte náklady. Vaše zůstatky zůstávají aktuální.';
+  String get quickStartExpenseBody => 'Zvolte, kdo platil a jak se má částka rozdělit. Jiné měny se převádějí podle kurzu z data nákupu, i když je přidáte později.';
 
   @override
   String get quickStartSettleTitle => 'Vyrovnejte se snadno';
@@ -3524,10 +3524,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get quickStartSettleBody => 'Podívejte se, kdo komu dluží, zaplaťte, jak vám vyhovuje, a potvrďte to v aplikaci.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Podívejte se, kam jdou peníze';
+  String get quickStartAnalyticsTitle => 'Rozpočet a výdaje';
 
   @override
-  String get quickStartAnalyticsBody => 'Sledujte své výdaje podle cest, kategorií a dnů.';
+  String get quickStartAnalyticsBody => 'Nastavte rozpočet pro výlet nebo skupinu a sledujte výdaje podle kategorií, výletů a dnů.';
 
   @override
   String get quickStartMapTitle => 'Uložte si svá místa';

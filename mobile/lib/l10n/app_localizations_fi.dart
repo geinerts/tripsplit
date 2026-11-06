@@ -3494,10 +3494,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get quickStartTitle => 'Pikaopas';
 
   @override
-  String get quickStartCreateTitle => 'Luo matka';
+  String get quickStartCreateTitle => 'Yksin tai ystävien kanssa';
 
   @override
-  String get quickStartCreateBody => 'Valitse nimi ja valuutta ja kutsu sitten ystäviä tai pidä matka omana tietonasi.';
+  String get quickStartCreateBody => 'Luo matka itsellesi tai ryhmälle. Lisää ystäviä linkillä tai QR-koodilla ja kutsu heidät mukaan.';
 
   @override
   String get quickStartInviteTitle => 'Matkusta yhdessä tai yksin';
@@ -3506,10 +3506,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get quickStartInviteBody => 'Kutsu ystäviä mukaan matkallesi tai aloita henkilökohtainen matka yksin.';
 
   @override
-  String get quickStartExpenseTitle => 'Lisää ensimmäinen kulusi';
+  String get quickStartExpenseTitle => 'Kulut monissa valuutoissa';
 
   @override
-  String get quickStartExpenseBody => 'Syötä summa, valitse maksaja ja jaa kustannukset. Saldojesi tiedot pysyvät ajan tasalla.';
+  String get quickStartExpenseBody => 'Valitse, kuka maksoi ja miten kulu jaetaan. Muut valuutat muunnetaan ostopäivän kurssilla, vaikka lisäisit ne myöhemmin.';
 
   @override
   String get quickStartSettleTitle => 'Selvitä maksut helposti';
@@ -3518,10 +3518,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get quickStartSettleBody => 'Katso, kuka on velkaa kenelle, maksa haluamallasi tavalla ja vahvista se sovelluksessa.';
 
   @override
-  String get quickStartAnalyticsTitle => 'Katso, mihin rahat menevät';
+  String get quickStartAnalyticsTitle => 'Budjetti ja kulut';
 
   @override
-  String get quickStartAnalyticsBody => 'Seuraa kulujasi matkoittain, luokittain ja päivittäin.';
+  String get quickStartAnalyticsBody => 'Aseta budjetti matkalle tai ryhmälle ja katso kulut luokittain, matkoittain ja päivittäin.';
 
   @override
   String get quickStartMapTitle => 'Tallenna paikkasi';

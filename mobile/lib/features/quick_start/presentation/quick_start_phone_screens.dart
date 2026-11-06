@@ -157,7 +157,6 @@ class _FloatingCard extends StatelessWidget {
     final opacity = (1 - delta.abs() * 1.6).clamp(0.0, 1.0);
     if (opacity == 0) return const SizedBox.shrink();
     final t = context.l10n;
-    final locale = Localizations.localeOf(context);
     final (
       double top,
       double? left,
@@ -165,11 +164,11 @@ class _FloatingCard extends StatelessWidget {
       Widget card,
     ) = switch (index) {
       0 => (
-        306.0,
+        352.0,
         null,
         -22.0,
         _Pill(
-          icon: Icons.person_add_alt_1_rounded,
+          icon: Icons.qr_code_2_rounded,
           label: t.tripInviteAction,
           color: _teal,
         ),
@@ -178,10 +177,13 @@ class _FloatingCard extends StatelessWidget {
         176.0,
         -22.0,
         null,
-        _SplitCard(
-          title: ExpenseCategoryCatalog.labelFor('food', locale),
-          amount: _money(context, 4800),
-          share: _money(context, 1600),
+        _ConversionCard(
+          original: AppFormatters.displayCurrencyFromCents(
+            context,
+            5000,
+            currencyCode: 'USD',
+          ),
+          converted: _money(context, 4620),
         ),
       ),
       2 => (
@@ -194,7 +196,7 @@ class _FloatingCard extends StatelessWidget {
           color: _marta,
         ),
       ),
-      3 => (172.0, null, -24.0, _DailyCard(title: t.analyticsDailySpending)),
+      3 => (222.0, null, -24.0, _DailyCard(title: t.analyticsDailySpending)),
       4 => (128.0, -22.0, null, const _PlaceCard()),
       _ => (
         118.0,
@@ -300,38 +302,17 @@ class _Pill extends StatelessWidget {
   );
 }
 
-class _SplitCard extends StatelessWidget {
-  const _SplitCard({
-    required this.title,
-    required this.amount,
-    required this.share,
-  });
+class _ConversionCard extends StatelessWidget {
+  const _ConversionCard({required this.original, required this.converted});
 
-  final String title;
-  final String amount;
-  final String share;
+  final String original;
+  final String converted;
 
   @override
   Widget build(BuildContext context) {
-    Widget row(String letter, Color color) => Padding(
-      padding: const EdgeInsets.only(top: 7),
-      child: Row(
-        children: [
-          _Avatar(letter, color, size: 22),
-          const SizedBox(width: 8),
-          Container(
-            width: 44,
-            height: 6,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(3),
-            ),
-          ),
-          const SizedBox(width: 8),
-          _Label(share, size: 12, weight: FontWeight.w600),
-        ],
-      ),
-    );
+    final date = MaterialLocalizations.of(
+      context,
+    ).formatMediumDate(DateTime(2026, 10, 5));
     return Container(
       width: 186,
       padding: const EdgeInsets.all(12),
@@ -339,11 +320,28 @@ class _SplitCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _Label(title, size: 12, color: _muted),
-          _Label(amount, size: 20, weight: FontWeight.w700),
-          row('M', _marta),
-          row('R', _rita),
-          row('I', _ivo),
+          Row(
+            children: [
+              const Icon(Icons.event_rounded, size: 14, color: _teal),
+              const SizedBox(width: 5),
+              Expanded(child: _Label(date, size: 12, color: _muted)),
+            ],
+          ),
+          const SizedBox(height: 6),
+          _Label(original, size: 14, weight: FontWeight.w600, color: _muted),
+          Row(
+            children: [
+              const Icon(
+                Icons.currency_exchange_rounded,
+                size: 16,
+                color: _teal,
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: _Label(converted, size: 20, weight: FontWeight.w700),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -518,6 +516,8 @@ class _TripScreen extends StatelessWidget {
             children: [
               const _Label('Lisbon getaway', size: 20, weight: FontWeight.w700),
               const SizedBox(height: 6),
+              const _TripTypeSwitch(),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Container(
@@ -562,6 +562,40 @@ class _TripScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _TripTypeSwitch extends StatelessWidget {
+  const _TripTypeSwitch();
+
+  @override
+  Widget build(BuildContext context) {
+    Widget option(IconData icon, bool selected) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      decoration: BoxDecoration(
+        color: selected ? _accent : Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Icon(
+        icon,
+        size: 16,
+        color: selected ? const Color(0xFF0B1220) : _muted,
+      ),
+    );
+    return Container(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: _surface,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          option(Icons.person_rounded, false),
+          option(Icons.groups_rounded, true),
+        ],
+      ),
     );
   }
 }
@@ -826,6 +860,37 @@ class _AnalyticsScreen extends StatelessWidget {
                 child: _Stat(t.analyticsAveragePerTrip, _money(context, 41333)),
               ),
             ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _Label(t.tripBudgetTitle, size: 12, color: _muted),
+              ),
+              _Label(
+                _money(context, 200000),
+                size: 12,
+                weight: FontWeight.w600,
+              ),
+            ],
+          ),
+          const SizedBox(height: 5),
+          Container(
+            height: 9,
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              color: _surface,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: FractionallySizedBox(
+              widthFactor: .62,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: _accent,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 14),
           _Label(t.analyticsByCategory, size: 15, weight: FontWeight.w700),
