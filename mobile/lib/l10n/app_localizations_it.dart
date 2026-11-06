@@ -3497,7 +3497,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get quickStartCreateTitle => 'Crea un viaggio';
 
   @override
-  String get quickStartCreateBody => 'Scegli un nome e una valuta. Gestisci le tue spese o condividi i costi con un gruppo.';
+  String get quickStartCreateBody => 'Scegli un nome e una valuta, poi invita gli amici o tieni il viaggio solo per te.';
 
   @override
   String get quickStartInviteTitle => 'Viaggiare in gruppo o da soli';
@@ -3510,6 +3510,30 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Inserisci l’importo, scegli chi ha pagato e dividi il costo. I tuoi saldi rimangono aggiornati.';
+
+  @override
+  String get quickStartSettleTitle => 'Salda in modo semplice';
+
+  @override
+  String get quickStartSettleBody => 'Vedi chi deve quanto a chi, paga come preferisci e conferma nell’app.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Guarda dove vanno i soldi';
+
+  @override
+  String get quickStartAnalyticsBody => 'Segui le tue spese per viaggio, categoria e giorno.';
+
+  @override
+  String get quickStartMapTitle => 'Salva i tuoi luoghi';
+
+  @override
+  String get quickStartMapBody => 'Aggiungi le città visitate alla tua mappa di viaggio privata. Puoi vederla solo tu.';
+
+  @override
+  String get quickStartLiveTitle => 'Ritrovatevi';
+
+  @override
+  String get quickStartLiveBody => 'Nei viaggi di gruppo, condividi la posizione in tempo reale per il tempo che scegli. I membri del viaggio possono vederla e puoi interrompere quando vuoi.';
 
   @override
   String get quickStartNext => 'Avanti';

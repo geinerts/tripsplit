@@ -329,14 +329,14 @@ void main() {
       final links = _Links();
       await _mount(tester, trips, service, links);
       await _tick(tester);
-      for (var i = 0; i < 2; i++) {
+      for (var i = 0; i < 5; i++) {
         await tester.tap(find.text('Next'));
         await tester.pumpAndSettle();
       }
       await tester.tap(
         find.descendant(
           of: find.byType(QuickStartSheet),
-          matching: find.text('Create'),
+          matching: find.text('Create trip'),
         ),
       );
       await tester.pumpAndSettle();
@@ -391,14 +391,14 @@ void main() {
         .widget<ProfilePage>(find.byType(ProfilePage, skipOffstage: false))
         .onQuickStartRequested!();
     await tester.pumpAndSettle();
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 5; i++) {
       await tester.tap(find.text('Next'));
       await tester.pumpAndSettle();
     }
     await tester.tap(
       find.descendant(
         of: find.byType(QuickStartSheet),
-        matching: find.text('Create'),
+        matching: find.text('Create trip'),
       ),
     );
     await tester.pumpAndSettle();

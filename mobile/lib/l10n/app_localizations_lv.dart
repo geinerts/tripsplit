@@ -3503,7 +3503,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get quickStartCreateTitle => 'Izveido ceļojumu';
 
   @override
-  String get quickStartCreateBody => 'Izvēlies nosaukumu un valūtu. Uzskaiti savus izdevumus vai dali izmaksas ar grupu.';
+  String get quickStartCreateBody => 'Izvēlies nosaukumu un valūtu, tad uzaicini draugus vai patur ceļojumu tikai sev.';
 
   @override
   String get quickStartInviteTitle => 'Ceļo kopā vai vienatnē';
@@ -3516,6 +3516,30 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Ievadi summu, norādi maksātāju un sadali izmaksas. Splyto aprēķinās katra bilanci.';
+
+  @override
+  String get quickStartSettleTitle => 'Norēķinies vienkārši';
+
+  @override
+  String get quickStartSettleBody => 'Redzi, kurš kuram parādā, samaksā sev ērtā veidā un apstiprini to lietotnē.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Redzi, kur aiziet nauda';
+
+  @override
+  String get quickStartAnalyticsBody => 'Seko saviem tēriņiem pa ceļojumiem, kategorijām un dienām.';
+
+  @override
+  String get quickStartMapTitle => 'Saglabā savas vietas';
+
+  @override
+  String get quickStartMapBody => 'Pievieno apmeklētās pilsētas savai privātajai ceļojumu kartei. To redzi tikai tu.';
+
+  @override
+  String get quickStartLiveTitle => 'Atrodiet cits citu';
+
+  @override
+  String get quickStartLiveBody => 'Grupas ceļojumos kopīgo savu atrašanās vietu reāllaikā uz izvēlēto laiku. To redz ceļojuma dalībnieki, un vari apturēt jebkurā brīdī.';
 
   @override
   String get quickStartNext => 'Tālāk';

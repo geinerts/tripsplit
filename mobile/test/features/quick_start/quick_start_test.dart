@@ -115,7 +115,7 @@ void main() {
 
   for (final dark in [false, true]) {
     for (final locale in ['en', 'lv', 'es']) {
-      testWidgets('three steps at 320px / 200%, $locale, dark=$dark', (
+      testWidgets('six steps at 320px / 200%, $locale, dark=$dark', (
         tester,
       ) async {
         tester.view.physicalSize = const Size(320, 568);
@@ -161,36 +161,39 @@ void main() {
           tester.getBottomLeft(dots).dy,
           lessThan(tester.getTopLeft(next).dy),
         );
-        for (var step = 0; step < 3; step++) {
+        for (var step = 0; step < 6; step++) {
           final action = find.widgetWithText(
             FilledButton,
-            step == 2 ? t.createAction : t.quickStartNext,
+            step == 5 ? t.quickStartCreateAction : t.quickStartNext,
           );
           final indicators = tester
               .widgetList<Container>(
                 find.descendant(of: dots, matching: find.byType(Container)),
               )
               .toList();
-          expect(indicators, hasLength(3));
-          final theme = Theme.of(tester.element(action));
+          expect(indicators, hasLength(6));
           for (var index = 0; index < indicators.length; index++) {
             final decoration = indicators[index].decoration! as BoxDecoration;
             expect(decoration.shape, BoxShape.circle);
-            expect(
-              decoration.color == theme.colorScheme.primary,
-              index == step,
-            );
+            expect(decoration.color == Colors.white, index == step);
           }
-          if (step == 1) {
-            expect(find.text(t.quickStartInviteTitle), findsOneWidget);
-            expect(
-              find.byKey(const ValueKey('quick-start-logo')),
-              findsNothing,
-            );
-          }
-          if (step == 2) {
-            expect(find.text(t.quickStartExpenseTitle), findsOneWidget);
-          }
+          expect(
+            find.text(
+              [
+                t.quickStartCreateTitle,
+                t.quickStartExpenseTitle,
+                t.quickStartSettleTitle,
+                t.quickStartAnalyticsTitle,
+                t.quickStartMapTitle,
+                t.quickStartLiveTitle,
+              ][step],
+            ),
+            findsOneWidget,
+          );
+          expect(
+            find.byKey(const ValueKey('quick-start-logo')),
+            findsOneWidget,
+          );
           expect(find.byType(FilledButton), findsOneWidget);
           await tester.tap(action);
           await tester.pumpAndSettle();
@@ -203,7 +206,7 @@ void main() {
     }
   }
 
-  for (final dismissal in ['skip', 'back', 'drag', 'invitation']) {
+  for (final dismissal in ['skip', 'back', 'invitation']) {
     testWidgets(
       '$dismissal dismisses without requesting creation; replay starts at step 1',
       (tester) async {
@@ -232,13 +235,6 @@ void main() {
             await tester.tap(find.text('Skip'));
           case 'back':
             await tester.binding.handlePopRoute();
-          case 'drag':
-            await tester.flingFrom(
-              tester.getTopLeft(find.byType(QuickStartSheet)) +
-                  const Offset(120, 15),
-              const Offset(0, 600),
-              1500,
-            );
           case 'invitation':
             presenter.dismiss();
         }
@@ -253,6 +249,113 @@ void main() {
       },
     );
   }
+
+  testWidgets('swiping moves both ways and never finishes the guide', (
+    tester,
+  ) async {
+    bool? result;
+    await tester.pumpWidget(
+      _app(
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () async {
+                result = await QuickStartPresenter().show(context);
+              },
+              child: const Text('Open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Open'));
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(
+      tester.element(find.byType(QuickStartSheet)),
+    )!;
+    final pages = find.byKey(const ValueKey('quick-start-pages'));
+    Future<void> swipe(double dx) async {
+      await tester.fling(pages, Offset(dx, 0), 1200);
+      await tester.pumpAndSettle();
+    }
+
+    await swipe(300);
+    expect(find.text(t.quickStartCreateTitle), findsOneWidget);
+    await swipe(-300);
+    expect(find.text(t.quickStartExpenseTitle), findsOneWidget);
+    await swipe(300);
+    expect(find.text(t.quickStartCreateTitle), findsOneWidget);
+    for (var i = 0; i < 7; i++) {
+      await swipe(-300);
+    }
+    expect(find.text(t.quickStartLiveTitle), findsOneWidget);
+    expect(find.byType(QuickStartSheet), findsOneWidget);
+    expect(result, isNull);
+    expect(
+      find.widgetWithText(FilledButton, t.quickStartCreateAction),
+      findsOneWidget,
+    );
+    await swipe(300);
+    expect(find.text(t.quickStartMapTitle), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, t.quickStartNext), findsOneWidget);
+    await tester.tap(find.text(t.quickStartNext));
+    await tester.pumpAndSettle();
+    expect(find.text(t.quickStartLiveTitle), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('phone stays still and shows settled balances', (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(_app(home: const QuickStartSheet()));
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(
+      tester.element(find.byType(QuickStartSheet)),
+    )!;
+    final phone = find.byKey(const ValueKey('quick-start-phone'));
+    final position = tester.getTopLeft(phone);
+    expect(tester.getBottomLeft(phone).dy, greaterThan(844));
+    for (var step = 0; step < 5; step++) {
+      await tester.tap(find.text(t.quickStartNext));
+      await tester.pumpAndSettle();
+      expect(tester.getTopLeft(phone), position);
+      if (step == 1) {
+        expect(find.text(t.settledLabel), findsNWidgets(3));
+      }
+    }
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('balances start with debts when animations are allowed', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const QuickStartSheet(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    for (var step = 0; step < 2; step++) {
+      await tester.tap(find.text('Next'));
+      await tester.pumpAndSettle();
+    }
+    // Two balance rows plus the floating payment card.
+    expect(find.textContaining('16.66'), findsNWidgets(3));
+    expect(find.text('Settled'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('16.66'), findsOneWidget);
+    expect(find.text('Settled'), findsNWidgets(3));
+  });
 
   testWidgets('invitation dismissal removes only the guide route', (
     tester,
@@ -315,7 +418,7 @@ void main() {
       );
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
-      for (var step = 1; step <= 3; step++) {
+      for (var step = 1; step <= 6; step++) {
         final boundary =
             key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
         await tester.runAsync(() async {
@@ -328,7 +431,7 @@ void main() {
           await file.writeAsBytes(bytes!.buffer.asUint8List());
           image.dispose();
         });
-        if (step < 3) {
+        if (step < 6) {
           await tester.tap(find.text('Tālāk'));
           await tester.pumpAndSettle();
         }

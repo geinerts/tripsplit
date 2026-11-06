@@ -9,3 +9,6 @@ Major city labels: Natural Earth 1:50m Populated Places Simple (public domain).
 Source: https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_50m_populated_places_simple.geojson
 https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-populated-places/
 Downloaded 2026-10-28; labels are bundled offline and filtered by zoom/rank.
+
+Quick Start travel map (assets/branding/quick_start_travel_map.svg): generated from the
+Natural Earth outlines above by tool/generate_quick_start_maps.py.

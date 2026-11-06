@@ -14,9 +14,8 @@ void main() {
     'splyto_empty_expenses',
     'splyto_no_results',
     'splyto_trip_load_error',
-    'splyto_tutorial_01_create_trip',
-    'splyto_tutorial_02_invite_friends',
-    'splyto_tutorial_03_add_expense',
+    'quick_start_travel_map',
+    'quick_start_live_map',
   ];
 
   for (final name in illustrations) {

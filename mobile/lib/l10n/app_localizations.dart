@@ -6436,7 +6436,7 @@ abstract class AppLocalizations {
   /// No description provided for @quickStartCreateBody.
   ///
   /// In en, this message translates to:
-  /// **'Choose a name and currency. Keep your own expenses or share costs with a group.'**
+  /// **'Pick a name and currency, then invite friends or keep the trip just for you.'**
   String get quickStartCreateBody;
 
   /// No description provided for @quickStartInviteTitle.
@@ -6462,6 +6462,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter the amount, choose who paid and split the cost. Your balances stay up to date.'**
   String get quickStartExpenseBody;
+
+  /// No description provided for @quickStartSettleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settle up easily'**
+  String get quickStartSettleTitle;
+
+  /// No description provided for @quickStartSettleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'See who owes whom, pay your own way and confirm it in the app.'**
+  String get quickStartSettleBody;
+
+  /// No description provided for @quickStartAnalyticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See where it goes'**
+  String get quickStartAnalyticsTitle;
+
+  /// No description provided for @quickStartAnalyticsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow your spending by trip, category and day.'**
+  String get quickStartAnalyticsBody;
+
+  /// No description provided for @quickStartMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your places'**
+  String get quickStartMapTitle;
+
+  /// No description provided for @quickStartMapBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the cities you’ve visited to your private travel map. Only you can see it.'**
+  String get quickStartMapBody;
+
+  /// No description provided for @quickStartLiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find each other'**
+  String get quickStartLiveTitle;
+
+  /// No description provided for @quickStartLiveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.'**
+  String get quickStartLiveBody;
 
   /// No description provided for @quickStartNext.
   ///

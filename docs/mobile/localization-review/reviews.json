@@ -18128,19 +18128,17 @@
   "cs:quickStartCreateBody": {
     "locale": "cs",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Vyberte si jméno a měnu. Nechte si své vlastní výdaje nebo sdílejte náklady se skupinou.",
-    "translation": "Vyberte si název a měnu. Hraďte si výdaje sami nebo se o náklady podělte se skupinou.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Vyberte si název a měnu. Hraďte si výdaje sami nebo se o náklady podělte se skupinou.",
+    "translation": "Zvolte název a měnu a poté pozvěte přátele, nebo si výlet nechte jen pro sebe.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "cs:quickStartInviteTitle": {
     "locale": "cs",
@@ -40753,19 +40751,17 @@
   "da:quickStartCreateBody": {
     "locale": "da",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Vælg et navn og en valuta. Behold dine egne udgifter eller del omkostninger med en gruppe.",
-    "translation": "Vælg et navn og en valuta. Hold dine egne udgifter, eller del omkostningerne med en gruppe.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Vælg et navn og en valuta. Hold dine egne udgifter, eller del omkostningerne med en gruppe.",
+    "translation": "Vælg navn og valuta, og inviter derefter venner, eller behold turen for dig selv.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "da:quickStartInviteTitle": {
     "locale": "da",
@@ -63431,19 +63427,17 @@
   "de:quickStartCreateBody": {
     "locale": "de",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Wählen Sie einen Namen und eine Währung. Behalten Sie Ihre eigenen Ausgaben oder teilen Sie die Kosten mit einer Gruppe.",
-    "translation": "Wählen Sie einen Namen und eine Währung aus. Tragen Sie Ihre Ausgaben selbst oder teilen Sie sich die Kosten mit einer Gruppe.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Wählen Sie einen Namen und eine Währung aus. Tragen Sie Ihre Ausgaben selbst oder teilen Sie sich die Kosten mit einer Gruppe.",
+    "translation": "Wählen Sie einen Namen und eine Währung. Laden Sie dann Freunde ein oder behalten Sie die Reise für sich.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "de:quickStartInviteTitle": {
     "locale": "de",
@@ -86017,19 +86011,17 @@
   "es:quickStartCreateBody": {
     "locale": "es",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
     "before": "Elige un nombre y una moneda. Registra tus gastos o comparte los costes en grupo.",
-    "translation": "Elige un nombre y una moneda. Registra tus gastos o comparte los costes en grupo.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "existing_translation_compared",
+    "translation": "Elige un nombre y una moneda, y luego invita a tus amigos o guarda el viaje solo para ti.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "es:quickStartInviteTitle": {
     "locale": "es",
@@ -108675,19 +108667,17 @@
   "fi:quickStartCreateBody": {
     "locale": "fi",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Valitse nimi ja valuutta. Pidä omat kulut tai jakaa kustannukset ryhmän kanssa.",
-    "translation": "Valitse nimi ja valuutta. Hoida omat kulusi itse tai jaa kustannukset ryhmän kanssa.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Valitse nimi ja valuutta. Hoida omat kulusi itse tai jaa kustannukset ryhmän kanssa.",
+    "translation": "Valitse nimi ja valuutta ja kutsu sitten ystäviä tai pidä matka omana tietonasi.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "fi:quickStartInviteTitle": {
     "locale": "fi",
@@ -131336,19 +131326,17 @@
   "fr:quickStartCreateBody": {
     "locale": "fr",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Choisissez un nom et une devise. Conservez vos propres dépenses ou partagez vos coûts avec un groupe.",
-    "translation": "Choisissez un nom et une devise. Prenez en charge vos propres dépenses ou partagez les coûts avec un groupe.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Choisissez un nom et une devise. Prenez en charge vos propres dépenses ou partagez les coûts avec un groupe.",
+    "translation": "Choisissez un nom et une devise, puis invitez vos amis ou gardez le voyage pour vous.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "fr:quickStartInviteTitle": {
     "locale": "fr",
@@ -153996,19 +153984,17 @@
   "it:quickStartCreateBody": {
     "locale": "it",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Scegli un nome e una valuta. Mantenere le proprie spese o condividere i costi con un gruppo.",
-    "translation": "Scegli un nome e una valuta. Gestisci le tue spese o condividi i costi con un gruppo.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Scegli un nome e una valuta. Gestisci le tue spese o condividi i costi con un gruppo.",
+    "translation": "Scegli un nome e una valuta, poi invita gli amici o tieni il viaggio solo per te.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "it:quickStartInviteTitle": {
     "locale": "it",
@@ -176601,19 +176587,17 @@
   "lv:quickStartCreateBody": {
     "locale": "lv",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
     "before": "Izvēlies nosaukumu un valūtu. Uzskaiti savus izdevumus vai dali izmaksas ar grupu.",
-    "translation": "Izvēlies nosaukumu un valūtu. Uzskaiti savus izdevumus vai dali izmaksas ar grupu.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "existing_translation_compared",
+    "translation": "Izvēlies nosaukumu un valūtu, tad uzaicini draugus vai patur ceļojumu tikai sev.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "lv:quickStartInviteTitle": {
     "locale": "lv",
@@ -199222,19 +199206,17 @@
   "nb:quickStartCreateBody": {
     "locale": "nb",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Velg et navn og valuta. Behold dine egne utgifter eller aksjekostnader med en gruppe.",
-    "translation": "Velg et navn og en valuta. Hold orden på dine egne utgifter, eller del kostnadene med en gruppe.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Velg et navn og en valuta. Hold orden på dine egne utgifter, eller del kostnadene med en gruppe.",
+    "translation": "Velg navn og valuta, og inviter deretter venner eller behold turen for deg selv.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "nb:quickStartInviteTitle": {
     "locale": "nb",
@@ -221869,19 +221851,17 @@
   "nl:quickStartCreateBody": {
     "locale": "nl",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Kies een naam en valuta. Houd uw eigen kosten of deel kosten met een groep.",
-    "translation": "Kies een naam en valuta. Houd je eigen uitgaven bij of deel de kosten met een groep.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Kies een naam en valuta. Houd je eigen uitgaven bij of deel de kosten met een groep.",
+    "translation": "Kies een naam en valuta en nodig daarna vrienden uit, of houd de reis voor jezelf.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "nl:quickStartInviteTitle": {
     "locale": "nl",
@@ -244509,19 +244489,17 @@
   "pl:quickStartCreateBody": {
     "locale": "pl",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Wybierz nazwę i walutę. Zachowaj własne wydatki lub podziel się kosztami z grupą.",
-    "translation": "Wybierz nazwę i walutę. Pokrywaj własne wydatki lub dziel się kosztami z grupą.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Wybierz nazwę i walutę. Pokrywaj własne wydatki lub dziel się kosztami z grupą.",
+    "translation": "Wybierz nazwę i walutę, a potem zaproś znajomych lub zachowaj wycieczkę tylko dla siebie.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "pl:quickStartInviteTitle": {
     "locale": "pl",
@@ -267140,19 +267118,17 @@
   "pt:quickStartCreateBody": {
     "locale": "pt",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Escolha um nome e moeda. Mantenha suas próprias despesas ou compartilhe custos com um grupo.",
-    "translation": "Escolha um nome e uma moeda. Assuma as suas próprias despesas ou partilhe os custos com um grupo.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Escolha um nome e uma moeda. Assuma as suas próprias despesas ou partilhe os custos com um grupo.",
+    "translation": "Escolha um nome e uma moeda e depois convide amigos ou mantenha a viagem só para si.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "pt:quickStartInviteTitle": {
     "locale": "pt",
@@ -289791,19 +289767,17 @@
   "sv:quickStartCreateBody": {
     "locale": "sv",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Välj ett namn och en valuta. Håll dina egna kostnader eller dela kostnader med en grupp.",
-    "translation": "Välj ett namn och en valuta. Håll dina egna utgifter eller dela kostnaderna med en grupp.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Välj ett namn och en valuta. Håll dina egna utgifter eller dela kostnaderna med en grupp.",
+    "translation": "Välj namn och valuta och bjud sedan in vänner eller behåll resan för dig själv.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "sv:quickStartInviteTitle": {
     "locale": "sv",
@@ -312487,19 +312461,17 @@
   "uk:quickStartCreateBody": {
     "locale": "uk",
     "key": "quickStartCreateBody",
-    "source": "Choose a name and currency. Keep your own expenses or share costs with a group.",
-    "before": "Оберіть ім'я та валюту. Зберігати власні витрати або обміняти витрати з групою.",
-    "translation": "Оберіть назву та валюту. Ведіть власні витрати або діліться витратами з групою.",
-    "status": "automated_reviewed",
-    "date": "2026-11-02",
-    "method": "deepl_revision",
+    "source": "Pick a name and currency, then invite friends or keep the trip just for you.",
+    "before": "Оберіть назву та валюту. Ведіть власні витрати або діліться витратами з групою.",
+    "translation": "Виберіть назву та валюту, а потім запросіть друзів або залиште поїздку лише для себе.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
     "checks": [
       "catalog completeness and interpolation arguments",
-      "literal numbers, URLs and product names",
-      "DeepL forward comparison of English source",
-      "DeepL backtranslation of PRE-REVIEW target wording"
+      "checked against live location and travel map behaviour"
     ],
-    "note": "Full-catalog engine comparison and structural checks; not individual proofreading."
+    "note": "Quick Start rewrite. Not native-speaker proofread."
   },
   "uk:quickStartInviteTitle": {
     "locale": "uk",
@@ -320968,5 +320940,1685 @@
       "reads as a continuation after the actor name"
     ],
     "note": "New profile navigation label added 2026-11-05. Not native-speaker proofread."
+  },
+  "lv:quickStartSettleTitle": {
+    "locale": "lv",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Norēķinies vienkārši",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "lv:quickStartSettleBody": {
+    "locale": "lv",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Redzi, kurš kuram parādā, samaksā sev ērtā veidā un apstiprini to lietotnē.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "lv:quickStartMapTitle": {
+    "locale": "lv",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Saglabā savas vietas",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "lv:quickStartMapBody": {
+    "locale": "lv",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Pievieno apmeklētās pilsētas savai privātajai ceļojumu kartei. To redzi tikai tu.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "lv:quickStartLiveTitle": {
+    "locale": "lv",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Atrodiet cits citu",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "lv:quickStartLiveBody": {
+    "locale": "lv",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "Grupas ceļojumos kopīgo savu atrašanās vietu reāllaikā uz izvēlēto laiku. To redz ceļojuma dalībnieki, un vari apturēt jebkurā brīdī.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "de:quickStartSettleTitle": {
+    "locale": "de",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Einfach abrechnen",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "de:quickStartSettleBody": {
+    "locale": "de",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Sehen Sie, wer wem etwas schuldet, zahlen Sie auf Ihre Weise und bestätigen Sie es in der App.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "de:quickStartMapTitle": {
+    "locale": "de",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Ihre Orte festhalten",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "de:quickStartMapBody": {
+    "locale": "de",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Fügen Sie besuchte Städte zu Ihrer privaten Reisekarte hinzu. Nur Sie können sie sehen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "de:quickStartLiveTitle": {
+    "locale": "de",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Einander finden",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "de:quickStartLiveBody": {
+    "locale": "de",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "Teilen Sie auf Gruppenreisen Ihren Live-Standort für die gewählte Zeit. Reiseteilnehmer können ihn sehen, und Sie können jederzeit beenden.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "es:quickStartSettleTitle": {
+    "locale": "es",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Liquida sin complicaciones",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "es:quickStartSettleBody": {
+    "locale": "es",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Mira quién debe a quién, paga como prefieras y confírmalo en la app.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "es:quickStartMapTitle": {
+    "locale": "es",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Guarda tus lugares",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "es:quickStartMapBody": {
+    "locale": "es",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Añade las ciudades que has visitado a tu mapa de viajes privado. Solo tú puedes verlo.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "es:quickStartLiveTitle": {
+    "locale": "es",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Encuentra a tu grupo",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "es:quickStartLiveBody": {
+    "locale": "es",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "En viajes en grupo, comparte tu ubicación en directo durante el tiempo que elijas. Los miembros del viaje pueden verla y puedes detenerla cuando quieras.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fr:quickStartSettleTitle": {
+    "locale": "fr",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Réglez simplement",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fr:quickStartSettleBody": {
+    "locale": "fr",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Voyez qui doit quoi à qui, payez comme vous voulez et confirmez dans l’app.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fr:quickStartMapTitle": {
+    "locale": "fr",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Gardez vos lieux",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fr:quickStartMapBody": {
+    "locale": "fr",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Ajoutez les villes visitées à votre carte de voyage privée. Elle n’est visible que par vous.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fr:quickStartLiveTitle": {
+    "locale": "fr",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Retrouvez-vous",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fr:quickStartLiveBody": {
+    "locale": "fr",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "En voyage de groupe, partagez votre position en direct pendant la durée choisie. Les membres du voyage la voient, et vous pouvez arrêter à tout moment.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "it:quickStartSettleTitle": {
+    "locale": "it",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Salda in modo semplice",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "it:quickStartSettleBody": {
+    "locale": "it",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Vedi chi deve quanto a chi, paga come preferisci e conferma nell’app.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "it:quickStartMapTitle": {
+    "locale": "it",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Salva i tuoi luoghi",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "it:quickStartMapBody": {
+    "locale": "it",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Aggiungi le città visitate alla tua mappa di viaggio privata. Puoi vederla solo tu.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "it:quickStartLiveTitle": {
+    "locale": "it",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Ritrovatevi",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "it:quickStartLiveBody": {
+    "locale": "it",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "Nei viaggi di gruppo, condividi la posizione in tempo reale per il tempo che scegli. I membri del viaggio possono vederla e puoi interrompere quando vuoi.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pt:quickStartSettleTitle": {
+    "locale": "pt",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Acerte contas facilmente",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pt:quickStartSettleBody": {
+    "locale": "pt",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Veja quem deve a quem, pague como preferir e confirme na app.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pt:quickStartMapTitle": {
+    "locale": "pt",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Guarde os seus lugares",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pt:quickStartMapBody": {
+    "locale": "pt",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Adicione as cidades que visitou ao seu mapa de viagem privado. Só você o pode ver.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pt:quickStartLiveTitle": {
+    "locale": "pt",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Encontrem-se",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pt:quickStartLiveBody": {
+    "locale": "pt",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "Nas viagens em grupo, partilhe a sua localização em tempo real durante o tempo que escolher. Os membros da viagem podem vê-la e pode parar a qualquer momento.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pl:quickStartSettleTitle": {
+    "locale": "pl",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Rozliczaj się łatwo",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pl:quickStartSettleBody": {
+    "locale": "pl",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Zobacz, kto komu ile jest winien, zapłać w dogodny sposób i potwierdź to w aplikacji.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pl:quickStartMapTitle": {
+    "locale": "pl",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Zachowaj swoje miejsca",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pl:quickStartMapBody": {
+    "locale": "pl",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Dodaj odwiedzone miasta do swojej prywatnej mapy podróży. Widzisz ją tylko Ty.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pl:quickStartLiveTitle": {
+    "locale": "pl",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Znajdźcie się nawzajem",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "pl:quickStartLiveBody": {
+    "locale": "pl",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "W wycieczkach grupowych udostępniaj swoją lokalizację na żywo przez wybrany czas. Widzą ją uczestnicy wycieczki, a Ty możesz zakończyć w dowolnej chwili.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nl:quickStartSettleTitle": {
+    "locale": "nl",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Eenvoudig afrekenen",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nl:quickStartSettleBody": {
+    "locale": "nl",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Zie wie wat aan wie schuldig is, betaal op je eigen manier en bevestig het in de app.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nl:quickStartMapTitle": {
+    "locale": "nl",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Bewaar je plekken",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nl:quickStartMapBody": {
+    "locale": "nl",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Voeg bezochte steden toe aan je privéreiskaart. Alleen jij kunt die zien.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nl:quickStartLiveTitle": {
+    "locale": "nl",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Vind elkaar",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nl:quickStartLiveBody": {
+    "locale": "nl",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "Deel op groepsreizen je live locatie voor de tijd die je kiest. Reisdeelnemers kunnen die zien en je kunt altijd stoppen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "sv:quickStartSettleTitle": {
+    "locale": "sv",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Gör upp enkelt",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "sv:quickStartSettleBody": {
+    "locale": "sv",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Se vem som är skyldig vem, betala som du vill och bekräfta i appen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "sv:quickStartMapTitle": {
+    "locale": "sv",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Spara dina platser",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "sv:quickStartMapBody": {
+    "locale": "sv",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Lägg till städer du besökt på din privata resekarta. Bara du kan se den.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "sv:quickStartLiveTitle": {
+    "locale": "sv",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Hitta varandra",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "sv:quickStartLiveBody": {
+    "locale": "sv",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "På gruppresor delar du din position live under den tid du väljer. Resans deltagare kan se den och du kan sluta när som helst.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "da:quickStartSettleTitle": {
+    "locale": "da",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Afregn nemt",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "da:quickStartSettleBody": {
+    "locale": "da",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Se, hvem der skylder hvem, betal, som du vil, og bekræft det i appen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "da:quickStartMapTitle": {
+    "locale": "da",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Gem dine steder",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "da:quickStartMapBody": {
+    "locale": "da",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Føj de byer, du har besøgt, til dit private rejsekort. Kun du kan se det.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "da:quickStartLiveTitle": {
+    "locale": "da",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Find hinanden",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "da:quickStartLiveBody": {
+    "locale": "da",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "På gruppeture deler du din live-placering i den tid, du vælger. Turens medlemmer kan se den, og du kan stoppe når som helst.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nb:quickStartSettleTitle": {
+    "locale": "nb",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Gjør opp enkelt",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nb:quickStartSettleBody": {
+    "locale": "nb",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Se hvem som skylder hvem, betal slik du vil, og bekreft det i appen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nb:quickStartMapTitle": {
+    "locale": "nb",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Ta vare på stedene dine",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nb:quickStartMapBody": {
+    "locale": "nb",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Legg til byene du har besøkt på det private reisekartet ditt. Bare du kan se det.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nb:quickStartLiveTitle": {
+    "locale": "nb",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Finn hverandre",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "nb:quickStartLiveBody": {
+    "locale": "nb",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "På gruppeturer deler du posisjonen din live så lenge du velger. Medlemmene på turen kan se den, og du kan stoppe når som helst.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fi:quickStartSettleTitle": {
+    "locale": "fi",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Selvitä maksut helposti",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fi:quickStartSettleBody": {
+    "locale": "fi",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Katso, kuka on velkaa kenelle, maksa haluamallasi tavalla ja vahvista se sovelluksessa.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fi:quickStartMapTitle": {
+    "locale": "fi",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Tallenna paikkasi",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fi:quickStartMapBody": {
+    "locale": "fi",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Lisää vierailemasi kaupungit yksityiseen matkakarttaasi. Vain sinä näet sen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fi:quickStartLiveTitle": {
+    "locale": "fi",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Löytäkää toisenne",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "fi:quickStartLiveBody": {
+    "locale": "fi",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "Ryhmämatkoilla voit jakaa sijaintisi reaaliajassa valitsemaksesi ajaksi. Matkan jäsenet näkevät sen, ja voit lopettaa milloin tahansa.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "cs:quickStartSettleTitle": {
+    "locale": "cs",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Vyrovnejte se snadno",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "cs:quickStartSettleBody": {
+    "locale": "cs",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Podívejte se, kdo komu dluží, zaplaťte, jak vám vyhovuje, a potvrďte to v aplikaci.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "cs:quickStartMapTitle": {
+    "locale": "cs",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Uložte si svá místa",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "cs:quickStartMapBody": {
+    "locale": "cs",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Přidejte navštívená města na svou soukromou cestovní mapu. Vidíte ji jen vy.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "cs:quickStartLiveTitle": {
+    "locale": "cs",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Najděte se navzájem",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "cs:quickStartLiveBody": {
+    "locale": "cs",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "Na skupinových výletech sdílejte svou polohu živě po zvolenou dobu. Vidí ji členové výletu a můžete ji kdykoli ukončit.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "uk:quickStartSettleTitle": {
+    "locale": "uk",
+    "key": "quickStartSettleTitle",
+    "source": "Settle up easily",
+    "before": null,
+    "translation": "Розраховуйтеся просто",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "uk:quickStartSettleBody": {
+    "locale": "uk",
+    "key": "quickStartSettleBody",
+    "source": "See who owes whom, pay your own way and confirm it in the app.",
+    "before": null,
+    "translation": "Дивіться, хто кому винен, платіть зручним способом і підтверджуйте це в застосунку.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "uk:quickStartMapTitle": {
+    "locale": "uk",
+    "key": "quickStartMapTitle",
+    "source": "Keep your places",
+    "before": null,
+    "translation": "Зберігайте свої місця",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "uk:quickStartMapBody": {
+    "locale": "uk",
+    "key": "quickStartMapBody",
+    "source": "Add the cities you’ve visited to your private travel map. Only you can see it.",
+    "before": null,
+    "translation": "Додавайте відвідані міста на свою приватну карту подорожей. Її бачите лише ви.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "uk:quickStartLiveTitle": {
+    "locale": "uk",
+    "key": "quickStartLiveTitle",
+    "source": "Find each other",
+    "before": null,
+    "translation": "Знаходьте одне одного",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "uk:quickStartLiveBody": {
+    "locale": "uk",
+    "key": "quickStartLiveBody",
+    "source": "On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.",
+    "before": null,
+    "translation": "У групових поїздках діліться місцезнаходженням наживо протягом вибраного часу. Його бачать учасники поїздки, і ви можете зупинити це будь-коли.",
+    "status": "ai_reviewed",
+    "date": "2026-11-05",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against live location and travel map behaviour"
+    ],
+    "note": "Quick Start rewrite. Not native-speaker proofread."
+  },
+  "lv:quickStartAnalyticsTitle": {
+    "locale": "lv",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Redzi, kur aiziet nauda",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "lv:quickStartAnalyticsBody": {
+    "locale": "lv",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Seko saviem tēriņiem pa ceļojumiem, kategorijām un dienām.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "de:quickStartAnalyticsTitle": {
+    "locale": "de",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Ausgaben im Blick",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "de:quickStartAnalyticsBody": {
+    "locale": "de",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Verfolgen Sie Ihre Ausgaben nach Reise, Kategorie und Tag.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "es:quickStartAnalyticsTitle": {
+    "locale": "es",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Mira en qué gastas",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "es:quickStartAnalyticsBody": {
+    "locale": "es",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Sigue tus gastos por viaje, categoría y día.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "fr:quickStartAnalyticsTitle": {
+    "locale": "fr",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Suivez vos dépenses",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "fr:quickStartAnalyticsBody": {
+    "locale": "fr",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Consultez vos dépenses par voyage, catégorie et jour.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "it:quickStartAnalyticsTitle": {
+    "locale": "it",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Guarda dove vanno i soldi",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "it:quickStartAnalyticsBody": {
+    "locale": "it",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Segui le tue spese per viaggio, categoria e giorno.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "pt:quickStartAnalyticsTitle": {
+    "locale": "pt",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Veja para onde vai o dinheiro",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "pt:quickStartAnalyticsBody": {
+    "locale": "pt",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Acompanhe as suas despesas por viagem, categoria e dia.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "pl:quickStartAnalyticsTitle": {
+    "locale": "pl",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Zobacz, na co wydajesz",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "pl:quickStartAnalyticsBody": {
+    "locale": "pl",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Śledź swoje wydatki według wycieczek, kategorii i dni.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "nl:quickStartAnalyticsTitle": {
+    "locale": "nl",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Zie waar je geld heen gaat",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "nl:quickStartAnalyticsBody": {
+    "locale": "nl",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Volg je uitgaven per reis, categorie en dag.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "sv:quickStartAnalyticsTitle": {
+    "locale": "sv",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Se vart pengarna går",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "sv:quickStartAnalyticsBody": {
+    "locale": "sv",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Följ dina utgifter per resa, kategori och dag.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "da:quickStartAnalyticsTitle": {
+    "locale": "da",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Se, hvor pengene går hen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "da:quickStartAnalyticsBody": {
+    "locale": "da",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Følg dine udgifter pr. tur, kategori og dag.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "nb:quickStartAnalyticsTitle": {
+    "locale": "nb",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Se hvor pengene går",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "nb:quickStartAnalyticsBody": {
+    "locale": "nb",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Følg utgiftene dine per tur, kategori og dag.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "fi:quickStartAnalyticsTitle": {
+    "locale": "fi",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Katso, mihin rahat menevät",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "fi:quickStartAnalyticsBody": {
+    "locale": "fi",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Seuraa kulujasi matkoittain, luokittain ja päivittäin.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "cs:quickStartAnalyticsTitle": {
+    "locale": "cs",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Podívejte se, kam jdou peníze",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "cs:quickStartAnalyticsBody": {
+    "locale": "cs",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Sledujte své výdaje podle cest, kategorií a dnů.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "uk:quickStartAnalyticsTitle": {
+    "locale": "uk",
+    "key": "quickStartAnalyticsTitle",
+    "source": "See where it goes",
+    "before": null,
+    "translation": "Дивіться, на що йдуть гроші",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
+  },
+  "uk:quickStartAnalyticsBody": {
+    "locale": "uk",
+    "key": "quickStartAnalyticsBody",
+    "source": "Follow your spending by trip, category and day.",
+    "before": null,
+    "translation": "Стежте за витратами за поїздками, категоріями та днями.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against analytics page content"
+    ],
+    "note": "Quick Start analytics slide. Not native-speaker proofread."
   }
 }

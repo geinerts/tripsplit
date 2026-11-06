@@ -3497,7 +3497,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get quickStartCreateTitle => 'Luo matka';
 
   @override
-  String get quickStartCreateBody => 'Valitse nimi ja valuutta. Hoida omat kulusi itse tai jaa kustannukset ryhmän kanssa.';
+  String get quickStartCreateBody => 'Valitse nimi ja valuutta ja kutsu sitten ystäviä tai pidä matka omana tietonasi.';
 
   @override
   String get quickStartInviteTitle => 'Matkusta yhdessä tai yksin';
@@ -3510,6 +3510,30 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Syötä summa, valitse maksaja ja jaa kustannukset. Saldojesi tiedot pysyvät ajan tasalla.';
+
+  @override
+  String get quickStartSettleTitle => 'Selvitä maksut helposti';
+
+  @override
+  String get quickStartSettleBody => 'Katso, kuka on velkaa kenelle, maksa haluamallasi tavalla ja vahvista se sovelluksessa.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Katso, mihin rahat menevät';
+
+  @override
+  String get quickStartAnalyticsBody => 'Seuraa kulujasi matkoittain, luokittain ja päivittäin.';
+
+  @override
+  String get quickStartMapTitle => 'Tallenna paikkasi';
+
+  @override
+  String get quickStartMapBody => 'Lisää vierailemasi kaupungit yksityiseen matkakarttaasi. Vain sinä näet sen.';
+
+  @override
+  String get quickStartLiveTitle => 'Löytäkää toisenne';
+
+  @override
+  String get quickStartLiveBody => 'Ryhmämatkoilla voit jakaa sijaintisi reaaliajassa valitsemaksesi ajaksi. Matkan jäsenet näkevät sen, ja voit lopettaa milloin tahansa.';
 
   @override
   String get quickStartNext => 'Seuraava';

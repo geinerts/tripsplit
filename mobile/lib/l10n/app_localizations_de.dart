@@ -3497,7 +3497,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get quickStartCreateTitle => 'Reise erstellen';
 
   @override
-  String get quickStartCreateBody => 'Wählen Sie einen Namen und eine Währung aus. Tragen Sie Ihre Ausgaben selbst oder teilen Sie sich die Kosten mit einer Gruppe.';
+  String get quickStartCreateBody => 'Wählen Sie einen Namen und eine Währung. Laden Sie dann Freunde ein oder behalten Sie die Reise für sich.';
 
   @override
   String get quickStartInviteTitle => 'Gemeinsam oder alleine reisen';
@@ -3510,6 +3510,30 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Geben Sie den Betrag ein, wählen Sie aus, wer bezahlt hat, und teilen Sie die Kosten auf. Ihre Kontostände bleiben auf dem neuesten Stand.';
+
+  @override
+  String get quickStartSettleTitle => 'Einfach abrechnen';
+
+  @override
+  String get quickStartSettleBody => 'Sehen Sie, wer wem etwas schuldet, zahlen Sie auf Ihre Weise und bestätigen Sie es in der App.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Ausgaben im Blick';
+
+  @override
+  String get quickStartAnalyticsBody => 'Verfolgen Sie Ihre Ausgaben nach Reise, Kategorie und Tag.';
+
+  @override
+  String get quickStartMapTitle => 'Ihre Orte festhalten';
+
+  @override
+  String get quickStartMapBody => 'Fügen Sie besuchte Städte zu Ihrer privaten Reisekarte hinzu. Nur Sie können sie sehen.';
+
+  @override
+  String get quickStartLiveTitle => 'Einander finden';
+
+  @override
+  String get quickStartLiveBody => 'Teilen Sie auf Gruppenreisen Ihren Live-Standort für die gewählte Zeit. Reiseteilnehmer können ihn sehen, und Sie können jederzeit beenden.';
 
   @override
   String get quickStartNext => 'Weiter';

@@ -3509,7 +3509,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get quickStartCreateTitle => 'Utwórz wycieczkę';
 
   @override
-  String get quickStartCreateBody => 'Wybierz nazwę i walutę. Pokrywaj własne wydatki lub dziel się kosztami z grupą.';
+  String get quickStartCreateBody => 'Wybierz nazwę i walutę, a potem zaproś znajomych lub zachowaj wycieczkę tylko dla siebie.';
 
   @override
   String get quickStartInviteTitle => 'Podróżujcie razem lub samodzielnie';
@@ -3522,6 +3522,30 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Wprowadź kwotę, wybierz, kto zapłacił, i podziel koszty. Twoje salda są zawsze aktualne.';
+
+  @override
+  String get quickStartSettleTitle => 'Rozliczaj się łatwo';
+
+  @override
+  String get quickStartSettleBody => 'Zobacz, kto komu ile jest winien, zapłać w dogodny sposób i potwierdź to w aplikacji.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Zobacz, na co wydajesz';
+
+  @override
+  String get quickStartAnalyticsBody => 'Śledź swoje wydatki według wycieczek, kategorii i dni.';
+
+  @override
+  String get quickStartMapTitle => 'Zachowaj swoje miejsca';
+
+  @override
+  String get quickStartMapBody => 'Dodaj odwiedzone miasta do swojej prywatnej mapy podróży. Widzisz ją tylko Ty.';
+
+  @override
+  String get quickStartLiveTitle => 'Znajdźcie się nawzajem';
+
+  @override
+  String get quickStartLiveBody => 'W wycieczkach grupowych udostępniaj swoją lokalizację na żywo przez wybrany czas. Widzą ją uczestnicy wycieczki, a Ty możesz zakończyć w dowolnej chwili.';
 
   @override
   String get quickStartNext => 'Dalej';

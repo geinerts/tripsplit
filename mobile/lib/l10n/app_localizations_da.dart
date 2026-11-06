@@ -3497,7 +3497,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get quickStartCreateTitle => 'Opret en tur';
 
   @override
-  String get quickStartCreateBody => 'Vælg et navn og en valuta. Hold dine egne udgifter, eller del omkostningerne med en gruppe.';
+  String get quickStartCreateBody => 'Vælg navn og valuta, og inviter derefter venner, eller behold turen for dig selv.';
 
   @override
   String get quickStartInviteTitle => 'Rejs sammen eller alene';
@@ -3510,6 +3510,30 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Indtast beløbet, vælg hvem der har betalt, og fordel udgiften. Jeres saldoer holdes opdateret.';
+
+  @override
+  String get quickStartSettleTitle => 'Afregn nemt';
+
+  @override
+  String get quickStartSettleBody => 'Se, hvem der skylder hvem, betal, som du vil, og bekræft det i appen.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Se, hvor pengene går hen';
+
+  @override
+  String get quickStartAnalyticsBody => 'Følg dine udgifter pr. tur, kategori og dag.';
+
+  @override
+  String get quickStartMapTitle => 'Gem dine steder';
+
+  @override
+  String get quickStartMapBody => 'Føj de byer, du har besøgt, til dit private rejsekort. Kun du kan se det.';
+
+  @override
+  String get quickStartLiveTitle => 'Find hinanden';
+
+  @override
+  String get quickStartLiveBody => 'På gruppeture deler du din live-placering i den tid, du vælger. Turens medlemmer kan se den, og du kan stoppe når som helst.';
 
   @override
   String get quickStartNext => 'Næste';

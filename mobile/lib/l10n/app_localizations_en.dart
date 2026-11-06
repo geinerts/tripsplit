@@ -3497,7 +3497,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickStartCreateTitle => 'Create a trip';
 
   @override
-  String get quickStartCreateBody => 'Choose a name and currency. Keep your own expenses or share costs with a group.';
+  String get quickStartCreateBody => 'Pick a name and currency, then invite friends or keep the trip just for you.';
 
   @override
   String get quickStartInviteTitle => 'Travel together or solo';
@@ -3510,6 +3510,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Enter the amount, choose who paid and split the cost. Your balances stay up to date.';
+
+  @override
+  String get quickStartSettleTitle => 'Settle up easily';
+
+  @override
+  String get quickStartSettleBody => 'See who owes whom, pay your own way and confirm it in the app.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'See where it goes';
+
+  @override
+  String get quickStartAnalyticsBody => 'Follow your spending by trip, category and day.';
+
+  @override
+  String get quickStartMapTitle => 'Keep your places';
+
+  @override
+  String get quickStartMapBody => 'Add the cities you’ve visited to your private travel map. Only you can see it.';
+
+  @override
+  String get quickStartLiveTitle => 'Find each other';
+
+  @override
+  String get quickStartLiveBody => 'On group trips, share your live location for the time you choose. Trip members can see it, and you can stop anytime.';
 
   @override
   String get quickStartNext => 'Next';

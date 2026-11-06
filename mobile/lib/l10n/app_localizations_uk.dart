@@ -3509,7 +3509,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get quickStartCreateTitle => 'Створити поїздку';
 
   @override
-  String get quickStartCreateBody => 'Оберіть назву та валюту. Ведіть власні витрати або діліться витратами з групою.';
+  String get quickStartCreateBody => 'Виберіть назву та валюту, а потім запросіть друзів або залиште поїздку лише для себе.';
 
   @override
   String get quickStartInviteTitle => 'Подорожуйте разом або самостійно';
@@ -3522,6 +3522,30 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Введіть суму, виберіть, хто заплатив, і розділіть витрати. Ваші залишки на рахунках завжди актуальні.';
+
+  @override
+  String get quickStartSettleTitle => 'Розраховуйтеся просто';
+
+  @override
+  String get quickStartSettleBody => 'Дивіться, хто кому винен, платіть зручним способом і підтверджуйте це в застосунку.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Дивіться, на що йдуть гроші';
+
+  @override
+  String get quickStartAnalyticsBody => 'Стежте за витратами за поїздками, категоріями та днями.';
+
+  @override
+  String get quickStartMapTitle => 'Зберігайте свої місця';
+
+  @override
+  String get quickStartMapBody => 'Додавайте відвідані міста на свою приватну карту подорожей. Її бачите лише ви.';
+
+  @override
+  String get quickStartLiveTitle => 'Знаходьте одне одного';
+
+  @override
+  String get quickStartLiveBody => 'У групових поїздках діліться місцезнаходженням наживо протягом вибраного часу. Його бачать учасники поїздки, і ви можете зупинити це будь-коли.';
 
   @override
   String get quickStartNext => 'Далі';

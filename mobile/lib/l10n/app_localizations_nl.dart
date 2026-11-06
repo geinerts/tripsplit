@@ -3497,7 +3497,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get quickStartCreateTitle => 'Maak een reis aan';
 
   @override
-  String get quickStartCreateBody => 'Kies een naam en valuta. Houd je eigen uitgaven bij of deel de kosten met een groep.';
+  String get quickStartCreateBody => 'Kies een naam en valuta en nodig daarna vrienden uit, of houd de reis voor jezelf.';
 
   @override
   String get quickStartInviteTitle => 'Reis samen of alleen';
@@ -3510,6 +3510,30 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Voer het bedrag in, kies wie er heeft betaald en verdeel de kosten. Je saldi blijven up-to-date.';
+
+  @override
+  String get quickStartSettleTitle => 'Eenvoudig afrekenen';
+
+  @override
+  String get quickStartSettleBody => 'Zie wie wat aan wie schuldig is, betaal op je eigen manier en bevestig het in de app.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Zie waar je geld heen gaat';
+
+  @override
+  String get quickStartAnalyticsBody => 'Volg je uitgaven per reis, categorie en dag.';
+
+  @override
+  String get quickStartMapTitle => 'Bewaar je plekken';
+
+  @override
+  String get quickStartMapBody => 'Voeg bezochte steden toe aan je privéreiskaart. Alleen jij kunt die zien.';
+
+  @override
+  String get quickStartLiveTitle => 'Vind elkaar';
+
+  @override
+  String get quickStartLiveBody => 'Deel op groepsreizen je live locatie voor de tijd die je kiest. Reisdeelnemers kunnen die zien en je kunt altijd stoppen.';
 
   @override
   String get quickStartNext => 'Volgende';

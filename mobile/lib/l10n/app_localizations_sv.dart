@@ -3497,7 +3497,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get quickStartCreateTitle => 'Skapa en resa';
 
   @override
-  String get quickStartCreateBody => 'Välj ett namn och en valuta. Håll dina egna utgifter eller dela kostnaderna med en grupp.';
+  String get quickStartCreateBody => 'Välj namn och valuta och bjud sedan in vänner eller behåll resan för dig själv.';
 
   @override
   String get quickStartInviteTitle => 'Res tillsammans eller på egen hand';
@@ -3510,6 +3510,30 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Ange beloppet, välj vem som har betalat och dela upp kostnaden. Dina saldon hålls uppdaterade.';
+
+  @override
+  String get quickStartSettleTitle => 'Gör upp enkelt';
+
+  @override
+  String get quickStartSettleBody => 'Se vem som är skyldig vem, betala som du vill och bekräfta i appen.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Se vart pengarna går';
+
+  @override
+  String get quickStartAnalyticsBody => 'Följ dina utgifter per resa, kategori och dag.';
+
+  @override
+  String get quickStartMapTitle => 'Spara dina platser';
+
+  @override
+  String get quickStartMapBody => 'Lägg till städer du besökt på din privata resekarta. Bara du kan se den.';
+
+  @override
+  String get quickStartLiveTitle => 'Hitta varandra';
+
+  @override
+  String get quickStartLiveBody => 'På gruppresor delar du din position live under den tid du väljer. Resans deltagare kan se den och du kan sluta när som helst.';
 
   @override
   String get quickStartNext => 'Nästa';

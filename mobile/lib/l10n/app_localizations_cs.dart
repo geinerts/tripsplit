@@ -3503,7 +3503,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get quickStartCreateTitle => 'Vytvořte výlet';
 
   @override
-  String get quickStartCreateBody => 'Vyberte si název a měnu. Hraďte si výdaje sami nebo se o náklady podělte se skupinou.';
+  String get quickStartCreateBody => 'Zvolte název a měnu a poté pozvěte přátele, nebo si výlet nechte jen pro sebe.';
 
   @override
   String get quickStartInviteTitle => 'Cestujte společně nebo sami';
@@ -3516,6 +3516,30 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get quickStartExpenseBody => 'Zadejte částku, vyberte, kdo zaplatil, a rozdělte náklady. Vaše zůstatky zůstávají aktuální.';
+
+  @override
+  String get quickStartSettleTitle => 'Vyrovnejte se snadno';
+
+  @override
+  String get quickStartSettleBody => 'Podívejte se, kdo komu dluží, zaplaťte, jak vám vyhovuje, a potvrďte to v aplikaci.';
+
+  @override
+  String get quickStartAnalyticsTitle => 'Podívejte se, kam jdou peníze';
+
+  @override
+  String get quickStartAnalyticsBody => 'Sledujte své výdaje podle cest, kategorií a dnů.';
+
+  @override
+  String get quickStartMapTitle => 'Uložte si svá místa';
+
+  @override
+  String get quickStartMapBody => 'Přidejte navštívená města na svou soukromou cestovní mapu. Vidíte ji jen vy.';
+
+  @override
+  String get quickStartLiveTitle => 'Najděte se navzájem';
+
+  @override
+  String get quickStartLiveBody => 'Na skupinových výletech sdílejte svou polohu živě po zvolenou dobu. Vidí ji členové výletu a můžete ji kdykoli ukončit.';
 
   @override
   String get quickStartNext => 'Další';
