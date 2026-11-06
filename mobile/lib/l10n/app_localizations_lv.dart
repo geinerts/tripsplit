@@ -4251,6 +4251,49 @@ class AppLocalizationsLv extends AppLocalizations {
   String get expenseCustomSplit => 'Pielāgots sadalījums';
 
   @override
+  String get expenseAdjustmentsLabel => 'Pielāgojumi';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ vai −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Pieskaiti vai atņem katram cilvēkam. Pārējais sadalās vienādi.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Pielāgojumi nedrīkst pārsniegt kopsummu, un nevienam daļa nedrīkst būt mazāka par nulli.';
+
+  @override
+  String get expenseItemsLabel => 'Pozīcijas';
+
+  @override
+  String get expenseAddItem => 'Pievienot pozīciju';
+
+  @override
+  String get expenseRemoveItem => 'Noņemt pozīciju';
+
+  @override
+  String get expenseItemName => 'Pozīcija';
+
+  @override
+  String get expenseItemExtra => 'Nodoklis vai dzeramnauda';
+
+  @override
+  String get expenseItemExtraHint => 'Sadalās proporcionāli katra cilvēka pozīcijām.';
+
+  @override
+  String get expenseItemsInvalid => 'Katrai pozīcijai vajag nosaukumu, summu un vismaz vienu cilvēku.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Kopā no pozīcijām: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Pozīcijām kopā jābūt $total.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Visa summa $amount sadalīta';
   }

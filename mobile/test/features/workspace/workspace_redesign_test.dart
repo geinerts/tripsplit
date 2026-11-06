@@ -38,6 +38,7 @@ import 'package:tripsplit/features/workspace/domain/entities/payment_item.dart';
 import 'package:tripsplit/features/workspace/domain/entities/workspace_activity_event.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_comment.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_comment_reaction.dart';
+import 'package:tripsplit/features/workspace/domain/entities/expense_item.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_split_value.dart';
 import 'package:tripsplit/features/workspace/domain/entities/mutation_result.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_reaction.dart';
@@ -452,6 +453,9 @@ class _Workspace implements WorkspaceController {
   Completer<void>? saveGate;
   List<int>? savedParticipants;
   List<ExpenseSplitValue>? savedSplits;
+  List<ExpenseItem>? savedItems;
+  double? savedExtra;
+  double? savedAmount;
   String? savedMode;
   String? savedCurrency;
   String? savedReceiptPath;
@@ -466,11 +470,16 @@ class _Workspace implements WorkspaceController {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
   }) async {
     saves++;
     savedParticipants = participants;
     savedSplits = splitValues;
+    savedItems = items;
+    savedExtra = extraAmount;
+    savedAmount = amount;
     savedMode = splitMode;
     savedCurrency = currencyCode;
     savedReceiptPath = receiptPath;
@@ -491,6 +500,8 @@ class _Workspace implements WorkspaceController {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     bool removeReceipt = false,
   }) async {
@@ -1203,6 +1214,118 @@ void main() {
     expect(controller.savedParticipants, [8]);
     expect(controller.savedSplits!.single.value, 10);
     expect(controller.savedSplits!.single.userId, 8);
+    await disposePage(tester);
+  });
+
+  testWidgets('adjustments show each result and save with a minus', (
+    tester,
+  ) async {
+    final commands = WorkspacePageCommandController();
+    final controller = _Workspace();
+    await _mount(tester, controller, commands: commands);
+    await tester.pumpAndSettle();
+    commands.requestOpenAddExpense();
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-form-amount')),
+      '100',
+    );
+    await selectExpenseFood(tester);
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-custom-split')),
+    );
+    await tester.tap(find.byKey(const ValueKey('split-mode-adjustment')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('split-input-7')), '10');
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<Text>(find.byKey(const ValueKey('split-result-7'))).data,
+      contains('55'),
+    );
+    await tester.enterText(find.byKey(const ValueKey('split-input-7')), '500');
+    await tester.pumpAndSettle();
+    final done = find.byKey(const ValueKey('expense-editor-done'));
+    expect(tester.widget<ElevatedButton>(done).onPressed, isNull);
+    await tester.enterText(find.byKey(const ValueKey('split-input-7')), '-5');
+    await tester.pumpAndSettle();
+    await tester.tap(done);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+    await tester.pumpAndSettle();
+    expect(controller.savedMode, 'adjustment');
+    expect(
+      controller.savedSplits!.firstWhere((item) => item.userId == 7).value,
+      -5,
+    );
+    await disposePage(tester);
+  });
+
+  testWidgets('items set the amount and decide who pays', (tester) async {
+    final commands = WorkspacePageCommandController();
+    final controller = _Workspace();
+    await _mount(tester, controller, commands: commands);
+    await tester.pumpAndSettle();
+    commands.requestOpenAddExpense();
+    await tester.pumpAndSettle();
+    await selectExpenseFood(tester);
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-custom-split')),
+    );
+    // No amount yet, so the items are what add up to it.
+    final done = find.byKey(const ValueKey('expense-editor-done'));
+    expect(find.byKey(const ValueKey('expense-item-name-0')), findsOneWidget);
+    expect(tester.widget<ElevatedButton>(done).onPressed, isNull);
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-item-name-0')),
+      'Pizza',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-item-amount-0')),
+      '12',
+    );
+    await tester.pumpAndSettle();
+    expect(tester.widget<ElevatedButton>(done).onPressed, isNotNull);
+    await tester.ensureVisible(find.byKey(const ValueKey('expense-add-item')));
+    await tester.tap(find.byKey(const ValueKey('expense-add-item')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-item-name-1')),
+      'Beer',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-item-amount-1')),
+      '5',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-item-extra')),
+      '3',
+    );
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.byKey(const ValueKey('expense-item-1-person-8')),
+    );
+    await tester.tap(find.byKey(const ValueKey('expense-item-1-person-8')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('20'), findsWidgets);
+    await tester.tap(done);
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<TextField>(find.byKey(const ValueKey('expense-form-amount')))
+          .controller!
+          .text,
+      '20.00',
+    );
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+    await tester.pumpAndSettle();
+    expect(controller.savedMode, 'itemized');
+    expect(controller.savedAmount, 20);
+    expect(controller.savedExtra, 3);
+    expect(controller.savedItems!.map((item) => item.name), ['Pizza', 'Beer']);
+    expect(controller.savedItems!.last.participantIds, isNot(contains(8)));
+    expect(controller.savedSplits, isEmpty);
     await disposePage(tester);
   });
 

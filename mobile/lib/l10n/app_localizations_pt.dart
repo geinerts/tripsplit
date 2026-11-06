@@ -4244,6 +4244,49 @@ class AppLocalizationsPt extends AppLocalizations {
   String get expenseCustomSplit => 'Divisão personalizada';
 
   @override
+  String get expenseAdjustmentsLabel => 'Ajustes';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ ou −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Adiciona ou subtrai a cada pessoa. O resto é dividido em partes iguais.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Os ajustes não podem exceder o total e ninguém pode dever menos de zero.';
+
+  @override
+  String get expenseItemsLabel => 'Artigos';
+
+  @override
+  String get expenseAddItem => 'Adicionar artigo';
+
+  @override
+  String get expenseRemoveItem => 'Remover artigo';
+
+  @override
+  String get expenseItemName => 'Artigo';
+
+  @override
+  String get expenseItemExtra => 'Impostos ou gorjeta';
+
+  @override
+  String get expenseItemExtraHint => 'Dividido em proporção aos artigos de cada pessoa.';
+
+  @override
+  String get expenseItemsInvalid => 'Cada artigo precisa de um nome, um valor e pelo menos uma pessoa.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Total dos artigos: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Os artigos têm de somar $total.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Os $amount estão distribuídos';
   }

@@ -14,6 +14,8 @@ class _ExpenseFormResult {
     required this.receiptFileName,
     required this.preuploadedReceipt,
     required this.removeReceipt,
+    this.items = const [],
+    this.extraAmount = 0,
   });
 
   final double amount;
@@ -28,6 +30,8 @@ class _ExpenseFormResult {
   final String? receiptFileName;
   final UploadedReceiptData? preuploadedReceipt;
   final bool removeReceipt;
+  final List<ExpenseItem> items;
+  final double extraAmount;
 }
 
 class _PickedFile {

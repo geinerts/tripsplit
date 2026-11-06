@@ -255,6 +255,7 @@ function workspace_load_trip_expenses(PDO $pdo, int $tripId, int $limit = 300): 
         );
     }
     unset($row);
+    attach_expense_items($pdo, $rows);
 
     return $rows;
 }

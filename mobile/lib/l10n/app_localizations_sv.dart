@@ -4244,6 +4244,49 @@ class AppLocalizationsSv extends AppLocalizations {
   String get expenseCustomSplit => 'Anpassad fördelning';
 
   @override
+  String get expenseAdjustmentsLabel => 'Justeringar';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ eller −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Lägg till eller dra av för varje person. Resten delas lika.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Justeringar får inte överstiga totalen, och ingen kan vara skyldig mindre än noll.';
+
+  @override
+  String get expenseItemsLabel => 'Artiklar';
+
+  @override
+  String get expenseAddItem => 'Lägg till artikel';
+
+  @override
+  String get expenseRemoveItem => 'Ta bort artikel';
+
+  @override
+  String get expenseItemName => 'Artikel';
+
+  @override
+  String get expenseItemExtra => 'Skatt eller dricks';
+
+  @override
+  String get expenseItemExtraHint => 'Delas i proportion till varje persons artiklar.';
+
+  @override
+  String get expenseItemsInvalid => 'Varje artikel behöver ett namn, ett belopp och minst en person.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Summa av artiklar: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Artiklarna måste bli $total totalt.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Hela $amount fördelat';
   }

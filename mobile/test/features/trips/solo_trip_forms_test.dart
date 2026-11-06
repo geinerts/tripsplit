@@ -11,6 +11,7 @@ import 'package:tripsplit/features/trips/data/models/trip_model.dart';
 import 'package:tripsplit/features/trips/domain/entities/trip.dart';
 import 'package:tripsplit/features/trips/presentation/controllers/trips_controller.dart';
 import 'package:tripsplit/features/trips/presentation/pages/trips_page.dart';
+import 'package:tripsplit/features/workspace/domain/entities/expense_item.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_split_value.dart';
 import 'package:tripsplit/features/workspace/domain/entities/mutation_result.dart';
 import 'package:tripsplit/features/workspace/domain/entities/queued_mutation.dart';
@@ -97,6 +98,8 @@ class _Workspace implements WorkspaceController {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
   }) async {
     savedParticipants = participants;

@@ -7,6 +7,7 @@ import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_mention.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
+import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/random_draw_result.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
@@ -285,6 +286,8 @@ class WorkspaceRemoteMutationApi {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     String? clientMutationId,
   }) async {
@@ -309,6 +312,9 @@ class WorkspaceRemoteMutationApi {
                 },
               )
               .toList(growable: false),
+        if (items.isNotEmpty)
+          'items': items.map((item) => item.toJson()).toList(growable: false),
+        if (extraAmount > 0) 'extra_amount': extraAmount,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
       },
@@ -326,6 +332,8 @@ class WorkspaceRemoteMutationApi {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     bool removeReceipt = false,
     String? clientMutationId,
@@ -352,6 +360,9 @@ class WorkspaceRemoteMutationApi {
                 },
               )
               .toList(growable: false),
+        if (items.isNotEmpty)
+          'items': items.map((item) => item.toJson()).toList(growable: false),
+        if (extraAmount > 0) 'extra_amount': extraAmount,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
         if (removeReceipt) 'remove_receipt': true,

@@ -3,6 +3,7 @@ import '../../../../core/network/legacy_receipt_uploader.dart';
 import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
+import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/random_draw_result.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
@@ -134,6 +135,8 @@ abstract class WorkspaceRemoteDataSource {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     String? clientMutationId,
   });
@@ -149,6 +152,8 @@ abstract class WorkspaceRemoteDataSource {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     bool removeReceipt,
     String? clientMutationId,
@@ -509,6 +514,8 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     String? clientMutationId,
   }) {
@@ -522,6 +529,8 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       participants: participants,
       splitMode: splitMode,
       splitValues: splitValues,
+      items: items,
+      extraAmount: extraAmount,
       receiptPath: receiptPath,
       clientMutationId: clientMutationId,
     );
@@ -539,6 +548,8 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     bool removeReceipt = false,
     String? clientMutationId,
@@ -554,6 +565,8 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       participants: participants,
       splitMode: splitMode,
       splitValues: splitValues,
+      items: items,
+      extraAmount: extraAmount,
       receiptPath: receiptPath,
       removeReceipt: removeReceipt,
       clientMutationId: clientMutationId,

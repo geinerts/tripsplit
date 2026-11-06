@@ -2,6 +2,7 @@ import '../../../../core/errors/api_exception.dart';
 import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
+import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/mutation_result.dart';
 import '../../domain/entities/queued_mutation.dart';
@@ -416,6 +417,8 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
   }) {
     final mutationId = _newClientMutationId(
@@ -434,6 +437,8 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           participants: participants,
           splitMode: splitMode,
           splitValues: splitValues,
+          items: items,
+          extraAmount: extraAmount,
           receiptPath: receiptPath,
           clientMutationId: mutationId,
         );
@@ -449,6 +454,8 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           participants: participants,
           splitMode: splitMode,
           splitValues: splitValues,
+          items: items,
+          extraAmount: extraAmount,
           receiptPath: receiptPath,
           mutationId: mutationId,
         );
@@ -468,6 +475,8 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     bool removeReceipt = false,
   }) {
@@ -488,6 +497,8 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           participants: participants,
           splitMode: splitMode,
           splitValues: splitValues,
+          items: items,
+          extraAmount: extraAmount,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
           clientMutationId: mutationId,
@@ -505,6 +516,8 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           participants: participants,
           splitMode: splitMode,
           splitValues: splitValues,
+          items: items,
+          extraAmount: extraAmount,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
           mutationId: mutationId,

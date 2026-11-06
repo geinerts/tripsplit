@@ -9,7 +9,7 @@ function normalize_expense_split_mode($value): string
     if ($raw === '' || $raw === 'equal') {
         return 'equal';
     }
-    if ($raw === 'exact' || $raw === 'percent' || $raw === 'shares') {
+    if (in_array($raw, ['exact', 'percent', 'shares', 'adjustment', 'itemized'], true)) {
         return $raw;
     }
     json_out(['ok' => false, 'error' => 'Unsupported split mode.'], 400);
@@ -60,7 +60,7 @@ function normalize_expense_category($value): string
     return $raw;
 }
 
-function parse_expense_split_entries(array $rawSplits): array
+function parse_expense_split_entries(array $rawSplits, bool $allowNegative = false): array
 {
     $out = [];
     foreach ($rawSplits as $item) {
@@ -79,7 +79,7 @@ function parse_expense_split_entries(array $rawSplits): array
             json_out(['ok' => false, 'error' => 'Split value must be numeric.'], 400);
         }
         $value = (float) $valueRaw;
-        if ($value < 0) {
+        if ($value < 0 && !$allowNegative) {
             json_out(['ok' => false, 'error' => 'Split value cannot be negative.'], 400);
         }
         $out[$userId] = $value;
@@ -397,6 +397,179 @@ function convert_exact_split_source_to_trip_rows(
     return $rows;
 }
 
+/**
+ * @return array{items:array<int, array{name:string, amount_cents:int, participant_ids:array<int, int>}>,
+ *               extra_cents:int, participant_ids:array<int, int>}
+ */
+function parse_expense_items(array $body, int $sourceAmountCents): array
+{
+    $rawItems = $body['items'] ?? null;
+    if (!is_array($rawItems) || $rawItems === []) {
+        json_out(['ok' => false, 'error' => 'Add at least one item.'], 400);
+    }
+    if (count($rawItems) > 100) {
+        json_out(['ok' => false, 'error' => 'Too many items.'], 400);
+    }
+
+    $items = [];
+    $sum = 0;
+    $everyone = [];
+    foreach ($rawItems as $rawItem) {
+        if (!is_array($rawItem)) {
+            json_out(['ok' => false, 'error' => 'Invalid items payload.'], 400);
+        }
+        $name = trim((string) ($rawItem['name'] ?? ''));
+        if ($name === '') {
+            json_out(['ok' => false, 'error' => 'Item name is required.'], 400);
+        }
+        if (str_length($name) > 80) {
+            json_out(['ok' => false, 'error' => 'Item name is too long.'], 400);
+        }
+        ensure_text_has_no_links($name, 'Item name');
+        $ids = normalize_user_ids((array) ($rawItem['participant_ids'] ?? []));
+        if ($ids === []) {
+            json_out(['ok' => false, 'error' => 'Each item needs at least one person.'], 400);
+        }
+        $amountCents = validate_amount_cents($rawItem['amount'] ?? null);
+        $sum += $amountCents;
+        foreach ($ids as $id) {
+            $everyone[$id] = $id;
+        }
+        $items[] = ['name' => $name, 'amount_cents' => $amountCents, 'participant_ids' => $ids];
+    }
+
+    $rawExtra = $body['extra_amount'] ?? 0;
+    $extraCents = is_numeric($rawExtra) && (float) $rawExtra == 0.0 ? 0 : validate_amount_cents($rawExtra);
+    if ($sum + $extraCents !== $sourceAmountCents) {
+        json_out(['ok' => false, 'error' => 'Items must add up to the expense amount.'], 400);
+    }
+
+    return ['items' => $items, 'extra_cents' => $extraCents, 'participant_ids' => array_values($everyone)];
+}
+
+function save_expense_items(PDO $pdo, int $expenseId, array $itemized): void
+{
+    $insertItem = $pdo->prepare(
+        'INSERT INTO ' . table_name('expense_items') . ' (expense_id, position, name, amount_cents, is_extra)
+         VALUES (:expense_id, :position, :name, :amount_cents, :is_extra)'
+    );
+    $insertPerson = $pdo->prepare(
+        'INSERT INTO ' . table_name('expense_item_participants') . ' (item_id, user_id) VALUES (:item_id, :user_id)'
+    );
+    foreach ($itemized['items'] as $position => $item) {
+        $insertItem->execute([
+            'expense_id' => $expenseId,
+            'position' => (int) $position,
+            'name' => $item['name'],
+            'amount_cents' => $item['amount_cents'],
+            'is_extra' => 0,
+        ]);
+        $itemId = (int) $pdo->lastInsertId();
+        foreach ($item['participant_ids'] as $userId) {
+            $insertPerson->execute(['item_id' => $itemId, 'user_id' => (int) $userId]);
+        }
+    }
+    if ($itemized['extra_cents'] > 0) {
+        $insertItem->execute([
+            'expense_id' => $expenseId,
+            'position' => count($itemized['items']),
+            'name' => '',
+            'amount_cents' => $itemized['extra_cents'],
+            'is_extra' => 1,
+        ]);
+    }
+}
+
+/**
+ * Adds `items` and `extra_amount` to itemized expenses.
+ *
+ * @param array<int, array<string, mixed>> $rows expenses that already have `id` and `split_mode`
+ */
+function attach_expense_items(PDO $pdo, array &$rows): void
+{
+    $ids = [];
+    foreach ($rows as $row) {
+        if (($row['split_mode'] ?? '') === 'itemized') {
+            $ids[] = (int) $row['id'];
+        }
+    }
+    if ($ids === []) {
+        return;
+    }
+
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $stmt = $pdo->prepare(
+        'SELECT id, expense_id, name, amount_cents, is_extra FROM ' . table_name('expense_items') . "
+         WHERE expense_id IN ($placeholders) ORDER BY expense_id, position, id"
+    );
+    $stmt->execute($ids);
+    $itemRows = $stmt->fetchAll();
+
+    $peopleByItem = [];
+    $stmt = $pdo->prepare(
+        'SELECT p.item_id, p.user_id FROM ' . table_name('expense_item_participants') . ' p
+         JOIN ' . table_name('expense_items') . " i ON i.id = p.item_id
+         WHERE i.expense_id IN ($placeholders) ORDER BY p.user_id"
+    );
+    $stmt->execute($ids);
+    foreach ($stmt->fetchAll() as $person) {
+        $peopleByItem[(int) $person['item_id']][] = (int) $person['user_id'];
+    }
+
+    $items = [];
+    $extras = [];
+    foreach ($itemRows as $item) {
+        $expenseId = (int) $item['expense_id'];
+        if ((int) $item['is_extra'] === 1) {
+            $extras[$expenseId] = (int) $item['amount_cents'];
+            continue;
+        }
+        $items[$expenseId][] = [
+            'name' => (string) $item['name'],
+            'amount' => cents_to_float((int) $item['amount_cents']),
+            'participant_ids' => $peopleByItem[(int) $item['id']] ?? [],
+        ];
+    }
+    foreach ($rows as &$row) {
+        if (($row['split_mode'] ?? '') === 'itemized') {
+            $id = (int) $row['id'];
+            $row['items'] = $items[$id] ?? [];
+            $row['extra_amount'] = cents_to_float($extras[$id] ?? 0);
+        }
+    }
+    unset($row);
+}
+
+/**
+ * Rows from each person's part in the expense's currency, kept as `exact` rows are.
+ *
+ * @param array<int, int> $owedSourceByUser
+ */
+function expense_rows_from_source_owed(
+    array $owedSourceByUser,
+    int $sourceAmountCents,
+    int $tripAmountCents,
+    float $fxRateToTrip,
+    string $sourceCurrencyCode,
+    string $tripCurrencyCode
+): array {
+    $splits = [];
+    foreach ($owedSourceByUser as $userId => $cents) {
+        $splits[] = ['user_id' => (int) $userId, 'value' => $cents / 100];
+    }
+    $ids = array_map('intval', array_keys($owedSourceByUser));
+    if ($sourceCurrencyCode !== $tripCurrencyCode) {
+        return convert_exact_split_source_to_trip_rows(
+            $sourceAmountCents,
+            $tripAmountCents,
+            $fxRateToTrip,
+            $ids,
+            $splits
+        );
+    }
+    return build_expense_split_rows($tripAmountCents, $ids, 'exact', $splits);
+}
+
 function build_expense_split_rows_with_currency_conversion(
     int $sourceAmountCents,
     int $tripAmountCents,
@@ -405,8 +578,57 @@ function build_expense_split_rows_with_currency_conversion(
     string $splitMode,
     array $rawSplits,
     string $sourceCurrencyCode,
-    string $tripCurrencyCode
+    string $tripCurrencyCode,
+    ?array $itemized = null
 ): array {
+    if ($splitMode === 'itemized') {
+        return expense_rows_from_source_owed(
+            expense_itemized_owed_cents((array) ($itemized['items'] ?? []), (int) ($itemized['extra_cents'] ?? 0)),
+            $sourceAmountCents,
+            $tripAmountCents,
+            $fxRateToTrip,
+            $sourceCurrencyCode,
+            $tripCurrencyCode
+        );
+    }
+
+    if ($splitMode === 'adjustment') {
+        $participantIds = normalize_user_ids($participantIds);
+        if ($participantIds === []) {
+            json_out(['ok' => false, 'error' => 'Pick at least one participant.'], 400);
+        }
+        $entries = parse_expense_split_entries($rawSplits, true);
+        $adjustments = [];
+        foreach ($participantIds as $userId) {
+            if (!array_key_exists($userId, $entries)) {
+                json_out(['ok' => false, 'error' => 'Split values are missing for some participants.'], 400);
+            }
+            $adjustments[$userId] = (int) round(((float) $entries[$userId]) * 100);
+        }
+        foreach ($entries as $userId => $_value) {
+            if (!in_array((int) $userId, $participantIds, true)) {
+                json_out(['ok' => false, 'error' => 'Split values include user outside participants.'], 400);
+            }
+        }
+        $owed = expense_adjustment_owed_cents($sourceAmountCents, $participantIds, $adjustments);
+        if ($owed === null) {
+            json_out(['ok' => false, 'error' => 'Adjustments exceed the expense amount.'], 400);
+        }
+        $rows = expense_rows_from_source_owed(
+            $owed,
+            $sourceAmountCents,
+            $tripAmountCents,
+            $fxRateToTrip,
+            $sourceCurrencyCode,
+            $tripCurrencyCode
+        );
+        foreach ($rows as &$row) {
+            $row['split_value'] = (int) ($adjustments[(int) $row['user_id']] ?? 0);
+        }
+        unset($row);
+        return $rows;
+    }
+
     if ($splitMode === 'exact' && $sourceCurrencyCode !== $tripCurrencyCode) {
         return convert_exact_split_source_to_trip_rows(
             $sourceAmountCents,
@@ -499,6 +721,11 @@ function add_expense_action(): void
     if (!is_array($rawSplits)) {
         json_out(['ok' => false, 'error' => 'Invalid splits payload.'], 400);
     }
+    $itemized = null;
+    if ($splitMode === 'itemized') {
+        $itemized = parse_expense_items($body, $sourceAmountCents);
+        $participants = require_valid_trip_member_ids($pdo, (int) $trip['id'], $itemized['participant_ids'], true);
+    }
     $participantRows = build_expense_split_rows_with_currency_conversion(
         $sourceAmountCents,
         $amountCents,
@@ -507,7 +734,8 @@ function add_expense_action(): void
         $splitMode,
         $rawSplits,
         $sourceCurrencyCode,
-        $tripCurrencyCode
+        $tripCurrencyCode,
+        $itemized
     );
     $payerId = $userId;
     $payerName = trim((string) ($me['nickname'] ?? ''));
@@ -569,6 +797,10 @@ function add_expense_action(): void
                 'owed_cents' => (int) ($participantRow['owed_cents'] ?? 0),
                 'split_value' => (int) ($participantRow['split_value'] ?? 0),
             ]);
+        }
+
+        if ($itemized !== null) {
+            save_expense_items($pdo, $expenseId, $itemized);
         }
 
         $notifyUserIds = [];
@@ -767,6 +999,11 @@ function update_expense_action(): void
     if (!is_array($rawSplits)) {
         json_out(['ok' => false, 'error' => 'Invalid splits payload.'], 400);
     }
+    $itemized = null;
+    if ($splitMode === 'itemized') {
+        $itemized = parse_expense_items($body, $sourceAmountCents);
+        $participants = require_valid_trip_member_ids($pdo, (int) $trip['id'], $itemized['participant_ids'], true);
+    }
     $participantRows = build_expense_split_rows_with_currency_conversion(
         $sourceAmountCents,
         $amountCents,
@@ -775,7 +1012,8 @@ function update_expense_action(): void
         $splitMode,
         $rawSplits,
         $sourceCurrencyCode,
-        $tripCurrencyCode
+        $tripCurrencyCode,
+        $itemized
     );
 
     $pdo->beginTransaction();
@@ -830,6 +1068,8 @@ function update_expense_action(): void
 
         $deleteParticipants = $pdo->prepare('DELETE FROM ' . $participantsTable . ' WHERE expense_id = :expense_id');
         $deleteParticipants->execute(['expense_id' => $expenseId]);
+        $deleteItems = $pdo->prepare('DELETE FROM ' . table_name('expense_items') . ' WHERE expense_id = :expense_id');
+        $deleteItems->execute(['expense_id' => $expenseId]);
 
         $insertParticipant = $pdo->prepare(
             'INSERT INTO ' . $participantsTable . ' (expense_id, user_id, owed_cents, split_value)
@@ -842,6 +1082,10 @@ function update_expense_action(): void
                 'owed_cents' => (int) ($participantRow['owed_cents'] ?? 0),
                 'split_value' => (int) ($participantRow['split_value'] ?? 0),
             ]);
+        }
+
+        if ($itemized !== null) {
+            save_expense_items($pdo, $expenseId, $itemized);
         }
 
         $pdo->commit();
@@ -1122,6 +1366,7 @@ function list_expenses_action(): void
         );
     }
     unset($row);
+    attach_expense_items($pdo, $rows);
 
     $nextCursor = null;
     if ($hasMore && count($rows) > 0) {

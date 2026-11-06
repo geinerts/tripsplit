@@ -1,4 +1,5 @@
 import '../../domain/entities/balance_item.dart';
+import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_participant.dart';
 import '../../domain/entities/payment_item.dart';
 import '../../domain/entities/random_order.dart';
@@ -131,6 +132,10 @@ class WorkspaceSnapshotCodec {
               'paid_by_nickname': expense.paidByNickname,
               'receipt_url': expense.receiptUrl,
               'receipt_thumb_url': expense.receiptThumbUrl,
+              'items': expense.items
+                  .map((item) => item.toJson())
+                  .toList(growable: false),
+              'extra_amount': expense.extraAmount,
               'participants': expense.participants
                   .map(
                     (participant) => <String, dynamic>{
@@ -333,6 +338,8 @@ class WorkspaceSnapshotCodec {
               item['receipt_thumb_url'],
             ),
             participants: participants,
+            items: ExpenseItem.listFromJson(item['items']),
+            extraAmount: (item['extra_amount'] as num?)?.toDouble() ?? 0,
           );
         })
         .toList(growable: false);
@@ -406,7 +413,11 @@ class WorkspaceSnapshotCodec {
 
   static String _parseSplitMode(Object? raw) {
     final value = (raw as String? ?? '').trim().toLowerCase();
-    if (value == 'exact' || value == 'percent' || value == 'shares') {
+    if (value == 'exact' ||
+        value == 'percent' ||
+        value == 'shares' ||
+        value == 'adjustment' ||
+        value == 'itemized') {
       return value;
     }
     return 'equal';

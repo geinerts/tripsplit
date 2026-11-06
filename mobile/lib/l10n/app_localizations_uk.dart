@@ -4258,6 +4258,49 @@ class AppLocalizationsUk extends AppLocalizations {
   String get expenseCustomSplit => 'Індивідуальний розподіл витрат';
 
   @override
+  String get expenseAdjustmentsLabel => 'Коригування';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ або −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Додайте або відніміть для кожної людини. Решта ділиться порівну.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Коригування не можуть перевищувати загальну суму, і ніхто не може винити менше за нуль.';
+
+  @override
+  String get expenseItemsLabel => 'Позиції';
+
+  @override
+  String get expenseAddItem => 'Додати позицію';
+
+  @override
+  String get expenseRemoveItem => 'Вилучити позицію';
+
+  @override
+  String get expenseItemName => 'Позиція';
+
+  @override
+  String get expenseItemExtra => 'Податок або чайові';
+
+  @override
+  String get expenseItemExtraHint => 'Ділиться пропорційно позиціям кожної людини.';
+
+  @override
+  String get expenseItemsInvalid => 'Кожна позиція повинна мати назву, суму й принаймні одну людину.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Разом за позиціями: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Сума позицій має становити $total.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Усю суму $amount розподілено';
   }

@@ -4258,6 +4258,49 @@ class AppLocalizationsPl extends AppLocalizations {
   String get expenseCustomSplit => 'Indywidualny podział kosztów';
 
   @override
+  String get expenseAdjustmentsLabel => 'Korekty';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ lub −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Dodaj lub odejmij każdej osobie. Reszta dzieli się po równo.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Korekty nie mogą przekraczać sumy, a nikt nie może być winien mniej niż zero.';
+
+  @override
+  String get expenseItemsLabel => 'Pozycje';
+
+  @override
+  String get expenseAddItem => 'Dodaj pozycję';
+
+  @override
+  String get expenseRemoveItem => 'Usuń pozycję';
+
+  @override
+  String get expenseItemName => 'Pozycja';
+
+  @override
+  String get expenseItemExtra => 'Podatek lub napiwek';
+
+  @override
+  String get expenseItemExtraHint => 'Dzielone proporcjonalnie do pozycji każdej osoby.';
+
+  @override
+  String get expenseItemsInvalid => 'Każda pozycja wymaga nazwy, kwoty i co najmniej jednej osoby.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Suma pozycji: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Pozycje muszą sumować się do $total.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Cała kwota $amount podzielona';
   }

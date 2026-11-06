@@ -5,6 +5,7 @@ import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/mutation_result.dart';
 import '../../domain/entities/queued_mutation.dart';
 import '../../domain/entities/random_draw_result.dart';
+import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/trip_expenses_page.dart';
@@ -327,6 +328,8 @@ class WorkspaceController {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
   }) {
     return _repository.addExpense(
@@ -339,6 +342,8 @@ class WorkspaceController {
       participants: participants,
       splitMode: splitMode,
       splitValues: splitValues,
+      items: items,
+      extraAmount: extraAmount,
       receiptPath: receiptPath,
     );
   }
@@ -354,6 +359,8 @@ class WorkspaceController {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     bool removeReceipt = false,
   }) {
@@ -368,6 +375,8 @@ class WorkspaceController {
       participants: participants,
       splitMode: splitMode,
       splitValues: splitValues,
+      items: items,
+      extraAmount: extraAmount,
       receiptPath: receiptPath,
       removeReceipt: removeReceipt,
     );

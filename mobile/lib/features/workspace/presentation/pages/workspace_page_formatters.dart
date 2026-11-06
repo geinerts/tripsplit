@@ -52,6 +52,8 @@ bool _isEqualSplitMode(String splitMode) => !const {
   'exact',
   'percent',
   'shares',
+  'adjustment',
+  'itemized',
 }.contains(splitMode.trim().toLowerCase());
 
 String _splitModeShortLabel(BuildContext context, String splitMode) {
@@ -63,6 +65,10 @@ String _splitModeShortLabel(BuildContext context, String splitMode) {
       return t.percentagesLabel;
     case 'shares':
       return t.sharesLabel;
+    case 'adjustment':
+      return t.expenseAdjustmentsLabel;
+    case 'itemized':
+      return t.expenseItemsLabel;
     default:
       return t.equalSplitLabel;
   }

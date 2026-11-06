@@ -4,6 +4,7 @@ import '../entities/expense_reaction.dart';
 import '../entities/mutation_result.dart';
 import '../entities/queued_mutation.dart';
 import '../entities/random_draw_result.dart';
+import '../entities/expense_item.dart';
 import '../entities/expense_split_value.dart';
 import '../entities/receipt_upload_payload.dart';
 import '../entities/trip_expenses_page.dart';
@@ -137,6 +138,8 @@ abstract class WorkspaceRepository {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
   });
 
@@ -151,6 +154,8 @@ abstract class WorkspaceRepository {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     bool removeReceipt,
   });

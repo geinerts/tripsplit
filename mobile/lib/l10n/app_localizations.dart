@@ -7855,6 +7855,84 @@ abstract class AppLocalizations {
   /// **'Custom split'**
   String get expenseCustomSplit;
 
+  /// No description provided for @expenseAdjustmentsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjustments'**
+  String get expenseAdjustmentsLabel;
+
+  /// No description provided for @expenseAdjustmentFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'+ or −'**
+  String get expenseAdjustmentFieldLabel;
+
+  /// No description provided for @expenseAdjustmentsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add or subtract for each person. The rest is split equally.'**
+  String get expenseAdjustmentsHint;
+
+  /// No description provided for @expenseAdjustmentsMustFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjustments can\'t exceed the total, and nobody can owe less than zero.'**
+  String get expenseAdjustmentsMustFit;
+
+  /// No description provided for @expenseItemsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get expenseItemsLabel;
+
+  /// No description provided for @expenseAddItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Add item'**
+  String get expenseAddItem;
+
+  /// No description provided for @expenseRemoveItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove item'**
+  String get expenseRemoveItem;
+
+  /// No description provided for @expenseItemName.
+  ///
+  /// In en, this message translates to:
+  /// **'Item'**
+  String get expenseItemName;
+
+  /// No description provided for @expenseItemExtra.
+  ///
+  /// In en, this message translates to:
+  /// **'Tax or tip'**
+  String get expenseItemExtra;
+
+  /// No description provided for @expenseItemExtraHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared in proportion to each person\'s items.'**
+  String get expenseItemExtraHint;
+
+  /// No description provided for @expenseItemsInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Each item needs a name, an amount and at least one person.'**
+  String get expenseItemsInvalid;
+
+  /// No description provided for @expenseItemsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total from items: {total}'**
+  String expenseItemsTotal(String total);
+
+  /// No description provided for @expenseItemsMustMatchTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Items must add up to {total}.'**
+  String expenseItemsMustMatchTotal(String total);
+
   /// No description provided for @expenseSplitAllocated.
   ///
   /// In en, this message translates to:

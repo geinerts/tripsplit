@@ -4244,6 +4244,49 @@ class AppLocalizationsFi extends AppLocalizations {
   String get expenseCustomSplit => 'Mukautettu jakaminen';
 
   @override
+  String get expenseAdjustmentsLabel => 'Oikaisut';
+
+  @override
+  String get expenseAdjustmentFieldLabel => '+ tai −';
+
+  @override
+  String get expenseAdjustmentsHint => 'Lisää tai vähennä jokaiselle henkilölle. Loput jaetaan tasan.';
+
+  @override
+  String get expenseAdjustmentsMustFit => 'Oikaisut eivät voi ylittää kokonaissummaa, eikä kenenkään osuus voi olla alle nollan.';
+
+  @override
+  String get expenseItemsLabel => 'Tuotteet';
+
+  @override
+  String get expenseAddItem => 'Lisää tuote';
+
+  @override
+  String get expenseRemoveItem => 'Poista tuote';
+
+  @override
+  String get expenseItemName => 'Tuote';
+
+  @override
+  String get expenseItemExtra => 'Vero tai juomaraha';
+
+  @override
+  String get expenseItemExtraHint => 'Jaetaan suhteessa kunkin tuotteisiin.';
+
+  @override
+  String get expenseItemsInvalid => 'Jokaisella tuotteella on oltava nimi, summa ja vähintään yksi henkilö.';
+
+  @override
+  String expenseItemsTotal(String total) {
+    return 'Tuotteet yhteensä: $total';
+  }
+
+  @override
+  String expenseItemsMustMatchTotal(String total) {
+    return 'Tuotteiden summan on oltava $total.';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Koko $amount jaettu';
   }

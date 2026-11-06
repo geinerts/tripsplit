@@ -63,6 +63,8 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                     participants: form.participants,
                     splitMode: form.splitMode,
                     splitValues: form.splitValues,
+                    items: form.items,
+                    extraAmount: form.extraAmount,
                     receiptPath: receipt?.path,
                   )
                 : await widget.workspaceController.updateExpense(
@@ -76,6 +78,8 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                     participants: form.participants,
                     splitMode: form.splitMode,
                     splitValues: form.splitValues,
+                    items: form.items,
+                    extraAmount: form.extraAmount,
                     receiptPath: receipt?.path,
                     removeReceipt: form.removeReceipt,
                   );

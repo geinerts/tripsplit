@@ -1,5 +1,6 @@
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/auth/account_data_session.dart';
+import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/queued_mutation.dart';
 import '../datasources/workspace_remote_data_source.dart';
@@ -48,6 +49,8 @@ class WorkspaceOfflineQueue {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     String? mutationId,
   }) {
@@ -74,6 +77,9 @@ class WorkspaceOfflineQueue {
                 },
               )
               .toList(growable: false),
+        if (items.isNotEmpty)
+          'items': items.map((item) => item.toJson()).toList(growable: false),
+        if (extraAmount > 0) 'extra_amount': extraAmount,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
       },
@@ -92,6 +98,8 @@ class WorkspaceOfflineQueue {
     required List<int> participants,
     required String splitMode,
     required List<ExpenseSplitValue> splitValues,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
     String? receiptPath,
     bool removeReceipt = false,
     String? mutationId,
@@ -120,6 +128,9 @@ class WorkspaceOfflineQueue {
                 },
               )
               .toList(growable: false),
+        if (items.isNotEmpty)
+          'items': items.map((item) => item.toJson()).toList(growable: false),
+        if (extraAmount > 0) 'extra_amount': extraAmount,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
         if (removeReceipt) 'remove_receipt': true,
@@ -210,6 +221,8 @@ class WorkspaceOfflineQueue {
           participants: _toIntList(payload['participants']),
           splitMode: _normalizeSplitMode(payload['split_mode']),
           splitValues: _toSplitValues(payload['splits']),
+          items: ExpenseItem.listFromJson(payload['items']),
+          extraAmount: (payload['extra_amount'] as num?)?.toDouble() ?? 0,
           receiptPath: payload['receipt_path'] as String?,
           clientMutationId: mutationId,
         );
@@ -226,6 +239,8 @@ class WorkspaceOfflineQueue {
           participants: _toIntList(payload['participants']),
           splitMode: _normalizeSplitMode(payload['split_mode']),
           splitValues: _toSplitValues(payload['splits']),
+          items: ExpenseItem.listFromJson(payload['items']),
+          extraAmount: (payload['extra_amount'] as num?)?.toDouble() ?? 0,
           receiptPath: payload['receipt_path'] as String?,
           removeReceipt: payload['remove_receipt'] == true,
           clientMutationId: mutationId,
@@ -306,7 +321,11 @@ class WorkspaceOfflineQueue {
 
   static String _normalizeSplitMode(Object? raw) {
     final value = (raw as String? ?? '').trim().toLowerCase();
-    if (value == 'exact' || value == 'percent' || value == 'shares') {
+    if (value == 'exact' ||
+        value == 'percent' ||
+        value == 'shares' ||
+        value == 'adjustment' ||
+        value == 'itemized') {
       return value;
     }
     return 'equal';

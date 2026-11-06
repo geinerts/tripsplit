@@ -24,6 +24,8 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
       participantIds: participantIds,
       splitMode: form.splitMode,
       splitValuesByUser: splitValuesByUser,
+      items: form.items,
+      extraAmount: form.extraAmount,
     );
     final participantModels = participantIds
         .where(usersById.containsKey)
@@ -55,6 +57,8 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
       receiptUrl: uploadedReceipt?.url,
       receiptThumbUrl: uploadedReceipt?.thumbUrl,
       participants: participantModels,
+      items: form.items,
+      extraAmount: form.extraAmount,
     );
     final nextSnapshotExpenses = [queuedExpense, ...snapshot.expenses];
     final visibleExpenses = [queuedExpense, ..._expensesFeed];
@@ -90,6 +94,8 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
       participantIds: participantIds,
       splitMode: form.splitMode,
       splitValuesByUser: splitValuesByUser,
+      items: form.items,
+      extraAmount: form.extraAmount,
     );
     final participantModels = participantIds
         .where(usersById.containsKey)
@@ -127,6 +133,8 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
             ? null
             : (uploadedReceipt?.thumbUrl ?? expense.receiptThumbUrl),
         participants: participantModels,
+        items: form.items,
+        extraAmount: form.extraAmount,
       );
     }
 
@@ -168,6 +176,8 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
     required List<int> participantIds,
     required String splitMode,
     required Map<int, double> splitValuesByUser,
+    List<ExpenseItem> items = const [],
+    double extraAmount = 0,
   }) {
     if (participantIds.isEmpty) {
       return const <int, double>{};
@@ -176,6 +186,22 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
     final amountCents = (amount * 100).round();
     if (amountCents <= 0) {
       return const <int, double>{};
+    }
+
+    if (splitMode == 'itemized') {
+      return itemizedOwedCents(
+        items,
+        (extraAmount * 100).round(),
+      ).map((key, value) => MapEntry(key, value / 100));
+    }
+    if (splitMode == 'adjustment') {
+      final owed = adjustmentOwedCents(amountCents, participantIds, {
+        for (final id in participantIds)
+          id: ((splitValuesByUser[id] ?? 0) * 100).round(),
+      });
+      if (owed != null) {
+        return owed.map((key, value) => MapEntry(key, value / 100));
+      }
     }
 
     final owedCents = <int, int>{for (final id in participantIds) id: 0};
