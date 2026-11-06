@@ -1,0 +1,116 @@
+/* Small pieces reused across sections. */
+
+/* Store badges */
+.stores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.store {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 9px 22px 9px 18px;
+  border-radius: 16px;
+  background: var(--ink);
+  color: #fff;
+}
+
+.store--light {
+  background: #fff;
+  color: var(--ink);
+}
+
+.store__logo {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
+.store small {
+  display: block;
+  font-size: 11.5px;
+  line-height: 1.25;
+  opacity: .78;
+}
+
+.store b {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.2;
+}
+
+/* Tick list */
+.ticks {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.ticks li {
+  display: flex;
+  gap: 12px;
+}
+
+.ticks .icon {
+  margin-top: 3px;
+  color: var(--green);
+  font-size: 18px;
+  stroke-width: 2.6;
+}
+
+/* Section label */
+.eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Decorative ribbons */
+.ribbons {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Rounded icon tile */
+.tile {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+.tile--green {
+  background: #D6F1E7;
+  color: var(--green);
+}
+
+.tile--teal {
+  background: #D8F2F5;
+  color: #007688;
+}
+
+.tile--pink {
+  background: #FBDFEC;
+  color: #C21F72;
+}
+
+@media (max-width: 560px) {
+  .store {
+    flex: 1 1 100%;
+  }
+}
