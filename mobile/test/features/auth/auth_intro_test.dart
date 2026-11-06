@@ -46,35 +46,57 @@ void main() {
   testWidgets('the page offers every way in, and no carousel', (tester) async {
     await _mount(tester, const Size(402, 874));
     expect(find.text('Create your account.'), findsOneWidget);
+    expect(find.text('Choose how you want to sign up.'), findsNothing);
     expect(find.text('Sign up with email'), findsOneWidget);
     expect(find.text('Continue with Google'), findsOneWidget);
     expect(find.text('Sign in'), findsOneWidget);
     expect(find.byType(PageView), findsNothing);
     expect(find.text('Get started'), findsNothing);
-    expect(find.textContaining('Split smarter.'), findsNothing);
   });
 
-  testWidgets('from the launch screen the logo starts where it was left', (
+  testWidgets('the logo moves up from the launch screen, above the text', (
     tester,
   ) async {
     tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
     addTearDown(tester.view.resetPadding);
     await _mount(tester, const Size(402, 874), fromLaunch: true, settle: false);
+    await tester.pump();
     final start = tester.getRect(find.byKey(logo));
     expect(start.width, 260);
     expect(start.center.dx, closeTo(201, .5));
     expect(start.center.dy, closeTo(437, .5));
     await tester.pumpAndSettle();
     final end = tester.getRect(find.byKey(logo));
-    expect(end.width, 150);
-    expect(end.center.dy, lessThan(start.center.dy));
-    expect(find.text('Sign up with email').hitTestable(), findsOneWidget);
+    expect(end.width, 260);
+    final heading = tester.getRect(find.text('Create your account.'));
+    // Below the middle of the space above the text, and clear of it.
+    expect(end.center.dy, greaterThan(heading.top / 2));
+    expect(end.bottom, lessThan(heading.top));
+    final firstButton = tester.getRect(find.byType(InkWell).first);
+    expect(firstButton.top - heading.bottom, closeTo(30, 1));
+    final google = tester.getRect(find.text('Continue with Google'));
+    final email = tester.getRect(find.text('Sign up with email'));
+    final signIn = tester.getRect(find.text('Sign in'));
+    expect(google.top, greaterThan(heading.bottom));
+    expect(email.top, greaterThan(google.bottom));
+    expect(signIn.top, greaterThan(email.bottom));
+    expect(signIn.bottom, lessThan(874 - 34));
+    expect(find.text('Sign in').hitTestable(), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a small phone keeps the logo clear of the text', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 20);
+    addTearDown(tester.view.resetPadding);
+    await _mount(tester, const Size(320, 568));
+    final heading = tester.getRect(find.text('Create your account.'));
+    expect(tester.getRect(find.byKey(logo)).bottom, lessThan(heading.top));
     expect(tester.takeException(), isNull);
   });
 
   testWidgets('it follows the phone language', (tester) async {
     await _mount(tester, const Size(402, 874), locale: const Locale('lv'));
-    expect(find.text('Create your account.'), findsNothing);
+    expect(find.text('Sign up with email'), findsNothing);
     expect(find.text('Continue with Google'), findsNothing);
     expect(tester.takeException(), isNull);
   });

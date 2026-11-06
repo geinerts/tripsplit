@@ -316,7 +316,7 @@ void main() {
         }
         tester.view.physicalSize = const Size(951, 669);
         await tester.pumpAndSettle();
-        expect(find.text('Create your account.'), findsOneWidget);
+        expect(find.text('Sign up with email'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );

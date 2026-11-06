@@ -20,10 +20,10 @@ import 'auth_intro_background.dart';
 import 'login_page.dart';
 
 // Match LaunchImage in ios/Runner/Base.lproj/LaunchScreen.storyboard, so the logo
-// doesn't move when the app takes over from the launch screen.
-const _launchLogoWidth = 260.0;
+// keeps its size when the app takes over from the launch screen.
+const _logoWidth = 260.0;
 const _logoAspectRatio = 1200 / 475;
-const _contentTopPadding = 12.0;
+const _contentPadding = EdgeInsets.fromLTRB(24, 12, 24, 22);
 
 enum _IntroSocialProvider { google, apple }
 
@@ -63,7 +63,8 @@ class AuthIntroPage extends StatefulWidget {
 
   final AuthController controller;
 
-  /// First screen after the launch screen: the logo starts where that left it.
+  /// First screen after the launch screen: the logo moves up from where that left
+  /// it, and the buttons fade in.
   final bool fromLaunch;
 
   @override
@@ -71,17 +72,37 @@ class AuthIntroPage extends StatefulWidget {
 }
 
 class _AuthIntroPageState extends State<AuthIntroPage> {
-  late bool _logoAtLaunch = widget.fromLaunch;
+  final _logoKey = GlobalKey();
+  late bool _choicesHidden = widget.fromLaunch;
+  late bool _logoHidden = widget.fromLaunch;
+  double _logoSlide = 0;
   bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
-    if (_logoAtLaunch) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) setState(() => _logoAtLaunch = false);
-      });
+    if (widget.fromLaunch) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _placeLogoAtLaunch());
     }
+  }
+
+  /// The first frame only measures, so the logo never shows anywhere else first.
+  void _placeLogoAtLaunch() {
+    final box = _logoKey.currentContext?.findRenderObject() as RenderBox?;
+    if (!mounted) return;
+    if (box != null && box.hasSize && box.size.height > 0) {
+      final center = box.localToGlobal(box.size.center(Offset.zero)).dy;
+      _logoSlide =
+          (MediaQuery.sizeOf(context).height / 2 - center) / box.size.height;
+    }
+    setState(() => _logoHidden = false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() {
+        _logoSlide = 0;
+        _choicesHidden = false;
+      });
+    });
   }
 
   Future<void> _openSignIn() async {
@@ -288,9 +309,6 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
 
   Widget _buildAuthIntroScaffold(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    // Read outside SafeArea, which removes the inset for its children.
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final topInset = MediaQuery.paddingOf(context).top;
     final semantic =
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.dark;
@@ -310,81 +328,65 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final wide = constraints.maxWidth >= 700;
-                    final atLaunch = _logoAtLaunch;
-                    // Starts exactly where the launch screen left the logo, then
-                    // moves aside for the sign-up choices.
-                    final launchLogoBottom =
-                        screenHeight / 2 +
-                        _launchLogoWidth / _logoAspectRatio / 2 -
-                        topInset -
-                        _contentTopPadding;
-                    final logoAreaHeight = math.min(
-                      atLaunch ? launchLogoBottom : constraints.maxHeight * .16,
-                      math.max(
-                        0.0,
-                        constraints.maxHeight -
-                            (220 + MediaQuery.textScalerOf(context).scale(110)),
-                      ),
-                    );
-                    return Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 1000),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            24,
-                            _contentTopPadding,
-                            24,
-                            22,
-                          ),
-                          child: Flex(
-                            direction: wide ? Axis.horizontal : Axis.vertical,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              AnimatedContainer(
-                                key: ValueKey('intro-logo-area-$wide'),
-                                duration:
-                                    MediaQuery.disableAnimationsOf(context)
-                                    ? Duration.zero
-                                    : const Duration(milliseconds: 320),
-                                curve: Curves.easeOutCubic,
-                                width: wide ? 340 : null,
-                                height: wide ? null : logoAreaHeight,
-                                alignment: wide
-                                    ? Alignment.center
-                                    : Alignment.bottomCenter,
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: atLaunch || wide
-                                        ? _launchLogoWidth
-                                        : 150,
-                                  ),
-                                  child: AspectRatio(
-                                    aspectRatio: _logoAspectRatio,
-                                    child: Image.asset(
-                                      'assets/branding/logo_full_dark.png',
-                                      key: const ValueKey('auth-intro-logo'),
-                                      fit: BoxFit.contain,
-                                      filterQuality: FilterQuality.high,
-                                      semanticLabel: 'Splyto',
+                    final logo = _buildLogo();
+                    final choices = _buildChoices(muted: muted);
+                    if (wide) {
+                      return Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1000),
+                          child: Padding(
+                            padding: _contentPadding,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 340,
+                                  child: Center(child: logo),
+                                ),
+                                const SizedBox(width: 32),
+                                Expanded(
+                                  child: Center(
+                                    child: SingleChildScrollView(
+                                      child: choices,
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: wide ? 32 : 0,
-                                height: wide ? 0 : 20,
-                              ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    final padding = _contentPadding.vertical;
+                    return SingleChildScrollView(
+                      padding: _contentPadding,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: math.max(
+                            0.0,
+                            constraints.maxHeight - padding,
+                          ),
+                        ),
+                        child: IntrinsicHeight(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Below the middle of the space above the text. The
+                              // spaces give way first, so nothing needs to scroll.
                               Expanded(
-                                child: AnimatedOpacity(
-                                  opacity: atLaunch ? 0 : 1,
-                                  duration:
-                                      MediaQuery.disableAnimationsOf(context)
-                                      ? Duration.zero
-                                      : const Duration(milliseconds: 320),
-                                  curve: Curves.easeOutCubic,
-                                  child: _buildChoices(muted: muted),
+                                child: Column(
+                                  children: [
+                                    const Spacer(flex: 65),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
+                                      child: logo,
+                                    ),
+                                    const Spacer(flex: 35),
+                                  ],
                                 ),
                               ),
+                              choices,
                             ],
                           ),
                         ),
@@ -414,37 +416,60 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
     );
   }
 
+  Widget _buildLogo() {
+    final duration = MediaQuery.disableAnimationsOf(context) || _logoSlide != 0
+        ? Duration.zero
+        : const Duration(milliseconds: 420);
+    return AnimatedSlide(
+      offset: Offset(0, _logoSlide),
+      duration: duration,
+      curve: Curves.easeOutCubic,
+      child: Opacity(
+        opacity: _logoHidden ? 0 : 1,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: _logoWidth),
+          child: AspectRatio(
+            key: _logoKey,
+            aspectRatio: _logoAspectRatio,
+            child: Image.asset(
+              'assets/branding/logo_full_dark.png',
+              key: const ValueKey('auth-intro-logo'),
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.high,
+              semanticLabel: 'Splyto',
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Kept at the bottom, within reach of the thumb.
   Widget _buildChoices({required Color muted}) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(top: 26, bottom: 4),
+    return AnimatedOpacity(
+      opacity: _choicesHidden ? 0 : 1,
+      duration: MediaQuery.disableAnimationsOf(context)
+          ? Duration.zero
+          : const Duration(milliseconds: 320),
+      curve: Curves.easeOutCubic,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            context.l10n.authIntroCreateAccount,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: AppDesign.darkForeground,
-              fontSize: 36,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.9,
-              height: 1.05,
+          Semantics(
+            header: true,
+            child: Text(
+              context.l10n.authIntroCreateAccount,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: AppDesign.darkForeground,
+                fontSize: 34,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.9,
+                height: 1.05,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            context.l10n.authIntroChooseSign,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: muted,
-              fontSize: 14,
-              height: 1.65,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 24),
-          _buildChoiceEmailButton(),
-          const SizedBox(height: 18),
-          _buildOrRow(),
-          const SizedBox(height: 18),
+          const SizedBox(height: 30),
           _buildChoiceSocialButton(
             label: context.l10n.authIntroContinueGoogle,
             icon: SvgPicture.asset(
@@ -472,6 +497,10 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
                   : () => _onSocialPressed(_IntroSocialProvider.apple),
             ),
           ],
+          const SizedBox(height: 18),
+          _buildOrRow(),
+          const SizedBox(height: 18),
+          _buildChoiceEmailButton(),
           const SizedBox(height: 10),
           _buildSignInRow(muted),
         ],
