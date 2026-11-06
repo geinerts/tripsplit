@@ -10,7 +10,14 @@ class _Auth implements AuthController {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-Future<void> _mount(WidgetTester tester, Size size, {double scale = 1}) async {
+Future<void> _mount(
+  WidgetTester tester,
+  Size size, {
+  double scale = 1,
+  bool fromLaunch = false,
+  bool settle = true,
+  Locale locale = const Locale('en'),
+}) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.resetPhysicalSize);
@@ -18,7 +25,7 @@ Future<void> _mount(WidgetTester tester, Size size, {double scale = 1}) async {
   await tester.pumpWidget(
     MaterialApp(
       theme: AppTheme.dark(),
-      locale: const Locale('en'),
+      locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       builder: (context, child) => MediaQuery(
@@ -27,81 +34,63 @@ Future<void> _mount(WidgetTester tester, Size size, {double scale = 1}) async {
         ).copyWith(textScaler: TextScaler.linear(scale)),
         child: child!,
       ),
-      home: AuthIntroPage(controller: _Auth()),
+      home: AuthIntroPage(controller: _Auth(), fromLaunch: fromLaunch),
     ),
   );
-  await tester.pumpAndSettle();
+  if (settle) await tester.pumpAndSettle();
 }
 
 void main() {
   const logo = ValueKey('auth-intro-logo');
 
-  testWidgets('the slide text still swipes under a logo that stays put', (
+  testWidgets('the page offers every way in, and no carousel', (tester) async {
+    await _mount(tester, const Size(402, 874));
+    expect(find.text('Create your account.'), findsOneWidget);
+    expect(find.text('Sign up with email'), findsOneWidget);
+    expect(find.text('Continue with Google'), findsOneWidget);
+    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.byType(PageView), findsNothing);
+    expect(find.text('Get started'), findsNothing);
+    expect(find.textContaining('Split smarter.'), findsNothing);
+  });
+
+  testWidgets('from the launch screen the logo starts where it was left', (
     tester,
   ) async {
-    await _mount(tester, const Size(402, 874));
-    final position = tester.getTopLeft(find.byKey(logo));
-    expect(find.textContaining('Split smarter.'), findsOneWidget);
-    for (final title in ['Plan together.', 'Settle fast.']) {
-      await tester.fling(
-        find.byType(PageView).last,
-        const Offset(-300, 0),
-        900,
-      );
-      await tester.pumpAndSettle();
-      expect(find.textContaining(title), findsOneWidget);
-      expect(tester.getTopLeft(find.byKey(logo)), position);
-    }
-    expect(find.text('Get started'), findsOneWidget);
-    expect(find.text('Sign in'), findsOneWidget);
-  });
-
-  testWidgets('get started shows the choice and back returns', (tester) async {
-    await _mount(tester, const Size(402, 874));
-    final introWidth = tester.getSize(find.byKey(logo)).width;
-    await tester.tap(find.text('Get started'));
-    await tester.pumpAndSettle();
-    expect(find.text('Create your account.'), findsOneWidget);
-    expect(tester.getSize(find.byKey(logo)).width, lessThan(introWidth));
-    expect(find.text('Continue with Google'), findsOneWidget);
-    await tester.tap(find.text('Back'));
-    await tester.pumpAndSettle();
-    expect(find.text('Get started'), findsOneWidget);
-    expect(tester.getSize(find.byKey(logo)).width, introWidth);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('the logo stays where the launch screen left it', (tester) async {
     tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
     addTearDown(tester.view.resetPadding);
-    await _mount(tester, const Size(402, 874));
-    final rect = tester.getRect(find.byKey(logo));
-    expect(rect.width, 260);
-    expect(rect.center.dx, closeTo(201, .5));
-    expect(rect.center.dy, closeTo(437, .5));
-    expect(find.text('Get started'), findsOneWidget);
+    await _mount(tester, const Size(402, 874), fromLaunch: true, settle: false);
+    final start = tester.getRect(find.byKey(logo));
+    expect(start.width, 260);
+    expect(start.center.dx, closeTo(201, .5));
+    expect(start.center.dy, closeTo(437, .5));
+    await tester.pumpAndSettle();
+    final end = tester.getRect(find.byKey(logo));
+    expect(end.width, 150);
+    expect(end.center.dy, lessThan(start.center.dy));
+    expect(find.text('Sign up with email').hitTestable(), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('on a small phone the logo moves up to keep the buttons', (
-    tester,
-  ) async {
-    tester.view.padding = const FakeViewPadding(top: 20);
-    addTearDown(tester.view.resetPadding);
-    await _mount(tester, const Size(320, 568));
-    expect(tester.getRect(find.byKey(logo)).center.dy, lessThan(284));
-    final button = tester.getRect(find.text('Get started'));
-    expect(button.bottom, lessThan(568));
+  testWidgets('it follows the phone language', (tester) async {
+    await _mount(tester, const Size(402, 874), locale: const Locale('lv'));
+    expect(find.text('Create your account.'), findsNothing);
+    expect(find.text('Continue with Google'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 
-  for (final size in const [Size(320, 568), Size(844, 390), Size(1024, 768)]) {
+  for (final locale in AppLocalizations.supportedLocales) {
+    testWidgets('fits a small phone at 200% text, ${locale.languageCode}', (
+      tester,
+    ) async {
+      await _mount(tester, const Size(320, 568), scale: 2, locale: locale);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  for (final size in const [Size(844, 390), Size(1024, 768)]) {
     testWidgets('fits $size at 200% text', (tester) async {
       await _mount(tester, size, scale: 2);
-      expect(tester.takeException(), isNull);
-      await tester.ensureVisible(find.text('Get started'));
-      await tester.tap(find.text('Get started'));
-      await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     });
   }

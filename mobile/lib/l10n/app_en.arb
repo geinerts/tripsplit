@@ -1523,6 +1523,7 @@
   "quickStartBack": "Back",
   "quickStartSkip": "Skip",
   "quickStartCreateAction": "Create trip",
+  "quickStartSignUpAction": "Sign up",
   "quickStartClose": "Close Quick Start",
   "quickStartSubtitle": "See how trips and expenses work",
   "quickStartStep": "Step {step} of {total}",

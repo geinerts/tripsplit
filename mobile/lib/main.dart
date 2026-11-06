@@ -7,7 +7,7 @@ import 'core/monitoring/app_monitoring.dart';
 
 Future<void> main() async {
   final dependencies = AppDependencies.bootstrap();
-  var initialRoute = AppRouter.authIntro;
+  var initialRoute = AppRouter.authFromLaunch;
   await AppMonitoring.bootstrapAndRun(
     dependencies: dependencies,
     beforeRunApp: () async {
@@ -23,8 +23,10 @@ Future<String> _resolveInitialRoute(AppDependencies dependencies) async {
     final hasSession = await dependencies.authController
         .hasRecoverableSession();
     if (!hasSession) {
-      return AppRouter.authIntro;
+      return _signedOutRoute(dependencies);
     }
+    // Whoever already has an account never needs the guide before signing in again.
+    unawaited(dependencies.quickStartSeenStore.markSeen());
 
     var user = dependencies.authController.currentUser;
     user ??= await dependencies.authController.readCachedCurrentUser();
@@ -44,7 +46,7 @@ Future<String> _resolveInitialRoute(AppDependencies dependencies) async {
     }
 
     // No verified account identity means no access to account-scoped offline data.
-    return AppRouter.authIntro;
+    return AppRouter.authFromLaunch;
   } catch (_) {
     final fallback = await dependencies.authController.readCachedCurrentUser();
     if (fallback != null) {
@@ -52,6 +54,15 @@ Future<String> _resolveInitialRoute(AppDependencies dependencies) async {
           ? AppRouter.credentials
           : AppRouter.trips;
     }
-    return AppRouter.authIntro;
+    return AppRouter.authFromLaunch;
   }
+}
+
+/// The guide once on a new install, unless a link opened the app for a reason.
+Future<String> _signedOutRoute(AppDependencies dependencies) async {
+  if (await dependencies.quickStartSeenStore.isSeen() ||
+      await dependencies.inviteDeepLinkController.openedWithLink()) {
+    return AppRouter.authFromLaunch;
+  }
+  return AppRouter.quickStartWelcome;
 }

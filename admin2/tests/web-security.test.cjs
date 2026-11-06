@@ -76,7 +76,7 @@ for (const file of ['friend.php', 'invite.php']) {
     assert.equal((rendered.match(/<\/script>/gi) || []).length, 1);
     assert.equal((rendered.match(/<script>/gi) || []).length, 1);
     const page = landing(file, '', false, rendered);
-    page.tick();
+    page.button.click();
     assert.ok(page.navigations[0].endsWith(file === 'friend.php' ? payload : encodeURIComponent(payload)));
   });
 
@@ -105,6 +105,15 @@ for (const file of ['friend.php', 'invite.php']) {
       assert.equal(page.timers.size, 0);
     });
   }
+}
+
+for (const file of ['friend.php', 'invite.php']) {
+  test(`${file}: without the app the page waits for a tap`, () => {
+    const page = landing(file, '', false, renderPhpScript(file,
+      file === 'friend.php' ? 'code=ABCDEFGHIJKLMNOPQRSTUVWX' : 'trip-abcdefghij'));
+    assert.equal(page.timers.size, 0);
+    assert.deepEqual(page.navigations, []);
+  });
 }
 
 test('invite.php: nonempty invalid invite never auto-launches', () => {

@@ -36,7 +36,10 @@ class QuickStartPresenter {
 }
 
 class QuickStartSheet extends StatefulWidget {
-  const QuickStartSheet({super.key});
+  const QuickStartSheet({super.key, this.onLeaveToSignUp});
+
+  /// Set before there is an account: skipping and finishing lead to sign-up.
+  final VoidCallback? onLeaveToSignUp;
 
   @override
   State<QuickStartSheet> createState() => _QuickStartSheetState();
@@ -77,7 +80,7 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
 
   void _onPrimaryPressed() {
     if (_step == _slideCount - 1) {
-      Navigator.of(context).pop(true);
+      _finish(true);
       return;
     }
     if (MediaQuery.disableAnimationsOf(context)) {
@@ -88,6 +91,15 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
       duration: const Duration(milliseconds: 320),
       curve: Curves.easeOutCubic,
     );
+  }
+
+  void _finish(bool create) {
+    final leave = widget.onLeaveToSignUp;
+    if (leave != null) {
+      leave();
+    } else {
+      Navigator.of(context).pop(create);
+    }
   }
 
   /// All slides reserve the tallest text, so the phone stays still while swiping.
@@ -267,7 +279,7 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
                             minimumSize: const Size(48, 48),
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                           ),
-                          onPressed: () => Navigator.of(context).pop(false),
+                          onPressed: () => _finish(false),
                           child: Text(t.quickStartSkip),
                         ),
                       ],
@@ -317,7 +329,9 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
                           onPressed: _onPrimaryPressed,
                           child: Text(
                             _step == _slideCount - 1
-                                ? t.quickStartCreateAction
+                                ? (widget.onLeaveToSignUp != null
+                                      ? t.quickStartSignUpAction
+                                      : t.quickStartCreateAction)
                                 : t.quickStartNext,
                             textAlign: TextAlign.center,
                           ),

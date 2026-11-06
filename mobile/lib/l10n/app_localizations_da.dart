@@ -3866,6 +3866,9 @@ class AppLocalizationsDa extends AppLocalizations {
   String get quickStartCreateAction => 'Opret tur';
 
   @override
+  String get quickStartSignUpAction => 'Tilmeld dig';
+
+  @override
   String get quickStartClose => 'Luk hurtigstart';
 
   @override

@@ -1523,6 +1523,7 @@
   "quickStartBack": "Takaisin",
   "quickStartSkip": "Ohita",
   "quickStartCreateAction": "Luo matka",
+  "quickStartSignUpAction": "Rekisteröidy",
   "quickStartClose": "Sulje Pikaopas",
   "quickStartSubtitle": "Katso, miten matkat ja kulut toimivat",
   "quickStartStep": "Vaihe {step} / {total}",

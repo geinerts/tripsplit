@@ -16,6 +16,7 @@ import 'package:tripsplit/features/friends/domain/entities/friends_snapshot.dart
 import 'package:tripsplit/features/friends/domain/entities/friends_section_page.dart';
 import 'package:tripsplit/features/friends/presentation/controllers/friends_controller.dart';
 import 'package:tripsplit/features/friends/presentation/pages/friend_search_page.dart';
+import 'package:tripsplit/features/quick_start/data/quick_start_seen_store.dart';
 import 'package:tripsplit/features/quick_start/data/quick_start_service.dart';
 import 'package:tripsplit/features/quick_start/presentation/quick_start_sheet.dart';
 import 'package:tripsplit/features/shell/presentation/pages/main_shell_page.dart';
@@ -132,6 +133,14 @@ class _Links implements InviteDeepLinkController {
 
 class _Service implements QuickStartService {
   _Service(this.accountSession);
+  bool seenOnDevice = false;
+  bool markedSeen = false;
+  @override
+  QuickStartSeenStore? get seenStore => null;
+  @override
+  Future<bool> isSeenOnDevice() async => seenOnDevice;
+  @override
+  Future<void> markSeenOnDevice() async => markedSeen = true;
   @override
   final AccountDataSession accountSession;
   int calls = 0;
@@ -253,6 +262,34 @@ void main() {
     await _tick(tester);
     expect(service.calls, 1);
     expect(find.byType(QuickStartSheet), findsOneWidget);
+    await _dispose(tester, links);
+  });
+
+  testWidgets('seen before sign-up: the server is told, the guide stays shut', (
+    tester,
+  ) async {
+    final session = AccountDataSession()..activate(1);
+    final trips = _Trips(session);
+    final service = _Service(session)..seenOnDevice = true;
+    final links = _Links();
+    await _mount(tester, trips, service, links);
+    await _tick(tester);
+    expect(service.calls, 1);
+    expect(find.byType(QuickStartSheet), findsNothing);
+    await _dispose(tester, links);
+  });
+
+  testWidgets('not seen, like after an invite: the guide shows and is marked', (
+    tester,
+  ) async {
+    final session = AccountDataSession()..activate(1);
+    final trips = _Trips(session);
+    final service = _Service(session);
+    final links = _Links();
+    await _mount(tester, trips, service, links);
+    await _tick(tester);
+    expect(find.byType(QuickStartSheet), findsOneWidget);
+    expect(service.markedSeen, isTrue);
     await _dispose(tester, links);
   });
 

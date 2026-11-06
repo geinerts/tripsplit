@@ -1523,6 +1523,7 @@
   "quickStartBack": "Voltar",
   "quickStartSkip": "Ignorar",
   "quickStartCreateAction": "Criar viagem",
+  "quickStartSignUpAction": "Registar",
   "quickStartClose": "Fechar o Guia de Início Rápido",
   "quickStartSubtitle": "Veja como funcionam as viagens e as despesas",
   "quickStartStep": "Passo {step} de {total}",

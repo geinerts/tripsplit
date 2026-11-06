@@ -5,7 +5,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
     BuildContext context, {
     required bool asStandaloneContent,
   }) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     final isLogin = _mode == _AuthMode.login;
     final responsive = context.responsive;
     final cardPadding = responsive.pick(compact: 16, medium: 20, expanded: 22);
@@ -76,7 +76,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   }
 
   List<Widget> _buildRegistrationFields(BuildContext context) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     return [
       _buildLabeledTextField(
         context: context,
@@ -98,7 +98,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   }
 
   Widget _buildSocialButtons(BuildContext context) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     final showApple = Platform.isIOS;
     if (!showApple) {
       return Column(
@@ -212,7 +212,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   Widget _buildPasswordField(BuildContext context, bool isLogin) {
     return _buildLabeledTextField(
       context: context,
-      label: context.l10nEn.passwordLabel,
+      label: context.l10n.passwordLabel,
       hint: '••••••••',
       leadingIcon: Icons.lock_outline_rounded,
       controller: _passwordController,
@@ -244,7 +244,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   Widget _buildRepeatPasswordField(BuildContext context) {
     return _buildLabeledTextField(
       context: context,
-      label: context.l10nEn.repeatPasswordLabel,
+      label: context.l10n.repeatPasswordLabel,
       hint: '••••••••',
       leadingIcon: Icons.lock_outline_rounded,
       controller: _repeatController,
@@ -359,7 +359,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   }
 
   Widget _buildForgotPasswordRow(BuildContext context) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
@@ -372,7 +372,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
   }
 
   Widget _buildOrRow(BuildContext context) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     final semantic =
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.dark;
@@ -421,7 +421,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
 
   Widget _buildSubmitButton(BuildContext context) {
     final isLogin = _mode == _AuthMode.login;
-    final t = context.l10nEn;
+    final t = context.l10n;
     final responsive = context.responsive;
     return SizedBox(
       width: double.infinity,
@@ -470,7 +470,7 @@ extension _LoginPageWidgetsForm on _LoginPageState {
 
   Widget _buildModeSwitchRow(BuildContext context) {
     final isLogin = _mode == _AuthMode.login;
-    final t = context.l10nEn;
+    final t = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
     final responsive = context.responsive;
 

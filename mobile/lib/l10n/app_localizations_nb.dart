@@ -3866,6 +3866,9 @@ class AppLocalizationsNb extends AppLocalizations {
   String get quickStartCreateAction => 'Opprett tur';
 
   @override
+  String get quickStartSignUpAction => 'Registrer deg';
+
+  @override
   String get quickStartClose => 'Lukk hurtigstart';
 
   @override

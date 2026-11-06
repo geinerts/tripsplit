@@ -344795,5 +344795,201 @@
       "taken from Unicode CLDR through Babel"
     ],
     "note": "Standard currency name from CLDR, capitalised. Not individually reviewed."
+  },
+  "lv:quickStartSignUpAction": {
+    "locale": "lv",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Reģistrēties",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "de:quickStartSignUpAction": {
+    "locale": "de",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Registrieren",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "es:quickStartSignUpAction": {
+    "locale": "es",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Registrarse",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "fr:quickStartSignUpAction": {
+    "locale": "fr",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "S'inscrire",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "it:quickStartSignUpAction": {
+    "locale": "it",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Registrati",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "pt:quickStartSignUpAction": {
+    "locale": "pt",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Registar",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "pl:quickStartSignUpAction": {
+    "locale": "pl",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Zarejestruj się",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "nl:quickStartSignUpAction": {
+    "locale": "nl",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Registreren",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "sv:quickStartSignUpAction": {
+    "locale": "sv",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Registrera dig",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "da:quickStartSignUpAction": {
+    "locale": "da",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Tilmeld dig",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "nb:quickStartSignUpAction": {
+    "locale": "nb",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Registrer deg",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "fi:quickStartSignUpAction": {
+    "locale": "fi",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Rekisteröidy",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "cs:quickStartSignUpAction": {
+    "locale": "cs",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Zaregistrovat se",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
+  },
+  "uk:quickStartSignUpAction": {
+    "locale": "uk",
+    "key": "quickStartSignUpAction",
+    "source": "Sign up",
+    "before": null,
+    "translation": "Зареєструватися",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New button on the last Quick Start slide before sign-up. Not reviewed by a native speaker."
   }
 }

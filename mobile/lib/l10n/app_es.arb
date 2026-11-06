@@ -1509,6 +1509,7 @@
   "quickStartBack": "Atrás",
   "quickStartSkip": "Omitir",
   "quickStartCreateAction": "Crear viaje",
+  "quickStartSignUpAction": "Registrarse",
   "quickStartClose": "Cerrar la guía rápida",
   "quickStartSubtitle": "Descubre cómo usar los viajes y los gastos",
   "quickStartStep": "Paso {step} de {total}",

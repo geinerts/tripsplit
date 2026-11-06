@@ -314,8 +314,6 @@ void main() {
           await tester.pumpAndSettle();
           expect(tester.takeException(), isNull);
         }
-        await tester.tap(find.text('Get started'));
-        await tester.pumpAndSettle();
         tester.view.physicalSize = const Size(951, 669);
         await tester.pumpAndSettle();
         expect(find.text('Create your account.'), findsOneWidget);

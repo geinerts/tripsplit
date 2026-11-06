@@ -3872,6 +3872,9 @@ class AppLocalizationsLv extends AppLocalizations {
   String get quickStartCreateAction => 'Izveidot ceļojumu';
 
   @override
+  String get quickStartSignUpAction => 'Reģistrēties';
+
+  @override
   String get quickStartClose => 'Aizvērt pamācību';
 
   @override

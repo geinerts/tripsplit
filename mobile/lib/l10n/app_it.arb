@@ -1523,6 +1523,7 @@
   "quickStartBack": "Indietro",
   "quickStartSkip": "Salta",
   "quickStartCreateAction": "Crea viaggio",
+  "quickStartSignUpAction": "Registrati",
   "quickStartClose": "Chiudi Guida rapida",
   "quickStartSubtitle": "Scopri come funzionano i viaggi e le spese",
   "quickStartStep": "Passo {step} di {total}",

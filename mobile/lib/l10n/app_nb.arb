@@ -1523,6 +1523,7 @@
   "quickStartBack": "Tilbake",
   "quickStartSkip": "Hopp over",
   "quickStartCreateAction": "Opprett tur",
+  "quickStartSignUpAction": "Registrer deg",
   "quickStartClose": "Lukk hurtigstart",
   "quickStartSubtitle": "Se hvordan turer og utgifter fungerer",
   "quickStartStep": "Trinn {step} av {total}",

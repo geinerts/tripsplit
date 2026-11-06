@@ -3878,6 +3878,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get quickStartCreateAction => 'Створити поїздку';
 
   @override
+  String get quickStartSignUpAction => 'Зареєструватися';
+
+  @override
   String get quickStartClose => 'Закрити «Швидкий старт»';
 
   @override

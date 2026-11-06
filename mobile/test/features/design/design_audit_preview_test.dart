@@ -29,6 +29,7 @@ import 'package:tripsplit/features/auth/presentation/controllers/auth_controller
 import 'package:tripsplit/features/friends/domain/entities/friends_snapshot.dart';
 import 'package:tripsplit/features/friends/domain/entities/friends_section_page.dart';
 import 'package:tripsplit/features/friends/presentation/controllers/friends_controller.dart';
+import 'package:tripsplit/features/quick_start/data/quick_start_seen_store.dart';
 import 'package:tripsplit/features/quick_start/data/quick_start_service.dart';
 import 'package:tripsplit/features/shell/presentation/pages/main_shell_page.dart';
 import 'package:tripsplit/features/trips/data/models/trip_model.dart';
@@ -285,6 +286,12 @@ class _Links implements InviteDeepLinkController {
 
 class _Service implements QuickStartService {
   _Service(this.accountSession);
+  @override
+  QuickStartSeenStore? get seenStore => null;
+  @override
+  Future<bool> isSeenOnDevice() async => false;
+  @override
+  Future<void> markSeenOnDevice() async {}
   @override
   final AccountDataSession accountSession;
   int calls = 0;

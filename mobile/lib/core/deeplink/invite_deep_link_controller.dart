@@ -435,6 +435,7 @@ class InviteDeepLinkController {
       StreamController<String>.broadcast();
   StreamSubscription<Uri>? _uriSubscription;
   bool _started = false;
+  Future<Uri?>? _initialLinkRead;
   String? _pendingInviteCode;
   FriendDeepLinkTarget? _pendingFriendTarget;
   String? _pendingFriendLinkToken;
@@ -445,6 +446,25 @@ class InviteDeepLinkController {
   Stream<String> get friendLinkTokenStream => _friendLinkTokenController.stream;
   Stream<int> get friendUserIdStream =>
       _friendTargetController.stream.map((target) => target.userId);
+
+  /// A link is waiting for sign-in to finish. Reading it doesn't consume it.
+  bool get hasPendingLink =>
+      _pendingInviteCode != null ||
+      _pendingFriendTarget != null ||
+      _pendingFriendLinkToken != null;
+
+  /// Whether the app was opened by a link, for choosing the first screen.
+  Future<bool> openedWithLink() async {
+    try {
+      return await _initialLink().timeout(const Duration(milliseconds: 400)) !=
+          null;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<Uri?> _initialLink() =>
+      _initialLinkRead ??= _appLinks.getInitialLink();
 
   String? consumePendingInviteCode() {
     final value = _pendingInviteCode;
@@ -479,7 +499,7 @@ class InviteDeepLinkController {
 
   Future<void> _emitInitialLinkIfAny() async {
     try {
-      final uri = await _appLinks.getInitialLink();
+      final uri = await _initialLink();
       if (uri != null) {
         _handleIncomingUri(uri);
       }

@@ -1523,6 +1523,7 @@
   "quickStartBack": "Powrót",
   "quickStartSkip": "Pomiń",
   "quickStartCreateAction": "Utwórz wycieczkę",
+  "quickStartSignUpAction": "Zarejestruj się",
   "quickStartClose": "Zamknij „Szybki start”",
   "quickStartSubtitle": "Zobacz, jak działają wycieczki i wydatki",
   "quickStartStep": "Krok {step} z {total}",

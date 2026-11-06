@@ -1523,6 +1523,7 @@
   "quickStartBack": "Tillbaka",
   "quickStartSkip": "Hoppa över",
   "quickStartCreateAction": "Skapa resa",
+  "quickStartSignUpAction": "Registrera dig",
   "quickStartClose": "Stäng snabbstart",
   "quickStartSubtitle": "Se hur resor och utgifter fungerar",
   "quickStartStep": "Steg {step} av {total}",

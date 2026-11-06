@@ -43,7 +43,7 @@ extension _LoginPageActions on _LoginPageState {
         final nameParts = _parseFullName(fullName);
         if (nameParts == null) {
           _updateState(() {
-            _errorText = context.l10nEn.fullNameValidation;
+            _errorText = context.l10n.fullNameValidation;
             _isSubmitting = false;
           });
           return;
@@ -93,7 +93,7 @@ extension _LoginPageActions on _LoginPageState {
         return;
       }
       _updateState(() {
-        _errorText = context.l10nEn.requestFailedTryAgain;
+        _errorText = context.l10n.requestFailedTryAgain;
       });
     } finally {
       if (mounted && !_isNavigatingAway) {
@@ -181,7 +181,7 @@ extension _LoginPageActions on _LoginPageState {
       final auth = await account.authentication;
       final idToken = (auth.idToken ?? '').trim();
       if (idToken.isEmpty) {
-        throw StateError(context.l10nEn.authGoogleSignDidNotReturnIdToken);
+        throw StateError(context.l10n.authGoogleSignDidNotReturnIdToken);
       }
 
       final fullName = (account.displayName ?? '').trim();
@@ -205,10 +205,10 @@ extension _LoginPageActions on _LoginPageState {
 
   Future<_SocialAuthCredential> _signInWithApple() async {
     if (!Platform.isIOS) {
-      throw StateError(context.l10nEn.authAppleSignAvailableIosDevices);
+      throw StateError(context.l10n.authAppleSignAvailableIosDevices);
     }
     if (!await SignInWithApple.isAvailable()) {
-      throw StateError(context.l10nEn.authAppleSignNotAvailableDevice);
+      throw StateError(context.l10n.authAppleSignNotAvailableDevice);
     }
 
     try {
@@ -221,7 +221,7 @@ extension _LoginPageActions on _LoginPageState {
 
       final idToken = (credential.identityToken ?? '').trim();
       if (idToken.isEmpty) {
-        throw StateError(context.l10nEn.authAppleSignDidNotReturnIdentityToken);
+        throw StateError(context.l10n.authAppleSignDidNotReturnIdentityToken);
       }
 
       final nameParts = [
@@ -247,9 +247,9 @@ extension _LoginPageActions on _LoginPageState {
 
   String _socialAuthFallbackError(_SocialAuthProvider provider) {
     if (provider == _SocialAuthProvider.apple) {
-      return context.l10nEn.authIntroAppleSignFailedPleaseTryAgain;
+      return context.l10n.authIntroAppleSignFailedPleaseTryAgain;
     }
-    return context.l10nEn.authIntroGoogleSignFailedPleaseTryAgain;
+    return context.l10n.authIntroGoogleSignFailedPleaseTryAgain;
   }
 
   void _goAfterAuth(AuthUser user) {
@@ -304,19 +304,18 @@ extension _LoginPageActions on _LoginPageState {
     final email = rawEmail.trim().toLowerCase();
     if (email.isEmpty) {
       _updateState(() {
-        _errorText = context
-            .l10nEn
-            .authEmailNotVerifiedEnterEmailRequestVerificationLink;
+        _errorText =
+            context.l10n.authEmailNotVerifiedEnterEmailRequestVerificationLink;
       });
       return;
     }
 
     final shouldSend = await showAppConfirmationDialog(
       context: context,
-      title: context.l10nEn.authEmailNotVerified,
-      message: context.l10nEn.authSendVerificationLinkEmail(email),
-      confirmLabel: context.l10nEn.authSendLink,
-      cancelLabel: context.l10nEn.authCancel,
+      title: context.l10n.authEmailNotVerified,
+      message: context.l10n.authSendVerificationLinkEmail(email),
+      confirmLabel: context.l10n.authSendLink,
+      cancelLabel: context.l10n.authCancel,
       icon: Icons.verified_user_outlined,
       illustration: const SplytoEmailSentIllustration(),
     );
@@ -330,7 +329,7 @@ extension _LoginPageActions on _LoginPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(context.l10nEn.authVerificationLinkSentCheckEmail);
+      _showSnack(context.l10n.authVerificationLinkSentCheckEmail);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -344,7 +343,7 @@ extension _LoginPageActions on _LoginPageState {
       }
       _updateState(() {
         _errorText =
-            context.l10nEn.authCouldNotSendVerificationLinkPleaseTryAgain;
+            context.l10n.authCouldNotSendVerificationLinkPleaseTryAgain;
       });
     }
   }
@@ -356,9 +355,7 @@ extension _LoginPageActions on _LoginPageState {
     final email = rawEmail.trim().toLowerCase();
     final message = backendMessage.trim().isNotEmpty
         ? backendMessage.trim()
-        : context
-              .l10nEn
-              .authVerificationEmailSentPleaseVerifyEmailBeforeLogging;
+        : context.l10n.authVerificationEmailSentPleaseVerifyEmailBeforeLogging;
 
     _updateState(() {
       _mode = _AuthMode.login;
@@ -369,12 +366,12 @@ extension _LoginPageActions on _LoginPageState {
 
     final shouldResend = await showAppConfirmationDialog(
       context: context,
-      title: context.l10nEn.authVerifyEmail,
+      title: context.l10n.authVerifyEmail,
       message: email.isEmpty
           ? message
-          : '$message\n\n${context.l10nEn.authEmailLabel} $email',
-      confirmLabel: context.l10nEn.authResendLink,
-      cancelLabel: context.l10nEn.authClose,
+          : '$message\n\n${context.l10n.authEmailLabel} $email',
+      confirmLabel: context.l10n.authResendLink,
+      cancelLabel: context.l10n.authClose,
       icon: Icons.outgoing_mail,
       illustration: const SplytoEmailSentIllustration(),
     );
@@ -388,7 +385,7 @@ extension _LoginPageActions on _LoginPageState {
       if (!mounted) {
         return;
       }
-      _showSnack(context.l10nEn.authVerificationLinkSentCheckEmail);
+      _showSnack(context.l10n.authVerificationLinkSentCheckEmail);
     } on ApiException catch (error) {
       if (!mounted) {
         return;
@@ -402,7 +399,7 @@ extension _LoginPageActions on _LoginPageState {
       }
       _updateState(() {
         _errorText =
-            context.l10nEn.authCouldNotSendVerificationLinkPleaseTryAgain;
+            context.l10n.authCouldNotSendVerificationLinkPleaseTryAgain;
       });
     }
   }

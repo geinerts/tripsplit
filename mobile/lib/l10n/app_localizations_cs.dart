@@ -3872,6 +3872,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get quickStartCreateAction => 'Vytvořit výlet';
 
   @override
+  String get quickStartSignUpAction => 'Zaregistrovat se';
+
+  @override
   String get quickStartClose => 'Zavřít Rychlý start';
 
   @override

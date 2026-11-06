@@ -4,6 +4,7 @@ import '../features/live_location/data/live_location_device.dart';
 import '../features/live_location/presentation/live_location_controller.dart';
 import '../features/travel_map/data/travel_places_repository.dart';
 import '../features/quick_start/data/quick_start_service.dart';
+import '../features/quick_start/data/quick_start_seen_store.dart';
 import '../core/auth/auth_session_store.dart';
 import '../core/auth/account_data_session.dart';
 import '../core/auth/account_local_storage.dart';
@@ -84,6 +85,7 @@ class AppDependencies {
     required this.friendsController,
     required this.workspaceController,
     required this.inviteDeepLinkController,
+    required this.quickStartSeenStore,
     required this.themeModeController,
     required this.localeController,
   });
@@ -96,6 +98,7 @@ class AppDependencies {
   final FriendsController friendsController;
   final WorkspaceController workspaceController;
   final InviteDeepLinkController inviteDeepLinkController;
+  final QuickStartSeenStore quickStartSeenStore;
   final ThemeModeController themeModeController;
   final AppLocaleController localeController;
 
@@ -148,6 +151,7 @@ class AppDependencies {
       localeCodeProvider: () => localeController.effectiveLocale.languageCode,
     );
     final inviteDeepLinkController = InviteDeepLinkController();
+    final quickStartSeenStore = QuickStartSeenStore();
 
     final tripsRemote = TripsRemoteDataSourceImpl(apiClient, tripImageUploader);
     final tripsLocalStore = TripsLocalStore(accountStorage);
@@ -230,10 +234,15 @@ class AppDependencies {
         await accountStorage.clear();
       },
       accountSession: accountSession,
-      beforeLogout: liveLocationController.stopAll,
+      // Signing out leads to the sign-in page, also after a restart, never the guide.
+      beforeLogout: () async {
+        await quickStartSeenStore.markSeen();
+        await liveLocationController.stopAll();
+      },
     );
     authController.imageCropService = imageCropService;
     apiClient.onSessionInvalidated = () async {
+      await quickStartSeenStore.markSeen();
       if (await authController.endInvalidatedSession()) {
         await AppRouter.navigatorKey.currentState?.pushNamedAndRemoveUntil(
           AppRouter.authIntro,
@@ -244,7 +253,11 @@ class AppDependencies {
 
     return AppDependencies(
       liveLocationController: liveLocationController,
-      quickStartService: QuickStartService(apiClient, accountSession),
+      quickStartService: QuickStartService(
+        apiClient,
+        accountSession,
+        seenStore: quickStartSeenStore,
+      ),
       travelPlacesRepository: ApiTravelPlacesRepository(
         apiClient,
         accountStorage,
@@ -260,6 +273,7 @@ class AppDependencies {
       friendsController: friendsController,
       workspaceController: workspaceController,
       inviteDeepLinkController: inviteDeepLinkController,
+      quickStartSeenStore: quickStartSeenStore,
       themeModeController: themeModeController,
       localeController: localeController,
     );

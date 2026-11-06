@@ -3866,6 +3866,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get quickStartCreateAction => 'Reis aanmaken';
 
   @override
+  String get quickStartSignUpAction => 'Registreren';
+
+  @override
   String get quickStartClose => 'Sluit Snelstart';
 
   @override

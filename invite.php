@@ -5,6 +5,7 @@ require_once __DIR__ . '/api/config.php';
 require_once __DIR__ . '/api/lib/helpers/api_core_helpers.php';
 require_once __DIR__ . '/api/lib/helpers/helper_share_preview.php';
 require_once __DIR__ . '/api/lib/web/splyto_web_page.php';
+require_once __DIR__ . '/api/lib/web/splyto_share_page_text.php';
 
 $rawInvite = share_param(['invite']);
 $inviteCode = share_normalize_invite_code($rawInvite);
@@ -24,33 +25,43 @@ $isValid = (bool) ($tripMeta['valid'] ?? false);
 $title = $isValid ? 'Join ' . $tripName . ' on Splyto' : 'Splyto trip invite';
 $description = 'Open Splyto to join this trip and split expenses together.';
 
+$language = splyto_share_page_language((string) ($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? ''));
+$text = SPLYTO_SHARE_PAGE_TEXT[$language];
+$install = splyto_app_install_links();
+
 // Invite validity can change immediately after this response.
 share_send_html_headers(0);
+header('Vary: Accept-Language');
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= share_html($language) ?>">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><?= share_html($title) ?></title>
   <meta name="description" content="<?= share_html($description) ?>" />
   <?= share_open_graph_tags($title, $description, $pageUrl, $imageUrl, 'image/jpeg') ?>
+  <?= splyto_share_page_meta() ?>
   <?= splyto_web_page_styles() ?>
+  <?= splyto_share_page_styles() ?>
 </head>
 <body>
   <main class="card">
-    <?= splyto_web_page_header() ?>
+    <?= splyto_share_page_header() ?>
     <div class="content">
-      <h1>Opening Splyto...</h1>
-      <p>If app does not open automatically, tap the button below.</p>
-      <div class="status" id="inviteStatus">
-        <?= $isValid ? share_html($tripName) : ($hasInvite ? 'Invite unavailable or expired' : 'Invite link missing') ?>
-      </div>
-      <button id="openAppBtn" type="button" class="btn"<?= $hasInvite ? '' : ' disabled' ?>>Open in app</button>
-      <a id="openPlayBtn" class="btn btn-secondary" href="https://play.google.com/store/apps/details?id=com.tripsplit.app.tripsplit">
-        Open on Google Play
-      </a>
-      <div class="hint">Trip invite links work when you are logged in.</div>
+      <?php if ($isValid): ?>
+        <img class="share-image" src="<?= share_html($imageUrl) ?>" alt="">
+        <h1><?= share_html($text['invite_title']) ?></h1>
+        <div class="trip-name"><?= share_html($tripName) ?></div>
+        <?php if ($install['ios'] !== ''): ?>
+          <a id="installIos" class="btn" href="<?= share_html($install['ios']) ?>"><?= share_html($text['install']) ?></a>
+        <?php endif; ?>
+        <a id="installAndroid" class="btn" href="<?= share_html($install['android']) ?>"><?= share_html($text['install']) ?></a>
+        <p id="returnHint" class="return-hint"><?= share_html($text['invite_return']) ?></p>
+      <?php else: ?>
+        <h1 class="alone"><?= share_html($hasInvite ? $text['invite_unavailable'] : $text['invite_missing']) ?></h1>
+      <?php endif; ?>
+      <button id="openAppBtn" type="button" class="open-app"<?= $isValid && $hasInvite ? '' : ' hidden' ?>><?= share_html($text['open_app']) ?></button>
     </div>
   </main>
   <script>
@@ -60,10 +71,18 @@ share_send_html_headers(0);
       var ua = navigator.userAgent.toLowerCase();
       var isAndroid = ua.indexOf('android') >= 0;
 
-      var openTimer;
+      var isIos = /iphone|ipad|ipod/.test(ua);
+      var installIos = document.getElementById('installIos');
+      var installAndroid = document.getElementById('installAndroid');
+      var returnHint = document.getElementById('returnHint');
+      // Unknown devices, like a computer, keep both links.
+      if (installIos && isAndroid) installIos.hidden = true;
+      if (installAndroid && isIos) installAndroid.hidden = true;
+      // Nothing to install yet, so don't talk about installing.
+      if (returnHint && isIos && !installIos) returnHint.hidden = true;
+
       var fallbackTimer;
       function cancelOpen() {
-        window.clearTimeout(openTimer);
         window.clearTimeout(fallbackTimer);
       }
       document.addEventListener('visibilitychange', function () {
@@ -91,9 +110,6 @@ share_send_html_headers(0);
       }
 
       openBtn.addEventListener('click', openApp);
-      if (invite) {
-        openTimer = window.setTimeout(openApp, 220);
-      }
     })();
   </script>
 </body>

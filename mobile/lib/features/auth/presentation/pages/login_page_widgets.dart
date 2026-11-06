@@ -119,12 +119,12 @@ extension _LoginPageWidgets on _LoginPageState {
   }
 
   Widget _buildTopActions(BuildContext context) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     return Row(
       children: [
         if (widget.showSheetClose)
           IconButton(
-            tooltip: context.l10nEn.authClose,
+            tooltip: context.l10n.authClose,
             onPressed: () => Navigator.of(context).maybePop(),
             icon: const Icon(Icons.close_rounded),
           )
@@ -146,7 +146,7 @@ extension _LoginPageWidgets on _LoginPageState {
   }
 
   Widget _buildBrandSection(BuildContext context) {
-    final t = context.l10nEn;
+    final t = context.l10n;
     final responsive = context.responsive;
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;

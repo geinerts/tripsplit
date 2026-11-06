@@ -1523,6 +1523,7 @@
   "quickStartBack": "Назад",
   "quickStartSkip": "Пропустити",
   "quickStartCreateAction": "Створити поїздку",
+  "quickStartSignUpAction": "Зареєструватися",
   "quickStartClose": "Закрити «Швидкий старт»",
   "quickStartSubtitle": "Дізнайтеся, як працюють поїздки та витрати",
   "quickStartStep": "Крок {step} із {total}",

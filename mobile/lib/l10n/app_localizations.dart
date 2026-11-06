@@ -7171,6 +7171,12 @@ abstract class AppLocalizations {
   /// **'Create trip'**
   String get quickStartCreateAction;
 
+  /// No description provided for @quickStartSignUpAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get quickStartSignUpAction;
+
   /// No description provided for @quickStartClose.
   ///
   /// In en, this message translates to:

@@ -1523,6 +1523,7 @@
   "quickStartBack": "Terug",
   "quickStartSkip": "Overslaan",
   "quickStartCreateAction": "Reis aanmaken",
+  "quickStartSignUpAction": "Registreren",
   "quickStartClose": "Sluit Snelstart",
   "quickStartSubtitle": "Bekijk hoe reizen en onkosten werken",
   "quickStartStep": "Stap {step} van {total}",

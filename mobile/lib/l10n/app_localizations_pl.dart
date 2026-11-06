@@ -3878,6 +3878,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get quickStartCreateAction => 'Utwórz wycieczkę';
 
   @override
+  String get quickStartSignUpAction => 'Zarejestruj się';
+
+  @override
   String get quickStartClose => 'Zamknij „Szybki start”';
 
   @override

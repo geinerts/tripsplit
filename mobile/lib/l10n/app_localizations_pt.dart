@@ -3866,6 +3866,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get quickStartCreateAction => 'Criar viagem';
 
   @override
+  String get quickStartSignUpAction => 'Registar';
+
+  @override
   String get quickStartClose => 'Fechar o Guia de Início Rápido';
 
   @override

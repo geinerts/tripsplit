@@ -9,6 +9,7 @@ import '../../features/auth/presentation/pages/auth_intro_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../theme/auth_flow_theme.dart';
 import '../theme/app_overlay_style.dart';
+import '../../features/quick_start/presentation/quick_start_welcome_page.dart';
 import '../../features/shell/presentation/pages/main_shell_page.dart';
 import '../../features/workspace/presentation/pages/workspace_page.dart';
 import '../../features/trips/domain/entities/trip.dart';
@@ -21,7 +22,8 @@ class AppRouter {
       GlobalKey<NavigatorState>();
 
   static const String authIntro = '/auth-intro';
-  static const String authSignInChoice = '/auth-sign-in-choice';
+  static const String authFromLaunch = '/auth-from-launch';
+  static const String quickStartWelcome = '/quick-start-welcome';
   static const String login = '/login';
   static const String credentials = '/credentials';
   static const String forgotPassword = '/forgot-password';
@@ -36,11 +38,15 @@ class AppRouter {
       authIntro: (_) => AuthFlowTheme(
         child: AuthIntroPage(controller: _dependencies.authController),
       ),
-      authSignInChoice: (_) => AuthFlowTheme(
+      authFromLaunch: (_) => AuthFlowTheme(
         child: AuthIntroPage(
           controller: _dependencies.authController,
-          initialStage: AuthIntroStage.choice,
+          fromLaunch: true,
         ),
+      ),
+      quickStartWelcome: (_) => QuickStartWelcomePage(
+        seenStore: _dependencies.quickStartSeenStore,
+        deepLinks: _dependencies.inviteDeepLinkController,
       ),
       login: (_) => AuthFlowTheme(
         child: LoginPage(controller: _dependencies.authController),

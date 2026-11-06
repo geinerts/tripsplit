@@ -1523,6 +1523,7 @@
   "quickStartBack": "Zurück",
   "quickStartSkip": "Überspringen",
   "quickStartCreateAction": "Reise erstellen",
+  "quickStartSignUpAction": "Registrieren",
   "quickStartClose": "Schnellstart schließen",
   "quickStartSubtitle": "Erfahren Sie, wie Reisen und Spesen funktionieren",
   "quickStartStep": "Schritt {step} von {total}",

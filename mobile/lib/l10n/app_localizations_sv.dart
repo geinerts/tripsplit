@@ -3866,6 +3866,9 @@ class AppLocalizationsSv extends AppLocalizations {
   String get quickStartCreateAction => 'Skapa resa';
 
   @override
+  String get quickStartSignUpAction => 'Registrera dig';
+
+  @override
   String get quickStartClose => 'Stäng snabbstart';
 
   @override

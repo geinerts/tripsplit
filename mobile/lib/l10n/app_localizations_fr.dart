@@ -3866,6 +3866,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get quickStartCreateAction => 'Créer un voyage';
 
   @override
+  String get quickStartSignUpAction => 'S\'inscrire';
+
+  @override
   String get quickStartClose => 'Fermer le guide de démarrage rapide';
 
   @override

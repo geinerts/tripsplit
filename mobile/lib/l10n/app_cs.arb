@@ -1523,6 +1523,7 @@
   "quickStartBack": "Zpět",
   "quickStartSkip": "Přeskočit",
   "quickStartCreateAction": "Vytvořit výlet",
+  "quickStartSignUpAction": "Zaregistrovat se",
   "quickStartClose": "Zavřít Rychlý start",
   "quickStartSubtitle": "Podívejte se, jak fungují výlety a výdaje",
   "quickStartStep": "Krok {step} z {total}",

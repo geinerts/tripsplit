@@ -3866,6 +3866,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickStartCreateAction => 'Create trip';
 
   @override
+  String get quickStartSignUpAction => 'Sign up';
+
+  @override
   String get quickStartClose => 'Close Quick Start';
 
   @override

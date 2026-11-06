@@ -63,6 +63,12 @@ extension _MainShellQuickStart on _MainShellPageState {
           return;
         }
         _quickStartClaimed = true;
+        // Already shown before sign-up, and the claim above recorded it.
+        if (await service.isSeenOnDevice()) {
+          _quickStartFinished = true;
+          return;
+        }
+        if (!mounted || !lease.isCurrent) return;
       }
       if (!_canPresentQuickStart) {
         _scheduleQuickStart();
@@ -70,6 +76,7 @@ extension _MainShellQuickStart on _MainShellPageState {
       }
       _quickStartOpen = true;
       _quickStartFinished = true;
+      unawaited(service.markSeenOnDevice());
       final create = await _quickStartPresenter.show(context);
       if (mounted && lease.isCurrent && create == true) _requestCreateTrip();
     } catch (_) {

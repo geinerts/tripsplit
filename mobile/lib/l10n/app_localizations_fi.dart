@@ -3866,6 +3866,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get quickStartCreateAction => 'Luo matka';
 
   @override
+  String get quickStartSignUpAction => 'Rekisteröidy';
+
+  @override
   String get quickStartClose => 'Sulje Pikaopas';
 
   @override

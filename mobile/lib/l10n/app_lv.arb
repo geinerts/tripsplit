@@ -1509,6 +1509,7 @@
   "quickStartBack": "Atpakaļ",
   "quickStartSkip": "Izlaist",
   "quickStartCreateAction": "Izveidot ceļojumu",
+  "quickStartSignUpAction": "Reģistrēties",
   "quickStartClose": "Aizvērt pamācību",
   "quickStartSubtitle": "Uzzini, kā lietot ceļojumus un izdevumus",
   "quickStartStep": "{step}. solis no {total}",
