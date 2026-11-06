@@ -10,15 +10,15 @@ import '../../../core/ui/app_formatters.dart';
 const _screenWidth = 270.0;
 const _screenHeight = 560.0;
 const _frameWidth = _screenWidth + 20;
-const _canvas = Color(0xFF12171D);
-const _surface = Color(0xFF1C232B);
-const _stroke = Color(0xFF2C3640);
-const _text = Colors.white;
-const _muted = Color(0xFF9AA8B3);
-const _accent = Color(0xFF57B487);
-const _teal = Color(0xFF00BED4);
+const _canvas = Colors.white;
+const _surface = Color(0xFFEFF3F5);
+const _stroke = Color(0xFFE3E8EC);
+const _text = Color(0xFF0B1220);
+const _muted = Color(0xFF5F6B76);
+const _accent = Color(0xFF00836B);
+const _teal = Color(0xFF0098AD);
 const _pink = Color(0xFFE5398F);
-const _red = Color(0xFFF2A0A8);
+const _red = Color(0xFFD9304F);
 const _marta = Color(0xFF00836B);
 const _rita = _pink;
 const _ivo = Color(0xFF0A8FA3);
@@ -81,56 +81,74 @@ class _Frame extends StatelessWidget {
     key: const ValueKey('quick-start-phone'),
     width: _frameWidth,
     height: _screenHeight + 20,
-    padding: const EdgeInsets.all(10),
+    padding: const EdgeInsets.all(4),
     decoration: BoxDecoration(
-      color: const Color(0xFF05070A),
+      // Natural titanium, as in the App Store preview.
+      gradient: const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        stops: [0, .22, .5, .78, 1],
+        colors: [
+          Color(0xFFE4DFD5),
+          Color(0xFFA8A296),
+          Color(0xFFD2CCC0),
+          Color(0xFF99948A),
+          Color(0xFFDAD5CA),
+        ],
+      ),
       borderRadius: BorderRadius.circular(46),
-      border: Border.all(color: const Color(0xFF3A444F), width: 2),
       boxShadow: const [
         BoxShadow(
-          color: Color(0x66000000),
-          blurRadius: 40,
+          color: Color(0x400B1B3A),
+          blurRadius: 36,
           offset: Offset(0, 16),
         ),
       ],
     ),
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(36),
-      child: ColoredBox(
-        color: _canvas,
-        child: Stack(
-          children: [
-            for (final index in visible)
-              Transform.translate(
-                offset: Offset((index - page) * _screenWidth, 0),
-                child: RepaintBoundary(
-                  child: SizedBox(
-                    width: _screenWidth,
-                    height: _screenHeight,
-                    child: switch (index) {
-                      0 => const _TripScreen(),
-                      1 => const _ExpensesScreen(),
-                      2 => _BalancesScreen(active: (page - 2).abs() < .01),
-                      3 => const _AnalyticsScreen(),
-                      4 => const _TravelMapScreen(),
-                      _ => const _LiveMapScreen(),
-                    },
+    child: Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: const Color(0xFF05070A),
+        borderRadius: BorderRadius.circular(42),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(36),
+        child: ColoredBox(
+          color: _canvas,
+          child: Stack(
+            children: [
+              for (final index in visible)
+                Transform.translate(
+                  offset: Offset((index - page) * _screenWidth, 0),
+                  child: RepaintBoundary(
+                    child: SizedBox(
+                      width: _screenWidth,
+                      height: _screenHeight,
+                      child: switch (index) {
+                        0 => const _TripScreen(),
+                        1 => const _ExpensesScreen(),
+                        2 => _BalancesScreen(active: (page - 2).abs() < .01),
+                        3 => const _AnalyticsScreen(),
+                        4 => const _TravelMapScreen(),
+                        _ => const _LiveMapScreen(),
+                      },
+                    ),
+                  ),
+                ),
+              Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  width: 76,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF05070A),
+                    borderRadius: BorderRadius.circular(11),
                   ),
                 ),
               ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                margin: const EdgeInsets.only(top: 10),
-                width: 76,
-                height: 22,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF05070A),
-                  borderRadius: BorderRadius.circular(11),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ),
@@ -164,7 +182,7 @@ class _FloatingCard extends StatelessWidget {
       Widget card,
     ) = switch (index) {
       0 => (
-        352.0,
+        128.0,
         null,
         -22.0,
         _Pill(
@@ -196,7 +214,7 @@ class _FloatingCard extends StatelessWidget {
           color: _marta,
         ),
       ),
-      3 => (222.0, null, -24.0, _DailyCard(title: t.analyticsDailySpending)),
+      3 => (346.0, null, -24.0, _DailyCard(title: t.analyticsDailySpending)),
       4 => (128.0, -22.0, null, const _PlaceCard()),
       _ => (
         118.0,
@@ -275,7 +293,7 @@ BoxDecoration _floatDecoration(Color color) => BoxDecoration(
   color: color,
   borderRadius: BorderRadius.circular(16),
   boxShadow: const [
-    BoxShadow(color: Color(0x73000000), blurRadius: 22, offset: Offset(0, 10)),
+    BoxShadow(color: Color(0x330B1B3A), blurRadius: 22, offset: Offset(0, 10)),
   ],
 );
 
@@ -296,7 +314,14 @@ class _Pill extends StatelessWidget {
       children: [
         Icon(icon, size: 18, color: Colors.white),
         const SizedBox(width: 8),
-        Flexible(child: _Label(label, size: 14, weight: FontWeight.w700)),
+        Flexible(
+          child: _Label(
+            label,
+            size: 14,
+            weight: FontWeight.w700,
+            color: Colors.white,
+          ),
+        ),
       ],
     ),
   );
@@ -316,7 +341,7 @@ class _ConversionCard extends StatelessWidget {
     return Container(
       width: 186,
       padding: const EdgeInsets.all(12),
-      decoration: _floatDecoration(const Color(0xFF26313B)),
+      decoration: _floatDecoration(Colors.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -359,7 +384,7 @@ class _DailyCard extends StatelessWidget {
     return Container(
       width: 176,
       padding: const EdgeInsets.all(12),
-      decoration: _floatDecoration(const Color(0xFF26313B)),
+      decoration: _floatDecoration(Colors.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -547,9 +572,14 @@ class _TripScreen extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
+                    flex: 5,
                     child: _Stat(t.workspaceTripTotal, _money(context, 124000)),
                   ),
-                  Expanded(child: _Stat(t.yourShare, _money(context, 41333))),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 4,
+                    child: _Stat(t.yourShare, _money(context, 41333)),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -577,11 +607,7 @@ class _TripTypeSwitch extends StatelessWidget {
         color: selected ? _accent : Colors.transparent,
         borderRadius: BorderRadius.circular(14),
       ),
-      child: Icon(
-        icon,
-        size: 16,
-        color: selected ? const Color(0xFF0B1220) : _muted,
-      ),
+      child: Icon(icon, size: 16, color: selected ? Colors.white : _muted),
     );
     return Container(
       padding: const EdgeInsets.all(2),
@@ -997,7 +1023,7 @@ class _TravelMapScreen extends StatelessWidget {
             t.travelMapHere,
             size: 13,
             weight: FontWeight.w700,
-            color: const Color(0xFF0B1220),
+            color: Colors.white,
           ),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../../app/theme/app_theme.dart';
 import '../../../core/l10n/l10n.dart';
+import 'quick_start_background.dart';
 import 'quick_start_phone_screens.dart';
 
 /// Owns only the guide's route, so an invitation can dismiss it without popping
@@ -43,27 +44,19 @@ class QuickStartSheet extends StatefulWidget {
 
 class _QuickStartSheetState extends State<QuickStartSheet> {
   static const _slideCount = 6;
-  static const _bottomColor = Color(0xFF0B0F14);
-  // Dark enough for white text on every slide.
-  static const _slideColors = [
-    Color(0xFF087A8F),
-    Color(0xFF006F5B),
-    Color(0xFF00706E),
-    Color(0xFF0A5F8C),
-    Color(0xFFB01A6B),
-    Color(0xFF27306B),
-  ];
   static const _titleStyle = TextStyle(
-    fontSize: 28,
-    height: 1.15,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -.5,
-    color: Colors.white,
+    fontFamily: 'Inter',
+    fontSize: 30,
+    height: 1.12,
+    fontWeight: FontWeight.w800,
+    letterSpacing: -.8,
+    color: quickStartInk,
   );
   static const _bodyStyle = TextStyle(
+    fontFamily: 'Inter',
     fontSize: 16,
     height: 1.4,
-    color: Color(0xE6FFFFFF),
+    color: Color(0xFF263654),
   );
 
   final _pageController = PageController();
@@ -148,11 +141,11 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
       t.quickStartLiveBody,
     ];
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: SystemUiOverlayStyle.dark,
       child: Theme(
-        data: AppTheme.dark(),
+        data: AppTheme.light(),
         child: Scaffold(
-          backgroundColor: _bottomColor,
+          backgroundColor: quickStartCream,
           body: LayoutBuilder(
             builder: (context, constraints) {
               final padding = MediaQuery.paddingOf(context);
@@ -178,7 +171,7 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
                     child: AnimatedBuilder(
                       animation: _pageController,
                       builder: (context, _) =>
-                          _Background(page: _page, colors: _slideColors),
+                          QuickStartBackground(page: _page),
                     ),
                   ),
                   if (showPhone)
@@ -202,15 +195,15 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    height: bottomBar + 90,
+                    height: bottomBar + 56,
                     child: const IgnorePointer(
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            stops: [0, .55],
-                            colors: [Color(0x000B0F14), _bottomColor],
+                            stops: [0, .4],
+                            colors: [Color(0x00FFF8EC), quickStartCream],
                           ),
                         ),
                       ),
@@ -261,7 +254,7 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
                     child: Row(
                       children: [
                         Image.asset(
-                          'assets/branding/logo_full_dark.png',
+                          'assets/branding/logo_full.png',
                           key: const ValueKey('quick-start-logo'),
                           height: 30,
                           fit: BoxFit.contain,
@@ -270,7 +263,7 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
                         const Spacer(),
                         TextButton(
                           style: TextButton.styleFrom(
-                            foregroundColor: Colors.white,
+                            foregroundColor: quickStartInk,
                             minimumSize: const Size(48, 48),
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                           ),
@@ -305,8 +298,8 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: index == _step
-                                        ? Colors.white
-                                        : Colors.white.withValues(alpha: .3),
+                                        ? quickStartInk
+                                        : quickStartInk.withValues(alpha: .22),
                                   ),
                                 ),
                               ),
@@ -318,8 +311,8 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
                           style: FilledButton.styleFrom(
                             minimumSize: const Size(48, 52),
                             shape: const StadiumBorder(),
-                            backgroundColor: Colors.white,
-                            foregroundColor: _bottomColor,
+                            backgroundColor: quickStartInk,
+                            foregroundColor: Colors.white,
                           ),
                           onPressed: _onPrimaryPressed,
                           child: Text(
@@ -336,31 +329,6 @@ class _QuickStartSheetState extends State<QuickStartSheet> {
               );
             },
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Background extends StatelessWidget {
-  const _Background({required this.page, required this.colors});
-
-  final double page;
-  final List<Color> colors;
-
-  @override
-  Widget build(BuildContext context) {
-    final clamped = page.clamp(0.0, colors.length - 1.0);
-    final from = clamped.floor();
-    final to = clamped.ceil();
-    final top = Color.lerp(colors[from], colors[to], clamped - from)!;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          stops: const [0, .8],
-          colors: [top, _QuickStartSheetState._bottomColor],
         ),
       ),
     );

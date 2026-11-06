@@ -12,6 +12,7 @@ import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/core/network/api_client.dart';
 import 'package:tripsplit/core/network/http_method.dart';
 import 'package:tripsplit/features/quick_start/data/quick_start_service.dart';
+import 'package:tripsplit/features/quick_start/presentation/quick_start_background.dart';
 import 'package:tripsplit/features/quick_start/presentation/quick_start_sheet.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
 
@@ -175,7 +176,7 @@ void main() {
           for (var index = 0; index < indicators.length; index++) {
             final decoration = indicators[index].decoration! as BoxDecoration;
             expect(decoration.shape, BoxShape.circle);
-            expect(decoration.color == Colors.white, index == step);
+            expect(decoration.color == quickStartInk, index == step);
           }
           expect(
             find.text(
@@ -316,7 +317,13 @@ void main() {
     )!;
     final phone = find.byKey(const ValueKey('quick-start-phone'));
     final position = tester.getTopLeft(phone);
-    expect(tester.getBottomLeft(phone).dy, greaterThan(844));
+    // Its lower edge stays hidden behind the opaque area around the dots.
+    expect(
+      tester.getBottomLeft(phone).dy,
+      greaterThan(
+        tester.getBottomLeft(find.byKey(const ValueKey('quick-start-dots'))).dy,
+      ),
+    );
     for (var step = 0; step < 5; step++) {
       await tester.tap(find.text(t.quickStartNext));
       await tester.pumpAndSettle();

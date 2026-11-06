@@ -8,7 +8,7 @@ import json
 import math
 import random
 
-SEA, LAND, BORDER, VISITED = '#14202A', '#26343F', '#3A4B58', '#2F7A66'
+SEA, LAND, BORDER, VISITED = '#CDEBF1', '#F6F3EC', '#D5D0C5', '#8FD6BE'
 OUT = 'assets/branding/'
 
 
@@ -52,9 +52,9 @@ def travel_map():
                          'stroke-width="1" stroke-linejoin="round"/>')
     for lng, lat in [(-9.14, 38.72), (-3.7, 40.42), (12.5, 41.9), (24.1, 56.95)]:
         x, y = project(lng, lat)
-        parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="15" fill="#57B487" '
-                     'stroke="#0F1720" stroke-width="2"/>')
-        parts.append(f'<path d="M{x - 6:.1f} {y:.1f}l4.5 4.5 8-9" fill="none" stroke="#0F1720" '
+        parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="15" fill="#00836B" '
+                     'stroke="#FFFFFF" stroke-width="2"/>')
+        parts.append(f'<path d="M{x - 6:.1f} {y:.1f}l4.5 4.5 8-9" fill="none" stroke="#FFFFFF" '
                      'stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>')
     parts.append('</svg>')
     open(OUT + 'quick_start_travel_map.svg', 'w').write('\n'.join(parts))
@@ -63,8 +63,8 @@ def travel_map():
 def city_map():
     w, h = 500, 572
     rng = random.Random(7)
-    block, street, avenue = '#2A3442', '#46546A', '#5A6A82'
-    park, water = '#2C4A3F', '#1C3650'
+    block, street, avenue = '#F4F1EA', '#FFFFFF', '#FFE6A8'
+    park, water = '#C9EBD3', '#BCE3EE'
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" height="{h}">',
         f'<rect width="{w}" height="{h}" fill="{street}"/>',
