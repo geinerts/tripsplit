@@ -19,6 +19,12 @@ import '../controllers/auth_controller.dart';
 import 'auth_intro_background.dart';
 import 'login_page.dart';
 
+// Match LaunchImage in ios/Runner/Base.lproj/LaunchScreen.storyboard, so the logo
+// doesn't move when the app takes over from the launch screen.
+const _launchLogoWidth = 260.0;
+const _logoAspectRatio = 1200 / 475;
+const _contentTopPadding = 12.0;
+
 enum AuthIntroStage { intro, choice }
 
 enum _IntroSocialProvider { google, apple }
@@ -350,6 +356,9 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
   Widget _buildAuthIntroScaffold(BuildContext context) {
     final slides = _slides();
     final colors = Theme.of(context).colorScheme;
+    // Read outside SafeArea, which removes the inset for its children.
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final topInset = MediaQuery.paddingOf(context).top;
     final semantic =
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.dark;
@@ -380,10 +389,18 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
                     builder: (context, constraints) {
                       final wide = constraints.maxWidth >= 700;
                       final inIntro = _stage == AuthIntroStage.intro;
-                      // The logo sits low in this area, just above the text. The
-                      // sign-up choice needs the room, so the logo moves aside.
+                      // On the first step the logo stays exactly where the launch
+                      // screen left it, unless the text and buttons need the room.
+                      // The sign-up choice needs more, so the logo moves aside.
+                      final launchLogoBottom =
+                          screenHeight / 2 +
+                          _launchLogoWidth / _logoAspectRatio / 2 -
+                          topInset -
+                          _contentTopPadding;
                       final logoAreaHeight = math.min(
-                        constraints.maxHeight * (inIntro ? .44 : .16),
+                        inIntro
+                            ? launchLogoBottom
+                            : constraints.maxHeight * .16,
                         math.max(
                           0.0,
                           constraints.maxHeight -
@@ -395,7 +412,12 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1000),
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(24, 12, 24, 22),
+                            padding: const EdgeInsets.fromLTRB(
+                              24,
+                              _contentTopPadding,
+                              24,
+                              22,
+                            ),
                             child: Flex(
                               direction: wide ? Axis.horizontal : Axis.vertical,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -414,10 +436,12 @@ class _AuthIntroPageState extends State<AuthIntroPage> {
                                       : Alignment.bottomCenter,
                                   child: ConstrainedBox(
                                     constraints: BoxConstraints(
-                                      maxWidth: inIntro || wide ? 300 : 150,
+                                      maxWidth: inIntro || wide
+                                          ? _launchLogoWidth
+                                          : 150,
                                     ),
                                     child: AspectRatio(
-                                      aspectRatio: 1200 / 475,
+                                      aspectRatio: _logoAspectRatio,
                                       child: Image.asset(
                                         'assets/branding/logo_full_dark.png',
                                         key: const ValueKey('auth-intro-logo'),

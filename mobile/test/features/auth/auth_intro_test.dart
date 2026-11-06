@@ -71,6 +71,30 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('the logo stays where the launch screen left it', (tester) async {
+    tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
+    addTearDown(tester.view.resetPadding);
+    await _mount(tester, const Size(402, 874));
+    final rect = tester.getRect(find.byKey(logo));
+    expect(rect.width, 260);
+    expect(rect.center.dx, closeTo(201, .5));
+    expect(rect.center.dy, closeTo(437, .5));
+    expect(find.text('Get started'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('on a small phone the logo moves up to keep the buttons', (
+    tester,
+  ) async {
+    tester.view.padding = const FakeViewPadding(top: 20);
+    addTearDown(tester.view.resetPadding);
+    await _mount(tester, const Size(320, 568));
+    expect(tester.getRect(find.byKey(logo)).center.dy, lessThan(284));
+    final button = tester.getRect(find.text('Get started'));
+    expect(button.bottom, lessThan(568));
+    expect(tester.takeException(), isNull);
+  });
+
   for (final size in const [Size(320, 568), Size(844, 390), Size(1024, 768)]) {
     testWidgets('fits $size at 200% text', (tester) async {
       await _mount(tester, size, scale: 2);
