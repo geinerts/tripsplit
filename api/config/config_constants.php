@@ -118,7 +118,7 @@ define('SOCIAL_APPLE_KEY_ID', env_string('TRIP_SOCIAL_APPLE_KEY_ID', ''));
 define('SOCIAL_APPLE_PRIVATE_KEY_PATH', env_string('TRIP_SOCIAL_APPLE_PRIVATE_KEY_PATH', ''));
 define('GOOGLE_WEB_CLIENT_ID', env_string('TRIP_GOOGLE_WEB_CLIENT_ID', ''));
 define('GOOGLE_WEB_CLIENT_SECRET', env_string('TRIP_GOOGLE_WEB_CLIENT_SECRET', ''));
-define('FX_PROVIDER_BASE_URL', env_string('TRIP_FX_PROVIDER_BASE_URL', 'https://api.frankfurter.app'));
+define('FX_PROVIDER_BASE_URL', env_string('TRIP_FX_PROVIDER_BASE_URL', 'https://api.frankfurter.dev/v2'));
 define('FX_TIMEOUT_SEC', env_int('TRIP_FX_TIMEOUT_SEC', 8));
 
 define('RESEND_API_KEY', env_string('TRIP_RESEND_API_KEY', ''));

@@ -164,11 +164,13 @@ function trip_currency_code_from_trip(array $trip): string
 
 function fx_provider_base_url(): string
 {
-    $raw = trim((string) FX_PROVIDER_BASE_URL);
-    if ($raw === '') {
-        return 'https://api.frankfurter.app';
+    $raw = rtrim(trim((string) FX_PROVIDER_BASE_URL), '/');
+    // The old address only covers the European Central Bank's currencies, which
+    // leaves out several the app offers. Existing configuration may still name it.
+    if ($raw === '' || $raw === 'https://api.frankfurter.app' || $raw === 'https://api.frankfurter.dev/v1') {
+        return 'https://api.frankfurter.dev/v2';
     }
-    return rtrim($raw, '/');
+    return $raw;
 }
 
 function fx_timeout_seconds(): int
@@ -281,6 +283,35 @@ function http_get_json_assoc(string $url, int $timeoutSeconds): array
     return $decoded;
 }
 
+function fx_rate_url(string $from, string $to, string $date): string
+{
+    return fx_provider_base_url()
+        . '/rate/' . rawurlencode($from)
+        . '/' . rawurlencode($to)
+        . '?date=' . rawurlencode($date);
+}
+
+/**
+ * Bulgaria adopted the euro on 2026-01-01 and rates for the lev stopped there, but
+ * older trips can still hold it. Its fixed rate lets those convert through the euro.
+ *
+ * @return array{from: string, to: string, multiplier: float}|null
+ */
+function fx_rate_via_bgn_peg(string $from, string $to, string $date): ?array
+{
+    if ($date < '2026-01-01' || $from === $to) {
+        return null;
+    }
+    $levPerEuro = 1.95583;
+    if ($from === 'BGN') {
+        return ['from' => 'EUR', 'to' => $to, 'multiplier' => 1 / $levPerEuro];
+    }
+    if ($to === 'BGN') {
+        return ['from' => $from, 'to' => 'EUR', 'multiplier' => $levPerEuro];
+    }
+    return null;
+}
+
 function fetch_historical_fx_rate(string $fromCurrency, string $toCurrency, string $dateIso): float
 {
     $from = normalize_currency_code($fromCurrency);
@@ -289,25 +320,21 @@ function fetch_historical_fx_rate(string $fromCurrency, string $toCurrency, stri
         return 1.0;
     }
 
-    $date = validate_date_iso($dateIso);
+    // A date ahead of the server's clock has no rate yet, for example just after
+    // midnight in a timezone east of UTC.
+    $date = min(validate_date_iso($dateIso), gmdate('Y-m-d'));
+    $viaEuro = fx_rate_via_bgn_peg($from, $to, $date);
+    if ($viaEuro !== null) {
+        return fetch_historical_fx_rate($viaEuro['from'], $viaEuro['to'], $date) * $viaEuro['multiplier'];
+    }
     static $memoryCache = [];
     $cacheKey = $date . '|' . $from . '|' . $to;
     if (isset($memoryCache[$cacheKey])) {
         return (float) $memoryCache[$cacheKey];
     }
 
-    $url = fx_provider_base_url()
-        . '/' . rawurlencode($date)
-        . '?from=' . rawurlencode($from)
-        . '&to=' . rawurlencode($to);
-
-    $payload = http_get_json_assoc($url, fx_timeout_seconds());
-    $rates = $payload['rates'] ?? null;
-    if (!is_array($rates) || !array_key_exists($to, $rates)) {
-        throw new RuntimeException('FX rate is not available for selected date/currency.');
-    }
-
-    $rateRaw = $rates[$to];
+    $payload = http_get_json_assoc(fx_rate_url($from, $to, $date), fx_timeout_seconds());
+    $rateRaw = $payload['rate'] ?? null;
     if (!is_numeric($rateRaw)) {
         throw new RuntimeException('FX rate response is invalid.');
     }
