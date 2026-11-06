@@ -1845,6 +1845,21 @@ class AppLocalizationsSv extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'APP-INSTÄLLNINGAR';
 
   @override
+  String get profileEmailVerified => 'Verifierad';
+
+  @override
+  String get profileEmailNotVerified => 'Inte verifierad';
+
+  @override
+  String get profileEmailSendVerification => 'Skicka länk';
+
+  @override
+  String get profileEmailVerificationSent => 'Verifieringsmejl skickat. Kolla din inkorg.';
+
+  @override
+  String get profileAccountSectionTitle => 'KONTO';
+
+  @override
   String get profileAccountSettings => 'Kontoinställningar';
 
   @override

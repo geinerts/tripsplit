@@ -1845,6 +1845,21 @@ class AppLocalizationsDe extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'APP-EINSTELLUNGEN';
 
   @override
+  String get profileEmailVerified => 'Bestätigt';
+
+  @override
+  String get profileEmailNotVerified => 'Nicht bestätigt';
+
+  @override
+  String get profileEmailSendVerification => 'Link senden';
+
+  @override
+  String get profileEmailVerificationSent => 'Bestätigungs-E-Mail gesendet. Sieh in deinem Postfach nach.';
+
+  @override
+  String get profileAccountSectionTitle => 'KONTO';
+
+  @override
   String get profileAccountSettings => 'Kontoeinstellungen';
 
   @override

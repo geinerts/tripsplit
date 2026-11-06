@@ -1851,6 +1851,21 @@ class AppLocalizationsCs extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'NASTAVENÍ APLIKACE';
 
   @override
+  String get profileEmailVerified => 'Ověřeno';
+
+  @override
+  String get profileEmailNotVerified => 'Neověřeno';
+
+  @override
+  String get profileEmailSendVerification => 'Odeslat odkaz';
+
+  @override
+  String get profileEmailVerificationSent => 'Ověřovací e-mail byl odeslán. Zkontrolujte doručenou poštu.';
+
+  @override
+  String get profileAccountSectionTitle => 'ÚČET';
+
+  @override
   String get profileAccountSettings => 'Nastavení účtu';
 
   @override

@@ -1845,6 +1845,21 @@ class AppLocalizationsNl extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'APP-INSTELLINGEN';
 
   @override
+  String get profileEmailVerified => 'Geverifieerd';
+
+  @override
+  String get profileEmailNotVerified => 'Niet geverifieerd';
+
+  @override
+  String get profileEmailSendVerification => 'Link versturen';
+
+  @override
+  String get profileEmailVerificationSent => 'Verificatie-e-mail verstuurd. Controleer je inbox.';
+
+  @override
+  String get profileAccountSectionTitle => 'ACCOUNT';
+
+  @override
   String get profileAccountSettings => 'Accountinstellingen';
 
   @override

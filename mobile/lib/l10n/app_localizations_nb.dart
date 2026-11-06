@@ -1845,6 +1845,21 @@ class AppLocalizationsNb extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'APP-INNSTILLINGER';
 
   @override
+  String get profileEmailVerified => 'Bekreftet';
+
+  @override
+  String get profileEmailNotVerified => 'Ikke bekreftet';
+
+  @override
+  String get profileEmailSendVerification => 'Send lenke';
+
+  @override
+  String get profileEmailVerificationSent => 'E-post for bekreftelse er sendt. Sjekk innboksen din.';
+
+  @override
+  String get profileAccountSectionTitle => 'KONTO';
+
+  @override
   String get profileAccountSettings => 'Kontoinnstillinger';
 
   @override

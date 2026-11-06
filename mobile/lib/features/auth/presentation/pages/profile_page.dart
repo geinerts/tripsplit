@@ -130,6 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
   int _handledRefreshRequestCount = 0;
   int _handledCloseEditModeRequestCount = 0;
   String _appVersionLabel = '—';
+  bool _sendingVerification = false;
 
   void _updateState(VoidCallback update) {
     if (!mounted) {

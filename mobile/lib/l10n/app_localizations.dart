@@ -3373,6 +3373,36 @@ abstract class AppLocalizations {
   /// **'APP SETTINGS'**
   String get profileAppSettingsSectionTitle;
 
+  /// No description provided for @profileEmailVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get profileEmailVerified;
+
+  /// No description provided for @profileEmailNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not verified'**
+  String get profileEmailNotVerified;
+
+  /// No description provided for @profileEmailSendVerification.
+  ///
+  /// In en, this message translates to:
+  /// **'Send link'**
+  String get profileEmailSendVerification;
+
+  /// No description provided for @profileEmailVerificationSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification email sent. Check your inbox.'**
+  String get profileEmailVerificationSent;
+
+  /// No description provided for @profileAccountSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'ACCOUNT'**
+  String get profileAccountSectionTitle;
+
   /// No description provided for @profileAccountSettings.
   ///
   /// In en, this message translates to:

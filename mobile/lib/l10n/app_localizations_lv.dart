@@ -1851,6 +1851,21 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'LIETOTNES IESTATĪJUMI';
 
   @override
+  String get profileEmailVerified => 'Apstiprināts';
+
+  @override
+  String get profileEmailNotVerified => 'Nav apstiprināts';
+
+  @override
+  String get profileEmailSendVerification => 'Nosūtīt saiti';
+
+  @override
+  String get profileEmailVerificationSent => 'Apstiprinājuma e-pasts nosūtīts. Pārbaudi iesūtni.';
+
+  @override
+  String get profileAccountSectionTitle => 'KONTS';
+
+  @override
   String get profileAccountSettings => 'Konta iestatījumi';
 
   @override

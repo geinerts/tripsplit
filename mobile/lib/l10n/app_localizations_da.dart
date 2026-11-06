@@ -1845,6 +1845,21 @@ class AppLocalizationsDa extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'APP-INDSTILLINGER';
 
   @override
+  String get profileEmailVerified => 'Bekræftet';
+
+  @override
+  String get profileEmailNotVerified => 'Ikke bekræftet';
+
+  @override
+  String get profileEmailSendVerification => 'Send link';
+
+  @override
+  String get profileEmailVerificationSent => 'Bekræftelsesmail sendt. Tjek din indbakke.';
+
+  @override
+  String get profileAccountSectionTitle => 'KONTO';
+
+  @override
   String get profileAccountSettings => 'Kontoindstillinger';
 
   @override

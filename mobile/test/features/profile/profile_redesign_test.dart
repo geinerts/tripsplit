@@ -48,6 +48,12 @@ class _Auth implements AuthController {
   final profiles = <Map<Symbol, dynamic>>[];
   int logoutCalls = 0, feedbackCalls = 0;
   final passwordEmails = <String>[];
+  final verificationEmails = <String>[];
+  @override
+  Future<void> requestEmailVerificationLink({required String email}) async {
+    verificationEmails.add(email);
+  }
+
   @override
   Future<void> requestPasswordReset({required String email}) async {
     passwordEmails.add(email);
@@ -287,10 +293,13 @@ void main() {
       t.notificationsTitle,
       t.profileAccountAndSecurity,
       t.profileHelpTitle,
-      t.logOutButton,
+      t.profileAppSettingsSectionTitle,
+      t.profileAccountSectionTitle,
     ]) {
       expect(find.text(label), findsOneWidget, reason: label);
     }
+    expect(find.text(t.logOutButton), findsNothing);
+    expect(find.byKey(const ValueKey('profile-app-version')), findsNothing);
     for (final label in [
       t.accountDeleteTitle,
       t.profileChangePassword,
@@ -303,13 +312,54 @@ void main() {
       expect(find.text(label), findsNothing, reason: label);
     }
     expect(find.byType(Switch), findsNothing);
-    final help = tester.getTopLeft(find.text(t.profileHelpTitle)).dy;
-    await tester.ensureVisible(find.text(t.logOutButton));
+  });
+
+  for (final (verified, shown, hidden) in [
+    (true, 'profile-email-verified', 'profile-email-not-verified'),
+    (false, 'profile-email-not-verified', 'profile-email-verified'),
+    (null, null, 'profile-email-verified'),
+  ]) {
+    testWidgets('email status when verified is $verified', (tester) async {
+      final auth = _Auth()
+        ..user = _Auth().user.copyWith(emailVerified: verified);
+      await _mount(tester, auth);
+      if (shown != null) {
+        expect(find.byKey(ValueKey(shown)), findsOneWidget);
+      }
+      expect(find.byKey(ValueKey(hidden)), findsNothing);
+      if (verified == null) {
+        expect(
+          find.byKey(const ValueKey('profile-email-not-verified')),
+          findsNothing,
+        );
+      }
+    });
+  }
+
+  testWidgets('an unverified email can send its link from the profile', (
+    tester,
+  ) async {
+    final auth = _Auth()..user = _Auth().user.copyWith(emailVerified: false);
+    await _mount(tester, auth);
+    final t = _t(tester);
+    await tester.tap(find.byKey(const ValueKey('profile-email-not-verified')));
     await tester.pumpAndSettle();
+    expect(auth.verificationEmails, ['matiss@example.com']);
+    expect(find.text(t.profileEmailVerificationSent), findsOneWidget);
+  });
+
+  test('email status comes from the server and is kept per account', () {
+    final user = AuthUserModel.fromLegacyMap({
+      'id': 1,
+      'nickname': 'A',
+      'email_verified': true,
+    });
+    expect(user.emailVerified, isTrue);
+    expect(user.copyWith(nickname: 'B').emailVerified, isTrue);
+    expect(user.copyWith(id: 2).emailVerified, isNull);
     expect(
-      tester.getTopLeft(find.text(t.logOutButton)).dy,
-      greaterThan(tester.getTopLeft(find.text(t.profileHelpTitle)).dy),
-      reason: 'Help was at $help before scrolling',
+      AuthUserModel.fromLegacyMap({'id': 1, 'nickname': 'A'}).emailVerified,
+      isNull,
     );
   });
 
@@ -537,11 +587,14 @@ void main() {
     final auth = _Auth();
     await _mount(tester, auth);
     final t = _t(tester);
+    await _tap(tester, t.profileAccountAndSecurity);
     await _tap(tester, t.logOutButton);
     await tester.tap(find.text(t.cancelAction));
     await tester.pumpAndSettle();
     expect(auth.logoutCalls, 0);
+    await _back(tester);
     await _tap(tester, t.profileHelpTitle);
+    expect(find.byKey(const ValueKey('profile-app-version')), findsOneWidget);
     await _tap(tester, t.profileContactUs);
     expect(find.text(t.profileContactDescription), findsOneWidget);
     expect(find.text(t.profileAttachScreenshot), findsNothing);
@@ -707,7 +760,7 @@ void main() {
         final commands = ProfilePageCommandController();
         await _mount(
           tester,
-          _Auth(),
+          _Auth()..user = _Auth().user.copyWith(emailVerified: dark),
           dark: dark,
           boundary: key,
           commands: commands,
@@ -715,6 +768,9 @@ void main() {
         final t = _t(tester);
         final prefix = dark ? 'dark' : 'light';
         await _capture(tester, key, '$prefix-profile');
+        await _tap(tester, t.profileAccountAndSecurity);
+        await _capture(tester, key, '$prefix-account-security');
+        await _back(tester);
         for (final item in [
           (t.profileAppearance, 'appearance'),
           (t.profileLanguage, 'language'),

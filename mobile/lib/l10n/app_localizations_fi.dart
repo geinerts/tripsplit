@@ -1845,6 +1845,21 @@ class AppLocalizationsFi extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'SOVELLUKSEN ASETUKSET';
 
   @override
+  String get profileEmailVerified => 'Vahvistettu';
+
+  @override
+  String get profileEmailNotVerified => 'Ei vahvistettu';
+
+  @override
+  String get profileEmailSendVerification => 'Lähetä linkki';
+
+  @override
+  String get profileEmailVerificationSent => 'Vahvistusviesti lähetetty. Tarkista saapuneet viestit.';
+
+  @override
+  String get profileAccountSectionTitle => 'TILI';
+
+  @override
   String get profileAccountSettings => 'Tilin asetukset';
 
   @override

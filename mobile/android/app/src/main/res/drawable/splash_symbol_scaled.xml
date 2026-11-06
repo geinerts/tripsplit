@@ -3,6 +3,6 @@
     <item
         android:drawable="@drawable/launch_symbol"
         android:gravity="center"
-        android:height="96dp"
-        android:width="96dp" />
+        android:height="70dp"
+        android:width="178dp" />
 </layer-list>

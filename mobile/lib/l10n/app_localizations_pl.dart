@@ -1857,6 +1857,21 @@ class AppLocalizationsPl extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'USTAWIENIA APLIKACJI';
 
   @override
+  String get profileEmailVerified => 'Zweryfikowany';
+
+  @override
+  String get profileEmailNotVerified => 'Niezweryfikowany';
+
+  @override
+  String get profileEmailSendVerification => 'Wyślij link';
+
+  @override
+  String get profileEmailVerificationSent => 'Wysłano e-mail weryfikacyjny. Sprawdź skrzynkę odbiorczą.';
+
+  @override
+  String get profileAccountSectionTitle => 'KONTO';
+
+  @override
   String get profileAccountSettings => 'Ustawienia konta';
 
   @override

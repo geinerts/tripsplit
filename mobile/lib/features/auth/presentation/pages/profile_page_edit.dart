@@ -216,10 +216,16 @@ extension _ProfilePageEditFlow on _ProfilePageState {
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(t.emailAddressLabel),
-            subtitle: Text(
-              _emailController.text.trim().isEmpty
-                  ? t.notSetValue
-                  : _emailController.text.trim(),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _emailController.text.trim().isEmpty
+                      ? t.notSetValue
+                      : _emailController.text.trim(),
+                ),
+                _buildEmailStatus(context),
+              ],
             ),
           ),
           const Divider(height: 1),

@@ -1857,6 +1857,21 @@ class AppLocalizationsUk extends AppLocalizations {
   String get profileAppSettingsSectionTitle => 'НАЛАШТУВАННЯ ДОДАТКА';
 
   @override
+  String get profileEmailVerified => 'Підтверджено';
+
+  @override
+  String get profileEmailNotVerified => 'Не підтверджено';
+
+  @override
+  String get profileEmailSendVerification => 'Надіслати посилання';
+
+  @override
+  String get profileEmailVerificationSent => 'Лист для підтвердження надіслано. Перевірте вхідні.';
+
+  @override
+  String get profileAccountSectionTitle => 'ОБЛІКОВИЙ ЗАПИС';
+
+  @override
   String get profileAccountSettings => 'Налаштування облікового запису';
 
   @override

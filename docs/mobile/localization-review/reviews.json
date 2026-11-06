@@ -324005,5 +324005,1055 @@
       "checked against the crop editor and its error states"
     ],
     "note": "Crop editing feature. Not native-speaker proofread."
+  },
+  "lv:profileEmailVerified": {
+    "locale": "lv",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Apstiprināts",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "lv:profileEmailNotVerified": {
+    "locale": "lv",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Nav apstiprināts",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "lv:profileEmailSendVerification": {
+    "locale": "lv",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Nosūtīt saiti",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "lv:profileEmailVerificationSent": {
+    "locale": "lv",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Apstiprinājuma e-pasts nosūtīts. Pārbaudi iesūtni.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "lv:profileAccountSectionTitle": {
+    "locale": "lv",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "KONTS",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "de:profileEmailVerified": {
+    "locale": "de",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Bestätigt",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "de:profileEmailNotVerified": {
+    "locale": "de",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Nicht bestätigt",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "de:profileEmailSendVerification": {
+    "locale": "de",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Link senden",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "de:profileEmailVerificationSent": {
+    "locale": "de",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Bestätigungs-E-Mail gesendet. Sieh in deinem Postfach nach.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "de:profileAccountSectionTitle": {
+    "locale": "de",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "KONTO",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "es:profileEmailVerified": {
+    "locale": "es",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Verificado",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "es:profileEmailNotVerified": {
+    "locale": "es",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Sin verificar",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "es:profileEmailSendVerification": {
+    "locale": "es",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Enviar enlace",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "es:profileEmailVerificationSent": {
+    "locale": "es",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Correo de verificación enviado. Revisa tu bandeja de entrada.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "es:profileAccountSectionTitle": {
+    "locale": "es",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "CUENTA",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fr:profileEmailVerified": {
+    "locale": "fr",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Vérifié",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fr:profileEmailNotVerified": {
+    "locale": "fr",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Non vérifié",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fr:profileEmailSendVerification": {
+    "locale": "fr",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Envoyer le lien",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fr:profileEmailVerificationSent": {
+    "locale": "fr",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "E-mail de vérification envoyé. Consultez votre boîte de réception.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fr:profileAccountSectionTitle": {
+    "locale": "fr",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "COMPTE",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "it:profileEmailVerified": {
+    "locale": "it",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Verificata",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "it:profileEmailNotVerified": {
+    "locale": "it",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Non verificata",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "it:profileEmailSendVerification": {
+    "locale": "it",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Invia link",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "it:profileEmailVerificationSent": {
+    "locale": "it",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Email di verifica inviata. Controlla la posta in arrivo.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "it:profileAccountSectionTitle": {
+    "locale": "it",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "ACCOUNT",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pt:profileEmailVerified": {
+    "locale": "pt",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Verificado",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pt:profileEmailNotVerified": {
+    "locale": "pt",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Não verificado",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pt:profileEmailSendVerification": {
+    "locale": "pt",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Enviar ligação",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pt:profileEmailVerificationSent": {
+    "locale": "pt",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "E-mail de verificação enviado. Verifique a sua caixa de entrada.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pt:profileAccountSectionTitle": {
+    "locale": "pt",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "CONTA",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pl:profileEmailVerified": {
+    "locale": "pl",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Zweryfikowany",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pl:profileEmailNotVerified": {
+    "locale": "pl",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Niezweryfikowany",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pl:profileEmailSendVerification": {
+    "locale": "pl",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Wyślij link",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pl:profileEmailVerificationSent": {
+    "locale": "pl",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Wysłano e-mail weryfikacyjny. Sprawdź skrzynkę odbiorczą.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "pl:profileAccountSectionTitle": {
+    "locale": "pl",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "KONTO",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nl:profileEmailVerified": {
+    "locale": "nl",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Geverifieerd",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nl:profileEmailNotVerified": {
+    "locale": "nl",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Niet geverifieerd",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nl:profileEmailSendVerification": {
+    "locale": "nl",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Link versturen",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nl:profileEmailVerificationSent": {
+    "locale": "nl",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Verificatie-e-mail verstuurd. Controleer je inbox.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nl:profileAccountSectionTitle": {
+    "locale": "nl",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "ACCOUNT",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "sv:profileEmailVerified": {
+    "locale": "sv",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Verifierad",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "sv:profileEmailNotVerified": {
+    "locale": "sv",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Inte verifierad",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "sv:profileEmailSendVerification": {
+    "locale": "sv",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Skicka länk",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "sv:profileEmailVerificationSent": {
+    "locale": "sv",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Verifieringsmejl skickat. Kolla din inkorg.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "sv:profileAccountSectionTitle": {
+    "locale": "sv",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "KONTO",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "da:profileEmailVerified": {
+    "locale": "da",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Bekræftet",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "da:profileEmailNotVerified": {
+    "locale": "da",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Ikke bekræftet",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "da:profileEmailSendVerification": {
+    "locale": "da",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Send link",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "da:profileEmailVerificationSent": {
+    "locale": "da",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Bekræftelsesmail sendt. Tjek din indbakke.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "da:profileAccountSectionTitle": {
+    "locale": "da",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "KONTO",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nb:profileEmailVerified": {
+    "locale": "nb",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Bekreftet",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nb:profileEmailNotVerified": {
+    "locale": "nb",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Ikke bekreftet",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nb:profileEmailSendVerification": {
+    "locale": "nb",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Send lenke",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nb:profileEmailVerificationSent": {
+    "locale": "nb",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "E-post for bekreftelse er sendt. Sjekk innboksen din.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "nb:profileAccountSectionTitle": {
+    "locale": "nb",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "KONTO",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fi:profileEmailVerified": {
+    "locale": "fi",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Vahvistettu",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fi:profileEmailNotVerified": {
+    "locale": "fi",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Ei vahvistettu",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fi:profileEmailSendVerification": {
+    "locale": "fi",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Lähetä linkki",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fi:profileEmailVerificationSent": {
+    "locale": "fi",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Vahvistusviesti lähetetty. Tarkista saapuneet viestit.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "fi:profileAccountSectionTitle": {
+    "locale": "fi",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "TILI",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "cs:profileEmailVerified": {
+    "locale": "cs",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Ověřeno",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "cs:profileEmailNotVerified": {
+    "locale": "cs",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Neověřeno",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "cs:profileEmailSendVerification": {
+    "locale": "cs",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Odeslat odkaz",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "cs:profileEmailVerificationSent": {
+    "locale": "cs",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Ověřovací e-mail byl odeslán. Zkontrolujte doručenou poštu.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "cs:profileAccountSectionTitle": {
+    "locale": "cs",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "ÚČET",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "uk:profileEmailVerified": {
+    "locale": "uk",
+    "key": "profileEmailVerified",
+    "source": "Verified",
+    "before": null,
+    "translation": "Підтверджено",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "uk:profileEmailNotVerified": {
+    "locale": "uk",
+    "key": "profileEmailNotVerified",
+    "source": "Not verified",
+    "before": null,
+    "translation": "Не підтверджено",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "uk:profileEmailSendVerification": {
+    "locale": "uk",
+    "key": "profileEmailSendVerification",
+    "source": "Send link",
+    "before": null,
+    "translation": "Надіслати посилання",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "uk:profileEmailVerificationSent": {
+    "locale": "uk",
+    "key": "profileEmailVerificationSent",
+    "source": "Verification email sent. Check your inbox.",
+    "before": null,
+    "translation": "Лист для підтвердження надіслано. Перевірте вхідні.",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
+  },
+  "uk:profileAccountSectionTitle": {
+    "locale": "uk",
+    "key": "profileAccountSectionTitle",
+    "source": "ACCOUNT",
+    "before": null,
+    "translation": "ОБЛІКОВИЙ ЗАПИС",
+    "status": "ai_reviewed",
+    "date": "2026-11-06",
+    "method": "contextual_ai_revision",
+    "checks": [
+      "catalog completeness and interpolation arguments",
+      "checked against the profile email status"
+    ],
+    "note": "Profile reorganisation. Not native-speaker proofread."
   }
 }

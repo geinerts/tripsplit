@@ -74,6 +74,7 @@ extension _ProfilePageSettings on _ProfilePageState {
           builder: (_) => _ProfileAccountSecurityPage(
             passwordTitle: _passwordActionTitle,
             onPasswordTap: _openChangePasswordPage,
+            onLogoutTap: () => unawaited(_onLogoutPressed()),
             onDeleteAccountTap: _openDangerZone,
           ),
         ),
@@ -92,6 +93,7 @@ extension _ProfilePageSettings on _ProfilePageState {
             onQuickStartTap: widget.onQuickStartRequested ?? _openQuickStart,
             onContactTap: _openContactDialog,
             onRateTap: _openRateHint,
+            appVersion: _appVersionLabel,
           ),
         ),
       ),
@@ -231,11 +233,13 @@ class _ProfileAccountSecurityPage extends StatelessWidget {
   const _ProfileAccountSecurityPage({
     required this.passwordTitle,
     required this.onPasswordTap,
+    required this.onLogoutTap,
     required this.onDeleteAccountTap,
   });
 
   final String passwordTitle;
   final VoidCallback onPasswordTap;
+  final VoidCallback onLogoutTap;
   final VoidCallback onDeleteAccountTap;
 
   @override
@@ -257,10 +261,21 @@ class _ProfileAccountSecurityPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppSettingsRow(
-                    title: passwordTitle,
-                    icon: Icons.lock_outline_rounded,
-                    onTap: onPasswordTap,
+                  Column(
+                    children: [
+                      AppSettingsRow(
+                        title: passwordTitle,
+                        icon: Icons.lock_outline_rounded,
+                        onTap: onPasswordTap,
+                      ),
+                      Divider(height: 1, color: AppDesign.cardStroke(context)),
+                      AppSettingsRow(
+                        title: t.logOutButton,
+                        icon: Icons.logout_rounded,
+                        chevron: false,
+                        onTap: onLogoutTap,
+                      ),
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 32),
@@ -291,11 +306,13 @@ class _ProfileHelpPage extends StatelessWidget {
     required this.onQuickStartTap,
     required this.onContactTap,
     required this.onRateTap,
+    required this.appVersion,
   });
 
   final VoidCallback onQuickStartTap;
   final VoidCallback onContactTap;
   final VoidCallback onRateTap;
+  final String appVersion;
 
   @override
   Widget build(BuildContext context) {
@@ -322,6 +339,16 @@ class _ProfileHelpPage extends StatelessWidget {
               title: t.profileRateSplyto,
               icon: Icons.star_outline_rounded,
               onTap: onRateTap,
+            ),
+            const SizedBox(height: 28),
+            Center(
+              child: Text(
+                'v$appVersion',
+                key: const ValueKey('profile-app-version'),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppDesign.mutedColor(context),
+                ),
+              ),
             ),
           ],
         ),

@@ -9,6 +9,7 @@ class AuthUser {
     this.displayName,
     required this.nickname,
     this.email,
+    this.emailVerified,
     required this.needsCredentials,
     this.hasPassword,
     this.bankCountryCode,
@@ -37,6 +38,9 @@ class AuthUser {
   final String? displayName;
   final String nickname;
   final String? email;
+
+  /// Null when unknown, such as a profile saved by an older version.
+  final bool? emailVerified;
   final bool needsCredentials;
 
   /// Whether a chosen password is known; null for legacy or unknown state.
@@ -68,6 +72,7 @@ class AuthUser {
     String? displayName,
     String? nickname,
     String? email,
+    bool? emailVerified,
     bool? needsCredentials,
     bool? hasPassword,
     bool clearPasswordStatus = false,
@@ -100,6 +105,9 @@ class AuthUser {
       displayName: displayName ?? this.displayName,
       nickname: nickname ?? this.nickname,
       email: email ?? this.email,
+      emailVerified: id != null && id != this.id
+          ? emailVerified
+          : (emailVerified ?? this.emailVerified),
       needsCredentials: needsCredentials ?? this.needsCredentials,
       hasPassword: clearPasswordStatus || (id != null && id != this.id)
           ? null

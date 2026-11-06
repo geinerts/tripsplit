@@ -40,6 +40,7 @@ class CurrentUserStore {
       'display_name': user.displayName,
       'nickname': user.nickname,
       'email': user.email,
+      'email_verified': user.emailVerified,
       'needs_credentials': user.needsCredentials,
       'has_password': user.hasPassword,
       'share_payment_details_with_trips': user.sharePaymentDetailsWithTrips,

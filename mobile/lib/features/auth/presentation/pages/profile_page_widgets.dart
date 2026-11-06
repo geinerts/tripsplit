@@ -121,10 +121,6 @@ extension _ProfilePageWidgets on _ProfilePageState {
             const SizedBox(height: 12),
             const Divider(height: 1),
             _buildProfileSettingsPanel(context),
-            const SizedBox(height: 12),
-            _buildProfileLogoutCard(context),
-            const SizedBox(height: 36),
-            _buildProfileFooter(context),
           ],
         ],
       ),
@@ -133,46 +129,8 @@ extension _ProfilePageWidgets on _ProfilePageState {
 
   Widget _buildProfileSettingsPanel(BuildContext context) {
     final t = context.l10n;
-    final rows = <Widget>[
-      _buildProfileSectionTile(
-        context: context,
-        title: t.profileAppearance,
-        icon: Icons.palette_outlined,
-        valueText: _currentAppearanceLabel(context),
-        subtitle: '',
-        onTap: _isBusy ? null : () => showThemeModePicker(context),
-      ),
-      _buildProfileSectionTile(
-        context: context,
-        title: t.profileLanguage,
-        icon: Icons.translate_outlined,
-        valueText: _currentLanguageLabel(context),
-        subtitle: '',
-        onTap: _isBusy ? null : () => showAppLocalePicker(context),
-      ),
-      _buildProfileSectionTile(
-        context: context,
-        title: t.notificationsTitle,
-        icon: Icons.notifications_none_rounded,
-        subtitle: '',
-        onTap: _isBusy ? null : _openNotificationSettings,
-      ),
-      _buildProfileSectionTile(
-        context: context,
-        title: t.profileAccountAndSecurity,
-        icon: Icons.shield_outlined,
-        subtitle: '',
-        onTap: _isBusy ? null : _openAccountAndSecurity,
-      ),
-      _buildProfileSectionTile(
-        context: context,
-        title: t.profileHelpTitle,
-        icon: Icons.help_outline,
-        subtitle: '',
-        onTap: _isBusy ? null : _openHelp,
-      ),
-    ];
-
+    Widget divider() =>
+        Divider(height: 1, color: AppDesign.cardStroke(context));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -184,7 +142,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
             icon: Icons.travel_explore,
             onTap: _isBusy ? null : widget.onTravelMapRequested,
           ),
-          const Divider(height: 1),
+          divider(),
         ],
         PremiumStatusTile(
           access: _user?.premiumAccess,
@@ -192,42 +150,157 @@ extension _ProfilePageWidgets on _ProfilePageState {
               ? null
               : () => unawaited(_loadProfile()),
         ),
-        const Divider(height: 1),
-        for (var i = 0; i < rows.length; i++) ...[
-          if (i > 0) Divider(height: 1, color: AppDesign.cardStroke(context)),
-          rows[i],
-        ],
+        _buildProfileSectionLabel(context, t.profileAppSettingsSectionTitle),
+        _buildProfileSectionTile(
+          context: context,
+          title: t.profileAppearance,
+          icon: Icons.palette_outlined,
+          valueText: _currentAppearanceLabel(context),
+          subtitle: '',
+          onTap: _isBusy ? null : () => showThemeModePicker(context),
+        ),
+        divider(),
+        _buildProfileSectionTile(
+          context: context,
+          title: t.profileLanguage,
+          icon: Icons.translate_outlined,
+          valueText: _currentLanguageLabel(context),
+          subtitle: '',
+          onTap: _isBusy ? null : () => showAppLocalePicker(context),
+        ),
+        divider(),
+        _buildProfileSectionTile(
+          context: context,
+          title: t.notificationsTitle,
+          icon: Icons.notifications_none_rounded,
+          subtitle: '',
+          onTap: _isBusy ? null : _openNotificationSettings,
+        ),
+        _buildProfileSectionLabel(context, t.profileAccountSectionTitle),
+        _buildProfileSectionTile(
+          context: context,
+          title: t.profileAccountAndSecurity,
+          icon: Icons.shield_outlined,
+          subtitle: '',
+          onTap: _isBusy ? null : _openAccountAndSecurity,
+        ),
+        divider(),
+        _buildProfileSectionTile(
+          context: context,
+          title: t.profileHelpTitle,
+          icon: Icons.help_outline,
+          subtitle: '',
+          onTap: _isBusy ? null : _openHelp,
+        ),
       ],
     );
   }
 
-  Widget _buildProfileLogoutCard(BuildContext context) => Column(
-    children: [
-      const Divider(height: 1),
-      AppSettingsRow(
-        title: context.l10n.logOutButton,
-        icon: Icons.logout_rounded,
-        destructive: true,
-        chevron: false,
-        onTap: _isBusy ? null : _onLogoutPressed,
-      ),
-    ],
-  );
+  Widget _buildProfileSectionLabel(BuildContext context, String label) =>
+      Semantics(
+        header: true,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 24, 0, 6),
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: AppDesign.mutedColor(context),
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.6,
+            ),
+          ),
+        ),
+      );
 
-  Widget _buildProfileFooter(BuildContext context) {
-    return Center(
-      child: Text(
-        'v$_appVersionLabel',
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          fontSize: 11,
-          color: AppDesign.mutedColor(context).withValues(alpha: 0.92),
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.2,
-          decoration: TextDecoration.none,
+  /// Verified is a quiet confirmation. Not verified can be fixed from right here.
+  Widget _buildEmailStatus(BuildContext context) {
+    final t = context.l10n;
+    final verified = _user?.emailVerified;
+    final hasEmail = (_user?.email ?? '').trim().isNotEmpty;
+    if (verified == null || !hasEmail) return const SizedBox.shrink();
+    final textTheme = Theme.of(context).textTheme;
+    if (verified) {
+      final color = Theme.of(context).colorScheme.primary;
+      return Padding(
+        key: const ValueKey('profile-email-verified'),
+        padding: const EdgeInsets.only(top: 4),
+        child: Row(
+          children: [
+            Icon(Icons.check_circle_rounded, size: 15, color: color),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                t.profileEmailVerified,
+                style: textTheme.bodySmall?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    final color = Theme.of(context).colorScheme.error;
+    return Semantics(
+      button: true,
+      child: InkWell(
+        key: const ValueKey('profile-email-not-verified'),
+        borderRadius: BorderRadius.circular(8),
+        onTap: _sendingVerification ? null : _sendEmailVerification,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 44),
+          child: Row(
+            children: [
+              Icon(Icons.error_outline_rounded, size: 15, color: color),
+              const SizedBox(width: 4),
+              Flexible(
+                child: Text.rich(
+                  TextSpan(
+                    text: t.profileEmailNotVerified,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    children: [
+                      const TextSpan(text: ' · '),
+                      TextSpan(
+                        text: t.profileEmailSendVerification,
+                        style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (_sendingVerification) ...[
+                const SizedBox(width: 8),
+                const SizedBox.square(
+                  dimension: 12,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _sendEmailVerification() async {
+    final email = (_user?.email ?? '').trim();
+    if (email.isEmpty || _sendingVerification) return;
+    final t = context.l10n;
+    _updateState(() => _sendingVerification = true);
+    try {
+      await widget.controller.requestEmailVerificationLink(email: email);
+      if (mounted) _showSnack(t.profileEmailVerificationSent);
+    } on ApiException catch (error) {
+      if (mounted) _showSnack(error.message);
+    } finally {
+      if (mounted) _updateState(() => _sendingVerification = false);
+    }
   }
 
   Widget _buildProfileSectionTile({
@@ -294,6 +367,7 @@ extension _ProfilePageWidgets on _ProfilePageState {
                         color: AppDesign.mutedColor(context),
                       ),
                     ),
+                    _buildEmailStatus(context),
                   ],
                 ),
               ),
