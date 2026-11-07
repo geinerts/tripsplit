@@ -1,7 +1,8 @@
 # Analytics summary
 
-Status: approved by the owner on 2026-11-07. Not deployed. The server goes first, because
-new app builds have no fallback to the old way of loading.
+Status: approved by the owner and deployed to the server on 2026-11-07. App builds made
+before that date still use `list_expenses`. New builds have no fallback to the old way of
+loading, so this action must stay in place.
 
 The Analytics screen used to download every expense of every trip and add them up on the
 phone. `analytics_summary` returns those numbers in one request. Filtering by currency, trip
