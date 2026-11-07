@@ -224,27 +224,43 @@ class _ProfileNotificationSettingsPageState
                 subtitle: t.tripReportEmailSettingSubtitle,
                 icon: Icons.picture_as_pdf_outlined,
                 chevron: false,
-                trailing: Semantics(
-                  label: t.tripReportEmailSetting,
-                  child: Switch.adaptive(
-                    key: const ValueKey('email-trip-report-switch'),
-                    value: _prefs.emailTripReportEnabled,
-                    onChanged: _isSaving
-                        ? null
-                        : (value) => unawaited(
-                            _save(
-                              optimistic: _prefs.copyWith(
-                                emailTripReportEnabled: value,
-                              ),
-                              request: () => widget.controller
-                                  .updateNotificationPreferences(
+                // Keep this switch in the same column as the rows above,
+                // which reserve space for a chevron after their switch.
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Semantics(
+                      label: t.tripReportEmailSetting,
+                      child: Switch.adaptive(
+                        key: const ValueKey('email-trip-report-switch'),
+                        value: _prefs.emailTripReportEnabled,
+                        onChanged: _isSaving
+                            ? null
+                            : (value) => unawaited(
+                                _save(
+                                  optimistic: _prefs.copyWith(
                                     emailTripReportEnabled: value,
                                   ),
-                            ),
-                          ),
-                    activeTrackColor: Theme.of(context).colorScheme.primary,
-                    activeThumbColor: Theme.of(context).colorScheme.onPrimary,
-                  ),
+                                  request: () => widget.controller
+                                      .updateNotificationPreferences(
+                                        emailTripReportEnabled: value,
+                                      ),
+                                ),
+                              ),
+                        activeTrackColor: Theme.of(context).colorScheme.primary,
+                        activeThumbColor: Theme.of(
+                          context,
+                        ).colorScheme.onPrimary,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const ExcludeSemantics(
+                      child: Visibility.maintain(
+                        visible: false,
+                        child: Icon(Icons.chevron_right),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
