@@ -18,7 +18,7 @@ $imageUrl = share_absolute_url('/share-image.php', [
     'type' => 'trip',
     'format' => 'jpeg',
     'invite' => $pageInvite,
-    'v' => $hasInvite ? 'trip5-' . substr(hash('sha256', $inviteCode), 0, 12) : 'trip5-missing',
+    'v' => $hasInvite ? 'trip6-' . substr(hash('sha256', $inviteCode), 0, 12) : 'trip6-missing',
 ]);
 $inviteForApp = $pageInvite !== '' ? $pageInvite : ($inviteCode ?? '');
 $isValid = (bool) ($tripMeta['valid'] ?? false);

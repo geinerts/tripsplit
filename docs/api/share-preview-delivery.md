@@ -32,3 +32,10 @@ Changes require backend/landing-page deployment; no mobile build change required
 - Fixtures/measurements: `output/design/share-preview-delivery/`.
 - Not deployed. WhatsApp on-device before/after behavior remains unverified;
   already sent link cards may keep a cached preview despite the new image version.
+
+## Centred invite card (7 November 2026)
+
+WhatsApp's small card shows the middle square of the image. The invite card's logo and
+trip name now stay inside the central 630 pixels, so they read in both card sizes. Long
+names shrink to fit two lines, then end in `...`. Preview URLs use `trip6` for newly
+fetched metadata. Friend and fallback cards don't change.

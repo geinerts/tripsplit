@@ -578,23 +578,43 @@ function share_render_trip_card(string $tripName, string $imagePath)
         share_fill_gradient($image, '#07110d', '#1e4a33');
     }
 
+    // WhatsApp's small card shows only the middle square of this image, so everything
+    // that must stay readable fits the central 630 pixels, in both card sizes.
     $accent = share_hex_color($image, '#79d9aa');
     $white = share_hex_color($image, '#f4fbf7');
-    $lines = share_wrap_text($tripName !== '' ? $tripName : 'Join this trip', 54, 940, 2, true);
-    $labelBaselineY = 400;
-    $titleBaselineY = 470;
-    $titleLineHeight = 68;
-    $panelTop = $labelBaselineY - 70;
+    $safeWidth = 570;
+    $name = $tripName !== '' ? $tripName : 'Join this trip';
+    foreach ([54, 46, 38] as $titleSize) {
+        $lines = share_wrap_text($name, $titleSize, $safeWidth, 2, true);
+        $widest = max(array_map(static fn(string $line): int => share_text_width($line, $titleSize, true), $lines ?: ['']));
+        $wholeName = implode(' ', $lines) === implode(' ', preg_split('/\s+/', trim($name)) ?: []);
+        if ($widest <= $safeWidth && $wholeName) {
+            break;
+        }
+    }
+    if (!$wholeName && $lines) {
+        $last = array_key_last($lines);
+        while (share_text_width($lines[$last] . '...', $titleSize, true) > $safeWidth && mb_strlen($lines[$last]) > 1) {
+            $lines[$last] = rtrim(mb_substr($lines[$last], 0, -1));
+        }
+        $lines[$last] .= '...';
+    }
+    $labelBaselineY = 370;
+    $titleBaselineY = 438;
+    $titleLineHeight = (int) round($titleSize * 1.26);
+    $panelTop = $labelBaselineY - 62;
     $panelBottom = min(630, $titleBaselineY + ((max(1, count($lines)) - 1) * $titleLineHeight) + 54);
 
     imagefilledrectangle($image, 0, 0, 1200, 630, share_hex_color($image, '#000000', 52));
     imagefilledrectangle($image, 0, $panelTop, 1200, $panelBottom, share_hex_color($image, '#000000', 34));
-    share_draw_logo($image, 72, 66, 352, true);
+    share_draw_logo($image, 440, 92, 320, true);
 
-    share_draw_text($image, 'Trip invite', 24, 78, $labelBaselineY, $accent, true);
+    $label = 'Trip invite';
+    share_draw_text($image, $label, 24, 600 - (int) (share_text_width($label, 24, true) / 2), $labelBaselineY, $accent, true);
     $y = $titleBaselineY;
     foreach ($lines as $line) {
-        share_draw_text($image, $line, 54, 76, $y, $white, true);
+        $x = 600 - (int) (share_text_width($line, $titleSize, true) / 2);
+        share_draw_text($image, $line, $titleSize, max(0, $x), $y, $white, true);
         $y += $titleLineHeight;
     }
     return $image;
