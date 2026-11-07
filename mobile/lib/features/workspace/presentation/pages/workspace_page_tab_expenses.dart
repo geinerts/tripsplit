@@ -373,7 +373,9 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                               size: 20,
                             ),
                             label: Text(
-                              context.l10n.workspaceCommentCount(comments),
+                              '$comments',
+                              semanticsLabel: context.l10n
+                                  .workspaceCommentCount(comments),
                             ),
                           ),
                       ],
