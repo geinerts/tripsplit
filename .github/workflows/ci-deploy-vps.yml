@@ -59,6 +59,37 @@ jobs:
       - name: Run PHPUnit
         run: php vendor/bin/phpunit
 
+  backend-mysql-tests:
+    name: Backend MySQL tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: api/vendor
+          key: composer-${{ runner.os }}-${{ hashFiles('api/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Install dependencies
+        working-directory: api
+        run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
+
+      - name: Run isolated MySQL tests
+        run: docker compose --env-file /dev/null -f ops/testing/compose.yaml up --build --abort-on-container-exit --exit-code-from tests
+
   web-tests:
     name: Web security regression tests
     runs-on: ubuntu-latest

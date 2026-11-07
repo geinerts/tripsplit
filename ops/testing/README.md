@@ -4,6 +4,12 @@ This is a local handler/database integration environment, NOT a full deployed st
 application. It uses PHP 8.3, MySQL 8.4/InnoDB and synthetic records only. Verify the exact
 production database version separately before claiming full environment parity.
 
+## CI
+
+The `Backend MySQL tests` job in `.github/workflows/ci-deploy-vps.yml` runs this environment
+on every pull request and push to `main`. A local run takes about a minute. The job doesn't
+block the `deploy-vps` job, whose `needs` list is unchanged. A failure still makes the run red.
+
 ## Run
 
 Prerequisites: running Docker Desktop and the project's locked PHPUnit dependencies
