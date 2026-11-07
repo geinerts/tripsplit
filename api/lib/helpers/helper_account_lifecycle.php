@@ -463,6 +463,7 @@ function process_unverified_account_deactivation(PDO $pdo, array $options = []):
            AND email IS NOT NULL
            AND email <> ""
            AND email_verified_at IS NULL
+           AND guest_trip_id IS NULL
            AND created_at <= (UTC_TIMESTAMP() - INTERVAL ' . $graceDays . ' DAY)
          ORDER BY created_at ASC, id ASC
          LIMIT ' . $limit

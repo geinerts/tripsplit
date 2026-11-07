@@ -1764,6 +1764,12 @@
   "expenseItemsInvalid": "Jokaisella tuotteella on oltava nimi, summa ja vähintään yksi henkilö.",
   "expenseItemsTotal": "Tuotteet yhteensä: {total}",
   "expenseItemsMustMatchTotal": "Tuotteiden summan on oltava {total}.",
+  "tripGuestAddAction": "Lisää henkilö ilman sovellusta",
+  "tripGuestNameLabel": "Nimi",
+  "tripGuestAddHint": "Henkilö ei tarvitse sovellusta. Sinä kirjaat, mitä hän maksoi, ja merkitset hänen maksunsa.",
+  "tripGuestBadge": "Ilman sovellusta",
+  "tripGuestRenameAction": "Muuta nimeä",
+  "tripGuestAdded": "{name} lisätty",
   "expenseSplitAllocated": "Koko {amount} jaettu",
   "@expenseSplitAllocated": {
     "placeholders": {

@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 
-function settlement_row_to_payload(array $row, int $currentUserId, array $stats = []): array
+require_once __DIR__ . '/../../helpers/helper_trip_guests.php';
+
+function settlement_row_to_payload(array $row, int $currentUserId, array $stats = [], array $guestIds = []): array
 {
+    $actsFor = static fn(int $id): bool => $currentUserId > 0 && ($id === $currentUserId || in_array($id, $guestIds, true));
     $fromUserId = (int) ($row['from_user_id'] ?? 0);
     $toUserId = (int) ($row['to_user_id'] ?? 0);
     $status = normalize_settlement_status($row['status'] ?? 'pending');
@@ -29,10 +32,10 @@ function settlement_row_to_payload(array $row, int $currentUserId, array $stats 
         'created_at' => $row['created_at'] ?? null,
         'marked_sent_at' => $row['marked_sent_at'] ?? null,
         'confirmed_at' => $row['confirmed_at'] ?? null,
-        'can_mark_sent' => $status === 'pending' && $currentUserId > 0 && $currentUserId === $fromUserId,
-        'can_confirm_received' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $toUserId,
-        'can_cancel_sent' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $fromUserId,
-        'can_report_not_received' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $toUserId,
+        'can_mark_sent' => $status === 'pending' && $actsFor($fromUserId),
+        'can_confirm_received' => $status === 'sent' && $actsFor($toUserId),
+        'can_cancel_sent' => $status === 'sent' && $actsFor($fromUserId),
+        'can_report_not_received' => $status === 'sent' && $actsFor($toUserId),
         'is_confirmed' => $status === 'confirmed',
     ];
 }
@@ -63,10 +66,11 @@ function load_trip_settlement_payload(PDO $pdo, int $tripId, int $currentUserId,
     $stmt->execute(['trip_id' => $tripId]);
     $rows = $stmt->fetchAll();
 
+    $guestIds = function_exists('trip_guest_ids_for_actor') ? trip_guest_ids_for_actor($pdo, $tripId, $currentUserId) : [];
     $settlements = [];
     $confirmedCount = 0;
     foreach ($rows as $row) {
-        $item = settlement_row_to_payload($row, $currentUserId, $stats);
+        $item = settlement_row_to_payload($row, $currentUserId, $stats, $guestIds);
         if ($item['is_confirmed'] === true) {
             $confirmedCount++;
         }

@@ -30,6 +30,7 @@ class WorkspaceSnapshotCodec {
               'avatar_url': user.avatarUrl,
               'avatar_thumb_url': user.avatarThumbUrl,
               'is_ready_to_settle': user.isReadyToSettle,
+              'is_guest': user.isGuest,
               'ready_to_settle_at': user.readyToSettleAt,
             },
           )
@@ -208,6 +209,7 @@ class WorkspaceSnapshotCodec {
                 (readyToSettleAt == null || readyToSettleAt.isEmpty)
                 ? null
                 : readyToSettleAt,
+            isGuest: item['is_guest'] == true,
           );
         })
         .toList(growable: false);

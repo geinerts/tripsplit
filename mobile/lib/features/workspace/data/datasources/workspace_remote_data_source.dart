@@ -137,6 +137,7 @@ abstract class WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     String? clientMutationId,
   });
@@ -154,9 +155,18 @@ abstract class WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     bool removeReceipt,
     String? clientMutationId,
+  });
+
+  Future<void> addTripGuest({required int tripId, required String name});
+
+  Future<void> renameTripGuest({
+    required int tripId,
+    required int userId,
+    required String name,
   });
 
   Future<void> deleteExpense({
@@ -516,6 +526,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     String? clientMutationId,
   }) {
@@ -531,6 +542,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       splitValues: splitValues,
       items: items,
       extraAmount: extraAmount,
+      paidBy: paidBy,
       receiptPath: receiptPath,
       clientMutationId: clientMutationId,
     );
@@ -550,6 +562,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
     String? clientMutationId,
@@ -567,9 +580,28 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       splitValues: splitValues,
       items: items,
       extraAmount: extraAmount,
+      paidBy: paidBy,
       receiptPath: receiptPath,
       removeReceipt: removeReceipt,
       clientMutationId: clientMutationId,
+    );
+  }
+
+  @override
+  Future<void> addTripGuest({required int tripId, required String name}) {
+    return _mutationApi.addTripGuest(tripId: tripId, name: name);
+  }
+
+  @override
+  Future<void> renameTripGuest({
+    required int tripId,
+    required int userId,
+    required String name,
+  }) {
+    return _mutationApi.renameTripGuest(
+      tripId: tripId,
+      userId: userId,
+      name: name,
     );
   }
 

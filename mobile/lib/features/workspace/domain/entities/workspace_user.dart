@@ -15,6 +15,7 @@ class WorkspaceUser {
     this.wisePayLink,
     this.isReadyToSettle = false,
     this.readyToSettleAt,
+    this.isGuest = false,
   });
 
   final int id;
@@ -32,6 +33,9 @@ class WorkspaceUser {
   final String? wisePayLink;
   final bool isReadyToSettle;
   final String? readyToSettleAt;
+
+  /// A person added by name, with no account. The trip owner acts for them.
+  final bool isGuest;
 
   String get preferredName {
     final fullName = (displayName ?? '').trim();

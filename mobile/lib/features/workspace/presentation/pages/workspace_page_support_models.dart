@@ -16,6 +16,7 @@ class _ExpenseFormResult {
     required this.removeReceipt,
     this.items = const [],
     this.extraAmount = 0,
+    this.paidBy,
   });
 
   final double amount;
@@ -32,6 +33,9 @@ class _ExpenseFormResult {
   final bool removeReceipt;
   final List<ExpenseItem> items;
   final double extraAmount;
+
+  /// Set when the trip owner chose who paid.
+  final int? paidBy;
 }
 
 class _PickedFile {

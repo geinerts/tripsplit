@@ -31,7 +31,7 @@ function reset_registration_mysql_schema(PDO $pdo, bool $hasNames = true): void
         throw new RuntimeException('Refusing to reset an unmarked test database.');
     }
     $pdo->exec('DROP TABLE IF EXISTS trip_users');
-    $pdo->exec('CREATE TABLE trip_users (
+    $pdo->exec('CREATE TABLE trip_users (guest_trip_id INT NULL, 
         id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
         nickname VARCHAR(32) NOT NULL,
         ' . ($hasNames ? 'first_name VARCHAR(64) NULL, last_name VARCHAR(64) NULL,' : '') . '

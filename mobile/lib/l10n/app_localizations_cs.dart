@@ -4294,6 +4294,26 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String get tripGuestAddAction => 'Přidat osobu bez aplikace';
+
+  @override
+  String get tripGuestNameLabel => 'Jméno';
+
+  @override
+  String get tripGuestAddHint => 'Tato osoba aplikaci nepotřebuje. Vy zadáváte, co zaplatila, a označujete její platby.';
+
+  @override
+  String get tripGuestBadge => 'Bez aplikace';
+
+  @override
+  String get tripGuestRenameAction => 'Změnit jméno';
+
+  @override
+  String tripGuestAdded(String name) {
+    return 'Přidáno: $name';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Celá částka $amount rozdělena';
   }

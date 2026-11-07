@@ -39,8 +39,8 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
         )
         .toList(growable: false);
 
-    final payerName =
-        usersById[_currentUserId]?.nickname ?? context.l10n.youLabel;
+    final payerId = form.paidBy ?? _currentUserId;
+    final payerName = usersById[payerId]?.nickname ?? context.l10n.youLabel;
     final queuedExpense = TripExpense(
       id: -DateTime.now().millisecondsSinceEpoch,
       amount: form.amount,
@@ -52,7 +52,7 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
       note: _tagQueuedNote(form.note),
       expenseDate: form.date,
       splitMode: form.splitMode,
-      paidById: _currentUserId,
+      paidById: payerId,
       paidByNickname: payerName,
       receiptUrl: uploadedReceipt?.url,
       receiptThumbUrl: uploadedReceipt?.thumbUrl,
@@ -124,8 +124,9 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
         note: _tagQueuedNote(form.note),
         expenseDate: form.date,
         splitMode: form.splitMode,
-        paidById: expense.paidById,
-        paidByNickname: expense.paidByNickname,
+        paidById: form.paidBy ?? expense.paidById,
+        paidByNickname:
+            usersById[form.paidBy]?.nickname ?? expense.paidByNickname,
         receiptUrl: form.removeReceipt
             ? null
             : (uploadedReceipt?.url ?? expense.receiptUrl),

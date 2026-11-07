@@ -449,10 +449,10 @@ function admin_panel_dashboard_action(): void
     $stats = [];
 
     // User counts
-    $stmt = $pdo->query("SELECT COUNT(*) FROM {$users}");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM {$users} WHERE guest_trip_id IS NULL");
     $stats['total_users'] = (int) $stmt->fetchColumn();
 
-    $stmt = $pdo->query("SELECT COUNT(*) FROM {$users} WHERE account_status = 'active'");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM {$users} WHERE account_status = 'active' AND guest_trip_id IS NULL");
     $stats['active_users'] = (int) $stmt->fetchColumn();
 
     $stmt = $pdo->query("SELECT COUNT(*) FROM {$users} WHERE created_at >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 7 DAY)");
@@ -524,6 +524,7 @@ function admin_panel_user_search_action(): void
         $params[]     = $status;
     }
 
+    $conditions[] = 'guest_trip_id IS NULL';
     $where = $conditions ? ('WHERE ' . implode(' AND ', $conditions)) : '';
 
     $stmt = $pdo->prepare("

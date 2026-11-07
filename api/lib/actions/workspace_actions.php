@@ -121,7 +121,7 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
         : 'CASE WHEN t.created_by = tm.user_id THEN "owner" ELSE "member" END AS role, ';
 
     $stmt = $pdo->prepare(
-        'SELECT u.id, ' . $nameSelect . $roleSelect . $readySelect . 'u.nickname, u.avatar_path
+        'SELECT u.id, ' . $nameSelect . $roleSelect . $readySelect . 'u.nickname, u.avatar_path, u.guest_trip_id
          FROM ' . $tripMembersTable . ' tm
          JOIN ' . $tripsTable . ' t ON t.id = tm.trip_id
          JOIN ' . $usersTable . ' u ON u.id = tm.user_id
@@ -141,12 +141,13 @@ function workspace_load_trip_users(PDO $pdo, int $tripId): array
             ? $displayName
             : trim((string) ($row['nickname'] ?? ''));
         $row['role'] = normalize_trip_member_role($row['role'] ?? 'member');
+        $row['is_guest'] = !empty($row['guest_trip_id']);
         $row['is_ready_to_settle'] = ((int) ($row['ready_to_settle'] ?? 0)) === 1;
         $row['ready_to_settle_at'] = $row['ready_to_settle_at'] ?: null;
         $avatarPath = trim((string) ($row['avatar_path'] ?? ''));
         $row['avatar_url'] = $avatarPath !== '' ? avatar_public_url($avatarPath) : null;
         $row['avatar_thumb_url'] = $avatarPath !== '' ? avatar_thumb_public_url($avatarPath) : null;
-        unset($row['avatar_path'], $row['ready_to_settle']);
+        unset($row['avatar_path'], $row['ready_to_settle'], $row['guest_trip_id']);
     }
     unset($row);
 

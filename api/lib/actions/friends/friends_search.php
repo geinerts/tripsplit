@@ -53,7 +53,7 @@ function search_users_action(): void
     $nameGroupBy = $hasNameColumns
         ? ', u.first_name, u.last_name'
         : '';
-    $activeFilter = users_active_filter_sql($pdo, 'u');
+    $activeFilter = users_active_filter_sql($pdo, 'u') . ' AND u.guest_trip_id IS NULL';
 
     $excludeClause = '';
     $excludeParams = [];

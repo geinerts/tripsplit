@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_trip_guests.php';
+
 require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
 
 function normalize_expense_split_mode($value): string
@@ -737,10 +739,15 @@ function add_expense_action(): void
         $tripCurrencyCode,
         $itemized
     );
-    $payerId = $userId;
+    $payerId = resolve_expense_payer_id($pdo, $tripId, $userId, $body, $userId);
     $payerName = trim((string) ($me['nickname'] ?? ''));
     if ($payerName === '') {
         $payerName = 'Trip member';
+    }
+    if ($payerId !== $userId) {
+        $payerStmt = $pdo->prepare('SELECT nickname FROM ' . table_name('users') . ' WHERE id = :id');
+        $payerStmt->execute(['id' => $payerId]);
+        $payerName = trim((string) ($payerStmt->fetchColumn() ?: $payerName));
     }
     $tripName = trim((string) ($trip['name'] ?? ''));
 
@@ -764,7 +771,7 @@ function add_expense_action(): void
                 'category' => $category,
                 'note' => $note,
                 'split_mode' => $splitMode,
-                'paid_by' => (int) $me['id'],
+                'paid_by' => $payerId,
                 'expense_date' => $expenseDate,
                 'receipt_path' => $receiptPath !== '' ? $receiptPath : null,
             ]);
@@ -779,7 +786,7 @@ function add_expense_action(): void
                 'category' => $category,
                 'note' => $note,
                 'split_mode' => $splitMode,
-                'paid_by' => (int) $me['id'],
+                'paid_by' => $payerId,
                 'expense_date' => $expenseDate,
                 'receipt_path' => $receiptPath !== '' ? $receiptPath : null,
             ]);
@@ -806,7 +813,7 @@ function add_expense_action(): void
         $notifyUserIds = [];
         foreach ($participantRows as $participantRow) {
             $participantUserId = (int) ($participantRow['user_id'] ?? 0);
-            if ($participantUserId > 0 && $participantUserId !== $payerId) {
+            if ($participantUserId > 0 && $participantUserId !== $payerId && $participantUserId !== $userId) {
                 $notifyUserIds[$participantUserId] = true;
             }
         }
@@ -941,7 +948,7 @@ function update_expense_action(): void
         if ((int) $expense['trip_id'] !== $tripId) {
             json_out(['ok' => false, 'error' => 'Expense not found in this trip.'], 404);
         }
-    if ((int) $expense['paid_by'] !== $userId) {
+    if (!trip_actor_acts_for($userId, (int) $expense['paid_by'], trip_guest_ids_for_actor($pdo, $tripId, $userId))) {
         json_out(['ok' => false, 'error' => 'Only expense owner can edit.'], 403);
     }
 
@@ -999,6 +1006,7 @@ function update_expense_action(): void
     if (!is_array($rawSplits)) {
         json_out(['ok' => false, 'error' => 'Invalid splits payload.'], 400);
     }
+    $nextPayerId = resolve_expense_payer_id($pdo, $tripId, $userId, $body, (int) $expense['paid_by']);
     $itemized = null;
     if ($splitMode === 'itemized') {
         $itemized = parse_expense_items($body, $sourceAmountCents);
@@ -1031,6 +1039,7 @@ function update_expense_action(): void
                      category = :category,
                      note = :note,
                      split_mode = :split_mode,
+                     paid_by = :paid_by,
                      expense_date = :expense_date,
                      receipt_path = :receipt_path
                  WHERE id = :id AND trip_id = :trip_id'
@@ -1043,6 +1052,7 @@ function update_expense_action(): void
                 'category' => $category,
                 'note' => $note,
                 'split_mode' => $splitMode,
+                'paid_by' => $nextPayerId,
                 'expense_date' => $expenseDate,
                 'receipt_path' => $nextReceiptPath !== '' ? $nextReceiptPath : null,
                 'id' => $expenseId,
@@ -1051,7 +1061,7 @@ function update_expense_action(): void
         } else {
             $update = $pdo->prepare(
                 'UPDATE ' . $expensesTable . '
-                 SET amount = :amount, category = :category, note = :note, split_mode = :split_mode, expense_date = :expense_date, receipt_path = :receipt_path
+                 SET amount = :amount, category = :category, note = :note, split_mode = :split_mode, paid_by = :paid_by, expense_date = :expense_date, receipt_path = :receipt_path
                  WHERE id = :id AND trip_id = :trip_id'
             );
             $update->execute([
@@ -1059,6 +1069,7 @@ function update_expense_action(): void
                 'category' => $category,
                 'note' => $note,
                 'split_mode' => $splitMode,
+                'paid_by' => $nextPayerId,
                 'expense_date' => $expenseDate,
                 'receipt_path' => $nextReceiptPath !== '' ? $nextReceiptPath : null,
                 'id' => $expenseId,
@@ -1194,7 +1205,7 @@ function delete_expense_action(): void
     if ((int) $expense['trip_id'] !== $tripId) {
         json_out(['ok' => false, 'error' => 'Expense not found in this trip.'], 404);
     }
-    if ((int) $expense['paid_by'] !== $userId) {
+    if (!trip_actor_acts_for($userId, (int) $expense['paid_by'], trip_guest_ids_for_actor($pdo, $tripId, $userId))) {
         json_out(['ok' => false, 'error' => 'Only expense owner can delete.'], 403);
     }
 

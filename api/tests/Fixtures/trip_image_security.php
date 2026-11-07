@@ -33,6 +33,7 @@ final class SyntheticDb extends PDO {
     }
 }
 $pdo=new SyntheticDb('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
+$pdo->exec('CREATE TABLE trip_users (id INTEGER PRIMARY KEY, guest_trip_id INT NULL)');
 $pdo->exec('CREATE TABLE trip_trips (id INTEGER PRIMARY KEY,name TEXT,currency_code TEXT,trip_mode TEXT,status TEXT,created_by INTEGER,image_path TEXT,ended_at TEXT,archived_at TEXT)');
 $pdo->exec('CREATE TABLE trip_expenses (trip_id INTEGER)');
 $pdo->exec('CREATE TABLE trip_trip_members (trip_id INTEGER,user_id INTEGER,role TEXT)');

@@ -670,6 +670,13 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
               title: t.inviteTripMembersAction,
               onTap: () => Navigator.of(sheetContext).pop('members'),
             ),
+          if (canManageMembers && _isCurrentTripOwner())
+            AppPlainActionTile(
+              key: const ValueKey('trip-add-guest'),
+              icon: Icons.person_outline_rounded,
+              title: t.tripGuestAddAction,
+              onTap: () => Navigator.of(sheetContext).pop('guest'),
+            ),
           if (canManageMembers)
             Builder(
               builder: (shareContext) => AppPlainActionTile(
@@ -726,6 +733,10 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     }
     if (choice == 'members') {
       await _openAddMembersDialog();
+      return;
+    }
+    if (choice == 'guest') {
+      await _onAddTripGuestPressed();
       return;
     }
     if (choice == 'share') {

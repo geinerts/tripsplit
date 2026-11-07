@@ -1764,6 +1764,12 @@
   "expenseItemsInvalid": "Elk item heeft een naam, een bedrag en minstens één persoon nodig.",
   "expenseItemsTotal": "Totaal van items: {total}",
   "expenseItemsMustMatchTotal": "Items moeten samen {total} zijn.",
+  "tripGuestAddAction": "Persoon zonder app toevoegen",
+  "tripGuestNameLabel": "Naam",
+  "tripGuestAddHint": "Deze persoon heeft de app niet nodig. Jij voert in wat diegene betaalde en markeert de betalingen.",
+  "tripGuestBadge": "Zonder app",
+  "tripGuestRenameAction": "Naam wijzigen",
+  "tripGuestAdded": "{name} toegevoegd",
   "expenseSplitAllocated": "Alle {amount} verdeeld",
   "@expenseSplitAllocated": {
     "placeholders": {

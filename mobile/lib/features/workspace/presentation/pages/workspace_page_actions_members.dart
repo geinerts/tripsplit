@@ -88,16 +88,48 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
                               ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: Text(
-                                  name,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(sheetContext)
-                                      .textTheme
-                                      .bodyLarge
-                                      ?.copyWith(fontWeight: FontWeight.w600),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      name,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(sheetContext)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                    if (user.isGuest)
+                                      Text(
+                                        context.l10n.tripGuestBadge,
+                                        style: Theme.of(
+                                          sheetContext,
+                                        ).textTheme.bodySmall,
+                                      ),
+                                  ],
                                 ),
                               ),
+                              if (user.isGuest &&
+                                  _canEditMembers &&
+                                  _isCurrentTripOwner())
+                                IconButton(
+                                  key: ValueKey('guest-rename-${user.id}'),
+                                  tooltip: context.l10n.tripGuestRenameAction,
+                                  onPressed: _isMutating
+                                      ? null
+                                      : () async {
+                                          Navigator.of(sheetContext).pop();
+                                          await Future<void>.delayed(
+                                            const Duration(milliseconds: 120),
+                                          );
+                                          if (!mounted) return;
+                                          await _onRenameTripGuestPressed(user);
+                                        },
+                                  icon: const Icon(Icons.edit_outlined),
+                                ),
                               if (isCurrent)
                                 Container(
                                   padding: const EdgeInsets.symmetric(
@@ -156,6 +188,93 @@ extension _WorkspacePageMembersActions on _WorkspacePageState {
             ],
           ),
         );
+      },
+    );
+  }
+
+  Future<String?> _askTripGuestName({String initial = ''}) async {
+    final t = context.l10n;
+    final controller = TextEditingController(text: initial);
+    try {
+      return await showDialog<String>(
+        context: context,
+        builder: (dialogContext) {
+          void submit() {
+            final name = controller.text.trim();
+            if (name.isNotEmpty) Navigator.of(dialogContext).pop(name);
+          }
+
+          return AlertDialog(
+            title: Text(
+              initial.isEmpty ? t.tripGuestAddAction : t.tripGuestRenameAction,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  key: const ValueKey('trip-guest-name'),
+                  controller: controller,
+                  autofocus: true,
+                  maxLength: 32,
+                  textCapitalization: TextCapitalization.words,
+                  onSubmitted: (_) => submit(),
+                  decoration: InputDecoration(labelText: t.tripGuestNameLabel),
+                ),
+                if (initial.isEmpty)
+                  Text(
+                    t.tripGuestAddHint,
+                    style: Theme.of(dialogContext).textTheme.bodySmall,
+                  ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: Text(t.cancelAction),
+              ),
+              TextButton(
+                key: const ValueKey('trip-guest-save'),
+                onPressed: submit,
+                child: Text(t.saveAction),
+              ),
+            ],
+          );
+        },
+      );
+    } finally {
+      controller.dispose();
+    }
+  }
+
+  Future<void> _onAddTripGuestPressed() async {
+    if (widget.trip.isSolo || !_isCurrentTripOwner() || _isMutating) return;
+    final name = await _askTripGuestName();
+    if (name == null || !mounted) return;
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.addTripGuest(
+          tripId: widget.trip.id,
+          name: name,
+        );
+        await _loadData(showLoader: false);
+        if (mounted) _showSnack(context.l10n.tripGuestAdded(name));
+      },
+    );
+  }
+
+  Future<void> _onRenameTripGuestPressed(WorkspaceUser user) async {
+    if (!user.isGuest || !_isCurrentTripOwner() || _isMutating) return;
+    final name = await _askTripGuestName(initial: user.preferredName);
+    if (name == null || !mounted) return;
+    await _runMutation(
+      action: () async {
+        await widget.workspaceController.renameTripGuest(
+          tripId: widget.trip.id,
+          userId: user.id,
+          name: name,
+        );
+        await _loadData(showLoader: false);
       },
     );
   }

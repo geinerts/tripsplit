@@ -51,6 +51,7 @@ class WorkspaceOfflineQueue {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     String? mutationId,
   }) {
@@ -80,6 +81,7 @@ class WorkspaceOfflineQueue {
         if (items.isNotEmpty)
           'items': items.map((item) => item.toJson()).toList(growable: false),
         if (extraAmount > 0) 'extra_amount': extraAmount,
+        'paid_by': ?paidBy,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
       },
@@ -100,6 +102,7 @@ class WorkspaceOfflineQueue {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
     String? mutationId,
@@ -131,6 +134,7 @@ class WorkspaceOfflineQueue {
         if (items.isNotEmpty)
           'items': items.map((item) => item.toJson()).toList(growable: false),
         if (extraAmount > 0) 'extra_amount': extraAmount,
+        'paid_by': ?paidBy,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
         if (removeReceipt) 'remove_receipt': true,
@@ -223,6 +227,7 @@ class WorkspaceOfflineQueue {
           splitValues: _toSplitValues(payload['splits']),
           items: ExpenseItem.listFromJson(payload['items']),
           extraAmount: (payload['extra_amount'] as num?)?.toDouble() ?? 0,
+          paidBy: (payload['paid_by'] as num?)?.toInt(),
           receiptPath: payload['receipt_path'] as String?,
           clientMutationId: mutationId,
         );
@@ -241,6 +246,7 @@ class WorkspaceOfflineQueue {
           splitValues: _toSplitValues(payload['splits']),
           items: ExpenseItem.listFromJson(payload['items']),
           extraAmount: (payload['extra_amount'] as num?)?.toDouble() ?? 0,
+          paidBy: (payload['paid_by'] as num?)?.toInt(),
           receiptPath: payload['receipt_path'] as String?,
           removeReceipt: payload['remove_receipt'] == true,
           clientMutationId: mutationId,

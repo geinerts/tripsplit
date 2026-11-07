@@ -4287,6 +4287,26 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get tripGuestAddAction => 'Persoon zonder app toevoegen';
+
+  @override
+  String get tripGuestNameLabel => 'Naam';
+
+  @override
+  String get tripGuestAddHint => 'Deze persoon heeft de app niet nodig. Jij voert in wat diegene betaalde en markeert de betalingen.';
+
+  @override
+  String get tripGuestBadge => 'Zonder app';
+
+  @override
+  String get tripGuestRenameAction => 'Naam wijzigen';
+
+  @override
+  String tripGuestAdded(String name) {
+    return '$name toegevoegd';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Alle $amount verdeeld';
   }

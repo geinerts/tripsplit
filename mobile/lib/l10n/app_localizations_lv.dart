@@ -4294,6 +4294,26 @@ class AppLocalizationsLv extends AppLocalizations {
   }
 
   @override
+  String get tripGuestAddAction => 'Pievienot cilvēku bez lietotnes';
+
+  @override
+  String get tripGuestNameLabel => 'Vārds';
+
+  @override
+  String get tripGuestAddHint => 'Viņam lietotne nav vajadzīga. Tu ievadi, ko viņš samaksāja, un atzīmē viņa maksājumus.';
+
+  @override
+  String get tripGuestBadge => 'Bez lietotnes';
+
+  @override
+  String get tripGuestRenameAction => 'Mainīt vārdu';
+
+  @override
+  String tripGuestAdded(String name) {
+    return '$name pievienots';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Visa summa $amount sadalīta';
   }

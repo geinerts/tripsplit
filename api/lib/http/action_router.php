@@ -52,6 +52,8 @@ function api_action_handlers(): array
         'update_trip' => 'update_trip_action',
         'delete_trip' => 'delete_trip_action',
         'add_trip_members' => 'add_trip_members_action',
+        'add_trip_guest' => 'add_trip_guest_action',
+        'rename_trip_guest' => 'rename_trip_guest_action',
         'remove_trip_member' => 'remove_trip_member_action',
         'leave_trip' => 'leave_trip_action',
         'update_trip_member_role' => 'update_trip_member_role_action',

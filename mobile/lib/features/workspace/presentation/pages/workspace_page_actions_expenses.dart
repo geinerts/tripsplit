@@ -13,6 +13,16 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
   Future<void> _onEditExpensePressed(TripExpense expense) =>
       _openExpenseForm(existing: expense);
 
+  /// People manage their own expenses, and the trip owner also a guest's.
+  bool _canManageExpense(TripExpense expense) {
+    if (expense.paidById == _currentUserId) return true;
+    if (!_isCurrentTripOwner()) return false;
+    return _snapshot?.users.any(
+          (user) => user.id == expense.paidById && user.isGuest,
+        ) ??
+        false;
+  }
+
   Future<void> _openExpenseForm({TripExpense? existing}) async {
     if (_snapshot == null || _isMutating || _isAddExpenseDialogOpen) return;
     if (!_snapshot!.isActive) {
@@ -20,7 +30,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
       return;
     }
     if (existing != null &&
-        (existing.id <= 0 || existing.paidById != _currentUserId)) {
+        (existing.id <= 0 || !_canManageExpense(existing))) {
       return;
     }
     _isAddExpenseDialogOpen = true;
@@ -65,6 +75,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                     splitValues: form.splitValues,
                     items: form.items,
                     extraAmount: form.extraAmount,
+                    paidBy: form.paidBy,
                     receiptPath: receipt?.path,
                   )
                 : await widget.workspaceController.updateExpense(
@@ -80,6 +91,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                     splitValues: form.splitValues,
                     items: form.items,
                     extraAmount: form.extraAmount,
+                    paidBy: form.paidBy,
                     receiptPath: receipt?.path,
                     removeReceipt: form.removeReceipt,
                   );

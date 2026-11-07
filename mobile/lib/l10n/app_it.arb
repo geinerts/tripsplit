@@ -1764,6 +1764,12 @@
   "expenseItemsInvalid": "Ogni voce deve avere un nome, un importo e almeno una persona.",
   "expenseItemsTotal": "Totale delle voci: {total}",
   "expenseItemsMustMatchTotal": "Le voci devono sommare {total}.",
+  "tripGuestAddAction": "Aggiungi persona senza l'app",
+  "tripGuestNameLabel": "Nome",
+  "tripGuestAddHint": "Non ha bisogno dell'app. Inserisci tu ciò che ha pagato e segni i suoi pagamenti.",
+  "tripGuestBadge": "Senza l'app",
+  "tripGuestRenameAction": "Cambia nome",
+  "tripGuestAdded": "{name} aggiunto",
   "expenseSplitAllocated": "Tutti i {amount} sono ripartiti",
   "@expenseSplitAllocated": {
     "placeholders": {

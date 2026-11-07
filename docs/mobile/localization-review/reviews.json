@@ -347539,5 +347539,1181 @@
       "catalog completeness and interpolation arguments"
     ],
     "note": "New text for adjustment and itemized splits. Not reviewed by a native speaker."
+  },
+  "lv:tripGuestAddAction": {
+    "locale": "lv",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Pievienot cilvēku bez lietotnes",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "lv:tripGuestNameLabel": {
+    "locale": "lv",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Vārds",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "lv:tripGuestAddHint": {
+    "locale": "lv",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Viņam lietotne nav vajadzīga. Tu ievadi, ko viņš samaksāja, un atzīmē viņa maksājumus.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "lv:tripGuestBadge": {
+    "locale": "lv",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Bez lietotnes",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "lv:tripGuestRenameAction": {
+    "locale": "lv",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Mainīt vārdu",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "lv:tripGuestAdded": {
+    "locale": "lv",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} pievienots",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "de:tripGuestAddAction": {
+    "locale": "de",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Person ohne App hinzufügen",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "de:tripGuestNameLabel": {
+    "locale": "de",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Name",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "de:tripGuestAddHint": {
+    "locale": "de",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Die Person braucht die App nicht. Du trägst ein, was sie bezahlt hat, und markierst ihre Zahlungen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "de:tripGuestBadge": {
+    "locale": "de",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Ohne App",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "de:tripGuestRenameAction": {
+    "locale": "de",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Namen ändern",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "de:tripGuestAdded": {
+    "locale": "de",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} hinzugefügt",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "es:tripGuestAddAction": {
+    "locale": "es",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Añadir persona sin la app",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "es:tripGuestNameLabel": {
+    "locale": "es",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Nombre",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "es:tripGuestAddHint": {
+    "locale": "es",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "No necesita la app. Tú introduces lo que pagó y marcas sus pagos.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "es:tripGuestBadge": {
+    "locale": "es",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Sin la app",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "es:tripGuestRenameAction": {
+    "locale": "es",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Cambiar nombre",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "es:tripGuestAdded": {
+    "locale": "es",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} añadido",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fr:tripGuestAddAction": {
+    "locale": "fr",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Ajouter une personne sans l'appli",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fr:tripGuestNameLabel": {
+    "locale": "fr",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Nom",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fr:tripGuestAddHint": {
+    "locale": "fr",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Cette personne n'a pas besoin de l'appli. Vous saisissez ce qu'elle a payé et marquez ses paiements.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fr:tripGuestBadge": {
+    "locale": "fr",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Sans l'appli",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fr:tripGuestRenameAction": {
+    "locale": "fr",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Modifier le nom",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fr:tripGuestAdded": {
+    "locale": "fr",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} ajouté",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "it:tripGuestAddAction": {
+    "locale": "it",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Aggiungi persona senza l'app",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "it:tripGuestNameLabel": {
+    "locale": "it",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Nome",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "it:tripGuestAddHint": {
+    "locale": "it",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Non ha bisogno dell'app. Inserisci tu ciò che ha pagato e segni i suoi pagamenti.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "it:tripGuestBadge": {
+    "locale": "it",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Senza l'app",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "it:tripGuestRenameAction": {
+    "locale": "it",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Cambia nome",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "it:tripGuestAdded": {
+    "locale": "it",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} aggiunto",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pt:tripGuestAddAction": {
+    "locale": "pt",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Adicionar pessoa sem a app",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pt:tripGuestNameLabel": {
+    "locale": "pt",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Nome",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pt:tripGuestAddHint": {
+    "locale": "pt",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Esta pessoa não precisa da app. Tu registas o que pagou e marcas os pagamentos dela.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pt:tripGuestBadge": {
+    "locale": "pt",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Sem a app",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pt:tripGuestRenameAction": {
+    "locale": "pt",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Alterar nome",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pt:tripGuestAdded": {
+    "locale": "pt",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} adicionado",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pl:tripGuestAddAction": {
+    "locale": "pl",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Dodaj osobę bez aplikacji",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pl:tripGuestNameLabel": {
+    "locale": "pl",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Imię",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pl:tripGuestAddHint": {
+    "locale": "pl",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Ta osoba nie potrzebuje aplikacji. To Ty wpisujesz, co zapłaciła, i oznaczasz jej płatności.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pl:tripGuestBadge": {
+    "locale": "pl",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Bez aplikacji",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pl:tripGuestRenameAction": {
+    "locale": "pl",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Zmień imię",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "pl:tripGuestAdded": {
+    "locale": "pl",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "Dodano: {name}",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nl:tripGuestAddAction": {
+    "locale": "nl",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Persoon zonder app toevoegen",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nl:tripGuestNameLabel": {
+    "locale": "nl",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Naam",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nl:tripGuestAddHint": {
+    "locale": "nl",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Deze persoon heeft de app niet nodig. Jij voert in wat diegene betaalde en markeert de betalingen.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nl:tripGuestBadge": {
+    "locale": "nl",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Zonder app",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nl:tripGuestRenameAction": {
+    "locale": "nl",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Naam wijzigen",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nl:tripGuestAdded": {
+    "locale": "nl",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} toegevoegd",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "sv:tripGuestAddAction": {
+    "locale": "sv",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Lägg till person utan appen",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "sv:tripGuestNameLabel": {
+    "locale": "sv",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Namn",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "sv:tripGuestAddHint": {
+    "locale": "sv",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Personen behöver inte appen. Du lägger in vad personen betalat och markerar betalningarna.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "sv:tripGuestBadge": {
+    "locale": "sv",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Utan appen",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "sv:tripGuestRenameAction": {
+    "locale": "sv",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Ändra namn",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "sv:tripGuestAdded": {
+    "locale": "sv",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} har lagts till",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "da:tripGuestAddAction": {
+    "locale": "da",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Tilføj person uden appen",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "da:tripGuestNameLabel": {
+    "locale": "da",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Navn",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "da:tripGuestAddHint": {
+    "locale": "da",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Personen behøver ikke appen. Du indtaster, hvad personen har betalt, og markerer betalingerne.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "da:tripGuestBadge": {
+    "locale": "da",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Uden appen",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "da:tripGuestRenameAction": {
+    "locale": "da",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Skift navn",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "da:tripGuestAdded": {
+    "locale": "da",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} tilføjet",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nb:tripGuestAddAction": {
+    "locale": "nb",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Legg til person uten appen",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nb:tripGuestNameLabel": {
+    "locale": "nb",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Navn",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nb:tripGuestAddHint": {
+    "locale": "nb",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Personen trenger ikke appen. Du legger inn hva personen har betalt, og markerer betalingene.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nb:tripGuestBadge": {
+    "locale": "nb",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Uten appen",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nb:tripGuestRenameAction": {
+    "locale": "nb",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Endre navn",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "nb:tripGuestAdded": {
+    "locale": "nb",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} lagt til",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fi:tripGuestAddAction": {
+    "locale": "fi",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Lisää henkilö ilman sovellusta",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fi:tripGuestNameLabel": {
+    "locale": "fi",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Nimi",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fi:tripGuestAddHint": {
+    "locale": "fi",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Henkilö ei tarvitse sovellusta. Sinä kirjaat, mitä hän maksoi, ja merkitset hänen maksunsa.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fi:tripGuestBadge": {
+    "locale": "fi",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Ilman sovellusta",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fi:tripGuestRenameAction": {
+    "locale": "fi",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Muuta nimeä",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "fi:tripGuestAdded": {
+    "locale": "fi",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "{name} lisätty",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "cs:tripGuestAddAction": {
+    "locale": "cs",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Přidat osobu bez aplikace",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "cs:tripGuestNameLabel": {
+    "locale": "cs",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Jméno",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "cs:tripGuestAddHint": {
+    "locale": "cs",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Tato osoba aplikaci nepotřebuje. Vy zadáváte, co zaplatila, a označujete její platby.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "cs:tripGuestBadge": {
+    "locale": "cs",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Bez aplikace",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "cs:tripGuestRenameAction": {
+    "locale": "cs",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Změnit jméno",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "cs:tripGuestAdded": {
+    "locale": "cs",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "Přidáno: {name}",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "uk:tripGuestAddAction": {
+    "locale": "uk",
+    "key": "tripGuestAddAction",
+    "source": "Add person without the app",
+    "before": null,
+    "translation": "Додати людину без застосунку",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "uk:tripGuestNameLabel": {
+    "locale": "uk",
+    "key": "tripGuestNameLabel",
+    "source": "Name",
+    "before": null,
+    "translation": "Ім'я",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "uk:tripGuestAddHint": {
+    "locale": "uk",
+    "key": "tripGuestAddHint",
+    "source": "They don't need the app. You enter what they paid and mark their payments.",
+    "before": null,
+    "translation": "Цій людині застосунок не потрібен. Ви вводите, що вона сплатила, і позначаєте її платежі.",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "uk:tripGuestBadge": {
+    "locale": "uk",
+    "key": "tripGuestBadge",
+    "source": "Without the app",
+    "before": null,
+    "translation": "Без застосунку",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "uk:tripGuestRenameAction": {
+    "locale": "uk",
+    "key": "tripGuestRenameAction",
+    "source": "Change name",
+    "before": null,
+    "translation": "Змінити ім'я",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
+  },
+  "uk:tripGuestAdded": {
+    "locale": "uk",
+    "key": "tripGuestAdded",
+    "source": "{name} added",
+    "before": null,
+    "translation": "Додано: {name}",
+    "status": "ai_reviewed",
+    "date": "2026-11-07",
+    "method": "ai_translation",
+    "checks": [
+      "catalog completeness and interpolation arguments"
+    ],
+    "note": "New text for trip members without the app. Not reviewed by a native speaker."
   }
 }

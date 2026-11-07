@@ -54,7 +54,7 @@ function reset_credentials_test_schema(PDO $pdo): void
         // This check must precede all destructive synthetic-schema operations.
         reset_registration_mysql_schema($pdo);
     } else {
-        $pdo->exec('CREATE TABLE trip_users (id INTEGER PRIMARY KEY AUTOINCREMENT,
+        $pdo->exec('CREATE TABLE trip_users (guest_trip_id INT NULL, id INTEGER PRIMARY KEY AUTOINCREMENT,
             nickname TEXT, first_name TEXT, last_name TEXT, email TEXT UNIQUE, password_hash TEXT,
             credentials_required INTEGER DEFAULT 1, email_verified_at TEXT,
             account_status TEXT DEFAULT \'active\', device_token TEXT UNIQUE)');

@@ -1778,6 +1778,19 @@
       }
     }
   },
+  "tripGuestAddAction": "Add person without the app",
+  "tripGuestNameLabel": "Name",
+  "tripGuestAddHint": "They don't need the app. You enter what they paid and mark their payments.",
+  "tripGuestBadge": "Without the app",
+  "tripGuestRenameAction": "Change name",
+  "tripGuestAdded": "{name} added",
+  "@tripGuestAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "expenseSplitAllocated": "All {amount} allocated",
   "@expenseSplitAllocated": {
     "placeholders": {

@@ -288,6 +288,7 @@ class WorkspaceRemoteMutationApi {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     String? clientMutationId,
   }) async {
@@ -315,6 +316,7 @@ class WorkspaceRemoteMutationApi {
         if (items.isNotEmpty)
           'items': items.map((item) => item.toJson()).toList(growable: false),
         if (extraAmount > 0) 'extra_amount': extraAmount,
+        'paid_by': ?paidBy,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
       },
@@ -334,6 +336,7 @@ class WorkspaceRemoteMutationApi {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
     String? clientMutationId,
@@ -363,10 +366,33 @@ class WorkspaceRemoteMutationApi {
         if (items.isNotEmpty)
           'items': items.map((item) => item.toJson()).toList(growable: false),
         if (extraAmount > 0) 'extra_amount': extraAmount,
+        'paid_by': ?paidBy,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
         if (removeReceipt) 'remove_receipt': true,
       },
+    );
+  }
+
+  Future<void> addTripGuest({required int tripId, required String name}) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('add_trip_guest'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'name': name},
+    );
+  }
+
+  Future<void> renameTripGuest({
+    required int tripId,
+    required int userId,
+    required String name,
+  }) async {
+    await _apiClient.request(
+      path: ApiEndpoints.legacyAction('rename_trip_guest'),
+      method: HttpMethod.post,
+      headers: _tripHeaders(tripId),
+      body: <String, dynamic>{'user_id': userId, 'name': name},
     );
   }
 

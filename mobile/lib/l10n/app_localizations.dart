@@ -7933,6 +7933,42 @@ abstract class AppLocalizations {
   /// **'Items must add up to {total}.'**
   String expenseItemsMustMatchTotal(String total);
 
+  /// No description provided for @tripGuestAddAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add person without the app'**
+  String get tripGuestAddAction;
+
+  /// No description provided for @tripGuestNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get tripGuestNameLabel;
+
+  /// No description provided for @tripGuestAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'They don\'t need the app. You enter what they paid and mark their payments.'**
+  String get tripGuestAddHint;
+
+  /// No description provided for @tripGuestBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Without the app'**
+  String get tripGuestBadge;
+
+  /// No description provided for @tripGuestRenameAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Change name'**
+  String get tripGuestRenameAction;
+
+  /// No description provided for @tripGuestAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added'**
+  String tripGuestAdded(String name);
+
   /// No description provided for @expenseSplitAllocated.
   ///
   /// In en, this message translates to:

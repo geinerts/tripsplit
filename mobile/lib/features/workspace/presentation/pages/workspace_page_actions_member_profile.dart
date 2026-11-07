@@ -10,7 +10,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
         userId: user.id,
       ),
     );
-    if (user.id != _currentUserId) {
+    if (user.id != _currentUserId && !user.isGuest) {
       paymentDetailsFuture = loadMemberDetails();
       paymentDetailsFuture.ignore();
     }
@@ -56,7 +56,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                 tripsRequest.ignore();
                 setProfileState(() {
                   sharedTripsFuture = tripsRequest;
-                  if (user.id != _currentUserId) {
+                  if (user.id != _currentUserId && !user.isGuest) {
                     paymentDetailsFuture = loadMemberDetails();
                     paymentDetailsFuture!.ignore();
                   }
@@ -177,6 +177,7 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
                     FutureBuilder<PaymentDetails>(
                       future: paymentDetailsFuture,
                       builder: (context, detailsSnapshot) {
+                        if (user.isGuest) return const SizedBox.shrink();
                         if (detailsSnapshot.connectionState !=
                             ConnectionState.done) {
                           return const Padding(

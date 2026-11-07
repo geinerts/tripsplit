@@ -330,6 +330,7 @@ class WorkspaceController {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
   }) {
     return _repository.addExpense(
@@ -344,6 +345,7 @@ class WorkspaceController {
       splitValues: splitValues,
       items: items,
       extraAmount: extraAmount,
+      paidBy: paidBy,
       receiptPath: receiptPath,
     );
   }
@@ -361,6 +363,7 @@ class WorkspaceController {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
   }) {
@@ -377,8 +380,25 @@ class WorkspaceController {
       splitValues: splitValues,
       items: items,
       extraAmount: extraAmount,
+      paidBy: paidBy,
       receiptPath: receiptPath,
       removeReceipt: removeReceipt,
+    );
+  }
+
+  Future<void> addTripGuest({required int tripId, required String name}) {
+    return _repository.addTripGuest(tripId: tripId, name: name);
+  }
+
+  Future<void> renameTripGuest({
+    required int tripId,
+    required int userId,
+    required String name,
+  }) {
+    return _repository.renameTripGuest(
+      tripId: tripId,
+      userId: userId,
+      name: name,
     );
   }
 

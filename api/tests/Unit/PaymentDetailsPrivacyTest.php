@@ -23,7 +23,7 @@ final class PaymentDetailsPrivacyTest extends TestCase
             $this->pdo = new PDO('sqlite::memory:');
         }
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->pdo->exec('CREATE TABLE trip_users (
+        $this->pdo->exec('CREATE TABLE trip_users (guest_trip_id INT NULL, 
             id INTEGER PRIMARY KEY, account_status VARCHAR(20), nickname VARCHAR(64),
             email VARCHAR(255), password_hash VARCHAR(255),
             bank_account_holder VARCHAR(100), bank_iban VARCHAR(100), bank_bic VARCHAR(100),

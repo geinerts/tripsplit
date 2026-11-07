@@ -1764,6 +1764,12 @@
   "expenseItemsInvalid": "Jede Position braucht einen Namen, einen Betrag und mindestens eine Person.",
   "expenseItemsTotal": "Summe der Positionen: {total}",
   "expenseItemsMustMatchTotal": "Die Positionen müssen {total} ergeben.",
+  "tripGuestAddAction": "Person ohne App hinzufügen",
+  "tripGuestNameLabel": "Name",
+  "tripGuestAddHint": "Die Person braucht die App nicht. Du trägst ein, was sie bezahlt hat, und markierst ihre Zahlungen.",
+  "tripGuestBadge": "Ohne App",
+  "tripGuestRenameAction": "Namen ändern",
+  "tripGuestAdded": "{name} hinzugefügt",
   "expenseSplitAllocated": "Gesamte {amount} aufgeteilt",
   "@expenseSplitAllocated": {
     "placeholders": {

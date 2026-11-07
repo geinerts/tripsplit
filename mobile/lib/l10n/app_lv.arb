@@ -1750,6 +1750,12 @@
   "expenseItemsInvalid": "Katrai pozīcijai vajag nosaukumu, summu un vismaz vienu cilvēku.",
   "expenseItemsTotal": "Kopā no pozīcijām: {total}",
   "expenseItemsMustMatchTotal": "Pozīcijām kopā jābūt {total}.",
+  "tripGuestAddAction": "Pievienot cilvēku bez lietotnes",
+  "tripGuestNameLabel": "Vārds",
+  "tripGuestAddHint": "Viņam lietotne nav vajadzīga. Tu ievadi, ko viņš samaksāja, un atzīmē viņa maksājumus.",
+  "tripGuestBadge": "Bez lietotnes",
+  "tripGuestRenameAction": "Mainīt vārdu",
+  "tripGuestAdded": "{name} pievienots",
   "expenseSplitAllocated": "Visa summa {amount} sadalīta",
   "@expenseSplitAllocated": {
     "placeholders": {

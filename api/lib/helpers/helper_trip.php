@@ -409,6 +409,9 @@ function create_user_notification(
     string $body,
     array $payload = []
 ): void {
+    if (function_exists('user_is_guest') && user_is_guest($pdo, $userId)) {
+        return;
+    }
     $accountNotification = in_array($type, ['friend_invite_received', 'friend_invite_accepted'], true);
     if ($userId <= 0 || ($tripId <= 0 && !$accountNotification)) {
         return;

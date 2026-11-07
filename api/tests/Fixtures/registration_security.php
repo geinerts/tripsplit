@@ -18,7 +18,7 @@ if (getenv('SPLYTO_ISOLATED_MYSQL') === '1') {
     $pdo = class_exists('Pdo\\Sqlite')
         ? new Pdo\Sqlite('sqlite::memory:', null, null, $options)
         : new PDO('sqlite::memory:', null, null, $options);
-    $pdo->exec('CREATE TABLE trip_users (
+    $pdo->exec('CREATE TABLE trip_users (guest_trip_id INT NULL, 
     id INTEGER PRIMARY KEY AUTOINCREMENT, nickname TEXT NOT NULL,
     ' . ($hasNames ? 'first_name TEXT, last_name TEXT,' : '') . '
     email TEXT UNIQUE, password_hash TEXT, credentials_required INTEGER NOT NULL DEFAULT 1,

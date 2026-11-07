@@ -140,6 +140,7 @@ abstract class WorkspaceRepository {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
   });
 
@@ -156,8 +157,17 @@ abstract class WorkspaceRepository {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     bool removeReceipt,
+  });
+
+  Future<void> addTripGuest({required int tripId, required String name});
+
+  Future<void> renameTripGuest({
+    required int tripId,
+    required int userId,
+    required String name,
   });
 
   Future<MutationResult> deleteExpense({

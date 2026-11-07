@@ -49,21 +49,29 @@ function payment_status_reserves_balance($status): bool
     return in_array(normalize_payment_status($status), ['requested', 'sent'], true);
 }
 
+function trip_payment_actor_acts_for(int $actorId, int $userId, array $guestIds): bool
+{
+    return $userId === $actorId || in_array($userId, $guestIds, true);
+}
+
 function trip_payment_action_is_allowed(
     string $mode,
     string $status,
     int $actorId,
     int $fromUserId,
-    int $toUserId
+    int $toUserId,
+    array $guestIds = []
 ): bool {
     $normalizedStatus = normalize_payment_status($status);
+    $actsForFrom = trip_payment_actor_acts_for($actorId, $fromUserId, $guestIds);
+    $actsForTo = trip_payment_actor_acts_for($actorId, $toUserId, $guestIds);
     return match ($mode) {
-        'confirm' => $normalizedStatus === 'sent' && $actorId === $toUserId,
-        'cancel' => $normalizedStatus === 'sent' && $actorId === $fromUserId,
-        'not_received' => $normalizedStatus === 'sent' && $actorId === $toUserId,
-        'request_sent' => $normalizedStatus === 'requested' && $actorId === $fromUserId,
-        'request_cancel' => $normalizedStatus === 'requested' && $actorId === $toUserId,
-        'request_decline' => $normalizedStatus === 'requested' && $actorId === $fromUserId,
+        'confirm' => $normalizedStatus === 'sent' && $actsForTo,
+        'cancel' => $normalizedStatus === 'sent' && $actsForFrom,
+        'not_received' => $normalizedStatus === 'sent' && $actsForTo,
+        'request_sent' => $normalizedStatus === 'requested' && $actsForFrom,
+        'request_cancel' => $normalizedStatus === 'requested' && $actsForTo,
+        'request_decline' => $normalizedStatus === 'requested' && $actsForFrom,
         default => false,
     };
 }
@@ -86,8 +94,9 @@ function load_trip_confirmed_payment_rows(PDO $pdo, int $tripId): array
     return $stmt->fetchAll();
 }
 
-function payment_row_to_payload(array $row, int $currentUserId): array
+function payment_row_to_payload(array $row, int $currentUserId, array $guestIds = []): array
 {
+    $actsFor = static fn(int $id): bool => $currentUserId > 0 && trip_payment_actor_acts_for($currentUserId, $id, $guestIds);
     $fromUserId = (int) ($row['from_user_id'] ?? 0);
     $toUserId = (int) ($row['to_user_id'] ?? 0);
     $status = normalize_payment_status($row['status'] ?? 'sent');
@@ -117,15 +126,15 @@ function payment_row_to_payload(array $row, int $currentUserId): array
         'confirmed_at' => $row['confirmed_at'] ?? null,
         'cancelled_at' => $row['cancelled_at'] ?? null,
         'cancel_reason' => $row['cancel_reason'] ?? null,
-        'can_mark_request_sent' => $status === 'requested' && $currentUserId > 0 && $currentUserId === $fromUserId,
         'can_view_payment_details' => $status === 'requested' && $currentUserId > 0
             && $currentUserId === $fromUserId && $fromUserId !== $toUserId
             && $requesterUserId === $toUserId && (int) ($row['share_payment_details'] ?? 0) === 1,
-        'can_cancel_request' => $status === 'requested' && $currentUserId > 0 && $currentUserId === $toUserId,
-        'can_decline_request' => $status === 'requested' && $currentUserId > 0 && $currentUserId === $fromUserId,
-        'can_confirm_received' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $toUserId,
-        'can_cancel_sent' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $fromUserId,
-        'can_report_not_received' => $status === 'sent' && $currentUserId > 0 && $currentUserId === $toUserId,
+        'can_mark_request_sent' => $status === 'requested' && $actsFor($fromUserId),
+        'can_cancel_request' => $status === 'requested' && $actsFor($toUserId),
+        'can_decline_request' => $status === 'requested' && $actsFor($fromUserId),
+        'can_confirm_received' => $status === 'sent' && $actsFor($toUserId),
+        'can_cancel_sent' => $status === 'sent' && $actsFor($fromUserId),
+        'can_report_not_received' => $status === 'sent' && $actsFor($toUserId),
         'is_confirmed' => $status === 'confirmed',
     ];
 }
@@ -174,9 +183,10 @@ function load_trip_payments_payload(PDO $pdo, int $tripId, int $currentUserId): 
          LIMIT 100'
     );
     $stmt->execute(['trip_id' => $tripId]);
+    $guestIds = function_exists('trip_guest_ids_for_actor') ? trip_guest_ids_for_actor($pdo, $tripId, $currentUserId) : [];
 
     return array_map(
-        static fn(array $row): array => payment_row_to_payload($row, $currentUserId),
+        static fn(array $row): array => payment_row_to_payload($row, $currentUserId, $guestIds),
         $stmt->fetchAll()
     );
 }
@@ -732,7 +742,7 @@ function update_trip_payment_status_action(string $mode): void
                 }
                 json_out(['ok' => false, 'error' => 'Only a sent payment can be confirmed.'], 409);
             }
-            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId)) {
+            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId, trip_guest_ids_for_actor($pdo, $tripId, $actorId))) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
                 }
@@ -759,7 +769,7 @@ function update_trip_payment_status_action(string $mode): void
                 }
                 json_out(['ok' => false, 'error' => 'Only a sent payment can be cancelled.'], 409);
             }
-            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId)) {
+            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId, trip_guest_ids_for_actor($pdo, $tripId, $actorId))) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
                 }
@@ -787,7 +797,7 @@ function update_trip_payment_status_action(string $mode): void
                 }
                 json_out(['ok' => false, 'error' => 'Only a sent payment can be marked as not received.'], 409);
             }
-            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId)) {
+            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId, trip_guest_ids_for_actor($pdo, $tripId, $actorId))) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
                 }
@@ -809,7 +819,7 @@ function update_trip_payment_status_action(string $mode): void
             $notificationBody = $toName . ' marked the ' . $amount . ' payment as not received.';
             $changed = true;
         } elseif ($mode === 'request_sent') {
-            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId)) {
+            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId, trip_guest_ids_for_actor($pdo, $tripId, $actorId))) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
                 }
@@ -830,7 +840,7 @@ function update_trip_payment_status_action(string $mode): void
             $notificationBody = $fromName . ' marked your ' . $amount . ' payment request as paid.';
             $changed = true;
         } elseif ($mode === 'request_cancel') {
-            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId)) {
+            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId, trip_guest_ids_for_actor($pdo, $tripId, $actorId))) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
                 }
@@ -852,7 +862,7 @@ function update_trip_payment_status_action(string $mode): void
             $notificationBody = $toName . ' cancelled the ' . $amount . ' payment request.';
             $changed = true;
         } elseif ($mode === 'request_decline') {
-            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId)) {
+            if (!trip_payment_action_is_allowed($mode, $status, $actorId, $fromUserId, $toUserId, trip_guest_ids_for_actor($pdo, $tripId, $actorId))) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
                 }

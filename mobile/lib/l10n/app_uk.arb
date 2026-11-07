@@ -1764,6 +1764,12 @@
   "expenseItemsInvalid": "Кожна позиція повинна мати назву, суму й принаймні одну людину.",
   "expenseItemsTotal": "Разом за позиціями: {total}",
   "expenseItemsMustMatchTotal": "Сума позицій має становити {total}.",
+  "tripGuestAddAction": "Додати людину без застосунку",
+  "tripGuestNameLabel": "Ім'я",
+  "tripGuestAddHint": "Цій людині застосунок не потрібен. Ви вводите, що вона сплатила, і позначаєте її платежі.",
+  "tripGuestBadge": "Без застосунку",
+  "tripGuestRenameAction": "Змінити ім'я",
+  "tripGuestAdded": "Додано: {name}",
   "expenseSplitAllocated": "Усю суму {amount} розподілено",
   "@expenseSplitAllocated": {
     "placeholders": {

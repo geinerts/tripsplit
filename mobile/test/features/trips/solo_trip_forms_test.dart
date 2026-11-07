@@ -100,6 +100,7 @@ class _Workspace implements WorkspaceController {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
   }) async {
     savedParticipants = participants;

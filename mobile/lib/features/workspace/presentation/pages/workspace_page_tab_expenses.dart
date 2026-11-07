@@ -397,7 +397,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
       return;
     }
     final canManage =
-        snapshot.isActive && expense.paidById == _currentUserId && !_isMutating;
+        snapshot.isActive && _canManageExpense(expense) && !_isMutating;
     final title = expense.note.trim().isEmpty
         ? ExpenseCategoryCatalog.labelFor(
             expense.category,

@@ -1764,6 +1764,12 @@
   "expenseItemsInvalid": "Varje artikel behöver ett namn, ett belopp och minst en person.",
   "expenseItemsTotal": "Summa av artiklar: {total}",
   "expenseItemsMustMatchTotal": "Artiklarna måste bli {total} totalt.",
+  "tripGuestAddAction": "Lägg till person utan appen",
+  "tripGuestNameLabel": "Namn",
+  "tripGuestAddHint": "Personen behöver inte appen. Du lägger in vad personen betalat och markerar betalningarna.",
+  "tripGuestBadge": "Utan appen",
+  "tripGuestRenameAction": "Ändra namn",
+  "tripGuestAdded": "{name} har lagts till",
   "expenseSplitAllocated": "Hela {amount} fördelat",
   "@expenseSplitAllocated": {
     "placeholders": {

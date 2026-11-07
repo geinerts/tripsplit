@@ -1,3 +1,4 @@
+import 'package:tripsplit/features/workspace/data/datasources/workspace_remote_parsers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:tripsplit/features/workspace/domain/entities/payment_details.dart';
 import 'package:tripsplit/features/workspace/domain/entities/receipt_upload_payload.dart';
@@ -188,6 +189,7 @@ WorkspaceSnapshot snapshot({
   users: [
     const WorkspaceUser(id: 7, nickname: 'Matiss', role: 'owner'),
     if (!solo) const WorkspaceUser(id: 8, nickname: 'Anna'),
+    if (!solo) ..._testGuests,
   ],
   balances: preview
       ? [
@@ -236,7 +238,16 @@ WorkspaceSnapshot snapshot({
   orders: [],
 );
 
+var _testGuests = const <WorkspaceUser>[];
+
 class _Workspace implements WorkspaceController {
+  final addedGuests = <String>[];
+  @override
+  Future<void> addTripGuest({required int tripId, required String name}) async {
+    addedGuests.add(name);
+  }
+
+  int? savedPaidBy;
   bool memberDetailsShared = false;
   ApiException? memberDetailsError;
   int memberDetailsCalls = 0;
@@ -472,6 +483,7 @@ class _Workspace implements WorkspaceController {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
   }) async {
     saves++;
@@ -479,6 +491,7 @@ class _Workspace implements WorkspaceController {
     savedSplits = splitValues;
     savedItems = items;
     savedExtra = extraAmount;
+    savedPaidBy = paidBy;
     savedAmount = amount;
     savedMode = splitMode;
     savedCurrency = currencyCode;
@@ -502,6 +515,7 @@ class _Workspace implements WorkspaceController {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
   }) async {
@@ -1215,6 +1229,70 @@ void main() {
     expect(controller.savedSplits!.single.value, 10);
     expect(controller.savedSplits!.single.userId, 8);
     await disposePage(tester);
+  });
+
+  group('people without the app', () {
+    const guest = WorkspaceUser(id: 99, nickname: 'Mamma', isGuest: true);
+    setUp(() => _testGuests = const [guest]);
+    tearDown(() => _testGuests = const []);
+
+    Future<_Workspace> openForm(
+      WidgetTester tester, {
+      required bool owner,
+    }) async {
+      final commands = WorkspacePageCommandController();
+      final controller = _Workspace();
+      await _mount(tester, controller, commands: commands, manager: owner);
+      await tester.pumpAndSettle();
+      commands.requestOpenAddExpense();
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-form-amount')),
+        '10',
+      );
+      await selectExpenseFood(tester);
+      return controller;
+    }
+
+    testWidgets('the trip owner can say a guest paid', (tester) async {
+      final controller = await openForm(tester, owner: true);
+      await visibleTap(tester, find.byKey(const ValueKey('expense-payer')));
+      expect(find.byKey(const ValueKey('expense-payer-sheet')), findsOneWidget);
+      // Only themselves and guests, never another account.
+      expect(find.byKey(const ValueKey('expense-payer-8')), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('expense-payer-99')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+      await tester.pumpAndSettle();
+      expect(controller.savedPaidBy, 99);
+      await disposePage(tester);
+    });
+
+    testWidgets('other members only enter their own expenses', (tester) async {
+      final controller = await openForm(tester, owner: false);
+      await visibleTap(tester, find.byKey(const ValueKey('expense-payer')));
+      expect(find.byKey(const ValueKey('expense-payer-sheet')), findsNothing);
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+      await tester.pumpAndSettle();
+      expect(controller.savedPaidBy, isNull);
+      await disposePage(tester);
+    });
+
+    test('a guest survives the server response and the local cache', () {
+      final parsed = WorkspaceRemoteParsers.parseUser(const {
+        'id': 99,
+        'nickname': 'Mamma',
+        'is_guest': true,
+      });
+      expect(parsed.isGuest, isTrue);
+      expect(
+        WorkspaceRemoteParsers.parseUser(const {
+          'id': 8,
+          'nickname': 'Anna',
+        }).isGuest,
+        isFalse,
+      );
+    });
   });
 
   testWidgets('adjustments show each result and save with a minus', (

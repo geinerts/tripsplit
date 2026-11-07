@@ -1,5 +1,7 @@
 <?php
 declare(strict_types=1);
+
+require_once __DIR__ . '/../../helpers/helper_trip_guests.php';
 require_once __DIR__ . '/../../helpers/helper_live_location.php';
 
 function balances_action(): void
@@ -676,7 +678,7 @@ function mark_settlement_sent_action(): void
         }
 
         $fromUserId = (int) ($row['from_user_id'] ?? 0);
-        if ($fromUserId !== (int) $me['id']) {
+        if (!trip_actor_acts_for((int) $me['id'], $fromUserId, trip_guest_ids_for_actor($pdo, $tripId, (int) $me['id']))) {
             json_out(['ok' => false, 'error' => 'Only payer can mark transfer as sent.'], 403);
         }
 
@@ -802,7 +804,7 @@ function cancel_settlement_sent_action(): void
             json_out(['ok' => false, 'error' => 'Settlement not found.'], 404);
         }
 
-        if ((int) ($row['from_user_id'] ?? 0) !== (int) $me['id']) {
+        if (!trip_actor_acts_for((int) $me['id'], (int) ($row['from_user_id'] ?? 0), trip_guest_ids_for_actor($pdo, $tripId, (int) $me['id']))) {
             $pdo->rollBack();
             json_out(['ok' => false, 'error' => 'Only payer can cancel sent status.'], 403);
         }
@@ -929,7 +931,7 @@ function report_settlement_not_received_action(): void
             json_out(['ok' => false, 'error' => 'Settlement not found.'], 404);
         }
 
-        if ((int) ($row['to_user_id'] ?? 0) !== (int) $me['id']) {
+        if (!trip_actor_acts_for((int) $me['id'], (int) ($row['to_user_id'] ?? 0), trip_guest_ids_for_actor($pdo, $tripId, (int) $me['id']))) {
             $pdo->rollBack();
             json_out(['ok' => false, 'error' => 'Only receiver can report not received.'], 403);
         }
@@ -1056,7 +1058,7 @@ function confirm_settlement_received_action(): void
         }
 
         $toUserId = (int) ($row['to_user_id'] ?? 0);
-        if ($toUserId !== (int) $me['id']) {
+        if (!trip_actor_acts_for((int) $me['id'], $toUserId, trip_guest_ids_for_actor($pdo, $tripId, (int) $me['id']))) {
             json_out(['ok' => false, 'error' => 'Only receiver can confirm transfer.'], 403);
         }
 

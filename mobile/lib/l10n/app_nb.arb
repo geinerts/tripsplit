@@ -1764,6 +1764,12 @@
   "expenseItemsInvalid": "Hver vare må ha et navn, et beløp og minst én person.",
   "expenseItemsTotal": "Totalt fra varer: {total}",
   "expenseItemsMustMatchTotal": "Varene må bli {total} til sammen.",
+  "tripGuestAddAction": "Legg til person uten appen",
+  "tripGuestNameLabel": "Navn",
+  "tripGuestAddHint": "Personen trenger ikke appen. Du legger inn hva personen har betalt, og markerer betalingene.",
+  "tripGuestBadge": "Uten appen",
+  "tripGuestRenameAction": "Endre navn",
+  "tripGuestAdded": "{name} lagt til",
   "expenseSplitAllocated": "Hele {amount} fordelt",
   "@expenseSplitAllocated": {
     "placeholders": {

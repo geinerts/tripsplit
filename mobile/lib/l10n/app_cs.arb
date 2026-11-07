@@ -1764,6 +1764,12 @@
   "expenseItemsInvalid": "Každá položka potřebuje název, částku a alespoň jednu osobu.",
   "expenseItemsTotal": "Celkem z položek: {total}",
   "expenseItemsMustMatchTotal": "Položky musí dát dohromady {total}.",
+  "tripGuestAddAction": "Přidat osobu bez aplikace",
+  "tripGuestNameLabel": "Jméno",
+  "tripGuestAddHint": "Tato osoba aplikaci nepotřebuje. Vy zadáváte, co zaplatila, a označujete její platby.",
+  "tripGuestBadge": "Bez aplikace",
+  "tripGuestRenameAction": "Změnit jméno",
+  "tripGuestAdded": "Přidáno: {name}",
   "expenseSplitAllocated": "Celá částka {amount} rozdělena",
   "@expenseSplitAllocated": {
     "placeholders": {

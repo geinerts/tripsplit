@@ -419,6 +419,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
   }) {
     final mutationId = _newClientMutationId(
@@ -439,6 +440,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           items: items,
           extraAmount: extraAmount,
+          paidBy: paidBy,
           receiptPath: receiptPath,
           clientMutationId: mutationId,
         );
@@ -456,6 +458,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           items: items,
           extraAmount: extraAmount,
+          paidBy: paidBy,
           receiptPath: receiptPath,
           mutationId: mutationId,
         );
@@ -477,6 +480,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
   }) {
@@ -499,6 +503,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           items: items,
           extraAmount: extraAmount,
+          paidBy: paidBy,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
           clientMutationId: mutationId,
@@ -518,12 +523,27 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           items: items,
           extraAmount: extraAmount,
+          paidBy: paidBy,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
           mutationId: mutationId,
         );
       },
     );
+  }
+
+  @override
+  Future<void> addTripGuest({required int tripId, required String name}) {
+    return _remote.addTripGuest(tripId: tripId, name: name);
+  }
+
+  @override
+  Future<void> renameTripGuest({
+    required int tripId,
+    required int userId,
+    required String name,
+  }) {
+    return _remote.renameTripGuest(tripId: tripId, userId: userId, name: name);
   }
 
   @override

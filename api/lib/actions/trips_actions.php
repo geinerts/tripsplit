@@ -946,6 +946,8 @@ function delete_trip_action(): void
          LIMIT 1'
     );
     $delete->execute(['id' => $tripId]);
+    $pdo->prepare('DELETE FROM ' . table_name('users') . ' WHERE guest_trip_id = :trip_id')
+        ->execute(['trip_id' => $tripId]);
     if ((int) $delete->rowCount() < 1) {
         json_out(['ok' => false, 'error' => 'Trip not found.'], 404);
     }

@@ -4301,6 +4301,26 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String get tripGuestAddAction => 'Додати людину без застосунку';
+
+  @override
+  String get tripGuestNameLabel => 'Ім\'я';
+
+  @override
+  String get tripGuestAddHint => 'Цій людині застосунок не потрібен. Ви вводите, що вона сплатила, і позначаєте її платежі.';
+
+  @override
+  String get tripGuestBadge => 'Без застосунку';
+
+  @override
+  String get tripGuestRenameAction => 'Змінити ім\'я';
+
+  @override
+  String tripGuestAdded(String name) {
+    return 'Додано: $name';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Усю суму $amount розподілено';
   }

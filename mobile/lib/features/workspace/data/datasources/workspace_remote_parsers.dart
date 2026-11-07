@@ -100,6 +100,7 @@ class WorkspaceRemoteParsers {
       avatarThumbUrl: avatarThumbUrl,
       isReadyToSettle: isReadyToSettle,
       readyToSettleAt: readyToSettleAt,
+      isGuest: item['is_guest'] == true,
     );
   }
 

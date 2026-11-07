@@ -74,6 +74,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
       'adjustment',
       'itemized',
     };
+    var selectedPayerId = existing?.paidById ?? _currentUserId;
     var itemDrafts = existing?.items ?? const <ExpenseItem>[];
     var extraDraft = existing?.extraAmount ?? 0.0;
     final isLegacySplitMode = !supportedSplitModes.contains(rawSplitMode);
@@ -279,7 +280,38 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                           (selected.isEmpty || selected.contains(user.id)),
                     )
                     .toList();
-                final payerId = existing?.paidById ?? _currentUserId;
+                final payerId = selectedPayerId;
+                final guests = users.where((user) => user.isGuest).toList();
+                final canChoosePayer =
+                    !isSolo && guests.isNotEmpty && _isCurrentTripOwner();
+                Future<void> choosePayer() async {
+                  FocusScope.of(context).unfocus();
+                  final me = users
+                      .where((user) => user.id == _currentUserId)
+                      .toList();
+                  final picked = await showAppBottomSheet<int>(
+                    context: context,
+                    builder: (sheetContext) => AppActionSheet(
+                      key: const ValueKey('expense-payer-sheet'),
+                      title: t.paidByLabel,
+                      children: [
+                        for (final user in [...me, ...guests])
+                          AppPlainActionTile(
+                            key: ValueKey('expense-payer-${user.id}'),
+                            icon: user.id == selectedPayerId
+                                ? Icons.check_rounded
+                                : Icons.person_outline_rounded,
+                            title: user.preferredName,
+                            onTap: () =>
+                                Navigator.of(sheetContext).pop(user.id),
+                          ),
+                      ],
+                    ),
+                  );
+                  if (picked == null || !context.mounted) return;
+                  setDialogState(() => selectedPayerId = picked);
+                }
+
                 final payer = users
                     .where((user) => user.id == payerId)
                     .firstOrNull;
@@ -637,40 +669,53 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                     const SizedBox(height: 18),
                                     const Divider(height: 1),
                                     if (!isSolo) ...[
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 16,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            _largeMemberAvatar(
-                                              id: payerId,
-                                              name: payerName,
-                                              avatarUrl:
-                                                  payer?.avatarThumbUrl ??
-                                                  payer?.avatarUrl,
-                                              size: 36,
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: Text(
-                                                t.paidByLabel,
-                                                style: Theme.of(
-                                                  context,
-                                                ).textTheme.bodyMedium,
+                                      InkWell(
+                                        key: const ValueKey('expense-payer'),
+                                        onTap: canChoosePayer
+                                            ? choosePayer
+                                            : null,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              _largeMemberAvatar(
+                                                id: payerId,
+                                                name: payerName,
+                                                avatarUrl:
+                                                    payer?.avatarThumbUrl ??
+                                                    payer?.avatarUrl,
+                                                size: 36,
                                               ),
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Flexible(
-                                              child: Text(
-                                                payerName,
-                                                textAlign: TextAlign.end,
-                                                style: Theme.of(
-                                                  context,
-                                                ).textTheme.titleSmall,
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: Text(
+                                                  t.paidByLabel,
+                                                  style: Theme.of(
+                                                    context,
+                                                  ).textTheme.bodyMedium,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                              const SizedBox(width: 12),
+                                              Flexible(
+                                                child: Text(
+                                                  payerName,
+                                                  textAlign: TextAlign.end,
+                                                  style: Theme.of(
+                                                    context,
+                                                  ).textTheme.titleSmall,
+                                                ),
+                                              ),
+                                              if (canChoosePayer) ...[
+                                                const SizedBox(width: 6),
+                                                const Icon(
+                                                  Icons.chevron_right_rounded,
+                                                  size: 20,
+                                                ),
+                                              ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                       const Divider(height: 1),
@@ -1386,6 +1431,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                   : participants,
                                               splitMode: splitMode,
                                               splitValues: splitValues,
+                                              paidBy: canChoosePayer
+                                                  ? selectedPayerId
+                                                  : null,
                                               items: splitMode == 'itemized'
                                                   ? itemDrafts
                                                   : const [],

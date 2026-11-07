@@ -4287,6 +4287,26 @@ class AppLocalizationsDa extends AppLocalizations {
   }
 
   @override
+  String get tripGuestAddAction => 'Tilføj person uden appen';
+
+  @override
+  String get tripGuestNameLabel => 'Navn';
+
+  @override
+  String get tripGuestAddHint => 'Personen behøver ikke appen. Du indtaster, hvad personen har betalt, og markerer betalingerne.';
+
+  @override
+  String get tripGuestBadge => 'Uden appen';
+
+  @override
+  String get tripGuestRenameAction => 'Skift navn';
+
+  @override
+  String tripGuestAdded(String name) {
+    return '$name tilføjet';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Hele $amount fordelt';
   }

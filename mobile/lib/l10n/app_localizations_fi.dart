@@ -4287,6 +4287,26 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
+  String get tripGuestAddAction => 'Lisää henkilö ilman sovellusta';
+
+  @override
+  String get tripGuestNameLabel => 'Nimi';
+
+  @override
+  String get tripGuestAddHint => 'Henkilö ei tarvitse sovellusta. Sinä kirjaat, mitä hän maksoi, ja merkitset hänen maksunsa.';
+
+  @override
+  String get tripGuestBadge => 'Ilman sovellusta';
+
+  @override
+  String get tripGuestRenameAction => 'Muuta nimeä';
+
+  @override
+  String tripGuestAdded(String name) {
+    return '$name lisätty';
+  }
+
+  @override
   String expenseSplitAllocated(String amount) {
     return 'Koko $amount jaettu';
   }

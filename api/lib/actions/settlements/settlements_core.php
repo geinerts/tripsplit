@@ -59,6 +59,7 @@ function load_trip_ready_to_settle_state(PDO $pdo, int $tripId, int $currentUser
          FROM ' . $tripMembersTable . ' tm
          JOIN ' . $usersTable . ' u ON u.id = tm.user_id
          WHERE tm.trip_id = :trip_id
+           AND u.guest_trip_id IS NULL
          ORDER BY tm.joined_at ASC, u.created_at ASC, u.id ASC'
     );
     $stmt->execute(['trip_id' => $tripId]);

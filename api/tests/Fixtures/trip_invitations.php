@@ -82,7 +82,7 @@ function invitation_test_setup(bool $mysql, bool $migrated = true): PDO {
     }
     if ($mysql) $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
     $id = $mysql ? 'INT UNSIGNED PRIMARY KEY AUTO_INCREMENT' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
-    $pdo->exec('CREATE TABLE trip_users (id ' . $id . ', nickname VARCHAR(64), first_name VARCHAR(64), last_name VARCHAR(64), account_status VARCHAR(20), avatar_path VARCHAR(255))');
+    $pdo->exec('CREATE TABLE trip_users (guest_trip_id INT NULL, id ' . $id . ', nickname VARCHAR(64), first_name VARCHAR(64), last_name VARCHAR(64), account_status VARCHAR(20), avatar_path VARCHAR(255))');
     $pdo->exec('CREATE TABLE trip_trips (id ' . $id . ', name VARCHAR(120), created_by INT UNSIGNED,
         trip_mode VARCHAR(10) DEFAULT "group", currency_code VARCHAR(3), status VARCHAR(20) DEFAULT "active",
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ended_at TIMESTAMP NULL, archived_at TIMESTAMP NULL)');

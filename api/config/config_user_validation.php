@@ -192,7 +192,7 @@ function require_valid_user_ids(PDO $pdo, array $ids, bool $requireAtLeastOne = 
     $stmt = $pdo->prepare(
         'SELECT id' . $accountSelect . '
          FROM ' . table_name('users') . "
-         WHERE id IN ($placeholders)"
+         WHERE id IN ($placeholders) AND guest_trip_id IS NULL"
     );
     $stmt->execute($ids);
     $rows = $stmt->fetchAll();

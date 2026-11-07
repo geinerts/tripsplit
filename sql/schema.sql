@@ -27,9 +27,11 @@ CREATE TABLE IF NOT EXISTS trip_users (
   share_payment_details_with_trips TINYINT(1) NOT NULL DEFAULT 0,
   preferred_currency_code CHAR(3) NOT NULL DEFAULT 'EUR',
   locale VARCHAR(8) CHARACTER SET ascii COLLATE ascii_general_ci NULL DEFAULT NULL,
+  guest_trip_id INT UNSIGNED NULL DEFAULT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   KEY idx_trip_users_account_status (account_status, created_at, id),
+  KEY idx_trip_users_guest_trip (guest_trip_id),
   UNIQUE KEY uq_trip_users_device_token (device_token),
   UNIQUE KEY uq_trip_users_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

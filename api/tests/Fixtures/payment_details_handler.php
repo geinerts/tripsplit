@@ -71,7 +71,7 @@ $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 if ($mysql) $pdo->exec('SET FOREIGN_KEY_CHECKS=0');
 foreach (['payments','trip_members','trips','users'] as $table) $pdo->exec('DROP TABLE IF EXISTS trip_' . $table);
 if ($mysql) $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
-$pdo->exec('CREATE TABLE trip_users (id INTEGER PRIMARY KEY, nickname VARCHAR(64), account_status VARCHAR(20),
+$pdo->exec('CREATE TABLE trip_users (guest_trip_id INT NULL, id INTEGER PRIMARY KEY, nickname VARCHAR(64), account_status VARCHAR(20),
     bank_account_holder VARCHAR(100), bank_iban VARCHAR(100), bank_bic VARCHAR(100),
     revolut_handle VARCHAR(100), revolut_me_link VARCHAR(255), paypal_me_link VARCHAR(255), wise_pay_link VARCHAR(255))');
 $pdo->exec('CREATE TABLE trip_trips (id INTEGER PRIMARY KEY, status VARCHAR(20), updated_at TIMESTAMP NULL)');
