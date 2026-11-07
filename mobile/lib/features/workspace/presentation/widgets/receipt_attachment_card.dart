@@ -99,7 +99,7 @@ class ReceiptAttachmentCard extends StatelessWidget {
             Semantics(
               liveRegion: true,
               child: Text(
-                busy ? t.expenseReadingReceipt : status!,
+                busy ? t.expenseReceiptUploading : status!,
                 style: Theme.of(
                   context,
                 ).textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),

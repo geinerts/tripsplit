@@ -3962,19 +3962,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get expenseQuickCategories => 'Categorias rápidas';
 
   @override
-  String get expenseReceiptRead => 'Recibo lido e formulário atualizado.';
+  String get expenseReceiptUploading => 'A carregar o recibo…';
 
   @override
-  String get expenseReceiptNoData => 'Recibo em anexo. Não foi encontrado qualquer montante, data ou comerciante claro.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Recibo selecionado. Falha na leitura automática; verifique os campos manualmente.';
-
-  @override
-  String get expenseReceiptOffline => 'O recibo será carregado quando guardar. A leitura automática requer uma ligação à Internet.';
-
-  @override
-  String get expenseReadingReceipt => 'A ler o recibo…';
+  String get expenseReceiptUploadOnSave => 'O recibo será carregado ao guardar.';
 
   @override
   String get expenseCommentsLoadFailed => 'Não foi possível carregar os comentários. Tente novamente.';

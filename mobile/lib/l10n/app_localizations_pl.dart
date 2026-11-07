@@ -3974,19 +3974,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get expenseQuickCategories => 'Szybkie kategorie';
 
   @override
-  String get expenseReceiptRead => 'Potwierdzono odczytanie pokwitowania i zaktualizowano formularz.';
+  String get expenseReceiptUploading => 'Przesyłanie paragonu…';
 
   @override
-  String get expenseReceiptNoData => 'Załączono paragon. Nie znaleziono wyraźnej kwoty, daty ani nazwy sprzedawcy.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Wybrano pokwitowanie. Nie udało się odczytać automatycznie; sprawdź pola ręcznie.';
-
-  @override
-  String get expenseReceiptOffline => 'Potwierdzenie zostanie przesłane po zapisaniu. Automatyczne odczytywanie wymaga połączenia z internetem.';
-
-  @override
-  String get expenseReadingReceipt => 'Odczytywanie paragonu…';
+  String get expenseReceiptUploadOnSave => 'Paragon zostanie przesłany po zapisaniu.';
 
   @override
   String get expenseCommentsLoadFailed => 'Nie udało się załadować komentarzy. Spróbuj ponownie.';

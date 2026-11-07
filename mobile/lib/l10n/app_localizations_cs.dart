@@ -3968,19 +3968,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get expenseQuickCategories => 'Rychlé kategorie';
 
   @override
-  String get expenseReceiptRead => 'Potvrzení přečteno a formulář aktualizován.';
+  String get expenseReceiptUploading => 'Nahrávání účtenky…';
 
   @override
-  String get expenseReceiptNoData => 'Účtenka v příloze. Nebylo nalezeno žádné jasné údaje o částce, datu ani obchodníkovi.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Byla vybrána účtenka. Automatické načtení se nezdařilo; zkontrolujte pole ručně.';
-
-  @override
-  String get expenseReceiptOffline => 'Potvrzení se nahraje při uložení. Automatické načítání vyžaduje připojení k internetu.';
-
-  @override
-  String get expenseReadingReceipt => 'Načítání účtenky…';
+  String get expenseReceiptUploadOnSave => 'Účtenka se nahraje při uložení.';
 
   @override
   String get expenseCommentsLoadFailed => 'Nepodařilo se načíst komentáře. Zkuste to znovu.';

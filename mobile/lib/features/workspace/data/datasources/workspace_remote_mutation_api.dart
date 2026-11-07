@@ -270,9 +270,6 @@ class WorkspaceRemoteMutationApi {
       path: uploaded.receiptPath,
       url: uploaded.receiptUrl,
       thumbUrl: uploaded.receiptThumbUrl,
-      ocrAmount: uploaded.ocrAmount,
-      ocrDate: uploaded.ocrDate,
-      ocrMerchant: uploaded.ocrMerchant,
     );
   }
 

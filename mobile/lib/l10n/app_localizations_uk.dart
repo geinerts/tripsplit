@@ -3974,19 +3974,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get expenseQuickCategories => 'Короткі категорії';
 
   @override
-  String get expenseReceiptRead => 'Квитанцію прочитано, форму оновлено.';
+  String get expenseReceiptUploading => 'Завантаження чека…';
 
   @override
-  String get expenseReceiptNoData => 'Квитанція додається. Не виявлено чіткої суми, дати або продавця.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Вибрано квитанцію. Автоматичне зчитування не вдалося; перевірте поля вручну.';
-
-  @override
-  String get expenseReceiptOffline => 'Квитанція завантажиться під час збереження. Для автоматичного зчитування необхідне підключення до Інтернету.';
-
-  @override
-  String get expenseReadingReceipt => 'Зчитування чека…';
+  String get expenseReceiptUploadOnSave => 'Чек завантажиться під час збереження.';
 
   @override
   String get expenseCommentsLoadFailed => 'Не вдалося завантажити коментарі. Спробуйте ще раз.';

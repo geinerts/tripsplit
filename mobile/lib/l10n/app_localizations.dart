@@ -7341,35 +7341,17 @@ abstract class AppLocalizations {
   /// **'Quick categories'**
   String get expenseQuickCategories;
 
-  /// No description provided for @expenseReceiptRead.
+  /// No description provided for @expenseReceiptUploading.
   ///
   /// In en, this message translates to:
-  /// **'Receipt read and form updated.'**
-  String get expenseReceiptRead;
+  /// **'Uploading receipt…'**
+  String get expenseReceiptUploading;
 
-  /// No description provided for @expenseReceiptNoData.
+  /// No description provided for @expenseReceiptUploadOnSave.
   ///
   /// In en, this message translates to:
-  /// **'Receipt attached. No clear amount, date or merchant found.'**
-  String get expenseReceiptNoData;
-
-  /// No description provided for @expenseReceiptScanFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Receipt selected. Automatic reading failed; check the fields manually.'**
-  String get expenseReceiptScanFailed;
-
-  /// No description provided for @expenseReceiptOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'Receipt will upload when you save. Automatic reading requires a connection.'**
-  String get expenseReceiptOffline;
-
-  /// No description provided for @expenseReadingReceipt.
-  ///
-  /// In en, this message translates to:
-  /// **'Reading receipt…'**
-  String get expenseReadingReceipt;
+  /// **'Receipt will upload when you save.'**
+  String get expenseReceiptUploadOnSave;
 
   /// No description provided for @expenseCommentsLoadFailed.
   ///

@@ -3962,19 +3962,10 @@ class AppLocalizationsNb extends AppLocalizations {
   String get expenseQuickCategories => 'Hurtigkategorier';
 
   @override
-  String get expenseReceiptRead => 'Kvittering lest og skjema oppdatert.';
+  String get expenseReceiptUploading => 'Laster opp kvittering…';
 
   @override
-  String get expenseReceiptNoData => 'Kvittering vedlagt. Det er ikke angitt noe klart beløp, dato eller forhandler.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Kvittering valgt. Automatisk avlesning mislyktes; sjekk feltene manuelt.';
-
-  @override
-  String get expenseReceiptOffline => 'Kvitteringen lastes opp når du lagrer. Automatisk avlesning krever en internettforbindelse.';
-
-  @override
-  String get expenseReadingReceipt => 'Leser kvitteringen…';
+  String get expenseReceiptUploadOnSave => 'Kvitteringen lastes opp når du lagrer.';
 
   @override
   String get expenseCommentsLoadFailed => 'Kunne ikke laste inn kommentarer. Prøv igjen.';

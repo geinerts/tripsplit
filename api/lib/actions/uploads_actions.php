@@ -5,106 +5,6 @@ require_once __DIR__ . '/../helpers/helper_image_originals.php';
 require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
 require_once __DIR__ . '/../helpers/helper_trip_image_ownership.php';
 
-function receipt_ocr_suggestions(string $imagePath): array
-{
-    $empty = [
-        'available' => false,
-        'text_detected' => false,
-        'merchant' => null,
-        'amount' => null,
-        'date' => null,
-    ];
-    if ($imagePath === '' || !is_file($imagePath) || !function_exists('shell_exec')) {
-        return $empty;
-    }
-
-    $binary = trim((string) @shell_exec('command -v tesseract 2>/dev/null'));
-    if ($binary === '') {
-        return $empty;
-    }
-
-    $command = escapeshellcmd($binary)
-        . ' '
-        . escapeshellarg($imagePath)
-        . ' stdout --psm 6 2>/dev/null';
-    $rawText = trim((string) @shell_exec($command));
-    if ($rawText === '') {
-        return array_merge($empty, ['available' => true]);
-    }
-
-    return receipt_ocr_parse_text($rawText);
-}
-
-function receipt_ocr_parse_text(string $rawText): array
-{
-    $lines = array_values(array_filter(
-        array_map(
-            static fn(string $line): string => trim(preg_replace('/\s+/', ' ', $line) ?? ''),
-            preg_split('/\R/u', $rawText) ?: []
-        ),
-        static fn(string $line): bool => $line !== ''
-    ));
-
-    $merchant = null;
-    foreach ($lines as $line) {
-        $lower = strtolower($line);
-        if (
-            strlen($line) >= 3
-            && strlen($line) <= 80
-            && !preg_match('/\d{1,2}[.\/-]\d{1,2}/', $line)
-            && !preg_match('/\b(total|sum|amount|visa|mastercard|cash|change|tax|pvn|receipt|ček|ceks)\b/u', $lower)
-        ) {
-            $merchant = $line;
-            break;
-        }
-    }
-
-    $date = null;
-    foreach ($lines as $line) {
-        if (preg_match('/\b(20\d{2})[-.\/](\d{1,2})[-.\/](\d{1,2})\b/', $line, $match)) {
-            $date = sprintf('%04d-%02d-%02d', (int) $match[1], (int) $match[2], (int) $match[3]);
-            break;
-        }
-        if (preg_match('/\b(\d{1,2})[-.\/](\d{1,2})[-.\/](20\d{2})\b/', $line, $match)) {
-            $date = sprintf('%04d-%02d-%02d', (int) $match[3], (int) $match[2], (int) $match[1]);
-            break;
-        }
-    }
-
-    $amountCandidates = [];
-    foreach ($lines as $line) {
-        $weight = preg_match('/\b(total|sum|amount|pay|paid|kopā|kopa|samaksai|visa)\b/iu', $line) ? 10 : 0;
-        if (preg_match_all('/(?<!\d)(\d{1,5}(?:[.,]\d{2}))(?!\d)/', $line, $matches)) {
-            foreach ($matches[1] as $rawAmount) {
-                $normalized = (float) str_replace(',', '.', $rawAmount);
-                if ($normalized > 0) {
-                    $amountCandidates[] = [
-                        'amount' => $normalized,
-                        'weight' => $weight,
-                    ];
-                }
-            }
-        }
-    }
-    usort($amountCandidates, static function (array $a, array $b): int {
-        $weightDiff = ((int) $b['weight']) <=> ((int) $a['weight']);
-        if ($weightDiff !== 0) {
-            return $weightDiff;
-        }
-        return ((float) $b['amount']) <=> ((float) $a['amount']);
-    });
-    $amount = $amountCandidates[0]['amount'] ?? null;
-
-    return [
-        'available' => true,
-        'text_detected' => count($lines) > 0,
-        'merchant' => $merchant,
-        'amount' => $amount,
-        'date' => $date,
-        'raw_text_preview' => substr(implode("\n", $lines), 0, 500),
-    ];
-}
-
 function upload_receipt_action(): void
 {
     require_post();
@@ -165,7 +65,6 @@ function upload_receipt_action(): void
     );
     $relativePath = bind_stored_receipt_to_owner($stored, $userId);
     $storedSize = (int) $stored['size'];
-    $ocr = receipt_ocr_suggestions((string) $validated['tmp']);
 
     json_out([
         'ok' => true,
@@ -173,7 +72,6 @@ function upload_receipt_action(): void
         'receipt_url' => receipt_public_url($relativePath),
         'receipt_thumb_url' => receipt_thumb_public_url($relativePath),
         'size' => $storedSize > 0 ? $storedSize : $size,
-        'ocr' => $ocr,
     ]);
 }
 

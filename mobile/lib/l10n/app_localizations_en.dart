@@ -3962,19 +3962,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expenseQuickCategories => 'Quick categories';
 
   @override
-  String get expenseReceiptRead => 'Receipt read and form updated.';
+  String get expenseReceiptUploading => 'Uploading receipt…';
 
   @override
-  String get expenseReceiptNoData => 'Receipt attached. No clear amount, date or merchant found.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Receipt selected. Automatic reading failed; check the fields manually.';
-
-  @override
-  String get expenseReceiptOffline => 'Receipt will upload when you save. Automatic reading requires a connection.';
-
-  @override
-  String get expenseReadingReceipt => 'Reading receipt…';
+  String get expenseReceiptUploadOnSave => 'Receipt will upload when you save.';
 
   @override
   String get expenseCommentsLoadFailed => 'Could not load comments. Try again.';

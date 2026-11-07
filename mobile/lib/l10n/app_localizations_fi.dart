@@ -3962,19 +3962,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get expenseQuickCategories => 'Pikaluokat';
 
   @override
-  String get expenseReceiptRead => 'Kuitin lukeminen ja lomakkeen päivittäminen.';
+  String get expenseReceiptUploading => 'Ladataan kuittia…';
 
   @override
-  String get expenseReceiptNoData => 'Kuitti liitteenä. Selkeää summaa, päivämäärää tai kauppiasta ei löytynyt.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Kuitta valittu. Automaattinen lukeminen epäonnistui; tarkista kentät manuaalisesti.';
-
-  @override
-  String get expenseReceiptOffline => 'Kuitti ladataan, kun tallennat. Automaattinen lukeminen edellyttää verkkoyhteyttä.';
-
-  @override
-  String get expenseReadingReceipt => 'Luetaan kuittia…';
+  String get expenseReceiptUploadOnSave => 'Kuitti ladataan, kun tallennat.';
 
   @override
   String get expenseCommentsLoadFailed => 'Kommentteja ei voitu ladata. Yritä uudelleen.';

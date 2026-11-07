@@ -3962,19 +3962,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get expenseQuickCategories => 'Snabbkategorier';
 
   @override
-  String get expenseReceiptRead => 'Kvittot har lästs och formuläret har uppdaterats.';
+  String get expenseReceiptUploading => 'Laddar upp kvittot…';
 
   @override
-  String get expenseReceiptNoData => 'Kvitto bifogat. Inget tydligt belopp, datum eller försäljare kunde hittas.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Kvitto valt. Automatisk avläsning misslyckades; kontrollera fälten manuellt.';
-
-  @override
-  String get expenseReceiptOffline => 'Kvittot laddas upp när du sparar. Automatisk avläsning kräver en internetanslutning.';
-
-  @override
-  String get expenseReadingReceipt => 'Läser kvittot…';
+  String get expenseReceiptUploadOnSave => 'Kvittot laddas upp när du sparar.';
 
   @override
   String get expenseCommentsLoadFailed => 'Det gick inte att ladda kommentarerna. Försök igen.';

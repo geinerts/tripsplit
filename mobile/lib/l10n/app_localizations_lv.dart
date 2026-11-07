@@ -3968,19 +3968,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get expenseQuickCategories => 'Ātrā kategoriju izvēle';
 
   @override
-  String get expenseReceiptRead => 'Čeks nolasīts un forma papildināta.';
+  String get expenseReceiptUploading => 'Augšupielādē čeku…';
 
   @override
-  String get expenseReceiptNoData => 'Čeks pievienots. Summu, datumu vai tirgotāju neizdevās nolasīt.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Čeks izvēlēts. Automātiskā nolasīšana neizdevās; pārbaudi laukus pats.';
-
-  @override
-  String get expenseReceiptOffline => 'Čeks tiks augšupielādēts saglabājot. Automātiskai nolasīšanai vajadzīgs savienojums.';
-
-  @override
-  String get expenseReadingReceipt => 'Nolasa čeku…';
+  String get expenseReceiptUploadOnSave => 'Čeks tiks augšupielādēts, kad saglabāsi.';
 
   @override
   String get expenseCommentsLoadFailed => 'Komentārus neizdevās ielādēt. Mēģini vēlreiz.';

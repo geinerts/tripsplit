@@ -449,12 +449,7 @@ class _Workspace implements WorkspaceController {
     required ReceiptUploadPayload payload,
   }) async {
     receiptUploads.add(payload);
-    return const UploadedReceiptData(
-      path: 'receipts/test.jpg',
-      ocrAmount: 42.50,
-      ocrDate: '2026-10-23',
-      ocrMerchant: 'Cafe',
-    );
+    return const UploadedReceiptData(path: 'receipts/test.jpg');
   }
 
   int saves = 0;
@@ -3518,179 +3513,188 @@ void main() {
     }
   }
   for (final source in ['camera', 'gallery', 'files', 'remove']) {
-    testWidgets('receipt source $source reaches upload and OCR', (
-      tester,
-    ) async {
-      final dir = Directory.systemTemp.createTempSync('splyto-receipt-test-');
-      addTearDown(() => dir.deleteSync(recursive: true));
-      final receiptBytes = await tester.runAsync(_receiptPreviewFixture);
-      final file = File('${dir.path}/receipt.png')
-        ..writeAsBytesSync(receiptBytes!);
-      const photoChannel = MethodChannel('plugins.flutter.io/image_picker');
-      const fileChannel = MethodChannel(
-        'miguelruivo.flutter.plugins.filepicker',
-        JSONMethodCodec(),
-      );
-      final messenger =
-          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
-      const cropChannel = MethodChannel('plugins.hunghd.vn/image_cropper');
-      var crops = 0;
-      messenger.setMockMethodCallHandler(cropChannel, (call) async {
-        crops++;
-        final output = File.fromUri(dir.uri.resolve('cropped.jpg'));
-        await output.writeAsBytes(receiptBytes);
-        return output.path;
-      });
-      addTearDown(() => messenger.setMockMethodCallHandler(cropChannel, null));
-      Map<dynamic, dynamic>? photoArgs;
-      messenger.setMockMethodCallHandler(photoChannel, (call) async {
-        expect(call.method, 'pickImage');
-        photoArgs = call.arguments as Map<dynamic, dynamic>;
-        return file.path;
-      });
-      FilePickerIO.registerWith();
-      messenger.setMockMethodCallHandler(
-        fileChannel,
-        (call) async => [
-          {
-            'name': 'receipt.png',
-            'path': file.path,
-            'size': receiptBytes.length,
-            'bytes': null,
-          },
-        ],
-      );
-      addTearDown(() {
-        messenger.setMockMethodCallHandler(photoChannel, null);
-        messenger.setMockMethodCallHandler(fileChannel, null);
-      });
-      final commands = WorkspacePageCommandController();
-      final controller = _Workspace();
-      final previewKey = const bool.fromEnvironment('EXPENSE_PREVIEWS')
-          ? GlobalKey()
-          : null;
-      await _mount(
-        tester,
-        controller,
-        commands: commands,
-        boundary: previewKey,
-        dark: source == 'gallery',
-      );
-      await tester.pumpAndSettle();
-      commands.requestOpenAddExpense();
-      await tester.pumpAndSettle();
-      await selectExpenseFood(tester);
-      await visibleTap(
-        tester,
-        find.byKey(const ValueKey('receipt-add')),
-        settle: false,
-      );
-      final t = AppLocalizations.of(
-        tester.element(find.byType(WorkspacePage, skipOffstage: false)),
-      )!;
-      for (final label in [
-        t.takePhotoAction,
-        t.chooseFromLibraryAction,
-        t.chooseReceiptFile,
-      ]) {
-        expect(find.text(label), findsOneWidget);
-      }
-      final label = source == 'camera'
-          ? t.takePhotoAction
-          : source == 'gallery'
-          ? t.chooseFromLibraryAction
-          : t.chooseReceiptFile;
-      await tester.tap(find.text(label));
-      await tester.pump(const Duration(milliseconds: 400));
-      // Cropping and reading the file take real time, which fake pumps cannot
-      // advance. A slow CI machine needs far longer than a developer laptop.
-      for (
-        var attempt = 0;
-        attempt < 1000 && controller.receiptUploads.isEmpty;
-        attempt++
-      ) {
-        await tester.runAsync(
-          () => Future<void>.delayed(const Duration(milliseconds: 10)),
+    testWidgets(
+      'receipt source $source reaches upload and leaves the form alone',
+      (tester) async {
+        final dir = Directory.systemTemp.createTempSync('splyto-receipt-test-');
+        addTearDown(() => dir.deleteSync(recursive: true));
+        final receiptBytes = await tester.runAsync(_receiptPreviewFixture);
+        final file = File('${dir.path}/receipt.png')
+          ..writeAsBytesSync(receiptBytes!);
+        const photoChannel = MethodChannel('plugins.flutter.io/image_picker');
+        const fileChannel = MethodChannel(
+          'miguelruivo.flutter.plugins.filepicker',
+          JSONMethodCodec(),
         );
-        await tester.pump();
-      }
-      expect(controller.receiptUploads, hasLength(1));
-      await tester.pumpAndSettle();
-      expect(controller.receiptUploads.single.tripId, 1);
-      expect(controller.receiptUploads.single.bytes, receiptBytes);
-      expect(controller.receiptUploads.single.fileName, 'receipt.jpg');
-      expect(crops, 1);
-      expect(file.existsSync(), isTrue);
-      if (source == 'camera' || source == 'gallery') {
-        expect(photoArgs!['source'], source == 'camera' ? 0 : 1);
-      }
-      expect(
-        tester
-            .widget<TextField>(
-              find.byKey(const ValueKey('expense-form-amount')),
-            )
-            .controller!
-            .text,
-        '42.50',
-      );
-      expect(find.text(t.expenseReceiptRead), findsOneWidget);
-      expect(
-        find.byKey(const ValueKey('receipt-attachment-card')),
-        findsOneWidget,
-      );
-      expect(find.text(t.replaceReceiptAction), findsOneWidget);
-      await tester.ensureVisible(
-        find.byKey(const ValueKey('receipt-attachment-card')),
-      );
-      await tester.pumpAndSettle();
-      final thumbnail = find.descendant(
-        of: find.byKey(const ValueKey('receipt-attachment-card')),
-        matching: find.byType(Image),
-      );
-      expect(thumbnail, findsOneWidget);
-      await tester.runAsync(
-        () => precacheImage(
-          tester.widget<Image>(thumbnail).image,
-          tester.element(thumbnail),
-        ),
-      );
-      await tester.pumpAndSettle();
-      if (previewKey != null) {
-        await tester.runAsync(() async {
-          final boundary =
-              previewKey.currentContext!.findRenderObject()!
-                  as RenderRepaintBoundary;
-          final image = await boundary.toImage(pixelRatio: 2);
-          final data = await image.toByteData(format: ui.ImageByteFormat.png);
-          final file = File('../output/design/expenses/receipt-$source.png');
-          await file.parent.create(recursive: true);
-          await file.writeAsBytes(data!.buffer.asUint8List());
-          image.dispose();
+        final messenger =
+            TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+        const cropChannel = MethodChannel('plugins.hunghd.vn/image_cropper');
+        var crops = 0;
+        messenger.setMockMethodCallHandler(cropChannel, (call) async {
+          crops++;
+          final output = File.fromUri(dir.uri.resolve('cropped.jpg'));
+          await output.writeAsBytes(receiptBytes);
+          return output.path;
         });
-      }
-      if (source == 'remove') {
-        await visibleTap(tester, find.byKey(const ValueKey('receipt-remove')));
+        addTearDown(
+          () => messenger.setMockMethodCallHandler(cropChannel, null),
+        );
+        Map<dynamic, dynamic>? photoArgs;
+        messenger.setMockMethodCallHandler(photoChannel, (call) async {
+          expect(call.method, 'pickImage');
+          photoArgs = call.arguments as Map<dynamic, dynamic>;
+          return file.path;
+        });
+        FilePickerIO.registerWith();
+        messenger.setMockMethodCallHandler(
+          fileChannel,
+          (call) async => [
+            {
+              'name': 'receipt.png',
+              'path': file.path,
+              'size': receiptBytes.length,
+              'bytes': null,
+            },
+          ],
+        );
+        addTearDown(() {
+          messenger.setMockMethodCallHandler(photoChannel, null);
+          messenger.setMockMethodCallHandler(fileChannel, null);
+        });
+        final commands = WorkspacePageCommandController();
+        final controller = _Workspace();
+        final previewKey = const bool.fromEnvironment('EXPENSE_PREVIEWS')
+            ? GlobalKey()
+            : null;
+        await _mount(
+          tester,
+          controller,
+          commands: commands,
+          boundary: previewKey,
+          dark: source == 'gallery',
+        );
+        await tester.pumpAndSettle();
+        commands.requestOpenAddExpense();
+        await tester.pumpAndSettle();
+        await selectExpenseFood(tester);
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('receipt-add')),
+          settle: false,
+        );
+        final t = AppLocalizations.of(
+          tester.element(find.byType(WorkspacePage, skipOffstage: false)),
+        )!;
+        for (final label in [
+          t.takePhotoAction,
+          t.chooseFromLibraryAction,
+          t.chooseReceiptFile,
+        ]) {
+          expect(find.text(label), findsOneWidget);
+        }
+        final label = source == 'camera'
+            ? t.takePhotoAction
+            : source == 'gallery'
+            ? t.chooseFromLibraryAction
+            : t.chooseReceiptFile;
+        await tester.tap(find.text(label));
+        await tester.pump(const Duration(milliseconds: 400));
+        // Cropping and reading the file take real time, which fake pumps cannot
+        // advance. A slow CI machine needs far longer than a developer laptop.
+        for (
+          var attempt = 0;
+          attempt < 1000 && controller.receiptUploads.isEmpty;
+          attempt++
+        ) {
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 10)),
+          );
+          await tester.pump();
+        }
+        expect(controller.receiptUploads, hasLength(1));
+        await tester.pumpAndSettle();
+        expect(controller.receiptUploads.single.tripId, 1);
+        expect(controller.receiptUploads.single.bytes, receiptBytes);
+        expect(controller.receiptUploads.single.fileName, 'receipt.jpg');
+        expect(crops, 1);
+        expect(file.existsSync(), isTrue);
+        if (source == 'camera' || source == 'gallery') {
+          expect(photoArgs!['source'], source == 'camera' ? 0 : 1);
+        }
+        expect(
+          tester
+              .widget<TextField>(
+                find.byKey(const ValueKey('expense-form-amount')),
+              )
+              .controller!
+              .text,
+          isEmpty,
+        );
         expect(
           find.byKey(const ValueKey('receipt-attachment-card')),
-          findsNothing,
+          findsOneWidget,
         );
-        expect(find.text(t.addReceiptAction), findsOneWidget);
-      }
+        expect(find.text(t.replaceReceiptAction), findsOneWidget);
+        await tester.ensureVisible(
+          find.byKey(const ValueKey('receipt-attachment-card')),
+        );
+        await tester.pumpAndSettle();
+        final thumbnail = find.descendant(
+          of: find.byKey(const ValueKey('receipt-attachment-card')),
+          matching: find.byType(Image),
+        );
+        expect(thumbnail, findsOneWidget);
+        await tester.runAsync(
+          () => precacheImage(
+            tester.widget<Image>(thumbnail).image,
+            tester.element(thumbnail),
+          ),
+        );
+        await tester.pumpAndSettle();
+        if (previewKey != null) {
+          await tester.runAsync(() async {
+            final boundary =
+                previewKey.currentContext!.findRenderObject()!
+                    as RenderRepaintBoundary;
+            final image = await boundary.toImage(pixelRatio: 2);
+            final data = await image.toByteData(format: ui.ImageByteFormat.png);
+            final file = File('../output/design/expenses/receipt-$source.png');
+            await file.parent.create(recursive: true);
+            await file.writeAsBytes(data!.buffer.asUint8List());
+            image.dispose();
+          });
+        }
+        if (source == 'remove') {
+          await visibleTap(
+            tester,
+            find.byKey(const ValueKey('receipt-remove')),
+          );
+          expect(
+            find.byKey(const ValueKey('receipt-attachment-card')),
+            findsNothing,
+          );
+          expect(find.text(t.addReceiptAction), findsOneWidget);
+        }
 
-      await visibleTap(
-        tester,
-        find.widgetWithText(ElevatedButton, t.addAction),
-      );
-      expect(controller.saves, 1);
-      expect(
-        controller.savedReceiptPath,
-        source == 'remove' ? isNull : 'receipts/test.jpg',
-      );
-      expect(controller.receiptUploads, hasLength(1));
-      expect(tester.takeException(), isNull);
-      await disposePage(tester);
-      commands.dispose();
-    });
+        await tester.enterText(
+          find.byKey(const ValueKey('expense-form-amount')),
+          '42.50',
+        );
+        await visibleTap(
+          tester,
+          find.widgetWithText(ElevatedButton, t.addAction),
+        );
+        expect(controller.saves, 1);
+        expect(
+          controller.savedReceiptPath,
+          source == 'remove' ? isNull : 'receipts/test.jpg',
+        );
+        expect(controller.receiptUploads, hasLength(1));
+        expect(tester.takeException(), isNull);
+        await disposePage(tester);
+        commands.dispose();
+      },
+    );
   }
   for (final denied in [false, true]) {
     testWidgets(

@@ -117,9 +117,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
     Uint8List? receiptPreviewBytes;
     String? selectedReceiptName;
     UploadedReceiptData? preuploadedReceipt;
-    bool isReceiptScanning = false;
+    bool isReceiptUploading = false;
     bool isReceiptPicking = false;
-    String? receiptOcrHint;
+    String? receiptUploadHint;
     bool removeExistingReceipt = false;
     bool isSaving = false;
     String? errorText;
@@ -876,7 +876,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                         onPressed:
                                             isSaving ||
                                                 isReceiptPicking ||
-                                                isReceiptScanning
+                                                isReceiptUploading
                                             ? null
                                             : () => setDialogState(
                                                 () => removeExistingReceipt =
@@ -890,7 +890,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                       onPressed:
                                           isSaving ||
                                               isReceiptPicking ||
-                                              isReceiptScanning
+                                              isReceiptUploading
                                           ? null
                                           : () async {
                                               setDialogState(
@@ -921,8 +921,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                 selectedReceiptName =
                                                     picked.fileName;
                                                 preuploadedReceipt = null;
-                                                receiptOcrHint = null;
-                                                isReceiptScanning = true;
+                                                receiptUploadHint = null;
+                                                isReceiptUploading = true;
                                                 removeExistingReceipt = false;
                                               });
                                               try {
@@ -942,49 +942,10 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                     !context.mounted) {
                                                   return;
                                                 }
-                                                final ocrAmount =
-                                                    uploaded.ocrAmount;
-                                                final ocrDate =
-                                                    uploaded.ocrDate;
-                                                final ocrMerchant =
-                                                    uploaded.ocrMerchant;
                                                 setDialogState(() {
                                                   preuploadedReceipt = uploaded;
                                                   selectedReceiptBytes = null;
-                                                  if (ocrAmount != null &&
-                                                      ocrAmount > 0 &&
-                                                      _parseAmount(
-                                                            amountController
-                                                                .text,
-                                                          ) <=
-                                                          0) {
-                                                    amountController.text =
-                                                        _formatNumericInput(
-                                                          ocrAmount,
-                                                        );
-                                                  }
-                                                  final parsedOcrDate =
-                                                      parseExpenseDate(ocrDate);
-                                                  if (parsedOcrDate != null &&
-                                                      existing == null) {
-                                                    selectedExpenseDate =
-                                                        parsedOcrDate;
-                                                  }
-                                                  if ((noteController.text)
-                                                          .trim()
-                                                          .isEmpty &&
-                                                      ocrMerchant != null &&
-                                                      ocrMerchant.isNotEmpty) {
-                                                    noteController.text =
-                                                        ocrMerchant;
-                                                  }
-                                                  receiptOcrHint =
-                                                      ocrAmount != null ||
-                                                          ocrDate != null ||
-                                                          ocrMerchant != null
-                                                      ? t.expenseReceiptRead
-                                                      : t.expenseReceiptNoData;
-                                                  isReceiptScanning = false;
+                                                  isReceiptUploading = false;
                                                 });
                                               } on ApiException catch (error) {
                                                 if (!mounted ||
@@ -992,11 +953,11 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                   return;
                                                 }
                                                 setDialogState(() {
-                                                  isReceiptScanning = false;
+                                                  isReceiptUploading = false;
                                                   preuploadedReceipt = null;
-                                                  receiptOcrHint =
+                                                  receiptUploadHint =
                                                       error.isNetworkError
-                                                      ? t.expenseReceiptOffline
+                                                      ? t.expenseReceiptUploadOnSave
                                                       : error.message;
                                                 });
                                               } catch (_) {
@@ -1005,10 +966,10 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                                   return;
                                                 }
                                                 setDialogState(() {
-                                                  isReceiptScanning = false;
+                                                  isReceiptUploading = false;
                                                   preuploadedReceipt = null;
-                                                  receiptOcrHint = t
-                                                      .expenseReceiptScanFailed;
+                                                  receiptUploadHint = t
+                                                      .expenseReceiptUploadOnSave;
                                                 });
                                               }
                                             },
@@ -1034,15 +995,15 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                       ReceiptAttachmentCard(
                                         fileName: selectedReceiptName!,
                                         bytes: receiptPreviewBytes,
-                                        busy: isReceiptScanning,
+                                        busy: isReceiptUploading,
                                         enabled: !isReceiptPicking && !isSaving,
-                                        status: receiptOcrHint,
+                                        status: receiptUploadHint,
                                         onRemove: () => setDialogState(() {
                                           selectedReceiptBytes = null;
                                           receiptPreviewBytes = null;
                                           selectedReceiptName = null;
                                           preuploadedReceipt = null;
-                                          receiptOcrHint = null;
+                                          receiptUploadHint = null;
                                         }),
                                       ),
                                     ] else if (existing != null &&
@@ -1124,12 +1085,12 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                     onPressed:
                                         isSaving ||
                                             isReceiptPicking ||
-                                            isReceiptScanning
+                                            isReceiptUploading
                                         ? null
                                         : () async {
                                             if (isSaving ||
                                                 isReceiptPicking ||
-                                                isReceiptScanning) {
+                                                isReceiptUploading) {
                                               return;
                                             }
                                             final amount = _parseAmount(
