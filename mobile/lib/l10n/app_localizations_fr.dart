@@ -3962,19 +3962,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get expenseQuickCategories => 'Catégories rapides';
 
   @override
-  String get expenseReceiptRead => 'Reçu lu et formulaire mis à jour.';
+  String get expenseReceiptUploading => 'Envoi du reçu…';
 
   @override
-  String get expenseReceiptNoData => 'Reçu joint. Aucun montant, aucune date ni aucun commerçant clairement identifiés.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Reçu sélectionné. Échec de la lecture automatique ; vérifiez les champs manuellement.';
-
-  @override
-  String get expenseReceiptOffline => 'Le reçu sera téléchargé lorsque vous enregistrerez. La lecture automatique nécessite une connexion.';
-
-  @override
-  String get expenseReadingReceipt => 'Lecture du justificatif…';
+  String get expenseReceiptUploadOnSave => 'Le reçu sera envoyé à l\'enregistrement.';
 
   @override
   String get expenseCommentsLoadFailed => 'Impossible de charger les commentaires. Réessayez.';

@@ -3962,19 +3962,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get expenseQuickCategories => 'Schnellkategorien';
 
   @override
-  String get expenseReceiptRead => 'Bestätigung gelesen und Formular aktualisiert.';
+  String get expenseReceiptUploading => 'Beleg wird hochgeladen…';
 
   @override
-  String get expenseReceiptNoData => 'Quittung im Anhang. Kein eindeutiger Betrag, Datum oder Händler gefunden.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Beleg ausgewählt. Automatisches Einlesen fehlgeschlagen; überprüfen Sie die Felder manuell.';
-
-  @override
-  String get expenseReceiptOffline => 'Der Beleg wird beim Speichern hochgeladen. Für das automatische Einlesen ist eine Internetverbindung erforderlich.';
-
-  @override
-  String get expenseReadingReceipt => 'Beleg wird ausgelesen…';
+  String get expenseReceiptUploadOnSave => 'Der Beleg wird beim Speichern hochgeladen.';
 
   @override
   String get expenseCommentsLoadFailed => 'Kommentare konnten nicht geladen werden. Bitte versuche es erneut.';

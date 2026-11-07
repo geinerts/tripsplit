@@ -3974,19 +3974,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get expenseQuickCategories => 'Быстрые категории';
 
   @override
-  String get expenseReceiptRead => 'Чек распознан, форма обновлена.';
+  String get expenseReceiptUploading => 'Загружаем чек…';
 
   @override
-  String get expenseReceiptNoData => 'Чек прикреплён. Сумма, дата или продавец чётко не определены.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Чек выбран. Автораспознавание не удалось, проверьте поля вручную.';
-
-  @override
-  String get expenseReceiptOffline => 'Чек загрузится при сохранении. Для автораспознавания нужно подключение.';
-
-  @override
-  String get expenseReadingReceipt => 'Распознаём чек…';
+  String get expenseReceiptUploadOnSave => 'Чек загрузится при сохранении.';
 
   @override
   String get expenseCommentsLoadFailed => 'Не удалось загрузить комментарии. Повторите попытку.';

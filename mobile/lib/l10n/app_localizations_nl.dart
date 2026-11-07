@@ -3962,19 +3962,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get expenseQuickCategories => 'Snelle categorieën';
 
   @override
-  String get expenseReceiptRead => 'Ontvangstbevestiging gelezen en formulier bijgewerkt.';
+  String get expenseReceiptUploading => 'Bon uploaden…';
 
   @override
-  String get expenseReceiptNoData => 'Kassabon bijgevoegd. Er is geen duidelijk bedrag, datum of handelaar gevonden.';
-
-  @override
-  String get expenseReceiptScanFailed => 'Ontvangstbewijs geselecteerd. Automatisch inlezen is mislukt; controleer de velden handmatig.';
-
-  @override
-  String get expenseReceiptOffline => 'De ontvangstbevestiging wordt geüpload wanneer je opslaat. Voor automatisch inlezen is een verbinding vereist.';
-
-  @override
-  String get expenseReadingReceipt => 'Bon wordt uitgelezen…';
+  String get expenseReceiptUploadOnSave => 'De bon wordt geüpload wanneer je opslaat.';
 
   @override
   String get expenseCommentsLoadFailed => 'Reacties konden niet worden geladen. Probeer het opnieuw.';
