@@ -22,7 +22,6 @@ Future<void> showAppLocalePicker(BuildContext context) async {
         title: t.profileLanguage,
         children: [
           AppSettingsRow(
-            icon: Icons.phone_iphone,
             title: t.languageSystem,
             subtitle: t.languageSystemSubtitle,
             selected: current == AppLocaleMode.system,
@@ -37,9 +36,6 @@ Future<void> showAppLocalePicker(BuildContext context) async {
           ))
             AppSettingsRow(
               key: ValueKey('language-${mode.languageCode}'),
-              leading: ExcludeSemantics(
-                child: Text(mode.flag, style: const TextStyle(fontSize: 24)),
-              ),
               title: mode.nativeName,
               selected: current == mode,
               chevron: false,

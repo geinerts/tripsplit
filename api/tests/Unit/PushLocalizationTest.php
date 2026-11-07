@@ -6,7 +6,7 @@ final class PushLocalizationTest extends TestCase
 {
     public function test_all_supported_locales_preserve_dynamic_payment_details(): void
     {
-        foreach (['en', 'lv', 'es', 'de', 'fr', 'it', 'pt', 'pl', 'nl', 'sv', 'da', 'nb', 'fi', 'cs', 'uk'] as $locale) {
+        foreach (['en', 'lv', 'es', 'de', 'fr', 'it', 'pt', 'pl', 'nl', 'sv', 'da', 'nb', 'fi', 'cs', 'uk', 'ru'] as $locale) {
             self::assertSame($locale, normalize_push_locale_code($locale . '-XX'));
             $result = push_localize_notification_for_locale([
                 'type' => 'payment_requested', 'title' => 'Payment requested',

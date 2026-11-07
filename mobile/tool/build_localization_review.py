@@ -13,7 +13,7 @@ OUTPUT = ROOT / 'output/localization-review'
 NAMES = {'en': 'English', 'de': 'Deutsch', 'es': 'Español', 'fr': 'Français',
          'it': 'Italiano', 'pt': 'Português (Portugal)', 'pl': 'Polski',
          'nl': 'Nederlands', 'sv': 'Svenska', 'da': 'Dansk', 'nb': 'Norsk bokmål',
-         'fi': 'Suomi', 'cs': 'Čeština', 'uk': 'Українська', 'lv': 'Latviešu'}
+         'fi': 'Suomi', 'cs': 'Čeština', 'uk': 'Українська', 'ru': 'Русский', 'lv': 'Latviešu'}
 
 
 def review_status(source, translation, record):

@@ -3,7 +3,7 @@
 The app offers English (`en`), German (`de`), Spanish (`es`), French (`fr`),
 Italian (`it`), Portuguese (`pt`, intended for Portugal), Polish (`pl`),
 Dutch (`nl`), Swedish (`sv`), Danish (`da`), Norwegian Bokmål (`nb`),
-Finnish (`fi`), Czech (`cs`), Ukrainian (`uk`) and Latvian (`lv`).
+Finnish (`fi`), Czech (`cs`), Ukrainian (`uk`), Latvian (`lv`) and Russian (`ru`).
 
 New installations follow the primary device language. Regional variants match
 the language; legacy Norwegian `no` maps to `nb`. An unsupported primary
@@ -51,6 +51,10 @@ Map place names
 are supplied by the map provider/offline map dataset independently of the app's
 message catalogs. Native OS permission descriptions have separate iOS/Android
 resource localization and are not generated from ARB files.
+
+Russian was added on 7 November 2026 and translated by AI in one pass, with currency
+names written by hand rather than generated from CLDR. It has not gone through the review
+ledger above, and neither has any other message added since the 2 November comparison.
 
 ## Traceable AI review
 

@@ -1,0 +1,2067 @@
+{
+  "@@locale": "ru",
+  "homeFirstTrip": "Ваша первая поездка",
+  "homeYourShareAllTrips": "Ваша доля по всем поездкам",
+  "homeAllTime": "За всё время",
+  "homeSolo": "Один",
+  "homePeople": "{count, plural, one{{count} человек} few{{count} человека} many{{count} человек} other{{count} человека}}",
+  "homeTripActions": "Действия с поездкой: {name}",
+  "homeNoActiveTrips": "Нет активных поездок",
+  "homeNoArchivedTrips": "Нет поездок в архиве",
+  "homeLoadingTrips": "Загружаем ваши поездки",
+  "homeLoadErrorTitle": "Не удалось загрузить поездки",
+  "homeLoadErrorBody": "Повторите попытку через минуту.",
+  "homeOfflineTitle": "Нет подключения",
+  "homeOfflineNoData": "Ваши поездки пока недоступны на этом устройстве.",
+  "homeOfflineCached": "Нет подключения. Показаны сохранённые поездки.",
+  "homeRefreshError": "Не удалось обновить. Показаны ранее загруженные поездки.",
+  "@homePeople": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@homeTripActions": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "paymentShareDetailsConsent": "Поделиться моими платёжными реквизитами с {arg1}",
+  "paymentShareDetailsScope": "Только пока запрос ожидает оплаты. Отмена запроса закрывает доступ.",
+  "paymentDetailsUnavailable": "Платёжные реквизиты недоступны. Подключитесь к интернету и проверьте, что запрос ещё открыт.",
+  "paymentDetailsRetry": "Повторить",
+  "tripModeSolo": "Только я",
+  "tripModeGroup": "С другими",
+  "premiumFree": "Бесплатно",
+  "premiumStatusUnavailable": "Статус тарифа недоступен",
+  "premiumGrantedUntil": "Premium предоставлен до {date}",
+  "@premiumGrantedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumBillingNotActive": "Нет активной подписки",
+  "premiumRefreshStatus": "Обновить статус тарифа",
+  "@addedMembersCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownConfirmedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownPendingCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSentCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@breakdownSuggestedCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@createdByLine": {
+    "placeholders": {
+      "creator": {},
+      "date": {}
+    }
+  },
+  "@currentEmailLabel": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "@directlyExplainedByExpenses": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@exactAmountWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@exactSplitMustMatchTotal": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@expenseIdDate": {
+    "placeholders": {
+      "date": {},
+      "id": {}
+    }
+  },
+  "@expenseImpactLine": {
+    "placeholders": {
+      "date": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@expenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@expensesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@forParticipants": {
+    "placeholders": {
+      "participants": {}
+    }
+  },
+  "@fromDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@fromToLine": {
+    "placeholders": {
+      "from": {},
+      "to": {}
+    }
+  },
+  "@helloUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@memberToPaySummary": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {},
+      "waiting": {}
+    }
+  },
+  "@moreCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@noExpensesByUserYet": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@noteMustBeMaxChars": {
+    "placeholders": {
+      "max": {}
+    }
+  },
+  "@offlineQueuePendingChanges": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@syncChangesWaiting": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@paidOwesLine": {
+    "placeholders": {
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@payerName": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@percentWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@pickedCycleCompleted": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@pickedUser": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@queueAddExpenseAmount": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@queueDeleteExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queueUpdateExpenseWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@queuedChangesTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@queuedCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@randomCycleDrawLeft": {
+    "placeholders": {
+      "cycleNo": {},
+      "drawNo": {},
+      "remaining": {}
+    }
+  },
+  "@selectedFileLabel": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementConfirmedProgress": {
+    "placeholders": {
+      "confirmed": {},
+      "total": {}
+    }
+  },
+  "@settlementCountLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@settlementImpactWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@settlementWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@sharesWithValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitLabelValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "@splitModeEqual": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeExact": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModePercent": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@splitModeShares": {
+    "placeholders": {
+      "target": {}
+    }
+  },
+  "@statusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@suggestedTransferRows": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@toDirection": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripCreated": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@tripStatusWithValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "@tripWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@unreadUpdates": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "@userIdLabel": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@userPaidOwesNetLine": {
+    "placeholders": {
+      "net": {},
+      "owes": {},
+      "paid": {}
+    }
+  },
+  "@userWithId": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+  "@whoOwesWhatWithFilter": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "@youShouldPay": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "@youShouldReceive": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "accountSectionTitle": "Аккаунт",
+  "activeStatus": "Активна",
+  "activeTripPlural": "активных поездок",
+  "activeTripSingle": "активная поездка",
+  "activeTrips": "Активные поездки",
+  "activitiesComingSoon": "Раздел активности скоро появится.",
+  "addAction": "Добавить",
+  "addExpenseTitle": "Добавить расход",
+  "addExpensesAction": "Добавить расходы",
+  "addMembersAction": "Добавить участников",
+  "addTripMembersTitle": "Пригласить участников поездки",
+  "addedMembersCount": "{count, plural, one{Отправлено приглашений: {count}.} few{Отправлено приглашений: {count}.} many{Отправлено приглашений: {count}.} other{Отправлено приглашений: {count}.}}",
+  "tripInvitationDeclined": "Приглашение в поездку отклонено.",
+  "tripInviteAction": "Пригласить",
+  "tripInvitationsPending": "Ожидают ответа",
+  "tripInvitationsRetry": "Приглашения недоступны. Повторить",
+  "tripInvitationRevoke": "Отменить приглашение",
+  "tripInvitationRevokeFailed": "Не удалось отменить приглашение. Повторите попытку.",
+  "tripInvitationBody": "Вас пригласили в поездку. Откройте приглашение, чтобы ответить.",
+  "allCaughtUp": "Новых уведомлений нет",
+  "allFilter": "Все",
+  "allMembersLabel": "Все участники",
+  "allPaymentsConfirmed": "Все платежи подтверждены.",
+  "allTrips": "Все поездки",
+  "amountHint": "12.50",
+  "amountLabel": "Сумма",
+  "amountMustBeGreaterThanZero": "Сумма должна быть больше 0.",
+  "appearance": "Оформление",
+  "archivedStatus": "В архиве",
+  "authSubtitleLogin": "Делите расходы в поездках с друзьями",
+  "authSubtitleRegister": "Создайте аккаунт и начните делить расходы",
+  "breakdownConfirmedCount": "подтверждено: {count}",
+  "breakdownPendingCount": "ожидает: {count}",
+  "breakdownSentCount": "отправлено: {count}",
+  "breakdownSuggestedCount": "предложено: {count}",
+  "cancelAction": "Отмена",
+  "changeEmailWithPasswordHelper": "Введите пароль, чтобы изменить эл. почту.",
+  "chooseReceiptFile": "Выбрать файл чека",
+  "completeAccountSetupDescription": "Укажите эл. почту и пароль, чтобы завершить настройку аккаунта.",
+  "completeAccountSetupTitle": "Завершите настройку аккаунта",
+  "confirmReceivedAction": "Подтвердить получение",
+  "confirmedAllSettlementsArchived": "Все расчёты подтверждены. Поездка в архиве.",
+  "confirmedAsReceived": "Получение подтверждено.",
+  "confirmedLabel": "Подтверждено",
+  "couldNotOpenReceiptLink": "Не удалось открыть ссылку на чек.",
+  "createAction": "Создать",
+  "createFirstTripHint": "Создайте первую поездку, чтобы начать.",
+  "createNewTripTitle": "Новая поездка",
+  "createTripAction": "Создать поездку",
+  "createTripFirst": "Сначала создайте поездку.",
+  "createdByLine": "{date}  -  Создал(а): {creator}",
+  "creatorMustFinishTripFirst": "Создатель поездки должен её завершить, чтобы началось подтверждение расчётов.",
+  "currentEmailLabel": "Текущая эл. почта: {email}",
+  "currentReceiptAttached": "Текущий чек прикреплён.",
+  "dateFormatHint": "ГГГГ-ММ-ДД",
+  "dateLabel": "Дата",
+  "dateMustMatchFormat": "Дата должна быть в формате ГГГГ-ММ-ДД.",
+  "dateUnknown": "Дата неизвестна",
+  "deleteAction": "Удалить",
+  "deleteExpenseConfirmQuestion": "Удалить этот расход?",
+  "deleteExpenseTitle": "Удалить расход",
+  "editExpenseConfirmTitle": "Сохранить изменения расхода?",
+  "editExpenseConfirmText": "Балансы всех участников поездки будут обновлены.",
+  "directlyExplainedByExpenses": "Напрямую объясняется расходами: {amount}",
+  "doneStatus": "Готово",
+  "editAction": "Изменить",
+  "editExpenseTitle": "Изменить расход",
+  "emailAddressLabel": "Адрес эл. почты",
+  "emailHint": "you@example.com",
+  "emailLabel": "Эл. почта",
+  "emailRequired": "Укажите эл. почту.",
+  "enterValidExactAmounts": "Введите корректные суммы для всех участников.",
+  "enterValidPercentages": "Введите корректные проценты для всех участников.",
+  "equalSplitLabel": "Поровну",
+  "exactAmountWithValue": "Точно: {value}",
+  "exactAmountsLabel": "Точные суммы",
+  "exactSplitMustMatchTotal": "Сумма точных долей должна равняться {amount}.",
+  "expenseAdded": "Расход добавлен.",
+  "expenseBreakdownSubtitle": "Как каждый расход влияет на этого участника.",
+  "expenseBreakdownTitle": "Разбивка расходов",
+  "expenseDeleted": "Расход удалён.",
+  "expenseIdDate": "Расход №{id}  -  {date}",
+  "expenseImpactLine": "{date}  -  Оплачено {paid}  -  Должен {owes}",
+  "expenseReactionsTitle": "Реакции",
+  "expenseCommentsTitle": "Комментарии",
+  "expenseNoComments": "Комментариев пока нет.",
+  "expenseAddCommentHint": "Добавить комментарий...",
+  "expenseCommentSend": "Отправить",
+  "expenseMentionNoMatches": "Подходящих участников нет",
+  "expenseMentionMembersLabel": "Участники поездки для упоминания",
+  "expenseDeleteCommentTitle": "Удалить комментарий?",
+  "expenseUpdated": "Расход обновлён.",
+  "expenseWithId": "Расход №{id}",
+  "expensesCount": "{count, plural, one{{count} расход} few{{count} расхода} many{{count} расходов} other{{count} расхода}}",
+  "expensesLabel": "Расходы",
+  "failedToCreateTrip": "Не удалось создать поездку.",
+  "failedToLoadUsersDirectory": "Не удалось загрузить список пользователей.",
+  "filterSettlementByMemberSubtitle": "Фильтр расчётов по участнику",
+  "finishSoloTripConfirmationText": "Завершить поездку и переместить её в архив? Ваши расходы останутся доступны для просмотра.",
+  "soloTripArchived": "Поездка завершена и перемещена в архив.",
+  "finishTripSyncPending": "Перед завершением поездки синхронизируйте ожидающие изменения.",
+  "finishTripAction": "Завершить поездку",
+  "finishTripConfirmationText": "Завершить поездку и начать расчёты?",
+  "finishTripStartSettlementsAction": "Завершить и начать расчёты",
+  "finishTripTitle": "Завершить поездку",
+  "forParticipants": "Для: {participants}",
+  "forgotPassword": "Забыли пароль?",
+  "profileSetPassword": "Задать пароль",
+  "profileManagePassword": "Задать или изменить пароль",
+  "profilePasswordByEmail": "Задать пароль через эл. почту",
+  "passwordEmailBackToProfile": "Назад в профиль",
+  "forgotPasswordSubtitle": "Введите эл. почту, и мы отправим ссылку для сброса пароля.",
+  "forgotPasswordSuccessMessage": "Если аккаунт с этой эл. почтой существует, мы отправили ссылку для сброса пароля.",
+  "passwordResetSentTitle": "Проверьте почту",
+  "passwordResetSentHint": "Ссылка действует 1 час. Если письма нет, проверьте папку «Спам».",
+  "forgotPasswordTitle": "Сброс пароля",
+  "friendsProgressSubtitle": "Каждый участник и статус его подтверждения.",
+  "friendsProgressTitle": "Прогресс друзей",
+  "friendsSectionComingSoon": "Раздел друзей скоро появится.",
+  "fromDirection": "От: {name}",
+  "fromToLine": "{from} → {to}",
+  "generateTurnAction": "Выбрать очередь",
+  "hasAccountQuestion": "Уже есть аккаунт?",
+  "helloUser": "Привет, {name}!",
+  "iSentAction": "Я отправил(а)",
+  "invalidEmailFormat": "Неверный формат эл. почты.",
+  "languageAction": "Язык",
+  "languageEnglish": "Английский",
+  "languageLatvian": "Латышский",
+  "languageSpanish": "Испанский",
+  "languageSystem": "Системный",
+  "languageSystemSubtitle": "Использовать язык устройства",
+  "leaveEmptyKeepPasswordHelper": "Оставьте пустым, чтобы сохранить текущий пароль.",
+  "logInButton": "Войти",
+  "logOutButton": "Выйти",
+  "logoutFromDeviceQuestion": "Выйти на этом устройстве?",
+  "logoutRevocationUnconfirmed": "Вы вышли на этом устройстве. Не удалось подтвердить завершение сеанса на сервере.",
+  "markedAsSent": "Отмечено как отправленное.",
+  "markSettlementSentConfirmTitle": "Отметить перевод как отправленный?",
+  "markSettlementSentConfirmText": "Используйте это только после реальной отправки платежа. Получателя попросят подтвердить.",
+  "settlementCancelSentAction": "Отметить как не отправленный",
+  "settlementCancelSentConfirmTitle": "Отменить статус отправки?",
+  "settlementCancelSentConfirmText": "Перевод снова станет ожидающим, а получатель получит уведомление.",
+  "settlementSentCancelled": "Перевод снова в ожидании.",
+  "settlementNotReceivedAction": "Я этого не получил(а)",
+  "settlementNotReceivedConfirmTitle": "Сообщить о неполучении?",
+  "settlementNotReceivedConfirmText": "Перевод снова станет ожидающим, а плательщик получит уведомление.",
+  "settlementMarkedNotReceived": "Отмечено как не полученное.",
+  "confirmSettlementReceivedConfirmTitle": "Подтвердить получение?",
+  "confirmSettlementReceivedConfirmText": "Подтверждайте только после поступления денег на ваш счёт. Это действие может завершить расчёт.",
+  "memberSummariesSubtitle": "Текущий баланс обеих сторон.",
+  "memberSummariesTitle": "Сводка по участникам",
+  "memberToPaySummary": "К оплате {total}  -  подтверждено {confirmed}  -  ожидает {waiting}",
+  "membersImpactSubtitle": "Примерная сумма платежа для каждого участника.",
+  "membersImpactTitle": "Влияние на участников",
+  "membersIncludedInExpense": "Включённые участники",
+  "membersLabel": "Участники",
+  "moreCount": "Ещё +{count}",
+  "myFilter": "Мои",
+  "myImpactTitle": "Моё участие",
+  "firstNameHint": "Ваше имя",
+  "firstNameLabel": "Имя",
+  "firstNameLengthValidation": "Имя должно содержать от 2 до 64 символов.",
+  "fullNameHelper": "Укажите имя и фамилию в одном поле.",
+  "fullNameHint": "например, Анна Иванова",
+  "fullNameLabel": "Полное имя",
+  "fullNameValidation": "Введите имя и фамилию (минимум по 2 символа).",
+  "lastNameHint": "Ваша фамилия",
+  "lastNameLabel": "Фамилия",
+  "lastNameLengthValidation": "Фамилия должна содержать от 2 до 64 символов.",
+  "nameHint": "Ваше имя",
+  "nameLabel": "Имя",
+  "nameLengthValidation": "Имя должно содержать минимум 2 символа.",
+  "navActivities": "Аналитика",
+  "navAddTrip": "Добавить поездку",
+  "navBalances": "Балансы",
+  "navExpenses": "Расходы",
+  "navFriends": "Друзья",
+  "navHome": "Главная",
+  "navProfile": "Профиль",
+  "navRandom": "Жребий",
+  "netLabel": "Итог",
+  "newPasswordLabel": "Новый пароль",
+  "nicknameHint": "Как вас будут видеть друзья",
+  "nicknameLabel": "Псевдоним",
+  "nicknameLengthValidation": "Псевдоним должен содержать минимум 2 символа.",
+  "noAccountQuestion": "Ещё нет аккаунта?",
+  "noBalancesYet": "Балансов пока нет.",
+  "noChangesToSave": "Нет изменений для сохранения.",
+  "noDirectExpenseLink": "Прямой связи с одним расходом нет. Этот расчёт основан на общем балансе поездки.",
+  "noExpenseImpactForMember": "Расходы не влияют на этого участника.",
+  "noExpensesByUserYet": "У {name} пока нет расходов.",
+  "noExpensesYet": "Расходов пока нет.",
+  "noExtraUsersToAdd": "Больше некого добавить.",
+  "noInternetDeleteQueued": "Нет интернета. Удаление в очереди.",
+  "noInternetExpenseQueued": "Нет интернета. Расход в очереди.",
+  "noInternetUpdateQueued": "Нет интернета. Обновление в очереди.",
+  "noMatchingRows": "Подходящих строк нет.",
+  "noMembersFound": "Участники не найдены.",
+  "noNewMembersAdded": "Эти люди уже участвуют или имеют ожидающие приглашения.",
+  "noNotePlaceholder": "Без примечания",
+  "notificationsToday": "Сегодня",
+  "notificationsEmptyBody": "Здесь будут появляться новости о поездках, расходах и друзьях.",
+  "notificationsCached": "Нет подключения — показаны сохранённые уведомления.",
+  "notificationsRefreshFailed": "Не удалось обновить. Показаны ранее загруженные уведомления.",
+  "notificationsJustNow": "Только что",
+  "notificationsMinutesAgo": "{count} мин назад",
+  "@notificationsMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsHoursAgo": "{count} ч назад",
+  "@notificationsHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notificationsUnread": "Непрочитанные",
+  "noNotificationsYet": "Уведомлений пока нет.",
+  "noParticipantData": "Нет данных об участниках.",
+  "noParticipantsSelected": "Участники не выбраны.",
+  "noPaymentRowsInTrip": "В этой поездке нет платежей.",
+  "noPaymentsNeeded": "Платежи не нужны.",
+  "noPicksYet": "Выборов пока нет.",
+  "noSettlementActivityForMember": "У этого участника нет операций по расчётам.",
+  "noSettlementRowsYet": "Расчётов пока нет.",
+  "noSettlements": "Нет расчётов",
+  "noTransferNeededForFilter": "Для выбранного фильтра переводы не нужны.",
+  "noTransferRowsToShow": "Нет переводов для показа.",
+  "noTripDataLoaded": "Данные поездки не загружены.",
+  "noTripsYet": "Поездок пока нет.",
+  "noUsersFoundYet": "Пользователи пока не найдены.",
+  "notSetValue": "Не указано",
+  "notYetConfirmedTitle": "Ещё не подтверждено",
+  "noteHint": "Ужин, такси, билеты...",
+  "noteLabel": "Примечание",
+  "noteMustBeMaxChars": "Примечание: не более {max} символов.",
+  "notificationFallbackTitle": "Уведомление",
+  "notificationsTitle": "Уведомления",
+  "notificationFriendInviteTitle": "Приглашение в друзья",
+  "notificationFriendInviteBody": "{name} приглашает вас в друзья.",
+  "notificationFriendInviteBodyGeneric": "Вы получили приглашение в друзья.",
+  "notificationFriendInviteAcceptedTitle": "Приглашение принято",
+  "notificationFriendInviteAcceptedBody": "{name} принимает ваше приглашение в друзья.",
+  "notificationFriendInviteAcceptedBodyGeneric": "Ваше приглашение в друзья принято.",
+  "notificationFriendInviteRejectedTitle": "Приглашение отклонено",
+  "notificationFriendInviteRejectedBody": "{name} отклоняет ваше приглашение в друзья.",
+  "notificationFriendInviteRejectedBodyGeneric": "Ваше приглашение в друзья отклонено.",
+  "notificationTripAddedTitle": "Добавление в поездку",
+  "notificationTripAddedBody": "{name} добавляет вас в поездку «{trip}».",
+  "notificationTripAddedBodyNoActor": "Вас добавили в поездку «{trip}».",
+  "notificationTripAddedBodyGeneric": "Вас добавили в поездку.",
+  "notificationExpenseAddedTitle": "Новый расход",
+  "notificationExpenseAddedBodyWithTrip": "{name}: новый расход {amount} в «{trip}».",
+  "notificationExpenseAddedBodyWithNote": "{name}: новый расход {amount}: {note}",
+  "notificationExpenseAddedBodyGeneric": "Добавлен новый расход.",
+  "notificationCommentMentionTitle": "Вас упомянули в комментарии",
+  "notificationCommentMentionBody": "{name} упоминает вас в комментарии к «{note}».",
+  "notificationCommentMentionBodyGeneric": "{name} упоминает вас в комментарии.",
+  "notificationTripFinishedTitle": "Поездка завершена",
+  "notificationTripFinishedBodySettlementsReady": "{name} завершает «{trip}». Расчёты готовы.",
+  "notificationTripFinishedBodyArchived": "{name} завершает «{trip}». Поездка в архиве.",
+  "notificationTripFinishedBodyNoActor": "Поездка «{trip}» завершена.",
+  "notificationTripFinishedBodyGeneric": "Статус поездки обновлён.",
+  "notificationMemberReadyToSettleTitle": "Участник готов",
+  "notificationMemberReadyToSettleBody": "{name} готов(а) к расчётам в «{trip}».",
+  "notificationMemberReadyToSettleBodyNoActor": "Участник готов к расчётам в «{trip}».",
+  "notificationMemberReadyToSettleBodyGeneric": "Участник готов к расчётам.",
+  "notificationTripReadyToSettleTitle": "Все участники готовы",
+  "notificationTripReadyToSettleBody": "Все участники «{trip}» готовы. Можно начинать расчёты.",
+  "notificationTripReadyToSettleBodyGeneric": "Все участники готовы. Можно начинать расчёты.",
+  "notificationSettlementReminderTitle": "Напоминание о расчёте",
+  "notificationSettlementReminderBodyMarkSent": "{actor} напоминает {target} отметить {amount} как отправленное.",
+  "notificationSettlementReminderBodyConfirm": "{actor} напоминает {target} подтвердить получение {amount}.",
+  "notificationSettlementReminderBodyGeneric": "Вы получили напоминание о расчёте.",
+  "notificationPaymentReminderTitle": "Напоминание о платеже",
+  "notificationPaymentReminderBody": "Напоминание: отметьте {amount} как отправленное для {target} в «{trip}».",
+  "notificationPaymentReminderBodyGeneric": "Напоминание: отметьте платёж как отправленный.",
+  "notificationConfirmationReminderTitle": "Напоминание о подтверждении",
+  "notificationConfirmationReminderBody": "Напоминание: подтвердите получение {amount} от {payer} в «{trip}».",
+  "notificationConfirmationReminderBodyGeneric": "Напоминание: подтвердите получение платежа.",
+  "notificationSettlementSentTitle": "Перевод отмечен как отправленный",
+  "notificationSettlementSentBody": "{name} отмечает, что отправил(а) вам {amount}.",
+  "notificationSettlementSentBodyGeneric": "Перевод отмечен как отправленный.",
+  "notificationSettlementConfirmedTitle": "Перевод подтверждён",
+  "notificationSettlementConfirmedBody": "{name} подтверждает получение {amount} от вас.",
+  "notificationSettlementConfirmedBodyGeneric": "Перевод подтверждён.",
+  "offlineQueuePendingChanges": "Офлайн-очередь: {count, plural, one{{count} ожидающее изменение} few{{count} ожидающих изменения} many{{count} ожидающих изменений} other{{count} ожидающего изменения}}",
+  "syncAllSynced": "Всё синхронизировано",
+  "syncChangesWaiting": "Ожидают синхронизации: {count}",
+  "syncFailedTapToRetry": "Сбой синхронизации, нажмите для повтора",
+  "offlineQueueStatus": "Офлайн-очередь",
+  "offlineStatus": "Нет подключения",
+  "onlineStatus": "В сети",
+  "onlyCreatorCanFinishTrip": "Завершить поездку может только её создатель.",
+  "openLabel": "Открыто",
+  "openReceiptAction": "Открыть чек",
+  "openSettlements": "Открытые расчёты",
+  "overviewTitle": "Обзор",
+  "owesLabel": "Должен",
+  "paidByLabel": "Кто оплатил",
+  "paidLabel": "Оплачено",
+  "paidOwesLine": "Оплачено {paid}  -  Должен {owes}",
+  "participantsEmptyMeansAll": "Участники (пусто = все)",
+  "participantsTitle": "Участники",
+  "passwordLabel": "Пароль",
+  "passwordComplexityHelper": "Используйте минимум 1 заглавную букву, 1 цифру и 1 символ.",
+  "passwordComplexityValidation": "Пароль должен содержать 1 заглавную букву, 1 цифру и 1 символ.",
+  "passwordMinLength": "Пароль должен содержать минимум 8 символов.",
+  "passwordMinLengthShort": "Пароль должен содержать минимум 6 символов.",
+  "passwordResetComingSoon": "Сброс пароля скоро появится.",
+  "passwordsDoNotMatch": "Пароли не совпадают.",
+  "payerName": "{name} (плательщик)",
+  "pendingLabel": "Ожидает",
+  "pendingPaymentsSubtitle": "Платежи, ожидающие полного подтверждения.",
+  "percentLabel": "Процент",
+  "percentSplitMustBe100": "Сумма процентов должна равняться ровно 100%.",
+  "percentWithValue": "{value}",
+  "percentagesLabel": "Проценты",
+  "pickAtLeastOneParticipant": "Выберите хотя бы одного участника.",
+  "pickMembersGenerateTurn": "Выберите участников и определите очередь.",
+  "pickedCycleCompleted": "Выбран(а) {name}. Круг завершён.",
+  "pickedUser": "Выбран(а) {name}.",
+  "profileRefreshCachedData": "Не удалось обновить профиль. Показаны сохранённые данные.",
+  "profileTitle": "Профиль",
+  "profileUpdated": "Профиль обновлён.",
+  "uploadAvatarAction": "Загрузить аватар",
+  "takePhotoAction": "Сделать снимок",
+  "chooseFromLibraryAction": "Выбрать из галереи",
+  "removeAvatarAction": "Удалить аватар",
+  "avatarUpdatedMessage": "Аватар обновлён.",
+  "avatarRemovedMessage": "Аватар удалён.",
+  "avatarFileTooLarge": "Файл аватара слишком большой (макс. 5 МБ).",
+  "avatarPickFailed": "Не удалось загрузить изображение аватара.",
+  "queueAddExpense": "Добавить расход",
+  "queueAddExpenseAmount": "В очереди: добавить расход {amount}",
+  "queueDeleteExpense": "Удалить расход",
+  "queueDeleteExpenseWithId": "В очереди: удалить расход №{id}",
+  "queuePendingStatus": "Очередь ожидает",
+  "queueUpdateExpense": "Обновить расход",
+  "queueUpdateExpenseWithId": "В очереди: обновить расход №{id}",
+  "queuedChange": "Изменение в очереди",
+  "queuedChangesTitle": "Изменения в очереди ({count})",
+  "queuedCountLabel": "В очереди ({count})",
+  "randomCycleDrawLeft": "Круг {cycleNo}, жребий {drawNo} — осталось {remaining}",
+  "receiptFallbackName": "чек",
+  "receiptLinkInvalid": "Ссылка на чек недействительна.",
+  "receiptOptionalLabel": "Чек (необязательно)",
+  "recentPicksTitle": "Последние выборы",
+  "reloadProfile": "Перезагрузить профиль",
+  "rememberMe": "Запомнить меня",
+  "removeCurrentReceipt": "Удалить текущий чек",
+  "repeatNewPasswordLabel": "Повторите новый пароль",
+  "repeatPasswordLabel": "Повторите пароль",
+  "requestFailedTryAgain": "Запрос не выполнен. Повторите попытку.",
+  "retryAction": "Повторить",
+  "rowsLabel": "Строки",
+  "backToLoginAction": "Назад ко входу",
+  "saveAction": "Сохранить",
+  "saveCredentialsButton": "Сохранить данные входа",
+  "saveProfileButton": "Сохранить профиль",
+  "sendResetLinkButton": "Отправить ссылку для сброса",
+  "searchUsersHint": "Поиск людей по имени или эл. почте",
+  "selectedPeopleLabel": "Выбранные люди",
+  "noSearchMatches": "Подходящие пользователи не найдены.",
+  "savingButton": "Сохранение...",
+  "selectAtLeastTwoMembers": "Выберите минимум двух участников.",
+  "selectMembersHint": "Выберите участников",
+  "selectedFileLabel": "Выбрано: {name}",
+  "selectedLabel": "Выбрано",
+  "selectedUserFallback": "Выбранный пользователь",
+  "settings": "Настройки",
+  "settleUpAction": "Рассчитаться",
+  "settledLabel": "Рассчитано",
+  "settledStatus": "Рассчитано",
+  "settlementActivitySubtitle": "Переводы, связанные с этим участником.",
+  "settlementActivityTitle": "Операции по расчётам",
+  "settlementCompletedTitle": "Расчёт завершён",
+  "settlementConfirmedProgress": "Подтверждено {confirmed} из {total}",
+  "settlementCountLabel": "Расчётов: {count}",
+  "settlementImpactTitle": "Влияние на расчёты",
+  "settlementImpactWithFilter": "Влияние на расчёты: {name}",
+  "settlementInProgress": "Идут расчёты",
+  "settlementInProgressTitle": "Идут расчёты",
+  "settlementLabel": "Расчёт",
+  "settlementOverviewArchivedSubtitle": "Поездка в архиве. Все расчёты завершены.",
+  "settlementOverviewInProgressSubtitle": "Отслеживайте подтверждения расчётов.",
+  "settlementOverviewPreviewSubtitle": "Предварительные переводы на момент завершения поездки.",
+  "settlementPreview": "Предпросмотр расчётов",
+  "settlementPreviewTitle": "Предпросмотр расчётов",
+  "settlementProgressTripArchived": "Поездка в архиве",
+  "settlementWithId": "Расчёт №{id}",
+  "settlements": "Расчёты",
+  "settlementsAlreadyCompletedSubtitle": "Расчёты уже завершены.",
+  "settlementsDone": "Расчёты завершены",
+  "settlingStatus": "Расчёты",
+  "shareUnit": "доля",
+  "sharesLabel": "Доли",
+  "sharesMustBePositiveIntegers": "Доли должны быть целыми положительными числами.",
+  "sharesWithValue": "Доли: {value}",
+  "showActiveTrips": "Показать активные поездки",
+  "signUpButton": "Зарегистрироваться",
+  "splitBreakdownSubtitle": "Как делится расход",
+  "splitBreakdownTitle": "Разбивка доли",
+  "splitHintEqual": "Поровну между выбранными участниками.",
+  "splitHintExact": "Введите точную сумму для каждого участника. Сумма должна совпадать с итогом.",
+  "splitHintPercent": "Введите процент для каждого участника. Сумма должна быть 100%.",
+  "splitHintShares": "Введите количество долей (1, 2, 3...). Расход делится пропорционально.",
+  "splitLabel": "Деление",
+  "splitLabelValue": "Деление: {value}",
+  "splitModeEqual": "Поровну ({target})",
+  "splitModeExact": "Точные суммы ({target})",
+  "splitModeLabel": "Способ деления",
+  "splitModePercent": "Проценты ({target})",
+  "splitModeShares": "Доли ({target})",
+  "statusConfirmed": "Подтверждено",
+  "statusPending": "Ожидает",
+  "statusSent": "Отправлено",
+  "statusSuggested": "Предложено",
+  "statusWithValue": "Статус: {status}",
+  "suggestedTransferDirections": "Предлагаемые направления переводов",
+  "suggestedTransferFromExpense": "Предлагаемый перевод по расходу",
+  "suggestedTransferRows": "{count, plural, one{{count} предлагаемый перевод} few{{count} предлагаемых перевода} many{{count} предлагаемых переводов} other{{count} предлагаемого перевода}}",
+  "suggestedTransfersSubtitle": "Плательщик → получатель.",
+  "suggestedTransfersTitle": "Предлагаемые переводы",
+  "summarySettledUp": "Всё рассчитано",
+  "summaryYouAreOwed": "Вам должны",
+  "summaryYouOwe": "Вы должны",
+  "syncAction": "Синхронизировать",
+  "syncNowAction": "Синхронизировать сейчас",
+  "syncingStatus": "Синхронизация",
+  "tapToViewDetails": "Нажмите, чтобы посмотреть детали",
+  "themeModeDark": "Тёмная",
+  "themeModeDarkSubtitle": "Мягкая тёмная (не чисто чёрная)",
+  "themeModeLight": "Светлая",
+  "themeModeSystem": "Системная",
+  "themeModeSystemSubtitle": "Как на устройстве",
+  "toDirection": "Кому: {name}",
+  "totalLabel": "Итого",
+  "travelerFallbackName": "Путешественник",
+  "tripAlreadyClosed": "Поездка уже закрыта.",
+  "tripArchivedReadOnly": "Поездка в архиве. Только просмотр.",
+  "tripClosedExpenseEditingDisabled": "Поездка закрыта. Изменять расходы нельзя.",
+  "tripClosedExpensesReadOnly": "Поездка закрыта. Расходы доступны только для просмотра.",
+  "tripClosedRandomDisabled": "Поездка закрыта. Жребий недоступен.",
+  "tripCreated": "Поездка «{name}» создана.",
+  "tripFinished": "Поездка завершена.",
+  "tripFinishedCompleteSettlements": "Поездка завершена. Завершите расчёты.",
+  "tripFinishedSettlementStarted": "Поездка завершена. Расчёты начаты.",
+  "tripFullySettledArchived": "Поездка полностью рассчитана и в архиве.",
+  "tripNameHint": "Лыжи в Австрии",
+  "tripNameLabel": "Название поездки",
+  "tripNameLengthValidation": "Название поездки должно содержать минимум 2 символа.",
+  "tripSnapshotTitle": "Сводка поездки",
+  "tripTitleShort": "Поездка",
+  "tripStatusWithValue": "Статус поездки: {status}",
+  "tripWithId": "Поездка №{id}",
+  "unexpectedErrorLoadingProfile": "Непредвиденная ошибка при загрузке профиля",
+  "unexpectedErrorLoadingTripData": "Непредвиденная ошибка при загрузке данных поездки",
+  "unexpectedErrorLoadingTrips": "Непредвиденная ошибка при загрузке поездок",
+  "unexpectedErrorSavingChanges": "Непредвиденная ошибка при сохранении изменений",
+  "unexpectedErrorSavingCredentials": "Непредвиденная ошибка при сохранении данных входа",
+  "unexpectedErrorUpdatingProfile": "Непредвиденная ошибка при обновлении профиля",
+  "unknownError": "Неизвестная ошибка",
+  "unknownLabel": "Неизвестно",
+  "unreadLabel": "Не прочитано",
+  "unreadUpdates": "{count, plural, one{{count} непрочитанное обновление} few{{count} непрочитанных обновления} many{{count} непрочитанных обновлений} other{{count} непрочитанного обновления}}",
+  "missingTripRouteArgument": "Отсутствует аргумент маршрута поездки.",
+  "userIdLabel": "ID пользователя: {id}",
+  "userPaidOwesNetLine": "Оплачено {paid}  -  Должен {owes}  -  Итог {net}",
+  "userWithId": "Пользователь {id}",
+  "valueLabel": "Значение",
+  "viewAllTrips": "Все поездки",
+  "viewByPersonTitle": "По людям",
+  "whoOwesWhatSubtitle": "Кто заплатил и кто должен.",
+  "whoOwesWhatTitle": "Кто кому должен",
+  "whoOwesWhatWithFilter": "Кто кому должен: {name}",
+  "whyPaymentExistsSubtitle": "Расходы, из которых складывается этот перевод.",
+  "whyPaymentExistsTitle": "Откуда этот платёж",
+  "youLabel": "Вы",
+  "youSettledForExpense": "Вы рассчитались за этот расход.",
+  "youShouldPay": "Вам нужно заплатить {amount}",
+  "youShouldReceive": "Вам должны заплатить {amount}",
+  "yourShare": "Ваша доля",
+  "yourTrips": "Ваши поездки",
+  "authIntroSplitSmarter": "Делите умнее.",
+  "authIntroTravelFree": "Путешествуйте свободно.",
+  "authIntroTrackSharedCostsAcrossCurrenciesSettleInstantlyNo": "Учитывайте общие расходы в разных валютах и рассчитывайтесь сразу, без неловких долгов.",
+  "authIntroPlanTogether": "Планируйте вместе.",
+  "authIntroPayClearly": "Платите прозрачно.",
+  "authIntroCreateTripsSecondsAddFriendsKeepEveryExpense": "Создавайте поездки за секунды, добавляйте друзей, и каждый расход будет понятен всем.",
+  "authIntroSettleFast": "Рассчитайтесь быстро.",
+  "authIntroStayFriends": "Оставайтесь друзьями.",
+  "authIntroFromSharedDinnersFullTripsSplytoKeepsBalances": "От общего ужина до целой поездки: с Splyto балансы честные и без стресса.",
+  "authIntroAppleSignFailedPleaseTryAgain": "Не удалось войти через Apple. Повторите попытку.",
+  "authIntroGoogleSignFailedPleaseTryAgain": "Не удалось войти через Google. Повторите попытку.",
+  "authIntroCreateAccount": "Создайте аккаунт.",
+  "authIntroChooseSign": "Выберите способ регистрации.",
+  "authIntroContinueGoogle": "Продолжить с Google",
+  "authIntroContinueApple": "Продолжить с Apple",
+  "authIntroBack": "Назад",
+  "authIntroSplitSettled": "Расчёт завершён",
+  "authIntroParis3Friends": "Париж · 3 друга",
+  "authIntroGetStarted": "Начать",
+  "authIntroAlreadyHaveAccount": "Уже есть аккаунт? ",
+  "authIntroSignIn": "Войти",
+  "authIntroSignUpWithEmail": "Регистрация по эл. почте",
+  "authIntroOr": "ИЛИ",
+  "authGoogleSignDidNotReturnIdToken": "Вход через Google не вернул токен.",
+  "authAppleSignAvailableIosDevices": "Вход через Apple доступен на устройствах iOS.",
+  "authAppleSignNotAvailableDevice": "Вход через Apple недоступен на этом устройстве.",
+  "authAppleSignDidNotReturnIdentityToken": "Вход через Apple не вернул токен.",
+  "authCancel": "Отмена",
+  "authSendLink": "Отправить ссылку",
+  "authEmailNotVerifiedEnterEmailRequestVerificationLink": "Эл. почта не подтверждена. Введите её, чтобы запросить ссылку для подтверждения.",
+  "authEmailNotVerified": "Эл. почта не подтверждена",
+  "authSendVerificationLinkEmail": "Отправить ссылку для подтверждения на {email}?",
+  "authVerificationLinkSentCheckEmail": "Ссылка для подтверждения отправлена. Проверьте почту.",
+  "authCouldNotSendVerificationLinkPleaseTryAgain": "Не удалось отправить ссылку для подтверждения. Повторите попытку.",
+  "authVerificationEmailSentPleaseVerifyEmailBeforeLogging": "Письмо для подтверждения отправлено. Подтвердите эл. почту перед входом.",
+  "authVerifyEmail": "Подтвердите эл. почту",
+  "authEmailLabel": "Эл. почта:",
+  "authClose": "Закрыть",
+  "authResendLink": "Отправить ссылку ещё раз",
+  "profileAppSettingsSectionTitle": "НАСТРОЙКИ ПРИЛОЖЕНИЯ",
+  "profileEmailVerified": "Подтверждена",
+  "profileEmailNotVerified": "Не подтверждена",
+  "profileEmailSendVerification": "Отправить ссылку",
+  "profileEmailVerificationSent": "Письмо для подтверждения отправлено. Проверьте почту.",
+  "profileAccountSectionTitle": "АККАУНТ",
+  "profileAccountSettings": "Настройки аккаунта",
+  "profileChangePhoto": "Изменить фото профиля",
+  "profileAppearance": "Оформление",
+  "profileThemeDisplayMode": "Тема и режим отображения",
+  "profileLanguage": "Язык",
+  "profileDisplayLanguage": "Язык интерфейса",
+  "profileNotificationsSectionHeading": "УВЕДОМЛЕНИЯ",
+  "profileAppBanners": "Баннеры в приложении",
+  "profileShowNewNotificationBannersInsideApp": "Показывать баннеры о новых уведомлениях в приложении",
+  "profilePushNotificationsTitle": "Push-уведомления",
+  "profilePhoneNotificationsExpensesFriendsTripsSettlements": "Уведомления на телефон о расходах, друзьях, поездках и расчётах",
+  "profileSupportSectionHeading": "ПОДДЕРЖКА",
+  "profileContactUs": "Связаться с нами",
+  "profileReportBugSuggestion": "Сообщить об ошибке / предложение",
+  "profileRateSplyto": "Оценить Splyto",
+  "profileLeaveStoreRating": "Оставить оценку в магазине",
+  "profileSecuritySectionHeading": "БЕЗОПАСНОСТЬ",
+  "profileAccountAndSecurity": "Аккаунт и безопасность",
+  "profileHelpTitle": "Помощь",
+  "profileChangePassword": "Изменить пароль",
+  "profileUpdateAccountPassword": "Обновить пароль аккаунта",
+  "profileDangerZoneSectionHeading": "ОПАСНАЯ ЗОНА",
+  "profileManageAccountAccess": "Управление доступом к аккаунту",
+  "profileMadeWithLabel": "Сделано с",
+  "profileStoreRatingActionWillConnectedNextStep": "Оценка в магазине будет подключена на следующем этапе.",
+  "profileFailedSaveNotificationSettings": "Не удалось сохранить настройки уведомлений.",
+  "profilePushNotificationsSectionTitle": "PUSH-УВЕДОМЛЕНИЯ",
+  "profileInAppBannersSectionTitle": "БАННЕРЫ В ПРИЛОЖЕНИИ",
+  "profileInAppTripMemberAddedTitle": "Участник добавлен в поездку",
+  "profileInAppAutoSettlementReminderTitle": "Автоматическое напоминание о расчёте",
+  "profileExpenseUpdates": "Обновления расходов",
+  "profileExpenseAddedBannersInsideApp": "Баннеры о новых расходах в приложении",
+  "profileExpenseAddedNotificationsPhone": "Уведомления о новых расходах на телефон",
+  "profileFriendInvites": "Приглашения в друзья",
+  "profileFriendInvitesBannersInsideApp": "Баннеры о запросах в друзья и ответах в приложении",
+  "profileFriendRequestResponseNotifications": "Уведомления о запросах в друзья и ответах",
+  "profileTripUpdates": "Обновления поездок",
+  "profileTripUpdatesBannersInsideApp": "Баннеры об этапах поездки и статусе участников в приложении",
+  "profileTripLifecycleMemberStatusChanges": "Этапы поездки и изменения статуса участников",
+  "profileSettlementUpdates": "Обновления расчётов",
+  "profileSettlementUpdatesBannersInsideApp": "Баннеры об отправленных и подтверждённых платежах в приложении",
+  "profileMarkedSentConfirmedPaymentUpdates": "Обновления об отправленных и подтверждённых платежах",
+  "profileScreenshotSizeMust8Mb": "Размер снимка экрана не должен превышать 8 МБ",
+  "profileFeedbackSendTitle": "Отправить отзыв",
+  "profileFeedbackTypeLabel": "Тип",
+  "profileFeedbackTypeBug": "Ошибка",
+  "profileFeedbackTypeSuggestion": "Предложение",
+  "profileDescribeIssueSuggestion": "Опишите проблему или предложение",
+  "profilePickingImage": "Выбор изображения...",
+  "profileAttachScreenshot": "Прикрепить снимок экрана",
+  "profileChangeScreenshot": "Изменить снимок экрана",
+  "profileRemoveImage": "Удалить изображение",
+  "profileTipAttachScreenshotFasterBugTriage": "Совет: со снимком экрана мы разберёмся с ошибкой быстрее",
+  "profileAddDetailsAttachScreenshotBeforeSending": "Перед отправкой добавьте описание или снимок экрана",
+  "profileSendAction": "Отправить",
+  "profileThanksFeedbackSent": "Спасибо! Отзыв отправлен",
+  "profileFailedSendFeedback": "Не удалось отправить отзыв",
+  "profileCouldNotOpenWebsite": "Не удалось открыть сайт.",
+  "profileOpenWebsiteQuestion": "Открыть сайт?",
+  "profileOpenPortfolioAction": "Открыть portfolio.egm.lv",
+  "profileImageFormatNotSupportedDevicePleaseChooseJpg": "Этот формат изображения не поддерживается на устройстве. Выберите JPG или PNG.",
+  "profileEditSetValidEmailEditProfileChangingPassword": "Для смены пароля нужна действующая эл. почта аккаунта. Если она отсутствует или неверна, обратитесь в поддержку.",
+  "profileEditDeletionLinkSentEmail": "Ссылка для удаления отправлена на вашу эл. почту.",
+  "profileEditCouldNotSendDeletionLinkTryAgain": "Не удалось отправить ссылку для удаления. Повторите попытку.",
+  "profileEditEnterCurrentPasswordChangeEmail": "Введите текущий пароль, чтобы изменить эл. почту.",
+  "profileEditVerificationWasSentNewEmailSecurityNoticeWas": "Подтверждение отправлено на новый адрес. Уведомление о безопасности отправлено на текущий адрес.",
+  "profileEditOverviewCurrency": "Валюта обзора",
+  "profileEditPaymentMethod": "Способ оплаты",
+  "profileEditBankTransferRevolutPaypalMe": "Банковский перевод, Revolut, PayPal.me",
+  "profileEditEnterPasswordOptionalGoogleApple": "Введите пароль (необязательно для Google/Apple)",
+  "profileEditSendDeletionLinkEmail": "Отправить ссылку для удаления на эл. почту",
+  "profileEditBackProfile": "Назад в профиль",
+  "profileEditSetValidEmailProfileChangingPassword": "Перед сменой пароля укажите в профиле действующую эл. почту.",
+  "profileEditPasswordUpdated": "Пароль обновлён.",
+  "profileEditFailedUpdatePassword": "Не удалось обновить пароль.",
+  "profileEditEmail": "Аккаунт: {email}",
+  "profileEditPrimary": "Основной",
+  "profileEditSearchCurrency": "Поиск валюты",
+  "profileEditNoCurrenciesFound": "Валюты не найдены",
+  "profileEditOverviewTotalsConvertedCurrency": "Итоги обзора пересчитываются в эту валюту.",
+  "profileEditPaymentInfoUpdated": "Платёжные данные обновлены.",
+  "profileEditCouldNotSavePaymentInfoTryAgain": "Не удалось сохранить платёжные данные. Повторите попытку.",
+  "profileEditCurrentPassword": "Текущий пароль",
+  "profileEditBankTransferIbanSwift": "Банковский перевод (IBAN / SWIFT)",
+  "profileEditIbanSwift": "IBAN + SWIFT",
+  "profileEditRevtagRevolutMe": "Revtag / revolut.me",
+  "profileEditPaypalMeLink": "Ссылка paypal.me",
+  "profileEditChoosePaymentMethod": "Выберите способ оплаты",
+  "profileEditTapChange": "Нажмите, чтобы изменить",
+  "profileEditUkTransfersSortCode6DigitsNumber8": "Для переводов в Великобритании код банка (sort code) содержит 6 цифр, а номер счёта 8 цифр.",
+  "profileEditPaymentInfo": "Платёжные данные",
+  "profileEditSaveDetails": "Сохранить данные",
+  "profileEditBankRegion": "Регион банка",
+  "profileEditEurope": "Европа",
+  "profileEditSortCode": "Sort code",
+  "profileEditExample112233": "Пример: 112233",
+  "profileEditNumber": "Номер счёта",
+  "profileEdit8Digits": "8 цифр",
+  "profileEditUkDomesticTransfersSortCodeNumber": "Для переводов внутри Великобритании укажите sort code и номер счёта.",
+  "profileEditExampleLv80bank0000435195001": "Пример: LV80BANK0000435195001",
+  "profileEdit811Chars": "8 или 11 символов",
+  "profileEditHolderNameTakenProfileFullName": "Имя владельца счёта берётся из полного имени в профиле.",
+  "profileEditRevolutMeUsername": "revolut.me/username",
+  "profileEditRevtag": "Revtag",
+  "profileEditUsername": "@username",
+  "profileEditPaypalMeUsernameUsername": "paypal.me/username или username",
+  "profileEditRevolut": "Revolut",
+  "profileEditPaypalMe": "PayPal.me",
+  "profileEditWise": "Wise",
+  "profileEditWisePayUsername": "wise.com/pay/me/username",
+  "profileEditUk": "Великобритания",
+  "profileEditIbanLabel": "IBAN",
+  "profileEditBicSwiftLabel": "BIC / SWIFT",
+  "profileEditRevolutMe": "Revolut.me",
+  "imageCropperAdjustAvatar": "Настроить аватар",
+  "imageCropperAdjustTripImage": "Настроить изображение поездки",
+  "imageCropEditAction": "Изменить кадрирование",
+  "imageCropZoomIn": "Увеличить",
+  "imageCropZoomOut": "Уменьшить",
+  "imageCropZoomOnly": "Сохранена только обрезанная версия этого фото, поэтому его можно только увеличить.",
+  "imageCropLoadFailed": "Не удалось открыть это фото.",
+  "imageCropSaveFailed": "Не удалось сохранить новое кадрирование. Повторите попытку.",
+  "imageCropChanged": "Это фото тем временем изменилось. Закройте экран и откройте его снова.",
+  "copyAction": "Копировать",
+  "currencyNameEur": "Евро",
+  "currencyNameGbp": "Британский фунт стерлингов",
+  "currencyNameChf": "Швейцарский франк",
+  "currencyNameNok": "Норвежская крона",
+  "currencyNameSek": "Шведская крона",
+  "currencyNameDkk": "Датская крона",
+  "currencyNamePln": "Польский злотый",
+  "currencyNameCzk": "Чешская крона",
+  "currencyNameHuf": "Венгерский форинт",
+  "currencyNameRon": "Румынский лей",
+  "currencyNameBgn": "Болгарский лев",
+  "currencyNameIsk": "Исландская крона",
+  "currencyNameAll": "Албанский лек",
+  "currencyNameBam": "Конвертируемая марка Боснии и Герцеговины",
+  "currencyNameByn": "Белорусский рубль",
+  "currencyNameMdl": "Молдавский лей",
+  "currencyNameMkd": "Македонский денар",
+  "currencyNameRsd": "Сербский динар",
+  "currencyNameUah": "Украинская гривна",
+  "currencyNameGel": "Грузинский лари",
+  "currencyNameTry": "Турецкая лира",
+  "currencyNameUsd": "Доллар США",
+  "currencyNameJpy": "Японская иена",
+  "currencyNameCny": "Китайский юань",
+  "currencyNameCad": "Канадский доллар",
+  "currencyNameAud": "Австралийский доллар",
+  "currencyNameRub": "Российский рубль",
+  "currencyNameMxn": "Мексиканский песо",
+  "currencyNameBrl": "Бразильский реал",
+  "currencyNameArs": "Аргентинский песо",
+  "currencyNameClp": "Чилийский песо",
+  "currencyNameCop": "Колумбийский песо",
+  "currencyNamePen": "Перуанский соль",
+  "currencyNameUyu": "Уругвайский песо",
+  "currencyNameBob": "Боливийский боливиано",
+  "currencyNamePyg": "Парагвайский гуарани",
+  "currencyNameCrc": "Костариканский колон",
+  "currencyNameDop": "Доминиканский песо",
+  "currencyNameGtq": "Гватемальский кетсаль",
+  "currencyNamePab": "Панамский бальбоа",
+  "currencyNameHnl": "Гондурасская лемпира",
+  "currencyNameNio": "Никарагуанская кордоба",
+  "currencyNameJmd": "Ямайский доллар",
+  "currencyNameBbd": "Барбадосский доллар",
+  "currencyNameBsd": "Багамский доллар",
+  "currencyNameTtd": "Доллар Тринидада и Тобаго",
+  "currencyNameXcd": "Восточно-карибский доллар",
+  "currencyNameBzd": "Белизский доллар",
+  "currencyNameAwg": "Арубанский флорин",
+  "currencyNameBmd": "Бермудский доллар",
+  "currencyNameKyd": "Доллар Каймановых островов",
+  "currencyNameKrw": "Южнокорейская вона",
+  "currencyNameInr": "Индийская рупия",
+  "currencyNameThb": "Таиландский бат",
+  "currencyNameVnd": "Вьетнамский донг",
+  "currencyNameIdr": "Индонезийская рупия",
+  "currencyNameMyr": "Малайзийский ринггит",
+  "currencyNameSgd": "Сингапурский доллар",
+  "currencyNamePhp": "Филиппинский песо",
+  "currencyNameHkd": "Гонконгский доллар",
+  "currencyNameTwd": "Новый тайваньский доллар",
+  "currencyNameLkr": "Шри-ланкийская рупия",
+  "currencyNameNpr": "Непальская рупия",
+  "currencyNameBdt": "Бангладешская така",
+  "currencyNamePkr": "Пакистанская рупия",
+  "currencyNameKhr": "Камбоджийский риель",
+  "currencyNameLak": "Лаосский кип",
+  "currencyNameMmk": "Мьянманский кьят",
+  "currencyNameMnt": "Монгольский тугрик",
+  "currencyNameMop": "Патака Макао",
+  "currencyNameBnd": "Брунейский доллар",
+  "currencyNameMvr": "Мальдивская руфия",
+  "currencyNameBtn": "Бутанский нгултрум",
+  "currencyNameKzt": "Казахстанский тенге",
+  "currencyNameUzs": "Узбекский сум",
+  "currencyNameKgs": "Киргизский сом",
+  "currencyNameTjs": "Таджикский сомони",
+  "currencyNameAzn": "Азербайджанский манат",
+  "currencyNameAmd": "Армянский драм",
+  "currencyNameAed": "Дирхам ОАЭ",
+  "currencyNameSar": "Саудовский риял",
+  "currencyNameQar": "Катарский риал",
+  "currencyNameOmr": "Оманский риал",
+  "currencyNameKwd": "Кувейтский динар",
+  "currencyNameBhd": "Бахрейнский динар",
+  "currencyNameJod": "Иорданский динар",
+  "currencyNameIls": "Новый израильский шекель",
+  "currencyNameLbp": "Ливанский фунт",
+  "currencyNameIqd": "Иракский динар",
+  "currencyNameZar": "Южноафриканский рэнд",
+  "currencyNameEgp": "Египетский фунт",
+  "currencyNameMad": "Марокканский дирхам",
+  "currencyNameTnd": "Тунисский динар",
+  "currencyNameDzd": "Алжирский динар",
+  "currencyNameKes": "Кенийский шиллинг",
+  "currencyNameTzs": "Танзанийский шиллинг",
+  "currencyNameUgx": "Угандийский шиллинг",
+  "currencyNameRwf": "Франк Руанды",
+  "currencyNameEtb": "Эфиопский быр",
+  "currencyNameGhs": "Ганский седи",
+  "currencyNameNgn": "Нигерийская найра",
+  "currencyNameXof": "Франк КФА ВСЕАО",
+  "currencyNameXaf": "Франк КФА ВЕАС",
+  "currencyNameMur": "Маврикийская рупия",
+  "currencyNameScr": "Сейшельская рупия",
+  "currencyNameNad": "Доллар Намибии",
+  "currencyNameBwp": "Ботсванская пула",
+  "currencyNameZmw": "Замбийская квача",
+  "currencyNameMzn": "Мозамбикский метикал",
+  "currencyNameAoa": "Ангольская кванза",
+  "currencyNameMga": "Малагасийский ариари",
+  "currencyNameCve": "Эскудо Кабо-Верде",
+  "currencyNameGmd": "Гамбийский даласи",
+  "currencyNameNzd": "Новозеландский доллар",
+  "currencyNameFjd": "Доллар Фиджи",
+  "currencyNameXpf": "Французский тихоокеанский франк",
+  "currencyNameWst": "Самоанская тала",
+  "currencyNameVuv": "Вату Вануату",
+  "currencyNameTop": "Тонганская паанга",
+  "currencyNamePgk": "Кина Папуа — Новой Гвинеи",
+  "expenseCategoryFood": "Еда",
+  "expenseCategoryGroceries": "Продукты",
+  "expenseCategoryFuel": "Топливо",
+  "expenseCategoryTransport": "Транспорт",
+  "expenseCategoryAccommodation": "Жильё",
+  "expenseCategoryActivities": "Развлечения",
+  "expenseCategoryTickets": "Билеты",
+  "expenseCategoryShopping": "Покупки",
+  "expenseCategoryParty": "Вечеринка",
+  "expenseCategoryParking": "Парковка",
+  "expenseCategoryOther": "Другое",
+  "shellTripAlreadyInListOpened": "Поездка уже в вашем списке. Мы её открыли.",
+  "shellJoinedTripFromInviteLink": "Вы присоединились к поездке по ссылке-приглашению.",
+  "shellFailedToOpenInviteLink": "Не удалось открыть ссылку-приглашение.",
+  "shellFailedToOpenFriendLink": "Не удалось открыть ссылку друга.",
+  "shellTripInviteTitle": "Приглашение в поездку",
+  "shellNoAction": "Нет",
+  "shellYesAction": "Да",
+  "shellOnlyTripCreatorCanDelete": "Удалить поездку может только её создатель.",
+  "shellOnlyActiveTripsCanDelete": "Удалять можно только активные поездки.",
+  "shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded": "Удалить «{tripLabel}»? Это возможно только до добавления расходов.",
+  "shellTripDeleted": "Поездка удалена.",
+  "shellFailedToDeleteTrip": "Не удалось удалить поездку.",
+  "shellFailedToLoadNotifications": "Не удалось загрузить уведомления.",
+  "shellNewNotificationTitle": "Новое уведомление: {title}",
+  "shellFailedToUpdateNotifications": "Не удалось обновить уведомления.",
+  "shellMarkAllAsReadAction": "Отметить все как прочитанные",
+  "shellNewSection": "Новые",
+  "shellEarlierSection": "Ранее",
+  "shellShowMoreEarlierAction": "Показать ещё",
+  "shellLoadingMore": "Загрузка...",
+  "shellLoadMoreNotificationsAction": "Загрузить ещё уведомления",
+  "shellTripNoLongerAvailable": "Эта поездка больше недоступна.",
+  "shellFailedToOpenTrip": "Не удалось открыть поездку.",
+  "shellYesterday": "Вчера",
+  "shellInviteAlreadyMemberOpenTripNow": "Вы уже участник поездки «{tripName}». Открыть её?\n\nПриглашение от: {inviterName}",
+  "shellInviteJoinTripQuestion": "Присоединиться к поездке «{tripName}»?\n\nПриглашение от: {inviterName}",
+  "tripsSelectedImage": "Выбрано изображение: {arg1}",
+  "tripsTripImageAlreadySet": "Изображение поездки уже задано.",
+  "tripsTripCreatedButImageUploadFailed": "Поездка создана, но изображение не загрузилось.",
+  "tripsTripCreatedButImageUploadFailedWithReason": "Поездка создана, но изображение не загрузилось: {arg1}",
+  "@tripsTripCreatedButImageUploadFailedWithReason": {
+    "placeholders": {
+      "arg1": {}
+    }
+  },
+  "tripsJoinTripViaInvite": "Присоединиться по приглашению",
+  "tripsTotalTrips": "Всего поездок",
+  "tripsTotalSpent": "Всего потрачено",
+  "tripsMixedCurrencies": "Разные валюты",
+  "tripsShowActive": "Показать активные",
+  "tripsSeeAll": "Все",
+  "tripsGridView": "Сетка",
+  "tripsListView": "Список",
+  "tripsAddNewTrip": "Добавить поездку",
+  "tripsLoadMore": "Загрузить ещё",
+  "tripsDeleteThisIsAllowedOnlyBeforeAnyExpensesAreAdded": "Удалить «{arg1}»? Это возможно только до добавления расходов.",
+  "tripsTripDates": "Даты поездки",
+  "tripsFrom": "С",
+  "tripsSelectDate": "Выберите дату",
+  "tripsTo": "По",
+  "tripsMainCurrency": "Основная валюта",
+  "tripsPleaseSelectTripPeriodFromAndToDates": "Выберите даты начала и окончания поездки.",
+  "tripsTripEndDateMustBeOnOrAfterStartDate": "Дата окончания не может быть раньше даты начала.",
+  "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "Неверный формат периода поездки. Выберите даты ещё раз.",
+  "tripsYouAreAlreadyAMemberOfThisTrip": "Вы уже участник этой поездки.",
+  "tripsJoinedTripSuccessfully": "Вы присоединились к поездке.",
+  "tripsFailedToJoinTripFromInvite": "Не удалось присоединиться к поездке по приглашению.",
+  "tripsJoinTrip": "Присоединиться к поездке",
+  "tripsPasteInviteLinkOrInviteToken": "Вставьте ссылку-приглашение или код приглашения.",
+  "tripsHttpsInviteNorthSeaAbc123def4": "https://.../?invite=north-sea-abc123def4",
+  "tripsEnterAValidInviteLinkOrToken": "Введите действительную ссылку или код приглашения.",
+  "tripsClipboardIsEmpty": "Буфер обмена пуст.",
+  "tripsPaste": "Вставить",
+  "tripsJoin": "Присоединиться",
+  "workspaceTripMembers": "Участники поездки",
+  "workspaceFailedToLoadFriends": "Не удалось загрузить друзей.",
+  "workspaceFailedToGenerateInviteLink": "Не удалось создать ссылку-приглашение.",
+  "workspaceInviteLink": "Ссылка-приглашение",
+  "workspaceGeneratingInviteLink": "Создаём ссылку-приглашение...",
+  "workspaceInviteLinkUnavailable": "Ссылка-приглашение недоступна.",
+  "workspaceCopyInviteLink": "Скопировать ссылку-приглашение",
+  "workspaceInviteLinkCopied": "Ссылка-приглашение скопирована.",
+  "workspaceExpiresUtc": "Действует до: {arg1} UTC",
+  "workspaceNoFriendsAvailableAddFriendsFirst": "Нет доступных друзей. Сначала добавьте друзей.",
+  "workspaceSettle": "Рассчитаться",
+  "workspaceOwesToTheGroup": "Должен группе",
+  "workspaceGetsBackFromGroup": "Группа должна вернуть",
+  "workspaceShowingTop4ByBalanceDifference": "Показаны 4 участника с наибольшей разницей баланса.",
+  "workspaceOpenFlow": "Подробнее",
+  "workspaceFriend": "Друг",
+  "workspaceSettlementTransfer": "Перевод для расчёта",
+  "workspaceCompleted": "Завершено",
+  "workspaceWaitingForConfirmation": "Ожидает подтверждения",
+  "workspaceWaitingForPayment": "Ожидает оплаты",
+  "workspaceActionNeeded": "Требуется действие",
+  "workspacePaymentSToMarkAsSentToConfirmAsReceived": "Отметить как отправленные: {arg1}. Подтвердить получение: {arg2}.",
+  "workspaceReadyToSettle": "Готов к расчётам",
+  "workspaceAllMembersAreReadyYouCanStartSettlements": "Все участники готовы. Можно начинать расчёты.",
+  "workspaceWaitingForEveryoneToMarkReady": "Ждём, пока все отметят готовность.",
+  "workspaceIMReady": "Я готов(а)",
+  "workspaceConfirmThatYouAddedAllYourExpenses": "Подтвердите, что добавили все свои расходы.",
+  "workspaceFinishButtonUnlocksOnceEveryoneMarksReady": "Кнопка завершения станет доступна, когда все отметят готовность.",
+  "workspaceGetsBackFromTheGroup": "Группа должна вернуть",
+  "workspaceSettledWithTheGroup": "Рассчитан(а) с группой",
+  "workspaceTotalPaid": "Всего оплачено",
+  "workspaceTotalOwes": "Всего должен",
+  "workspaceTransactionHistory": "История операций",
+  "workspaceNoTransactionsYetForThisMember": "У этого участника пока нет операций.",
+  "workspaceSettlements": "Расчёты: {arg1}",
+  "workspaceAllMembersMustMarkReadyBeforeStartingSettlements": "Перед началом расчётов все участники должны отметить готовность.",
+  "workspaceYouMarkedYourselfReadyToSettle": "Вы отметили готовность к расчётам.",
+  "workspaceReadyToSettleMarkRemoved": "Отметка о готовности снята.",
+  "workspaceReminderSent": "Напоминание отправлено.",
+  "workspaceInviteLinkOrAddFromFriends": "Ссылка-приглашение или добавление из друзей",
+  "workspaceOnlyTripCreatorCanEditThisTrip": "Изменять поездку может только её создатель.",
+  "workspaceTripUpdated": "Поездка обновлена.",
+  "workspaceFailedToUpdateTrip": "Не удалось обновить поездку.",
+  "workspaceNoMembersSelectedYet": "Участники пока не выбраны.",
+  "workspaceNoInternetExpenseSavedWithoutReceiptImage": "Нет интернета. Расход будет сохранён без изображения чека.",
+  "workspaceRandomPicker": "Случайный выбор",
+  "workspaceCurrency": "Валюта",
+  "workspaceCategory": "Категория",
+  "workspaceCustomCategory": "Своя категория",
+  "workspaceCategoryName": "Название категории",
+  "workspaceApartmentRentParkingEtc": "Аренда квартиры, парковка и т. д.",
+  "workspaceEnterACustomCategory": "Введите свою категорию.",
+  "workspacePickAnExpenseCategory": "Выберите категорию расхода.",
+  "workspaceCategoryMustBeAtLeast2Characters": "Категория должна содержать минимум 2 символа.",
+  "workspaceCategoryMustBeUpTo64Characters": "Категория должна содержать не более 64 символов.",
+  "workspacePercentageSplitMustTotal100": "Сумма процентов должна быть 100%.",
+  "workspaceSharesMustBeGreaterThan0ForAllParticipants": "Доли всех участников должны быть больше 0.",
+  "workspaceTotalAmount": "Общая сумма",
+  "workspaceOriginal": "Исходная",
+  "workspaceTotalCost": "Общая стоимость",
+  "workspaceStarted": "Начало: {arg1}",
+  "workspaceEnded": "Окончание: {arg1}",
+  "workspaceArchivedTrip": "Поездка в архиве",
+  "workspaceActiveTrip": "Активная поездка",
+  "workspaceMemberProfile": "Профиль участника",
+  "workspaceTripOwner": "Владелец поездки",
+  "workspaceMember": "Участник",
+  "workspaceReadyForSettlement": "Готов к расчётам",
+  "workspaceNotReadyForSettlement": "Не готов к расчётам",
+  "workspaceBankDetails": "Банковские реквизиты",
+  "workspaceIbanAndPayoutDetailsWillBeAddedHereInA": "IBAN и реквизиты для выплат появятся здесь в следующем обновлении.",
+  "workspacePaymentDetails": "Платёжные реквизиты",
+  "workspaceThisMemberHasNotAddedPayoutDetailsYet": "Этот участник ещё не добавил реквизиты для выплат.",
+  "workspaceBankTransfer": "Банковский перевод",
+  "workspaceHolder": "Владелец",
+  "workspaceCouldNotOpenPaymentLink": "Не удалось открыть платёжную ссылку.",
+  "workspaceTripActivity": "Активность в поездке",
+  "workspacePaidExpenses": "Оплаченные расходы",
+  "workspacePaidTotal": "Всего оплачено",
+  "workspaceInvolvedIn": "Участвует в",
+  "workspaceCurrentTrip": "Текущая поездка",
+  "workspaceCommonTrips": "Общие поездки",
+  "workspaceLoadingCommonTrips": "Загружаем общие поездки...",
+  "workspaceNoCommonTripsFoundYet": "Общих поездок пока нет.",
+  "workspaceCouldNotLoadAllCommonTripsShowingCurrentOne": "Не удалось загрузить все общие поездки. Показана текущая.",
+  "workspaceMembers": "участников",
+  "workspaceExpense": "Расход",
+  "workspacePaid": "оплачено",
+  "workspaceLoadingMoreExpenses": "Загружаем ещё расходы...",
+  "workspaceScrollDownToLoadMore": "Прокрутите вниз, чтобы загрузить ещё",
+  "workspaceTripFinished": "Поездка завершена",
+  "workspaceSettlementsAreUnlockedForThisTrip": "Расчёты для этой поездки открыты.",
+  "workspaceFinishTripToStartSettlements": "Завершите поездку, чтобы начать расчёты.",
+  "workspaceMarkedTransferAsSent": "{arg1}: перевод отмечен как отправленный.",
+  "workspaceWaitingForToMarkAsPaid": "Ждём, пока {arg1} отметит оплату.",
+  "workspaceConfirmedReceivingThePayment": "{arg1}: получение платежа подтверждено.",
+  "workspaceWaitingForToConfirm": "Ждём подтверждения от {arg1}.",
+  "workspaceAllTripSettlementsAreFullyCompleted": "Все расчёты поездки полностью завершены.",
+  "workspaceFinalStateAfterAllTransfersAreConfirmed": "Итоговое состояние после подтверждения всех переводов.",
+  "workspaceSettlementFlow": "Ход расчётов",
+  "workspaceActions": "Действия",
+  "workspaceQuickPay": "Быстрая оплата",
+  "workspacePayWithRevolut": "Оплатить через Revolut",
+  "workspacePayWithPaypal": "Оплатить через PayPal",
+  "workspacePayWithWise": "Оплатить через Wise",
+  "workspaceTransferIsConfirmed": "Перевод подтверждён.",
+  "workspaceWaitingForTheOtherMemberToCompleteTheNextStep": "Ждём, пока другой участник выполнит следующий шаг.",
+  "workspaceSendReminder": "Отправить напоминание",
+  "workspaceInProgress": "В процессе",
+  "workspaceTimeUnknown": "Время неизвестно",
+  "workspaceRemind": "Напомнить",
+  "workspaceYourPosition": "Ваша позиция",
+  "workspaceRecentActivity": "Недавняя активность",
+  "workspaceNoRecentActivityYet": "Недавней активности пока нет.",
+  "workspaceAddAtLeastOneMemberToStartSplittingExpenses": "Добавьте хотя бы одного участника, чтобы делить расходы.",
+  "workspaceMarkYourselfReadyToSettleAfterAddingAllYourExpenses": "Отметьте готовность к расчётам, когда добавите все свои расходы.",
+  "workspaceWaitingForMemberSToMarkReady": "Участников, ещё не отметивших готовность: {arg1}.",
+  "workspaceAllMembersAreReadyYouCanFinishTheTripAnd": "Все участники готовы. Можно завершить поездку и начать расчёты.",
+  "workspaceAllMembersAreReadyWaitingForTheTripOwnerTo": "Все участники готовы. Ждём, пока владелец поездки начнёт расчёты.",
+  "workspaceSettlementInProgressConfirmed": "Идут расчёты: подтверждено {arg1} из {arg2}.",
+  "workspaceNoActionsPendingThisTripIsSettled": "Действий не требуется. Поездка рассчитана.",
+  "workspaceNoActionsNeededRightNow": "Сейчас действий не требуется.",
+  "workspaceYouShouldReceive": "Вам должны заплатить {arg1}.",
+  "workspaceYouShouldPay": "Вам нужно заплатить {arg1}.",
+  "workspaceYouAreCurrentlySettledInThisTrip": "Сейчас у вас нет долгов в этой поездке.",
+  "workspaceUnknownTime": "Неизвестное время",
+  "workspaceJustNow": "Только что",
+  "workspaceMinAgo": "{arg1} мин назад",
+  "workspaceHAgo": "{arg1} ч назад",
+  "workspaceDAgo": "{arg1} дн. назад",
+  "friendsRemoveFriend": "Удалить из друзей",
+  "friendsRemoveThisFriend": "Удалить этого друга?",
+  "friendsWillBeRemovedFromYourFriendsListYouCanAdd": "{arg1} будет удалён(а) из списка друзей. Позже можно добавить снова.",
+  "friendsContinue": "Продолжить",
+  "friendsFriendRemoved": "Друг удалён.",
+  "friendsCouldNotRemoveFriend": "Не удалось удалить друга.",
+  "friendsFriendProfile": "Профиль друга",
+  "friendsMoreActions": "Другие действия",
+  "friendsThisFriendHasNotAddedPayoutDetailsYet": "Этот друг ещё не добавил реквизиты для выплат.",
+  "friendsCouldNotLoadCommonTripsRightNow": "Сейчас не удалось загрузить общие поездки.",
+  "friendsFinished": "Завершена",
+  "friendsTrip": "Поездка №{arg1}",
+  "friendsMembers": "Участников: {arg1}",
+  "friendsNoDate": "Без даты",
+  "friendsIncomingRequests": "ВХОДЯЩИЕ ЗАПРОСЫ",
+  "friendsSentInvites": "ОТПРАВЛЕННЫЕ ПРИГЛАШЕНИЯ",
+  "friendsMyFriends": "МОИ ДРУЗЬЯ",
+  "friendsRequests": "Запросы",
+  "friendsIncoming": "Входящие",
+  "friendsIncomingRequestSubtitle": "хочет добавить вас в друзья",
+  "friendsOutgoingInviteSubtitle": "Приглашение отправлено",
+  "friendsNoPendingActivity": "Нет запросов в друзья",
+  "friendsInviteSentTo": "Приглашение отправлено: {arg1}.",
+  "friendsNoIncomingRequests": "Нет входящих запросов",
+  "friendsDecline": "Отклонить",
+  "friendsAccept": "Принять",
+  "friendsNoSentInvites": "Нет отправленных приглашений",
+  "friendsNoFriendsYet": "Друзей пока нет",
+  "friendsScrollDownToLoadMoreFriends": "Прокрутите вниз, чтобы загрузить ещё друзей.",
+  "friendsUser": "Пользователь",
+  "friendsSearchUsers": "Поиск пользователей",
+  "friendsFindByNameOrEmailAndSendInvite": "Найдите по имени или эл. почте и отправьте приглашение",
+  "friendsScanQr": "Сканировать QR",
+  "friendsScanAnotherUserToAddFriend": "Отсканируйте код другого пользователя, чтобы добавить в друзья",
+  "friendsMyQr": "Мой QR",
+  "friendsShowOrShareYourQrCode": "Покажите QR-код или поделитесь им",
+  "friendsScanFriendQrTitle": "Сканировать QR друга",
+  "friendsPlaceFriendQrInsideFrame": "Поместите QR-код друга в рамку",
+  "friendsHoldFriendQrInsideFrame": "Удерживайте QR-код в рамке",
+  "friendsConfirmAddFriendTitle": "Добавить {arg1} в друзья?",
+  "friendsConfirmSendFriendInviteText": "{arg1} получит ваш запрос в друзья.",
+  "friendsConfirmAcceptFriendRequestText": "Принять запрос в друзья от {arg1}?",
+  "friendsMyFriendQrTitle": "Мой QR-код для друзей",
+  "friendsOpenFriendsScanQrOnAnotherPhoneAndScanThisCode": "Отсканируйте этот QR-код или поделитесь ссылкой, чтобы добавить меня в Splyto.",
+  "friendsAddMeOnTripSplitFriends": "Добавьте меня в Splyto.",
+  "friendsTripSplitFriendCode": "Ссылка для добавления в друзья в Splyto",
+  "shareAction": "Поделиться",
+  "friendsQrCodeIsNotAValidFriendCode": "Этот QR-код не является кодом друга.",
+  "friendsYouCannotAddYourself": "Нельзя добавить самого себя.",
+  "friendsThisUserIsAlreadyInYourFriendsList": "Этот пользователь уже в вашем списке друзей.",
+  "friendsInviteToThisUserIsAlreadySent": "Приглашение этому пользователю уже отправлено.",
+  "friendsFriendRequestProcessed": "Запрос в друзья обработан.",
+  "friendsFailedToProcessFriendQr": "Не удалось обработать QR-код друга.",
+  "friendsCouldNotLoadYourUserProfile": "Не удалось загрузить ваш профиль.",
+  "friendsMyProfile": "Мой профиль",
+  "friendsUnexpectedErrorLoadingFriends": "Непредвиденная ошибка при загрузке друзей.",
+  "friendsFriendAdded": "Друг добавлен.",
+  "friendsRequestDeclined": "Запрос отклонён.",
+  "friendsFailedToUpdateRequest": "Не удалось обновить запрос.",
+  "friendsCancelInvite": "Отменить приглашение",
+  "friendsCancelInviteTo": "Отменить приглашение для {arg1}?",
+  "friendsKeep": "Оставить",
+  "friendsInviteToCancelled": "Приглашение для {arg1} отменено.",
+  "friendsFailedToCancelInvite": "Не удалось отменить приглашение.",
+  "analyticsOther": "Другое",
+  "analyticsSelectATripForAnalytics": "Выберите поездку для аналитики",
+  "analyticsMembers": "{arg1} • участников: {arg2} • {arg3} • {arg4}",
+  "analyticsDailySpending": "Расходы по дням",
+  "analyticsMyDaily": "Мои за день",
+  "analyticsGroupDaily": "Группа за день",
+  "analyticsByMember": "По участникам",
+  "analyticsShowLess": "Свернуть",
+  "analyticsByCategory": "По категориям",
+  "analyticsQuickInsights": "Коротко о главном",
+  "analyticsBiggestExpense": "Самый большой расход: {arg1} ({arg2})",
+  "analyticsTopSpender": "Больше всех потратил(а): {arg1} ({arg2})",
+  "analyticsHighestGroupDay": "Самый дорогой день группы: {arg1} ({arg2})",
+  "analyticsNoDates": "Без дат",
+  "friendsSearchFailedTryAgain": "Поиск не удался. Повторите попытку.",
+  "friendsFailedToSendInvite": "Не удалось отправить приглашение.",
+  "friendsAddFriend": "Добавить друга",
+  "friendsSearchByNameOrEmail": "Поиск по имени или эл. почте",
+  "friendsTypeAtLeast2CharactersToSearch": "Для поиска введите минимум 2 символа.",
+  "friendsNoUsersFound": "Пользователи не найдены",
+  "friendsInviteAction": "Пригласить",
+  "workspacePaidForGroup": "Оплачено за группу",
+  "workspacePaidForGroupDate": "Оплачено за группу • {arg1}",
+  "workspaceShareOfExpense": "Доля расхода",
+  "workspaceShareOfExpenseDate": "Доля расхода • {arg1}",
+  "paymentHolderNameCopied": "Имя владельца скопировано.",
+  "paymentIbanCopied": "IBAN скопирован.",
+  "paymentSwiftCopied": "SWIFT скопирован.",
+  "paymentRevtagCopied": "Revtag скопирован.",
+  "paymentCouldNotCopyToClipboard": "Не удалось скопировать в буфер обмена.",
+  "paymentCopied": "Скопировано.",
+  "paymentRequestAction": "Запросить платёж",
+  "paymentRecordAction": "Записать платёж",
+  "paymentRequestSheetTitle": "Запросить платёж",
+  "paymentRecordSheetTitle": "Записать платёж",
+  "paymentRequestSheetBody": "Попросите {arg1} оплатить сумму, которую вам сейчас должны.",
+  "paymentRecordSheetBody": "Используйте это после оплаты {arg1} вне Splyto. Получатель подтвердит поступление.",
+  "paymentMaxAmount": "Максимум {arg1}",
+  "paymentNoteHint": "Банковский перевод, Revolut, наличные...",
+  "paymentAmountPositiveError": "Сумма должна быть больше нуля.",
+  "paymentAmountTooHighError": "Сумма не может превышать остаток долга.",
+  "paymentRequestCreated": "Запрос на платёж отправлен.",
+  "paymentRecordedWaiting": "Платёж записан. Ожидает подтверждения.",
+  "paymentConfirmTitle": "Подтвердить платёж",
+  "paymentConfirmText": "Подтвердите, что получили {arg1} от {arg2}.",
+  "paymentConfirmedMessage": "Платёж подтверждён.",
+  "paymentCancelRecordTitle": "Отменить запись о платеже",
+  "paymentCancelRecordText": "Отменить отметку о платеже {arg1} для {arg2}?",
+  "paymentRecordCancelled": "Запись о платеже отменена.",
+  "paymentNotReceivedTitle": "Платёж не получен",
+  "paymentNotReceivedText": "Отметить платёж {arg1} от {arg2} как не полученный?",
+  "paymentMarkedNotReceived": "Платёж отмечен как не полученный.",
+  "paymentActivityTitle": "Операции по платежам",
+  "paymentOpenRequestsCount": "Открытых запросов на платёж: {arg1}",
+  "paymentAwaitingConfirmationCount": "Платежей ожидают подтверждения: {arg1}",
+  "paymentRecordedPaymentsTitle": "Записанные платежи",
+  "paymentRequestedFrom": "{arg1} запрашивает платёж у {arg2}",
+  "paymentPaidTo": "{arg1} → {arg2}: оплачено",
+  "paymentRequestPendingStatus": "Платёж запрошен",
+  "paymentAwaitingConfirmationStatus": "Ожидает подтверждения",
+  "paymentReviewRequestAction": "Посмотреть запрос",
+  "paymentViewDetailsAction": "Детали платежа",
+  "paymentMarkPaidAction": "Я оплатил(а)",
+  "paymentDeclineAction": "Отклонить",
+  "paymentRequestReviewTitle": "Запрос на платёж",
+  "paymentRequestReviewBody": "{arg1} запрашивает у вас {arg2}. Оплатите вне Splyto, затем отметьте как оплаченное.",
+  "paymentRequestMarkPaidConfirmTitle": "Отметить запрос как оплаченный?",
+  "paymentRequestMarkPaidConfirmText": "Подтверждайте только после оплаты {arg1} для {arg2} вне Splyto.",
+  "paymentRequestMarkedPaid": "Отмечено как оплаченное. Ожидает подтверждения.",
+  "paymentRequestCancelTitle": "Отменить запрос на платёж?",
+  "paymentRequestCancelText": "Отменить ваш запрос на {arg1} к {arg2}?",
+  "paymentRequestCancelled": "Запрос на платёж отменён.",
+  "paymentRequestDeclineTitle": "Отклонить запрос на платёж?",
+  "paymentRequestDeclineText": "Отклонить запрос на {arg1} от {arg2}? Отправитель получит уведомление.",
+  "paymentRequestDeclined": "Запрос на платёж отклонён.",
+  "paymentPendingBeforeFinish": "Перед итоговым расчётом закройте открытые запросы и неподтверждённые платежи.",
+  "paymentFinishBlockedByPending": "Завершение станет доступно, когда все запросы и неподтверждённые платежи будут закрыты.",
+  "notificationPaymentRequestedTitle": "Запрос на платёж",
+  "notificationPaymentRequestedBody": "{arg1} запрашивает у вас {arg2}.",
+  "notificationPaymentRequestedBodyGeneric": "Вы получили запрос на платёж.",
+  "notificationPaymentRequestSentTitle": "Запрошенный платёж отправлен",
+  "notificationPaymentRequestSentBody": "{arg1} отмечает ваш запрос на {arg2} как оплаченный.",
+  "notificationPaymentRequestSentBodyGeneric": "Ваш запрос на платёж отмечен как оплаченный.",
+  "notificationPaymentRequestCancelledTitle": "Запрос на платёж отменён",
+  "notificationPaymentRequestCancelledBody": "{arg1} отменяет запрос на платёж {arg2}.",
+  "notificationPaymentRequestCancelledBodyGeneric": "Запрос на платёж отменён.",
+  "notificationPaymentRequestDeclinedTitle": "Запрос на платёж отклонён",
+  "notificationPaymentRequestDeclinedBody": "{arg1} отклоняет ваш запрос на платёж {arg2}.",
+  "notificationPaymentRequestDeclinedBodyGeneric": "Ваш запрос на платёж отклонён.",
+  "notificationPaymentSentTitle": "Платёж отмечен как отправленный",
+  "notificationPaymentSentBody": "{arg1} отмечает {arg2} как оплаченное вам.",
+  "notificationPaymentSentBodyGeneric": "Платёж вам отмечен как отправленный.",
+  "notificationPaymentConfirmedTitle": "Платёж подтверждён",
+  "notificationPaymentConfirmedBody": "{arg1} подтверждает получение {arg2} от вас.",
+  "notificationPaymentConfirmedBodyGeneric": "Ваш платёж подтверждён.",
+  "notificationPaymentCancelledTitle": "Платёж отменён",
+  "notificationPaymentCancelledBody": "{arg1} отменяет отметку о платеже {arg2}.",
+  "notificationPaymentCancelledBodyGeneric": "Отметка о платеже отменена.",
+  "notificationPaymentNotReceivedTitle": "Платёж не получен",
+  "notificationPaymentNotReceivedBody": "{arg1} отмечает платёж {arg2} как не полученный.",
+  "notificationPaymentNotReceivedBodyGeneric": "Платёж отмечен как не полученный.",
+  "quickStartTitle": "Быстрый старт",
+  "quickStartCreateTitle": "Одному или с друзьями",
+  "quickStartCreateBody": "Создайте поездку для себя или группы. Добавляйте друзей по ссылке или QR-коду и приглашайте их.",
+  "quickStartInviteTitle": "Вместе или в одиночку",
+  "quickStartInviteBody": "Пригласите друзей в поездку или начните личную поездку самостоятельно.",
+  "quickStartExpenseTitle": "Расходы в разных валютах",
+  "quickStartExpenseBody": "Выберите, кто заплатил и как разделить. Другие валюты пересчитываются по курсу на дату покупки, даже если вы добавите расход позже.",
+  "quickStartSettleTitle": "Рассчитывайтесь легко",
+  "quickStartSettleBody": "Смотрите, кто кому должен, платите удобным способом и подтверждайте в приложении.",
+  "quickStartAnalyticsTitle": "Бюджет и расходы",
+  "quickStartAnalyticsBody": "Задайте бюджет для поездки или группы и смотрите расходы по категориям, поездкам и дням.",
+  "quickStartMapTitle": "Сохраняйте свои места",
+  "quickStartMapBody": "Добавляйте города, где вы были, на личную карту путешествий. Её видите только вы.",
+  "quickStartLiveTitle": "Находите друг друга",
+  "quickStartLiveBody": "В групповых поездках делитесь геопозицией на выбранное время. Её видят участники поездки, а остановить можно в любой момент.",
+  "quickStartNext": "Далее",
+  "quickStartBack": "Назад",
+  "quickStartSkip": "Пропустить",
+  "quickStartCreateAction": "Создать поездку",
+  "quickStartSignUpAction": "Зарегистрироваться",
+  "quickStartClose": "Закрыть быстрый старт",
+  "quickStartSubtitle": "Как работают поездки и расходы",
+  "quickStartStep": "Шаг {step} из {total}",
+  "@quickStartStep": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceTripTotal": "Итого за поездку",
+  "workspacePersonalTotal": "Всего потрачено",
+  "workspaceBalanceEven": "Ваш баланс на нуле",
+  "workspaceBalanceOwe": "Вы должны {amount}",
+  "workspaceBalanceReceive": "Вам вернут {amount}",
+  "workspaceMemberCount": "Участников: {count}",
+  "workspaceSearchExpenses": "Поиск расходов",
+  "workspaceClearSearch": "Очистить поиск",
+  "workspaceSearchLoadedHint": "Поиск идёт по загруженным расходам. Загрузите ещё, чтобы включить более старые.",
+  "workspaceNoExpenseMatches": "Подходящих расходов нет",
+  "workspaceNoExpenseMatchesBody": "Измените запрос или очистите его, чтобы увидеть все загруженные расходы.",
+  "workspaceEmptyPersonalExpenses": "Добавьте первый расход, чтобы начать учёт трат.",
+  "workspaceEmptyGroupExpenses": "Добавьте первый общий расход, чтобы увидеть долю каждого.",
+  "workspaceLoadMoreExpenses": "Загрузить ещё расходы",
+  "workspaceOriginalExpenseAmount": "Исходная сумма: {amount}",
+  "workspaceCommentCount": "Комментариев: {count}",
+  "workspaceExpenseActions": "Действия с расходом",
+  "workspaceLoadErrorTitle": "Не удалось загрузить поездку",
+  "workspaceCachedWarning": "Показаны сохранённые данные. Они могут быть устаревшими.",
+  "workspaceActivityTab": "Активность",
+  "@workspaceBalanceOwe": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceBalanceReceive": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceMemberCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@workspaceOriginalExpenseAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "@workspaceCommentCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workspaceLoadingTrip": "Загрузка поездки",
+  "workspaceRefreshFailed": "Не удалось обновить",
+  "expenseDetailsTitle": "Детали расхода",
+  "expenseQuickCategories": "Быстрые категории",
+  "expenseReceiptRead": "Чек распознан, форма обновлена.",
+  "expenseReceiptNoData": "Чек прикреплён. Сумма, дата или продавец чётко не определены.",
+  "expenseReceiptScanFailed": "Чек выбран. Автораспознавание не удалось, проверьте поля вручную.",
+  "expenseReceiptOffline": "Чек загрузится при сохранении. Для автораспознавания нужно подключение.",
+  "expenseReadingReceipt": "Распознаём чек…",
+  "expenseCommentsLoadFailed": "Не удалось загрузить комментарии. Повторите попытку.",
+  "expenseReplyAction": "Ответить",
+  "expenseReplyHint": "Напишите ответ…",
+  "expenseReplyTo": "Ответ для {name}",
+  "@expenseReplyTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balanceEmptyBody": "Балансы появятся после добавления расходов.",
+  "balanceAfterPayments": "Балансы учитывают подтверждённые платежи.",
+  "balanceExpenseShare": "Доля расхода",
+  "balanceHistoryScope": "Загруженные расходы и подтверждённые платежи. В списке может быть не вся история поездки.",
+  "balancePaymentTo": "Платёж для {name}",
+  "@balancePaymentTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "balancePaymentFrom": "Платёж от {name}",
+  "@balancePaymentFrom": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settlementEmptyActive": "Перед началом итоговых расчётов все должны отметить готовность.",
+  "settlementEmptyClosed": "Для этой поездки переводов нет.",
+  "settlementConfirmedCount": "Подтверждено переводов: {count} из {total}",
+  "@settlementConfirmedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementReadyCount": "Готовы участники: {count} из {total}",
+  "@settlementReadyCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settlementMemberReady": "Готов",
+  "settlementMemberNotReady": "Не готов",
+  "settlementSuggested": "Предлагаемый перевод",
+  "activityLoadFailed": "Не удалось обновить активность. Показанные записи могут быть устаревшими.",
+  "activityMember": "Участник поездки",
+  "friendsEmptyBody": "Найдите друга по имени или эл. почте либо используйте QR-код.",
+  "friendsDeclineAction": "Отклонить",
+  "friendsLoading": "Загрузка друзей",
+  "friendsCommonTripsCount": "Общих поездок: {count}",
+  "@friendsCommonTripsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberActivityScope": "На основе загруженных расходов; возможно, это не вся поездка.",
+  "sharedTripsLoadedLimit": "Показано до 20 общих поездок.",
+  "memberRemoveTitle": "Удалить участника?",
+  "memberRemoveBody": "Удалить {name} из поездки? Это возможно, только если у участника нет расходов, расчётов и баланса.",
+  "@memberRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "memberRemoveAction": "Удалить из поездки",
+  "memberRemoved": "{name}: удаление из поездки выполнено.",
+  "@memberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentNotAdded": "Ещё не добавлено",
+  "friendRelationshipLabel": "Друг",
+  "sharedTripsEmptyBody": "Здесь появятся поездки, в которых вы оба участвуете.",
+  "analyticsAllTrips": "Все поездки",
+  "analyticsByTrip": "По поездкам",
+  "analyticsYourSpending": "Ваши расходы",
+  "analyticsActiveArchived": "Активные и архивные поездки",
+  "analyticsTrips": "Поездки",
+  "analyticsAveragePerTrip": "В среднем за поездку",
+  "analyticsPaidByMember": "Оплачено участниками",
+  "analyticsYouPaid": "Вы заплатили",
+  "analyticsYouGetBack": "Вам вернут",
+  "analyticsYouOwe": "Вы должны",
+  "analyticsParticipants": "Участники",
+  "analyticsYourCategories": "Ваши расходы по категориям",
+  "analyticsLargestShares": "Ваши самые большие доли",
+  "analyticsLargestExpenses": "Самые большие расходы",
+  "analyticsSpendingByTrip": "Ваши расходы по поездкам",
+  "analyticsEmptyTitle": "Расходов пока нет",
+  "analyticsEmptyBody": "Ваши расходы появятся здесь, когда вы добавите их в поездку.",
+  "analyticsPeriodEmptyBody": "Для этого вида нет расходов. Выберите другую поездку или период.",
+  "analyticsLoadFailed": "Не удалось загрузить полный отчёт о расходах. Повторите попытку.",
+  "analyticsLastLoaded": "Показан последний успешно загруженный отчёт.",
+  "analyticsExpenseCount": "{count, plural, one{{count} расход} few{{count} расхода} many{{count} расходов} other{{count} расхода}}",
+  "@analyticsExpenseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tripOptionsTitle": "Параметры поездки",
+  "editTripAction": "Изменить поездку",
+  "deleteTripAction": "Удалить поездку",
+  "inviteTripMembersAction": "Пригласить участников",
+  "tripCoverPhoto": "Обложка",
+  "tripInviteLaterHint": "Пригласить людей можно после создания поездки.",
+  "inviteClipboardFailed": "Нет доступа к буферу обмена. Повторите попытку.",
+  "friendInviteToTrip": "Пригласить в поездку",
+  "friendChooseTrip": "Выберите поездку",
+  "friendNoInvitableTrips": "Нет доступных поездок. Друзей можно приглашать в активные групповые поездки, которыми вы управляете, если они ещё не участники и у них нет ожидающего приглашения.",
+  "friendTripInviteSent": "Приглашение отправлено.",
+  "friendTripUnavailable": "Эта поездка больше недоступна для этого действия. Обновите и повторите попытку.",
+  "friendTripActionFailed": "Не удалось выполнить действие. Повторите попытку.",
+  "profileContactDescription": "Есть проблема, предложение или вопрос о Splyto? Напишите нам — мы будем рады помочь.",
+  "profileContactEmailAction": "Написать письмо",
+  "profileContactEmailUnavailable": "Не удалось открыть почтовое приложение. Скопируйте адрес и напишите нам оттуда.",
+  "profilePrivacyPolicy": "Политика конфиденциальности",
+  "privacyLoadFailed": "Не удалось загрузить политику конфиденциальности. Повторите попытку.",
+  "addReceiptAction": "Добавить чек",
+  "receiptPickFailed": "Не удалось загрузить чек. Повторите попытку.",
+  "receiptPhotoAccessDenied": "Разрешите Splyto доступ к камере или галерее в Настройках и повторите попытку.",
+  "receiptPhotoLabel": "Фото чека",
+  "replaceReceiptAction": "Заменить чек",
+  "removeReceiptAction": "Удалить чек",
+  "restoreReceiptAction": "Вернуть предыдущий чек",
+  "expenseSplitBetween": "Разделить между",
+  "expenseEditParticipants": "Выбрать участников",
+  "expenseCustomSplit": "Своё деление",
+  "expenseAdjustmentsLabel": "Корректировки",
+  "expenseAdjustmentFieldLabel": "+ или −",
+  "expenseAdjustmentsHint": "Прибавьте или вычтите для каждого. Остаток делится поровну.",
+  "expenseAdjustmentsMustFit": "Корректировки не могут превышать итог, и никто не может быть должен меньше нуля.",
+  "expenseItemsLabel": "Позиции",
+  "expenseAddItem": "Добавить позицию",
+  "expenseRemoveItem": "Удалить позицию",
+  "expenseItemName": "Позиция",
+  "expenseItemExtra": "Налог или чаевые",
+  "expenseItemExtraHint": "Делится пропорционально позициям каждого.",
+  "expenseItemsInvalid": "У каждой позиции должны быть название, сумма и хотя бы один человек.",
+  "expenseItemsTotal": "Итого по позициям: {total}",
+  "expenseItemsMustMatchTotal": "Сумма позиций должна равняться {total}.",
+  "tripGuestAddAction": "Добавить человека без приложения",
+  "tripGuestNameLabel": "Имя",
+  "tripGuestAddHint": "Приложение ему не нужно. Вы сами вводите, что он оплатил, и отмечаете его платежи.",
+  "tripGuestBadge": "Без приложения",
+  "tripGuestRenameAction": "Изменить имя",
+  "tripGuestAdded": "{name}: добавлен(а)",
+  "expenseSplitAllocated": "Распределено всё: {amount}",
+  "@expenseSplitAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitRemaining": "Осталось распределить: {amount}",
+  "@expenseSplitRemaining": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseSplitOver": "Больше итога на {amount}",
+  "@expenseSplitOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePaymentSharingTitle": "Показывать способы оплаты в моих поездках",
+  "profilePaymentSharingDescription": "Участники поездок, которые я создаю или к которым присоединяюсь, смогут видеть мои способы оплаты. Это касается текущих и будущих поездок. Отключите в любой момент, чтобы закрыть новый доступ.",
+  "memberPaymentDetailsNotShared": "Способы оплаты не показаны или сейчас недоступны.",
+  "homeTripInvitations": "Приглашения в поездки",
+  "homeNoTripInvitations": "Нет ожидающих приглашений в поездки",
+  "homeInvitationsLoadFailed": "Не удалось загрузить приглашения. Повторите попытку.",
+  "homeInvitationResponseFailed": "Не удалось ответить на приглашение. Повторите попытку.",
+  "homeTripShareFailed": "Не удалось поделиться поездкой. Повторите попытку.",
+  "settleStillToReceive": "Ещё получить",
+  "settleStillToPay": "Ещё заплатить",
+  "settleEstimateCaption": "Оценка по текущим расходам. Суммы могут измениться до конца поездки.",
+  "settleOutstandingCaption": "Ожидает оплаты или подтверждения.",
+  "settleWaitingForYou": "Ждём, пока вы отметите готовность.",
+  "settleWhoPaysWhom": "Кто кому платит",
+  "settlePreviewCaption": "Предпросмотр · окончательно после завершения поездки",
+  "settleOpenPaymentCaption": "Откройте платёж, чтобы увидеть детали и доступные действия.",
+  "tripBudgetEnable": "Задать бюджет",
+  "tripBudgetSoloHint": "Необязательная цель по расходам для этой поездки.",
+  "tripBudgetGroupHint": "Один общий бюджет на всю группу.",
+  "tripBudgetAmount": "Сумма бюджета",
+  "tripBudgetInvalid": "Введите сумму от 0.01 до 999999999.99, не более двух знаков после запятой.",
+  "tripBudgetTitle": "Бюджет поездки",
+  "tripBudgetGroupTitle": "Бюджет группы",
+  "tripBudgetRemaining": "Осталось",
+  "tripBudgetOver": "Сверх бюджета",
+  "tripBudgetSpent": "Потрачено",
+  "tripBudgetLimit": "Бюджет",
+  "travelMapTitle": "Моя карта путешествий",
+  "travelMapSubtitle": "Места, где вы были. Только для вас.",
+  "travelMapHere": "Я здесь был(а)",
+  "travelMapAdd": "Добавить место",
+  "travelMapSearch": "Поиск города и страны",
+  "travelMapSearchAction": "Найти",
+  "travelMapSearchHint": "Например, Лиссабон, Португалия",
+  "travelMapEmpty": "Ваше следующее воспоминание начинается здесь",
+  "travelMapEmptyBody": "Добавьте город, где вы были, или отметьтесь там, где находитесь сейчас.",
+  "travelMapConfirm": "Сохранить это посещение?",
+  "travelMapConfirmBody": "Проверьте город и дату перед сохранением на личной карте.",
+  "travelMapDate": "Дата посещения",
+  "travelMapSave": "Сохранить на моей карте",
+  "travelMapCancel": "Отмена",
+  "travelMapClose": "Закрыть",
+  "travelMapNoResults": "Город не найден. Попробуйте добавить к запросу страну.",
+  "travelMapLookupError": "Не удалось найти город. Проверьте подключение или добавьте место вручную.",
+  "travelMapDenied": "Доступ к геопозиции выключен. Город можно добавить вручную.",
+  "travelMapDisabled": "Включите службы геолокации или добавьте город вручную.",
+  "travelMapError": "Не удалось загрузить карту путешествий. Повторите попытку.",
+  "travelMapSaveError": "Не удалось сохранить посещение. Повторите попытку.",
+  "travelMapUnavailable": "Для карты путешествий нужно обновление сервера.",
+  "travelMapOffline": "Нет подключения · показаны сохранённые места",
+  "travelMapRetry": "Повторить",
+  "travelMapDelete": "Удалить посещение",
+  "travelMapDeleteConfirm": "Удалить это посещение с личной карты?",
+  "travelMapFit": "Показать все места",
+  "travelMapSaved": "Посещение сохранено",
+  "travelMapVisited": "Посещено",
+  "travelMapLimit": "На карте уже 1000 посещений. Удалите старое, прежде чем добавить новое.",
+  "travelMapCounts": "{countries, plural, one{{countries} страна} few{{countries} страны} many{{countries} стран} other{{countries} страны}} · {cities, plural, one{{cities} город} few{{cities} города} many{{cities} городов} other{{cities} города}}",
+  "@travelMapCounts": {
+    "placeholders": {
+      "countries": {
+        "type": "int"
+      },
+      "cities": {
+        "type": "int"
+      }
+    }
+  },
+  "travelMapVisits": "{count, plural, one{{count} посещение} few{{count} посещения} many{{count} посещений} other{{count} посещения}}",
+  "@travelMapVisits": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "travelTripDestinations": "Направления (необязательно)",
+  "travelAddDestination": "Добавить направление",
+  "travelRemoveDestination": "Удалить направление",
+  "travelFromTrip": "Из поездки",
+  "travelChooseTrip": "Выберите поездку",
+  "travelNoTrips": "Поездок пока нет. Место можно добавить вручную.",
+  "travelAddToMap": "Добавить на мою карту",
+  "travelTripConfirm": "Сохраняйте только места, где вы действительно были. На карту добавится личное воспоминание.",
+  "travelVisitTitle": "Название (необязательно)",
+  "travelAddPhoto": "Добавить фото",
+  "travelChangePhoto": "Изменить фото",
+  "travelRemovePhoto": "Удалить фото",
+  "travelPhotoError": "Не удалось подготовить это фото. Выберите другое.",
+  "travelEditVisit": "Изменить посещение",
+  "travelOpenTrip": "Открыть поездку",
+  "travelPreviousVisit": "Предыдущее посещение",
+  "travelNextVisit": "Следующее посещение",
+  "travelDuplicate": "Это посещение уже есть на вашей карте.",
+  "liveMapTitle": "Живая карта",
+  "liveShareTitle": "Поделиться геопозицией",
+  "liveConsent": "Делитесь точной геопозицией только с принятыми участниками этой поездки на выбранное время. Передача продолжается в фоне, и её можно остановить в любой момент.",
+  "liveBackgroundNote": "Обновления могут приостановиться без интернета или при принудительном закрытии приложения. Хранится только последняя геопозиция, история маршрута не записывается.",
+  "liveStart": "Начать передачу",
+  "liveStop": "Остановить передачу",
+  "liveNotification": "Ваша геопозиция передаётся участникам поездки. Откройте Splyto, чтобы остановить.",
+  "livePermissionError": "Включите доступ к геопозиции в настройках телефона, чтобы поделиться ею.",
+  "liveStartError": "Не удалось начать передачу. Проверьте доступ к геопозиции, интернет, а также дату и время на телефоне.",
+  "liveStopPending": "Обновления остановлены. Ждём интернет, чтобы удалить последнюю геопозицию; без обновлений она исчезнет с карты в течение 2 минут.",
+  "liveSharing": "передаёт",
+  "liveUnavailable": "Эта живая карта недоступна. Вернитесь в поездку и обновите её.",
+  "liveMapLoadError": "Не удалось загрузить карту. Проверьте подключение и откройте карту снова.",
+  "liveLoadError": "Не удалось обновить геопозиции. Показаны только недавние обновления.",
+  "liveFit": "Показать всех",
+  "liveEmpty": "Пока никто не передаёт недавнюю геопозицию.",
+  "liveRecent": "Только что обновлено",
+  "liveLastKnown": "Последнее обновление",
+  "liveAccuracy": "Точность",
+  "liveUntil": "Передача до",
+  "liveOtherSession": "Начато в другом сеансе. Остановить можно здесь.",
+  "liveUpdatesPaused": "Обновления приостановлены. Проверьте доступ к геопозиции и интернет.",
+  "livePrivateUntilShared": "Ваша геопозиция остаётся личной, пока вы не решите ею поделиться.",
+  "activityEventExpenseCreated": "добавляет расход",
+  "activityEventExpenseUpdated": "изменяет расход",
+  "activityEventExpenseDeleted": "удаляет расход",
+  "activityEventExpenseCommentAdded": "комментирует расход",
+  "activityEventTripCreated": "создаёт поездку",
+  "activityEventTripUpdated": "изменяет данные поездки",
+  "activityEventTripRenamed": "переименовывает поездку",
+  "activityEventTripCurrencyChanged": "меняет валюту поездки",
+  "activityEventTripPhotoChanged": "меняет фото поездки",
+  "activityEventTripBudgetChanged": "меняет бюджет поездки",
+  "activityEventTripDestinationsChanged": "меняет направления поездки",
+  "activityEventTripMembersAdded": "добавляет участников",
+  "activityEventTripMembersInvited": "отправляет приглашения: {count}",
+  "@activityEventTripMembersInvited": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "activityEventTripMemberJoined": "присоединяется к поездке",
+  "activityEventTripInvitationDeclined": "отклоняет приглашение в поездку",
+  "activityEventTripInvitationRevoked": "отменяет приглашение в поездку",
+  "activityEventTripMemberRemoved": "удаляет из поездки: {name}",
+  "@activityEventTripMemberRemoved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberLeft": "покидает поездку",
+  "activityEventTripMemberRoleUpdated": "меняет роль {name} на {role}",
+  "@activityEventTripMemberRoleUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "activityEventTripMemberReady": "отмечает готовность к расчётам",
+  "activityEventTripMemberNotReady": "снимает отметку о готовности",
+  "activityEventTripAllMembersReady": "Все участники готовы к расчётам",
+  "activityEventTripFinished": "завершает поездку",
+  "activityEventTripSettled": "Все переводы подтверждены, поездка рассчитана",
+  "activityEventSettlementMarkedSent": "отмечает перевод как отправленный",
+  "activityEventSettlementConfirmed": "подтверждает перевод",
+  "activityEventSettlementSentCancelled": "отменяет статус отправки",
+  "activityEventSettlementNotReceived": "отмечает перевод как не полученный",
+  "activityEventSettlementReminderSent": "отправляет напоминание о расчёте",
+  "activityEventPaymentMarkedSent": "записывает платёж",
+  "activityEventPaymentRequested": "запрашивает платёж",
+  "activityEventPaymentRequestMarkedSent": "отмечает запрошенный платёж как отправленный",
+  "activityEventPaymentRequestCancelled": "отменяет запрос на платёж",
+  "activityEventPaymentRequestDeclined": "отклоняет запрос на платёж",
+  "activityEventPaymentConfirmed": "подтверждает платёж",
+  "activityEventPaymentCancelled": "отменяет запись о платеже",
+  "activityEventPaymentNotReceived": "отмечает платёж как не полученный",
+  "activityEventUnknown": "вносит изменение",
+  "privacyEnglishFallback": "Политика конфиденциальности сейчас доступна на английском языке.",
+  "activityRoleAdmin": "Администратор",
+  "accountDeleteTitle": "Удалить аккаунт",
+  "accountDeleteIntro": "Подтвердите удаление по эл. почте. После подтверждения его нельзя отменить.",
+  "accountDeleteConsequences": "Удаление необратимо. Ваш профиль будет обезличен, а доступ к аккаунту закрыт. Общие записи о поездках и расходах останутся у других участников.",
+  "accountDeleteReasonsTitle": "Что мы могли бы сделать лучше?",
+  "accountDeleteReasonsHint": "Причина (необязательно)",
+  "accountDeleteReasonNotUsing": "Splyto мне больше не нужен для поездок",
+  "accountDeleteReasonAnotherWay": "Я веду общие расходы другим способом",
+  "accountDeleteReasonComplicated": "Всё требует слишком много усилий",
+  "accountDeleteReasonTechnical": "Я столкнулся(-ась) с ошибками или техническими проблемами",
+  "accountDeleteReasonPrivacy": "Я предпочитаю удалить свои данные аккаунта",
+  "accountDeleteReasonOther": "Я ухожу по другой причине",
+  "accountDeleteEmailStep": "Следующий шаг: подтверждение по эл. почте.",
+  "accountDeletePasswordHint": "Введите текущий пароль Splyto, чтобы запросить письмо с подтверждением. Ваш аккаунт пока активен.",
+  "accountDeleteInboxTitle": "Последний шаг в вашей почте",
+  "accountDeleteSentBody": "Ссылка для подтверждения отправлена на {email}.",
+  "accountDeleteSentHint": "Аккаунт остаётся активным, пока вы не подтвердите удаление.",
+  "accountDeleteSending": "Отправляем письмо с подтверждением",
+  "@accountDeleteSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "friendsShowMore": "Показать ещё",
+  "tripReportTitle": "Отчёт о поездке",
+  "tripReportDetailedTitle": "Подробный отчёт о поездке",
+  "tripReportDates": "Даты",
+  "tripReportDestinations": "Направления",
+  "tripReportTotalSpent": "Всего потрачено",
+  "tripReportExpenses": "Расходы",
+  "tripReportYouPaid": "Вы заплатили",
+  "tripReportYourShare": "Ваша доля",
+  "tripReportYourBalance": "Ваш баланс",
+  "tripReportYourSettlements": "Ваши расчёты",
+  "tripReportYouPay": "Вы платите: {arg1}",
+  "tripReportPaysYou": "{arg1} платит вам",
+  "tripReportStatus": "Статус",
+  "tripReportStatusPending": "Ожидает",
+  "tripReportStatusSent": "Отправлено",
+  "tripReportStatusConfirmed": "Подтверждено",
+  "tripReportNoSettlements": "Вам рассчитываться не нужно.",
+  "tripReportByCategory": "Расходы по категориям",
+  "tripReportCategory": "Категория",
+  "tripReportAmount": "Сумма",
+  "tripReportMembers": "Участники",
+  "tripReportMember": "Участник",
+  "tripReportPaid": "Оплачено",
+  "tripReportShare": "Доля",
+  "tripReportBalance": "Баланс",
+  "tripReportAllExpenses": "Все расходы",
+  "tripReportDate": "Дата",
+  "tripReportDescription": "Описание",
+  "tripReportPaidBy": "Кто оплатил",
+  "tripReportOriginalAmount": "Исходная сумма",
+  "tripReportCurrency": "Валюта",
+  "tripReportRate": "Курс",
+  "tripReportPayments": "Платежи",
+  "tripReportFrom": "От кого",
+  "tripReportTo": "Кому",
+  "tripReportFooter": "Создано в Splyto",
+  "tripReportEmailSubject": "Ваш отчёт о поездке: {arg1}",
+  "tripReportEmailTitle": "Ваш отчёт о поездке готов",
+  "tripReportEmailGreeting": "Привет, {arg1}!",
+  "tripReportEmailBody": "Поездка «{arg1}» завершена. Отчёт прикреплён в формате PDF.",
+  "tripReportEmailOptOut": "Эти письма можно отключить в разделе «Профиль», в пункте «Уведомления».",
+  "tripReportEmailSetting": "Отчёт о поездке по эл. почте",
+  "tripReportEmailSettingSubtitle": "Получайте сводку в PDF, когда поездка завершена.",
+  "tripExportAction": "Экспортировать детали поездки",
+  "tripExportPdf": "Подробный PDF",
+  "tripExportCsv": "Таблица (CSV)",
+  "tripExportFailed": "Не удалось создать экспорт. Повторите попытку.",
+  "yearSummaryTitle": "Ваш год в путешествиях",
+  "yearSummarySubtitle": "Ваши поездки, места и расходы за год.",
+  "yearSummaryEmpty": "В {arg1} году нет завершённых поездок.",
+  "yearSummaryLoadFailed": "Не удалось загрузить ваш год в путешествиях.",
+  "yearSummaryTrips": "Поездки",
+  "yearSummaryDays": "Дней в пути",
+  "yearSummaryCountries": "Страны",
+  "yearSummaryCities": "Города",
+  "yearSummarySpending": "Ваши расходы",
+  "yearSummaryBiggestTrip": "Самая большая поездка",
+  "yearSummaryTopCategory": "Главная категория",
+  "yearSummaryTopCompanion": "Больше всего поездок с",
+  "yearSummaryTripsTogether": "Совместных поездок: {arg1}",
+  "yearSummaryPartial": "Некоторых сумм нет, потому что курс валюты был недоступен.",
+  "yearSummaryShare": "Поделиться",
+  "yearSummaryShareFailed": "Не удалось поделиться изображением.",
+  "yearSummaryRetry": "Повторить"
+}

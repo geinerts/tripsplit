@@ -13,7 +13,7 @@ from babel.numbers import get_currency_name, get_currency_precision
 ROOT = Path(__file__).resolve().parents[1]
 LOCALES = {'en': 'en', 'lv': 'lv', 'de': 'de', 'es': 'es', 'fr': 'fr', 'it': 'it',
            'pt': 'pt_PT', 'pl': 'pl', 'nl': 'nl', 'sv': 'sv', 'da': 'da', 'nb': 'nb',
-           'fi': 'fi', 'cs': 'cs', 'uk': 'uk'}
+           'fi': 'fi', 'cs': 'cs', 'uk': 'uk', 'ru': 'ru'}
 
 # Offered in this order. Each one is checked to have current and historical rates.
 CURRENCIES = {

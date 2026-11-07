@@ -64,6 +64,7 @@ void main() {
         'fi',
         'cs',
         'uk',
+        'ru',
         'lv',
         'es',
       ]) {

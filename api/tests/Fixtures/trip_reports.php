@@ -170,7 +170,7 @@ invitation_expect(str_contains($csv, 'Surf lessons'), 'Custom category stays as 
 invitation_expect(!str_contains($csv, 'example.invalid'), 'CSV has no email addresses');
 
 // Detailed PDF, rendered for real.
-$_GET = ['format' => 'pdf', 'locale' => 'uk'];
+$_GET = ['format' => 'pdf', 'locale' => 'ru'];
 $export = invitation_call('trip_export_action', 4);
 invitation_expect($export['status'] === 200 && $export['body']['mime_type'] === 'application/pdf', 'Premium account can export a PDF');
 invitation_expect(str_starts_with((string) base64_decode($export['body']['content_base64']), '%PDF-'), 'Output is a PDF');
@@ -180,7 +180,7 @@ invitation_expect(str_contains($detailed, 'All expenses') && !str_contains($deta
 
 // Every language has every phrase.
 $english = array_keys(trip_report_strings('en'));
-foreach (['en','de','es','fr','it','pt','pl','nl','sv','da','nb','fi','cs','uk','lv'] as $locale) {
+foreach (['en','de','es','fr','it','pt','pl','nl','sv','da','nb','fi','cs','uk','lv','ru'] as $locale) {
     $catalog = json_decode((string) file_get_contents(__DIR__ . '/../../lib/helpers/trip_report_locales/' . $locale . '.json'), true);
     invitation_expect(array_keys($catalog) === $english, 'Catalog ' . $locale . ' is complete');
 }

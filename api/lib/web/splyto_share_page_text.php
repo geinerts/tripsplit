@@ -160,6 +160,17 @@ const SPLYTO_SHARE_PAGE_TEXT = [
         'invite_missing' => 'Odkaz na pozvánku je neúplný.',
         'friend_missing' => 'Odkaz na přítele je neúplný.',
     ],
+    'ru' => [
+        'invite_title' => 'Вас пригласили в поездку',
+        'friend_title' => 'Добавьте друга в SPLYTO',
+        'install' => 'Установить SPLYTO',
+        'invite_return' => 'После установки вернитесь к этому сообщению и нажмите на ссылку ещё раз, чтобы присоединиться к поездке.',
+        'friend_return' => 'После установки вернитесь к этому сообщению и нажмите на ссылку ещё раз, чтобы добавить друга.',
+        'open_app' => 'Уже есть SPLYTO? Открыть приложение',
+        'invite_unavailable' => 'Это приглашение больше недоступно.',
+        'invite_missing' => 'Ссылка на приглашение неполная.',
+        'friend_missing' => 'Ссылка на друга неполная.',
+    ],
     'uk' => [
         'invite_title' => 'Вас запросили в подорож',
         'friend_title' => 'Додайте друга в SPLYTO',

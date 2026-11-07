@@ -121,6 +121,7 @@ void main() {
         'fi',
         'cs',
         'uk',
+        'ru',
       ]) {
         expect(
           AppLocaleController.resolveDeviceLocale([Locale(code, 'XX')]),

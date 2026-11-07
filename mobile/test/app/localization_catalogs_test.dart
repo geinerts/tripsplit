@@ -6,14 +6,14 @@ import 'package:tripsplit/l10n/app_localizations.dart';
 
 void main() {
   test(
-    'all 15 catalogs contain every message and preserve interpolation arguments',
+    'all 16 catalogs contain every message and preserve interpolation arguments',
     () {
       final source =
           jsonDecode(File('lib/l10n/app_en.arb').readAsStringSync())
               as Map<String, dynamic>;
       final keys = source.keys.where((key) => !key.startsWith('@')).toSet();
       final args = RegExp(r'\{(\w+)(?:\}|,)');
-      expect(AppLocalizations.supportedLocales, hasLength(15));
+      expect(AppLocalizations.supportedLocales, hasLength(16));
       for (final locale in AppLocalizations.supportedLocales) {
         final catalog =
             jsonDecode(
@@ -74,7 +74,7 @@ void main() {
   });
 
   test('Slavic counts use different forms for 1, 2 and 5', () async {
-    for (final code in ['pl', 'uk', 'cs']) {
+    for (final code in ['pl', 'uk', 'cs', 'ru']) {
       final t = await AppLocalizations.delegate.load(Locale(code));
       expect(t.expensesCount(1), isNot(t.expensesCount(2)));
       expect(

@@ -4,27 +4,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 
 enum AppLocaleMode {
-  system(null, '', ''),
-  english('en', 'English', '🇬🇧'),
-  german('de', 'Deutsch', '🇩🇪'),
-  spanish('es', 'Español', '🇪🇸'),
-  french('fr', 'Français', '🇫🇷'),
-  italian('it', 'Italiano', '🇮🇹'),
-  portuguese('pt', 'Português', '🇵🇹'),
-  polish('pl', 'Polski', '🇵🇱'),
-  dutch('nl', 'Nederlands', '🇳🇱'),
-  swedish('sv', 'Svenska', '🇸🇪'),
-  danish('da', 'Dansk', '🇩🇰'),
-  norwegian('nb', 'Norsk bokmål', '🇳🇴'),
-  finnish('fi', 'Suomi', '🇫🇮'),
-  czech('cs', 'Čeština', '🇨🇿'),
-  ukrainian('uk', 'Українська', '🇺🇦'),
-  latvian('lv', 'Latviešu', '🇱🇻');
+  system(null, ''),
+  english('en', 'English'),
+  german('de', 'Deutsch'),
+  spanish('es', 'Español'),
+  french('fr', 'Français'),
+  italian('it', 'Italiano'),
+  portuguese('pt', 'Português'),
+  polish('pl', 'Polski'),
+  dutch('nl', 'Nederlands'),
+  swedish('sv', 'Svenska'),
+  danish('da', 'Dansk'),
+  norwegian('nb', 'Norsk bokmål'),
+  finnish('fi', 'Suomi'),
+  czech('cs', 'Čeština'),
+  ukrainian('uk', 'Українська'),
+  latvian('lv', 'Latviešu'),
+  russian('ru', 'Русский');
 
-  const AppLocaleMode(this.languageCode, this.nativeName, this.flag);
+  const AppLocaleMode(this.languageCode, this.nativeName);
   final String? languageCode;
   final String nativeName;
-  final String flag;
 }
 
 class AppLocaleController extends ChangeNotifier {

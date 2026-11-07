@@ -9,7 +9,7 @@ final class SharePageTextTest extends TestCase
 {
     public function test_every_language_has_every_text(): void
     {
-        self::assertCount(15, SPLYTO_SHARE_PAGE_TEXT);
+        self::assertCount(16, SPLYTO_SHARE_PAGE_TEXT);
         $keys = array_keys(SPLYTO_SHARE_PAGE_TEXT['en']);
         foreach (SPLYTO_SHARE_PAGE_TEXT as $language => $text) {
             self::assertSame($keys, array_keys($text), $language);

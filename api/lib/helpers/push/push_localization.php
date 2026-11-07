@@ -22,7 +22,7 @@ function normalize_push_locale_code(?string $raw): string
     }
 
     if ($value === 'no') $value = 'nb';
-    return in_array($value, ['en', 'de', 'fr', 'it', 'pt', 'pl', 'nl', 'sv', 'da', 'nb', 'fi', 'cs', 'uk'], true) ? $value : 'en';
+    return in_array($value, ['en', 'de', 'fr', 'it', 'pt', 'pl', 'nl', 'sv', 'da', 'nb', 'fi', 'cs', 'uk', 'ru'], true) ? $value : 'en';
 }
 
 function push_localize_notification_for_locale(array $notification, string $localeCode): array

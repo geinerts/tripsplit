@@ -48,7 +48,7 @@ void main() {
     final catalogs = directory.listSync().whereType<File>().where(
       (file) => file.path.endsWith('.arb'),
     );
-    expect(catalogs.length, 15);
+    expect(catalogs.length, 16);
     for (final catalog in catalogs) {
       final data = jsonDecode(catalog.readAsStringSync()) as Map;
       for (final item in AppCurrencyCatalog.supported) {
