@@ -89,7 +89,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
                       _selectedTabIndex == _MainShellPageState._tabActivities &&
                       !_isWorkspaceOpen,
                   tripsController: widget.tripsController,
-                  workspaceController: widget.workspaceController,
+                  analyticsRepository: widget.analyticsRepository,
                   authController: widget.authController,
                   commandController: _analyticsCommandController ??=
                       AnalyticsPageCommandController(),

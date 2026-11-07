@@ -23,19 +23,15 @@ extension _AnalyticsPageActions on _AnalyticsPageState {
       _error = null;
     });
     try {
-      // Force a server read: cached trip totals must not silently mix with fresh pages.
+      // Force a server read: cached trip totals must not silently mix with a fresh summary.
       final trips = await widget.tripsController.loadTrips(forceRefresh: true);
       if (!current()) return;
-      final entries = await loadAnalyticsEntries(
-        trips: trips,
-        userId: account,
-        loadPage: widget.workspaceController.loadExpensesPage,
-        isCurrent: current,
-      );
+      final summaries = await widget.analyticsRepository.loadSummary();
       if (!current()) return;
+      final matched = matchAnalyticsToTrips(trips, summaries);
       _updateState(() {
         _trips = trips;
-        _entries = entries;
+        _summaries = matched;
         _loaded = true;
         if (!trips.any((t) => t.id == _selectedTripId)) {
           _selectedTripId = trips.firstOrNull?.id;
@@ -54,7 +50,7 @@ extension _AnalyticsPageActions on _AnalyticsPageState {
             ([401, 403, 404].contains(error.statusCode) ||
                 error.code == 'account_changed');
         if (denied) {
-          _entries = [];
+          _summaries = [];
           _trips = [];
           _loaded = false;
         }

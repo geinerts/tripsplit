@@ -6,16 +6,17 @@ extension _AnalyticsPageCalculations on _AnalyticsPageState {
   String get _displayCurrency =>
       (_byTrip ? _selectedTrip?.currencyCode : _currency) ?? 'EUR';
   AnalyticsReport get _report => AnalyticsReport(
-    source: _entries,
+    source: _summaries,
     currency: _displayCurrency,
     tripId: _byTrip ? _selectedTripId : null,
     month: _byTrip ? null : _month,
     personal: !_byTrip || _personal,
   );
   List<String> get _months =>
-      (_entries
-          .where((e) => e.trip.currencyCode == _currency)
-          .map((e) => e.month)
+      (_summaries
+          .where((s) => s.currencyCode == _currency)
+          .expand((s) => s.buckets)
+          .map((b) => b.month)
           .whereType<String>()
           .toSet()
           .toList()

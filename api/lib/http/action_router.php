@@ -91,6 +91,7 @@ function api_action_handlers(): array
         'end_trip' => 'end_trip_action',
         'trip_export' => 'trip_export_action',
         'travel_year_summary' => 'travel_year_summary_action',
+        'analytics_summary' => 'analytics_summary_action',
         'set_account_locale' => 'set_account_locale_action',
         'set_ready_to_settle' => 'set_ready_to_settle_action',
         'mark_settlement_sent' => 'mark_settlement_sent_action',

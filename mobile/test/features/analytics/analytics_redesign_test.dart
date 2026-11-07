@@ -8,16 +8,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/core/ui/app_bottom_nav_bar.dart';
+import 'package:tripsplit/features/analytics/data/analytics_repository.dart';
+import 'package:tripsplit/features/analytics/domain/analytics_report.dart';
 import 'package:tripsplit/features/analytics/presentation/pages/analytics_page.dart';
 import 'package:tripsplit/features/auth/domain/entities/auth_user.dart';
 import 'package:tripsplit/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:tripsplit/features/trips/domain/entities/trip.dart';
 import 'package:tripsplit/features/trips/presentation/controllers/trips_controller.dart';
-import 'package:tripsplit/features/workspace/domain/entities/trip_expense.dart';
-import 'package:tripsplit/features/workspace/domain/entities/trip_expenses_page.dart';
-import 'package:tripsplit/features/workspace/presentation/controllers/workspace_controller.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
-import 'analytics_report_test.dart' show analyticsTrip, analyticsExpense, page;
+import 'analytics_report_test.dart'
+    show AnalyticsTestExpense, analyticsSummary, analyticsTrip;
 
 class _Auth implements AuthController {
   int id = 1;
@@ -41,43 +41,51 @@ class _Trips implements TripsController {
   dynamic noSuchMethod(Invocation i) => super.noSuchMethod(i);
 }
 
-class _Workspace implements WorkspaceController {
-  Map<int, List<TripExpense>> byTrip = {};
+class _Analytics implements AnalyticsRepository {
+  Map<int, List<AnalyticsTestExpense>> byTrip = {};
+  List<Trip> trips = [];
+  List<AnalyticsTripSummary>? fixed;
   Object? error;
-  Completer<TripExpensesPage>? pending;
+  Completer<List<AnalyticsTripSummary>>? pending;
   int calls = 0;
-  List<TripExpense> expenses = [
-    analyticsExpense(1, amount: 24, share: 8, payer: 1, note: 'Breakfast'),
-    analyticsExpense(
+  List<AnalyticsTestExpense> expenses = const [
+    AnalyticsTestExpense(1, amount: 24, share: 8, payer: 1, note: 'Breakfast'),
+    AnalyticsTestExpense(
       2,
       amount: 42,
       share: 14,
       category: 'transport',
       note: 'Airport transfer',
     ),
-    analyticsExpense(3, amount: 60, share: 20, payer: 1, date: '2026-10-06'),
+    AnalyticsTestExpense(
+      3,
+      amount: 60,
+      share: 20,
+      payer: 1,
+      date: '2026-10-06',
+    ),
   ];
   @override
-  Future<TripExpensesPage> loadExpensesPage({
-    required int tripId,
-    int limit = 50,
-    String? cursor,
-    int? offset,
-  }) async {
+  Future<List<AnalyticsTripSummary>> loadSummary() async {
     calls++;
     if (error != null) throw error!;
     if (pending != null) return pending!.future;
-    return page(byTrip[tripId] ?? expenses);
+    if (fixed != null) return fixed!;
+    return [
+      for (final trip in trips)
+        analyticsSummary(
+          trip.id,
+          trip.currencyCode,
+          byTrip[trip.id] ?? expenses,
+        ),
+    ];
   }
-
-  @override
-  dynamic noSuchMethod(Invocation i) => super.noSuchMethod(i);
 }
 
 Future<void> _mount(
   WidgetTester tester,
   _Trips trips,
-  _Workspace workspace, {
+  _Analytics analytics, {
   _Auth? auth,
   bool dark = false,
   String locale = 'en',
@@ -93,6 +101,7 @@ Future<void> _mount(
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
   addTearDown(tester.view.resetPadding);
+  analytics.trips = trips.trips;
   final app = MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: dark ? AppTheme.dark() : AppTheme.light(),
@@ -127,7 +136,7 @@ Future<void> _mount(
       ),
       body: AnalyticsPage(
         tripsController: trips,
-        workspaceController: workspace,
+        analyticsRepository: analytics,
         authController: auth ?? _Auth(),
         commandController: commands,
         active: active,
@@ -158,7 +167,7 @@ void main() {
         await _mount(
           tester,
           _Trips(),
-          _Workspace(),
+          _Analytics(),
           dark: dark,
           locale: locale,
           scale: 2,
@@ -187,7 +196,7 @@ void main() {
   testWidgets('all trips personal totals, trip total and share switch', (
     tester,
   ) async {
-    await _mount(tester, _Trips(), _Workspace());
+    await _mount(tester, _Trips(), _Analytics());
     expect(find.text('€42.00'), findsWidgets);
     await tester.tap(find.text('By trip'));
     await tester.pumpAndSettle();
@@ -216,7 +225,7 @@ void main() {
   testWidgets(
     'failed load has no zero total; retry recovers; denial clears old data',
     (tester) async {
-      final w = _Workspace()
+      final w = _Analytics()
         ..error = const ApiException('Offline', isNetworkError: true);
       final c = AnalyticsPageCommandController();
       await _mount(tester, _Trips(), w, commands: c);
@@ -232,11 +241,27 @@ void main() {
       expect(find.byKey(const ValueKey('analytics-total')), findsNothing);
     },
   );
-  testWidgets('hidden analytics does not load all expense histories', (
+  testWidgets('filters use the loaded summary without a new request', (
     tester,
   ) async {
+    final w = _Analytics();
+    await _mount(tester, _Trips(), w);
+    await tester.tap(find.text('By trip'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Trip total').first);
+    await tester.pumpAndSettle();
+    expect(w.calls, 1);
+  });
+  testWidgets('a currency that no longer matches shows no totals', (
+    tester,
+  ) async {
+    final w = _Analytics()..fixed = [analyticsSummary(1, 'USD', const [])];
+    await _mount(tester, _Trips(), w);
+    expect(find.byKey(const ValueKey('analytics-total')), findsNothing);
+  });
+  testWidgets('hidden analytics does not load the summary', (tester) async {
     final t = _Trips();
-    final w = _Workspace();
+    final w = _Analytics();
     await _mount(tester, t, w, active: false);
     expect(t.calls, 0);
     expect(w.calls, 0);
@@ -246,24 +271,26 @@ void main() {
   testWidgets('empty trips shows approved illustration without totals', (
     tester,
   ) async {
-    await _mount(tester, _Trips()..trips = [], _Workspace());
+    await _mount(tester, _Trips()..trips = [], _Analytics());
     expect(find.byKey(const ValueKey('analytics-empty')), findsOneWidget);
     expect(find.byKey(const ValueKey('analytics-total')), findsNothing);
   });
   testWidgets('stale refresh cannot replace a newer report', (tester) async {
-    final w = _Workspace();
+    final w = _Analytics();
     final c = AnalyticsPageCommandController();
     await _mount(tester, _Trips(), w, commands: c);
-    final old = Completer<TripExpensesPage>();
+    final old = Completer<List<AnalyticsTripSummary>>();
     w.pending = old;
     c.requestRefresh();
     await tester.pump();
     await tester.pump();
     w.pending = null;
-    w.expenses = [analyticsExpense(5, share: 5)];
+    w.expenses = const [AnalyticsTestExpense(5, share: 5)];
     c.requestRefresh();
     await tester.pumpAndSettle();
-    old.complete(page([analyticsExpense(6, share: 99)]));
+    old.complete([
+      analyticsSummary(1, 'EUR', const [AnalyticsTestExpense(6, share: 99)]),
+    ]);
     await tester.pumpAndSettle();
     expect(
       tester.widget<Text>(find.byKey(const ValueKey('analytics-total'))).data,
@@ -275,13 +302,13 @@ void main() {
     (tester) async {
       final trips = _Trips()
         ..trips = [analyticsTrip(), analyticsTrip(id: 2, currency: 'USD')];
-      final w = _Workspace()
-        ..byTrip = {
+      final w = _Analytics()
+        ..byTrip = const {
           1: [
-            analyticsExpense(1, share: 20),
-            analyticsExpense(2, share: 5, date: '2026-11-05'),
+            AnalyticsTestExpense(1, share: 20),
+            AnalyticsTestExpense(2, share: 5, date: '2026-11-05'),
           ],
-          2: [analyticsExpense(3, currency: 'USD', share: 15)],
+          2: [AnalyticsTestExpense(3, share: 15)],
         };
       await _mount(tester, trips, w);
       expect(
@@ -310,7 +337,7 @@ void main() {
   testWidgets('ordinary refresh failure retains an explicitly stale report', (
     tester,
   ) async {
-    final w = _Workspace();
+    final w = _Analytics();
     final c = AnalyticsPageCommandController();
     await _mount(tester, _Trips(), w, commands: c);
     w.error = const ApiException('Offline', isNetworkError: true);
@@ -329,7 +356,7 @@ void main() {
     'account change clears the previous report before a failed load',
     (tester) async {
       final a = _Auth();
-      final w = _Workspace();
+      final w = _Analytics();
       final trips = _Trips();
       await _mount(tester, trips, w, auth: a);
       a.id = 2;
@@ -344,16 +371,21 @@ void main() {
         testWidgets('preview $screen dark=$dark', (tester) async {
           final key = GlobalKey();
           final trips = _Trips();
-          final workspace = _Workspace();
+          final analytics = _Analytics();
           if (screen == 'categories') {
-            workspace.expenses = [
-              analyticsExpense(
+            analytics.expenses = const [
+              AnalyticsTestExpense(
                 1,
                 amount: 1000,
                 share: 1000,
                 category: 'tickets',
               ),
-              analyticsExpense(2, amount: 25, share: 25, category: 'groceries'),
+              AnalyticsTestExpense(
+                2,
+                amount: 25,
+                share: 25,
+                category: 'groceries',
+              ),
             ];
           }
           if (screen == 'empty') trips.trips = [];
@@ -363,9 +395,9 @@ void main() {
               analyticsTrip(id: 2, name: 'Alpine weekend', status: 'archived'),
               analyticsTrip(id: 3, name: 'Copenhagen'),
             ];
-            workspace.byTrip = {
+            analytics.byTrip = const {
               2: [
-                analyticsExpense(
+                AnalyticsTestExpense(
                   4,
                   amount: 240,
                   share: 120,
@@ -373,7 +405,7 @@ void main() {
                 ),
               ],
               3: [
-                analyticsExpense(
+                AnalyticsTestExpense(
                   5,
                   amount: 85,
                   share: 85,
@@ -382,7 +414,7 @@ void main() {
               ],
             };
           }
-          await _mount(tester, trips, workspace, dark: dark, boundary: key);
+          await _mount(tester, trips, analytics, dark: dark, boundary: key);
           if (screen == 'total' ||
               screen == 'share' ||
               screen == 'categories') {

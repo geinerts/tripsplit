@@ -13,7 +13,7 @@ import '../../../../core/ui/responsive.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../trips/domain/entities/trip.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
-import '../../../workspace/presentation/controllers/workspace_controller.dart';
+import '../../data/analytics_repository.dart';
 import '../../domain/analytics_report.dart';
 part 'analytics_page_actions.dart';
 part 'analytics_page_calculations.dart';
@@ -35,14 +35,14 @@ class AnalyticsPage extends StatefulWidget {
   const AnalyticsPage({
     super.key,
     required this.tripsController,
-    required this.workspaceController,
+    required this.analyticsRepository,
     required this.authController,
     this.commandController,
     this.onOpenTrip,
     this.active = true,
   });
   final TripsController tripsController;
-  final WorkspaceController workspaceController;
+  final AnalyticsRepository analyticsRepository;
   final AuthController authController;
   final AnalyticsPageCommandController? commandController;
   final AnalyticsOpenTripCallback? onOpenTrip;
@@ -57,7 +57,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   int? _selectedTripId;
   int _generation = 0, _accountId = 0;
   List<Trip> _trips = [];
-  List<AnalyticsEntry> _entries = [];
+  List<AnalyticsTripSummary> _summaries = [];
   @override
   void initState() {
     super.initState();
@@ -78,7 +78,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
       _generation++;
       _accountId = account;
       _trips = [];
-      _entries = [];
+      _summaries = [];
       _loaded = false;
       _loading = false;
       _selectedTripId = null;

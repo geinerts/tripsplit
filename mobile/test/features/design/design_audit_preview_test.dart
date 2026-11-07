@@ -1,7 +1,6 @@
 import 'package:tripsplit/core/ui/app_bottom_nav_bar.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_participant.dart';
-import 'package:tripsplit/features/workspace/domain/entities/trip_expenses_page.dart';
 import 'package:tripsplit/app/theme/theme_mode_controller.dart';
 import 'package:tripsplit/app/theme/theme_mode_scope.dart';
 import 'package:tripsplit/features/workspace/domain/entities/trip_expense.dart';
@@ -31,6 +30,8 @@ import 'package:tripsplit/features/friends/domain/entities/friends_section_page.
 import 'package:tripsplit/features/friends/presentation/controllers/friends_controller.dart';
 import 'package:tripsplit/features/quick_start/data/quick_start_seen_store.dart';
 import 'package:tripsplit/features/quick_start/data/quick_start_service.dart';
+import 'package:tripsplit/features/analytics/data/analytics_repository.dart';
+import 'package:tripsplit/features/analytics/domain/analytics_report.dart';
 import 'package:tripsplit/features/shell/presentation/pages/main_shell_page.dart';
 import 'package:tripsplit/features/trips/data/models/trip_model.dart';
 import 'package:tripsplit/features/trips/domain/entities/trip.dart';
@@ -133,18 +134,6 @@ class _Workspace implements WorkspaceController {
     return 0;
   }
 
-  @override
-  Future<TripExpensesPage> loadExpensesPage({
-    required int tripId,
-    int limit = 300,
-    String? cursor,
-    int? offset,
-  }) async => TripExpensesPage(
-    items: (await loadSnapshot(tripId: tripId)).expenses,
-    hasMore: false,
-    nextCursor: null,
-    nextOffset: null,
-  );
   @override
   Future<WorkspaceSnapshot> loadSnapshot({required int tripId}) async =>
       WorkspaceSnapshot(
@@ -304,6 +293,66 @@ class _Service implements QuickStartService {
   }
 }
 
+class _DesignAnalytics implements AnalyticsRepository {
+  _DesignAnalytics(this.workspace);
+  final WorkspaceController workspace;
+  @override
+  Future<List<AnalyticsTripSummary>> loadSummary() async {
+    final expenses = (await workspace.loadSnapshot(tripId: 1)).expenses;
+    int cents(double value) => (value * 100).round();
+    int share(TripExpense e) => e.participants
+        .where((p) => p.id == 1)
+        .fold(0, (sum, p) => sum + cents(p.owedAmount ?? 0));
+    final paid = <int, int>{};
+    for (final e in expenses) {
+      paid.update(
+        e.paidById,
+        (v) => v + cents(e.amount),
+        ifAbsent: () => cents(e.amount),
+      );
+    }
+    AnalyticsLargestExpense largest(TripExpense e, int amount) =>
+        AnalyticsLargestExpense(
+          id: e.id,
+          category: e.category,
+          note: e.note,
+          amountCents: amount,
+        );
+    return [
+      AnalyticsTripSummary(
+        tripId: 1,
+        currencyCode: 'EUR',
+        buckets: [
+          for (final e in expenses)
+            AnalyticsBucket(
+              date: e.expenseDate,
+              category: e.category,
+              totalCents: cents(e.amount),
+              shareCents: share(e),
+              paidCents: e.paidById == 1 ? cents(e.amount) : 0,
+              expenseCount: 1,
+              sharedExpenseCount: share(e) != 0 ? 1 : 0,
+            ),
+        ],
+        members: [
+          for (final entry in paid.entries)
+            AnalyticsMember(
+              id: entry.key,
+              nickname: entry.key == 1 ? 'Matiss' : 'Anna',
+              paidCents: entry.value,
+            ),
+        ],
+        largestByTotal: [
+          for (final e in expenses.take(5)) largest(e, cents(e.amount)),
+        ],
+        largestByShare: [
+          for (final e in expenses.take(5)) largest(e, share(e)),
+        ],
+      ),
+    ];
+  }
+}
+
 void main() {
   const analyticsPreview = bool.fromEnvironment('ANALYTICS_SHELL_PREVIEWS');
   const profilePreview = bool.fromEnvironment('PROFILE_SHELL_PREVIEWS');
@@ -413,6 +462,7 @@ void main() {
                 tripsController: trips,
                 friendsController: _Friends(),
                 workspaceController: workspaceController,
+                analyticsRepository: _DesignAnalytics(workspaceController),
                 inviteDeepLinkController: links,
                 quickStartService: service,
                 initialTabIndex: screen.startsWith('analytics')

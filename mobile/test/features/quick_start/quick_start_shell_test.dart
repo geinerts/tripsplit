@@ -19,6 +19,8 @@ import 'package:tripsplit/features/friends/presentation/pages/friend_search_page
 import 'package:tripsplit/features/quick_start/data/quick_start_seen_store.dart';
 import 'package:tripsplit/features/quick_start/data/quick_start_service.dart';
 import 'package:tripsplit/features/quick_start/presentation/quick_start_sheet.dart';
+import 'package:tripsplit/features/analytics/data/analytics_repository.dart';
+import 'package:tripsplit/features/analytics/domain/analytics_report.dart';
 import 'package:tripsplit/features/shell/presentation/pages/main_shell_page.dart';
 import 'package:tripsplit/features/trips/data/models/trip_model.dart';
 import 'package:tripsplit/features/trips/domain/entities/trip.dart';
@@ -171,6 +173,7 @@ Future<void> _mount(
         tripsController: trips,
         friendsController: _Friends(),
         workspaceController: _Workspace(),
+        analyticsRepository: _Analytics(),
         inviteDeepLinkController: links,
         quickStartService: service,
         initialTabIndex: tab,
@@ -191,6 +194,11 @@ Future<void> _dispose(WidgetTester tester, _Links links) async {
   await tester.pumpWidget(const SizedBox.shrink());
   await tester.pump(const Duration(seconds: 1));
   await links.invites.close();
+}
+
+class _Analytics implements AnalyticsRepository {
+  @override
+  Future<List<AnalyticsTripSummary>> loadSummary() async => const [];
 }
 
 void main() {

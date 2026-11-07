@@ -230,7 +230,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
     final t = context.l10n;
     final tripCount = _month == null
         ? _trips.where((t) => t.currencyCode == _displayCurrency).length
-        : report.entries.map((e) => e.trip.id).toSet().length;
+        : report.shareByTrip.length;
     final items = _byTrip
         ? <(String, String)>[
             (t.analyticsYouPaid, _money(report.paidCents)),
@@ -461,25 +461,11 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
   }
 
   List<Widget> _memberRows(AnalyticsReport report) {
-    final names = <int, String>{};
-    final paid = <int, int>{};
-    for (final entry in report.entries) {
-      for (final participant in entry.expense.participants) {
-        names.putIfAbsent(participant.id, () => participant.nickname);
-      }
-      names[entry.expense.paidById] = entry.expense.paidByNickname;
-      paid.update(
-        entry.expense.paidById,
-        (v) => v + entry.totalCents,
-        ifAbsent: () => entry.totalCents,
-      );
-    }
-    final ids = names.keys.toList()
-      ..sort((a, b) => (paid[b] ?? 0).compareTo(paid[a] ?? 0));
+    final members = report.members;
     return [
-      for (final id in ids)
+      for (final member in members)
         Padding(
-          key: ValueKey('analytics-member-$id'),
+          key: ValueKey('analytics-member-${member.id}'),
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -494,9 +480,9 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                     context,
                   ).colorScheme.onPrimaryContainer,
                   child: Text(
-                    names[id]!.trim().isEmpty
+                    member.nickname.trim().isEmpty
                         ? '?'
-                        : names[id]!.trim().characters.first.toUpperCase(),
+                        : member.nickname.trim().characters.first.toUpperCase(),
                   ),
                 ),
               ),
@@ -505,7 +491,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final amount = Text(
-                      _money(paid[id] ?? 0),
+                      _money(member.paidCents),
                       style: Theme.of(context).textTheme.titleMedium,
                     );
                     final stacked =
@@ -515,12 +501,12 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (stacked) ...[
-                          Text(names[id]!),
+                          Text(member.nickname),
                           amount,
                         ] else
                           Row(
                             children: [
-                              Expanded(child: Text(names[id]!)),
+                              Expanded(child: Text(member.nickname)),
                               const SizedBox(width: 12),
                               amount,
                             ],
@@ -529,10 +515,10 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                         LinearProgressIndicator(
                           value: report.totalCents == 0
                               ? 0
-                              : (paid[id] ?? 0) / report.totalCents,
+                              : member.paidCents / report.totalCents,
                           minHeight: 6,
                           borderRadius: BorderRadius.circular(4),
-                          color: id == ids.first
+                          color: member.id == members.first.id
                               ? const Color(0xff00866e)
                               : const Color(0xff24b7d8),
                           backgroundColor: Theme.of(
@@ -610,30 +596,28 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
   }
 
   List<Widget> _largestRows(AnalyticsReport report) {
-    final rows = report.entries.where((e) => report.amount(e) > 0).toList()
-      ..sort((a, b) => report.amount(b).compareTo(report.amount(a)));
     return [
-      for (final entry in rows.take(5))
+      for (final entry in report.largest)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Row(
             children: [
               Icon(
-                ExpenseCategoryCatalog.iconFor(entry.expense.category),
-                color: _categoryColor(entry.expense.category),
+                ExpenseCategoryCatalog.iconFor(entry.category),
+                color: _categoryColor(entry.category),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
-                  entry.expense.note.trim().isEmpty
-                      ? _categoryName(entry.expense.category)
-                      : entry.expense.note,
+                  entry.note.trim().isEmpty
+                      ? _categoryName(entry.category)
+                      : entry.note,
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  _money(report.amount(entry)),
+                  _money(entry.amountCents),
                   textAlign: TextAlign.end,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
@@ -645,14 +629,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
   }
 
   List<Widget> _tripRows(AnalyticsReport report) {
-    final totals = <int, int>{};
-    for (final e in report.entries) {
-      totals.update(
-        e.trip.id,
-        (v) => v + e.shareCents,
-        ifAbsent: () => e.shareCents,
-      );
-    }
+    final totals = report.shareByTrip;
     final trips =
         _trips
             .where(

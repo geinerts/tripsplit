@@ -3,6 +3,7 @@ import '../features/live_location/data/live_location_repository.dart';
 import '../features/live_location/data/live_location_device.dart';
 import '../features/live_location/presentation/live_location_controller.dart';
 import '../features/travel_map/data/travel_places_repository.dart';
+import '../features/analytics/data/analytics_repository.dart';
 import '../features/trip_reports/data/trip_reports_repository.dart';
 import '../features/quick_start/data/quick_start_service.dart';
 import '../features/quick_start/data/quick_start_seen_store.dart';
@@ -82,6 +83,7 @@ class AppDependencies {
     this.quickStartService,
     this.travelPlacesRepository,
     this.tripReportsRepository,
+    required this.analyticsRepository,
     this.liveLocationController,
     required this.tripsController,
     required this.friendsController,
@@ -96,6 +98,7 @@ class AppDependencies {
   final QuickStartService? quickStartService;
   final TravelPlacesRepository? travelPlacesRepository;
   final TripReportsRepository? tripReportsRepository;
+  final AnalyticsRepository analyticsRepository;
   final LiveLocationController? liveLocationController;
   final TripsController tripsController;
   final FriendsController friendsController;
@@ -262,6 +265,7 @@ class AppDependencies {
         seenStore: quickStartSeenStore,
       ),
       tripReportsRepository: ApiTripReportsRepository(apiClient),
+      analyticsRepository: ApiAnalyticsRepository(apiClient, accountSession),
       travelPlacesRepository: ApiTravelPlacesRepository(
         apiClient,
         accountStorage,
