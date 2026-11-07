@@ -48,6 +48,7 @@ $pdo->exec('INSERT INTO trip_expense_participants(expense_id,user_id,owed_cents)
     (200,4,1250),
     (400,6,9900)');
 
+$pdo->exec('CREATE TABLE trip_feature_usage_counts (usage_month TEXT, feature TEXT, use_count INTEGER, PRIMARY KEY (usage_month, feature))');
 $_SERVER['HTTP_X_TRIP_ID'] = '';
 $response = invitation_call('analytics_summary_action', 4);
 invitation_expect($response['status'] === 200 && $response['body']['ok'] === true, 'Summary loads without a trip header');
@@ -87,7 +88,10 @@ invitation_expect($other[10]['buckets'][0]['share_cents'] === 2500 && $other[10]
 invitation_expect($other[10]['buckets'][0]['total_cents'] === 4000, 'Totals are the same for everyone');
 
 $pdo->exec('INSERT INTO trip_expenses(id,trip_id,paid_by,amount,category,note,expense_date) VALUES (500,30,4,1.00,"food","","2026-03-03")');
+$counted = static fn(): int => (int) $pdo->query('SELECT COALESCE(SUM(use_count), 0) FROM trip_feature_usage_counts WHERE feature = "analytics_open"')->fetchColumn();
+invitation_expect($counted() === 2, 'Each successful summary is counted');
 $missing = invitation_call('analytics_summary_action', 4);
+invitation_expect($counted() === 2, 'A failed summary is not counted');
 invitation_expect($missing['status'] === 500 && $missing['body']['code'] === 'analytics_incomplete', 'A missing allocation fails instead of guessing');
 $pdo->exec('DELETE FROM trip_expenses WHERE id=500');
 $pdo->exec('INSERT INTO trip_expenses(id,trip_id,paid_by,amount,category,note,expense_date) VALUES (501,30,4,0.00,"food","","2026-03-03")');

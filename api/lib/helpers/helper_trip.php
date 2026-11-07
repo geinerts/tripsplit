@@ -442,6 +442,9 @@ function create_user_notification(
         'body' => $normalizedBody,
         'payload_json' => $payloadJson,
     ]);
+    // Read the id now: MySQL resets it to 0 after the preference SELECT below,
+    // and a 0 notification_id fails the push queue foreign key.
+    $notificationId = (int) $pdo->lastInsertId();
 
     if (!push_should_queue_notification_type($normalizedType)) {
         return;
@@ -460,7 +463,7 @@ function create_user_notification(
             $normalizedTitle,
             $normalizedBody,
             $payload,
-            (int) $pdo->lastInsertId()
+            $notificationId > 0 ? $notificationId : null
         );
     } catch (Throwable $error) {
         log_api_exception($error, 'queue_push_notification');

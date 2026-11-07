@@ -372,6 +372,41 @@ async function pollIncidents() {
 // ── View: Dashboard ───────────────────────────────────────────────────────────
 
 // Anonymous selections from deletion requests, not completed deletions.
+function renderFeatureUsage(usage) {
+  const labels = [
+    ['trip_export_pdf', 'Trip export, PDF'],
+    ['trip_export_csv', 'Trip export, CSV'],
+    ['year_summary_view', 'Year summary'],
+    ['receipt_upload', 'Receipt upload'],
+    ['travel_map_open', 'Travel map'],
+    ['travel_place_save', 'Travel visit saved'],
+    ['live_location_start', 'Live location started'],
+    ['random_pick', 'Random picker'],
+    ['analytics_open', 'Analytics'],
+  ];
+  const months = usage?.available === true && Array.isArray(usage.months) ? usage.months : [];
+  const count = (month, feature) => {
+    const value = month?.counts?.find?.(row => row.feature === feature)?.count;
+    return Number.isSafeInteger(value) && value > 0 ? value : 0;
+  };
+  const body = usage?.available !== true
+    ? '<div class="empty-state" role="status">Usage totals are unavailable. Check the feature usage migration.</div>'
+    : !months.length
+      ? '<div class="empty-state" role="status">No feature use counted yet.</div>'
+      : `<div class="table-wrap feature-usage-table"><table>
+          <thead><tr><th scope="col">Feature</th>${months.map(month => `<th scope="col">${esc(month.month)}</th>`).join('')}</tr></thead>
+          <tbody>${labels.map(([feature, label]) => `<tr><th scope="row">${esc(label)}</th>${months.map(month => `<td>${count(month, feature)}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table></div>
+        <p class="deletion-note">Monthly totals of uses, not people. They include our own testing. Don't share numbers below 5 outside this panel.</p>`;
+  return `<section class="table-card feature-usage" aria-labelledby="feature-usage-title">
+    <div class="table-card-header">
+      <div class="table-card-title" id="feature-usage-title">Feature usage</div>
+      <span class="deletion-period">Last ${months.length || 0} months</span>
+    </div>
+    ${body}
+  </section>`;
+}
+
 function renderDeletionFeedback(feedback) {
   const definitions = [
     ['not_using', 'No longer needed for trips', '#00BED4'],
@@ -524,6 +559,7 @@ registerView('dashboard', {
         <!-- Left: deletion feedback + incidents + activity -->
         <div>
           ${renderDeletionFeedback(s.account_deletion_feedback)}
+          ${renderFeatureUsage(s.feature_usage)}
           <div class="table-card">
             <div class="table-card-header">
               <div class="table-card-title">🚨 Open Incidents</div>

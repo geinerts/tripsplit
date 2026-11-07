@@ -20,7 +20,9 @@ check(invitation_call('list_trip_live_locations_action',1)['body']['members']===
 foreach ([['minutes'=>0],['minutes'=>999],['minutes'=>'60'],['latitude'=>91],['longitude'=>-181],['latitude'=>'38.72'],['accuracy_m'=>-1],['observed_at'=>time()-180]] as $bad) {
  check(invitation_call('start_trip_live_location_action',1,array_replace($start,$bad))['status']===400,'invalid input');
 }
+$pdo->exec('CREATE TABLE trip_feature_usage_counts (usage_month TEXT, feature TEXT, use_count INTEGER, PRIMARY KEY (usage_month, feature))');
 $r=invitation_call('start_trip_live_location_action',1,$start+['user_id'=>2]);
+check((int)$pdo->query('SELECT SUM(use_count) FROM trip_feature_usage_counts WHERE feature="live_location_start"')->fetchColumn()===1,'starting is counted once');
 check($r['status']===200,'start'); $token=$r['body']['session_token']; $expires=$r['body']['expires_at'];
 check(abs($expires-time()-3600)<3,'one hour server deadline');
 $read=invitation_call('list_trip_live_locations_action',2)['body'];

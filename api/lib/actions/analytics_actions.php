@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../helpers/helper_analytics_summary.php';
+require_once __DIR__ . '/../helpers/helper_feature_usage.php';
 
 function analytics_summary_action(): void
 {
@@ -15,6 +16,7 @@ function analytics_summary_action(): void
     } catch (AnalyticsIncompleteException $error) {
         json_out(['ok' => false, 'code' => 'analytics_incomplete', 'error' => 'Analytics could not be calculated.'], 500);
     }
+    record_feature_use($pdo, 'analytics_open');
     if (!headers_sent()) {
         header('Cache-Control: private, no-store');
     }

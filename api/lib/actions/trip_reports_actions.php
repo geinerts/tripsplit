@@ -5,6 +5,7 @@ require_once __DIR__ . '/../helpers/helper_trip_report.php';
 require_once __DIR__ . '/../helpers/helper_trip_report_render.php';
 require_once __DIR__ . '/../helpers/helper_trip_report_delivery.php';
 require_once __DIR__ . '/../helpers/helper_year_summary.php';
+require_once __DIR__ . '/../helpers/helper_feature_usage.php';
 
 function require_premium_feature(PDO $pdo, array $me): void
 {
@@ -54,6 +55,7 @@ function trip_export_action(): void
     $content = $format === 'pdf'
         ? trip_report_render_pdf(trip_report_html($report, $s, $locale, true))
         : trip_report_csv($report, $s);
+    record_feature_use($pdo, 'trip_export_' . $format);
 
     if (!headers_sent()) {
         header('Cache-Control: private, no-store');
@@ -88,6 +90,7 @@ function travel_year_summary_action(): void
         $currency,
         static fn(string $from, string $to, string $date): float => year_summary_fx_rate($pdo, $from, $to, $date)
     );
+    record_feature_use($pdo, 'year_summary_view');
     if (!headers_sent()) {
         header('Cache-Control: private, no-store');
     }
