@@ -9302,6 +9302,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try again'**
   String get yearSummaryRetry;
+
+  /// No description provided for @notificationCommentAddedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New comment on your expense'**
+  String get notificationCommentAddedTitle;
+
+  /// No description provided for @notificationCommentAddedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} commented on \"{note}\".'**
+  String notificationCommentAddedBody(Object name, Object note);
+
+  /// No description provided for @notificationCommentAddedBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} commented on your expense.'**
+  String notificationCommentAddedBodyGeneric(Object name);
+
+  /// No description provided for @profilePushCommentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments and mentions'**
+  String get profilePushCommentsTitle;
+
+  /// No description provided for @profilePushCommentsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New comments on your expenses and mentions of you'**
+  String get profilePushCommentsSubtitle;
+
+  /// No description provided for @profilePushTripInvitesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip invites and members'**
+  String get profilePushTripInvitesTitle;
+
+  /// No description provided for @profilePushTripInvitesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitations and people joining or leaving a trip'**
+  String get profilePushTripInvitesSubtitle;
+
+  /// No description provided for @profilePushTripStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip status'**
+  String get profilePushTripStatusTitle;
+
+  /// No description provided for @profilePushTripStatusSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip finished and ready to settle'**
+  String get profilePushTripStatusSubtitle;
+
+  /// No description provided for @profilePushPaymentRequestsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment requests'**
+  String get profilePushPaymentRequestsTitle;
+
+  /// No description provided for @profilePushPaymentRequestsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests sent to you, declined or cancelled'**
+  String get profilePushPaymentRequestsSubtitle;
+
+  /// No description provided for @profilePushPaymentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments'**
+  String get profilePushPaymentsTitle;
+
+  /// No description provided for @profilePushPaymentsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payments marked sent, confirmed or not received'**
+  String get profilePushPaymentsSubtitle;
+
+  /// No description provided for @profilePushRemindersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get profilePushRemindersTitle;
+
+  /// No description provided for @profilePushRemindersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders about unsettled payments'**
+  String get profilePushRemindersSubtitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

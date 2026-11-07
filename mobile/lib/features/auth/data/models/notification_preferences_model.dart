@@ -22,6 +22,12 @@ class NotificationPreferencesModel extends NotificationPreferences {
     required super.pushFriendInvitesEnabled,
     required super.pushTripUpdatesEnabled,
     required super.pushSettlementUpdatesEnabled,
+    super.pushCommentsEnabled,
+    super.pushTripInvitesEnabled,
+    super.pushTripStatusEnabled,
+    super.pushPaymentRequestsEnabled,
+    super.pushPaymentsEnabled,
+    super.pushRemindersEnabled,
     super.emailTripReportEnabled,
   });
 
@@ -120,6 +126,20 @@ class NotificationPreferencesModel extends NotificationPreferences {
             inAppSettlementSentEnabled ||
             inAppSettlementConfirmedEnabled);
 
+    final pushTripUpdatesEnabled =
+        _readBool(push['trip_updates']) ??
+        _readBool(payload['push_trip_updates_enabled']) ??
+        true;
+    final pushSettlementUpdatesEnabled =
+        _readBool(push['settlement_updates']) ??
+        _readBool(payload['push_settlement_updates_enabled']) ??
+        true;
+    // Servers without the split categories send only the combined switches.
+    bool pushCategory(String key, bool combined) =>
+        _readBool(push[key]) ??
+        _readBool(payload['push_${key}_enabled']) ??
+        combined;
+
     return NotificationPreferencesModel(
       inAppBannerEnabled: inAppBannerEnabled,
       inAppExpenseAddedEnabled: inAppExpenseAddedEnabled,
@@ -145,14 +165,29 @@ class NotificationPreferencesModel extends NotificationPreferences {
           _readBool(push['friend_invites']) ??
           _readBool(payload['push_friend_invites_enabled']) ??
           true,
-      pushTripUpdatesEnabled:
-          _readBool(push['trip_updates']) ??
-          _readBool(payload['push_trip_updates_enabled']) ??
-          true,
-      pushSettlementUpdatesEnabled:
-          _readBool(push['settlement_updates']) ??
-          _readBool(payload['push_settlement_updates_enabled']) ??
-          true,
+      pushTripUpdatesEnabled: pushTripUpdatesEnabled,
+      pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
+      pushCommentsEnabled: pushCategory('comments', pushTripUpdatesEnabled),
+      pushTripInvitesEnabled: pushCategory(
+        'trip_invites',
+        pushTripUpdatesEnabled,
+      ),
+      pushTripStatusEnabled: pushCategory(
+        'trip_status',
+        pushTripUpdatesEnabled,
+      ),
+      pushPaymentRequestsEnabled: pushCategory(
+        'payment_requests',
+        pushSettlementUpdatesEnabled,
+      ),
+      pushPaymentsEnabled: pushCategory(
+        'payments',
+        pushSettlementUpdatesEnabled,
+      ),
+      pushRemindersEnabled: pushCategory(
+        'reminders',
+        pushSettlementUpdatesEnabled,
+      ),
       emailTripReportEnabled:
           _readBool(payload['email_trip_report_enabled']) ?? true,
     );

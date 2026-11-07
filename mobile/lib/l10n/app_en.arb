@@ -2081,5 +2081,20 @@
   "yearSummaryPartial": "Some amounts are missing because no exchange rate was available.",
   "yearSummaryShare": "Share",
   "yearSummaryShareFailed": "Couldn't share the image.",
-  "yearSummaryRetry": "Try again"
+  "yearSummaryRetry": "Try again",
+  "notificationCommentAddedTitle": "New comment on your expense",
+  "notificationCommentAddedBody": "{name} commented on \"{note}\".",
+  "notificationCommentAddedBodyGeneric": "{name} commented on your expense.",
+  "profilePushCommentsTitle": "Comments and mentions",
+  "profilePushCommentsSubtitle": "New comments on your expenses and mentions of you",
+  "profilePushTripInvitesTitle": "Trip invites and members",
+  "profilePushTripInvitesSubtitle": "Invitations and people joining or leaving a trip",
+  "profilePushTripStatusTitle": "Trip status",
+  "profilePushTripStatusSubtitle": "Trip finished and ready to settle",
+  "profilePushPaymentRequestsTitle": "Payment requests",
+  "profilePushPaymentRequestsSubtitle": "Requests sent to you, declined or cancelled",
+  "profilePushPaymentsTitle": "Payments",
+  "profilePushPaymentsSubtitle": "Payments marked sent, confirmed or not received",
+  "profilePushRemindersTitle": "Reminders",
+  "profilePushRemindersSubtitle": "Reminders about unsettled payments"
 }

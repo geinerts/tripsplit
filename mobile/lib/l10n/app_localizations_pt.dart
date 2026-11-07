@@ -5021,4 +5021,53 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Tentar novamente';
+
+  @override
+  String get notificationCommentAddedTitle => 'Novo comentário na sua despesa';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name comentou \"$note\".';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name comentou a sua despesa.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Comentários e menções';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Novos comentários nas suas despesas e menções a você';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Convites e membros da viagem';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Convites e pessoas que entram ou saem de uma viagem';
+
+  @override
+  String get profilePushTripStatusTitle => 'Estado da viagem';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Viagem terminada e pronta para acertar contas';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Pedidos de pagamento';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Pedidos recebidos, recusados ou cancelados';
+
+  @override
+  String get profilePushPaymentsTitle => 'Pagamentos';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Pagamentos marcados como enviados, confirmados ou não recebidos';
+
+  @override
+  String get profilePushRemindersTitle => 'Lembretes';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Lembretes de pagamentos pendentes';
 }

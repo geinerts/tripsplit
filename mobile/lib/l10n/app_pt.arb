@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Faltam alguns montantes porque a taxa de câmbio não estava disponível.",
   "yearSummaryShare": "Partilhar",
   "yearSummaryShareFailed": "Não foi possível partilhar a imagem.",
-  "yearSummaryRetry": "Tentar novamente"
+  "yearSummaryRetry": "Tentar novamente",
+  "notificationCommentAddedTitle": "Novo comentário na sua despesa",
+  "notificationCommentAddedBody": "{name} comentou \"{note}\".",
+  "notificationCommentAddedBodyGeneric": "{name} comentou a sua despesa.",
+  "profilePushCommentsTitle": "Comentários e menções",
+  "profilePushCommentsSubtitle": "Novos comentários nas suas despesas e menções a você",
+  "profilePushTripInvitesTitle": "Convites e membros da viagem",
+  "profilePushTripInvitesSubtitle": "Convites e pessoas que entram ou saem de uma viagem",
+  "profilePushTripStatusTitle": "Estado da viagem",
+  "profilePushTripStatusSubtitle": "Viagem terminada e pronta para acertar contas",
+  "profilePushPaymentRequestsTitle": "Pedidos de pagamento",
+  "profilePushPaymentRequestsSubtitle": "Pedidos recebidos, recusados ou cancelados",
+  "profilePushPaymentsTitle": "Pagamentos",
+  "profilePushPaymentsSubtitle": "Pagamentos marcados como enviados, confirmados ou não recebidos",
+  "profilePushRemindersTitle": "Lembretes",
+  "profilePushRemindersSubtitle": "Lembretes de pagamentos pendentes"
 }

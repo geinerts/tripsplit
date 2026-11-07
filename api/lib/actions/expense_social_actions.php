@@ -251,6 +251,54 @@ function notify_expense_comment_mentions(
     }
 }
 
+/** Tell the expense's payer about a new comment, unless they wrote it or are mentioned in it. */
+function notify_expense_comment_added(
+    PDO $pdo,
+    int $tripId,
+    int $expenseId,
+    string $expenseNote,
+    int $commentId,
+    int $actorId
+): void {
+    // The comment is already saved, so a notification failure must not fail the request.
+    try {
+        $stmt = $pdo->prepare(
+            'SELECT paid_by FROM ' . table_name('expenses') . ' WHERE id = :id AND trip_id = :trip_id LIMIT 1'
+        );
+        $stmt->execute(['id' => $expenseId, 'trip_id' => $tripId]);
+        $payerId = (int) ($stmt->fetchColumn() ?: 0);
+        if ($payerId <= 0 || $payerId === $actorId) {
+            return;
+        }
+        if (expense_comment_mentions_available($pdo)) {
+            $mentions = load_expense_comment_mention_rows($pdo, $commentId);
+            if (!empty($mentions[$payerId]['active'])) {
+                return;
+            }
+        }
+        $actorName = trip_member_label($pdo, $actorId);
+        $note = trim($expenseNote);
+        create_user_notification(
+            $pdo,
+            $tripId,
+            $payerId,
+            'expense_comment_added',
+            'New comment on your expense',
+            $note !== ''
+                ? $actorName . ' commented on "' . $note . '".'
+                : $actorName . ' commented on your expense.',
+            [
+                'trip_id' => $tripId,
+                'expense_id' => $expenseId,
+                'comment_id' => $commentId,
+                'commented_by_user_id' => $actorId,
+            ]
+        );
+    } catch (Throwable $error) {
+        log_api_exception($error, 'notify_expense_comment_added');
+    }
+}
+
 /** @return list<array{user_id: int, name: string}> */
 function expense_comment_mentions_payload(PDO $pdo, int $commentId): array
 {
@@ -722,6 +770,14 @@ function add_expense_comment_action(): void
         $userId,
         $commentBody,
         normalize_mentioned_user_ids($body['mentioned_user_ids'] ?? [])
+    );
+    notify_expense_comment_added(
+        $pdo,
+        $tripId,
+        $expenseId,
+        (string) ($expense['note'] ?? ''),
+        $commentId,
+        $userId
     );
 
     $nickStmt = $pdo->prepare(

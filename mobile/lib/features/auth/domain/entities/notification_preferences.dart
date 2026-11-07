@@ -20,6 +20,12 @@ class NotificationPreferences {
     required this.pushFriendInvitesEnabled,
     required this.pushTripUpdatesEnabled,
     required this.pushSettlementUpdatesEnabled,
+    this.pushCommentsEnabled = true,
+    this.pushTripInvitesEnabled = true,
+    this.pushTripStatusEnabled = true,
+    this.pushPaymentRequestsEnabled = true,
+    this.pushPaymentsEnabled = true,
+    this.pushRemindersEnabled = true,
     this.emailTripReportEnabled = true,
   });
 
@@ -44,6 +50,12 @@ class NotificationPreferences {
       pushFriendInvitesEnabled = true,
       pushTripUpdatesEnabled = true,
       pushSettlementUpdatesEnabled = true,
+      pushCommentsEnabled = true,
+      pushTripInvitesEnabled = true,
+      pushTripStatusEnabled = true,
+      pushPaymentRequestsEnabled = true,
+      pushPaymentsEnabled = true,
+      pushRemindersEnabled = true,
       emailTripReportEnabled = true;
 
   final bool inAppBannerEnabled;
@@ -66,6 +78,12 @@ class NotificationPreferences {
   final bool pushFriendInvitesEnabled;
   final bool pushTripUpdatesEnabled;
   final bool pushSettlementUpdatesEnabled;
+  final bool pushCommentsEnabled;
+  final bool pushTripInvitesEnabled;
+  final bool pushTripStatusEnabled;
+  final bool pushPaymentRequestsEnabled;
+  final bool pushPaymentsEnabled;
+  final bool pushRemindersEnabled;
   final bool emailTripReportEnabled;
 
   NotificationPreferences copyWith({
@@ -89,6 +107,12 @@ class NotificationPreferences {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? pushCommentsEnabled,
+    bool? pushTripInvitesEnabled,
+    bool? pushTripStatusEnabled,
+    bool? pushPaymentRequestsEnabled,
+    bool? pushPaymentsEnabled,
+    bool? pushRemindersEnabled,
     bool? emailTripReportEnabled,
   }) {
     return NotificationPreferences(
@@ -136,6 +160,15 @@ class NotificationPreferences {
           pushTripUpdatesEnabled ?? this.pushTripUpdatesEnabled,
       pushSettlementUpdatesEnabled:
           pushSettlementUpdatesEnabled ?? this.pushSettlementUpdatesEnabled,
+      pushCommentsEnabled: pushCommentsEnabled ?? this.pushCommentsEnabled,
+      pushTripInvitesEnabled:
+          pushTripInvitesEnabled ?? this.pushTripInvitesEnabled,
+      pushTripStatusEnabled:
+          pushTripStatusEnabled ?? this.pushTripStatusEnabled,
+      pushPaymentRequestsEnabled:
+          pushPaymentRequestsEnabled ?? this.pushPaymentRequestsEnabled,
+      pushPaymentsEnabled: pushPaymentsEnabled ?? this.pushPaymentsEnabled,
+      pushRemindersEnabled: pushRemindersEnabled ?? this.pushRemindersEnabled,
       emailTripReportEnabled:
           emailTripReportEnabled ?? this.emailTripReportEnabled,
     );

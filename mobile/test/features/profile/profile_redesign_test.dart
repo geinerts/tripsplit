@@ -12,6 +12,7 @@ import 'package:tripsplit/app/theme/theme_mode_scope.dart';
 import 'package:tripsplit/app/locale/app_locale_controller.dart';
 import 'package:tripsplit/app/locale/app_locale_scope.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
+import 'package:tripsplit/core/ui/app_settings_widgets.dart';
 import 'package:tripsplit/features/auth/data/models/auth_user_model.dart';
 import 'package:tripsplit/features/auth/domain/entities/auth_user.dart';
 import 'package:tripsplit/features/auth/domain/entities/notification_preferences.dart';
@@ -84,6 +85,13 @@ class _Auth implements AuthController {
         pushTripUpdatesEnabled: i.namedArguments[#pushTripUpdatesEnabled],
         pushSettlementUpdatesEnabled:
             i.namedArguments[#pushSettlementUpdatesEnabled],
+        pushCommentsEnabled: i.namedArguments[#pushCommentsEnabled],
+        pushTripInvitesEnabled: i.namedArguments[#pushTripInvitesEnabled],
+        pushTripStatusEnabled: i.namedArguments[#pushTripStatusEnabled],
+        pushPaymentRequestsEnabled:
+            i.namedArguments[#pushPaymentRequestsEnabled],
+        pushPaymentsEnabled: i.namedArguments[#pushPaymentsEnabled],
+        pushRemindersEnabled: i.namedArguments[#pushRemindersEnabled],
         inAppBannerEnabled: i.namedArguments[#inAppBannerEnabled],
         inAppExpenseAddedEnabled: i.namedArguments[#inAppExpenseAddedEnabled],
         emailTripReportEnabled: i.namedArguments[#emailTripReportEnabled],
@@ -417,9 +425,51 @@ void main() {
     expect(auth.updates.last[#pushExpenseAddedEnabled], false);
     expect(auth.updates.last[#pushFriendInvitesEnabled], false);
     expect(auth.updates.last[#pushSettlementUpdatesEnabled], false);
+    expect(auth.updates.last[#pushCommentsEnabled], false);
+    expect(auth.updates.last[#pushRemindersEnabled], false);
     expect(auth.updates.last[#inAppBannerEnabled], isNull);
     expect(tester.widget<Switch>(push).value, false);
     expect(auth.prefs.pushTripUpdatesEnabled, false);
+  });
+
+  testWidgets('push page has one switch per category, each saved alone', (
+    tester,
+  ) async {
+    final auth = _Auth();
+    await _mount(tester, auth);
+    final t = _t(tester);
+    await _tap(tester, t.notificationsTitle);
+    await _tap(tester, t.profilePushNotificationsTitle);
+    for (final label in [
+      t.profileExpenseUpdates,
+      t.profilePushCommentsTitle,
+      t.profilePushTripInvitesTitle,
+      t.profilePushTripStatusTitle,
+      t.profilePushPaymentRequestsTitle,
+      t.profilePushPaymentsTitle,
+      t.profilePushRemindersTitle,
+      t.profileFriendInvites,
+    ]) {
+      await tester.scrollUntilVisible(
+        find.text(label),
+        100,
+        scrollable: find.byType(Scrollable).last,
+      );
+      expect(find.text(label), findsOneWidget, reason: label);
+    }
+    final reminders = find.descendant(
+      of: find.widgetWithText(AppSettingsRow, t.profilePushRemindersTitle),
+      matching: find.byType(Switch),
+    );
+    await tester.tap(reminders);
+    await tester.pumpAndSettle();
+    final sent = Map.fromEntries(
+      auth.updates.single.entries.where((entry) => entry.value != null),
+    );
+    expect(sent.keys, [#pushRemindersEnabled]);
+    expect(auth.updates.single[#pushRemindersEnabled], false);
+    expect(tester.widget<Switch>(reminders).value, false);
+    expect(auth.prefs.pushPaymentsEnabled, true);
   });
 
   testWidgets('trip report email switch saves only its own setting', (
@@ -463,11 +513,30 @@ void main() {
     final t = _t(tester);
     await _tap(tester, t.notificationsTitle);
     await _tap(tester, t.profilePushNotificationsTitle);
-    for (var i = 0; i < 4; i++) {
-      await tester.tap(find.byType(Switch).at(i));
+    for (final label in [
+      t.profileExpenseUpdates,
+      t.profilePushCommentsTitle,
+      t.profilePushTripInvitesTitle,
+      t.profilePushTripStatusTitle,
+      t.profilePushPaymentRequestsTitle,
+      t.profilePushPaymentsTitle,
+      t.profilePushRemindersTitle,
+      t.profileFriendInvites,
+    ]) {
+      await tester.scrollUntilVisible(
+        find.text(label),
+        100,
+        scrollable: find.byType(Scrollable).last,
+      );
+      await tester.tap(
+        find.descendant(
+          of: find.widgetWithText(AppSettingsRow, label),
+          matching: find.byType(Switch),
+        ),
+      );
       await tester.pumpAndSettle();
     }
-    expect(auth.updates.length, 4);
+    expect(auth.updates.length, 8);
     await _back(tester);
     expect(find.text(t.profilePushNotificationsTitle), findsOneWidget);
     expect(tester.widget<Switch>(find.byType(Switch).at(1)).value, false);

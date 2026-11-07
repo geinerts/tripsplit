@@ -5021,4 +5021,53 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Reintentar';
+
+  @override
+  String get notificationCommentAddedTitle => 'Nuevo comentario en tu gasto';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name comentó «$note».';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name comentó tu gasto.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Comentarios y menciones';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Nuevos comentarios en tus gastos y menciones a ti';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Invitaciones y miembros del viaje';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Invitaciones y personas que se unen o salen de un viaje';
+
+  @override
+  String get profilePushTripStatusTitle => 'Estado del viaje';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Viaje finalizado y listo para liquidar';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Solicitudes de pago';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Solicitudes recibidas, rechazadas o canceladas';
+
+  @override
+  String get profilePushPaymentsTitle => 'Pagos';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Pagos marcados como enviados, confirmados o no recibidos';
+
+  @override
+  String get profilePushRemindersTitle => 'Recordatorios';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Recordatorios de pagos pendientes';
 }

@@ -137,6 +137,12 @@ class AuthRepositoryImpl implements AuthRepository {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? pushCommentsEnabled,
+    bool? pushTripInvitesEnabled,
+    bool? pushTripStatusEnabled,
+    bool? pushPaymentRequestsEnabled,
+    bool? pushPaymentsEnabled,
+    bool? pushRemindersEnabled,
     bool? emailTripReportEnabled,
   }) {
     return _remote.updateNotificationPreferences(
@@ -160,6 +166,12 @@ class AuthRepositoryImpl implements AuthRepository {
       pushFriendInvitesEnabled: pushFriendInvitesEnabled,
       pushTripUpdatesEnabled: pushTripUpdatesEnabled,
       pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
+      pushCommentsEnabled: pushCommentsEnabled,
+      pushTripInvitesEnabled: pushTripInvitesEnabled,
+      pushTripStatusEnabled: pushTripStatusEnabled,
+      pushPaymentRequestsEnabled: pushPaymentRequestsEnabled,
+      pushPaymentsEnabled: pushPaymentsEnabled,
+      pushRemindersEnabled: pushRemindersEnabled,
       emailTripReportEnabled: emailTripReportEnabled,
     );
   }

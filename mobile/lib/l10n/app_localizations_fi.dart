@@ -5021,4 +5021,53 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Yritä uudelleen';
+
+  @override
+  String get notificationCommentAddedTitle => 'Uusi kommentti kuluusi';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name kommentoi kulua \"$note\".';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name kommentoi kuluasi.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Kommentit ja maininnat';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Uudet kommentit kuluihisi ja sinua koskevat maininnat';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Matkakutsut ja jäsenet';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Kutsut sekä matkaan liittyvät tai siitä lähtevät henkilöt';
+
+  @override
+  String get profilePushTripStatusTitle => 'Matkan tila';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Matka päättynyt ja valmis tilitettäväksi';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Maksupyynnöt';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Sinulle lähetetyt, hylätyt tai perutut pyynnöt';
+
+  @override
+  String get profilePushPaymentsTitle => 'Maksut';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Lähetetyiksi, vahvistetuiksi tai saapumattomiksi merkityt maksut';
+
+  @override
+  String get profilePushRemindersTitle => 'Muistutukset';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Muistutukset maksamattomista summista';
 }

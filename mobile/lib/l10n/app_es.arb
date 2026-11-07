@@ -2046,5 +2046,20 @@
   "yearSummaryPartial": "Faltan algunos importes porque no había tipo de cambio disponible.",
   "yearSummaryShare": "Compartir",
   "yearSummaryShareFailed": "No se ha podido compartir la imagen.",
-  "yearSummaryRetry": "Reintentar"
+  "yearSummaryRetry": "Reintentar",
+  "notificationCommentAddedTitle": "Nuevo comentario en tu gasto",
+  "notificationCommentAddedBody": "{name} comentó «{note}».",
+  "notificationCommentAddedBodyGeneric": "{name} comentó tu gasto.",
+  "profilePushCommentsTitle": "Comentarios y menciones",
+  "profilePushCommentsSubtitle": "Nuevos comentarios en tus gastos y menciones a ti",
+  "profilePushTripInvitesTitle": "Invitaciones y miembros del viaje",
+  "profilePushTripInvitesSubtitle": "Invitaciones y personas que se unen o salen de un viaje",
+  "profilePushTripStatusTitle": "Estado del viaje",
+  "profilePushTripStatusSubtitle": "Viaje finalizado y listo para liquidar",
+  "profilePushPaymentRequestsTitle": "Solicitudes de pago",
+  "profilePushPaymentRequestsSubtitle": "Solicitudes recibidas, rechazadas o canceladas",
+  "profilePushPaymentsTitle": "Pagos",
+  "profilePushPaymentsSubtitle": "Pagos marcados como enviados, confirmados o no recibidos",
+  "profilePushRemindersTitle": "Recordatorios",
+  "profilePushRemindersSubtitle": "Recordatorios de pagos pendientes"
 }

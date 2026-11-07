@@ -107,13 +107,39 @@ final class ExpenseCommentMentionsTest extends TestCase
         self::assertSame([['user_id'=>1, 'name'=>'Owner']], $byId[(int) self::$r['reply']['id']]);
     }
 
+    public function test_payer_is_told_about_new_comments_once(): void
+    {
+        $added = self::$r['comment_added'];
+        self::assertCount(1, $added);
+        self::assertSame(1, $added[0]['user_id']);
+        self::assertSame('expense_comment_added', $added[0]['type']);
+        self::assertSame('New comment on your expense', $added[0]['title']);
+        self::assertStringEndsWith(' commented on "Dinner".', $added[0]['body']);
+        self::assertSame(
+            ['trip_id', 'expense_id', 'comment_id', 'commented_by_user_id'],
+            array_keys($added[0]['payload'])
+        );
+        self::assertSame(5, $added[0]['payload']['expense_id']);
+        self::assertSame(self::$r['comment_added_id'], $added[0]['payload']['comment_id']);
+        self::assertSame(2, $added[0]['payload']['commented_by_user_id']);
+        self::assertSame([], self::$r['comment_by_payer']);
+        self::assertSame(['expense_comment_mention'], array_column(self::$r['comment_mentions_payer'], 'type'));
+        self::assertSame('Nia commented on your expense.', self::$r['comment_added_no_note'][0]['body']);
+        self::assertSame([], self::$r['comment_edit']);
+        self::assertSame('push_comments_enabled', self::$r['comment_added_push_pref']);
+        self::assertSame('in_app_trip_updates_enabled', self::$r['comment_added_in_app_pref']);
+        self::assertSame(4, self::$r['comment_added_actor']);
+        self::assertSame('Jauns komentārs pie tava izdevuma', self::$r['comment_added_push_lv']['title']);
+        self::assertSame('Nia komentēja izdevumu "Dinner".', self::$r['comment_added_push_lv']['body']);
+    }
+
     public function test_push_text_is_localized_and_follows_trip_updates_preferences(): void
     {
         self::assertSame('Tevi pieminēja komentārā', self::$r['push_lv']['title']);
         self::assertSame('Owner tevi pieminēja komentārā pie "Dinner".', self::$r['push_lv']['body']);
         self::assertSame('Owner tevi pieminēja komentārā.', self::$r['push_lv_generic']['body']);
         self::assertSame('in_app_trip_updates_enabled', self::$r['in_app_pref']);
-        self::assertSame('push_trip_updates_enabled', self::$r['push_pref']);
+        self::assertSame('push_comments_enabled', self::$r['push_pref']);
         self::assertSame(7, self::$r['actor']);
     }
 }

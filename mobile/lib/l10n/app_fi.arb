@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Joitakin summia puuttuu, koska valuuttakurssia ei ollut saatavilla.",
   "yearSummaryShare": "Jaa",
   "yearSummaryShareFailed": "Kuvaa ei voitu jakaa.",
-  "yearSummaryRetry": "Yritä uudelleen"
+  "yearSummaryRetry": "Yritä uudelleen",
+  "notificationCommentAddedTitle": "Uusi kommentti kuluusi",
+  "notificationCommentAddedBody": "{name} kommentoi kulua \"{note}\".",
+  "notificationCommentAddedBodyGeneric": "{name} kommentoi kuluasi.",
+  "profilePushCommentsTitle": "Kommentit ja maininnat",
+  "profilePushCommentsSubtitle": "Uudet kommentit kuluihisi ja sinua koskevat maininnat",
+  "profilePushTripInvitesTitle": "Matkakutsut ja jäsenet",
+  "profilePushTripInvitesSubtitle": "Kutsut sekä matkaan liittyvät tai siitä lähtevät henkilöt",
+  "profilePushTripStatusTitle": "Matkan tila",
+  "profilePushTripStatusSubtitle": "Matka päättynyt ja valmis tilitettäväksi",
+  "profilePushPaymentRequestsTitle": "Maksupyynnöt",
+  "profilePushPaymentRequestsSubtitle": "Sinulle lähetetyt, hylätyt tai perutut pyynnöt",
+  "profilePushPaymentsTitle": "Maksut",
+  "profilePushPaymentsSubtitle": "Lähetetyiksi, vahvistetuiksi tai saapumattomiksi merkityt maksut",
+  "profilePushRemindersTitle": "Muistutukset",
+  "profilePushRemindersSubtitle": "Muistutukset maksamattomista summista"
 }

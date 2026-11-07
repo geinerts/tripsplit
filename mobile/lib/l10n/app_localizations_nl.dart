@@ -5021,4 +5021,53 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Opnieuw proberen';
+
+  @override
+  String get notificationCommentAddedTitle => 'Nieuwe reactie op je uitgave';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name reageerde op \"$note\".';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name reageerde op je uitgave.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Reacties en vermeldingen';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Nieuwe reacties op je uitgaven en vermeldingen van jou';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Reisuitnodigingen en leden';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Uitnodigingen en mensen die een reis joinen of verlaten';
+
+  @override
+  String get profilePushTripStatusTitle => 'Reisstatus';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Reis afgerond en klaar om te verrekenen';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Betaalverzoeken';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Ontvangen, geweigerde of geannuleerde verzoeken';
+
+  @override
+  String get profilePushPaymentsTitle => 'Betalingen';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Betalingen gemarkeerd als verzonden, bevestigd of niet ontvangen';
+
+  @override
+  String get profilePushRemindersTitle => 'Herinneringen';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Herinneringen aan openstaande betalingen';
 }

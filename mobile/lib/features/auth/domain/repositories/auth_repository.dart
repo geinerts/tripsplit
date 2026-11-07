@@ -74,6 +74,12 @@ abstract class AuthRepository {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? pushCommentsEnabled,
+    bool? pushTripInvitesEnabled,
+    bool? pushTripStatusEnabled,
+    bool? pushPaymentRequestsEnabled,
+    bool? pushPaymentsEnabled,
+    bool? pushRemindersEnabled,
     bool? emailTripReportEnabled,
   });
 }

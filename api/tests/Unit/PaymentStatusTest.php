@@ -105,9 +105,14 @@ class PaymentStatusTest extends TestCase
             notification_in_app_pref_key_for_type('payment_confirmed')
         );
         $this->assertSame(
-            'push_settlement_updates_enabled',
+            'push_payment_requests_enabled',
             notification_push_pref_key_for_type('payment_request_declined')
         );
+        $this->assertSame('push_payments_enabled', notification_push_pref_key_for_type('payment_confirmed'));
+        $this->assertSame('push_payments_enabled', notification_push_pref_key_for_type('settlement_not_received'));
+        $this->assertSame('push_reminders_enabled', notification_push_pref_key_for_type('settlement_auto_reminder'));
+        $this->assertSame('push_trip_invites_enabled', notification_push_pref_key_for_type('trip_member_removed'));
+        $this->assertSame('push_trip_status_enabled', notification_push_pref_key_for_type('member_ready_to_settle'));
     }
 
     public function test_payment_request_push_is_localized(): void

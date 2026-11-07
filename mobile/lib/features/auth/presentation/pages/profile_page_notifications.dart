@@ -26,8 +26,12 @@ class _ProfileNotificationSettingsPageState
   bool get _pushEnabled =>
       _prefs.pushExpenseAddedEnabled ||
       _prefs.pushFriendInvitesEnabled ||
-      _prefs.pushTripUpdatesEnabled ||
-      _prefs.pushSettlementUpdatesEnabled;
+      _prefs.pushCommentsEnabled ||
+      _prefs.pushTripInvitesEnabled ||
+      _prefs.pushTripStatusEnabled ||
+      _prefs.pushPaymentRequestsEnabled ||
+      _prefs.pushPaymentsEnabled ||
+      _prefs.pushRemindersEnabled;
 
   @override
   void initState() {
@@ -80,12 +84,24 @@ class _ProfileNotificationSettingsPageState
       pushFriendInvitesEnabled: value,
       pushTripUpdatesEnabled: value,
       pushSettlementUpdatesEnabled: value,
+      pushCommentsEnabled: value,
+      pushTripInvitesEnabled: value,
+      pushTripStatusEnabled: value,
+      pushPaymentRequestsEnabled: value,
+      pushPaymentsEnabled: value,
+      pushRemindersEnabled: value,
     ),
     request: () => widget.controller.updateNotificationPreferences(
       pushExpenseAddedEnabled: value,
       pushFriendInvitesEnabled: value,
       pushTripUpdatesEnabled: value,
       pushSettlementUpdatesEnabled: value,
+      pushCommentsEnabled: value,
+      pushTripInvitesEnabled: value,
+      pushTripStatusEnabled: value,
+      pushPaymentRequestsEnabled: value,
+      pushPaymentsEnabled: value,
+      pushRemindersEnabled: value,
     ),
   );
 

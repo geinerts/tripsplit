@@ -228,6 +228,12 @@ class AuthController {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? pushCommentsEnabled,
+    bool? pushTripInvitesEnabled,
+    bool? pushTripStatusEnabled,
+    bool? pushPaymentRequestsEnabled,
+    bool? pushPaymentsEnabled,
+    bool? pushRemindersEnabled,
     bool? emailTripReportEnabled,
   }) async {
     final prefs = await _updateNotificationPreferencesUseCase.call(
@@ -251,6 +257,12 @@ class AuthController {
       pushFriendInvitesEnabled: pushFriendInvitesEnabled,
       pushTripUpdatesEnabled: pushTripUpdatesEnabled,
       pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
+      pushCommentsEnabled: pushCommentsEnabled,
+      pushTripInvitesEnabled: pushTripInvitesEnabled,
+      pushTripStatusEnabled: pushTripStatusEnabled,
+      pushPaymentRequestsEnabled: pushPaymentRequestsEnabled,
+      pushPaymentsEnabled: pushPaymentsEnabled,
+      pushRemindersEnabled: pushRemindersEnabled,
       emailTripReportEnabled: emailTripReportEnabled,
     );
     _notificationPreferences = prefs;

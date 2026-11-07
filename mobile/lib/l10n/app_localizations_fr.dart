@@ -5021,4 +5021,53 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Réessayer';
+
+  @override
+  String get notificationCommentAddedTitle => 'Nouveau commentaire sur ta dépense';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name a commenté « $note ».';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name a commenté ta dépense.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Commentaires et mentions';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Nouveaux commentaires sur tes dépenses et mentions de toi';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Invitations et membres du voyage';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Invitations et personnes qui rejoignent ou quittent un voyage';
+
+  @override
+  String get profilePushTripStatusTitle => 'Statut du voyage';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Voyage terminé et prêt à être réglé';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Demandes de paiement';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Demandes reçues, refusées ou annulées';
+
+  @override
+  String get profilePushPaymentsTitle => 'Paiements';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Paiements marqués envoyés, confirmés ou non reçus';
+
+  @override
+  String get profilePushRemindersTitle => 'Rappels';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Rappels de paiements non réglés';
 }

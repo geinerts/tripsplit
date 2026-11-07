@@ -138,6 +138,34 @@ void main() {
     );
   });
 
+  test('push categories read their own keys or fall back to old ones', () {
+    NotificationPreferences parse(Map<String, dynamic> preferences) =>
+        NotificationPreferencesModel.fromApiMap({'preferences': preferences});
+    final split = parse({
+      'push': {
+        'trip_updates': true,
+        'settlement_updates': true,
+        'comments': false,
+        'reminders': false,
+      },
+    });
+    expect(split.pushCommentsEnabled, isFalse);
+    expect(split.pushTripInvitesEnabled, isTrue);
+    expect(split.pushRemindersEnabled, isFalse);
+    expect(split.pushPaymentsEnabled, isTrue);
+    final older = parse({
+      'push': {'trip_updates': false, 'settlement_updates': true},
+    });
+    expect(older.pushCommentsEnabled, isFalse);
+    expect(older.pushTripStatusEnabled, isFalse);
+    expect(older.pushPaymentRequestsEnabled, isTrue);
+    expect(parse({}).pushRemindersEnabled, isTrue);
+    expect(
+      older.copyWith(pushCommentsEnabled: true).pushCommentsEnabled,
+      isTrue,
+    );
+  });
+
   test(
     'Premium features stay offered after display freshness, until expiry',
     () {

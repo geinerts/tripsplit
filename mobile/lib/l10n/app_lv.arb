@@ -2046,5 +2046,20 @@
   "yearSummaryPartial": "Dažu summu trūkst, jo valūtas kurss nebija pieejams.",
   "yearSummaryShare": "Kopīgot",
   "yearSummaryShareFailed": "Neizdevās kopīgot attēlu.",
-  "yearSummaryRetry": "Mēģināt vēlreiz"
+  "yearSummaryRetry": "Mēģināt vēlreiz",
+  "notificationCommentAddedTitle": "Jauns komentārs pie tava izdevuma",
+  "notificationCommentAddedBody": "{name} komentēja izdevumu \"{note}\".",
+  "notificationCommentAddedBodyGeneric": "{name} komentēja tavu izdevumu.",
+  "profilePushCommentsTitle": "Komentāri un pieminējumi",
+  "profilePushCommentsSubtitle": "Jauni komentāri pie taviem tēriņiem un tavi pieminējumi",
+  "profilePushTripInvitesTitle": "Ceļojumu ielūgumi un dalībnieki",
+  "profilePushTripInvitesSubtitle": "Ielūgumi un dalībnieki, kas pievienojas vai pamet ceļojumu",
+  "profilePushTripStatusTitle": "Ceļojuma statuss",
+  "profilePushTripStatusSubtitle": "Ceļojums pabeigts un gatavs norēķiniem",
+  "profilePushPaymentRequestsTitle": "Maksājumu pieprasījumi",
+  "profilePushPaymentRequestsSubtitle": "Tev nosūtīti, noraidīti vai atcelti pieprasījumi",
+  "profilePushPaymentsTitle": "Maksājumi",
+  "profilePushPaymentsSubtitle": "Maksājumi atzīmēti kā nosūtīti, apstiprināti vai nesaņemti",
+  "profilePushRemindersTitle": "Atgādinājumi",
+  "profilePushRemindersSubtitle": "Atgādinājumi par nenokārtotiem maksājumiem"
 }

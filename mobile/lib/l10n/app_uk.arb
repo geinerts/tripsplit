@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Деякі суми відсутні, бо обмінний курс був недоступний.",
   "yearSummaryShare": "Поділитися",
   "yearSummaryShareFailed": "Не вдалося поділитися зображенням.",
-  "yearSummaryRetry": "Спробувати ще раз"
+  "yearSummaryRetry": "Спробувати ще раз",
+  "notificationCommentAddedTitle": "Новий коментар до вашої витрати",
+  "notificationCommentAddedBody": "{name} прокоментував(-ла) «{note}».",
+  "notificationCommentAddedBodyGeneric": "{name} прокоментував(-ла) вашу витрату.",
+  "profilePushCommentsTitle": "Коментарі та згадки",
+  "profilePushCommentsSubtitle": "Нові коментарі до ваших витрат і згадки про вас",
+  "profilePushTripInvitesTitle": "Запрошення та учасники подорожі",
+  "profilePushTripInvitesSubtitle": "Запрошення та люди, які приєднуються до подорожі або залишають її",
+  "profilePushTripStatusTitle": "Статус подорожі",
+  "profilePushTripStatusSubtitle": "Подорож завершено, можна розраховуватися",
+  "profilePushPaymentRequestsTitle": "Запити на оплату",
+  "profilePushPaymentRequestsSubtitle": "Запити до вас, відхилені або скасовані",
+  "profilePushPaymentsTitle": "Платежі",
+  "profilePushPaymentsSubtitle": "Платежі, позначені як надіслані, підтверджені або не отримані",
+  "profilePushRemindersTitle": "Нагадування",
+  "profilePushRemindersSubtitle": "Нагадування про неоплачені суми"
 }

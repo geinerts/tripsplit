@@ -5021,4 +5021,53 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Prøv igen';
+
+  @override
+  String get notificationCommentAddedTitle => 'Ny kommentar til din udgift';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name kommenterede \"$note\".';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name kommenterede din udgift.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Kommentarer og omtaler';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Nye kommentarer til dine udgifter og omtaler af dig';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Rejseinvitationer og medlemmer';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Invitationer og personer, der deltager i eller forlader en rejse';
+
+  @override
+  String get profilePushTripStatusTitle => 'Rejsestatus';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Rejsen er afsluttet og klar til afregning';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Betalingsanmodninger';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Anmodninger til dig, afviste eller annullerede';
+
+  @override
+  String get profilePushPaymentsTitle => 'Betalinger';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Betalinger markeret som sendt, bekræftet eller ikke modtaget';
+
+  @override
+  String get profilePushRemindersTitle => 'Påmindelser';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Påmindelser om ubetalte beløb';
 }

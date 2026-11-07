@@ -100,6 +100,37 @@ $results['push_lv'] = push_localize_notification_for_locale(
 $results['push_lv_generic'] = push_localize_notification_for_locale(
     ['type'=>'expense_comment_mention', 'title'=>'You were mentioned in a comment', 'body'=>'Owner mentioned you in a comment.'], 'lv'
 );
+// The payer hears about comments on their expense, except their own or ones that mention them.
+$pdo->exec('DELETE FROM trip_notifications');
+$commentAdded = static function () use ($pdo): array {
+    $rows = $pdo->query('SELECT user_id, type, title, body, payload_json FROM trip_notifications ORDER BY id')->fetchAll();
+    $pdo->exec('DELETE FROM trip_notifications');
+    return array_map(static fn(array $row): array => [
+        'user_id' => (int) $row['user_id'],
+        'type' => $row['type'],
+        'title' => $row['title'],
+        'body' => $row['body'],
+        'payload' => json_decode((string) $row['payload_json'], true),
+    ], $rows);
+};
+$plain = $add(['body'=>'Great dinner'], 2);
+$results['comment_added'] = $commentAdded();
+$results['comment_added_id'] = (int) $plain['body']['comment']['id'];
+$add(['body'=>'Thanks all']);
+$results['comment_by_payer'] = $commentAdded();
+$add(['body'=>'@Owner look', 'mentioned_user_ids'=>[1]], 2);
+$results['comment_mentions_payer'] = $commentAdded();
+invitation_call('add_expense_comment_action', 4, ['expense_id'=>6, 'body'=>'Nice']);
+$results['comment_added_no_note'] = $commentAdded();
+$edit($results['comment_added_id'], ['body'=>'Great dinner!']);
+$results['comment_edit'] = $commentAdded();
+$results['comment_added_push_pref'] = notification_push_pref_key_for_type('expense_comment_added');
+$results['comment_added_in_app_pref'] = notification_in_app_pref_key_for_type('expense_comment_added');
+$results['comment_added_actor'] = notification_actor_user_id(['type'=>'expense_comment_added', 'payload'=>['commented_by_user_id'=>4]]);
+$results['comment_added_push_lv'] = push_localize_notification_for_locale(
+    ['type'=>'expense_comment_added', 'title'=>'New comment on your expense', 'body'=>'Nia commented on "Dinner".'], 'lv'
+);
+
 $results['in_app_pref'] = notification_in_app_pref_key_for_type('expense_comment_mention');
 $results['push_pref'] = notification_push_pref_key_for_type('expense_comment_mention');
 $results['actor'] = notification_actor_user_id(['type'=>'expense_comment_mention', 'payload'=>['mentioned_by_user_id'=>7]]);

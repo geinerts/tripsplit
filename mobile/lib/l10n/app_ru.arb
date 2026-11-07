@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Некоторых сумм нет, потому что курс валюты был недоступен.",
   "yearSummaryShare": "Поделиться",
   "yearSummaryShareFailed": "Не удалось поделиться изображением.",
-  "yearSummaryRetry": "Повторить"
+  "yearSummaryRetry": "Повторить",
+  "notificationCommentAddedTitle": "Новый комментарий к вашему расходу",
+  "notificationCommentAddedBody": "{name} прокомментировал(а) «{note}».",
+  "notificationCommentAddedBodyGeneric": "{name} прокомментировал(а) ваш расход.",
+  "profilePushCommentsTitle": "Комментарии и упоминания",
+  "profilePushCommentsSubtitle": "Новые комментарии к вашим расходам и упоминания о вас",
+  "profilePushTripInvitesTitle": "Приглашения и участники поездки",
+  "profilePushTripInvitesSubtitle": "Приглашения и люди, которые присоединяются к поездке или покидают её",
+  "profilePushTripStatusTitle": "Статус поездки",
+  "profilePushTripStatusSubtitle": "Поездка завершена, можно рассчитываться",
+  "profilePushPaymentRequestsTitle": "Запросы на оплату",
+  "profilePushPaymentRequestsSubtitle": "Запросы вам, отклонённые или отменённые",
+  "profilePushPaymentsTitle": "Платежи",
+  "profilePushPaymentsSubtitle": "Платежи, отмеченные как отправленные, подтверждённые или не полученные",
+  "profilePushRemindersTitle": "Напоминания",
+  "profilePushRemindersSubtitle": "Напоминания о неоплаченных суммах"
 }

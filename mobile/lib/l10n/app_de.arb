@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Einige Beträge fehlen, weil kein Wechselkurs verfügbar war.",
   "yearSummaryShare": "Teilen",
   "yearSummaryShareFailed": "Das Bild konnte nicht geteilt werden.",
-  "yearSummaryRetry": "Erneut versuchen"
+  "yearSummaryRetry": "Erneut versuchen",
+  "notificationCommentAddedTitle": "Neuer Kommentar zu deiner Ausgabe",
+  "notificationCommentAddedBody": "{name} hat „{note}“ kommentiert.",
+  "notificationCommentAddedBodyGeneric": "{name} hat deine Ausgabe kommentiert.",
+  "profilePushCommentsTitle": "Kommentare und Erwähnungen",
+  "profilePushCommentsSubtitle": "Neue Kommentare zu deinen Ausgaben und Erwähnungen von dir",
+  "profilePushTripInvitesTitle": "Reiseeinladungen und Mitglieder",
+  "profilePushTripInvitesSubtitle": "Einladungen und Personen, die einer Reise beitreten oder sie verlassen",
+  "profilePushTripStatusTitle": "Reisestatus",
+  "profilePushTripStatusSubtitle": "Reise beendet und bereit zur Abrechnung",
+  "profilePushPaymentRequestsTitle": "Zahlungsanfragen",
+  "profilePushPaymentRequestsSubtitle": "An dich gesendete, abgelehnte oder stornierte Anfragen",
+  "profilePushPaymentsTitle": "Zahlungen",
+  "profilePushPaymentsSubtitle": "Zahlungen als gesendet, bestätigt oder nicht erhalten markiert",
+  "profilePushRemindersTitle": "Erinnerungen",
+  "profilePushRemindersSubtitle": "Erinnerungen an offene Zahlungen"
 }

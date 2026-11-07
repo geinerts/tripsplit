@@ -78,6 +78,12 @@ abstract class AuthRemoteDataSource {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? pushCommentsEnabled,
+    bool? pushTripInvitesEnabled,
+    bool? pushTripStatusEnabled,
+    bool? pushPaymentRequestsEnabled,
+    bool? pushPaymentsEnabled,
+    bool? pushRemindersEnabled,
     bool? emailTripReportEnabled,
   });
 }
@@ -350,6 +356,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     bool? pushFriendInvitesEnabled,
     bool? pushTripUpdatesEnabled,
     bool? pushSettlementUpdatesEnabled,
+    bool? pushCommentsEnabled,
+    bool? pushTripInvitesEnabled,
+    bool? pushTripStatusEnabled,
+    bool? pushPaymentRequestsEnabled,
+    bool? pushPaymentsEnabled,
+    bool? pushRemindersEnabled,
     bool? emailTripReportEnabled,
   }) async {
     final inAppPayload = <String, dynamic>{};
@@ -412,6 +424,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
     if (pushSettlementUpdatesEnabled != null) {
       pushPayload['settlement_updates'] = pushSettlementUpdatesEnabled;
+    }
+    if (pushCommentsEnabled != null) {
+      pushPayload['comments'] = pushCommentsEnabled;
+    }
+    if (pushTripInvitesEnabled != null) {
+      pushPayload['trip_invites'] = pushTripInvitesEnabled;
+    }
+    if (pushTripStatusEnabled != null) {
+      pushPayload['trip_status'] = pushTripStatusEnabled;
+    }
+    if (pushPaymentRequestsEnabled != null) {
+      pushPayload['payment_requests'] = pushPaymentRequestsEnabled;
+    }
+    if (pushPaymentsEnabled != null) {
+      pushPayload['payments'] = pushPaymentsEnabled;
+    }
+    if (pushRemindersEnabled != null) {
+      pushPayload['reminders'] = pushRemindersEnabled;
     }
 
     final payload = <String, dynamic>{};

@@ -5021,4 +5021,53 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Försök igen';
+
+  @override
+  String get notificationCommentAddedTitle => 'Ny kommentar på din utgift';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name kommenterade \"$note\".';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name kommenterade din utgift.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Kommentarer och omnämnanden';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Nya kommentarer på dina utgifter och omnämnanden av dig';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Resinbjudningar och medlemmar';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Inbjudningar och personer som går med i eller lämnar en resa';
+
+  @override
+  String get profilePushTripStatusTitle => 'Resans status';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Resan avslutad och redo att göras upp';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Betalningsförfrågningar';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Förfrågningar till dig, avböjda eller avbrutna';
+
+  @override
+  String get profilePushPaymentsTitle => 'Betalningar';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Betalningar markerade som skickade, bekräftade eller inte mottagna';
+
+  @override
+  String get profilePushRemindersTitle => 'Påminnelser';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Påminnelser om obetalda skulder';
 }

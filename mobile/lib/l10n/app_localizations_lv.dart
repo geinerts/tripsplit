@@ -5031,4 +5031,53 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Mēģināt vēlreiz';
+
+  @override
+  String get notificationCommentAddedTitle => 'Jauns komentārs pie tava izdevuma';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name komentēja izdevumu \"$note\".';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name komentēja tavu izdevumu.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Komentāri un pieminējumi';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Jauni komentāri pie taviem tēriņiem un tavi pieminējumi';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Ceļojumu ielūgumi un dalībnieki';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Ielūgumi un dalībnieki, kas pievienojas vai pamet ceļojumu';
+
+  @override
+  String get profilePushTripStatusTitle => 'Ceļojuma statuss';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Ceļojums pabeigts un gatavs norēķiniem';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Maksājumu pieprasījumi';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Tev nosūtīti, noraidīti vai atcelti pieprasījumi';
+
+  @override
+  String get profilePushPaymentsTitle => 'Maksājumi';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Maksājumi atzīmēti kā nosūtīti, apstiprināti vai nesaņemti';
+
+  @override
+  String get profilePushRemindersTitle => 'Atgādinājumi';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Atgādinājumi par nenokārtotiem maksājumiem';
 }

@@ -21,12 +21,10 @@ class _PushNotificationSettingsPageState
     _prefs = widget.controller.notificationPreferences;
   }
 
-  Future<void> _setPreference({
-    bool? pushExpenseAddedEnabled,
-    bool? pushFriendInvitesEnabled,
-    bool? pushTripUpdatesEnabled,
-    bool? pushSettlementUpdatesEnabled,
-  }) async {
+  Future<void> _setPreference(
+    NotificationPreferences optimistic,
+    Future<NotificationPreferences> Function() request,
+  ) async {
     if (_isSaving) {
       return;
     }
@@ -34,25 +32,11 @@ class _PushNotificationSettingsPageState
     final previous = _prefs;
     setState(() {
       _isSaving = true;
-      _prefs = _prefs.copyWith(
-        pushExpenseAddedEnabled:
-            pushExpenseAddedEnabled ?? _prefs.pushExpenseAddedEnabled,
-        pushFriendInvitesEnabled:
-            pushFriendInvitesEnabled ?? _prefs.pushFriendInvitesEnabled,
-        pushTripUpdatesEnabled:
-            pushTripUpdatesEnabled ?? _prefs.pushTripUpdatesEnabled,
-        pushSettlementUpdatesEnabled:
-            pushSettlementUpdatesEnabled ?? _prefs.pushSettlementUpdatesEnabled,
-      );
+      _prefs = optimistic;
     });
 
     try {
-      final updated = await widget.controller.updateNotificationPreferences(
-        pushExpenseAddedEnabled: pushExpenseAddedEnabled,
-        pushFriendInvitesEnabled: pushFriendInvitesEnabled,
-        pushTripUpdatesEnabled: pushTripUpdatesEnabled,
-        pushSettlementUpdatesEnabled: pushSettlementUpdatesEnabled,
-      );
+      final updated = await request();
       if (!mounted) {
         return;
       }
@@ -127,11 +111,104 @@ class _PushNotificationSettingsPageState
                           context.l10n.profileExpenseAddedNotificationsPhone,
                       icon: Icons.receipt_long_outlined,
                       value: _prefs.pushExpenseAddedEnabled,
-                      onChanged: (value) {
-                        unawaited(
-                          _setPreference(pushExpenseAddedEnabled: value),
-                        );
-                      },
+                      onChanged: (value) => unawaited(
+                        _setPreference(
+                          _prefs.copyWith(pushExpenseAddedEnabled: value),
+                          () => widget.controller.updateNotificationPreferences(
+                            pushExpenseAddedEnabled: value,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profilePushCommentsTitle,
+                      subtitle: context.l10n.profilePushCommentsSubtitle,
+                      icon: Icons.chat_bubble_outline_rounded,
+                      value: _prefs.pushCommentsEnabled,
+                      onChanged: (value) => unawaited(
+                        _setPreference(
+                          _prefs.copyWith(pushCommentsEnabled: value),
+                          () => widget.controller.updateNotificationPreferences(
+                            pushCommentsEnabled: value,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profilePushTripInvitesTitle,
+                      subtitle: context.l10n.profilePushTripInvitesSubtitle,
+                      icon: Icons.person_add_alt_outlined,
+                      value: _prefs.pushTripInvitesEnabled,
+                      onChanged: (value) => unawaited(
+                        _setPreference(
+                          _prefs.copyWith(pushTripInvitesEnabled: value),
+                          () => widget.controller.updateNotificationPreferences(
+                            pushTripInvitesEnabled: value,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profilePushTripStatusTitle,
+                      subtitle: context.l10n.profilePushTripStatusSubtitle,
+                      icon: Icons.flag_outlined,
+                      value: _prefs.pushTripStatusEnabled,
+                      onChanged: (value) => unawaited(
+                        _setPreference(
+                          _prefs.copyWith(pushTripStatusEnabled: value),
+                          () => widget.controller.updateNotificationPreferences(
+                            pushTripStatusEnabled: value,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profilePushPaymentRequestsTitle,
+                      subtitle: context.l10n.profilePushPaymentRequestsSubtitle,
+                      icon: Icons.request_quote_outlined,
+                      value: _prefs.pushPaymentRequestsEnabled,
+                      onChanged: (value) => unawaited(
+                        _setPreference(
+                          _prefs.copyWith(pushPaymentRequestsEnabled: value),
+                          () => widget.controller.updateNotificationPreferences(
+                            pushPaymentRequestsEnabled: value,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profilePushPaymentsTitle,
+                      subtitle: context.l10n.profilePushPaymentsSubtitle,
+                      icon: Icons.task_alt_outlined,
+                      value: _prefs.pushPaymentsEnabled,
+                      onChanged: (value) => unawaited(
+                        _setPreference(
+                          _prefs.copyWith(pushPaymentsEnabled: value),
+                          () => widget.controller.updateNotificationPreferences(
+                            pushPaymentsEnabled: value,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
+                      title: context.l10n.profilePushRemindersTitle,
+                      subtitle: context.l10n.profilePushRemindersSubtitle,
+                      icon: Icons.alarm_outlined,
+                      value: _prefs.pushRemindersEnabled,
+                      onChanged: (value) => unawaited(
+                        _setPreference(
+                          _prefs.copyWith(pushRemindersEnabled: value),
+                          () => widget.controller.updateNotificationPreferences(
+                            pushRemindersEnabled: value,
+                          ),
+                        ),
+                      ),
                     ),
                     _buildProfileSwitchTile(
                       context: context,
@@ -141,37 +218,14 @@ class _PushNotificationSettingsPageState
                           .profileFriendRequestResponseNotifications,
                       icon: Icons.group_add_outlined,
                       value: _prefs.pushFriendInvitesEnabled,
-                      onChanged: (value) {
-                        unawaited(
-                          _setPreference(pushFriendInvitesEnabled: value),
-                        );
-                      },
-                    ),
-                    _buildProfileSwitchTile(
-                      context: context,
-                      title: context.l10n.profileTripUpdates,
-                      subtitle:
-                          context.l10n.profileTripLifecycleMemberStatusChanges,
-                      icon: Icons.flag_outlined,
-                      value: _prefs.pushTripUpdatesEnabled,
-                      onChanged: (value) {
-                        unawaited(
-                          _setPreference(pushTripUpdatesEnabled: value),
-                        );
-                      },
-                    ),
-                    _buildProfileSwitchTile(
-                      context: context,
-                      title: context.l10n.profileSettlementUpdates,
-                      subtitle:
-                          context.l10n.profileMarkedSentConfirmedPaymentUpdates,
-                      icon: Icons.task_alt_outlined,
-                      value: _prefs.pushSettlementUpdatesEnabled,
-                      onChanged: (value) {
-                        unawaited(
-                          _setPreference(pushSettlementUpdatesEnabled: value),
-                        );
-                      },
+                      onChanged: (value) => unawaited(
+                        _setPreference(
+                          _prefs.copyWith(pushFriendInvitesEnabled: value),
+                          () => widget.controller.updateNotificationPreferences(
+                            pushFriendInvitesEnabled: value,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

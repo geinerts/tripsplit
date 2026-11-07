@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Brakuje niektórych kwot, ponieważ kurs wymiany był niedostępny.",
   "yearSummaryShare": "Udostępnij",
   "yearSummaryShareFailed": "Nie udało się udostępnić obrazu.",
-  "yearSummaryRetry": "Spróbuj ponownie"
+  "yearSummaryRetry": "Spróbuj ponownie",
+  "notificationCommentAddedTitle": "Nowy komentarz do Twojego wydatku",
+  "notificationCommentAddedBody": "{name} skomentował(a) „{note}”.",
+  "notificationCommentAddedBodyGeneric": "{name} skomentował(a) Twój wydatek.",
+  "profilePushCommentsTitle": "Komentarze i wzmianki",
+  "profilePushCommentsSubtitle": "Nowe komentarze do Twoich wydatków i wzmianki o Tobie",
+  "profilePushTripInvitesTitle": "Zaproszenia i uczestnicy podróży",
+  "profilePushTripInvitesSubtitle": "Zaproszenia oraz osoby dołączające do podróży lub ją opuszczające",
+  "profilePushTripStatusTitle": "Status podróży",
+  "profilePushTripStatusSubtitle": "Podróż zakończona i gotowa do rozliczenia",
+  "profilePushPaymentRequestsTitle": "Prośby o płatność",
+  "profilePushPaymentRequestsSubtitle": "Prośby otrzymane, odrzucone lub anulowane",
+  "profilePushPaymentsTitle": "Płatności",
+  "profilePushPaymentsSubtitle": "Płatności oznaczone jako wysłane, potwierdzone lub nieotrzymane",
+  "profilePushRemindersTitle": "Przypomnienia",
+  "profilePushRemindersSubtitle": "Przypomnienia o nierozliczonych płatnościach"
 }

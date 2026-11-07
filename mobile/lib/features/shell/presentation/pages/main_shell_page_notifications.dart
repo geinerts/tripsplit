@@ -17,7 +17,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
     if (type == 'expense_added') {
       return prefs.inAppExpenseAddedEnabled;
     }
-    if (type == 'expense_comment_mention') {
+    if (type == 'expense_comment_mention' || type == 'expense_comment_added') {
       return prefs.inAppTripUpdatesEnabled;
     }
     if (type == 'friend_invite' || type == 'friend_invite_received') {

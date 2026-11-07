@@ -5031,4 +5031,53 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Zkusit znovu';
+
+  @override
+  String get notificationCommentAddedTitle => 'Nový komentář k vašemu výdaji';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name okomentoval(a) „$note“.';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name okomentoval(a) váš výdaj.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Komentáře a zmínky';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Nové komentáře k vašim výdajům a zmínky o vás';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Pozvánky a členové výletu';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Pozvánky a lidé, kteří se k výletu připojí nebo ho opustí';
+
+  @override
+  String get profilePushTripStatusTitle => 'Stav výletu';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Výlet ukončen a připraven k vyrovnání';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Žádosti o platbu';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Žádosti pro vás, odmítnuté nebo zrušené';
+
+  @override
+  String get profilePushPaymentsTitle => 'Platby';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Platby označené jako odeslané, potvrzené nebo nepřijaté';
+
+  @override
+  String get profilePushRemindersTitle => 'Připomínky';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Připomínky nevyrovnaných plateb';
 }

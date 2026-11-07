@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Některé částky chybí, protože nebyl k dispozici směnný kurz.",
   "yearSummaryShare": "Sdílet",
   "yearSummaryShareFailed": "Obrázek se nepodařilo sdílet.",
-  "yearSummaryRetry": "Zkusit znovu"
+  "yearSummaryRetry": "Zkusit znovu",
+  "notificationCommentAddedTitle": "Nový komentář k vašemu výdaji",
+  "notificationCommentAddedBody": "{name} okomentoval(a) „{note}“.",
+  "notificationCommentAddedBodyGeneric": "{name} okomentoval(a) váš výdaj.",
+  "profilePushCommentsTitle": "Komentáře a zmínky",
+  "profilePushCommentsSubtitle": "Nové komentáře k vašim výdajům a zmínky o vás",
+  "profilePushTripInvitesTitle": "Pozvánky a členové výletu",
+  "profilePushTripInvitesSubtitle": "Pozvánky a lidé, kteří se k výletu připojí nebo ho opustí",
+  "profilePushTripStatusTitle": "Stav výletu",
+  "profilePushTripStatusSubtitle": "Výlet ukončen a připraven k vyrovnání",
+  "profilePushPaymentRequestsTitle": "Žádosti o platbu",
+  "profilePushPaymentRequestsSubtitle": "Žádosti pro vás, odmítnuté nebo zrušené",
+  "profilePushPaymentsTitle": "Platby",
+  "profilePushPaymentsSubtitle": "Platby označené jako odeslané, potvrzené nebo nepřijaté",
+  "profilePushRemindersTitle": "Připomínky",
+  "profilePushRemindersSubtitle": "Připomínky nevyrovnaných plateb"
 }

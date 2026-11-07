@@ -78,14 +78,18 @@ function push_should_queue_notification_type(string $type): bool
         return false;
     }
 
-    if ($normalizedType === 'settlement_reminder' || $normalizedType === 'settlement_auto_reminder') {
-        return false;
-    }
-
-    // Always deliver these high-frequency collaboration updates via push,
-    // even when env critical types is narrowed down.
+    // Always deliver these collaboration updates via push, even when env critical
+    // types is narrowed down. Each one has its own user switch.
     if (
-        in_array($normalizedType, ['expense_added', 'expense_comment_mention', 'friend_invite_received', 'trip_invitation'], true)
+        in_array($normalizedType, [
+            'expense_added',
+            'expense_comment_mention',
+            'expense_comment_added',
+            'friend_invite_received',
+            'trip_invitation',
+            'settlement_reminder',
+            'settlement_auto_reminder',
+        ], true)
         || str_starts_with($normalizedType, 'payment_')
     ) {
         return true;

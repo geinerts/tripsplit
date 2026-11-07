@@ -30,6 +30,12 @@ final RegExp _commentMentionWithNotePattern = RegExp(
 final RegExp _commentMentionGenericPattern = RegExp(
   r'^(.+?) mentioned you in a comment\.$',
 );
+final RegExp _commentAddedWithNotePattern = RegExp(
+  r'^(.+?) commented on "(.+)"\.$',
+);
+final RegExp _commentAddedGenericPattern = RegExp(
+  r'^(.+?) commented on your expense\.$',
+);
 
 final RegExp _expenseAddedWithTripPattern = RegExp(
   r'^(.+?) added an expense of (.+?) in "(.+?)"\.$',
@@ -217,6 +223,26 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
               ? t.notificationCommentMentionBodyGeneric(
                   generic.group(1)!.trim(),
                 )
+              : rawBody,
+        );
+      }
+    case 'expense_comment_added':
+      {
+        final withNote = _commentAddedWithNotePattern.firstMatch(rawBody);
+        if (withNote != null) {
+          return LocalizedWorkspaceNotification(
+            title: t.notificationCommentAddedTitle,
+            body: t.notificationCommentAddedBody(
+              withNote.group(1)!.trim(),
+              withNote.group(2)!.trim(),
+            ),
+          );
+        }
+        final generic = _commentAddedGenericPattern.firstMatch(rawBody);
+        return LocalizedWorkspaceNotification(
+          title: t.notificationCommentAddedTitle,
+          body: generic != null
+              ? t.notificationCommentAddedBodyGeneric(generic.group(1)!.trim())
               : rawBody,
         );
       }
@@ -555,6 +581,10 @@ String? notificationActorName(WorkspaceNotification notification) {
     'expense_comment_mention' => [
       _commentMentionWithNotePattern,
       _commentMentionGenericPattern,
+    ],
+    'expense_comment_added' => [
+      _commentAddedWithNotePattern,
+      _commentAddedGenericPattern,
     ],
     'trip_finished' => [
       _tripFinishedSettlingPattern,

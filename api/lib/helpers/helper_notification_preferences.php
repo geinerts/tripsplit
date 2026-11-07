@@ -24,8 +24,54 @@ function notification_preferences_defaults(): array
         'push_friend_invites_enabled' => true,
         'push_trip_updates_enabled' => true,
         'push_settlement_updates_enabled' => true,
+        'push_comments_enabled' => true,
+        'push_trip_invites_enabled' => true,
+        'push_trip_status_enabled' => true,
+        'push_payment_requests_enabled' => true,
+        'push_payments_enabled' => true,
+        'push_reminders_enabled' => true,
         'email_trip_report_enabled' => true,
     ];
+}
+
+/**
+ * Push categories split out of the two older switches, as category key => older key.
+ * The older keys stay in the API for apps that don't know the categories.
+ */
+function notification_push_category_parents(): array
+{
+    return [
+        'push_comments_enabled' => 'push_trip_updates_enabled',
+        'push_trip_invites_enabled' => 'push_trip_updates_enabled',
+        'push_trip_status_enabled' => 'push_trip_updates_enabled',
+        'push_payment_requests_enabled' => 'push_settlement_updates_enabled',
+        'push_payments_enabled' => 'push_settlement_updates_enabled',
+        'push_reminders_enabled' => 'push_settlement_updates_enabled',
+    ];
+}
+
+/** Separate from the main query so the server keeps working before the migration runs. */
+function load_push_category_preferences(PDO $pdo, int $userId, array $legacy): array
+{
+    $columns = array_keys(notification_push_category_parents());
+    $result = [];
+    foreach (notification_push_category_parents() as $key => $parentKey) {
+        $result[$key] = (bool) ($legacy[$parentKey] ?? true);
+    }
+    try {
+        $stmt = $pdo->prepare('SELECT ' . implode(', ', $columns) . ' FROM ' . table_name('notification_preferences')
+            . ' WHERE user_id = :user_id LIMIT 1');
+        $stmt->execute(['user_id' => $userId]);
+        $row = $stmt->fetch();
+        if (is_array($row)) {
+            foreach ($columns as $column) {
+                $result[$column] = ((int) ($row[$column] ?? 1)) === 1;
+            }
+        }
+    } catch (PDOException $error) {
+        // Columns not migrated yet: the categories follow the older switches.
+    }
+    return $result;
 }
 
 /** Separate from the main query so the server keeps working before the migration runs. */
@@ -174,6 +220,12 @@ function normalize_notification_preferences_patch(array $input): array
         'push_friend_invites_enabled' => 'push_friend_invites_enabled',
         'push_trip_updates_enabled' => 'push_trip_updates_enabled',
         'push_settlement_updates_enabled' => 'push_settlement_updates_enabled',
+        'push_comments_enabled' => 'push_comments_enabled',
+        'push_trip_invites_enabled' => 'push_trip_invites_enabled',
+        'push_trip_status_enabled' => 'push_trip_status_enabled',
+        'push_payment_requests_enabled' => 'push_payment_requests_enabled',
+        'push_payments_enabled' => 'push_payments_enabled',
+        'push_reminders_enabled' => 'push_reminders_enabled',
         'email_trip_report_enabled' => 'email_trip_report_enabled',
     ];
     foreach ($flatMap as $inputKey => $targetKey) {
@@ -233,6 +285,12 @@ function normalize_notification_preferences_patch(array $input): array
             'friend_invites' => 'push_friend_invites_enabled',
             'trip_updates' => 'push_trip_updates_enabled',
             'settlement_updates' => 'push_settlement_updates_enabled',
+            'comments' => 'push_comments_enabled',
+            'trip_invites' => 'push_trip_invites_enabled',
+            'trip_status' => 'push_trip_status_enabled',
+            'payment_requests' => 'push_payment_requests_enabled',
+            'payments' => 'push_payments_enabled',
+            'reminders' => 'push_reminders_enabled',
         ];
         foreach ($nestedMap as $inputKey => $targetKey) {
             if (!array_key_exists($inputKey, $pushPayload)) {
@@ -343,6 +401,7 @@ function load_user_notification_preferences(PDO $pdo, int $userId): array
         'push_settlement_updates_enabled' => ((int) ($row['push_settlement_updates_enabled'] ?? 1)) === 1,
         'email_trip_report_enabled' => load_email_trip_report_preference($pdo, $userId),
     ];
+    $cache[$userId] += load_push_category_preferences($pdo, $userId, $cache[$userId]);
     return $cache[$userId];
 }
 
@@ -421,6 +480,30 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
             }
         }
         $patch[$groupKey] = $groupValue;
+    }
+
+    // Older apps write the combined switch: apply it to each category it covers.
+    // A category set in the same request wins. The combined switch then reads true
+    // while any of its categories is on.
+    $pushParents = notification_push_category_parents();
+    foreach ($pushParents as $categoryKey => $parentKey) {
+        if (array_key_exists($parentKey, $patch) && !array_key_exists($categoryKey, $patch)) {
+            $patch[$categoryKey] = (bool) $patch[$parentKey];
+        }
+    }
+    foreach (array_unique(array_values($pushParents)) as $parentKey) {
+        $touched = false;
+        $anyOn = false;
+        foreach ($pushParents as $categoryKey => $categoryParent) {
+            if ($categoryParent !== $parentKey) {
+                continue;
+            }
+            $touched = $touched || array_key_exists($categoryKey, $patch);
+            $anyOn = $anyOn || (bool) ($patch[$categoryKey] ?? $current[$categoryKey] ?? true);
+        }
+        if ($touched) {
+            $patch[$parentKey] = $anyOn;
+        }
     }
 
     $hasAnyInAppPatch = false;
@@ -549,6 +632,22 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
         $next['email_trip_report_enabled'] = true;
     }
 
+    $categoryKeys = array_keys($pushParents);
+    try {
+        $assignments = array_map(static fn(string $key): string => $key . ' = :' . $key, $categoryKeys);
+        $params = ['user_id' => $userId];
+        foreach ($categoryKeys as $key) {
+            $params[$key] = ($next[$key] ?? true) ? 1 : 0;
+        }
+        $pdo->prepare('UPDATE ' . $table . ' SET ' . implode(', ', $assignments) . ' WHERE user_id = :user_id')
+            ->execute($params);
+    } catch (PDOException $error) {
+        // Not migrated yet: the categories keep following the older switches.
+        foreach ($pushParents as $categoryKey => $parentKey) {
+            $next[$categoryKey] = (bool) $next[$parentKey];
+        }
+    }
+
     $cache = &notification_preferences_runtime_cache();
     $cache[$userId] = $next;
     return $next;
@@ -580,6 +679,12 @@ function build_notification_preferences_payload(array $prefs): array
             'friend_invites' => (bool) ($prefs['push_friend_invites_enabled'] ?? true),
             'trip_updates' => (bool) ($prefs['push_trip_updates_enabled'] ?? true),
             'settlement_updates' => (bool) ($prefs['push_settlement_updates_enabled'] ?? true),
+            'comments' => (bool) ($prefs['push_comments_enabled'] ?? true),
+            'trip_invites' => (bool) ($prefs['push_trip_invites_enabled'] ?? true),
+            'trip_status' => (bool) ($prefs['push_trip_status_enabled'] ?? true),
+            'payment_requests' => (bool) ($prefs['push_payment_requests_enabled'] ?? true),
+            'payments' => (bool) ($prefs['push_payments_enabled'] ?? true),
+            'reminders' => (bool) ($prefs['push_reminders_enabled'] ?? true),
         ],
         'email_trip_report_enabled' => (bool) ($prefs['email_trip_report_enabled'] ?? true),
     ];
@@ -596,7 +701,7 @@ function notification_in_app_pref_key_for_type(string $type): ?string
         return 'in_app_expense_added_enabled';
     }
 
-    if ($normalized === 'expense_comment_mention') {
+    if ($normalized === 'expense_comment_mention' || $normalized === 'expense_comment_added') {
         return 'in_app_trip_updates_enabled';
     }
 
@@ -676,47 +781,34 @@ function notification_push_pref_key_for_type(string $type): ?string
         return null;
     }
 
-    if ($normalized === 'expense_added') {
-        return 'push_expense_added_enabled';
-    }
-
-    if (in_array(
-        $normalized,
-        ['friend_invite', 'friend_invite_received', 'friend_invite_accepted'],
-        true
-    )) {
-        return 'push_friend_invites_enabled';
-    }
-
-    if (in_array(
-        $normalized,
-        ['trip_invitation', 'trip_added', 'trip_member_added', 'trip_finished', 'trip_ready_to_settle', 'member_ready_to_settle', 'expense_comment_mention'],
-        true
-    )) {
-        return 'push_trip_updates_enabled';
-    }
-
-    if (in_array(
-        $normalized,
-        [
-            'settlement_sent',
-            'settlement_confirmed',
+    $categories = [
+        'push_expense_added_enabled' => ['expense_added'],
+        'push_friend_invites_enabled' => ['friend_invite', 'friend_invite_received', 'friend_invite_accepted'],
+        'push_comments_enabled' => ['expense_comment_mention', 'expense_comment_added'],
+        'push_trip_invites_enabled' => ['trip_invitation', 'trip_added', 'trip_member_added', 'trip_member_removed'],
+        'push_trip_status_enabled' => ['trip_finished', 'trip_ready_to_settle', 'member_ready_to_settle'],
+        'push_payment_requests_enabled' => [
             'payment_requested',
             'payment_request_sent',
             'payment_request_cancelled',
             'payment_request_declined',
+        ],
+        'push_payments_enabled' => [
             'payment_sent',
             'payment_confirmed',
             'payment_cancelled',
             'payment_not_received',
+            'settlement_sent',
+            'settlement_confirmed',
+            'settlement_sent_cancelled',
+            'settlement_not_received',
         ],
-        true
-    )) {
-        return 'push_settlement_updates_enabled';
-    }
-
-    if ($normalized === 'settlement_reminder' || $normalized === 'settlement_auto_reminder') {
-        return '__disabled__';
+        'push_reminders_enabled' => ['settlement_reminder', 'settlement_auto_reminder'],
+    ];
+    foreach ($categories as $prefKey => $types) {
+        if (in_array($normalized, $types, true)) {
+            return $prefKey;
+        }
     }
 
     return null;
@@ -729,9 +821,6 @@ function user_allows_push_notification(PDO $pdo, int $userId, string $type): boo
     }
 
     $prefKey = notification_push_pref_key_for_type($type);
-    if ($prefKey === '__disabled__') {
-        return false;
-    }
     if ($prefKey === null) {
         return true;
     }

@@ -5021,4 +5021,53 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Riprova';
+
+  @override
+  String get notificationCommentAddedTitle => 'Nuovo commento sulla tua spesa';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name ha commentato \"$note\".';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name ha commentato la tua spesa.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Commenti e menzioni';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Nuovi commenti sulle tue spese e menzioni di te';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Inviti e membri del viaggio';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Inviti e persone che si uniscono o lasciano un viaggio';
+
+  @override
+  String get profilePushTripStatusTitle => 'Stato del viaggio';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Viaggio concluso e pronto per il saldo';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Richieste di pagamento';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Richieste ricevute, rifiutate o annullate';
+
+  @override
+  String get profilePushPaymentsTitle => 'Pagamenti';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Pagamenti segnati come inviati, confermati o non ricevuti';
+
+  @override
+  String get profilePushRemindersTitle => 'Promemoria';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Promemoria per pagamenti in sospeso';
 }

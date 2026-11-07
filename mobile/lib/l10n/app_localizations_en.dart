@@ -5021,4 +5021,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Try again';
+
+  @override
+  String get notificationCommentAddedTitle => 'New comment on your expense';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name commented on \"$note\".';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name commented on your expense.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Comments and mentions';
+
+  @override
+  String get profilePushCommentsSubtitle => 'New comments on your expenses and mentions of you';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Trip invites and members';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Invitations and people joining or leaving a trip';
+
+  @override
+  String get profilePushTripStatusTitle => 'Trip status';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Trip finished and ready to settle';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Payment requests';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Requests sent to you, declined or cancelled';
+
+  @override
+  String get profilePushPaymentsTitle => 'Payments';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Payments marked sent, confirmed or not received';
+
+  @override
+  String get profilePushRemindersTitle => 'Reminders';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Reminders about unsettled payments';
 }

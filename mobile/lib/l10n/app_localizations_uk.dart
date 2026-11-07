@@ -5041,4 +5041,53 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Спробувати ще раз';
+
+  @override
+  String get notificationCommentAddedTitle => 'Новий коментар до вашої витрати';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name прокоментував(-ла) «$note».';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name прокоментував(-ла) вашу витрату.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Коментарі та згадки';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Нові коментарі до ваших витрат і згадки про вас';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Запрошення та учасники подорожі';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Запрошення та люди, які приєднуються до подорожі або залишають її';
+
+  @override
+  String get profilePushTripStatusTitle => 'Статус подорожі';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Подорож завершено, можна розраховуватися';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Запити на оплату';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'Запити до вас, відхилені або скасовані';
+
+  @override
+  String get profilePushPaymentsTitle => 'Платежі';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Платежі, позначені як надіслані, підтверджені або не отримані';
+
+  @override
+  String get profilePushRemindersTitle => 'Нагадування';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Нагадування про неоплачені суми';
 }

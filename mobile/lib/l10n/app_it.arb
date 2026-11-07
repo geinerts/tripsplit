@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Mancano alcuni importi perché il tasso di cambio non era disponibile.",
   "yearSummaryShare": "Condividi",
   "yearSummaryShareFailed": "Impossibile condividere l'immagine.",
-  "yearSummaryRetry": "Riprova"
+  "yearSummaryRetry": "Riprova",
+  "notificationCommentAddedTitle": "Nuovo commento sulla tua spesa",
+  "notificationCommentAddedBody": "{name} ha commentato \"{note}\".",
+  "notificationCommentAddedBodyGeneric": "{name} ha commentato la tua spesa.",
+  "profilePushCommentsTitle": "Commenti e menzioni",
+  "profilePushCommentsSubtitle": "Nuovi commenti sulle tue spese e menzioni di te",
+  "profilePushTripInvitesTitle": "Inviti e membri del viaggio",
+  "profilePushTripInvitesSubtitle": "Inviti e persone che si uniscono o lasciano un viaggio",
+  "profilePushTripStatusTitle": "Stato del viaggio",
+  "profilePushTripStatusSubtitle": "Viaggio concluso e pronto per il saldo",
+  "profilePushPaymentRequestsTitle": "Richieste di pagamento",
+  "profilePushPaymentRequestsSubtitle": "Richieste ricevute, rifiutate o annullate",
+  "profilePushPaymentsTitle": "Pagamenti",
+  "profilePushPaymentsSubtitle": "Pagamenti segnati come inviati, confermati o non ricevuti",
+  "profilePushRemindersTitle": "Promemoria",
+  "profilePushRemindersSubtitle": "Promemoria per pagamenti in sospeso"
 }

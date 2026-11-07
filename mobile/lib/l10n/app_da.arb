@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Nogle beløb mangler, fordi der ikke var en valutakurs tilgængelig.",
   "yearSummaryShare": "Del",
   "yearSummaryShareFailed": "Billedet kunne ikke deles.",
-  "yearSummaryRetry": "Prøv igen"
+  "yearSummaryRetry": "Prøv igen",
+  "notificationCommentAddedTitle": "Ny kommentar til din udgift",
+  "notificationCommentAddedBody": "{name} kommenterede \"{note}\".",
+  "notificationCommentAddedBodyGeneric": "{name} kommenterede din udgift.",
+  "profilePushCommentsTitle": "Kommentarer og omtaler",
+  "profilePushCommentsSubtitle": "Nye kommentarer til dine udgifter og omtaler af dig",
+  "profilePushTripInvitesTitle": "Rejseinvitationer og medlemmer",
+  "profilePushTripInvitesSubtitle": "Invitationer og personer, der deltager i eller forlader en rejse",
+  "profilePushTripStatusTitle": "Rejsestatus",
+  "profilePushTripStatusSubtitle": "Rejsen er afsluttet og klar til afregning",
+  "profilePushPaymentRequestsTitle": "Betalingsanmodninger",
+  "profilePushPaymentRequestsSubtitle": "Anmodninger til dig, afviste eller annullerede",
+  "profilePushPaymentsTitle": "Betalinger",
+  "profilePushPaymentsSubtitle": "Betalinger markeret som sendt, bekræftet eller ikke modtaget",
+  "profilePushRemindersTitle": "Påmindelser",
+  "profilePushRemindersSubtitle": "Påmindelser om ubetalte beløb"
 }

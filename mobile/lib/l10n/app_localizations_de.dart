@@ -5021,4 +5021,53 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get yearSummaryRetry => 'Erneut versuchen';
+
+  @override
+  String get notificationCommentAddedTitle => 'Neuer Kommentar zu deiner Ausgabe';
+
+  @override
+  String notificationCommentAddedBody(Object name, Object note) {
+    return '$name hat „$note“ kommentiert.';
+  }
+
+  @override
+  String notificationCommentAddedBodyGeneric(Object name) {
+    return '$name hat deine Ausgabe kommentiert.';
+  }
+
+  @override
+  String get profilePushCommentsTitle => 'Kommentare und Erwähnungen';
+
+  @override
+  String get profilePushCommentsSubtitle => 'Neue Kommentare zu deinen Ausgaben und Erwähnungen von dir';
+
+  @override
+  String get profilePushTripInvitesTitle => 'Reiseeinladungen und Mitglieder';
+
+  @override
+  String get profilePushTripInvitesSubtitle => 'Einladungen und Personen, die einer Reise beitreten oder sie verlassen';
+
+  @override
+  String get profilePushTripStatusTitle => 'Reisestatus';
+
+  @override
+  String get profilePushTripStatusSubtitle => 'Reise beendet und bereit zur Abrechnung';
+
+  @override
+  String get profilePushPaymentRequestsTitle => 'Zahlungsanfragen';
+
+  @override
+  String get profilePushPaymentRequestsSubtitle => 'An dich gesendete, abgelehnte oder stornierte Anfragen';
+
+  @override
+  String get profilePushPaymentsTitle => 'Zahlungen';
+
+  @override
+  String get profilePushPaymentsSubtitle => 'Zahlungen als gesendet, bestätigt oder nicht erhalten markiert';
+
+  @override
+  String get profilePushRemindersTitle => 'Erinnerungen';
+
+  @override
+  String get profilePushRemindersSubtitle => 'Erinnerungen an offene Zahlungen';
 }

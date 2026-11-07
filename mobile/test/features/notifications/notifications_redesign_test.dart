@@ -434,6 +434,8 @@ void main() {
           'Anna mentioned you in a comment on "Taxi".',
         ),
         ('expense_comment_mention', 'Anna mentioned you in a comment.'),
+        ('expense_comment_added', 'Anna commented on "Taxi".'),
+        ('expense_comment_added', 'Anna commented on your expense.'),
         ('settlement_reminder', 'Anna reminded Daniel to mark €42.00 as sent.'),
         (
           'settlement_reminder',

@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Vissa belopp saknas eftersom ingen växelkurs fanns tillgänglig.",
   "yearSummaryShare": "Dela",
   "yearSummaryShareFailed": "Det gick inte att dela bilden.",
-  "yearSummaryRetry": "Försök igen"
+  "yearSummaryRetry": "Försök igen",
+  "notificationCommentAddedTitle": "Ny kommentar på din utgift",
+  "notificationCommentAddedBody": "{name} kommenterade \"{note}\".",
+  "notificationCommentAddedBodyGeneric": "{name} kommenterade din utgift.",
+  "profilePushCommentsTitle": "Kommentarer och omnämnanden",
+  "profilePushCommentsSubtitle": "Nya kommentarer på dina utgifter och omnämnanden av dig",
+  "profilePushTripInvitesTitle": "Resinbjudningar och medlemmar",
+  "profilePushTripInvitesSubtitle": "Inbjudningar och personer som går med i eller lämnar en resa",
+  "profilePushTripStatusTitle": "Resans status",
+  "profilePushTripStatusSubtitle": "Resan avslutad och redo att göras upp",
+  "profilePushPaymentRequestsTitle": "Betalningsförfrågningar",
+  "profilePushPaymentRequestsSubtitle": "Förfrågningar till dig, avböjda eller avbrutna",
+  "profilePushPaymentsTitle": "Betalningar",
+  "profilePushPaymentsSubtitle": "Betalningar markerade som skickade, bekräftade eller inte mottagna",
+  "profilePushRemindersTitle": "Påminnelser",
+  "profilePushRemindersSubtitle": "Påminnelser om obetalda skulder"
 }

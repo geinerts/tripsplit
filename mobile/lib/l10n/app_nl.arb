@@ -2060,5 +2060,20 @@
   "yearSummaryPartial": "Sommige bedragen ontbreken omdat er geen wisselkoers beschikbaar was.",
   "yearSummaryShare": "Delen",
   "yearSummaryShareFailed": "De afbeelding kon niet worden gedeeld.",
-  "yearSummaryRetry": "Opnieuw proberen"
+  "yearSummaryRetry": "Opnieuw proberen",
+  "notificationCommentAddedTitle": "Nieuwe reactie op je uitgave",
+  "notificationCommentAddedBody": "{name} reageerde op \"{note}\".",
+  "notificationCommentAddedBodyGeneric": "{name} reageerde op je uitgave.",
+  "profilePushCommentsTitle": "Reacties en vermeldingen",
+  "profilePushCommentsSubtitle": "Nieuwe reacties op je uitgaven en vermeldingen van jou",
+  "profilePushTripInvitesTitle": "Reisuitnodigingen en leden",
+  "profilePushTripInvitesSubtitle": "Uitnodigingen en mensen die een reis joinen of verlaten",
+  "profilePushTripStatusTitle": "Reisstatus",
+  "profilePushTripStatusSubtitle": "Reis afgerond en klaar om te verrekenen",
+  "profilePushPaymentRequestsTitle": "Betaalverzoeken",
+  "profilePushPaymentRequestsSubtitle": "Ontvangen, geweigerde of geannuleerde verzoeken",
+  "profilePushPaymentsTitle": "Betalingen",
+  "profilePushPaymentsSubtitle": "Betalingen gemarkeerd als verzonden, bevestigd of niet ontvangen",
+  "profilePushRemindersTitle": "Herinneringen",
+  "profilePushRemindersSubtitle": "Herinneringen aan openstaande betalingen"
 }
