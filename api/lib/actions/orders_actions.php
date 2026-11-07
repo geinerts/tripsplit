@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__ . '/../helpers/helper_feature_usage.php';
 
 function generate_order_action(): void
 {
@@ -124,6 +125,7 @@ function generate_order_action(): void
         $pickedNickname = (string) ($nameStmt->fetchColumn() ?: '');
 
         $pdo->commit();
+        record_feature_use($pdo, 'random_pick');
         json_out([
             'ok' => true,
             'order_id' => $orderId,

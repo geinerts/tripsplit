@@ -62,6 +62,7 @@ foreach ([
         PRIMARY KEY (rate_date, from_currency, to_currency))',
     'CREATE TABLE trip_premium_grants (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, source VARCHAR(20),
         starts_at DATETIME, ends_at DATETIME, revoked_at DATETIME NULL)',
+    'CREATE TABLE trip_feature_usage_counts (usage_month TEXT, feature TEXT, use_count INTEGER, PRIMARY KEY (usage_month, feature))',
     'CREATE TABLE trip_travel_places (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INT, city VARCHAR(120), country VARCHAR(120),
         country_code VARCHAR(2), visited_on DATE)',
 ] as $sql) {
@@ -239,6 +240,14 @@ $pdo->exec('DROP TABLE trip_report_deliveries');
 invitation_expect(!trip_report_queue_available($pdo), 'Missing queue is detected');
 $pdo->exec('INSERT INTO trip_trips(id,name,created_by,trip_mode,currency_code) VALUES (30,"Late",4,"solo","EUR")');
 $pdo->exec('INSERT INTO trip_trip_members(trip_id,user_id,role) VALUES (30,4,"owner")');
+$usage = $pdo->query('SELECT feature, SUM(use_count) AS n FROM trip_feature_usage_counts GROUP BY feature ORDER BY feature')->fetchAll(PDO::FETCH_KEY_PAIR);
+invitation_expect(($usage['trip_export_pdf'] ?? 0) > 0 && ($usage['trip_export_csv'] ?? 0) > 0, 'Successful exports are counted by format');
+invitation_expect(($usage['year_summary_view'] ?? 0) > 0, 'Year summary is counted');
+$before = array_sum($usage);
+invitation_call('travel_year_summary_action', 8);
+invitation_call('trip_export_action', 8);
+invitation_expect((int) $pdo->query('SELECT SUM(use_count) FROM trip_feature_usage_counts')->fetchColumn() === (int) $before, 'Rejected requests are not counted');
+
 $_SERVER['HTTP_X_TRIP_ID'] = '30';
 invitation_expect(invitation_call('end_trip_action', 4)['status'] === 200, 'Finish works before the migration');
 invitation_expect(process_trip_report_deliveries($pdo, $send, $render)['picked'] === 0, 'Worker is idle before the migration');

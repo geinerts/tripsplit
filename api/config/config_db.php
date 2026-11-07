@@ -69,6 +69,7 @@ function table_name(string $key): string
         'email_verification_tokens' => DB_TABLE_PREFIX . 'email_verification_tokens',
         'account_action_tokens' => DB_TABLE_PREFIX . 'account_action_tokens',
         'account_deletion_reason_counts' => DB_TABLE_PREFIX . 'account_deletion_reason_counts',
+        'feature_usage_counts' => DB_TABLE_PREFIX . 'feature_usage_counts',
         'user_identities' => DB_TABLE_PREFIX . 'user_identities',
         'trip_invites'         => DB_TABLE_PREFIX . 'trip_invites',
         'trip_invite_preview_tokens' => DB_TABLE_PREFIX . 'trip_invite_preview_tokens',

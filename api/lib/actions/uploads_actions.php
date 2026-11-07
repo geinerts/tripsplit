@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../helpers/helper_image_originals.php';
+require_once __DIR__ . '/../helpers/helper_feature_usage.php';
 
 require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
 require_once __DIR__ . '/../helpers/helper_trip_image_ownership.php';
@@ -64,6 +65,7 @@ function upload_receipt_action(): void
         (string) $validated['mime']
     );
     $relativePath = bind_stored_receipt_to_owner($stored, $userId);
+    record_feature_use($pdo, 'receipt_upload');
     $storedSize = (int) $stored['size'];
 
     json_out([

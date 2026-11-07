@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../helpers/helper_live_location.php';
+require_once __DIR__ . '/../helpers/helper_feature_usage.php';
 
 function live_location_context(): array
 {
@@ -61,6 +62,7 @@ function start_trip_live_location_action(): void
             ->execute(['trip'=>$trip,'user'=>$user,'token'=>$token,'expires'=>gmdate('Y-m-d H:i:s',$expires),'updated'=>gmdate('Y-m-d H:i:s')]+$fix);
         $pdo->commit();
     } catch (Throwable $error) { if ($pdo->inTransaction()) $pdo->rollBack(); throw $error; }
+    record_feature_use($pdo,'live_location_start');
     json_out(['ok'=>true,'session_token'=>$token,'expires_at'=>$expires,'server_time'=>time()]);
 }
 

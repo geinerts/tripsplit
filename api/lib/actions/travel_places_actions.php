@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/../helpers/helper_travel_places.php';
+require_once __DIR__ . '/../helpers/helper_feature_usage.php';
 require_once __DIR__ . '/../helpers/helper_image_originals.php';
 
 function list_travel_places_action(): void
@@ -8,7 +9,9 @@ function list_travel_places_action(): void
     $me=get_me(); $pdo=db(); require_travel_places_schema($pdo);
     $stmt=$pdo->prepare(travel_places_select($pdo).' WHERE p.user_id=:user ORDER BY p.visited_on DESC,p.id DESC LIMIT 1000');
     $stmt->execute(['user'=>(int)$me['id']]);
-    json_out(['ok'=>true,'places'=>array_map('travel_place_payload',$stmt->fetchAll())]);
+    $places=array_map('travel_place_payload',$stmt->fetchAll());
+    record_feature_use($pdo,'travel_map_open');
+    json_out(['ok'=>true,'places'=>$places]);
 }
 
 function travel_place_photo_action(): void
@@ -113,6 +116,7 @@ function save_travel_place_action(): void
         if ($pdo->inTransaction()) $pdo->rollBack();
         throw $error;
     }
+    record_feature_use($pdo,'travel_place_save');
     json_out(['ok'=>true,'place'=>travel_place_payload($saved)]);
 }
 
