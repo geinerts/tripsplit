@@ -28,7 +28,8 @@ function combine_full_name($first, $last): ?string { return null; }
 function me_display_name(array $user): string { return $user['nickname']; }
 function normalize_user_ids(array $ids): array { return array_values(array_unique(array_filter(array_map('intval', $ids), fn($id)=>$id>0))); }
 function push_should_queue_notification_type(string $type): bool { return true; }
-function user_allows_push_notification(...$args): bool { return true; }
+// Like the real preference lookup, run a SELECT between the notification INSERT and the push queue.
+function user_allows_push_notification(PDO $pdo, ...$args): bool { $pdo->query('SELECT 1')->fetchAll(); return true; }
 function queue_push_notification(...$args): void { $GLOBALS['pushes'][] = $args; }
 function log_api_exception(...$args): void { throw new RuntimeException('Unexpected push failure'); }
 function app_event(...$args): void {}
@@ -69,6 +70,8 @@ check(callAction('send_friend_invite_action',1,['user_id'=>2])[0]===200);
 $first=inbox(2); $id=$first['notifications'][0]['id'];
 check($id>0 && $first['unread_count']===1 && count($first['notifications'])===1);
 check($first['notifications'][0]['trip_id']===0 && count($pushes)===1);
+// The push keeps the stored notification id; MySQL would otherwise hand back 0 and fail the queue FK.
+check($pushes[0][7]===$id);
 check(callAction('send_friend_invite_action',1,['user_id'=>2])[0]===409);
 check(count(inbox(2)['notifications'])===1 && count($pushes)===1);
 // Reading does not accept the invitation; the badge stays clear on reload.
