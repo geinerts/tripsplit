@@ -1,8 +1,11 @@
 # Isolated account security tests
 
 This is a local handler/database integration environment, NOT a full deployed staging
-application. It uses PHP 8.3, MySQL 8.4/InnoDB and synthetic records only. Verify the exact
-production database version separately before claiming full environment parity.
+application. It uses PHP 8.3, MySQL 8.4.13/InnoDB and synthetic records only. Production
+moved to Oracle's MySQL 8.4.13 on 2026-11-07, and the image is pinned to that version by digest.
+Production gets 8.4 updates automatically, so check `SELECT VERSION()` there and bump the pin
+when the two differ. This still isn't full environment parity: the schema, settings and
+production data differ.
 
 ## CI
 
