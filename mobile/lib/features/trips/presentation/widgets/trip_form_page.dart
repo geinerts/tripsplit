@@ -498,55 +498,63 @@ class _TripFormPageState extends State<TripFormPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (!_editing) ...[
-                  Row(
-                    children: [
-                      for (final mode in ['group', 'solo'])
-                        Expanded(
-                          child: Semantics(
-                            selected: _mode == mode,
-                            child: InkWell(
-                              key: ValueKey('trip-mode-$mode'),
-                              onTap: () => setState(() {
-                                _mode = mode;
-                                if (mode == 'solo') _selected.clear();
-                              }),
-                              child: Container(
-                                constraints: const BoxConstraints(
-                                  minHeight: 48,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                  horizontal: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      width: _mode == mode ? 2 : 1,
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: colors.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (final mode in ['group', 'solo'])
+                            Tooltip(
+                              message: mode == 'group'
+                                  ? t.tripModeGroup
+                                  : t.tripModeSolo,
+                              child: Semantics(
+                                selected: _mode == mode,
+                                label: mode == 'group'
+                                    ? t.tripModeGroup
+                                    : t.tripModeSolo,
+                                child: InkWell(
+                                  key: ValueKey('trip-mode-$mode'),
+                                  borderRadius: BorderRadius.circular(24),
+                                  onTap: () => setState(() {
+                                    _mode = mode;
+                                    if (mode == 'solo') _selected.clear();
+                                  }),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 150),
+                                    width: 88,
+                                    height: 48,
+                                    decoration: BoxDecoration(
                                       color: _mode == mode
                                           ? colors.primary
-                                          : colors.outlineVariant,
+                                          : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(24),
                                     ),
-                                  ),
-                                ),
-                                child: Text(
-                                  mode == 'group'
-                                      ? t.tripModeGroup
-                                      : t.tripModeSolo,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: _mode == mode
-                                        ? colors.primary
-                                        : colors.onSurfaceVariant,
-                                    fontWeight: _mode == mode
-                                        ? FontWeight.w600
-                                        : FontWeight.w400,
+                                    child: Icon(
+                                      mode == 'group'
+                                          ? (_mode == mode
+                                                ? Icons.groups
+                                                : Icons.groups_outlined)
+                                          : (_mode == mode
+                                                ? Icons.person
+                                                : Icons.person_outline),
+                                      size: 26,
+                                      color: _mode == mode
+                                          ? colors.onPrimary
+                                          : colors.onSurfaceVariant,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 20),
                 ],

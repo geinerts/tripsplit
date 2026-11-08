@@ -170,6 +170,62 @@ void main() {
     });
   }
 
+  testWidgets('mode switch icons keep names, selection and tap size', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    tester.view.physicalSize = const Size(320, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      _app(
+        TripsPage(
+          controller: _Trips(),
+          authController: _Auth(),
+          friendsController: _Friends(),
+          openCreateTripOnStart: true,
+          showInlineHeader: false,
+          showBottomNav: false,
+        ),
+        locale: 'lv',
+      ),
+    );
+    await tester.pumpAndSettle();
+    final group = find.byKey(const ValueKey('trip-mode-group'));
+    final solo = find.byKey(const ValueKey('trip-mode-solo'));
+    for (final mode in [group, solo]) {
+      final size = tester.getSize(mode);
+      expect(size.width, greaterThanOrEqualTo(48));
+      expect(size.height, greaterThanOrEqualTo(48));
+    }
+    final l10n = AppLocalizations.of(tester.element(group))!;
+    expect(find.bySemanticsLabel(l10n.tripModeGroup), findsOne);
+    expect(find.bySemanticsLabel(l10n.tripModeSolo), findsOne);
+    expect(
+      tester.getSemantics(find.bySemanticsLabel(l10n.tripModeGroup)),
+      matchesSemantics(
+        label: l10n.tripModeGroup,
+        isSelected: true,
+        hasSelectedState: true,
+        isButton: false,
+        hasTapAction: true,
+        isFocusable: true,
+        hasFocusAction: true,
+        tooltip: l10n.tripModeGroup,
+      ),
+    );
+    expect(find.byIcon(Icons.groups), findsOne);
+    expect(find.byIcon(Icons.person_outline), findsOne);
+    await tester.tap(solo);
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.person), findsOne);
+    expect(find.byIcon(Icons.groups_outlined), findsOne);
+    expect(tester.takeException(), isNull);
+    await _dispose(tester);
+    semantics.dispose();
+  });
+
   for (final mode in ['solo', 'group']) {
     for (final width in [360.0, 800.0]) {
       testWidgets(
