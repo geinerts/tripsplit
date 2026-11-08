@@ -246,6 +246,8 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
               ? Icons.alternate_email
               : item.type == 'expense_comment_added'
               ? Icons.chat_bubble_outline_rounded
+              : item.type == 'live_location_started'
+              ? Icons.location_on_outlined
               : Icons.notifications_none,
           size: 22,
         );

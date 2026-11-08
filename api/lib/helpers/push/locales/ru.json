@@ -18,6 +18,8 @@
   "comment_added_title": "Новый комментарий к вашему расходу",
   "comment_added_body": "{name} прокомментировал(а) «{note}».",
   "comment_added_body_generic": "{name} прокомментировал(а) ваш расход.",
+  "live_location_title": "Местоположение в реальном времени",
+  "live_location_body": "{name} начал(а) делиться местоположением в реальном времени в «{trip}».",
   "trip_finished_title": "Поездка завершена",
   "trip_finished_body_settling": "{name} завершает «{trip}». Расчёты готовы.",
   "trip_finished_body_archived": "{name} завершает «{trip}». Поездка в архиве.",

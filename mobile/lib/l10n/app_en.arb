@@ -2096,5 +2096,9 @@
   "profilePushPaymentsTitle": "Payments",
   "profilePushPaymentsSubtitle": "Payments marked sent, confirmed or not received",
   "profilePushRemindersTitle": "Reminders",
-  "profilePushRemindersSubtitle": "Reminders about unsettled payments"
+  "profilePushRemindersSubtitle": "Reminders about unsettled payments",
+  "notificationLiveLocationTitle": "Live location shared",
+  "notificationLiveLocationBody": "{name} started sharing their live location in \"{trip}\".",
+  "profilePushLocationTitle": "Live location",
+  "profilePushLocationSubtitle": "When someone in your trip starts sharing their location"
 }

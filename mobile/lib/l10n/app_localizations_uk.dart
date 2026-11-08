@@ -5090,4 +5090,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Нагадування про неоплачені суми';
+
+  @override
+  String get notificationLiveLocationTitle => 'Поширено геопозицію наживо';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name почав(-ла) ділитися геопозицією наживо в «$trip».';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Геопозиція наживо';
+
+  @override
+  String get profilePushLocationSubtitle => 'Коли хтось у подорожі починає ділитися геопозицією';
 }

@@ -89,6 +89,7 @@ function push_should_queue_notification_type(string $type): bool
             'trip_invitation',
             'settlement_reminder',
             'settlement_auto_reminder',
+            'live_location_started',
         ], true)
         || str_starts_with($normalizedType, 'payment_')
     ) {

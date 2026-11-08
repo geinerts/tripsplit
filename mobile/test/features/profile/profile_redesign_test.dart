@@ -92,6 +92,7 @@ class _Auth implements AuthController {
             i.namedArguments[#pushPaymentRequestsEnabled],
         pushPaymentsEnabled: i.namedArguments[#pushPaymentsEnabled],
         pushRemindersEnabled: i.namedArguments[#pushRemindersEnabled],
+        pushLocationEnabled: i.namedArguments[#pushLocationEnabled],
         inAppBannerEnabled: i.namedArguments[#inAppBannerEnabled],
         inAppExpenseAddedEnabled: i.namedArguments[#inAppExpenseAddedEnabled],
         emailTripReportEnabled: i.namedArguments[#emailTripReportEnabled],
@@ -427,6 +428,7 @@ void main() {
     expect(auth.updates.last[#pushSettlementUpdatesEnabled], false);
     expect(auth.updates.last[#pushCommentsEnabled], false);
     expect(auth.updates.last[#pushRemindersEnabled], false);
+    expect(auth.updates.last[#pushLocationEnabled], false);
     expect(auth.updates.last[#inAppBannerEnabled], isNull);
     expect(tester.widget<Switch>(push).value, false);
     expect(auth.prefs.pushTripUpdatesEnabled, false);
@@ -448,6 +450,7 @@ void main() {
       t.profilePushPaymentRequestsTitle,
       t.profilePushPaymentsTitle,
       t.profilePushRemindersTitle,
+      t.profilePushLocationTitle,
       t.profileFriendInvites,
     ]) {
       await tester.scrollUntilVisible(
@@ -521,6 +524,7 @@ void main() {
       t.profilePushPaymentRequestsTitle,
       t.profilePushPaymentsTitle,
       t.profilePushRemindersTitle,
+      t.profilePushLocationTitle,
       t.profileFriendInvites,
     ]) {
       await tester.scrollUntilVisible(
@@ -536,7 +540,7 @@ void main() {
       );
       await tester.pumpAndSettle();
     }
-    expect(auth.updates.length, 8);
+    expect(auth.updates.length, 9);
     await _back(tester);
     expect(find.text(t.profilePushNotificationsTitle), findsOneWidget);
     expect(tester.widget<Switch>(find.byType(Switch).at(1)).value, false);

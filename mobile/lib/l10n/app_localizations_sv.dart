@@ -5070,4 +5070,18 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Påminnelser om obetalda skulder';
+
+  @override
+  String get notificationLiveLocationTitle => 'Liveplats delad';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name började dela sin liveplats i \"$trip\".';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Liveplats';
+
+  @override
+  String get profilePushLocationSubtitle => 'När någon i resan börjar dela sin plats';
 }

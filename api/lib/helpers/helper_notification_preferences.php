@@ -30,17 +30,20 @@ function notification_preferences_defaults(): array
         'push_payment_requests_enabled' => true,
         'push_payments_enabled' => true,
         'push_reminders_enabled' => true,
+        'push_location_enabled' => true,
         'email_trip_report_enabled' => true,
     ];
 }
 
 /**
- * Push categories split out of the two older switches, as category key => older key.
- * The older keys stay in the API for apps that don't know the categories.
+ * Push categories stored in their own columns, as category key => older key. Most were
+ * split out of the two older switches, which stay in the API for apps that don't know
+ * the categories. Location is new and has no older switch.
  */
 function notification_push_category_parents(): array
 {
     return [
+        'push_location_enabled' => null,
         'push_comments_enabled' => 'push_trip_updates_enabled',
         'push_trip_invites_enabled' => 'push_trip_updates_enabled',
         'push_trip_status_enabled' => 'push_trip_updates_enabled',
@@ -50,26 +53,40 @@ function notification_push_category_parents(): array
     ];
 }
 
-/** Separate from the main query so the server keeps working before the migration runs. */
+/**
+ * Category columns grouped by the migration that adds them, so each group keeps
+ * working while a later migration is still pending.
+ */
+function notification_push_category_column_groups(): array
+{
+    $parents = notification_push_category_parents();
+    return [
+        array_keys(array_filter($parents, static fn(?string $parent): bool => $parent !== null)),
+        array_keys(array_filter($parents, static fn(?string $parent): bool => $parent === null)),
+    ];
+}
+
+/** Separate from the main query so the server keeps working before the migrations run. */
 function load_push_category_preferences(PDO $pdo, int $userId, array $legacy): array
 {
-    $columns = array_keys(notification_push_category_parents());
     $result = [];
     foreach (notification_push_category_parents() as $key => $parentKey) {
-        $result[$key] = (bool) ($legacy[$parentKey] ?? true);
+        $result[$key] = $parentKey === null ? true : (bool) ($legacy[$parentKey] ?? true);
     }
-    try {
-        $stmt = $pdo->prepare('SELECT ' . implode(', ', $columns) . ' FROM ' . table_name('notification_preferences')
-            . ' WHERE user_id = :user_id LIMIT 1');
-        $stmt->execute(['user_id' => $userId]);
-        $row = $stmt->fetch();
-        if (is_array($row)) {
-            foreach ($columns as $column) {
-                $result[$column] = ((int) ($row[$column] ?? 1)) === 1;
+    foreach (notification_push_category_column_groups() as $columns) {
+        try {
+            $stmt = $pdo->prepare('SELECT ' . implode(', ', $columns) . ' FROM ' . table_name('notification_preferences')
+                . ' WHERE user_id = :user_id LIMIT 1');
+            $stmt->execute(['user_id' => $userId]);
+            $row = $stmt->fetch();
+            if (is_array($row)) {
+                foreach ($columns as $column) {
+                    $result[$column] = ((int) ($row[$column] ?? 1)) === 1;
+                }
             }
+        } catch (PDOException $error) {
+            // Columns not migrated yet: the categories follow the older switches.
         }
-    } catch (PDOException $error) {
-        // Columns not migrated yet: the categories follow the older switches.
     }
     return $result;
 }
@@ -226,6 +243,7 @@ function normalize_notification_preferences_patch(array $input): array
         'push_payment_requests_enabled' => 'push_payment_requests_enabled',
         'push_payments_enabled' => 'push_payments_enabled',
         'push_reminders_enabled' => 'push_reminders_enabled',
+        'push_location_enabled' => 'push_location_enabled',
         'email_trip_report_enabled' => 'email_trip_report_enabled',
     ];
     foreach ($flatMap as $inputKey => $targetKey) {
@@ -291,6 +309,7 @@ function normalize_notification_preferences_patch(array $input): array
             'payment_requests' => 'push_payment_requests_enabled',
             'payments' => 'push_payments_enabled',
             'reminders' => 'push_reminders_enabled',
+            'location' => 'push_location_enabled',
         ];
         foreach ($nestedMap as $inputKey => $targetKey) {
             if (!array_key_exists($inputKey, $pushPayload)) {
@@ -487,11 +506,11 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
     // while any of its categories is on.
     $pushParents = notification_push_category_parents();
     foreach ($pushParents as $categoryKey => $parentKey) {
-        if (array_key_exists($parentKey, $patch) && !array_key_exists($categoryKey, $patch)) {
+        if ($parentKey !== null && array_key_exists($parentKey, $patch) && !array_key_exists($categoryKey, $patch)) {
             $patch[$categoryKey] = (bool) $patch[$parentKey];
         }
     }
-    foreach (array_unique(array_values($pushParents)) as $parentKey) {
+    foreach (array_unique(array_filter(array_values($pushParents))) as $parentKey) {
         $touched = false;
         $anyOn = false;
         foreach ($pushParents as $categoryKey => $categoryParent) {
@@ -632,19 +651,21 @@ function upsert_user_notification_preferences(PDO $pdo, int $userId, array $patc
         $next['email_trip_report_enabled'] = true;
     }
 
-    $categoryKeys = array_keys($pushParents);
-    try {
-        $assignments = array_map(static fn(string $key): string => $key . ' = :' . $key, $categoryKeys);
-        $params = ['user_id' => $userId];
-        foreach ($categoryKeys as $key) {
-            $params[$key] = ($next[$key] ?? true) ? 1 : 0;
-        }
-        $pdo->prepare('UPDATE ' . $table . ' SET ' . implode(', ', $assignments) . ' WHERE user_id = :user_id')
-            ->execute($params);
-    } catch (PDOException $error) {
-        // Not migrated yet: the categories keep following the older switches.
-        foreach ($pushParents as $categoryKey => $parentKey) {
-            $next[$categoryKey] = (bool) $next[$parentKey];
+    foreach (notification_push_category_column_groups() as $categoryKeys) {
+        try {
+            $assignments = array_map(static fn(string $key): string => $key . ' = :' . $key, $categoryKeys);
+            $params = ['user_id' => $userId];
+            foreach ($categoryKeys as $key) {
+                $params[$key] = ($next[$key] ?? true) ? 1 : 0;
+            }
+            $pdo->prepare('UPDATE ' . $table . ' SET ' . implode(', ', $assignments) . ' WHERE user_id = :user_id')
+                ->execute($params);
+        } catch (PDOException $error) {
+            // Not migrated yet: these categories keep following the older switches.
+            foreach ($categoryKeys as $categoryKey) {
+                $parentKey = $pushParents[$categoryKey];
+                $next[$categoryKey] = $parentKey === null ? true : (bool) $next[$parentKey];
+            }
         }
     }
 
@@ -685,6 +706,7 @@ function build_notification_preferences_payload(array $prefs): array
             'payment_requests' => (bool) ($prefs['push_payment_requests_enabled'] ?? true),
             'payments' => (bool) ($prefs['push_payments_enabled'] ?? true),
             'reminders' => (bool) ($prefs['push_reminders_enabled'] ?? true),
+            'location' => (bool) ($prefs['push_location_enabled'] ?? true),
         ],
         'email_trip_report_enabled' => (bool) ($prefs['email_trip_report_enabled'] ?? true),
     ];
@@ -701,7 +723,7 @@ function notification_in_app_pref_key_for_type(string $type): ?string
         return 'in_app_expense_added_enabled';
     }
 
-    if ($normalized === 'expense_comment_mention' || $normalized === 'expense_comment_added') {
+    if (in_array($normalized, ['expense_comment_mention', 'expense_comment_added', 'live_location_started'], true)) {
         return 'in_app_trip_updates_enabled';
     }
 
@@ -804,6 +826,7 @@ function notification_push_pref_key_for_type(string $type): ?string
             'settlement_not_received',
         ],
         'push_reminders_enabled' => ['settlement_reminder', 'settlement_auto_reminder'],
+        'push_location_enabled' => ['live_location_started'],
     ];
     foreach ($categories as $prefKey => $types) {
         if (in_array($normalized, $types, true)) {

@@ -5070,4 +5070,18 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Påmindelser om ubetalte beløb';
+
+  @override
+  String get notificationLiveLocationTitle => 'Live-placering delt';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name begyndte at dele sin live-placering i \"$trip\".';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Live-placering';
+
+  @override
+  String get profilePushLocationSubtitle => 'Når nogen på rejsen begynder at dele sin placering';
 }

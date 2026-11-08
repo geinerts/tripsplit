@@ -18,6 +18,8 @@
   "comment_added_title": "Ny kommentar på utgiften din",
   "comment_added_body": "{name} kommenterte «{note}».",
   "comment_added_body_generic": "{name} kommenterte utgiften din.",
+  "live_location_title": "Sanntidsposisjon delt",
+  "live_location_body": "{name} begynte å dele sanntidsposisjonen sin i «{trip}».",
   "trip_finished_title": "Turen er avsluttet",
   "trip_finished_body_settling": "{name} har fullført «{trip}». Oppgjørene er klare.",
   "trip_finished_body_archived": "{name} har fullført «{trip}». Turen er arkivert.",

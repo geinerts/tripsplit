@@ -28,6 +28,7 @@ class NotificationPreferencesModel extends NotificationPreferences {
     super.pushPaymentRequestsEnabled,
     super.pushPaymentsEnabled,
     super.pushRemindersEnabled,
+    super.pushLocationEnabled,
     super.emailTripReportEnabled,
   });
 
@@ -188,6 +189,7 @@ class NotificationPreferencesModel extends NotificationPreferences {
         'reminders',
         pushSettlementUpdatesEnabled,
       ),
+      pushLocationEnabled: pushCategory('location', true),
       emailTripReportEnabled:
           _readBool(payload['email_trip_report_enabled']) ?? true,
     );

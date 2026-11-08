@@ -9392,6 +9392,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reminders about unsettled payments'**
   String get profilePushRemindersSubtitle;
+
+  /// No description provided for @notificationLiveLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live location shared'**
+  String get notificationLiveLocationTitle;
+
+  /// No description provided for @notificationLiveLocationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} started sharing their live location in \"{trip}\".'**
+  String notificationLiveLocationBody(Object name, Object trip);
+
+  /// No description provided for @profilePushLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live location'**
+  String get profilePushLocationTitle;
+
+  /// No description provided for @profilePushLocationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When someone in your trip starts sharing their location'**
+  String get profilePushLocationSubtitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

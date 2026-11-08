@@ -18,6 +18,8 @@
   "comment_added_title": "New comment on your expense",
   "comment_added_body": "{name} commented on \"{note}\".",
   "comment_added_body_generic": "{name} commented on your expense.",
+  "live_location_title": "Live location shared",
+  "live_location_body": "{name} started sharing their live location in \"{trip}\".",
   "trip_finished_title": "Trip finished",
   "trip_finished_body_settling": "{name} finished \"{trip}\". Settlements are ready.",
   "trip_finished_body_archived": "{name} finished \"{trip}\". Trip is archived.",

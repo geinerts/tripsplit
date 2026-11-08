@@ -5080,4 +5080,18 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Připomínky nevyrovnaných plateb';
+
+  @override
+  String get notificationLiveLocationTitle => 'Sdílená poloha v reálném čase';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name začal(a) sdílet polohu v reálném čase ve výletu „$trip“.';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Poloha v reálném čase';
+
+  @override
+  String get profilePushLocationSubtitle => 'Když někdo z výletu začne sdílet svou polohu';
 }

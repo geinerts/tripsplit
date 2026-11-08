@@ -5070,4 +5070,18 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Påminnelser om ubetalte beløp';
+
+  @override
+  String get notificationLiveLocationTitle => 'Sanntidsposisjon delt';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name begynte å dele sanntidsposisjonen sin i «$trip».';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Sanntidsposisjon';
+
+  @override
+  String get profilePushLocationSubtitle => 'Når noen på reisen begynner å dele posisjonen sin';
 }

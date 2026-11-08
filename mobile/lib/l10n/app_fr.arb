@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Paiements",
   "profilePushPaymentsSubtitle": "Paiements marqués envoyés, confirmés ou non reçus",
   "profilePushRemindersTitle": "Rappels",
-  "profilePushRemindersSubtitle": "Rappels de paiements non réglés"
+  "profilePushRemindersSubtitle": "Rappels de paiements non réglés",
+  "notificationLiveLocationTitle": "Position en direct partagée",
+  "notificationLiveLocationBody": "{name} partage sa position en direct dans « {trip} ».",
+  "profilePushLocationTitle": "Position en direct",
+  "profilePushLocationSubtitle": "Quand quelqu’un de ton voyage partage sa position"
 }

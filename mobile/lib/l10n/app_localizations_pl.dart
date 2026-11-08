@@ -5090,4 +5090,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Przypomnienia o nierozliczonych płatnościach';
+
+  @override
+  String get notificationLiveLocationTitle => 'Udostępniono lokalizację na żywo';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name udostępnia lokalizację na żywo w „$trip”.';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Lokalizacja na żywo';
+
+  @override
+  String get profilePushLocationSubtitle => 'Gdy ktoś z podróży zacznie udostępniać lokalizację';
 }

@@ -2061,5 +2061,9 @@
   "profilePushPaymentsTitle": "Maksājumi",
   "profilePushPaymentsSubtitle": "Maksājumi atzīmēti kā nosūtīti, apstiprināti vai nesaņemti",
   "profilePushRemindersTitle": "Atgādinājumi",
-  "profilePushRemindersSubtitle": "Atgādinājumi par nenokārtotiem maksājumiem"
+  "profilePushRemindersSubtitle": "Atgādinājumi par nenokārtotiem maksājumiem",
+  "notificationLiveLocationTitle": "Kopīgota atrašanās vieta",
+  "notificationLiveLocationBody": "{name} sāka kopīgot savu atrašanās vietu ceļojumā \"{trip}\".",
+  "profilePushLocationTitle": "Atrašanās vieta",
+  "profilePushLocationSubtitle": "Kad kāds ceļojumā sāk kopīgot savu atrašanās vietu"
 }

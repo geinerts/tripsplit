@@ -5090,4 +5090,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Напоминания о неоплаченных суммах';
+
+  @override
+  String get notificationLiveLocationTitle => 'Местоположение в реальном времени';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name начал(а) делиться местоположением в реальном времени в «$trip».';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Местоположение в реальном времени';
+
+  @override
+  String get profilePushLocationSubtitle => 'Когда кто-то в поездке начинает делиться местоположением';
 }

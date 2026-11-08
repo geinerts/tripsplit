@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Pagamenti",
   "profilePushPaymentsSubtitle": "Pagamenti segnati come inviati, confermati o non ricevuti",
   "profilePushRemindersTitle": "Promemoria",
-  "profilePushRemindersSubtitle": "Promemoria per pagamenti in sospeso"
+  "profilePushRemindersSubtitle": "Promemoria per pagamenti in sospeso",
+  "notificationLiveLocationTitle": "Posizione in tempo reale condivisa",
+  "notificationLiveLocationBody": "{name} ha iniziato a condividere la posizione in tempo reale in \"{trip}\".",
+  "profilePushLocationTitle": "Posizione in tempo reale",
+  "profilePushLocationSubtitle": "Quando qualcuno del viaggio inizia a condividere la posizione"
 }

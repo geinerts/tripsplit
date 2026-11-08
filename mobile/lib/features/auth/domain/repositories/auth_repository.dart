@@ -80,6 +80,7 @@ abstract class AuthRepository {
     bool? pushPaymentRequestsEnabled,
     bool? pushPaymentsEnabled,
     bool? pushRemindersEnabled,
+    bool? pushLocationEnabled,
     bool? emailTripReportEnabled,
   });
 }

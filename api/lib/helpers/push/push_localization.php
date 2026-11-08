@@ -67,6 +67,8 @@ function push_localized_notification_title(string $type, string $rawTitle, strin
             return push_locale_phrase($locale, 'comment_mention_title');
         case 'expense_comment_added':
             return push_locale_phrase($locale, 'comment_added_title');
+        case 'live_location_started':
+            return push_locale_phrase($locale, 'live_location_title');
         case 'trip_finished':
             return push_locale_phrase($locale, 'trip_finished_title');
         case 'member_ready_to_settle':
@@ -179,6 +181,17 @@ function push_localized_notification_body(string $type, string $rawBody, string 
                 return push_locale_format(
                     push_locale_phrase($locale, 'comment_mention_body_generic'),
                     ['name' => trim((string) ($match[1] ?? ''))]
+                );
+            }
+            return '';
+        case 'live_location_started':
+            if (preg_match('/^(.+?) started sharing their live location in "(.+)"\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'live_location_body'),
+                    [
+                        'name' => trim((string) ($match[1] ?? '')),
+                        'trip' => trim((string) ($match[2] ?? '')),
+                    ]
                 );
             }
             return '';

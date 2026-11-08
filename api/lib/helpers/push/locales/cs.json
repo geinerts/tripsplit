@@ -18,6 +18,8 @@
   "comment_added_title": "Nový komentář k vašemu výdaji",
   "comment_added_body": "{name} okomentoval(a) „{note}“.",
   "comment_added_body_generic": "{name} okomentoval(a) váš výdaj.",
+  "live_location_title": "Sdílená poloha v reálném čase",
+  "live_location_body": "{name} začal(a) sdílet polohu v reálném čase ve výletu „{trip}“.",
   "trip_finished_title": "Cesta skončila",
   "trip_finished_body_settling": "{name} dokončil/a „{trip}“. Vyúčtování jsou připravena.",
   "trip_finished_body_archived": "{name} dokončil/a „{trip}“. Cesta je archivována.",

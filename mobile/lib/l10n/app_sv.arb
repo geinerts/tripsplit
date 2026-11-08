@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Betalningar",
   "profilePushPaymentsSubtitle": "Betalningar markerade som skickade, bekräftade eller inte mottagna",
   "profilePushRemindersTitle": "Påminnelser",
-  "profilePushRemindersSubtitle": "Påminnelser om obetalda skulder"
+  "profilePushRemindersSubtitle": "Påminnelser om obetalda skulder",
+  "notificationLiveLocationTitle": "Liveplats delad",
+  "notificationLiveLocationBody": "{name} började dela sin liveplats i \"{trip}\".",
+  "profilePushLocationTitle": "Liveplats",
+  "profilePushLocationSubtitle": "När någon i resan börjar dela sin plats"
 }

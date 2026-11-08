@@ -21,6 +21,9 @@ JSON; all location fields and tokens are redacted from diagnostics.
   the consent deadline. Older fixes cannot overwrite newer ones. Wrong, stopped and expired
   sessions return 409. Incoming fixes must be within 120 seconds of server time, allowing
   at most 60 seconds future clock skew. Coordinates are finite and range-checked.
+  When a share starts that wasn't already active, the other members get a
+  `live_location_started` notification without coordinates, at most once per 30 minutes
+  per sharer and trip. See [push notification categories](push-notification-categories.md).
 - POST `stop_trip_live_location`: `trip_id`; idempotently removes only the caller's row,
   including after they have left or the trip has closed.
 

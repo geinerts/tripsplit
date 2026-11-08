@@ -5070,4 +5070,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Recordatorios de pagos pendientes';
+
+  @override
+  String get notificationLiveLocationTitle => 'Ubicación en tiempo real compartida';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name empezó a compartir su ubicación en tiempo real en «$trip».';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Ubicación en tiempo real';
+
+  @override
+  String get profilePushLocationSubtitle => 'Cuando alguien de tu viaje empieza a compartir su ubicación';
 }

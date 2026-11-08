@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Платежи",
   "profilePushPaymentsSubtitle": "Платежи, отмеченные как отправленные, подтверждённые или не полученные",
   "profilePushRemindersTitle": "Напоминания",
-  "profilePushRemindersSubtitle": "Напоминания о неоплаченных суммах"
+  "profilePushRemindersSubtitle": "Напоминания о неоплаченных суммах",
+  "notificationLiveLocationTitle": "Местоположение в реальном времени",
+  "notificationLiveLocationBody": "{name} начал(а) делиться местоположением в реальном времени в «{trip}».",
+  "profilePushLocationTitle": "Местоположение в реальном времени",
+  "profilePushLocationSubtitle": "Когда кто-то в поездке начинает делиться местоположением"
 }

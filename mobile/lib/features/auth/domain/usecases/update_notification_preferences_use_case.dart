@@ -33,6 +33,7 @@ class UpdateNotificationPreferencesUseCase {
     bool? pushPaymentRequestsEnabled,
     bool? pushPaymentsEnabled,
     bool? pushRemindersEnabled,
+    bool? pushLocationEnabled,
     bool? emailTripReportEnabled,
   }) {
     return _repository.updateNotificationPreferences(
@@ -62,6 +63,7 @@ class UpdateNotificationPreferencesUseCase {
       pushPaymentRequestsEnabled: pushPaymentRequestsEnabled,
       pushPaymentsEnabled: pushPaymentsEnabled,
       pushRemindersEnabled: pushRemindersEnabled,
+      pushLocationEnabled: pushLocationEnabled,
       emailTripReportEnabled: emailTripReportEnabled,
     );
   }

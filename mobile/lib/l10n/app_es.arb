@@ -2061,5 +2061,9 @@
   "profilePushPaymentsTitle": "Pagos",
   "profilePushPaymentsSubtitle": "Pagos marcados como enviados, confirmados o no recibidos",
   "profilePushRemindersTitle": "Recordatorios",
-  "profilePushRemindersSubtitle": "Recordatorios de pagos pendientes"
+  "profilePushRemindersSubtitle": "Recordatorios de pagos pendientes",
+  "notificationLiveLocationTitle": "Ubicación en tiempo real compartida",
+  "notificationLiveLocationBody": "{name} empezó a compartir su ubicación en tiempo real en «{trip}».",
+  "profilePushLocationTitle": "Ubicación en tiempo real",
+  "profilePushLocationSubtitle": "Cuando alguien de tu viaje empieza a compartir su ubicación"
 }

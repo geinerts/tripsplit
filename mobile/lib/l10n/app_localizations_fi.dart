@@ -5070,4 +5070,18 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Muistutukset maksamattomista summista';
+
+  @override
+  String get notificationLiveLocationTitle => 'Reaaliaikainen sijainti jaettu';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name alkoi jakaa reaaliaikaista sijaintiaan matkalla \"$trip\".';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Reaaliaikainen sijainti';
+
+  @override
+  String get profilePushLocationSubtitle => 'Kun joku matkalla alkaa jakaa sijaintiaan';
 }

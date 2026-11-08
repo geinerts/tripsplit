@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Betalinger",
   "profilePushPaymentsSubtitle": "Betalinger markeret som sendt, bekræftet eller ikke modtaget",
   "profilePushRemindersTitle": "Påmindelser",
-  "profilePushRemindersSubtitle": "Påmindelser om ubetalte beløb"
+  "profilePushRemindersSubtitle": "Påmindelser om ubetalte beløb",
+  "notificationLiveLocationTitle": "Live-placering delt",
+  "notificationLiveLocationBody": "{name} begyndte at dele sin live-placering i \"{trip}\".",
+  "profilePushLocationTitle": "Live-placering",
+  "profilePushLocationSubtitle": "Når nogen på rejsen begynder at dele sin placering"
 }

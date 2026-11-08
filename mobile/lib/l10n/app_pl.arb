@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Płatności",
   "profilePushPaymentsSubtitle": "Płatności oznaczone jako wysłane, potwierdzone lub nieotrzymane",
   "profilePushRemindersTitle": "Przypomnienia",
-  "profilePushRemindersSubtitle": "Przypomnienia o nierozliczonych płatnościach"
+  "profilePushRemindersSubtitle": "Przypomnienia o nierozliczonych płatnościach",
+  "notificationLiveLocationTitle": "Udostępniono lokalizację na żywo",
+  "notificationLiveLocationBody": "{name} udostępnia lokalizację na żywo w „{trip}”.",
+  "profilePushLocationTitle": "Lokalizacja na żywo",
+  "profilePushLocationSubtitle": "Gdy ktoś z podróży zacznie udostępniać lokalizację"
 }

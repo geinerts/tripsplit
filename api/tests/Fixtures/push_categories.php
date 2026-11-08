@@ -23,7 +23,7 @@ $pdo->exec('DROP TABLE IF EXISTS ' . $table);
 $schema = file_get_contents(__DIR__ . '/../../../sql/schema.sql');
 preg_match('/CREATE TABLE IF NOT EXISTS ' . $table . ' \((.*?)\n\) ENGINE/s', $schema, $match);
 $lines = array_filter(explode("\n", $match[1]), static fn(string $line): bool =>
-    !preg_match('/push_(comments|trip_invites|trip_status|payment_requests|payments|reminders)_enabled|CONSTRAINT|FOREIGN KEY|REFERENCES/', $line));
+    !preg_match('/push_(comments|trip_invites|trip_status|payment_requests|payments|reminders|location)_enabled|CONSTRAINT|FOREIGN KEY|REFERENCES/', $line));
 $pdo->exec('CREATE TABLE ' . $table . ' (' . rtrim(implode("\n", $lines), ", \n") . ') ENGINE=InnoDB');
 
 $assertions = 0;
@@ -63,7 +63,21 @@ $pdo->exec($migration);
 $pdo->exec($migration);
 $columns = $pdo->query("SELECT COUNT(*) FROM information_schema.columns WHERE table_schema = DATABASE()
     AND table_name = '{$table}' AND column_name LIKE 'push\\_%'")->fetchColumn();
-check((int) $columns === 10, 'ten push columns');
+check((int) $columns === 10, 'ten push columns before the location migration');
+$prefs = fresh($pdo, 1);
+check($prefs['push_location_enabled'] && !$prefs['push_payments_enabled'], 'split categories work before the location migration');
+upsert_user_notification_preferences($pdo, 1, normalize_notification_preferences_patch(['push' => ['location' => false]]));
+$prefs = fresh($pdo, 1);
+check($prefs['push_location_enabled'] && !$prefs['push_payments_enabled'], 'location stays on until migrated');
+$location = file_get_contents(__DIR__ . '/../../../sql/migrations/2026-11-08-add-live-location-push.sql');
+$pdo->exec($location);
+$pdo->exec($location);
+upsert_user_notification_preferences($pdo, 1, normalize_notification_preferences_patch(['push' => ['location' => false]]));
+$prefs = fresh($pdo, 1);
+check(!$prefs['push_location_enabled'] && !$prefs['push_payments_enabled'], 'location stored on its own');
+check(!user_allows_push_notification($pdo, 1, 'live_location_started'), 'location push blocked');
+check(fresh($pdo, 2)['push_location_enabled'], 'location on by default');
+upsert_user_notification_preferences($pdo, 1, normalize_notification_preferences_patch(['push' => ['location' => true]]));
 $prefs = fresh($pdo, 1);
 foreach ($settle as $key) check(!$prefs[$key], 'migrated ' . $key . ' copied off');
 foreach ($trip as $key) check($prefs[$key], 'migrated ' . $key . ' copied on');
@@ -90,11 +104,12 @@ $prefs = fresh($pdo, 1);
 check($prefs['push_comments_enabled'] && $prefs['push_trip_invites_enabled'] && !$prefs['push_trip_status_enabled'], 'category wins');
 $payload = build_notification_preferences_payload($prefs);
 check($payload['push']['trip_updates'] === true && $payload['push']['trip_status'] === false, 'payload keys');
-check(count($payload['push']) === 10, 'payload has ten push keys');
+check(count($payload['push']) === 11, 'payload has eleven push keys');
 
 // Reminders and new comments reach the queue even when env critical types is narrowed.
 check(push_should_queue_notification_type('settlement_reminder'), 'reminder queued');
 check(push_should_queue_notification_type('expense_comment_added'), 'comment queued');
+check(push_should_queue_notification_type('live_location_started'), 'location queued');
 check(!push_should_queue_notification_type('trip_member_removed'), 'critical types still apply to others');
 
 echo json_encode(['assertions' => $assertions]);

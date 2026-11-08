@@ -5080,4 +5080,18 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Atgādinājumi par nenokārtotiem maksājumiem';
+
+  @override
+  String get notificationLiveLocationTitle => 'Kopīgota atrašanās vieta';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name sāka kopīgot savu atrašanās vietu ceļojumā \"$trip\".';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Atrašanās vieta';
+
+  @override
+  String get profilePushLocationSubtitle => 'Kad kāds ceļojumā sāk kopīgot savu atrašanās vietu';
 }

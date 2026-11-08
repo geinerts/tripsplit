@@ -360,6 +360,7 @@ function notification_actor_user_id(array $notification): ?int
         'settlement_reminder' => 'reminded_by_user_id',
         'expense_comment_mention' => 'mentioned_by_user_id',
         'expense_comment_added' => 'commented_by_user_id',
+        'live_location_started' => 'shared_by_user_id',
         default => null,
     };
     if ($key === null) return null;

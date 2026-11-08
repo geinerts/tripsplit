@@ -18,6 +18,8 @@
   "comment_added_title": "Ny kommentar til din udgift",
   "comment_added_body": "{name} kommenterede \"{note}\".",
   "comment_added_body_generic": "{name} kommenterede din udgift.",
+  "live_location_title": "Live-placering delt",
+  "live_location_body": "{name} begyndte at dele sin live-placering i \"{trip}\".",
   "trip_finished_title": "Turen er afsluttet",
   "trip_finished_body_settling": "{name} har afsluttet \"{trip}\". Afregningerne er klar.",
   "trip_finished_body_archived": "{name} har afsluttet \"{trip}\". Turen er arkiveret.",

@@ -56,6 +56,9 @@ function start_trip_live_location_action(): void
         $locked=lock_active_trip_membership_scope($pdo,$trip);
         if (trip_is_solo($locked)) json_out(['ok'=>false,'error'=>'Group trip required.'],409);
         require_locked_trip_member($pdo,$trip,$user);
+        $s=$pdo->prepare('SELECT 1 FROM '.table_name('live_locations').' WHERE trip_id=:trip AND user_id=:user AND expires_at>:now');
+        $s->execute(['trip'=>$trip,'user'=>$user,'now'=>gmdate('Y-m-d H:i:s')]);
+        $wasSharing=(bool)$s->fetchColumn();
         $pdo->prepare('DELETE FROM '.table_name('live_locations').' WHERE trip_id=:trip AND user_id=:user')->execute(['trip'=>$trip,'user'=>$user]);
         $pdo->prepare('INSERT INTO '.table_name('live_locations').' (trip_id,user_id,session_token,expires_at,latitude,longitude,accuracy_m,observed_at,updated_at)
             VALUES (:trip,:user,:token,:expires,:latitude,:longitude,:accuracy_m,:observed_at,:updated)')
@@ -63,7 +66,40 @@ function start_trip_live_location_action(): void
         $pdo->commit();
     } catch (Throwable $error) { if ($pdo->inTransaction()) $pdo->rollBack(); throw $error; }
     record_feature_use($pdo,'live_location_start');
+    if (!$wasSharing) notify_live_location_started($pdo,$trip,$user,(string)($locked['name'] ?? ''),$minutes);
     json_out(['ok'=>true,'session_token'=>$token,'expires_at'=>$expires,'server_time'=>time()]);
+}
+
+/**
+ * Tell the other members that someone started sharing. Renewing an active share sends
+ * nothing, and one person notifies a trip at most once per 30 minutes.
+ */
+function notify_live_location_started(PDO $pdo, int $tripId, int $userId, string $tripName, int $minutes): void
+{
+    // Sharing has already started, so a notification failure must not fail the request.
+    try {
+        $s=$pdo->prepare('SELECT MAX(created_at) AS last_at, CURRENT_TIMESTAMP AS now_at FROM '.table_name('notifications').'
+            WHERE trip_id=:trip AND type="live_location_started" AND payload_json LIKE :sharer');
+        $s->execute(['trip'=>$tripId,'sharer'=>'%"shared_by_user_id":'.$userId.',%']);
+        $last=$s->fetch();
+        if (is_array($last) && $last['last_at'] !== null
+            && strtotime((string)$last['now_at'])-strtotime((string)$last['last_at']) < 1800) {
+            return;
+        }
+        $s=$pdo->prepare('SELECT m.user_id FROM '.table_name('trip_members').' m
+            JOIN '.table_name('users').' u ON u.id=m.user_id AND u.account_status="active"
+            WHERE m.trip_id=:trip AND m.user_id<>:user');
+        $s->execute(['trip'=>$tripId,'user'=>$userId]);
+        $name=trip_member_label($pdo,$userId);
+        $trip=trim($tripName)!=='' ? trim($tripName) : 'Trip #'.$tripId;
+        foreach ($s->fetchAll(PDO::FETCH_COLUMN) as $memberId) {
+            create_user_notification($pdo,$tripId,(int)$memberId,'live_location_started','Live location shared',
+                $name.' started sharing their live location in "'.$trip.'".',
+                ['trip_id'=>$tripId,'shared_by_user_id'=>$userId,'minutes'=>$minutes]);
+        }
+    } catch (Throwable $error) {
+        log_api_exception($error,'notify_live_location_started');
+    }
 }
 
 function update_trip_live_location_action(): void

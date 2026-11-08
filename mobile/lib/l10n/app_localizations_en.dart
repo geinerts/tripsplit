@@ -5070,4 +5070,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Reminders about unsettled payments';
+
+  @override
+  String get notificationLiveLocationTitle => 'Live location shared';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name started sharing their live location in \"$trip\".';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Live location';
+
+  @override
+  String get profilePushLocationSubtitle => 'When someone in your trip starts sharing their location';
 }

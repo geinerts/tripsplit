@@ -18,6 +18,8 @@
   "comment_added_title": "Nouveau commentaire sur ta dépense",
   "comment_added_body": "{name} a commenté « {note} ».",
   "comment_added_body_generic": "{name} a commenté ta dépense.",
+  "live_location_title": "Position en direct partagée",
+  "live_location_body": "{name} partage sa position en direct dans « {trip} ».",
   "trip_finished_title": "Voyage terminé",
   "trip_finished_body_settling": "{name} a terminé « {trip} ». Les règlements sont prêts.",
   "trip_finished_body_archived": "{name} a terminé « {trip} ». Le voyage est archivé.",

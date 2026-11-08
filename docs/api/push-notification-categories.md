@@ -1,6 +1,6 @@
 # Push notification categories
 
-Approved by the owner on 2026-11-08. Phone (push) notifications are split into eight
+Approved by the owner on 2026-11-08. Phone (push) notifications are split into nine
 categories. In-app banner preferences don't change. Expense edits and deletions don't send
 push notifications.
 
@@ -14,6 +14,7 @@ push notifications.
 | `payments` | `push_payments_enabled` | `payment_sent`, `payment_confirmed`, `payment_cancelled`, `payment_not_received`, `settlement_sent`, `settlement_confirmed`, `settlement_sent_cancelled`, `settlement_not_received` |
 | `reminders` | `push_reminders_enabled` | `settlement_reminder`, `settlement_auto_reminder` |
 | `friend_invites` | `push_friend_invites_enabled` | `friend_invite`, `friend_invite_received`, `friend_invite_accepted` |
+| `location` | `push_location_enabled` | `live_location_started` |
 
 All categories are on by default. Types that aren't in the table still send a push and
 have no switch.
@@ -25,8 +26,8 @@ one with no way to turn it off. Reminders now send a push when `reminders` is on
 ## API
 
 `get_notification_preferences` and `update_notification_preferences` keep their existing
-fields. The `push` object gains the six new keys above, and the matching flat keys are
-accepted in updates.
+fields. The `push` object gains the seven new keys above, and the matching flat keys are
+accepted in updates. `location` has no older key.
 
 The older keys stay for apps that don't know the new categories:
 
@@ -46,6 +47,15 @@ holds `trip_id`, `expense_id`, `comment_id` and `commented_by_user_id`. The Engl
 is `"{name} commented on \"{note}\"."` or `"{name} commented on your expense."` when the
 expense has no note. In-app banners follow the trip updates preference, as mentions do.
 
+## New notification type: `live_location_started`
+
+When a member starts sharing their live location in a group trip, every other active
+member gets `live_location_started`. Renewing a share that is still active sends nothing,
+and the same person notifies a trip at most once every 30 minutes. The payload holds
+`trip_id`, `shared_by_user_id` and `minutes`. It never holds coordinates. The English text
+is `"{name} started sharing their live location in \"{trip}\"."`. In-app banners follow
+the trip updates preference.
+
 ## Migration
 
 Run `sql/migrations/2026-11-08-split-push-notification-categories.sql`. It adds the six
@@ -54,5 +64,9 @@ it copies that user's current value from `push_trip_updates_enabled` or
 `push_settlement_updates_enabled`, so nobody's existing choice changes. Running it again
 does nothing.
 
-Without the migration the server still works. The new categories read from the old
-switches, and updates to them only change the old switches.
+Then run `sql/migrations/2026-11-08-add-live-location-push.sql`, which adds
+`push_location_enabled`, on for everyone. Each migration works without the other.
+
+Without the migrations the server still works. The split categories read from the old
+switches, and updates to them only change the old switches. Location reads as on until
+its column exists, and changes to it are ignored until then.

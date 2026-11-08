@@ -5070,4 +5070,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get profilePushRemindersSubtitle => 'Rappels de paiements non réglés';
+
+  @override
+  String get notificationLiveLocationTitle => 'Position en direct partagée';
+
+  @override
+  String notificationLiveLocationBody(Object name, Object trip) {
+    return '$name partage sa position en direct dans « $trip ».';
+  }
+
+  @override
+  String get profilePushLocationTitle => 'Position en direct';
+
+  @override
+  String get profilePushLocationSubtitle => 'Quand quelqu’un de ton voyage partage sa position';
 }

@@ -26,6 +26,7 @@ class NotificationPreferences {
     this.pushPaymentRequestsEnabled = true,
     this.pushPaymentsEnabled = true,
     this.pushRemindersEnabled = true,
+    this.pushLocationEnabled = true,
     this.emailTripReportEnabled = true,
   });
 
@@ -56,6 +57,7 @@ class NotificationPreferences {
       pushPaymentRequestsEnabled = true,
       pushPaymentsEnabled = true,
       pushRemindersEnabled = true,
+      pushLocationEnabled = true,
       emailTripReportEnabled = true;
 
   final bool inAppBannerEnabled;
@@ -84,6 +86,7 @@ class NotificationPreferences {
   final bool pushPaymentRequestsEnabled;
   final bool pushPaymentsEnabled;
   final bool pushRemindersEnabled;
+  final bool pushLocationEnabled;
   final bool emailTripReportEnabled;
 
   NotificationPreferences copyWith({
@@ -113,6 +116,7 @@ class NotificationPreferences {
     bool? pushPaymentRequestsEnabled,
     bool? pushPaymentsEnabled,
     bool? pushRemindersEnabled,
+    bool? pushLocationEnabled,
     bool? emailTripReportEnabled,
   }) {
     return NotificationPreferences(
@@ -169,6 +173,7 @@ class NotificationPreferences {
           pushPaymentRequestsEnabled ?? this.pushPaymentRequestsEnabled,
       pushPaymentsEnabled: pushPaymentsEnabled ?? this.pushPaymentsEnabled,
       pushRemindersEnabled: pushRemindersEnabled ?? this.pushRemindersEnabled,
+      pushLocationEnabled: pushLocationEnabled ?? this.pushLocationEnabled,
       emailTripReportEnabled:
           emailTripReportEnabled ?? this.emailTripReportEnabled,
     );

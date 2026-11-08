@@ -30,6 +30,9 @@ final RegExp _commentMentionWithNotePattern = RegExp(
 final RegExp _commentMentionGenericPattern = RegExp(
   r'^(.+?) mentioned you in a comment\.$',
 );
+final RegExp _liveLocationPattern = RegExp(
+  r'^(.+?) started sharing their live location in "(.+)"\.$',
+);
 final RegExp _commentAddedWithNotePattern = RegExp(
   r'^(.+?) commented on "(.+)"\.$',
 );
@@ -222,6 +225,19 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
           body: generic != null
               ? t.notificationCommentMentionBodyGeneric(
                   generic.group(1)!.trim(),
+                )
+              : rawBody,
+        );
+      }
+    case 'live_location_started':
+      {
+        final match = _liveLocationPattern.firstMatch(rawBody);
+        return LocalizedWorkspaceNotification(
+          title: t.notificationLiveLocationTitle,
+          body: match != null
+              ? t.notificationLiveLocationBody(
+                  match.group(1)!.trim(),
+                  match.group(2)!.trim(),
                 )
               : rawBody,
         );
@@ -582,6 +598,7 @@ String? notificationActorName(WorkspaceNotification notification) {
       _commentMentionWithNotePattern,
       _commentMentionGenericPattern,
     ],
+    'live_location_started' => [_liveLocationPattern],
     'expense_comment_added' => [
       _commentAddedWithNotePattern,
       _commentAddedGenericPattern,

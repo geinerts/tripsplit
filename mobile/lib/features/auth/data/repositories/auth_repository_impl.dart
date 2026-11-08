@@ -143,6 +143,7 @@ class AuthRepositoryImpl implements AuthRepository {
     bool? pushPaymentRequestsEnabled,
     bool? pushPaymentsEnabled,
     bool? pushRemindersEnabled,
+    bool? pushLocationEnabled,
     bool? emailTripReportEnabled,
   }) {
     return _remote.updateNotificationPreferences(
@@ -172,6 +173,7 @@ class AuthRepositoryImpl implements AuthRepository {
       pushPaymentRequestsEnabled: pushPaymentRequestsEnabled,
       pushPaymentsEnabled: pushPaymentsEnabled,
       pushRemindersEnabled: pushRemindersEnabled,
+      pushLocationEnabled: pushLocationEnabled,
       emailTripReportEnabled: emailTripReportEnabled,
     );
   }

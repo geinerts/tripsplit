@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Платежі",
   "profilePushPaymentsSubtitle": "Платежі, позначені як надіслані, підтверджені або не отримані",
   "profilePushRemindersTitle": "Нагадування",
-  "profilePushRemindersSubtitle": "Нагадування про неоплачені суми"
+  "profilePushRemindersSubtitle": "Нагадування про неоплачені суми",
+  "notificationLiveLocationTitle": "Поширено геопозицію наживо",
+  "notificationLiveLocationBody": "{name} почав(-ла) ділитися геопозицією наживо в «{trip}».",
+  "profilePushLocationTitle": "Геопозиція наживо",
+  "profilePushLocationSubtitle": "Коли хтось у подорожі починає ділитися геопозицією"
 }

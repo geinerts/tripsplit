@@ -24,6 +24,13 @@ $pdo->exec('CREATE TABLE trip_feature_usage_counts (usage_month TEXT, feature TE
 $r=invitation_call('start_trip_live_location_action',1,$start+['user_id'=>2]);
 check((int)$pdo->query('SELECT SUM(use_count) FROM trip_feature_usage_counts WHERE feature="live_location_start"')->fetchColumn()===1,'starting is counted once');
 check($r['status']===200,'start'); $token=$r['body']['session_token']; $expires=$r['body']['expires_at'];
+$shared=static fn(int $user): array => $pdo->query('SELECT title,body,payload_json FROM trip_notifications
+    WHERE type="live_location_started" AND user_id='.$user.' ORDER BY id')->fetchAll();
+$told=$shared(2);
+check(count($told)===1 && $shared(1)===[],'other members are told once, not the sharer');
+check($told[0]['title']==='Live location shared' && str_ends_with($told[0]['body'],' started sharing their live location in "Group".'),'notification text');
+check(json_decode($told[0]['payload_json'],true)===['trip_id'=>1,'shared_by_user_id'=>1,'minutes'=>60],'notification payload');
+check(notification_actor_user_id(['type'=>'live_location_started','payload'=>['shared_by_user_id'=>1]])===1,'actor');
 check(abs($expires-time()-3600)<3,'one hour server deadline');
 $read=invitation_call('list_trip_live_locations_action',2)['body'];
 check(count($read['members'])===1 && $read['members'][0]['user_id']===1,'current account only');
@@ -35,6 +42,7 @@ check((float)$pdo->query('SELECT latitude FROM trip_live_locations')->fetchColum
 check(strtotime($pdo->query('SELECT expires_at FROM trip_live_locations')->fetchColumn().' UTC')===$expires,'update never extends consent');
 $renew=invitation_call('start_trip_live_location_action',1,['minutes'=>15]+$fix);
 check($renew['body']['session_token']!==$token,'renew rotates token');
+check(count($shared(2))===1,'renewing an active share sends nothing');
 check(invitation_call('update_trip_live_location_action',1,$update)['status']===409,'old requests cannot revive/overwrite new consent');
 $update['session_token']=$renew['body']['session_token'];
 invitation_call('stop_trip_live_location_action',2,['trip_id'=>1,'user_id'=>1]);
@@ -58,6 +66,8 @@ check(invitation_call('list_trip_live_locations_action',2)['status']===403,'remo
 $pdo->exec('UPDATE trip_trips SET status="archived" WHERE id=1');
 check(invitation_call('list_trip_live_locations_action',1)['status']===409,'closed group denied');
 check(invitation_call('stop_trip_live_location_action',1,['trip_id'=>1])['status']===200,'stop works after closing');
+check(count($shared(2))===1,'restarting within 30 minutes sends nothing');
+check(count($shared(1))===1,'another member sharing is announced');
 $_SERVER['HTTP_X_TRIP_ID']='3';
 check(invitation_call('start_trip_live_location_action',1,$start)['status']===409,'solo excluded');
 $_SERVER['HTTP_X_TRIP_ID']='2';

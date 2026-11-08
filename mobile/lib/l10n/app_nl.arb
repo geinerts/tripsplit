@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Betalingen",
   "profilePushPaymentsSubtitle": "Betalingen gemarkeerd als verzonden, bevestigd of niet ontvangen",
   "profilePushRemindersTitle": "Herinneringen",
-  "profilePushRemindersSubtitle": "Herinneringen aan openstaande betalingen"
+  "profilePushRemindersSubtitle": "Herinneringen aan openstaande betalingen",
+  "notificationLiveLocationTitle": "Live locatie gedeeld",
+  "notificationLiveLocationBody": "{name} deelt nu de live locatie in \"{trip}\".",
+  "profilePushLocationTitle": "Live locatie",
+  "profilePushLocationSubtitle": "Als iemand in je reis zijn locatie begint te delen"
 }

@@ -84,6 +84,7 @@ abstract class AuthRemoteDataSource {
     bool? pushPaymentRequestsEnabled,
     bool? pushPaymentsEnabled,
     bool? pushRemindersEnabled,
+    bool? pushLocationEnabled,
     bool? emailTripReportEnabled,
   });
 }
@@ -362,6 +363,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     bool? pushPaymentRequestsEnabled,
     bool? pushPaymentsEnabled,
     bool? pushRemindersEnabled,
+    bool? pushLocationEnabled,
     bool? emailTripReportEnabled,
   }) async {
     final inAppPayload = <String, dynamic>{};
@@ -442,6 +444,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
     if (pushRemindersEnabled != null) {
       pushPayload['reminders'] = pushRemindersEnabled;
+    }
+    if (pushLocationEnabled != null) {
+      pushPayload['location'] = pushLocationEnabled;
     }
 
     final payload = <String, dynamic>{};

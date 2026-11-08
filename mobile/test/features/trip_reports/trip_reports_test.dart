@@ -160,6 +160,13 @@ void main() {
     expect(older.pushTripStatusEnabled, isFalse);
     expect(older.pushPaymentRequestsEnabled, isTrue);
     expect(parse({}).pushRemindersEnabled, isTrue);
+    expect(older.pushLocationEnabled, isTrue);
+    expect(
+      parse({
+        'push': {'location': false},
+      }).pushLocationEnabled,
+      isFalse,
+    );
     expect(
       older.copyWith(pushCommentsEnabled: true).pushCommentsEnabled,
       isTrue,

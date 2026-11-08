@@ -18,6 +18,8 @@
   "comment_added_title": "Новий коментар до вашої витрати",
   "comment_added_body": "{name} прокоментував(-ла) «{note}».",
   "comment_added_body_generic": "{name} прокоментував(-ла) вашу витрату.",
+  "live_location_title": "Поширено геопозицію наживо",
+  "live_location_body": "{name} почав(-ла) ділитися геопозицією наживо в «{trip}».",
   "trip_finished_title": "Подорож завершено",
   "trip_finished_body_settling": "{name} завершив(ла) «{trip}». Розрахунки готові.",
   "trip_finished_body_archived": "{name} завершив(ла) «{trip}». Подорож архівується.",

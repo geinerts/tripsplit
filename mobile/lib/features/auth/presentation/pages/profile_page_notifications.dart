@@ -31,7 +31,8 @@ class _ProfileNotificationSettingsPageState
       _prefs.pushTripStatusEnabled ||
       _prefs.pushPaymentRequestsEnabled ||
       _prefs.pushPaymentsEnabled ||
-      _prefs.pushRemindersEnabled;
+      _prefs.pushRemindersEnabled ||
+      _prefs.pushLocationEnabled;
 
   @override
   void initState() {
@@ -90,6 +91,7 @@ class _ProfileNotificationSettingsPageState
       pushPaymentRequestsEnabled: value,
       pushPaymentsEnabled: value,
       pushRemindersEnabled: value,
+      pushLocationEnabled: value,
     ),
     request: () => widget.controller.updateNotificationPreferences(
       pushExpenseAddedEnabled: value,
@@ -102,6 +104,7 @@ class _ProfileNotificationSettingsPageState
       pushPaymentRequestsEnabled: value,
       pushPaymentsEnabled: value,
       pushRemindersEnabled: value,
+      pushLocationEnabled: value,
     ),
   );
 

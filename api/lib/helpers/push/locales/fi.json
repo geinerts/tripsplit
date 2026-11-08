@@ -18,6 +18,8 @@
   "comment_added_title": "Uusi kommentti kuluusi",
   "comment_added_body": "{name} kommentoi kulua \"{note}\".",
   "comment_added_body_generic": "{name} kommentoi kuluasi.",
+  "live_location_title": "Reaaliaikainen sijainti jaettu",
+  "live_location_body": "{name} alkoi jakaa reaaliaikaista sijaintiaan matkalla \"{trip}\".",
   "trip_finished_title": "Matka päättynyt",
   "trip_finished_body_settling": "{name} on suorittanut matkan ”{trip}”. Maksut ovat valmiina.",
   "trip_finished_body_archived": "{name} on suorittanut matkan ”{trip}”. Matka on arkistoitu.",

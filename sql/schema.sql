@@ -377,6 +377,7 @@ CREATE TABLE IF NOT EXISTS trip_user_notification_preferences (
   push_payment_requests_enabled TINYINT(1) NOT NULL DEFAULT 1,
   push_payments_enabled TINYINT(1) NOT NULL DEFAULT 1,
   push_reminders_enabled TINYINT(1) NOT NULL DEFAULT 1,
+  push_location_enabled TINYINT(1) NOT NULL DEFAULT 1,
   email_trip_report_enabled TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

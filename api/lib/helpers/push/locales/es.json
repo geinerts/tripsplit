@@ -18,6 +18,8 @@
   "comment_added_title": "Nuevo comentario en tu gasto",
   "comment_added_body": "{name} comentó «{note}».",
   "comment_added_body_generic": "{name} comentó tu gasto.",
+  "live_location_title": "Ubicación en tiempo real compartida",
+  "live_location_body": "{name} empezó a compartir su ubicación en tiempo real en «{trip}».",
   "trip_finished_title": "Viaje finalizado",
   "trip_finished_body_settling": "{name} finalizó \"{trip}\". Las liquidaciones están listas.",
   "trip_finished_body_archived": "{name} finalizó \"{trip}\". El viaje está archivado.",

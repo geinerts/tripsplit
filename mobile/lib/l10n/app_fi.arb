@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Maksut",
   "profilePushPaymentsSubtitle": "Lähetetyiksi, vahvistetuiksi tai saapumattomiksi merkityt maksut",
   "profilePushRemindersTitle": "Muistutukset",
-  "profilePushRemindersSubtitle": "Muistutukset maksamattomista summista"
+  "profilePushRemindersSubtitle": "Muistutukset maksamattomista summista",
+  "notificationLiveLocationTitle": "Reaaliaikainen sijainti jaettu",
+  "notificationLiveLocationBody": "{name} alkoi jakaa reaaliaikaista sijaintiaan matkalla \"{trip}\".",
+  "profilePushLocationTitle": "Reaaliaikainen sijainti",
+  "profilePushLocationSubtitle": "Kun joku matkalla alkaa jakaa sijaintiaan"
 }

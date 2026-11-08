@@ -212,6 +212,21 @@ class _PushNotificationSettingsPageState
                     ),
                     _buildProfileSwitchTile(
                       context: context,
+                      title: context.l10n.profilePushLocationTitle,
+                      subtitle: context.l10n.profilePushLocationSubtitle,
+                      icon: Icons.location_on_outlined,
+                      value: _prefs.pushLocationEnabled,
+                      onChanged: (value) => unawaited(
+                        _setPreference(
+                          _prefs.copyWith(pushLocationEnabled: value),
+                          () => widget.controller.updateNotificationPreferences(
+                            pushLocationEnabled: value,
+                          ),
+                        ),
+                      ),
+                    ),
+                    _buildProfileSwitchTile(
+                      context: context,
                       title: context.l10n.profileFriendInvites,
                       subtitle: context
                           .l10n

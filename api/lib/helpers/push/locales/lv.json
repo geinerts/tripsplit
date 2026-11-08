@@ -18,6 +18,8 @@
   "comment_added_title": "Jauns komentārs pie tava izdevuma",
   "comment_added_body": "{name} komentēja izdevumu \"{note}\".",
   "comment_added_body_generic": "{name} komentēja tavu izdevumu.",
+  "live_location_title": "Kopīgota atrašanās vieta",
+  "live_location_body": "{name} sāka kopīgot savu atrašanās vietu ceļojumā \"{trip}\".",
   "trip_finished_title": "Ceļojums pabeigts",
   "trip_finished_body_settling": "{name} pabeidza \"{trip}\". Norēķini ir gatavi.",
   "trip_finished_body_archived": "{name} pabeidza \"{trip}\". Ceļojums ir arhivēts.",

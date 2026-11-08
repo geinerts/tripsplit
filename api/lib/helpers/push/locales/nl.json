@@ -18,6 +18,8 @@
   "comment_added_title": "Nieuwe reactie op je uitgave",
   "comment_added_body": "{name} reageerde op \"{note}\".",
   "comment_added_body_generic": "{name} reageerde op je uitgave.",
+  "live_location_title": "Live locatie gedeeld",
+  "live_location_body": "{name} deelt nu de live locatie in \"{trip}\".",
   "trip_finished_title": "Reis voltooid",
   "trip_finished_body_settling": "{name} heeft \"{trip}\" voltooid. De afrekeningen zijn klaar.",
   "trip_finished_body_archived": "{name} heeft \"{trip}\" voltooid. De reis is gearchiveerd.",

@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Betalinger",
   "profilePushPaymentsSubtitle": "Betalinger merket som sendt, bekreftet eller ikke mottatt",
   "profilePushRemindersTitle": "Påminnelser",
-  "profilePushRemindersSubtitle": "Påminnelser om ubetalte beløp"
+  "profilePushRemindersSubtitle": "Påminnelser om ubetalte beløp",
+  "notificationLiveLocationTitle": "Sanntidsposisjon delt",
+  "notificationLiveLocationBody": "{name} begynte å dele sanntidsposisjonen sin i «{trip}».",
+  "profilePushLocationTitle": "Sanntidsposisjon",
+  "profilePushLocationSubtitle": "Når noen på reisen begynner å dele posisjonen sin"
 }

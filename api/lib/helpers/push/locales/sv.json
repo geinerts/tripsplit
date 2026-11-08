@@ -18,6 +18,8 @@
   "comment_added_title": "Ny kommentar på din utgift",
   "comment_added_body": "{name} kommenterade \"{note}\".",
   "comment_added_body_generic": "{name} kommenterade din utgift.",
+  "live_location_title": "Liveplats delad",
+  "live_location_body": "{name} började dela sin liveplats i \"{trip}\".",
   "trip_finished_title": "Resan är avslutad",
   "trip_finished_body_settling": "{name} har avslutat ”{trip}”. Avräkningarna är klara.",
   "trip_finished_body_archived": "{name} har avslutat ”{trip}”. Resan är arkiverad.",

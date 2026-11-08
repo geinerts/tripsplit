@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Platby",
   "profilePushPaymentsSubtitle": "Platby označené jako odeslané, potvrzené nebo nepřijaté",
   "profilePushRemindersTitle": "Připomínky",
-  "profilePushRemindersSubtitle": "Připomínky nevyrovnaných plateb"
+  "profilePushRemindersSubtitle": "Připomínky nevyrovnaných plateb",
+  "notificationLiveLocationTitle": "Sdílená poloha v reálném čase",
+  "notificationLiveLocationBody": "{name} začal(a) sdílet polohu v reálném čase ve výletu „{trip}“.",
+  "profilePushLocationTitle": "Poloha v reálném čase",
+  "profilePushLocationSubtitle": "Když někdo z výletu začne sdílet svou polohu"
 }

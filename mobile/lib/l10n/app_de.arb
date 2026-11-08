@@ -2075,5 +2075,9 @@
   "profilePushPaymentsTitle": "Zahlungen",
   "profilePushPaymentsSubtitle": "Zahlungen als gesendet, bestätigt oder nicht erhalten markiert",
   "profilePushRemindersTitle": "Erinnerungen",
-  "profilePushRemindersSubtitle": "Erinnerungen an offene Zahlungen"
+  "profilePushRemindersSubtitle": "Erinnerungen an offene Zahlungen",
+  "notificationLiveLocationTitle": "Live-Standort geteilt",
+  "notificationLiveLocationBody": "{name} teilt jetzt den Live-Standort in „{trip}“.",
+  "profilePushLocationTitle": "Live-Standort",
+  "profilePushLocationSubtitle": "Wenn jemand auf deiner Reise den Standort teilt"
 }
