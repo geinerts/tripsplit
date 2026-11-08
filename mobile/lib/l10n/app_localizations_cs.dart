@@ -5118,4 +5118,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get expenseSplitEvenly => 'Rozdělit rovným dílem';
+
+  @override
+  String expensePaidByName(Object name) {
+    return 'Platil(a) $name';
+  }
 }

@@ -216,7 +216,8 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
       if (showDate && expense.expenseDate.trim().isNotEmpty)
         _formatDisplayDate(context, expense.expenseDate),
       if (widget.trip.isSolo && expense.note.trim().isNotEmpty) category,
-      if (!widget.trip.isSolo) payerName,
+      if (!widget.trip.isSolo && payerName.isNotEmpty)
+        context.l10n.expensePaidByName(payerName),
       if (!widget.trip.isSolo && !_isEqualSplitMode(expense.splitMode))
         _splitModeShortLabel(context, expense.splitMode),
     ].join(' · ');
@@ -247,139 +248,129 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
               final stacked =
                   constraints.maxWidth < 300 ||
                   MediaQuery.textScalerOf(context).scale(16) > 21;
-              final amountText = Text(
-                amount,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
+              final muted = theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               );
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ExcludeSemantics(
-                        child: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerLow,
-                            borderRadius: BorderRadius.circular(10),
+              final foreign =
+                  expense.expenseCurrencyCode != expense.tripCurrencyCode;
+              final originalAmount = AppFormatters.displayCurrencyFromCents(
+                context,
+                (expense.originalAmount * 100).round(),
+                currencyCode: expense.expenseCurrencyCode,
+              );
+              final hasSocial =
+                  expense.id > 0 && (reactions.isNotEmpty || comments > 0);
+              // Everything about the amount sits under it, in one column, so
+              // every row keeps the same shape.
+              final amountColumn = <Widget>[
+                Text(
+                  amount,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+                if (foreign)
+                  Text(
+                    originalAmount,
+                    key: ValueKey('expense-original-${expense.id}'),
+                    semanticsLabel: context.l10n.workspaceOriginalExpenseAmount(
+                      originalAmount,
+                    ),
+                    style: muted,
+                  ),
+                if (hasSocial)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Row(
+                      key: ValueKey('expense-social-${expense.id}'),
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final reaction in reactions) ...[
+                          Text(
+                            '${reaction.emoji} ${reaction.count}',
+                            style: muted?.copyWith(
+                              color: reaction.isMine
+                                  ? theme.colorScheme.primary
+                                  : null,
+                            ),
                           ),
-                          child: Icon(
-                            ExpenseCategoryCatalog.iconFor(expense.category),
-                            size: 18,
+                          const SizedBox(width: 8),
+                        ],
+                        if (comments > 0) ...[
+                          Icon(
+                            Icons.chat_bubble_outline,
+                            size: 13,
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          const SizedBox(width: 3),
+                          Text(
+                            '$comments',
+                            semanticsLabel: context.l10n.workspaceCommentCount(
+                              comments,
                             ),
-                            if (details.isNotEmpty)
-                              Text(
-                                details,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                            if (stacked) ...[
-                              const SizedBox(height: 2),
-                              amountText,
-                            ],
-                          ],
-                        ),
-                      ),
-                      if (!stacked) ...[
-                        const SizedBox(width: 8),
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: constraints.maxWidth * .4,
+                            style: muted,
                           ),
-                          child: amountText,
-                        ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                  if (expense.expenseCurrencyCode != expense.tripCurrencyCode)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2, left: 48),
-                      child: Text(
-                        context.l10n.workspaceOriginalExpenseAmount(
-                          AppFormatters.displayCurrencyFromCents(
-                            context,
-                            (expense.originalAmount * 100).round(),
-                            currencyCode: expense.expenseCurrencyCode,
-                          ),
-                        ),
-                        style: theme.textTheme.bodySmall,
+              ];
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ExcludeSemantics(
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surfaceContainerLow,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        ExpenseCategoryCatalog.iconFor(expense.category),
+                        size: 18,
+                        color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
-                  if (expense.id <= 0)
-                    Text(
-                      context.l10n.queuePendingStatus,
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  if (expense.id > 0 && (reactions.isNotEmpty || comments > 0))
-                    Wrap(
-                      alignment: WrapAlignment.end,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 4,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        for (final reaction in reactions)
-                          Semantics(
-                            selected: reaction.isMine,
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                minimumSize: const Size(48, 48),
-                              ),
-                              onPressed:
-                                  _isMutating ||
-                                      _expenseSocialTogglingIds.contains(
-                                        expense.id,
-                                      )
-                                  ? null
-                                  : () => _toggleExpenseReactionInline(
-                                      expenseId: expense.id,
-                                      emoji: reaction.emoji,
-                                    ),
-                              child: Text(
-                                '${reaction.emoji} ${reaction.count}',
-                              ),
-                            ),
+                        Text(
+                          title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
-                        if (comments > 0)
-                          TextButton.icon(
-                            onPressed: open,
-                            style: TextButton.styleFrom(
-                              minimumSize: const Size(48, 48),
-                            ),
-                            icon: const Icon(
-                              Icons.chat_bubble_outline,
-                              size: 20,
-                            ),
-                            label: Text(
-                              '$comments',
-                              semanticsLabel: context.l10n
-                                  .workspaceCommentCount(comments),
-                            ),
-                          ),
+                        ),
+                        if (details.isNotEmpty) Text(details, style: muted),
+                        if (expense.id <= 0)
+                          Text(context.l10n.queuePendingStatus, style: muted),
+                        if (stacked) ...[
+                          const SizedBox(height: 2),
+                          ...amountColumn,
+                        ],
                       ],
                     ),
+                  ),
+                  if (!stacked) ...[
+                    const SizedBox(width: 8),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: constraints.maxWidth * .4,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: amountColumn,
+                      ),
+                    ),
+                  ],
                 ],
               );
             },

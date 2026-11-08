@@ -2087,5 +2087,6 @@
   "expenseSplitAdjustmentHint": "Поровну, с плюсом или минусом для каждого",
   "expenseSplitItemsHint": "Каждый платит за свои позиции",
   "tripsSearchFriends": "Искать друзей",
-  "expenseSplitEvenly": "Разделить поровну"
+  "expenseSplitEvenly": "Разделить поровну",
+  "expensePaidByName": "Оплатил(а) {name}"
 }

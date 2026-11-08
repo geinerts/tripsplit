@@ -5118,4 +5118,9 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get expenseSplitEvenly => 'Sadalīt vienādi';
+
+  @override
+  String expensePaidByName(Object name) {
+    return '$name maksāja';
+  }
 }

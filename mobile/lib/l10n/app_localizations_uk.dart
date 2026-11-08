@@ -5128,4 +5128,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get expenseSplitEvenly => 'Розділити порівну';
+
+  @override
+  String expensePaidByName(Object name) {
+    return 'Сплатив(-ла) $name';
+  }
 }

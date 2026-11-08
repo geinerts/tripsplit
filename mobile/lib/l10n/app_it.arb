@@ -2087,5 +2087,6 @@
   "expenseSplitAdjustmentHint": "In parti uguali, con un più o meno a persona",
   "expenseSplitItemsHint": "Ciascuno paga le proprie voci",
   "tripsSearchFriends": "Cerca amici",
-  "expenseSplitEvenly": "Dividi in parti uguali"
+  "expenseSplitEvenly": "Dividi in parti uguali",
+  "expensePaidByName": "Ha pagato {name}"
 }

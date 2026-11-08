@@ -2087,5 +2087,6 @@
   "expenseSplitAdjustmentHint": "Likt, med pluss eller minus per person",
   "expenseSplitItemsHint": "Hver person betaler for sine egne poster",
   "tripsSearchFriends": "Søk etter venner",
-  "expenseSplitEvenly": "Del likt"
+  "expenseSplitEvenly": "Del likt",
+  "expensePaidByName": "{name} betalte"
 }

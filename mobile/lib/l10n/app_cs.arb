@@ -2087,5 +2087,6 @@
   "expenseSplitAdjustmentHint": "Rovným dílem, s plusem či mínusem pro každého",
   "expenseSplitItemsHint": "Každý platí své vlastní položky",
   "tripsSearchFriends": "Hledat přátele",
-  "expenseSplitEvenly": "Rozdělit rovným dílem"
+  "expenseSplitEvenly": "Rozdělit rovným dílem",
+  "expensePaidByName": "Platil(a) {name}"
 }

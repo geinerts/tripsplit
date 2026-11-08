@@ -5108,4 +5108,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get expenseSplitEvenly => 'Jaa tasan';
+
+  @override
+  String expensePaidByName(Object name) {
+    return '$name maksoi';
+  }
 }

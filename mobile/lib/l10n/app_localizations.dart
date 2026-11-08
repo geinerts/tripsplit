@@ -9464,6 +9464,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Split evenly'**
   String get expenseSplitEvenly;
+
+  /// No description provided for @expensePaidByName.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} paid'**
+  String expensePaidByName(Object name);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

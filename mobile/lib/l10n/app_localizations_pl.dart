@@ -5128,4 +5128,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get expenseSplitEvenly => 'Podziel po równo';
+
+  @override
+  String expensePaidByName(Object name) {
+    return 'Zapłacił(a) $name';
+  }
 }

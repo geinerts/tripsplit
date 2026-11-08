@@ -2108,5 +2108,6 @@
   "expenseSplitAdjustmentHint": "Equal split with a plus or minus per person",
   "expenseSplitItemsHint": "Each person pays for their own items",
   "tripsSearchFriends": "Search friends",
-  "expenseSplitEvenly": "Split evenly"
+  "expenseSplitEvenly": "Split evenly",
+  "expensePaidByName": "{name} paid"
 }

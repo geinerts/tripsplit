@@ -2087,5 +2087,6 @@
   "expenseSplitAdjustmentHint": "Partage égal avec un plus ou un moins par personne",
   "expenseSplitItemsHint": "Chacun paie ses propres articles",
   "tripsSearchFriends": "Rechercher des amis",
-  "expenseSplitEvenly": "Partager à parts égales"
+  "expenseSplitEvenly": "Partager à parts égales",
+  "expensePaidByName": "Payé par {name}"
 }

@@ -2087,5 +2087,6 @@
   "expenseSplitAdjustmentHint": "Gelijk verdeeld, met een plus of min per persoon",
   "expenseSplitItemsHint": "Iedereen betaalt zijn eigen items",
   "tripsSearchFriends": "Vrienden zoeken",
-  "expenseSplitEvenly": "Gelijk verdelen"
+  "expenseSplitEvenly": "Gelijk verdelen",
+  "expensePaidByName": "{name} betaalde"
 }

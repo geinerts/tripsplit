@@ -2073,5 +2073,6 @@
   "expenseSplitAdjustmentHint": "Vienādi, ar plusu vai mīnusu katram",
   "expenseSplitItemsHint": "Katrs maksā par savām pozīcijām",
   "tripsSearchFriends": "Meklēt draugus",
-  "expenseSplitEvenly": "Sadalīt vienādi"
+  "expenseSplitEvenly": "Sadalīt vienādi",
+  "expensePaidByName": "{name} maksāja"
 }

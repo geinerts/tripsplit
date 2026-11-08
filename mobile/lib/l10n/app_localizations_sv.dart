@@ -5108,4 +5108,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get expenseSplitEvenly => 'Dela lika';
+
+  @override
+  String expensePaidByName(Object name) {
+    return '$name betalade';
+  }
 }

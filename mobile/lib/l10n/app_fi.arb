@@ -2087,5 +2087,6 @@
   "expenseSplitAdjustmentHint": "Tasan, plus tai miinus henkilöä kohden",
   "expenseSplitItemsHint": "Kukin maksaa omat tuotteensa",
   "tripsSearchFriends": "Hae ystäviä",
-  "expenseSplitEvenly": "Jaa tasan"
+  "expenseSplitEvenly": "Jaa tasan",
+  "expensePaidByName": "{name} maksoi"
 }

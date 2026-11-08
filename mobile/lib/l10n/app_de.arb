@@ -2087,5 +2087,6 @@
   "expenseSplitAdjustmentHint": "Gleich aufteilen, mit Plus oder Minus pro Person",
   "expenseSplitItemsHint": "Jede Person zahlt ihre eigenen Posten",
   "tripsSearchFriends": "Freunde suchen",
-  "expenseSplitEvenly": "Gleich aufteilen"
+  "expenseSplitEvenly": "Gleich aufteilen",
+  "expensePaidByName": "{name} hat bezahlt"
 }
