@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' show NumberFormat;
 import '../../../../core/ui/splyto_illustration.dart';
 import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';

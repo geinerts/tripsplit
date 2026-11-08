@@ -313,58 +313,49 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
   Widget _categories(AnalyticsReport report) {
     final rows = report.categories.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
+    String percent(int value) =>
+        _analyticsPercent(context, value, report.totalCents);
     Widget legend() => Column(
       children: [
         for (final row in rows)
           Padding(
+            key: ValueKey('analytics-category-${row.key}'),
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Icon(
-                        Icons.circle,
-                        size: 12,
-                        color: _categoryColor(row.key),
+            child: _byTrip
+                // The chart shows the percentage visually; screen readers get
+                // the whole row, including the percentage, as one label.
+                ? Semantics(
+                    container: true,
+                    label:
+                        '${_categoryName(row.key)}, ${_money(row.value)}, '
+                        '${percent(row.value)}',
+                    excludeSemantics: true,
+                    child: _categoryLegendRow(row),
+                  )
+                : Column(
+                    children: [
+                      _categoryLegendRow(row),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          '${(row.value * 100 / report.totalCents).toStringAsFixed(1)}%',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(_categoryName(row.key))),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        _money(row.value),
-                        textAlign: TextAlign.end,
-                        style: Theme.of(context).textTheme.titleMedium,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: LinearProgressIndicator(
+                          value: row.value / report.totalCents,
+                          minHeight: 8,
+                          borderRadius: BorderRadius.circular(4),
+                          color: _categoryColor(row.key),
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    '${(row.value * 100 / report.totalCents).toStringAsFixed(1)}%',
-                    style: Theme.of(context).textTheme.bodySmall,
+                    ],
                   ),
-                ),
-                if (!_byTrip)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: LinearProgressIndicator(
-                      value: row.value / report.totalCents,
-                      minHeight: 8,
-                      borderRadius: BorderRadius.circular(4),
-                      color: _categoryColor(row.key),
-                      backgroundColor: Theme.of(
-                        context,
-                      ).colorScheme.surfaceContainerHighest,
-                    ),
-                  ),
-              ],
-            ),
           ),
       ],
     );
@@ -421,44 +412,103 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
       );
     }
 
-    final donut = ExcludeSemantics(
-      child: SizedBox(
-        width: 128,
-        height: 128,
-        child: CustomPaint(
-          painter: _AnalyticsDonut(
-            values: rows.map((e) => e.value).toList(),
-            colors: rows.map((e) => _categoryColor(e.key)).toList(),
-          ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(28),
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  _money(report.totalCents),
-                  maxLines: 1,
-                  style: Theme.of(context).textTheme.titleMedium,
+    final values = rows.map((e) => e.value).toList();
+    final percents = rows.map((e) => percent(e.value)).toList();
+    final textScaler = MediaQuery.textScalerOf(
+      context,
+    ).clamp(maxScaleFactor: 1.3);
+    final labelStyle = Theme.of(
+      context,
+    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w600, height: 1.1);
+    Widget donut(_AnalyticsDonutLayout layout) {
+      final hole = layout.radius - layout.stroke - 4;
+      return ExcludeSemantics(
+        child: SizedBox(
+          key: const ValueKey('analytics-category-donut'),
+          width: layout.size.width,
+          height: layout.size.height,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _AnalyticsDonut(
+                    layout: layout,
+                    values: values,
+                    colors: rows.map((e) => _categoryColor(e.key)).toList(),
+                    labelStyle: labelStyle,
+                    textScaler: textScaler,
+                    textColor: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
               ),
-            ),
+              Positioned.fromRect(
+                rect: Rect.fromCircle(center: layout.center, radius: hole),
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      _money(report.totalCents),
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-      ),
-    );
+      );
+    }
+
     return LayoutBuilder(
-      builder: (context, box) =>
-          box.maxWidth < 340 || MediaQuery.textScalerOf(context).scale(16) > 20
-          ? Column(children: [donut, const SizedBox(height: 16), legend()])
-          : Row(
-              children: [
-                donut,
-                const SizedBox(width: 16),
-                Expanded(child: legend()),
-              ],
-            ),
+      builder: (context, box) {
+        _AnalyticsDonutLayout layoutFor(double width) =>
+            _AnalyticsDonutLayout.compute(
+              values: values,
+              percents: percents,
+              style: labelStyle,
+              scaler: textScaler,
+              maxWidth: width,
+            );
+        final beside = layoutFor(box.maxWidth);
+        final stacked =
+            box.maxWidth - beside.size.width - 16 < 180 ||
+            MediaQuery.textScalerOf(context).scale(16) > 20;
+        if (stacked) {
+          return Column(
+            children: [donut(beside), const SizedBox(height: 16), legend()],
+          );
+        }
+        return Row(
+          children: [
+            donut(beside),
+            const SizedBox(width: 16),
+            Expanded(child: legend()),
+          ],
+        );
+      },
     );
   }
+
+  Widget _categoryLegendRow(MapEntry<String, int> row) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.only(top: 5),
+        child: Icon(Icons.circle, size: 12, color: _categoryColor(row.key)),
+      ),
+      const SizedBox(width: 8),
+      Expanded(child: Text(_categoryName(row.key))),
+      const SizedBox(width: 8),
+      Flexible(
+        child: Text(
+          _money(row.value),
+          textAlign: TextAlign.end,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ),
+    ],
+  );
 
   List<Widget> _memberRows(AnalyticsReport report) {
     final members = report.members;

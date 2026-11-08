@@ -150,6 +150,20 @@ Future<void> _mount(
   await tester.pumpAndSettle();
 }
 
+const _manyCategories = [
+  AnalyticsTestExpense(1, amount: 320, share: 320, category: 'accommodation'),
+  AnalyticsTestExpense(2, amount: 180, share: 180, category: 'food'),
+  AnalyticsTestExpense(3, amount: 95, share: 95, category: 'transport'),
+  AnalyticsTestExpense(4, amount: 60, share: 60, category: 'groceries'),
+  AnalyticsTestExpense(5, amount: 42, share: 42, category: 'activities'),
+  AnalyticsTestExpense(6, amount: 30, share: 30, category: 'tickets'),
+  AnalyticsTestExpense(7, amount: 21, share: 21, category: 'fuel'),
+  AnalyticsTestExpense(8, amount: 14, share: 14, category: 'shopping'),
+  AnalyticsTestExpense(9, amount: 9, share: 9, category: 'party'),
+  AnalyticsTestExpense(10, amount: 6, share: 6, category: 'parking'),
+  AnalyticsTestExpense(11, amount: 3, share: 3, category: 'other'),
+];
+
 AppLocalizations _strings(WidgetTester tester) =>
     AppLocalizations.of(tester.element(find.byType(AnalyticsPage)))!;
 void main() {
@@ -365,9 +379,101 @@ void main() {
       expect(find.byKey(const ValueKey('analytics-total')), findsNothing);
     },
   );
+  group('category donut percentages', () {
+    Future<void> openTripTotal(WidgetTester tester) async {
+      final t = _strings(tester);
+      await tester.tap(find.text(t.analyticsByTrip));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(t.workspaceTripTotal).first);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('legend keeps one row and screen readers hear the percent', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await _mount(tester, _Trips(), _Analytics());
+      await openTripTotal(tester);
+      expect(find.byKey(const ValueKey('analytics-category-donut')), findsOne);
+      // Percentages are drawn by the chart, not as legend text.
+      expect(find.textContaining('%'), findsNothing);
+      expect(find.bySemanticsLabel('Food, €84.00, 67%'), findsOne);
+      expect(find.bySemanticsLabel('Transport, €42.00, 33%'), findsOne);
+      final food = find.byKey(const ValueKey('analytics-category-food'));
+      expect(
+        find.descendant(of: food, matching: find.byType(Text)),
+        findsNWidgets(2),
+      );
+      semantics.dispose();
+    });
+
+    testWidgets('your share view uses the same chart', (tester) async {
+      await _mount(tester, _Trips(), _Analytics());
+      await tester.tap(find.text(_strings(tester).analyticsByTrip));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('analytics-category-donut')), findsOne);
+      expect(find.textContaining('%'), findsNothing);
+    });
+
+    for (final (width, scale) in [(390.0, 1.0), (320.0, 2.0)]) {
+      testWidgets('many small categories fit at ${width}px ${scale}x', (
+        tester,
+      ) async {
+        final semantics = tester.ensureSemantics();
+        final analytics = _Analytics()..expenses = _manyCategories;
+        await _mount(tester, _Trips(), analytics, width: width, scale: scale);
+        await openTripTotal(tester);
+        expect(tester.takeException(), isNull);
+        final donut = find.byKey(const ValueKey('analytics-category-donut'));
+        await tester.scrollUntilVisible(
+          find.byKey(const ValueKey('analytics-category-other')),
+          150,
+          scrollable: find.byType(Scrollable).first,
+        );
+        expect(tester.takeException(), isNull);
+        final rect = tester.getRect(donut);
+        expect(rect.left, greaterThanOrEqualTo(0));
+        expect(rect.right, lessThanOrEqualTo(width));
+        // A tiny slice has no label on the chart but keeps its percentage
+        // for screen readers.
+        expect(find.bySemanticsLabel(RegExp(r'^Other, .*0\.4%$')), findsOne);
+        semantics.dispose();
+      });
+    }
+
+    testWidgets('a single category is one full slice', (tester) async {
+      final analytics = _Analytics()
+        ..expenses = const [
+          AnalyticsTestExpense(
+            1,
+            amount: 6.5,
+            share: 6.5,
+            category: 'groceries',
+          ),
+        ];
+      await _mount(tester, _Trips(), analytics);
+      await openTripTotal(tester);
+      expect(tester.takeException(), isNull);
+      expect(
+        find.byKey(const ValueKey('analytics-category-groceries')),
+        findsOne,
+      );
+      expect(find.textContaining('%'), findsNothing);
+    });
+  });
   if (const bool.fromEnvironment('ANALYTICS_PREVIEWS')) {
     for (final dark in [false, true]) {
-      for (final screen in ['all', 'total', 'share', 'empty', 'categories']) {
+      for (final screen in [
+        'all',
+        'total',
+        'share',
+        'empty',
+        'categories',
+        'many',
+        'many-narrow',
+        'single',
+        'pair',
+      ]) {
         testWidgets('preview $screen dark=$dark', (tester) async {
           final key = GlobalKey();
           final trips = _Trips();
@@ -384,6 +490,33 @@ void main() {
                 2,
                 amount: 25,
                 share: 25,
+                category: 'groceries',
+              ),
+            ];
+          }
+          if (screen.startsWith('many')) analytics.expenses = _manyCategories;
+          if (screen == 'pair') {
+            analytics.expenses = const [
+              AnalyticsTestExpense(
+                1,
+                amount: 33.89,
+                share: 6.5,
+                category: 'groceries',
+              ),
+              AnalyticsTestExpense(
+                2,
+                amount: 8.47,
+                share: 0,
+                category: 'tickets',
+              ),
+            ];
+          }
+          if (screen == 'single') {
+            analytics.expenses = const [
+              AnalyticsTestExpense(
+                1,
+                amount: 6.5,
+                share: 6.5,
                 category: 'groceries',
               ),
             ];
@@ -414,16 +547,42 @@ void main() {
               ],
             };
           }
-          await _mount(tester, trips, analytics, dark: dark, boundary: key);
-          if (screen == 'total' ||
-              screen == 'share' ||
-              screen == 'categories') {
+          final narrow = screen == 'many-narrow';
+          await _mount(
+            tester,
+            trips,
+            analytics,
+            dark: dark,
+            boundary: key,
+            width: narrow ? 320 : 390,
+            scale: narrow ? 2 : 1,
+          );
+          if (screen != 'all' && screen != 'empty') {
             await tester.tap(find.text('By trip'));
             await tester.pumpAndSettle();
-            if (screen == 'total' || screen == 'categories') {
+            if (screen != 'share') {
               await tester.tap(find.text('Trip total').first);
               await tester.pumpAndSettle();
             }
+          }
+          if (screen.startsWith('many') ||
+              screen == 'single' ||
+              screen == 'pair') {
+            final donut = find.byKey(
+              const ValueKey('analytics-category-donut'),
+            );
+            await tester.scrollUntilVisible(
+              donut,
+              150,
+              scrollable: find.byType(Scrollable).first,
+            );
+            await tester.ensureVisible(donut);
+            await tester.pumpAndSettle();
+            await tester.drag(
+              find.byKey(const ValueKey('analytics-scroll')),
+              const Offset(0, 60),
+            );
+            await tester.pumpAndSettle();
           }
           expect(tester.takeException(), isNull);
           await tester.runAsync(() async {
