@@ -8,7 +8,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
     final t = context.l10n;
     final shortNames = WorkspaceMemberShortNames([
       for (final user in _snapshot?.users ?? const <WorkspaceUser>[])
-        (id: user.id, name: user.preferredName),
+        (id: user.id, name: user.fullName),
       for (final event in events)
         (id: event.actorUserId, name: event.actorName),
     ]);
@@ -139,7 +139,7 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
                       if (!_activityTextNamesItsOwnSubject(event.eventType))
                         TextSpan(
                           text:
-                              '${shortNames.labelFor(event.actorUserId, actor)} ',
+                              '${_activityActorName(event.actorUserId, actor, shortNames)} ',
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                       TextSpan(
@@ -428,5 +428,27 @@ extension _WorkspacePageActivityTab on _WorkspacePageState {
   bool _isDestructiveActivity(String type) {
     final normalized = type.trim().toLowerCase();
     return normalized.contains('deleted');
+  }
+}
+
+extension _WorkspaceActivityTripNames on _WorkspacePageState {
+  /// The trip's short name while everyone sharing the first name is still a
+  /// member. A former member with the same first name means the full name.
+  String _activityActorName(
+    int? userId,
+    String actor,
+    WorkspaceMemberShortNames shortNames,
+  ) {
+    final members = <int, WorkspaceUser>{
+      for (final user in _snapshot?.users ?? const <WorkspaceUser>[])
+        user.id: user,
+    };
+    final member = userId == null ? null : members[userId];
+    if (member == null) return shortNames.labelFor(userId, actor);
+    final owners = shortNames.ownersOf(actor);
+    final onlyMembers = owners.every(
+      (owner) => owner is int && members.containsKey(owner),
+    );
+    return onlyMembers ? member.preferredName : actor.trim();
   }
 }

@@ -29,6 +29,14 @@ class WorkspaceMemberShortNames {
     return isUnique ? first : name.trim();
   }
 
+  /// Everyone, by ID or name, who has this first name.
+  Set<Object> ownersOf(String name) {
+    final first = _firstName(name);
+    return first.isEmpty
+        ? const <Object>{}
+        : _ownersByFirstName[foldMemberName(first)] ?? const <Object>{};
+  }
+
   static String _firstName(String name) =>
       name.trim().split(RegExp(r'\s+')).first;
 }

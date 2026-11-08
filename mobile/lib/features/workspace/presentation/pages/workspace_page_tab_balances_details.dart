@@ -236,11 +236,20 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       }
 
       final participants = expense.participants.isNotEmpty
-          ? expense.participants
+          ? [
+              for (final person in expense.participants)
+                ExpenseParticipant(
+                  id: person.id,
+                  nickname:
+                      usersById[person.id]?.preferredName ?? person.nickname,
+                ),
+            ]
           : snapshot.users
                 .map(
-                  (user) =>
-                      ExpenseParticipant(id: user.id, nickname: user.nickname),
+                  (user) => ExpenseParticipant(
+                    id: user.id,
+                    nickname: user.preferredName,
+                  ),
                 )
                 .toList(growable: false);
       final payerUser = usersById[expense.paidById];

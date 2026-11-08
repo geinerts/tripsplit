@@ -96,6 +96,8 @@ class WorkspaceRemoteParsers {
       nickname: item['nickname'] as String? ?? '',
       role: role,
       displayName: displayName.isEmpty ? null : displayName,
+      firstName: _toNullableString(item['first_name']),
+      lastName: _toNullableString(item['last_name']),
       avatarUrl: avatarUrl,
       avatarThumbUrl: avatarThumbUrl,
       isReadyToSettle: isReadyToSettle,

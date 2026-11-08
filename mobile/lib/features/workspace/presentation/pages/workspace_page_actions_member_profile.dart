@@ -97,9 +97,10 @@ extension _WorkspacePageMemberProfileActions on _WorkspacePageState {
               }
 
               final title = context.l10n.workspaceMemberProfile;
-              final name = profileUser.preferredName.trim().isEmpty
+              // The profile shows the full name; elsewhere in the trip a short one.
+              final name = profileUser.fullName.trim().isEmpty
                   ? profileContext.l10n.userWithId(profileUser.id)
-                  : profileUser.preferredName.trim();
+                  : profileUser.fullName.trim();
               final nickname = profileUser.nickname.trim();
               final hasDifferentNickname =
                   nickname.isNotEmpty &&

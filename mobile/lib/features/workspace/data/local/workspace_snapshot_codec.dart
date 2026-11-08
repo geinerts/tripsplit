@@ -27,6 +27,8 @@ class WorkspaceSnapshotCodec {
               'nickname': user.nickname,
               'role': user.role,
               'display_name': user.displayName,
+              'first_name': user.firstName,
+              'last_name': user.lastName,
               'avatar_url': user.avatarUrl,
               'avatar_thumb_url': user.avatarThumbUrl,
               'is_ready_to_settle': user.isReadyToSettle,
@@ -180,39 +182,45 @@ class WorkspaceSnapshotCodec {
         ? rawTripStatus
         : 'active';
 
-    final users = (map['users'] as List<dynamic>? ?? <dynamic>[])
-        .whereType<Map<String, dynamic>>()
-        .map((item) {
-          final displayName = (item['display_name'] as String?)?.trim();
-          final avatarUrl = MediaUrlResolver.normalize(item['avatar_url']);
-          final avatarThumbUrl = MediaUrlResolver.normalize(
-            item['avatar_thumb_url'],
-          );
-          final readyToSettleAt = (item['ready_to_settle_at'] as String?)
-              ?.trim();
-          return WorkspaceUser(
-            id: (item['id'] as num?)?.toInt() ?? 0,
-            nickname: item['nickname'] as String? ?? '',
-            role: _normalizeTripRole(item['role']),
-            displayName: (displayName == null || displayName.isEmpty)
-                ? null
-                : displayName,
-            avatarUrl: avatarUrl,
-            avatarThumbUrl: avatarThumbUrl,
-            isReadyToSettle:
-                item['is_ready_to_settle'] == true ||
-                (item['is_ready_to_settle'] as num?)?.toInt() == 1 ||
-                (item['is_ready_to_settle'] as String?)?.trim() == '1' ||
-                (item['is_ready_to_settle'] as String?)?.trim().toLowerCase() ==
-                    'true',
-            readyToSettleAt:
-                (readyToSettleAt == null || readyToSettleAt.isEmpty)
-                ? null
-                : readyToSettleAt,
-            isGuest: item['is_guest'] == true,
-          );
-        })
-        .toList(growable: false);
+    final users = WorkspaceUser.withTripNames(
+      (map['users'] as List<dynamic>? ?? <dynamic>[])
+          .whereType<Map<String, dynamic>>()
+          .map((item) {
+            final displayName = (item['display_name'] as String?)?.trim();
+            final avatarUrl = MediaUrlResolver.normalize(item['avatar_url']);
+            final avatarThumbUrl = MediaUrlResolver.normalize(
+              item['avatar_thumb_url'],
+            );
+            final readyToSettleAt = (item['ready_to_settle_at'] as String?)
+                ?.trim();
+            return WorkspaceUser(
+              id: (item['id'] as num?)?.toInt() ?? 0,
+              nickname: item['nickname'] as String? ?? '',
+              role: _normalizeTripRole(item['role']),
+              displayName: (displayName == null || displayName.isEmpty)
+                  ? null
+                  : displayName,
+              firstName: (item['first_name'] as String?)?.trim(),
+              lastName: (item['last_name'] as String?)?.trim(),
+              avatarUrl: avatarUrl,
+              avatarThumbUrl: avatarThumbUrl,
+              isReadyToSettle:
+                  item['is_ready_to_settle'] == true ||
+                  (item['is_ready_to_settle'] as num?)?.toInt() == 1 ||
+                  (item['is_ready_to_settle'] as String?)?.trim() == '1' ||
+                  (item['is_ready_to_settle'] as String?)
+                          ?.trim()
+                          .toLowerCase() ==
+                      'true',
+              readyToSettleAt:
+                  (readyToSettleAt == null || readyToSettleAt.isEmpty)
+                  ? null
+                  : readyToSettleAt,
+              isGuest: item['is_guest'] == true,
+            );
+          })
+          .toList(growable: false),
+    );
 
     final balances = (map['balances'] as List<dynamic>? ?? <dynamic>[])
         .whereType<Map<String, dynamic>>()

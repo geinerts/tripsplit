@@ -13,4 +13,3 @@ class TripExpensesPage {
   final String? nextCursor;
   final int? nextOffset;
 }
-

@@ -6,6 +6,7 @@ import '../../domain/entities/workspace_notifications_inbox.dart';
 import '../../domain/entities/workspace_activity_event.dart';
 import '../../domain/entities/workspace_shared_trip.dart';
 import '../../domain/entities/workspace_snapshot.dart';
+import '../../domain/entities/workspace_user.dart';
 import '../../domain/entities/trip_expenses_page.dart';
 import 'workspace_remote_parsers.dart';
 
@@ -208,10 +209,12 @@ class WorkspaceRemoteSnapshotLoader {
         progressPayload?['all_settled'] == true ||
         balancesResponse['all_settled'] == true;
 
-    final users = (usersResponse['users'] as List<dynamic>? ?? <dynamic>[])
-        .whereType<Map<String, dynamic>>()
-        .map(WorkspaceRemoteParsers.parseUser)
-        .toList(growable: false);
+    final users = WorkspaceUser.withTripNames(
+      (usersResponse['users'] as List<dynamic>? ?? <dynamic>[])
+          .whereType<Map<String, dynamic>>()
+          .map(WorkspaceRemoteParsers.parseUser)
+          .toList(growable: false),
+    );
 
     final balances =
         (balancesResponse['balances'] as List<dynamic>? ?? <dynamic>[])

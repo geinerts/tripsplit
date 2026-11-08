@@ -515,7 +515,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                 ? null
                 : liveSnapshot.users
                       .where((user) => user.id == selectedUserId)
-                      .map((user) => user.nickname)
+                      .map((user) => user.preferredName)
                       .firstOrNull;
 
             final title = liveSnapshot.isArchived
@@ -591,7 +591,7 @@ extension _WorkspacePageSettlementDetails on _WorkspacePageState {
                             ),
                           for (final user in liveSnapshot.users)
                             FilterChip(
-                              label: Text(user.nickname),
+                              label: Text(user.preferredName),
                               selected: selectedUserId == user.id,
                               onSelected: (_) {
                                 setSheetState(() {

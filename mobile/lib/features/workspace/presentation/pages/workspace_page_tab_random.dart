@@ -76,7 +76,7 @@ extension _WorkspacePageRandomTab on _WorkspacePageState {
                   children: [
                     for (final user in snapshot.users)
                       FilterChip(
-                        label: Text(user.nickname),
+                        label: Text(user.preferredName),
                         selected: _randomSelection.contains(user.id),
                         onSelected: _isMutating
                             ? null
@@ -171,8 +171,16 @@ extension _WorkspacePageRandomTab on _WorkspacePageState {
           )
         else
           ...snapshot.orders.map((order) {
+            // The order lists nicknames; show the trip name when it matches.
             final name = order.members.isNotEmpty
-                ? order.members.first.nickname
+                ? (snapshot.users
+                          .where(
+                            (user) =>
+                                user.nickname == order.members.first.nickname,
+                          )
+                          .firstOrNull
+                          ?.preferredName ??
+                      order.members.first.nickname)
                 : t.unknownLabel;
 
             return Card(

@@ -104,7 +104,7 @@ class WorkspaceSnapshot {
       tripArchivedAt: clearTripArchivedAt
           ? null
           : (tripArchivedAt ?? this.tripArchivedAt),
-      users: users ?? this.users,
+      users: users == null ? this.users : WorkspaceUser.withTripNames(users),
       balances: balances ?? this.balances,
       settlements: settlements ?? this.settlements,
       payments: payments ?? this.payments,

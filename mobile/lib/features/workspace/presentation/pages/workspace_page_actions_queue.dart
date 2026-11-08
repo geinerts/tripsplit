@@ -32,7 +32,8 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
         .map(
           (id) => ExpenseParticipant(
             id: id,
-            nickname: usersById[id]?.nickname ?? context.l10n.userWithId(id),
+            nickname:
+                usersById[id]?.preferredName ?? context.l10n.userWithId(id),
             owedAmount: owedByUser[id],
             splitValue: splitValuesByUser[id],
           ),
@@ -40,7 +41,8 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
         .toList(growable: false);
 
     final payerId = form.paidBy ?? _currentUserId;
-    final payerName = usersById[payerId]?.nickname ?? context.l10n.youLabel;
+    final payerName =
+        usersById[payerId]?.preferredName ?? context.l10n.youLabel;
     final queuedExpense = TripExpense(
       id: -DateTime.now().millisecondsSinceEpoch,
       amount: form.amount,
@@ -102,7 +104,8 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
         .map(
           (id) => ExpenseParticipant(
             id: id,
-            nickname: usersById[id]?.nickname ?? context.l10n.userWithId(id),
+            nickname:
+                usersById[id]?.preferredName ?? context.l10n.userWithId(id),
             owedAmount: owedByUser[id],
             splitValue: splitValuesByUser[id],
           ),
@@ -126,7 +129,7 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
         splitMode: form.splitMode,
         paidById: form.paidBy ?? expense.paidById,
         paidByNickname:
-            usersById[form.paidBy]?.nickname ?? expense.paidByNickname,
+            usersById[form.paidBy]?.preferredName ?? expense.paidByNickname,
         receiptUrl: form.removeReceipt
             ? null
             : (uploadedReceipt?.url ?? expense.receiptUrl),

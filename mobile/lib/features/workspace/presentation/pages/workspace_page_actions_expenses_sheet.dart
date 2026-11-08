@@ -5,18 +5,26 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
     required WorkspaceSnapshot snapshot,
     required TripExpense expense,
   }) async {
-    final participants = expense.participants.isNotEmpty
-        ? expense.participants
-        : snapshot.users
-              .map(
-                (user) =>
-                    ExpenseParticipant(id: user.id, nickname: user.nickname),
-              )
-              .toList(growable: false);
-
     final usersById = <int, WorkspaceUser>{
       for (final user in snapshot.users) user.id: user,
     };
+    final participants = expense.participants.isNotEmpty
+        ? [
+            for (final person in expense.participants)
+              ExpenseParticipant(
+                id: person.id,
+                nickname:
+                    usersById[person.id]?.preferredName ?? person.nickname,
+              ),
+          ]
+        : snapshot.users
+              .map(
+                (user) => ExpenseParticipant(
+                  id: user.id,
+                  nickname: user.preferredName,
+                ),
+              )
+              .toList(growable: false);
     final payerUser = usersById[expense.paidById];
     final payerName =
         (payerUser?.preferredName ?? expense.paidByNickname).trim().isEmpty
