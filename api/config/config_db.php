@@ -29,6 +29,7 @@ function table_name(string $key): string
         'premium_partners' => DB_TABLE_PREFIX . 'premium_partners',
         'premium_grants' => DB_TABLE_PREFIX . 'premium_grants',
         'premium_events' => DB_TABLE_PREFIX . 'premium_events',
+        'premium_trip_grants' => DB_TABLE_PREFIX . 'premium_trip_grants',
         'subscription_accounts' => DB_TABLE_PREFIX . 'subscription_accounts',
         'subscription_sandbox_attempts' => DB_TABLE_PREFIX . 'subscription_sandbox_attempts',
         'subscription_sandbox_purchases' => DB_TABLE_PREFIX . 'subscription_sandbox_purchases',
