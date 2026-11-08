@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tripsplit/app/theme/app_design.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
+import 'package:tripsplit/core/media/image_crop_service.dart';
 import 'package:tripsplit/core/ui/app_bottom_nav_bar.dart';
 import 'package:tripsplit/core/ui/app_skeleton.dart';
 import 'package:tripsplit/features/auth/domain/entities/auth_user.dart';
@@ -54,6 +55,8 @@ class _Friends implements FriendsController {
 }
 
 class _Trips implements TripsController {
+  @override
+  ImageCropService? imageCropService;
   List<ReceivedTripInvitation> invitations = [];
   bool invitationsFail = false, shareFail = false;
   int accepted = 0, declined = 0, shareCalls = 0;
@@ -137,6 +140,8 @@ Trip _trip(
   String currency = 'EUR',
   int share = 4200,
   String role = 'member',
+  int? members,
+  List<Map<String, Object?>>? preview,
 }) => TripModel.fromLegacyMap({
   'id': id,
   'name': name ?? 'Lisbon getaway',
@@ -145,7 +150,8 @@ Trip _trip(
   'currency_code': currency,
   'my_owed_cents': share,
   'my_paid_cents': 99999,
-  'members_count': mode == 'solo' ? 1 : 3,
+  'members_count': members ?? (mode == 'solo' ? 1 : 3),
+  'members_preview': ?preview,
   'current_user_role': role,
   'date_from': '2026-10-05',
   'date_to': '2026-10-09',
@@ -220,6 +226,62 @@ Future<void> _pump(
     ),
   );
   await tester.pump();
+}
+
+/// Serves local files for network images in opt-in preview runs only.
+class _PreviewHttpClient implements HttpClient {
+  _PreviewHttpClient(this.files);
+  final Map<String, List<int>> files;
+  @override
+  bool autoUncompress = true;
+  @override
+  Future<HttpClientRequest> getUrl(Uri url) async =>
+      _PreviewRequest(files[url.pathSegments.last] ?? const []);
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _PreviewRequest implements HttpClientRequest {
+  _PreviewRequest(this.bytes);
+  final List<int> bytes;
+  @override
+  Future<HttpClientResponse> close() async => _PreviewResponse(bytes);
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _PreviewResponse extends Stream<List<int>> implements HttpClientResponse {
+  _PreviewResponse(this.bytes);
+  final List<int> bytes;
+  @override
+  int get statusCode => bytes.isEmpty ? 404 : 200;
+  @override
+  int get contentLength => bytes.length;
+  @override
+  HttpClientResponseCompressionState get compressionState =>
+      HttpClientResponseCompressionState.notCompressed;
+  @override
+  StreamSubscription<List<int>> listen(
+    void Function(List<int> event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) => Stream<List<int>>.fromIterable([bytes]).listen(
+    onData,
+    onError: onError,
+    onDone: onDone,
+    cancelOnError: cancelOnError,
+  );
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _PreviewHttpOverrides extends HttpOverrides {
+  _PreviewHttpOverrides(this.files);
+  final Map<String, List<int>> files;
+  @override
+  HttpClient createHttpClient(SecurityContext? context) =>
+      _PreviewHttpClient(files);
 }
 
 void main() {
@@ -326,7 +388,8 @@ void main() {
           null,
         ),
       );
-      final trips = _Trips()..trips = [_trip(1, role: 'owner')];
+      // Two active trips keep the list layout this test checks.
+      final trips = _Trips()..trips = [_trip(1, role: 'owner'), _trip(2)];
       var opened = false;
       await _pump(
         tester,
@@ -760,6 +823,234 @@ void main() {
       }
     }
   });
+
+  group('single active trip hero', () {
+    const fiveMembers = [
+      {'id': 1, 'display_name': 'Matiss Geinerts', 'avatar_url': null},
+      {
+        'id': 2,
+        'display_name': 'Anna Parker',
+        'avatar_url': 'https://example.invalid/a2.jpg',
+        'avatar_thumb_url': 'https://example.invalid/a2-thumb.jpg',
+      },
+      {'id': 3, 'display_name': 'Valerija', 'avatar_url': null},
+    ];
+
+    testWidgets('one active trip shows the photo card with avatars and +2', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      Trip? opened;
+      await _pump(
+        tester,
+        _Trips()
+          ..trips = [
+            _trip(1, role: 'owner', members: 5, preview: fiveMembers),
+            _trip(2, name: 'Old trip', status: 'archived'),
+          ],
+        onTripOpened: (trip, {bool openAddExpense = false}) => opened = trip,
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('home-active-trip-1')), findsOne);
+      expect(
+        find.byKey(const ValueKey('home-active-trip-name-band')),
+        findsOne,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('home-active-trip-name-band')),
+          matching: find.text('Lisbon getaway'),
+        ),
+        findsOne,
+      );
+      final members = find.byKey(const ValueKey('home-active-trip-members'));
+      expect(
+        find.descendant(of: members, matching: find.byType(ClipOval)),
+        findsOne,
+        reason: 'Only the member with a real avatar gets a photo',
+      );
+      expect(find.descendant(of: members, matching: find.text('M')), findsOne);
+      expect(find.descendant(of: members, matching: find.text('V')), findsOne);
+      expect(find.text('+2'), findsOne);
+      expect(
+        find.bySemanticsLabel(RegExp('Lisbon getaway.*5 people', dotAll: true)),
+        findsOne,
+      );
+      expect(find.byKey(const ValueKey('home-trip-share-1')), findsOne);
+      expect(find.byKey(const ValueKey('home-trip-menu-1')), findsOne);
+      await tester.tap(find.byKey(const ValueKey('home-trip-1')));
+      await tester.pumpAndSettle();
+      expect(opened?.id, 1);
+
+      await tester.tap(find.byKey(const ValueKey('home-archived')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('home-active-trip-2')), findsNothing);
+      expect(find.byKey(const ValueKey('home-trip-2')), findsOne);
+      semantics.dispose();
+    });
+
+    testWidgets('three members show three avatars and no extra count', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        _Trips()..trips = [_trip(1, members: 3, preview: fiveMembers)],
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('home-active-trip-members')), findsOne);
+      expect(
+        find.byKey(const ValueKey('home-active-trip-members-extra')),
+        findsNothing,
+      );
+    });
+
+    testWidgets('two active trips keep the list', (tester) async {
+      await _pump(tester, _Trips()..trips = [_trip(1), _trip(2)]);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('home-active-trip-1')), findsNothing);
+      expect(find.byKey(const ValueKey('home-trip-1')), findsOne);
+      expect(find.byKey(const ValueKey('home-trip-2')), findsOne);
+    });
+
+    testWidgets('without a members preview the count is shown', (tester) async {
+      await _pump(tester, _Trips()..trips = [_trip(1)]);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('home-active-trip-1')), findsOne);
+      expect(find.text('3 people'), findsOne);
+    });
+
+    testWidgets('solo trip shows no members', (tester) async {
+      await _pump(tester, _Trips()..trips = [_trip(1, mode: 'solo')]);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('home-active-trip-1')), findsOne);
+      expect(find.text('1 person'), findsNothing);
+      expect(
+        find.byKey(const ValueKey('home-active-trip-members')),
+        findsNothing,
+      );
+    });
+
+    for (final brightness in Brightness.values) {
+      for (final locale in ['en', 'lv', 'es']) {
+        testWidgets('hero 320px 200% ${brightness.name} $locale', (
+          tester,
+        ) async {
+          await _pump(
+            tester,
+            _Trips()
+              ..trips = [
+                _trip(
+                  1,
+                  name: 'Lake Koman and the Albanian Alps with friends',
+                  role: 'owner',
+                  members: 5,
+                  preview: fiveMembers,
+                ),
+              ],
+            brightness: brightness,
+            locale: locale,
+            scale: 2,
+            width: 320,
+          );
+          await tester.pumpAndSettle();
+          await tester.scrollUntilVisible(
+            find.byKey(const ValueKey('home-trip-menu-1')),
+            200,
+            scrollable: find.byType(Scrollable).first,
+          );
+          expect(tester.takeException(), isNull);
+        });
+      }
+    }
+  });
+
+  // Opt-in review images of the hero with real photos:
+  // --dart-define=HOME_HERO_PREVIEWS=<folder with cover.jpg, a1.jpg, a2.jpg>
+  const heroAssets = String.fromEnvironment('HOME_HERO_PREVIEWS');
+  if (heroAssets.isNotEmpty) {
+    for (final (name, brightness, scale, width, people) in [
+      ('light', Brightness.light, 1.0, 390.0, 5),
+      ('dark', Brightness.dark, 1.0, 390.0, 3),
+      ('light-320-200', Brightness.light, 2.0, 320.0, 5),
+      ('dark-no-photo', Brightness.dark, 1.0, 390.0, 2),
+    ]) {
+      testWidgets('hero preview $name', (tester) async {
+        final files = {
+          for (final file in ['cover.jpg', 'a1.jpg', 'a2.jpg'])
+            file: File('$heroAssets/$file').readAsBytesSync(),
+        };
+        HttpOverrides.global = _PreviewHttpOverrides(files);
+        addTearDown(() => HttpOverrides.global = null);
+        tester.view.padding = const FakeViewPadding(top: 44, bottom: 20);
+        addTearDown(tester.view.resetPadding);
+        final key = GlobalKey();
+        await _pump(
+          tester,
+          _Trips()
+            ..trips = [
+              TripModel.fromLegacyMap({
+                'id': 1,
+                'name': scale > 1
+                    ? 'Lake Koman and the Albanian Alps with friends'
+                    : 'Albania road trip',
+                'status': 'active',
+                'currency_code': 'EUR',
+                'my_owed_cents': 18420,
+                'members_count': people,
+                'current_user_role': 'owner',
+                'date_from': '2026-11-06',
+                'date_to': '2026-11-13',
+                if (!name.contains('no-photo'))
+                  'image_url': 'https://example.invalid/cover.jpg',
+                'members_preview': [
+                  {'id': 1, 'display_name': 'Matiss Geinerts'},
+                  {
+                    'id': 2,
+                    'display_name': 'Anna',
+                    'avatar_thumb_url': 'https://example.invalid/a1.jpg',
+                  },
+                  {
+                    'id': 3,
+                    'display_name': 'Valerija',
+                    'avatar_thumb_url': 'https://example.invalid/a2.jpg',
+                  },
+                ].take(people).toList(),
+              }),
+              _trip(2, name: 'Alpine weekend', status: 'archived'),
+            ],
+          brightness: brightness,
+          scale: scale,
+          width: width,
+          boundary: key,
+        );
+        for (var i = 0; i < 5; i++) {
+          await tester.runAsync(
+            () => Future<void>.delayed(const Duration(milliseconds: 50)),
+          );
+          await tester.pump();
+        }
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          find.byKey(const ValueKey('home-trip-menu-1')),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        await tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File('../output/design/home-active-hero/hero-$name.png');
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+      });
+    }
+  }
 
   // Opt-in image generation/verification, using real production widgets and
   // fixture data only. Normal unit-test runs remain portable across platforms.

@@ -14,6 +14,7 @@ class TripModel extends Trip {
     required super.imageUrl,
     super.imageThumbUrl,
     required super.membersCount,
+    super.membersPreview,
     required super.createdAt,
     required super.createdBy,
     required super.currentUserRole,
@@ -81,6 +82,7 @@ class TripModel extends Trip {
       imageUrl: imageUrl,
       imageThumbUrl: imageThumbUrl,
       membersCount: (map['members_count'] as num?)?.toInt() ?? 0,
+      membersPreview: _parseMembersPreview(map['members_preview']),
       createdAt: map['created_at'] as String?,
       createdBy: (map['created_by'] as num?)?.toInt(),
       currentUserRole: currentUserRole,
@@ -128,4 +130,28 @@ Map<String, bool>? _parsePremiumFeatures(dynamic raw) {
     if (key is String && value is bool) features[key] = value;
   });
   return Map.unmodifiable(features);
+}
+
+List<TripMemberPreview> _parseMembersPreview(dynamic raw) {
+  if (raw is! List) return const [];
+  String? url(Object? value) => value is String && value.trim().isNotEmpty
+      ? MediaUrlResolver.normalize(value.trim())
+      : null;
+  final members = <TripMemberPreview>[];
+  for (final item in raw) {
+    if (item is! Map) continue;
+    final id = (item['id'] as num?)?.toInt() ?? 0;
+    if (id <= 0) continue;
+    final name = item['display_name'];
+    members.add(
+      TripMemberPreview(
+        id: id,
+        displayName: name is String ? name.trim() : '',
+        avatarUrl: url(item['avatar_url']),
+        avatarThumbUrl: url(item['avatar_thumb_url']),
+      ),
+    );
+    if (members.length == 3) break;
+  }
+  return List.unmodifiable(members);
 }

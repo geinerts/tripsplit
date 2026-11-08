@@ -6,6 +6,7 @@ require_once __DIR__ . '/../helpers/helper_trip_budget.php';
 require_once __DIR__ . '/../helpers/helper_quick_start.php';
 require_once __DIR__ . '/../helpers/helper_trip_image_ownership.php';
 require_once __DIR__ . '/../helpers/helper_premium.php';
+require_once __DIR__ . '/../helpers/helper_trip_members_preview.php';
 
 function trip_invite_ttl_seconds(): int
 {
@@ -360,6 +361,10 @@ function trips_action(): void
         premium_access_for_user($pdo, $currentUserId),
         array_map('intval', array_column($rows, 'id'))
     );
+    $membersPreview = trip_members_preview(
+        $pdo,
+        array_map('intval', array_column($rows, 'id'))
+    );
 
     $activeTripId = null;
     foreach ($rows as &$row) {
@@ -376,6 +381,7 @@ function trips_action(): void
         $row['image_thumb_url'] = $imagePath !== '' ? trip_image_thumb_public_url($imagePath) : null;
         unset($row['image_path']);
         $row['members_count'] = (int) $row['members_count'];
+        $row['members_preview'] = $membersPreview[$row['id']] ?? [];
         $row['date_from'] = $row['date_from'] ?: null;
         $row['date_to'] = $row['date_to'] ?: null;
         $row['ended_at'] = $row['ended_at'] ?: null;

@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import '../widgets/trip_form_page.dart';
 import 'dart:async';
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,6 +43,7 @@ part 'trips_page_dialogs_helpers.dart';
 part 'trips_page_invite.dart';
 part 'trips_page_widgets.dart';
 part 'trips_page_widgets_cards.dart';
+part 'trips_page_widgets_hero.dart';
 part 'trips_page_widgets_navigation.dart';
 part 'trips_page_support.dart';
 
@@ -314,6 +316,16 @@ class _TripsPageState extends State<TripsPage> {
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
                               ],
+                            ),
+                          ),
+                        )
+                      else if (!_showArchived && visibleTrips.length == 1)
+                        SliverPadding(
+                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                          sliver: SliverToBoxAdapter(
+                            child: _buildActiveTripHero(
+                              context,
+                              visibleTrips.single,
                             ),
                           ),
                         )

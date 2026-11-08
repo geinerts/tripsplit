@@ -52,6 +52,15 @@ class TripsLocalStore {
       'image_url': trip.imageUrl,
       'image_thumb_url': trip.imageThumbUrl,
       'members_count': trip.membersCount,
+      'members_preview': [
+        for (final member in trip.membersPreview)
+          {
+            'id': member.id,
+            'display_name': member.displayName,
+            'avatar_url': member.avatarUrl,
+            'avatar_thumb_url': member.avatarThumbUrl,
+          },
+      ],
       'created_at': trip.createdAt,
       'created_by': trip.createdBy,
       'current_user_role': trip.currentUserRole,

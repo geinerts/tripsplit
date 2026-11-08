@@ -1,3 +1,7 @@
+import 'trip_member_preview.dart';
+
+export 'trip_member_preview.dart';
+
 class Trip {
   const Trip({
     required this.id,
@@ -10,6 +14,7 @@ class Trip {
     required this.imageUrl,
     this.imageThumbUrl,
     required this.membersCount,
+    this.membersPreview = const [],
     required this.createdAt,
     required this.createdBy,
     required this.currentUserRole,
@@ -43,6 +48,10 @@ class Trip {
   final String? imageUrl;
   final String? imageThumbUrl;
   final int membersCount;
+
+  /// Up to three members for the home screen avatars; empty when the server
+  /// did not send them. [membersCount] still counts every member.
+  final List<TripMemberPreview> membersPreview;
   final String? createdAt;
   final int? createdBy;
   final String currentUserRole;
@@ -79,6 +88,7 @@ class Trip {
         imageUrl: imageUrl,
         imageThumbUrl: imageThumbUrl,
         membersCount: membersCount,
+        membersPreview: membersPreview,
         createdAt: createdAt,
         createdBy: createdBy,
         currentUserRole: currentUserRole,
