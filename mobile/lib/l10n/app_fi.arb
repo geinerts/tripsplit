@@ -2085,5 +2085,7 @@
   "expenseSplitPercentHint": "Kukin maksaa prosenttiosuuden",
   "expenseSplitSharesHint": "Jaa osiin, esim. 2 : 1 : 1",
   "expenseSplitAdjustmentHint": "Tasan, plus tai miinus henkilöä kohden",
-  "expenseSplitItemsHint": "Kukin maksaa omat tuotteensa"
+  "expenseSplitItemsHint": "Kukin maksaa omat tuotteensa",
+  "tripsSearchFriends": "Hae ystäviä",
+  "expenseSplitEvenly": "Jaa tasan"
 }

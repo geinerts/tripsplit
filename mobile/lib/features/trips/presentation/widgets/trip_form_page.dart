@@ -9,6 +9,7 @@ import '../../../../core/currency/app_currency.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/media/app_image_cropper.dart';
 import '../../../../core/ui/app_components.dart';
+import '../../../../core/ui/app_person_toggle.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/app_settings_widgets.dart';
 import '../../../../core/ui/app_currency_picker.dart';
@@ -110,6 +111,10 @@ class _TripFormPageState extends State<TripFormPage> {
   bool _friendsFailed = false, _nameInvalid = false, _datesInvalid = false;
   List<TripUser> _friends = [];
   final _selected = <int>{};
+  final _friendQuery = TextEditingController();
+
+  /// With more friends than this, a search field filters them.
+  static const _friendSearchThreshold = 12;
   late final List<Map<String, dynamic>> _destinations = [
     ...?widget.trip?.destinations,
   ];
@@ -143,7 +148,45 @@ class _TripFormPageState extends State<TripFormPage> {
   void dispose() {
     _name.dispose();
     _budget.dispose();
+    _friendQuery.dispose();
     super.dispose();
+  }
+
+  /// Friends matching the search, with picked friends always kept visible.
+  List<TripUser> get _visibleFriends {
+    final query = _friendQuery.text.trim().toLowerCase();
+    if (query.isEmpty) return _friends;
+    return [
+      for (final friend in _friends)
+        if (_selected.contains(friend.id) ||
+            friend.nickname.toLowerCase().contains(query))
+          friend,
+    ];
+  }
+
+  Widget _friendAvatar(TripUser friend) {
+    final colors = Theme.of(context).colorScheme;
+    final name = friend.nickname.trim();
+    final initial = Text(
+      name.isEmpty ? '?' : name.characters.first.toUpperCase(),
+    );
+    final url = (friend.avatarThumbUrl ?? friend.avatarUrl ?? '').trim();
+    return CircleAvatar(
+      radius: 18,
+      backgroundColor: colors.primaryContainer,
+      foregroundColor: colors.onPrimaryContainer,
+      child: ClipOval(
+        child: url.isEmpty
+            ? initial
+            : Image.network(
+                url,
+                width: 36,
+                height: 36,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => initial,
+              ),
+      ),
+    );
   }
 
   Future<void> _loadFriends() async {
@@ -711,72 +754,47 @@ class _TripFormPageState extends State<TripFormPage> {
                                       ),
                                     ),
                                   ),
-                                for (final friend in _friends) ...[
-                                  CheckboxListTile(
-                                    key: ValueKey('trip-friend-${friend.id}'),
-                                    contentPadding: EdgeInsets.zero,
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    value: _selected.contains(friend.id),
-                                    title: Row(
-                                      children: [
-                                        CircleAvatar(
-                                          radius: 18,
-                                          backgroundColor:
-                                              colors.primaryContainer,
-                                          foregroundColor:
-                                              colors.onPrimaryContainer,
-                                          child: ClipOval(
-                                            child:
-                                                (friend.avatarThumbUrl ??
-                                                        friend.avatarUrl ??
-                                                        '')
-                                                    .isEmpty
-                                                ? Text(
-                                                    friend.nickname
-                                                            .trim()
-                                                            .isEmpty
-                                                        ? '?'
-                                                        : friend.nickname
-                                                              .trim()
-                                                              .characters
-                                                              .first
-                                                              .toUpperCase(),
-                                                  )
-                                                : Image.network(
-                                                    friend.avatarThumbUrl ??
-                                                        friend.avatarUrl!,
-                                                    width: 36,
-                                                    height: 36,
-                                                    fit: BoxFit.cover,
-                                                    errorBuilder: (_, _, _) =>
-                                                        Text(
-                                                          friend.nickname
-                                                                  .trim()
-                                                                  .isEmpty
-                                                              ? '?'
-                                                              : friend.nickname
-                                                                    .trim()
-                                                                    .characters
-                                                                    .first
-                                                                    .toUpperCase(),
-                                                        ),
-                                                  ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(child: Text(friend.nickname)),
-                                      ],
+                                if (_friends.length >
+                                    _friendSearchThreshold) ...[
+                                  const SizedBox(height: 12),
+                                  TextField(
+                                    key: const ValueKey('trip-friend-search'),
+                                    controller: _friendQuery,
+                                    onChanged: (_) => setState(() {}),
+                                    textInputAction: TextInputAction.search,
+                                    decoration: InputDecoration(
+                                      prefixIcon: const Icon(
+                                        Icons.search_rounded,
+                                      ),
+                                      hintText: t.tripsSearchFriends,
                                     ),
-                                    onChanged: (value) => setState(() {
-                                      if (value == true) {
-                                        _selected.add(friend.id);
-                                      } else {
-                                        _selected.remove(friend.id);
-                                      }
-                                    }),
                                   ),
-                                  const Divider(height: 1),
+                                ],
+                                if (_friends.isNotEmpty) ...[
+                                  const SizedBox(height: 12),
+                                  // Nobody is picked until you tap them.
+                                  Wrap(
+                                    spacing: 12,
+                                    runSpacing: 10,
+                                    children: [
+                                      for (final friend in _visibleFriends)
+                                        AppPersonToggle(
+                                          key: ValueKey(
+                                            'trip-friend-${friend.id}',
+                                          ),
+                                          name: friend.nickname,
+                                          avatar: _friendAvatar(friend),
+                                          selected: _selected.contains(
+                                            friend.id,
+                                          ),
+                                          onChanged: (on) => setState(() {
+                                            on
+                                                ? _selected.add(friend.id)
+                                                : _selected.remove(friend.id);
+                                          }),
+                                        ),
+                                    ],
+                                  ),
                                 ],
                               ],
                             ],

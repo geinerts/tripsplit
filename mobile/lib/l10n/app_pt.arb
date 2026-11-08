@@ -2085,5 +2085,7 @@
   "expenseSplitPercentHint": "Cada pessoa paga uma percentagem",
   "expenseSplitSharesHint": "Dividir em partes, p. ex. 2 : 1 : 1",
   "expenseSplitAdjustmentHint": "Partes iguais, com mais ou menos por pessoa",
-  "expenseSplitItemsHint": "Cada pessoa paga os seus próprios itens"
+  "expenseSplitItemsHint": "Cada pessoa paga os seus próprios itens",
+  "tripsSearchFriends": "Pesquisar amigos",
+  "expenseSplitEvenly": "Dividir em partes iguais"
 }

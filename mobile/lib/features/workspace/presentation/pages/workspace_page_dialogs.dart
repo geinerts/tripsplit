@@ -322,25 +322,6 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                   avatarUrl: user.avatarThumbUrl ?? user.avatarUrl,
                   size: 30,
                 );
-                Future<void> editParticipants() async {
-                  FocusScope.of(context).unfocus();
-                  final result = await showAppBottomSheet<Set<int>>(
-                    context: context,
-                    builder: (_) => _ExpenseParticipantsEditor(
-                      users: users.where((user) => user.id > 0).toList(),
-                      selected: activeUsers.map((u) => u.id).toSet(),
-                      avatarBuilder: memberAvatar,
-                    ),
-                  );
-                  if (!mounted || !context.mounted || result == null) return;
-                  setDialogState(() {
-                    selected
-                      ..clear()
-                      ..addAll(result);
-                    errorText = null;
-                  });
-                }
-
                 Future<void> editSplit() async {
                   final amount = _parseAmount(amountController.text);
                   if (activeUsers.isEmpty) {
@@ -719,49 +700,67 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                         ),
                                       ),
                                       const Divider(height: 1),
-                                      ListTile(
+                                      Padding(
                                         key: const ValueKey(
                                           'expense-participants',
                                         ),
-                                        contentPadding: EdgeInsets.zero,
-                                        title: Text(
-                                          t.expenseSplitBetween,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodyMedium,
+                                        padding: const EdgeInsets.only(top: 12),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              t.expenseSplitBetween,
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium,
+                                            ),
+                                            const SizedBox(height: 10),
+                                            // Everyone is in by default; a tap
+                                            // takes a person out or back in.
+                                            Wrap(
+                                              spacing: 12,
+                                              runSpacing: 10,
+                                              children: [
+                                                for (final user in users.where(
+                                                  (user) => user.id > 0,
+                                                ))
+                                                  AppPersonToggle(
+                                                    key: ValueKey(
+                                                      'expense-participant-${user.id}',
+                                                    ),
+                                                    name: user.preferredName,
+                                                    avatar: memberAvatar(user),
+                                                    selected: activeUsers.any(
+                                                      (active) =>
+                                                          active.id == user.id,
+                                                    ),
+                                                    onChanged: (on) {
+                                                      final next = activeUsers
+                                                          .map((u) => u.id)
+                                                          .toSet();
+                                                      on
+                                                          ? next.add(user.id)
+                                                          : next.remove(
+                                                              user.id,
+                                                            );
+                                                      setDialogState(() {
+                                                        if (next.isEmpty) {
+                                                          errorText = t
+                                                              .pickAtLeastOneParticipant;
+                                                          return;
+                                                        }
+                                                        selected
+                                                          ..clear()
+                                                          ..addAll(next);
+                                                        errorText = null;
+                                                      });
+                                                    },
+                                                  ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        subtitle: Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 6,
-                                          ),
-                                          child: Wrap(
-                                            spacing: 4,
-                                            runSpacing: 6,
-                                            crossAxisAlignment:
-                                                WrapCrossAlignment.center,
-                                            children: [
-                                              for (final user
-                                                  in activeUsers.take(3))
-                                                memberAvatar(user),
-                                              Text(
-                                                t.workspaceMemberCount(
-                                                  activeUsers.length,
-                                                ),
-                                                style: Theme.of(
-                                                  context,
-                                                ).textTheme.bodySmall,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        trailing: IconButton(
-                                          tooltip: t.expenseEditParticipants,
-                                          onPressed: editParticipants,
-                                          icon: const Icon(
-                                            Icons.add_circle_outline,
-                                          ),
-                                        ),
-                                        onTap: editParticipants,
                                       ),
                                       const SizedBox(height: 8),
                                       Text(

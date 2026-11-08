@@ -2085,5 +2085,7 @@
   "expenseSplitPercentHint": "Каждый платит определённый процент",
   "expenseSplitSharesHint": "Разделить на доли, напр. 2 : 1 : 1",
   "expenseSplitAdjustmentHint": "Поровну, с плюсом или минусом для каждого",
-  "expenseSplitItemsHint": "Каждый платит за свои позиции"
+  "expenseSplitItemsHint": "Каждый платит за свои позиции",
+  "tripsSearchFriends": "Искать друзей",
+  "expenseSplitEvenly": "Разделить поровну"
 }

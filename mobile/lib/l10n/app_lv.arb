@@ -2071,5 +2071,7 @@
   "expenseSplitPercentHint": "Katrs maksā noteiktu procentu",
   "expenseSplitSharesHint": "Sadala daļās, piem. 2 : 1 : 1",
   "expenseSplitAdjustmentHint": "Vienādi, ar plusu vai mīnusu katram",
-  "expenseSplitItemsHint": "Katrs maksā par savām pozīcijām"
+  "expenseSplitItemsHint": "Katrs maksā par savām pozīcijām",
+  "tripsSearchFriends": "Meklēt draugus",
+  "expenseSplitEvenly": "Sadalīt vienādi"
 }

@@ -5102,4 +5102,10 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get expenseSplitItemsHint => 'Hver person betaler for sine egne poster';
+
+  @override
+  String get tripsSearchFriends => 'Søk etter venner';
+
+  @override
+  String get expenseSplitEvenly => 'Del likt';
 }

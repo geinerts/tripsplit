@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tripsplit/core/ui/app_person_toggle.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
 import 'package:tripsplit/features/trips/data/models/trip_model.dart';
 import 'package:tripsplit/features/trips/domain/entities/trip_user.dart';
@@ -197,6 +198,40 @@ void main() {
       expect(DateTime.tryParse(h.result!.dateFrom!), isNotNull);
     },
   );
+  testWidgets('friends start unpicked and a search shows with many', (
+    tester,
+  ) async {
+    final few = _Harness();
+    await few.mount(tester);
+    expect(find.byKey(const ValueKey('trip-friend-search')), findsNothing);
+    await tapVisible(tester, find.byKey(const ValueKey('trip-friend-8')));
+    expect(
+      tester
+          .widget<AppPersonToggle>(find.byKey(const ValueKey('trip-friend-9')))
+          .selected,
+      isFalse,
+    );
+  });
+
+  testWidgets('with many friends a search filters them', (tester) async {
+    final many = _Harness();
+    await many.mount(
+      tester,
+      load: () async => [
+        for (var id = 20; id < 34; id++)
+          TripUser(id: id, nickname: id == 33 ? 'Zelma' : 'Friend $id'),
+      ],
+    );
+    final search = find.byKey(const ValueKey('trip-friend-search'));
+    await tapVisible(tester, search);
+    await tapVisible(tester, find.byKey(const ValueKey('trip-friend-20')));
+    await tester.enterText(search, 'zel');
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('trip-friend-33')), findsOneWidget);
+    expect(find.byKey(const ValueKey('trip-friend-21')), findsNothing);
+    // A picked friend stays visible while searching.
+    expect(find.byKey(const ValueKey('trip-friend-20')), findsOneWidget);
+  });
   testWidgets('currency search and selection stay above the keyboard', (
     tester,
   ) async {

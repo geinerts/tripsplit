@@ -2085,5 +2085,7 @@
   "expenseSplitPercentHint": "Iedereen betaalt een percentage",
   "expenseSplitSharesHint": "Verdeel in delen, bijv. 2 : 1 : 1",
   "expenseSplitAdjustmentHint": "Gelijk verdeeld, met een plus of min per persoon",
-  "expenseSplitItemsHint": "Iedereen betaalt zijn eigen items"
+  "expenseSplitItemsHint": "Iedereen betaalt zijn eigen items",
+  "tripsSearchFriends": "Vrienden zoeken",
+  "expenseSplitEvenly": "Gelijk verdelen"
 }

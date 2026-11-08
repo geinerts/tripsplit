@@ -5102,4 +5102,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get expenseSplitItemsHint => 'Cada persona paga sus propios artículos';
+
+  @override
+  String get tripsSearchFriends => 'Buscar amigos';
+
+  @override
+  String get expenseSplitEvenly => 'Dividir a partes iguales';
 }

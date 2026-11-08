@@ -5122,4 +5122,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get expenseSplitItemsHint => 'Каждый платит за свои позиции';
+
+  @override
+  String get tripsSearchFriends => 'Искать друзей';
+
+  @override
+  String get expenseSplitEvenly => 'Разделить поровну';
 }

@@ -9452,6 +9452,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Each person pays for their own items'**
   String get expenseSplitItemsHint;
+
+  /// No description provided for @tripsSearchFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Search friends'**
+  String get tripsSearchFriends;
+
+  /// No description provided for @expenseSplitEvenly.
+  ///
+  /// In en, this message translates to:
+  /// **'Split evenly'**
+  String get expenseSplitEvenly;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

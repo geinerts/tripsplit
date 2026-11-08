@@ -5122,4 +5122,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get expenseSplitItemsHint => 'Кожен платить за свої позиції';
+
+  @override
+  String get tripsSearchFriends => 'Шукати друзів';
+
+  @override
+  String get expenseSplitEvenly => 'Розділити порівну';
 }

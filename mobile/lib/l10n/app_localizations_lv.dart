@@ -5112,4 +5112,10 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get expenseSplitItemsHint => 'Katrs maksā par savām pozīcijām';
+
+  @override
+  String get tripsSearchFriends => 'Meklēt draugus';
+
+  @override
+  String get expenseSplitEvenly => 'Sadalīt vienādi';
 }

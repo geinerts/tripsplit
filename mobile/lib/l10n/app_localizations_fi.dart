@@ -5102,4 +5102,10 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get expenseSplitItemsHint => 'Kukin maksaa omat tuotteensa';
+
+  @override
+  String get tripsSearchFriends => 'Hae ystäviä';
+
+  @override
+  String get expenseSplitEvenly => 'Jaa tasan';
 }

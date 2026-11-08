@@ -2085,5 +2085,7 @@
   "expenseSplitPercentHint": "Každý platí určité procento",
   "expenseSplitSharesHint": "Rozdělit na díly, např. 2 : 1 : 1",
   "expenseSplitAdjustmentHint": "Rovným dílem, s plusem či mínusem pro každého",
-  "expenseSplitItemsHint": "Každý platí své vlastní položky"
+  "expenseSplitItemsHint": "Každý platí své vlastní položky",
+  "tripsSearchFriends": "Hledat přátele",
+  "expenseSplitEvenly": "Rozdělit rovným dílem"
 }

@@ -95,49 +95,6 @@ class _ExpenseEditorSurface extends StatelessWidget {
   }
 }
 
-class _ExpenseParticipantsEditor extends StatefulWidget {
-  const _ExpenseParticipantsEditor({
-    required this.users,
-    required this.selected,
-    required this.avatarBuilder,
-  });
-  final List<WorkspaceUser> users;
-  final Set<int> selected;
-  final Widget Function(WorkspaceUser) avatarBuilder;
-  @override
-  State<_ExpenseParticipantsEditor> createState() =>
-      _ExpenseParticipantsEditorState();
-}
-
-class _ExpenseParticipantsEditorState
-    extends State<_ExpenseParticipantsEditor> {
-  late final selected = {...widget.selected};
-  @override
-  Widget build(BuildContext context) => _ExpenseEditorSurface(
-    title: context.l10n.expenseEditParticipants,
-    onDone: selected.isEmpty ? null : () => Navigator.pop(context, selected),
-    children: [
-      for (final user in widget.users)
-        CheckboxListTile(
-          key: ValueKey('expense-participant-${user.id}'),
-          contentPadding: EdgeInsets.zero,
-          controlAffinity: ListTileControlAffinity.trailing,
-          secondary: widget.avatarBuilder(user),
-          title: Text(user.preferredName),
-          value: selected.contains(user.id),
-          onChanged: (value) => setState(() {
-            value == true ? selected.add(user.id) : selected.remove(user.id);
-          }),
-        ),
-      if (selected.isEmpty)
-        Text(
-          context.l10n.pickAtLeastOneParticipant,
-          style: TextStyle(color: Theme.of(context).colorScheme.error),
-        ),
-    ],
-  );
-}
-
 class _ExpenseSplitEditor extends StatefulWidget {
   const _ExpenseSplitEditor({
     required this.users,
@@ -167,6 +124,9 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
   Map<int, TextEditingController> get controllers => drafts[mode]!;
   final _items = <_ExpenseItemDraft>[];
   final _extra = TextEditingController();
+
+  /// People whose value was typed in, per mode. The others share what's left.
+  final _pinned = <String, Set<int>>{};
 
   void _addItem() => _items.add(
     _ExpenseItemDraft(people: widget.users.map((user) => user.id).toSet()),
@@ -218,6 +178,60 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
                   : ((total ~/ count + (index < total % count ? 1 : 0)) / 100)
                         .toStringAsFixed(2)),
         ),
+    };
+  }
+
+  bool get _autoFills => mode == 'exact' || mode == 'percent';
+
+  /// Keeps typed values and splits the rest of the total evenly among
+  /// everyone not typed in yet, so the split always adds up while it can.
+  void _onEdited(int userId) {
+    if (!_autoFills) return;
+    final pinned = _pinned.putIfAbsent(mode, () => <int>{})..add(userId);
+    final free = [
+      for (final user in widget.users)
+        if (!pinned.contains(user.id)) user.id,
+    ];
+    if (free.isEmpty) return;
+    final expected = mode == 'percent' ? 10000 : (widget.amount * 100).round();
+    var taken = 0;
+    for (final id in pinned) {
+      final value = _parseAmount(controllers[id]?.text ?? '');
+      if (value.isFinite && value > 0) taken += (value * 100).round();
+    }
+    final rest = math.max(0, expected - taken);
+    for (var i = 0; i < free.length; i++) {
+      final cents = rest ~/ free.length + (i < rest % free.length ? 1 : 0);
+      controllers[free[i]]?.text = (cents / 100).toStringAsFixed(2);
+    }
+  }
+
+  void _splitEvenly() {
+    _pinned.remove(mode);
+    final total = mode == 'percent' ? 10000 : (widget.amount * 100).round();
+    final count = widget.users.length;
+    for (var i = 0; i < count; i++) {
+      final cents = total ~/ count + (i < total % count ? 1 : 0);
+      controllers[widget.users[i].id]?.text = (cents / 100).toStringAsFixed(2);
+    }
+  }
+
+  /// What each person pays in money, for methods whose values aren't money.
+  Map<int, int>? _moneyPreview(List<double?> values) {
+    final amountCents = (widget.amount * 100).round();
+    if (amountCents <= 0) return null;
+    if (mode == 'adjustment') return _adjustedOwed;
+    if (mode != 'percent' && mode != 'shares') return null;
+    final ids = controllers.keys.toList();
+    if (values.any((v) => v == null || !v.isFinite || v < 0)) return null;
+    final weights = values.map((v) => v!).toList();
+    final total = mode == 'percent'
+        ? 100.0
+        : weights.fold<double>(0, (sum, v) => sum + v);
+    if (total <= 0) return null;
+    return {
+      for (var i = 0; i < ids.length; i++)
+        ids[i]: (amountCents * weights[i] / total).round(),
     };
   }
 
@@ -298,6 +312,8 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
         ? '${(cents / 100).toStringAsFixed(2)}%'
         : _formatMoney(context, cents / 100, currencyCode: widget.currencyCode);
     final difference = expected - total;
+    final preview = _moneyPreview(values);
+    final pinned = _pinned[mode] ?? const <int>{};
     final status = widget.amount <= 0
         ? t.amountMustBeGreaterThanZero
         : mode == 'adjustment'
@@ -332,6 +348,16 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
         ),
         const SizedBox(height: 12),
         _modeChips(context),
+        if (_autoFills && pinned.isNotEmpty)
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton.icon(
+              key: const ValueKey('split-evenly'),
+              onPressed: () => setState(_splitEvenly),
+              icon: const Icon(Icons.restart_alt_rounded, size: 18),
+              label: Text(t.expenseSplitEvenly),
+            ),
+          ),
         const SizedBox(height: 12),
         for (final user in widget.users) ...[
           Padding(
@@ -350,11 +376,20 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(user.preferredName),
-                          if (mode == 'adjustment' && _adjustedOwed != null)
+                          if (preview?[user.id] case final cents?)
                             Text(
-                              format(_adjustedOwed![user.id] ?? 0),
+                              _formatMoney(
+                                context,
+                                cents / 100,
+                                currencyCode: widget.currencyCode,
+                              ),
                               key: ValueKey('split-result-${user.id}'),
-                              style: Theme.of(context).textTheme.bodySmall,
+                              style: Theme.of(context).textTheme.titleSmall
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
                             ),
                         ],
                       ),
@@ -364,7 +399,7 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
                 final field = TextField(
                   key: ValueKey('split-input-${user.id}'),
                   controller: controllers[user.id],
-                  onChanged: (_) => setState(() {}),
+                  onChanged: (_) => setState(() => _onEdited(user.id)),
                   textAlign: TextAlign.end,
                   keyboardType: TextInputType.numberWithOptions(
                     decimal: mode != 'shares',
@@ -382,6 +417,14 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
                         ? '%'
                         : mode == 'exact' || mode == 'adjustment'
                         ? widget.currencyCode
+                        : null,
+                    // A lock marks values you typed; the others fill in.
+                    prefixIcon: _autoFills && pinned.contains(user.id)
+                        ? Icon(
+                            Icons.lock_outline_rounded,
+                            size: 16,
+                            key: ValueKey('split-pinned-${user.id}'),
+                          )
                         : null,
                   ),
                 );
@@ -696,7 +739,7 @@ class _ExpenseItemEditor extends StatelessWidget {
             runSpacing: 10,
             children: [
               for (final user in users)
-                _ExpensePersonToggle(
+                AppPersonToggle(
                   key: ValueKey('expense-item-$index-person-${user.id}'),
                   name: user.preferredName,
                   avatar: avatarBuilder(user),
@@ -773,110 +816,6 @@ class _ExpenseSplitModePicker extends StatelessWidget {
               ),
             ],
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// A person on an item: their photo with a ring and check when included,
-/// dimmed when not. No chip outline.
-class _ExpensePersonToggle extends StatelessWidget {
-  const _ExpensePersonToggle({
-    super.key,
-    required this.name,
-    required this.avatar,
-    required this.selected,
-    required this.onChanged,
-  });
-  final String name;
-  final Widget avatar;
-  final bool selected;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    final muted = AppDesign.mutedColor(context);
-    return Semantics(
-      button: true,
-      toggled: selected,
-      label: name,
-      excludeSemantics: true,
-      child: InkWell(
-        onTap: () => onChanged(!selected),
-        borderRadius: BorderRadius.circular(12),
-        child: SizedBox(
-          width: 64,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 160),
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: selected
-                                ? colors.primary
-                                : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                        child: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 160),
-                          opacity: selected ? 1 : 0.4,
-                          child: SizedBox.expand(
-                            child: FittedBox(child: avatar),
-                          ),
-                        ),
-                      ),
-                      if (selected)
-                        PositionedDirectional(
-                          end: -2,
-                          bottom: -2,
-                          child: Container(
-                            width: 18,
-                            height: 18,
-                            decoration: BoxDecoration(
-                              color: colors.primary,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Theme.of(context).colorScheme.surface,
-                                width: 2,
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.check_rounded,
-                              size: 11,
-                              color: colors.onPrimary,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: selected ? AppDesign.titleColor(context) : muted,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );

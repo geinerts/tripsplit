@@ -5102,4 +5102,10 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get expenseSplitItemsHint => 'Iedereen betaalt zijn eigen items';
+
+  @override
+  String get tripsSearchFriends => 'Vrienden zoeken';
+
+  @override
+  String get expenseSplitEvenly => 'Gelijk verdelen';
 }

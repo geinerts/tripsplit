@@ -2085,5 +2085,7 @@
   "expenseSplitPercentHint": "Ciascuno paga una percentuale",
   "expenseSplitSharesHint": "Dividi in quote, es. 2 : 1 : 1",
   "expenseSplitAdjustmentHint": "In parti uguali, con un più o meno a persona",
-  "expenseSplitItemsHint": "Ciascuno paga le proprie voci"
+  "expenseSplitItemsHint": "Ciascuno paga le proprie voci",
+  "tripsSearchFriends": "Cerca amici",
+  "expenseSplitEvenly": "Dividi in parti uguali"
 }

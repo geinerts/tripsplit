@@ -5112,4 +5112,10 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get expenseSplitItemsHint => 'Každý platí své vlastní položky';
+
+  @override
+  String get tripsSearchFriends => 'Hledat přátele';
+
+  @override
+  String get expenseSplitEvenly => 'Rozdělit rovným dílem';
 }

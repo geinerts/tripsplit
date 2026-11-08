@@ -5102,4 +5102,10 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get expenseSplitItemsHint => 'Var och en betalar sina egna poster';
+
+  @override
+  String get tripsSearchFriends => 'Sök vänner';
+
+  @override
+  String get expenseSplitEvenly => 'Dela lika';
 }

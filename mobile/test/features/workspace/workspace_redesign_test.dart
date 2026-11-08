@@ -23,6 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
+import 'package:tripsplit/core/ui/app_person_toggle.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/core/ui/app_skeleton.dart';
 import 'package:tripsplit/core/ui/app_bottom_nav_bar.dart';
@@ -1174,42 +1175,19 @@ void main() {
       '10',
     );
     await selectExpenseFood(tester);
-    expect(find.byType(CheckboxListTile), findsNothing);
-    await visibleTap(
-      tester,
-      find.byKey(const ValueKey('expense-participants')),
-    );
-    await tester.tap(find.byKey(const ValueKey('expense-participant-7')));
-    await tester.tap(find.byKey(const ValueKey('expense-participant-8')));
+    // Everyone is in by default, right in the form.
+    final anna = find.byKey(const ValueKey('expense-participant-7'));
+    final ben = find.byKey(const ValueKey('expense-participant-8'));
+    await tester.ensureVisible(anna);
+    expect(tester.widget<AppPersonToggle>(anna).selected, isTrue);
+    expect(tester.widget<AppPersonToggle>(ben).selected, isTrue);
+    await tester.tap(anna);
     await tester.pumpAndSettle();
-    expect(
-      tester
-          .widget<ElevatedButton>(
-            find.byKey(const ValueKey('expense-editor-done')),
-          )
-          .onPressed,
-      isNull,
-    );
-    await tester.tap(find.byKey(const ValueKey('expense-participant-8')));
+    expect(tester.widget<AppPersonToggle>(anna).selected, isFalse);
+    // The last person can't be taken out.
+    await tester.tap(ben);
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('expense-editor-done')));
-    await tester.pumpAndSettle();
-    // A dismissed edit must not change the applied participant list.
-    await visibleTap(
-      tester,
-      find.byKey(const ValueKey('expense-participants')),
-    );
-    expect(
-      tester
-          .widget<CheckboxListTile>(
-            find.byKey(const ValueKey('expense-participant-7')),
-          )
-          .value,
-      false,
-    );
-    await tester.tap(find.byKey(const ValueKey('expense-participant-7')));
-    await tester.tap(find.byKey(const ValueKey('expense-editor-close')));
-    await tester.pumpAndSettle();
+    expect(tester.widget<AppPersonToggle>(ben).selected, isTrue);
     await visibleTap(
       tester,
       find.byKey(const ValueKey('expense-custom-split')),
@@ -1430,18 +1408,37 @@ void main() {
         tester,
         find.byKey(const ValueKey('expense-custom-split')),
       );
+      String text(int id) => tester
+          .widget<TextField>(find.byKey(ValueKey('split-input-$id')))
+          .controller!
+          .text;
+      VoidCallback? done() => tester
+          .widget<ElevatedButton>(
+            find.byKey(const ValueKey('expense-editor-done')),
+          )
+          .onPressed;
+      // Typing one value fills in the rest of the total for the others.
       await tester.enterText(find.byKey(const ValueKey('split-input-7')), '6');
       await tester.pumpAndSettle();
-      expect(
-        tester
-            .widget<ElevatedButton>(
-              find.byKey(const ValueKey('expense-editor-done')),
-            )
-            .onPressed,
-        isNull,
-      );
+      expect(text(8), '4.00');
+      expect(find.byKey(const ValueKey('split-pinned-7')), findsOneWidget);
+      expect(find.byKey(const ValueKey('split-pinned-8')), findsNothing);
+      expect(done(), isNotNull);
+      // Once everyone is typed in, the totals are checked instead.
+      await tester.enterText(find.byKey(const ValueKey('split-input-8')), '3');
+      await tester.pumpAndSettle();
+      expect(text(7), '6');
+      expect(find.textContaining('left to split'), findsOneWidget);
+      expect(done(), isNull);
+      await tester.enterText(find.byKey(const ValueKey('split-input-8')), '5');
+      await tester.pumpAndSettle();
       expect(find.textContaining('over the total'), findsOneWidget);
-      await tester.enterText(find.byKey(const ValueKey('split-input-8')), '4');
+      // Split evenly forgets the typed values.
+      await tester.tap(find.byKey(const ValueKey('split-evenly')));
+      await tester.pumpAndSettle();
+      expect([text(7), text(8)], ['5.00', '5.00']);
+      expect(find.byKey(const ValueKey('split-pinned-7')), findsNothing);
+      await tester.enterText(find.byKey(const ValueKey('split-input-7')), '6');
       FocusManager.instance.primaryFocus?.unfocus();
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('expense-editor-done')));
@@ -1452,7 +1449,7 @@ void main() {
       );
       await tester.enterText(find.byKey(const ValueKey('split-input-7')), '1');
       await tester.pumpAndSettle();
-      expect(find.textContaining('left to split'), findsOneWidget);
+      expect(text(8), '9.00');
       await tester.tap(find.byKey(const ValueKey('expense-editor-close')));
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
@@ -1505,13 +1502,17 @@ void main() {
       await pickSplitMode(tester, 'Percentages');
       await tester.enterText(find.byKey(const ValueKey('split-input-7')), '40');
       await tester.pumpAndSettle();
+      // The other person gets the rest of the percentages and its money.
       expect(
         tester
-            .widget<ElevatedButton>(
-              find.byKey(const ValueKey('expense-editor-done')),
-            )
-            .onPressed,
-        isNull,
+            .widget<TextField>(find.byKey(const ValueKey('split-input-8')))
+            .controller!
+            .text,
+        '60.00',
+      );
+      expect(
+        tester.widget<Text>(find.byKey(const ValueKey('split-result-8'))).data,
+        contains('6.01'),
       );
       await pickSplitMode(tester, 'Exact amounts');
       expect(
@@ -1520,6 +1521,13 @@ void main() {
             .controller!
             .text,
         '6.01',
+      );
+      expect(
+        tester
+            .widget<TextField>(find.byKey(const ValueKey('split-input-8')))
+            .controller!
+            .text,
+        '4.00',
       );
       await pickSplitMode(tester, 'Shares');
       tester.view.viewInsets = const FakeViewPadding(bottom: 280);
