@@ -11,7 +11,7 @@
     content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:"
   />
   <link rel="icon" type="image/svg+xml" href="assets/splyto-mark-v2.svg"/>
-  <link rel="stylesheet" href="app.css?v=11"/>
+  <link rel="stylesheet" href="app.css?v=12"/>
 </head>
 <body>
 
@@ -77,8 +77,8 @@
     <div class="sidebar-section">
       <div class="sidebar-section-label">Support</div>
       <div class="nav-item" data-view="users"><span class="nav-icon">👤</span> Users</div>
-      <div class="nav-item" data-view="premium" id="nav-premium" style="display:none">Premium</div>
-      <div class="nav-item" data-view="partners" id="nav-partners" style="display:none">Partners</div>
+      <div class="nav-item" data-view="premium" id="nav-premium" style="display:none"><span class="nav-icon">⭐</span> Premium</div>
+      <div class="nav-item" data-view="partners" id="nav-partners" style="display:none"><span class="nav-icon">🤝</span> Partners</div>
       <div class="nav-item" data-view="feedback"><span class="nav-icon">💬</span> Feedback</div>
       <div class="nav-item" data-view="push-queue"><span class="nav-icon">🔔</span> Push Queue</div>
     </div>
@@ -126,10 +126,10 @@
         <h1 id="page-title">Dashboard</h1>
       </div>
       <div id="topbar-actions"></div>
-      <div class="topbar-pill" id="topbar-status">
-        <div class="topbar-pill-dot"></div>
-        All systems operational
-      </div>
+      <button class="topbar-pill" id="topbar-status" type="button" title="Open incidents">
+        <span class="topbar-pill-dot"></span>
+        <span class="topbar-pill-text">Checking incidents…</span>
+      </button>
       <div class="topbar-time" id="topbar-time"></div>
     </div>
     <div id="page-content">
@@ -150,6 +150,6 @@
 <!-- ── Toast container ──────────────────────────────────────────────────────── -->
 <div id="toast-container"></div>
 
-<script src="app.js?v=14"></script>
+<script src="app.js?v=15"></script>
 </body>
 </html>

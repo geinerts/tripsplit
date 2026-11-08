@@ -12,6 +12,54 @@ function account_action_token_is_well_formed(string $token): bool
     return (bool) preg_match('/^[a-f0-9]{64}$/D', $token);
 }
 
+/**
+ * Erases a locked user's personal data and access inside the caller's transaction.
+ * Shared by self-service and admin deletion so both remove the same data.
+ * Returns the work that must run after commit (see finish_account_deletion_cleanup).
+ */
+function erase_account_for_deletion(PDO $pdo, array $user): array
+{
+    if (!$pdo->inTransaction()) {
+        throw new RuntimeException('Account deletion requires a transaction.');
+    }
+    $userId = (int) $user['id'];
+    $avatarPath = trim((string) ($user['avatar_path'] ?? ''));
+    $providerTokens = [];
+    delete_user_travel_places($pdo, $userId);
+    $pdo->prepare('DELETE FROM ' . table_name('friends')
+        . ' WHERE user_a_id = :a OR user_b_id = :b')->execute(['a' => $userId, 'b' => $userId]);
+    if (social_auth_identity_table_available($pdo)) {
+        $providerTokens = social_tokens_for_user($pdo, $userId);
+        $pdo->prepare('DELETE FROM ' . table_name('user_identities') . ' WHERE user_id = :id')
+            ->execute(['id' => $userId]);
+    }
+    $names = users_name_columns_available($pdo) ? 'first_name = "Deleted", last_name = "User", ' : '';
+    $paymentFields = deleted_account_payment_assignments($pdo);
+    $pdo->prepare('UPDATE ' . table_name('users') . ' SET ' . $names . $paymentFields . '
+        nickname = "Deleted User", email = NULL, password_hash = NULL, credentials_required = 1,
+        email_verified_at = NULL, avatar_path = NULL, device_token = :device,
+        account_status = "deleted", deactivated_at = UTC_TIMESTAMP(), deleted_at = UTC_TIMESTAMP()
+        WHERE id = :id')->execute(['device' => bin2hex(random_bytes(32)), 'id' => $userId]);
+    revoke_refresh_tokens_for_user($pdo, $userId);
+    deactivate_push_tokens_for_user($pdo, $userId);
+    consume_account_action_proofs($pdo, $userId);
+    return ['avatar_path' => $avatarPath, 'provider_tokens' => $providerTokens];
+}
+
+/** Revokes Apple/Google tokens and removes the avatar once the deletion has committed. */
+function finish_account_deletion_cleanup(?array $cleanup): void
+{
+    if ($cleanup === null) {
+        return;
+    }
+    social_tokens_revoke($cleanup['provider_tokens'] ?? []);
+    $avatarPath = (string) ($cleanup['avatar_path'] ?? '');
+    if ($avatarPath !== '') {
+        try { delete_avatar_file($avatarPath); }
+        catch (Throwable $error) { error_log('Account deletion avatar cleanup failed.'); }
+    }
+}
+
 function request_account_deletion_link_action(): void
 {
     require_post();
@@ -84,8 +132,7 @@ function confirm_account_deletion_action(): void
     $lookup = $pdo->prepare('SELECT user_id FROM ' . $table . ' WHERE token_hash = :hash AND action = :action');
     $lookup->execute(['hash' => $hash, 'action' => 'delete']);
     $userId = (int) $lookup->fetchColumn();
-    $avatarPath = '';
-    $providerTokens = [];
+    $cleanup = null;
     $pdo->beginTransaction();
     try {
         // Lock the user first, then the proof, avoiding opposite lock ordering.
@@ -100,34 +147,12 @@ function confirm_account_deletion_action(): void
             $pdo->rollBack();
             json_out($invalid, 400);
         }
-        $avatarPath = trim((string) ($user['avatar_path'] ?? ''));
-        delete_user_travel_places($pdo, $userId);
-        $pdo->prepare('DELETE FROM ' . table_name('friends')
-            . ' WHERE user_a_id = :a OR user_b_id = :b')->execute(['a' => $userId, 'b' => $userId]);
-        if (social_auth_identity_table_available($pdo)) {
-            $providerTokens = social_tokens_for_user($pdo, $userId);
-            $pdo->prepare('DELETE FROM ' . table_name('user_identities') . ' WHERE user_id = :id')
-                ->execute(['id' => $userId]);
-        }
-        $names = users_name_columns_available($pdo) ? 'first_name = "Deleted", last_name = "User", ' : '';
-        $paymentFields = deleted_account_payment_assignments($pdo);
-        $pdo->prepare('UPDATE ' . table_name('users') . ' SET ' . $names . $paymentFields . '
-            nickname = "Deleted User", email = NULL, password_hash = NULL, credentials_required = 1,
-            email_verified_at = NULL, avatar_path = NULL, device_token = :device,
-            account_status = "deleted", deactivated_at = UTC_TIMESTAMP(), deleted_at = UTC_TIMESTAMP()
-            WHERE id = :id')->execute(['device' => bin2hex(random_bytes(32)), 'id' => $userId]);
-        revoke_refresh_tokens_for_user($pdo, $userId);
-        deactivate_push_tokens_for_user($pdo, $userId);
-        consume_account_action_proofs($pdo, $userId);
+        $cleanup = erase_account_for_deletion($pdo, $user);
         $pdo->commit();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) { $pdo->rollBack(); }
         throw $error;
     }
-    social_tokens_revoke($providerTokens);
-    if ($avatarPath !== '') {
-        try { delete_avatar_file($avatarPath); }
-        catch (Throwable $error) { error_log('Account deletion avatar cleanup failed.'); }
-    }
+    finish_account_deletion_cleanup($cleanup);
     json_out(['ok' => true, 'status' => 'deleted', 'user_id' => $userId]);
 }

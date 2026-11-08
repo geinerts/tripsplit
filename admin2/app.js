@@ -60,6 +60,9 @@ function toast(msg, type = 'info', durationMs = 3500) {
 
 const modal = {
   open(title, bodyHtml, footerHtml = '') {
+    const pending = modal.afterClose;
+    modal.afterClose = null;
+    if (pending) pending();
     document.getElementById('modal-title').textContent = title;
     document.getElementById('modal-body').innerHTML = bodyHtml;
     document.getElementById('modal-footer').innerHTML = footerHtml;
@@ -67,8 +70,45 @@ const modal = {
   },
   close() {
     document.getElementById('modal-backdrop').classList.remove('open');
+    const afterClose = modal.afterClose;
+    modal.afterClose = null;
+    if (afterClose) afterClose();
   },
+  afterClose: null,
 };
+
+// Asks inside the panel's own modal instead of the browser's prompt()/confirm().
+// Resolves to the entered text (or true without an input), or null when cancelled.
+function askInModal({ title, message, input = null, confirmLabel = 'Confirm', danger = false }) {
+  return new Promise(resolve => {
+    modal.close();
+    const field = input ? `
+      <div class="form-group" style="margin-top:14px">
+        <label class="form-label" for="ask-input">${esc(input.label)}</label>
+        <input class="form-input" id="ask-input" type="${input.type === 'password' ? 'password' : 'text'}"
+               autocomplete="${input.type === 'password' ? 'current-password' : 'off'}" maxlength="500"
+               ${input.required ? 'required' : ''}/>
+      </div>` : '';
+    modal.open(title, `<form id="ask-form" novalidate><p class="ask-message">${esc(message)}</p>${field}
+      <p class="ask-error" id="ask-error" hidden>This field is required.</p></form>`, `
+      <button class="btn btn-ghost" type="button" id="ask-cancel">Cancel</button>
+      <button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" type="submit" form="ask-form">${esc(confirmLabel)}</button>`);
+    let settled = false;
+    const finish = value => { if (!settled) { settled = true; resolve(value); } };
+    modal.afterClose = () => finish(null);
+    document.getElementById('ask-cancel').addEventListener('click', () => modal.close());
+    const inputEl = document.getElementById('ask-input');
+    document.getElementById('ask-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const value = inputEl ? inputEl.value.trim() : true;
+      if (input?.required && !value) { document.getElementById('ask-error').hidden = false; inputEl.focus(); return; }
+      finish(inputEl ? (input.type === 'password' ? inputEl.value : value) : true);
+      modal.afterClose = null;
+      modal.close();
+    });
+    (inputEl || document.querySelector('#modal-footer [type="submit"]')).focus();
+  });
+}
 
 document.getElementById('modal-backdrop').addEventListener('click', e => {
   if (e.target === e.currentTarget) modal.close();
@@ -349,6 +389,17 @@ document.querySelectorAll('.nav-item[data-view]').forEach(el => {
 
 // ── Incident badge poll ───────────────────────────────────────────────────────
 
+// The topbar pill reflects open incidents; it is not a live health check.
+function renderIncidentStatus(count) {
+  const pill = document.getElementById('topbar-status');
+  if (!pill) return;
+  pill.classList.toggle('alert', count > 0);
+  pill.querySelector('.topbar-pill-text').textContent =
+    count > 0 ? `${count} open incident${count === 1 ? '' : 's'}` : 'No open incidents';
+}
+
+document.getElementById('topbar-status').addEventListener('click', () => navigate('incidents'));
+
 async function pollIncidents() {
   if (!state.user) return;
   const res = await get('admin_panel_incidents', { status: 'open', limit: 1 }).catch(() => null);
@@ -366,6 +417,7 @@ async function pollIncidents() {
   } else if (badge) {
     badge.remove();
   }
+  renderIncidentStatus(count);
   setTimeout(pollIncidents, 60_000);
 }
 
@@ -661,12 +713,15 @@ registerView('users', {
         </select>
         <button class="btn btn-ghost btn-sm" id="user-search-btn">Search</button>
       </div>
-      <div id="user-results"><div class="empty-state">Enter a search term to find users.</div></div>
+      <div id="user-results"><div class="loading-state"><span class="spinner"></span></div></div>
     `;
   },
   init() {
     const doSearch = () => userSearch();
     document.getElementById('user-search-btn').addEventListener('click', doSearch);
+    document.getElementById('user-status-filter').addEventListener('change', doSearch);
+    // Newest sign-ups first, so new or suspicious accounts are visible without searching.
+    doSearch();
     document.getElementById('user-search-inp').addEventListener('keydown', e => {
       if (e.key === 'Enter') doSearch();
     });
@@ -692,10 +747,11 @@ async function userSearch(offset = 0) {
       <div class="cl-row" style="margin-bottom:6px">
         <div style="flex:1;min-width:0">
           <div class="cl-title">${esc(u.nickname)}</div>
-          <div class="cl-sub">${esc(u.email)}</div>
+          <div class="cl-sub">${esc(u.email || '—')}</div>
         </div>
         ${statusBadge(u.account_status)}
       </div>
+      <div class="user-signals">${userSignalBadges(u)}</div>
       <div class="cl-actions">
         <button class="btn btn-ghost btn-sm" ${actionAttrs('openUserDetail', u.id)}>View</button>
         ${u.account_status === 'active' && can('superadmin','admin','support') ?
@@ -725,6 +781,20 @@ async function userSearch(offset = 0) {
   `;
 }
 
+const SIGN_IN_LABELS = { email: 'Email', apple: 'Apple', google: 'Google' };
+const PLATFORM_LABELS = { ios: 'iOS', android: 'Android', web: 'Web' };
+
+// How the account signs in, which apps registered for push, and email verification.
+function userSignalBadges(u) {
+  const methods = (u.sign_in_methods || []).map(m => `<span class="badge badge-blue">${esc(SIGN_IN_LABELS[m] || m)}</span>`);
+  const platforms = (u.platforms || []).map(p => `<span class="badge badge-purple">${esc(PLATFORM_LABELS[p] || p)}</span>`);
+  const parts = [...methods, ...platforms];
+  if (!methods.length) parts.push('<span class="badge badge-gray">No sign-in</span>');
+  if (!platforms.length) parts.push('<span class="badge badge-gray">No app push</span>');
+  if (u.email_verified === false && u.email) parts.push('<span class="badge badge-amber">Email not verified</span>');
+  return parts.join('');
+}
+
 async function openUserDetail(userId) {
   modal.open('User detail', '<div class="loading-state"><span class="spinner"></span> Loading…</div>', '');
   const res = await get('admin_panel_user_detail', { user_id: userId });
@@ -751,7 +821,8 @@ async function openUserDetail(userId) {
     <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value">${statusBadge(u.account_status)}</span></div>
     <div class="detail-row"><span class="detail-label">Joined</span><span class="detail-value">${relTime(u.created_at)}</span></div>
     <div class="detail-row"><span class="detail-label">Unread notifs</span><span class="detail-value">${res.unread_notifs}</span></div>
-    <div class="detail-row"><span class="detail-label">Push tokens</span><span class="detail-value">${(res.push_tokens || []).length}</span></div>
+    <div class="detail-row"><span class="detail-label">Sign-in &amp; apps</span><span class="detail-value user-signals">${userSignalBadges(u)}</span></div>
+    <div class="detail-row"><span class="detail-label">Push tokens</span><span class="detail-value">${pushTokenSummary(res.push_tokens || [])}</span></div>
     <div style="margin-top:14px;font-size:12px;font-weight:700;color:var(--fg-muted);letter-spacing:0.3px;text-transform:uppercase;margin-bottom:6px;">Recent trips</div>
     ${trips}
     ${premiumDetailHtml(res.premium, u)}
@@ -759,8 +830,16 @@ async function openUserDetail(userId) {
   `, `<button class="btn btn-ghost" ${actionAttrs('closeModal')}>Close</button>`);
 }
 
+function pushTokenSummary(tokens) {
+  if (!tokens.length) return '0';
+  return tokens.map(t => `${esc(PLATFORM_LABELS[String(t.platform).toLowerCase()] || t.platform)}`
+    + `${Number(t.is_active) === 1 ? '' : ' (inactive)'} · ${esc(relTime(t.last_seen_at))}`).join('<br>');
+}
+
 async function suspendUser(userId, name) {
-  const reason = prompt(`Suspend ${name}? Enter a reason (optional):`);
+  const reason = await askInModal({ title: `Suspend ${name}?`, confirmLabel: 'Suspend', danger: true,
+    message: 'The user is signed out and cannot use the app until reactivated.',
+    input: { label: 'Reason (optional)' } });
   if (reason === null) return;
   const res = await post('admin_panel_user_suspend', { user_id: userId, reason });
   if (res.ok) { toast(`${name} suspended`, 'success'); userSearch(); }
@@ -774,7 +853,9 @@ async function reactivateUser(userId, name) {
 }
 
 async function deleteUser(userId, name) {
-  const reason = prompt(`⚠️ Delete user ${name}? This is irreversible. Enter reason:`);
+  const reason = await askInModal({ title: `Delete ${name}?`, confirmLabel: 'Delete user', danger: true,
+    message: 'This cannot be undone. Personal data, sign-in links, friends, sessions and push tokens are erased; shared trip history stays as "Deleted User".',
+    input: { label: 'Reason', required: true } });
   if (!reason) return;
   const res = await post('admin_panel_user_delete', { user_id: userId, reason });
   if (res.ok) { toast(`${name} deleted`, 'success'); userSearch(); }
@@ -782,7 +863,8 @@ async function deleteUser(userId, name) {
 }
 
 async function clearPushTokens(userId) {
-  if (!confirm('Clear all push tokens for this user?')) return;
+  if (!await askInModal({ title: 'Clear push tokens?', confirmLabel: 'Clear',
+    message: 'The user stops receiving push notifications until the app registers again.' })) return;
   const res = await post('admin_panel_clear_push_tokens', { user_id: userId });
   if (res.ok) toast(`Removed ${res.removed} push token(s)`, 'success');
   else toast(res.error || 'Failed', 'error');
@@ -1067,7 +1149,8 @@ async function archiveFeedback(id) {
 }
 
 async function deleteFeedback(id) {
-  if (!confirm('Delete this feedback permanently?')) return;
+  if (!await askInModal({ title: 'Delete feedback?', confirmLabel: 'Delete', danger: true,
+    message: 'This feedback is deleted permanently.' })) return;
   const res = await post('admin_panel_delete_feedback', { id });
   if (res.ok) { toast('Deleted', 'success'); loadFeedback(0); }
   else toast(res.error || 'Failed', 'error');
@@ -1494,7 +1577,8 @@ async function saveAdminUser(id) {
 }
 
 async function deleteAdminUser(id, username) {
-  if (!confirm(`Delete admin user "${username}"? This cannot be undone.`)) return;
+  if (!await askInModal({ title: `Delete admin user ${username}?`, confirmLabel: 'Delete', danger: true,
+    message: 'This cannot be undone.' })) return;
   const res = await post('admin_panel_delete_admin_user', { id });
   if (res.ok) { toast(`Deleted ${username}`, 'success'); navigate('admin-users'); }
   else toast(res.error || 'Failed', 'error');
@@ -1540,7 +1624,8 @@ registerView('sessions', {
 });
 
 async function revokeSession(sessionId) {
-  if (!confirm('Revoke this session?')) return;
+  if (!await askInModal({ title: 'Revoke this session?', confirmLabel: 'Revoke', danger: true,
+    message: 'That browser is signed out of the admin panel.' })) return;
   const res = await post('admin_panel_revoke_session', { session_id: sessionId });
   if (res.ok) { toast('Session revoked', 'success'); navigate('sessions'); }
   else toast(res.error || 'Failed', 'error');
@@ -1608,7 +1693,9 @@ async function confirm2fa() {
 }
 
 async function disable2fa() {
-  const pw = prompt('Enter your password to disable 2FA:');
+  const pw = await askInModal({ title: 'Disable 2FA?', confirmLabel: 'Disable 2FA', danger: true,
+    message: 'Your account will be protected by the password only.',
+    input: { label: 'Your password', type: 'password', required: true } });
   if (!pw) return;
   const res = await post('admin_panel_disable_totp', { password: pw });
   if (res.ok) {

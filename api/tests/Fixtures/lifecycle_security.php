@@ -75,6 +75,18 @@ if ($request) {
     $requestBody['reason_codes'] = ['not_using', 'technical_issue', 'not_using', '<invalid>', 42];
 }
 $handler=$request ? 'request_account_deletion_link_action' : 'confirm_account_deletion_action';
+if (str_starts_with($scenario,'admin_erase')) {
+    // Admin deletion needs no proof: it erases the locked account with the shared helper.
+    if ($scenario==='admin_erase_deactivated') $pdo->exec("UPDATE trip_users SET account_status='deactivated' WHERE id=1");
+    $before=scenario_snapshot($pdo,$scenario);
+    $handler=static function () use ($pdo): void {
+        $pdo->beginTransaction();
+        $cleanup=erase_account_for_deletion($pdo, lock_account_action_user($pdo, 1));
+        $pdo->commit();
+        finish_account_deletion_cleanup($cleanup);
+        json_out(['ok'=>true]);
+    };
+}
 $failure=false; $second=null;
 try {
     $response=credential_test_response($handler);

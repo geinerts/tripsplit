@@ -206,13 +206,12 @@ test('admin actions render and operate under CSP without executing untrusted dat
     await page.locator('[data-action="suspendUser"]').waitFor();
     assert.equal(await page.locator('.cl-title').textContent(), name);
     assert.equal(await page.locator('#page-content img, #page-content [onclick]').count(), 0);
-    const promptSeen = new Promise(resolve => page.once('dialog', async dialog => {
-      assert.ok(dialog.message().includes(name));
-      await dialog.accept('Regression test');
-      resolve();
-    }));
+    // Reasons are asked in the panel's own modal; the hostile name stays text.
     await page.locator('[data-action="suspendUser"]').click();
-    await promptSeen;
+    await page.locator('#ask-input').waitFor();
+    assert.equal(await page.locator('#modal-title').textContent(), `Suspend ${name}?`);
+    await page.locator('#ask-input').fill('Regression test');
+    await page.locator('#modal-footer [type="submit"]').click();
     await page.waitForFunction(() => document.querySelector('.toast.success'));
     assert.deepEqual(requests.find(r => r.action === 'admin_panel_user_suspend').body,
       { user_id: 42, reason: 'Regression test' });
@@ -231,8 +230,8 @@ test('admin actions render and operate under CSP without executing untrusted dat
     await page.locator('#modal-backdrop').waitFor({ state: 'hidden' });
     assert.equal(requests.find(r => r.action === 'admin_panel_update_admin_user').body.id, 42);
     await page.evaluate(() => navigate('sessions'));
-    page.once('dialog', dialog => dialog.accept());
     await page.locator('[data-action="revokeSession"]').click();
+    await page.locator('#modal-footer [type="submit"]').click();
     await page.waitForFunction(() => [...document.querySelectorAll('.toast')].some(el => el.textContent === 'Session revoked'));
     assert.equal(requests.find(r => r.action === 'admin_panel_revoke_session').body.session_id, name);
     for (const view of ['audit-log', 'app-events']) {

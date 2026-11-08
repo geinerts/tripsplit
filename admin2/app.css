@@ -344,7 +344,13 @@ body::before {
   font-size: 12px;
   color: var(--fg-dim);
   white-space: nowrap;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
 }
+.topbar-pill:hover { color: var(--fg); }
+.topbar-pill.alert { color: #F87171; border-color: rgba(239,68,68,0.30); }
+.topbar-pill.alert .topbar-pill-dot { background: var(--red); box-shadow: 0 0 6px var(--red); }
 
 .topbar-pill-dot {
   width: 6px; height: 6px;
@@ -812,6 +818,11 @@ tbody td:first-child { color: var(--fg); }
   font-size: 13px;
 }
 .detail-row:last-child { border-bottom: none; }
+
+.user-signals { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.detail-value.user-signals { justify-content: flex-end; margin-bottom: 0; }
+.ask-message { color: var(--fg-dim); font-size: 13.5px; }
+.ask-error { color: var(--red); font-size: 12.5px; margin-top: -6px; }
 .detail-label { width: 140px; flex-shrink: 0; color: var(--fg-muted); font-weight: 500; }
 .detail-value { color: var(--fg); word-break: break-all; }
 

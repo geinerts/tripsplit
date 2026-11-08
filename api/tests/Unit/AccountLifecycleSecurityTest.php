@@ -37,7 +37,8 @@ final class AccountLifecycleSecurityTest extends TestCase
     }
     public static function confirmations(): iterable
     {
-        foreach(['delete'] as $a) foreach(['confirm','confirm_social','replay','old_link_after_new_state'] as $s) yield [$a,$s];
+        foreach(['delete'] as $a) foreach(['confirm','confirm_social','replay','old_link_after_new_state',
+            'admin_erase','admin_erase_social','admin_erase_deactivated'] as $s) yield [$a,$s];
     }
     #[DataProvider('confirmations')]
     public function test_confirmation_consumes_all_proofs_and_revokes_owner_access(string $action,string $scenario): void

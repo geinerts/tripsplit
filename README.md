@@ -4,7 +4,7 @@
 
 - End-user web UI at [`index.html`](./index.html) is frozen (landing only).
 - Active end-user product is Flutter app in [`mobile/`](./mobile/).
-- Web remains active for admin panel at [`admin.html`](./admin.html) and legacy API at [`api/api.php`](./api/api.php).
+- Web remains active for the admin panel in [`admin2/`](./admin2/) (served at `https://ops.splyto.eu/`) and the legacy API at [`api/api.php`](./api/api.php).
 
 Mobile-first PWA for one travel group:
 
@@ -108,7 +108,7 @@ php /home/<user>/public_html/projekti/trip/scripts/run_email_verification_cleanu
 1. Open your domain over HTTPS.
 2. Sign in or create account on first launch.
 3. Install to home screen from browser install prompt.
-4. Admin panel is available at `/admin.html`.
+4. Admin panel is available at `https://ops.splyto.eu/` (files in `admin2/`).
 
 ## 4) Mobile push setup
 

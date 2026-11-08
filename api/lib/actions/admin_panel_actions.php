@@ -529,8 +529,9 @@ function admin_panel_user_search_action(): void
     $conditions[] = 'guest_trip_id IS NULL';
     $where = $conditions ? ('WHERE ' . implode(' AND ', $conditions)) : '';
 
+    $hasPassword = admin_has_password_login_sql();
     $stmt = $pdo->prepare("
-        SELECT id, nickname, email, account_status, created_at
+        SELECT id, nickname, email, account_status, created_at, {$hasPassword}
         FROM {$userTable}
         {$where}
         ORDER BY created_at DESC
@@ -545,8 +546,63 @@ function admin_panel_user_search_action(): void
     $cntStmt = $pdo->prepare("SELECT COUNT(*) FROM {$userTable} {$where}");
     $cntStmt->execute(array_slice($params, 0, count($params) - 2));
     $total = (int) $cntStmt->fetchColumn();
+    $users = admin_users_with_account_signals($pdo, $users);
 
     json_out(['ok' => true, 'users' => $users, 'total' => $total, 'limit' => $limit, 'offset' => $offset]);
+}
+
+/** A boolean column: the user can sign in with email and password. The hash itself is never selected. */
+function admin_has_password_login_sql(): string
+{
+    return "(password_hash IS NOT NULL AND password_hash <> '') AS has_password_login";
+}
+
+/**
+ * Adds how each user signs in, which app platforms they use and whether the
+ * email is verified, so support can spot test or bot accounts at a glance.
+ * Rows must contain has_password_login; it becomes the "email" sign-in method.
+ */
+function admin_users_with_account_signals(PDO $pdo, array $users): array
+{
+    $ids = array_values(array_unique(array_map(static fn(array $u): int => (int) $u['id'], $users)));
+    $providers = [];
+    $platforms = [];
+    $verified = [];
+    if ($ids !== []) {
+        $marks = implode(',', array_fill(0, count($ids), '?'));
+        if (social_auth_identity_table_available($pdo)) {
+            $stmt = $pdo->prepare('SELECT user_id, provider FROM ' . table_name('user_identities')
+                . " WHERE user_id IN ({$marks}) ORDER BY provider");
+            $stmt->execute($ids);
+            foreach ($stmt->fetchAll() as $row) {
+                $providers[(int) $row['user_id']][] = (string) $row['provider'];
+            }
+        }
+        if (push_tokens_table_available($pdo)) {
+            $stmt = $pdo->prepare('SELECT DISTINCT user_id, platform FROM ' . table_name('push_tokens')
+                . " WHERE user_id IN ({$marks}) ORDER BY platform");
+            $stmt->execute($ids);
+            foreach ($stmt->fetchAll() as $row) {
+                $platforms[(int) $row['user_id']][] = strtolower((string) $row['platform']);
+            }
+        }
+        if (users_email_verified_at_column_available($pdo)) {
+            $stmt = $pdo->prepare('SELECT id, email_verified_at FROM ' . table_name('users') . " WHERE id IN ({$marks})");
+            $stmt->execute($ids);
+            foreach ($stmt->fetchAll() as $row) {
+                $verified[(int) $row['id']] = !empty($row['email_verified_at']);
+            }
+        }
+    }
+    return array_map(static function (array $user) use ($providers, $platforms, $verified): array {
+        $id = (int) $user['id'];
+        $methods = !empty($user['has_password_login']) ? ['email'] : [];
+        $user['sign_in_methods'] = array_merge($methods, $providers[$id] ?? []);
+        $user['platforms'] = array_values(array_unique($platforms[$id] ?? []));
+        $user['email_verified'] = $verified[$id] ?? null;
+        unset($user['has_password_login']);
+        return $user;
+    }, $users);
 }
 
 function admin_panel_user_detail_action(): void
@@ -564,12 +620,14 @@ function admin_panel_user_detail_action(): void
     $pushTable   = table_name('push_tokens');
     $notifTable  = table_name('notifications');
 
-    $stmt = $pdo->prepare("SELECT id, nickname, email, account_status, created_at FROM {$userTable} WHERE id = ? LIMIT 1");
+    $hasPassword = admin_has_password_login_sql();
+    $stmt = $pdo->prepare("SELECT id, nickname, email, account_status, created_at, {$hasPassword} FROM {$userTable} WHERE id = ? LIMIT 1");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
     if (!is_array($user)) {
         json_out(['ok' => false, 'error' => 'User not found.'], 404);
     }
+    $user = admin_users_with_account_signals($pdo, [$user])[0];
 
     // Recent trips
     $stmt = $pdo->prepare("
@@ -683,25 +741,34 @@ function admin_panel_user_delete_action(): void
         json_out(['ok' => false, 'error' => 'A reason is required to delete a user.'], 400);
     }
 
-    $userTable = table_name('users');
-    $stmt = $pdo->prepare("SELECT id, nickname, email FROM {$userTable} WHERE id = ? LIMIT 1");
-    $stmt->execute([$userId]);
-    $user = $stmt->fetch();
-    if (!is_array($user)) {
-        json_out(['ok' => false, 'error' => 'User not found.'], 404);
+    // Same erasure as a self-service deletion: sessions, push tokens, social links,
+    // friends, payment details and avatar are removed; shared trip history stays.
+    ensure_account_action_proof_schema($pdo);
+    ensure_refresh_tokens_table_available($pdo);
+    $cleanup = null;
+    $pdo->beginTransaction();
+    try {
+        $user = lock_account_action_user($pdo, $userId);
+        if (!is_array($user)) {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'User not found.'], 404);
+        }
+        if ((string) ($user['account_status'] ?? '') === 'deleted') {
+            $pdo->rollBack();
+            json_out(['ok' => false, 'error' => 'This user is already deleted.'], 409);
+        }
+        // The audit entry keeps no email, so an erased account leaves no contact data behind.
+        admin_audit($pdo, $sess, 'user.delete', 'user', $userId, [
+            'nickname' => $user['nickname'],
+            'reason'   => $reason,
+        ]);
+        $cleanup = erase_account_for_deletion($pdo, $user);
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) { $pdo->rollBack(); }
+        throw $error;
     }
-
-    admin_audit($pdo, $sess, 'user.delete', 'user', $userId, [
-        'nickname' => $user['nickname'],
-        'email'    => $user['email'],
-        'reason'   => $reason,
-    ]);
-
-    // Cascade delete via existing admin helper (reuses admin_delete_user logic)
-    // Soft-delete: mark as deleted rather than hard-delete to preserve financial history
-    $pdo->prepare("UPDATE {$userTable} SET account_status = 'deleted', email = CONCAT('deleted_', id, '_', email) WHERE id = ?")
-        ->execute([$userId]);
-    delete_user_travel_places($pdo, $userId);
+    finish_account_deletion_cleanup($cleanup);
 
     json_out(['ok' => true]);
 }
