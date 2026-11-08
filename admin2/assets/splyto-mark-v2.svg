@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 124.7 124.7">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0" y1="0" x2="124.7" y2="124.7" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#141E30" />
+      <stop offset="100%" stop-color="#243B55" />
+    </linearGradient>
+
+    <linearGradient id="pillar-gradient" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#ff0080" />
+      <stop offset="100%" stop-color="#8c1bab" />
+    </linearGradient>
+
+    <linearGradient id="shards-gradient" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#00f2ff" />
+      <stop offset="100%" stop-color="#00c9db" />
+    </linearGradient>
+
+    <style>
+      .cls-1 { fill: none; }
+      
+      .fill-bg { fill: url(#bg-gradient); }
+      .fill-arrow { fill: url(#pillar-gradient); }
+      .fill-shards { fill: url(#shards-gradient); }
+
+      /* Oriģinālie Clip Paths */
+      .cls-3 { clip-path: url(#clippath-17); }
+      .cls-4 { clip-path: url(#clippath-19); }
+      .cls-5 { clip-path: url(#clippath-11); }
+      .cls-6 { clip-path: url(#clippath-16); }
+      .cls-7 { clip-path: url(#clippath-18); }
+      .cls-8 { clip-path: url(#clippath-10); }
+      .cls-9 { clip-path: url(#clippath-15); }
+      .cls-10 { clip-path: url(#clippath-13); }
+      .cls-11 { clip-path: url(#clippath-14); }
+      .cls-12 { clip-path: url(#clippath-12); }
+      .cls-13 { clip-path: url(#clippath-27); }
+      .cls-14 { clip-path: url(#clippath-26); }
+      .cls-15 { clip-path: url(#clippath-20); }
+      .cls-16 { clip-path: url(#clippath-21); }
+      .cls-17 { clip-path: url(#clippath-22); }
+      .cls-18 { clip-path: url(#clippath-23); }
+      .cls-19 { clip-path: url(#clippath-24); }
+      .cls-20 { clip-path: url(#clippath-25); }
+      .cls-21 { clip-path: url(#clippath-1); }
+      .cls-22 { clip-path: url(#clippath-3); }
+      .cls-23 { clip-path: url(#clippath-4); }
+      .cls-24 { clip-path: url(#clippath-2); }
+      .cls-25 { clip-path: url(#clippath-7); }
+      .cls-26 { clip-path: url(#clippath-6); }
+      .cls-27 { clip-path: url(#clippath-9); }
+      .cls-28 { clip-path: url(#clippath-8); }
+      .cls-29 { clip-path: url(#clippath-5); }
+      .cls-31 { clip-path: url(#clippath); }
+    </style>
+    
+    <clipPath id="clippath"><rect class="cls-1" width="124.7" height="124.7"/></clipPath>
+    <clipPath id="clippath-1"><rect class="cls-1" x="-14.53" y="-18.67" width="155.38" height="155.38" transform="translate(-23.23 61.95) rotate(-45)"/></clipPath>
+    <clipPath id="clippath-2"><rect class="cls-1" x="-14.53" y="-18.67" width="155.38" height="155.38" transform="translate(-23.23 61.95) rotate(-45)"/></clipPath>
+    <clipPath id="clippath-3"><path class="cls-1" d="M27.33.03h74.72c11.96,0,21.68,9.69,21.65,21.62v74.74c0,11.96-9.71,21.65-21.65,21.62H27.33c-11.96,0-21.65-9.69-21.65-21.62V21.65C5.68,9.71,15.37.03,27.33.03Z"/></clipPath>
+    <clipPath id="clippath-4"><rect class="cls-1" x="14.17" y="25.31" width="72.56" height="70.18" transform="translate(-24.88 83.19) rotate(-66.95)"/></clipPath>
+    <clipPath id="clippath-5"><polygon class="cls-1" points="27.34 26.51 102.29 24.37 102.6 101.05 27.64 103.19 27.34 26.51"/></clipPath>
+    <clipPath id="clippath-6"><polygon class="cls-1" points="27.34 26.51 102.29 24.37 102.6 101.05 27.64 103.19 27.34 26.51"/></clipPath>
+    <clipPath id="clippath-7"><rect class="cls-1" x="86.38" y="24.21" width="36.69" height="18.41" transform="translate(32.98 116.7) rotate(-66.95)"/></clipPath>
+    <clipPath id="clippath-8"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-9"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-10"><rect class="cls-1" x="68.36" y="13.11" width="41.28" height="32.21" transform="translate(27.27 99.68) rotate(-66.95)"/></clipPath>
+    <clipPath id="clippath-11"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-12"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-13"><rect class="cls-1" x="72.92" y="26.94" width="41.28" height="18.41" transform="translate(23.68 108.08) rotate(-66.95)"/></clipPath>
+    <clipPath id="clippath-14"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-15"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-16"><rect class="cls-1" x="65.29" y="59.28" width="22.93" height="9.2" transform="translate(-12.07 109.5) rotate(-66.95)"/></clipPath>
+    <clipPath id="clippath-17"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-18"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-19"><rect class="cls-1" x="83.73" y="50.22" width="13.76" height="9.2" transform="translate(4.69 116.74) rotate(-66.95)"/></clipPath>
+    <clipPath id="clippath-20"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-21"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-22"><rect class="cls-1" x="68.16" y="54.35" width="18.34" height="4.6" transform="translate(-5.07 105.63) rotate(-66.95)"/></clipPath>
+    <clipPath id="clippath-23"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-24"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-25"><rect class="cls-1" x="76.95" y="60.77" width="18.35" height="9.2" transform="translate(-7.75 119.03) rotate(-66.95)"/></clipPath>
+    <clipPath id="clippath-26"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+    <clipPath id="clippath-27"><polygon class="cls-1" points="61.59 25.93 112 15.19 122.88 65.53 72.45 76.24 61.59 25.93"/></clipPath>
+  </defs>
+  
+  <g class="cls-31">
+    <g class="cls-21">
+      <g class="cls-24">
+        <g class="cls-22">
+          <path class="fill-bg" d="M64.7,177.06L-53.34,59.05,64.7-58.99l118.04,118.04-118.04,118.01Z"/>
+        </g>
+      </g>
+    </g>
+  </g>
+  
+  <g class="cls-23">
+    <g class="cls-29">
+      <g class="cls-26">
+        <path class="fill-arrow" d="M54.22,25.76l-26.88.75.11,27.51,9.6-10.14,22.71,22.48.15,36.22,10.75-.31-.15-40.77-25.87-25.61,9.61-10.13Z"/>
+      </g>
+    </g>
+  </g>
+  
+  <g>
+    <g class="cls-25">
+      <g class="cls-28">
+        <g class="cls-27">
+          <path class="fill-shards" d="M105.35,51.55l-15.7-4.97,4.52-6.58,14.05-20.72c.74-1.1,1.3-2.05,2.3-3.11l-1.29,10.92-2.85,23.92c-.05.44-.54.68-1.03.54Z"/>
+        </g>
+      </g>
+    </g>
+    <g class="cls-8">
+      <g class="cls-5">
+        <g class="cls-12">
+          <path class="fill-shards" d="M72.49,41.62l-3.76-1.17c-.29.05-.87-.62-.57-.81l3.03-1.88,36.75-21.69-11.83,12.39-5.23,5.45-9.88,10.18-8.5-2.49v.02Z"/>
+        </g>
+      </g>
+    </g>
+    <g class="cls-10">
+      <g class="cls-11">
+        <g class="cls-9">
+          <path class="fill-shards" d="M87.87,46.88c-.57,2.54-.21,6.74-.85,8.71l-5.03-10.45,8.18-8.49,14.53-14.91-11.16,16.63c-1.95,2.89-4.01,5.53-5.67,8.51Z"/>
+        </g>
+      </g>
+    </g>
+    <g class="cls-6">
+      <g class="cls-3">
+        <g class="cls-7">
+          <path class="fill-shards" d="M72.27,73.36l9.68-15.08c.23-.35.51-.41.86-.18l.25.15c.34.22.41.51.18.86l-9.68,15.08c-.23.35-.51.41-.87.2l-.24-.16c-.34-.22-.41-.51-.18-.86Z"/>
+        </g>
+      </g>
+    </g>
+    <g class="cls-4">
+      <g class="cls-15">
+        <g class="cls-16">
+          <path class="fill-shards" d="M93.58,49.86c-2.12,2.7-2.89,4.41-4.95,6.87l.53-8.69c1.46.19,2.71.74,4.09,1.18.26.07.58.33.33.65Z"/>
+        </g>
+      </g>
+    </g>
+    <g class="cls-17">
+      <g class="cls-18">
+        <g class="cls-19">
+          <path class="fill-shards" d="M73.21,61.05l6.24-9.63c.23-.35.52-.4.86-.18l.28.18c.35.23.41.51.18.86l-6.24,9.63c-.22.33-.51.41-.86.18l-.27-.19c-.34-.22-.41-.51-.19-.84Z"/>
+        </g>
+      </g>
+    </g>
+    <g class="cls-20">
+      <g class="cls-14">
+        <g class="cls-13">
+          <path class="fill-shards" d="M83.41,69.55c-.3.48-.72.63-1.02.48-.35-.15-.57-.67-.32-1.05l4.92-7.7c.24-.38.86-.37,1.16-.11.2.18.22.64-.03,1.04l-4.71,7.34Z"/>
+        </g>
+      </g>
+    </g>
+  </g>
+  
+  </svg>

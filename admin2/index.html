@@ -10,7 +10,8 @@
     http-equiv="Content-Security-Policy"
     content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:"
   />
-  <link rel="stylesheet" href="app.css?v=10"/>
+  <link rel="icon" type="image/svg+xml" href="assets/splyto-mark-v2.svg"/>
+  <link rel="stylesheet" href="app.css?v=11"/>
 </head>
 <body>
 
@@ -18,6 +19,7 @@
 <div id="auth-screen">
   <!-- Login form -->
   <div class="auth-card" id="login-card">
+    <img class="auth-logo" src="assets/splyto-logo-dark-v2.svg" alt="Splyto" width="120" height="47"/>
     <h2>Admin login</h2>
     <p class="auth-subtitle">Splyto operations panel</p>
     <form id="login-form">
@@ -36,6 +38,7 @@
 
   <!-- 2FA form -->
   <div class="auth-card" id="totp-card" style="display:none;">
+    <img class="auth-logo" src="assets/splyto-logo-dark-v2.svg" alt="Splyto" width="120" height="47"/>
     <h2>Two-factor auth</h2>
     <p class="auth-subtitle">Enter the 6-digit code from your authenticator app</p>
     <form id="totp-form">
@@ -60,8 +63,7 @@
   <!-- Sidebar -->
   <nav id="sidebar">
     <div class="sidebar-logo">
-      <div class="sidebar-logo-icon">✦</div>
-      <span class="sidebar-logo-text">Splyto</span>
+      <img class="sidebar-logo-img" src="assets/splyto-logo-dark-v2.svg" alt="Splyto" width="82" height="32"/>
       <span class="sidebar-logo-badge">Admin</span>
     </div>
 
