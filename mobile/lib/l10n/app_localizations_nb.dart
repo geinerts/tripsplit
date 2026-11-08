@@ -5084,4 +5084,22 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get profilePushLocationSubtitle => 'Når noen på reisen begynner å dele posisjonen sin';
+
+  @override
+  String get expenseSplitMethodTitle => 'Delingsmåte';
+
+  @override
+  String get expenseSplitExactHint => 'Skriv inn hva hver person betaler';
+
+  @override
+  String get expenseSplitPercentHint => 'Hver person betaler en prosentandel';
+
+  @override
+  String get expenseSplitSharesHint => 'Del i andeler, f.eks. 2 : 1 : 1';
+
+  @override
+  String get expenseSplitAdjustmentHint => 'Likt, med pluss eller minus per person';
+
+  @override
+  String get expenseSplitItemsHint => 'Hver person betaler for sine egne poster';
 }

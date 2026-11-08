@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Поширено геопозицію наживо",
   "notificationLiveLocationBody": "{name} почав(-ла) ділитися геопозицією наживо в «{trip}».",
   "profilePushLocationTitle": "Геопозиція наживо",
-  "profilePushLocationSubtitle": "Коли хтось у подорожі починає ділитися геопозицією"
+  "profilePushLocationSubtitle": "Коли хтось у подорожі починає ділитися геопозицією",
+  "expenseSplitMethodTitle": "Спосіб розподілу",
+  "expenseSplitExactHint": "Вкажіть, скільки платить кожен",
+  "expenseSplitPercentHint": "Кожен платить певний відсоток",
+  "expenseSplitSharesHint": "Поділ на частки, напр. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Порівну, з плюсом або мінусом для кожного",
+  "expenseSplitItemsHint": "Кожен платить за свої позиції"
 }

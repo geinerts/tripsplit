@@ -434,32 +434,66 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
     );
   }
 
+  static List<(String, String, String, IconData)> _modeOptions(
+    BuildContext context,
+  ) {
+    final t = context.l10n;
+    return [
+      (
+        'exact',
+        t.exactAmountsLabel,
+        t.expenseSplitExactHint,
+        Icons.payments_outlined,
+      ),
+      ('percent', t.percentagesLabel, t.expenseSplitPercentHint, Icons.percent),
+      (
+        'shares',
+        t.sharesLabel,
+        t.expenseSplitSharesHint,
+        Icons.pie_chart_outline,
+      ),
+      (
+        'adjustment',
+        t.expenseAdjustmentsLabel,
+        t.expenseSplitAdjustmentHint,
+        Icons.exposure_rounded,
+      ),
+      (
+        'itemized',
+        t.expenseItemsLabel,
+        t.expenseSplitItemsHint,
+        Icons.receipt_long_rounded,
+      ),
+    ];
+  }
+
+  void _selectMode(String value) => setState(() {
+    if (value != 'itemized') _prepare(value);
+    mode = value;
+  });
+
+  /// One row like the category and date rows; the methods open in a list.
   Widget _modeChips(BuildContext context) {
     final t = context.l10n;
-    return Wrap(
-      spacing: 8,
-      runSpacing: 4,
-      children: [
-        for (final option in [
-          ('exact', t.exactAmountsLabel, Icons.payments_outlined),
-          ('percent', t.percentagesLabel, Icons.percent),
-          ('shares', t.sharesLabel, Icons.pie_chart_outline),
-          ('adjustment', t.expenseAdjustmentsLabel, Icons.exposure_rounded),
-          ('itemized', t.expenseItemsLabel, Icons.receipt_long_rounded),
-        ])
-          ChoiceChip(
-            key: ValueKey('split-mode-${option.$1}'),
-            labelStyle: Theme.of(context).textTheme.bodyMedium,
-            showCheckmark: false,
-            label: Text(option.$2),
-            avatar: Icon(option.$3, size: 16),
-            selected: mode == option.$1,
-            onSelected: (_) => setState(() {
-              if (option.$1 != 'itemized') _prepare(option.$1);
-              mode = option.$1;
-            }),
-          ),
-      ],
+    final options = _modeOptions(context);
+    final current = options.firstWhere(
+      (option) => option.$1 == mode,
+      orElse: () => options.first,
+    );
+    return _ExpenseCompactTile(
+      key: const ValueKey('expense-split-method'),
+      label: t.expenseSplitMethodTitle,
+      value: current.$2,
+      icon: current.$4,
+      onTap: () async {
+        final picked = await showAppBottomSheet<String>(
+          context: context,
+          builder: (sheetContext) =>
+              _ExpenseSplitModePicker(options: options, selected: mode),
+        );
+        if (!mounted || picked == null || picked == mode) return;
+        _selectMode(picked);
+      },
     );
   }
 
@@ -658,18 +692,16 @@ class _ExpenseItemEditor extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Wrap(
-            spacing: 6,
-            runSpacing: 4,
+            spacing: 12,
+            runSpacing: 10,
             children: [
               for (final user in users)
-                FilterChip(
+                _ExpensePersonToggle(
                   key: ValueKey('expense-item-$index-person-${user.id}'),
-                  labelStyle: Theme.of(context).textTheme.bodyMedium,
-                  showCheckmark: false,
-                  avatar: ExcludeSemantics(child: avatarBuilder(user)),
-                  label: Text(user.preferredName),
+                  name: user.preferredName,
+                  avatar: avatarBuilder(user),
                   selected: draft.people.contains(user.id),
-                  onSelected: (on) {
+                  onChanged: (on) {
                     if (on) {
                       draft.people.add(user.id);
                     } else {
@@ -681,6 +713,171 @@ class _ExpenseItemEditor extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// The split methods as a list: icon, name, one-line explanation, check.
+class _ExpenseSplitModePicker extends StatelessWidget {
+  const _ExpenseSplitModePicker({
+    required this.options,
+    required this.selected,
+  });
+  final List<(String, String, String, IconData)> options;
+  final String selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                context.l10n.expenseSplitMethodTitle,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            for (final (index, option) in options.indexed) ...[
+              if (index > 0) const Divider(height: 1),
+              ListTile(
+                key: ValueKey('split-mode-${option.$1}'),
+                contentPadding: EdgeInsets.zero,
+                selected: option.$1 == selected,
+                leading: Icon(
+                  option.$4,
+                  color: option.$1 == selected
+                      ? colors.primary
+                      : AppDesign.mutedColor(context),
+                ),
+                title: Text(
+                  option.$2,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                subtitle: Text(
+                  option.$3,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppDesign.mutedColor(context),
+                  ),
+                ),
+                trailing: option.$1 == selected
+                    ? Icon(Icons.check_rounded, color: colors.primary)
+                    : null,
+                onTap: () => Navigator.pop(context, option.$1),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A person on an item: their photo with a ring and check when included,
+/// dimmed when not. No chip outline.
+class _ExpensePersonToggle extends StatelessWidget {
+  const _ExpensePersonToggle({
+    super.key,
+    required this.name,
+    required this.avatar,
+    required this.selected,
+    required this.onChanged,
+  });
+  final String name;
+  final Widget avatar;
+  final bool selected;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final muted = AppDesign.mutedColor(context);
+    return Semantics(
+      button: true,
+      toggled: selected,
+      label: name,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: () => onChanged(!selected),
+        borderRadius: BorderRadius.circular(12),
+        child: SizedBox(
+          width: 64,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 160),
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: selected
+                                ? colors.primary
+                                : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                        child: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 160),
+                          opacity: selected ? 1 : 0.4,
+                          child: SizedBox.expand(
+                            child: FittedBox(child: avatar),
+                          ),
+                        ),
+                      ),
+                      if (selected)
+                        PositionedDirectional(
+                          end: -2,
+                          bottom: -2,
+                          child: Container(
+                            width: 18,
+                            height: 18,
+                            decoration: BoxDecoration(
+                              color: colors.primary,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.surface,
+                                width: 2,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.check_rounded,
+                              size: 11,
+                              color: colors.onPrimary,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: selected ? AppDesign.titleColor(context) : muted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

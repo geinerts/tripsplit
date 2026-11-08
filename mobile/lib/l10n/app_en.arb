@@ -2100,5 +2100,11 @@
   "notificationLiveLocationTitle": "Live location shared",
   "notificationLiveLocationBody": "{name} started sharing their live location in \"{trip}\".",
   "profilePushLocationTitle": "Live location",
-  "profilePushLocationSubtitle": "When someone in your trip starts sharing their location"
+  "profilePushLocationSubtitle": "When someone in your trip starts sharing their location",
+  "expenseSplitMethodTitle": "Split method",
+  "expenseSplitExactHint": "Enter what each person pays",
+  "expenseSplitPercentHint": "Each person pays a percentage",
+  "expenseSplitSharesHint": "Split into parts, like 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Equal split with a plus or minus per person",
+  "expenseSplitItemsHint": "Each person pays for their own items"
 }

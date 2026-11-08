@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Position en direct partagée",
   "notificationLiveLocationBody": "{name} partage sa position en direct dans « {trip} ».",
   "profilePushLocationTitle": "Position en direct",
-  "profilePushLocationSubtitle": "Quand quelqu’un de ton voyage partage sa position"
+  "profilePushLocationSubtitle": "Quand quelqu’un de ton voyage partage sa position",
+  "expenseSplitMethodTitle": "Méthode de partage",
+  "expenseSplitExactHint": "Indique ce que paie chaque personne",
+  "expenseSplitPercentHint": "Chaque personne paie un pourcentage",
+  "expenseSplitSharesHint": "Partager en parts, par ex. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Partage égal avec un plus ou un moins par personne",
+  "expenseSplitItemsHint": "Chacun paie ses propres articles"
 }

@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Live-Standort geteilt",
   "notificationLiveLocationBody": "{name} teilt jetzt den Live-Standort in „{trip}“.",
   "profilePushLocationTitle": "Live-Standort",
-  "profilePushLocationSubtitle": "Wenn jemand auf deiner Reise den Standort teilt"
+  "profilePushLocationSubtitle": "Wenn jemand auf deiner Reise den Standort teilt",
+  "expenseSplitMethodTitle": "Aufteilungsart",
+  "expenseSplitExactHint": "Gib ein, was jede Person zahlt",
+  "expenseSplitPercentHint": "Jede Person zahlt einen Prozentsatz",
+  "expenseSplitSharesHint": "In Anteile aufteilen, z. B. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Gleich aufteilen, mit Plus oder Minus pro Person",
+  "expenseSplitItemsHint": "Jede Person zahlt ihre eigenen Posten"
 }

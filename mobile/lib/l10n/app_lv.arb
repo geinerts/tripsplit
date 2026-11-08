@@ -2065,5 +2065,11 @@
   "notificationLiveLocationTitle": "Kopīgota atrašanās vieta",
   "notificationLiveLocationBody": "{name} sāka kopīgot savu atrašanās vietu ceļojumā \"{trip}\".",
   "profilePushLocationTitle": "Atrašanās vieta",
-  "profilePushLocationSubtitle": "Kad kāds ceļojumā sāk kopīgot savu atrašanās vietu"
+  "profilePushLocationSubtitle": "Kad kāds ceļojumā sāk kopīgot savu atrašanās vietu",
+  "expenseSplitMethodTitle": "Sadalījuma veids",
+  "expenseSplitExactHint": "Ievadi, cik maksā katrs",
+  "expenseSplitPercentHint": "Katrs maksā noteiktu procentu",
+  "expenseSplitSharesHint": "Sadala daļās, piem. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Vienādi, ar plusu vai mīnusu katram",
+  "expenseSplitItemsHint": "Katrs maksā par savām pozīcijām"
 }

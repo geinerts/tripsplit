@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Localização em tempo real partilhada",
   "notificationLiveLocationBody": "{name} começou a partilhar a localização em tempo real em \"{trip}\".",
   "profilePushLocationTitle": "Localização em tempo real",
-  "profilePushLocationSubtitle": "Quando alguém da viagem começa a partilhar a localização"
+  "profilePushLocationSubtitle": "Quando alguém da viagem começa a partilhar a localização",
+  "expenseSplitMethodTitle": "Forma de dividir",
+  "expenseSplitExactHint": "Indique quanto paga cada pessoa",
+  "expenseSplitPercentHint": "Cada pessoa paga uma percentagem",
+  "expenseSplitSharesHint": "Dividir em partes, p. ex. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Partes iguais, com mais ou menos por pessoa",
+  "expenseSplitItemsHint": "Cada pessoa paga os seus próprios itens"
 }

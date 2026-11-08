@@ -5084,4 +5084,22 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get profilePushLocationSubtitle => 'Kun joku matkalla alkaa jakaa sijaintiaan';
+
+  @override
+  String get expenseSplitMethodTitle => 'Jakotapa';
+
+  @override
+  String get expenseSplitExactHint => 'Syötä, mitä kukin maksaa';
+
+  @override
+  String get expenseSplitPercentHint => 'Kukin maksaa prosenttiosuuden';
+
+  @override
+  String get expenseSplitSharesHint => 'Jaa osiin, esim. 2 : 1 : 1';
+
+  @override
+  String get expenseSplitAdjustmentHint => 'Tasan, plus tai miinus henkilöä kohden';
+
+  @override
+  String get expenseSplitItemsHint => 'Kukin maksaa omat tuotteensa';
 }

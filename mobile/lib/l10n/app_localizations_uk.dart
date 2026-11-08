@@ -5104,4 +5104,22 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get profilePushLocationSubtitle => 'Коли хтось у подорожі починає ділитися геопозицією';
+
+  @override
+  String get expenseSplitMethodTitle => 'Спосіб розподілу';
+
+  @override
+  String get expenseSplitExactHint => 'Вкажіть, скільки платить кожен';
+
+  @override
+  String get expenseSplitPercentHint => 'Кожен платить певний відсоток';
+
+  @override
+  String get expenseSplitSharesHint => 'Поділ на частки, напр. 2 : 1 : 1';
+
+  @override
+  String get expenseSplitAdjustmentHint => 'Порівну, з плюсом або мінусом для кожного';
+
+  @override
+  String get expenseSplitItemsHint => 'Кожен платить за свої позиції';
 }

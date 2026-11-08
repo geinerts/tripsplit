@@ -5094,4 +5094,22 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get profilePushLocationSubtitle => 'Když někdo z výletu začne sdílet svou polohu';
+
+  @override
+  String get expenseSplitMethodTitle => 'Způsob rozdělení';
+
+  @override
+  String get expenseSplitExactHint => 'Zadejte, kolik platí každý';
+
+  @override
+  String get expenseSplitPercentHint => 'Každý platí určité procento';
+
+  @override
+  String get expenseSplitSharesHint => 'Rozdělit na díly, např. 2 : 1 : 1';
+
+  @override
+  String get expenseSplitAdjustmentHint => 'Rovným dílem, s plusem či mínusem pro každého';
+
+  @override
+  String get expenseSplitItemsHint => 'Každý platí své vlastní položky';
 }

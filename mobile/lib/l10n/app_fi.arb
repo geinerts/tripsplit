@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Reaaliaikainen sijainti jaettu",
   "notificationLiveLocationBody": "{name} alkoi jakaa reaaliaikaista sijaintiaan matkalla \"{trip}\".",
   "profilePushLocationTitle": "Reaaliaikainen sijainti",
-  "profilePushLocationSubtitle": "Kun joku matkalla alkaa jakaa sijaintiaan"
+  "profilePushLocationSubtitle": "Kun joku matkalla alkaa jakaa sijaintiaan",
+  "expenseSplitMethodTitle": "Jakotapa",
+  "expenseSplitExactHint": "Syötä, mitä kukin maksaa",
+  "expenseSplitPercentHint": "Kukin maksaa prosenttiosuuden",
+  "expenseSplitSharesHint": "Jaa osiin, esim. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Tasan, plus tai miinus henkilöä kohden",
+  "expenseSplitItemsHint": "Kukin maksaa omat tuotteensa"
 }

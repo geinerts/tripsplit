@@ -5094,4 +5094,22 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get profilePushLocationSubtitle => 'Kad kāds ceļojumā sāk kopīgot savu atrašanās vietu';
+
+  @override
+  String get expenseSplitMethodTitle => 'Sadalījuma veids';
+
+  @override
+  String get expenseSplitExactHint => 'Ievadi, cik maksā katrs';
+
+  @override
+  String get expenseSplitPercentHint => 'Katrs maksā noteiktu procentu';
+
+  @override
+  String get expenseSplitSharesHint => 'Sadala daļās, piem. 2 : 1 : 1';
+
+  @override
+  String get expenseSplitAdjustmentHint => 'Vienādi, ar plusu vai mīnusu katram';
+
+  @override
+  String get expenseSplitItemsHint => 'Katrs maksā par savām pozīcijām';
 }

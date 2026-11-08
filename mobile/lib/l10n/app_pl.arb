@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Udostępniono lokalizację na żywo",
   "notificationLiveLocationBody": "{name} udostępnia lokalizację na żywo w „{trip}”.",
   "profilePushLocationTitle": "Lokalizacja na żywo",
-  "profilePushLocationSubtitle": "Gdy ktoś z podróży zacznie udostępniać lokalizację"
+  "profilePushLocationSubtitle": "Gdy ktoś z podróży zacznie udostępniać lokalizację",
+  "expenseSplitMethodTitle": "Sposób podziału",
+  "expenseSplitExactHint": "Wpisz, ile płaci każda osoba",
+  "expenseSplitPercentHint": "Każda osoba płaci określony procent",
+  "expenseSplitSharesHint": "Podział na części, np. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Po równo, z plusem lub minusem dla osoby",
+  "expenseSplitItemsHint": "Każdy płaci za swoje pozycje"
 }

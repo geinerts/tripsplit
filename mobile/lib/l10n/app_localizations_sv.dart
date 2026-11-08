@@ -5084,4 +5084,22 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get profilePushLocationSubtitle => 'När någon i resan börjar dela sin plats';
+
+  @override
+  String get expenseSplitMethodTitle => 'Delningssätt';
+
+  @override
+  String get expenseSplitExactHint => 'Ange vad varje person betalar';
+
+  @override
+  String get expenseSplitPercentHint => 'Varje person betalar en procentandel';
+
+  @override
+  String get expenseSplitSharesHint => 'Dela i delar, t.ex. 2 : 1 : 1';
+
+  @override
+  String get expenseSplitAdjustmentHint => 'Lika delar, med plus eller minus per person';
+
+  @override
+  String get expenseSplitItemsHint => 'Var och en betalar sina egna poster';
 }

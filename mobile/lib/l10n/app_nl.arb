@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Live locatie gedeeld",
   "notificationLiveLocationBody": "{name} deelt nu de live locatie in \"{trip}\".",
   "profilePushLocationTitle": "Live locatie",
-  "profilePushLocationSubtitle": "Als iemand in je reis zijn locatie begint te delen"
+  "profilePushLocationSubtitle": "Als iemand in je reis zijn locatie begint te delen",
+  "expenseSplitMethodTitle": "Verdeelmethode",
+  "expenseSplitExactHint": "Vul in wat iedereen betaalt",
+  "expenseSplitPercentHint": "Iedereen betaalt een percentage",
+  "expenseSplitSharesHint": "Verdeel in delen, bijv. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Gelijk verdeeld, met een plus of min per persoon",
+  "expenseSplitItemsHint": "Iedereen betaalt zijn eigen items"
 }

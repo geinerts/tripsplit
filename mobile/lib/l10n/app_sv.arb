@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Liveplats delad",
   "notificationLiveLocationBody": "{name} började dela sin liveplats i \"{trip}\".",
   "profilePushLocationTitle": "Liveplats",
-  "profilePushLocationSubtitle": "När någon i resan börjar dela sin plats"
+  "profilePushLocationSubtitle": "När någon i resan börjar dela sin plats",
+  "expenseSplitMethodTitle": "Delningssätt",
+  "expenseSplitExactHint": "Ange vad varje person betalar",
+  "expenseSplitPercentHint": "Varje person betalar en procentandel",
+  "expenseSplitSharesHint": "Dela i delar, t.ex. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Lika delar, med plus eller minus per person",
+  "expenseSplitItemsHint": "Var och en betalar sina egna poster"
 }

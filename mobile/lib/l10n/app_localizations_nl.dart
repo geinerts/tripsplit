@@ -5084,4 +5084,22 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get profilePushLocationSubtitle => 'Als iemand in je reis zijn locatie begint te delen';
+
+  @override
+  String get expenseSplitMethodTitle => 'Verdeelmethode';
+
+  @override
+  String get expenseSplitExactHint => 'Vul in wat iedereen betaalt';
+
+  @override
+  String get expenseSplitPercentHint => 'Iedereen betaalt een percentage';
+
+  @override
+  String get expenseSplitSharesHint => 'Verdeel in delen, bijv. 2 : 1 : 1';
+
+  @override
+  String get expenseSplitAdjustmentHint => 'Gelijk verdeeld, met een plus of min per persoon';
+
+  @override
+  String get expenseSplitItemsHint => 'Iedereen betaalt zijn eigen items';
 }

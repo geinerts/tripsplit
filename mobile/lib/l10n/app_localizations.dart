@@ -9416,6 +9416,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'When someone in your trip starts sharing their location'**
   String get profilePushLocationSubtitle;
+
+  /// No description provided for @expenseSplitMethodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Split method'**
+  String get expenseSplitMethodTitle;
+
+  /// No description provided for @expenseSplitExactHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter what each person pays'**
+  String get expenseSplitExactHint;
+
+  /// No description provided for @expenseSplitPercentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each person pays a percentage'**
+  String get expenseSplitPercentHint;
+
+  /// No description provided for @expenseSplitSharesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Split into parts, like 2 : 1 : 1'**
+  String get expenseSplitSharesHint;
+
+  /// No description provided for @expenseSplitAdjustmentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Equal split with a plus or minus per person'**
+  String get expenseSplitAdjustmentHint;
+
+  /// No description provided for @expenseSplitItemsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each person pays for their own items'**
+  String get expenseSplitItemsHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

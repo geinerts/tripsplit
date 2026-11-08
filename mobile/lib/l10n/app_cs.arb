@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Sdílená poloha v reálném čase",
   "notificationLiveLocationBody": "{name} začal(a) sdílet polohu v reálném čase ve výletu „{trip}“.",
   "profilePushLocationTitle": "Poloha v reálném čase",
-  "profilePushLocationSubtitle": "Když někdo z výletu začne sdílet svou polohu"
+  "profilePushLocationSubtitle": "Když někdo z výletu začne sdílet svou polohu",
+  "expenseSplitMethodTitle": "Způsob rozdělení",
+  "expenseSplitExactHint": "Zadejte, kolik platí každý",
+  "expenseSplitPercentHint": "Každý platí určité procento",
+  "expenseSplitSharesHint": "Rozdělit na díly, např. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Rovným dílem, s plusem či mínusem pro každého",
+  "expenseSplitItemsHint": "Každý platí své vlastní položky"
 }

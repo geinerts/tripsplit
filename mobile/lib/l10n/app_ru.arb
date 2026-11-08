@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Местоположение в реальном времени",
   "notificationLiveLocationBody": "{name} начал(а) делиться местоположением в реальном времени в «{trip}».",
   "profilePushLocationTitle": "Местоположение в реальном времени",
-  "profilePushLocationSubtitle": "Когда кто-то в поездке начинает делиться местоположением"
+  "profilePushLocationSubtitle": "Когда кто-то в поездке начинает делиться местоположением",
+  "expenseSplitMethodTitle": "Способ разделения",
+  "expenseSplitExactHint": "Укажите, сколько платит каждый",
+  "expenseSplitPercentHint": "Каждый платит определённый процент",
+  "expenseSplitSharesHint": "Разделить на доли, напр. 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Поровну, с плюсом или минусом для каждого",
+  "expenseSplitItemsHint": "Каждый платит за свои позиции"
 }

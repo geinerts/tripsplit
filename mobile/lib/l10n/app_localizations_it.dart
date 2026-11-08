@@ -5084,4 +5084,22 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get profilePushLocationSubtitle => 'Quando qualcuno del viaggio inizia a condividere la posizione';
+
+  @override
+  String get expenseSplitMethodTitle => 'Metodo di divisione';
+
+  @override
+  String get expenseSplitExactHint => 'Inserisci quanto paga ciascuno';
+
+  @override
+  String get expenseSplitPercentHint => 'Ciascuno paga una percentuale';
+
+  @override
+  String get expenseSplitSharesHint => 'Dividi in quote, es. 2 : 1 : 1';
+
+  @override
+  String get expenseSplitAdjustmentHint => 'In parti uguali, con un più o meno a persona';
+
+  @override
+  String get expenseSplitItemsHint => 'Ciascuno paga le proprie voci';
 }

@@ -829,6 +829,13 @@ Future<void> selectExpenseFood(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+/// Opens the split method list and picks the method with this label.
+Future<void> pickSplitMode(WidgetTester tester, String label) async {
+  await visibleTap(tester, find.byKey(const ValueKey('expense-split-method')));
+  await tester.tap(find.widgetWithText(ListTile, label).last);
+  await tester.pumpAndSettle();
+}
+
 Future<void> visibleTap(
   WidgetTester tester,
   Finder finder, {
@@ -1308,6 +1315,9 @@ void main() {
       tester,
       find.byKey(const ValueKey('expense-custom-split')),
     );
+    await tester.tap(find.byKey(const ValueKey('expense-split-method')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('split-mode-itemized')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('split-mode-adjustment')));
     await tester.pumpAndSettle();
     await tester.enterText(find.byKey(const ValueKey('split-input-7')), '10');
@@ -1492,7 +1502,7 @@ void main() {
         find.byKey(const ValueKey('split-input-7')),
         '6.01',
       );
-      await visibleTap(tester, find.text('Percentages'));
+      await pickSplitMode(tester, 'Percentages');
       await tester.enterText(find.byKey(const ValueKey('split-input-7')), '40');
       await tester.pumpAndSettle();
       expect(
@@ -1503,7 +1513,7 @@ void main() {
             .onPressed,
         isNull,
       );
-      await visibleTap(tester, find.text('Exact amounts'));
+      await pickSplitMode(tester, 'Exact amounts');
       expect(
         tester
             .widget<TextField>(find.byKey(const ValueKey('split-input-7')))
@@ -1511,7 +1521,7 @@ void main() {
             .text,
         '6.01',
       );
-      await visibleTap(tester, find.text('Shares'));
+      await pickSplitMode(tester, 'Shares');
       tester.view.viewInsets = const FakeViewPadding(bottom: 280);
       addTearDown(tester.view.resetViewInsets);
       await tester.ensureVisible(find.byKey(const ValueKey('split-input-7')));
@@ -2229,7 +2239,7 @@ void main() {
             'percent': t.percentagesLabel,
             'shares': t.sharesLabel,
           };
-          await tester.tap(find.text(labels[mode]!).last);
+          await pickSplitMode(tester, labels[mode]!);
           await tester.pumpAndSettle();
           for (final name in ['Matiss', 'Anna']) {
             final field = find.byKey(
@@ -3888,7 +3898,7 @@ void main() {
           );
           final picker = find.byKey(const ValueKey('expense-editor-done'));
           expect(picker, findsOneWidget);
-          await visibleTap(tester, find.text(label));
+          await pickSplitMode(tester, label);
           for (final id in [7, 8]) {
             final field = find.byKey(ValueKey('split-input-$id'));
             await tester.ensureVisible(field);
@@ -3936,7 +3946,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('expense-custom-split')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(labels[mode]!).last);
+      await pickSplitMode(tester, labels[mode]!);
       await tester.pumpAndSettle();
       for (final name in ['Matiss', 'Anna']) {
         final field = find.byKey(

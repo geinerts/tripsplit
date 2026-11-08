@@ -2079,5 +2079,11 @@
   "notificationLiveLocationTitle": "Live-placering delt",
   "notificationLiveLocationBody": "{name} begyndte at dele sin live-placering i \"{trip}\".",
   "profilePushLocationTitle": "Live-placering",
-  "profilePushLocationSubtitle": "Når nogen på rejsen begynder at dele sin placering"
+  "profilePushLocationSubtitle": "Når nogen på rejsen begynder at dele sin placering",
+  "expenseSplitMethodTitle": "Delingsmetode",
+  "expenseSplitExactHint": "Angiv, hvad hver person betaler",
+  "expenseSplitPercentHint": "Hver person betaler en procentdel",
+  "expenseSplitSharesHint": "Del i andele, fx 2 : 1 : 1",
+  "expenseSplitAdjustmentHint": "Ligeligt, med plus eller minus pr. person",
+  "expenseSplitItemsHint": "Hver person betaler for sine egne poster"
 }
