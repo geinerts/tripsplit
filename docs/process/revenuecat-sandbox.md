@@ -44,7 +44,7 @@ configuration keeps both endpoints unavailable.
 
 Enable only for the agreed tester accounts after setup. TestFlight remains
 connected to the normal backend, but these routes reject production purchases
-and do not modify `subscription_preview` or real access permissions.
+and do not modify `premium_access` or real access permissions.
 
 ## Current API checkpoint
 

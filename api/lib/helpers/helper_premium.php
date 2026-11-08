@@ -48,19 +48,125 @@ function premium_id(mixed $value): int
     return $value;
 }
 
-function premium_access_payload(int $userId, string $plan, ?string $endsAt, int $now): array
+/**
+ * Every feature that can need Premium. `tier` is premium or free. `scope` trip means a trip's
+ * own Premium also allows it there; account means only the person's own Premium does.
+ * Moving a feature is a change here only.
+ */
+function premium_feature_catalog(): array
+{
+    return [
+        'trip_export' => ['tier' => 'premium', 'scope' => 'trip'],
+        'year_summary' => ['tier' => 'premium', 'scope' => 'account'],
+    ];
+}
+
+/** What each listed feature allows for a plan. Free-tier features are allowed for every plan. */
+function premium_features_for_plan(string $plan): array
+{
+    $features = [];
+    foreach (premium_feature_catalog() as $feature => $definition) {
+        $features[$feature] = $definition['tier'] === 'free' || $plan === 'premium';
+    }
+    return $features;
+}
+
+/** Unlisted features are refused, so a typo can't open a Premium feature. */
+function premium_feature_allowed(array $access, string $feature): bool
+{
+    return ($access['features'][$feature] ?? false) === true;
+}
+
+/** Those of $tripIds with an active trip Premium. A missing table means none. */
+function premium_trips_with_grant(PDO $pdo, array $tripIds): array
+{
+    $ids = array_values(array_unique(array_filter(array_map('intval', $tripIds), static fn(int $id): bool => $id > 0)));
+    if ($ids === []) {
+        return [];
+    }
+    try {
+        $stmt = $pdo->prepare('SELECT DISTINCT trip_id FROM ' . table_name('premium_trip_grants')
+            . ' WHERE revoked_at IS NULL AND trip_id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')');
+        $stmt->execute($ids);
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    } catch (PDOException $error) {
+        return [];
+    }
+}
+
+/** Trip features for one account in each trip: its own access, or the trip's Premium. */
+function premium_trip_features(PDO $pdo, array $access, array $tripIds): array
+{
+    $granted = array_flip(premium_trips_with_grant($pdo, $tripIds));
+    $result = [];
+    foreach ($tripIds as $tripId) {
+        $tripId = (int) $tripId;
+        $features = [];
+        foreach (premium_feature_catalog() as $feature => $definition) {
+            if ($definition['scope'] !== 'trip') {
+                continue;
+            }
+            $features[$feature] = premium_feature_allowed($access, $feature) || isset($granted[$tripId]);
+        }
+        $result[$tripId] = $features;
+    }
+    return $result;
+}
+
+/** Whether the account may use $feature, in $tripId when the feature belongs to a trip. */
+function premium_feature_allowed_for(PDO $pdo, array $access, string $feature, ?int $tripId = null): bool
+{
+    if (premium_feature_allowed($access, $feature)) {
+        return true;
+    }
+    if ($tripId === null || (premium_feature_catalog()[$feature]['scope'] ?? null) !== 'trip') {
+        return false;
+    }
+    return (premium_trip_features($pdo, $access, [$tripId])[$tripId][$feature] ?? false) === true;
+}
+
+function premium_for_everyone_config(): array
+{
+    return [
+        'enabled' => defined('PREMIUM_FOR_EVERYONE') && PREMIUM_FOR_EVERYONE === true,
+        'until' => defined('PREMIUM_FOR_EVERYONE_UNTIL') ? (string) PREMIUM_FOR_EVERYONE_UNTIL : '',
+    ];
+}
+
+/** Null when Premium for everyone is off, ended or has an invalid end; otherwise its end or null. */
+function premium_for_everyone_window(array $config, int $now): ?array
+{
+    if (($config['enabled'] ?? false) !== true) {
+        return null;
+    }
+    $until = trim((string) ($config['until'] ?? ''));
+    if ($until === '') {
+        return ['ends_at' => null];
+    }
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s\Z', $until, new DateTimeZone('UTC'));
+    if (!$date || $date->format('Y-m-d\TH:i:s\Z') !== $until || $date->getTimestamp() <= $now) {
+        return null;
+    }
+    return ['ends_at' => $date->format('Y-m-d H:i:s')];
+}
+
+function premium_access_payload(int $userId, string $plan, ?string $endsAt, int $now, string $source = 'admin_grant'): array
 {
     return ['schema_version' => 1, 'account_id' => $userId, 'plan' => $plan,
-        'source' => $plan === 'premium' ? 'admin_grant' : null,
+        'source' => $plan === 'premium' ? $source : null,
         'expires_at' => $endsAt === null ? null : str_replace(' ', 'T', $endsAt) . 'Z',
         'checked_at' => gmdate('Y-m-d\TH:i:s\Z', $now), 'refresh_after_seconds' => 300,
-        'billing_enabled' => false, 'limits_enforced' => false];
+        'billing_enabled' => false, 'limits_enforced' => false,
+        'features' => premium_features_for_plan($plan)];
 }
 
 /** Account-scoped projection; sandbox purchases and profile flags never grant access. */
-function premium_access_for_user(PDO $pdo, int $userId, ?int $now = null): array
+function premium_access_for_user(PDO $pdo, int $userId, ?int $now = null, ?array $everyone = null): array
 {
     $now ??= time();
+    $window = premium_for_everyone_window($everyone ?? premium_for_everyone_config(), $now);
+    $grantUnavailable = false;
+    $end = false;
     try {
         $stmt = $pdo->prepare('SELECT g.ends_at FROM ' . table_name('premium_grants') . ' g'
             . ' JOIN ' . table_name('users') . ' u ON u.id = g.user_id'
@@ -69,18 +175,33 @@ function premium_access_for_user(PDO $pdo, int $userId, ?int $now = null): array
         $stmt->execute(['user_id' => $userId, 'status' => 'active', 'starts' => gmdate('Y-m-d H:i:s', $now),
             'ends' => gmdate('Y-m-d H:i:s', $now)]);
         $end = $stmt->fetchColumn();
-        return premium_access_payload($userId, $end ? 'premium' : 'free', $end ?: null, $now);
     } catch (PDOException $error) {
         // Older servers/missing migration must not break login or claim Free/Pro.
-        return premium_access_payload($userId, 'unknown', null, $now);
+        $grantUnavailable = true;
     }
+    if ($end) {
+        return premium_access_payload($userId, 'premium', (string) $end, $now);
+    }
+    if ($window !== null) {
+        try {
+            $stmt = $pdo->prepare('SELECT account_status FROM ' . table_name('users') . ' WHERE id = :id');
+            $stmt->execute(['id' => $userId]);
+            $active = $stmt->fetchColumn() === 'active';
+        } catch (PDOException $error) {
+            return premium_access_payload($userId, 'unknown', null, $now);
+        }
+        return $active
+            ? premium_access_payload($userId, 'premium', $window['ends_at'], $now, 'launch')
+            : premium_access_payload($userId, 'free', null, $now);
+    }
+    return premium_access_payload($userId, $grantUnavailable ? 'unknown' : 'free', null, $now);
 }
 
 function premium_user_detail(PDO $pdo, int $userId, array $session): array
 {
     $result = ['access' => premium_access_for_user($pdo, $userId), 'can_manage' => premium_can_manage($session),
         'csrf_token' => premium_can_manage($session) ? premium_csrf_token($session) : null,
-        'grants' => [], 'history' => []];
+        'grants' => [], 'history' => [], 'trip_grants' => []];
     if (!in_array($session['role'], ['superadmin', 'admin'], true)) return $result;
     try {
         $stmt = $pdo->prepare('SELECT g.*, p.name AS partner_name FROM ' . table_name('premium_grants') . ' g'
@@ -92,11 +213,26 @@ function premium_user_detail(PDO $pdo, int $userId, array $session): array
             . table_name('premium_events') . ' WHERE user_id = ? ORDER BY id DESC LIMIT 100');
         $stmt->execute([$userId]);
         $result['history'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result['trip_grants'] = premium_user_trip_grants($pdo, $userId);
     } catch (PDOException $error) {
         $result['can_manage'] = false;
         $result['csrf_token'] = null;
     }
     return $result;
+}
+
+/** Active trip Premium of the user's trips. A missing table means none. */
+function premium_user_trip_grants(PDO $pdo, int $userId): array
+{
+    try {
+        $stmt = $pdo->prepare('SELECT g.id, g.trip_id, g.source, g.reason, g.version, g.created_at FROM '
+            . table_name('premium_trip_grants') . ' g JOIN ' . table_name('trip_members') . ' m ON m.trip_id = g.trip_id'
+            . ' WHERE m.user_id = ? AND g.revoked_at IS NULL ORDER BY g.id DESC LIMIT 100');
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $error) {
+        return [];
+    }
 }
 
 /** Every mutation and both audit records commit or roll back together. */
@@ -106,7 +242,8 @@ function premium_mutate(PDO $pdo, array $session, string $csrf, array $body, ?in
     $now ??= time();
     $stamp = gmdate('Y-m-d H:i:s', $now);
     $operation = $body['operation'] ?? '';
-    if (!in_array($operation, ['partner_create', 'grant_create', 'grant_extend', 'grant_revoke'], true)) {
+    if (!in_array($operation, ['partner_create', 'grant_create', 'grant_extend', 'grant_revoke',
+        'trip_grant_create', 'trip_grant_revoke'], true)) {
         throw new InvalidArgumentException('Unknown Premium operation.');
     }
     $requestId = $body['request_id'] ?? '';
@@ -135,7 +272,11 @@ function premium_mutate(PDO $pdo, array $session, string $csrf, array $body, ?in
         }
         $before = null;
         $userId = $grantId = $partnerId = null;
-        if ($operation === 'partner_create') {
+        $targetType = null;
+        if ($operation === 'trip_grant_create' || $operation === 'trip_grant_revoke') {
+            [$grantId, $before, $after] = premium_mutate_trip_grant($pdo, $operation, $body, $reason, $stamp);
+            $targetType = 'premium_trip_grant';
+        } elseif ($operation === 'partner_create') {
             $name = premium_text($body['name'] ?? null, 120, 'Partner name');
             $pdo->prepare('INSERT INTO ' . table_name('premium_partners') . ' (name, created_at) VALUES (?, ?)')->execute([$name, $stamp]);
             $partnerId = (int) $pdo->lastInsertId();
@@ -196,7 +337,8 @@ function premium_mutate(PDO $pdo, array $session, string $csrf, array $body, ?in
                 $requestId, $requestHash, $session['admin_user_id'], $session['username'], $userId, $grantId, $partnerId,
                 $operation, $reason, $before === null ? null : json_encode($before, JSON_THROW_ON_ERROR),
                 json_encode($after, JSON_THROW_ON_ERROR), $stamp]);
-        admin_audit($pdo, $session, 'premium.' . $operation, $grantId === null ? 'premium_partner' : 'premium_grant',
+        $targetType ??= $grantId === null ? 'premium_partner' : 'premium_grant';
+        admin_audit($pdo, $session, 'premium.' . $operation, $targetType,
             $grantId ?? $partnerId, ['user_id' => $userId, 'reason' => $reason, 'before' => $before, 'after' => $after], true);
         $pdo->commit();
         return ['grant_id' => $grantId, 'partner_id' => $partnerId, 'replayed' => false];
@@ -204,4 +346,54 @@ function premium_mutate(PDO $pdo, array $session, string $csrf, array $body, ?in
         if ($pdo->inTransaction()) $pdo->rollBack();
         throw $error;
     }
+}
+
+/** Creates or revokes a trip Premium inside premium_mutate's transaction. */
+function premium_mutate_trip_grant(PDO $pdo, string $operation, array $body, string $reason, string $stamp): array
+{
+    $grants = table_name('premium_trip_grants');
+    $before = null;
+    if ($operation === 'trip_grant_create') {
+        $tripId = premium_id($body['trip_id'] ?? null);
+        $source = $body['source'] ?? '';
+        if (!in_array($source, ['testing', 'compensation'], true)) {
+            throw new InvalidArgumentException('Invalid grant source.');
+        }
+    } else {
+        $grantId = premium_id($body['trip_grant_id'] ?? null);
+        $getTrip = $pdo->prepare('SELECT trip_id FROM ' . $grants . ' WHERE id = ?');
+        $getTrip->execute([$grantId]);
+        $tripId = (int) $getTrip->fetchColumn();
+        if ($tripId <= 0) {
+            throw new DomainException('Grant not found.');
+        }
+    }
+    // Lock the trip so two admins can't both create its trip Premium.
+    $trip = $pdo->prepare('SELECT id FROM ' . table_name('trips') . ' WHERE id = ? FOR UPDATE');
+    $trip->execute([$tripId]);
+    if (!$trip->fetchColumn()) {
+        throw new DomainException('Trip not found.');
+    }
+    if ($operation === 'trip_grant_create') {
+        $active = $pdo->prepare('SELECT id FROM ' . $grants . ' WHERE trip_id = ? AND revoked_at IS NULL');
+        $active->execute([$tripId]);
+        if ($active->fetchColumn()) {
+            throw new DomainException('This trip already has trip Premium.');
+        }
+        $pdo->prepare('INSERT INTO ' . $grants . ' (trip_id, source, reason, created_at) VALUES (?, ?, ?, ?)')
+            ->execute([$tripId, $source, $reason, $stamp]);
+        $grantId = (int) $pdo->lastInsertId();
+    } else {
+        $getGrant = $pdo->prepare('SELECT * FROM ' . $grants . ' WHERE id = ? FOR UPDATE');
+        $getGrant->execute([$grantId]);
+        $before = $getGrant->fetch(PDO::FETCH_ASSOC);
+        if (!$before || (int) $before['version'] !== premium_id($body['version'] ?? null) || $before['revoked_at'] !== null) {
+            throw new DomainException('Grant changed. Reload before trying again.');
+        }
+        $pdo->prepare('UPDATE ' . $grants . ' SET revoked_at = ?, version = version + 1 WHERE id = ?')
+            ->execute([$stamp, $grantId]);
+    }
+    $current = $pdo->prepare('SELECT * FROM ' . $grants . ' WHERE id = ?');
+    $current->execute([$grantId]);
+    return [$grantId, $before, $current->fetch(PDO::FETCH_ASSOC)];
 }

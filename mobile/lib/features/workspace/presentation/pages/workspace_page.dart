@@ -47,6 +47,7 @@ import '../../../../core/ui/user_profile_page.dart';
 import '../../../../core/ui/user_shared_trips_section.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 import '../../../friends/presentation/controllers/friends_controller.dart';
+import '../../../subscriptions/domain/entities/premium_access.dart';
 import '../../../trips/domain/entities/trip.dart';
 import '../../../trips/domain/entities/trip_user.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';

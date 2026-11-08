@@ -7,10 +7,10 @@ require_once __DIR__ . '/../helpers/helper_trip_report_delivery.php';
 require_once __DIR__ . '/../helpers/helper_year_summary.php';
 require_once __DIR__ . '/../helpers/helper_feature_usage.php';
 
-function require_premium_feature(PDO $pdo, array $me): void
+function require_premium_feature(PDO $pdo, array $me, string $feature, ?int $tripId = null): void
 {
     $access = premium_access_for_user($pdo, (int) $me['id']);
-    if (($access['plan'] ?? '') !== 'premium') {
+    if (!premium_feature_allowed_for($pdo, $access, $feature, $tripId)) {
         json_out(['ok' => false, 'code' => 'premium_required', 'error' => 'This feature requires Premium.'], 403);
     }
 }
@@ -36,7 +36,7 @@ function trip_export_action(): void
     $me = get_me();
     $pdo = db();
     $trip = get_current_trip($pdo, $me, true);
-    require_premium_feature($pdo, $me);
+    require_premium_feature($pdo, $me, 'trip_export', (int) $trip['id']);
 
     $format = strtolower(trim((string) ($_GET['format'] ?? '')));
     if ($format !== 'pdf' && $format !== 'csv') {
@@ -72,7 +72,7 @@ function travel_year_summary_action(): void
 {
     $me = get_me();
     $pdo = db();
-    require_premium_feature($pdo, $me);
+    require_premium_feature($pdo, $me, 'year_summary');
 
     $thisYear = (int) gmdate('Y');
     $rawYear = $_GET['year'] ?? null;

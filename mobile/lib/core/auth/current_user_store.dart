@@ -20,6 +20,7 @@ class CurrentUserStore {
         return null;
       }
       // Cached profile data is not evidence of a current billing entitlement.
+      // Older caches may still hold the removed subscription_preview field.
       decoded.remove('subscription_preview');
       decoded.remove('premium_access');
       return AuthUserModel.fromLegacyMap(decoded);

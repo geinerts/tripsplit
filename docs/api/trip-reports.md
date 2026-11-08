@@ -42,16 +42,20 @@ and changes are ignored.
 
 ## Premium
 
-The two actions below check `premium_access_for_user` for the requesting account, so the
-organizer's plan doesn't matter. Anything other than `premium`, including `unknown`,
-returns:
+The two actions below are the features `trip_export` and `year_summary` in the server's
+feature list. They check the requesting account, so the organizer's plan doesn't matter. The
+detailed export is also allowed in a trip with [trip Premium](trip-premium.md).
+When the account's `premium_access.features` entry is false, including for plan `unknown`,
+they return:
 
 ```json
 {"ok": false, "code": "premium_required", "error": "This feature requires Premium."}
 ```
 
-with status 403. Premium never replaces the membership checks. `premium_access` itself
-doesn't change, and the app hides these features for other plans. It has no purchase flow.
+with status 403. Premium never replaces the membership checks. The app shows these features
+only when `features` allows them. With Premium for everyone switched on, every active
+account is allowed. See [subscriptions](../architecture/subscriptions.md). There is no
+purchase flow.
 
 ## Detailed export (Premium)
 

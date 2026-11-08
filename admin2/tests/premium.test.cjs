@@ -105,3 +105,70 @@ for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
     } finally { await browser.close(); }
   });
 }
+
+for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) {
+  test(`Trip Premium grant and revoke at ${viewport.width}px`, async () => {
+    const browser = await chromium.launch({headless:true, channel:process.env.PLAYWRIGHT_CHANNEL || 'chrome'});
+    try {
+      const page = await browser.newPage({viewport});
+      const errors = [];
+      const mutations = [];
+      let tripGrants = [];
+      let canManage = true;
+      const tripName = `Rome <img src=x onerror=window.xss=1>`;
+      const user = {id:7, nickname:'Trip tester', email:'tester@example.test', account_status:'active', created_at:'2026-01-01 00:00:00'};
+      page.on('pageerror', error => errors.push(error.message));
+      await page.route('**/*', async route => {
+        const url = new URL(route.request().url());
+        if (url.pathname === '/api/api.php') {
+          const action = url.searchParams.get('action');
+          if (action === 'admin_panel_session_check') return route.fulfill({json:{authenticated:false}});
+          if (action === 'admin_panel_user_detail') return route.fulfill({json:{ok:true,user,unread_notifs:0,
+            trips:[{id:20,name:tripName,status:'active',created_at:'2026-11-01 00:00:00'},{id:21,name:'Oslo',status:'active',created_at:'2026-10-01 00:00:00'}],
+            premium:{can_manage:canManage,csrf_token:canManage?'fixture-csrf':null,grants:[],history:[],trip_grants:tripGrants,
+              access:{plan:'free',expires_at:null}}}});
+          if (action === 'admin_panel_premium_mutate') {
+            const body = route.request().postDataJSON();
+            mutations.push(body);
+            assert.equal(route.request().headers()['x-premium-csrf'],'fixture-csrf');
+            if (body.operation === 'trip_grant_create') tripGrants = [{id:1,trip_id:body.trip_id,source:body.source,reason:body.reason,version:1,created_at:'2026-11-08 12:00:00'}];
+            if (body.operation === 'trip_grant_revoke') tripGrants = [];
+            return route.fulfill({json:{ok:true}});
+          }
+          return route.fulfill({json:{ok:true}});
+        }
+        const files = {'/admin2/':'admin2/index.html','/admin2/app.js':'admin2/app.js','/admin2/app.css':'admin2/app.css'};
+        const file = files[url.pathname];
+        if (!file) return route.abort();
+        return route.fulfill({body:fs.readFileSync(path.join(root,file)),contentType:file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html'});
+      });
+      await page.goto('https://splyto.test/admin2/');
+      await page.locator('#auth-screen.visible').waitFor();
+      await page.evaluate(() => {state.user={id:1,username:'Test admin',role:'superadmin'};showApp();openUserDetail(7);});
+      await page.getByRole('button',{name:'Grant trip Premium',exact:true}).first().click();
+      await page.locator('#premium-form').getByText(tripName,{exact:true}).waitFor();
+      await page.locator('[name="source"]').selectOption('compensation');
+      await page.locator('[name="reason"]').fill('Group pilot');
+      await page.locator('#premium-form [type="submit"]').click();
+      await page.getByRole('button',{name:'Revoke trip Premium',exact:true}).waitFor();
+      assert.deepEqual({...mutations[0], request_id:undefined},
+        {operation:'trip_grant_create', reason:'Group pilot', trip_id:20, source:'compensation', request_id:undefined});
+      assert.equal(await page.getByText('Trip Premium',{exact:true}).count(),1);
+      assert.equal(await page.getByRole('button',{name:'Grant trip Premium',exact:true}).count(),1);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth > innerWidth),false);
+      await page.getByRole('button',{name:'Revoke trip Premium',exact:true}).click();
+      await page.locator('[name="reason"]').fill('Pilot ended');
+      await page.locator('#premium-form [type="submit"]').click();
+      await page.getByRole('button',{name:'Grant trip Premium',exact:true}).nth(1).waitFor();
+      assert.equal(mutations[1].operation,'trip_grant_revoke');
+      assert.equal(mutations[1].trip_grant_id,1);
+      assert.equal(mutations[1].version,1);
+      canManage=false;
+      await page.evaluate(()=>openUserDetail(7));
+      await page.getByText('Oslo',{exact:true}).waitFor();
+      assert.equal(await page.getByRole('button',{name:'Grant trip Premium',exact:true}).count(),0);
+      assert.equal(await page.evaluate(()=>window.xss),undefined);
+      assert.deepEqual(errors,[]);
+    } finally { await browser.close(); }
+  });
+}

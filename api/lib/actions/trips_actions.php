@@ -5,6 +5,7 @@ require_once __DIR__ . '/trip_invitations.php';
 require_once __DIR__ . '/../helpers/helper_trip_budget.php';
 require_once __DIR__ . '/../helpers/helper_quick_start.php';
 require_once __DIR__ . '/../helpers/helper_trip_image_ownership.php';
+require_once __DIR__ . '/../helpers/helper_premium.php';
 
 function trip_invite_ttl_seconds(): int
 {
@@ -354,10 +355,16 @@ function trips_action(): void
     );
     $stmt->execute(['user_id' => $currentUserId]);
     $rows = $stmt->fetchAll();
+    $tripPremium = premium_trip_features(
+        $pdo,
+        premium_access_for_user($pdo, $currentUserId),
+        array_map('intval', array_column($rows, 'id'))
+    );
 
     $activeTripId = null;
     foreach ($rows as &$row) {
         $row['id'] = (int) $row['id'];
+        $row['premium_features'] = $tripPremium[$row['id']] ?? [];
         $row['currency_code'] = normalize_currency_code(
             $row['currency_code'] ?? default_trip_currency_code()
         );

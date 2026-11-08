@@ -613,14 +613,14 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
     final canManageMembers = _canEditMembers && !widget.trip.isSolo;
     final canFinishSolo = widget.trip.isSolo && _canEditMembers;
     final canDelete = _isTripActive && _isCurrentTripOwner();
+    // The trip's own Premium covers every member; personal Premium covers all trips.
     final canExport =
         widget.onExportTripRequested != null &&
-        widget
-                .authController
-                .currentUser
-                ?.premiumAccess
-                ?.offersPremiumFeatures ==
-            true;
+        (widget.trip.premiumFeatures?[PremiumFeatures.tripExport] == true ||
+            widget.authController.currentUser?.premiumAccess?.allows(
+                  PremiumFeatures.tripExport,
+                ) ==
+                true);
     if (!canEdit &&
         !canExport &&
         !canDelete &&

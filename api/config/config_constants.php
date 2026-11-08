@@ -13,6 +13,9 @@ define('DB_TABLE_PREFIX', env_string('TRIP_DB_TABLE_PREFIX', 'trip_'));
 define('ADMIN_KEY', env_string('TRIP_ADMIN_KEY', ''));
 define('ADMIN_TOTP_ENCRYPTION_KEY', env_string('TRIP_ADMIN_TOTP_ENCRYPTION_KEY', ''));
 define('ADMIN_PANEL_HOST', env_string('TRIP_ADMIN_PANEL_HOST', 'ops.splyto.eu'));
+// Premium for every active account, optionally until a UTC time (YYYY-MM-DDTHH:MM:SSZ).
+define('PREMIUM_FOR_EVERYONE', env_bool('TRIP_PREMIUM_FOR_EVERYONE', false));
+define('PREMIUM_FOR_EVERYONE_UNTIL', env_string('TRIP_PREMIUM_FOR_EVERYONE_UNTIL', ''));
 define('RECEIPTS_REL_DIR', env_string('TRIP_RECEIPTS_REL_DIR', 'uploads/receipts'));
 define('RECEIPTS_MAX_BYTES', env_int('TRIP_RECEIPTS_MAX_BYTES', 8_388_608)); // 8 MB
 define('PRIVATE_MEDIA_SIGNING_SECRET', env_string('TRIP_PRIVATE_MEDIA_SIGNING_SECRET', ''));

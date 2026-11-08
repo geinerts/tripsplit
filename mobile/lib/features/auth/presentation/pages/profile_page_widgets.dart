@@ -145,7 +145,8 @@ extension _ProfilePageWidgets on _ProfilePageState {
           divider(),
         ],
         if (widget.onYearSummaryRequested != null &&
-            _user?.premiumAccess?.offersPremiumFeatures == true) ...[
+            _user?.premiumAccess?.allows(PremiumFeatures.yearSummary) ==
+                true) ...[
           _buildProfileSectionTile(
             context: context,
             title: t.yearSummaryTitle,
@@ -155,12 +156,13 @@ extension _ProfilePageWidgets on _ProfilePageState {
           ),
           divider(),
         ],
-        PremiumStatusTile(
-          access: _user?.premiumAccess,
-          onRefresh: _isLoading || _isBusy
-              ? null
-              : () => unawaited(_loadProfile()),
-        ),
+        if (_user?.premiumAccess?.showsPlanStatus == true)
+          PremiumStatusTile(
+            access: _user?.premiumAccess,
+            onRefresh: _isLoading || _isBusy
+                ? null
+                : () => unawaited(_loadProfile()),
+          ),
         _buildProfileSectionLabel(context, t.profileAppSettingsSectionTitle),
         _buildProfileSectionTile(
           context: context,

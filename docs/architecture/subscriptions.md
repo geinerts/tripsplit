@@ -1,42 +1,84 @@
 # Subscription rollout
 
-Status: preview foundation and opt-in RevenueCat sandbox server verification,
-2026-09-23. No purchase UI, paywalls or commercial limit enforcement. No production
-deployment, applied migration or store product configuration is included.
+Status: Premium can be switched on for everyone from server configuration, and two features
+check it. RevenueCat exists only as sandbox server verification. There is no purchase UI and
+no store product. Nothing in this document is deployed or configured by itself.
 
-## First Premium features (2026-11-06)
+## Free and Premium
 
-The detailed trip export and the year summary check `premium_access_for_user` on the server
-and return 403 `premium_required` otherwise. See [trip reports](../api/trip-reports.md). The
-check uses the requesting account's plan, since both are personal. `limits_enforced` stays
-false, and no limit is enforced. The free trip report email stays free. Premium sells the
-detailed format, not access to one's data: expense history stays visible in the app, and a
-copy of personal data stays available without Premium on request.
+Agreed with the owner on 2026-11-08. Everything a group needs to split money together stays
+free, because a paywall there stops new people joining. Premium is extra value for one
+person. Nobody pays to see their own data.
 
-## Implemented
+| Free | Premium |
+| --- | --- |
+| Trips and solo trips, invites and QR, friends, people without the app | Detailed PDF/CSV export (`trip_export`) |
+| Expenses, categories, comments, reactions, mentions, activity | Year summary (`year_summary`) |
+| Every split mode, including adjustments and itemized splits | |
+| 120 currencies with automatic rates, receipt photos | |
+| Payment requests, settlements, reminders, balances, debt simplification | |
+| One trip budget, analytics, travel map, live map, random picker | |
+| Offline use, notifications, languages, the trip report email | |
 
-- One server-side draft catalog (`helper_subscription.php`): Free allows one
-  active owned trip and two currencies per trip; Pro has no commercial count
-  limit on these two dimensions. Null explicitly represents no count limit.
-- Private `me` payloads include `subscription_preview`, also covering login,
-  registration, session refresh and profile updates through `build_me_payload`.
-  No client-writable plan field is introduced.
-- Payloads are versioned and account-bound. Actual current limits remain null;
-  proposed plans are separate. Billing and enforcement are hard-disabled in
-  code, not enabled by an environment variable or profile parameter.
-- Flutter loads the preview with the authenticated profile. Invalid, unknown,
-  enabled-billing or cross-account payloads are ignored without breaking login.
-  An absent preview means unknown/unavailable, not Free or Pro authorization.
-- Profile copies preserve the preview only for the same user. Offline profile
-  storage neither writes nor trusts this information. Existing auth-generation
-  checks protect against late profile responses after account switching.
-- PHP and Flutter tests consume one shared JSON contract fixture.
+Planned, not built: AI receipt reading with a personal monthly limit (Premium), a short
+year summary (free) next to the full one, a trip story with SPLYTO branding (free) and more
+designs (Premium). Prices live in the stores, not in code.
 
-This is deliberately not a purchase record, an entitlement resolver, a usage
-counter or an authorization gate. No UI should advertise an active subscription
-or use proposed limits to block operations. Pro definitions in the catalog do
-not grant Pro to any account. Ordinary trip membership and permission checks
-remain mandatory regardless of future subscription status.
+Two products, decided on 2026-11-08: a yearly subscription for one person, and a one-off
+Premium for a single trip that covers the whole group of that trip. The trip Premium exists
+on the server and in the admin panel, without a purchase. See [trip Premium](../api/trip-premium.md).
+
+The draft Free limits of one active trip and two currencies are dropped, with no daily
+expense cap.
+
+## Feature list and the server check
+
+`premium_feature_catalog()` in `api/lib/helpers/helper_premium.php` is the one list of
+features that can need Premium, each with its tier (`premium` or `free`) and scope (`trip` or
+`account`). Moving a feature
+between tiers is a change to that list only. Every gated action calls
+`require_premium_feature($pdo, $me, '<feature>')`, which returns 403 `premium_required`
+unless `premium_feature_allowed` says yes. The check uses the requesting account.
+
+`premium_access` in the `me` payload carries `features`, the same answer for each feature in
+the list, so the app shows a feature exactly when the server would allow it. A feature made
+free on the server appears in current apps without an update.
+
+## Premium for everyone
+
+Two server settings switch Premium on for every active account:
+
+- `TRIP_PREMIUM_FOR_EVERYONE`: `1` turns it on. Off by default.
+- `TRIP_PREMIUM_FOR_EVERYONE_UNTIL`: optional end, `YYYY-MM-DDTHH:MM:SSZ` in UTC. Empty means
+  no end date. A value in any other format leaves the switch off.
+
+While it's on, accounts without their own grant get `plan: "premium"`, `source: "launch"`
+and the end date, or `null`. An admin grant takes precedence, so testers still see their
+own expiry. A deleted or suspended account stays `free`. If the grant table is missing, the
+switch still applies. Switching it off needs no app update: features disappear on the next
+profile refresh, and the server refuses them at once.
+
+Changing these settings in production is a production configuration change and needs its
+own approval.
+
+## App rules
+
+- `PremiumAccess` accepts `schema_version` 1 or higher, any boolean `billing_enabled` and
+  `limits_enforced`, and any lowercase `source` up to 40 characters, so builds released now
+  keep working when purchases (`purchase`, a trip pass) arrive. A Premium payload may have no
+  expiry.
+- Features are offered from `features`. Without it, the app falls back to `plan` and the
+  expiry, as before.
+- The profile hides the plan row while billing is off, unless the account has its own
+  Premium (an admin grant), which shows its expiry. During `launch` nothing about plans is
+  shown.
+- Builds from before 2026-11-08 accept only `admin_grant`. They hide Premium features under
+  `launch`. These are TestFlight builds only; ship the updated build before public release.
+
+The removed `subscription_preview` payload is gone from `me`. Older apps already treat its
+absence as unknown, and none used it to show or block anything.
+
+Ordinary trip membership and permission checks remain mandatory regardless of plan.
 
 ## RevenueCat sandbox server
 
@@ -82,26 +124,16 @@ by this server-only step. Nothing in the app currently starts a purchase.
 
 ## Product rules for the next phases
 
-These are the initial design, to confirm before enforcing limits:
-
-- Count only owned trips with status `active`, not joined trips or historical
-  trips. Settlement-stage trips do not consume an active-trip slot. Resolve the
-  actual canonical owner; do not treat every admin/member as an owner.
-- Currency limits are a count from supported currencies, never a country-based
-  whitelist. Count the trip base currency plus distinct currencies on current
-  expenses. Editing within the existing set must not require an upgrade.
-- An organizer's Pro benefits apply to that trip's participants, not to their
-  own separately organized trips. Trip currency access must therefore be
-  resolved from the owner/trip, not solely from the requesting user's plan.
 - Do not monetize access to existing history, debt resolution, correcting old
-  entries, basic splits, payment requests, joining trips, security, deletion or
+  entries, splits, payment requests, joining trips, security, deletion or
   receiving a copy of personal data. Do not introduce a daily expense cap.
-- On expiry, keep existing active trips usable with their existing currencies;
-  require Free limits for new trips/new premium expansion. Persist per-trip
-  grandfathering explicitly, including trips predating the paid rollout.
-- Keep monthly/yearly products within one Pro tier. No prices are hard-coded.
-  Receipt processing, storage, analytics and exports are not promised by this
-  implementation; decide their limits/value before adding them to the catalog.
+- The one-off trip Premium covers every current member of that trip, so it needs a
+  grant that belongs to the trip, not to an account. It only unlocks features that
+  belong to a trip, not account-wide ones such as the year summary.
+- A limited Premium feature such as AI receipt reading needs a per-account monthly
+  count, separate from the anonymous feature usage counters.
+- On expiry, nothing a person created disappears; only Premium actions stop.
+- Keep monthly/yearly products within one Premium tier. No prices are hard-coded.
 
 ## Next implementation gates
 
@@ -115,13 +147,10 @@ These are the initial design, to confirm before enforcing limits:
    period end, refund/revocation, payment failure, grace period and store outages.
    Resolve account and owner-sponsored trip access separately. Define ownership
    transfer and downgrade behavior before allowing transfers to bypass limits.
-3. Shadow usage evaluation before enforcement: count owned active trips and
-   currencies without denying requests. Measure actual use with minimal data.
-   Ensure create/reopen/transfer/import and add/edit expense paths are covered.
-4. Enforcement: transactional locking around owner quota plus trip creation,
-   and trip quota plus currency changes; evaluate on the same transaction as
-   the write. An independent count before insert is race-prone. Preserve mutation
-   idempotency. Return stable structured limit codes to all API clients.
+3. Purchases feed `premium_access_for_user` with their own `source`, next to admin
+   grants and the launch switch. The feature list and the app need no change.
+4. A limited feature counts its use per account and month in the same transaction as
+   the use. Return stable structured limit codes to all API clients.
 5. Mobile purchase/restore/manage UI with localized store prices, renewal terms,
    privacy/terms links and accessible errors. Do not ship a nonfunctional buy
    button or web checkout until relevant store/region rules are reviewed.
@@ -132,12 +161,11 @@ These are the initial design, to confirm before enforcing limits:
    recoverable handling for subscription-limit errors BEFORE enabling enforcement.
 7. Release gates: test purchase, restore, renew, cancel, expire, grace, revoke,
    reinstall, account switch, duplicate/out-of-order notifications, concurrent
-   quota writes, organizer sponsorship, ownership transfer, grandfathering and
-   offline replay. Confirm Free/Pro limits and existing-user rollout, then enable
-   enforcement independently from purchase availability with a rollback plan.
+   limited-feature counts, trip Premium for the whole group, and offline replay. Switch off
+   Premium for everyone only once purchases work, with a rollback plan.
 
-Do not change the preview booleans to enable billing. A separate reviewed live
-contract and all relevant gates above are needed first. Older app versions and
+Do not set `billing_enabled` to true before a separate reviewed live contract and
+all relevant gates above. Older app versions and
 older servers must remain compatible during staged deployment.
 
 ## Checks
@@ -146,9 +174,9 @@ older servers must remain compatible during staged deployment.
 - `cd mobile && flutter test --no-pub`
 - `cd mobile && flutter analyze --no-pub`
 
-Shared fixture: `api/tests/Fixtures/subscription_preview_v1.json`. New contract
-tests cover catalog values, unchanged current limits, valid ownership, ignored
-Pro input, backward compatibility, malformed data and untrusted profile caches.
+`PremiumGrantTest` covers the feature list, the launch switch and its end date,
+and the precedence of grants. `premium_access_test.dart` covers the payloads that
+current and future servers send.
 
 Foundation verified locally on 2026-09-23: 87 PHP tests (294 assertions) and 55 Flutter tests
 passed, including 18 subscription-foundation tests. Flutter analysis reports

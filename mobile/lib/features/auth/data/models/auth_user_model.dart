@@ -1,5 +1,4 @@
 import '../../domain/entities/auth_user.dart';
-import '../../../subscriptions/domain/entities/subscription_preview.dart';
 import '../../../subscriptions/domain/entities/premium_access.dart';
 import '../../../../core/currency/app_currency.dart';
 import '../../../../core/network/media_url_resolver.dart';
@@ -31,7 +30,6 @@ class AuthUserModel extends AuthUser {
     super.avatarBase64,
     super.avatarUrl,
     super.avatarThumbUrl,
-    super.subscriptionPreview,
     super.premiumAccess,
   });
 
@@ -69,10 +67,6 @@ class AuthUserModel extends AuthUser {
       id: id,
       premiumAccess: PremiumAccess.fromMap(
         map['premium_access'],
-        accountId: id,
-      ),
-      subscriptionPreview: SubscriptionPreview.fromMap(
-        map['subscription_preview'],
         accountId: id,
       ),
       firstName: (firstName == null || firstName.isEmpty) ? null : firstName,

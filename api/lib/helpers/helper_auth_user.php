@@ -5,7 +5,6 @@ require_once __DIR__ . '/helper_password_capability.php';
 
 require_once __DIR__ . '/helper_profile_payment_sharing.php';
 
-require_once __DIR__ . '/helper_subscription.php';
 require_once __DIR__ . '/helper_premium.php';
 
 function users_name_columns_available(PDO $pdo): bool
@@ -243,7 +242,6 @@ function build_me_payload(array $user, ?PDO $pdo = null): array
 
     return [
         'id' => (int) $user['id'],
-        'subscription_preview' => subscription_preview_payload((int) $user['id']),
         'premium_access' => $pdo === null ? null : premium_access_for_user($pdo, (int) $user['id']),
         'first_name' => $firstName,
         'last_name' => $lastName,

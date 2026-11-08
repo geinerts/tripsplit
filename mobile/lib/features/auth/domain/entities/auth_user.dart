@@ -1,4 +1,3 @@
-import '../../../subscriptions/domain/entities/subscription_preview.dart';
 import '../../../subscriptions/domain/entities/premium_access.dart';
 
 class AuthUser {
@@ -28,7 +27,6 @@ class AuthUser {
     this.avatarBase64,
     this.avatarUrl,
     this.avatarThumbUrl,
-    this.subscriptionPreview,
     this.premiumAccess,
   });
 
@@ -62,7 +60,6 @@ class AuthUser {
   final String? avatarBase64;
   final String? avatarUrl;
   final String? avatarThumbUrl;
-  final SubscriptionPreview? subscriptionPreview;
   final PremiumAccess? premiumAccess;
 
   AuthUser copyWith({
@@ -97,9 +94,6 @@ class AuthUser {
     return AuthUser(
       id: id ?? this.id,
       premiumAccess: id == null || id == this.id ? premiumAccess : null,
-      subscriptionPreview: id == null || id == this.id
-          ? subscriptionPreview
-          : null,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       displayName: displayName ?? this.displayName,

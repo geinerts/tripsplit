@@ -801,9 +801,16 @@ async function openUserDetail(userId) {
   if (!res.ok) { modal.open('Error', `<div class="empty-state">${esc(res.error)}</div>`); return; }
 
   const u  = res.user;
-  const trips = (res.trips || []).map(t =>
-    `<div class="detail-row"><span>${esc(t.name)}</span><span class="badge badge-gray">${esc(t.status)}</span></div>`
-  ).join('') || '<div class="empty-state" style="padding:8px">No trips</div>';
+  const tripGrants = res.premium?.trip_grants || [];
+  const canManageTrips = Boolean(res.premium?.can_manage);
+  const trips = (res.trips || []).map(t => {
+    const grant = tripGrants.find(g => Number(g.trip_id) === Number(t.id));
+    const button = !canManageTrips ? '' : grant
+      ? `<button class="btn btn-danger btn-sm" ${actionAttrs('openPremiumForm', 'trip_grant_revoke', u.id, grant.id)}>Revoke trip Premium</button>`
+      : `<button class="btn btn-ghost btn-sm" ${actionAttrs('openPremiumForm', 'trip_grant_create', u.id, t.id)}>Grant trip Premium</button>`;
+    return `<div class="detail-row"><span>${esc(t.name)}</span><span class="trip-premium-row">
+      <span class="badge badge-gray">${esc(t.status)}</span>${grant ? '<span class="badge">Trip Premium</span>' : ''}${button}</span></div>`;
+  }).join('') || '<div class="empty-state" style="padding:8px">No trips</div>';
 
   const actions = [];
   if (u.account_status === 'active' && can('superadmin','admin','support'))
@@ -969,21 +976,29 @@ async function premiumPage(offset = 0) {
 
 async function openPremiumForm(operation, userId = null, grantId = null) {
   const isPartner = operation === 'partner_create';
+  const isTrip = operation === 'trip_grant_create' || operation === 'trip_grant_revoke';
   const isCreate = operation === 'grant_create';
   const needsDate = isCreate || operation === 'grant_extend';
   const result = isPartner ? await get('admin_panel_premium_list', {kind:'partners'})
     : await get('admin_panel_user_detail', {user_id:userId});
   const permission = isPartner ? result : result.premium;
   if (!result.ok || !permission?.can_manage) { toast(result.error || 'Verified 2FA is required.', 'error'); return; }
-  const grant = permission.grants?.find(g => Number(g.id) === Number(grantId));
-  if (!isPartner && !isCreate && !grant) { toast('Grant not found. Reload the user.', 'error'); return; }
-  const titles = {partner_create:'Add partner', grant_create:'Grant Premium', grant_extend:'Extend Premium', grant_revoke:'Revoke Premium'};
+  const grant = (operation === 'trip_grant_revoke' ? permission.trip_grants : permission.grants)
+    ?.find(g => Number(g.id) === Number(grantId));
+  // For a new trip Premium, grantId is the trip's id.
+  const trip = (result.trips || []).find(t => Number(t.id) === Number(operation === 'trip_grant_revoke' ? grant?.trip_id : grantId));
+  if (!isPartner && !isCreate && operation !== 'trip_grant_create' && !grant) { toast('Grant not found. Reload the user.', 'error'); return; }
+  if (isTrip && !trip) { toast('Trip not found. Reload the user.', 'error'); return; }
+  const titles = {partner_create:'Add partner', grant_create:'Grant Premium', grant_extend:'Extend Premium', grant_revoke:'Revoke Premium',
+    trip_grant_create:'Grant trip Premium', trip_grant_revoke:'Revoke trip Premium'};
   const title = titles[operation];
   modal.open(title, `<form id="premium-form" class="premium-form">
     ${isPartner ? '<label>Partner name<input class="form-input" name="name" required maxlength="120"></label>' : `<p><strong>${esc(result.user.nickname)}</strong> &middot; ${esc(result.user.email)}</p>`}
     ${isCreate ? `<label>Source<select class="form-input" name="source"><option value="testing">Testing</option><option value="partner">Partner</option><option value="compensation">Compensation</option></select></label>
       <label id="premium-partner-label" hidden>Partner<select class="form-input" name="partner_id" disabled><option value="">Select partner</option></select></label>` : ''}
     ${needsDate ? `<label>Expires (your local time)<input class="form-input" name="ends_at" type="datetime-local" required></label>` : ''}
+    ${isTrip ? `<p>Trip: <strong>${esc(trip.name)}</strong>. Trip Premium covers every current member of this trip and has no end date.</p>` : ''}
+    ${operation === 'trip_grant_create' ? `<label>Source<select class="form-input" name="source"><option value="testing">Testing</option><option value="compensation">Compensation</option></select></label>` : ''}
     ${operation === 'grant_revoke' ? '<p>This revokes only this grant. Other valid grants remain active.</p>' : ''}
     <label>Reason<textarea class="form-input" name="reason" required maxlength="500" rows="3"></textarea></label>
     <p id="premium-form-error" role="alert"></p>
@@ -1026,6 +1041,8 @@ async function openPremiumForm(operation, userId = null, grantId = null) {
     if (button.disabled) return;
     const body = {operation, reason:form.elements.reason.value.trim()};
     if (isPartner) body.name = form.elements.name.value.trim();
+    else if (operation === 'trip_grant_create') { body.trip_id = Number(trip.id); body.source = form.elements.source.value; }
+    else if (operation === 'trip_grant_revoke') { body.trip_grant_id = Number(grant.id); body.version = Number(grant.version); }
     else if (isCreate) {
       body.user_id = Number(userId);
       body.source = form.elements.source.value;

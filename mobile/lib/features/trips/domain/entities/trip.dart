@@ -28,6 +28,7 @@ class Trip {
     this.preferredCurrencyCode,
     required this.myOwedCents,
     required this.myBalanceCents,
+    this.premiumFeatures,
   });
 
   final int id;
@@ -61,6 +62,11 @@ class Trip {
   final int myOwedCents;
   final int myBalanceCents;
 
+  /// Trip features the server allows for the current user in this trip, from
+  /// their own Premium or the trip's Premium. Null when the server didn't send
+  /// it, such as from the offline cache. Display only; the server decides.
+  final Map<String, bool>? premiumFeatures;
+
   Trip withImage({required String? imageUrl, required String? imageThumbUrl}) =>
       Trip(
         id: id,
@@ -91,6 +97,7 @@ class Trip {
         preferredCurrencyCode: preferredCurrencyCode,
         myOwedCents: myOwedCents,
         myBalanceCents: myBalanceCents,
+        premiumFeatures: premiumFeatures,
       );
 
   bool get isActive => status == 'active';

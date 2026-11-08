@@ -27,6 +27,7 @@ import '../../../../core/ui/app_settings_widgets.dart';
 import '../../../../core/ui/responsive.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../../quick_start/presentation/quick_start_sheet.dart';
+import '../../../subscriptions/domain/entities/premium_access.dart';
 import '../../../subscriptions/presentation/widgets/premium_status_tile.dart';
 import '../../domain/entities/notification_preferences.dart';
 import '../controllers/auth_controller.dart';

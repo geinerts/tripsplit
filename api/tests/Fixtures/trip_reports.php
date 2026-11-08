@@ -152,6 +152,14 @@ invitation_expect($denied['status'] === 403 && $denied['body']['code'] === 'prem
 $pdo->exec('INSERT INTO trip_premium_grants(user_id,source,starts_at,ends_at) VALUES (4,"testing","2000-01-01","2100-01-01")');
 $pdo->exec('INSERT INTO trip_premium_grants(user_id,source,starts_at,ends_at,revoked_at) VALUES (8,"testing","2000-01-01","2100-01-01","2020-01-01")');
 invitation_expect(invitation_call('trip_export_action', 8)['status'] === 403, 'Revoked grant cannot export');
+$pdo->exec('CREATE TABLE trip_premium_trip_grants (id INTEGER PRIMARY KEY AUTOINCREMENT, trip_id INT, source VARCHAR(20),
+    reason TEXT, revoked_at DATETIME NULL, version INT DEFAULT 1, created_at DATETIME)');
+$pdo->exec('INSERT INTO trip_premium_trip_grants(trip_id,source,reason,created_at) VALUES (10,"testing","Pilot","2026-11-08")');
+$tripPremiumExport = invitation_call('trip_export_action', 8);
+invitation_expect($tripPremiumExport['status'] === 200 && $tripPremiumExport['body']['mime_type'] === 'text/csv',
+    'Trip Premium lets a free member export that trip');
+$pdo->exec('UPDATE trip_premium_trip_grants SET revoked_at = "2026-11-08"');
+invitation_expect(invitation_call('trip_export_action', 8)['status'] === 403, 'Revoked trip Premium cannot export');
 $_SERVER['HTTP_X_TRIP_ID'] = '12';
 invitation_expect(invitation_call('trip_export_action', 8)['status'] !== 200, 'Non-member cannot export');
 $_SERVER['HTTP_X_TRIP_ID'] = '10';

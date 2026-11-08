@@ -50,7 +50,9 @@ status and expiry; refresh requests the current profile. Display data is fresh
 for at most five minutes (or until expiry), then becomes unknown. It is never
 saved/restored from offline profile storage and is discarded on account changes.
 With a missing migration/backend failure, status is unknown instead of inferred
-Free. Current app functionality remains unrestricted.
+Free, unless Premium for everyone is on. An admin grant takes precedence over
+Premium for everyone, so a tester still sees the grant's expiry. See
+[subscriptions](../architecture/subscriptions.md).
 
 ## Release order
 

@@ -67,12 +67,15 @@ class _PremiumStatusTileState extends State<PremiumStatusTile>
         : known
         ? l10n.premiumFree
         : l10n.premiumStatusUnavailable;
-    final subtitle = premium
-        ? l10n.premiumGrantedUntil(
-            MaterialLocalizations.of(
-              context,
-            ).formatMediumDate(access.expiresAt!.toLocal()),
-          )
+    final expiresAt = access?.expiresAt;
+    final String? subtitle = premium
+        ? (expiresAt == null
+              ? null
+              : l10n.premiumGrantedUntil(
+                  MaterialLocalizations.of(
+                    context,
+                  ).formatMediumDate(expiresAt.toLocal()),
+                ))
         : known
         ? l10n.premiumBillingNotActive
         : l10n.premiumRefreshStatus;
@@ -92,13 +95,15 @@ class _PremiumStatusTileState extends State<PremiumStatusTile>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label, style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppDesign.mutedColor(context),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppDesign.mutedColor(context),
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

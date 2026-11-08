@@ -1139,6 +1139,7 @@ tbody td:first-child { color: var(--fg); }
 .premium-section { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
 .premium-entry { padding: 12px 0; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
 .premium-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.trip-premium-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; }
 .premium-form { display: grid; gap: 14px; }
 .premium-form label { display: grid; gap: 6px; }
 .premium-form [hidden] { display: none; }

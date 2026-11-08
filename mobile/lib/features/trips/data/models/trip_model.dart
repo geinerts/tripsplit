@@ -32,6 +32,7 @@ class TripModel extends Trip {
     super.preferredCurrencyCode,
     required super.myOwedCents,
     required super.myBalanceCents,
+    super.premiumFeatures,
   });
 
   factory TripModel.fromLegacyMap(Map<String, dynamic> map) {
@@ -107,6 +108,7 @@ class TripModel extends Trip {
           : null,
       myOwedCents: (map['my_owed_cents'] as num?)?.toInt() ?? 0,
       myBalanceCents: (map['my_balance_cents'] as num?)?.toInt() ?? 0,
+      premiumFeatures: _parsePremiumFeatures(map['premium_features']),
     );
   }
 
@@ -117,4 +119,13 @@ class TripModel extends Trip {
     }
     return 'member';
   }
+}
+
+Map<String, bool>? _parsePremiumFeatures(dynamic raw) {
+  if (raw is! Map) return null;
+  final features = <String, bool>{};
+  raw.forEach((key, value) {
+    if (key is String && value is bool) features[key] = value;
+  });
+  return Map.unmodifiable(features);
 }

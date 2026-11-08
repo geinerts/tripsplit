@@ -40,17 +40,17 @@ void main() {
     expect(PremiumAccess.fromMap(premiumFixture(), accountId: 8), isNull);
   });
 
-  test('malformed, expired, paid and wrong-account payloads fail closed', () {
+  test('malformed, expired and wrong-account payloads fail closed', () {
     for (final change in <String, Object?>{
-      'schema_version': 2,
+      'schema_version': 0,
       'account_id': '7',
       'plan': 'pro',
-      'source': 'sandbox',
+      'source': 'Not A Source',
       'expires_at': '2026-09-23T12:00:00Z',
       'checked_at': '2026-02-30T12:00:00Z',
       'refresh_after_seconds': 301,
-      'billing_enabled': true,
-      'limits_enforced': true,
+      'billing_enabled': 'yes',
+      'limits_enforced': null,
     }.entries) {
       expect(
         PremiumAccess.fromMap(
@@ -64,6 +64,98 @@ void main() {
     final free = premiumFixture()
       ..addAll({'plan': 'free', 'source': null, 'expires_at': null});
     expect(PremiumAccess.fromMap(free, accountId: 7)!.isPremium, isFalse);
+  });
+
+  test('payloads from later servers are accepted', () {
+    for (final change in <String, Object?>{
+      'schema_version': 2,
+      'source': 'purchase',
+      'billing_enabled': true,
+      'limits_enforced': true,
+      'expires_at': null,
+      'extra_field': 'ignored',
+    }.entries) {
+      final access = PremiumAccess.fromMap(
+        premiumFixture()..[change.key] = change.value,
+        accountId: 7,
+      );
+      expect(access?.isPremium, isTrue, reason: change.key);
+    }
+  });
+
+  test('Premium for everyone offers features and hides the plan row', () {
+    final launch = PremiumAccess.fromMap(
+      premiumFixture()..addAll({
+        'source': 'launch',
+        'expires_at': null,
+        'features': {'trip_export': true, 'year_summary': true},
+      }),
+      accountId: 7,
+    )!;
+    expect(launch.source, 'launch');
+    expect(launch.expiresAt, isNull);
+    expect(launch.allows(PremiumFeatures.tripExport), isTrue);
+    expect(launch.allows(PremiumFeatures.yearSummary), isTrue);
+    expect(launch.showsPlanStatus, isFalse);
+    expect(
+      PremiumAccess.fromMap(premiumFixture(), accountId: 7)!.showsPlanStatus,
+      isTrue,
+    );
+    final free = premiumFixture()
+      ..addAll({'plan': 'free', 'source': null, 'expires_at': null});
+    expect(PremiumAccess.fromMap(free, accountId: 7)!.showsPlanStatus, isFalse);
+    expect(
+      PremiumAccess.fromMap(
+        free..['billing_enabled'] = true,
+        accountId: 7,
+      )!.showsPlanStatus,
+      isTrue,
+    );
+  });
+
+  test('the server feature list decides each feature', () {
+    final free = premiumFixture()
+      ..addAll({
+        'plan': 'free',
+        'source': null,
+        'expires_at': null,
+        'features': {'trip_export': true, 'year_summary': false, 'x': 'yes'},
+      });
+    final access = PremiumAccess.fromMap(free, accountId: 7)!;
+    expect(access.allows(PremiumFeatures.tripExport), isTrue);
+    expect(access.allows(PremiumFeatures.yearSummary), isFalse);
+    expect(access.allows('x'), isFalse);
+    expect(access.allows('unlisted'), isFalse);
+    // Without a feature list the app falls back to the plan and expiry.
+    final older = PremiumAccess.fromMap(
+      premiumFixture()..['expires_at'] = '2099-01-01T00:00:00Z',
+      accountId: 7,
+    )!;
+    expect(older.allows(PremiumFeatures.tripExport), isTrue);
+    final olderFree = premiumFixture()
+      ..addAll({'plan': 'free', 'source': null, 'expires_at': null});
+    expect(
+      PremiumAccess.fromMap(
+        olderFree,
+        accountId: 7,
+      )!.allows(PremiumFeatures.tripExport),
+      isFalse,
+    );
+  });
+
+  test('an expired grant offers no listed feature', () {
+    final now = DateTime.now().toUtc();
+    String stamp(DateTime value) =>
+        '${value.toIso8601String().split('.').first}Z';
+    final access = PremiumAccess.fromMap(
+      premiumFixture()..addAll({
+        'checked_at': stamp(now.subtract(const Duration(days: 2))),
+        'expires_at': stamp(now.subtract(const Duration(days: 1))),
+        'features': {'trip_export': true},
+      }),
+      accountId: 7,
+    )!;
+    expect(access.allows(PremiumFeatures.tripExport), isFalse);
   });
 
   test('a cached grant is never restored or persisted as access', () async {

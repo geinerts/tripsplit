@@ -29,6 +29,13 @@ final class PremiumTestDatabase extends PDO
         $this->exec('CREATE TABLE trip_premium_events (id INTEGER PRIMARY KEY AUTOINCREMENT, request_id TEXT UNIQUE, request_hash TEXT,
             admin_user_id INTEGER, admin_username TEXT, user_id INTEGER, grant_id INTEGER, partner_id INTEGER,
             action TEXT, reason TEXT, before_json TEXT, after_json TEXT, created_at TEXT)');
+        $this->exec('CREATE TABLE trip_trips (id INTEGER PRIMARY KEY, name TEXT)');
+        $this->exec("INSERT INTO trip_trips VALUES (20, 'Rome'), (21, 'Oslo')");
+        $this->exec('CREATE TABLE trip_trip_members (trip_id INTEGER REFERENCES trip_trips(id) ON DELETE CASCADE, user_id INTEGER)');
+        $this->exec('INSERT INTO trip_trip_members VALUES (20, 7), (20, 8), (21, 8)');
+        $this->exec('CREATE TABLE trip_premium_trip_grants (id INTEGER PRIMARY KEY AUTOINCREMENT,
+            trip_id INTEGER NOT NULL REFERENCES trip_trips(id) ON DELETE CASCADE, source TEXT NOT NULL, reason TEXT NOT NULL,
+            revoked_at TEXT, version INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL)');
         $this->exec('CREATE TABLE trip_admin_audit_log (id INTEGER PRIMARY KEY AUTOINCREMENT, admin_user_id INTEGER,
             admin_username TEXT, action TEXT, target_type TEXT, target_id INTEGER, details TEXT, ip_address TEXT)');
     }
@@ -78,6 +85,121 @@ final class PremiumGrantTest extends TestCase
         self::assertSame('free', premium_access_for_user($this->pdo, 8, $this->now)['plan']);
         self::assertSame('free', premium_access_for_user($this->pdo, 7, strtotime($access['expires_at']))['plan']);
         self::assertSame(1, (int) $this->pdo->query('SELECT COUNT(*) FROM trip_admin_audit_log')->fetchColumn());
+    }
+
+    public function test_feature_list_decides_each_feature_and_refuses_unlisted_ones(): void
+    {
+        self::assertSame([
+            'trip_export' => ['tier' => 'premium', 'scope' => 'trip'],
+            'year_summary' => ['tier' => 'premium', 'scope' => 'account'],
+        ], premium_feature_catalog());
+        $free = premium_access_for_user($this->pdo, 8, $this->now, ['enabled' => false]);
+        self::assertSame(['trip_export' => false, 'year_summary' => false], $free['features']);
+        self::assertFalse(premium_feature_allowed($free, 'trip_export'));
+        $this->mutate($this->body());
+        $premium = premium_access_for_user($this->pdo, 7, $this->now, ['enabled' => false]);
+        self::assertTrue(premium_feature_allowed($premium, 'trip_export'));
+        self::assertTrue(premium_feature_allowed($premium, 'year_summary'));
+        self::assertFalse(premium_feature_allowed($premium, 'unlisted'));
+        self::assertFalse(premium_feature_allowed(['features' => ['trip_export' => 'yes']], 'trip_export'));
+    }
+
+    public function test_premium_for_everyone_covers_active_accounts_until_its_end(): void
+    {
+        $open = ['enabled' => true, 'until' => ''];
+        $access = premium_access_for_user($this->pdo, 8, $this->now, $open);
+        self::assertSame('premium', $access['plan']);
+        self::assertSame('launch', $access['source']);
+        self::assertNull($access['expires_at']);
+        self::assertTrue(premium_feature_allowed($access, 'trip_export'));
+        self::assertSame('free', premium_access_for_user($this->pdo, 9, $this->now, $open)['plan']);
+
+        $until = ['enabled' => true, 'until' => '2026-12-31T00:00:00Z'];
+        self::assertSame('2026-12-31T00:00:00Z', premium_access_for_user($this->pdo, 8, $this->now, $until)['expires_at']);
+        self::assertSame('free', premium_access_for_user($this->pdo, 8, strtotime('2026-12-31T00:00:00Z'), $until)['plan']);
+        foreach (['2026-12-31', '2026-12-31T00:00:00+02:00', 'tomorrow'] as $invalid) {
+            self::assertSame('free', premium_access_for_user($this->pdo, 8, $this->now,
+                ['enabled' => true, 'until' => $invalid])['plan'], $invalid);
+        }
+        self::assertSame('free', premium_access_for_user($this->pdo, 8, $this->now, ['enabled' => false, 'until' => ''])['plan']);
+    }
+
+    public function test_admin_grant_takes_precedence_and_switch_survives_missing_grant_table(): void
+    {
+        $this->mutate($this->body());
+        $open = ['enabled' => true, 'until' => ''];
+        $access = premium_access_for_user($this->pdo, 7, $this->now, $open);
+        self::assertSame('admin_grant', $access['source']);
+        self::assertSame('2026-10-23T12:00:00Z', $access['expires_at']);
+        $this->pdo->exec('DROP TABLE trip_premium_grants');
+        self::assertSame('launch', premium_access_for_user($this->pdo, 7, $this->now, $open)['source']);
+        self::assertSame('unknown', premium_access_for_user($this->pdo, 7, $this->now, ['enabled' => false])['plan']);
+        $this->pdo->exec('DROP TABLE trip_users');
+        self::assertSame('unknown', premium_access_for_user($this->pdo, 7, $this->now, $open)['plan']);
+        self::assertFalse(premium_feature_allowed(premium_access_for_user($this->pdo, 7, $this->now, $open), 'trip_export'));
+    }
+
+    public function test_trip_premium_covers_members_only_for_trip_features(): void
+    {
+        $off = ['enabled' => false];
+        $free = premium_access_for_user($this->pdo, 8, $this->now, $off);
+        self::assertSame([20 => ['trip_export' => false], 21 => ['trip_export' => false]],
+            premium_trip_features($this->pdo, $free, [20, 21]));
+        $grant = $this->mutate($this->body(['operation' => 'trip_grant_create', 'trip_id' => 20, 'source' => 'testing']));
+        self::assertSame([20 => ['trip_export' => true], 21 => ['trip_export' => false]],
+            premium_trip_features($this->pdo, $free, [20, 21]));
+        self::assertTrue(premium_feature_allowed_for($this->pdo, $free, 'trip_export', 20));
+        self::assertFalse(premium_feature_allowed_for($this->pdo, $free, 'trip_export', 21));
+        self::assertFalse(premium_feature_allowed_for($this->pdo, $free, 'trip_export'));
+        self::assertFalse(premium_feature_allowed_for($this->pdo, $free, 'year_summary', 20));
+        self::assertFalse(premium_feature_allowed_for($this->pdo, $free, 'unlisted', 20));
+        $launch = premium_access_for_user($this->pdo, 8, $this->now, ['enabled' => true, 'until' => '']);
+        self::assertTrue(premium_feature_allowed_for($this->pdo, $launch, 'trip_export', 21));
+
+        $detail = premium_user_detail($this->pdo, 8, $this->session);
+        self::assertSame([20], array_map('intval', array_column($detail['trip_grants'], 'trip_id')));
+        self::assertSame([], premium_user_detail($this->pdo, 8, array_replace($this->session, ['role' => 'support']))['trip_grants']);
+        $event = $this->pdo->query("SELECT * FROM trip_premium_events WHERE action = 'trip_grant_create'")->fetch(PDO::FETCH_ASSOC);
+        self::assertNull($event['user_id']);
+        self::assertSame(20, json_decode($event['after_json'], true)['trip_id']);
+        self::assertSame('premium_trip_grant', $this->pdo->query('SELECT target_type FROM trip_admin_audit_log')->fetchColumn());
+
+        $this->mutate($this->body(['operation' => 'trip_grant_revoke', 'trip_grant_id' => $grant['grant_id'], 'version' => 1]));
+        self::assertFalse(premium_feature_allowed_for($this->pdo, $free, 'trip_export', 20));
+        self::assertSame([], premium_user_detail($this->pdo, 8, $this->session)['trip_grants']);
+    }
+
+    public function test_trip_premium_rejects_duplicates_bad_input_and_stale_revokes(): void
+    {
+        $grant = $this->mutate($this->body(['operation' => 'trip_grant_create', 'trip_id' => 20, 'source' => 'compensation']));
+        foreach ([
+            [DomainException::class, ['operation' => 'trip_grant_create', 'trip_id' => 20, 'source' => 'testing']],
+            [DomainException::class, ['operation' => 'trip_grant_create', 'trip_id' => 999, 'source' => 'testing']],
+            [InvalidArgumentException::class, ['operation' => 'trip_grant_create', 'trip_id' => 21, 'source' => 'partner']],
+            [InvalidArgumentException::class, ['operation' => 'trip_grant_create', 'trip_id' => '21', 'source' => 'testing']],
+            [DomainException::class, ['operation' => 'trip_grant_revoke', 'trip_grant_id' => $grant['grant_id'], 'version' => 2]],
+            [DomainException::class, ['operation' => 'trip_grant_revoke', 'trip_grant_id' => 999, 'version' => 1]],
+        ] as [$expected, $change]) {
+            try {
+                $this->mutate($this->body($change));
+                self::fail('Invalid trip grant accepted.');
+            } catch (DomainException | InvalidArgumentException $error) {
+                self::assertInstanceOf($expected, $error);
+            }
+        }
+        self::assertSame(1, (int) $this->pdo->query('SELECT COUNT(*) FROM trip_premium_trip_grants')->fetchColumn());
+        $this->pdo->exec('DELETE FROM trip_trips WHERE id = 20');
+        self::assertSame(0, (int) $this->pdo->query('SELECT COUNT(*) FROM trip_premium_trip_grants')->fetchColumn());
+    }
+
+    public function test_missing_trip_premium_table_means_only_own_premium_counts(): void
+    {
+        $this->pdo->exec('DROP TABLE trip_premium_trip_grants');
+        $free = premium_access_for_user($this->pdo, 8, $this->now, ['enabled' => false]);
+        self::assertSame([20 => ['trip_export' => false]], premium_trip_features($this->pdo, $free, [20]));
+        self::assertSame([], premium_user_detail($this->pdo, 8, $this->session)['trip_grants']);
+        $this->expectException(PDOException::class);
+        $this->mutate($this->body(['operation' => 'trip_grant_create', 'trip_id' => 20, 'source' => 'testing']));
     }
 
     public function test_idempotent_retries_and_request_key_mismatch(): void

@@ -30,6 +30,7 @@ import 'package:tripsplit/core/ui/app_bottom_nav_bar.dart';
 import 'package:tripsplit/core/ui/user_profile_page.dart';
 import 'package:tripsplit/features/workspace/domain/entities/workspace_shared_trip.dart';
 import 'package:tripsplit/features/auth/domain/entities/auth_user.dart';
+import 'package:tripsplit/features/subscriptions/domain/entities/premium_access.dart';
 import 'package:tripsplit/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:tripsplit/features/friends/presentation/controllers/friends_controller.dart';
 import 'package:tripsplit/features/trips/data/models/trip_model.dart';
@@ -56,14 +57,16 @@ import 'package:tripsplit/core/media/image_crop.dart';
 import 'package:tripsplit/core/media/image_crop_service.dart';
 
 class _Auth implements AuthController {
-  _Auth({this.revtag});
+  _Auth({this.revtag, this.premiumAccess});
   final String? revtag;
+  final PremiumAccess? premiumAccess;
   @override
   AuthUser? get currentUser => AuthUser(
     id: 7,
     nickname: 'Matiss',
     needsCredentials: false,
     revolutHandle: revtag,
+    premiumAccess: premiumAccess,
   );
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -605,6 +608,8 @@ Future<void> _mount(
   double height = 844,
   WorkspacePageCommandController? commands,
   GlobalKey? boundary,
+  Map<String, bool>? premiumFeatures,
+  Future<void> Function()? onExportTripRequested,
 }) async {
   tester.view.physicalSize = Size(width, height);
   tester.view.devicePixelRatio = 1;
@@ -663,8 +668,10 @@ Future<void> _mount(
           'currency_code': 'EUR',
           'date_from': '2026-10-05',
           'date_to': '2026-10-09',
+          'premium_features': ?premiumFeatures,
         }),
         workspaceController: controller,
+        onExportTripRequested: onExportTripRequested,
         authController: auth ?? _Auth(),
         tripsController: trips ?? _Trips(),
         onTripUpdated: onTripUpdated,
@@ -1134,6 +1141,105 @@ void main() {
       commands.dispose();
     },
   );
+
+  testWidgets('trip menu offers the export with trip or personal Premium', (
+    tester,
+  ) async {
+    PremiumAccess premium(String plan, {Map<String, bool>? features}) =>
+        PremiumAccess.fromMap({
+          'schema_version': 1,
+          'account_id': 7,
+          'plan': plan,
+          'source': plan == 'premium' ? 'admin_grant' : null,
+          'expires_at': plan == 'premium' ? '2099-01-01T00:00:00Z' : null,
+          'checked_at': '2026-11-08T12:00:00Z',
+          'refresh_after_seconds': 300,
+          'billing_enabled': false,
+          'limits_enforced': false,
+          'features': ?features,
+        }, accountId: 7)!;
+    final free = premium('free', features: {'trip_export': false});
+    var exports = 0;
+    Future<void> export() async => exports++;
+    for (final (name, auth, tripFeatures, callback, shown) in [
+      (
+        'no export flow',
+        _Auth(premiumAccess: free),
+        {'trip_export': true},
+        null,
+        false,
+      ),
+      (
+        'free account, no trip Premium',
+        _Auth(premiumAccess: free),
+        {'trip_export': false},
+        export,
+        false,
+      ),
+      (
+        'free account, older server',
+        _Auth(premiumAccess: free),
+        null,
+        export,
+        false,
+      ),
+      (
+        'trip Premium',
+        _Auth(premiumAccess: free),
+        {'trip_export': true},
+        export,
+        true,
+      ),
+      (
+        'trip Premium, no account status',
+        _Auth(),
+        {'trip_export': true},
+        export,
+        true,
+      ),
+      (
+        'personal Premium',
+        _Auth(premiumAccess: premium('premium')),
+        {'trip_export': false},
+        export,
+        true,
+      ),
+      (
+        'personal Premium, older server',
+        _Auth(premiumAccess: premium('premium')),
+        null,
+        export,
+        true,
+      ),
+    ]) {
+      final commands = WorkspacePageCommandController();
+      await _mount(
+        tester,
+        _Workspace()..data = snapshot(status: 'active'),
+        role: 'member',
+        auth: auth,
+        commands: commands,
+        premiumFeatures: tripFeatures,
+        onExportTripRequested: callback,
+      );
+      await tester.pumpAndSettle();
+      commands.requestOpenTripActions();
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('trip-export')),
+        shown ? findsOneWidget : findsNothing,
+        reason: name,
+      );
+      if (shown) {
+        final before = exports;
+        await tester.tap(find.byKey(const ValueKey('trip-export')));
+        await tester.pumpAndSettle();
+        expect(exports, before + 1, reason: name);
+      }
+      await disposePage(tester);
+      commands.dispose();
+    }
+  });
 
   testWidgets('trip menu share requires active group management access', (
     tester,
