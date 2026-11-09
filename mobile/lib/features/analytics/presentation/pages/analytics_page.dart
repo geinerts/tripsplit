@@ -20,6 +20,7 @@ part 'analytics_page_actions.dart';
 part 'analytics_page_calculations.dart';
 part 'analytics_page_widgets.dart';
 part 'analytics_page_components.dart';
+part 'analytics_page_categories.dart';
 
 class AnalyticsPageCommandController extends ChangeNotifier {
   int _refreshRequestCount = 0;
@@ -56,6 +57,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   bool _loading = false, _loaded = false, _byTrip = false, _personal = true;
   String? _error, _currency, _month;
   int? _selectedTripId;
+  bool _hasChosenTrip = false;
   int _generation = 0, _accountId = 0;
   List<Trip> _trips = [];
   List<AnalyticsTripSummary> _summaries = [];
@@ -83,9 +85,14 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
       _loaded = false;
       _loading = false;
       _selectedTripId = null;
+      _hasChosenTrip = false;
       _currency = null;
       _month = null;
       _error = null;
+    }
+    if (widget.active && !oldWidget.active) {
+      _hasChosenTrip = false;
+      _selectedTripId = _defaultTrip?.id;
     }
     if (widget.active && !_loaded && !_loading) unawaited(_load());
   }

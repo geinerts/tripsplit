@@ -9,6 +9,7 @@ import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';

@@ -58,19 +58,87 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
         ),
       ],
     );
-    final coverWidget = ExcludeSemantics(
-      child: ClipRRect(
-        borderRadius: AppDesign.cardRadius,
-        child: AspectRatio(
-          aspectRatio: AppImageCropper.tripAspectRatio,
-          child: cover.isEmpty
-              ? fallback()
-              : Image.network(
-                  cover,
-                  key: const ValueKey('workspace-cover-photo'),
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, error, stack) => fallback(),
+    final coverWidget = ClipRRect(
+      borderRadius: AppDesign.cardRadius,
+      child: AspectRatio(
+        aspectRatio: AppImageCropper.tripAspectRatio,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ExcludeSemantics(
+              child: cover.isEmpty
+                  ? fallback()
+                  : Image.network(
+                      cover,
+                      key: const ValueKey('workspace-cover-photo'),
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, error, stack) => fallback(),
+                    ),
+            ),
+            if (_canOpenLiveMap)
+              Positioned(
+                left: 12,
+                right: 12,
+                bottom: 12,
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: AnimatedBuilder(
+                    animation: widget.liveLocationController!,
+                    builder: (context, _) {
+                      final sharing =
+                          widget.liveLocationController!.sharing(
+                                widget.trip.id,
+                              ) !=
+                              null &&
+                          !widget.liveLocationController!.stopping(
+                            widget.trip.id,
+                          );
+                      return TextButton(
+                        key: const ValueKey('trip-live-map'),
+                        onPressed: _openLiveMap,
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xB8101214),
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(48, 48),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          shape: StadiumBorder(
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: .20),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              sharing
+                                  ? Icons.my_location
+                                  : Icons.location_on_outlined,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                sharing
+                                    ? '${t.liveMapTitle} · ${t.liveSharing}'
+                                    : t.liveMapTitle,
+                                style: theme.textTheme.labelLarge?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
+              ),
+          ],
         ),
       ),
     );
@@ -169,32 +237,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             );
           },
         ),
-        if (_canOpenLiveMap)
-          Align(
-            alignment: Alignment.centerRight,
-            child: AnimatedBuilder(
-              animation: widget.liveLocationController!,
-              builder: (context, _) {
-                final sharing =
-                    widget.liveLocationController!.sharing(widget.trip.id) !=
-                        null &&
-                    !widget.liveLocationController!.stopping(widget.trip.id);
-                return TextButton.icon(
-                  key: const ValueKey('trip-live-map'),
-                  onPressed: _openLiveMap,
-                  icon: Icon(
-                    sharing ? Icons.my_location : Icons.location_on_outlined,
-                    size: 20,
-                  ),
-                  label: Text(
-                    sharing
-                        ? '${t.liveMapTitle} · ${t.liveSharing}'
-                        : t.liveMapTitle,
-                  ),
-                );
-              },
-            ),
-          ),
         const SizedBox(height: 4),
         LayoutBuilder(
           builder: (context, constraints) {

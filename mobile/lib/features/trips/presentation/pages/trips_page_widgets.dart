@@ -251,48 +251,96 @@ extension _TripsPageWidgets on _TripsPageState {
   );
 
   Widget _buildTripFilters(BuildContext context) {
-    final activeCount = _trips.where((trip) => !trip.isArchived).length;
-    final archivedCount = _trips.length - activeCount;
     final colors = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        for (final archived in [false, true])
-          Expanded(
-            child: Semantics(
-              selected: _showArchived == archived,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: _showArchived == archived
-                          ? colors.primary
-                          : colors.outlineVariant,
-                      width: _showArchived == archived ? 2 : 1,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 300),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colors.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(28),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: AnimatedAlign(
+                    duration: MediaQuery.disableAnimationsOf(context)
+                        ? Duration.zero
+                        : const Duration(milliseconds: 150),
+                    alignment: _showArchived
+                        ? AlignmentDirectional.centerEnd
+                        : AlignmentDirectional.centerStart,
+                    child: FractionallySizedBox(
+                      widthFactor: 0.5,
+                      heightFactor: 1,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: colors.primary,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                child: TextButton(
-                  key: ValueKey(archived ? 'home-archived' : 'home-active'),
-                  onPressed: () => _updateState(() {
-                    _hasChosenFilter = true;
-                    _showArchived = archived;
-                  }),
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size(48, 48),
-                    foregroundColor: _showArchived == archived
-                        ? colors.primary
-                        : colors.onSurfaceVariant,
-                    shape: const RoundedRectangleBorder(),
-                  ),
-                  child: Text(
-                    '${archived ? context.l10n.archivedStatus : context.l10n.activeStatus}  ${archived ? archivedCount : activeCount}',
-                    textAlign: TextAlign.center,
-                  ),
+                Row(
+                  children: [
+                    for (final archived in [false, true])
+                      Expanded(
+                        child: Semantics(
+                          selected: _showArchived == archived,
+                          child: TextButton(
+                            key: ValueKey(
+                              archived ? 'home-archived' : 'home-active',
+                            ),
+                            onPressed: () => _updateState(() {
+                              _hasChosenFilter = true;
+                              _showArchived = archived;
+                            }),
+                            style: TextButton.styleFrom(
+                              minimumSize: const Size(48, 48),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 12,
+                              ),
+                              foregroundColor: _showArchived == archived
+                                  ? colors.onPrimary
+                                  : colors.onSurfaceVariant,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  archived
+                                      ? Icons.inventory_2_outlined
+                                      : Icons.luggage_outlined,
+                                  size: 21,
+                                ),
+                                const SizedBox(width: 8),
+                                Flexible(
+                                  child: Text(
+                                    archived
+                                        ? context.l10n.archivedStatus
+                                        : context.l10n.activeStatus,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-              ),
+              ],
             ),
           ),
-      ],
+        ),
+      ),
     );
   }
 }

@@ -554,12 +554,40 @@ void main() {
       );
       expect(find.text('Settling trip'), findsOneWidget);
       expect(find.text('Archived trip'), findsNothing);
+      final activeFilter = find.byKey(const ValueKey('home-active'));
+      final archivedFilter = find.byKey(const ValueKey('home-archived'));
+      expect(
+        find.descendant(of: activeFilter, matching: find.text('Active')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: archivedFilter, matching: find.text('Archived')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: activeFilter,
+          matching: find.byIcon(Icons.luggage_outlined),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: archivedFilter,
+          matching: find.byIcon(Icons.inventory_2_outlined),
+        ),
+        findsOneWidget,
+      );
       await tester.tap(find.byKey(const ValueKey('home-trip-1')));
       expect(opened, 1);
       await tester.tap(find.byKey(const ValueKey('home-archived')));
       await tester.pumpAndSettle();
       expect(find.text('Archived trip'), findsOneWidget);
       expect(find.text('Lisbon getaway'), findsNothing);
+      await tester.tap(activeFilter);
+      await tester.pumpAndSettle();
+      expect(find.text('Settling trip'), findsOneWidget);
+      expect(find.text('Archived trip'), findsNothing);
     },
   );
 

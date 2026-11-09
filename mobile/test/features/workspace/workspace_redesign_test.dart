@@ -1,3 +1,5 @@
+import 'package:tripsplit/features/live_location/presentation/live_location_controller.dart';
+import 'package:tripsplit/features/live_location/domain/live_location.dart';
 import 'package:tripsplit/features/workspace/data/datasources/workspace_remote_parsers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:tripsplit/features/workspace/domain/entities/payment_details.dart';
@@ -55,6 +57,22 @@ import 'package:tripsplit/features/workspace/presentation/pages/workspace_page.d
 import 'package:tripsplit/l10n/app_localizations.dart';
 import 'package:tripsplit/core/media/image_crop.dart';
 import 'package:tripsplit/core/media/image_crop_service.dart';
+
+class _LiveLocation extends ChangeNotifier implements LiveLocationController {
+  bool isSharing = false;
+  void startSharing() {
+    isSharing = true;
+    notifyListeners();
+  }
+
+  @override
+  LiveShareSession? sharing(int trip) =>
+      isSharing ? LiveShareSession('test-only', DateTime(2030)) : null;
+  @override
+  bool stopping(int trip) => false;
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 class _Auth implements AuthController {
   _Auth({this.revtag, this.premiumAccess});
@@ -595,6 +613,7 @@ Future<void> _mount(
   WidgetTester tester,
   _Workspace controller, {
   bool solo = false,
+  LiveLocationController? liveLocation,
   bool manager = false,
   String? role,
   String? coverUrl,
@@ -671,6 +690,7 @@ Future<void> _mount(
           'premium_features': ?premiumFeatures,
         }),
         workspaceController: controller,
+        liveLocationController: liveLocation,
         onExportTripRequested: onExportTripRequested,
         authController: auth ?? _Auth(),
         tripsController: trips ?? _Trips(),
@@ -817,7 +837,7 @@ PaymentItem payment(String status) => PaymentItem(
 );
 
 Future<void> _selectTab(WidgetTester tester, String label) async {
-  final tab = find.widgetWithText(TextButton, label);
+  final tab = find.byTooltip(label);
   await tester.ensureVisible(tab);
   await tester.pumpAndSettle();
   await tester.tap(tab);
@@ -863,6 +883,79 @@ Future<void> visibleTap(
 }
 
 void main() {
+  testWidgets(
+    'icon tabs expose labels, update heading and load activity once',
+    (tester) async {
+      final controller = _Workspace();
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      final title = find.byKey(const ValueKey('workspace-section-title'));
+      expect(tester.widget<Text>(title).data, 'Expenses');
+      expect(controller.activityOffsets, isEmpty);
+      for (final label in [
+        'Balances',
+        'Settle',
+        'Activity',
+        'Expenses',
+        'Activity',
+      ]) {
+        await _selectTab(tester, label);
+        expect(tester.widget<Text>(title).data, label);
+        expect(tester.takeException(), isNull);
+      }
+      expect(controller.activityOffsets, [0]);
+      await disposePage(tester);
+    },
+  );
+
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'live map overlays cover and retains sharing status at scale $scale',
+      (tester) async {
+        final live = _LiveLocation();
+        await _mount(
+          tester,
+          _Workspace(),
+          liveLocation: live,
+          width: 320,
+          scale: scale,
+        );
+        await tester.pumpAndSettle();
+        final button = find.byKey(const ValueKey('trip-live-map'));
+        expect(button, findsOneWidget);
+        final cover = find
+            .ancestor(of: button, matching: find.byType(AspectRatio))
+            .first;
+        final coverRect = tester.getRect(cover);
+        final buttonRect = tester.getRect(button);
+        expect(buttonRect.right, closeTo(coverRect.right - 12, .1));
+        expect(buttonRect.bottom, closeTo(coverRect.bottom - 12, .1));
+        final t = AppLocalizations.of(tester.element(button))!;
+        live.startSharing();
+        await tester.pumpAndSettle();
+        expect(
+          find.text('${t.liveMapTitle} · ${t.liveSharing}'),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+        await disposePage(tester);
+        live.dispose();
+      },
+    );
+  }
+
+  testWidgets('solo trips do not show live map or section tabs', (
+    tester,
+  ) async {
+    final live = _LiveLocation();
+    await _mount(tester, _Workspace(), solo: true, liveLocation: live);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('trip-live-map')), findsNothing);
+    expect(find.byKey(const ValueKey('workspace-tab-0')), findsNothing);
+    await disposePage(tester);
+    live.dispose();
+  });
+
   testWidgets(
     'readiness card toggles only self and updates finish eligibility',
     (tester) async {
@@ -2652,7 +2745,7 @@ void main() {
         final t = AppLocalizations.of(
           tester.element(find.byType(WorkspacePage)),
         )!;
-        expect(find.text(t.workspaceActivityTab), findsNothing);
+        expect(find.byTooltip(t.workspaceActivityTab), findsNothing);
         expect(controller.data.allMembersReadyToSettle, isFalse);
         Future<void> finishDialog() async {
           commands.requestOpenTripActions();
@@ -3034,11 +3127,11 @@ void main() {
             tester.element(find.byType(WorkspacePage)),
           )!;
           expect(
-            find.text(t.navBalances),
+            find.byTooltip(t.navBalances),
             solo ? findsNothing : findsOneWidget,
           );
           expect(
-            find.text(t.workspaceActivityTab),
+            find.byTooltip(t.workspaceActivityTab),
             solo ? findsNothing : findsOneWidget,
           );
           if (solo) expect(controller.activityOffsets, isEmpty);

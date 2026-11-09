@@ -77,10 +77,7 @@ extension _WorkspacePageLayout on _WorkspacePageState {
     }
     final snapshot = _snapshot!;
     final tab = widget.trip.isSolo ? 0 : _workspaceTabIndex.clamp(0, 3);
-    final tabHeight = math.max(
-      56.0,
-      MediaQuery.textScalerOf(context).scale(16) * 1.5 + 24,
-    );
+    const tabHeight = 64.0;
     return AppBackground(
       child: Center(
         child: ConstrainedBox(
@@ -147,6 +144,20 @@ extension _WorkspacePageLayout on _WorkspacePageState {
                     elevation: 0,
                     flexibleSpace: _buildWorkspaceTabSwitcher(context),
                   ),
+                if (!widget.trip.isSolo)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+                    sliver: SliverToBoxAdapter(
+                      child: Semantics(
+                        header: true,
+                        child: Text(
+                          _workspaceTabLabel(context, tab),
+                          key: const ValueKey('workspace-section-title'),
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                    ),
+                  ),
                 if (tab == 0)
                   ..._buildExpensesSlivers(snapshot)
                 else if (tab == 3)
@@ -167,80 +178,84 @@ extension _WorkspacePageLayout on _WorkspacePageState {
     );
   }
 
+  String _workspaceTabLabel(BuildContext context, int tab) => switch (tab) {
+    1 => context.l10n.navBalances,
+    2 => context.l10n.workspaceSettle,
+    3 => context.l10n.workspaceActivityTab,
+    _ => context.l10n.navExpenses,
+  };
+
   Widget _buildWorkspaceTabSwitcher(BuildContext context) {
-    final tabs = <(int, String)>[
-      (0, context.l10n.navExpenses),
-      if (!widget.trip.isSolo) (1, context.l10n.navBalances),
-      if (!widget.trip.isSolo) (2, context.l10n.workspaceSettle),
-      if (!widget.trip.isSolo) (3, context.l10n.workspaceActivityTab),
-    ];
     final colors = Theme.of(context).colorScheme;
-    Widget tabButton((int, String) tab) => Semantics(
-      selected: _workspaceTabIndex == tab.$1,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              width: 2,
-              color: _workspaceTabIndex == tab.$1
-                  ? colors.primary
-                  : Colors.transparent,
+    const icons = ['receipt-text', 'wallet', 'hand-coins', 'history'];
+    final duration = MediaQuery.disableAnimationsOf(context)
+        ? Duration.zero
+        : const Duration(milliseconds: 150);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(28),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Row(
+                children: [
+                  for (var index = 0; index < icons.length; index++)
+                    Expanded(
+                      child: Semantics(
+                        selected: _workspaceTabIndex == index,
+                        child: Tooltip(
+                          message: _workspaceTabLabel(context, index),
+                          child: AnimatedContainer(
+                            duration: duration,
+                            decoration: BoxDecoration(
+                              color: _workspaceTabIndex == index
+                                  ? colors.primary
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: TextButton(
+                              key: ValueKey('workspace-tab-$index'),
+                              style: TextButton.styleFrom(
+                                minimumSize: const Size(48, 48),
+                                padding: EdgeInsets.zero,
+                                shape: const StadiumBorder(),
+                                foregroundColor: _workspaceTabIndex == index
+                                    ? colors.onPrimary
+                                    : colors.onSurfaceVariant,
+                              ),
+                              onPressed: () {
+                                _updateState(() => _workspaceTabIndex = index);
+                                if (index == 3 && !_activityLoaded) {
+                                  unawaited(_loadTripActivity(reset: true));
+                                }
+                              },
+                              child: SvgPicture.asset(
+                                'assets/branding/workspace_${icons[index]}.svg',
+                                width: 24,
+                                height: 24,
+                                excludeFromSemantics: true,
+                                colorFilter: ColorFilter.mode(
+                                  _workspaceTabIndex == index
+                                      ? colors.onPrimary
+                                      : colors.onSurfaceVariant,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
-        ),
-        child: TextButton(
-          style: TextButton.styleFrom(
-            minimumSize: const Size(48, 48),
-            foregroundColor: _workspaceTabIndex == tab.$1
-                ? colors.onSurface
-                : colors.onSurfaceVariant,
-            shape: const RoundedRectangleBorder(),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-          ),
-          onPressed: () {
-            _updateState(() => _workspaceTabIndex = tab.$1);
-            if (tab.$1 == 3 && !_activityLoaded) {
-              unawaited(_loadTripActivity(reset: true));
-            }
-          },
-          child: Text(tab.$2),
-        ),
-      ),
-    );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: colors.outlineVariant)),
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final labelsFit =
-                tabs.fold<double>(0, (sum, tab) {
-                  final painter = TextPainter(
-                    text: TextSpan(
-                      text: tab.$2,
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    textDirection: Directionality.of(context),
-                    textScaler: MediaQuery.textScalerOf(context),
-                  )..layout();
-                  return sum + painter.width + 16;
-                }) <=
-                constraints.maxWidth;
-            return labelsFit
-                ? Row(
-                    children: [
-                      for (final tab in tabs) Expanded(child: tabButton(tab)),
-                    ],
-                  )
-                : SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [for (final tab in tabs) tabButton(tab)],
-                    ),
-                  );
-          },
         ),
       ),
     );

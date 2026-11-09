@@ -33,8 +33,9 @@ extension _AnalyticsPageActions on _AnalyticsPageState {
         _trips = trips;
         _summaries = matched;
         _loaded = true;
-        if (!trips.any((t) => t.id == _selectedTripId)) {
-          _selectedTripId = trips.firstOrNull?.id;
+        if (!_hasChosenTrip || !trips.any((t) => t.id == _selectedTripId)) {
+          _hasChosenTrip = false;
+          _selectedTripId = _defaultTrip?.id;
         }
         final codes = trips.map((t) => t.currencyCode).toSet();
         if (!codes.contains(_currency)) {
@@ -95,7 +96,12 @@ extension _AnalyticsPageActions on _AnalyticsPageState {
         ),
       ),
     );
-    if (mounted && choice != null) _updateState(() => _selectedTripId = choice);
+    if (mounted && choice != null) {
+      _updateState(() {
+        _selectedTripId = choice;
+        _hasChosenTrip = true;
+      });
+    }
   }
 
   Future<void> _chooseMonth() async {

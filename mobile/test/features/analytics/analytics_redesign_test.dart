@@ -207,21 +207,120 @@ void main() {
       });
     }
   }
+  testWidgets(
+    'By trip defaults to active, allows a choice and resets on re-entry',
+    (tester) async {
+      final trips = _Trips()
+        ..trips = [
+          analyticsTrip(id: 9, name: 'Archived holiday', status: 'archived'),
+          analyticsTrip(id: 2, name: 'Active holiday'),
+        ];
+      final commands = AnalyticsPageCommandController();
+      await _mount(tester, trips, _Analytics(), commands: commands);
+      await tester.tap(find.text('By trip'));
+      await tester.pumpAndSettle();
+      expect(find.text('Active holiday'), findsOneWidget);
+      expect(find.text('Archived holiday'), findsNothing);
+      await tester.tap(find.text('Active holiday'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Archived holiday'));
+      await tester.pumpAndSettle();
+      expect(find.text('Archived holiday'), findsOneWidget);
+      commands.requestRefresh();
+      await tester.pumpAndSettle();
+      expect(find.text('Archived holiday'), findsOneWidget);
+      await tester.tap(find.text('All trips'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('By trip'));
+      await tester.pumpAndSettle();
+      expect(find.text('Active holiday'), findsOneWidget);
+      expect(find.text('Archived holiday'), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'without active trips the latest travel dates win over list order',
+    (tester) async {
+      final trips = _Trips()
+        ..trips = [
+          analyticsTrip(id: 9, name: 'Older holiday', status: 'archived'),
+          analyticsTrip(
+            id: 1,
+            name: 'Latest holiday',
+            status: 'settling',
+            dateFrom: '2026-11-01',
+            dateTo: '2026-11-08',
+          ),
+          analyticsTrip(
+            id: 12,
+            name: 'Undated holiday',
+            status: 'archived',
+            dateFrom: null,
+            dateTo: null,
+          ),
+        ];
+      await _mount(tester, trips, _Analytics());
+      await tester.tap(find.text('By trip'));
+      await tester.pumpAndSettle();
+      expect(find.text('Latest holiday'), findsOneWidget);
+      expect(find.text('Older holiday'), findsNothing);
+      expect(find.text('Undated holiday'), findsNothing);
+    },
+  );
+
   testWidgets('all trips personal totals, trip total and share switch', (
     tester,
   ) async {
     await _mount(tester, _Trips(), _Analytics());
     expect(find.text('€42.00'), findsWidgets);
+    expect(find.text('Average per trip'), findsNothing);
+    expect(find.text('Active & archived trips'), findsOneWidget);
+    expect(find.byKey(const ValueKey('analytics-trip-count')), findsOneWidget);
+    expect(
+      tester.getTopLeft(find.byKey(const ValueKey('analytics-trip-count'))).dy,
+      greaterThan(
+        tester.getBottomLeft(find.byKey(const ValueKey('analytics-total'))).dy,
+      ),
+    );
     await tester.tap(find.text('By trip'));
     await tester.pumpAndSettle();
     expect(find.text('You paid'), findsOneWidget);
+    final donut = find.byKey(const ValueKey('analytics-category-donut'));
+    final firstCategory = find.byKey(const ValueKey('analytics-category-food'));
+    expect(
+      tester.getTopLeft(find.text('You paid')).dy,
+      greaterThan(tester.getBottomLeft(donut).dy),
+    );
+    expect(
+      tester.getBottomLeft(find.text('You paid')).dy,
+      lessThan(tester.getTopLeft(firstCategory).dy),
+    );
     expect(find.text('€84.00'), findsOneWidget);
+    final summary = find.byKey(const ValueKey('analytics-chart-summary'));
+    expect(
+      find.descendant(of: summary, matching: find.text('Your share')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: summary, matching: find.text('3 expenses')),
+      findsOneWidget,
+    );
+    expect(find.text('3 expenses'), findsOneWidget);
     await tester.tap(find.text('Trip total').first);
     await tester.pumpAndSettle();
     expect(
       tester.widget<Text>(find.byKey(const ValueKey('analytics-total'))).data,
       '€126.00',
     );
+    expect(
+      find.descendant(of: summary, matching: find.text('Trip total')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: summary, matching: find.text('3 expenses')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('analytics-total')), findsOneWidget);
     await tester.scrollUntilVisible(
       find.byKey(const ValueKey('analytics-member-2')),
       150,
@@ -388,31 +487,46 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('legend keeps one row and screen readers hear the percent', (
-      tester,
-    ) async {
-      final semantics = tester.ensureSemantics();
-      await _mount(tester, _Trips(), _Analytics());
-      await openTripTotal(tester);
-      expect(find.byKey(const ValueKey('analytics-category-donut')), findsOne);
-      // Percentages are drawn by the chart, not as legend text.
-      expect(find.textContaining('%'), findsNothing);
-      expect(find.bySemanticsLabel('Food, €84.00, 67%'), findsOne);
-      expect(find.bySemanticsLabel('Transport, €42.00, 33%'), findsOne);
-      final food = find.byKey(const ValueKey('analytics-category-food'));
-      expect(
-        find.descendant(of: food, matching: find.byType(Text)),
-        findsNWidgets(2),
-      );
-      semantics.dispose();
-    });
+    testWidgets(
+      'legend is below the donut with visible and spoken percentages',
+      (tester) async {
+        final semantics = tester.ensureSemantics();
+        await _mount(tester, _Trips(), _Analytics());
+        await openTripTotal(tester);
+        expect(
+          find.byKey(const ValueKey('analytics-category-donut')),
+          findsOne,
+        );
+        expect(find.text('66.7%'), findsOne);
+        expect(find.text('33.3%'), findsOne);
+        expect(find.bySemanticsLabel('Food, €84.00, 66.7%'), findsOne);
+        expect(find.bySemanticsLabel('Transport, €42.00, 33.3%'), findsOne);
+        final food = find.byKey(const ValueKey('analytics-category-food'));
+        expect(
+          find.descendant(of: food, matching: find.byType(Text)),
+          findsNWidgets(3),
+        );
+        expect(
+          tester.getTopLeft(food).dy,
+          greaterThan(
+            tester
+                .getBottomLeft(
+                  find.byKey(const ValueKey('analytics-category-donut')),
+                )
+                .dy,
+          ),
+        );
+        semantics.dispose();
+      },
+    );
 
     testWidgets('your share view uses the same chart', (tester) async {
       await _mount(tester, _Trips(), _Analytics());
       await tester.tap(find.text(_strings(tester).analyticsByTrip));
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('analytics-category-donut')), findsOne);
-      expect(find.textContaining('%'), findsNothing);
+      expect(find.text('66.7%'), findsOne);
+      expect(find.text('33.3%'), findsOne);
     });
 
     for (final (width, scale) in [(390.0, 1.0), (320.0, 2.0)]) {
@@ -434,8 +548,8 @@ void main() {
         final rect = tester.getRect(donut);
         expect(rect.left, greaterThanOrEqualTo(0));
         expect(rect.right, lessThanOrEqualTo(width));
-        // A tiny slice has no label on the chart but keeps its percentage
-        // for screen readers.
+        // Even the smallest category has a visible and accessible percentage.
+        expect(find.text('0.4%'), findsOne);
         expect(find.bySemanticsLabel(RegExp(r'^Other, .*0\.4%$')), findsOne);
         semantics.dispose();
       });
@@ -458,7 +572,7 @@ void main() {
         find.byKey(const ValueKey('analytics-category-groceries')),
         findsOne,
       );
-      expect(find.textContaining('%'), findsNothing);
+      expect(find.text('100.0%'), findsOne);
     });
   });
   if (const bool.fromEnvironment('ANALYTICS_PREVIEWS')) {

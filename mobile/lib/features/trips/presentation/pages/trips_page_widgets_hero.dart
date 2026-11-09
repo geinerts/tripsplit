@@ -136,29 +136,13 @@ extension _TripsPageHeroWidgets on _TripsPageState {
     );
 
     final members = trip.isSolo ? null : _buildHeroMembers(context, trip);
-    final share = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          t.yourShare,
-          style: theme.textTheme.bodyMedium?.copyWith(color: muted),
-        ),
-        Text(
-          AppFormatters.displayCurrencyFromCents(
-            context,
-            trip.myOwedCents,
-            currencyCode: trip.currencyCode,
-          ),
-          style: theme.textTheme.titleLarge?.copyWith(fontSize: 20),
-        ),
-        if (pending && !trip.isSettling) ...[
-          const SizedBox(height: 4),
-          Text(
-            t.settlingStatus,
-            style: theme.textTheme.labelMedium?.copyWith(color: colors.primary),
-          ),
-        ],
-      ],
+    final share = Text(
+      AppFormatters.displayCurrencyFromCents(
+        context,
+        trip.myOwedCents,
+        currencyCode: trip.currencyCode,
+      ),
+      style: theme.textTheme.titleLarge?.copyWith(fontSize: 20),
     );
 
     return Column(
@@ -199,8 +183,12 @@ extension _TripsPageHeroWidgets on _TripsPageState {
           ),
         ),
         const SizedBox(height: 4),
+        Text(
+          t.yourShare,
+          style: theme.textTheme.bodyMedium?.copyWith(color: muted),
+        ),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(child: share),
             if (!trip.isSolo && trip.isActive && trip.canCurrentUserManageTrip)
@@ -230,6 +218,13 @@ extension _TripsPageHeroWidgets on _TripsPageState {
             ),
           ],
         ),
+        if (pending && !trip.isSettling) ...[
+          const SizedBox(height: 4),
+          Text(
+            t.settlingStatus,
+            style: theme.textTheme.labelMedium?.copyWith(color: colors.primary),
+          ),
+        ],
       ],
     );
   }

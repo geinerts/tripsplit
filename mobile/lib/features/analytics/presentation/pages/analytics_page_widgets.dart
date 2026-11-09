@@ -21,7 +21,13 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                 _AnalyticsTabs(
                   labels: [t.analyticsAllTrips, t.analyticsByTrip],
                   selected: _byTrip ? 1 : 0,
-                  onSelected: (i) => _updateState(() => _byTrip = i == 1),
+                  onSelected: (i) => _updateState(() {
+                    if (i == 1 && !_byTrip) {
+                      _hasChosenTrip = false;
+                      _selectedTripId = _defaultTrip?.id;
+                    }
+                    _byTrip = i == 1;
+                  }),
                 ),
                 if (_loading && _loaded) const LinearProgressIndicator(),
                 if (_error != null)
@@ -96,10 +102,9 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                         ),
                       ),
                     ),
-                    _AnalyticsTabs(
+                    _AnalyticsScopeSwitch(
                       labels: [t.workspaceTripTotal, t.yourShare],
                       selected: _personal ? 1 : 0,
-                      segmented: true,
                       onSelected: (i) => _updateState(() => _personal = i == 1),
                     ),
                   ] else
@@ -159,37 +164,33 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                       ),
                     ),
                   const SizedBox(height: 8),
-                  if (!_byTrip)
+                  if (!_byTrip || report.expenseCount == 0) ...[
                     Text(
-                      t.analyticsActiveArchived,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppDesign.mutedColor(context),
+                      _byTrip
+                          ? (_personal ? t.yourShare : t.workspaceTripTotal)
+                          : t.analyticsYourSpending,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _money(report.totalCents),
+                      key: const ValueKey('analytics-total'),
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        fontSize: 32,
+                        height: 1.15,
                       ),
                     ),
-                  Text(
-                    _byTrip
-                        ? (_personal ? t.yourShare : t.workspaceTripTotal)
-                        : t.analyticsYourSpending,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    _money(report.totalCents),
-                    key: const ValueKey('analytics-total'),
-                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      fontSize: 32,
-                      height: 1.15,
-                    ),
-                  ),
-                  if (_byTrip)
-                    Text(
-                      t.analyticsExpenseCount(report.expenseCount),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppDesign.mutedColor(context),
+                    if (_byTrip)
+                      Text(
+                        t.analyticsExpenseCount(report.expenseCount),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppDesign.mutedColor(context),
+                        ),
                       ),
-                    ),
+                  ],
                   const SizedBox(height: 12),
-                  if (!_byTrip || _personal) _summaryMetrics(report),
+                  if (!_byTrip || (_personal && report.expenseCount == 0))
+                    _summaryMetrics(report),
                   if (report.expenseCount == 0)
                     _empty(t.analyticsEmptyTitle, t.analyticsPeriodEmptyBody)
                   else ...[
@@ -228,31 +229,58 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
 
   Widget _summaryMetrics(AnalyticsReport report) {
     final t = context.l10n;
-    final tripCount = _month == null
-        ? _trips.where((t) => t.currencyCode == _displayCurrency).length
-        : report.shareByTrip.length;
-    final items = _byTrip
-        ? <(String, String)>[
-            (t.analyticsYouPaid, _money(report.paidCents)),
-            if (_personal)
-              (
-                (_selectedTrip!.myBalanceCents < 0
-                    ? t.analyticsYouOwe
-                    : t.analyticsYouGetBack),
-                _money(_selectedTrip!.myBalanceCents.abs()),
-              )
-            else
-              (t.analyticsParticipants, '${_selectedTrip!.membersCount}'),
-          ]
-        : <(String, String)>[
-            (t.analyticsTrips, '$tripCount'),
-            (
-              t.analyticsAveragePerTrip,
-              _money(
-                tripCount == 0 ? 0 : (report.totalCents / tripCount).round(),
-              ),
+    if (!_byTrip) {
+      final tripCount = _month == null
+          ? _trips.where((t) => t.currencyCode == _displayCurrency).length
+          : report.shareByTrip.length;
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ExcludeSemantics(
+            child: Icon(
+              Icons.luggage_outlined,
+              size: 20,
+              color: Theme.of(context).colorScheme.primary,
             ),
-          ];
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Wrap(
+              spacing: 12,
+              runSpacing: 4,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(
+                  '${t.analyticsTrips} $tripCount',
+                  key: const ValueKey('analytics-trip-count'),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                Text(
+                  t.analyticsActiveArchived,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppDesign.mutedColor(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+    final items = <(String, String)>[
+      (t.analyticsYouPaid, _money(report.paidCents)),
+      if (_personal)
+        (
+          (_selectedTrip!.myBalanceCents < 0
+              ? t.analyticsYouOwe
+              : t.analyticsYouGetBack),
+          _money(_selectedTrip!.myBalanceCents.abs()),
+        )
+      else
+        (t.analyticsParticipants, '${_selectedTrip!.membersCount}'),
+    ];
     Widget metric(int i) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -310,206 +338,6 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
       ],
     ),
   );
-  Widget _categories(AnalyticsReport report) {
-    final rows = report.categories.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    String percent(int value) =>
-        _analyticsPercent(context, value, report.totalCents);
-    Widget legend() => Column(
-      children: [
-        for (final row in rows)
-          Padding(
-            key: ValueKey('analytics-category-${row.key}'),
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: _byTrip
-                // The chart shows the percentage visually; screen readers get
-                // the whole row, including the percentage, as one label.
-                ? Semantics(
-                    container: true,
-                    label:
-                        '${_categoryName(row.key)}, ${_money(row.value)}, '
-                        '${percent(row.value)}',
-                    excludeSemantics: true,
-                    child: _categoryLegendRow(row),
-                  )
-                : Column(
-                    children: [
-                      _categoryLegendRow(row),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          '${(row.value * 100 / report.totalCents).toStringAsFixed(1)}%',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: LinearProgressIndicator(
-                          value: row.value / report.totalCents,
-                          minHeight: 8,
-                          borderRadius: BorderRadius.circular(4),
-                          color: _categoryColor(row.key),
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
-                        ),
-                      ),
-                    ],
-                  ),
-          ),
-      ],
-    );
-    if (!_byTrip) {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 300 ||
-              MediaQuery.textScalerOf(context).scale(16) > 20) {
-            return legend();
-          }
-          return Column(
-            children: [
-              for (final row in rows)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      SizedBox(width: 112, child: Text(_categoryName(row.key))),
-                      Expanded(
-                        child: LinearProgressIndicator(
-                          value: row.value / report.totalCents,
-                          minHeight: 14,
-                          borderRadius: BorderRadius.circular(4),
-                          color: _categoryColor(row.key),
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      SizedBox(
-                        width: 86,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              _money(row.value),
-                              textAlign: TextAlign.end,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            Text(
-                              '${(row.value * 100 / report.totalCents).toStringAsFixed(1)}%',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            ],
-          );
-        },
-      );
-    }
-
-    final values = rows.map((e) => e.value).toList();
-    final percents = rows.map((e) => percent(e.value)).toList();
-    final textScaler = MediaQuery.textScalerOf(
-      context,
-    ).clamp(maxScaleFactor: 1.3);
-    final labelStyle = Theme.of(
-      context,
-    ).textTheme.labelSmall!.copyWith(fontWeight: FontWeight.w600, height: 1.1);
-    Widget donut(_AnalyticsDonutLayout layout) {
-      final hole = layout.radius - layout.stroke - 4;
-      return ExcludeSemantics(
-        child: SizedBox(
-          key: const ValueKey('analytics-category-donut'),
-          width: layout.size.width,
-          height: layout.size.height,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _AnalyticsDonut(
-                    layout: layout,
-                    values: values,
-                    colors: rows.map((e) => _categoryColor(e.key)).toList(),
-                    labelStyle: labelStyle,
-                    textScaler: textScaler,
-                    textColor: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-              ),
-              Positioned.fromRect(
-                rect: Rect.fromCircle(center: layout.center, radius: hole),
-                child: Center(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      _money(report.totalCents),
-                      maxLines: 1,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return LayoutBuilder(
-      builder: (context, box) {
-        _AnalyticsDonutLayout layoutFor(double width) =>
-            _AnalyticsDonutLayout.compute(
-              values: values,
-              percents: percents,
-              style: labelStyle,
-              scaler: textScaler,
-              maxWidth: width,
-            );
-        final beside = layoutFor(box.maxWidth);
-        final stacked =
-            box.maxWidth - beside.size.width - 16 < 180 ||
-            MediaQuery.textScalerOf(context).scale(16) > 20;
-        if (stacked) {
-          return Column(
-            children: [donut(beside), const SizedBox(height: 16), legend()],
-          );
-        }
-        return Row(
-          children: [
-            donut(beside),
-            const SizedBox(width: 16),
-            Expanded(child: legend()),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _categoryLegendRow(MapEntry<String, int> row) => Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Padding(
-        padding: const EdgeInsets.only(top: 5),
-        child: Icon(Icons.circle, size: 12, color: _categoryColor(row.key)),
-      ),
-      const SizedBox(width: 8),
-      Expanded(child: Text(_categoryName(row.key))),
-      const SizedBox(width: 8),
-      Flexible(
-        child: Text(
-          _money(row.value),
-          textAlign: TextAlign.end,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-      ),
-    ],
-  );
-
   List<Widget> _memberRows(AnalyticsReport report) {
     final members = report.members;
     return [
