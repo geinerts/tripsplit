@@ -17,7 +17,8 @@ TripModel analyticsTrip({
   'members_count': 3,
   'date_from': dateFrom,
   'date_to': dateTo,
-  'my_balance_cents': 4200,
+  // As the server sends it: share (owed) minus paid.
+  'my_balance_cents': -4200,
   'my_paid_cents': 8400,
   'my_owed_cents': 4200,
 });

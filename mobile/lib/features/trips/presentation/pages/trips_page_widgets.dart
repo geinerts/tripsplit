@@ -217,7 +217,10 @@ extension _TripsPageWidgets on _TripsPageState {
     children: [
       Expanded(
         child: Text(
-          context.l10n.yourTrips,
+          _showArchived
+              ? context.l10n.homeYourArchivedTrips
+              : context.l10n.homeYourActiveTrips,
+          key: const ValueKey('home-trips-heading'),
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
@@ -254,7 +257,9 @@ extension _TripsPageWidgets on _TripsPageState {
     final colors = Theme.of(context).colorScheme;
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 300),
+        // Icons only, like the Friends / Requests switch; the names are in
+        // tooltips and semantics, and the heading above says which list.
+        constraints: const BoxConstraints(maxWidth: 184),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colors.surfaceContainerHighest,
@@ -288,48 +293,44 @@ extension _TripsPageWidgets on _TripsPageState {
                   children: [
                     for (final archived in [false, true])
                       Expanded(
-                        child: Semantics(
-                          selected: _showArchived == archived,
-                          child: TextButton(
-                            key: ValueKey(
-                              archived ? 'home-archived' : 'home-active',
-                            ),
-                            onPressed: () => _updateState(() {
-                              _hasChosenFilter = true;
-                              _showArchived = archived;
-                            }),
-                            style: TextButton.styleFrom(
-                              minimumSize: const Size(48, 48),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 12,
+                        child: Tooltip(
+                          message: archived
+                              ? context.l10n.archivedStatus
+                              : context.l10n.activeStatus,
+                          child: Semantics(
+                            selected: _showArchived == archived,
+                            button: true,
+                            label: archived
+                                ? context.l10n.archivedStatus
+                                : context.l10n.activeStatus,
+                            excludeSemantics: true,
+                            child: TextButton(
+                              key: ValueKey(
+                                archived ? 'home-archived' : 'home-active',
                               ),
-                              foregroundColor: _showArchived == archived
-                                  ? colors.onPrimary
-                                  : colors.onSurfaceVariant,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24),
+                              onPressed: () => _updateState(() {
+                                _hasChosenFilter = true;
+                                _showArchived = archived;
+                              }),
+                              style: TextButton.styleFrom(
+                                minimumSize: const Size(48, 48),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 12,
+                                ),
+                                foregroundColor: _showArchived == archived
+                                    ? colors.onPrimary
+                                    : colors.onSurfaceVariant,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
                               ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  archived
-                                      ? Icons.inventory_2_outlined
-                                      : Icons.luggage_outlined,
-                                  size: 21,
-                                ),
-                                const SizedBox(width: 8),
-                                Flexible(
-                                  child: Text(
-                                    archived
-                                        ? context.l10n.archivedStatus
-                                        : context.l10n.activeStatus,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
+                              child: Icon(
+                                archived
+                                    ? Icons.inventory_2_outlined
+                                    : Icons.luggage_outlined,
+                                size: 26,
+                              ),
                             ),
                           ),
                         ),

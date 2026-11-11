@@ -187,7 +187,10 @@ extension _WorkspacePageLayout on _WorkspacePageState {
 
   Widget _buildWorkspaceTabSwitcher(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    const icons = ['receipt-text', 'wallet', 'hand-coins', 'history'];
+    // Settle uses the SPLYTO "Y" mark, one colour like the other tab icons.
+    // It is a filled shape, so it is drawn a little larger to match their
+    // visual weight.
+    const icons = ['receipt-text', 'wallet', 'splyto-y', 'history'];
     final duration = MediaQuery.disableAnimationsOf(context)
         ? Duration.zero
         : const Duration(milliseconds: 150);
@@ -237,8 +240,8 @@ extension _WorkspacePageLayout on _WorkspacePageState {
                               },
                               child: SvgPicture.asset(
                                 'assets/branding/workspace_${icons[index]}.svg',
-                                width: 24,
-                                height: 24,
+                                width: index == 2 ? 30 : 24,
+                                height: index == 2 ? 30 : 24,
                                 excludeFromSemantics: true,
                                 colorFilter: ColorFilter.mode(
                                   _workspaceTabIndex == index

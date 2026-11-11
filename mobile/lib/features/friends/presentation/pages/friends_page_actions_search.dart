@@ -23,6 +23,13 @@ extension _FriendsPageActionsSearch on _FriendsPageState {
                 ...?snapshot?.pendingReceived.map((request) => request.user.id),
               };
             },
+            friends: () => _snapshot?.friends ?? const <FriendUser>[],
+            onOpenFriend: (friend) async {
+              if (mounted &&
+                  widget.authController.currentUser?.id == accountId) {
+                await _openFriendProfile(friend);
+              }
+            },
             onInvited: () async {
               if (mounted &&
                   widget.authController.currentUser?.id == accountId) {

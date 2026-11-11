@@ -98,9 +98,9 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                           _updateState(() => _expenseSearchQuery = value),
                     ),
                   ),
-                  if (expenses.isNotEmpty && _refreshError == null) ...[
+                  if (_showSyncStatusIcon) ...[
                     const SizedBox(width: 4),
-                    _buildSyncStatusBadge(context, compact: true),
+                    _buildSyncStatusBadge(context),
                   ],
                 ],
               ),
@@ -113,11 +113,6 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                         : t.workspaceSearchLoadedHint,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
-                ),
-              if (expenses.isEmpty || _refreshError != null)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: _buildSyncStatusBadge(context),
                 ),
             ],
           ),

@@ -1729,6 +1729,12 @@ class AppLocalizationsCs extends AppLocalizations {
   String get yourTrips => 'Vaše výlety';
 
   @override
+  String get homeYourActiveTrips => 'Vaše aktivní výlety';
+
+  @override
+  String get homeYourArchivedTrips => 'Vaše archivované výlety';
+
+  @override
   String get authIntroSplitSmarter => 'Dělejte si účty chytřeji.';
 
   @override
@@ -4116,10 +4122,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get analyticsYouOwe => 'Dlužíš';
 
   @override
+  String get analyticsPaidForOthers => 'Zaplatil jsi za ostatní';
+
+  @override
+  String get analyticsOthersPaidForYou => 'Ostatní zaplatili za tebe';
+
+  @override
   String get analyticsParticipants => 'Účastníci';
 
   @override
   String get analyticsYourCategories => 'Vaše výdaje podle kategorií';
+
+  @override
+  String get analyticsTripTotalByCategory => 'Celkem za výlet podle kategorií';
 
   @override
   String get analyticsLargestShares => 'Moje největší podíly na výdajích';

@@ -741,6 +741,111 @@ void main() {
     expect(f.invites, isEmpty);
     await dispose(tester);
   });
+  testWidgets('friends show as a grid with QR actions above the bottom', (
+    tester,
+  ) async {
+    final f = _Friends()
+      ..received = []
+      ..sent = [];
+    await _mount(tester, f);
+    await tester.pumpAndSettle();
+    final t = strings(tester);
+    expect(find.byType(GridView, skipOffstage: false), findsNothing);
+    final anna = tester.getRect(find.byKey(const ValueKey('friend-row-8')));
+    final daniel = tester.getRect(find.byKey(const ValueKey('friend-row-9')));
+    // Side by side in one grid row, the name under the avatar.
+    expect(anna.top, daniel.top);
+    expect(anna.right, lessThanOrEqualTo(daniel.left));
+    final qrBar = tester.getRect(find.byKey(const ValueKey('friends-qr-bar')));
+    expect(qrBar.bottom, tester.getRect(find.byType(FriendsPage)).bottom);
+    expect(qrBar.top, greaterThan(anna.bottom));
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('friends-qr-bar')),
+        matching: find.text(t.friendsMyQr),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('friends-qr-bar')),
+        matching: find.text(t.friendsScanQr),
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('friend-row-8')));
+    await tester.pumpAndSettle();
+    // The profile opens as a sheet over the grid, not as a page.
+    expect(
+      find.ancestor(
+        of: find.byType(UserProfilePage),
+        matching: find.byType(BottomSheet),
+      ),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('friend-invite-to-trip')), findsOneWidget);
+    expect(find.text(t.workspacePaymentDetails), findsOneWidget);
+    await dispose(tester);
+  });
+  testWidgets('search lists matching friends first with a Friend badge', (
+    tester,
+  ) async {
+    final f = _Friends()
+      ..received = []
+      ..sent = []
+      ..searchHandler = (_) async => [
+        const FriendUser(id: 30, nickname: 'Annija Stranger'),
+      ];
+    await _mount(tester, f);
+    await tester.pumpAndSettle();
+    final t = strings(tester);
+    await tester.tap(find.byKey(const ValueKey('friends-open-search')));
+    await tester.pumpAndSettle();
+    // Diacritics are ignored: "berz" finds "Bērziņa".
+    await tester.enterText(find.byType(TextField), 'berz');
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey('friend-search-friend-8')),
+      findsOneWidget,
+    );
+    expect(find.text(t.friendsNoUsersFound), findsNothing);
+
+    await tester.enterText(find.byType(TextField), 'ann');
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pumpAndSettle();
+    // Friends are still left out of the server request.
+    expect(f.searchCalls.last.$3, containsAll(<int>[8, 9]));
+    final friendRow = find.byKey(const ValueKey('friend-search-friend-8'));
+    final stranger = find.byKey(const ValueKey('friend-search-user-30'));
+    expect(friendRow, findsOneWidget);
+    expect(stranger, findsOneWidget);
+    expect(
+      tester.getRect(friendRow).top,
+      lessThan(tester.getRect(stranger).top),
+    );
+    expect(
+      find.descendant(
+        of: friendRow,
+        matching: find.text(t.friendRelationshipLabel),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: friendRow,
+        matching: find.text(t.friendsInviteAction),
+      ),
+      findsNothing,
+    );
+
+    await tester.tap(friendRow);
+    await tester.pumpAndSettle();
+    expect(find.byType(UserProfilePage), findsOneWidget);
+    expect(find.byType(BottomSheet), findsOneWidget);
+    await dispose(tester);
+  });
   testWidgets('latest search query wins; invitation uses selected user', (
     tester,
   ) async {
@@ -986,7 +1091,7 @@ void main() {
       await tester.pumpAndSettle();
       final t = strings(tester);
       Future<void> openRemoval() async {
-        await tester.tap(find.byKey(const ValueKey('friend-more-8')));
+        await tester.longPress(find.byKey(const ValueKey('friend-row-8')));
         await tester.pumpAndSettle();
         expect(find.byType(UserProfilePage), findsNothing);
         await tester.tap(find.text(t.friendsRemoveFriend));

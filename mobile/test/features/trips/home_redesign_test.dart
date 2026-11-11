@@ -556,14 +556,19 @@ void main() {
       expect(find.text('Archived trip'), findsNothing);
       final activeFilter = find.byKey(const ValueKey('home-active'));
       final archivedFilter = find.byKey(const ValueKey('home-archived'));
+      // Icons only; the names are tooltips and the heading names the list.
       expect(
         find.descendant(of: activeFilter, matching: find.text('Active')),
-        findsOneWidget,
+        findsNothing,
       );
       expect(
         find.descendant(of: archivedFilter, matching: find.text('Archived')),
-        findsOneWidget,
+        findsNothing,
       );
+      expect(find.byTooltip('Active'), findsOneWidget);
+      expect(find.byTooltip('Archived'), findsOneWidget);
+      final heading = find.byKey(const ValueKey('home-trips-heading'));
+      expect(tester.widget<Text>(heading).data, 'Your active trips');
       expect(
         find.descendant(
           of: activeFilter,
@@ -584,6 +589,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Archived trip'), findsOneWidget);
       expect(find.text('Lisbon getaway'), findsNothing);
+      expect(tester.widget<Text>(heading).data, 'Your archived trips');
       await tester.tap(activeFilter);
       await tester.pumpAndSettle();
       expect(find.text('Settling trip'), findsOneWidget);

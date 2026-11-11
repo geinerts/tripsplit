@@ -24,7 +24,31 @@ class UserProfilePage extends StatelessWidget {
     this.copyNameSuccessText,
     this.copyNameFailureText,
     this.appBarActions = const <Widget>[],
-  });
+  }) : asSheet = false;
+
+  /// The same profile content laid out for a modal bottom sheet: no app bar,
+  /// the [appBarActions] sit above the avatar and the list sizes to its
+  /// content, scrolling only when it is taller than the sheet.
+  const UserProfilePage.sheet({
+    super.key,
+    required this.title,
+    required this.name,
+    this.nickname,
+    this.subtitle,
+    this.avatarUrl,
+    this.badges = const <String>[],
+    this.statusBadge,
+    this.sections = const <Widget>[],
+    required this.bankTitle,
+    required this.bankDescription,
+    this.showBankDetails = true,
+    this.enableNameCopy = false,
+    this.copyNameTooltip,
+    this.copyNameSuccessText,
+    this.copyNameFailureText,
+    this.appBarActions = const <Widget>[],
+  }) : asSheet = true,
+       onRefresh = null;
 
   final String title;
   final String name;
@@ -43,6 +67,7 @@ class UserProfilePage extends StatelessWidget {
   final String? copyNameSuccessText;
   final String? copyNameFailureText;
   final List<Widget> appBarActions;
+  final bool asSheet;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +75,34 @@ class UserProfilePage extends StatelessWidget {
       name: name.trim(),
       nickname: nickname?.trim() ?? '',
     );
+
+    if (asSheet) {
+      return Semantics(
+        scopesRoute: true,
+        namesRoute: true,
+        label: title,
+        explicitChildNodes: true,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [...appBarActions, const SizedBox(height: 48)],
+              ),
+            ),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                children: _profileChildren(context, visibleNickname),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     return AppPageScaffold(
       appBar: AppBar(
@@ -67,58 +120,61 @@ class UserProfilePage extends StatelessWidget {
                   parent: BouncingScrollPhysics(),
                 ),
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-          children: [
-            _UserProfileHeroCard(
-              name: name,
-              nickname: subtitle ?? visibleNickname,
-              avatarUrl: avatarUrl,
-              badges: badges,
-              statusBadge: statusBadge,
-              enableNameCopy: enableNameCopy,
-              copyNameTooltip: copyNameTooltip,
-              copyNameSuccessText: copyNameSuccessText,
-              copyNameFailureText: copyNameFailureText,
-            ),
-            for (final section in sections) ...[
-              const SizedBox(height: 16),
-              section,
-            ],
-            if (showBankDetails) ...[
-              const SizedBox(height: 12),
-              UserProfileSectionCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.account_balance_outlined,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          bankTitle,
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      bankDescription,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppDesign.mutedColor(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ],
+          children: _profileChildren(context, visibleNickname),
         ),
       ),
     );
   }
+
+  List<Widget> _profileChildren(
+    BuildContext context,
+    String? visibleNickname,
+  ) => [
+    _UserProfileHeroCard(
+      name: name,
+      nickname: subtitle ?? visibleNickname,
+      avatarUrl: avatarUrl,
+      badges: badges,
+      statusBadge: statusBadge,
+      enableNameCopy: enableNameCopy,
+      copyNameTooltip: copyNameTooltip,
+      copyNameSuccessText: copyNameSuccessText,
+      copyNameFailureText: copyNameFailureText,
+    ),
+    for (final section in sections) ...[const SizedBox(height: 16), section],
+    if (showBankDetails) ...[
+      const SizedBox(height: 12),
+      UserProfileSectionCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.account_balance_outlined,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  bankTitle,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              bankDescription,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppDesign.mutedColor(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  ];
 
   String? _visibleNickname({required String name, required String nickname}) {
     if (nickname.isEmpty) {

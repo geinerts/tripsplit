@@ -5311,6 +5311,48 @@ void main() {
       }
     }
   });
+  testWidgets('a synced trip shows no sync icon or status text', (
+    tester,
+  ) async {
+    await _mount(tester, _Workspace()..data = snapshot(solo: true), solo: true);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('workspace-sync-status')), findsNothing);
+    await disposePage(tester);
+  });
+  testWidgets('with no expenses, waiting changes are still only an icon', (
+    tester,
+  ) async {
+    await _mount(
+      tester,
+      _Workspace()
+        ..data = snapshot(expenses: [], solo: true)
+        ..queued = [
+          const QueuedMutation(
+            id: 'pending',
+            tripId: 1,
+            createdAtMillis: 1,
+            type: QueuedMutationType.addExpense,
+          ),
+        ],
+      solo: true,
+    );
+    await tester.pumpAndSettle();
+    final status = find.byKey(const ValueKey('workspace-sync-status'));
+    await tester.scrollUntilVisible(
+      status,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(status, findsOneWidget);
+    final t = AppLocalizations.of(tester.element(status))!;
+    expect(find.text(t.syncChangesWaiting(1)), findsNothing);
+    final search = find.widgetWithText(TextField, t.workspaceSearchExpenses);
+    expect(
+      (tester.getCenter(status).dy - tester.getCenter(search).dy).abs(),
+      lessThan(2),
+    );
+    await disposePage(tester);
+  });
   for (final dark in [false, true]) {
     testWidgets('waiting changes show only a cloud icon dark=$dark', (
       tester,

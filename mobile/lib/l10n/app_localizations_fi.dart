@@ -1723,6 +1723,12 @@ class AppLocalizationsFi extends AppLocalizations {
   String get yourTrips => 'Matkanne';
 
   @override
+  String get homeYourActiveTrips => 'Aktiiviset matkasi';
+
+  @override
+  String get homeYourArchivedTrips => 'Arkistoidut matkasi';
+
+  @override
   String get authIntroSplitSmarter => 'Jaa älykkäämmin.';
 
   @override
@@ -4110,10 +4116,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String get analyticsYouOwe => 'Olet velkaa';
 
   @override
+  String get analyticsPaidForOthers => 'Maksoit muiden puolesta';
+
+  @override
+  String get analyticsOthersPaidForYou => 'Muut maksoivat puolestasi';
+
+  @override
   String get analyticsParticipants => 'Osallistujat';
 
   @override
   String get analyticsYourCategories => 'Kulutuksesi luokittain';
+
+  @override
+  String get analyticsTripTotalByCategory => 'Matkan kokonaissumma luokittain';
 
   @override
   String get analyticsLargestShares => 'Suurimmat kuluosuuteni';

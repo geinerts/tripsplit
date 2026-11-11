@@ -35,6 +35,7 @@ import '../controllers/friends_controller.dart';
 import '../controllers/friend_trip_actions.dart';
 import '../widgets/friend_trip_invite_page.dart';
 import '../widgets/friend_avatar.dart';
+import '../widgets/friend_grid_tile.dart';
 import 'friend_search_page.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../../trips/domain/entities/trip.dart';

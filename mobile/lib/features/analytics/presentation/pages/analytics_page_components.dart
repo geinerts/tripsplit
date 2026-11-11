@@ -73,17 +73,25 @@ class _AnalyticsScopeSwitch extends StatelessWidget {
     required this.labels,
     required this.selected,
     required this.onSelected,
+    this.iconOnly = false,
   });
   final List<String> labels;
+
+  /// Icons only, with each label in a tooltip and in semantics, like the
+  /// Friends / Requests switch.
+  final bool iconOnly;
   final int selected;
   final ValueChanged<int> onSelected;
+
+  Widget _tooltip(int i, Widget child) =>
+      iconOnly ? Tooltip(message: labels[i], child: child) : child;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 340),
+        constraints: BoxConstraints(maxWidth: iconOnly ? 184 : 340),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colors.surfaceContainerHighest,
@@ -117,41 +125,49 @@ class _AnalyticsScopeSwitch extends StatelessWidget {
                   children: [
                     for (var i = 0; i < labels.length; i++)
                       Expanded(
-                        child: Semantics(
-                          selected: selected == i,
-                          child: TextButton(
-                            key: ValueKey('analytics-scope-$i'),
-                            onPressed: () => onSelected(i),
-                            style: TextButton.styleFrom(
-                              minimumSize: const Size(48, 48),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 12,
-                              ),
-                              foregroundColor: selected == i
-                                  ? colors.onPrimary
-                                  : colors.onSurfaceVariant,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  i == 0
-                                      ? Icons.pie_chart_outline
-                                      : Icons.person_outline,
-                                  size: 21,
+                        child: _tooltip(
+                          i,
+                          Semantics(
+                            selected: selected == i,
+                            label: iconOnly ? labels[i] : null,
+                            button: iconOnly ? true : null,
+                            excludeSemantics: iconOnly,
+                            child: TextButton(
+                              key: ValueKey('analytics-scope-$i'),
+                              onPressed: () => onSelected(i),
+                              style: TextButton.styleFrom(
+                                minimumSize: const Size(48, 48),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 12,
                                 ),
-                                const SizedBox(width: 8),
-                                Flexible(
-                                  child: Text(
-                                    labels[i],
-                                    textAlign: TextAlign.center,
+                                foregroundColor: selected == i
+                                    ? colors.onPrimary
+                                    : colors.onSurfaceVariant,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    i == 0
+                                        ? Icons.pie_chart_outline
+                                        : Icons.person_outline,
+                                    size: iconOnly ? 26 : 21,
                                   ),
-                                ),
-                              ],
+                                  if (!iconOnly) ...[
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: Text(
+                                        labels[i],
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
                             ),
                           ),
                         ),

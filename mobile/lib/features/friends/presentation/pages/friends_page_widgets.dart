@@ -11,130 +11,156 @@ extension _FriendsPageWidgets on _FriendsPageState {
           constraints: BoxConstraints(
             maxWidth: context.responsive.pageMaxWidth,
           ),
-          child: RefreshIndicator(
-            onRefresh: () => _loadSnapshot(showLoader: false),
-            child: CustomScrollView(
-              controller: _scrollController,
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                  sliver: SliverList.list(
-                    children: [
-                      if (_isLoading && snapshot == null)
-                        Semantics(
-                          label: context.l10n.friendsLoading,
-                          child: const Column(
-                            children: [
-                              AppSkeletonBlock(height: 50),
-                              SizedBox(height: 24),
-                              AppSkeletonBlock(height: 64),
-                              SizedBox(height: 16),
-                              AppSkeletonBlock(height: 64),
-                              SizedBox(height: 16),
-                              AppSkeletonBlock(height: 64),
+          child: Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () => _loadSnapshot(showLoader: false),
+                  child: CustomScrollView(
+                    controller: _scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                        sliver: SliverList.list(
+                          children: [
+                            if (_isLoading && snapshot == null)
+                              Semantics(
+                                label: context.l10n.friendsLoading,
+                                child: const Column(
+                                  children: [
+                                    AppSkeletonBlock(height: 50),
+                                    SizedBox(height: 24),
+                                    AppSkeletonBlock(height: 64),
+                                    SizedBox(height: 16),
+                                    AppSkeletonBlock(height: 64),
+                                    SizedBox(height: 16),
+                                    AppSkeletonBlock(height: 64),
+                                  ],
+                                ),
+                              ),
+                            if (_isLoading && snapshot != null)
+                              const LinearProgressIndicator(),
+                            if (_errorText != null) ...[
+                              _InlineErrorCard(
+                                message: _errorText!,
+                                retryLabel: context.l10n.retryAction,
+                                onRetry: () => _loadSnapshot(showLoader: false),
+                              ),
+                              const SizedBox(height: 16),
                             ],
-                          ),
-                        ),
-                      if (_isLoading && snapshot != null)
-                        const LinearProgressIndicator(),
-                      if (_errorText != null) ...[
-                        _InlineErrorCard(
-                          message: _errorText!,
-                          retryLabel: context.l10n.retryAction,
-                          onRetry: () => _loadSnapshot(showLoader: false),
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-                      if (snapshot != null) ...[
-                        const SizedBox(height: 8),
-                        _buildListSwitch(snapshot),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: _qrAction(
-                                  Icons.qr_code_2,
-                                  context.l10n.friendsMyQr,
-                                  _openMyFriendQr,
+                            if (snapshot != null) ...[
+                              const SizedBox(height: 8),
+                              _buildListSwitch(snapshot),
+                              const SizedBox(height: 24),
+                              if (_showRequests) ...[
+                                _buildSectionHeadingRow(
+                                  title: context.l10n.friendsRequests,
+                                  trailing: Text(
+                                    '${_sectionCountRequests(snapshot)}',
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                width: 1,
-                                height: 32,
-                                color: AppDesign.cardStroke(context),
-                              ),
-                              Expanded(
-                                child: _qrAction(
-                                  Icons.qr_code_scanner,
-                                  context.l10n.friendsScanQr,
-                                  _openScanFriendQr,
+                                if (_sectionCountRequests(snapshot) == 0)
+                                  Padding(
+                                    key: const ValueKey(
+                                      'friends-requests-empty',
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    child: Text(
+                                      context.l10n.friendsNoPendingActivity,
+                                      style: TextStyle(
+                                        color: AppDesign.mutedColor(context),
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  _buildFriendRequestsFeed(snapshot),
+                              ] else ...[
+                                _buildSectionHeadingRow(
+                                  title: context.l10n.navFriends,
+                                  trailing: Text(
+                                    '${_sectionCountFriends(snapshot)}',
+                                  ),
                                 ),
-                              ),
+                                if (snapshot.friends.isEmpty)
+                                  _buildFriendsEmpty(snapshot),
+                              ],
                             ],
+                          ],
+                        ),
+                      ),
+                      if (snapshot != null &&
+                          !_showRequests &&
+                          snapshot.friends.isNotEmpty)
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          sliver: SliverGrid.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 120,
+                                  mainAxisSpacing: 8,
+                                  crossAxisSpacing: 8,
+                                  mainAxisExtent: FriendGridTile.extent(
+                                    context,
+                                  ),
+                                ),
+                            itemCount: snapshot.friends.length,
+                            itemBuilder: (_, index) =>
+                                _buildFriendGridTile(snapshot.friends[index]),
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        if (_showRequests) ...[
-                          _buildSectionHeadingRow(
-                            title: context.l10n.friendsRequests,
-                            trailing: Text(
-                              '${_sectionCountRequests(snapshot)}',
-                            ),
+                      if (snapshot != null && !_showRequests && _friendsHasMore)
+                        SliverToBoxAdapter(
+                          child: _buildLoadMoreTextButton(
+                            loading: _isLoadingMoreFriends,
+                            onPressed: () => unawaited(_loadMoreFriends()),
                           ),
-                          if (_sectionCountRequests(snapshot) == 0)
-                            Padding(
-                              key: const ValueKey('friends-requests-empty'),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              child: Text(
-                                context.l10n.friendsNoPendingActivity,
-                                style: TextStyle(
-                                  color: AppDesign.mutedColor(context),
-                                ),
-                              ),
-                            )
-                          else
-                            _buildFriendRequestsFeed(snapshot),
-                        ] else ...[
-                          _buildSectionHeadingRow(
-                            title: context.l10n.navFriends,
-                            trailing: Text('${_sectionCountFriends(snapshot)}'),
-                          ),
-                          if (snapshot.friends.isEmpty)
-                            _buildFriendsEmpty(snapshot),
-                        ],
-                      ],
+                        ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 24)),
                     ],
                   ),
                 ),
-                if (snapshot != null &&
-                    !_showRequests &&
-                    snapshot.friends.isNotEmpty)
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    sliver: SliverList.builder(
-                      itemCount: snapshot.friends.length,
-                      itemBuilder: (_, index) =>
-                          _buildFriendListRow(snapshot.friends[index]),
-                    ),
-                  ),
-                if (snapshot != null && !_showRequests && _friendsHasMore)
-                  SliverToBoxAdapter(
-                    child: _buildLoadMoreTextButton(
-                      loading: _isLoadingMoreFriends,
-                      onPressed: () => unawaited(_loadMoreFriends()),
-                    ),
-                  ),
-                const SliverToBoxAdapter(child: SizedBox(height: 24)),
-              ],
-            ),
+              ),
+              if (snapshot != null) _buildQrBar(),
+            ],
           ),
         ),
       ),
     );
   }
+
+  /// My QR / Scan QR, pinned to the bottom of the page right above the
+  /// bottom navigation so they stay in reach of the thumb.
+  Widget _buildQrBar() => DecoratedBox(
+    key: const ValueKey('friends-qr-bar'),
+    decoration: BoxDecoration(
+      border: Border(top: BorderSide(color: AppDesign.cardStroke(context))),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+      child: Row(
+        children: [
+          Expanded(
+            child: _qrAction(
+              Icons.qr_code_2,
+              context.l10n.friendsMyQr,
+              _openMyFriendQr,
+            ),
+          ),
+          Container(width: 1, height: 32, color: AppDesign.cardStroke(context)),
+          Expanded(
+            child: _qrAction(
+              Icons.qr_code_scanner,
+              context.l10n.friendsScanQr,
+              _openScanFriendQr,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 
   /// Friends / Requests switch: icons only, like the trip form's
   /// With others / Just me switch; names are in tooltips and semantics.
@@ -430,42 +456,15 @@ extension _FriendsPageWidgets on _FriendsPageState {
     label: Text(context.l10n.tripsLoadMore),
   );
 
-  Widget _buildFriendListRow(FriendUser friend) => Column(
-    children: [
-      Material(
-        color: Colors.transparent,
-        child: InkWell(
-          key: ValueKey('friend-row-${friend.id}'),
-          borderRadius: AppDesign.cardRadius,
-          onTap: () => unawaited(_openFriendProfile(friend)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              children: [
-                ExcludeSemantics(child: _userAvatar(friend, size: 48)),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildFeedTextBlock(
-                    title: _friendPrimaryName(friend),
-                    subtitle: _friendTripsLabel(friend),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  key: ValueKey('friend-more-${friend.id}'),
-                  tooltip: context.l10n.friendsMoreActions,
-                  onPressed: _friendActionLoading.contains(friend.id)
-                      ? null
-                      : () => unawaited(_openFriendListActions(friend)),
-                  icon: const Icon(Icons.more_horiz_rounded),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      const Divider(height: 1),
-    ],
+  Widget _buildFriendGridTile(FriendUser friend) => FriendGridTile(
+    key: ValueKey('friend-row-${friend.id}'),
+    user: friend,
+    name: _friendPrimaryName(friend),
+    onTap: () => unawaited(_openFriendProfile(friend)),
+    longPressHint: context.l10n.friendsMoreActions,
+    onLongPress: _friendActionLoading.contains(friend.id)
+        ? null
+        : () => unawaited(_openFriendListActions(friend)),
   );
 
   Widget _buildFriendsEmpty(FriendsSnapshot snapshot) => Padding(
@@ -525,13 +524,5 @@ extension _FriendsPageWidgets on _FriendsPageState {
       return fallback;
     }
     return context.l10n.friendsUser;
-  }
-
-  String _friendTripsLabel(FriendUser friend) {
-    final count = friend.commonTripsCount;
-    if (count <= 0) {
-      return context.l10n.workspaceNoCommonTripsFoundYet;
-    }
-    return context.l10n.friendsCommonTripsCount(count);
   }
 }

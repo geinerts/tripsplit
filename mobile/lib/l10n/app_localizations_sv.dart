@@ -1723,6 +1723,12 @@ class AppLocalizationsSv extends AppLocalizations {
   String get yourTrips => 'Dina resor';
 
   @override
+  String get homeYourActiveTrips => 'Dina aktiva resor';
+
+  @override
+  String get homeYourArchivedTrips => 'Dina arkiverade resor';
+
+  @override
   String get authIntroSplitSmarter => 'Dela upp på ett smartare sätt.';
 
   @override
@@ -4110,10 +4116,19 @@ class AppLocalizationsSv extends AppLocalizations {
   String get analyticsYouOwe => 'Du är skyldig';
 
   @override
+  String get analyticsPaidForOthers => 'Betalat för andra';
+
+  @override
+  String get analyticsOthersPaidForYou => 'Andra betalade för dig';
+
+  @override
   String get analyticsParticipants => 'Deltagare';
 
   @override
   String get analyticsYourCategories => 'Dina utgifter per kategori';
+
+  @override
+  String get analyticsTripTotalByCategory => 'Resans totalsumma per kategori';
 
   @override
   String get analyticsLargestShares => 'Mina största kostnadsandelar';

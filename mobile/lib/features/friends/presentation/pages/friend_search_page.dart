@@ -6,6 +6,7 @@ import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../../../core/ui/responsive.dart';
+import '../../../../core/ui/user_profile_page.dart';
 import '../../domain/entities/friend_user.dart';
 import '../controllers/friends_controller.dart';
 import '../widgets/friend_avatar.dart';
@@ -19,12 +20,20 @@ class FriendSearchPage extends StatefulWidget {
     required this.accountIsCurrent,
     required this.excludeIds,
     required this.onInvited,
+    this.friends,
+    this.onOpenFriend,
   });
 
   final FriendsController controller;
   final bool Function() accountIsCurrent;
   final Set<int> Function() excludeIds;
   final Future<void> Function() onInvited;
+
+  /// Friends already loaded on the Friends page. The server search leaves
+  /// them out (their IDs are excluded), so matches are found here and shown
+  /// above everyone else with a Friend badge.
+  final List<FriendUser> Function()? friends;
+  final Future<void> Function(FriendUser friend)? onOpenFriend;
 
   @override
   State<FriendSearchPage> createState() => _FriendSearchPageState();
@@ -47,6 +56,19 @@ class _FriendSearchPageState extends State<FriendSearchPage> {
   String? _error;
 
   bool get _active => mounted && widget.accountIsCurrent();
+
+  List<FriendUser> get _friendMatches {
+    if (_denied || _query.length < 2) return const [];
+    final query = foldForSearch(_query);
+    final seen = <int>{};
+    return [
+      for (final friend in widget.friends?.call() ?? const <FriendUser>[])
+        if ((foldForSearch(friend.preferredName).contains(query) ||
+                foldForSearch(friend.nickname).contains(query)) &&
+            seen.add(friend.id))
+          friend,
+    ];
+  }
 
   @override
   void dispose() {
@@ -161,6 +183,15 @@ class _FriendSearchPageState extends State<FriendSearchPage> {
     }
   }
 
+  Future<void> _openFriend(
+    Future<void> Function(FriendUser friend) open,
+    FriendUser friend,
+  ) async {
+    await open(friend);
+    // The friend may have been removed in the profile sheet.
+    if (mounted) setState(() {});
+  }
+
   void _showSnack(String message, {bool isError = false}) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -177,4 +208,20 @@ class _FriendSearchPageState extends State<FriendSearchPage> {
 
   @override
   Widget build(BuildContext context) => _buildSearchPage(context);
+}
+
+/// Lower-cases [value] and drops common Latin diacritics, so "berz" finds
+/// "Bērziņa" and "sirs" finds "Širšs".
+String foldForSearch(String value) {
+  const from =
+      'āáàâäãåąăčćçďđēéèêëėęěģğīíìîïįķĺļľłņńñňōóòôöõőøŗřšśşșťţțūúùûüůűųýÿžźż';
+  const to =
+      'aaaaaaaaacccddeeeeeeeeggiiiiiikllllnnnnoooooooorrsssstttuuuuuuuuyyzzz';
+  final buffer = StringBuffer();
+  for (final rune in value.toLowerCase().runes) {
+    final char = String.fromCharCode(rune);
+    final index = from.indexOf(char);
+    buffer.write(index < 0 ? char : to[index]);
+  }
+  return buffer.toString();
 }

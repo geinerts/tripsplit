@@ -201,7 +201,7 @@ void main() {
           const Offset(0, 2500),
         );
         await tester.pumpAndSettle();
-        await tester.tap(find.text(t.workspaceTripTotal).first);
+        await tester.tap(find.byKey(const ValueKey('analytics-scope-0')));
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
       });
@@ -296,6 +296,11 @@ void main() {
       lessThan(tester.getTopLeft(firstCategory).dy),
     );
     expect(find.text('€84.00'), findsOneWidget);
+    // Paid €84 with a €42 share: €42 was paid for others. It is not shown
+    // as a debt, because settlements do not change this number.
+    expect(find.text('Paid for others'), findsOneWidget);
+    expect(find.text('You owe'), findsNothing);
+    expect(find.text('You get back'), findsNothing);
     final summary = find.byKey(const ValueKey('analytics-chart-summary'));
     expect(
       find.descendant(of: summary, matching: find.text('Your share')),
@@ -306,12 +311,25 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('3 expenses'), findsOneWidget);
-    await tester.tap(find.text('Trip total').first);
+    // The scope switch is icons only; the names stay in tooltips.
+    expect(find.byTooltip('Trip total'), findsOneWidget);
+    expect(find.byTooltip('Your share'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('analytics-scope-1')),
+        matching: find.text('Your share'),
+      ),
+      findsNothing,
+    );
+    expect(find.text('Your spending by category'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('analytics-scope-0')));
     await tester.pumpAndSettle();
     expect(
       tester.widget<Text>(find.byKey(const ValueKey('analytics-total'))).data,
       '€126.00',
     );
+    expect(find.text('Trip total by category'), findsOneWidget);
+    expect(find.text('By Category'), findsNothing);
     expect(
       find.descendant(of: summary, matching: find.text('Trip total')),
       findsOneWidget,
@@ -363,7 +381,7 @@ void main() {
     await _mount(tester, _Trips(), w);
     await tester.tap(find.text('By trip'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Trip total').first);
+    await tester.tap(find.byKey(const ValueKey('analytics-scope-0')));
     await tester.pumpAndSettle();
     expect(w.calls, 1);
   });
@@ -497,7 +515,7 @@ void main() {
       final t = _strings(tester);
       await tester.tap(find.text(t.analyticsByTrip));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(t.workspaceTripTotal).first);
+      await tester.tap(find.byKey(const ValueKey('analytics-scope-0')));
       await tester.pumpAndSettle();
     }
 
@@ -689,7 +707,7 @@ void main() {
             await tester.tap(find.text('By trip'));
             await tester.pumpAndSettle();
             if (screen != 'share') {
-              await tester.tap(find.text('Trip total').first);
+              await tester.tap(find.byKey(const ValueKey('analytics-scope-0')));
               await tester.pumpAndSettle();
             }
           }

@@ -1735,6 +1735,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get yourTrips => 'Twoje wycieczki';
 
   @override
+  String get homeYourActiveTrips => 'Twoje aktywne wycieczki';
+
+  @override
+  String get homeYourArchivedTrips => 'Twoje zarchiwizowane wycieczki';
+
+  @override
   String get authIntroSplitSmarter => 'Dziel się mądrzej.';
 
   @override
@@ -4122,10 +4128,19 @@ class AppLocalizationsPl extends AppLocalizations {
   String get analyticsYouOwe => 'Do zapłaty';
 
   @override
+  String get analyticsPaidForOthers => 'Zapłacono za innych';
+
+  @override
+  String get analyticsOthersPaidForYou => 'Inni zapłacili za ciebie';
+
+  @override
   String get analyticsParticipants => 'Uczestnicy';
 
   @override
   String get analyticsYourCategories => 'Twoje wydatki według kategorii';
+
+  @override
+  String get analyticsTripTotalByCategory => 'Suma podróży według kategorii';
 
   @override
   String get analyticsLargestShares => 'Moje największe udziały w wydatkach';

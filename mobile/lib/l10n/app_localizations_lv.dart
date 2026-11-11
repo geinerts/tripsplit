@@ -1729,6 +1729,12 @@ class AppLocalizationsLv extends AppLocalizations {
   String get yourTrips => 'Tavi ceļojumi';
 
   @override
+  String get homeYourActiveTrips => 'Tavi aktīvie ceļojumi';
+
+  @override
+  String get homeYourArchivedTrips => 'Tavi arhivētie ceļojumi';
+
+  @override
   String get authIntroSplitSmarter => 'Dali gudrāk.';
 
   @override
@@ -4116,10 +4122,19 @@ class AppLocalizationsLv extends AppLocalizations {
   String get analyticsYouOwe => 'Tev jāmaksā';
 
   @override
+  String get analyticsPaidForOthers => 'Samaksāji par citiem';
+
+  @override
+  String get analyticsOthersPaidForYou => 'Citi samaksāja par tevi';
+
+  @override
   String get analyticsParticipants => 'Dalībnieki';
 
   @override
   String get analyticsYourCategories => 'Tavi izdevumi pa kategorijām';
+
+  @override
+  String get analyticsTripTotalByCategory => 'Ceļojuma kopsumma pa kategorijām';
 
   @override
   String get analyticsLargestShares => 'Manas lielākās izdevumu daļas';

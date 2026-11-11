@@ -1735,6 +1735,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get yourTrips => 'Ваші поїздки';
 
   @override
+  String get homeYourActiveTrips => 'Ваші активні поїздки';
+
+  @override
+  String get homeYourArchivedTrips => 'Ваші архівні поїздки';
+
+  @override
   String get authIntroSplitSmarter => 'Розподіляйте витрати розумніше.';
 
   @override
@@ -4122,10 +4128,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get analyticsYouOwe => 'Твій борг';
 
   @override
+  String get analyticsPaidForOthers => 'Ви заплатили за інших';
+
+  @override
+  String get analyticsOthersPaidForYou => 'Інші заплатили за вас';
+
+  @override
   String get analyticsParticipants => 'Учасники';
 
   @override
   String get analyticsYourCategories => 'Ваші витрати за категоріями';
+
+  @override
+  String get analyticsTripTotalByCategory => 'Загалом за поїздку за категоріями';
 
   @override
   String get analyticsLargestShares => 'Мої найбільші частки витрат';

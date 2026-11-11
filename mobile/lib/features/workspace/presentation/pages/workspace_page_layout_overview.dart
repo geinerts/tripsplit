@@ -406,12 +406,24 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     );
   }
 
-  Widget _buildSyncStatusBadge(BuildContext context, {bool compact = false}) {
+  /// Whether the sync icon next to the expense search has anything to say:
+  /// changes waiting to sync, no connection, or a failed refresh. When all
+  /// is synced it stays hidden.
+  bool get _showSyncStatusIcon =>
+      _pendingQueueCount > 0 ||
+      _refreshError != null ||
+      _syncState == _SyncState.offline ||
+      _syncState == _SyncState.offlineQueue;
+
+  /// Icon only, next to the expense search; the text is in the tooltip and
+  /// in semantics. Tapping it retries the sync.
+  Widget _buildSyncStatusBadge(BuildContext context) {
     final visual = _syncVisual(context, _syncState);
     final offline =
         _syncState == _SyncState.offline ||
         _syncState == _SyncState.offlineQueue;
-    final label = _refreshError != null && !_workspaceOffline
+    final failed = _refreshError != null && !_workspaceOffline;
+    final label = failed
         ? context.l10n.workspaceRefreshFailed
         : _pendingQueueCount > 0
         ? context.l10n.syncChangesWaiting(_pendingQueueCount)
@@ -420,29 +432,22 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
               : (offline
                     ? context.l10n.offlineStatus
                     : context.l10n.syncAllSynced));
-    // Next to the search field only the icon is shown; the text stays in
-    // the tooltip so the row never wraps. Unsynced work shows a cloud with
-    // an up arrow, even while offline.
-    if (compact && _refreshError == null) {
-      return IconButton(
-        key: const ValueKey('workspace-sync-status'),
-        tooltip: label,
-        color: Theme.of(context).colorScheme.primary,
-        onPressed: _isMutating || _syncState == _SyncState.syncing
-            ? null
-            : _onRefreshPressed,
-        icon: Icon(
-          _pendingQueueCount > 0 ? Icons.cloud_upload_outlined : visual.icon,
-        ),
-      );
-    }
-    return TextButton.icon(
-      style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+    final colors = Theme.of(context).colorScheme;
+    // Unsynced work shows a cloud with an up arrow, even while offline.
+    return IconButton(
+      key: const ValueKey('workspace-sync-status'),
+      tooltip: label,
+      color: failed ? colors.error : colors.primary,
       onPressed: _isMutating || _syncState == _SyncState.syncing
           ? null
           : _onRefreshPressed,
-      icon: Icon(visual.icon, size: 20),
-      label: Text(label),
+      icon: Icon(
+        failed
+            ? Icons.sync_problem_rounded
+            : _pendingQueueCount > 0
+            ? Icons.cloud_upload_outlined
+            : visual.icon,
+      ),
     );
   }
 

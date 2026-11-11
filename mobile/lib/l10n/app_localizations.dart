@@ -3135,6 +3135,18 @@ abstract class AppLocalizations {
   /// **'Your trips'**
   String get yourTrips;
 
+  /// No description provided for @homeYourActiveTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Your active trips'**
+  String get homeYourActiveTrips;
+
+  /// No description provided for @homeYourArchivedTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Your archived trips'**
+  String get homeYourArchivedTrips;
+
   /// No description provided for @authIntroSplitSmarter.
   ///
   /// In en, this message translates to:
@@ -7605,6 +7617,18 @@ abstract class AppLocalizations {
   /// **'You owe'**
   String get analyticsYouOwe;
 
+  /// No description provided for @analyticsPaidForOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid for others'**
+  String get analyticsPaidForOthers;
+
+  /// No description provided for @analyticsOthersPaidForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Others paid for you'**
+  String get analyticsOthersPaidForYou;
+
   /// No description provided for @analyticsParticipants.
   ///
   /// In en, this message translates to:
@@ -7616,6 +7640,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your spending by category'**
   String get analyticsYourCategories;
+
+  /// No description provided for @analyticsTripTotalByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip total by category'**
+  String get analyticsTripTotalByCategory;
 
   /// No description provided for @analyticsLargestShares.
   ///

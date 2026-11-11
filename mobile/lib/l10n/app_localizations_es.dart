@@ -1723,6 +1723,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yourTrips => 'Tus viajes';
 
   @override
+  String get homeYourActiveTrips => 'Tus viajes activos';
+
+  @override
+  String get homeYourArchivedTrips => 'Tus viajes archivados';
+
+  @override
   String get authIntroSplitSmarter => 'Divida de forma más inteligente.';
 
   @override
@@ -4110,10 +4116,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get analyticsYouOwe => 'Debes';
 
   @override
+  String get analyticsPaidForOthers => 'Pagaste por otros';
+
+  @override
+  String get analyticsOthersPaidForYou => 'Otros pagaron por ti';
+
+  @override
   String get analyticsParticipants => 'Participantes';
 
   @override
   String get analyticsYourCategories => 'Tus gastos por categoría';
+
+  @override
+  String get analyticsTripTotalByCategory => 'Total del viaje por categoría';
 
   @override
   String get analyticsLargestShares => 'Mis mayores partes de gastos';

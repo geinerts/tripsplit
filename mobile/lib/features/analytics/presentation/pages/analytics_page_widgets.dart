@@ -104,6 +104,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                     ),
                     _AnalyticsScopeSwitch(
                       labels: [t.workspaceTripTotal, t.yourShare],
+                      iconOnly: true,
                       selected: _personal ? 1 : 0,
                       onSelected: (i) => _updateState(() => _personal = i == 1),
                     ),
@@ -195,9 +196,11 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
                     _empty(t.analyticsEmptyTitle, t.analyticsPeriodEmptyBody)
                   else ...[
                     _sectionTitle(
-                      _byTrip && _personal
+                      !_byTrip
+                          ? t.analyticsByCategory
+                          : _personal
                           ? t.analyticsYourCategories
-                          : t.analyticsByCategory,
+                          : t.analyticsTripTotalByCategory,
                     ),
                     _categories(report),
                     if (_byTrip) ...[
@@ -273,9 +276,12 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
       (t.analyticsYouPaid, _money(report.paidCents)),
       if (_personal)
         (
-          (_selectedTrip!.myBalanceCents < 0
-              ? t.analyticsYouOwe
-              : t.analyticsYouGetBack),
+          // The server sends my_balance_cents = share - paid. This is a
+          // spending fact, not a debt: confirmed settlements do not change
+          // it, so it is not labelled as what you owe or get back.
+          (_selectedTrip!.myBalanceCents > 0
+              ? t.analyticsOthersPaidForYou
+              : t.analyticsPaidForOthers),
           _money(_selectedTrip!.myBalanceCents.abs()),
         )
       else
@@ -293,14 +299,7 @@ extension _AnalyticsPageWidgets on _AnalyticsPageState {
         const SizedBox(height: 4),
         Text(
           items[i].$2,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontSize: 20,
-            color: _byTrip && _personal && i == 1
-                ? (_selectedTrip!.myBalanceCents < 0
-                      ? Theme.of(context).colorScheme.error
-                      : Theme.of(context).colorScheme.primary)
-                : null,
-          ),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 20),
         ),
       ],
     );
