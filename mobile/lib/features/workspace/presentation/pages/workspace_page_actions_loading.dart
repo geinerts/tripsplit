@@ -13,6 +13,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
 
   Future<void> _loadData({required bool showLoader}) async {
     final generation = ++_loadGeneration;
+    final expenseRevision = _localExpenseRevision;
     ++_activityGeneration;
     _isLoadingActivity = false;
     final tripId = widget.trip.id;
@@ -39,6 +40,12 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
               _expensesFeed = cached.expenses;
               _isLoading = false;
             });
+            // Cached trip members and categories are sufficient to open the
+            // form. The server refresh must not hold up the user's first step.
+            if (_openAddExpenseAfterLoad) {
+              _openAddExpenseAfterLoad = false;
+              unawaited(_runStartupAddExpenseFlow());
+            }
           }
         } catch (_) {
           // A failed cache read is not a successful empty/server response.
@@ -58,6 +65,9 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
       }
       if (!current()) return;
       final memberIds = snapshot.users.map((user) => user.id).toSet();
+      // Local changes made while this refresh was in flight win over its
+      // earlier snapshot. The next refresh reconciles them with the server.
+      if (expenseRevision != _localExpenseRevision) return;
       _updateState(() {
         _currentUserId = userId;
         _pendingQueueCount = queue.length;
@@ -75,7 +85,8 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
         _randomSelection = _normalizeRandomSelection(memberIds);
         if (!memberIds.contains(_expenseFilterUserId)) _expenseFilterUserId = 0;
       });
-      unawaited(_primeExpensesFeed());
+      // The snapshot includes local mutations; a server-only page would hide them.
+      if (queue.isEmpty) unawaited(_primeExpensesFeed());
       if (!widget.trip.isSolo && (_activityLoaded || _workspaceTabIndex == 3)) {
         unawaited(_loadTripActivity(reset: true));
       }
@@ -160,6 +171,7 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
 
   Future<void> _primeExpensesFeed() async {
     final generation = _loadGeneration;
+    final expenseRevision = _localExpenseRevision;
     final snapshot = _snapshot;
     if (snapshot == null) {
       return;
@@ -169,7 +181,9 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
         tripId: widget.trip.id,
         limit: 50,
       );
-      if (!mounted || generation != _loadGeneration) {
+      if (!mounted ||
+          generation != _loadGeneration ||
+          expenseRevision != _localExpenseRevision) {
         return;
       }
       _updateState(() {

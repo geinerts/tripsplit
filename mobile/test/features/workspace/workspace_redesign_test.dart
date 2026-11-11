@@ -180,6 +180,7 @@ TripExpense expense(
   String? name,
   int payer = 7,
   String currency = 'EUR',
+  String category = 'food',
   String splitMode = 'equal',
   String? receiptUrl,
   String date = '2026-10-21',
@@ -190,7 +191,7 @@ TripExpense expense(
   tripCurrencyCode: 'EUR',
   expenseCurrencyCode: currency,
   fxRateToTrip: .8,
-  category: 'food',
+  category: category,
   note: name ?? 'Breakfast $id',
   expenseDate: date,
   splitMode: splitMode,
@@ -319,6 +320,7 @@ class _Workspace implements WorkspaceController {
   WorkspaceSnapshot? cache;
   Object? error;
   Completer<WorkspaceSnapshot>? pending;
+  Completer<TripExpensesPage>? pendingPage;
   int cacheReads = 0;
   int pageCalls = 0;
   bool more = false;
@@ -485,6 +487,7 @@ class _Workspace implements WorkspaceController {
   double? savedExtra;
   double? savedAmount;
   String? savedMode;
+  String? savedCategory;
   String? savedCurrency;
   String? savedReceiptPath;
   @override
@@ -510,6 +513,7 @@ class _Workspace implements WorkspaceController {
     savedExtra = extraAmount;
     savedPaidBy = paidBy;
     savedAmount = amount;
+    savedCategory = category;
     savedMode = splitMode;
     savedCurrency = currencyCode;
     savedReceiptPath = receiptPath;
@@ -584,6 +588,7 @@ class _Workspace implements WorkspaceController {
     int? offset,
   }) async {
     pageCalls++;
+    if (pendingPage != null) return pendingPage!.future;
     if (pageFailure) throw const ApiException('Page failed');
     return TripExpensesPage(
       items: cursor == null
@@ -609,10 +614,25 @@ class _Workspace implements WorkspaceController {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+Future<void> showInFilterMenu(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    120,
+    scrollable: find
+        .descendant(
+          of: find.byKey(const ValueKey('expense-filters-menu')),
+          matching: find.byType(Scrollable),
+        )
+        .first,
+  );
+  await tester.pumpAndSettle();
+}
+
 Future<void> _mount(
   WidgetTester tester,
   _Workspace controller, {
   bool solo = false,
+  bool openAddExpenseOnStart = false,
   LiveLocationController? liveLocation,
   bool manager = false,
   String? role,
@@ -676,6 +696,7 @@ Future<void> _mount(
               avatarLetter: 'M',
             ),
       body: WorkspacePage(
+        openAddExpenseOnStart: openAddExpenseOnStart,
         trip: TripModel.fromLegacyMap({
           'id': 1,
           'name': 'Lisbon getaway',
@@ -2545,7 +2566,10 @@ void main() {
             150,
             scrollable: find.byType(Scrollable).first,
           );
-          await visibleTap(tester, find.text(t.workspaceCategory));
+          await visibleTap(
+            tester,
+            find.byKey(const ValueKey('expense-category')),
+          );
         } else {
           await tester.tap(find.text('EUR').first);
           await tester.pumpAndSettle();
@@ -2591,11 +2615,14 @@ void main() {
             tester.element(find.byType(WorkspacePage, skipOffstage: false)),
           )!;
           await tester.scrollUntilVisible(
-            find.text(t.workspaceCategory),
+            find.byKey(const ValueKey('expense-category')),
             200,
             scrollable: find.byType(Scrollable).first,
           );
-          await visibleTap(tester, find.text(t.workspaceCategory));
+          await visibleTap(
+            tester,
+            find.byKey(const ValueKey('expense-category')),
+          );
           final picker = find.byKey(const ValueKey('expense-category-picker'));
           expect(picker, findsOneWidget);
           await visibleTap(
@@ -3185,6 +3212,100 @@ void main() {
     expect(find.byKey(const ValueKey('expense-row-1')), findsOneWidget);
     await disposePage(tester);
   });
+  testWidgets('expense starts without a category and Other can be saved', (
+    tester,
+  ) async {
+    final controller = _Workspace();
+    await _mount(tester, controller, openAddExpenseOnStart: true);
+    await tester.pumpAndSettle();
+    expect(find.text('Choose category'), findsOneWidget);
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-form-amount')),
+      '12',
+    );
+    await tester.ensureVisible(find.byKey(const ValueKey('expense-category')));
+    await tester.tap(find.byKey(const ValueKey('expense-category')));
+    await tester.pumpAndSettle();
+    final other = find.widgetWithText(ListTile, 'Other');
+    await tester.ensureVisible(other);
+    expect(tester.widget<ListTile>(other).selected, isFalse);
+    await tester.tap(other);
+    await tester.pumpAndSettle();
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+    await tester.pumpAndSettle();
+    expect(controller.saves, 1);
+    expect(controller.savedCategory, 'other');
+    expect(tester.takeException(), isNull);
+    await disposePage(tester);
+  });
+
+  testWidgets(
+    'expense filters combine category payer and search and can be reset',
+    (tester) async {
+      final controller = _Workspace()
+        ..data = snapshot(
+          expenses: [
+            expense(1, category: 'other'),
+            expense(2, category: 'other', payer: 8),
+            expense(3, category: 'food', payer: 8),
+          ],
+        );
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.byKey(const ValueKey('expense-filters')));
+      await tester.tap(find.byKey(const ValueKey('expense-filters')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-filters-menu')), findsOne);
+      expect(find.byKey(const ValueKey('expense-filters-save')), findsNothing);
+      expect(find.byKey(const ValueKey('expense-filters-clear')), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('expense-filter-payer-row')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('expense-filter-payer-8')));
+      await tester.pumpAndSettle();
+      // Applied at once, the menu stays open on its first page.
+      expect(find.byKey(const ValueKey('expense-filters-menu')), findsOne);
+      expect(find.byKey(const ValueKey('expense-row-1')), findsNothing);
+      expect(find.byKey(const ValueKey('expense-row-3')), findsOneWidget);
+      await tester.tap(
+        find.byKey(const ValueKey('expense-filter-category-row')),
+      );
+      await tester.pumpAndSettle();
+      await showInFilterMenu(
+        tester,
+        find.byKey(const ValueKey('expense-filter-category-other')),
+      );
+      await tester.tap(
+        find.byKey(const ValueKey('expense-filter-category-other')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-row-2')), findsOneWidget);
+      expect(find.byKey(const ValueKey('expense-row-3')), findsNothing);
+      // Tapping outside closes the menu and keeps the filters.
+      await tester.tapAt(const Offset(20, 800));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-filters-menu')), findsNothing);
+      expect(find.byKey(const ValueKey('expense-row-1')), findsNothing);
+      expect(find.byKey(const ValueKey('expense-row-2')), findsOneWidget);
+      await tester.enterText(find.byType(TextField), 'no-match');
+      await tester.pumpAndSettle();
+      expect(find.text('No matching expenses'), findsOneWidget);
+      await tester.tap(find.byTooltip('Clear search'));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-row-2')), findsOneWidget);
+      expect(find.byKey(const ValueKey('expense-row-1')), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('expense-filters')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('expense-filters-clear')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-filters-clear')), findsNothing);
+      expect(find.byKey(const ValueKey('expense-row-1')), findsOneWidget);
+      expect(find.byKey(const ValueKey('expense-row-2')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await disposePage(tester);
+    },
+  );
+
   testWidgets('pagination is explicit, retryable and deduplicated', (
     tester,
   ) async {
@@ -3212,6 +3333,100 @@ void main() {
     expect(controller.pageCalls, 3);
     await disposePage(tester);
   });
+  testWidgets(
+    'saved offline trip opens the expense form and displays a queued addition',
+    (tester) async {
+      final controller = _Workspace()
+        ..cache = snapshot()
+        ..error = const ApiException('Offline', isNetworkError: true);
+      final commands = WorkspacePageCommandController();
+      await _mount(tester, controller, commands: commands);
+      await tester.pumpAndSettle();
+      commands.requestOpenAddExpense();
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-form-amount')), findsOneWidget);
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-form-amount')),
+        '12.34',
+      );
+      await selectExpenseFood(tester);
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+      await tester.pumpAndSettle();
+      expect(controller.saves, 1);
+      expect(controller.savedAmount, 12.34);
+      expect(find.byKey(const ValueKey('expense-form-amount')), findsNothing);
+      await tester.scrollUntilVisible(
+        find.textContaining('12.34').first,
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.textContaining('12.34'), findsWidgets);
+      expect(tester.takeException(), isNull);
+      await disposePage(tester);
+      commands.dispose();
+    },
+  );
+
+  for (final delayPage in [false, true]) {
+    testWidgets(
+      'cached trip saves before stalled refresh; expenses page: $delayPage',
+      (tester) async {
+        final remote = Completer<WorkspaceSnapshot>();
+        final page = Completer<TripExpensesPage>();
+        final controller = _Workspace()
+          ..cache = snapshot()
+          ..pending = delayPage ? null : remote
+          ..pendingPage = delayPage ? page : null;
+        await _mount(tester, controller, openAddExpenseOnStart: true);
+        // Do not wait for the background spinner to settle: the server is stalled.
+        await tester.pump(const Duration(milliseconds: 400));
+        expect(remote.isCompleted, isFalse);
+        expect(
+          find.byKey(const ValueKey('expense-form-amount')),
+          findsOneWidget,
+        );
+        await tester.enterText(
+          find.byKey(const ValueKey('expense-form-amount')),
+          '12.34',
+        );
+        // Finish the outstanding read after the local save, proving it cannot
+        // overwrite the newly queued expense with an older server snapshot.
+        await selectExpenseFood(tester);
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pump(const Duration(milliseconds: 400));
+        await tester.ensureVisible(find.widgetWithText(ElevatedButton, 'Add'));
+        await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+        await tester.pump(const Duration(milliseconds: 400));
+        await tester.pump(const Duration(milliseconds: 400));
+        expect(controller.saves, 1);
+        if (delayPage) {
+          expect(controller.pageCalls, 1);
+          page.complete(
+            TripExpensesPage(
+              items: snapshot().expenses,
+              hasMore: false,
+              nextCursor: null,
+              nextOffset: null,
+            ),
+          );
+        } else {
+          remote.complete(snapshot());
+        }
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          find.textContaining('12.34'),
+          250,
+          scrollable: find.byType(Scrollable).first,
+        );
+        expect(find.textContaining('12.34'), findsWidgets);
+        expect(tester.takeException(), isNull);
+        await disposePage(tester);
+      },
+    );
+  }
+
   testWidgets(
     'cached offline data is retained; access denial clears it and prevents cache revival',
     (tester) async {
@@ -5096,4 +5311,244 @@ void main() {
       }
     }
   });
+  for (final dark in [false, true]) {
+    testWidgets('waiting changes show only a cloud icon dark=$dark', (
+      tester,
+    ) async {
+      final key = GlobalKey();
+      await _mount(
+        tester,
+        _Workspace()
+          ..data = snapshot(solo: true)
+          ..queued = [
+            const QueuedMutation(
+              id: 'pending',
+              tripId: 1,
+              createdAtMillis: 1,
+              type: QueuedMutationType.addExpense,
+            ),
+          ],
+        solo: true,
+        locale: 'lv',
+        dark: dark,
+        width: 320,
+        scale: 2,
+        boundary: const bool.fromEnvironment('SYNC_ICON_PREVIEWS') ? key : null,
+      );
+      await tester.pumpAndSettle();
+      final status = find.byKey(const ValueKey('workspace-sync-status'));
+      await tester.scrollUntilVisible(
+        status,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      expect(status, findsOneWidget);
+      final t = AppLocalizations.of(tester.element(status))!;
+      expect(find.byTooltip(t.syncChangesWaiting(1)), findsOneWidget);
+      expect(find.text(t.syncChangesWaiting(1)), findsNothing);
+      expect(
+        find.descendant(
+          of: status,
+          matching: find.byIcon(Icons.cloud_upload_outlined),
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      if (const bool.fromEnvironment('SYNC_ICON_PREVIEWS')) {
+        await tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage();
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/sync-icon/${dark ? 'dark' : 'light'}.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+      }
+      await disposePage(tester);
+    });
+  }
+  for (final locale in AppLocalizations.supportedLocales.map(
+    (l) => l.languageCode,
+  )) {
+    for (final dark in [false, true]) {
+      testWidgets('expense filter menu 320px 200% $locale dark=$dark', (
+        tester,
+      ) async {
+        await _mount(
+          tester,
+          _Workspace()
+            ..data = snapshot(
+              expenses: [
+                expense(1, category: 'other'),
+                expense(2, category: 'food', payer: 8),
+              ],
+            ),
+          locale: locale,
+          dark: dark,
+          width: 320,
+          scale: 2,
+        );
+        await tester.pumpAndSettle();
+        final filters = find.byKey(const ValueKey('expense-filters'));
+        await tester.scrollUntilVisible(
+          filters,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(filters);
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        await tester.tap(
+          find.byKey(const ValueKey('expense-filter-category-row')),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        await showInFilterMenu(
+          tester,
+          find.byKey(const ValueKey('expense-filter-category-other')),
+        );
+        await tester.tap(
+          find.byKey(const ValueKey('expense-filter-category-other')),
+        );
+        await tester.pumpAndSettle();
+        final clear = find.byKey(const ValueKey('expense-filters-clear'));
+        await showInFilterMenu(tester, clear);
+        expect(clear, findsOne);
+        expect(tester.takeException(), isNull);
+        await disposePage(tester);
+      });
+    }
+  }
+  testWidgets('expense filter menu review images', (tester) async {
+    if (!const bool.fromEnvironment('FILTER_MENU_PREVIEWS')) return;
+    // Real shadows for the images; tests draw them as solid outlines.
+    debugDisableShadows = false;
+    for (final dark in [false, true]) {
+      for (final screen in ['root', 'payer', 'applied', 'large']) {
+        final key = GlobalKey();
+        await _mount(
+          tester,
+          _Workspace()
+            ..data =
+                snapshot(
+                  expenses: [
+                    expense(1, category: 'food'),
+                    expense(2, category: 'transport', payer: 8),
+                    expense(3, category: 'accommodation', payer: 9),
+                  ],
+                ).copyWith(
+                  users: const [
+                    WorkspaceUser(id: 7, nickname: 'Matiss Geinerts'),
+                    WorkspaceUser(id: 8, nickname: 'Marta Kalnīte'),
+                    WorkspaceUser(id: 9, nickname: 'Valerija Gornovska'),
+                    WorkspaceUser(id: 10, nickname: 'Jana'),
+                  ],
+                ),
+          locale: 'lv',
+          dark: dark,
+          boundary: key,
+          width: screen == 'large' ? 320 : 390,
+          scale: screen == 'large' ? 2 : 1,
+        );
+        await tester.pumpAndSettle();
+        final filters = find.byKey(const ValueKey('expense-filters'));
+        await tester.scrollUntilVisible(
+          filters,
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(filters);
+        await tester.pumpAndSettle();
+        if (screen != 'root') {
+          await tester.tap(
+            find.byKey(const ValueKey('expense-filter-payer-row')),
+          );
+          await tester.pumpAndSettle();
+        }
+        if (screen == 'applied' || screen == 'large') {
+          await tester.tap(
+            find.byKey(const ValueKey('expense-filter-payer-7')),
+          );
+          await tester.pumpAndSettle();
+        }
+        expect(tester.takeException(), isNull);
+        await tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage();
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/expense-filter-menu/${dark ? 'dark' : 'light'}-$screen.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+        await disposePage(tester);
+      }
+    }
+    debugDisableShadows = true;
+  });
+  for (final dark in [false, true]) {
+    for (final scale in [1.0, 2.0]) {
+      testWidgets('extra member count is a filled pill dark=$dark x$scale', (
+        tester,
+      ) async {
+        final key = GlobalKey();
+        final previews = const bool.fromEnvironment('MEMBER_PILL_PREVIEWS');
+        await _mount(
+          tester,
+          _Workspace()
+            ..data = snapshot().copyWith(
+              users: const [
+                WorkspaceUser(id: 7, nickname: 'Matiss'),
+                WorkspaceUser(id: 8, nickname: 'Marta'),
+                WorkspaceUser(id: 9, nickname: 'Valerija'),
+                WorkspaceUser(id: 10, nickname: 'Jana'),
+              ],
+            ),
+          dark: dark,
+          scale: scale,
+          width: scale == 1 ? 390 : 320,
+          boundary: previews ? key : null,
+        );
+        await tester.pumpAndSettle();
+        final pill = find.byKey(const ValueKey('workspace-members-more'));
+        expect(pill, findsOneWidget);
+        expect(
+          find.descendant(of: pill, matching: find.text('+1')),
+          findsOneWidget,
+        );
+        expect(tester.getSize(pill).height, 32);
+        expect(tester.takeException(), isNull);
+        if (previews) {
+          await tester.runAsync(() async {
+            final image =
+                await (key.currentContext!.findRenderObject()!
+                        as RenderRepaintBoundary)
+                    .toImage(pixelRatio: 2);
+            final bytes = await image.toByteData(
+              format: ui.ImageByteFormat.png,
+            );
+            final file = File(
+              '../output/design/member-pill/${dark ? 'dark' : 'light'}-x${scale.round()}.png',
+            );
+            await file.parent.create(recursive: true);
+            await file.writeAsBytes(bytes!.buffer.asUint8List());
+            image.dispose();
+          });
+        }
+        await disposePage(tester);
+      });
+    }
+  }
 }

@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Hver person betaler for sine egne poster",
   "tripsSearchFriends": "Søg efter venner",
   "expenseSplitEvenly": "Del ligeligt",
-  "expensePaidByName": "{name} betalte"
+  "expensePaidByName": "{name} betalte",
+  "workspaceChooseCategory": "Vælg kategori",
+  "workspaceExpenseFilters": "Udgiftsfiltre",
+  "workspaceClearFilters": "Ryd filtre",
+  "workspaceFiltersLoadedHint": "Filtrene gælder indlæste udgifter. Indlæs flere for at medtage ældre udgifter.",
+  "workspaceFiltersNoMatchesHint": "Skift eller ryd filtrene for at se alle indlæste udgifter."
 }

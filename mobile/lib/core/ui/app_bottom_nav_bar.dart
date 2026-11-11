@@ -43,6 +43,17 @@ class AppBottomNavBar extends StatelessWidget {
       Icons.people_outline,
       Icons.account_circle_outlined,
     ];
+    // Icons only, no labels: the selected tab gets a filled icon. Names stay
+    // in the tooltip and the screen reader label.
+    const selectedIcons = [
+      Icons.home,
+      Icons.query_stats,
+      Icons.receipt_long,
+      Icons.people,
+      Icons.account_circle,
+    ];
+    IconData iconFor(AppBottomNavItem item) =>
+        selectedItem == item ? selectedIcons[item.index] : icons[item.index];
     if (vertical) {
       return Material(
         key: const ValueKey('app-navigation-rail'),
@@ -94,37 +105,13 @@ class AppBottomNavBar extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                               child: item == AppBottomNavItem.expenses
-                                  ? _buildExpenseAction(
-                                      context,
-                                      labels[item.index],
-                                    )
-                                  : Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          icons[item.index],
-                                          color: selectedItem == item
-                                              ? colors.primary
-                                              : colors.onSurfaceVariant,
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Text(
-                                          labels[item.index],
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelSmall
-                                              ?.copyWith(
-                                                color:
-                                                    selectedItem == item ||
-                                                        item ==
-                                                            AppBottomNavItem
-                                                                .expenses
-                                                    ? colors.primary
-                                                    : colors.onSurfaceVariant,
-                                              ),
-                                        ),
-                                      ],
+                                  ? Center(child: _buildExpenseIcon(context))
+                                  : Icon(
+                                      iconFor(item),
+                                      size: 26,
+                                      color: selectedItem == item
+                                          ? colors.primary
+                                          : colors.onSurfaceVariant,
                                     ),
                             ),
                           ),
@@ -184,81 +171,27 @@ class AppBottomNavBar extends StatelessWidget {
                             child: ExcludeSemantics(
                               child: ConstrainedBox(
                                 constraints: const BoxConstraints(
-                                  minHeight: 90,
+                                  minHeight: 72,
                                   minWidth: 48,
                                 ),
                                 child: Padding(
                                   padding: EdgeInsets.fromLTRB(
                                     item == AppBottomNavItem.expenses ? 0 : 4,
-                                    item == AppBottomNavItem.expenses ? 0 : 30,
+                                    item == AppBottomNavItem.expenses ? 0 : 31,
                                     item == AppBottomNavItem.expenses ? 0 : 4,
-                                    12,
+                                    item == AppBottomNavItem.expenses ? 0 : 15,
                                   ),
                                   child: item == AppBottomNavItem.expenses
-                                      ? _buildExpenseAction(
-                                          context,
-                                          labels[item.index],
+                                      ? Align(
+                                          alignment: Alignment.topCenter,
+                                          child: _buildExpenseIcon(context),
                                         )
-                                      : Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            SizedBox(
-                                              width: 32,
-                                              height: 28,
-                                              child: Stack(
-                                                children: [
-                                                  Center(
-                                                    child: Icon(
-                                                      item ==
-                                                                  AppBottomNavItem
-                                                                      .home &&
-                                                              selectedItem ==
-                                                                  item
-                                                          ? Icons.home
-                                                          : icons[item.index],
-                                                      size: 24,
-                                                      color:
-                                                          selectedItem == item
-                                                          ? colors.primary
-                                                          : colors
-                                                                .onSurfaceVariant,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height:
-                                                  item ==
-                                                      AppBottomNavItem.expenses
-                                                  ? 6
-                                                  : 4,
-                                            ),
-                                            Text(
-                                              labels[item.index],
-                                              textAlign: TextAlign.center,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelSmall
-                                                  ?.copyWith(
-                                                    color:
-                                                        item ==
-                                                                AppBottomNavItem
-                                                                    .expenses ||
-                                                            selectedItem == item
-                                                        ? colors.primary
-                                                        : colors
-                                                              .onSurfaceVariant,
-                                                    fontWeight:
-                                                        item ==
-                                                            AppBottomNavItem
-                                                                .expenses
-                                                        ? FontWeight.w600
-                                                        : null,
-                                                    letterSpacing: 0,
-                                                  ),
-                                            ),
-                                          ],
+                                      : Icon(
+                                          iconFor(item),
+                                          size: 26,
+                                          color: selectedItem == item
+                                              ? colors.primary
+                                              : colors.onSurfaceVariant,
                                         ),
                                 ),
                               ),
@@ -273,27 +206,6 @@ class AppBottomNavBar extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  // Share the complete action between the bottom bar and the expanded rail,
-  // including its label, spacing, outline and elevation.
-  Widget _buildExpenseAction(BuildContext context, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _buildExpenseIcon(context),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: Theme.of(context).colorScheme.primary,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0,
-          ),
-        ),
-      ],
     );
   }
 

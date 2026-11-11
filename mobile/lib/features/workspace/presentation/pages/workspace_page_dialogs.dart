@@ -123,9 +123,10 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
     bool removeExistingReceipt = false;
     bool isSaving = false;
     String? errorText;
+    AppFormPageRoute<_ExpenseFormResult>? route;
     try {
       return await Navigator.of(context).push<_ExpenseFormResult>(
-        AppFormPageRoute<_ExpenseFormResult>(
+        route = AppFormPageRoute<_ExpenseFormResult>(
           builder: (sheetContext) {
             final t = sheetContext.l10n;
             String formatExpenseDate(DateTime value) {
@@ -252,9 +253,10 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                 String? categoryDropdownValue;
                 if (isCustomCategoryMode) {
                   categoryDropdownValue = customCategoryDropdownValue;
-                } else if (ExpenseCategoryCatalog.isBuiltInKey(
-                  normalizedSelectedCategory,
-                )) {
+                } else if (selectedCategory.trim().isNotEmpty &&
+                    ExpenseCategoryCatalog.isBuiltInKey(
+                      normalizedSelectedCategory,
+                    )) {
                   categoryDropdownValue = normalizedSelectedCategory;
                 }
                 final selectedCategoryValue =
@@ -270,6 +272,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                       );
                 final selectedCategoryIcon = isCustomCategoryMode
                     ? Icons.add_rounded
+                    : selectedCategory.isEmpty
+                    ? Icons.category_outlined
                     : ExpenseCategoryCatalog.iconFor(selectedCategoryValue);
                 final keyboardOpen =
                     MediaQuery.viewInsetsOf(context).bottom > 0;
@@ -552,7 +556,7 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                           value:
                                               selectedCategory.isEmpty &&
                                                   !isCustomCategoryMode
-                                              ? t.workspaceCategory
+                                              ? t.workspaceChooseCategory
                                               : selectedCategoryLabel,
                                           icon: selectedCategoryIcon,
                                           onTap: () async {
@@ -1479,14 +1483,15 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         ),
       );
     } finally {
-      Future<void>.delayed(const Duration(milliseconds: 350), () {
-        amountController.dispose();
-        noteController.dispose();
-        customCategoryController.dispose();
-        for (final controller in splitControllers.values) {
-          controller.dispose();
-        }
-      });
+      // A network/cache update can rebuild the closing route. Keep its
+      // controllers alive until the overlay is actually removed.
+      if (route != null) await route.completed;
+      amountController.dispose();
+      noteController.dispose();
+      customCategoryController.dispose();
+      for (final controller in splitControllers.values) {
+        controller.dispose();
+      }
     }
   }
 }

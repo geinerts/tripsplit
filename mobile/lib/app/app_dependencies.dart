@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+import '../core/network/network_connection.dart';
+import '../core/media/trip_image_cache.dart';
 import 'router/app_router.dart';
 import '../features/live_location/data/live_location_repository.dart';
 import '../features/live_location/data/live_location_device.dart';
@@ -81,9 +84,11 @@ class AppDependencies {
   AppDependencies({
     required this.authController,
     this.quickStartService,
+    this.tripImageCache,
     this.travelPlacesRepository,
     this.tripReportsRepository,
     required this.analyticsRepository,
+    required this.offlineStatus,
     this.liveLocationController,
     required this.tripsController,
     required this.friendsController,
@@ -94,11 +99,15 @@ class AppDependencies {
     required this.localeController,
   });
 
+  final TripImageCache? tripImageCache;
   final AuthController authController;
   final QuickStartService? quickStartService;
   final TravelPlacesRepository? travelPlacesRepository;
   final TripReportsRepository? tripReportsRepository;
   final AnalyticsRepository analyticsRepository;
+
+  /// App-wide offline state for the single Offline indicator.
+  final ValueListenable<bool> offlineStatus;
   final LiveLocationController? liveLocationController;
   final TripsController tripsController;
   final FriendsController friendsController;
@@ -112,6 +121,7 @@ class AppDependencies {
     final env = AppEnv.current;
     final accountSession = AccountDataSession(namespace: env.apiBaseUrl);
     final accountStorage = AccountLocalStorage(accountSession);
+    final tripImageCache = TripImageCache(accountSession);
     PerfMonitor.configure(
       enabled: env.enableVerboseLogs || env.enablePerformanceLogs,
     );
@@ -122,17 +132,23 @@ class AppDependencies {
     final avatarStore = UserAvatarStore();
     final themeModeController = ThemeModeController();
     final localeController = AppLocaleController();
+    final networkConnection = NetworkConnection(
+      probe: () => probeApiConnection(env.apiBaseUrl),
+    );
     final apiClient = LegacyApiClient(
       baseUrl: env.apiBaseUrl,
       tokenStore: tokenStore,
       authSessionStore: authSessionStore,
       enableVerboseLogs: env.enableVerboseLogs,
       requestTimeout: env.apiRequestTimeout,
+      isOffline: networkConnection.isOffline,
+      onNetworkFailure: networkConnection.markNetworkFailure,
     );
     final receiptUploader = LegacyReceiptUploader(
       baseUrl: env.apiBaseUrl,
       tokenStore: tokenStore,
       authSessionStore: authSessionStore,
+      isOffline: networkConnection.isOffline,
     );
     final avatarUploader = LegacyAvatarUploader(
       baseUrl: env.apiBaseUrl,
@@ -238,6 +254,7 @@ class AppDependencies {
         tripsController.clearTripsCache();
         friendsController.clearSnapshotCache();
         await accountStorage.clear();
+        await tripImageCache.clear();
       },
       accountSession: accountSession,
       // Signing out leads to the sign-in page, also after a restart, never the guide.
@@ -258,6 +275,7 @@ class AppDependencies {
     };
 
     return AppDependencies(
+      tripImageCache: tripImageCache,
       liveLocationController: liveLocationController,
       quickStartService: QuickStartService(
         apiClient,
@@ -266,6 +284,7 @@ class AppDependencies {
       ),
       tripReportsRepository: ApiTripReportsRepository(apiClient),
       analyticsRepository: ApiAnalyticsRepository(apiClient, accountSession),
+      offlineStatus: networkConnection.offlineStatus,
       travelPlacesRepository: ApiTravelPlacesRepository(
         apiClient,
         accountStorage,

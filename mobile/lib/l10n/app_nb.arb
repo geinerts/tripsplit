@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Hver person betaler for sine egne poster",
   "tripsSearchFriends": "Søk etter venner",
   "expenseSplitEvenly": "Del likt",
-  "expensePaidByName": "{name} betalte"
+  "expensePaidByName": "{name} betalte",
+  "workspaceChooseCategory": "Velg kategori",
+  "workspaceExpenseFilters": "Utgiftsfiltre",
+  "workspaceClearFilters": "Nullstill filtre",
+  "workspaceFiltersLoadedHint": "Filtrene gjelder innlastede utgifter. Last inn flere for å inkludere eldre utgifter.",
+  "workspaceFiltersNoMatchesHint": "Endre eller nullstill filtrene for å se alle innlastede utgifter."
 }

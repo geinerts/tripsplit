@@ -293,6 +293,11 @@ Future<void> show(WidgetTester tester, Finder finder) async {
   await tester.ensureVisible(finder);
 }
 
+Future<void> openRequests(WidgetTester tester) async {
+  await tester.tap(find.byKey(const ValueKey('friends-tab-requests')));
+  await tester.pumpAndSettle();
+}
+
 Future<void> dispose(WidgetTester tester) async {
   await tester.pumpWidget(const SizedBox.shrink());
   await tester.pump(const Duration(seconds: 1));
@@ -663,6 +668,7 @@ void main() {
       final f = _Friends()..mutationGate = Completer<void>();
       await _mount(tester, f);
       await tester.pumpAndSettle();
+      await openRequests(tester);
       final t = strings(tester);
       await tester.tap(find.byTooltip(t.friendsAccept));
       await tester.pump();
@@ -1026,6 +1032,7 @@ void main() {
     final f = _Friends();
     await _mount(tester, f);
     await tester.pumpAndSettle();
+    await openRequests(tester);
     await tester.tap(find.byTooltip(strings(tester).friendsDeclineAction));
     await tester.pumpAndSettle();
     expect(f.responses, [(20, false)]);
@@ -1036,6 +1043,7 @@ void main() {
     (tester) async {
       await _mount(tester, _Friends()..sent = []);
       await tester.pumpAndSettle();
+      await openRequests(tester);
       final row = find.byKey(const ValueKey('friend-request-20'));
       final name = find.descendant(of: row, matching: find.text('Laura'));
       final accept = find.byTooltip(strings(tester).friendsAccept);
@@ -1140,5 +1148,93 @@ void main() {
         await dispose(tester);
       }
     }
+  });
+  testWidgets('friends tab switch review images', (tester) async {
+    const label = String.fromEnvironment('FRIENDS_TABS_PREVIEWS');
+    if (label.isEmpty) return;
+    for (final dark in [false, true]) {
+      for (final tab in ['friends', 'requests']) {
+        final key = GlobalKey();
+        await _mount(
+          tester,
+          _Friends(),
+          locale: 'lv',
+          dark: dark,
+          boundary: key,
+        );
+        await tester.pumpAndSettle();
+        final tabButton = find.byKey(ValueKey('friends-tab-$tab'));
+        if (tabButton.evaluate().isEmpty && tab == 'requests') {
+          await dispose(tester);
+          continue;
+        }
+        if (tabButton.evaluate().isNotEmpty) {
+          await tester.tap(tabButton);
+          await tester.pumpAndSettle();
+        }
+        expect(tester.takeException(), isNull);
+        await tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage();
+          final data = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/friends-tabs/$label-${dark ? 'dark' : 'light'}-$tab.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(data!.buffer.asUint8List());
+          image.dispose();
+        });
+        await dispose(tester);
+      }
+    }
+  });
+  for (final locale in AppLocalizations.supportedLocales.map(
+    (l) => l.languageCode,
+  )) {
+    for (final dark in [false, true]) {
+      testWidgets('friends/requests switch 320px 200% $locale dark=$dark', (
+        tester,
+      ) async {
+        await _mount(
+          tester,
+          _Friends(),
+          locale: locale,
+          dark: dark,
+          width: 320,
+          scale: 2,
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        expect(find.byKey(const ValueKey('friend-request-20')), findsNothing);
+        await show(tester, find.byKey(const ValueKey('friends-tab-requests')));
+        await openRequests(tester);
+        expect(tester.takeException(), isNull);
+        expect(find.byKey(const ValueKey('friend-row-8')), findsNothing);
+        await show(tester, find.byKey(const ValueKey('friend-request-20')));
+        await show(tester, find.byKey(const ValueKey('friends-tab-friends')));
+        await tester.tap(find.byKey(const ValueKey('friends-tab-friends')));
+        await tester.pumpAndSettle();
+        await show(tester, find.byKey(const ValueKey('friend-row-8')));
+        expect(tester.takeException(), isNull);
+        await dispose(tester);
+      });
+    }
+  }
+  testWidgets('requests tab without requests shows the empty text', (
+    tester,
+  ) async {
+    await _mount(
+      tester,
+      _Friends()
+        ..received = []
+        ..sent = [],
+    );
+    await tester.pumpAndSettle();
+    await openRequests(tester);
+    expect(find.byKey(const ValueKey('friends-requests-empty')), findsOne);
+    expect(find.text(strings(tester).friendsNoPendingActivity), findsOne);
+    await dispose(tester);
   });
 }

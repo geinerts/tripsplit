@@ -5113,4 +5113,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String expensePaidByName(Object name) {
     return '$name maksoi';
   }
+
+  @override
+  String get workspaceChooseCategory => 'Valitse luokka';
+
+  @override
+  String get workspaceExpenseFilters => 'Menojen suodattimet';
+
+  @override
+  String get workspaceClearFilters => 'Tyhjennä suodattimet';
+
+  @override
+  String get workspaceFiltersLoadedHint => 'Suodattimet koskevat ladattuja menoja. Lataa lisää, jotta myös vanhemmat menot tulevat mukaan.';
+
+  @override
+  String get workspaceFiltersNoMatchesHint => 'Muuta tai tyhjennä suodattimet nähdäksesi kaikki ladatut menot.';
 }

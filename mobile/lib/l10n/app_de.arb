@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Jede Person zahlt ihre eigenen Posten",
   "tripsSearchFriends": "Freunde suchen",
   "expenseSplitEvenly": "Gleich aufteilen",
-  "expensePaidByName": "{name} hat bezahlt"
+  "expensePaidByName": "{name} hat bezahlt",
+  "workspaceChooseCategory": "Kategorie wählen",
+  "workspaceExpenseFilters": "Ausgabenfilter",
+  "workspaceClearFilters": "Filter zurücksetzen",
+  "workspaceFiltersLoadedHint": "Die Filter gelten für geladene Ausgaben. Lade weitere, um ältere Ausgaben einzubeziehen.",
+  "workspaceFiltersNoMatchesHint": "Ändere die Filter oder setze sie zurück, um alle geladenen Ausgaben zu sehen."
 }

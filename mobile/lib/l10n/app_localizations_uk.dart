@@ -5133,4 +5133,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String expensePaidByName(Object name) {
     return 'Сплатив(-ла) $name';
   }
+
+  @override
+  String get workspaceChooseCategory => 'Вибрати категорію';
+
+  @override
+  String get workspaceExpenseFilters => 'Фільтри витрат';
+
+  @override
+  String get workspaceClearFilters => 'Скинути фільтри';
+
+  @override
+  String get workspaceFiltersLoadedHint => 'Фільтри застосовуються до завантажених витрат. Завантаж більше, щоб включити попередні витрати.';
+
+  @override
+  String get workspaceFiltersNoMatchesHint => 'Зміни або скинь фільтри, щоб побачити всі завантажені витрати.';
 }

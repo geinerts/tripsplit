@@ -55,7 +55,10 @@ extension _AnalyticsPageActions on _AnalyticsPageState {
           _trips = [];
           _loaded = false;
         }
-        _error = context.l10n.analyticsLoadFailed;
+        // Offline is shown once, next to the bell.
+        _error = error is ApiException && error.isNetworkError
+            ? null
+            : context.l10n.analyticsLoadFailed;
       });
     } finally {
       if (current()) _updateState(() => _loading = false);

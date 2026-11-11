@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Každý platí své vlastní položky",
   "tripsSearchFriends": "Hledat přátele",
   "expenseSplitEvenly": "Rozdělit rovným dílem",
-  "expensePaidByName": "Platil(a) {name}"
+  "expensePaidByName": "Platil(a) {name}",
+  "workspaceChooseCategory": "Vybrat kategorii",
+  "workspaceExpenseFilters": "Filtry výdajů",
+  "workspaceClearFilters": "Vymazat filtry",
+  "workspaceFiltersLoadedHint": "Filtry se vztahují na načtené výdaje. Načti další, aby zahrnovaly i starší výdaje.",
+  "workspaceFiltersNoMatchesHint": "Změň nebo vymaž filtry pro zobrazení všech načtených výdajů."
 }

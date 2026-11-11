@@ -2074,5 +2074,10 @@
   "expenseSplitItemsHint": "Katrs maksā par savām pozīcijām",
   "tripsSearchFriends": "Meklēt draugus",
   "expenseSplitEvenly": "Sadalīt vienādi",
-  "expensePaidByName": "{name} maksāja"
+  "expensePaidByName": "{name} maksāja",
+  "workspaceChooseCategory": "Izvēlies kategoriju",
+  "workspaceExpenseFilters": "Izdevumu filtri",
+  "workspaceClearFilters": "Notīrīt filtrus",
+  "workspaceFiltersLoadedHint": "Filtri attiecas uz ielādētajiem izdevumiem. Ielādē vairāk, lai iekļautu senākus izdevumus.",
+  "workspaceFiltersNoMatchesHint": "Maini vai notīri filtrus, lai redzētu visus ielādētos izdevumus."
 }

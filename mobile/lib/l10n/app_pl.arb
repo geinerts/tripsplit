@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Każdy płaci za swoje pozycje",
   "tripsSearchFriends": "Szukaj znajomych",
   "expenseSplitEvenly": "Podziel po równo",
-  "expensePaidByName": "Zapłacił(a) {name}"
+  "expensePaidByName": "Zapłacił(a) {name}",
+  "workspaceChooseCategory": "Wybierz kategorię",
+  "workspaceExpenseFilters": "Filtry wydatków",
+  "workspaceClearFilters": "Wyczyść filtry",
+  "workspaceFiltersLoadedHint": "Filtry obejmują wczytane wydatki. Wczytaj więcej, aby uwzględnić starsze wydatki.",
+  "workspaceFiltersNoMatchesHint": "Zmień lub wyczyść filtry, aby zobaczyć wszystkie wczytane wydatki."
 }

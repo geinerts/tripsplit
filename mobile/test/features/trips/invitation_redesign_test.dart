@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
+import 'package:tripsplit/core/ui/app_person_toggle.dart';
 import 'package:tripsplit/features/trips/presentation/widgets/trip_invite_members_page.dart';
 import 'package:tripsplit/features/trips/domain/entities/trip_user.dart';
 import 'package:tripsplit/features/trips/domain/entities/pending_trip_invitation.dart';
@@ -17,6 +18,9 @@ class _Harness {
   bool closed = false, failFriends = false;
   Completer<List<TripUser>>? pendingFriends;
   int friendCalls = 0;
+  List<TripUser> friends = const [
+    TripUser(id: 8, nickname: 'Anna with a very long family name'),
+  ];
   Future<void> mount(
     WidgetTester tester, {
     String locale = 'en',
@@ -51,15 +55,11 @@ class _Harness {
                       tripName: 'A long trip name with several destinations',
                       loadFriends: () async {
                         friendCalls++;
-                        if (pendingFriends != null)
+                        if (pendingFriends != null) {
                           return pendingFriends!.future;
+                        }
                         if (failFriends) throw Exception('Offline');
-                        return const [
-                          TripUser(
-                            id: 8,
-                            nickname: 'Anna with a very long family name',
-                          ),
-                        ];
+                        return friends;
                       },
                       loadPending: () async => [
                         const PendingTripInvitation(
@@ -172,7 +172,9 @@ void main() {
     }
   });
 
-  for (final locale in ['en', 'lv', 'es']) {
+  for (final locale in AppLocalizations.supportedLocales.map(
+    (l) => l.languageCode,
+  )) {
     for (final dark in [false, true]) {
       testWidgets('friend invitation 320px 200% $locale dark=$dark', (
         tester,
@@ -185,10 +187,10 @@ void main() {
         await tester.pumpAndSettle();
         expect(
           tester
-              .widget<CheckboxListTile>(
+              .widget<AppPersonToggle>(
                 find.byKey(const ValueKey('invite-friend-8')),
               )
-              .value,
+              .selected,
           isTrue,
         );
         expect(find.byType(SelectableText), findsNothing);
@@ -256,5 +258,50 @@ void main() {
     expect(h.closed, isTrue);
     expect(h.result, isNull);
     expect(tester.takeException(), isNull);
+  });
+  testWidgets('empty friends keeps the hint and a disabled invite', (
+    tester,
+  ) async {
+    final h = _Harness()..friends = const [];
+    await h.mount(tester);
+    expect(find.text('No friends available. Add friends first.'), findsOne);
+    expect(find.byType(AppPersonToggle), findsNothing);
+    expect(
+      tester
+          .widget<ElevatedButton>(
+            find.byKey(const ValueKey('invite-members-submit')),
+          )
+          .onPressed,
+      isNull,
+    );
+  });
+  testWidgets('many friends: avatar grid with search, toggle on and off', (
+    tester,
+  ) async {
+    final h = _Harness()
+      ..friends = [
+        for (var i = 1; i <= 14; i++) TripUser(id: i, nickname: 'Friend $i'),
+      ];
+    await h.mount(tester);
+    expect(find.byKey(const ValueKey('invite-friends-grid')), findsOne);
+    await tester.tap(find.byKey(const ValueKey('invite-friend-2')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('invite-friend-search')),
+      'friend 14',
+    );
+    await tester.pumpAndSettle();
+    // The search keeps already picked friends visible.
+    expect(find.byType(AppPersonToggle), findsNWidgets(2));
+    await visible(tester, find.byKey(const ValueKey('invite-friend-14')));
+    await tester.tap(find.byKey(const ValueKey('invite-friend-14')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('invite-friend-14')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('invite-friend-14')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('invite-members-submit')));
+    await tester.pumpAndSettle();
+    expect(h.result, {2, 14});
   });
 }

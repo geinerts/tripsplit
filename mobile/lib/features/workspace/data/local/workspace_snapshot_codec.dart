@@ -13,6 +13,16 @@ import '../../../../core/currency/app_currency.dart';
 import '../../../../core/network/media_url_resolver.dart';
 
 class WorkspaceSnapshotCodec {
+  static bool _bool(Object? value) {
+    if (value is bool) return value;
+    if (value is num) return value == 1;
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      return normalized == '1' || normalized == 'true';
+    }
+    return false;
+  }
+
   static Map<String, dynamic> toMap(WorkspaceSnapshot snapshot) {
     return <String, dynamic>{
       'trip_status': snapshot.tripStatus,
@@ -204,14 +214,7 @@ class WorkspaceSnapshotCodec {
               lastName: (item['last_name'] as String?)?.trim(),
               avatarUrl: avatarUrl,
               avatarThumbUrl: avatarThumbUrl,
-              isReadyToSettle:
-                  item['is_ready_to_settle'] == true ||
-                  (item['is_ready_to_settle'] as num?)?.toInt() == 1 ||
-                  (item['is_ready_to_settle'] as String?)?.trim() == '1' ||
-                  (item['is_ready_to_settle'] as String?)
-                          ?.trim()
-                          .toLowerCase() ==
-                      'true',
+              isReadyToSettle: _bool(item['is_ready_to_settle']),
               readyToSettleAt:
                   (readyToSettleAt == null || readyToSettleAt.isEmpty)
                   ? null
@@ -367,9 +370,7 @@ class WorkspaceSnapshotCodec {
                 actorUserId: (item['actor_user_id'] as num?)?.toInt(),
                 actorAvatarUrl: item['actor_avatar_url'] as String?,
                 actorAvatarThumbUrl: item['actor_avatar_thumb_url'] as String?,
-                isRead:
-                    item['is_read'] == true ||
-                    (item['is_read'] as num?)?.toInt() == 1,
+                isRead: _bool(item['is_read']),
                 createdAt: item['created_at'] as String?,
               ),
             )

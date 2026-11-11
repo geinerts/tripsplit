@@ -84,7 +84,15 @@ extension _MainShellPageNavigation on _MainShellPageState {
 
     List<Trip> trips;
     try {
-      trips = await widget.tripsController.loadTrips(forceRefresh: true);
+      // Selecting an existing trip is a local action. Do not put a server
+      // round trip in front of the expense form when we already have the list.
+      var cached = widget.tripsController.peekTripsCache();
+      if (cached == null) {
+        await widget.tripsController.primeTripsCacheFromDisk();
+        cached = widget.tripsController.peekTripsCache();
+      }
+      trips =
+          cached ?? await widget.tripsController.loadTrips(forceRefresh: true);
     } on ApiException catch (error) {
       if (!mounted) {
         return;

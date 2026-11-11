@@ -5113,4 +5113,19 @@ class AppLocalizationsDa extends AppLocalizations {
   String expensePaidByName(Object name) {
     return '$name betalte';
   }
+
+  @override
+  String get workspaceChooseCategory => 'Vælg kategori';
+
+  @override
+  String get workspaceExpenseFilters => 'Udgiftsfiltre';
+
+  @override
+  String get workspaceClearFilters => 'Ryd filtre';
+
+  @override
+  String get workspaceFiltersLoadedHint => 'Filtrene gælder indlæste udgifter. Indlæs flere for at medtage ældre udgifter.';
+
+  @override
+  String get workspaceFiltersNoMatchesHint => 'Skift eller ryd filtrene for at se alle indlæste udgifter.';
 }

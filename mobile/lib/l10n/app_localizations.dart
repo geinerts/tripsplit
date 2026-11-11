@@ -9470,6 +9470,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{name} paid'**
   String expensePaidByName(Object name);
+
+  /// No description provided for @workspaceChooseCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose category'**
+  String get workspaceChooseCategory;
+
+  /// No description provided for @workspaceExpenseFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense filters'**
+  String get workspaceExpenseFilters;
+
+  /// No description provided for @workspaceClearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filters'**
+  String get workspaceClearFilters;
+
+  /// No description provided for @workspaceFiltersLoadedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters cover loaded expenses. Load more to include older expenses.'**
+  String get workspaceFiltersLoadedHint;
+
+  /// No description provided for @workspaceFiltersNoMatchesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the filters or clear them to see all loaded expenses.'**
+  String get workspaceFiltersNoMatchesHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -68,11 +68,12 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
             ExcludeSemantics(
               child: cover.isEmpty
                   ? fallback()
-                  : Image.network(
-                      cover,
-                      key: const ValueKey('workspace-cover-photo'),
+                  : TripCoverImage(
+                      tripId: widget.trip.id,
+                      url: cover,
+                      fallback: fallback(),
+                      imageKey: const ValueKey('workspace-cover-photo'),
                       fit: BoxFit.contain,
-                      errorBuilder: (_, error, stack) => fallback(),
                     ),
             ),
             if (_canOpenLiveMap)
@@ -99,10 +100,11 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                         style: TextButton.styleFrom(
                           backgroundColor: const Color(0xB8101214),
                           foregroundColor: Colors.white,
-                          minimumSize: const Size(48, 48),
+                          minimumSize: const Size(48, 34),
+                          tapTargetSize: MaterialTapTargetSize.padded,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
+                            horizontal: 10,
+                            vertical: 6,
                           ),
                           shape: StadiumBorder(
                             side: BorderSide(
@@ -117,9 +119,9 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                               sharing
                                   ? Icons.my_location
                                   : Icons.location_on_outlined,
-                              size: 20,
+                              size: 17,
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: 5),
                             Flexible(
                               child: Text(
                                 sharing
@@ -127,6 +129,7 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                                     : t.liveMapTitle,
                                 style: theme.textTheme.labelLarge?.copyWith(
                                   color: Colors.white,
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -210,9 +213,38 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
                             ),
                           ),
                         if (snapshot.users.length > 3)
+                          // A filled pill the size of the avatars, so the
+                          // extra member count is easy to notice.
                           Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: Text('+${snapshot.users.length - 3}'),
+                            padding: const EdgeInsets.only(left: 2),
+                            child: ExcludeSemantics(
+                              child: MediaQuery.withClampedTextScaling(
+                                maxScaleFactor: 1.2,
+                                child: Container(
+                                  key: const ValueKey('workspace-members-more'),
+                                  height: 32,
+                                  constraints: const BoxConstraints(
+                                    minWidth: 32,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                  ),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primary,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Text(
+                                    '+${snapshot.users.length - 3}',
+                                    maxLines: 1,
+                                    style: theme.textTheme.labelLarge?.copyWith(
+                                      color: theme.colorScheme.onPrimary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                       ],
                     ),
@@ -388,17 +420,20 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
               : (offline
                     ? context.l10n.offlineStatus
                     : context.l10n.syncAllSynced));
-    if (compact &&
-        _refreshError == null &&
-        _pendingQueueCount == 0 &&
-        !offline) {
+    // Next to the search field only the icon is shown; the text stays in
+    // the tooltip so the row never wraps. Unsynced work shows a cloud with
+    // an up arrow, even while offline.
+    if (compact && _refreshError == null) {
       return IconButton(
+        key: const ValueKey('workspace-sync-status'),
         tooltip: label,
         color: Theme.of(context).colorScheme.primary,
         onPressed: _isMutating || _syncState == _SyncState.syncing
             ? null
             : _onRefreshPressed,
-        icon: Icon(visual.icon),
+        icon: Icon(
+          _pendingQueueCount > 0 ? Icons.cloud_upload_outlined : visual.icon,
+        ),
       );
     }
     return TextButton.icon(

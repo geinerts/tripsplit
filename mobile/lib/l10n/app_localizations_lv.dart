@@ -5123,4 +5123,19 @@ class AppLocalizationsLv extends AppLocalizations {
   String expensePaidByName(Object name) {
     return '$name maksāja';
   }
+
+  @override
+  String get workspaceChooseCategory => 'Izvēlies kategoriju';
+
+  @override
+  String get workspaceExpenseFilters => 'Izdevumu filtri';
+
+  @override
+  String get workspaceClearFilters => 'Notīrīt filtrus';
+
+  @override
+  String get workspaceFiltersLoadedHint => 'Filtri attiecas uz ielādētajiem izdevumiem. Ielādē vairāk, lai iekļautu senākus izdevumus.';
+
+  @override
+  String get workspaceFiltersNoMatchesHint => 'Maini vai notīri filtrus, lai redzētu visus ielādētos izdevumus.';
 }

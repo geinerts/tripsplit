@@ -5,7 +5,7 @@ extension _TripsPageCardWidgets on _TripsPageState {
     final t = context.l10n;
     final theme = Theme.of(context);
     final title = trip.name.trim().isEmpty ? t.tripWithId(trip.id) : trip.name;
-    final coverUrl = (trip.imageThumbUrl ?? trip.imageUrl ?? '').trim();
+    final coverUrl = (trip.imageUrl ?? trip.imageThumbUrl ?? '').trim();
     final pending =
         !trip.isSolo &&
         !trip.isArchived &&
@@ -32,14 +32,13 @@ extension _TripsPageCardWidgets on _TripsPageState {
         height: 84,
         child: coverUrl.isEmpty
             ? fallback()
-            : Image.network(
-                coverUrl,
+            : TripCoverImage(
+                tripId: trip.id,
+                url: coverUrl,
+                fallback: fallback(),
                 fit: BoxFit.cover,
                 cacheWidth: (84 * MediaQuery.devicePixelRatioOf(context))
                     .round(),
-                errorBuilder: (context, error, stack) => fallback(),
-                loadingBuilder: (context, child, progress) =>
-                    progress == null ? child : fallback(),
               ),
       ),
     );

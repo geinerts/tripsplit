@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/l10n/l10n.dart';
+import '../../../../core/ui/app_person_toggle.dart';
 import '../../../../core/ui/app_scaffold.dart';
 import '../../domain/entities/trip_user.dart';
 import '../../domain/entities/pending_trip_invitation.dart';
@@ -26,10 +27,57 @@ class _TripInviteMembersPageState extends State<TripInviteMembersPage> {
   final _selected = <int>{};
   bool _friendsLoading = false, _friendsFailed = false;
   bool _submitted = false;
+  final _friendQuery = TextEditingController();
+
+  /// Above this many friends a search field appears, as in the trip form.
+  static const _friendSearchThreshold = 12;
+
   @override
   void initState() {
     super.initState();
     _loadFriends();
+  }
+
+  @override
+  void dispose() {
+    _friendQuery.dispose();
+    super.dispose();
+  }
+
+  List<TripUser> get _visibleFriends {
+    final query = _friendQuery.text.trim().toLowerCase();
+    if (query.isEmpty) return _friends;
+    return [
+      for (final friend in _friends)
+        if (_selected.contains(friend.id) ||
+            friend.nickname.toLowerCase().contains(query))
+          friend,
+    ];
+  }
+
+  Widget _friendAvatar(TripUser friend) {
+    final colors = Theme.of(context).colorScheme;
+    final name = friend.nickname.trim();
+    final initial = Text(
+      name.isEmpty ? '?' : name.characters.first.toUpperCase(),
+    );
+    final url = (friend.avatarThumbUrl ?? friend.avatarUrl ?? '').trim();
+    return CircleAvatar(
+      radius: 18,
+      backgroundColor: colors.primaryContainer,
+      foregroundColor: colors.onPrimaryContainer,
+      child: ClipOval(
+        child: url.isEmpty
+            ? initial
+            : Image.network(
+                url,
+                width: 36,
+                height: 36,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => initial,
+              ),
+      ),
+    );
   }
 
   Future<void> _loadFriends() async {
@@ -127,69 +175,44 @@ class _TripInviteMembersPageState extends State<TripInviteMembersPage> {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Text(t.workspaceNoFriendsAvailableAddFriendsFirst),
                   ),
-                for (final friend in _friends) ...[
-                  CheckboxListTile(
-                    key: ValueKey('invite-friend-${friend.id}'),
-                    contentPadding: EdgeInsets.zero,
-                    controlAffinity: ListTileControlAffinity.leading,
-                    title: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 18,
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primaryContainer,
-                          foregroundColor: Theme.of(
-                            context,
-                          ).colorScheme.onPrimaryContainer,
-                          child: ClipOval(
-                            child:
-                                (friend.avatarThumbUrl ??
-                                        friend.avatarUrl ??
-                                        '')
-                                    .isEmpty
-                                ? Text(
-                                    friend.nickname.trim().isEmpty
-                                        ? '?'
-                                        : friend.nickname
-                                              .trim()
-                                              .characters
-                                              .first
-                                              .toUpperCase(),
-                                  )
-                                : Image.network(
-                                    friend.avatarThumbUrl ?? friend.avatarUrl!,
-                                    width: 36,
-                                    height: 36,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, _, _) => Text(
-                                      friend.nickname.trim().isEmpty
-                                          ? '?'
-                                          : friend.nickname
-                                                .trim()
-                                                .characters
-                                                .first
-                                                .toUpperCase(),
-                                    ),
-                                  ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(child: Text(friend.nickname)),
-                      ],
+                if (_friends.length > _friendSearchThreshold) ...[
+                  const SizedBox(height: 12),
+                  TextField(
+                    key: const ValueKey('invite-friend-search'),
+                    controller: _friendQuery,
+                    onChanged: (_) => setState(() {}),
+                    textInputAction: TextInputAction.search,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search_rounded),
+                      hintText: t.tripsSearchFriends,
                     ),
-                    value: _selected.contains(friend.id),
-                    onChanged: _submitted
-                        ? null
-                        : (selected) => setState(() {
-                            if (selected == true) {
-                              _selected.add(friend.id);
-                            } else {
-                              _selected.remove(friend.id);
-                            }
-                          }),
                   ),
-                  const Divider(height: 1),
+                ],
+                if (_friends.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  // Same picker as the trip form: tap a face to include them.
+                  Wrap(
+                    key: const ValueKey('invite-friends-grid'),
+                    spacing: 12,
+                    runSpacing: 10,
+                    children: [
+                      for (final friend in _visibleFriends)
+                        AppPersonToggle(
+                          key: ValueKey('invite-friend-${friend.id}'),
+                          name: friend.nickname,
+                          avatar: _friendAvatar(friend),
+                          selected: _selected.contains(friend.id),
+                          onChanged: (on) {
+                            if (_submitted) return;
+                            setState(() {
+                              on
+                                  ? _selected.add(friend.id)
+                                  : _selected.remove(friend.id);
+                            });
+                          },
+                        ),
+                    ],
+                  ),
                 ],
                 const SizedBox(height: 20),
               ],

@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Chacun paie ses propres articles",
   "tripsSearchFriends": "Rechercher des amis",
   "expenseSplitEvenly": "Partager à parts égales",
-  "expensePaidByName": "Payé par {name}"
+  "expensePaidByName": "Payé par {name}",
+  "workspaceChooseCategory": "Choisir une catégorie",
+  "workspaceExpenseFilters": "Filtres des dépenses",
+  "workspaceClearFilters": "Effacer les filtres",
+  "workspaceFiltersLoadedHint": "Les filtres concernent les dépenses chargées. Charge davantage de dépenses pour inclure les plus anciennes.",
+  "workspaceFiltersNoMatchesHint": "Modifie ou efface les filtres pour voir toutes les dépenses chargées."
 }

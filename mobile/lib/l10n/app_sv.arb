@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Var och en betalar sina egna poster",
   "tripsSearchFriends": "Sök vänner",
   "expenseSplitEvenly": "Dela lika",
-  "expensePaidByName": "{name} betalade"
+  "expensePaidByName": "{name} betalade",
+  "workspaceChooseCategory": "Välj kategori",
+  "workspaceExpenseFilters": "Utgiftsfilter",
+  "workspaceClearFilters": "Rensa filter",
+  "workspaceFiltersLoadedHint": "Filtren gäller inlästa utgifter. Läs in fler för att inkludera äldre utgifter.",
+  "workspaceFiltersNoMatchesHint": "Ändra eller rensa filtren för att se alla inlästa utgifter."
 }

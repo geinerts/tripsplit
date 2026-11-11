@@ -97,6 +97,9 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                   );
             queued = mutation.queued;
             if (mounted && queued) {
+              _localExpenseRevision++;
+              _workspaceOffline = true;
+              _syncState = _SyncState.offlineQueue;
               if (existing == null) {
                 _applyQueuedAdd(form: form, uploadedReceipt: receipt);
               } else {
@@ -210,6 +213,9 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
         );
 
         if (mutation.queued) {
+          _localExpenseRevision++;
+          _workspaceOffline = true;
+          _syncState = _SyncState.offlineQueue;
           _applyQueuedDelete(expense.id);
           await _refreshQueueState();
           if (mounted) {

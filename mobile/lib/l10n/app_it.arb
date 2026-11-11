@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Ciascuno paga le proprie voci",
   "tripsSearchFriends": "Cerca amici",
   "expenseSplitEvenly": "Dividi in parti uguali",
-  "expensePaidByName": "Ha pagato {name}"
+  "expensePaidByName": "Ha pagato {name}",
+  "workspaceChooseCategory": "Scegli categoria",
+  "workspaceExpenseFilters": "Filtri delle spese",
+  "workspaceClearFilters": "Cancella filtri",
+  "workspaceFiltersLoadedHint": "I filtri si applicano alle spese caricate. Caricane altre per includere quelle precedenti.",
+  "workspaceFiltersNoMatchesHint": "Modifica o cancella i filtri per vedere tutte le spese caricate."
 }

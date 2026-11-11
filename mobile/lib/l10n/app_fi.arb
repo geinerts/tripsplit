@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Kukin maksaa omat tuotteensa",
   "tripsSearchFriends": "Hae ystäviä",
   "expenseSplitEvenly": "Jaa tasan",
-  "expensePaidByName": "{name} maksoi"
+  "expensePaidByName": "{name} maksoi",
+  "workspaceChooseCategory": "Valitse luokka",
+  "workspaceExpenseFilters": "Menojen suodattimet",
+  "workspaceClearFilters": "Tyhjennä suodattimet",
+  "workspaceFiltersLoadedHint": "Suodattimet koskevat ladattuja menoja. Lataa lisää, jotta myös vanhemmat menot tulevat mukaan.",
+  "workspaceFiltersNoMatchesHint": "Muuta tai tyhjennä suodattimet nähdäksesi kaikki ladatut menot."
 }

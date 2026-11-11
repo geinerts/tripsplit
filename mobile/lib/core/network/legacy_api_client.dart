@@ -24,13 +24,19 @@ class LegacyApiClient implements ApiClient {
     required bool enableVerboseLogs,
     required Duration requestTimeout,
     http.Client? httpClient,
+    Future<bool> Function()? isOffline,
+    void Function()? onNetworkFailure,
   }) : _baseUrl = _ensureTrailingSlash(baseUrl),
        _tokenStore = tokenStore,
        _authSessionStore = authSessionStore,
        _enableVerboseLogs = enableVerboseLogs,
        _requestTimeout = requestTimeout,
-       _httpClient = httpClient ?? http.Client();
+       _httpClient = httpClient ?? http.Client(),
+       _isOffline = isOffline,
+       _onNetworkFailure = onNetworkFailure;
 
+  final Future<bool> Function()? _isOffline;
+  final void Function()? _onNetworkFailure;
   final String _baseUrl;
   final DeviceTokenStore _tokenStore;
   final AuthSessionStore _authSessionStore;
@@ -57,6 +63,11 @@ class LegacyApiClient implements ApiClient {
     Map<String, dynamic>? body,
     Map<String, String>? headers,
   }) async {
+    AccountDataSession.boundLease?.check();
+    if (await _isOffline?.call() == true) {
+      AccountDataSession.boundLease?.check();
+      throw const ApiException('Network unavailable.', isNetworkError: true);
+    }
     AccountDataSession.boundLease?.check();
     return _requestWithOptionalRefresh(
       path: path,
@@ -263,6 +274,11 @@ class LegacyApiClient implements ApiClient {
     Map<String, String>? headers,
     int? sessionGeneration,
   }) async {
+    // A failed refresh may have just established that the network is down.
+    if (await _isOffline?.call() == true) {
+      AccountDataSession.boundLease?.check();
+      throw const ApiException('Network unavailable.', isNetworkError: true);
+    }
     final mergedHeaders = await _buildAuthHeaders(
       extra: headers,
       requestId: requestId,
@@ -285,18 +301,21 @@ class LegacyApiClient implements ApiClient {
         body: requestBody,
       );
     } on SocketException {
+      _onNetworkFailure?.call();
       throw ApiException(
         'Network unavailable.',
         isNetworkError: true,
         requestId: requestId,
       );
     } on http.ClientException {
+      _onNetworkFailure?.call();
       throw ApiException(
         'Network unavailable.',
         isNetworkError: true,
         requestId: requestId,
       );
     } on TimeoutException {
+      _onNetworkFailure?.call();
       throw ApiException(
         'Network timeout.',
         isNetworkError: true,
@@ -468,6 +487,7 @@ class LegacyApiClient implements ApiClient {
           .timeout(_requestTimeout);
       requestId = _responseRequestId(response) ?? requestId;
     } on SocketException {
+      _onNetworkFailure?.call();
       trace.stop(success: false);
       AppMonitoring.recordApiRequest(
         endpoint: metricPath,
@@ -478,6 +498,7 @@ class LegacyApiClient implements ApiClient {
       );
       return false;
     } on http.ClientException {
+      _onNetworkFailure?.call();
       trace.stop(success: false);
       AppMonitoring.recordApiRequest(
         endpoint: metricPath,
@@ -488,6 +509,7 @@ class LegacyApiClient implements ApiClient {
       );
       return false;
     } on TimeoutException {
+      _onNetworkFailure?.call();
       trace.stop(success: false);
       AppMonitoring.recordApiRequest(
         endpoint: metricPath,

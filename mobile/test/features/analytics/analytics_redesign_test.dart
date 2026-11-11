@@ -344,8 +344,10 @@ void main() {
       await _mount(tester, _Trips(), w, commands: c);
       expect(find.byKey(const ValueKey('analytics-total')), findsNothing);
       expect(find.byKey(const ValueKey('analytics-empty')), findsNothing);
+      // Offline is shown once in the app bar, not on the page.
+      expect(find.text('Retry'), findsNothing);
       w.error = null;
-      await tester.tap(find.text('Retry'));
+      c.requestRefresh();
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('analytics-total')), findsOneWidget);
       w.error = const ApiException('Denied', statusCode: 403);
@@ -454,6 +456,18 @@ void main() {
     final c = AnalyticsPageCommandController();
     await _mount(tester, _Trips(), w, commands: c);
     w.error = const ApiException('Offline', isNetworkError: true);
+    c.requestRefresh();
+    await tester.pumpAndSettle();
+    // Offline is shown once in the app bar; the old report stays.
+    expect(
+      find.text('Showing the last successfully loaded report.'),
+      findsNothing,
+    );
+    expect(
+      tester.widget<Text>(find.byKey(const ValueKey('analytics-total'))).data,
+      '€42.00',
+    );
+    w.error = const ApiException('Server error', statusCode: 500);
     c.requestRefresh();
     await tester.pumpAndSettle();
     expect(

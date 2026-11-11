@@ -11,6 +11,7 @@ import 'dart:ui' as ui;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 
 import '../../../../app/locale/app_locale_picker.dart';
@@ -66,6 +67,7 @@ class MainShellPage extends StatefulWidget {
     this.travelPlacesRepository,
     this.tripReportsRepository,
     this.liveLocationController,
+    this.offlineStatus,
     this.initialTabIndex = 0,
     this.openCreateTripOnStart = false,
     this.openAddExpenseOnStart = false,
@@ -76,6 +78,9 @@ class MainShellPage extends StatefulWidget {
   final TripReportsRepository? tripReportsRepository;
   final AnalyticsRepository analyticsRepository;
   final LiveLocationController? liveLocationController;
+
+  /// When true, the app bar shows Offline and a retry button next to the bell.
+  final ValueListenable<bool>? offlineStatus;
   final AuthController authController;
   final TripsController tripsController;
   final FriendsController friendsController;
@@ -171,6 +176,8 @@ class _MainShellPageState extends State<MainShellPage>
     }());
     unawaited(_refreshGlobalNotifications());
     _startConnectivityQueueSync();
+    _wasOffline = widget.offlineStatus?.value ?? false;
+    widget.offlineStatus?.addListener(_onOfflineStatusChanged);
     _bindInviteDeepLinkHandling();
     unawaited(_flushWorkspaceQueueBestEffort());
     if (widget.openCreateTripOnStart) {
@@ -196,6 +203,7 @@ class _MainShellPageState extends State<MainShellPage>
     _quickStartTimer?.cancel();
     _notificationsPollTimer?.cancel();
     _connectivitySubscription?.cancel();
+    widget.offlineStatus?.removeListener(_onOfflineStatusChanged);
     _inviteCodeSubscription?.cancel();
     _friendTargetSubscription?.cancel();
     _friendLinkTokenSubscription?.cancel();
@@ -667,6 +675,32 @@ class _MainShellPageState extends State<MainShellPage>
         declineLabel: directed ? null : context.l10n.shellNoAction,
       ),
     );
+  }
+
+  bool _wasOffline = false;
+
+  /// Back online: reload what is on screen so cached data is replaced.
+  void _onOfflineStatusChanged() {
+    final offline = widget.offlineStatus?.value ?? false;
+    final recovered = _wasOffline && !offline;
+    _wasOffline = offline;
+    if (recovered && mounted && !_isLoggingOut) _refreshVisiblePage();
+  }
+
+  /// Reloads the visible tab (or the open trip) and sends queued changes.
+  void _refreshVisiblePage() {
+    if (_isWorkspaceOpen) {
+      _workspaceCommandController.requestRefresh();
+    } else if (_selectedTabIndex == _tabActivities) {
+      _analyticsCommandController?.requestRefresh();
+    } else if (_selectedTabIndex == _tabFriends) {
+      _friendsCommandController.requestRefresh();
+    } else if (_selectedTabIndex == _tabProfile) {
+      _profileCommandController.requestRefresh();
+    } else {
+      _tripsCommandController.requestRefresh();
+    }
+    unawaited(_flushWorkspaceQueueBestEffort());
   }
 
   bool _hasOnlineConnectivity(List<ConnectivityResult> results) {

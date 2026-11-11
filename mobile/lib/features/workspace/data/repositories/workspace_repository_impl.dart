@@ -1,3 +1,4 @@
+import '../local/workspace_pending_snapshot.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
@@ -61,7 +62,26 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
   @override
   Future<WorkspaceSnapshot?> readCachedSnapshot({required int tripId}) {
-    return _localStore.readSnapshot(tripId: tripId);
+    return _localStore.storage.session.run(() async {
+      final snapshot = await _localStore.readSnapshot(tripId: tripId);
+      if (snapshot == null) return null;
+      return _withPendingExpenses(snapshot, tripId);
+    });
+  }
+
+  Future<WorkspaceSnapshot> _withPendingExpenses(
+    WorkspaceSnapshot snapshot,
+    int tripId,
+  ) async {
+    final lease = _localStore.storage.session.capture();
+    final queue = await _localStore.readQueue();
+    lease.check();
+    return withPendingExpenses(
+      snapshot,
+      queue,
+      tripId: tripId,
+      currentUserId: lease.userId,
+    );
   }
 
   @override
@@ -367,13 +387,13 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     try {
       final snapshot = await _remote.loadSnapshot(tripId: tripId);
       await _localStore.writeSnapshot(tripId: tripId, snapshot: snapshot);
-      return snapshot;
+      return _withPendingExpenses(snapshot, tripId);
     } on ApiException catch (error) {
       if (!error.isNetworkError || !allowOfflineCache) {
         rethrow;
       }
 
-      final cached = await _localStore.readSnapshot(tripId: tripId);
+      final cached = await readCachedSnapshot(tripId: tripId);
       if (cached != null) {
         return cached;
       }

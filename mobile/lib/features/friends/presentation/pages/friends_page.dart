@@ -95,6 +95,9 @@ class _FriendsPageState extends State<FriendsPage> {
   static const String _sectionPendingReceived = 'pending_received';
 
   int _loadGeneration = 0;
+
+  /// Which list the switch above the list shows: friends or requests.
+  bool _showRequests = false;
   bool _isLoading = true;
   bool _isLoadingMoreFriends = false;
   bool _isLoadingMorePendingReceived = false;

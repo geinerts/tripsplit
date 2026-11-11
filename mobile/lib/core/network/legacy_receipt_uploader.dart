@@ -25,10 +25,14 @@ class LegacyReceiptUploader {
     required DeviceTokenStore tokenStore,
     required AuthSessionStore authSessionStore,
     http.Client? httpClient,
+    Future<bool> Function()? isOffline,
   }) : _baseUrl = _ensureTrailingSlash(baseUrl),
        _tokenStore = tokenStore,
        _authSessionStore = authSessionStore,
-       _httpClient = httpClient ?? http.Client();
+       _httpClient = httpClient ?? http.Client(),
+       _isOffline = isOffline;
+
+  final Future<bool> Function()? _isOffline;
 
   final String _baseUrl;
   final DeviceTokenStore _tokenStore;
@@ -40,6 +44,9 @@ class LegacyReceiptUploader {
     required Uint8List bytes,
     int? tripId,
   }) async {
+    if (await _isOffline?.call() == true) {
+      throw const ApiException('Network unavailable.', isNetworkError: true);
+    }
     final token = await _tokenStore.getOrCreateToken();
     final uri = Uri.parse(
       _baseUrl,

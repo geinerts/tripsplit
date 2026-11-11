@@ -1,3 +1,4 @@
+import '../../../../core/ui/trip_cover_image.dart';
 import '../widgets/trip_invitation_dialog.dart';
 import '../widgets/received_trip_invitations_sheet.dart';
 import '../../domain/entities/received_trip_invitation.dart';
@@ -5,7 +6,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import '../widgets/trip_form_page.dart';
 import 'dart:async';
-import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -258,7 +258,8 @@ class _TripsPageState extends State<TripsPage> {
                                 ? const LinearProgressIndicator()
                                 : null,
                           ),
-                          if (_refreshError != null)
+                          // Offline is shown once, next to the bell.
+                          if (_refreshError != null && !_isOffline)
                             _buildRefreshNotice(context),
                         ],
                       ),

@@ -28,9 +28,6 @@ extension _TripsPageHeroWidgets on _TripsPageState {
         excludeFromSemantics: true,
       ),
     );
-    // Without a photo the band sits on the theme surface, so the name uses the
-    // theme text colour instead of dark text with a light glow.
-    final onPhoto = coverUrl.isNotEmpty;
     final photo = ClipRRect(
       borderRadius: AppDesign.cardRadius,
       child: AspectRatio(
@@ -42,57 +39,55 @@ extension _TripsPageHeroWidgets on _TripsPageState {
               child: coverUrl.isEmpty
                   ? fallback()
                   : LayoutBuilder(
-                      builder: (context, box) => Image.network(
-                        coverUrl,
-                        key: const ValueKey('home-active-trip-photo'),
+                      builder: (context, box) => TripCoverImage(
+                        tripId: trip.id,
+                        url: coverUrl,
+                        fallback: fallback(),
+                        imageKey: const ValueKey('home-active-trip-photo'),
                         fit: BoxFit.cover,
                         cacheWidth:
                             (box.maxWidth *
                                     MediaQuery.devicePixelRatioOf(context))
                                 .round(),
-                        errorBuilder: (context, error, stack) => fallback(),
-                        loadingBuilder: (context, child, progress) =>
-                            progress == null ? child : fallback(),
                       ),
                     ),
             ),
-            // A light, mostly see-through band keeps the photo visible while
-            // the name stays readable; the soft glow helps on dark photos.
+            // The name sits in a small dark pill at the bottom left, styled
+            // like the Live map button on the trip page.
             Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: ClipRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
-                  child: ColoredBox(
-                    key: const ValueKey('home-active-trip-name-band'),
-                    color: Colors.white.withValues(alpha: 0.15),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-                      child: Text(
-                        title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        // Large text would cover the whole photo; the full
-                        // name is still read out through the card semantics.
-                        textScaler: MediaQuery.textScalerOf(
-                          context,
-                        ).clamp(maxScaleFactor: 1.5),
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: onPhoto
-                              ? const Color(0xFF111315)
-                              : colors.onSurface,
-                          fontWeight: FontWeight.w700,
-                          shadows: onPhoto
-                              ? [
-                                  Shadow(
-                                    color: Colors.white.withValues(alpha: 0.7),
-                                    blurRadius: 6,
-                                  ),
-                                ]
-                              : null,
-                        ),
+              left: 12,
+              right: 12,
+              bottom: 12,
+              child: Align(
+                alignment: AlignmentDirectional.bottomStart,
+                child: DecoratedBox(
+                  key: const ValueKey('home-active-trip-name'),
+                  decoration: ShapeDecoration(
+                    color: const Color(0xB8101214),
+                    shape: StadiumBorder(
+                      side: BorderSide(
+                        color: Colors.white.withValues(alpha: .20),
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    child: Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      // The full name is still read out through the card
+                      // semantics; large text would cover the photo.
+                      textScaler: MediaQuery.textScalerOf(
+                        context,
+                      ).clamp(maxScaleFactor: 1.5),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -257,14 +252,29 @@ extension _TripsPageHeroWidgets on _TripsPageState {
               child: _TripMemberAvatar(member: member, size: 32),
             ),
           if (extra > 0)
+            // Same filled pill as on the trip page, so the count is noticed.
             Padding(
-              padding: const EdgeInsets.only(left: 6),
-              child: Text(
-                '+$extra',
-                key: const ValueKey('home-active-trip-members-extra'),
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
+              padding: const EdgeInsets.only(left: 4),
+              child: MediaQuery.withClampedTextScaling(
+                maxScaleFactor: 1.2,
+                child: Container(
+                  height: 32,
+                  constraints: const BoxConstraints(minWidth: 32),
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    '+$extra',
+                    key: const ValueKey('home-active-trip-members-extra'),
+                    maxLines: 1,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
             ),

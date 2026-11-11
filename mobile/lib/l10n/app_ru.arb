@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Каждый платит за свои позиции",
   "tripsSearchFriends": "Искать друзей",
   "expenseSplitEvenly": "Разделить поровну",
-  "expensePaidByName": "Оплатил(а) {name}"
+  "expensePaidByName": "Оплатил(а) {name}",
+  "workspaceChooseCategory": "Выбрать категорию",
+  "workspaceExpenseFilters": "Фильтры расходов",
+  "workspaceClearFilters": "Сбросить фильтры",
+  "workspaceFiltersLoadedHint": "Фильтры применяются к загруженным расходам. Загрузи больше, чтобы включить более ранние расходы.",
+  "workspaceFiltersNoMatchesHint": "Измени или сбрось фильтры, чтобы увидеть все загруженные расходы."
 }

@@ -81,7 +81,10 @@ extension _ProfilePageActions on _ProfilePageState {
       }
       if (fallback != null) {
         _applyUser(fallback);
-        _errorText = context.l10n.profileRefreshCachedData;
+        // Offline is shown once, next to the bell.
+        _errorText = error.isNetworkError
+            ? null
+            : context.l10n.profileRefreshCachedData;
       } else {
         _errorText = error.message;
       }

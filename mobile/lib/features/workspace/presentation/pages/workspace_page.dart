@@ -1,3 +1,5 @@
+import '../../domain/queued_expense_math.dart';
+import '../../../../core/ui/trip_cover_image.dart';
 import '../../../live_location/presentation/live_location_controller.dart';
 import '../../../live_location/presentation/live_map_page.dart';
 import '../../../trips/presentation/widgets/trip_form_page.dart';
@@ -188,8 +190,10 @@ class _WorkspacePageState extends State<WorkspacePage> {
   bool _mayUseWorkspaceCache = true;
 
   int _currentUserId = 0;
+  int _localExpenseRevision = 0;
   int _pendingQueueCount = 0;
   int _expenseFilterUserId = 0;
+  String? _expenseFilterCategory;
   final TextEditingController _expenseSearchController =
       TextEditingController();
   String _expenseSearchQuery = '';

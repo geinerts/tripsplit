@@ -43,7 +43,10 @@ extension _FriendsPageActionsCore on _FriendsPageState {
   }
 
   void _onScroll() {
-    if (!_scrollController.hasClients || _errorText != null || _isLoading) {
+    if (_showRequests ||
+        !_scrollController.hasClients ||
+        _errorText != null ||
+        _isLoading) {
       return;
     }
     final position = _scrollController.position;
@@ -318,7 +321,10 @@ extension _FriendsPageActionsCore on _FriendsPageState {
         ([401, 403, 404].contains(error.statusCode) ||
             error.code == 'account_changed');
     _updateState(() {
-      _errorText = error is ApiException && error.message.trim().isNotEmpty
+      // Offline is shown once, next to the bell.
+      _errorText = error is ApiException && error.isNetworkError
+          ? null
+          : error is ApiException && error.message.trim().isNotEmpty
           ? error.message
           : context.l10n.workspaceFailedToLoadFriends;
       if (denied) {

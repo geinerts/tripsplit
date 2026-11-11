@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Кожен платить за свої позиції",
   "tripsSearchFriends": "Шукати друзів",
   "expenseSplitEvenly": "Розділити порівну",
-  "expensePaidByName": "Сплатив(-ла) {name}"
+  "expensePaidByName": "Сплатив(-ла) {name}",
+  "workspaceChooseCategory": "Вибрати категорію",
+  "workspaceExpenseFilters": "Фільтри витрат",
+  "workspaceClearFilters": "Скинути фільтри",
+  "workspaceFiltersLoadedHint": "Фільтри застосовуються до завантажених витрат. Завантаж більше, щоб включити попередні витрати.",
+  "workspaceFiltersNoMatchesHint": "Зміни або скинь фільтри, щоб побачити всі завантажені витрати."
 }

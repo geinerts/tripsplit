@@ -34,6 +34,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
               icon: const Icon(Icons.more_horiz_rounded),
               tooltip: context.l10n.settings,
             ),
+          _buildOfflineAction(context),
           _buildNotificationsAction(context),
         ],
       ),
@@ -212,6 +213,73 @@ extension _MainShellPageWidgets on _MainShellPageState {
         trip != null &&
         (widget.travelPlacesRepository != null ||
             (trip.isActive && trip.canCurrentUserManageTrip));
+  }
+
+  /// The one Offline notice for the whole app: a crossed-out Wi-Fi icon with
+  /// "Offline", then a retry button, next to the bell.
+  Widget _buildOfflineAction(BuildContext context) {
+    final status = widget.offlineStatus;
+    if (status == null) return const SizedBox.shrink();
+    return ValueListenableBuilder<bool>(
+      valueListenable: status,
+      builder: (context, offline, _) {
+        if (!offline) return const SizedBox.shrink();
+        final theme = Theme.of(context);
+        final muted = theme.colorScheme.onSurfaceVariant;
+        final t = context.l10n;
+        // With another header button on a narrow screen, keep only the icon
+        // so the page title is not cut; the word stays in the tooltip.
+        final crowded =
+            (!_isWorkspaceOpen &&
+                _selectedTabIndex == _MainShellPageState._tabFriends) ||
+            _canShowWorkspaceTripActions;
+        final showLabel = !crowded || MediaQuery.sizeOf(context).width >= 430;
+        return MediaQuery.withClampedTextScaling(
+          maxScaleFactor: 1.3,
+          child: Row(
+            key: const ValueKey('shell-offline'),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Semantics(
+                liveRegion: true,
+                label: t.offlineStatus,
+                excludeSemantics: true,
+                child: Tooltip(
+                  message: showLabel ? '' : t.offlineStatus,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.wifi_off_rounded, size: 20, color: muted),
+                      if (showLabel) ...[
+                        const SizedBox(width: 4),
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 96),
+                          child: Text(
+                            t.offlineStatus,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: muted,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              IconButton(
+                key: const ValueKey('shell-offline-retry'),
+                tooltip: t.retryAction,
+                visualDensity: VisualDensity.compact,
+                onPressed: _isLoggingOut ? null : _refreshVisiblePage,
+                icon: Icon(Icons.refresh_rounded, color: muted),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildNotificationsAction(BuildContext context) {

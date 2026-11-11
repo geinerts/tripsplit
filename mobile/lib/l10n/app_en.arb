@@ -2109,5 +2109,10 @@
   "expenseSplitItemsHint": "Each person pays for their own items",
   "tripsSearchFriends": "Search friends",
   "expenseSplitEvenly": "Split evenly",
-  "expensePaidByName": "{name} paid"
+  "expensePaidByName": "{name} paid",
+  "workspaceChooseCategory": "Choose category",
+  "workspaceExpenseFilters": "Expense filters",
+  "workspaceClearFilters": "Clear filters",
+  "workspaceFiltersLoadedHint": "Filters cover loaded expenses. Load more to include older expenses.",
+  "workspaceFiltersNoMatchesHint": "Change the filters or clear them to see all loaded expenses."
 }

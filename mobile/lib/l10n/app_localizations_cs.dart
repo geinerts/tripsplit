@@ -5123,4 +5123,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String expensePaidByName(Object name) {
     return 'Platil(a) $name';
   }
+
+  @override
+  String get workspaceChooseCategory => 'Vybrat kategorii';
+
+  @override
+  String get workspaceExpenseFilters => 'Filtry výdajů';
+
+  @override
+  String get workspaceClearFilters => 'Vymazat filtry';
+
+  @override
+  String get workspaceFiltersLoadedHint => 'Filtry se vztahují na načtené výdaje. Načti další, aby zahrnovaly i starší výdaje.';
+
+  @override
+  String get workspaceFiltersNoMatchesHint => 'Změň nebo vymaž filtry pro zobrazení všech načtených výdajů.';
 }

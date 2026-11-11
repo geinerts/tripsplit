@@ -31,6 +31,41 @@ class _Device extends DeviceTokenStore {
 
 void main() {
   test(
+    'airplane mode fails immediately without reading credentials or sending HTTP',
+    () async {
+      final device = _Device();
+      var sent = 0;
+      final client = LegacyApiClient(
+        baseUrl: 'https://splyto.test',
+        tokenStore: device,
+        authSessionStore: _Session(),
+        enableVerboseLogs: false,
+        requestTimeout: const Duration(seconds: 30),
+        isOffline: () async => true,
+        httpClient: MockClient((_) async {
+          sent++;
+          return http.Response('{"ok":true}', 200);
+        }),
+      );
+      await expectLater(
+        client.request(
+          path: 'api/api.php?action=add_expense',
+          method: HttpMethod.post,
+        ),
+        throwsA(
+          isA<ApiException>().having(
+            (error) => error.isNetworkError,
+            'isNetworkError',
+            isTrue,
+          ),
+        ),
+      );
+      expect(sent, 0);
+      expect(device.entered.isCompleted, isFalse);
+    },
+  );
+
+  test(
     'old queued request cannot use credentials read after an account switch',
     () async {
       final account = AccountDataSession()..activate(1);

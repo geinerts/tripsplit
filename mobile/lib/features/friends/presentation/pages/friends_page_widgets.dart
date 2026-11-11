@@ -47,6 +47,9 @@ extension _FriendsPageWidgets on _FriendsPageState {
                         const SizedBox(height: 16),
                       ],
                       if (snapshot != null) ...[
+                        const SizedBox(height: 8),
+                        _buildListSwitch(snapshot),
+                        const SizedBox(height: 8),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Row(
@@ -73,28 +76,42 @@ extension _FriendsPageWidgets on _FriendsPageState {
                             ],
                           ),
                         ),
-                        if (_sectionCountRequests(snapshot) > 0) ...[
-                          const SizedBox(height: 8),
+                        const SizedBox(height: 16),
+                        if (_showRequests) ...[
                           _buildSectionHeadingRow(
                             title: context.l10n.friendsRequests,
                             trailing: Text(
                               '${_sectionCountRequests(snapshot)}',
                             ),
                           ),
-                          _buildFriendRequestsFeed(snapshot),
+                          if (_sectionCountRequests(snapshot) == 0)
+                            Padding(
+                              key: const ValueKey('friends-requests-empty'),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Text(
+                                context.l10n.friendsNoPendingActivity,
+                                style: TextStyle(
+                                  color: AppDesign.mutedColor(context),
+                                ),
+                              ),
+                            )
+                          else
+                            _buildFriendRequestsFeed(snapshot),
+                        ] else ...[
+                          _buildSectionHeadingRow(
+                            title: context.l10n.navFriends,
+                            trailing: Text('${_sectionCountFriends(snapshot)}'),
+                          ),
+                          if (snapshot.friends.isEmpty)
+                            _buildFriendsEmpty(snapshot),
                         ],
-                        const SizedBox(height: 24),
-                        _buildSectionHeadingRow(
-                          title: context.l10n.navFriends,
-                          trailing: Text('${_sectionCountFriends(snapshot)}'),
-                        ),
-                        if (snapshot.friends.isEmpty)
-                          _buildFriendsEmpty(snapshot),
                       ],
                     ],
                   ),
                 ),
-                if (snapshot != null && snapshot.friends.isNotEmpty)
+                if (snapshot != null &&
+                    !_showRequests &&
+                    snapshot.friends.isNotEmpty)
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     sliver: SliverList.builder(
@@ -103,7 +120,7 @@ extension _FriendsPageWidgets on _FriendsPageState {
                           _buildFriendListRow(snapshot.friends[index]),
                     ),
                   ),
-                if (snapshot != null && _friendsHasMore)
+                if (snapshot != null && !_showRequests && _friendsHasMore)
                   SliverToBoxAdapter(
                     child: _buildLoadMoreTextButton(
                       loading: _isLoadingMoreFriends,
@@ -111,6 +128,110 @@ extension _FriendsPageWidgets on _FriendsPageState {
                     ),
                   ),
                 const SliverToBoxAdapter(child: SizedBox(height: 24)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Friends / Requests switch: icons only, like the trip form's
+  /// With others / Just me switch; names are in tooltips and semantics.
+  Widget _buildListSwitch(FriendsSnapshot snapshot) {
+    final colors = Theme.of(context).colorScheme;
+    final incoming = _pendingReceivedTotalCount > 0
+        ? _pendingReceivedTotalCount
+        : snapshot.pendingReceived.length;
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 184),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colors.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(28),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: AnimatedAlign(
+                    duration: MediaQuery.disableAnimationsOf(context)
+                        ? Duration.zero
+                        : const Duration(milliseconds: 150),
+                    alignment: _showRequests
+                        ? AlignmentDirectional.centerEnd
+                        : AlignmentDirectional.centerStart,
+                    child: FractionallySizedBox(
+                      widthFactor: 0.5,
+                      heightFactor: 1,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: colors.primary,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    for (final requests in [false, true])
+                      Expanded(
+                        child: Tooltip(
+                          message: requests
+                              ? context.l10n.friendsRequests
+                              : context.l10n.navFriends,
+                          child: Semantics(
+                            selected: _showRequests == requests,
+                            label: requests
+                                ? context.l10n.friendsRequests
+                                : context.l10n.navFriends,
+                            excludeSemantics: true,
+                            button: true,
+                            child: TextButton(
+                              key: ValueKey(
+                                requests
+                                    ? 'friends-tab-requests'
+                                    : 'friends-tab-friends',
+                              ),
+                              onPressed: () =>
+                                  _updateState(() => _showRequests = requests),
+                              style: TextButton.styleFrom(
+                                minimumSize: const Size(48, 48),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 11,
+                                ),
+                                foregroundColor: _showRequests == requests
+                                    ? colors.onPrimary
+                                    : colors.onSurfaceVariant,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                              ),
+                              child: Badge(
+                                isLabelVisible: requests && incoming > 0,
+                                label: Text(
+                                  incoming > 99 ? '99+' : '$incoming',
+                                ),
+                                child: Icon(
+                                  requests
+                                      ? (_showRequests
+                                            ? Icons.mail
+                                            : Icons.mail_outline)
+                                      : (_showRequests
+                                            ? Icons.group_outlined
+                                            : Icons.group),
+                                  size: 26,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ],
             ),
           ),

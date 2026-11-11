@@ -617,7 +617,8 @@ void main() {
         const ApiException('Offline', isNetworkError: true),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Offline. Showing saved trips.'), findsOneWidget);
+      // Offline is shown once in the app bar, not on the page.
+      expect(find.text('Offline. Showing saved trips.'), findsNothing);
       expect(find.text('Lisbon getaway'), findsOneWidget);
       trips.pending = null;
       trips.error = const ApiException('Forbidden', statusCode: 403);
@@ -880,13 +881,10 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('home-active-trip-1')), findsOne);
-      expect(
-        find.byKey(const ValueKey('home-active-trip-name-band')),
-        findsOne,
-      );
+      expect(find.byKey(const ValueKey('home-active-trip-name')), findsOne);
       expect(
         find.descendant(
-          of: find.byKey(const ValueKey('home-active-trip-name-band')),
+          of: find.byKey(const ValueKey('home-active-trip-name')),
           matching: find.text('Lisbon getaway'),
         ),
         findsOne,

@@ -20,5 +20,7 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byType(MaterialApp), findsOneWidget);
+    // Let the network check's one-second start-up timeout finish.
+    await tester.pump(const Duration(seconds: 1));
   });
 }

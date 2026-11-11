@@ -1,3 +1,7 @@
+import 'package:flutter/rendering.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:ui' as ui;
+import 'dart:io';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -59,6 +63,7 @@ class _Trips implements TripsController {
   Object? error;
   Completer<List<Trip>>? pending;
   Completer<TripInvitePreview>? invite;
+  int loadCalls = 0;
   @override
   List<Trip>? peekTripsCache({bool allowStale = true}) => cache;
   @override
@@ -71,7 +76,11 @@ class _Trips implements TripsController {
   }
 
   @override
-  Future<List<Trip>> loadTrips({bool forceRefresh = false}) async => [];
+  Future<List<Trip>> loadTrips({bool forceRefresh = false}) async {
+    loadCalls++;
+    return pending?.future ?? [];
+  }
+
   @override
   Future<TripInvitePreview> previewTripInvite({required String inviteToken}) =>
       invite!.future;
@@ -161,24 +170,38 @@ Future<void> _mount(
   _Service service,
   _Links links, {
   int tab = 0,
+  ValueListenable<bool>? offline,
+  String locale = 'en',
+  bool dark = false,
+  double scale = 1,
+  GlobalKey? boundary,
 }) async {
-  await tester.pumpWidget(
-    MaterialApp(
-      theme: AppTheme.light(),
-      locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: MainShellPage(
-        authController: _Auth(),
-        tripsController: trips,
-        friendsController: _Friends(),
-        workspaceController: _Workspace(),
-        analyticsRepository: _Analytics(),
-        inviteDeepLinkController: links,
-        quickStartService: service,
-        initialTabIndex: tab,
-      ),
+  final app = MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: dark ? AppTheme.dark() : AppTheme.light(),
+    locale: Locale(locale),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    builder: (context, child) => MediaQuery(
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(scale)),
+      child: child!,
     ),
+    home: MainShellPage(
+      offlineStatus: offline,
+      authController: _Auth(),
+      tripsController: trips,
+      friendsController: _Friends(),
+      workspaceController: _Workspace(),
+      analyticsRepository: _Analytics(),
+      inviteDeepLinkController: links,
+      quickStartService: service,
+      initialTabIndex: tab,
+    ),
+  );
+  await tester.pumpWidget(
+    boundary == null ? app : RepaintBoundary(key: boundary, child: app),
   );
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
@@ -242,6 +265,42 @@ void main() {
       await _tick(tester);
       expect(search, findsOneWidget);
       expect(find.byKey(const ValueKey('friends-search')), findsNothing);
+      await _dispose(tester, links);
+    },
+  );
+
+  testWidgets(
+    'Expenses chooses a cached trip without waiting for the network',
+    (tester) async {
+      final session = AccountDataSession()..activate(1);
+      final links = _Links();
+      final trips = _Trips(session)
+        ..pending = Completer<List<Trip>>()
+        ..cache = [
+          TripModel.fromLegacyMap({
+            'id': 1,
+            'name': 'Offline Lisbon',
+            'status': 'active',
+          }),
+          TripModel.fromLegacyMap({
+            'id': 2,
+            'name': 'Offline Riga',
+            'status': 'active',
+          }),
+        ];
+      await _mount(
+        tester,
+        trips,
+        _Service(session)..eligible = false,
+        links,
+        tab: 3,
+      );
+      await tester.tap(find.byKey(const ValueKey('nav-expenses')));
+      await _tick(tester);
+      expect(find.text('Offline Lisbon'), findsOneWidget);
+      expect(find.text('Offline Riga'), findsOneWidget);
+      expect(trips.loadCalls, 0);
+      expect(trips.pending!.isCompleted, isFalse);
       await _dispose(tester, links);
     },
   );
@@ -472,4 +531,120 @@ void main() {
       await _dispose(tester, links);
     },
   );
+  testWidgets('one Offline notice sits next to the bell and retries', (
+    tester,
+  ) async {
+    final session = AccountDataSession()..activate(1);
+    final links = _Links();
+    final offline = ValueNotifier<bool>(true);
+    addTearDown(offline.dispose);
+    final trips = _Trips(session);
+    await _mount(
+      tester,
+      trips,
+      _Service(session)..eligible = false,
+      links,
+      offline: offline,
+    );
+    await _tick(tester);
+    final notice = find.byKey(const ValueKey('shell-offline'));
+    expect(notice, findsOneWidget);
+    expect(
+      find.descendant(of: notice, matching: find.text('Offline')),
+      findsOne,
+    );
+    expect(
+      find.descendant(
+        of: notice,
+        matching: find.byIcon(Icons.wifi_off_rounded),
+      ),
+      findsOne,
+    );
+    final bell = find.byIcon(Icons.notifications_none_outlined);
+    expect(tester.getCenter(notice).dx, lessThan(tester.getCenter(bell).dx));
+    await tester.tap(find.byKey(const ValueKey('shell-offline-retry')));
+    await _tick(tester);
+    offline.value = false;
+    await _tick(tester);
+    expect(notice, findsNothing);
+    expect(tester.takeException(), isNull);
+    await _dispose(tester, links);
+  });
+  for (final locale in AppLocalizations.supportedLocales.map(
+    (l) => l.languageCode,
+  )) {
+    testWidgets('Offline notice fits 320px at 200% in $locale', (tester) async {
+      tester.view.physicalSize = const Size(320, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final session = AccountDataSession()..activate(1);
+      final links = _Links();
+      final offline = ValueNotifier<bool>(true);
+      addTearDown(offline.dispose);
+      await _mount(
+        tester,
+        _Trips(session),
+        _Service(session)..eligible = false,
+        links,
+        tab: 3,
+        offline: offline,
+        locale: locale,
+        scale: 2,
+      );
+      await _tick(tester);
+      expect(find.byKey(const ValueKey('shell-offline')), findsOneWidget);
+      expect(find.byKey(const ValueKey('shell-offline-retry')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await _dispose(tester, links);
+    });
+  }
+  testWidgets('Offline notice review images', (tester) async {
+    if (!const bool.fromEnvironment('OFFLINE_NOTICE_PREVIEWS')) return;
+    await (FontLoader(
+      'Inter',
+    )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
+    await (FontLoader(
+      'MaterialIcons',
+    )..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'))).load();
+    tester.view.physicalSize = const Size(390, 300);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    for (final dark in [false, true]) {
+      for (final tab in [0, 1, 3, 4]) {
+        final key = GlobalKey();
+        final session = AccountDataSession()..activate(1);
+        final links = _Links();
+        final offline = ValueNotifier<bool>(true);
+        await _mount(
+          tester,
+          _Trips(session),
+          _Service(session)..eligible = false,
+          links,
+          tab: tab,
+          offline: offline,
+          locale: 'lv',
+          dark: dark,
+          boundary: key,
+        );
+        await _tick(tester);
+        await tester.runAsync(() async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/offline-notice/${dark ? 'dark' : 'light'}-tab$tab.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+        await _dispose(tester, links);
+        offline.dispose();
+      }
+    }
+  });
 }

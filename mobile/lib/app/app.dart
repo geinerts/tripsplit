@@ -1,3 +1,4 @@
+import '../core/ui/trip_cover_image.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -95,7 +96,12 @@ class _TripSplitAppState extends State<TripSplitApp>
                 if (child == null) {
                   return const SizedBox.shrink();
                 }
-                return AppKeyboardDismissal(child: AppBackground(child: child));
+                return TripImageCacheScope(
+                  cache: widget.dependencies.tripImageCache,
+                  child: AppKeyboardDismissal(
+                    child: AppBackground(child: child),
+                  ),
+                );
               },
               supportedLocales: AppLocalizations.supportedLocales,
               localizationsDelegates: const [

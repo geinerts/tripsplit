@@ -2088,5 +2088,10 @@
   "expenseSplitItemsHint": "Iedereen betaalt zijn eigen items",
   "tripsSearchFriends": "Vrienden zoeken",
   "expenseSplitEvenly": "Gelijk verdelen",
-  "expensePaidByName": "{name} betaalde"
+  "expensePaidByName": "{name} betaalde",
+  "workspaceChooseCategory": "Kies categorie",
+  "workspaceExpenseFilters": "Uitgavenfilters",
+  "workspaceClearFilters": "Filters wissen",
+  "workspaceFiltersLoadedHint": "De filters gelden voor geladen uitgaven. Laad meer om oudere uitgaven mee te nemen.",
+  "workspaceFiltersNoMatchesHint": "Wijzig of wis de filters om alle geladen uitgaven te zien."
 }
