@@ -504,9 +504,9 @@
 }
 
 .float--place {
-  top: 128px;
+  top: 160px;
   left: -22px;
-  width: 150px;
+  width: 188px;
 }
 
 .conversion__date {
@@ -575,12 +575,71 @@
 }
 
 .place__date {
-  margin-top: 4px;
+  margin-top: 2px;
   font-size: 12px;
+}
+
+.place__head,
+.place__actions {
+  display: flex;
+  align-items: center;
+}
+
+.place__head .place__name {
+  flex: 1;
+  font-size: 15px;
+}
+
+.place__head .icon,
+.place__actions > .icon {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.place__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  margin: 7px 0;
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+.place__trip {
+  font-weight: 700;
+}
+
+.place__actions {
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.place__actions span {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 5px;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.place__actions span .icon {
+  font-size: 14px;
 }
 
 @media (max-width: 560px) {
   .phone {
     zoom: .92;
   }
+}
+
+/* Real app screenshots fill the screen; the status bar is part of the image. */
+.screen-shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
 }

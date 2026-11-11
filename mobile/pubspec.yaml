@@ -90,6 +90,7 @@ flutter:
   assets:
     - assets/branding/
     - assets/maps/
+    - assets/quick_start/
     - assets/fonts/OFL.txt
 
   fonts:

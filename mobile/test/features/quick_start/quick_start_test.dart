@@ -305,7 +305,9 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('phone stays still and shows settled balances', (tester) async {
+  testWidgets('phone stays still and shows a screenshot on every step', (
+    tester,
+  ) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -324,44 +326,30 @@ void main() {
         tester.getBottomLeft(find.byKey(const ValueKey('quick-start-dots'))).dy,
       ),
     );
+    final assets = [
+      'create_trip',
+      'add_expense',
+      'settle_up',
+      'analytics',
+      'travel_map',
+      'live_map',
+    ];
+    bool showsScreenshot(String name) => tester
+        .widgetList<Image>(find.byType(Image))
+        .any(
+          (image) =>
+              image.image is AssetImage &&
+              (image.image as AssetImage).assetName ==
+                  'assets/quick_start/$name.webp',
+        );
+    expect(showsScreenshot(assets.first), isTrue);
     for (var step = 0; step < 5; step++) {
       await tester.tap(find.text(t.quickStartNext));
       await tester.pumpAndSettle();
       expect(tester.getTopLeft(phone), position);
-      if (step == 1) {
-        expect(find.text(t.settledLabel), findsNWidgets(3));
-      }
+      expect(showsScreenshot(assets[step + 1]), isTrue);
     }
     expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('balances start with debts when animations are allowed', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(390, 844);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const QuickStartSheet(),
-      ),
-    );
-    await tester.pumpAndSettle();
-    for (var step = 0; step < 2; step++) {
-      await tester.tap(find.text('Next'));
-      await tester.pumpAndSettle();
-    }
-    // Two balance rows plus the floating payment card.
-    expect(find.textContaining('16.66'), findsNWidgets(3));
-    expect(find.text('Settled'), findsOneWidget);
-    await tester.pump(const Duration(seconds: 2));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('16.66'), findsOneWidget);
-    expect(find.text('Settled'), findsNWidgets(3));
   });
 
   testWidgets('invitation dismissal removes only the guide route', (
