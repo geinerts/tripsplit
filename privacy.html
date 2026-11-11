@@ -1,204 +1,251 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Splyto Privacy Policy</title>
-    <style>
-      :root {
-        color-scheme: light;
-        --bg: #f7f5f0;
-        --card: #ffffff;
-        --text: #2c2418;
-        --muted: #756c60;
-        --accent: #2d7a5e;
-        --stroke: #e9e4dd;
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy Policy · Splyto</title>
+  <meta name="description" content="How Splyto handles your personal data: what we collect, who can see it, which providers help us run the service, how long we keep it and how to use your rights.">
+  <meta name="theme-color" content="#BFEFEA">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="https://splyto.eu/privacy.html">
+  <link rel="stylesheet" href="/site/css/base.css?v=1">
+  <link rel="stylesheet" href="/site/css/components.css?v=1">
+  <link rel="stylesheet" href="/site/css/sections.css?v=1">
+  <style>
+    .legal { background: #fff; border-top: 1px solid var(--line); }
+    .legal .wrap { max-width: 820px; padding-top: 40px; padding-bottom: 72px; }
+    .legal h1 { color: var(--ink); font-size: clamp(32px, 6vw, 44px); line-height: 1.1; letter-spacing: -.02em; }
+    .legal .updated { margin-top: 10px; color: var(--muted); }
+    .legal h2 { margin-top: 44px; color: var(--ink); font-size: 24px; line-height: 1.25; scroll-margin-top: 96px; }
+    .legal h3 { margin-top: 24px; color: var(--ink); font-size: 18px; line-height: 1.3; }
+    .legal p, .legal li { margin-top: 12px; font-size: 17px; line-height: 1.65; }
+    .legal ul { margin-top: 4px; padding-left: 22px; list-style: disc; }
+    .legal li { margin-top: 8px; }
+    .legal a { color: var(--green); text-underline-offset: 3px; }
+    .legal strong { color: var(--ink); }
+    .summary { margin-top: 28px; padding: 22px 24px; border-radius: 18px; background: var(--mist); border: 1px solid var(--line); }
+    .summary h2 { margin-top: 0; font-size: 20px; }
+    .toc { margin-top: 28px; }
+    .toc ol { margin-top: 8px; padding-left: 22px; list-style: decimal; columns: 2 260px; column-gap: 32px; }
+    .toc li { margin-top: 6px; font-size: 16px; break-inside: avoid; }
+    .table-scroll { margin-top: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .legal table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 15px; line-height: 1.5; }
+    .legal th, .legal td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .legal th { color: var(--ink); background: var(--surface); font-weight: 600; }
+    @media (max-width: 600px) {
+      .legal .wrap { padding-top: 28px; }
+      .legal p, .legal li { font-size: 16px; }
+      .summary { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="site-logo" href="/" aria-label="Splyto home">
+        <img src="/site/images/logo.svg" width="180" height="71" alt="">
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="/#features">Features</a>
+        <a href="/#how">How it works</a>
+        <a href="/#privacy">Privacy</a>
+      </nav>
+    </div>
+  </header>
 
-      * {
-        box-sizing: border-box;
-      }
+  <main class="legal" id="top">
+    <div class="wrap">
+      <h1>Privacy Policy</h1>
+      <p class="updated">Effective 11 November 2026</p>
 
-      body {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        line-height: 1.55;
-      }
+      <p>Splyto helps you keep track of travel costs, alone or with the people you travel with. To do that, we have to store some information about you, and the people you share a trip with will see some of it. This policy explains what that information is, why we need it, who else is involved and what you can do about it. It covers the Splyto apps for iPhone and Android, the website at splyto.eu and the emails we send.</p>
 
-      .wrap {
-        max-width: 860px;
-        margin: 0 auto;
-        padding: 24px 16px 56px;
-      }
-
-      .card {
-        background: var(--card);
-        border: 1px solid var(--stroke);
-        border-radius: 18px;
-        padding: 20px;
-      }
-
-      h1 {
-        margin: 0 0 6px;
-        font-size: 32px;
-        line-height: 1.2;
-      }
-
-      h2 {
-        margin: 26px 0 8px;
-        font-size: 20px;
-        line-height: 1.3;
-      }
-
-      p {
-        margin: 8px 0;
-      }
-
-      ul {
-        margin: 8px 0 0 20px;
-        padding: 0;
-      }
-
-      li {
-        margin: 6px 0;
-      }
-
-      .muted {
-        color: var(--muted);
-      }
-
-      a {
-        color: var(--accent);
-      }
-    </style>
-  </head>
-  <body>
-    <main class="wrap">
-      <article class="card">
-        <h1>Splyto Privacy Policy</h1>
-        <p class="muted">
-          Effective date: November 6, 2026
-        </p>
-
-        <p>
-          This Privacy Policy explains how Splyto (package id
-          <strong>com.tripsplit.app.tripsplit</strong>) collects, uses, and
-          protects information when you use the app.
-        </p>
-
-        <h2>Information We Collect</h2>
+      <section class="summary" aria-labelledby="summary">
+        <h2 id="summary">The short version</h2>
         <ul>
-          <li>
-            Account information: name, nickname, email, encrypted password
-            hash.
-          </li>
-          <li>
-            Trip data: trips, members, expenses, settlements, and related notes.
-          </li>
-          <li>
-            Uploaded content: receipt images, trip images, profile avatar.
-          </li>
-          <li>
-            Uncropped originals of cropped trip, profile and visit photos, kept
-            privately so the crop can be changed later. They have no public
-            address and location and other metadata are removed. Only you can
-            open yours; for a trip cover, so can the people allowed to change
-            that trip's details. They are deleted with the photo, visit, trip or
-            account, and leave routine backups within 14 days after that.
-          </li>
-          <li>
-            Device/app information: app version, platform, basic diagnostics,
-            push token for notifications.
-          </li>
+          <li>We use your data to run Splyto for you. We don’t sell it, and the app has no ads, no advertising trackers and no third-party analytics.</li>
+          <li>What you add to a trip is visible to the members of that trip. Your bank details stay private unless you choose to share them.</li>
+          <li>Your travel map is private. Live location is off until you start it, for a time you choose, and only the latest position is kept.</li>
+          <li>Our server is in Helsinki, Finland. A few providers, such as Apple, Google, Mapbox and our email service, also handle some data to deliver their part of the service.</li>
+          <li>You can see, correct, export or delete your data. Write to <a href="mailto:info@splyto.eu">info@splyto.eu</a>.</li>
         </ul>
+      </section>
 
-        <h2>Optional payment-method sharing</h2>
-        <p>You can also enable “Share payment methods with my trips” in Profile &rarr; Payment methods. This is off by default. When enabled, accepted members of trips you create or join can view these details, including in current and future trips. Pending invitations and friendship alone do not grant access. Turning it off stops new access through trip member profiles; separately shared payment requests retain their own sharing rules. Information already seen or copied cannot be withdrawn.</p>
+      <nav class="toc" aria-labelledby="toc">
+        <h2 id="toc">Contents</h2>
+        <ol>
+          <li><a href="#who">Who is responsible</a></li>
+          <li><a href="#collect">What we collect</a></li>
+          <li><a href="#visible">What other people can see</a></li>
+          <li><a href="#why">Why we use your data</a></li>
+          <li><a href="#providers">Providers that help us</a></li>
+          <li><a href="#not">What we don’t do</a></li>
+          <li><a href="#retention">How long we keep data</a></li>
+          <li><a href="#rights">Your choices and rights</a></li>
+          <li><a href="#device">Your device and our website</a></li>
+          <li><a href="#security">Security</a></li>
+          <li><a href="#children">Children</a></li>
+          <li><a href="#changes">Changes to this policy</a></li>
+          <li><a href="#contact">Contact and complaints</a></li>
+        </ol>
+      </nav>
 
-        <h2>Your private travel map</h2>
-        <p>The optional “My travel map” stores cities you confirm, their country and region, city-centre coordinates and visit dates in your Splyto account. This map is private to your account; joining a trip does not share these visits with other participants. You can remove individual visits from their map markers. Confirmed account deletion removes the map records from the active database; routine backups follow the recovery window described below.</p>
-        <p>You can optionally associate a confirmed visit with a trip you have joined, add a personal title and choose a photo. Planned trip destinations are visible to that trip’s participants; they do not automatically become personal visits. When you save a visit from a trip, its name and available cover photo are copied into your private visit. That copy can remain after the trip is changed or deleted; a link back is available only while you still have access to the trip. You can replace or remove the private photo without changing the shared trip. Photos are resized, converted to WebP and stripped of metadata. They are available through authenticated requests for your account, cached locally with your account data, and removed with the visit or confirmed account deletion.</p>
-        <p>“I’ve been here” requests location access only when you tap it. Your phone uses a one-time location reading to suggest a city through its native geocoding service. Splyto receives the city centre, not that device location, only after you confirm the visit. Manual city search does not require location permission. Search terms and coordinates used to suggest a city may be processed by your platform’s geocoding provider, under its own terms. This feature does not track you in the background or share live locations.</p>
-        <p>In configured mobile builds, the travel map uses Mapbox. Opening or moving the map sends your IP address and the requested map area to Mapbox; SDK telemetry may process de-identified usage and location data under https://www.mapbox.com/legal/privacy. You can opt out through the map’s attribution/info control. Splyto renders visit markers, titles, dates and photos on your device and does not upload those records to Mapbox. Opening this map does not request your device location. Builds without Mapbox configuration use a bundled Natural Earth overview. Visits are cached per account and cleared on sign-out; Mapbox background coverage offline depends on previously cached map data. Searching, resolving the current city and synchronising visits may require a connection.</p>
+      <h2 id="who">1. Who is responsible</h2>
+      <p>Splyto, based in Latvia, is the controller of the personal data described in this policy. For anything related to privacy, write to <a href="mailto:info@splyto.eu">info@splyto.eu</a>. For general help with the app, write to <a href="mailto:support@splyto.eu">support@splyto.eu</a>.</p>
 
-        <h2>Live location within a trip</h2>
-<p>Live map is optional and off by default. Only after you choose a duration and confirm sharing does Splyto receive your device coordinates, accuracy and observation time. Accepted members of that active group trip can see your latest position and name/avatar. Joining a trip or opening its map does not start sharing. Live location is separate from your private travel map.</p>
-<p>You can choose 15 minutes, 1 hour, 4 hours or 8 hours and stop earlier at any time. A location stream may continue in the background with the operating system location indicator or notification. Updates may pause without connectivity or when the app is force-closed. Restarting the app does not automatically restart location tracking. The server enforces the sharing deadline. Coordinates older than two minutes are not shown; stopping without internet stops device updates immediately and remote removal is retried while the session is active.</p>
-<p>Only the latest location is stored, not a route history. Expired sessions are removed and stale coordinates are cleared by scheduled cleanup. Leaving the trip removes your sharing session; closing the trip or revoking the account/session also stops access. Routine recovery backups can retain earlier database copies for up to 14 days. Stopping sharing cannot retract information another member has already seen or copied.</p>
-<p>The live street map uses Mapbox in configured mobile builds; versions without Mapbox configuration use OpenStreetMap tiles. Opening or moving the map sends your IP address and the requested map area to the provider. Mapbox SDK telemetry may also process de-identified usage and location data under its privacy policy (https://www.mapbox.com/legal/privacy); you can opt out through the attribution/info control on the map. Splyto does not upload participant names, profile photos, account identifiers or sharing tokens to Mapbox: participant markers are rendered on your device. The map does not enable device location sharing; that remains controlled by your separate timed consent. Operating-system location services have their own privacy terms.</p>
+      <h2 id="collect">2. What we collect</h2>
 
-        <h2>Permissions</h2>
-        <p>Splyto may request the following permissions:</p>
-        <ul>
-          <li>
-            <strong>Camera</strong> (<code>android.permission.CAMERA</code>):
-            used for QR code scanning and taking photos (for receipts/profile).
-          </li>
-          <li>
-            <strong>Photos/Media</strong>: used to select and upload images.
-          </li>
-          <li>
-            <strong>Notifications</strong>: used to deliver trip and payment
-            updates.
-          </li>
-        </ul>
+      <h3>Your account</h3>
+      <p>When you create an account we store your email address, the name or nickname you choose, and, if you add one, a profile photo. We also store your preferred currency, language and notification settings. If you set a password, we keep only a secure hash of it, never the password itself.</p>
+      <p>If you sign in with Apple or Google, we receive an identifier for your account at that provider, plus the name and email address the provider shares with us. With Apple you can hide your real address and give us a relay address instead. We never see your Apple or Google password.</p>
 
-        <h2>How We Use Information</h2>
-        <ul>
-          <li>To provide trip expense splitting features.</li>
-          <li>To sync your data across devices and sessions.</li>
-          <li>To send notifications related to your trips.</li>
-          <li>To improve app reliability, performance, and security.</li>
-        </ul>
+      <h3>Trips and expenses</h3>
+      <p>Splyto stores the trips you create or join, their members and invitations, and the dates, destinations and cover photo of each trip. For every expense we keep the description, amount, currency, date, category, who paid, who takes part and how the cost is split, along with any comments, reactions and receipt photos. We also store settlements, payment requests and an activity history, and we calculate balances, budgets and spending summaries from these records.</p>
+      <p>Some of this information may be about you even if you didn’t enter it yourself. For example, a friend can add an expense that you take part in, or comment on one. If you take part in a trip, we treat what other members record about you in it as part of the trip.</p>
 
-        <h2>Data Sharing</h2>
-        <p>
-          We do not sell your personal data. Data is shared only as needed to
-          operate the service (for example, hosting, database, and push
-          delivery providers), and only for service functionality.
-        </p>
+      <h3>Friends</h3>
+      <p>If you add friends, we store those connections, friend requests and the personal link or QR code that lets someone add you.</p>
 
-        <h2>Data Retention</h2>
-        <p>
-          We keep account and trip data while your account is active or as
-          needed to provide the service, comply with legal obligations, resolve
-          disputes, and enforce agreements.
-        </p>
+      <h3>Payment details (optional)</h3>
+      <p>To make it easier for friends to pay you back, you can add an account-holder name, IBAN and BIC/SWIFT, and Revolut, PayPal or Wise usernames or links. Splyto only displays these details. It doesn’t move money, and we never ask for card numbers or online-banking passwords.</p>
 
-        <h2>Security</h2>
-        <p>
-          We apply reasonable technical and organizational measures to protect
-          your data. No method of transmission or storage is 100% secure.
-        </p>
+      <h3>Your travel map (optional)</h3>
+      <p>The travel map stores the cities you mark as visited: the city, its country and region, the coordinates of the city centre, your visit dates, and an optional title, linked trip and photo. When you tap “I’ve been here”, your phone reads your location once and suggests the nearest city. We only receive the city you confirm, not your exact position. You can always search for a city by name instead.</p>
 
-        <h2>Children</h2>
-        <p>
-          Splyto is not intended for children under 13, and we do not knowingly
-          collect personal information from children under 13.
-        </p>
+      <h3>Live location (optional)</h3>
+      <p>In a group trip you can share your live location with the other members for 15 minutes, 1, 4 or 8 hours. Only while you are sharing do we receive your coordinates, their accuracy and the time they were taken. We keep only your latest position, not the route you travelled, and we remove it when sharing ends.</p>
 
-        <h2>Your Choices</h2>
-        <ul>
-          <li>You can update account details in the app profile settings.</li>
-          <li>You can manage app permissions in your device settings.</li>
-          <li>You can stop using the app at any time.</li>
-        </ul>
+      <h3>Photos</h3>
+      <p>You can add a profile photo, trip covers, visit photos and receipts. We resize the photos, convert them to a web format and remove location and other hidden metadata. When you crop a photo, we also keep the uncropped version so you can change the crop later. That original has no public address and only you can open it. For a trip cover, the people allowed to edit the trip can open it too.</p>
 
-        <h2>Contact</h2>
-        <p>
-          If you have privacy questions, contact:
-          <a href="mailto:info@splyto.eu">info@splyto.eu</a>
-        </p>
+      <h3>Devices and notifications</h3>
+      <p>To send push notifications we store an identifier for your app installation, a delivery token, your platform and language, and the notifications you want. Inside the app, your phone keeps your settings, a copy of your trips so the app works offline, and changes waiting to sync. Your sign-in credentials are kept in the phone’s secure storage.</p>
 
-        <h2>Policy Updates</h2>
-        <p>
-          We may update this policy from time to time. The updated version will
-          be posted at this URL with a new effective date.
-        </p>
-      </article>
-    </main>
-  </body>
+      <h3>Technical data</h3>
+      <p>When the app or website talks to our server, the server records technical information such as your IP address, the time, the device and app version, and which request was made. We use it to keep the service running, find errors and protect accounts against abuse.</p>
+
+      <h3>Messages you send us</h3>
+      <p>If you write to us, we receive your email address, your message and anything you attach. Older app versions could also send feedback with screenshots and app details.</p>
+
+      <h3>Premium</h3>
+      <p>Some features are part of Splyto Premium. At the moment Premium is given to selected accounts and trips, and it is not sold in the app. We store which features an account or trip has and when they expire. If we start selling subscriptions, Apple or Google will handle the payment and we will update this policy first.</p>
+
+      <h2 id="visible">3. What other people can see</h2>
+      <ul>
+        <li><strong>Other Splyto users</strong> can find you by name, nickname or email. Search results show your name, profile photo and an account identifier, but not your email address.</li>
+        <li><strong>Trip members</strong> can see the trip and everything recorded in it, including the expenses, comments, receipts, balances and activity, and your name and profile photo.</li>
+        <li><strong>Your payment details</strong> stay private by default. Someone can see them only if you attach them to a payment request you send to that person, or if you turn on “Share payment methods with my trips”. With that setting on, accepted members of your trips can see them. Being someone’s friend is not enough.</li>
+        <li><strong>Your live location</strong> is visible only to accepted members of the trip you are sharing it with, and only while you share.</li>
+        <li><strong>Your travel map</strong> is private to you. Joining a trip doesn’t share your visits.</li>
+      </ul>
+      <p>Please keep in mind that we can’t take back something another person has already seen, copied or downloaded, and that a receipt link stays valid for a short time after it is created.</p>
+
+      <h2 id="why">4. Why we use your data</h2>
+      <p>Where the EU General Data Protection Regulation (GDPR) applies, each use of your data needs a legal basis. These are the ones we rely on:</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th scope="col">What we do</th><th scope="col">Legal basis</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Create and run your account, sign you in, store and share your trips, expenses, friends and balances, send notifications and emails you need, and give you the features you choose.</td><td>Performing our agreement with you (Art. 6(1)(b))</td></tr>
+            <tr><td>Show your bank details to a specific payer or to your trip members, and share your live location.</td><td>Your consent, which you can withdraw at any time (Art. 6(1)(a))</td></tr>
+            <tr><td>Keep the service secure, prevent abuse and fraud, fix errors, make backups, answer support requests and improve the app.</td><td>Our legitimate interests in a safe, reliable service (Art. 6(1)(f))</td></tr>
+            <tr><td>Keep a trip’s shared history available to its other members after you leave or delete your account.</td><td>The legitimate interests of those members in an accurate record (Art. 6(1)(f))</td></tr>
+            <tr><td>Respond to lawful requests from authorities and meet other legal duties.</td><td>Legal obligation (Art. 6(1)(c))</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>We don’t make decisions about you based solely on automated processing that have legal or similarly significant effects. Balances and spending summaries are calculations to help you, not decisions about you.</p>
+
+      <h2 id="providers">5. Providers that help us</h2>
+      <p>We use a small number of providers to run Splyto. Each gets only the data it needs for its task.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th scope="col">Provider</th><th scope="col">What they do</th><th scope="col">Data involved</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Hetzner Online (Helsinki, Finland)</td><td>Hosts our server, database, files and backups</td><td>All data stored in Splyto</td></tr>
+            <tr><td>Cloudflare</td><td>Delivers the website and app traffic quickly and blocks attacks</td><td>IP address and the traffic passing through, which is encrypted in transit</td></tr>
+            <tr><td>Resend</td><td>Sends account emails, such as verification and password reset</td><td>Your email address and the email content</td></tr>
+            <tr><td>Apple Push Notification service, Google Firebase Cloud Messaging</td><td>Deliver push notifications to your phone</td><td>Delivery token and the notification text, which can name people, trips and expenses</td></tr>
+            <tr><td>Apple, Google</td><td>Sign in with Apple or Google, if you choose it</td><td>The identity information you allow them to share</td></tr>
+            <tr><td>Mapbox</td><td>Map tiles for the travel map and live map</td><td>Your IP address and the map area you view. Pins, names and photos are drawn on your phone and are not sent to Mapbox. You can opt out of Mapbox’s own telemetry using the “i” button on the map.</td></tr>
+            <tr><td>OpenStreetMap</td><td>Map tiles in app versions without Mapbox</td><td>Your IP address and the map area you view</td></tr>
+            <tr><td>Your phone’s maps service (Apple or Google)</td><td>Turns your one-time location into a city name for the travel map</td><td>The location reading, processed under your phone’s terms</td></tr>
+            <tr><td>Frankfurter</td><td>Daily exchange rates for currency conversion</td><td>No personal data, only currencies and dates</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Our server and database are in the European Union. Some of the providers above, such as Cloudflare, Resend, Mapbox, Apple and Google, may also process data outside the European Economic Area, including in the United States. When that happens, we rely on the safeguards these providers offer under the GDPR, such as the European Commission’s Standard Contractual Clauses or the EU–US Data Privacy Framework.</p>
+      <p>A small number of authorised people who run Splyto can access data when needed for support, maintenance or security. Access is protected with two-factor authentication. We may also disclose data if the law requires it, or to protect the rights and safety of our users or the service. If Splyto is ever reorganised or transferred, your data would move with it under the same protections, and we would tell you in advance.</p>
+
+      <h2 id="not">6. What we don’t do</h2>
+      <ul>
+        <li>We don’t sell your personal data or share it with anyone for their marketing.</li>
+        <li>We don’t show ads, and the app contains no advertising or third-party analytics trackers.</li>
+        <li>We don’t read your receipts with AI or send them to outside services.</li>
+        <li>We don’t track your location in the background unless you have started live location sharing yourself.</li>
+      </ul>
+
+      <h2 id="retention">7. How long we keep data</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th scope="col">Data</th><th scope="col">How long</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Your account and profile</td><td>Until you delete your account. A deactivated account is kept so you can reactivate it.</td></tr>
+            <tr><td>Trips, expenses and comments</td><td>While the trip exists. Because other members rely on the shared history, it can stay in their trips after you leave or delete your account.</td></tr>
+            <tr><td>Payment details, travel map visits and photos</td><td>Until you remove them or delete your account.</td></tr>
+            <tr><td>Uncropped photo originals</td><td>Until you replace or remove the photo, or the trip, visit or your account is deleted.</td></tr>
+            <tr><td>Live location</td><td>Only your latest position, removed when sharing ends or expires.</td></tr>
+            <tr><td>Server access logs</td><td>14 days</td></tr>
+            <tr><td>Server error logs</td><td>About 3 months</td></tr>
+            <tr><td>Backups</td><td>Daily copies, each deleted after 14 days. Data you delete disappears from backups within that time.</td></tr>
+            <tr><td>Messages to support</td><td>As long as needed to help you and to handle any follow-up.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="rights">8. Your choices and rights</h2>
+      <h3>In the app</h3>
+      <ul>
+        <li>Change your name, photo, settings and payment details in your profile. To change your email address, write to us.</li>
+        <li>Turn sharing of payment details with your trips on or off, stop live location at any time, and remove visits from your travel map.</li>
+        <li>Choose which notifications you get, in the app and in your phone’s settings.</li>
+        <li>Deactivate your account, or delete it in Profile → Account settings. Deletion is confirmed by email. It removes your profile, contact and payment details, friends, sign-in links and sessions. Your name in trips you shared with others is replaced, and the amounts stay so their balances remain correct.</li>
+      </ul>
+      <h3>Under the GDPR</h3>
+      <p>You have the right to access your data and receive a copy, to have it corrected, to have it deleted, to restrict how we use it, to receive the data you gave us in a portable format, and to object to uses based on our legitimate interests. Where we rely on your consent, you can withdraw it at any time without affecting what was done before.</p>
+      <p>Write to <a href="mailto:info@splyto.eu">info@splyto.eu</a>. We may ask you to confirm your identity first. We answer within one month. If a request is complex, we may need longer, and we will tell you within that first month. Some rights have limits. For example, we can’t delete expenses that are also part of another member’s records, but we can remove what identifies you in them where that is possible.</p>
+
+      <h2 id="device">9. Your device and our website</h2>
+      <p>The app asks for permission before it uses your camera (for photos and QR codes), your photo library (for photos you choose), your location (for the travel map or live location) and notifications. You can change these permissions at any time in your phone’s settings.</p>
+      <p>Our website doesn’t use advertising or analytics cookies and doesn’t track you. Cloudflare may set a strictly necessary cookie to protect the site from automated attacks.</p>
+
+      <h2 id="security">10. Security</h2>
+      <p>All connections use encryption (HTTPS). Passwords are hashed, sign-in tokens are kept in your phone’s secure storage, access to data is checked on every request, and administrative access requires two-factor authentication. We make daily backups. No system is completely secure, so please share only what a trip needs. If a security incident puts your data at risk, we will inform you and the authorities as the law requires.</p>
+
+      <h2 id="children">11. Children</h2>
+      <p>Splyto is not intended for children under 13. If you believe a child has given us personal data, write to <a href="mailto:info@splyto.eu">info@splyto.eu</a> and we will delete it.</p>
+
+      <h2 id="changes">12. Changes to this policy</h2>
+      <p>We will update this policy when Splyto changes the way it handles data, and the date at the top will change. If a change matters for you, for example a new kind of data or a new provider, we will tell you in the app or by email before it takes effect.</p>
+
+      <h2 id="contact">13. Contact and complaints</h2>
+      <p>Questions about privacy or this policy: <a href="mailto:info@splyto.eu">info@splyto.eu</a>.</p>
+      <p>If you think we handle your data unlawfully, you can complain to a data protection authority. In Latvia this is the Data State Inspectorate (Datu valsts inspekcija, <a href="https://www.dvi.gov.lv" rel="noopener">www.dvi.gov.lv</a>). You can also contact the authority in the EU country where you live or work. We would appreciate the chance to sort it out with you first.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© 2026 Splyto</span>
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="mailto:info@splyto.eu">Contact</a>
+    </div>
+  </footer>
+</body>
 </html>
