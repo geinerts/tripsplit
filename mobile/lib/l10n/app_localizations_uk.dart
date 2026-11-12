@@ -2004,49 +2004,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Позначені як надіслані та підтверджені оновлення про платежі';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Розмір скріншоту не повинен перевищувати 8 МБ';
-
-  @override
-  String get profileFeedbackSendTitle => 'Надіслати відгук';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Тип';
-
-  @override
-  String get profileFeedbackTypeBug => 'Помилка';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Рекомендація';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Опишіть проблему або пропозицію';
-
-  @override
-  String get profilePickingImage => 'Вибір зображення...';
-
-  @override
-  String get profileAttachScreenshot => 'Додайте скріншот';
-
-  @override
-  String get profileChangeScreenshot => 'Змінити знімок екрана';
-
-  @override
   String get profileRemoveImage => 'Видалити зображення';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Порада: додайте скріншот для швидшого аналізу помилок';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Перед надсиланням додайте деталі або вкладіть скріншот';
-
-  @override
-  String get profileSendAction => 'Надіслати';
-
-  @override
-  String get profileThanksFeedbackSent => 'Дякуємо! Відгук надіслано';
-
-  @override
-  String get profileFailedSendFeedback => 'Не вдалося надіслати відгук';
 
   @override
   String get profileCouldNotOpenWebsite => 'Не вдалося відкрити веб-сайт.';

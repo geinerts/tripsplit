@@ -10,7 +10,6 @@ import 'package:tripsplit/core/auth/current_user_store.dart';
 import 'package:tripsplit/core/auth/user_avatar_store.dart';
 import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/core/network/legacy_avatar_uploader.dart';
-import 'package:tripsplit/core/network/legacy_feedback_reporter.dart';
 import 'package:tripsplit/core/push/push_registration_service.dart';
 import 'package:tripsplit/features/auth/domain/entities/auth_user.dart';
 import 'package:tripsplit/features/auth/domain/repositories/auth_repository.dart';
@@ -99,11 +98,6 @@ void main() {
         current,
         avatars,
         LegacyAvatarUploader(
-          baseUrl: 'https://example.test',
-          tokenStore: device,
-          authSessionStore: session,
-        ),
-        LegacyFeedbackReporter(
           baseUrl: 'https://example.test',
           tokenStore: device,
           authSessionStore: session,

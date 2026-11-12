@@ -2004,49 +2004,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Обновления об отправленных и подтверждённых платежах';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Размер снимка экрана не должен превышать 8 МБ';
-
-  @override
-  String get profileFeedbackSendTitle => 'Отправить отзыв';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Тип';
-
-  @override
-  String get profileFeedbackTypeBug => 'Ошибка';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Предложение';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Опишите проблему или предложение';
-
-  @override
-  String get profilePickingImage => 'Выбор изображения...';
-
-  @override
-  String get profileAttachScreenshot => 'Прикрепить снимок экрана';
-
-  @override
-  String get profileChangeScreenshot => 'Изменить снимок экрана';
-
-  @override
   String get profileRemoveImage => 'Удалить изображение';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Совет: со снимком экрана мы разберёмся с ошибкой быстрее';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Перед отправкой добавьте описание или снимок экрана';
-
-  @override
-  String get profileSendAction => 'Отправить';
-
-  @override
-  String get profileThanksFeedbackSent => 'Спасибо! Отзыв отправлен';
-
-  @override
-  String get profileFailedSendFeedback => 'Не удалось отправить отзыв';
 
   @override
   String get profileCouldNotOpenWebsite => 'Не удалось открыть сайт.';

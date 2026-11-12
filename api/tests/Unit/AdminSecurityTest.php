@@ -52,6 +52,11 @@ class AdminSecurityTest extends TestCase
             'admin_feedback_feed',
             'admin_archive_feedback',
             'admin_delete_feedback',
+            // In-app feedback was removed on 2026-11-12.
+            'submit_feedback',
+            'admin_panel_feedback',
+            'admin_panel_archive_feedback',
+            'admin_panel_delete_feedback',
         ] as $action) {
             $this->assertArrayNotHasKey($action, $handlers);
         }

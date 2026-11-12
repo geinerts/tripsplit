@@ -1992,49 +1992,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Mises à jour des paiements marquées comme « envoyées » et « confirmées »';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'La taille des captures d’écran ne doit pas dépasser 8 Mo';
-
-  @override
-  String get profileFeedbackSendTitle => 'Envoyer un commentaire';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Type';
-
-  @override
-  String get profileFeedbackTypeBug => 'Bug';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Suggestion';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Décrivez le problème ou la suggestion';
-
-  @override
-  String get profilePickingImage => 'Sélection d\'une image...';
-
-  @override
-  String get profileAttachScreenshot => 'Joindre une capture d’écran';
-
-  @override
-  String get profileChangeScreenshot => 'Modifier la capture d’écran';
-
-  @override
   String get profileRemoveImage => 'Supprimer l’image';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Astuce : joignez une capture d’écran pour un tri plus rapide des bugs';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Ajoutez des détails ou joignez une capture d’écran avant l’envoi';
-
-  @override
-  String get profileSendAction => 'Envoyer';
-
-  @override
-  String get profileThanksFeedbackSent => 'Merci ! Commentaire envoyé';
-
-  @override
-  String get profileFailedSendFeedback => 'Échec de l’envoi des commentaires';
 
   @override
   String get profileCouldNotOpenWebsite => 'Impossible d’ouvrir le site web.';

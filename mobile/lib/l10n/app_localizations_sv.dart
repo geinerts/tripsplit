@@ -1992,49 +1992,10 @@ class AppLocalizationsSv extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Uppdateringar om skickade och bekräftade betalningar';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Skärmdumpens storlek får vara högst 8 MB';
-
-  @override
-  String get profileFeedbackSendTitle => 'Skicka feedback';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Typ';
-
-  @override
-  String get profileFeedbackTypeBug => 'Bug';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Förslag';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Beskriv problem eller förslag';
-
-  @override
-  String get profilePickingImage => 'Väljer bild...';
-
-  @override
-  String get profileAttachScreenshot => 'Bifoga skärmdump';
-
-  @override
-  String get profileChangeScreenshot => 'Ändra skärmdump';
-
-  @override
   String get profileRemoveImage => 'Ta bort bild';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Tips: bifoga en skärmdump för snabbare felsökning';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Lägg till detaljer eller bifoga en skärmdump innan du skickar';
-
-  @override
-  String get profileSendAction => 'Skicka';
-
-  @override
-  String get profileThanksFeedbackSent => 'Tack! Feedback skickad';
-
-  @override
-  String get profileFailedSendFeedback => 'Det gick inte att skicka feedback';
 
   @override
   String get profileCouldNotOpenWebsite => 'Det gick inte att öppna webbplatsen.';

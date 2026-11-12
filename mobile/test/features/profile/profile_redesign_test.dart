@@ -47,7 +47,7 @@ class _Auth implements AuthController {
   Completer<NotificationPreferences>? pending;
   final updates = <Map<Symbol, dynamic>>[];
   final profiles = <Map<Symbol, dynamic>>[];
-  int logoutCalls = 0, feedbackCalls = 0;
+  int logoutCalls = 0;
   final passwordEmails = <String>[];
   final verificationEmails = <String>[];
   @override
@@ -107,10 +107,6 @@ class _Auth implements AuthController {
     if (i.memberName == #logout) {
       logoutCalls++;
       return Future.value(true);
-    }
-    if (i.memberName == #submitFeedback) {
-      feedbackCalls++;
-      return Future<void>.value();
     }
     return super.noSuchMethod(i);
   }
@@ -671,7 +667,7 @@ void main() {
     expect(find.text(t.profileEditPasswordUpdated), findsOneWidget);
     expect(find.text(t.profileAccountAndSecurity), findsOneWidget);
   });
-  testWidgets('logout cancellation and contact sheet do not submit feedback', (
+  testWidgets('logout cancellation and contact sheet without a feedback form', (
     tester,
   ) async {
     final auth = _Auth();
@@ -687,13 +683,9 @@ void main() {
     expect(find.byKey(const ValueKey('profile-app-version')), findsOneWidget);
     await _tap(tester, t.profileContactUs);
     expect(find.text(t.profileContactDescription), findsOneWidget);
-    expect(find.text(t.profileAttachScreenshot), findsNothing);
-    expect(find.text(t.profileSendAction), findsNothing);
     expect(find.byType(TextFormField), findsNothing);
     expect(find.byType(SelectableText), findsOneWidget);
-    expect(auth.feedbackCalls, 0);
     await _back(tester);
-    expect(auth.feedbackCalls, 0);
   });
   testWidgets('theme and language selections update the actual app', (
     tester,
@@ -839,7 +831,6 @@ void main() {
         result == 'opened' ? findsNothing : findsOneWidget,
       );
       expect(find.text('support@splyto.eu'), findsOneWidget);
-      expect(auth.feedbackCalls, 0);
       expect(tester.takeException(), isNull);
     });
   }
@@ -883,7 +874,7 @@ void main() {
         await _tap(tester, t.profileHelpTitle);
         await _capture(tester, key, '$prefix-help');
         await _tap(tester, t.profileContactUs);
-        await _capture(tester, key, '$prefix-feedback');
+        await _capture(tester, key, '$prefix-contact');
         await _back(tester);
         await _back(tester);
         await _tap(tester, 'Matiss Geinerts');

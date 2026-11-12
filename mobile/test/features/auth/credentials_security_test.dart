@@ -13,7 +13,6 @@ import 'package:tripsplit/core/errors/api_exception.dart';
 import 'package:tripsplit/core/network/api_client.dart';
 import 'package:tripsplit/core/network/http_method.dart';
 import 'package:tripsplit/core/network/legacy_avatar_uploader.dart';
-import 'package:tripsplit/core/network/legacy_feedback_reporter.dart';
 import 'package:tripsplit/core/push/push_registration_service.dart';
 import 'package:tripsplit/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:tripsplit/features/auth/data/repositories/auth_repository_impl.dart';
@@ -81,8 +80,6 @@ class RecordingApi extends Fake implements ApiClient {
 
 class UnusedUploader extends Fake implements LegacyAvatarUploader {}
 
-class UnusedReporter extends Fake implements LegacyFeedbackReporter {}
-
 class QuietPush extends Fake implements PushRegistrationService {
   @override
   Future<void> unregisterCurrentDevice() async {}
@@ -117,7 +114,6 @@ class ControllerHarness {
       profiles,
       UserAvatarStore(),
       UnusedUploader(),
-      UnusedReporter(),
       QuietPush(),
       () async {
         loggedOut++;

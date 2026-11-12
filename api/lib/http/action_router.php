@@ -114,7 +114,6 @@ function api_action_handlers(): array
         'list_pending_trip_invitations' => 'list_pending_trip_invitations_action',
         'revoke_trip_invitation' => 'revoke_trip_invitation_action',
         'join_trip_invite' => 'join_trip_invite_action',
-        'submit_feedback' => 'submit_feedback_action',
         'workspace_snapshot' => 'workspace_snapshot_action',
         'list_trip_activity' => 'list_trip_activity_action',
         'shared_trips_with_user' => 'shared_trips_with_user_action',
@@ -150,9 +149,6 @@ function api_action_handlers(): array
         'admin_panel_create_admin_user' => 'admin_panel_create_admin_user_action',
         'admin_panel_update_admin_user' => 'admin_panel_update_admin_user_action',
         'admin_panel_delete_admin_user' => 'admin_panel_delete_admin_user_action',
-        'admin_panel_feedback'          => 'admin_panel_feedback_action',
-        'admin_panel_archive_feedback'  => 'admin_panel_archive_feedback_action',
-        'admin_panel_delete_feedback'   => 'admin_panel_delete_feedback_action',
     ];
 
     return $handlers;

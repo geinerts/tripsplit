@@ -1992,49 +1992,10 @@ class AppLocalizationsNb extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Merkede sendte og bekreftede betalingsoppdateringer';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Skjermbildet må være på maksimalt 8 MB';
-
-  @override
-  String get profileFeedbackSendTitle => 'Send tilbakemelding';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Type';
-
-  @override
-  String get profileFeedbackTypeBug => 'Feil';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Forslag';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Beskriv problem eller forslag';
-
-  @override
-  String get profilePickingImage => 'Henter bilde...';
-
-  @override
-  String get profileAttachScreenshot => 'Legg ved skjermbilde';
-
-  @override
-  String get profileChangeScreenshot => 'Endre skjermbilde';
-
-  @override
   String get profileRemoveImage => 'Fjern bilde';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Tips: legg ved skjermbilde for raskere feilsøking';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Legg til detaljer eller legg ved skjermbilde før du sender';
-
-  @override
-  String get profileSendAction => 'Send';
-
-  @override
-  String get profileThanksFeedbackSent => 'Takk! Tilbakemelding sendt';
-
-  @override
-  String get profileFailedSendFeedback => 'Kunne ikke sende tilbakemelding';
 
   @override
   String get profileCouldNotOpenWebsite => 'Kunne ikke åpne nettstedet.';

@@ -3669,95 +3669,17 @@ abstract class AppLocalizations {
   /// **'Marked sent and confirmed payment updates'**
   String get profileMarkedSentConfirmedPaymentUpdates;
 
-  /// No description provided for @profileScreenshotSizeMust8Mb.
-  ///
-  /// In en, this message translates to:
-  /// **'Screenshot size must be up to 8 MB'**
-  String get profileScreenshotSizeMust8Mb;
-
-  /// No description provided for @profileFeedbackSendTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Send feedback'**
-  String get profileFeedbackSendTitle;
-
-  /// No description provided for @profileFeedbackTypeLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Type'**
-  String get profileFeedbackTypeLabel;
-
-  /// No description provided for @profileFeedbackTypeBug.
-  ///
-  /// In en, this message translates to:
-  /// **'Bug'**
-  String get profileFeedbackTypeBug;
-
-  /// No description provided for @profileFeedbackTypeSuggestion.
-  ///
-  /// In en, this message translates to:
-  /// **'Suggestion'**
-  String get profileFeedbackTypeSuggestion;
-
-  /// No description provided for @profileDescribeIssueSuggestion.
-  ///
-  /// In en, this message translates to:
-  /// **'Describe issue or suggestion'**
-  String get profileDescribeIssueSuggestion;
-
-  /// No description provided for @profilePickingImage.
-  ///
-  /// In en, this message translates to:
-  /// **'Picking image...'**
-  String get profilePickingImage;
-
-  /// No description provided for @profileAttachScreenshot.
-  ///
-  /// In en, this message translates to:
-  /// **'Attach screenshot'**
-  String get profileAttachScreenshot;
-
-  /// No description provided for @profileChangeScreenshot.
-  ///
-  /// In en, this message translates to:
-  /// **'Change screenshot'**
-  String get profileChangeScreenshot;
-
   /// No description provided for @profileRemoveImage.
   ///
   /// In en, this message translates to:
   /// **'Remove image'**
   String get profileRemoveImage;
 
-  /// No description provided for @profileTipAttachScreenshotFasterBugTriage.
-  ///
-  /// In en, this message translates to:
-  /// **'Tip: attach screenshot for faster bug triage'**
-  String get profileTipAttachScreenshotFasterBugTriage;
-
   /// No description provided for @profileAddDetailsAttachScreenshotBeforeSending.
   ///
   /// In en, this message translates to:
   /// **'Add details or attach screenshot before sending'**
   String get profileAddDetailsAttachScreenshotBeforeSending;
-
-  /// No description provided for @profileSendAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Send'**
-  String get profileSendAction;
-
-  /// No description provided for @profileThanksFeedbackSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Thanks! Feedback sent'**
-  String get profileThanksFeedbackSent;
-
-  /// No description provided for @profileFailedSendFeedback.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to send feedback'**
-  String get profileFailedSendFeedback;
 
   /// No description provided for @profileCouldNotOpenWebsite.
   ///

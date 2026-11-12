@@ -2004,49 +2004,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Oznaczone jako wysłane i potwierdzone aktualizacje dotyczące płatności';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Rozmiar zrzutu ekranu nie może przekraczać 8 MB';
-
-  @override
-  String get profileFeedbackSendTitle => 'Prześlij opinię';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Typ';
-
-  @override
-  String get profileFeedbackTypeBug => 'Błąd';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Sugestia';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Opisz problem lub sugestię';
-
-  @override
-  String get profilePickingImage => 'Wybieranie obrazu...';
-
-  @override
-  String get profileAttachScreenshot => 'Załącz zrzut ekranu';
-
-  @override
-  String get profileChangeScreenshot => 'Zmień zrzut ekranu';
-
-  @override
   String get profileRemoveImage => 'Usuń obrazek';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Wskazówka: dołącz zrzut ekranu, aby przyspieszyć klasyfikację błędów';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Przed wysłaniem dodaj szczegóły lub załącz zrzut ekranu';
-
-  @override
-  String get profileSendAction => 'Wyślij';
-
-  @override
-  String get profileThanksFeedbackSent => 'Dziękujemy! Opinia wysłana';
-
-  @override
-  String get profileFailedSendFeedback => 'Nie udało się wysłać opinii';
 
   @override
   String get profileCouldNotOpenWebsite => 'Nie udało się otworzyć strony internetowej.';

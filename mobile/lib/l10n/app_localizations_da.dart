@@ -1992,49 +1992,10 @@ class AppLocalizationsDa extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Markeret som sendt og bekræftede betalingsopdateringer';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Skærmbilleder må højst være 8 MB';
-
-  @override
-  String get profileFeedbackSendTitle => 'Send feedback';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Type';
-
-  @override
-  String get profileFeedbackTypeBug => 'Fejl';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Forslag';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Beskriv problem eller forslag';
-
-  @override
-  String get profilePickingImage => 'Vælger billede...';
-
-  @override
-  String get profileAttachScreenshot => 'Vedhæft skærmbillede';
-
-  @override
-  String get profileChangeScreenshot => 'Skift skærmbillede';
-
-  @override
   String get profileRemoveImage => 'Fjern billede';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Tip: Vedhæft et skærmbillede for hurtigere fejlklassificering';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Tilføj detaljer eller vedhæft et skærmbillede, inden du sender';
-
-  @override
-  String get profileSendAction => 'Send';
-
-  @override
-  String get profileThanksFeedbackSent => 'Tak! Feedback sendt';
-
-  @override
-  String get profileFailedSendFeedback => 'Det lykkedes ikke at sende feedback';
 
   @override
   String get profileCouldNotOpenWebsite => 'Det var ikke muligt at åbne hjemmesiden.';

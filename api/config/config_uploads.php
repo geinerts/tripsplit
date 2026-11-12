@@ -16,11 +16,6 @@ function trip_images_dir_abs(): string
     return upload_dir_abs(TRIP_IMAGES_REL_DIR);
 }
 
-function feedback_dir_abs(): string
-{
-    return upload_dir_abs(FEEDBACK_REL_DIR);
-}
-
 function upload_dir_abs(string $relativeDir): string
 {
     $clean = sanitize_upload_relative_dir($relativeDir);
@@ -215,11 +210,6 @@ function ensure_trip_images_dir(): void
     ensure_upload_dir_abs(trip_images_dir_abs(), 'Unable to create trip images directory.');
 }
 
-function ensure_feedback_dir(): void
-{
-    ensure_upload_dir_abs(feedback_dir_abs(), 'Unable to create feedback upload directory.');
-}
-
 function ensure_upload_dir_abs(string $dir, string $errorMessage): void
 {
     if (!is_dir($dir) && !mkdir($dir, 0750, true) && !is_dir($dir)) {
@@ -251,11 +241,6 @@ function avatar_public_url(?string $avatarPath): ?string
 function trip_image_public_url(?string $tripImagePath): ?string
 {
     return project_public_url($tripImagePath);
-}
-
-function feedback_public_url(?string $feedbackPath): ?string
-{
-    return project_public_url($feedbackPath);
 }
 
 function receipt_thumb_public_url(?string $receiptPath): ?string
@@ -350,11 +335,6 @@ function avatar_thumb_public_url(?string $avatarPath): ?string
 function trip_image_thumb_public_url(?string $tripImagePath): ?string
 {
     return upload_thumb_public_url($tripImagePath, 'trip_image_public_url');
-}
-
-function feedback_thumb_public_url(?string $feedbackPath): ?string
-{
-    return upload_thumb_public_url($feedbackPath, 'feedback_public_url');
 }
 
 function upload_thumb_public_url(?string $relativePath, callable $fallbackUrlResolver): ?string
@@ -500,11 +480,6 @@ function normalize_trip_image_path(string $path, bool $allowEmpty = true): strin
     return normalize_upload_path($path, TRIP_IMAGES_REL_DIR, 'Trip image path', $allowEmpty);
 }
 
-function normalize_feedback_path(string $path, bool $allowEmpty = true): string
-{
-    return normalize_upload_path($path, FEEDBACK_REL_DIR, 'Feedback screenshot path', $allowEmpty);
-}
-
 function normalize_upload_path(
     string $path,
     string $relativeDir,
@@ -547,11 +522,6 @@ function delete_trip_image_file(?string $tripImagePath): void
     if (function_exists('image_source_delete_for_file')) {
         image_source_delete_for_file('trip', $tripImagePath);
     }
-}
-
-function delete_feedback_file(?string $feedbackPath): void
-{
-    delete_upload_file($feedbackPath, 'normalize_feedback_path', feedback_dir_abs());
 }
 
 function delete_upload_file(

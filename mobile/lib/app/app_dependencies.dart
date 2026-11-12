@@ -20,7 +20,6 @@ import '../core/config/app_env.dart';
 import '../core/deeplink/invite_deep_link_controller.dart';
 import '../core/network/legacy_api_client.dart';
 import '../core/network/legacy_avatar_uploader.dart';
-import '../core/network/legacy_feedback_reporter.dart';
 import '../core/network/legacy_receipt_uploader.dart';
 import '../core/network/legacy_trip_image_uploader.dart';
 import '../core/push/push_native_bridge.dart';
@@ -155,11 +154,6 @@ class AppDependencies {
       tokenStore: tokenStore,
       authSessionStore: authSessionStore,
     );
-    final feedbackReporter = LegacyFeedbackReporter(
-      baseUrl: env.apiBaseUrl,
-      tokenStore: tokenStore,
-      authSessionStore: authSessionStore,
-    );
     final tripImageUploader = LegacyTripImageUploader(
       baseUrl: env.apiBaseUrl,
       tokenStore: tokenStore,
@@ -248,7 +242,6 @@ class AppDependencies {
       currentUserStore,
       avatarStore,
       avatarUploader,
-      feedbackReporter,
       pushRegistrationService,
       () async {
         tripsController.clearTripsCache();

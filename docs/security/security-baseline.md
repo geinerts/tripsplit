@@ -31,7 +31,7 @@ fixes are locally tested but not yet deployed; see
 - Android backups and cleartext HTTP are disabled.
 - App caches are cleared on logout and exclude payment profile details.
 - Offline caches and queues are account/API-host scoped and protected against stale login generations. Legacy unowned queues are quarantined for recovery, never automatically replayed; see the migration notes for their retention exception.
-- Feedback screenshots are not publicly served.
+- In-app feedback was removed on 2026-11-12 (no stored submissions). Nginx still denies `/uploads/feedback/`.
 - Receipt storage is not publicly served. Authorized API responses issue short-lived signed image URLs; new attachments are bound to the uploader.
 - Receipt delivery has both positive (valid image) and negative (unsigned/direct storage) checks. An unsigned 404 alone does not demonstrate working receipt delivery.
 - Admin action arguments are encoded as data, not executable inline handlers.

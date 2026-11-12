@@ -1992,49 +1992,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Als verzonden gemarkeerde en bevestigde betalingsupdates';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'De grootte van de schermafbeelding mag maximaal 8 MB bedragen';
-
-  @override
-  String get profileFeedbackSendTitle => 'Feedback versturen';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Type';
-
-  @override
-  String get profileFeedbackTypeBug => 'Bug';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Suggestie';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Beschrijf het probleem of de suggestie';
-
-  @override
-  String get profilePickingImage => 'Afbeelding wordt geselecteerd...';
-
-  @override
-  String get profileAttachScreenshot => 'Voeg een screenshot toe';
-
-  @override
-  String get profileChangeScreenshot => 'Screenshot wijzigen';
-
-  @override
   String get profileRemoveImage => 'Afbeelding verwijderen';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Tip: voeg een screenshot toe voor een snellere bugtriage';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Voeg details toe of voeg een screenshot toe voordat je het bericht verstuurt';
-
-  @override
-  String get profileSendAction => 'Verzenden';
-
-  @override
-  String get profileThanksFeedbackSent => 'Bedankt! Feedback verzonden';
-
-  @override
-  String get profileFailedSendFeedback => 'Het verzenden van feedback is mislukt';
 
   @override
   String get profileCouldNotOpenWebsite => 'De website kon niet worden geopend.';

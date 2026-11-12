@@ -1998,49 +1998,10 @@ class AppLocalizationsLv extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Atzīmēts kā nosūtīts un apstiprināts saņemts';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Ekrānattēla izmēram jābūt līdz 8 MB';
-
-  @override
-  String get profileFeedbackSendTitle => 'Sūtīt atsauksmi';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Tips';
-
-  @override
-  String get profileFeedbackTypeBug => 'Kļūda';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Ieteikums';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Apraksti problēmu vai ieteikumu';
-
-  @override
-  String get profilePickingImage => 'Tiek izvēlēts attēls...';
-
-  @override
-  String get profileAttachScreenshot => 'Pievienot ekrānattēlu';
-
-  @override
-  String get profileChangeScreenshot => 'Mainīt ekrānattēlu';
-
-  @override
   String get profileRemoveImage => 'Noņemt attēlu';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Ieteikums: pievieno ekrānattēlu ātrākai kļūdas analīzei';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Pirms sūtīšanas pievieno aprakstu vai ekrānattēlu';
-
-  @override
-  String get profileSendAction => 'Sūtīt';
-
-  @override
-  String get profileThanksFeedbackSent => 'Paldies! Atsauksme nosūtīta';
-
-  @override
-  String get profileFailedSendFeedback => 'Neizdevās nosūtīt atsauksmi';
 
   @override
   String get profileCouldNotOpenWebsite => 'Neizdevās atvērt mājaslapu.';

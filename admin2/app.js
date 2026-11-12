@@ -204,7 +204,7 @@ function actionAttrs(action, ...args) {
 const clickActions = Object.freeze({
   openPremiumForm, premiumPage,
   navigate, openUserDetail, suspendUser, reactivateUser, deleteUser, clearPushTokens, signOutEverywhere,
-  userSearch, archiveFeedback, deleteFeedback, loadFeedback, retryPush,
+  userSearch, retryPush,
   updateIncident, submitIncident, loadAuditLog, loadAppEvents,
   editAdminUser, deleteAdminUser, showCreateAdminModal, createAdminUser, saveAdminUser,
   revokeSession, replace2fa, confirm2fa,
@@ -1335,8 +1335,6 @@ async function openPremiumForm(operation, userId = null, grantId = null) {
   form.querySelector('[type="submit"]').disabled = false;
 }
 
-// ── View: Feedback ────────────────────────────────────────────────────────────
-
 // ── View: System health ──────────────────────────────────────────────────────
 
 function formatBytes(bytes) {
@@ -1478,107 +1476,6 @@ registerView('security', {
       </div>`;
   },
 });
-
-registerView('feedback', {
-  title: 'Feedback',
-  async render() {
-    return `
-      <div class="toolbar">
-        <select class="form-input" id="fb-type" style="width:auto;">
-          <option value="all">All types</option>
-          <option value="bug">Bugs</option>
-          <option value="suggestion">Suggestions</option>
-        </select>
-        <select class="form-input" id="fb-status" style="width:auto;">
-          <option value="open">Open</option>
-          <option value="all">All</option>
-          <option value="archived">Archived</option>
-        </select>
-        <div class="toolbar-search">
-          <input type="search" id="fb-search" placeholder="Search feedback…"/>
-        </div>
-        <button class="btn btn-ghost btn-sm" id="fb-search-btn">Filter</button>
-      </div>
-      <div id="fb-stats" style="margin-bottom:16px;"></div>
-      <div id="fb-results"><div class="loading-state"><span class="spinner"></span></div></div>
-    `;
-  },
-  init() {
-    loadFeedback(0);
-    document.getElementById('fb-search-btn').addEventListener('click', () => loadFeedback(0));
-  },
-});
-
-async function loadFeedback(offset = 0) {
-  const type   = document.getElementById('fb-type').value;
-  const status = document.getElementById('fb-status').value;
-  const search = document.getElementById('fb-search').value.trim();
-  document.getElementById('fb-results').innerHTML = '<div class="loading-state"><span class="spinner"></span></div>';
-
-  const res = await get('admin_panel_feedback', { type, status, search, limit: 40, offset });
-  if (!res.ok) { document.getElementById('fb-results').innerHTML = `<div class="empty-state">Error: ${esc(res.error)}</div>`; return; }
-
-  const s = res.stats || {};
-  document.getElementById('fb-stats').innerHTML = `
-    <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr));">
-      <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value">${s.total ?? 0}</div></div>
-      <div class="stat-card red"><div class="stat-label">Bugs</div><div class="stat-value">${s.bugs ?? 0}</div></div>
-      <div class="stat-card blue"><div class="stat-label">Suggestions</div><div class="stat-value">${s.suggestions ?? 0}</div></div>
-      <div class="stat-card amber"><div class="stat-label">Open</div><div class="stat-value">${s.open_count ?? 0}</div></div>
-    </div>
-  `;
-
-  if (!res.feedback.length) {
-    document.getElementById('fb-results').innerHTML = '<div class="empty-state">No feedback found.</div>';
-    return;
-  }
-
-  const cards = res.feedback.map(f => `
-    <div class="cl-item">
-      <div class="cl-row" style="margin-bottom:7px">
-        <span class="badge ${f.type === 'bug' ? 'badge-red' : 'badge-blue'}">${esc(f.type)}</span>
-        ${statusBadge(f.status)}
-        <span style="margin-left:auto;font-size:11px;color:var(--fg-muted)">${relTime(f.created_at)}</span>
-      </div>
-      <div style="font-size:13px;color:var(--fg);line-height:1.45;margin-bottom:6px">${esc(f.message)}</div>
-      ${f.user_nickname ? `<div class="cl-meta">by ${esc(f.user_nickname)}</div>` : ''}
-      <div class="cl-actions">
-        ${f.status === 'open' && can('superadmin','admin','support')
-          ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('archiveFeedback', f.id)}>Archive</button>` : ''}
-        ${can('superadmin','admin')
-          ? `<button class="btn btn-danger btn-sm" ${actionAttrs('deleteFeedback', f.id)}>Delete</button>` : ''}
-      </div>
-    </div>
-  `).join('');
-
-  const nextBtn = (offset + 40) < res.total
-    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('loadFeedback', offset + 40)}>Next →</button>` : '';
-  const prevBtn = offset > 0
-    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('loadFeedback', offset - 40)}>← Prev</button>` : '';
-
-  document.getElementById('fb-results').innerHTML = `
-    <div class="table-card" style="padding:0">
-      ${cards}
-    </div>
-    <div class="pagination">${offset + 1}–${Math.min(offset + 40, res.total)} of ${res.total} ${prevBtn} ${nextBtn}</div>
-  `;
-}
-
-async function archiveFeedback(id) {
-  const res = await post('admin_panel_archive_feedback', { id });
-  if (res.ok) { toast('Archived', 'success'); loadFeedback(0); }
-  else toast(res.error || 'Failed', 'error');
-}
-
-async function deleteFeedback(id) {
-  if (!await askInModal({ title: 'Delete feedback?', confirmLabel: 'Delete', danger: true,
-    message: 'This feedback is deleted permanently.' })) return;
-  const res = await post('admin_panel_delete_feedback', { id });
-  if (res.ok) { toast('Deleted', 'success'); loadFeedback(0); }
-  else toast(res.error || 'Failed', 'error');
-}
-
-Object.assign(window, { loadFeedback, archiveFeedback, deleteFeedback });
 
 // ── View: Push Queue ──────────────────────────────────────────────────────────
 
@@ -1754,7 +1651,6 @@ registerView('audit-log', {
           <option value="">All targets</option>
           <option value="user">user</option>
           <option value="admin_user">admin_user</option>
-          <option value="feedback">feedback</option>
           <option value="incident">incident</option>
           <option value="push_queue">push_queue</option>
           <option value="session">session</option>

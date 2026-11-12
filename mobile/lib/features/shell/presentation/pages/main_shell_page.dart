@@ -6,18 +6,12 @@ import '../../../trip_reports/presentation/trip_export_flow.dart';
 import '../../../trip_reports/presentation/year_summary_page.dart';
 import '../../../travel_map/presentation/travel_map_page.dart';
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show ValueListenable;
 import 'package:flutter/material.dart';
 
-import '../../../../app/locale/app_locale_picker.dart';
-import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_design.dart';
-import '../../../../app/theme/theme_mode_picker.dart';
 import '../../../../core/deeplink/invite_deep_link_controller.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
@@ -51,7 +45,6 @@ import '../widgets/notifications_sheet.dart';
 part 'main_shell_page_quick_start.dart';
 part 'main_shell_page_navigation.dart';
 part 'main_shell_page_notifications.dart';
-part 'main_shell_page_settings.dart';
 part 'main_shell_page_widgets.dart';
 
 class MainShellPage extends StatefulWidget {
@@ -121,8 +114,7 @@ class _MainShellPageState extends State<MainShellPage>
   int? _quickStartGeneration;
   bool _openAddExpenseOnWorkspaceStart = false;
   bool _isProfileInEditMode = false;
-  bool _isLoggingOut = false;
-  bool _isSendingFeedback = false;
+  final bool _isLoggingOut = false;
   bool _isNotificationsLoading = false;
   bool _notificationsSheetOpen = false;
   bool _isMarkingNotifications = false;

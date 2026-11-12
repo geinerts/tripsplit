@@ -90,7 +90,7 @@ php scripts/run_migrations.php --baseline
 4. On a production server, keep secrets outside the web root at
    `/etc/splyto/splyto.env` (recommended ownership/mode: `root:www-data`, `0640`).
    The project-root `.env` and `api/.env` fallbacks are for local development only.
-5. Ensure directories `uploads/receipts`, `uploads/avatars`, `uploads/trips`, `uploads/feedback` exist and are writable by PHP process.
+5. Ensure directories `uploads/receipts`, `uploads/avatars`, `uploads/trips` exist and are writable by PHP process.
 6. Place Verot `class.upload.php` at `api/lib/verot/class.upload.php` (or change `TRIP_CLASS_UPLOAD_REL_PATH`).
 
 ### Cron jobs (recommended)
@@ -243,7 +243,7 @@ Deploy strategy used in workflow:
 
 ## API actions
 
-`register_proof`, `register`, `login`, `social_auth`, `refresh_session`, `set_credentials`, `me`, `update_profile`, `forgot_password`, `reset_password`, `request_email_verification_link`, `confirm_email_verification`, `request_account_deletion_link`, `confirm_account_deletion`, `trips`, `all_users`, `search_users`, `friends_list`, `send_friend_invite`, `respond_friend_invite`, `cancel_friend_invite`, `remove_friend`, `create_trip`, `update_trip`, `delete_trip`, `add_trip_members`, `users`, `upload_trip_image`, `upload_receipt`, `upload_avatar`, `remove_avatar`, `add_expense`, `update_expense`, `delete_expense`, `list_expenses`, `balances`, `create_trip_payment`, `create_trip_payment_request`, `mark_trip_payment_request_sent`, `cancel_trip_payment_request`, `decline_trip_payment_request`, `confirm_trip_payment_received`, `cancel_trip_payment_sent`, `report_trip_payment_not_received`, `end_trip`, `set_ready_to_settle`, `mark_settlement_sent`, `confirm_settlement_received`, `remind_settlement`, `list_notifications`, `list_notifications_global`, `mark_notifications_read`, `mark_notifications_read_global`, `register_push_token`, `unregister_push_token`, `create_trip_invite`, `join_trip_invite`, `submit_feedback`, `workspace_snapshot`, `generate_order`, `list_orders`, `admin_panel_*`
+`register_proof`, `register`, `login`, `social_auth`, `refresh_session`, `set_credentials`, `me`, `update_profile`, `forgot_password`, `reset_password`, `request_email_verification_link`, `confirm_email_verification`, `request_account_deletion_link`, `confirm_account_deletion`, `trips`, `all_users`, `search_users`, `friends_list`, `send_friend_invite`, `respond_friend_invite`, `cancel_friend_invite`, `remove_friend`, `create_trip`, `update_trip`, `delete_trip`, `add_trip_members`, `users`, `upload_trip_image`, `upload_receipt`, `upload_avatar`, `remove_avatar`, `add_expense`, `update_expense`, `delete_expense`, `list_expenses`, `balances`, `create_trip_payment`, `create_trip_payment_request`, `mark_trip_payment_request_sent`, `cancel_trip_payment_request`, `decline_trip_payment_request`, `confirm_trip_payment_received`, `cancel_trip_payment_sent`, `report_trip_payment_not_received`, `end_trip`, `set_ready_to_settle`, `mark_settlement_sent`, `confirm_settlement_received`, `remind_settlement`, `list_notifications`, `list_notifications_global`, `mark_notifications_read`, `mark_notifications_read_global`, `register_push_token`, `unregister_push_token`, `create_trip_invite`, `join_trip_invite`, `workspace_snapshot`, `generate_order`, `list_orders`, `admin_panel_*`
 
 ## Notes about realtime on nano.lv shared hosting
 

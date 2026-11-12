@@ -9,7 +9,6 @@ import '../../../../core/auth/device_token_store.dart';
 import '../../../../core/auth/user_avatar_store.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/network/legacy_avatar_uploader.dart';
-import '../../../../core/network/legacy_feedback_reporter.dart';
 import '../../../../core/push/push_registration_service.dart';
 import '../../data/models/auth_user_model.dart';
 import '../../domain/entities/auth_user.dart';
@@ -50,7 +49,6 @@ class AuthController {
     this._currentUserStore,
     this._avatarStore,
     this._avatarUploader,
-    this._feedbackReporter,
     this._pushRegistrationService,
     this._onLoggedOut, {
     AccountDataSession? accountSession,
@@ -77,7 +75,6 @@ class AuthController {
   final UserAvatarStore _avatarStore;
   final LegacyAvatarUploader _avatarUploader;
   ImageCropService? imageCropService;
-  final LegacyFeedbackReporter _feedbackReporter;
   final PushRegistrationService _pushRegistrationService;
   final Future<void> Function() _onLoggedOut;
   final AccountDataSession _accountSession;
@@ -420,26 +417,6 @@ class AuthController {
     await _avatarStore.writeAvatarBase64(userId: merged.id, avatarBase64: null);
     await _setCurrentUser(merged, generation);
     return merged;
-  }
-
-  Future<void> submitFeedback({
-    required String type,
-    required String note,
-    int? tripId,
-    String? localeCode,
-    Map<String, Object?>? contextData,
-    String? screenshotFileName,
-    Uint8List? screenshotBytes,
-  }) {
-    return _feedbackReporter.submitFeedback(
-      type: type,
-      note: note,
-      tripId: tripId,
-      localeCode: localeCode,
-      contextData: contextData,
-      screenshotFileName: screenshotFileName,
-      screenshotBytes: screenshotBytes,
-    );
   }
 
   Future<bool> logout() =>

@@ -1992,49 +1992,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Marked sent and confirmed payment updates';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Screenshot size must be up to 8 MB';
-
-  @override
-  String get profileFeedbackSendTitle => 'Send feedback';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Type';
-
-  @override
-  String get profileFeedbackTypeBug => 'Bug';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Suggestion';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Describe issue or suggestion';
-
-  @override
-  String get profilePickingImage => 'Picking image...';
-
-  @override
-  String get profileAttachScreenshot => 'Attach screenshot';
-
-  @override
-  String get profileChangeScreenshot => 'Change screenshot';
-
-  @override
   String get profileRemoveImage => 'Remove image';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Tip: attach screenshot for faster bug triage';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Add details or attach screenshot before sending';
-
-  @override
-  String get profileSendAction => 'Send';
-
-  @override
-  String get profileThanksFeedbackSent => 'Thanks! Feedback sent';
-
-  @override
-  String get profileFailedSendFeedback => 'Failed to send feedback';
 
   @override
   String get profileCouldNotOpenWebsite => 'Could not open website.';

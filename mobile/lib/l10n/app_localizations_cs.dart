@@ -1998,49 +1998,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Označené odeslané a potvrzené aktualizace plateb';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Velikost snímku obrazovky nesmí přesáhnout 8 MB';
-
-  @override
-  String get profileFeedbackSendTitle => 'Poslat zpětnou vazbu';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Typ';
-
-  @override
-  String get profileFeedbackTypeBug => 'Chyba';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Doporučení';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Popište problém nebo návrh';
-
-  @override
-  String get profilePickingImage => 'Vybírání obrázku...';
-
-  @override
-  String get profileAttachScreenshot => 'Přiložte snímek obrazovky';
-
-  @override
-  String get profileChangeScreenshot => 'Změnit snímek obrazovky';
-
-  @override
   String get profileRemoveImage => 'Odstranit obrázek';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Tip: přiložte snímek obrazovky pro rychlejší vyhodnocení chyby';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Před odesláním doplňte podrobnosti nebo přiložte snímek obrazovky';
-
-  @override
-  String get profileSendAction => 'Odeslat';
-
-  @override
-  String get profileThanksFeedbackSent => 'Děkujeme! Zpětná vazba odeslána';
-
-  @override
-  String get profileFailedSendFeedback => 'Nepodařilo se odeslat zpětnou vazbu';
 
   @override
   String get profileCouldNotOpenWebsite => 'Nelze otevřít webovou stránku.';

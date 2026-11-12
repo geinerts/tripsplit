@@ -1992,49 +1992,10 @@ class AppLocalizationsFi extends AppLocalizations {
   String get profileMarkedSentConfirmedPaymentUpdates => 'Merkitty lähetetyiksi ja vahvistetuiksi maksupäivitykset';
 
   @override
-  String get profileScreenshotSizeMust8Mb => 'Kuvakaappauksen koon on oltava enintään 8 Mt';
-
-  @override
-  String get profileFeedbackSendTitle => 'Lähetä palautetta';
-
-  @override
-  String get profileFeedbackTypeLabel => 'Kirjoita';
-
-  @override
-  String get profileFeedbackTypeBug => 'Virhe';
-
-  @override
-  String get profileFeedbackTypeSuggestion => 'Ehdotus';
-
-  @override
-  String get profileDescribeIssueSuggestion => 'Kuvaile ongelma tai ehdotus';
-
-  @override
-  String get profilePickingImage => 'Valitaan kuvaa...';
-
-  @override
-  String get profileAttachScreenshot => 'Liitä kuvakaappaus';
-
-  @override
-  String get profileChangeScreenshot => 'Vaihda kuvakaappaus';
-
-  @override
   String get profileRemoveImage => 'Poista kuva';
 
   @override
-  String get profileTipAttachScreenshotFasterBugTriage => 'Vinkki: liitä kuvakaappaus, jotta virheiden luokittelu sujuu nopeammin';
-
-  @override
   String get profileAddDetailsAttachScreenshotBeforeSending => 'Lisää yksityiskohdat tai liitä kuvakaappaus ennen lähettämistä';
-
-  @override
-  String get profileSendAction => 'Lähetä';
-
-  @override
-  String get profileThanksFeedbackSent => 'Kiitos! Palaute lähetetty';
-
-  @override
-  String get profileFailedSendFeedback => 'Palautteen lähettäminen epäonnistui';
 
   @override
   String get profileCouldNotOpenWebsite => 'Verkkosivustoa ei voitu avata.';
