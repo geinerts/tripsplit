@@ -12,3 +12,5 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
+# The admin System page reads job heartbeats from here (scripts/README.md).
+ReadWritePaths=/var/lib/splyto/status
