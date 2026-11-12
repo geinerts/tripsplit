@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tripsplit/app/router/app_router.dart';
 import 'package:tripsplit/app/theme/app_design.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
 import 'package:tripsplit/app/theme/auth_flow_theme.dart';
@@ -85,5 +86,49 @@ void main() {
     final color =
         message.style?.color ?? DefaultTextStyle.of(dialogContext).style.color!;
     expect(_isDark(color), isFalse, reason: 'message text $color');
+  });
+
+  testWidgets('opening an auth route never flashes the light background', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        themeMode: ThemeMode.light,
+        builder: (context, child) => AppBackground(child: child!),
+        routes: {
+          AppRouter.forgotPassword: (_) => const AuthFlowTheme(
+            child: AppPageScaffold(body: Text('Reset password')),
+          ),
+        },
+        home: Builder(
+          builder: (context) => Scaffold(
+            body: TextButton(
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(AppRouter.forgotPassword),
+              child: const Text('open'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.tap(find.text('open'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 16));
+    // First frames of the transition: the opaque backdrop behind the fading
+    // auth page (the top route) must already be the dark auth canvas.
+    final pageStack = find
+        .ancestor(of: find.text('Reset password'), matching: find.byType(Stack))
+        .last;
+    final backdrop = tester.widget<ColoredBox>(
+      find
+          .descendant(
+            of: find.descendant(of: pageStack, matching: find.byType(Opacity)),
+            matching: find.byType(ColoredBox),
+          )
+          .first,
+    );
+    expect(backdrop.color, AppDesign.authCanvas);
+    await tester.pumpAndSettle();
   });
 }

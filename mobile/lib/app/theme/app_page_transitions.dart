@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/ui/app_background.dart';
+import '../router/app_router.dart';
+import 'app_design.dart';
 
 /// Unified page transition used across platforms to avoid iOS-style
 /// side-slide overlap where previous screen remains visible underneath.
@@ -24,9 +26,13 @@ class AppPageTransitionsBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
+    final canvas = AppRouter.authFlowRoutes.contains(route.settings.name)
+        ? AppDesign.authCanvas
+        : null;
     if (route.fullscreenDialog) {
       return _OpaquePageTransition(
         animation: animation,
+        canvas: canvas,
         child: FadeTransition(
           opacity: animation.drive(_opacityTween),
           child: child,
@@ -36,6 +42,7 @@ class AppPageTransitionsBuilder extends PageTransitionsBuilder {
 
     return _OpaquePageTransition(
       animation: animation,
+      canvas: canvas,
       child: SlideTransition(
         position: animation.drive(_offsetTween),
         child: FadeTransition(
@@ -48,10 +55,17 @@ class AppPageTransitionsBuilder extends PageTransitionsBuilder {
 }
 
 class _OpaquePageTransition extends StatelessWidget {
-  const _OpaquePageTransition({required this.animation, required this.child});
+  const _OpaquePageTransition({
+    required this.animation,
+    required this.child,
+    this.canvas,
+  });
 
   final Animation<double> animation;
   final Widget child;
+
+  /// Fixed backdrop colour; null uses the app's page background for the theme.
+  final Color? canvas;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +82,9 @@ class _OpaquePageTransition extends StatelessWidget {
           children: [
             Opacity(
               opacity: backgroundOpacity,
-              child: const AppBackground(force: true, child: SizedBox.expand()),
+              child: canvas != null
+                  ? ColoredBox(color: canvas!, child: const SizedBox.expand())
+                  : const AppBackground(force: true, child: SizedBox.expand()),
             ),
             child!,
           ],

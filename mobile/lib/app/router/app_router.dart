@@ -31,6 +31,16 @@ class AppRouter {
   static const String trips = '/trips';
   static const String workspace = '/workspace';
 
+  /// Routes wrapped in [AuthFlowTheme]; their page transition uses the dark
+  /// auth canvas so the light app background never flashes underneath.
+  static const Set<String> authFlowRoutes = {
+    authIntro,
+    authFromLaunch,
+    login,
+    credentials,
+    forgotPassword,
+  };
+
   final AppDependencies _dependencies;
 
   Map<String, WidgetBuilder> get routes {
