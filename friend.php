@@ -37,6 +37,9 @@ header('Vary: Accept-Language');
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" sizes="192x192" href="/site/images/icon-192.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <title><?= share_html($title) ?></title>
   <meta name="description" content="<?= share_html($description) ?>" />
   <?= share_open_graph_tags($title, $description, $pageUrl, $imageUrl) ?>
