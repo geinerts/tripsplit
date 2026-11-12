@@ -51,9 +51,9 @@ credentials or customer mutations are needed for these checks.
 
 ## Open work
 
-The owner explicitly deferred MFA enrollment and factor-lifecycle changes until
-release. These remain open; the boundary does not make password-only admin access
-equivalent to MFA. Recovery procedures and safe factor replacement are required.
+Mandatory admin 2FA, safe factor replacement and recovery were implemented on
+2026-11-12; see [admin MFA](admin-mfa.md). Until that is deployed and enrolled,
+the boundary does not make password-only admin access equivalent to MFA.
 
 Cloudflare Access policies were not inspected in its dashboard. A VPS-originated
 request to the ops site returned HTTP 200, so enforcement for all clients is not

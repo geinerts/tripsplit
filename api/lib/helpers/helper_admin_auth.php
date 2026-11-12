@@ -156,16 +156,31 @@ function resolve_admin_session_any(): array
 }
 
 /**
- * Require a fully-authenticated admin session (password + 2FA if enabled).
+ * Require a fully-authenticated admin session: password and 2FA. 2FA is mandatory;
+ * an account without it can only reach the enrolment actions.
  * Returns the session row. Exits with 401/403 on failure.
  */
 function require_admin_session(): array
 {
     $sess = resolve_admin_session_any();
-    if ((int) $sess['totp_enabled'] === 1 && !(bool) $sess['is_2fa_verified']) {
-        json_out(['ok' => false, 'error' => 'Two-factor authentication required.', 'code' => '2fa_required'], 401);
+    $denied = admin_session_denial($sess);
+    if ($denied !== null) {
+        json_out(['ok' => false, 'error' => $denied['error'], 'code' => $denied['code']], $denied['status']);
     }
     return $sess;
+}
+
+/** Null when the session passed password and 2FA; otherwise why it is refused. */
+function admin_session_denial(array $sess): ?array
+{
+    if ((int) ($sess['totp_enabled'] ?? 0) !== 1) {
+        return ['status' => 403, 'code' => '2fa_enrollment_required',
+            'error' => 'Set up two-factor authentication to continue.'];
+    }
+    if ((int) ($sess['is_2fa_verified'] ?? 0) !== 1) {
+        return ['status' => 401, 'code' => '2fa_required', 'error' => 'Two-factor authentication required.'];
+    }
+    return null;
 }
 
 /**
@@ -303,7 +318,21 @@ function admin_totp_encryption_key_bytes(): string
     return hash('sha256', $configured, true);
 }
 
-function admin_totp_encrypt_secret(string $secret): string
+/** Current key first; the previous key is read-only and only set during rotation. */
+function admin_totp_decryption_keys(): array
+{
+    $keys = [admin_totp_encryption_key_bytes()];
+    $previous = defined('ADMIN_TOTP_ENCRYPTION_KEY_PREVIOUS') ? trim((string) ADMIN_TOTP_ENCRYPTION_KEY_PREVIOUS) : '';
+    if (strlen($previous) >= 32) {
+        $previousBytes = hash('sha256', $previous, true);
+        if (!hash_equals($keys[0], $previousBytes)) {
+            $keys[] = $previousBytes;
+        }
+    }
+    return $keys;
+}
+
+function admin_totp_encrypt_secret(string $secret, ?string $keyBytes = null): string
 {
     $secret = strtoupper(trim($secret));
     if (!preg_match('/^[A-Z2-7]{16,128}$/', $secret)) {
@@ -318,7 +347,7 @@ function admin_totp_encrypt_secret(string $secret): string
     $ciphertext = openssl_encrypt(
         $secret,
         'aes-256-gcm',
-        admin_totp_encryption_key_bytes(),
+        $keyBytes ?? admin_totp_encryption_key_bytes(),
         OPENSSL_RAW_DATA,
         $nonce,
         $tag,
@@ -332,7 +361,7 @@ function admin_totp_encrypt_secret(string $secret): string
     return 'enc:v1:' . base64_encode($nonce . $tag . $ciphertext);
 }
 
-function admin_totp_decrypt_secret(string $stored): string
+function admin_totp_decrypt_secret(string $stored, ?array $keys = null): string
 {
     $stored = trim($stored);
     if ($stored === '') {
@@ -355,20 +384,14 @@ function admin_totp_decrypt_secret(string $stored): string
     $nonce = substr($payload, 0, 12);
     $tag = substr($payload, 12, 16);
     $ciphertext = substr($payload, 28);
-    $secret = openssl_decrypt(
-        $ciphertext,
-        'aes-256-gcm',
-        admin_totp_encryption_key_bytes(),
-        OPENSSL_RAW_DATA,
-        $nonce,
-        $tag
-    );
-    if (!is_string($secret)) {
-        return '';
+    foreach ($keys ?? admin_totp_decryption_keys() as $key) {
+        $secret = openssl_decrypt($ciphertext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $nonce, $tag);
+        if (is_string($secret)) {
+            $secret = strtoupper(trim($secret));
+            return preg_match('/^[A-Z2-7]{16,128}$/', $secret) ? $secret : '';
+        }
     }
-
-    $secret = strtoupper(trim($secret));
-    return preg_match('/^[A-Z2-7]{16,128}$/', $secret) ? $secret : '';
+    return '';
 }
 
 function admin_totp_code(string $secret, int $counter): string
@@ -388,17 +411,7 @@ function admin_totp_code(string $secret, int $counter): string
 
 function admin_totp_verify(string $secret, string $code, int $window = 1): bool
 {
-    $code = trim($code);
-    if (!preg_match('/^\d{6}$/', $code)) {
-        return false;
-    }
-    $counter = (int) floor(time() / 30);
-    for ($i = -$window; $i <= $window; $i++) {
-        if (hash_equals(admin_totp_code($secret, $counter + $i), $code)) {
-            return true;
-        }
-    }
-    return false;
+    return admin_totp_matched_counter($secret, $code, time(), $window) !== null;
 }
 
 function admin_totp_uri(string $secret, string $username, string $issuer = 'Splyto Admin'): string
@@ -411,3 +424,5 @@ function admin_totp_uri(string $secret, string $username, string $issuer = 'Sply
         rawurlencode($issuer)
     );
 }
+
+require_once __DIR__ . '/helper_admin_totp.php';

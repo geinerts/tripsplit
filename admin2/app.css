@@ -1146,3 +1146,16 @@ tbody td:first-child { color: var(--fg); }
 .premium-form input, .premium-form select, .premium-form textarea { width: 100%; min-width: 0; box-sizing: border-box; }
 #premium-results .table-wrap { overflow-x: auto; }
 #premium-form-error { color: var(--red, #b91c1c); margin: 0; overflow-wrap: anywhere; }
+
+/* 2FA setup key shown during enrolment or replacement */
+.setup-key {
+  background: var(--bg-card-2);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 16px;
+  font-family: monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}

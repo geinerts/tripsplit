@@ -6,7 +6,7 @@ require_once __DIR__ . '/../helpers/helper_feature_usage.php';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Admin Panel v2 Actions
-// Auth: cookie-based sessions with optional TOTP 2FA, RBAC roles.
+// Auth: cookie-based sessions with mandatory TOTP 2FA, RBAC roles.
 // All write actions emit an audit log entry.
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -124,8 +124,9 @@ function admin_panel_login_action(): void
     $pdo->prepare("UPDATE {$userTable} SET failed_login_count = 0, locked_until = NULL, last_login_at = UTC_TIMESTAMP() WHERE id = ?")
         ->execute([$user['id']]);
 
+    // 2FA is mandatory: a password-only session is never fully authenticated.
     $needs2fa    = (int) $user['totp_enabled'] === 1;
-    $sessionToken = admin_create_session($pdo, (int) $user['id'], !$needs2fa);
+    $sessionToken = admin_create_session($pdo, (int) $user['id'], false);
     admin_set_session_cookie($sessionToken);
     admin_audit_event(
         $pdo,
@@ -143,6 +144,7 @@ function admin_panel_login_action(): void
     json_out([
         'ok'          => true,
         'requires_2fa' => $needs2fa,
+        'requires_2fa_enrollment' => !$needs2fa,
         'user'         => [
             'id'       => (int) $user['id'],
             'username' => $user['username'],
@@ -182,27 +184,16 @@ function admin_panel_verify_2fa_action(): void
         max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC)
     );
 
-    $sessTable = table_name('admin_sessions');
-    $userTable = table_name('admin_users');
-
-    $stmt = $pdo->prepare("
-        SELECT s.token, s.admin_user_id, s.is_2fa_verified,
-               u.totp_secret, u.totp_enabled, u.username, u.email, u.role
-        FROM {$sessTable} s
-        JOIN {$userTable} u ON u.id = s.admin_user_id
-        WHERE s.token = ? AND s.expires_at > UTC_TIMESTAMP() AND u.is_active = 1
-    ");
-    $stmt->execute([$tokenHash]);
-    $sess = $stmt->fetch();
-
+    $sess = admin_resolve_session($pdo, $token);
     if (!is_array($sess)) {
         json_out(['ok' => false, 'error' => 'Session not found or expired.'], 401);
     }
-    if ((int) $sess['totp_enabled'] !== 1) {
-        json_out(['ok' => false, 'error' => '2FA is not enabled on this account.'], 400);
+    $result = admin_totp_verify_login($pdo, $sess, $code, time());
+    if ($result === 'enrollment_required') {
+        json_out(['ok' => false, 'code' => '2fa_enrollment_required',
+            'error' => 'Set up two-factor authentication to continue.'], 403);
     }
-    $totpSecret = admin_totp_decrypt_secret((string) $sess['totp_secret']);
-    if ($totpSecret === '' || !admin_totp_verify($totpSecret, $code)) {
+    if ($result !== 'ok') {
         admin_audit_event(
             $pdo,
             (int) $sess['admin_user_id'],
@@ -214,9 +205,6 @@ function admin_panel_verify_2fa_action(): void
         );
         json_out(['ok' => false, 'error' => 'Invalid or expired 2FA code.'], 401);
     }
-
-    $pdo->prepare("UPDATE {$sessTable} SET is_2fa_verified = 1 WHERE token = ?")
-        ->execute([$tokenHash]);
     admin_audit_event(
         $pdo,
         (int) $sess['admin_user_id'],
@@ -265,89 +253,57 @@ function admin_panel_session_check_action(): void
         json_out(['ok' => false, 'authenticated' => false]);
     }
 
-    $needs2fa  = (int) $sess['totp_enabled'] === 1;
-    $verified  = (bool) $sess['is_2fa_verified'];
-    $fullAuth  = !$needs2fa || $verified;
+    $enrolled = (int) $sess['totp_enabled'] === 1;
+    $verified = (int) $sess['is_2fa_verified'] === 1;
 
     json_out([
         'ok'            => true,
         'authenticated' => true,
-        'full_auth'     => $fullAuth,
-        'requires_2fa'  => $needs2fa && !$verified,
+        'full_auth'     => $enrolled && $verified,
+        'requires_2fa'  => $enrolled && !$verified,
+        'requires_2fa_enrollment' => !$enrolled,
         'user'          => [
             'id'           => (int) $sess['admin_user_id'],
             'username'     => $sess['username'],
             'email'        => $sess['email'],
             'role'         => $sess['role'],
-            'totp_enabled' => $needs2fa,
+            'totp_enabled' => $enrolled,
         ],
     ]);
 }
 
 // ── TOTP Setup ────────────────────────────────────────────────────────────────
+// Enrolment (no 2FA yet) works from the password-only login session. Replacing an
+// authenticator needs a verified session, the password and a current code.
+// There is no way to turn 2FA off from the panel; recovery is scripts/admin_totp.php.
+
+function admin_panel_totp_rate_limit(PDO $pdo, array $sess): void
+{
+    enforce_rate_limit($pdo, 'admin_panel_totp_setup_ip', client_ip_address(),
+        max(1, RATE_LIMIT_ADMIN_PANEL_2FA_IP_MAX), max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC));
+    enforce_rate_limit($pdo, 'admin_panel_totp_setup_admin', (string) (int) $sess['admin_user_id'],
+        max(1, RATE_LIMIT_ADMIN_PANEL_2FA_TOKEN_MAX), max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC));
+}
 
 function admin_panel_setup_totp_action(): void
 {
     require_post();
-    $sess      = require_admin_session();
-    $secret    = admin_totp_generate_secret();
-    $uri       = admin_totp_uri($secret, (string) $sess['username']);
-
-    // Persist the pending secret (enabled=0 until confirmed)
-    $userTable = table_name('admin_users');
-    db()->prepare("UPDATE {$userTable} SET totp_secret = ? WHERE id = ?")
-       ->execute([admin_totp_encrypt_secret($secret), (int) $sess['admin_user_id']]);
-
-    json_out(['ok' => true, 'secret' => $secret, 'uri' => $uri]);
+    $sess = resolve_admin_session_any();
+    $pdo  = db();
+    admin_panel_totp_rate_limit($pdo, $sess);
+    $setup = admin_totp_begin_setup($pdo, $sess, read_json(), time());
+    admin_audit($pdo, $sess, $setup['replacing'] ? 'admin.totp.replace_started' : 'admin.totp.enroll_started');
+    json_out(['ok' => true] + $setup);
 }
 
 function admin_panel_confirm_totp_action(): void
 {
     require_post();
-    $sess      = require_admin_session();
-    $pdo       = db();
-    $body      = read_json();
-    $code      = trim((string) ($body['code'] ?? ''));
-
-    $userTable = table_name('admin_users');
-    $stmt      = $pdo->prepare("SELECT totp_secret FROM {$userTable} WHERE id = ?");
-    $stmt->execute([(int) $sess['admin_user_id']]);
-    $storedSecret = (string) ($stmt->fetchColumn() ?: '');
-    $secret = admin_totp_decrypt_secret($storedSecret);
-
-    if ($secret === '' || !admin_totp_verify($secret, $code)) {
-        json_out(['ok' => false, 'error' => 'Invalid or expired 2FA code.'], 400);
-    }
-
-    $pdo->prepare("UPDATE {$userTable} SET totp_enabled = 1, totp_secret = ? WHERE id = ?")
-       ->execute([admin_totp_encrypt_secret($secret), (int) $sess['admin_user_id']]);
-
-    admin_audit($pdo, $sess, 'admin.totp.enable');
-    json_out(['ok' => true]);
-}
-
-function admin_panel_disable_totp_action(): void
-{
-    require_post();
-    $sess      = require_admin_session();
-    $pdo       = db();
-    $body      = read_json();
-    $password  = (string) ($body['password'] ?? '');
-
-    $userTable = table_name('admin_users');
-    $stmt      = $pdo->prepare("SELECT password_hash FROM {$userTable} WHERE id = ?");
-    $stmt->execute([(int) $sess['admin_user_id']]);
-    $hash = (string) ($stmt->fetchColumn() ?: '');
-
-    if (!password_verify($password, $hash)) {
-        json_out(['ok' => false, 'error' => 'Incorrect password.'], 403);
-    }
-
-    $pdo->prepare("UPDATE {$userTable} SET totp_enabled = 0, totp_secret = NULL WHERE id = ?")
-       ->execute([(int) $sess['admin_user_id']]);
-
-    admin_audit($pdo, $sess, 'admin.totp.disable');
-    json_out(['ok' => true]);
+    $sess = resolve_admin_session_any();
+    $pdo  = db();
+    admin_panel_totp_rate_limit($pdo, $sess);
+    $result = admin_totp_confirm_setup($pdo, $sess, read_json(), time());
+    json_out(['ok' => true] + $result);
 }
 
 // ── Active Sessions ───────────────────────────────────────────────────────────
@@ -1184,16 +1140,48 @@ function admin_panel_update_admin_user_action(): void
         $changes['password_hash'] = password_hash($pw, PASSWORD_BCRYPT, ['cost' => 12]);
     }
 
-    if (empty($changes)) {
+    $resetTotp = !empty($body['reset_totp']);
+    $isSelf = $targetId === (int) $sess['admin_user_id'];
+    if ($resetTotp && $isSelf) {
+        json_out(['ok' => false, 'error' => 'Replace your own authenticator from My Account.'], 400);
+    }
+
+    if (empty($changes) && !$resetTotp) {
         json_out(['ok' => false, 'error' => 'Nothing to update.'], 400);
     }
 
-    $setClauses = implode(', ', array_map(fn(string $k) => "{$k} = ?", array_keys($changes)));
-    $pdo->prepare("UPDATE {$userTable} SET {$setClauses} WHERE id = ?")
-        ->execute([...array_values($changes), $targetId]);
-
-    $logDetails = array_diff_key($changes, ['password_hash' => null]); // Don't log hash
-    admin_audit($pdo, $sess, 'admin_user.update', 'admin_user', $targetId, $logDetails);
+    $pdo->beginTransaction();
+    try {
+        if ($changes) {
+            $setClauses = implode(', ', array_map(fn(string $k) => "{$k} = ?", array_keys($changes)));
+            $pdo->prepare("UPDATE {$userTable} SET {$setClauses} WHERE id = ?")
+                ->execute([...array_values($changes), $targetId]);
+        }
+        $revoked = 0;
+        if ($resetTotp) {
+            $revoked = admin_totp_reset_user($pdo, $targetId);
+        } elseif (!$isSelf && (isset($changes['password_hash']) || ($changes['is_active'] ?? 1) === 0)) {
+            // A new password or deactivation signs the other admin out everywhere.
+            $revoke = $pdo->prepare('DELETE FROM ' . table_name('admin_sessions') . ' WHERE admin_user_id = ?');
+            $revoke->execute([$targetId]);
+            $revoked = $revoke->rowCount();
+        }
+        $logDetails = array_diff_key($changes, ['password_hash' => null]); // Don't log hash
+        if (isset($changes['password_hash'])) {
+            $logDetails['password_changed'] = true;
+        }
+        if ($resetTotp) {
+            $logDetails['totp_reset'] = true;
+        }
+        $logDetails['revoked_sessions'] = $revoked;
+        admin_audit($pdo, $sess, 'admin_user.update', 'admin_user', $targetId, $logDetails, true);
+        $pdo->commit();
+    } catch (Throwable $error) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $error;
+    }
     json_out(['ok' => true]);
 }
 

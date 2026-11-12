@@ -12,6 +12,8 @@ define('API_MAX_JSON_BYTES', env_int('TRIP_API_MAX_JSON_BYTES', 65_536)); // 64 
 define('DB_TABLE_PREFIX', env_string('TRIP_DB_TABLE_PREFIX', 'trip_'));
 define('ADMIN_KEY', env_string('TRIP_ADMIN_KEY', ''));
 define('ADMIN_TOTP_ENCRYPTION_KEY', env_string('TRIP_ADMIN_TOTP_ENCRYPTION_KEY', ''));
+// Set only while rotating: the old key, so stored secrets stay readable until re-encrypted.
+define('ADMIN_TOTP_ENCRYPTION_KEY_PREVIOUS', env_string('TRIP_ADMIN_TOTP_ENCRYPTION_KEY_PREVIOUS', ''));
 define('ADMIN_PANEL_HOST', env_string('TRIP_ADMIN_PANEL_HOST', 'ops.splyto.eu'));
 // Premium for every active account, optionally until a UTC time (YYYY-MM-DDTHH:MM:SSZ).
 define('PREMIUM_FOR_EVERYONE', env_bool('TRIP_PREMIUM_FOR_EVERYONE', false));

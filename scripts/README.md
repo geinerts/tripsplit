@@ -13,6 +13,7 @@ Available:
 - `run_settlement_reminders.php` emits automatic settlement reminders for overdue `pending/sent` settlements.
 - `run_push_delivery.php` processes queued push deliveries to APNs/FCM.
 - `run_trip_report_delivery.php` emails queued trip report PDFs.
+- `admin_totp.php` checks administrator 2FA, rotates its encryption key and resets a lost authenticator (dry run unless `--apply`). See [admin MFA](../docs/security/admin-mfa.md).
 - `run_migrations.php` runs SQL migrations from `sql/migrations` and tracks applied files in `trip_schema_migrations`.
 - `vps_run_migrations.sh` runs `run_migrations.php` remotely on VPS over SSH.
 - Migrations and backups require separate protected operator credentials, never

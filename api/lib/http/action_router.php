@@ -127,7 +127,6 @@ function api_action_handlers(): array
         'admin_panel_session_check'     => 'admin_panel_session_check_action',
         'admin_panel_setup_totp'        => 'admin_panel_setup_totp_action',
         'admin_panel_confirm_totp'      => 'admin_panel_confirm_totp_action',
-        'admin_panel_disable_totp'      => 'admin_panel_disable_totp_action',
         'admin_panel_active_sessions'   => 'admin_panel_active_sessions_action',
         'admin_panel_revoke_session'    => 'admin_panel_revoke_session_action',
         'admin_panel_dashboard'         => 'admin_panel_dashboard_action',

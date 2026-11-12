@@ -207,7 +207,7 @@ const clickActions = Object.freeze({
   userSearch, archiveFeedback, deleteFeedback, loadFeedback, retryPush,
   updateIncident, submitIncident, loadAuditLog, loadAppEvents,
   editAdminUser, deleteAdminUser, showCreateAdminModal, createAdminUser, saveAdminUser,
-  revokeSession, disable2fa, setup2fa, confirm2fa,
+  revokeSession, replace2fa, confirm2fa,
   closeModal: () => modal.close(),
 });
 
@@ -269,6 +269,7 @@ function can(...roles) {
 async function checkSession() {
   const res = await get('admin_panel_session_check');
   if (!res.authenticated) return false;
+  if (res.requires_2fa_enrollment) return 'needs_enrollment';
   if (res.requires_2fa)   return 'needs_2fa';
   state.user = res.user;
   return true;
@@ -279,6 +280,17 @@ function showAuth(mode = 'login') {
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-card').style.display = mode === 'login' ? '' : 'none';
   document.getElementById('totp-card').style.display  = mode === '2fa'   ? '' : 'none';
+  document.getElementById('enroll-card').style.display = mode === 'enroll' ? '' : 'none';
+  if (mode === 'enroll') resetEnrollCard();
+}
+
+async function enterApp() {
+  const sessRes = await get('admin_panel_session_check');
+  if (!sessRes.full_auth) { showAuth(sessRes.requires_2fa_enrollment ? 'enroll' : 'login'); return; }
+  state.user = sessRes.user;
+  showApp();
+  navigate('dashboard');
+  pollIncidents();
 }
 
 function showApp() {
@@ -323,15 +335,17 @@ document.getElementById('login-form').addEventListener('submit', async e => {
     return;
   }
 
+  document.getElementById('inp-password').value = '';
+  if (res.requires_2fa_enrollment) {
+    showAuth('enroll');
+    return;
+  }
   if (res.requires_2fa) {
     showAuth('2fa');
     return;
   }
 
-  state.user = res.user;
-  showApp();
-  navigate('dashboard');
-  pollIncidents();
+  await enterApp();
 });
 
 // ── 2FA form ──────────────────────────────────────────────────────────────────
@@ -357,16 +371,69 @@ document.getElementById('totp-form').addEventListener('submit', async e => {
     return;
   }
 
-  state.user = res.user;
-  const sessRes = await get('admin_panel_session_check');
-  state.user = sessRes.user;
-
-  showApp();
-  navigate('dashboard');
-  pollIncidents();
+  document.getElementById('inp-totp').value = '';
+  await enterApp();
 });
 
 document.getElementById('back-to-login-btn').addEventListener('click', () => {
+  post('admin_panel_logout');
+  showAuth('login');
+});
+
+// ── Mandatory 2FA enrolment ───────────────────────────────────────────────────
+
+function showEnrollError(message) {
+  const el = document.getElementById('enroll-error');
+  el.textContent = message;
+  el.style.display = message ? '' : 'none';
+}
+
+function resetEnrollCard() {
+  document.getElementById('enroll-start-form').style.display = '';
+  document.getElementById('enroll-confirm-form').style.display = 'none';
+  document.getElementById('enroll-secret').textContent = '';
+  document.getElementById('inp-enroll-password').value = '';
+  document.getElementById('inp-enroll-code').value = '';
+  showEnrollError('');
+}
+
+document.getElementById('enroll-start-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('enroll-start-btn');
+  btn.disabled = true;
+  showEnrollError('');
+  const res = await post('admin_panel_setup_totp', {
+    password: document.getElementById('inp-enroll-password').value,
+  }).catch(err => ({ ok: false, error: err.message }));
+  btn.disabled = false;
+  document.getElementById('inp-enroll-password').value = '';
+  if (!res.ok) { showEnrollError(res.error || 'Could not start setup.'); return; }
+  document.getElementById('enroll-secret').textContent = res.secret;
+  document.getElementById('enroll-start-form').style.display = 'none';
+  document.getElementById('enroll-confirm-form').style.display = '';
+  document.getElementById('inp-enroll-code').focus();
+});
+
+document.getElementById('enroll-confirm-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('enroll-confirm-btn');
+  btn.disabled = true;
+  showEnrollError('');
+  const res = await post('admin_panel_confirm_totp', {
+    code: document.getElementById('inp-enroll-code').value.trim(),
+  }).catch(err => ({ ok: false, error: err.message }));
+  btn.disabled = false;
+  if (!res.ok) {
+    if (res.code === 'totp_setup_expired') resetEnrollCard();
+    showEnrollError(res.error || 'Invalid code.');
+    return;
+  }
+  document.getElementById('enroll-secret').textContent = '';
+  toast('2FA enabled', 'success');
+  await enterApp();
+});
+
+document.getElementById('enroll-back-btn').addEventListener('click', () => {
   post('admin_panel_logout');
   showAuth('login');
 });
@@ -1574,6 +1641,11 @@ function editAdminUser(id, username, role, isActive) {
       <label class="form-label">New password (leave blank to keep)</label>
       <input class="form-input" id="edit-admin-pw" type="password" placeholder="(unchanged)"/>
     </div>
+    ${id !== state.user?.id ? `
+    <div class="form-group">
+      <label class="form-label"><input type="checkbox" id="edit-admin-reset-2fa"/> Reset 2FA (lost authenticator)</label>
+      <p style="color:var(--fg-muted);font-size:12px;">Signs this admin out. They set up a new authenticator at the next login.</p>
+    </div>` : ''}
   `, `
     <button class="btn btn-ghost" ${actionAttrs('closeModal')}>Cancel</button>
     <button class="btn btn-primary" ${actionAttrs('saveAdminUser', id)}>Save</button>
@@ -1588,6 +1660,7 @@ async function saveAdminUser(id) {
   };
   const pw = document.getElementById('edit-admin-pw').value;
   if (pw) payload.password = pw;
+  if (document.getElementById('edit-admin-reset-2fa')?.checked) payload.reset_totp = true;
   const res = await post('admin_panel_update_admin_user', payload);
   if (res.ok) { modal.close(); toast('Updated', 'success'); navigate('admin-users'); }
   else toast(res.error || 'Failed', 'error');
@@ -1663,36 +1736,63 @@ registerView('my-account', {
         <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${esc(u?.email)}</span></div>
         <div class="detail-row"><span class="detail-label">Role</span><span class="detail-value">${roleBadge(u?.role)}</span></div>
         <div class="detail-row"><span class="detail-label">2FA</span><span class="detail-value">
-          ${u?.totp_enabled
-            ? `<span class="badge badge-green">Enabled</span> <button class="btn btn-danger btn-sm" style="margin-left:8px" ${actionAttrs('disable2fa')}>Disable</button>`
-            : `<span class="badge badge-gray">Disabled</span> <button class="btn btn-primary btn-sm" style="margin-left:8px" ${actionAttrs('setup2fa')}>Enable 2FA</button>`}
+          <span class="badge badge-green">Enabled</span>
+          <button class="btn btn-ghost btn-sm" style="margin-left:8px" ${actionAttrs('replace2fa')}>Replace authenticator</button>
         </span></div>
+        <p style="color:var(--fg-muted);font-size:12px;margin-top:12px;">
+          2FA is required for admin accounts. Lost your authenticator? Ask a superadmin to reset it,
+          or use scripts/admin_totp.php on the server.
+        </p>
       </div>
     `;
   },
 });
 
-async function setup2fa() {
-  const res = await post('admin_panel_setup_totp');
-  if (!res.ok) { toast(res.error || 'Failed', 'error'); return; }
+// Replacing needs the password and a code from the current app; the old
+// authenticator keeps working until the new one is confirmed.
+async function replace2fa() {
+  modal.open('Replace authenticator', `
+    <form id="replace-2fa-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="replace-2fa-password">Your password</label>
+        <input class="form-input" id="replace-2fa-password" type="password" autocomplete="current-password" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="replace-2fa-code">Code from your current authenticator</label>
+        <input class="form-input" id="replace-2fa-code" type="text" inputmode="numeric" maxlength="6"
+               placeholder="000000" autocomplete="one-time-code" required/>
+      </div>
+    </form>
+  `, `
+    <button class="btn btn-ghost" ${actionAttrs('closeModal')}>Cancel</button>
+    <button class="btn btn-primary" type="submit" form="replace-2fa-form">Continue</button>
+  `);
+  document.getElementById('replace-2fa-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const res = await post('admin_panel_setup_totp', {
+      password: document.getElementById('replace-2fa-password').value,
+      current_code: document.getElementById('replace-2fa-code').value.trim(),
+    }).catch(err => ({ ok: false, error: err.message }));
+    if (!res.ok) { toast(res.error || 'Failed', 'error'); return; }
+    showNewSecret(res.secret);
+  });
+  document.getElementById('replace-2fa-password').focus();
+}
 
-  modal.open('Enable Two-Factor Auth', `
+function showNewSecret(secret) {
+  modal.open('New authenticator', `
     <p style="color:var(--fg-dim);font-size:13px;margin-bottom:16px;">
       Add a new account in your authenticator app and enter this setup key manually.
+      Your current authenticator keeps working until you confirm.
     </p>
-    <div style="background:var(--bg-card-2);border-radius:8px;padding:10px;font-family:monospace;font-size:13px;text-align:center;letter-spacing:2px;margin-bottom:16px;">
-      ${esc(res.secret)}
-    </div>
-    <p style="color:var(--fg-muted);font-size:12px;margin-bottom:12px;">
-      The setup key stays between this browser and Splyto. Enter the generated 6-digit code below to confirm.
-    </p>
+    <div class="setup-key">${esc(secret)}</div>
     <div class="form-group">
-      <label class="form-label">Confirmation code</label>
+      <label class="form-label" for="totp-confirm-code">Code from the new app</label>
       <input class="form-input" id="totp-confirm-code" type="text" inputmode="numeric" maxlength="6" placeholder="000000"/>
     </div>
   `, `
     <button class="btn btn-ghost" ${actionAttrs('closeModal')}>Cancel</button>
-    <button class="btn btn-primary" ${actionAttrs('confirm2fa')}>Confirm & enable</button>
+    <button class="btn btn-primary" ${actionAttrs('confirm2fa')}>Confirm &amp; switch</button>
   `);
 }
 
@@ -1701,36 +1801,25 @@ async function confirm2fa() {
   const res  = await post('admin_panel_confirm_totp', { code });
   if (res.ok) {
     modal.close();
-    toast('2FA enabled', 'success');
-    if (state.user) state.user.totp_enabled = true;
+    const others = res.revoked_sessions ? ` ${res.revoked_sessions} other session(s) signed out.` : '';
+    toast(`Authenticator replaced.${others}`, 'success');
     navigate('my-account');
   } else {
     toast(res.error || 'Invalid code', 'error');
   }
 }
 
-async function disable2fa() {
-  const pw = await askInModal({ title: 'Disable 2FA?', confirmLabel: 'Disable 2FA', danger: true,
-    message: 'Your account will be protected by the password only.',
-    input: { label: 'Your password', type: 'password', required: true } });
-  if (!pw) return;
-  const res = await post('admin_panel_disable_totp', { password: pw });
-  if (res.ok) {
-    toast('2FA disabled', 'info');
-    if (state.user) state.user.totp_enabled = false;
-    navigate('my-account');
-  } else {
-    toast(res.error || 'Failed', 'error');
-  }
-}
-
-Object.assign(window, { setup2fa, confirm2fa, disable2fa });
+Object.assign(window, { replace2fa, confirm2fa });
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
 (async function boot() {
   const sessState = await checkSession().catch(() => false);
 
+  if (sessState === 'needs_enrollment') {
+    showAuth('enroll');
+    return;
+  }
   if (sessState === 'needs_2fa') {
     showAuth('2fa');
     return;

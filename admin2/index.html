@@ -11,7 +11,7 @@
     content="default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:"
   />
   <link rel="icon" type="image/svg+xml" href="assets/splyto-mark-v2.svg"/>
-  <link rel="stylesheet" href="app.css?v=13"/>
+  <link rel="stylesheet" href="app.css?v=14"/>
 </head>
 <body>
 
@@ -51,6 +51,32 @@
       <button class="btn btn-primary btn-full" type="submit" id="totp-btn">Verify</button>
       <button class="btn btn-ghost btn-full" type="button" id="back-to-login-btn" style="margin-top:8px;">← Back to login</button>
     </form>
+  </div>
+
+  <!-- Mandatory 2FA enrolment -->
+  <div class="auth-card" id="enroll-card" style="display:none;">
+    <img class="auth-logo" src="assets/splyto-logo-dark-v2.svg" alt="Splyto" width="120" height="47"/>
+    <h2>Set up two-factor auth</h2>
+    <p class="auth-subtitle">Two-factor authentication is required for every admin account.</p>
+    <form id="enroll-start-form">
+      <div class="form-group">
+        <label class="form-label" for="inp-enroll-password">Confirm your password</label>
+        <input class="form-input" id="inp-enroll-password" type="password" autocomplete="current-password" required/>
+      </div>
+      <button class="btn btn-primary btn-full" type="submit" id="enroll-start-btn">Show setup key</button>
+    </form>
+    <form id="enroll-confirm-form" style="display:none;">
+      <p class="auth-subtitle">Add a new account in your authenticator app and enter this setup key manually.</p>
+      <div class="setup-key" id="enroll-secret"></div>
+      <div class="form-group">
+        <label class="form-label" for="inp-enroll-code">Code from the app</label>
+        <input class="form-input" id="inp-enroll-code" type="text" inputmode="numeric" pattern="[0-9]{6}"
+               maxlength="6" placeholder="000000" autocomplete="one-time-code" required/>
+      </div>
+      <button class="btn btn-primary btn-full" type="submit" id="enroll-confirm-btn">Confirm &amp; continue</button>
+    </form>
+    <p id="enroll-error" style="color:var(--red);font-size:13px;margin-top:12px;display:none;"></p>
+    <button class="btn btn-ghost btn-full" type="button" id="enroll-back-btn" style="margin-top:8px;">← Back to login</button>
   </div>
 </div>
 
@@ -150,6 +176,6 @@
 <!-- ── Toast container ──────────────────────────────────────────────────────── -->
 <div id="toast-container"></div>
 
-<script src="app.js?v=16"></script>
+<script src="app.js?v=17"></script>
 </body>
 </html>
