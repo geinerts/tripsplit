@@ -61,12 +61,17 @@ function email_template_escape(string $value): string
     return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-function build_email_brand_logo_html(): string
+function email_asset_base_url(): string
 {
     $baseUrl = defined('PUBLIC_BASE_URL') ? trim(PUBLIC_BASE_URL) : '';
     if ($baseUrl === '') { $baseUrl = defined('APP_BASE_URL') ? trim(APP_BASE_URL) : ''; }
     if ($baseUrl === '') { $baseUrl = 'https://splyto.eu'; }
-    $logoUrl = email_template_escape(rtrim($baseUrl, '/') . '/email-logo-dark-v2.png');
+    return rtrim($baseUrl, '/');
+}
+
+function build_email_brand_logo_html(): string
+{
+    $logoUrl = email_template_escape(email_asset_base_url() . '/email-logo-dark-v2.png');
     // Same light logo as the app's dark theme. It always sits on the fixed dark header band,
     // so it stays legible whether or not the mail client re-colors the message.
     return '<img src="' . $logoUrl . '" alt="Splyto" width="156" height="62" '
@@ -93,6 +98,9 @@ function build_account_email_template(
     $notice = email_template_escape($notice);
     $preheader = email_template_escape($preheader);
     $logo = build_email_brand_logo_html();
+    // Clients with forced dark mode (Outlook, some Gmail apps, Resend's preview) invert
+    // background colours but never images, so the header's dark band is also an image.
+    $headerBg = email_template_escape(email_asset_base_url() . '/email-header-bg-v1.png');
     $buttonColor = $destructive ? '#B83445' : '#008576';
 
     return <<<HTML
@@ -134,7 +142,7 @@ function build_account_email_template(
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;">
         <tr><td class="card" bgcolor="#FFFFFF" style="background-color:#FFFFFF;border:1px solid #DFE8E5;border-radius:20px;overflow:hidden;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td class="email-header" bgcolor="#15222E" style="padding:30px 36px 26px;background-color:#15222E;background-image:linear-gradient(#15222E,#15222E);">
+            <tr><td class="email-header" bgcolor="#15222E" background="{$headerBg}" style="padding:30px 36px 26px;background-color:#15222E;background-image:url('{$headerBg}');background-repeat:repeat;">
               {$logo}
             </td></tr>
             <tr><td style="padding:0;">

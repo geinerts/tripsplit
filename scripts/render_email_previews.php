@@ -8,6 +8,7 @@ require __DIR__ . '/../api/lib/helpers/helper_email.php';
 $directory = __DIR__ . '/../output/design/account-emails';
 if (!is_dir($directory)) { mkdir($directory, 0755, true); }
 copy(__DIR__ . '/../email-logo-dark-v2.png', $directory . '/logo-dark.png');
+copy(__DIR__ . '/../email-header-bg-v1.png', $directory . '/header-bg.png');
 $previews = [
     'password' => build_password_reset_email('https://splyto.eu/reset-password?token=preview-only', 'Matiss'),
     'deletion' => build_account_delete_email('https://splyto.eu/delete-account?token=preview-only', 'Matiss'),
@@ -15,6 +16,7 @@ $previews = [
 ];
 foreach ($previews as $name => $html) {
     $html = str_replace('https://splyto.eu/email-logo-dark-v2.png', 'logo-dark.png', $html);
+    $html = str_replace('https://splyto.eu/email-header-bg-v1.png', 'header-bg.png', $html);
     file_put_contents($directory . '/' . $name . '.html', $html);
 }
 file_put_contents($directory . '/index.html', <<<'HTML'

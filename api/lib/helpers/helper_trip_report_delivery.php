@@ -56,6 +56,7 @@ function build_trip_report_email(array $report, array $s, string $locale, string
     $optOut = $e(trip_report_text($s, 'email_opt_out'));
     $footer = $e(trip_report_text($s, 'footer'));
     $logo = build_email_brand_logo_html();
+    $headerBg = email_template_escape(email_asset_base_url() . '/email-header-bg-v1.png');
     $lang = $e($locale);
 
     $rows = [[trip_report_text($s, 'total_spent'), trip_report_money($report['total_cents'], $report['currency'])]];
@@ -96,7 +97,7 @@ function build_trip_report_email(array $report, array $s, string $locale, string
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;">
         <tr><td class="card" bgcolor="#FFFFFF" style="background-color:#FFFFFF;border:1px solid #DFE8E5;border-radius:20px;overflow:hidden;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr><td bgcolor="#15222E" style="padding:28px 32px 24px;background-color:#15222E;background-image:linear-gradient(#15222E,#15222E);">{$logo}</td></tr>
+            <tr><td bgcolor="#15222E" background="{$headerBg}" style="padding:28px 32px 24px;background-color:#15222E;background-image:url('{$headerBg}');background-repeat:repeat;">{$logo}</td></tr>
             <tr><td height="3" bgcolor="#008576" style="height:3px;font-size:0;line-height:0;background-color:#008576;background-image:linear-gradient(#008576,#008576);">&nbsp;</td></tr>
             <tr><td style="padding:30px 32px;">
               <h1 class="t-strong" style="margin:0 0 20px;font-size:26px;line-height:32px;color:#193149;">{$title}</h1>
