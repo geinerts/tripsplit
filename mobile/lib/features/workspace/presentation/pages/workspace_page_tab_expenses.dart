@@ -98,10 +98,10 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                           _updateState(() => _expenseSearchQuery = value),
                     ),
                   ),
-                  if (_showSyncStatusIcon) ...[
-                    const SizedBox(width: 4),
-                    _buildSyncStatusBadge(context),
-                  ],
+                  // Always shown: a cloud with a tick when everything is
+                  // synced online, otherwise what waits or failed.
+                  const SizedBox(width: 4),
+                  _buildSyncStatusBadge(context),
                 ],
               ),
               if (isSearching && _expensesHasMore)

@@ -406,15 +406,6 @@ extension _WorkspacePageLayoutOverview on _WorkspacePageState {
     );
   }
 
-  /// Whether the sync icon next to the expense search has anything to say:
-  /// changes waiting to sync, no connection, or a failed refresh. When all
-  /// is synced it stays hidden.
-  bool get _showSyncStatusIcon =>
-      _pendingQueueCount > 0 ||
-      _refreshError != null ||
-      _syncState == _SyncState.offline ||
-      _syncState == _SyncState.offlineQueue;
-
   /// Icon only, next to the expense search; the text is in the tooltip and
   /// in semantics. Tapping it retries the sync.
   Widget _buildSyncStatusBadge(BuildContext context) {

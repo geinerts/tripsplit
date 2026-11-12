@@ -5311,12 +5311,18 @@ void main() {
       }
     }
   });
-  testWidgets('a synced trip shows no sync icon or status text', (
-    tester,
-  ) async {
+  testWidgets('a synced trip shows only the synced cloud icon', (tester) async {
     await _mount(tester, _Workspace()..data = snapshot(solo: true), solo: true);
     await tester.pumpAndSettle();
-    expect(find.byKey(const ValueKey('workspace-sync-status')), findsNothing);
+    final status = find.byKey(const ValueKey('workspace-sync-status'));
+    expect(status, findsOneWidget);
+    expect(
+      find.descendant(
+        of: status,
+        matching: find.byIcon(Icons.cloud_done_outlined),
+      ),
+      findsOneWidget,
+    );
     await disposePage(tester);
   });
   testWidgets('with no expenses, waiting changes are still only an icon', (
