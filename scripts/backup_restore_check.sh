@@ -52,6 +52,7 @@ on_error() {
   local msg="[SPLYTO][BACKUP_RESTORE][FAIL] line=${line} backup=${LATEST_DB_BACKUP}"
   echo "$msg" >&2
   send_alert_with_cooldown "backup_restore_check" "$msg" "$ENV_FILE" "$ALERT_COOLDOWN_SEC"
+  write_ops_status backup_restore_check false || true
 }
 trap 'cleanup' EXIT
 trap 'on_error $LINENO' ERR
@@ -68,4 +69,5 @@ fi
 
 cleanup
 
+write_ops_status backup_restore_check true "{\"table_count\":${TABLE_COUNT}}" || true
 echo "[SPLYTO][BACKUP_RESTORE][OK] backup=${LATEST_DB_BACKUP} restore_db=${RESTORE_DB} table_count=${TABLE_COUNT}"

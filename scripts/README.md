@@ -91,3 +91,14 @@ Synthetic safety checks:
 ```sh
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_backup_retention.py
 ```
+
+## Job heartbeats
+
+Scheduled jobs write `<job>.json` (time, ok flag, integer counts only) to
+`TRIP_OPS_STATUS_DIR` (default `/var/lib/splyto/status`) after each run; the admin
+panel's System page reads them. PHP jobs call `ops_heartbeat()`
+(`api/lib/helpers/helper_ops_status.php`, which also lists each job and when it
+counts as late); `backup_vps.sh` and `backup_restore_check.sh` call
+`write_ops_status` from `ops_common.sh`, including `ok:false` from their error traps.
+Dry runs write nothing. The first job creates the directory owned by `www-data`
+(0750, files 0640). Writing never fails the job.

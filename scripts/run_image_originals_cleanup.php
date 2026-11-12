@@ -12,6 +12,7 @@ if (PHP_SAPI !== 'cli') {
 
 require __DIR__ . '/../api/config.php';
 require __DIR__ . '/../api/lib/bootstrap.php';
+require_once __DIR__ . '/../api/lib/helpers/helper_ops_status.php';
 
 $apply = in_array('--apply', $argv, true);
 $orphans = image_originals_orphans(db());
@@ -19,5 +20,8 @@ foreach ($orphans as $key) {
     if ($apply) {
         image_source_delete($key);
     }
+}
+if ($apply) {
+    ops_heartbeat('image_originals_cleanup', true, ['removed' => count($orphans)]);
 }
 echo 'Image originals cleanup: ' . ($apply ? 'removed ' : 'would remove ') . count($orphans) . "\n";

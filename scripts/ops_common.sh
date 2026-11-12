@@ -168,3 +168,27 @@ send_recovery_alert_if_needed() {
 
   send_alert_now "$message" "$env_file"
 }
+
+# Heartbeat for the admin panel's System page. Only times, counts and an ok flag.
+# Never fails the calling script.
+write_ops_status() {
+  local job="$1" ok="$2" details="${3:-}"
+  local dir="${TRIP_OPS_STATUS_DIR:-/var/lib/splyto/status}"
+  [[ "$job" =~ ^[a-z_]{1,64}$ ]] || return 0
+  [[ "$ok" == "true" || "$ok" == "false" ]] || return 0
+  [[ -n "$details" ]] || details='{}'
+  [[ "$details" =~ ^\{[a-z_0-9\":,]*\}$ ]] || details='{}'
+  if [[ ! -d "$dir" ]]; then
+    mkdir -p "$dir" 2>/dev/null || return 0
+    chmod 0750 "$dir" 2>/dev/null || true
+    chown www-data:www-data "$dir" 2>/dev/null || true
+  fi
+  local tmp
+  tmp="$(mktemp "$dir/.${job}.XXXXXX" 2>/dev/null)" || return 0
+  printf '{"job":"%s","ok":%s,"at":"%s","details":%s}\n' \
+    "$job" "$ok" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$details" > "$tmp" 2>/dev/null || { rm -f "$tmp"; return 0; }
+  chmod 0640 "$tmp" 2>/dev/null || true
+  chown www-data:www-data "$tmp" 2>/dev/null || true
+  mv -f "$tmp" "$dir/$job.json" 2>/dev/null || rm -f "$tmp"
+  return 0
+}

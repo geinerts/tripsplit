@@ -46,6 +46,7 @@ on_error() {
   local msg="[SPLYTO][BACKUP][FAIL] line=${line} ts=${TIMESTAMP}"
   echo "$msg" >&2
   send_alert_with_cooldown "backup_vps" "$msg" "$ENV_FILE" "$ALERT_COOLDOWN_SEC"
+  write_ops_status backup false || true
 }
 trap 'on_error $LINENO' ERR
 
@@ -80,4 +81,5 @@ tar -czf "$APP_FILE" "${include_paths[@]}"
 python3 "$SCRIPT_DIR/backup_retention.py" \
   --root "$BACKUP_ROOT" --database "$DB_NAME" --days "$RETENTION_DAYS" --apply
 
+write_ops_status backup true "{\"db_bytes\":$(stat -c %s "$DB_FILE" 2>/dev/null || echo 0),\"app_bytes\":$(stat -c %s "$APP_FILE" 2>/dev/null || echo 0)}" || true
 echo "[SPLYTO][BACKUP][OK] db=${DB_FILE} app=${APP_FILE} retention_days=${RETENTION_DAYS}"

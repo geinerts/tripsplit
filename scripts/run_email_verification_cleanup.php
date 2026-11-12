@@ -9,6 +9,7 @@ if (PHP_SAPI !== 'cli') {
 
 require __DIR__ . '/../api/config.php';
 require __DIR__ . '/../api/lib/bootstrap.php';
+require_once __DIR__ . '/../api/lib/helpers/helper_ops_status.php';
 
 main($argv);
 
@@ -20,6 +21,9 @@ function main(array $argv): void
         'dry_run' => $options['dry_run'],
         'limit' => $options['limit'],
     ]);
+    if (!($result['dry_run'] ?? false)) {
+        ops_heartbeat('email_verification_cleanup', true, $result);
+    }
 
     echo "Email verification cleanup\n";
     echo '  enabled: ' . (($result['enabled'] ?? false) ? 'yes' : 'no') . "\n";

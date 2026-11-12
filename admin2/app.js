@@ -203,7 +203,7 @@ function actionAttrs(action, ...args) {
 
 const clickActions = Object.freeze({
   openPremiumForm, premiumPage,
-  navigate, openUserDetail, suspendUser, reactivateUser, deleteUser, clearPushTokens,
+  navigate, openUserDetail, suspendUser, reactivateUser, deleteUser, clearPushTokens, signOutEverywhere,
   userSearch, archiveFeedback, deleteFeedback, loadFeedback, retryPush,
   updateIncident, submitIncident, loadAuditLog, loadAppEvents,
   editAdminUser, deleteAdminUser, showCreateAdminModal, createAdminUser, saveAdminUser,
@@ -241,6 +241,7 @@ function statusBadge(status) {
     active: 'badge-green', deactivated: 'badge-red', suspended: 'badge-red', deleted: 'badge-gray',
     open: 'badge-red', investigating: 'badge-amber', resolved: 'badge-green',
     pending: 'badge-amber', sent: 'badge-green', failed: 'badge-red', dead: 'badge-gray',
+    ok: 'badge-green', stale: 'badge-amber', unknown: 'badge-gray',
   };
   return `<span class="badge ${map[status] ?? 'badge-gray'}">${esc(status)}</span>`;
 }
@@ -301,6 +302,8 @@ function showApp() {
     for (const id of ['nav-premium', 'nav-partners']) {
       document.getElementById(id).style.display = can('superadmin', 'admin') ? '' : 'none';
     }
+    document.getElementById('nav-system').style.display = can('superadmin', 'admin', 'ops') ? '' : 'none';
+    document.getElementById('nav-security').style.display = can('superadmin', 'admin') ? '' : 'none';
     document.getElementById('sidebar-avatar').textContent =
       state.user.username.slice(0, 2).toUpperCase();
     document.getElementById('sidebar-username').textContent = state.user.username;
@@ -573,6 +576,74 @@ function renderDeletionFeedback(feedback) {
   </section>`;
 }
 
+// Last 30 days, one small column chart per measure (different scales, so never one shared axis).
+const GROWTH_SERIES = [
+  { key: 'signups', title: 'Sign-ups', total: true },
+  { key: 'active', title: 'Active users', total: false },
+  { key: 'trips', title: 'New trips', total: true },
+];
+
+function growthDay(date) {
+  const d = new Date(date + 'T00:00:00Z');
+  return d.toLocaleDateString('lv-LV', { day: '2-digit', month: '2-digit', timeZone: 'UTC' });
+}
+
+function renderGrowthChart(days, { key, title, total }) {
+  const values = days.map(d => Number(d[key]) || 0);
+  const max = Math.max(...values, 0);
+  const sum = values.reduce((a, b) => a + b, 0);
+  const today = values[values.length - 1] ?? 0;
+  const headline = total ? `${sum}<span class="growth-unit">in 30 days</span>`
+    : `${today}<span class="growth-unit">today · peak ${max}</span>`;
+  const cols = days.map((d, i) => {
+    const v = values[i];
+    const h = max ? Math.max(v ? 4 : 0, Math.round((v / max) * 100)) : 0;
+    return `<div class="growth-col" data-tip="${esc(growthDay(d.date))} · ${v} ${esc(title.toLowerCase())}">
+      <div class="growth-bar" style="height:${h}%"></div></div>`;
+  }).join('');
+  const rows = days.map((d, i) => `<tr><td>${esc(d.date)}</td><td>${values[i]}</td></tr>`).join('');
+  return `
+    <div class="growth-chart">
+      <div class="growth-title">${esc(title)}</div>
+      <div class="growth-value">${headline}</div>
+      <div class="growth-plot" role="img" aria-label="${esc(title)} per day for the last 30 days, maximum ${max}">
+        <span class="growth-max">${max}</span>${cols}
+      </div>
+      <div class="growth-axis"><span>${esc(growthDay(days[0].date))}</span><span>${esc(growthDay(days[days.length - 1].date))}</span></div>
+      <details class="growth-table"><summary>Table</summary>
+        <table><thead><tr><th>Date</th><th>${esc(title)}</th></tr></thead><tbody>${rows}</tbody></table>
+      </details>
+    </div>`;
+}
+
+function renderGrowth(days) {
+  if (!Array.isArray(days) || !days.length) return '';
+  return `
+    <div class="table-card growth-card">
+      <div class="table-card-header"><div class="table-card-title">📈 Last 30 days</div></div>
+      <div class="growth-grid">${GROWTH_SERIES.map(series => renderGrowthChart(days, series)).join('')}</div>
+    </div>`;
+}
+
+// One shared tooltip for chart columns: pointer hover anywhere in the column's full height.
+(function growthTooltip() {
+  const tip = document.createElement('div');
+  tip.className = 'chart-tip';
+  tip.hidden = true;
+  document.body.appendChild(tip);
+  document.addEventListener('pointerover', e => {
+    const col = e.target.closest?.('[data-tip]');
+    if (!col) { tip.hidden = true; return; }
+    tip.textContent = col.dataset.tip;
+    tip.hidden = false;
+    const r = col.getBoundingClientRect();
+    const w = tip.offsetWidth;
+    tip.style.left = `${Math.min(window.innerWidth - w - 8, Math.max(8, r.left + r.width / 2 - w / 2))}px`;
+    tip.style.top = `${Math.max(8, r.top - tip.offsetHeight - 6)}px`;
+  });
+  document.addEventListener('scroll', () => { tip.hidden = true; }, true);
+})();
+
 registerView('dashboard', {
   title: 'Dashboard',
   async render() {
@@ -672,6 +743,8 @@ registerView('dashboard', {
         </div>
       </div>
 
+      ${renderGrowth(s.growth)}
+
       <!-- Two-col grid -->
       <div class="dashboard-grid">
 
@@ -764,54 +837,118 @@ registerView('dashboard', {
 
 // ── View: Users ───────────────────────────────────────────────────────────────
 
+// Remembered per browser; falls back to the list when storage is unavailable.
+function usersLayout() {
+  try { return localStorage.getItem('splyto-admin-users-layout') === 'grid' ? 'grid' : 'list'; } catch { return 'list'; }
+}
+
+function setUsersLayout(layout) {
+  try { localStorage.setItem('splyto-admin-users-layout', layout); } catch { /* private mode */ }
+  for (const btn of document.querySelectorAll('[data-users-layout]')) {
+    btn.setAttribute('aria-pressed', String(btn.dataset.usersLayout === layout));
+  }
+  userSearch(usersState.offset);
+}
+
+const usersState = { offset: 0 };
+
 registerView('users', {
   title: 'Users',
   async render() {
+    const layout = usersLayout();
+    const option = (value, label) => `<option value="${value}">${label}</option>`;
     return `
       <div class="toolbar">
         <div class="toolbar-search">
-          <input type="search" id="user-search-inp" placeholder="Search by name or email…"/>
+          <input type="search" id="user-search-inp" placeholder="Search by name or email…" aria-label="Search users"/>
         </div>
-        <select class="form-input" id="user-status-filter" style="width:auto;">
-          <option value="all">All statuses</option>
-          <option value="active">Active</option>
-          <option value="deactivated">Deactivated/Suspended</option>
-          <option value="deleted">Deleted</option>
-        </select>
         <button class="btn btn-ghost btn-sm" id="user-search-btn">Search</button>
+        <div class="segmented" role="group" aria-label="Layout">
+          <button type="button" class="segmented-btn" data-users-layout="list" aria-pressed="${layout === 'list'}">☰ List</button>
+          <button type="button" class="segmented-btn" data-users-layout="grid" aria-pressed="${layout === 'grid'}">▦ Grid</button>
+        </div>
+      </div>
+      <div class="toolbar filter-row">
+        <select class="form-input" id="user-status-filter" aria-label="Status">
+          ${option('all', 'All statuses')}${option('active', 'Active')}${option('deactivated', 'Suspended')}${option('deleted', 'Deleted')}
+        </select>
+        <select class="form-input" id="user-platform-filter" aria-label="Platform">
+          ${option('', 'All platforms')}${option('ios', 'iOS')}${option('android', 'Android')}
+        </select>
+        <select class="form-input" id="user-signin-filter" aria-label="Sign-in method">
+          ${option('', 'Any sign-in')}${option('email', 'Email')}${option('apple', 'Apple')}${option('google', 'Google')}
+        </select>
+        <select class="form-input" id="user-sort" aria-label="Sort">
+          ${option('newest', 'Newest first')}${option('last_active', 'Last active')}${option('trips', 'Most trips')}${option('oldest', 'Oldest first')}
+        </select>
+        <label class="check-chip"><input type="checkbox" id="user-premium-filter"/> Premium</label>
+        <label class="check-chip"><input type="checkbox" id="user-unverified-filter"/> Email not verified</label>
       </div>
       <div id="user-results"><div class="loading-state"><span class="spinner"></span></div></div>
     `;
   },
   init() {
-    const doSearch = () => userSearch();
+    const doSearch = () => userSearch(0);
     document.getElementById('user-search-btn').addEventListener('click', doSearch);
-    document.getElementById('user-status-filter').addEventListener('change', doSearch);
-    // Newest sign-ups first, so new or suspicious accounts are visible without searching.
-    doSearch();
+    for (const id of ['user-status-filter', 'user-platform-filter', 'user-signin-filter', 'user-sort',
+      'user-premium-filter', 'user-unverified-filter']) {
+      document.getElementById(id).addEventListener('change', doSearch);
+    }
+    for (const btn of document.querySelectorAll('[data-users-layout]')) {
+      btn.addEventListener('click', () => setUsersLayout(btn.dataset.usersLayout));
+    }
     document.getElementById('user-search-inp').addEventListener('keydown', e => {
       if (e.key === 'Enter') doSearch();
     });
+    // Newest sign-ups first, so new or suspicious accounts are visible without searching.
+    doSearch();
   },
 });
 
-async function userSearch(offset = 0) {
-  const q      = document.getElementById('user-search-inp').value.trim();
-  const status = document.getElementById('user-status-filter').value;
-  document.getElementById('user-results').innerHTML =
-    '<div class="loading-state"><span class="spinner"></span></div>';
+function userSearchQuery(offset) {
+  const value = id => document.getElementById(id).value;
+  const query = { q: value('user-search-inp').trim(), status: value('user-status-filter'),
+    sort: value('user-sort'), limit: 40, offset };
+  if (value('user-platform-filter')) query.platform = value('user-platform-filter');
+  if (value('user-signin-filter')) query.sign_in = value('user-signin-filter');
+  if (document.getElementById('user-premium-filter').checked) query.premium = 1;
+  if (document.getElementById('user-unverified-filter').checked) query.unverified = 1;
+  return query;
+}
 
-  const res = await get('admin_panel_user_search', { q, status, limit: 40, offset });
-  if (!res.ok) { document.getElementById('user-results').innerHTML = `<div class="empty-state">Error: ${esc(res.error)}</div>`; return; }
+function userInitials(name) {
+  const parts = String(name || '?').trim().split(/\s+/).filter(Boolean);
+  return ((parts[0]?.[0] || '?') + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+}
 
-  if (!res.users.length) {
-    document.getElementById('user-results').innerHTML = '<div class="empty-state">No users found.</div>';
-    return;
-  }
+// Stable colour per user id, so the same person keeps the same avatar colour.
+function userAvatarHue(id) {
+  return (Number(id) * 47) % 360;
+}
 
-  const cards = res.users.map(u => `
+function userActions(u) {
+  const actions = [`<button class="btn btn-ghost btn-sm" ${actionAttrs('openUserDetail', u.id)}>View</button>`];
+  if (u.account_status === 'active' && can('superadmin', 'admin', 'support'))
+    actions.push(`<button class="btn btn-amber btn-sm" ${actionAttrs('suspendUser', u.id, u.nickname)}>Suspend</button>`);
+  if (u.account_status === 'deactivated' && can('superadmin', 'admin', 'support'))
+    actions.push(`<button class="btn btn-ghost btn-sm" ${actionAttrs('reactivateUser', u.id, u.nickname)}>Reactivate</button>`);
+  return actions.join('');
+}
+
+function userFacts(u, premiumForEveryone) {
+  const trips = `${u.trips_count} trip${u.trips_count === 1 ? '' : 's'}`;
+  const premium = u.premium_grant ? '<span class="badge badge-green">Premium</span>'
+    : premiumForEveryone && u.account_status === 'active' ? '<span class="badge badge-gray">Premium (launch)</span>' : '';
+  const active = u.last_active_at ? `Active ${relTime(u.last_active_at)}` : 'No session use';
+  return `<span>${trips}</span><span>·</span><span title="Last session use">${active}</span>`
+    + `<span>·</span><span>Joined ${relTime(u.created_at)}</span>${premium}`;
+}
+
+function userListItem(u, premiumForEveryone) {
+  return `
     <div class="cl-item">
       <div class="cl-row" style="margin-bottom:6px">
+        <span class="user-avatar" style="--hue:${userAvatarHue(u.id)}" aria-hidden="true">${esc(userInitials(u.nickname))}</span>
         <div style="flex:1;min-width:0">
           <div class="cl-title">${esc(u.nickname)}</div>
           <div class="cl-sub">${esc(u.email || '—')}</div>
@@ -819,33 +956,51 @@ async function userSearch(offset = 0) {
         ${statusBadge(u.account_status)}
       </div>
       <div class="user-signals">${userSignalBadges(u)}</div>
-      <div class="cl-actions">
-        <button class="btn btn-ghost btn-sm" ${actionAttrs('openUserDetail', u.id)}>View</button>
-        ${u.account_status === 'active' && can('superadmin','admin','support') ?
-          `<button class="btn btn-amber btn-sm" ${actionAttrs('suspendUser', u.id, u.nickname)}>Suspend</button>` : ''}
-        ${u.account_status === 'deactivated' && can('superadmin','admin','support') ?
-          `<button class="btn btn-ghost btn-sm" ${actionAttrs('reactivateUser', u.id, u.nickname)}>Reactivate</button>` : ''}
-        <span style="margin-left:auto;font-size:11px;color:var(--fg-muted);align-self:center">${relTime(u.created_at)}</span>
+      <div class="user-facts">${userFacts(u, premiumForEveryone)}</div>
+      <div class="cl-actions">${userActions(u)}</div>
+    </div>`;
+}
+
+function userGridCard(u, premiumForEveryone) {
+  return `
+    <article class="user-card">
+      <div class="user-card-head">
+        <span class="user-avatar large" style="--hue:${userAvatarHue(u.id)}" aria-hidden="true">${esc(userInitials(u.nickname))}</span>
+        ${statusBadge(u.account_status)}
       </div>
-    </div>
-  `).join('');
+      <div class="cl-title">${esc(u.nickname)}</div>
+      <div class="cl-sub">${esc(u.email || '—')}</div>
+      <div class="user-signals">${userSignalBadges(u)}</div>
+      <div class="user-facts">${userFacts(u, premiumForEveryone)}</div>
+      <div class="cl-actions">${userActions(u)}</div>
+    </article>`;
+}
+
+async function userSearch(offset = 0) {
+  usersState.offset = offset;
+  const results = document.getElementById('user-results');
+  if (!results) return;
+  results.innerHTML = '<div class="loading-state"><span class="spinner"></span></div>';
+
+  const res = await get('admin_panel_user_search', userSearchQuery(offset));
+  if (!res.ok) { results.innerHTML = `<div class="empty-state">Error: ${esc(res.error)}</div>`; return; }
+  if (!res.users.length) { results.innerHTML = '<div class="empty-state">No users found.</div>'; return; }
+
+  const everyone = Boolean(res.premium_for_everyone);
+  const body = usersLayout() === 'grid'
+    ? `<div class="user-grid">${res.users.map(u => userGridCard(u, everyone)).join('')}</div>`
+    : `<div class="table-card" style="padding:0">${res.users.map(u => userListItem(u, everyone)).join('')}</div>`;
 
   const prevBtn = offset > 0
-    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('userSearch', offset - 40)}>← Prev</button>`
-    : '';
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('userSearch', offset - 40)}>← Prev</button>` : '';
   const nextBtn = (offset + 40) < res.total
-    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('userSearch', offset + 40)}>Next →</button>`
-    : '';
+    ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('userSearch', offset + 40)}>Next →</button>` : '';
 
-  document.getElementById('user-results').innerHTML = `
-    <div class="table-card" style="padding:0">
-      ${cards}
-    </div>
+  results.innerHTML = `${body}
     <div class="pagination">
       Showing ${offset + 1}–${Math.min(offset + 40, res.total)} of ${res.total}
       ${prevBtn} ${nextBtn}
-    </div>
-  `;
+    </div>`;
 }
 
 const SIGN_IN_LABELS = { email: 'Email', apple: 'Apple', google: 'Google' };
@@ -875,7 +1030,8 @@ async function openUserDetail(userId) {
     const button = !canManageTrips ? '' : grant
       ? `<button class="btn btn-danger btn-sm" ${actionAttrs('openPremiumForm', 'trip_grant_revoke', u.id, grant.id)}>Revoke trip Premium</button>`
       : `<button class="btn btn-ghost btn-sm" ${actionAttrs('openPremiumForm', 'trip_grant_create', u.id, t.id)}>Grant trip Premium</button>`;
-    return `<div class="detail-row"><span>${esc(t.name)}</span><span class="trip-premium-row">
+    const members = Number(t.members_count) || 0;
+    return `<div class="detail-row"><span><span>${esc(t.name)}</span> <span class="muted-inline">· ${members} member${members === 1 ? '' : 's'}</span></span><span class="trip-premium-row">
       <span class="badge badge-gray">${esc(t.status)}</span>${grant ? '<span class="badge">Trip Premium</span>' : ''}${button}</span></div>`;
   }).join('') || '<div class="empty-state" style="padding:8px">No trips</div>';
 
@@ -886,6 +1042,8 @@ async function openUserDetail(userId) {
     actions.push(`<button class="btn btn-ghost btn-sm" data-close-modal ${actionAttrs('reactivateUser', u.id, u.nickname)}>Reactivate</button>`);
   if (can('superadmin','admin','support'))
     actions.push(`<button class="btn btn-ghost btn-sm" data-close-modal ${actionAttrs('clearPushTokens', u.id)}>Clear push tokens</button>`);
+  if (can('superadmin','admin','support') && (res.sessions || []).length)
+    actions.push(`<button class="btn btn-amber btn-sm" data-close-modal ${actionAttrs('signOutEverywhere', u.id, u.nickname)}>Sign out everywhere</button>`);
   if (can('superadmin','admin'))
     actions.push(`<button class="btn btn-danger btn-sm" data-close-modal ${actionAttrs('deleteUser', u.id, u.nickname)}>Delete user</button>`);
 
@@ -900,8 +1058,46 @@ async function openUserDetail(userId) {
     <div style="margin-top:14px;font-size:12px;font-weight:700;color:var(--fg-muted);letter-spacing:0.3px;text-transform:uppercase;margin-bottom:6px;">Recent trips</div>
     ${trips}
     ${premiumDetailHtml(res.premium, u)}
+    <div class="detail-section-title">Signed-in devices (${(res.sessions || []).length})</div>
+    ${userSessionsHtml(res.sessions || [])}
+    <div class="detail-section-title">Recent activity</div>
+    ${userTimelineHtml(res.timeline || [])}
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">${actions.join('')}</div>
   `, `<button class="btn btn-ghost" ${actionAttrs('closeModal')}>Close</button>`);
+}
+
+// A short device name from the app's User-Agent; the raw string is the tooltip.
+function deviceLabel(ua) {
+  const text = String(ua || '');
+  if (!text) return 'Unknown device';
+  const os = /iPhone|iPad|iOS/i.test(text) ? 'iOS' : /Android/i.test(text) ? 'Android' : /Mac OS|Macintosh/i.test(text) ? 'Mac'
+    : /Windows/i.test(text) ? 'Windows' : '';
+  const app = /Splyto|Dart|okhttp|CFNetwork/i.test(text) ? 'App' : 'Browser';
+  return os ? `${app} · ${os}` : app;
+}
+
+function userSessionsHtml(sessions) {
+  if (!sessions.length) return '<div class="empty-state" style="padding:8px">No active sessions</div>';
+  return sessions.map(s => `
+    <div class="detail-row"><span title="${esc(s.user_agent)}">${esc(deviceLabel(s.user_agent))}</span>
+      <span class="detail-value" style="margin-left:auto;text-align:right">used ${esc(relTime(s.last_used_at || s.created_at))} · since ${esc(relTime(s.created_at))}</span></div>`).join('');
+}
+
+function userTimelineHtml(events) {
+  if (!events.length) return '<div class="empty-state" style="padding:8px">No recorded activity</div>';
+  return `<div class="user-timeline">${events.map(e => `
+    <div class="timeline-row">
+      <span class="timeline-event">${esc(e.event_type)}</span>
+      <span class="timeline-meta">${e.trip_name ? esc(e.trip_name) + ' · ' : ''}${esc(relTime(e.created_at))}</span>
+    </div>`).join('')}</div>`;
+}
+
+async function signOutEverywhere(userId, name) {
+  if (!await askInModal({ title: `Sign ${name} out everywhere?`, confirmLabel: 'Sign out', danger: true,
+    message: 'Every app session ends now. The account stays active and the user can sign in again.' })) return;
+  const res = await post('admin_panel_user_sign_out_everywhere', { user_id: userId });
+  if (res.ok) toast(`${res.revoked} session(s) signed out`, 'success');
+  else toast(res.error || 'Failed', 'error');
 }
 
 function pushTokenSummary(tokens) {
@@ -1140,6 +1336,148 @@ async function openPremiumForm(operation, userId = null, grantId = null) {
 }
 
 // ── View: Feedback ────────────────────────────────────────────────────────────
+
+// ── View: System health ──────────────────────────────────────────────────────
+
+function formatBytes(bytes) {
+  if (bytes === null || bytes === undefined) return '—';
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  let value = Number(bytes);
+  let unit = 0;
+  while (value >= 1024 && unit < units.length - 1) { value /= 1024; unit += 1; }
+  return `${value.toFixed(value >= 10 || unit === 0 ? 0 : 1)} ${units[unit]}`;
+}
+
+const JOB_STATE_LABELS = { ok: 'OK', stale: 'Late', failed: 'Failed', unknown: 'No data yet' };
+
+function jobDetails(details) {
+  const parts = Object.entries(details || {})
+    .filter(([key, value]) => typeof value === 'number' && !['limit', 'interval_minutes', 'min_age_minutes'].includes(key))
+    .map(([key, value]) => key.endsWith('_bytes') ? `${key.replace(/_bytes$/, '')} ${formatBytes(value)}` : `${key.replace(/_/g, ' ')} ${value}`);
+  return parts.length ? parts.join(' · ') : '';
+}
+
+registerView('system', {
+  title: 'System',
+  async render() {
+    const res = await get('admin_panel_system_health');
+    if (!res.ok) return `<div class="empty-state">${esc(res.error || 'Failed to load system health.')}</div>`;
+    const sys = res.system || {};
+    const push = res.push || {};
+    const jobs = res.jobs || [];
+    const problems = jobs.filter(j => j.state === 'failed' || j.state === 'stale').length;
+    const used = sys.disk_total_bytes && sys.disk_free_bytes !== null ? sys.disk_total_bytes - sys.disk_free_bytes : null;
+    const usedPct = used !== null ? Math.round((used / sys.disk_total_bytes) * 100) : null;
+    const oldestAge = push.oldest_pending_at ? relTime(push.oldest_pending_at) : '—';
+
+    const jobRows = jobs.map(j => `
+      <div class="cl-item">
+        <div class="cl-row">
+          <div style="flex:1;min-width:0">
+            <div class="cl-title">${esc(j.label)}</div>
+            <div class="cl-sub">${esc(j.schedule)}${j.last_run ? ` · last run ${esc(relTime(j.last_run))}` : ''}</div>
+          </div>
+          <span class="badge ${j.state === 'ok' ? 'badge-green' : j.state === 'failed' ? 'badge-red' : j.state === 'stale' ? 'badge-amber' : 'badge-gray'}">${esc(JOB_STATE_LABELS[j.state] || j.state)}</span>
+        </div>
+        ${jobDetails(j.details) ? `<div class="user-facts">${esc(jobDetails(j.details))}</div>` : ''}
+      </div>`).join('');
+
+    return `
+      <div class="stats-grid">
+        <div class="stat-card ${problems ? 'red' : 'green'}">
+          <div class="stat-label">Scheduled jobs</div>
+          <div class="stat-value">${problems ? `${problems} need attention` : 'All OK'}</div>
+          <div class="stat-sub">${jobs.filter(j => j.state === 'unknown').length} without data yet</div>
+        </div>
+        <div class="stat-card ${usedPct !== null && usedPct >= 85 ? 'amber' : ''}">
+          <div class="stat-label">Disk used</div>
+          <div class="stat-value">${usedPct !== null ? `${usedPct}%` : '—'}</div>
+          <div class="stat-sub">${formatBytes(sys.disk_free_bytes)} free of ${formatBytes(sys.disk_total_bytes)}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Database</div>
+          <div class="stat-value">${formatBytes(sys.database_bytes)}</div>
+          <div class="stat-sub">MySQL ${esc(sys.mysql_version || '—')}</div>
+        </div>
+        <div class="stat-card ${push.failed_24h ? 'amber' : ''}">
+          <div class="stat-label">Push queue</div>
+          <div class="stat-value">${push.pending ?? 0} pending</div>
+          <div class="stat-sub">${push.failed_24h ?? 0} failed in 24 h · oldest ${esc(oldestAge)}</div>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-card-header">
+          <div class="table-card-title">⏱ Scheduled jobs</div>
+          <span class="table-card-link" ${actionAttrs('navigate', 'system')}>Refresh</span>
+        </div>
+        ${jobRows}
+      </div>
+      <div class="card system-facts">
+        <div class="detail-row"><span class="detail-label">Deployed commit</span><span class="detail-value">${esc(sys.commit || '—')}</span></div>
+        <div class="detail-row"><span class="detail-label">PHP</span><span class="detail-value">${esc(sys.php_version || '—')}</span></div>
+        <div class="detail-row"><span class="detail-label">Last push sent</span><span class="detail-value">${esc(relTime(push.last_sent_at))}</span></div>
+      </div>
+    `;
+  },
+});
+
+// ── View: Security ───────────────────────────────────────────────────────────
+
+const SECURITY_ACTION_LABELS = {
+  'admin.auth.login_success': ['Password OK', 'badge-gray'],
+  'admin.auth.2fa_success': ['Signed in', 'badge-green'],
+  'admin.auth.login_failed': ['Wrong password', 'badge-amber'],
+  'admin.auth.login_failed_unknown_user': ['Unknown username', 'badge-amber'],
+  'admin.auth.2fa_failed': ['Wrong 2FA code', 'badge-amber'],
+  'admin.auth.login_blocked_locked': ['Locked out', 'badge-red'],
+  'admin.auth.logout': ['Signed out', 'badge-gray'],
+  'admin.totp.enable': ['2FA enabled', 'badge-blue'],
+  'admin.totp.replace': ['2FA replaced', 'badge-blue'],
+  'admin.totp.reset': ['2FA reset', 'badge-red'],
+  'user.sessions.revoke_all': ['User signed out everywhere', 'badge-purple'],
+};
+
+registerView('security', {
+  title: 'Security',
+  async render() {
+    const res = await get('admin_panel_security_overview');
+    if (!res.ok) return `<div class="empty-state">${esc(res.error || 'Failed to load.')}</div>`;
+    const c = res.counts_7d || {};
+    const events = (res.events || []).map(e => {
+      const [label, cls] = SECURITY_ACTION_LABELS[e.action] || [e.action, 'badge-gray'];
+      return `<div class="cl-item"><div class="cl-row">
+        <span class="badge ${cls}">${esc(label)}</span>
+        <div style="flex:1;min-width:0;margin-left:10px"><div class="cl-sub" style="margin:0">${esc(e.admin_username)} · ${esc(e.ip_address || '—')}</div></div>
+        <span class="timeline-meta">${esc(relTime(e.created_at))}</span></div></div>`;
+    }).join('') || '<div class="empty-state" style="padding:24px">No sign-in or security events in the last 7 days</div>';
+    const limits = (res.rate_limits_24h || []).map(r => `
+      <tr><td style="font-family:ui-monospace,monospace;font-size:12px">${esc(r.scope)}</td>
+      <td>${r.peak}</td><td>${r.requests}</td><td>${r.windows}</td></tr>`).join('');
+    return `
+      <div class="stats-grid">
+        <div class="stat-card ${c.failed_logins ? 'amber' : ''}"><div class="stat-label">Failed admin logins</div>
+          <div class="stat-value">${c.failed_logins ?? 0}</div><div class="stat-sub">last 7 days</div></div>
+        <div class="stat-card ${c.failed_2fa ? 'amber' : ''}"><div class="stat-label">Wrong 2FA codes</div>
+          <div class="stat-value">${c.failed_2fa ?? 0}</div><div class="stat-sub">last 7 days</div></div>
+        <div class="stat-card ${c.locked ? 'red' : ''}"><div class="stat-label">Lockouts</div>
+          <div class="stat-value">${c.locked ?? 0}</div><div class="stat-sub">last 7 days</div></div>
+        <div class="stat-card"><div class="stat-label">Admin sessions</div>
+          <div class="stat-value">${res.active_admin_sessions ?? 0}</div><div class="stat-sub">${c.successful_logins ?? 0} sign-ins in 7 days</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-card-header"><div class="table-card-title">🔐 Admin sign-ins and 2FA (7 days)</div>
+          <span class="table-card-link" ${actionAttrs('navigate', 'audit-log')}>Full audit log →</span></div>
+        ${events}
+      </div>
+      <div class="table-card">
+        <div class="table-card-header"><div class="table-card-title">🚦 Rate limits (24 h)</div></div>
+        ${limits ? `<div class="table-wrap" style="border:0;border-radius:0"><table>
+          <thead><tr><th>Scope</th><th>Peak in one window</th><th>Requests</th><th>Windows</th></tr></thead>
+          <tbody>${limits}</tbody></table></div>` : '<div class="empty-state" style="padding:24px">No rate-limited requests in the last 24 hours</div>'}
+        <div class="cl-sub" style="padding:10px 18px 14px;white-space:normal">A high peak for one scope means one IP or account sent many requests in a short window. Subjects are stored only as hashes.</div>
+      </div>`;
+  },
+});
 
 registerView('feedback', {
   title: 'Feedback',

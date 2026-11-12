@@ -449,62 +449,219 @@ function admin_panel_dashboard_action(): void
 
     $stats['account_deletion_feedback'] = account_deletion_feedback_summary($pdo);
     $stats['feature_usage'] = feature_usage_summary($pdo);
+    $stats['growth'] = admin_growth_series($pdo, gmdate('Y-m-d'));
 
     json_out(['ok' => true, 'stats' => $stats]);
+}
+
+/**
+ * Daily counts for the last $days days, ending with $today (UTC, Y-m-d):
+ * sign-ups (guests excluded), active users (anyone with an app event that day)
+ * and new trips. Days without data are zero.
+ */
+function admin_growth_series(PDO $pdo, string $today, int $days = 30): array
+{
+    $end = new DateTimeImmutable($today . ' 00:00:00', new DateTimeZone('UTC'));
+    $start = $end->modify('-' . ($days - 1) . ' days');
+    $from = $start->format('Y-m-d H:i:s');
+    $series = [];
+    for ($day = $start; $day <= $end; $day = $day->modify('+1 day')) {
+        $series[$day->format('Y-m-d')] = ['date' => $day->format('Y-m-d'), 'signups' => 0, 'active' => 0, 'trips' => 0];
+    }
+    $queries = [
+        'signups' => 'SELECT DATE(created_at) AS d, COUNT(*) AS n FROM ' . table_name('users')
+            . ' WHERE created_at >= ? AND guest_trip_id IS NULL GROUP BY DATE(created_at)',
+        'active' => 'SELECT DATE(created_at) AS d, COUNT(DISTINCT user_id) AS n FROM ' . table_name('app_events')
+            . ' WHERE created_at >= ? AND user_id IS NOT NULL GROUP BY DATE(created_at)',
+        'trips' => 'SELECT DATE(created_at) AS d, COUNT(*) AS n FROM ' . table_name('trips')
+            . ' WHERE created_at >= ? GROUP BY DATE(created_at)',
+    ];
+    foreach ($queries as $key => $sql) {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$from]);
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $date = substr((string) $row['d'], 0, 10);
+            if (isset($series[$date])) {
+                $series[$date][$key] = (int) $row['n'];
+            }
+        }
+    }
+    return array_values($series);
+}
+
+// ── System health ────────────────────────────────────────────────────────────
+
+function admin_panel_system_health_action(): void
+{
+    require_admin_role(...admin_roles_ops());
+    $pdo = db();
+    $now = time();
+    json_out(['ok' => true, 'jobs' => ops_status_read($now),
+        'system' => ops_system_snapshot($pdo, dirname(__DIR__, 3)),
+        'push' => admin_push_queue_health($pdo, gmdate('Y-m-d H:i:s', $now))]);
+}
+
+/** Backlog and recent failures of the push queue. */
+function admin_push_queue_health(PDO $pdo, string $now): array
+{
+    $queue = table_name('push_queue');
+    $stmt = $pdo->prepare("SELECT
+            SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending,
+            MIN(CASE WHEN status = 'pending' THEN created_at END) AS oldest_pending_at,
+            SUM(CASE WHEN status IN ('failed', 'dead') AND updated_at >= ? THEN 1 ELSE 0 END) AS failed_24h,
+            MAX(sent_at) AS last_sent_at
+        FROM {$queue}");
+    $stmt->execute([(new DateTimeImmutable($now . ' UTC'))->modify('-1 day')->format('Y-m-d H:i:s')]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+    return ['pending' => (int) ($row['pending'] ?? 0), 'oldest_pending_at' => $row['oldest_pending_at'] ?? null,
+        'failed_24h' => (int) ($row['failed_24h'] ?? 0), 'last_sent_at' => $row['last_sent_at'] ?? null];
+}
+
+// ── Security overview ────────────────────────────────────────────────────────
+
+function admin_panel_security_overview_action(): void
+{
+    require_admin_role('superadmin', 'admin');
+    json_out(['ok' => true] + admin_security_overview(db(), time()));
+}
+
+/**
+ * Admin sign-in, 2FA and session events from the audit log, plus rate-limit
+ * pressure per scope in the last 24 hours (subjects stay hashed).
+ */
+function admin_security_overview(PDO $pdo, int $now): array
+{
+    $since = gmdate('Y-m-d H:i:s', $now - 7 * 86400);
+    $stmt = $pdo->prepare("SELECT admin_username, action, ip_address, created_at FROM " . table_name('admin_audit_log') . "
+        WHERE created_at >= ? AND (action LIKE 'admin.auth.%' OR action LIKE 'admin.totp.%'
+            OR action LIKE 'admin_user.%' OR action LIKE 'admin.session.%' OR action = 'user.sessions.revoke_all')
+        ORDER BY created_at DESC, id DESC LIMIT 100");
+    $stmt->execute([$since]);
+    $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $counts = ['failed_logins' => 0, 'failed_2fa' => 0, 'locked' => 0, 'successful_logins' => 0];
+    foreach ($events as $event) {
+        $action = (string) $event['action'];
+        if (str_starts_with($action, 'admin.auth.login_failed')) $counts['failed_logins']++;
+        elseif ($action === 'admin.auth.2fa_failed') $counts['failed_2fa']++;
+        elseif ($action === 'admin.auth.login_blocked_locked') $counts['locked']++;
+        elseif ($action === 'admin.auth.2fa_success') $counts['successful_logins']++;
+    }
+
+    $limits = $pdo->prepare('SELECT scope, COUNT(*) AS windows, SUM(hits) AS requests, MAX(hits) AS peak
+        FROM ' . table_name('request_limits') . ' WHERE window_start >= ? GROUP BY scope ORDER BY peak DESC, scope LIMIT 30');
+    $limits->execute([$now - 86400]);
+    $rateLimits = array_map(static fn(array $row): array => ['scope' => (string) $row['scope'],
+        'windows' => (int) $row['windows'], 'requests' => (int) $row['requests'], 'peak' => (int) $row['peak']],
+        $limits->fetchAll(PDO::FETCH_ASSOC));
+
+    $sessions = $pdo->prepare('SELECT COUNT(*) FROM ' . table_name('admin_sessions') . ' WHERE expires_at > ?');
+    $sessions->execute([gmdate('Y-m-d H:i:s', $now)]);
+
+    return ['counts_7d' => $counts, 'events' => $events, 'rate_limits_24h' => $rateLimits,
+        'active_admin_sessions' => (int) $sessions->fetchColumn()];
 }
 
 // ── User support tools ────────────────────────────────────────────────────────
 
 function admin_panel_user_search_action(): void
 {
-    $sess = require_admin_role(...admin_roles_support());
-    $pdo  = db();
+    require_admin_role(...admin_roles_support());
+    $pdo = db();
+    $result = admin_user_search($pdo, $_GET, gmdate('Y-m-d H:i:s'));
+    $result['premium_for_everyone'] = premium_for_everyone_window(premium_for_everyone_config(), time()) !== null;
+    json_out(['ok' => true] + $result);
+}
 
-    $q      = trim((string) ($_GET['q']      ?? ''));
-    $status = trim((string) ($_GET['status'] ?? 'all'));
-    $limit  = max(1, min(100, (int) ($_GET['limit']  ?? 40)));
-    $offset = max(0,          (int) ($_GET['offset'] ?? 0));
+/**
+ * Users list for the admin panel: search, filters, sorting and per-user summary
+ * (trip count, last activity, Premium grant). Guests are never listed.
+ */
+function admin_user_search(PDO $pdo, array $query, string $now): array
+{
+    $q      = trim((string) ($query['q'] ?? ''));
+    $status = trim((string) ($query['status'] ?? 'all'));
+    $limit  = max(1, min(100, (int) ($query['limit'] ?? 40)));
+    $offset = max(0, (int) ($query['offset'] ?? 0));
+    $sort   = (string) ($query['sort'] ?? 'newest');
 
-    $userTable = table_name('users');
-
-    $conditions = [];
-    $params     = [];
+    $users = table_name('users');
+    $hasIdentities = social_auth_identity_table_available($pdo);
+    $hasPush = push_tokens_table_available($pdo);
+    $conditions = ['u.guest_trip_id IS NULL'];
+    $params = [];
 
     if ($q !== '') {
-        $conditions[] = '(nickname LIKE ? OR email LIKE ?)';
-        $like = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $q) . '%';
-        $params[] = $like;
-        $params[] = $like;
+        $conditions[] = "(u.nickname LIKE ? ESCAPE '!' OR u.email LIKE ? ESCAPE '!')";
+        $like = '%' . str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $q) . '%';
+        array_push($params, $like, $like);
+    }
+    if (in_array($status, ['active', 'deactivated', 'deleted'], true)) {
+        $conditions[] = 'u.account_status = ?';
+        $params[] = $status;
+    }
+    $platform = (string) ($query['platform'] ?? '');
+    if (in_array($platform, ['ios', 'android'], true)) {
+        $conditions[] = $hasPush
+            ? 'EXISTS (SELECT 1 FROM ' . table_name('push_tokens') . ' p WHERE p.user_id = u.id AND LOWER(p.platform) = ?)'
+            : '1 = 0';
+        if ($hasPush) {
+            $params[] = $platform;
+        }
+    }
+    $signIn = (string) ($query['sign_in'] ?? '');
+    if ($signIn === 'email') {
+        $conditions[] = "(u.password_hash IS NOT NULL AND u.password_hash <> '')";
+    } elseif (in_array($signIn, ['apple', 'google'], true)) {
+        $conditions[] = $hasIdentities
+            ? 'EXISTS (SELECT 1 FROM ' . table_name('user_identities') . ' i WHERE i.user_id = u.id AND i.provider = ?)'
+            : '1 = 0';
+        if ($hasIdentities) {
+            $params[] = $signIn;
+        }
+    }
+    $premiumSql = 'EXISTS (SELECT 1 FROM ' . table_name('premium_grants') . ' g WHERE g.user_id = u.id'
+        . ' AND g.revoked_at IS NULL AND g.starts_at <= ? AND g.ends_at > ?)';
+    if (!empty($query['premium'])) {
+        $conditions[] = $premiumSql;
+        array_push($params, $now, $now);
+    }
+    if (!empty($query['unverified'])) {
+        $conditions[] = "u.email IS NOT NULL AND u.email <> '' AND u.email_verified_at IS NULL";
     }
 
-    if ($status !== 'all' && in_array($status, ['active', 'deactivated', 'deleted'], true)) {
-        $conditions[] = 'account_status = ?';
-        $params[]     = $status;
-    }
+    $where = 'WHERE ' . implode(' AND ', $conditions);
+    $order = match ($sort) {
+        'last_active' => 'last_active_at IS NULL, last_active_at DESC, u.id DESC',
+        'trips' => 'trips_count DESC, u.id DESC',
+        'oldest' => 'u.created_at ASC, u.id ASC',
+        default => 'u.created_at DESC, u.id DESC',
+    };
 
-    $conditions[] = 'guest_trip_id IS NULL';
-    $where = $conditions ? ('WHERE ' . implode(' AND ', $conditions)) : '';
+    $stmt = $pdo->prepare('SELECT u.id, u.nickname, u.email, u.account_status, u.created_at, '
+        . admin_has_password_login_sql() . ',
+            (SELECT COUNT(*) FROM ' . table_name('trip_members') . ' m WHERE m.user_id = u.id) AS trips_count,
+            (SELECT MAX(r.last_used_at) FROM ' . table_name('refresh_tokens') . ' r WHERE r.user_id = u.id) AS last_active_at,
+            ' . $premiumSql . ' AS premium_grant
+        FROM ' . $users . ' u ' . $where . ' ORDER BY ' . $order . ' LIMIT ? OFFSET ?');
+    $stmt->execute([$now, $now, ...$params, $limit, $offset]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $hasPassword = admin_has_password_login_sql();
-    $stmt = $pdo->prepare("
-        SELECT id, nickname, email, account_status, created_at, {$hasPassword}
-        FROM {$userTable}
-        {$where}
-        ORDER BY created_at DESC
-        LIMIT ? OFFSET ?
-    ");
-    $params[] = $limit;
-    $params[] = $offset;
-    $stmt->execute($params);
-    $users = $stmt->fetchAll();
+    $count = $pdo->prepare('SELECT COUNT(*) FROM ' . $users . ' u ' . $where);
+    $count->execute($params);
 
-    // Total count
-    $cntStmt = $pdo->prepare("SELECT COUNT(*) FROM {$userTable} {$where}");
-    $cntStmt->execute(array_slice($params, 0, count($params) - 2));
-    $total = (int) $cntStmt->fetchColumn();
-    $users = admin_users_with_account_signals($pdo, $users);
+    $rows = array_map(static function (array $row): array {
+        $row['trips_count'] = (int) $row['trips_count'];
+        $row['premium_grant'] = (bool) (int) $row['premium_grant'];
+        return $row;
+    }, $rows);
 
-    json_out(['ok' => true, 'users' => $users, 'total' => $total, 'limit' => $limit, 'offset' => $offset]);
+    return [
+        'users' => admin_users_with_account_signals($pdo, $rows),
+        'total' => (int) $count->fetchColumn(),
+        'limit' => $limit,
+        'offset' => $offset,
+    ];
 }
 
 /** A boolean column: the user can sign in with email and password. The hash itself is never selected. */
@@ -587,7 +744,8 @@ function admin_panel_user_detail_action(): void
 
     // Recent trips
     $stmt = $pdo->prepare("
-        SELECT t.id, t.name, t.status, t.created_at
+        SELECT t.id, t.name, t.status, t.created_at,
+               (SELECT COUNT(*) FROM {$membTable} c WHERE c.trip_id = t.id) AS members_count
         FROM {$tripsTable} t
         JOIN {$membTable} tm ON tm.trip_id = t.id AND tm.user_id = ?
         ORDER BY t.created_at DESC LIMIT 10
@@ -617,7 +775,54 @@ function admin_panel_user_detail_action(): void
         'premium'        => premium_user_detail($pdo, $userId, $sess),
         'push_tokens'    => $pushTokens,
         'unread_notifs'  => $unreadNotifs,
+        'sessions'       => admin_user_sessions($pdo, $userId, gmdate('Y-m-d H:i:s')),
+        'timeline'       => admin_user_timeline($pdo, $userId),
     ]);
+}
+
+/** Signed-in devices: active refresh sessions. Token hashes and IP addresses are not returned. */
+function admin_user_sessions(PDO $pdo, int $userId, string $now): array
+{
+    $stmt = $pdo->prepare('SELECT id, created_at, last_used_at, user_agent FROM ' . table_name('refresh_tokens')
+        . ' WHERE user_id = ? AND revoked_at IS NULL AND expires_at > ? ORDER BY COALESCE(last_used_at, created_at) DESC LIMIT 20');
+    $stmt->execute([$userId, $now]);
+    return array_map(static fn(array $row): array => [
+        'id' => (int) $row['id'],
+        'created_at' => $row['created_at'],
+        'last_used_at' => $row['last_used_at'],
+        'user_agent' => mb_substr(trim((string) ($row['user_agent'] ?? '')), 0, 120),
+    ], $stmt->fetchAll(PDO::FETCH_ASSOC));
+}
+
+/** The user's most recent app events, newest first, with the trip name when there is one. */
+function admin_user_timeline(PDO $pdo, int $userId, int $limit = 25): array
+{
+    $stmt = $pdo->prepare('SELECT e.event_type, e.entity_type, e.entity_id, e.trip_id, t.name AS trip_name, e.created_at
+        FROM ' . table_name('app_events') . ' e
+        LEFT JOIN ' . table_name('trips') . ' t ON t.id = e.trip_id
+        WHERE e.user_id = ? ORDER BY e.created_at DESC, e.id DESC LIMIT ' . max(1, min(100, $limit)));
+    $stmt->execute([$userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/** Support action: ends every app session of the user; they must sign in again on each device. */
+function admin_panel_user_sign_out_everywhere_action(): void
+{
+    require_post();
+    $sess   = require_admin_role(...admin_roles_support());
+    $pdo    = db();
+    $body   = read_json();
+    $userId = (int) ($body['user_id'] ?? 0);
+    if ($userId <= 0) {
+        json_out(['ok' => false, 'error' => 'Invalid user_id.'], 400);
+    }
+    $count = $pdo->prepare('SELECT COUNT(*) FROM ' . table_name('refresh_tokens')
+        . ' WHERE user_id = ? AND revoked_at IS NULL AND expires_at > ?');
+    $count->execute([$userId, gmdate('Y-m-d H:i:s')]);
+    $active = (int) $count->fetchColumn();
+    revoke_refresh_tokens_for_user($pdo, $userId);
+    admin_audit($pdo, $sess, 'user.sessions.revoke_all', 'user', $userId, ['sessions' => $active]);
+    json_out(['ok' => true, 'revoked' => $active]);
 }
 
 function admin_panel_user_suspend_action(): void

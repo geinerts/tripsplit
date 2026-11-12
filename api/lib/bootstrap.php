@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/helpers/api_core_helpers.php';
+require_once __DIR__ . '/helpers/helper_ops_status.php';
 require_once __DIR__ . '/helpers/helper_email.php';
 require_once __DIR__ . '/helpers/helper_app_events.php';
 
