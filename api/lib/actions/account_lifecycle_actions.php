@@ -46,6 +46,81 @@ function erase_account_for_deletion(PDO $pdo, array $user): array
     return ['avatar_path' => $avatarPath, 'provider_tokens' => $providerTokens];
 }
 
+/** Days after sign-up when a never-verified, never-used account is erased; always after the grace period. */
+function email_verification_erase_days(): int
+{
+    $days = defined('EMAIL_VERIFICATION_ERASE_DAYS') ? (int) EMAIL_VERIFICATION_ERASE_DAYS : 30;
+    return max(email_verification_grace_days() + 1, min(365, $days));
+}
+
+/** Conditions for an account that only ever existed as an unverified sign-up. */
+function unverified_unused_account_sql(PDO $pdo): string
+{
+    $identities = social_auth_identity_table_available($pdo)
+        ? ' AND NOT EXISTS (SELECT 1 FROM ' . table_name('user_identities') . ' i WHERE i.user_id = u.id)'
+        : '';
+    return 'u.account_status = "deactivated" AND u.credentials_required = 0
+        AND u.email IS NOT NULL AND u.email <> "" AND u.email_verified_at IS NULL
+        AND u.guest_trip_id IS NULL AND u.created_at <= :cutoff
+        AND NOT EXISTS (SELECT 1 FROM ' . table_name('trip_members') . ' m WHERE m.user_id = u.id)
+        AND NOT EXISTS (SELECT 1 FROM ' . table_name('friends') . ' f WHERE f.user_a_id = u.id OR f.user_b_id = u.id)
+        AND NOT EXISTS (SELECT 1 FROM ' . table_name('refresh_tokens') . ' r WHERE r.user_id = u.id)' . $identities;
+}
+
+/**
+ * Erases accounts whose email was never verified and that were never used: no
+ * session, trip, friend or Apple/Google link. They were already deactivated after
+ * the grace period. Erasing frees the email address and removes personal data,
+ * the same way as a self-service deletion.
+ */
+function process_unverified_account_erasure(PDO $pdo, array $options = []): array
+{
+    $days = email_verification_erase_days();
+    $limit = max(1, min(2000, (int) ($options['limit'] ?? email_verification_cleanup_batch_limit())));
+    $dryRun = !empty($options['dry_run']);
+    $now = (int) ($options['now'] ?? time());
+    $result = ['enabled' => email_verification_required(), 'erase_days' => $days, 'dry_run' => $dryRun,
+        'picked' => 0, 'erased' => 0, 'user_ids' => []];
+    if (!$result['enabled'] || !users_email_verified_at_column_available($pdo)
+        || !users_account_status_column_available($pdo)) {
+        return $result;
+    }
+    $cutoff = gmdate('Y-m-d H:i:s', $now - $days * 86400);
+    $conditions = unverified_unused_account_sql($pdo);
+    $stmt = $pdo->prepare('SELECT u.id FROM ' . table_name('users') . ' u WHERE ' . $conditions
+        . ' ORDER BY u.created_at ASC, u.id ASC LIMIT ' . $limit);
+    $stmt->execute(['cutoff' => $cutoff]);
+    $ids = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    $result['picked'] = count($ids);
+    $result['user_ids'] = $ids;
+    if ($dryRun) {
+        return $result;
+    }
+    foreach ($ids as $userId) {
+        $cleanup = null;
+        $pdo->beginTransaction();
+        try {
+            // Recheck under the row lock: a verification or sign-in may have happened since.
+            $lock = $pdo->prepare('SELECT u.* FROM ' . table_name('users') . ' u WHERE u.id = :id AND '
+                . $conditions . ' FOR UPDATE');
+            $lock->execute(['id' => $userId, 'cutoff' => $cutoff]);
+            $user = $lock->fetch(PDO::FETCH_ASSOC);
+            if (is_array($user)) {
+                $cleanup = erase_account_for_deletion($pdo, $user);
+                $result['erased']++;
+            }
+            $pdo->commit();
+        } catch (Throwable $error) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $error;
+        }
+        finish_account_deletion_cleanup($cleanup);
+    }
+    return $result;
+}
+
 /** Revokes Apple/Google tokens and removes the avatar once the deletion has committed. */
 function finish_account_deletion_cleanup(?array $cleanup): void
 {

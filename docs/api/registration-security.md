@@ -61,3 +61,17 @@ full HTTP signup/login/verification behavior, including lost-response retries, l
 revocation followed by registration replay. The concurrency tests exercise native InnoDB
 constraints, not every schedule or service failure; token/mail/transport adapters are
 still stubbed. Production deployment and mobile distribution remain separate authorized steps.
+
+## Unverified accounts
+
+Email/password accounts cannot sign in until the email is verified (`EMAIL_NOT_VERIFIED`).
+The link is valid for `TRIP_EMAIL_VERIFICATION_TOKEN_TTL_SEC` (24 h); a new one can be
+requested from the sign-in screen. `scripts/run_email_verification_cleanup.php` (cron,
+every 10 minutes) deactivates accounts still unverified after
+`TRIP_EMAIL_VERIFICATION_GRACE_DAYS` (7) and erases them after
+`TRIP_EMAIL_VERIFICATION_ERASE_DAYS` (30, always later than the grace period) when they
+were never used: no refresh session, trip membership, friend or Apple/Google link.
+Erasure is the same as a self-service deletion (`erase_account_for_deletion`): personal
+data is removed and the email address becomes free for a new sign-up. Each account is
+rechecked under a row lock, so a verification or sign-in in the meantime keeps it.
+Verifying a deactivated (not yet erased) account reactivates it.

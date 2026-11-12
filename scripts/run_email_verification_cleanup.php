@@ -21,8 +21,15 @@ function main(array $argv): void
         'dry_run' => $options['dry_run'],
         'limit' => $options['limit'],
     ]);
+    $erasure = process_unverified_account_erasure($pdo, [
+        'dry_run' => $options['dry_run'],
+        'limit' => $options['limit'],
+    ]);
     if (!($result['dry_run'] ?? false)) {
-        ops_heartbeat('email_verification_cleanup', true, $result);
+        ops_heartbeat('email_verification_cleanup', true, [
+            'deactivated' => (int) ($result['deactivated'] ?? 0),
+            'erased' => (int) ($erasure['erased'] ?? 0),
+        ]);
     }
 
     echo "Email verification cleanup\n";
@@ -33,6 +40,9 @@ function main(array $argv): void
     echo '  limit: ' . (int) ($result['limit'] ?? 0) . "\n";
     echo '  picked: ' . (int) ($result['picked'] ?? 0) . "\n";
     echo '  deactivated: ' . (int) ($result['deactivated'] ?? 0) . "\n";
+    echo '  erase_after_days: ' . (int) ($erasure['erase_days'] ?? 0) . "\n";
+    echo '  erase_picked: ' . (int) ($erasure['picked'] ?? 0) . "\n";
+    echo '  erased: ' . (int) ($erasure['erased'] ?? 0) . "\n";
 
     $userIds = $result['user_ids'] ?? [];
     if (is_array($userIds) && $userIds) {

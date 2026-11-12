@@ -198,14 +198,23 @@ function build_password_reset_email(string $resetUrl, string $firstName): string
     );
 }
 
-function build_email_verification_email(string $verifyUrl, string $firstName, int $graceDays): string
-{
+function build_email_verification_email(
+    string $verifyUrl,
+    string $firstName,
+    int $graceDays,
+    int $linkTtlSeconds = 86_400
+): string {
     $days = $graceDays > 0 ? $graceDays : 7;
+    $hours = max(1, intdiv($linkTtlSeconds > 0 ? $linkTtlSeconds : 86_400, 3600));
+    // You can sign in only after verifying; unverified accounts are deactivated
+    // after the grace period (and reactivated if verified later).
     return build_account_email_template(
         'One last step. You’re in.', $firstName,
         'Confirm your email address to activate your Splyto account and start sharing trips and expenses.',
         'Verify email', $verifyUrl,
-        'Please verify within ' . $days . ' days to keep your account active. If you did not create this account, ignore this email.',
+        'You can sign in once your email is verified. This link is valid for ' . $hours . ' hours; '
+            . 'you can request a new one from the sign-in screen. Accounts that are not verified within '
+            . $days . ' days are deactivated. If you did not create this account, ignore this email.',
         'Confirm your email address to get started with Splyto.'
     );
 }

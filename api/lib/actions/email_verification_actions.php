@@ -90,7 +90,8 @@ function send_email_verification_link_for_user(PDO $pdo, array $user, bool $supp
     }
 
     $verifyUrl = app_base_url() . '/api/verify-email.php?token=' . urlencode($plainToken);
-    $html = build_email_verification_email($verifyUrl, $firstName, email_verification_grace_days());
+    $html = build_email_verification_email($verifyUrl, $firstName, email_verification_grace_days(),
+        email_verification_token_ttl_seconds());
     $sent = send_email_via_resend($email, 'Verify your Splyto email', $html);
     if (!$sent && !$suppressSendErrors) {
         json_out([
