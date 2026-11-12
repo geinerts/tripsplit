@@ -2797,7 +2797,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tripsMainCurrency => 'Основная валюта';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Выберите даты начала и окончания поездки.';
+  String get tripsSelectStartDate => 'Выберите дату начала поездки.';
+
+  @override
+  String get tripsEndDateOptional => 'Необязательно';
+
+  @override
+  String get tripsClearEndDate => 'Удалить дату окончания';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Дата окончания не может быть раньше даты начала.';
@@ -4823,7 +4829,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get accountDeleteReasonTechnical => 'Я столкнулся(-ась) с ошибками или техническими проблемами';
 
   @override
-  String get accountDeleteReasonPrivacy => 'Я предпочитаю удалить свои данные аккаунта';
+  String get accountDeleteReasonPrivacy => 'Я бы предпочёл(-ла) удалить данные аккаунта';
 
   @override
   String get accountDeleteReasonOther => 'Я ухожу по другой причине';
@@ -5159,8 +5165,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get workspaceClearFilters => 'Сбросить фильтры';
 
   @override
-  String get workspaceFiltersLoadedHint => 'Фильтры применяются к загруженным расходам. Загрузи больше, чтобы включить более ранние расходы.';
+  String get workspaceFiltersLoadedHint => 'Фильтры применяются к загруженным расходам. Загрузите больше, чтобы включить более ранние расходы.';
 
   @override
-  String get workspaceFiltersNoMatchesHint => 'Измени или сбрось фильтры, чтобы увидеть все загруженные расходы.';
+  String get workspaceFiltersNoMatchesHint => 'Измените или сбросьте фильтры, чтобы увидеть все загруженные расходы.';
 }

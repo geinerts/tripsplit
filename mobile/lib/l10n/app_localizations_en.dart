@@ -2785,7 +2785,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tripsMainCurrency => 'Main currency';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Please select trip period (from and to dates).';
+  String get tripsSelectStartDate => 'Choose when the trip starts.';
+
+  @override
+  String get tripsEndDateOptional => 'Optional';
+
+  @override
+  String get tripsClearEndDate => 'Remove end date';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Trip end date must be on or after start date.';

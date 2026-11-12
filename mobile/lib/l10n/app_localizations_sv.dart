@@ -2785,7 +2785,13 @@ class AppLocalizationsSv extends AppLocalizations {
   String get tripsMainCurrency => 'Huvudvaluta';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Välj reseperiod (start- och slutdatum).';
+  String get tripsSelectStartDate => 'Välj när resan börjar.';
+
+  @override
+  String get tripsEndDateOptional => 'Valfritt';
+
+  @override
+  String get tripsClearEndDate => 'Ta bort slutdatum';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Resans slutdatum måste vara på eller efter startdatumet.';

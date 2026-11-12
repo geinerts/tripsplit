@@ -2785,7 +2785,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tripsMainCurrency => 'Moneda principal';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Selecciona el período del viaje (fechas de inicio y fin).';
+  String get tripsSelectStartDate => 'Elige cuándo empieza el viaje.';
+
+  @override
+  String get tripsEndDateOptional => 'Opcional';
+
+  @override
+  String get tripsClearEndDate => 'Quitar fecha de fin';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'La fecha de fin del viaje debe ser igual o posterior a la fecha de inicio.';
@@ -4826,7 +4832,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accountDeleteSentHint => 'Tu cuenta seguirá activa hasta que confirmes la eliminación.';
 
   @override
-  String get accountDeleteSending => 'Envío de un correo electrónico de confirmación';
+  String get accountDeleteSending => 'Enviando correo de confirmación';
 
   @override
   String get friendsShowMore => 'Mostrar más';

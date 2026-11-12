@@ -252,6 +252,30 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('trip-currency-search')), findsNothing);
   });
+  testWidgets('a start date alone is enough and the end date can be removed', (
+    tester,
+  ) async {
+    final h = _Harness();
+    await h.mount(tester);
+    await tester.enterText(
+      find.byKey(const ValueKey('trip-form-name')),
+      'Open-ended trip',
+    );
+    FocusManager.instance.primaryFocus?.unfocus();
+    expect(find.text('Optional'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('trip-form-submit')));
+    await tester.pumpAndSettle();
+    expect(h.closed, isFalse);
+    expect(find.text('Choose when the trip starts.'), findsOneWidget);
+    await dates(tester);
+    expect(find.text('Optional'), findsNothing);
+    await tapVisible(tester, find.byKey(const ValueKey('trip-date-to-clear')));
+    expect(find.text('Optional'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('trip-form-submit')));
+    await tester.pumpAndSettle();
+    expect(DateTime.tryParse(h.result!.dateFrom!), isNotNull);
+    expect(h.result!.dateTo, isNull);
+  });
   testWidgets('solo clears selection and submits no members', (tester) async {
     final h = _Harness();
     await h.mount(tester);

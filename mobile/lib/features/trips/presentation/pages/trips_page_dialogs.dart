@@ -35,7 +35,7 @@ extension _TripsPageDialogs on _TripsPageState {
       tripMode: result.tripMode,
       memberIds: result.memberIds,
       dateFrom: result.dateFrom!,
-      dateTo: result.dateTo!,
+      dateTo: result.dateTo,
       imageFileName: result.image?.fileName,
       imageBytes: result.image?.bytes,
       cropSource: result.image?.source,

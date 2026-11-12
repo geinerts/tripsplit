@@ -529,28 +529,7 @@ function create_trip_action(bool $solo = false): void
             'error' => 'Trip currency support is not enabled on server yet. Run migration first.',
         ], 409);
     }
-    $dateFromRaw = trim((string) ($body['date_from'] ?? ''));
-    $dateToRaw = trim((string) ($body['date_to'] ?? ''));
-    $hasDateFrom = $dateFromRaw !== '';
-    $hasDateTo = $dateToRaw !== '';
-    if ($hasDateFrom xor $hasDateTo) {
-        json_out([
-            'ok' => false,
-            'error' => 'Trip period must include both date_from and date_to.',
-        ], 400);
-    }
-    $dateFrom = null;
-    $dateTo = null;
-    if ($hasDateFrom && $hasDateTo) {
-        $dateFrom = validate_date_iso($dateFromRaw);
-        $dateTo = validate_date_iso($dateToRaw);
-        if ($dateTo < $dateFrom) {
-            json_out([
-                'ok' => false,
-                'error' => 'Trip end date must be on or after start date.',
-            ], 400);
-        }
-    }
+    [$dateFrom, $dateTo] = trip_period_input($body);
     if (($dateFrom !== null || $dateTo !== null) && !$tripDateColumnsAvailable) {
         json_out([
             'ok' => false,

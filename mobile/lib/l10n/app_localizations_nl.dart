@@ -2785,7 +2785,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get tripsMainCurrency => 'Hoofdvaluta';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Selecteer de reisperiode (begin- en einddatum).';
+  String get tripsSelectStartDate => 'Kies wanneer de reis begint.';
+
+  @override
+  String get tripsEndDateOptional => 'Optioneel';
+
+  @override
+  String get tripsClearEndDate => 'Einddatum verwijderen';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'De einddatum van de reis moet op of na de startdatum liggen.';

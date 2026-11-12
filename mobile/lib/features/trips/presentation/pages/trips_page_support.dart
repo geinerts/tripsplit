@@ -9,7 +9,7 @@ class _CreateTripResult {
     required this.memberIds,
     required this.tripMode,
     required this.dateFrom,
-    required this.dateTo,
+    this.dateTo,
     this.imageFileName,
     this.imageBytes,
     this.cropSource,
@@ -22,7 +22,7 @@ class _CreateTripResult {
   final List<int> memberIds;
   final String tripMode;
   final String dateFrom;
-  final String dateTo;
+  final String? dateTo;
   final String? imageFileName;
   final Uint8List? imageBytes;
   final ImageCropSourceUpload? cropSource;

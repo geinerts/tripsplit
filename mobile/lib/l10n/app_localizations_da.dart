@@ -2785,7 +2785,13 @@ class AppLocalizationsDa extends AppLocalizations {
   String get tripsMainCurrency => 'Hovedvaluta';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Vælg venligst rejseperioden (start- og slutdato).';
+  String get tripsSelectStartDate => 'Vælg, hvornår rejsen starter.';
+
+  @override
+  String get tripsEndDateOptional => 'Valgfrit';
+
+  @override
+  String get tripsClearEndDate => 'Fjern slutdato';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Rejsens slutdato skal være på eller efter startdatoen.';

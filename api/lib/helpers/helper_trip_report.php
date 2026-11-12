@@ -288,10 +288,18 @@ function trip_report_date_range(array $report): string
     if ($from !== '' && $to !== '') {
         return $from === $to ? $from : $from . ' – ' . $to;
     }
-    if ($from !== '' || $to !== '') {
-        return $from . $to;
-    }
     $dates = array_values(array_filter(array_column($report['expenses'], 'date')));
+    if ($from !== '') {
+        // Only a start date: end at the last expense or when the trip finished.
+        $start = (string) ($report['date_from'] ?? '');
+        $last = $dates ? substr((string) max($dates), 0, 10) : '';
+        $endRaw = $last !== '' && $last > $start ? $last : (string) ($report['ended_at'] ?? '');
+        $end = substr($endRaw, 0, 10) > $start ? trip_report_date($endRaw) : '';
+        return $end === '' || $end === $from ? $from : $from . ' – ' . $end;
+    }
+    if ($to !== '') {
+        return $to;
+    }
     if (!$dates) {
         return trip_report_date($report['ended_at'] ?? null);
     }

@@ -1184,7 +1184,9 @@
   "tripsSelectDate": "Seleccionar fecha",
   "tripsTo": "Hasta",
   "tripsMainCurrency": "Moneda principal",
-  "tripsPleaseSelectTripPeriodFromAndToDates": "Selecciona el período del viaje (fechas de inicio y fin).",
+  "tripsSelectStartDate": "Elige cuándo empieza el viaje.",
+  "tripsEndDateOptional": "Opcional",
+  "tripsClearEndDate": "Quitar fecha de fin",
   "tripsTripEndDateMustBeOnOrAfterStartDate": "La fecha de fin del viaje debe ser igual o posterior a la fecha de inicio.",
   "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "El formato del período del viaje no es válido. Selecciona las fechas de nuevo.",
   "tripsYouAreAlreadyAMemberOfThisTrip": "Ya eres miembro de este viaje.",
@@ -1979,7 +1981,7 @@
   "accountDeleteInboxTitle": "Un último paso en tu bandeja de entrada",
   "accountDeleteSentBody": "Enlace de confirmación enviado a {email}.",
   "accountDeleteSentHint": "Tu cuenta seguirá activa hasta que confirmes la eliminación.",
-  "accountDeleteSending": "Envío de un correo electrónico de confirmación",
+  "accountDeleteSending": "Enviando correo de confirmación",
   "@accountDeleteSentBody": {
     "placeholders": {
       "email": {

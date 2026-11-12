@@ -2797,7 +2797,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get tripsMainCurrency => 'Основна валюта';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Будь ласка, виберіть період поїздки (дати початку та закінчення).';
+  String get tripsSelectStartDate => 'Виберіть, коли починається поїздка.';
+
+  @override
+  String get tripsEndDateOptional => 'Необов’язково';
+
+  @override
+  String get tripsClearEndDate => 'Видалити дату завершення';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Дата закінчення поїздки має бути не раніше дати початку.';

@@ -2791,7 +2791,13 @@ class AppLocalizationsLv extends AppLocalizations {
   String get tripsMainCurrency => 'Galvenā valūta';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Lūdzu, izvēlies ceļojuma periodu (no un līdz).';
+  String get tripsSelectStartDate => 'Izvēlies, kad ceļojums sākas.';
+
+  @override
+  String get tripsEndDateOptional => 'Nav obligāti';
+
+  @override
+  String get tripsClearEndDate => 'Noņemt beigu datumu';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Ceļojuma beigu datumam jābūt vienādam vai vēlākam par sākuma datumu.';

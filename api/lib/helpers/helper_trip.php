@@ -43,6 +43,27 @@ function validate_trip_mode($value): string
     return $value;
 }
 
+/**
+ * Reads the optional trip period from a create request. A start date alone is
+ * allowed (the return date is not always known); an end date needs a start.
+ *
+ * @return array{0: ?string, 1: ?string} [date_from, date_to]
+ */
+function trip_period_input(array $body): array
+{
+    $fromRaw = trim((string) ($body['date_from'] ?? ''));
+    $toRaw = trim((string) ($body['date_to'] ?? ''));
+    if ($fromRaw === '' && $toRaw !== '') {
+        json_out(['ok' => false, 'error' => 'Trip end date needs a start date.'], 400);
+    }
+    $from = $fromRaw === '' ? null : validate_date_iso($fromRaw);
+    $to = $toRaw === '' ? null : validate_date_iso($toRaw);
+    if ($from !== null && $to !== null && $to < $from) {
+        json_out(['ok' => false, 'error' => 'Trip end date must be on or after start date.'], 400);
+    }
+    return [$from, $to];
+}
+
 function validate_solo_expense(array $trip, int $actorId, array $body): void
 {
     if (!trip_is_solo($trip)) {

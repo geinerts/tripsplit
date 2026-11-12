@@ -359,8 +359,10 @@ class _TripFormPageState extends State<TripFormPage> {
           (budgetCents == null ||
               budgetCents <= 0 ||
               budgetCents > 99999999999);
+      // The end date is optional: the return is not always known.
       _datesInvalid =
-          !_editing && (_from == null || _to == null || _to!.isBefore(_from!));
+          !_editing &&
+          (_from == null || (_to != null && _to!.isBefore(_from!)));
     });
     if (_nameInvalid || _datesInvalid || _budgetInvalid) return;
     setState(() => _submitted = true);
@@ -711,8 +713,21 @@ class _TripFormPageState extends State<TripFormPage> {
                               AppSettingsRow(
                                 key: const ValueKey('trip-date-to'),
                                 title: t.tripsTo,
-                                value: dateLabel(_to),
+                                value: _to == null
+                                    ? t.tripsEndDateOptional
+                                    : dateLabel(_to),
                                 icon: Icons.event_outlined,
+                                trailing: _to == null
+                                    ? null
+                                    : IconButton(
+                                        key: const ValueKey(
+                                          'trip-date-to-clear',
+                                        ),
+                                        tooltip: t.tripsClearEndDate,
+                                        icon: const Icon(Icons.close_rounded),
+                                        onPressed: () =>
+                                            setState(() => _to = null),
+                                      ),
                                 onTap: () => _pickDate(false),
                               ),
                               const Divider(height: 1),
@@ -828,7 +843,7 @@ class _TripFormPageState extends State<TripFormPage> {
                           Padding(
                             padding: const EdgeInsets.only(top: 8),
                             child: Text(
-                              t.tripsPleaseSelectTripPeriodFromAndToDates,
+                              t.tripsSelectStartDate,
                               style: TextStyle(color: colors.error),
                             ),
                           ),

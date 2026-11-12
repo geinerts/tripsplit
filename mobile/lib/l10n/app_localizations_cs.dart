@@ -2791,7 +2791,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get tripsMainCurrency => 'Hlavní měna';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Vyberte prosím období cesty (datum od a do).';
+  String get tripsSelectStartDate => 'Vyberte, kdy cesta začíná.';
+
+  @override
+  String get tripsEndDateOptional => 'Nepovinné';
+
+  @override
+  String get tripsClearEndDate => 'Odebrat datum konce';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Datum ukončení cesty musí být stejné jako datum zahájení nebo pozdější.';

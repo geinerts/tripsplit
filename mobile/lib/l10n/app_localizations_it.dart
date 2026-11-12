@@ -2785,7 +2785,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get tripsMainCurrency => 'Valuta principale';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Seleziona il periodo del viaggio (date di inizio e fine).';
+  String get tripsSelectStartDate => 'Scegli quando inizia il viaggio.';
+
+  @override
+  String get tripsEndDateOptional => 'Facoltativo';
+
+  @override
+  String get tripsClearEndDate => 'Rimuovi data di fine';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'La data di fine del viaggio deve essere pari o successiva alla data di inizio.';

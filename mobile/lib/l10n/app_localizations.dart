@@ -5223,11 +5223,23 @@ abstract class AppLocalizations {
   /// **'Main currency'**
   String get tripsMainCurrency;
 
-  /// No description provided for @tripsPleaseSelectTripPeriodFromAndToDates.
+  /// No description provided for @tripsSelectStartDate.
   ///
   /// In en, this message translates to:
-  /// **'Please select trip period (from and to dates).'**
-  String get tripsPleaseSelectTripPeriodFromAndToDates;
+  /// **'Choose when the trip starts.'**
+  String get tripsSelectStartDate;
+
+  /// No description provided for @tripsEndDateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get tripsEndDateOptional;
+
+  /// No description provided for @tripsClearEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove end date'**
+  String get tripsClearEndDate;
 
   /// No description provided for @tripsTripEndDateMustBeOnOrAfterStartDate.
   ///

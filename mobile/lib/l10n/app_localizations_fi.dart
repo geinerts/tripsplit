@@ -2785,7 +2785,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get tripsMainCurrency => 'Päävaluutta';
 
   @override
-  String get tripsPleaseSelectTripPeriodFromAndToDates => 'Valitse matkan ajankohta (alkamis- ja päättymispäivämäärät).';
+  String get tripsSelectStartDate => 'Valitse, milloin matka alkaa.';
+
+  @override
+  String get tripsEndDateOptional => 'Valinnainen';
+
+  @override
+  String get tripsClearEndDate => 'Poista päättymispäivä';
 
   @override
   String get tripsTripEndDateMustBeOnOrAfterStartDate => 'Matkan päättymispäivän on oltava alkamispäivänä tai sen jälkeen.';

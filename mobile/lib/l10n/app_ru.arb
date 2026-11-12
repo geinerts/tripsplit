@@ -1198,7 +1198,9 @@
   "tripsSelectDate": "Выберите дату",
   "tripsTo": "По",
   "tripsMainCurrency": "Основная валюта",
-  "tripsPleaseSelectTripPeriodFromAndToDates": "Выберите даты начала и окончания поездки.",
+  "tripsSelectStartDate": "Выберите дату начала поездки.",
+  "tripsEndDateOptional": "Необязательно",
+  "tripsClearEndDate": "Удалить дату окончания",
   "tripsTripEndDateMustBeOnOrAfterStartDate": "Дата окончания не может быть раньше даты начала.",
   "tripsTripPeriodFormatIsInvalidPleasePickDatesAgain": "Неверный формат периода поездки. Выберите даты ещё раз.",
   "tripsYouAreAlreadyAMemberOfThisTrip": "Вы уже участник этой поездки.",
@@ -1986,7 +1988,7 @@
   "accountDeleteReasonAnotherWay": "Я веду общие расходы другим способом",
   "accountDeleteReasonComplicated": "Всё требует слишком много усилий",
   "accountDeleteReasonTechnical": "Я столкнулся(-ась) с ошибками или техническими проблемами",
-  "accountDeleteReasonPrivacy": "Я предпочитаю удалить свои данные аккаунта",
+  "accountDeleteReasonPrivacy": "Я бы предпочёл(-ла) удалить данные аккаунта",
   "accountDeleteReasonOther": "Я ухожу по другой причине",
   "accountDeleteEmailStep": "Следующий шаг: подтверждение по эл. почте.",
   "accountDeletePasswordHint": "Введите текущий пароль Splyto, чтобы запросить письмо с подтверждением. Ваш аккаунт пока активен.",
@@ -2097,6 +2099,6 @@
   "workspaceChooseCategory": "Выбрать категорию",
   "workspaceExpenseFilters": "Фильтры расходов",
   "workspaceClearFilters": "Сбросить фильтры",
-  "workspaceFiltersLoadedHint": "Фильтры применяются к загруженным расходам. Загрузи больше, чтобы включить более ранние расходы.",
-  "workspaceFiltersNoMatchesHint": "Измени или сбрось фильтры, чтобы увидеть все загруженные расходы."
+  "workspaceFiltersLoadedHint": "Фильтры применяются к загруженным расходам. Загрузите больше, чтобы включить более ранние расходы.",
+  "workspaceFiltersNoMatchesHint": "Измените или сбросьте фильтры, чтобы увидеть все загруженные расходы."
 }
