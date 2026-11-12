@@ -6,8 +6,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '../..');
 
-const SECRET = 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP';
-const NEW_SECRET = 'KRSXG5CTMVRXEZLUKRSXG5CTMVRXEZLU';
+// Synthetic setup keys for the mocked API.
+const FIRST_KEY = 'A'.repeat(32);
+const SECOND_KEY = 'B'.repeat(32);
 
 async function openPanel(browser, width) {
   const page = await browser.newPage({ viewport: { width, height: 800 } });
@@ -33,7 +34,7 @@ async function openPanel(browser, width) {
         json = { ok: true, requires_2fa: false, requires_2fa_enrollment: true, user };
       } else if (action === 'admin_panel_setup_totp') {
         state.setups += 1;
-        json = { ok: true, secret: state.setups === 1 ? SECRET : NEW_SECRET, replacing: state.enrolled };
+        json = { ok: true, secret: state.setups === 1 ? FIRST_KEY : SECOND_KEY, replacing: state.enrolled };
       } else if (action === 'admin_panel_confirm_totp') {
         if (body.code !== '123456') {
           json = { ok: false, code: '2fa_invalid', error: 'Invalid or expired 2FA code.' };
@@ -75,7 +76,7 @@ for (const width of [1280, 390]) {
       await page.fill('#inp-enroll-password', 'password-1234');
       await page.click('#enroll-start-btn');
       await page.locator('#enroll-confirm-form').waitFor();
-      assert.equal(await page.locator('#enroll-secret').textContent(), SECRET);
+      assert.equal(await page.locator('#enroll-secret').textContent(), FIRST_KEY);
       assert.deepEqual(requests.find(r => r.action === 'admin_panel_setup_totp').body, { password: 'password-1234' });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
 
@@ -94,7 +95,7 @@ for (const width of [1280, 390]) {
       await page.fill('#replace-2fa-password', 'password-1234');
       await page.fill('#replace-2fa-code', '654321');
       await page.click('#modal-footer [type="submit"]');
-      await page.locator('#modal-body .setup-key').filter({ hasText: NEW_SECRET }).waitFor();
+      await page.locator('#modal-body .setup-key').filter({ hasText: SECOND_KEY }).waitFor();
       assert.deepEqual(requests.filter(r => r.action === 'admin_panel_setup_totp')[1].body,
         { password: 'password-1234', current_code: '654321' });
       await page.fill('#totp-confirm-code', '123456');

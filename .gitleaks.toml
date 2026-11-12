@@ -15,4 +15,6 @@ regexes = [
   '''^percentSplitMustBe100$''',
   # Finnish 'salasana' (password) makes the following ARB key match the Asana rule.
   '''^profileEditBankTransferIbanSwift$''',
+  # Synthetic TOTP setup key from the mocked admin 2FA browser test (commit 3f51abb).
+  '''^KRSXG5CTMVRXEZLUKRSXG5CTMVRXEZLU$''',
 ]
