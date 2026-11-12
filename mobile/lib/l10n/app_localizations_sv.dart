@@ -642,10 +642,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get firstNameLengthValidation => 'Förnamnet måste bestå av 2–64 tecken.';
 
   @override
-  String get fullNameHelper => 'Ange för- och efternamn i ett fält.';
-
-  @override
-  String get fullNameHint => 't.ex. Anna Ozolina';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Fullständigt namn';
@@ -3878,6 +3875,9 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Sök efter utgifter';
+
+  @override
+  String get workspaceExpensesToday => 'Idag';
 
   @override
   String get workspaceClearSearch => 'Töm sökningen';

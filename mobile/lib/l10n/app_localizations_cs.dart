@@ -645,10 +645,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get firstNameLengthValidation => 'Křestní jméno musí mít 2–64 znaků.';
 
   @override
-  String get fullNameHelper => 'Jméno a příjmení uveďte v jednom poli.';
-
-  @override
-  String get fullNameHint => 'např. Anna Ozolina';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Celé jméno';
@@ -3884,6 +3881,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Vyhledávání výdajů';
+
+  @override
+  String get workspaceExpensesToday => 'Dnes';
 
   @override
   String get workspaceClearSearch => 'Čisté vyhledávání';

@@ -87,13 +87,6 @@ extension _LoginPageWidgetsForm on _LoginPageState {
         validator: _validateFullName,
         autocorrect: false,
       ),
-      const SizedBox(height: 8),
-      Text(
-        t.fullNameHelper,
-        style: Theme.of(
-          context,
-        ).textTheme.bodySmall?.copyWith(color: AppDesign.mutedColor(context)),
-      ),
     ];
   }
 

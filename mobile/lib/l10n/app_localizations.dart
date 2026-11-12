@@ -1257,16 +1257,10 @@ abstract class AppLocalizations {
   /// **'First name must be 2-64 characters.'**
   String get firstNameLengthValidation;
 
-  /// No description provided for @fullNameHelper.
-  ///
-  /// In en, this message translates to:
-  /// **'Use first and last name in one field.'**
-  String get fullNameHelper;
-
   /// No description provided for @fullNameHint.
   ///
   /// In en, this message translates to:
-  /// **'e.g. Anna Ozolina'**
+  /// **'John Smith'**
   String get fullNameHint;
 
   /// No description provided for @fullNameLabel.
@@ -7184,6 +7178,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search expenses'**
   String get workspaceSearchExpenses;
+
+  /// Heading above the expenses dated today in a trip's expense list.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get workspaceExpensesToday;
 
   /// No description provided for @workspaceClearSearch.
   ///

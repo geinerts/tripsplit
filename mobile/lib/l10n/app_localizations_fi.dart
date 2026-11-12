@@ -642,10 +642,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get firstNameLengthValidation => 'Etunimen on oltava 2–64 merkkiä pitkä.';
 
   @override
-  String get fullNameHelper => 'Käytä etu- ja sukunimeä yhdessä kentässä.';
-
-  @override
-  String get fullNameHint => 'esim. Anna Ozolina';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Koko nimi';
@@ -3878,6 +3875,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Hae kuluja';
+
+  @override
+  String get workspaceExpensesToday => 'Tänään';
 
   @override
   String get workspaceClearSearch => 'Selkeä haku';

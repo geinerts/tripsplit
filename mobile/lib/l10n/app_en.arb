@@ -518,8 +518,7 @@
   "firstNameHint": "Your first name",
   "firstNameLabel": "First name",
   "firstNameLengthValidation": "First name must be 2-64 characters.",
-  "fullNameHelper": "Use first and last name in one field.",
-  "fullNameHint": "e.g. Anna Ozolina",
+  "fullNameHint": "John Smith",
   "fullNameLabel": "Full name",
   "fullNameValidation": "Enter first and last name (at least 2 characters each).",
   "lastNameHint": "Your last name",
@@ -1535,6 +1534,10 @@
   "workspaceBalanceReceive": "You get back {amount}",
   "workspaceMemberCount": "{count} members",
   "workspaceSearchExpenses": "Search expenses",
+  "workspaceExpensesToday": "Today",
+  "@workspaceExpensesToday": {
+    "description": "Heading above the expenses dated today in a trip's expense list."
+  },
   "workspaceClearSearch": "Clear search",
   "workspaceSearchLoadedHint": "Search covers loaded expenses. Load more to include older expenses.",
   "workspaceNoExpenseMatches": "No matching expenses",

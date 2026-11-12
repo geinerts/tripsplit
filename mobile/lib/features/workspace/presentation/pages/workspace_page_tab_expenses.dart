@@ -168,12 +168,10 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
               final sameDayBefore =
                   index > 0 &&
                   expenses[index - 1].expenseDate == expense.expenseDate;
-              final sameDayAfter =
-                  index + 1 < expenses.length &&
-                  expenses[index + 1].expenseDate == expense.expenseDate;
-              // A day earns a heading only when several expenses share it;
-              // a lone expense carries its date in its own row instead.
-              final showHeading = !sameDayBefore && sameDayAfter;
+              // Every day gets a heading, also a day with a single expense,
+              // so today's expenses sit under "Today" at the top.
+              final showHeading =
+                  !sameDayBefore && expense.expenseDate.trim().isNotEmpty;
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -183,7 +181,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                       child: Semantics(
                         header: true,
                         child: Text(
-                          _formatDisplayDate(context, expense.expenseDate),
+                          _expenseDayHeading(context, expense.expenseDate),
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
                                 color: Theme.of(
@@ -193,12 +191,7 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                         ),
                       ),
                     ),
-                  _buildExpenseRow(
-                    snapshot,
-                    expense,
-                    users[expense.paidById],
-                    showDate: !sameDayBefore && !sameDayAfter,
-                  ),
+                  _buildExpenseRow(snapshot, expense, users[expense.paidById]),
                   const Divider(height: 1),
                 ],
               );
@@ -290,9 +283,8 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
   Widget _buildExpenseRow(
     WorkspaceSnapshot snapshot,
     TripExpense expense,
-    WorkspaceUser? payer, {
-    required bool showDate,
-  }) {
+    WorkspaceUser? payer,
+  ) {
     final theme = Theme.of(context);
     final category = ExpenseCategoryCatalog.labelFor(
       expense.category,
@@ -301,8 +293,6 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     final title = expense.note.trim().isEmpty ? category : expense.note.trim();
     final payerName = (payer?.preferredName ?? expense.paidByNickname).trim();
     final details = [
-      if (showDate && expense.expenseDate.trim().isNotEmpty)
-        _formatDisplayDate(context, expense.expenseDate),
       if (widget.trip.isSolo && expense.note.trim().isNotEmpty) category,
       if (!widget.trip.isSolo && payerName.isNotEmpty)
         context.l10n.expensePaidByName(payerName),

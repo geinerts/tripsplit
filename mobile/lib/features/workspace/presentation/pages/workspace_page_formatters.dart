@@ -88,6 +88,22 @@ String _formatDisplayDate(BuildContext context, String raw) {
   return AppFormatters.shortDayMonth(context, parsed);
 }
 
+/// Day heading in the expense list: "Today" for today's date (device time),
+/// otherwise the short date.
+String _expenseDayHeading(BuildContext context, String raw) {
+  final parsed =
+      AppFormatters.parseIsoDate(raw.trim()) ??
+      DateTime.tryParse(raw.trim().split(' ').first);
+  final now = DateTime.now();
+  if (parsed != null &&
+      parsed.year == now.year &&
+      parsed.month == now.month &&
+      parsed.day == now.day) {
+    return context.l10n.workspaceExpensesToday;
+  }
+  return _formatDisplayDate(context, raw);
+}
+
 String _formatCompactNumber(double value) {
   final rounded = value.abs() < 0.000001 ? 0.0 : value;
   final whole = rounded.roundToDouble();

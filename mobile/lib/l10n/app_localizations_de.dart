@@ -642,10 +642,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get firstNameLengthValidation => 'Der Vorname muss aus 2 bis 64 Zeichen bestehen.';
 
   @override
-  String get fullNameHelper => 'Verwenden Sie Vor- und Nachnamen in einem Feld.';
-
-  @override
-  String get fullNameHint => 'z. B. Anna Ozolina';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Vollständiger Name';
@@ -3878,6 +3875,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Ausgaben suchen';
+
+  @override
+  String get workspaceExpensesToday => 'Heute';
 
   @override
   String get workspaceClearSearch => 'Klare Suche';

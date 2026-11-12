@@ -642,10 +642,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get firstNameLengthValidation => 'De voornaam moet 2-64 tekens lang zijn.';
 
   @override
-  String get fullNameHelper => 'Gebruik voor- en achternaam in één veld.';
-
-  @override
-  String get fullNameHint => 'bijv. Anna Ozolina';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Volledige naam';
@@ -3878,6 +3875,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Uitgaven zoeken';
+
+  @override
+  String get workspaceExpensesToday => 'Vandaag';
 
   @override
   String get workspaceClearSearch => 'Zoek';

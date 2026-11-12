@@ -648,10 +648,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get firstNameLengthValidation => 'Imię musi składać się z 2–64 znaków.';
 
   @override
-  String get fullNameHelper => 'W jednym polu należy podać imię i nazwisko.';
-
-  @override
-  String get fullNameHint => 'np. Anna Ozolina';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Imię i nazwisko';
@@ -3890,6 +3887,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Wyszukiwanie wydatków';
+
+  @override
+  String get workspaceExpensesToday => 'Dzisiaj';
 
   @override
   String get workspaceClearSearch => 'Czyste wyszukiwanie';

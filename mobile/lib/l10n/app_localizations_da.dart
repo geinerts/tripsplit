@@ -642,10 +642,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get firstNameLengthValidation => 'Fornavnet skal bestå af 2-64 tegn.';
 
   @override
-  String get fullNameHelper => 'Brug fornavn og efternavn i ét felt.';
-
-  @override
-  String get fullNameHint => 'f.eks. Anna Ozolina';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Fulde navn';
@@ -3878,6 +3875,9 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Søg efter udgifter';
+
+  @override
+  String get workspaceExpensesToday => 'I dag';
 
   @override
   String get workspaceClearSearch => 'Tydelig søgning';

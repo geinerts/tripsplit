@@ -642,10 +642,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firstNameLengthValidation => 'First name must be 2-64 characters.';
 
   @override
-  String get fullNameHelper => 'Use first and last name in one field.';
-
-  @override
-  String get fullNameHint => 'e.g. Anna Ozolina';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Full name';
@@ -3878,6 +3875,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Search expenses';
+
+  @override
+  String get workspaceExpensesToday => 'Today';
 
   @override
   String get workspaceClearSearch => 'Clear search';

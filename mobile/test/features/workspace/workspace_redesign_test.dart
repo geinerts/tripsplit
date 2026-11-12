@@ -2541,6 +2541,50 @@ void main() {
       await disposePage(tester);
     },
   );
+  testWidgets('every expense day has a heading and today says Today', (
+    tester,
+  ) async {
+    final now = DateTime.now();
+    String iso(DateTime d) =>
+        '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+    final today = iso(now);
+    final older = iso(now.subtract(const Duration(days: 40)));
+    final controller = _Workspace()
+      ..data = snapshot(
+        expenses: [
+          expense(1, name: 'Lunch today', date: today),
+          expense(2, name: 'Old dinner', date: older),
+        ],
+      );
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('expense-row-2')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    // A single expense today still gets a heading, above its row.
+    final heading = find.text(t.workspaceExpensesToday);
+    expect(heading, findsOneWidget);
+    expect(
+      tester.getTopLeft(heading).dy,
+      lessThan(
+        tester.getTopLeft(find.byKey(const ValueKey('expense-row-1'))).dy,
+      ),
+    );
+    // The lone older expense also gets its own day heading.
+    final dayHeadings = find.byWidgetPredicate(
+      (w) =>
+          w is Semantics &&
+          w.properties.header == true &&
+          w.child is Text &&
+          ((w.child! as Text).data == t.workspaceExpensesToday ||
+              RegExp(r'\d').hasMatch((w.child! as Text).data ?? '')),
+    );
+    expect(dayHeadings, findsNWidgets(2));
+    await disposePage(tester);
+  });
   testWidgets('remaining selector review', (tester) async {
     if (!const bool.fromEnvironment('FRIEND_FLOW_PREVIEWS')) return;
     for (final dark in [false, true]) {
@@ -3527,53 +3571,55 @@ void main() {
     await disposePage(tester);
   });
 
-  testWidgets('expense dates and split modes only show when they add meaning', (
-    tester,
-  ) async {
-    final controller = _Workspace()
-      ..data = snapshot(
-        expenses: [
-          expense(1, name: 'Dinner', date: '2026-10-21'),
-          expense(2, name: 'Taxi', date: '2026-10-21', splitMode: 'exact'),
-          expense(3, name: 'Museum', date: '2026-10-20'),
-        ],
+  testWidgets(
+    'expense days get headings and split modes show when they matter',
+    (tester) async {
+      final controller = _Workspace()
+        ..data = snapshot(
+          expenses: [
+            expense(1, name: 'Dinner', date: '2026-10-21'),
+            expense(2, name: 'Taxi', date: '2026-10-21', splitMode: 'exact'),
+            expense(3, name: 'Museum', date: '2026-10-20'),
+          ],
+        );
+      await _mount(tester, controller);
+      await tester.pumpAndSettle();
+      final context = tester.element(find.byType(WorkspacePage));
+      final t = AppLocalizations.of(context)!;
+      final row = find.byKey(const ValueKey('expense-row-1'));
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('expense-row-3')),
+        200,
+        scrollable: find.byType(Scrollable).first,
       );
-    await _mount(tester, controller);
-    await tester.pumpAndSettle();
-    final context = tester.element(find.byType(WorkspacePage));
-    final t = AppLocalizations.of(context)!;
-    final row = find.byKey(const ValueKey('expense-row-1'));
-    await tester.scrollUntilVisible(
-      find.byKey(const ValueKey('expense-row-3')),
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    String details(int id) => tester
-        .widgetList<Text>(
-          find.descendant(
-            of: find.byKey(ValueKey('expense-row-$id')),
-            matching: find.byType(Text),
-          ),
-        )
-        .map((text) => text.data ?? '')
-        .join(' | ');
-    expect(find.text(t.equalSplitLabel), findsNothing);
-    expect(details(1), isNot(contains(t.equalSplitLabel)));
-    expect(details(2), contains(t.exactAmountsLabel));
-    expect(details(3), contains('Oct 20'));
-    expect(details(1), isNot(contains('Oct 21')));
-    expect(find.text('Oct 21'), findsOneWidget);
-    expect(find.text('Oct 20'), findsNothing);
-    expect(
-      find.descendant(of: row, matching: find.byIcon(Icons.chevron_right)),
-      findsNothing,
-    );
-    final height = tester.getSize(row).height;
-    expect(height, greaterThanOrEqualTo(48));
-    expect(height, lessThanOrEqualTo(64));
-    expect(tester.takeException(), isNull);
-    await disposePage(tester);
-  });
+      String details(int id) => tester
+          .widgetList<Text>(
+            find.descendant(
+              of: find.byKey(ValueKey('expense-row-$id')),
+              matching: find.byType(Text),
+            ),
+          )
+          .map((text) => text.data ?? '')
+          .join(' | ');
+      expect(find.text(t.equalSplitLabel), findsNothing);
+      expect(details(1), isNot(contains(t.equalSplitLabel)));
+      expect(details(2), contains(t.exactAmountsLabel));
+      // Every day has its own heading, so rows never repeat the date.
+      expect(details(3), isNot(contains('Oct 20')));
+      expect(details(1), isNot(contains('Oct 21')));
+      expect(find.text('Oct 21'), findsOneWidget);
+      expect(find.text('Oct 20'), findsOneWidget);
+      expect(
+        find.descendant(of: row, matching: find.byIcon(Icons.chevron_right)),
+        findsNothing,
+      );
+      final height = tester.getSize(row).height;
+      expect(height, greaterThanOrEqualTo(48));
+      expect(height, lessThanOrEqualTo(64));
+      expect(tester.takeException(), isNull);
+      await disposePage(tester);
+    },
+  );
 
   testWidgets('activity sentence uses a first name unless it is ambiguous', (
     tester,

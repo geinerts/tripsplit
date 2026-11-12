@@ -648,10 +648,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get firstNameLengthValidation => 'Ім’я має містити від 2 до 64 символів.';
 
   @override
-  String get fullNameHelper => 'Вкажіть ім’я та прізвище в одному полі.';
-
-  @override
-  String get fullNameHint => 'Наприклад: Анна Озоліна';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Повне ім’я';
@@ -3890,6 +3887,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Пошук витрат';
+
+  @override
+  String get workspaceExpensesToday => 'Сьогодні';
 
   @override
   String get workspaceClearSearch => 'Чіткий пошук';

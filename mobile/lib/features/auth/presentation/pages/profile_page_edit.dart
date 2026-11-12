@@ -585,11 +585,7 @@ extension _ProfilePageEditFlow on _ProfilePageState {
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.name,
       autofillHints: const [AutofillHints.name],
-      decoration: InputDecoration(
-        isDense: true,
-        hintText: t.fullNameHint,
-        helperText: t.fullNameHelper,
-      ),
+      decoration: InputDecoration(isDense: true, hintText: t.fullNameHint),
       onChanged: _onDraftFullNameChanged,
       onFieldSubmitted: (_) => _saveInlineField(_ProfileEditField.fullName),
     );

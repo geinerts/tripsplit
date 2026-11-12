@@ -645,10 +645,7 @@ class AppLocalizationsLv extends AppLocalizations {
   String get firstNameLengthValidation => 'Vārdam jābūt 2-64 rakstzīmes garam.';
 
   @override
-  String get fullNameHelper => 'Ievadi vārdu un uzvārdu vienā laukā.';
-
-  @override
-  String get fullNameHint => 'piem. Anna Ozoliņa';
+  String get fullNameHint => 'John Smith';
 
   @override
   String get fullNameLabel => 'Vārds un uzvārds';
@@ -3884,6 +3881,9 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get workspaceSearchExpenses => 'Meklēt izdevumus';
+
+  @override
+  String get workspaceExpensesToday => 'Šodien';
 
   @override
   String get workspaceClearSearch => 'Notīrīt meklēšanu';

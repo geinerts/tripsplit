@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app_design.dart';
 import 'app_overlay_style.dart';
+import 'app_theme.dart';
 import 'app_semantic_colors.dart';
 
 /// Route-level theme wrapper for pre-auth flow.
@@ -15,9 +16,14 @@ class AuthFlowTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Built on the dark app theme, so dialogs, sheets and other components get
+    // dark surfaces too, not only the colours overridden below. The canvas is
+    // painted here because app pages keep their scaffolds transparent.
     return Theme(
-      data: buildAuthFlowThemeData(Theme.of(context)),
-      child: AppFixedLightSystemOverlay(child: child),
+      data: buildAuthFlowThemeData(AppTheme.dark()),
+      child: AppFixedLightSystemOverlay(
+        child: ColoredBox(color: AppDesign.authCanvas, child: child),
+      ),
     );
   }
 }
