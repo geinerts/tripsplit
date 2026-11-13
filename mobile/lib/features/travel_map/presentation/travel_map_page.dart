@@ -4,6 +4,7 @@ import '../../../core/auth/account_data_session.dart';
 import '../../../app/theme/app_design.dart';
 import '../../../core/errors/api_exception.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/location/location_access.dart';
 import '../../../core/ui/app_scaffold.dart';
 import '../../trips/domain/entities/trip.dart';
 import 'travel_visit_photo.dart';
@@ -132,9 +133,11 @@ class _TravelMapPageState extends State<TravelMapPage> {
     }
   }
 
-  void _notice(String text) {
+  void _notice(String text, {SnackBarAction? action}) {
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(text), action: action));
     }
   }
 
@@ -190,11 +193,18 @@ class _TravelMapPageState extends State<TravelMapPage> {
     } on TravelLocationError catch (error) {
       if (!mounted || !_current) return;
       final t = context.l10n;
-      _notice(switch (error.code) {
-        'denied' || 'deniedForever' => t.travelMapDenied,
-        'disabled' => t.travelMapDisabled,
-        _ => t.travelMapLookupError,
-      });
+      _notice(
+        switch (error.code) {
+          'denied' || 'deniedForever' => t.travelMapDenied,
+          'disabled' => t.travelMapDisabled,
+          _ => t.travelMapLookupError,
+        },
+        action: locationSettingsAction(context, switch (error.code) {
+          'deniedForever' => LocationAccessProblem.deniedForever,
+          'disabled' => LocationAccessProblem.servicesDisabled,
+          _ => null,
+        }),
+      );
     } catch (_) {
       if (mounted && _current) _notice(context.l10n.travelMapLookupError);
     } finally {

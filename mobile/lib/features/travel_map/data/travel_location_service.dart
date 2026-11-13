@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import '../../../core/location/location_access.dart';
 import '../domain/travel_place.dart';
 
 class TravelLocationError implements Exception {
@@ -79,19 +80,10 @@ class NativeTravelLocationService implements TravelLocationService {
 
   @override
   Future<PlaceCandidate> currentCity() async {
-    if (!await Geolocator.isLocationServiceEnabled()) {
-      throw const TravelLocationError('disabled');
-    }
-    var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-    if (permission == LocationPermission.deniedForever) {
-      throw const TravelLocationError('deniedForever');
-    }
-    if (permission != LocationPermission.whileInUse &&
-        permission != LocationPermission.always) {
-      throw const TravelLocationError('denied');
+    try {
+      await ensureLocationPermission();
+    } on LocationAccessException catch (error) {
+      throw TravelLocationError(_codeFor(error.problem));
     }
     try {
       final position = await Geolocator.getCurrentPosition(
@@ -126,8 +118,15 @@ class NativeTravelLocationService implements TravelLocationService {
       return matching.first;
     } on TravelLocationError {
       rethrow;
-    } catch (_) {
-      throw const TravelLocationError('lookup');
+    } catch (error) {
+      final problem = locationAccessProblemFor(error);
+      throw TravelLocationError(problem == null ? 'lookup' : _codeFor(problem));
     }
   }
+
+  static String _codeFor(LocationAccessProblem problem) => switch (problem) {
+    LocationAccessProblem.denied => 'denied',
+    LocationAccessProblem.deniedForever => 'deniedForever',
+    LocationAccessProblem.servicesDisabled => 'disabled',
+  };
 }

@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/auth/account_data_session.dart';
 import '../../../core/errors/api_exception.dart';
 import '../../../core/l10n/l10n.dart';
+import '../../../core/location/location_access.dart';
 import '../../workspace/domain/entities/workspace_user.dart';
 import '../data/live_location_device.dart';
 import '../domain/live_location.dart';
@@ -211,6 +212,9 @@ class _LiveMapPageState extends State<LiveMapPage> with WidgetsBindingObserver {
                 ? t.livePermissionError
                 : t.liveStartError,
           ),
+          action: error is LiveLocationPermissionError
+              ? locationSettingsAction(context, error.problem)
+              : null,
         ),
       );
     }

@@ -1,8 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import '../../../core/location/location_access.dart';
 import '../domain/live_location.dart';
 
-class LiveLocationPermissionError implements Exception {}
+class LiveLocationPermissionError implements Exception {
+  LiveLocationPermissionError([this.problem = LocationAccessProblem.denied]);
+  final LocationAccessProblem problem;
+}
 
 abstract interface class LiveLocationDevice {
   Future<LiveFix> requestFix();
@@ -14,25 +18,21 @@ class NativeLiveLocationDevice implements LiveLocationDevice {
       LiveFix(p.latitude, p.longitude, p.accuracy, p.timestamp);
   @override
   Future<LiveFix> requestFix() async {
-    if (!await Geolocator.isLocationServiceEnabled()) {
-      throw LiveLocationPermissionError();
-    }
-    var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-    if (permission != LocationPermission.whileInUse &&
-        permission != LocationPermission.always) {
-      throw LiveLocationPermissionError();
-    }
-    return _fix(
-      await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          timeLimit: Duration(seconds: 20),
+    try {
+      await ensureLocationPermission();
+      return _fix(
+        await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            timeLimit: Duration(seconds: 20),
+          ),
         ),
-      ),
-    );
+      );
+    } catch (error) {
+      final problem = locationAccessProblemFor(error);
+      if (problem != null) throw LiveLocationPermissionError(problem);
+      rethrow;
+    }
   }
 
   @override
