@@ -12,6 +12,6 @@
     <item
         android:drawable="@drawable/launch_symbol"
         android:gravity="center"
-        android:height="46dp"
-        android:width="118dp" />
+        android:height="39dp"
+        android:width="100dp" />
 </layer-list>
