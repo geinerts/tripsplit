@@ -75,6 +75,13 @@ $results['note_free'] = invitation_call('add_expense_comment_action', 1, [
 ])['status'];
 $results['note_free_notifications'] = $notifications();
 
+// The apps insert the short trip name: the first name, or the first name and last initial.
+$results['short_first'] = $add(['body'=>'@Anna thanks', 'mentioned_user_ids'=>[2]])['body']['comment']['mentions'];
+$results['short_first_notifications'] = $notifications();
+$results['short_initial'] = $add(['body'=>'ok @anna b.', 'mentioned_user_ids'=>[2]])['body']['comment']['mentions'];
+$results['short_partial'] = $add(['body'=>'@Ann and @Annab', 'mentioned_user_ids'=>[2]])['body']['comment']['mentions'];
+$notifications();
+
 $results['edit_absent'] = $edit($commentId, ['body'=>'Hi @Nia and @Anna Bērziņa!'])['body']['comment']['mentions'];
 $results['edit_absent_notifications'] = $notifications();
 $results['edit_remove'] = $edit($commentId, ['body'=>'Hi @Nia', 'mentioned_user_ids'=>[4]])['body']['comment']['mentions'];

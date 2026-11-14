@@ -87,6 +87,27 @@ function normalize_mentioned_user_ids($raw): array
     return array_slice(array_values($ids), 0, 50);
 }
 
+/**
+ * The short trip names the apps insert for a member: the first name, and the
+ * first name with the last initial (`Anna B.`), as in `WorkspaceUser.withTripNames`.
+ *
+ * @return list<string>
+ */
+function expense_comment_short_names(?string $firstName, ?string $lastName, string $fullName): array
+{
+    $words = preg_split('/\s+/u', trim($fullName), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+    $first = $firstName ?? ($words[0] ?? '');
+    $last = $lastName ?? (count($words) > 1 ? $words[count($words) - 1] : '');
+    if ($first === '') {
+        return [];
+    }
+    $names = [$first];
+    if ($last !== '') {
+        $names[] = $first . ' ' . mb_strtoupper(mb_substr($last, 0, 1)) . '.';
+    }
+    return $names;
+}
+
 function expense_comment_mention_text(string $commentBody, array $names): ?string
 {
     usort($names, static fn(string $a, string $b): int => str_length($b) <=> str_length($a));
@@ -157,6 +178,11 @@ function resolve_expense_comment_mentions(
         $text = expense_comment_mention_text($commentBody, array_filter([
             (string) $fullName,
             (string) ($row['nickname'] ?? ''),
+            ...expense_comment_short_names(
+                normalize_me_name_value($row['first_name'] ?? null),
+                normalize_me_name_value($row['last_name'] ?? null),
+                (string) ($fullName ?? $row['nickname'] ?? '')
+            ),
             (string) ($existingRows[$userId]['text'] ?? ''),
         ], static fn(string $name): bool => $name !== ''));
         if ($text !== null) {

@@ -10,9 +10,13 @@ clients keep working and simply show the text.
 `mentioned_user_ids: int[]`.
 
 - The server keeps an ID only when that user is an active member of the trip and
-  `@` followed by their full name, nickname or the text already stored for that
-  mention appears in the body, case-insensitively and not inside a longer word.
-  Any other ID is ignored without an error.
+  `@` followed by one of their names appears in the body, case-insensitively and
+  not inside a longer word. Accepted names: full name, nickname, the short trip
+  name the apps show (first name, or first name and last initial such as
+  `Anna B.`), or the text already stored for that mention. The first name is the
+  user's first name, otherwise the first word of the full name or nickname; the
+  last initial comes from the last name, otherwise the last word. Any other ID is
+  ignored without an error.
 - On update, the list replaces the comment's mentions, so `[]` removes them all.
   When the field is absent, the stored mentions stay unchanged.
 

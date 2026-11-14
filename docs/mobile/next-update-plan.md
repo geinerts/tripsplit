@@ -1,7 +1,7 @@
-# Nākamais atjauninājums: ceļojuma atgādinājums, PDF čeki un avāriju žurnāli
+# Nākamais atjauninājums: ceļojuma atgādinājums, PDF čeki, avāriju žurnāli un atzīmes
 
 Statuss: plāns, īpašnieks apstiprinājis virzienu 2026-11-13. Kods, API un datubāze vēl nav
-mainīti. Visus trīs darbus ieviest vienā atjauninājumā, ko izlaiž gan iOS, gan Android.
+mainīti. Visus darbus ieviest vienā atjauninājumā, ko izlaiž gan iOS, gan Android.
 
 Sagatavots kopā ar Android pirmo Play iesniegšanu. Tur Data safety tika iesniegts **bez**
 "Files and docs" (čeki ir tikai attēli), tāpēc pēc B darba forma jāatjauno.
@@ -190,13 +190,41 @@ dod mazāk detalizētu informāciju nekā Sentry. Var sākt ar to un Sentry iesl
 - Vai ES datu glabāšana ir pieejama izvēlētajā Sentry plānā?
 - Cik ilgi glabāt ziņojumus (ieteikums: 30 līdz 90 dienas)?
 
+## D. Komentāru atzīmes pēc pozīcijas, nevis vārda
+
+### Mērķis
+
+`@atzīme` darbojas neatkarīgi no tā, kā vārds uzrakstīts tekstā, kā Slack vai WhatsApp.
+
+### Kas ir tagad
+
+Lietotne sūta `mentioned_user_ids`. Serveris atzīmi saglabā tikai tad, ja tekstā aiz `@`
+ir dalībnieka vārda forma (`docs/api/expense-comment-mentions.md`). 2026-11-14 atklājām:
+lietotne ieliek īso ceļojuma vārdu (`@Marta`), serveris pazina tikai pilno vārdu vai
+segvārdu, tāpēc reģistrētiem dalībniekiem atzīmes un paziņojumi pazuda. Steidzamais labojums:
+serveris pieņem arī vārdu un "Vārds U.", tāpēc vecais build strādā.
+
+### Ieteicamais risinājums (atpakaļsaderīgs)
+
+- Pieprasījumā jauns neobligāts lauks, piemēram `mentions: [{user_id, start, end}]`.
+  Ja tas ir, serveris pārbauda, ka lietotājs ir aktīvs dalībnieks un ka `start` vietā ir
+  `@`; vārdu vairs nesalīdzina. Ja lauka nav, strādā vecā pārbaude.
+- Atbildē `mentions` paliek `{user_id, name}`, klāt nāk `start` un `end`.
+- Migrācija tikai pievieno kolonnas `start_offset`, `end_offset` (NULL veciem ierakstiem).
+- Lietotne sūta pozīcijas un iekrāso pēc tām.
+
+### Pārbaude
+
+Testi gan vecajiem pieprasījumiem (tikai ID), gan jaunajiem; rediģēšana, kas maina pozīcijas;
+280 zīmju robeža; dalībnieks, kas izstājies.
+
 ## Secība un izlaišana
 
 1. **Apstiprinājumi.** API izmaiņas (jauns paziņojuma veids, `receipt_kind`), datubāzes
    migrācija (dublikātu aizsardzība), servera izvietošana (cron, jauns skripts). Šie
    darbi neietilpst "uzrakstīt kodu" un prasa tavu atļauju atsevišķi.
 2. **Dokumentācija** pirms koda: `push-notification-categories.md` un čeku līgums.
-3. **A un B serveris**, tad lietotne, tad testi. **C** neprasa servera izmaiņas, tikai
+3. **A, B un D serveris**, tad lietotne, tad testi. D servera daļu var izvietot arī agrāk. **C** neprasa servera izmaiņas, tikai
    lietotnes konfigurāciju un dokumentus.
 4. **Versija.** Paaugstināt `pubspec.yaml` build numuru. Android būvei vienmēr
    `--dart-define-from-file=config/env/android-internal.local.json`; iOS arhīvam vispirms

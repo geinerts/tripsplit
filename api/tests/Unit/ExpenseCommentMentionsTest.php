@@ -69,6 +69,14 @@ final class ExpenseCommentMentionsTest extends TestCase
         self::assertSame('Anna Bērziņa mentioned you in a comment on "Dinner".', self::$r['reply_notifications'][0]['body']);
     }
 
+    public function test_short_trip_name_is_accepted_like_the_full_name(): void
+    {
+        self::assertSame([['user_id'=>2, 'name'=>'Anna']], self::$r['short_first']);
+        self::assertSame([2], self::userIds(self::$r['short_first_notifications']));
+        self::assertSame([['user_id'=>2, 'name'=>'anna b.']], self::$r['short_initial']);
+        self::assertSame([], self::$r['short_partial']);
+    }
+
     public function test_expense_without_note_uses_the_generic_sentence(): void
     {
         self::assertSame('Owner mentioned you in a comment.', self::$r['note_free_notifications'][0]['body']);
