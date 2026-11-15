@@ -65,7 +65,7 @@
       });
       stage.appendChild(phone);
 
-      // Dots: one per step; tapping one scrolls to that step.
+      // Dots: one per step. Tap one, or slide along them and let go, to jump to a step.
       dotBox.innerHTML = '';
       sections.forEach(function (sec, k) {
         var b = document.createElement('button');
@@ -74,10 +74,10 @@
         b.tabIndex = -1;
         var h = sec.querySelector('h1, h2');
         b.setAttribute('aria-label', h ? h.textContent.trim() : 'Step ' + (k + 1));
-        b.addEventListener('click', function () { goTo(k); });
         dotBox.appendChild(b);
         dots.push(b);
       });
+      bindDots();
 
       // One ribbon layer that stays put; each section's ribbons fade in over the last.
       var bg = story.querySelector('.story__bg');
@@ -249,6 +249,57 @@
       else if (mobile.matches) top = sectionTop(k) - fit.offset + 4;
       else top = sectionTop(k) - header + 1;
       window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
+
+    // Which dot is closest to a pointer's height.
+    function dotAt(y) {
+      var best = 0;
+      var bestDist = Infinity;
+      dots.forEach(function (d, k) {
+        var r = d.getBoundingClientRect();
+        var dist = Math.abs(r.top + r.height / 2 - y);
+        if (dist < bestDist) { bestDist = dist; best = k; }
+      });
+      return best;
+    }
+
+    function bindDots() {
+      var dragging = false;
+      var preview = -1;
+
+      function show(k) {
+        if (k === preview) return;
+        preview = k;
+        dots.forEach(function (d, i) { d.classList.toggle('is-preview', i === k); });
+        // A light tick on each new dot while sliding (Android; iPhone browsers ignore it).
+        if (dragging && navigator.vibrate) navigator.vibrate(4);
+      }
+
+      function hide() {
+        preview = -1;
+        dots.forEach(function (d) { d.classList.remove('is-preview'); });
+        dotBox.classList.remove('is-dragging');
+      }
+
+      dotBox.addEventListener('pointerdown', function (e) {
+        dragging = true;
+        if (dotBox.setPointerCapture) dotBox.setPointerCapture(e.pointerId);
+        dotBox.classList.add('is-dragging');
+        show(dotAt(e.clientY));
+        e.preventDefault();
+      });
+      dotBox.addEventListener('pointermove', function (e) {
+        if (dragging || e.pointerType === 'mouse') show(dotAt(e.clientY));
+      });
+      dotBox.addEventListener('pointerup', function (e) {
+        if (!dragging) return;
+        dragging = false;
+        var k = dotAt(e.clientY);
+        hide();
+        goTo(k);
+      });
+      dotBox.addEventListener('pointercancel', function () { dragging = false; hide(); });
+      dotBox.addEventListener('pointerleave', function () { if (!dragging) hide(); });
     }
 
     function activate(i) {

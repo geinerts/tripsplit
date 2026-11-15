@@ -171,6 +171,9 @@
 
 .story__dots {
   pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Each dot is a button with a larger tap area around the visible mark */
@@ -192,11 +195,18 @@
   height: 6px;
   border-radius: 3px;
   background: rgba(11, 27, 58, .2);
-  transition: height .3s, background .3s;
+  transition: height .3s, background .3s, transform .25s cubic-bezier(.3, 1.6, .5, 1);
 }
 
-.story__dot:hover::before {
-  background: rgba(11, 27, 58, .4);
+/* The dot under the pointer or finger grows a little */
+.story__dot.is-preview::before {
+  background: rgba(11, 27, 58, .45);
+  transform: scale(1.7);
+}
+
+.story__dot.is-on.is-preview::before {
+  background: var(--green);
+  transform: scale(1.35);
 }
 
 .story__dot.is-on::before {
@@ -424,7 +434,13 @@
   /* Dots sit at the right edge, level with the middle of the phone */
   .story--mobile .story__dots {
     top: calc(var(--phone-top, 300px) + var(--phone-h, 400px) / 2);
-    right: 6px;
+    right: 0;
+    padding: 0 4px;
+  }
+
+  .story--mobile .story__dot {
+    width: 34px;
+    min-height: 26px;
   }
 
   /* One swipe moves one step: the story snaps to each step while you are in it */
