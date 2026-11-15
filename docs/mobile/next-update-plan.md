@@ -248,6 +248,76 @@ Uzmetums: `output/design/expense-subcategories/board3.png` (gitignored).
   Shopping. Groceries, Fuel, Parking, Party un Other tipus nesaņem.
 - Vērts reizē izlemt pārklāšanos: Tickets (Transport/Activities) un Party (Food → Bar).
 
+### Savs tips (custom)
+
+- Izvēlnes apakšā rinda **"Custom type…"**. Uzspiežot to, tā pati rinda turpat izvēlnē
+  pārvēršas par ievades lauku (zaļa apmale, ✓ poga, atveras tastatūra ar "Save"); bez
+  atsevišķa loga. Izvēlne paceļas virs tastatūras. Saglabājot tips uzreiz ir pogā
+  ("Food · Street food"). Uzmetums: `output/design/expense-subcategories/board4.png`.
+  Ierobežot garumu (ap 30 zīmēm) un noņemt liekas atstarpes.
+- **Izlemts (2026-11-15), lai izvēlne nekļūst bezgalīga:**
+  - Izvēlnē savi tipi pēc noklusējuma **neparādās**, un nav uzraksta "Saved for next time".
+  - **Rakstot** "Custom type…" laukā, zem tā parādās ieteikumi no tipiem, kas šajā
+    ceļojumā jau ir ierakstīti (sākot rakstīt "St…" → "Street food"), kā vienkāršas
+    rindas, ko var uzspiest; bez paskaidrojošiem uzrakstiem.
+  - Ja savu tipu ceļojumā **lieto regulāri** (priekšlikums: vismaz 3 izdevumos, jebkurš
+    dalībnieks), tas kļūst par šī ceļojuma tipu un parādās "Type" izvēlnē **visiem
+    dalībniekiem** pirms "Custom type…". Citos ceļojumos tas neparādās.
+  - Atsevišķa savu tipu pārvaldības lapa (dzēšana, kārtošana) nav vajadzīga.
+- Savus tipus netulko. Tipiem ar vienādu nosaukumu (bez reģistra un liekām atstarpēm)
+  jāsakrīt, lai "street food" un "Street food" ir viens un tas pats, gan ieteikumos, gan
+  skaitot lietojumus, gan analītikā. Grafikā rādīt lielākos 3–4 tipus, pārējos apvienot
+  "Other <kategorija>".
+
+### Izdevumu saraksta rinda (izlemts 2026-11-15)
+
+Uzmetums: `output/design/expense-subcategories/board6.png` (pa kreisi tagad, pa labi jaunā).
+
+- **Maksātāja avatars** mazā aplī ar baltu apmali kategorijas ikonas augšējā kreisajā
+  stūrī (foto vai krāsains aplis ar burtu). Rinda **"… paid" vairs nav.**
+- **Augšējā rinda:** galvenā kategorija un blakus pelēkāks tips: "Food · Restaurant",
+  "Tickets · Cinema". Bez tipa tikai kategorija ("Groceries").
+- **Apakšējā rinda:** piezīme ("Dinner by the sea") tur, kur bija "… paid". Bez piezīmes
+  rinda ir vienā līnijā.
+- Summa un oriģinālā valūta labajā pusē paliek kā tagad.
+- Kategorija tagad redzama vienmēr (šodien piezīme to aizstāj nosaukumā).
+- Dalīšanas veids ("Exact amounts") no rindas pazūd un paliek izdevuma detaļās.
+- Vērts apsvērt: izcelt paša samaksātos (piemēram, zaļa apmale ap avataru) un dot
+  atšķirīgas krāsas burtu aplīšiem ar vienādu burtu (Marta un Matiss).
+
+### Atvērts izdevums (izlemts 2026-11-15)
+
+Uzmetums: `output/design/expense-subcategories/board7.png` (pa kreisi tagad, pa labi jaunais).
+
+- **Augša kā sarakstā:** ikona ar maksātāja avataru stūrī, virsraksts "Kategorija · tips"
+  ("Transport · Taxi"), zem tā piezīme un tad datums ar laiku. Atkārtojums
+  "Transport" / "Nov 13 · Transport" pazūd.
+- **Summa** ar oriģinālo valūtu blakus ("€14.70 ALL 1,350"), ja maksāts citā valūtā.
+- **Viena rinda ar zīmītēm:** "Paid by <vārds>" ar avataru, dalīšanas veids
+  ("= Equal split", "Exact amounts" utt.) un "Receipt" (tikai, ja čeks pievienots; atver to).
+- **Split breakdown** ar cilvēku skaitu; pie maksātāja zaļa zīme "paid €14.70".
+- **Comments** ar skaitu, ziņas burbuļos ar avataru, vārdu un laiku, @atzīmes zaļā krāsā.
+  Ievades lauks paliek kā tagad.
+
+### Kas seko pēc tipiem: analītika un PDF atskaite
+
+Tipi un maksātājs katrā izdevumā dod materiālu bagātākai analītikai un ceļojuma PDF
+atskaitei (sk. arī sesiju par Premium PDF atskaiti). Būvē **pēc** tam, kad tipi ir API un
+datubāzē. Pirmajos ceļojumos pēc atjauninājuma daudziem izdevumiem tipa nebūs, tāpēc visur
+jārāda arī "bez tipa" bez tukšiem caurumiem.
+
+- **Analītika:**
+  - kategorija sadalīta pa tipiem ("Food €420: Restaurant €260 · Café €85 · Bar €45");
+  - kas ko maksāja pa tipiem ("Marta samaksāja lielāko daļu restorānu");
+  - reižu skaits un vidējā summa ("12 kafijas, vidēji €3,40");
+  - dārgākās dienas un kas tās veidoja;
+  - savi tipi kā atsevišķas rindas, sīkie apvienoti zem "Other <kategorija>".
+- **PDF atskaite:**
+  - lapa "Kur aizgāja nauda": kategorijas ar tipiem, procenti, lielākie izdevumi;
+  - "fakti" ("9 kafejnīcas", "dārgākais taksometrs €42", "restorāni = 28%");
+  - katra cilvēka lapa: ko maksāja un kam, pa tipiem, kopā ar viņa daļu;
+  - izdevumu saraksts jaunajā formā ("Food · Restaurant", piezīme, maksātājs).
+
 ### Ko tas prasa
 
 - Jauns neobligāts lauks (piemēram, `subcategory`) API līgumā, datubāzē un bezsaistes
