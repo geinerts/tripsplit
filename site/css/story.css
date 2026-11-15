@@ -209,6 +209,19 @@
   transform: scale(1.35);
 }
 
+/* While a finger slides along the dots, the green pill moves with it */
+.story__dots.is-dragging .story__dot.is-on::before {
+  height: 6px;
+  background: rgba(11, 27, 58, .2);
+  transform: none;
+}
+
+.story__dots.is-dragging .story__dot.is-preview::before {
+  height: 22px;
+  background: var(--green);
+  transform: none;
+}
+
 .story__dot.is-on::before {
   height: 22px;
   background: var(--green);

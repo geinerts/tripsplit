@@ -229,14 +229,44 @@
       for (var k = 1; k < sections.length; k++) {
         if (y >= sections[k].getBoundingClientRect().top + y - fit.offset) idx = k;
       }
-      activate(idx);
+      if (jumpTarget < 0) activate(idx);
     }
 
     window.addEventListener('scroll', function () {
+      if (jumpTarget >= 0) settleJumpLater(180);
       if (queued) return;
       queued = true;
       requestAnimationFrame(onScroll);
     }, { passive: true });
+
+    /* Jumping from a dot: show the chosen step at once and ignore the steps scrolled past. */
+    var jumpTarget = -1;
+    var jumpTimer = 0;
+
+    function currentIndex() {
+      if (mobile.matches) {
+        var y = window.scrollY;
+        var idx = 0;
+        for (var k = 1; k < sections.length; k++) {
+          if (y >= sections[k].getBoundingClientRect().top + y - fit.offset) idx = k;
+        }
+        return idx;
+      }
+      var mid = window.innerHeight / 2;
+      for (var i = sections.length - 1; i >= 0; i--) {
+        if (sections[i].getBoundingClientRect().top <= mid) return i;
+      }
+      return 0;
+    }
+
+    // The jump is over once scrolling has been quiet for a moment.
+    function settleJumpLater(ms) {
+      clearTimeout(jumpTimer);
+      jumpTimer = setTimeout(function () {
+        jumpTarget = -1;
+        activate(currentIndex());
+      }, ms);
+    }
 
     function sectionTop(k) {
       return sections[k].getBoundingClientRect().top + window.scrollY;
@@ -248,6 +278,9 @@
       if (k === 0) top = 0;
       else if (mobile.matches) top = sectionTop(k) - fit.offset + 4;
       else top = sectionTop(k) - header + 1;
+      jumpTarget = k;
+      activate(k);
+      settleJumpLater(1500);
       window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? 'auto' : 'smooth' });
     }
 
@@ -329,7 +362,7 @@
 
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting && !mobile.matches) activate(sections.indexOf(e.target));
+        if (e.isIntersecting && !mobile.matches && jumpTarget < 0) activate(sections.indexOf(e.target));
       });
     }, { rootMargin: '-50% 0px -49% 0px' });
 
