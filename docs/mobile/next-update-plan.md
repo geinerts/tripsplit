@@ -218,6 +218,52 @@ serveris pieņem arī vārdu un "Vārds U.", tāpēc vecais build strādā.
 Testi gan vecajiem pieprasījumiem (tikai ID), gan jaunajiem; rediģēšana, kas maina pozīcijas;
 280 zīmju robeža; dalībnieks, kas izstājies.
 
+## E. Izdevuma tips (neobligāta apakškategorija)
+
+### Mērķis
+
+Precīzāka analītika ("restorāniem €320, kafijai €45"), nepalēninot izdevuma ievadi.
+Kategoriju saraksts paliek kā tagad, bez zīmītēm un bez otra līmeņa sarakstā.
+
+### Izvēlētais dizains (2026-11-15)
+
+Uzmetums: `output/design/expense-subcategories/board3.png` (gitignored).
+
+1. "Add expense" ekrānā kategorijas pogā labajā pusē ir maza poga ar raustītu malu
+   **"+ Type"**, tikai kategorijām, kurām ir tipi. Ja to neaiztiek, saglabājas tikai
+   kategorija (piemēram, "Food").
+2. Uzspiežot "+ Type", tieši zem pogas atveras uznirstoša izvēlne tādā pašā stilā kā
+   izdevumu filtra izvēlne: virsraksts "Type of food · optional", rindas ar ikonām,
+   izvēlētais zaļš ar ķeksīti, pirmā rinda "Just food". Izvēle vai pieskāriens ārpus
+   aizver izvēlni.
+3. Rezultāts vienā pogā: **"Food · Restaurant"**. Pogas pamatdaļa atver kategoriju
+   sarakstu kā tagad; mainot kategoriju, tips noņemas. Pogas labajā malā jāatstāj zona,
+   kas atkal atver tipu izvēlni (uzmetumā vēl nav).
+
+### Tipi (sākumam)
+
+- **Food:** Restaurant, Café, Bar, Fast food, Snacks.
+- **Transport:** Taxi / ride-share, Flight, Train, Bus, Car rental, Ferry, Public transport.
+- Vēlāk, ja vajadzēs: Accommodation (Hotel, Hostel, Apartment, Camping), Activities,
+  Shopping. Groceries, Fuel, Parking, Party un Other tipus nesaņem.
+- Vērts reizē izlemt pārklāšanos: Tickets (Transport/Activities) un Party (Food → Bar).
+
+### Ko tas prasa
+
+- Jauns neobligāts lauks (piemēram, `subcategory`) API līgumā, datubāzē un bezsaistes
+  kešatmiņā. Vecām app versijām tas jāignorē bez kļūdām. API izmaiņai un migrācijai
+  vajag atsevišķu atļauju, un vispirms jāatjauno līguma dokuments.
+- Tipu nosaukumi visās 16 valodās (ARB, `flutter gen-l10n`).
+- Analītika: dalījums pa tipiem kategorijas iekšienē; izdevumu filtrā, iespējams,
+  filtrs pēc tipa.
+- Vēlāk: "Recent" kombinācijas un Premium čeku nolasīšana var aizpildīt tipu automātiski.
+
+### Ko nedarīt
+
+Atsevišķu "Tip & tax" bloku nevajag: "By item" režīmā jau ir lauks "Tax or tip"
+(`extra_amount`), ko sadala proporcionāli katra pozīcijām. Vienādai dalīšanai pietiek ar
+samaksāto kopsummu.
+
 ## Secība un izlaišana
 
 1. **Apstiprinājumi.** API izmaiņas (jauns paziņojuma veids, `receipt_kind`), datubāzes
