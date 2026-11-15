@@ -1,0 +1,669 @@
+/* Home page story: one phone that changes while scrolling, live map, settle-up animation, counters. */
+
+/* ---------- Hero ---------- */
+.hero__accent {
+  background: linear-gradient(100deg, var(--green) 10%, var(--teal) 60%, var(--pink) 115%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+.hero h1,
+.hero__tagline,
+.hero .lead,
+.hero .stores,
+.hero__note {
+  animation: rise .7s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.hero__tagline { animation-delay: .08s; }
+.hero .lead { animation-delay: .16s; }
+.hero .stores { animation-delay: .24s; }
+.hero__note { animation-delay: .3s; }
+
+/* ---------- Story: one phone, screens change while scrolling ---------- */
+.story {
+  position: relative;
+}
+
+.story__rail {
+  display: none;
+}
+
+.story--on {
+  padding-bottom: 96px;
+}
+
+.story--on .story__rail {
+  position: absolute;
+  z-index: 6;
+  inset: 0 0 72px;
+  display: block;
+  padding-top: var(--start-y, 0);
+  pointer-events: none;
+}
+
+.story__sticky {
+  position: sticky;
+  top: var(--stick-top, 84px);
+  width: max-content;
+  margin-left: var(--start-x, 0);
+}
+
+.story--on .hero__phone .phone {
+  visibility: hidden;
+  transform: none;
+}
+
+.story__phone .phone__screen {
+  isolation: isolate;
+}
+
+/* Earlier screens wait above, later ones below; the active one sits in the screen */
+.story__shot {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transition: transform .9s cubic-bezier(.77, 0, .18, 1), filter .9s ease;
+}
+
+.story__shot.is-above {
+  transform: translateY(-100%);
+  filter: brightness(.85);
+}
+
+.story__shot.is-below {
+  transform: translateY(100%);
+}
+
+.story__shot.no-anim {
+  transition: none;
+}
+
+.story__floats {
+  position: absolute;
+  inset: 0;
+}
+
+/* One ribbon layer behind everything in the story; it never scrolls, only changes colour */
+.story__bgrail {
+  display: none;
+}
+
+.story--on {
+  background: linear-gradient(180deg, var(--mint) 0, var(--mist) 85vh, var(--mist) 55%, var(--cream) 100%);
+}
+
+.story--on .story__bgrail {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+
+.story__bg {
+  position: sticky;
+  top: 68px;
+  height: calc(100vh - 68px);
+  overflow: hidden;
+}
+
+.story__ribbon {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.4s cubic-bezier(.4, 0, .2, 1);
+}
+
+.story__ribbon.is-active {
+  opacity: 1;
+}
+
+.story--on .hero,
+.story--on .feature {
+  z-index: 1;
+  background: transparent;
+}
+
+.story--on .hero > .ribbons,
+.story--on .feature__stage .ribbons {
+  display: none;
+}
+
+/* The text panel above the phone is only used on phones */
+.story__text {
+  display: none;
+}
+
+.story--mobile .story__text {
+  display: block;
+}
+
+.story__dots {
+  position: absolute;
+  top: 50%;
+  right: -36px;
+  display: grid;
+  gap: 7px;
+  transform: translateY(-50%);
+}
+
+.story__dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(11, 27, 58, .18);
+  transition: height .3s, background .3s;
+}
+
+.story__dots i.is-on {
+  height: 22px;
+  background: var(--green);
+}
+
+/* ---------- Live map: the three friends move around ---------- */
+.live-fx {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 540 / 1173;
+  pointer-events: none;
+}
+
+/* A clean map over the screenshot's map area, so the people can move */
+.live-fx__map {
+  position: absolute;
+  top: 18.9%;
+  left: 3%;
+  width: 94%;
+  height: 51.3%;
+  overflow: hidden;
+  border: 1px solid #E3E8EC;
+  border-bottom: 0;
+  border-radius: 5.5% 5.5% 0 0 / 4.6% 4.6% 0 0;
+  background: #fff url('/site/images/map-live.svg') center top / cover no-repeat;
+}
+
+.live-fx__person {
+  position: absolute;
+  width: 13.4%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: 0 3px 10px rgba(11, 27, 58, .28);
+  transform: translate(-50%, -50%);
+  animation-duration: 10s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-play-state: paused;
+}
+
+.live-fx__person img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+/* Each person walks along one of the yellow roads */
+.live-fx__person--alex {
+  top: 17%;
+  left: 52%;
+  animation-name: walk-alex;
+  animation-duration: 9s;
+}
+
+.live-fx__person--sofia {
+  top: 51.5%;
+  left: 15%;
+  animation-name: walk-sofia;
+  animation-duration: 11s;
+  animation-delay: -3s;
+}
+
+.live-fx__person--marta {
+  top: 64%;
+  left: 16.6%;
+  animation-name: walk-marta;
+  animation-duration: 13s;
+  animation-delay: -6s;
+}
+
+.story__shot.is-active .live-fx__person {
+  animation-play-state: running;
+}
+
+@keyframes walk-alex {
+  to { top: 50.4%; left: 62.5%; }
+}
+
+@keyframes walk-sofia {
+  to { top: 45.6%; left: 42%; }
+}
+
+@keyframes walk-marta {
+  to { top: 37%; left: 8.6%; }
+}
+
+/* ---------- Floating cards pop in, then drift ---------- */
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(.6);
+  }
+}
+
+@keyframes float-drift {
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+.js-floats .feature__stage .float,
+.story__floats .float {
+  opacity: 0;
+}
+
+.js-floats .feature__stage.is-in .float,
+.story__floats.is-active .float {
+  opacity: 1;
+  animation:
+    float-in .65s cubic-bezier(.3, 1.6, .5, 1) .35s both,
+    float-drift 5s ease-in-out 1.3s infinite;
+}
+
+/* ---------- Desktop: text on the left, the phone on the right ---------- */
+@media (min-width: 901px) {
+  .story__ribbon {
+    top: var(--rib-top, 0);
+    right: auto;
+    bottom: auto;
+    left: var(--rib-left, 50%);
+    width: var(--rib-w, 720px);
+    height: var(--rib-h, 640px);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+  }
+
+  .story--on .feature .wrap {
+    min-height: calc(100vh - 68px);
+  }
+
+  .story--on .feature__copy {
+    order: 0;
+    padding: 72px 0;
+  }
+
+  .story--on .feature__stage .phone {
+    visibility: hidden;
+  }
+
+  .story--on .feature__stage::after {
+    display: none;
+  }
+}
+
+/* ---------- Phone: the phone stays on top, text cards scroll over it ---------- */
+@media (max-width: 900px) {
+  .hero .wrap {
+    padding-top: 28px;
+    padding-bottom: 32px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 10.4vw, 56px);
+  }
+
+  .hero__tagline {
+    margin-top: 12px;
+    font-size: 18px;
+  }
+
+  .hero .lead {
+    margin-top: 16px;
+    font-size: 16.5px;
+  }
+
+  .hero .stores {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .hero .store {
+    gap: 8px;
+    min-height: 52px;
+    padding: 8px 12px;
+    text-align: left;
+  }
+
+  .hero .store__logo {
+    width: 22px;
+    height: 22px;
+  }
+
+  .hero .store small {
+    font-size: 10px;
+  }
+
+  .hero .store b {
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+  .story--on .phone {
+    zoom: .8;
+  }
+
+  /* The phone and the text panel stay pinned under the header */
+  .story--mobile {
+    overflow-x: clip;
+  }
+
+  .story--mobile .story__sticky {
+    top: 68px;
+    width: auto;
+    height: var(--sticky-h, calc(100svh - 68px));
+    margin-left: 0;
+  }
+
+  .story--mobile .story__stage {
+    position: absolute;
+    top: var(--phone-top, 14px);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .story--mobile .story__dots {
+    display: none;
+  }
+
+  .story--mobile .story__ribbon {
+    top: calc(var(--phone-top, 300px) - 120px);
+    height: calc(100% - var(--phone-top, 300px) + 120px);
+    object-position: 70% center;
+  }
+
+  .story--mobile .story__ribbon:first-child {
+    object-position: 100% center;
+  }
+
+  /* Each feature becomes one scroll step; its text shows in the panel instead */
+  .story--mobile .feature {
+    height: 92svh;
+    padding: 0;
+    background: transparent;
+  }
+
+  .story--mobile .feature > .wrap {
+    display: none;
+  }
+
+  .story--mobile .feature:last-of-type {
+    height: 110svh;
+  }
+
+  .story--mobile .story__text {
+    position: absolute;
+    top: 18px;
+    right: var(--gutter);
+    left: var(--gutter);
+    height: var(--text-h, 50%);
+    overflow-x: clip;
+    opacity: 0;
+  }
+
+  .story__copy {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    text-align: left;
+    transition: transform .8s cubic-bezier(.22, 1, .36, 1), opacity .6s ease;
+  }
+
+  .story__copy.is-right {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+
+  .story__copy.is-left {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  .story__copy.is-active {
+    transition-delay: .22s;
+  }
+
+  /* The outgoing text leaves a little quicker than the new one arrives */
+  .story__copy.is-left,
+  .story__copy.is-right {
+    transition-duration: .5s, .35s;
+  }
+
+  .story__copy.no-anim {
+    transition: none;
+  }
+
+  .story__copy h2 {
+    margin-top: 6px;
+    font-size: clamp(26px, 7.6vw, 34px);
+  }
+
+  .story__copy .lead {
+    margin-top: 10px;
+    font-size: 15.5px;
+  }
+
+  .story__copy .ticks {
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 14.5px;
+  }
+
+  /* The settle-up chart sits in the settle step, small, in place of the ticks */
+  .story__copy.has-viz .ticks {
+    display: none;
+  }
+
+  .settle-viz--mini {
+    max-width: 320px;
+    margin-top: 14px;
+    padding: 10px 12px 4px;
+    border-radius: 18px;
+  }
+
+  .settle-viz--mini .settle-viz__head {
+    font-size: 13.5px;
+  }
+
+  .settle-viz--mini .settle-viz__num {
+    font-size: 19px;
+  }
+
+  .settle-viz--mini .settle-viz__replay {
+    width: 30px;
+    height: 30px;
+  }
+
+  .settle-viz--mini .settle-viz__svg {
+    max-width: 230px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero .store small {
+    display: none;
+  }
+}
+
+/* ---------- Settle-up animation ---------- */
+.settle-viz {
+  max-width: 420px;
+  margin-top: 28px;
+  padding: 16px 16px 8px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 16px 36px rgba(11, 27, 58, .08);
+}
+
+.settle-viz__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.settle-viz__num {
+  display: inline-block;
+  min-width: 1ch;
+  color: var(--red);
+  font-size: 22px;
+  transition: color .4s;
+}
+
+.settle-viz__tag {
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #E8F5F2;
+  color: var(--green);
+  font-size: 12px;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity .4s, transform .4s;
+}
+
+.settle-viz__replay {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.settle-viz__replay:hover {
+  color: var(--green);
+}
+
+.settle-viz__replay:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 2px;
+}
+
+.settle-viz__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: inherit;
+}
+
+.settle-viz__svg path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.settle-viz__messy,
+.settle-viz__clean {
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.settle-viz.is-messy .settle-viz__messy,
+.settle-viz.is-clean .settle-viz__clean {
+  opacity: 1;
+}
+
+.settle-viz__amounts {
+  opacity: 0;
+  transition: opacity .4s .5s;
+}
+
+.settle-viz.is-messy .settle-viz__messy path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset .5s ease-out;
+}
+
+.settle-viz.is-messy .settle-viz__messy path:nth-child(2n) { transition-delay: .12s; }
+.settle-viz.is-messy .settle-viz__messy path:nth-child(3n) { transition-delay: .24s; }
+
+.settle-viz.is-clean .settle-viz__messy {
+  opacity: .12;
+  transition: opacity .5s;
+}
+
+.settle-viz.is-clean .settle-viz__clean path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset .6s cubic-bezier(.3, .8, .3, 1);
+}
+
+.settle-viz.is-clean .settle-viz__clean path:nth-child(2) { transition-delay: .15s; }
+.settle-viz.is-clean .settle-viz__clean path:nth-child(3) { transition-delay: .3s; }
+
+.settle-viz.is-clean .settle-viz__amounts,
+.settle-viz.is-clean .settle-viz__tag {
+  opacity: 1;
+  transform: none;
+}
+
+.settle-viz.is-clean .settle-viz__num {
+  color: var(--green);
+}
+
+
+/* ---------- Reveal on scroll (only when JS has opted in) ---------- */
+.js-reveal .will-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .7s ease-out, transform .7s ease-out;
+}
+
+.js-reveal .will-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero h1,
+  .hero__tagline,
+  .hero .lead,
+  .hero .stores,
+  .hero__note,
+  .live-fx__person,
+  .js-floats .feature__stage.is-in .float,
+  .story__floats.is-active .float {
+    animation: none !important;
+  }
+
+  .story__shot,
+  .story__ribbon,
+  .story__dots i,
+  .settle-viz *,
+  .settle-viz__svg path {
+    transition: none !important;
+  }
+}

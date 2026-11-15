@@ -16,12 +16,26 @@
   <meta property="og:description" content="Keep every trip expense in one place, for a solo trip or a whole group.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://splyto.eu/">
+  <meta property="og:site_name" content="Splyto">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:image" content="https://splyto.eu/site/images/share/splyto-share.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Splyto app on two phones with the line: More memories. Less money stress.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Splyto: more memories, less money stress">
+  <meta name="twitter:description" content="Keep every trip expense in one place, for a solo trip or a whole group.">
+  <meta name="twitter:image" content="https://splyto.eu/site/images/share/splyto-share.jpg">
+  <meta name="twitter:image:alt" content="Splyto app on two phones with the line: More memories. Less money stress.">
 
   <link rel="stylesheet" href="/site/css/base.css?v=1">
   <link rel="stylesheet" href="/site/css/components.css?v=1">
   <link rel="stylesheet" href="/site/css/phone.css?v=3">
   <link rel="stylesheet" href="/site/css/sections.css?v=1">
+  <link rel="stylesheet" href="/site/css/story.css?v=1">
   <script src="/site/js/main.js?v=1" defer></script>
+  <script src="/site/js/story.js?v=1" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -39,11 +53,21 @@
   </header>
 
   <main id="top">
+
+    <div class="story">
+      <div class="story__bgrail" aria-hidden="true"><div class="story__bg"></div></div>
+      <div class="story__rail" aria-hidden="true">
+        <div class="story__sticky">
+          <div class="story__stage"></div>
+          <div class="story__dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+
     <section class="hero">
       <img class="ribbons" src="/site/images/ribbons/hero.svg" width="1440" height="900" alt="">
       <div class="wrap">
-        <div>
-          <h1>More memories.<br>Less money stress.</h1>
+        <div class="hero__copy">
+          <h1>More memories.<br><span class="hero__accent">Less money stress.</span></h1>
           <p class="hero__tagline">Your trips. Your people. All together.</p>
           <p class="lead">Splyto keeps every trip expense in one place, whether you travel alone or with a group. See who paid and who owes what, then settle up without the awkward messages.</p>
           <div class="stores">
@@ -66,17 +90,6 @@
             </div></div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section class="facts" aria-label="Splyto at a glance">
-      <div class="wrap">
-        <ul>
-          <li><b>6</b><span>ways to split a cost</span></li>
-          <li><b>120</b><span>currencies</span></li>
-          <li><b>16</b><span>languages</span></li>
-          <li><b>Offline</b><span>add expenses, sync later</span></li>
-        </ul>
       </div>
     </section>
 
@@ -143,6 +156,40 @@
             <li><svg class="icon"><use href="/site/images/icons.svg?v=2#check"/></svg><span>One side marks a payment as sent, the other confirms it</span></li>
             <li><svg class="icon"><use href="/site/images/icons.svg?v=2#check"/></svg><span>Send a polite reminder when a payment is waiting</span></li>
           </ul>
+          <figure class="settle-viz" aria-label="Without Splyto, Marta, Sofia and Alex could end up with six payments between them. Splyto settles it in two.">
+            <figcaption class="settle-viz__head">
+              <span class="settle-viz__count"><b class="settle-viz__num">6</b> payments</span>
+              <span class="settle-viz__tag">with Splyto</span>
+              <button type="button" class="settle-viz__replay" aria-label="Play the animation again"><svg class="icon"><use href="/site/images/icons.svg?v=2#swap"/></svg></button>
+            </figcaption>
+            <svg class="settle-viz__svg" viewBox="0 0 340 222" aria-hidden="true">
+              <defs>
+                <marker id="sv-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="#C3CBD3"/></marker>
+                <marker id="sv-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="#00836B"/></marker>
+              </defs>
+              <g class="settle-viz__messy" fill="none" stroke="#C3CBD3" stroke-width="2" marker-end="url(#sv-a)">
+                <path pathLength="1" d="M150 64Q104 92 86 142"/>
+                <path pathLength="1" d="M100 154Q144 124 160 76"/>
+                <path pathLength="1" d="M190 64Q236 92 254 142"/>
+                <path pathLength="1" d="M240 154Q196 124 180 76"/>
+                <path pathLength="1" d="M98 160Q170 138 242 160"/>
+                <path pathLength="1" d="M242 182Q170 204 98 182"/>
+              </g>
+              <g class="settle-viz__clean" fill="none" stroke="#00836B" stroke-width="3.5" stroke-linecap="round" marker-end="url(#sv-b)">
+                <path pathLength="1" d="M90 148L152 76"/>
+                <path pathLength="1" d="M250 148L188 76"/>
+              </g>
+              <g class="settle-viz__amounts" font-size="12" font-weight="700" fill="#00836B" stroke="#fff" stroke-width="4" paint-order="stroke" text-anchor="middle">
+                <text x="94" y="104">€110.40</text>
+                <text x="248" y="104">€42.23</text>
+              </g>
+              <g>
+                <clipPath id="sv-marta"><circle cx="170" cy="52" r="23"/></clipPath><image href="/site/images/people/marta.webp" x="146" y="28" width="48" height="48" clip-path="url(#sv-marta)"/><text x="170" y="18" font-size="12" fill="#5F6B76" text-anchor="middle">Marta</text>
+                <clipPath id="sv-sofia"><circle cx="70" cy="170" r="23"/></clipPath><image href="/site/images/people/sofia.webp" x="46" y="146" width="48" height="48" clip-path="url(#sv-sofia)"/><text x="70" y="212" font-size="12" fill="#5F6B76" text-anchor="middle">Sofia</text>
+                <clipPath id="sv-alex"><circle cx="270" cy="170" r="23"/></clipPath><image href="/site/images/people/alex.webp" x="246" y="146" width="48" height="48" clip-path="url(#sv-alex)"/><text x="270" y="212" font-size="12" fill="#5F6B76" text-anchor="middle">Alex</text>
+              </g>
+            </svg>
+          </figure>
         </div>
         <div class="feature__stage" aria-hidden="true">
           <img class="ribbons" src="/site/images/ribbons/settle.svg" width="1440" height="900" alt="" loading="lazy">
@@ -245,6 +292,18 @@
         </div>
       </div>
     </section>
+    </div>
+
+    <section class="facts" aria-label="Splyto at a glance">
+      <div class="wrap">
+        <ul>
+          <li><b data-count="6">6</b><span>ways to split a cost</span></li>
+          <li><b data-count="120">120</b><span>currencies</span></li>
+          <li><b data-count="16">16</b><span>languages</span></li>
+          <li><b>Offline</b><span>add expenses, sync later</span></li>
+        </ul>
+      </div>
+    </section>
 
     <section class="details" id="details">
       <div class="wrap">
@@ -290,7 +349,7 @@
       </div>
     </section>
 
-    <section class="closing">
+    <section class="closing" id="download">
       <div class="wrap">
         <h2>Your next trip starts here</h2>
         <p class="lead">Splyto is coming soon to the App Store and Google Play.</p>
