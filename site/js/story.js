@@ -10,7 +10,8 @@
     if (!story || !('IntersectionObserver' in window)) return;
     var rail = story.querySelector('.story__rail');
     var stage = story.querySelector('.story__stage');
-    var dots = story.querySelectorAll('.story__dots i');
+    var dotBox = story.querySelector('.story__dots');
+    var dots = [];
     var heroPhone = story.querySelector('.hero__phone .phone');
     var heroCopy = story.querySelector('.hero__copy');
     var sections = [story.querySelector('.hero')].concat(
@@ -64,6 +65,20 @@
       });
       stage.appendChild(phone);
 
+      // Dots: one per step; tapping one scrolls to that step.
+      dotBox.innerHTML = '';
+      sections.forEach(function (sec, k) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'story__dot';
+        b.tabIndex = -1;
+        var h = sec.querySelector('h1, h2');
+        b.setAttribute('aria-label', h ? h.textContent.trim() : 'Step ' + (k + 1));
+        b.addEventListener('click', function () { goTo(k); });
+        dotBox.appendChild(b);
+        dots.push(b);
+      });
+
       // One ribbon layer that stays put; each section's ribbons fade in over the last.
       var bg = story.querySelector('.story__bg');
       sections.forEach(function (sec) {
@@ -86,7 +101,10 @@
     var vizHome = viz ? viz.parentNode : null;
     var vizNext = viz ? viz.nextSibling : null;
     var vizSection = viz ? viz.closest('.feature') : null;
-    var fit = { start: 0, offset: 0 };
+    var fit = { start: 0, offset: 0, snapEnd: Infinity };
+    var root = document.documentElement;
+    var stableVh = 0;
+    var lastW = 0;
     var queued = false;
 
     function buildText() {
@@ -138,7 +156,7 @@
       var sr = story.getBoundingClientRect();
       var pr = heroPhone.getBoundingClientRect();
       var header = 68;
-      var vh = window.innerHeight;
+      var vh = stableVh || window.innerHeight;
       var startY = pr.top - sr.top;
       var storyTop = sr.top + window.scrollY;
 
@@ -169,6 +187,11 @@
         var copyBottom = heroCopy.getBoundingClientRect().bottom + window.scrollY;
         fit.start = copyBottom - header - 20;
         fit.offset = (sections[1].getBoundingClientRect().top + window.scrollY) - fit.start;
+        rail.style.setProperty('--phone-h', phoneH + 'px');
+        // Snap points: one swipe moves one step, however fast the swipe is.
+        story.style.setProperty('--snap-offset', (fit.offset - 4) + 'px');
+        var next = story.nextElementSibling;
+        fit.snapEnd = next ? next.getBoundingClientRect().top + window.scrollY - header : Infinity;
         onScroll();
         return;
       }
@@ -190,10 +213,16 @@
 
     function onScroll() {
       queued = false;
-      if (!mobile.matches || !story.classList.contains('story--on')) return;
+      if (!mobile.matches || !story.classList.contains('story--on')) {
+        root.classList.remove('story-snap');
+        return;
+      }
       var y = window.scrollY;
+      root.classList.toggle('story-snap', y < fit.snapEnd - 2);
       var t = Math.max(0, Math.min(1, (y - fit.start + 40) / 80));
       textPanel.style.opacity = t.toFixed(3);
+      // On phones the dots appear together with the story text.
+      dotBox.style.opacity = t.toFixed(3);
 
       // Step through the sections a little earlier than their tops, in step with the text.
       var idx = 0;
@@ -208,6 +237,19 @@
       queued = true;
       requestAnimationFrame(onScroll);
     }, { passive: true });
+
+    function sectionTop(k) {
+      return sections[k].getBoundingClientRect().top + window.scrollY;
+    }
+
+    function goTo(k) {
+      var header = 68;
+      var top;
+      if (k === 0) top = 0;
+      else if (mobile.matches) top = sectionTop(k) - fit.offset + 4;
+      else top = sectionTop(k) - header + 1;
+      window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
 
     function activate(i) {
       if (i === active) return;
@@ -241,6 +283,8 @@
     }, { rootMargin: '-50% 0px -49% 0px' });
 
     function apply() {
+      lastW = window.innerWidth;
+      stableVh = window.innerHeight;
       if (tallEnough.matches) {
         build();
         buildText();
@@ -248,6 +292,7 @@
         story.classList.toggle('story--mobile', mobile.matches);
         placeViz(mobile.matches);
         textPanel.style.opacity = '';
+        dotBox.style.opacity = '';
         measure();
         // Measure again once layout and fonts have settled.
         requestAnimationFrame(measure);
@@ -264,7 +309,14 @@
     var resizeTimer;
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () { if (story.classList.contains('story--on')) measure(); }, 120);
+      resizeTimer = setTimeout(function () {
+        var w = window.innerWidth;
+        // Phones change height when the address bar hides; that must not move the layout.
+        if (w === lastW && mobile.matches) return;
+        lastW = w;
+        stableVh = window.innerHeight;
+        if (story.classList.contains('story--on')) measure();
+      }, 120);
     });
     window.addEventListener('load', function () { if (story.classList.contains('story--on')) measure(); });
     [tallEnough, mobile].forEach(function (mq) {
