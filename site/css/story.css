@@ -141,6 +141,15 @@
   display: none;
 }
 
+/* The floating chart holder is only used on phones */
+.story__viz {
+  display: none;
+}
+
+.story--mobile .story__viz {
+  display: block;
+}
+
 /* The text panel above the phone is only used on phones */
 .story__text {
   display: none;
@@ -385,7 +394,8 @@
     position: absolute;
     top: var(--phone-top, 14px);
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) scale(var(--phone-scale, 1));
+    transform-origin: top center;
   }
 
   .story--mobile .story__dots {
@@ -476,34 +486,63 @@
     font-size: 14.5px;
   }
 
-  /* The settle-up chart sits in the settle step, small, in place of the ticks */
-  .story__copy.has-viz .ticks {
+  /* The settle-up chart floats over the phone's side in the settle step */
+  .story__viz {
+    position: absolute;
+    z-index: 3;
+    top: var(--viz-top, 50%);
+    left: max(8px, calc(50% - 190px));
+    width: 216px;
+    opacity: 0;
+    transform: translateY(14px) scale(.9);
+    transform-origin: left center;
+    transition: opacity .45s ease, transform .6s cubic-bezier(.3, 1.5, .5, 1);
+  }
+
+  .story__viz.is-active {
+    opacity: 1;
+    transform: none;
+    transition-delay: .3s;
+  }
+
+  .story__floats.has-viz .float {
     display: none;
   }
 
   .settle-viz--mini {
-    max-width: 320px;
-    margin-top: 14px;
-    padding: 10px 12px 4px;
+    max-width: none;
+    margin: 0;
+    padding: 9px 10px 2px;
+    border: 0;
     border-radius: 18px;
+    box-shadow: var(--shadow-float), 0 0 0 1px rgba(11, 27, 58, .04);
   }
 
   .settle-viz--mini .settle-viz__head {
-    font-size: 13.5px;
+    gap: 8px;
+    font-size: 12.5px;
   }
 
   .settle-viz--mini .settle-viz__num {
-    font-size: 19px;
+    font-size: 18px;
+  }
+
+  .settle-viz--mini .settle-viz__tag {
+    padding: 2px 8px;
+    font-size: 11px;
   }
 
   .settle-viz--mini .settle-viz__replay {
-    width: 30px;
-    height: 30px;
+    display: none;
   }
 
-  .settle-viz--mini .settle-viz__svg {
-    max-width: 230px;
-    margin: 0 auto;
+  /* Bigger labels so they stay readable at this size */
+  .settle-viz--mini .settle-viz__svg text {
+    font-size: 17px;
+  }
+
+  .settle-viz--mini .settle-viz__amounts text {
+    font-size: 17px;
   }
 }
 

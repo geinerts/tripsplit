@@ -77,7 +77,7 @@
       });
     }
 
-    /* Phones: the phone shrinks to the bottom and the text changes above it. */
+    /* Phones: the phone stays fully visible and short text changes above it. */
     var mobile = window.matchMedia('(max-width: 900px)');
     var sticky = story.querySelector('.story__sticky');
     var textPanel = null;
@@ -99,7 +99,13 @@
         var src = sec.querySelector('.feature__copy');
         if (src) {
           var c = src.cloneNode(true);
-          c.querySelectorAll('.settle-viz').forEach(function (v) { v.remove(); });
+          // Phones get the heading and the first sentence; the full text stays on desktop.
+          c.querySelectorAll('.settle-viz, .ticks').forEach(function (v) { v.remove(); });
+          var lead = c.querySelector('.lead');
+          if (lead) {
+            var first = lead.textContent.trim().match(/^.*?[.!?](?=\s|$)/);
+            if (first) lead.textContent = first[0];
+          }
           c.classList.remove('will-reveal', 'is-in');
           while (c.firstChild) copy.appendChild(c.firstChild);
         }
@@ -109,14 +115,18 @@
       sticky.appendChild(textPanel);
     }
 
-    // On phones the settle-up chart sits in the settle step's text, in place of the tick list.
+    // On phones the settle-up chart floats over the phone's side in the settle step.
+    var vizFloat = null;
     function placeViz(onPhone) {
       if (!viz) return;
       if (onPhone) {
-        var k = sections.indexOf(vizSection);
-        var copy = copies[k];
-        copy.classList.add('has-viz');
-        copy.appendChild(viz);
+        if (!vizFloat) {
+          vizFloat = document.createElement('div');
+          vizFloat.className = 'story__viz';
+          sticky.appendChild(vizFloat);
+          floats[sections.indexOf(vizSection)].classList.add('has-viz');
+        }
+        vizFloat.appendChild(viz);
       } else {
         vizHome.insertBefore(viz, vizNext);
       }
@@ -133,20 +143,25 @@
       var storyTop = sr.top + window.scrollY;
 
       if (mobile.matches) {
-        // The phone stays exactly where it is on the first screen (only on very short
-        // screens does it rise a little, so at least 60% of it stays visible).
-        var phoneTop = storyTop + startY;
-        var stickTop = Math.min(phoneTop, vh - pr.height * 0.6);
-        rail.style.setProperty('--start-y', (startY - (stickTop - header)) + 'px');
-        rail.style.setProperty('--phone-top', (stickTop - header) + 'px');
-        // The pinned area holds the whole phone, so it leaves with the story, not over the next section.
-        rail.style.setProperty('--sticky-h', Math.max(vh - header, stickTop - header + pr.height + 8) + 'px');
-        story.style.setProperty('--phone-top', (stickTop - header) + 'px');
-        // The changing text lives between the header and the phone; shrink it if needed.
-        var textH = stickTop - header - 30;
+        var avail = vh - header;
+        // Room the tallest short text needs above the phone.
         textPanel.style.zoom = 1;
         var tallest = 0;
         copies.forEach(function (c) { tallest = Math.max(tallest, c.scrollHeight); });
+        var textNeed = 18 + tallest + 14;
+        // The whole phone stays visible; it only gets smaller on very short screens.
+        var scale = Math.min(1, Math.max(0.62, (avail - textNeed - 16) / pr.height));
+        var phoneH = pr.height * scale;
+        var phoneTop = Math.min(avail - 16 - phoneH, storyTop + startY - header);
+        rail.style.setProperty('--phone-scale', scale.toFixed(3));
+        rail.style.setProperty('--phone-top', phoneTop + 'px');
+        story.style.setProperty('--phone-top', phoneTop + 'px');
+        // Scroll up with the page from the hero, then stay put.
+        rail.style.setProperty('--start-y', (startY - phoneTop) + 'px');
+        rail.style.setProperty('--sticky-h', Math.max(avail, phoneTop + phoneH + 8) + 'px');
+        rail.style.setProperty('--viz-top', (phoneTop + phoneH * 0.42) + 'px');
+        // The text lives between the header and the phone; shrink it only if it still does not fit.
+        var textH = phoneTop - 32;
         var zoom = Math.min(1, Math.max(0.7, textH / tallest));
         textPanel.style.zoom = zoom.toFixed(3);
         rail.style.setProperty('--text-h', (textH / zoom) + 'px');
@@ -214,6 +229,7 @@
       });
       floats.forEach(function (g, k) { g.classList.toggle('is-active', k === i); });
       ribbons.forEach(function (r, k) { r.classList.toggle('is-active', k === i); });
+      if (vizFloat) vizFloat.classList.toggle('is-active', sections[i] === vizSection);
       if (viz && mobile.matches && sections[i] === vizSection) viz.dispatchEvent(new CustomEvent('settle:play'));
       dots.forEach(function (d, k) { d.classList.toggle('is-on', k === i); });
     }
