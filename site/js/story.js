@@ -244,20 +244,40 @@
     var jumpTimer = 0;
 
     function currentIndex() {
+      return indexAt(window.scrollY);
+    }
+
+    // Which step is showing when the page is scrolled to y.
+    function indexAt(y) {
       if (mobile.matches) {
-        var y = window.scrollY;
         var idx = 0;
         for (var k = 1; k < sections.length; k++) {
           if (y >= sections[k].getBoundingClientRect().top + y - fit.offset) idx = k;
         }
         return idx;
       }
-      var mid = window.innerHeight / 2;
+      var mid = y + window.innerHeight / 2;
       for (var i = sections.length - 1; i >= 0; i--) {
-        if (sections[i].getBoundingClientRect().top <= mid) return i;
+        if (sectionTop(i) <= mid) return i;
       }
       return 0;
     }
+
+    // Links within the page (the logo, the menu) jump the same way as the dots.
+    document.addEventListener('click', function (e) {
+      if (!story.classList.contains('story--on')) return;
+      var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+      if (!a) return;
+      var id = a.getAttribute('href').slice(1);
+      var el = id ? document.getElementById(id) : null;
+      if (!el) return;
+      var pad = parseFloat(getComputedStyle(root).scrollPaddingTop) || 0;
+      var dest = Math.max(0, el.getBoundingClientRect().top + window.scrollY - pad);
+      var k = indexAt(dest);
+      jumpTarget = k;
+      activate(k);
+      settleJumpLater(1500);
+    });
 
     // The jump is over once scrolling has been quiet for a moment.
     function settleJumpLater(ms) {
