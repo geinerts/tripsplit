@@ -232,7 +232,32 @@
       if (jumpTarget < 0) activate(idx);
     }
 
+    /* Desktop: while scrolling fast the phone holds its screen; when scrolling stops it
+       goes straight to the step you stopped at. Slow scrolling changes screens as usual. */
+    var FAST = 1.2; // px per ms
+    var speed = 0;
+    var lastY = window.scrollY;
+    var lastT = 0;
+    var idleTimer = 0;
+
+    function trackSpeed() {
+      var now = performance.now();
+      var y = window.scrollY;
+      var dt = lastT ? Math.max(1, now - lastT) : 16;
+      speed = speed * 0.6 + (Math.abs(y - lastY) / dt) * 0.4;
+      lastY = y;
+      lastT = now;
+      if (mobile.matches || jumpTarget >= 0) return;
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(function () {
+        speed = 0;
+        lastT = 0;
+        if (jumpTarget < 0 && story.classList.contains('story--on')) activate(currentIndex());
+      }, 140);
+    }
+
     window.addEventListener('scroll', function () {
+      trackSpeed();
       if (jumpTarget >= 0) settleJumpLater(180);
       if (queued) return;
       queued = true;
@@ -382,7 +407,7 @@
 
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting && !mobile.matches && jumpTarget < 0) activate(sections.indexOf(e.target));
+        if (e.isIntersecting && !mobile.matches && jumpTarget < 0 && speed < FAST) activate(sections.indexOf(e.target));
       });
     }, { rootMargin: '-50% 0px -49% 0px' });
 
