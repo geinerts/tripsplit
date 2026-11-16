@@ -299,6 +299,29 @@ Uzmetums: `output/design/expense-subcategories/board7.png` (pa kreisi tagad, pa 
 - **Comments** ar skaitu, ziņas burbuļos ar avataru, vārdu un laiku, @atzīmes zaļā krāsā.
   Ievades lauks paliek kā tagad.
 
+### Dalībnieka bilance un vēsture (izlemts 2026-11-16)
+
+Balances → pieskāriens dalībniekam atver lapu ar viņa bilanci un vēsturi. Uzmetums:
+`output/design/expense-subcategories/board10.png` (pa kreisi tagad, pa labi jaunais).
+Krāsas paliek tās, kas app jau ir; ņem ideju un izkārtojumu.
+
+- **Augša paliek pēc būtības tāda pati**, tikai kompaktāka: avatars, vārds, statuss kā
+  mazs marķieris ("Owes to the group" sarkans, "Gets back" zaļš), zem tā liela summa.
+- **Trīs skaitļi vienā rindā** ar tievām atdalītājlīnijām, bez rāmjiem: Paid · Share ·
+  Payments (nulle pelēka).
+- **Virsraksts "Transaction history" un teksts "may not include the entire trip history"
+  pazūd**; sadaļu iezīmē filtrs All · Expenses · Payments tādā stilā kā tripa cilnes.
+- **Grupēts pa dienām**, katrai dienai sava kopsumma (ietekme uz šī cilvēka bilanci).
+- **Rindas kā izdevumu sarakstā:** ikona ar maksātāja avataru, "Kategorija · tips", piezīme.
+  "Share of expense" katrā rindā pazūd.
+- **Pa labi ietekme uz šo cilvēku:** sarkans "−€10.62 / share", ja maksāja cits; zaļš
+  "+€14.17 / paid €18.89", ja maksāja viņš pats (samaksātais mīnus viņa daļa).
+- **Maksājumi atsevišķi:** zaļa ikona ar bultiņām, "Payment", divi avatari "Kas → kam ·
+  confirmed", summa.
+- Pieskāriens rindai atver izdevumu (atvērtā izdevuma lapa augstāk).
+- Jāpārbauda, vai pašreizējie API dati dod maksātāju un tipu katrai rindai; ja ne, tas ir
+  API līguma papildinājums un prasa atsevišķu atļauju.
+
 ### Kas seko pēc tipiem: analītika un PDF atskaite
 
 Tipi un maksātājs katrā izdevumā dod materiālu bagātākai analītikai un ceļojuma PDF
@@ -318,6 +341,31 @@ jārāda arī "bez tipa" bez tukšiem caurumiem.
   - katra cilvēka lapa: ko maksāja un kam, pa tipiem, kopā ar viņa daļu;
   - izdevumu saraksts jaunajā formā ("Food · Restaurant", piezīme, maksātājs).
 
+**Izlemts (2026-11-16), uzmetumi `output/design/expense-subcategories/board8.png` un
+`board9.png`:**
+
+- **Analītika:** donuts paliek ar galvenajām kategorijām kā tagad. Atverot kategoriju (no
+  saraksta), redzams sīkāk: tipi ar joslām, summām, procentiem, reižu skaitu un vidējo, kas
+  maksāja, lielākie izdevumi. Sarakstā pie kategorijas pelēki redzami tās tipi.
+- **PDF:** krāsains, bet atturīgs. Tās pašas kategoriju krāsas kā app (tipi ir tās krāsas
+  toņi), krāsa tikai joslās un punktos, teksts tumšs uz balta, bez lieliem krāsainiem
+  laukumiem, lai labi izdrukājas. Nekas nedrīkst būt saprotams tikai pēc krāsas.
+  Struktūra:
+  1. "Kur aizgāja nauda" (bezmaksas e-pasta atskaite): kopsummas, kategorijas ar tipu
+     joslām un 3 īsi fakti;
+  2. "Fakti un dienas" (Premium): ceļojums skaitļos, tēriņi pa dienām pa kategorijām,
+     lielākie izdevumi;
+  3. katra cilvēka lapa (Premium): ko samaksāja pa kategorijām un tipiem, norēķini, viņa
+     izdevumi.
+  PDF taisa serveris, tāpēc to var uzlabot arī starp app atjauninājumiem.
+- **CSV (Premium eksports):** jaunas kolonnas **Category** un **Type** atsevišķi (tukšs
+  Type = bez tipa, savi tipi tāpat kā standarta), nosaukumi lietotāja valodā, pārējais
+  kā tagad (`;`, BOM, oriģinālā summa, kurss, katra cilvēka daļa). Mērķis: filtrs un pivot
+  tabula pēc tipa.
+- **CSV pārbaude pirms izlaišanas:** atvērt īstu failu Excel (Windows un Mac), Numbers un
+  Google Sheets ar latviešu un angļu reģionālajiem iestatījumiem; pārbaudīt kolonnas, burtus
+  (ā, ņ), decimāldaļas un tekstu, kas sākas ar mīnusu.
+
 ### Ko tas prasa
 
 - Jauns neobligāts lauks (piemēram, `subcategory`) API līgumā, datubāzē un bezsaistes
@@ -333,6 +381,104 @@ jārāda arī "bez tipa" bez tukšiem caurumiem.
 Atsevišķu "Tip & tax" bloku nevajag: "By item" režīmā jau ir lauks "Tax or tip"
 (`extra_amount`), ko sadala proporcionāli katra pozīcijām. Vienādai dalīšanai pietiek ar
 samaksāto kopsummu.
+
+## F. Live map: "Share my location" lapa (izlemts 2026-11-16)
+
+Tikai izskata labojums; uzvedība, laiki un API paliek tādi paši. Kods:
+`mobile/lib/features/live_location/presentation/live_map_page.dart`. Uzmetums:
+`output/design/expense-subcategories/board11.png` (pa kreisi tagad, pa labi jaunais).
+Krāsas paliek tās, kas app jau ir.
+
+- **Virsraksts ar ikonu:** zaļa atrašanās vietas ikona mīkstā zaļā kvadrātā + "Share my
+  location".
+- **Viena īsa rinda** garo divu teksta bloku vietā: "Your trip members see where you are.
+  Stop anytime."
+- **Kas redzēs:** pārklājoši apstiprināto dalībnieku avatari + "Visible to N members of
+  <trip>".
+- **Laika izvēle kā tripa cilnes:** pelēka josla ar zaļu aktīvo daļu (15 min · 1 h · 4 h ·
+  8 h); atsevišķās apaļās pogas ar ķeksīti pazūd.
+- **Zem tā beigu laiks:** "Sharing until 00:44, then it stops on its own." (mainās pēc
+  izvēles, ierīces laika formātā).
+- **Poga "Start sharing"** paliek.
+- **Tehniskie paskaidrojumi pazūd** (pēdējā atrašanās vieta, maršruta vēsture, pauzes bez
+  interneta) — tas viss ir privātuma politikā. Privātuma politikas teksts nemainās.
+- Jaunie teksti visās 16 valodās (ARB, `flutter gen-l10n`); vecās atslēgas, kas vairs nav
+  vajadzīgas, izņem.
+
+## G. Settle lapa (izlemts 2026-11-16)
+
+Mērķis: maksimāli vienkārša un pārskatāma norēķinu cilne. Mainās izkārtojums un teksti;
+norēķinu loģika, statusi un API paliek tādi paši. Kods:
+`mobile/lib/features/workspace/presentation/pages/workspace_page_tab_balances.dart`.
+Uzmetums: `output/design/expense-subcategories/board13.png` (pa kreisi tagad, pa labi
+jaunais; varianti A/B/C `board12.png`). Krāsas paliek tās, kas app jau ir.
+
+No augšas uz leju:
+
+1. **Soļu josla:** 1 · Ready → 2 · Trip ends → 3 · Pay; aktīvais solis zaļš. Aizstāj
+   teikumus "Trip creator must finish the trip…" un "Waiting for everyone to mark ready".
+2. **Ready to settle · 2 of 4:** visi dalībnieki vienā avataru rindā; gatavajiem zaļš ķeksītis
+   stūrī, pārējiem pelēks pulkstenis. Bez lielās pelēkās kartītes un progresa joslas.
+3. **Slēdzis "I added all my expenses"** (tavs gatavības slēdzis), viena rinda.
+4. **Tava summa:** "You get back" / "You owe" ar mazu marķieri "estimate" un lielu summu.
+   Garais "Estimate based on current expenses…" teksts pazūd (abās vietās).
+5. **"To you" (vai "You pay"):** tikai maksājumi, kas skar tevi; katrā rindā avatars, vārds,
+   "pays you" / "you pay", summa un maza poga "Request" uzreiz (bez atveramas kartītes).
+   "Details" paliek pieejams, pieskaroties rindai.
+6. **"Between others":** pārējie maksājumi pelēkāk, ar diviem avatariem "Kas → kam".
+
+Vēl jāizlemj būvējot: kā izskatās 2. un 3. solis (pēc ceļojuma beigām: apstiprināšana,
+"Mark as paid"), lai tas pats izkārtojums der visiem soļiem; teksti visās 16 valodās.
+
+## H. "By item" dalīšana: saraksts un cilvēki (izlemts 2026-11-16)
+
+Mērķis: pārskatāma dalīšana pēc pozīcijām (restorāns, čeks). Tagad katrai pozīcijai ir liela
+kartīte ar visiem avatariem, visi atzīmēti, un nav redzams, vai summa sakrīt un cik katrs maksā.
+Kods: `mobile/lib/features/workspace/presentation/pages/workspace_page_expense_editors.dart`
+(un `workspace_page_dialogs.dart`). Uzmetumi `output/design/expense-subcategories/`:
+`board19.png` (galīgais), `board18.png` (Items stāvokļi), `board17.png` (People avatari),
+`board16.png` (daudzumi), `board14.png` (sākotnējie varianti). Tumšais un gaišais režīms; krāsas
+paliek app esošās.
+
+**Divas cilnes ar ikonām** (čeks un cilvēki, bez teksta), tāda paša stila kā tripa cilnes.
+
+**Čeka cilne (saraksta veidošana):**
+- Augšā progresa josla "Entered from the receipt €X of €Y".
+- Zem tās uzraksts "Item list", tur sākas saraksts.
+- Rinda: mazs numurs, nosaukums ar daudzuma zīmi "×2", zem tā "€12.50 each", pa labi kopā.
+- Rediģējot: nosaukums un "Price each" bez rāmja, tikai līnija (zaļa, kad aktīva); "Qty" ar −/+;
+  uzreiz "= €13.50". Virs tastatūras "Next item ›" saglabā un atver nākamo rindu.
+- "Tax or tip" atsevišķa rinda ar "%" ikonu, dalās pēc tā, ko katrs ēda (kā tagad `extra_amount`).
+- Apakšā pārbaude "Items €54.80 + tip €4.00 = €58.80 ✓"; ja nesakrīt, oranžs "€6.50 is missing
+  from the receipt total" un poga uz cilvēkiem neaktīva.
+
+**Cilvēku cilne (kurš ko ēda):**
+- Bez virsraksta: augšā cilvēku avatari ar summu zem katra; zaļš rāmis ap to, kurš izvēlas.
+- Avatari kā "Add expense": bez atzīmes, kamēr cilvēkam nekas nav; zaļš aplis ar ķeksi, kad ir.
+- Saraksts kā ķekšu rindas: ķeksis, nosaukums, paskaidrojums ("1 of 2 · 1 left for others",
+  "Shared with Marta"), summa pa labi. Pozīcijām ar daudzumu zem summas mazs −/+.
+- Paņemtais pazūd nākamajam: ja alus ir 1 un to paņēma Jana, citiem tā vairs nav; ja picas ir 2 un
+  viena paņemta, nākamajam rāda "1 left". Pilnībā paņemtās pozīcijas apakšā pelēkā rindā ar avataru
+  ("Caesar salad · Valerija").
+- Kopīga lieta (deserts, ūdens): "Share", cena dalās starp visiem, kas to atzīmē.
+- Apakšā "Not assigned yet €X" un "Next person"; kad viss sadalīts: "✓ All items assigned · €Y"
+  un "Done". Tad katram cilvēkam rāda tikai viņa sarakstu.
+
+**"+ Add item" jebkurā brīdī:** čeka cilnes saraksta beigās vienmēr, un maza saite arī cilvēku
+cilnes apakšā. Jauna pozīcija visiem parādās kā nepaņemta, "All items assigned" atkal kļūst par
+"Not assigned yet", Done nestrādā, kamēr kāds to nepaņem. Jau sadalītais nemainās. Labojot vai
+dzēšot pozīciju, ko kāds jau paņēma, viņa daļa pārrēķinās.
+
+**API:** daudzumus var nosūtīt pa esošo `itemized` līgumu bez izmaiņām (`docs/api/expense-split-types.md`):
+app izvērš "Pizza ×2, Marta 1, Matiss 1" par divām pozīcijām ar vienu cilvēku katrā, kopīgu lietu
+par vienu pozīciju ar vairākiem `participant_ids`. Atverot izdevumu labošanai, vienāda nosaukuma
+un cenas pozīcijas var atkal apvienot "×N". Jāpārbauda 100 pozīciju limits un noapaļošana. Ja
+gribam glabāt daudzumu kā lauku, tā ir līguma izmaiņa un vajag atļauju.
+
+**Saistība ar Quick Split:** šī pati lapa būs Quick Split pamats; AI čeki vēlāk aizpildīs čeka cilni
+(arī daudzumus), cilvēki tikai atzīmē savas pozīcijas (sk. `docs/mobile/quick-split-ai-plan.md`).
+
+Teksti visās 16 valodās (ARB, `flutter gen-l10n`).
 
 ## Secība un izlaišana
 
@@ -354,3 +500,13 @@ samaksāto kopsummu.
   atļaujas (sistēmas logs vai `.ics` fails), un tad "Calendar events" Data safety nav
   jāatzīmē.
 - Reklāmas, pirkumi un Premium. Katrs no tiem maina Data safety un privātuma politiku.
+- **Imports no Splitwise (vēlāk, ne nākamajā atjauninājumā).** Mērķis: "pārnes savu grupu
+  1 minūtē". Splitwise grupas CSV satur katra cilvēka bilances izmaiņu, nevis maksātāju un
+  daļas; no tā maksātāju un daļas var precīzi atjaunot tikai, ja maksāja viens cilvēks.
+  Splitwise kategorijas labi kartējas uz mūsu kategorijām un tipiem (Dining out → Food ·
+  Restaurant, Taxi → Transport · Taxi, Hotel → Accommodation · Hotel).
+  - **B (vispirms):** tikai bilances: "Sāc ar atlikumiem no Splitwise", kurš kam parādā.
+  - **A (vēlāk):** pilns imports: izdevumi ar kategorijām un tipiem, dalībnieki, maksājumi.
+  - Atkarīgs no dalībniekiem bez konta (vēl nav uzbūvēts) un no tipiem. Pirms būvēšanas
+    iegūt īstu Splitwise CSV, jo formāts nav pārbaudīts. Vēlāk var nākt arī citi avoti
+    (Tricount, Settle Up), katram savs formāts.
