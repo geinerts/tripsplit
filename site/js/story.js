@@ -176,7 +176,8 @@
         story.style.setProperty('--phone-top', phoneTop + 'px');
         // Scroll up with the page from the hero, then stay put.
         rail.style.setProperty('--start-y', (startY - phoneTop) + 'px');
-        rail.style.setProperty('--sticky-h', Math.max(avail, phoneTop + phoneH + 8) + 'px');
+        var stickyH = Math.max(avail, phoneTop + phoneH + 8);
+        rail.style.setProperty('--sticky-h', stickyH + 'px');
         rail.style.setProperty('--viz-top', (phoneTop + phoneH * 0.42) + 'px');
         // The text lives between the header and the phone; shrink it only if it still does not fit.
         var textH = phoneTop - 32;
@@ -190,12 +191,21 @@
         rail.style.setProperty('--phone-h', phoneH + 'px');
         // Snap points: one swipe moves one step, however fast the swipe is.
         story.style.setProperty('--snap-offset', (fit.offset - 4) + 'px');
-        var next = story.nextElementSibling;
-        fit.snapEnd = next ? next.getBoundingClientRect().top + window.scrollY - header : Infinity;
+        // The last step is only as tall as the pinned phone needs, so the page moves on
+        // right after it instead of scrolling through empty space.
+        var last = sections[sections.length - 1];
+        var lastSnap = last.getBoundingClientRect().top + window.scrollY - (fit.offset - 4);
+        var railEnd = rail.getBoundingClientRect().bottom + window.scrollY;
+        var extra = railEnd - (lastSnap + header + stickyH);
+        last.style.height = Math.max(1, Math.round(last.offsetHeight - extra)) + 'px';
+        // Snapping stops at the last step; below it the page scrolls freely, and coming
+        // back up it only catches the last step once you reach it.
+        fit.snapEnd = lastSnap + 6;
         onScroll();
         return;
       }
 
+      sections[sections.length - 1].style.height = '';
       var stick = Math.max(header + 16, (vh + header - pr.height) / 2);
       // Never stick lower than where the phone starts, so nothing jumps on load.
       stick = Math.min(stick, storyTop + startY);
