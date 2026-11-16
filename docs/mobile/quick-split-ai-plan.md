@@ -322,8 +322,8 @@ Mockup: `output/design/expense-subcategories/board21.png` (iepriekšējais varia
 **Sākšana.**
 
 - Augšējais "+" paliek "New trip".
-- Jaunu quick split sāk ar vidējo Expenses pogu. Quick splits cilnē tā atver Add expense uzreiz
-  Quick split režīmā.
+- Vidējā Expenses poga pēc noklusējuma atver Add expense **aktīvajam tripam**, kā līdz šim. Quick split
+  izvēlas, uzspiežot "▾" zem virsraksta. Ja aktīva tripa nav, forma atveras uzreiz kā Quick split.
 - **Forma ir tā pati Add expense**: summa, valūta, Note, Category, datums, Paid by, Split between,
   Equal / Custom split. Zem virsraksta trip nosaukuma vietā ir "⚡ Quick split ▾", un to var pārslēgt
   uz kādu tripu (tad tas ir parasts trip izdevums).
