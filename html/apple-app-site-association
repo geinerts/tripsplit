@@ -3,12 +3,22 @@
     "apps": [],
     "details": [
       {
+        "appIDs": ["54RJ78MUJ6.eu.splyto.app"],
         "appID": "54RJ78MUJ6.eu.splyto.app",
+        "components": [
+          { "/": "/reset-password.php", "exclude": true },
+          { "/": "/api/*", "exclude": true },
+          { "/": "/invite*" },
+          { "/": "/friend*" },
+          { "/": "/add-friend*" },
+          { "/": "/", "?": { "invite": "?*" } }
+        ],
         "paths": [
           "NOT /reset-password.php",
           "NOT /api/*",
-          "/",
-          "/*"
+          "/invite*",
+          "/friend*",
+          "/add-friend*"
         ]
       }
     ]

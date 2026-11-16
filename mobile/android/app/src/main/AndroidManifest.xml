@@ -59,6 +59,10 @@
                 <data
                     android:scheme="https"
                     android:host="www.splyto.eu" />
+                <!-- Only invite and friend links open the app; the home page stays in the browser. -->
+                <data android:pathPrefix="/invite" />
+                <data android:pathPrefix="/friend" />
+                <data android:pathPrefix="/add-friend" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
