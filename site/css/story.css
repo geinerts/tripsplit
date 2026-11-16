@@ -474,6 +474,12 @@
     scroll-margin-top: var(--snap-offset, 0px);
   }
 
+  html.story-snap .story--mobile .story__intro {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    scroll-margin-top: var(--snap-offset, 0px);
+  }
+
   html.story-snap .story--mobile + * {
     scroll-snap-align: start;
     scroll-margin-top: 68px;
@@ -498,6 +504,10 @@
 
   .story--mobile .feature > .wrap {
     display: none;
+  }
+
+  .story--mobile .story__intro {
+    height: 92svh;
   }
 
   .story--mobile .feature:last-of-type {

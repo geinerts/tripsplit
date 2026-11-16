@@ -101,7 +101,10 @@
     var vizHome = viz ? viz.parentNode : null;
     var vizNext = viz ? viz.nextSibling : null;
     var vizSection = viz ? viz.closest('.feature') : null;
-    var fit = { start: 0, offset: 0, snapEnd: Infinity };
+    var fit = { start: 0, offset: 0, snapEnd: Infinity, lastSnap: Infinity };
+    var prevScrollY = window.scrollY;
+    // Phones: one extra stop where the phone has settled but still shows the home screen.
+    var intro = null;
     var root = document.documentElement;
     var stableVh = 0;
     var lastW = 0;
@@ -186,8 +189,8 @@
         rail.style.setProperty('--text-h', (textH / zoom) + 'px');
         // The first feature takes over as soon as the hero text has scrolled away.
         var copyBottom = heroCopy.getBoundingClientRect().bottom + window.scrollY;
-        fit.start = copyBottom - header - 20;
-        fit.offset = (sections[1].getBoundingClientRect().top + window.scrollY) - fit.start;
+        fit.start = copyBottom - header + 4;
+        fit.offset = ((intro || sections[1]).getBoundingClientRect().top + window.scrollY) - fit.start;
         rail.style.setProperty('--phone-h', phoneH + 'px');
         // Snap points: one swipe moves one step, however fast the swipe is.
         story.style.setProperty('--snap-offset', (fit.offset - 4) + 'px');
@@ -200,6 +203,7 @@
         last.style.height = Math.max(1, Math.round(last.offsetHeight - extra)) + 'px';
         // Snapping stops at the last step; below it the page scrolls freely, and coming
         // back up it only catches the last step once you reach it.
+        fit.lastSnap = lastSnap;
         fit.snapEnd = lastSnap + 6;
         onScroll();
         return;
@@ -228,8 +232,15 @@
         return;
       }
       var y = window.scrollY;
+      // A fast swipe up from below the story stops at the last step first, instead of
+      // flying past it to the step before.
+      if (jumpTarget < 0 && prevScrollY >= fit.snapEnd - 2 && y < fit.snapEnd - 2 && y < fit.lastSnap) {
+        y = Math.round(fit.lastSnap);
+        window.scrollTo({ top: y, behavior: 'instant' });
+      }
+      prevScrollY = y;
       root.classList.toggle('story-snap', y < fit.snapEnd - 2);
-      var t = Math.max(0, Math.min(1, (y - fit.start + 40) / 80));
+      var t = Math.max(0, Math.min(1, (y - fit.start + 60) / 60));
       textPanel.style.opacity = t.toFixed(3);
       // On phones the dots appear together with the story text.
       dotBox.style.opacity = t.toFixed(3);
@@ -330,7 +341,7 @@
     function goTo(k) {
       var header = 68;
       var top;
-      if (k === 0) top = 0;
+      if (k === 0) top = mobile.matches && intro ? intro.getBoundingClientRect().top + window.scrollY - fit.offset + 4 : 0;
       else if (mobile.matches) top = sectionTop(k) - fit.offset + 4;
       else top = sectionTop(k) - header + 1;
       jumpTarget = k;
@@ -429,6 +440,15 @@
         buildText();
         story.classList.add('story--on');
         story.classList.toggle('story--mobile', mobile.matches);
+        if (mobile.matches && !intro) {
+          intro = document.createElement('div');
+          intro.className = 'story__intro';
+          intro.setAttribute('aria-hidden', 'true');
+          sections[1].parentNode.insertBefore(intro, sections[1]);
+        } else if (!mobile.matches && intro) {
+          intro.remove();
+          intro = null;
+        }
         placeViz(mobile.matches);
         textPanel.style.opacity = '';
         dotBox.style.opacity = '';
@@ -440,6 +460,7 @@
         sections.forEach(function (s) { io.observe(s); });
       } else {
         story.classList.remove('story--on', 'story--mobile');
+        if (intro) { intro.remove(); intro = null; }
         placeViz(false);
         io.disconnect();
       }
