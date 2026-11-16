@@ -61,6 +61,8 @@ Nākotnē: QR saite, lai dalībnieki paši atzīmē savas pozīcijas.
 
 ## 3. Vienotais Archive
 
+> **Aizstāts 2026-11-16:** Quick splits būs sava cilne sākumlapā, nevis arhīvā (sk. 11. sadaļas beigas).
+
 Esošajā **Archive** sadaļā rādīt gan arhivētos ceļojumus, gan saglabātos Quick Split rēķinus.
 
 **Filtri:** All / Trips / Quick Splits.
@@ -303,3 +305,39 @@ ja lietotāji to prasīs.
 
 Secība: 1) Quick Split manuāli → 2) AI čeki Quick Split → 3) Add to Trip / Archive → 4) AI pie ceļojuma
 izdevumiem pēc pieprasījuma.
+
+### Izlemts 2026-11-16: Quick splits cilne un sākšana
+
+Mockup: `output/design/expense-subcategories/board21.png` (iepriekšējais variants board20.png).
+
+**Sava cilne sākumlapā, nevis arhīvā.**
+
+- Sākumlapas pārslēdzējā ir trīs ikonas: tripi · ⚡ Quick splits · arhīvs. Virsraksts mainās līdzi,
+  piemēram, "Your quick splits".
+- Augšā ir "Open" (kur vēl kāds kādam ir parādā): +€ zaļā krāsā, ja tev jāsaņem, −€, ja tu esi parādā.
+  Apakšā pelēcīgi "Settled". Atsevišķa arhīva nokārtotiem nav.
+- Pārnests uz tripu → no šīs cilnes pazūd, jo izdevums tagad dzīvo tripā.
+- Cilne redzama vienmēr. Tukšā cilnē ir viena īsa rinda, bez gariem skaidrojumiem.
+
+**Sākšana.**
+
+- Augšējais "+" paliek "New trip".
+- Jaunu quick split sāk ar vidējo Expenses pogu. Quick splits cilnē tā atver Add expense uzreiz
+  Quick split režīmā.
+- **Forma ir tā pati Add expense**: summa, valūta, Note, Category, datums, Paid by, Split between,
+  Equal / Custom split. Zem virsraksta trip nosaukuma vietā ir "⚡ Quick split ▾", un to var pārslēgt
+  uz kādu tripu (tad tas ir parasts trip izdevums).
+- Cilvēki tiek pievienoti tāpat kā Add expense: draugi ar avatāriem, un "+" pievieno arī vārdu bez konta.
+- **Kameras poga pa kreisi no summas.** Tā atver sistēmas izvēlni: Scan receipt / Choose from Photos /
+  Choose file / Cancel. Ja to neaiztiek, summu ievada kā parasti.
+- Pēc skenēšanas summa, nosaukums un pozīcijas ir aizpildītas. Ieslēgts "Custom split → By item", un
+  "Add receipt" vietā ir nolasītais čeks ("7 items read · tap to check").
+- Kameras poga sākumā ir tikai Quick split režīmā (sk. iepriekšējo lēmumu). Vēlāk to pašu pogu var likt
+  arī trip Add expense.
+
+**Beigas.** Pēc pogas "Split" no apakšas izbīdās logs pāri formai. Tajā ir kopsumma un kurš maksāja,
+cik katram jāmaksā, poga "Share result" un trīs izvēles:
+
+- **Keep in Quick splits** (galvenā) — paliek cilnē, lai var sekot, kurš atdevis;
+- **Add to a trip** — kļūst par trip izdevumu un no cilnes pazūd;
+- **Don't save** — aizver.

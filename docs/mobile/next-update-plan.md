@@ -475,6 +475,10 @@ par vienu pozīciju ar vairākiem `participant_ids`. Atverot izdevumu labošanai
 un cenas pozīcijas var atkal apvienot "×N". Jāpārbauda 100 pozīciju limits un noapaļošana. Ja
 gribam glabāt daudzumu kā lauku, tā ir līguma izmaiņa un vajag atļauju.
 
+**Arī pārējie dalīšanas veidi (Custom split):** "Exact amounts", "Percentages", "Shares" un
+"Adjustments" (+/−) ievades laukiem tāpat nav rāmja, tikai līnija apakšā (zaļa, kad aktīva), lai
+visi dalīšanas veidi izskatās vienādi ar "By item".
+
 **Saistība ar Quick Split:** šī pati lapa būs Quick Split pamats; AI čeki vēlāk aizpildīs čeka cilni
 (arī daudzumus), cilvēki tikai atzīmē savas pozīcijas (sk. `docs/mobile/quick-split-ai-plan.md`).
 
