@@ -105,6 +105,7 @@
     var prevScrollY = window.scrollY;
     // Phones: one extra stop where the phone has settled but still shows the home screen.
     var intro = null;
+    var holdLast = 0;
     var root = document.documentElement;
     var stableVh = 0;
     var lastW = 0;
@@ -234,8 +235,21 @@
       var y = window.scrollY;
       // A fast swipe up from below the story stops at the last step first, instead of
       // flying past it to the step before.
-      if (jumpTarget < 0 && prevScrollY >= fit.snapEnd - 2 && y < fit.snapEnd - 2 && y < fit.lastSnap) {
+      var now = Date.now();
+      var crossed = prevScrollY >= fit.snapEnd - 2 && y < fit.snapEnd - 2 && y < fit.lastSnap;
+      if (jumpTarget < 0 && (crossed || (now < holdLast && y < fit.lastSnap - 1))) {
         y = Math.round(fit.lastSnap);
+        if (crossed) {
+          // iOS keeps a fling going after a programmatic scroll; hiding overflow for a
+          // frame stops it, and the short hold catches anything that still slips past.
+          holdLast = now + 350;
+          root.style.overflow = 'hidden';
+          document.body.style.overflow = 'hidden';
+          requestAnimationFrame(function () {
+            root.style.overflow = '';
+            document.body.style.overflow = '';
+          });
+        }
         window.scrollTo({ top: y, behavior: 'instant' });
       }
       prevScrollY = y;
