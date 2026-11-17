@@ -1,3 +1,5 @@
+import '../features/quick_splits/data/quick_splits_repository.dart';
+import '../features/quick_splits/presentation/quick_splits_controller.dart';
 import 'package:flutter/foundation.dart';
 import '../core/network/network_connection.dart';
 import '../core/media/trip_image_cache.dart';
@@ -89,6 +91,7 @@ class AppDependencies {
     required this.analyticsRepository,
     required this.offlineStatus,
     this.liveLocationController,
+    this.quickSplitsController,
     required this.tripsController,
     required this.friendsController,
     required this.workspaceController,
@@ -108,6 +111,7 @@ class AppDependencies {
   /// App-wide offline state for the single Offline indicator.
   final ValueListenable<bool> offlineStatus;
   final LiveLocationController? liveLocationController;
+  final QuickSplitsController? quickSplitsController;
   final TripsController tripsController;
   final FriendsController friendsController;
   final WorkspaceController workspaceController;
@@ -214,6 +218,9 @@ class AppDependencies {
       workspaceLocalStore,
     );
     final workspaceController = WorkspaceController(workspaceRepository);
+    final quickSplitsController = QuickSplitsController(
+      ApiQuickSplitsRepository(apiClient, accountSession),
+    );
 
     final liveLocationController = LiveLocationController(
       ApiLiveLocationRepository(apiClient, accountSession),
@@ -246,6 +253,7 @@ class AppDependencies {
       () async {
         tripsController.clearTripsCache();
         friendsController.clearSnapshotCache();
+        quickSplitsController.clear();
         await accountStorage.clear();
         await tripImageCache.clear();
       },
@@ -270,6 +278,7 @@ class AppDependencies {
     return AppDependencies(
       tripImageCache: tripImageCache,
       liveLocationController: liveLocationController,
+      quickSplitsController: quickSplitsController,
       quickStartService: QuickStartService(
         apiClient,
         accountSession,

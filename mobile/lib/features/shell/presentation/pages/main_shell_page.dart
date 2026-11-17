@@ -40,12 +40,20 @@ import '../../../workspace/presentation/controllers/workspace_controller.dart';
 import '../../../workspace/domain/entities/workspace_notification.dart';
 import '../../../workspace/domain/entities/workspace_notifications_inbox.dart';
 import '../../../workspace/presentation/pages/workspace_page.dart';
+import '../../../workspace/domain/entities/expense_draft.dart';
+import '../../../workspace/domain/entities/expense_item.dart';
+import '../../../workspace/domain/entities/uploaded_receipt.dart';
+import '../../../quick_splits/domain/quick_split.dart';
+import '../../../quick_splits/presentation/quick_splits_controller.dart';
+import '../../../quick_splits/presentation/quick_splits_views.dart';
+import '../../../../core/currency/app_currency.dart';
 import '../widgets/notifications_sheet.dart';
 
 part 'main_shell_page_quick_start.dart';
 part 'main_shell_page_navigation.dart';
 part 'main_shell_page_notifications.dart';
 part 'main_shell_page_widgets.dart';
+part 'main_shell_page_quick_splits.dart';
 
 class MainShellPage extends StatefulWidget {
   const MainShellPage({
@@ -64,6 +72,7 @@ class MainShellPage extends StatefulWidget {
     this.initialTabIndex = 0,
     this.openCreateTripOnStart = false,
     this.openAddExpenseOnStart = false,
+    this.quickSplitsController,
   });
 
   final QuickStartService? quickStartService;
@@ -82,6 +91,9 @@ class MainShellPage extends StatefulWidget {
   final int initialTabIndex;
   final bool openCreateTripOnStart;
   final bool openAddExpenseOnStart;
+
+  /// Quick splits; null hides the home tab and keeps Expenses trip-only.
+  final QuickSplitsController? quickSplitsController;
 
   @override
   State<MainShellPage> createState() => _MainShellPageState();
@@ -113,6 +125,11 @@ class _MainShellPageState extends State<MainShellPage>
   bool _isOpeningExpense = false;
   int? _quickStartGeneration;
   bool _openAddExpenseOnWorkspaceStart = false;
+  ExpenseDraft? _workspaceExpenseDraft;
+
+  /// Bumped to start the trip page again, e.g. to open a filled form.
+  int _workspaceSession = 0;
+  bool _quickSplitsShown = false;
   bool _isProfileInEditMode = false;
   final bool _isLoggingOut = false;
   bool _isNotificationsLoading = false;
@@ -599,6 +616,7 @@ class _MainShellPageState extends State<MainShellPage>
       _selectedTabIndex = _tabFriends;
       _openedTrip = null;
       _openAddExpenseOnWorkspaceStart = false;
+      _workspaceExpenseDraft = null;
     });
   }
 

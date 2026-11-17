@@ -1026,6 +1026,22 @@ class AppLocalizationsLv extends AppLocalizations {
   String get notificationTripStartsTomorrowBodyGeneric => 'Tavs ceļojums sākas rīt.';
 
   @override
+  String get notificationQuickSplitAddedTitle => 'Ātrā dalīšana';
+
+  @override
+  String notificationQuickSplitAddedBodyWithNote(String name, String note) {
+    return '$name tevi pievienoja ātrajai dalīšanai: $note';
+  }
+
+  @override
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount) {
+    return '$name tevi pievienoja ātrajai dalīšanai par $amount';
+  }
+
+  @override
+  String get notificationQuickSplitAddedBodyGeneric => 'Tevi pievienoja ātrajai dalīšanai.';
+
+  @override
   String get notificationSettlementSentTitle => 'Pārskaitījums atzīmēts kā nosūtīts';
 
   @override
@@ -1738,6 +1754,110 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get homeYourActiveTrips => 'Tavi aktīvie ceļojumi';
+
+  @override
+  String get quickSplitsTitle => 'Ātrās dalīšanas';
+
+  @override
+  String get homeYourQuickSplits => 'Tavas ātrās dalīšanas';
+
+  @override
+  String get quickSplitLabel => 'Ātrā dalīšana';
+
+  @override
+  String get quickSplitTargetHint => 'Bez ceļojuma';
+
+  @override
+  String get expenseTargetTitle => 'Kur pievienot';
+
+  @override
+  String get expenseTargetChange => 'mainīt';
+
+  @override
+  String get quickSplitSplitAction => 'Sadalīt';
+
+  @override
+  String get quickSplitAddPerson => 'Pievienot';
+
+  @override
+  String get quickSplitAddPersonTitle => 'Pievienot cilvēku';
+
+  @override
+  String get quickSplitNameHint => 'Vārds (app nav vajadzīga)';
+
+  @override
+  String get quickSplitFriendsFailed => 'Neizdevās ielādēt draugus. Vārdu vari pievienot.';
+
+  @override
+  String get quickSplitNeedTwoPeople => 'Pievieno vēl vismaz vienu cilvēku.';
+
+  @override
+  String get quickSplitShareResult => 'Dalīties ar rezultātu';
+
+  @override
+  String quickSplitShareTotal(String amount, String name) {
+    return 'Kopā $amount, maksāja $name';
+  }
+
+  @override
+  String get quickSplitShareFailed => 'Neizdevās dalīties.';
+
+  @override
+  String quickSplitPaidBy(String name) {
+    return 'maksāja $name';
+  }
+
+  @override
+  String quickSplitOfTotal(String total) {
+    return 'no $total';
+  }
+
+  @override
+  String quickSplitYourPart(String amount) {
+    return 'tava daļa $amount';
+  }
+
+  @override
+  String get quickSplitAddToTrip => 'Pievienot ceļojumam';
+
+  @override
+  String get quickSplitAddToTripHint => 'Kļūst par ceļojuma izdevumu';
+
+  @override
+  String get quickSplitAddToTripOnlyPayer => 'Ceļojumam to var pievienot tikai tas, kurš maksāja.';
+
+  @override
+  String get quickSplitNoActiveTrip => 'Tev nav aktīva ceļojuma.';
+
+  @override
+  String get quickSplitStillListed => 'Pievienots ceļojumam, bet vēl redzams ātrajās dalīšanās.';
+
+  @override
+  String get quickSplitDeleteTitle => 'Dzēst ātro dalīšanu?';
+
+  @override
+  String get quickSplitDeleteMessage => 'Tā pazudīs visiem, kas tajā ir.';
+
+  @override
+  String get quickSplitDeleted => 'Ātrā dalīšana izdzēsta';
+
+  @override
+  String get quickSplitsEmpty => 'Šeit būs ātrās dalīšanas, kurās esi.';
+
+  @override
+  String get quickSplitsLoadFailed => 'Neizdevās ielādēt ātrās dalīšanas.';
+
+  @override
+  String get quickSplitsOffline => 'Ātrajām dalīšanām vajag internetu.';
+
+  @override
+  String get quickSplitsShowMore => 'Rādīt vairāk';
+
+  @override
+  String get receiptButtonTooltip => 'Skenēt vai izvēlēties čeku';
+
+  @override
+  String get scanReceiptAction => 'Skenēt čeku';
 
   @override
   String get homeYourArchivedTrips => 'Tavi arhivētie ceļojumi';

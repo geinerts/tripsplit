@@ -57,6 +57,15 @@ class TripsPageCommandController extends ChangeNotifier {
     notifyListeners();
   }
 
+  int _showQuickSplitsRequestCount = 0;
+  int get showQuickSplitsRequestCount => _showQuickSplitsRequestCount;
+
+  /// Switches home to the Quick splits list.
+  void requestShowQuickSplits() {
+    _showQuickSplitsRequestCount++;
+    notifyListeners();
+  }
+
   int get openCreateTripRequestCount => _openCreateTripRequestCount;
   int get refreshRequestCount => _refreshRequestCount;
 
@@ -87,6 +96,9 @@ class TripsPage extends StatefulWidget {
     this.onTripOpened,
     this.onServerTripsState,
     this.onInteractionStateChanged,
+    this.quickSplitsTab,
+    this.onQuickSplitsShown,
+    this.onRefreshQuickSplits,
   });
 
   final TripsController controller;
@@ -102,6 +114,14 @@ class TripsPage extends StatefulWidget {
   final ValueChanged<bool?>? onServerTripsState;
   final ValueChanged<bool>? onInteractionStateChanged;
 
+  /// The Quick splits list, as the middle of the three home icons. Null
+  /// keeps just trips and archive.
+  final WidgetBuilder? quickSplitsTab;
+
+  /// Whether Quick splits is the list on show.
+  final ValueChanged<bool>? onQuickSplitsShown;
+  final Future<void> Function()? onRefreshQuickSplits;
+
   @override
   State<TripsPage> createState() => _TripsPageState();
 }
@@ -114,7 +134,9 @@ class _TripsPageState extends State<TripsPage> {
   bool _isOffline = false;
   bool _isMutating = false;
   bool _showArchived = false;
+  bool _showQuickSplits = false;
   bool _hasChosenFilter = false;
+  int _handledShowQuickSplitsRequestCount = 0;
   int _loadGeneration = 0;
   bool _openCreateAfterLoad = false;
   bool _isCreateTripDialogOpen = false;
@@ -205,6 +227,12 @@ class _TripsPageState extends State<TripsPage> {
       }
     }
 
+    final quickRequests = controller.showQuickSplitsRequestCount;
+    if (quickRequests != _handledShowQuickSplitsRequestCount) {
+      _handledShowQuickSplitsRequestCount = quickRequests;
+      if (widget.quickSplitsTab != null) _selectHomeList(quickSplits: true);
+    }
+
     final refreshRequestCount = controller.refreshRequestCount;
     if (refreshRequestCount != _handledRefreshRequestCount) {
       _handledRefreshRequestCount = refreshRequestCount;
@@ -217,6 +245,12 @@ class _TripsPageState extends State<TripsPage> {
     final visibleTrips = _trips
         .where((trip) => _showArchived ? trip.isArchived : !trip.isArchived)
         .toList(growable: false);
+    final quickSplitsTab = widget.quickSplitsTab;
+    final showingQuickSplits = _showQuickSplits && quickSplitsTab != null;
+    Widget quickSplitsSliver() => SliverPadding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+      sliver: SliverToBoxAdapter(child: quickSplitsTab!(context)),
+    );
     return AppPageScaffold(
       body: SafeArea(
         child: Center(
@@ -225,7 +259,9 @@ class _TripsPageState extends State<TripsPage> {
               maxWidth: context.responsive.pageMaxWidth,
             ),
             child: RefreshIndicator(
-              onRefresh: _loadTrips,
+              onRefresh: () => showingQuickSplits
+                  ? (widget.onRefreshQuickSplits?.call() ?? Future.value())
+                  : _loadTrips(),
               child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
@@ -268,10 +304,19 @@ class _TripsPageState extends State<TripsPage> {
                       SliverPadding(
                         padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                         sliver: SliverToBoxAdapter(
-                          child: _buildTripsSectionHeader(context),
+                          child: Column(
+                            children: [
+                              _buildTripsSectionHeader(context),
+                              // Quick splits stay reachable without trips.
+                              if (quickSplitsTab != null)
+                                _buildTripFilters(context),
+                            ],
+                          ),
                         ),
                       ),
-                    if (_trips.isEmpty)
+                    if (_trips.isEmpty && showingQuickSplits)
+                      quickSplitsSliver()
+                    else if (_trips.isEmpty)
                       SliverFillRemaining(
                         hasScrollBody: false,
                         child: _buildEmptyTripsState(context),
@@ -293,7 +338,9 @@ class _TripsPageState extends State<TripsPage> {
                           ),
                         ),
                       ),
-                      if (visibleTrips.isEmpty)
+                      if (showingQuickSplits)
+                        quickSplitsSliver()
+                      else if (visibleTrips.isEmpty)
                         SliverPadding(
                           padding: const EdgeInsets.all(32),
                           sliver: SliverToBoxAdapter(

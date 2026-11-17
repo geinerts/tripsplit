@@ -6,7 +6,7 @@ push notifications.
 
 | Category (`push.*`) | Flat key | Notification types |
 |---|---|---|
-| `expense_added` | `push_expense_added_enabled` | `expense_added` |
+| `expense_added` | `push_expense_added_enabled` | `expense_added`, `quick_split_added` |
 | `comments` | `push_comments_enabled` | `expense_comment_mention`, `expense_comment_added` |
 | `trip_invites` | `push_trip_invites_enabled` | `trip_invitation`, `trip_added`, `trip_member_added`, `trip_member_removed` |
 | `trip_status` | `push_trip_status_enabled` | `trip_finished`, `trip_ready_to_settle`, `member_ready_to_settle` |

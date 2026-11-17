@@ -274,7 +274,8 @@ class WorkspaceRemoteMutationApi {
     );
   }
 
-  Future<void> addExpense({
+  /// Returns the new expense id.
+  Future<int?> addExpense({
     required int tripId,
     required double amount,
     required String currencyCode,
@@ -291,7 +292,7 @@ class WorkspaceRemoteMutationApi {
     String? receiptPath,
     String? clientMutationId,
   }) async {
-    await _apiClient.request(
+    final response = await _apiClient.request(
       path: ApiEndpoints.legacyAction('add_expense'),
       method: HttpMethod.post,
       headers: _tripHeaders(tripId, clientMutationId: clientMutationId),
@@ -321,6 +322,8 @@ class WorkspaceRemoteMutationApi {
           'receipt_path': receiptPath,
       },
     );
+    final id = response['expense_id'];
+    return id is num ? id.toInt() : null;
   }
 
   Future<void> updateExpense({

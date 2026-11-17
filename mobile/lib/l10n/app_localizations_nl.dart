@@ -1023,6 +1023,22 @@ class AppLocalizationsNl extends AppLocalizations {
   String get notificationTripStartsTomorrowBodyGeneric => 'Je reis begint morgen.';
 
   @override
+  String get notificationQuickSplitAddedTitle => 'Snelle verdeling';
+
+  @override
+  String notificationQuickSplitAddedBodyWithNote(String name, String note) {
+    return '$name heeft je toegevoegd aan een snelle verdeling: $note';
+  }
+
+  @override
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount) {
+    return '$name heeft je toegevoegd aan een snelle verdeling van $amount';
+  }
+
+  @override
+  String get notificationQuickSplitAddedBodyGeneric => 'Je bent toegevoegd aan een snelle verdeling.';
+
+  @override
   String get notificationSettlementSentTitle => 'Overschrijving gemarkeerd als verzonden';
 
   @override
@@ -1732,6 +1748,110 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get homeYourActiveTrips => 'Je actieve reizen';
+
+  @override
+  String get quickSplitsTitle => 'Snelle verdelingen';
+
+  @override
+  String get homeYourQuickSplits => 'Je snelle verdelingen';
+
+  @override
+  String get quickSplitLabel => 'Snelle verdeling';
+
+  @override
+  String get quickSplitTargetHint => 'Zonder reis';
+
+  @override
+  String get expenseTargetTitle => 'Toevoegen aan';
+
+  @override
+  String get expenseTargetChange => 'wijzigen';
+
+  @override
+  String get quickSplitSplitAction => 'Verdelen';
+
+  @override
+  String get quickSplitAddPerson => 'Toevoegen';
+
+  @override
+  String get quickSplitAddPersonTitle => 'Iemand toevoegen';
+
+  @override
+  String get quickSplitNameHint => 'Naam (zonder app)';
+
+  @override
+  String get quickSplitFriendsFailed => 'Vrienden laden mislukt. Je kunt wel een naam toevoegen.';
+
+  @override
+  String get quickSplitNeedTwoPeople => 'Voeg minstens nog één persoon toe.';
+
+  @override
+  String get quickSplitShareResult => 'Resultaat delen';
+
+  @override
+  String quickSplitShareTotal(String amount, String name) {
+    return 'Totaal $amount, betaald door $name';
+  }
+
+  @override
+  String get quickSplitShareFailed => 'Delen mislukt.';
+
+  @override
+  String quickSplitPaidBy(String name) {
+    return 'betaald door $name';
+  }
+
+  @override
+  String quickSplitOfTotal(String total) {
+    return 'van $total';
+  }
+
+  @override
+  String quickSplitYourPart(String amount) {
+    return 'jouw deel $amount';
+  }
+
+  @override
+  String get quickSplitAddToTrip => 'Toevoegen aan een reis';
+
+  @override
+  String get quickSplitAddToTripHint => 'Wordt een reisuitgave';
+
+  @override
+  String get quickSplitAddToTripOnlyPayer => 'Alleen wie betaald heeft, kan het aan een reis toevoegen.';
+
+  @override
+  String get quickSplitNoActiveTrip => 'Je hebt geen actieve reis.';
+
+  @override
+  String get quickSplitStillListed => 'Aan de reis toegevoegd, maar staat nog bij snelle verdelingen.';
+
+  @override
+  String get quickSplitDeleteTitle => 'Snelle verdeling verwijderen?';
+
+  @override
+  String get quickSplitDeleteMessage => 'Hij verdwijnt voor iedereen die erin staat.';
+
+  @override
+  String get quickSplitDeleted => 'Snelle verdeling verwijderd';
+
+  @override
+  String get quickSplitsEmpty => 'Snelle verdelingen waar je in zit, staan hier.';
+
+  @override
+  String get quickSplitsLoadFailed => 'Snelle verdelingen laden mislukt.';
+
+  @override
+  String get quickSplitsOffline => 'Snelle verdelingen hebben internet nodig.';
+
+  @override
+  String get quickSplitsShowMore => 'Meer tonen';
+
+  @override
+  String get receiptButtonTooltip => 'Bon scannen of kiezen';
+
+  @override
+  String get scanReceiptAction => 'Bon scannen';
 
   @override
   String get homeYourArchivedTrips => 'Je gearchiveerde reizen';

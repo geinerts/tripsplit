@@ -1023,6 +1023,22 @@ class AppLocalizationsNb extends AppLocalizations {
   String get notificationTripStartsTomorrowBodyGeneric => 'Turen din starter i morgen.';
 
   @override
+  String get notificationQuickSplitAddedTitle => 'Hurtigdeling';
+
+  @override
+  String notificationQuickSplitAddedBodyWithNote(String name, String note) {
+    return '$name la deg til i en hurtigdeling: $note';
+  }
+
+  @override
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount) {
+    return '$name la deg til i en hurtigdeling på $amount';
+  }
+
+  @override
+  String get notificationQuickSplitAddedBodyGeneric => 'Du ble lagt til i en hurtigdeling.';
+
+  @override
   String get notificationSettlementSentTitle => 'Overføring merket som sendt';
 
   @override
@@ -1732,6 +1748,110 @@ class AppLocalizationsNb extends AppLocalizations {
 
   @override
   String get homeYourActiveTrips => 'Dine aktive turer';
+
+  @override
+  String get quickSplitsTitle => 'Hurtigdelinger';
+
+  @override
+  String get homeYourQuickSplits => 'Dine hurtigdelinger';
+
+  @override
+  String get quickSplitLabel => 'Hurtigdeling';
+
+  @override
+  String get quickSplitTargetHint => 'Uten reise';
+
+  @override
+  String get expenseTargetTitle => 'Legg til i';
+
+  @override
+  String get expenseTargetChange => 'endre';
+
+  @override
+  String get quickSplitSplitAction => 'Del';
+
+  @override
+  String get quickSplitAddPerson => 'Legg til';
+
+  @override
+  String get quickSplitAddPersonTitle => 'Legg til noen';
+
+  @override
+  String get quickSplitNameHint => 'Navn (uten appen)';
+
+  @override
+  String get quickSplitFriendsFailed => 'Kunne ikke laste inn venner. Du kan fortsatt legge til et navn.';
+
+  @override
+  String get quickSplitNeedTwoPeople => 'Legg til minst én person til.';
+
+  @override
+  String get quickSplitShareResult => 'Del resultatet';
+
+  @override
+  String quickSplitShareTotal(String amount, String name) {
+    return 'Totalt $amount, betalt av $name';
+  }
+
+  @override
+  String get quickSplitShareFailed => 'Kunne ikke dele.';
+
+  @override
+  String quickSplitPaidBy(String name) {
+    return 'betalt av $name';
+  }
+
+  @override
+  String quickSplitOfTotal(String total) {
+    return 'av $total';
+  }
+
+  @override
+  String quickSplitYourPart(String amount) {
+    return 'din del $amount';
+  }
+
+  @override
+  String get quickSplitAddToTrip => 'Legg til i en reise';
+
+  @override
+  String get quickSplitAddToTripHint => 'Blir en utgift i reisen';
+
+  @override
+  String get quickSplitAddToTripOnlyPayer => 'Bare den som betalte, kan legge den til i en reise.';
+
+  @override
+  String get quickSplitNoActiveTrip => 'Du har ingen aktiv reise.';
+
+  @override
+  String get quickSplitStillListed => 'Lagt til i reisen, men ligger fortsatt i hurtigdelinger.';
+
+  @override
+  String get quickSplitDeleteTitle => 'Slette hurtigdelingen?';
+
+  @override
+  String get quickSplitDeleteMessage => 'Den forsvinner for alle som er med.';
+
+  @override
+  String get quickSplitDeleted => 'Hurtigdelingen er slettet';
+
+  @override
+  String get quickSplitsEmpty => 'Hurtigdelinger du er med i, vises her.';
+
+  @override
+  String get quickSplitsLoadFailed => 'Kunne ikke laste inn hurtigdelinger.';
+
+  @override
+  String get quickSplitsOffline => 'Hurtigdelinger krever internett.';
+
+  @override
+  String get quickSplitsShowMore => 'Vis flere';
+
+  @override
+  String get receiptButtonTooltip => 'Skann eller velg en kvittering';
+
+  @override
+  String get scanReceiptAction => 'Skann kvittering';
 
   @override
   String get homeYourArchivedTrips => 'Dine arkiverte turer';

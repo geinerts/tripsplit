@@ -63,6 +63,8 @@ function push_localized_notification_title(string $type, string $rawTitle, strin
             return push_locale_phrase($locale, 'trip_added_title');
         case 'expense_added':
             return push_locale_phrase($locale, 'expense_added_title');
+        case 'quick_split_added':
+            return push_locale_phrase($locale, 'quick_split_added_title');
         case 'expense_comment_mention':
             return push_locale_phrase($locale, 'comment_mention_title');
         case 'expense_comment_added':
@@ -147,6 +149,20 @@ function push_localized_notification_body(string $type, string $rawBody, string 
                 );
             }
             return push_locale_phrase($locale, 'trip_added_body_generic');
+        case 'quick_split_added':
+            if (preg_match('/^(.+?) added you to a quick split: (.+)$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'quick_split_added_body_note'),
+                    ['name' => trim((string) ($match[1] ?? '')), 'note' => trim((string) ($match[2] ?? ''))]
+                );
+            }
+            if (preg_match('/^(.+?) added you to a quick split of (.+)$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'quick_split_added_body_amount'),
+                    ['name' => trim((string) ($match[1] ?? '')), 'amount' => trim((string) ($match[2] ?? ''))]
+                );
+            }
+            return push_locale_phrase($locale, 'quick_split_added_body_generic');
         case 'expense_added':
             if (preg_match('/^(.+?) added an expense of (.+?) in "(.+?)"\.$/u', $rawBody, $match) === 1) {
                 return push_locale_format(

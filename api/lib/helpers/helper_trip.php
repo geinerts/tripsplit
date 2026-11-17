@@ -435,7 +435,7 @@ function create_user_notification(
     if (function_exists('user_is_guest') && user_is_guest($pdo, $userId)) {
         return;
     }
-    $accountNotification = in_array($type, ['friend_invite_received', 'friend_invite_accepted'], true);
+    $accountNotification = in_array($type, ['friend_invite_received', 'friend_invite_accepted', 'quick_split_added'], true);
     if ($userId <= 0 || ($tripId <= 0 && !$accountNotification)) {
         return;
     }

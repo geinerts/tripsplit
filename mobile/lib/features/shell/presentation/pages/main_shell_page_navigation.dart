@@ -50,6 +50,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
         _selectedTabIndex = _MainShellPageState._tabHome;
         _openedTrip = null;
         _openAddExpenseOnWorkspaceStart = false;
+        _workspaceExpenseDraft = null;
       });
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -79,6 +80,15 @@ extension _MainShellPageNavigation on _MainShellPageState {
     final openedTrip = _openedTrip;
     if (openedTrip != null && openedTrip.isActive) {
       _workspaceCommandController.requestOpenAddExpense();
+      return;
+    }
+    final quickSplitsEnabled = widget.quickSplitsController != null;
+    // On the Quick splits list the button starts a quick split.
+    if (quickSplitsEnabled &&
+        _quickSplitsShown &&
+        openedTrip == null &&
+        _selectedTabIndex == _MainShellPageState._tabHome) {
+      await _openQuickSplitForm();
       return;
     }
 
@@ -113,6 +123,24 @@ extension _MainShellPageNavigation on _MainShellPageState {
     if (!mounted) {
       return;
     }
+    final activeTrips = trips.where((trip) => trip.isActive).toList();
+    if (quickSplitsEnabled && activeTrips.length != 1) {
+      // No active trip: a quick split. Several: choose, Quick split first.
+      if (activeTrips.isEmpty) {
+        await _openQuickSplitForm();
+        return;
+      }
+      final target = await _pickExpenseTarget(context, trips: trips);
+      if (target == null || !mounted) return;
+      final trip = target.trip;
+      if (trip == null) {
+        await _openQuickSplitForm();
+      } else {
+        _openWorkspaceInShell(trip, openAddExpense: true);
+      }
+      return;
+    }
+
     if (trips.isEmpty) {
       _requestCreateTrip();
       return;
@@ -214,6 +242,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
             _selectedTabIndex = _MainShellPageState._tabActivities;
             _openedTrip = null;
             _openAddExpenseOnWorkspaceStart = false;
+            _workspaceExpenseDraft = null;
           });
         }
         return;
@@ -224,6 +253,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
             _selectedTabIndex = _MainShellPageState._tabFriends;
             _openedTrip = null;
             _openAddExpenseOnWorkspaceStart = false;
+            _workspaceExpenseDraft = null;
           });
         }
         return;
@@ -234,6 +264,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
             _selectedTabIndex = _MainShellPageState._tabProfile;
             _openedTrip = null;
             _openAddExpenseOnWorkspaceStart = false;
+            _workspaceExpenseDraft = null;
           });
         }
         return;
@@ -244,17 +275,25 @@ extension _MainShellPageNavigation on _MainShellPageState {
             _selectedTabIndex = _MainShellPageState._tabHome;
             _openedTrip = null;
             _openAddExpenseOnWorkspaceStart = false;
+            _workspaceExpenseDraft = null;
           });
         }
         return;
     }
   }
 
-  void _openWorkspaceInShell(Trip trip, {bool openAddExpense = false}) {
+  void _openWorkspaceInShell(
+    Trip trip, {
+    bool openAddExpense = false,
+    ExpenseDraft? draft,
+  }) {
     _updateState(() {
       _selectedTabIndex = _MainShellPageState._tabHome;
+      // A filled form needs a fresh trip page, also for the open trip.
+      if (draft != null) _workspaceSession++;
       _openedTrip = trip;
       _openAddExpenseOnWorkspaceStart = openAddExpense;
+      _workspaceExpenseDraft = draft;
     });
     unawaited(_refreshGlobalNotifications());
   }
@@ -266,6 +305,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
     _updateState(() {
       _openedTrip = null;
       _openAddExpenseOnWorkspaceStart = false;
+      _workspaceExpenseDraft = null;
     });
     _tripsCommandController.requestRefresh();
     _analyticsCommandController?.requestRefresh();

@@ -217,7 +217,9 @@ extension _TripsPageWidgets on _TripsPageState {
     children: [
       Expanded(
         child: Text(
-          _showArchived
+          _showQuickSplits && widget.quickSplitsTab != null
+              ? context.l10n.homeYourQuickSplits
+              : _showArchived
               ? context.l10n.homeYourArchivedTrips
               : context.l10n.homeYourActiveTrips,
           key: const ValueKey('home-trips-heading'),
@@ -253,13 +255,56 @@ extension _TripsPageWidgets on _TripsPageState {
     ],
   );
 
+  /// Shows trips, Quick splits or the archive.
+  void _selectHomeList({bool archived = false, bool quickSplits = false}) {
+    final quickChanged = _showQuickSplits != quickSplits;
+    _updateState(() {
+      _hasChosenFilter = true;
+      _showArchived = archived;
+      _showQuickSplits = quickSplits;
+    });
+    if (quickChanged) widget.onQuickSplitsShown?.call(quickSplits);
+  }
+
   Widget _buildTripFilters(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final t = context.l10n;
+    // Trips · ⚡ Quick splits · archive; Quick splits only when available.
+    final lists = [
+      (
+        key: 'home-active',
+        label: t.activeStatus,
+        icon: Icons.luggage_outlined,
+        archived: false,
+        quick: false,
+      ),
+      if (widget.quickSplitsTab != null)
+        (
+          key: 'home-quick-splits',
+          label: t.quickSplitsTitle,
+          icon: Icons.bolt_rounded,
+          archived: false,
+          quick: true,
+        ),
+      (
+        key: 'home-archived',
+        label: t.archivedStatus,
+        icon: Icons.inventory_2_outlined,
+        archived: true,
+        quick: false,
+      ),
+    ];
+    bool isSelected(({bool archived, bool quick}) list) => list.quick
+        ? _showQuickSplits && widget.quickSplitsTab != null
+        : !_showQuickSplits && _showArchived == list.archived;
+    final selectedIndex = lists.indexWhere(
+      (list) => isSelected((archived: list.archived, quick: list.quick)),
+    );
     return Center(
       child: ConstrainedBox(
         // Icons only, like the Friends / Requests switch; the names are in
         // tooltips and semantics, and the heading above says which list.
-        constraints: const BoxConstraints(maxWidth: 184),
+        constraints: BoxConstraints(maxWidth: 92.0 * lists.length),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colors.surfaceContainerHighest,
@@ -274,11 +319,17 @@ extension _TripsPageWidgets on _TripsPageState {
                     duration: MediaQuery.disableAnimationsOf(context)
                         ? Duration.zero
                         : const Duration(milliseconds: 150),
-                    alignment: _showArchived
-                        ? AlignmentDirectional.centerEnd
-                        : AlignmentDirectional.centerStart,
+                    alignment: AlignmentDirectional(
+                      lists.length == 1
+                          ? 0
+                          : -1 +
+                                2 *
+                                    selectedIndex.clamp(0, lists.length) /
+                                    (lists.length - 1),
+                      0,
+                    ),
                     child: FractionallySizedBox(
-                      widthFactor: 0.5,
+                      widthFactor: 1 / lists.length,
                       heightFactor: 1,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
@@ -291,46 +342,42 @@ extension _TripsPageWidgets on _TripsPageState {
                 ),
                 Row(
                   children: [
-                    for (final archived in [false, true])
+                    for (final list in lists)
                       Expanded(
                         child: Tooltip(
-                          message: archived
-                              ? context.l10n.archivedStatus
-                              : context.l10n.activeStatus,
+                          message: list.label,
                           child: Semantics(
-                            selected: _showArchived == archived,
+                            selected: isSelected((
+                              archived: list.archived,
+                              quick: list.quick,
+                            )),
                             button: true,
-                            label: archived
-                                ? context.l10n.archivedStatus
-                                : context.l10n.activeStatus,
+                            label: list.label,
                             excludeSemantics: true,
                             child: TextButton(
-                              key: ValueKey(
-                                archived ? 'home-archived' : 'home-active',
+                              key: ValueKey(list.key),
+                              onPressed: () => _selectHomeList(
+                                archived: list.archived,
+                                quickSplits: list.quick,
                               ),
-                              onPressed: () => _updateState(() {
-                                _hasChosenFilter = true;
-                                _showArchived = archived;
-                              }),
                               style: TextButton.styleFrom(
                                 minimumSize: const Size(48, 48),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 10,
                                   vertical: 12,
                                 ),
-                                foregroundColor: _showArchived == archived
+                                foregroundColor:
+                                    isSelected((
+                                      archived: list.archived,
+                                      quick: list.quick,
+                                    ))
                                     ? colors.onPrimary
                                     : colors.onSurfaceVariant,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24),
                                 ),
                               ),
-                              child: Icon(
-                                archived
-                                    ? Icons.inventory_2_outlined
-                                    : Icons.luggage_outlined,
-                                size: 26,
-                              ),
+                              child: Icon(list.icon, size: 26),
                             ),
                           ),
                         ),

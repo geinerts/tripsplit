@@ -21,6 +21,7 @@ require_once __DIR__ . '/actions/live_location_actions.php';
 require_once __DIR__ . '/actions/uploads_actions.php';
 require_once __DIR__ . '/actions/image_crop_actions.php';
 require_once __DIR__ . '/actions/expenses_actions.php';
+require_once __DIR__ . '/actions/quick_splits_actions.php';
 require_once __DIR__ . '/actions/expense_social_actions.php';
 require_once __DIR__ . '/actions/settlements_actions.php';
 require_once __DIR__ . '/actions/notifications_actions.php';

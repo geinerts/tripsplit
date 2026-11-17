@@ -41,7 +41,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
       body: _isWorkspaceOpen
           ? WorkspacePage(
               liveLocationController: widget.liveLocationController,
-              key: ValueKey('workspace-${_openedTrip!.id}'),
+              key: ValueKey('workspace-${_openedTrip!.id}-$_workspaceSession'),
               trip: _openedTrip!,
               workspaceController: widget.workspaceController,
               tripsController: widget.tripsController,
@@ -50,6 +50,17 @@ extension _MainShellPageWidgets on _MainShellPageState {
               showAppBar: false,
               showBottomNav: false,
               openAddExpenseOnStart: _openAddExpenseOnWorkspaceStart,
+              initialExpenseDraft: _workspaceExpenseDraft,
+              pickExpenseTarget: widget.quickSplitsController == null
+                  ? null
+                  : (formContext, current) =>
+                        _pickExpenseTarget(formContext, current: current),
+              onExpenseTargetChanged: widget.quickSplitsController == null
+                  ? null
+                  : _onExpenseTargetChanged,
+              onQuickSplitAddedToTrip: widget.quickSplitsController == null
+                  ? null
+                  : _onQuickSplitAddedToTrip,
               commandController: _workspaceCommandController,
               onExitRequested: _closeWorkspaceInShell,
               onTravelMapRequested: widget.travelPlacesRepository == null
@@ -79,6 +90,11 @@ extension _MainShellPageWidgets on _MainShellPageState {
                   showBottomNav: false,
                   commandController: _tripsCommandController,
                   onTripOpened: _openWorkspaceInShell,
+                  quickSplitsTab: widget.quickSplitsController == null
+                      ? null
+                      : _buildQuickSplitsTab,
+                  onQuickSplitsShown: _onQuickSplitsShown,
+                  onRefreshQuickSplits: widget.quickSplitsController?.load,
                   onServerTripsState: _onHomeServerTripsState,
                   onInteractionStateChanged: (busy) {
                     _homeInteractionBusy = busy;

@@ -2,7 +2,7 @@ part of 'workspace_page.dart';
 
 extension _WorkspacePageLoadingActions on _WorkspacePageState {
   Future<void> _runStartupAddExpenseFlow() async {
-    await _onAddExpensePressed();
+    await _openExpenseForm(draft: widget.initialExpenseDraft);
     if (!mounted) {
       return;
     }

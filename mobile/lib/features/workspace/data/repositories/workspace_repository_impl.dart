@@ -443,14 +443,15 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     String? subcategory,
     int? paidBy,
     String? receiptPath,
-  }) {
+  }) async {
     final mutationId = _newClientMutationId(
       type: 'add_expense',
       tripId: tripId,
     );
-    return _runMutationOrQueue(
-      remoteAction: () {
-        return _remote.addExpense(
+    int? expenseId;
+    final result = await _runMutationOrQueue(
+      remoteAction: () async {
+        expenseId = await _remote.addExpense(
           tripId: tripId,
           amount: amount,
           currencyCode: currencyCode,
@@ -488,6 +489,9 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
         );
       },
     );
+    return result.queued
+        ? result
+        : MutationResult(queued: false, expenseId: expenseId);
   }
 
   @override

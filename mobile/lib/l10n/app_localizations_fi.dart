@@ -1023,6 +1023,22 @@ class AppLocalizationsFi extends AppLocalizations {
   String get notificationTripStartsTomorrowBodyGeneric => 'Matkasi alkaa huomenna.';
 
   @override
+  String get notificationQuickSplitAddedTitle => 'Pikajako';
+
+  @override
+  String notificationQuickSplitAddedBodyWithNote(String name, String note) {
+    return '$name lisäsi sinut pikajakoon: $note';
+  }
+
+  @override
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount) {
+    return '$name lisäsi sinut pikajakoon ($amount)';
+  }
+
+  @override
+  String get notificationQuickSplitAddedBodyGeneric => 'Sinut lisättiin pikajakoon.';
+
+  @override
   String get notificationSettlementSentTitle => 'Tilisiirto merkitty lähetetyksi';
 
   @override
@@ -1732,6 +1748,110 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get homeYourActiveTrips => 'Aktiiviset matkasi';
+
+  @override
+  String get quickSplitsTitle => 'Pikajaot';
+
+  @override
+  String get homeYourQuickSplits => 'Pikajakosi';
+
+  @override
+  String get quickSplitLabel => 'Pikajako';
+
+  @override
+  String get quickSplitTargetHint => 'Ilman matkaa';
+
+  @override
+  String get expenseTargetTitle => 'Lisää kohteeseen';
+
+  @override
+  String get expenseTargetChange => 'vaihda';
+
+  @override
+  String get quickSplitSplitAction => 'Jaa';
+
+  @override
+  String get quickSplitAddPerson => 'Lisää';
+
+  @override
+  String get quickSplitAddPersonTitle => 'Lisää henkilö';
+
+  @override
+  String get quickSplitNameHint => 'Nimi (ei sovellusta)';
+
+  @override
+  String get quickSplitFriendsFailed => 'Kavereita ei voitu ladata. Voit silti lisätä nimen.';
+
+  @override
+  String get quickSplitNeedTwoPeople => 'Lisää vähintään yksi henkilö lisää.';
+
+  @override
+  String get quickSplitShareResult => 'Jaa tulos';
+
+  @override
+  String quickSplitShareTotal(String amount, String name) {
+    return 'Yhteensä $amount, maksoi $name';
+  }
+
+  @override
+  String get quickSplitShareFailed => 'Jakaminen epäonnistui.';
+
+  @override
+  String quickSplitPaidBy(String name) {
+    return 'maksoi $name';
+  }
+
+  @override
+  String quickSplitOfTotal(String total) {
+    return '/ $total';
+  }
+
+  @override
+  String quickSplitYourPart(String amount) {
+    return 'osuutesi $amount';
+  }
+
+  @override
+  String get quickSplitAddToTrip => 'Lisää matkaan';
+
+  @override
+  String get quickSplitAddToTripHint => 'Muuttuu matkan kuluksi';
+
+  @override
+  String get quickSplitAddToTripOnlyPayer => 'Vain maksaja voi lisätä sen matkaan.';
+
+  @override
+  String get quickSplitNoActiveTrip => 'Sinulla ei ole aktiivista matkaa.';
+
+  @override
+  String get quickSplitStillListed => 'Lisätty matkaan, mutta näkyy yhä pikajaoissa.';
+
+  @override
+  String get quickSplitDeleteTitle => 'Poistetaanko pikajako?';
+
+  @override
+  String get quickSplitDeleteMessage => 'Se katoaa kaikilta osallisilta.';
+
+  @override
+  String get quickSplitDeleted => 'Pikajako poistettu';
+
+  @override
+  String get quickSplitsEmpty => 'Pikajaot, joissa olet mukana, näkyvät täällä.';
+
+  @override
+  String get quickSplitsLoadFailed => 'Pikajakoja ei voitu ladata.';
+
+  @override
+  String get quickSplitsOffline => 'Pikajaot tarvitsevat internetin.';
+
+  @override
+  String get quickSplitsShowMore => 'Näytä lisää';
+
+  @override
+  String get receiptButtonTooltip => 'Skannaa tai valitse kuitti';
+
+  @override
+  String get scanReceiptAction => 'Skannaa kuitti';
 
   @override
   String get homeYourArchivedTrips => 'Arkistoidut matkasi';

@@ -26,6 +26,7 @@ function erase_account_for_deletion(PDO $pdo, array $user): array
     $avatarPath = trim((string) ($user['avatar_path'] ?? ''));
     $providerTokens = [];
     delete_user_travel_places($pdo, $userId);
+    $quickSplitReceipts = function_exists('delete_user_quick_splits') ? delete_user_quick_splits($pdo, $userId) : [];
     $pdo->prepare('DELETE FROM ' . table_name('friends')
         . ' WHERE user_a_id = :a OR user_b_id = :b')->execute(['a' => $userId, 'b' => $userId]);
     if (social_auth_identity_table_available($pdo)) {
@@ -43,7 +44,7 @@ function erase_account_for_deletion(PDO $pdo, array $user): array
     revoke_refresh_tokens_for_user($pdo, $userId);
     deactivate_push_tokens_for_user($pdo, $userId);
     consume_account_action_proofs($pdo, $userId);
-    return ['avatar_path' => $avatarPath, 'provider_tokens' => $providerTokens];
+    return ['avatar_path' => $avatarPath, 'provider_tokens' => $providerTokens, 'quick_split_receipts' => $quickSplitReceipts];
 }
 
 /** Days after sign-up when a never-verified, never-used account is erased; always after the grace period. */
@@ -132,6 +133,10 @@ function finish_account_deletion_cleanup(?array $cleanup): void
     if ($avatarPath !== '') {
         try { delete_avatar_file($avatarPath); }
         catch (Throwable $error) { error_log('Account deletion avatar cleanup failed.'); }
+    }
+    foreach ((array) ($cleanup['quick_split_receipts'] ?? []) as $receiptPath) {
+        try { delete_receipt_file((string) $receiptPath); }
+        catch (Throwable $error) { error_log('Account deletion receipt cleanup failed.'); }
     }
 }
 

@@ -1026,6 +1026,22 @@ class AppLocalizationsCs extends AppLocalizations {
   String get notificationTripStartsTomorrowBodyGeneric => 'Tvůj výlet začíná zítra.';
 
   @override
+  String get notificationQuickSplitAddedTitle => 'Rychlé rozdělení';
+
+  @override
+  String notificationQuickSplitAddedBodyWithNote(String name, String note) {
+    return '$name tě přidal(a) do rychlého rozdělení: $note';
+  }
+
+  @override
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount) {
+    return '$name tě přidal(a) do rychlého rozdělení na $amount';
+  }
+
+  @override
+  String get notificationQuickSplitAddedBodyGeneric => 'Byl(a) jsi přidán(a) do rychlého rozdělení.';
+
+  @override
   String get notificationSettlementSentTitle => 'Převod označen jako odeslaný';
 
   @override
@@ -1738,6 +1754,110 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get homeYourActiveTrips => 'Vaše aktivní výlety';
+
+  @override
+  String get quickSplitsTitle => 'Rychlá rozdělení';
+
+  @override
+  String get homeYourQuickSplits => 'Tvoje rychlá rozdělení';
+
+  @override
+  String get quickSplitLabel => 'Rychlé rozdělení';
+
+  @override
+  String get quickSplitTargetHint => 'Bez cesty';
+
+  @override
+  String get expenseTargetTitle => 'Přidat do';
+
+  @override
+  String get expenseTargetChange => 'změnit';
+
+  @override
+  String get quickSplitSplitAction => 'Rozdělit';
+
+  @override
+  String get quickSplitAddPerson => 'Přidat';
+
+  @override
+  String get quickSplitAddPersonTitle => 'Přidat osobu';
+
+  @override
+  String get quickSplitNameHint => 'Jméno (bez aplikace)';
+
+  @override
+  String get quickSplitFriendsFailed => 'Přátele se nepodařilo načíst. Jméno můžeš přidat i tak.';
+
+  @override
+  String get quickSplitNeedTwoPeople => 'Přidej aspoň jednu další osobu.';
+
+  @override
+  String get quickSplitShareResult => 'Sdílet výsledek';
+
+  @override
+  String quickSplitShareTotal(String amount, String name) {
+    return 'Celkem $amount, platil(a) $name';
+  }
+
+  @override
+  String get quickSplitShareFailed => 'Sdílení se nepovedlo.';
+
+  @override
+  String quickSplitPaidBy(String name) {
+    return 'platil(a) $name';
+  }
+
+  @override
+  String quickSplitOfTotal(String total) {
+    return 'z $total';
+  }
+
+  @override
+  String quickSplitYourPart(String amount) {
+    return 'tvůj podíl $amount';
+  }
+
+  @override
+  String get quickSplitAddToTrip => 'Přidat do cesty';
+
+  @override
+  String get quickSplitAddToTripHint => 'Stane se výdajem cesty';
+
+  @override
+  String get quickSplitAddToTripOnlyPayer => 'Do cesty to může přidat jen ten, kdo platil.';
+
+  @override
+  String get quickSplitNoActiveTrip => 'Nemáš žádnou aktivní cestu.';
+
+  @override
+  String get quickSplitStillListed => 'Přidáno do cesty, ale stále je v rychlých rozděleních.';
+
+  @override
+  String get quickSplitDeleteTitle => 'Smazat rychlé rozdělení?';
+
+  @override
+  String get quickSplitDeleteMessage => 'Zmizí všem, kdo v něm jsou.';
+
+  @override
+  String get quickSplitDeleted => 'Rychlé rozdělení smazáno';
+
+  @override
+  String get quickSplitsEmpty => 'Zde se zobrazí rychlá rozdělení, ve kterých jsi.';
+
+  @override
+  String get quickSplitsLoadFailed => 'Rychlá rozdělení se nepodařilo načíst.';
+
+  @override
+  String get quickSplitsOffline => 'Rychlá rozdělení potřebují internet.';
+
+  @override
+  String get quickSplitsShowMore => 'Zobrazit další';
+
+  @override
+  String get receiptButtonTooltip => 'Naskenovat nebo vybrat účtenku';
+
+  @override
+  String get scanReceiptAction => 'Naskenovat účtenku';
 
   @override
   String get homeYourArchivedTrips => 'Vaše archivované výlety';

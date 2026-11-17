@@ -50,6 +50,7 @@ import '../../../../core/ui/user_profile_payment_section.dart';
 import '../../../../core/ui/user_profile_page.dart';
 import '../../../../core/ui/user_shared_trips_section.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../../../friends/domain/entities/friend_user.dart';
 import '../../../friends/presentation/controllers/friends_controller.dart';
 import '../../../subscriptions/domain/entities/premium_access.dart';
 import '../../../trips/domain/entities/trip.dart';
@@ -65,6 +66,7 @@ import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_participant.dart';
 import '../../domain/entities/expense_reaction.dart';
+import '../../domain/entities/expense_draft.dart';
 import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/services/expense_split_math.dart';
@@ -88,6 +90,7 @@ import '../widgets/receipt_viewer_page.dart';
 import '../widgets/receipt_attachment_card.dart';
 import '../widgets/workspace_input_pages.dart';
 import '../controllers/workspace_controller.dart';
+import '../../../quick_splits/domain/quick_split.dart';
 
 part 'workspace_page_actions_loading.dart';
 part 'workspace_page_actions_members.dart';
@@ -109,6 +112,8 @@ part 'workspace_page_tab_expenses_social.dart';
 part 'workspace_page_tab_activity.dart';
 part 'workspace_page_tab_random.dart';
 part 'workspace_page_dialogs.dart';
+part 'workspace_expense_form_setup.dart';
+part 'workspace_quick_split_form.dart';
 part 'workspace_page_expense_editors.dart';
 part 'workspace_page_expense_items.dart';
 part 'workspace_page_expense_type_picker.dart';
@@ -135,6 +140,10 @@ class WorkspacePage extends StatefulWidget {
     this.onTravelMapRequested,
     this.onExportTripRequested,
     this.liveLocationController,
+    this.initialExpenseDraft,
+    this.pickExpenseTarget,
+    this.onExpenseTargetChanged,
+    this.onQuickSplitAddedToTrip,
   });
 
   final Trip trip;
@@ -151,6 +160,21 @@ class WorkspacePage extends StatefulWidget {
   final Future<void> Function()? onTravelMapRequested;
   final Future<void> Function()? onExportTripRequested;
   final LiveLocationController? liveLocationController;
+
+  /// Fills the Add expense form that opens on start.
+  final ExpenseDraft? initialExpenseDraft;
+
+  /// Offers Quick split and other trips under the form title. Null hides "▾".
+  final Future<ExpenseTarget?> Function(BuildContext context, Trip current)?
+  pickExpenseTarget;
+
+  /// The form was closed to continue the same expense somewhere else.
+  final void Function(ExpenseTarget target, ExpenseDraft draft)?
+  onExpenseTargetChanged;
+
+  /// A quick split became the expense [expenseId] of this trip.
+  final Future<void> Function(int quickSplitId, int tripId, int expenseId)?
+  onQuickSplitAddedToTrip;
 
   @override
   State<WorkspacePage> createState() => _WorkspacePageState();

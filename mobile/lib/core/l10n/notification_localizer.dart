@@ -21,6 +21,12 @@ final RegExp _friendInviteAcceptedBodyPattern = RegExp(
 );
 
 final RegExp _tripStartsTomorrowPattern = RegExp(r'^"(.+)" starts tomorrow\.$');
+final RegExp _quickSplitNotePattern = RegExp(
+  r'^(.+?) added you to a quick split: (.+)$',
+);
+final RegExp _quickSplitAmountPattern = RegExp(
+  r'^(.+?) added you to a quick split of (.+)$',
+);
 final RegExp _tripAddedBodyPattern = RegExp(
   r'^(.+?) added you to trip "(.+?)"\.$',
 );
@@ -504,6 +510,25 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
           body: t.notificationSettlementReminderBodyGeneric,
         );
       }
+    case 'quick_split_added':
+      {
+        final note = _quickSplitNotePattern.firstMatch(rawBody);
+        final amount = _quickSplitAmountPattern.firstMatch(rawBody);
+        return LocalizedWorkspaceNotification(
+          title: t.notificationQuickSplitAddedTitle,
+          body: note != null
+              ? t.notificationQuickSplitAddedBodyWithNote(
+                  note.group(1)!.trim(),
+                  note.group(2)!.trim(),
+                )
+              : amount != null
+              ? t.notificationQuickSplitAddedBodyWithAmount(
+                  amount.group(1)!.trim(),
+                  amount.group(2)!.trim(),
+                )
+              : t.notificationQuickSplitAddedBodyGeneric,
+        );
+      }
     case 'trip_starts_tomorrow':
       {
         final match = _tripStartsTomorrowPattern.firstMatch(rawBody);
@@ -611,6 +636,7 @@ String? notificationActorName(WorkspaceNotification notification) {
       _commentMentionGenericPattern,
     ],
     'live_location_started' => [_liveLocationPattern],
+    'quick_split_added' => [_quickSplitNotePattern, _quickSplitAmountPattern],
     'expense_comment_added' => [
       _commentAddedWithNotePattern,
       _commentAddedGenericPattern,

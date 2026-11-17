@@ -23,7 +23,10 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
         false;
   }
 
-  Future<void> _openExpenseForm({TripExpense? existing}) async {
+  Future<void> _openExpenseForm({
+    TripExpense? existing,
+    ExpenseDraft? draft,
+  }) async {
     if (_snapshot == null || _isMutating || _isAddExpenseDialogOpen) return;
     if (!_snapshot!.isActive) {
       _showSnack(context.l10n.tripClosedExpensesReadOnly, isError: true);
@@ -40,6 +43,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
       result = await _showExpenseDialog(
         users: _snapshot!.users,
         existing: existing,
+        draft: existing == null ? _seedFromDraft(draft) : null,
         recentExpenses: _snapshot!.expenses,
         onSubmit: (formContext, form) async {
           if (existing != null) {
@@ -98,6 +102,13 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                     removeReceipt: form.removeReceipt,
                   );
             queued = mutation.queued;
+            final quickSplitId = draft?.quickSplitId;
+            final newExpenseId = mutation.expenseId;
+            if (existing == null &&
+                quickSplitId != null &&
+                newExpenseId != null) {
+              await _markQuickSplitAdded(quickSplitId, newExpenseId);
+            }
             if (mounted && queued) {
               _localExpenseRevision++;
               _workspaceOffline = true;
@@ -143,6 +154,59 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
           : (existing == null
                 ? context.l10n.expenseAdded
                 : context.l10n.expenseUpdated),
+    );
+  }
+
+  /// Leaves the quick split once its trip expense exists. A failure only
+  /// leaves it in Quick splits; the expense is already saved.
+  Future<void> _markQuickSplitAdded(int quickSplitId, int expenseId) async {
+    try {
+      await widget.onQuickSplitAddedToTrip?.call(
+        quickSplitId,
+        widget.trip.id,
+        expenseId,
+      );
+    } catch (_) {
+      if (mounted) {
+        _showSnack(context.l10n.quickSplitStillListed, isError: true);
+      }
+    }
+  }
+
+  /// A draft for this trip: people who aren't in it are left out, and the
+  /// split falls back to equal when someone in it is missing.
+  _ExpenseFormSeed? _seedFromDraft(ExpenseDraft? draft) {
+    if (draft == null) return null;
+    final members = <int>{
+      for (final user in _snapshot?.users ?? const <WorkspaceUser>[])
+        if (user.id > 0) user.id,
+    };
+    final everyoneIn =
+        draft.participantUserIds.every(members.contains) &&
+        draft.items.every(
+          (item) => item.participantIds.every(members.contains),
+        );
+    final keepSplit = draft.hasPeople && everyoneIn;
+    final participants = draft.participantUserIds
+        .where(members.contains)
+        .toList(growable: false);
+    final payer = draft.payerUserId;
+    return _ExpenseFormSeed(
+      amount: draft.amount,
+      currencyCode: draft.currencyCode,
+      note: draft.note,
+      category: draft.category,
+      subcategory: draft.subcategory,
+      date: draft.date,
+      receipt: draft.receipt,
+      payerId: payer != null && members.contains(payer) ? payer : null,
+      participantIds: draft.splitMode == 'itemized' && keepSplit
+          ? const []
+          : participants,
+      splitMode: keepSplit ? draft.splitMode : 'equal',
+      splitValues: keepSplit ? draft.splitValues : const {},
+      items: keepSplit ? draft.items : const [],
+      extraAmount: keepSplit ? draft.extraAmount : 0,
     );
   }
 

@@ -719,7 +719,7 @@ function notification_in_app_pref_key_for_type(string $type): ?string
         return null;
     }
 
-    if ($normalized === 'expense_added') {
+    if ($normalized === 'expense_added' || $normalized === 'quick_split_added') {
         return 'in_app_expense_added_enabled';
     }
 
@@ -804,7 +804,7 @@ function notification_push_pref_key_for_type(string $type): ?string
     }
 
     $categories = [
-        'push_expense_added_enabled' => ['expense_added'],
+        'push_expense_added_enabled' => ['expense_added', 'quick_split_added'],
         'push_friend_invites_enabled' => ['friend_invite', 'friend_invite_received', 'friend_invite_accepted'],
         'push_comments_enabled' => ['expense_comment_mention', 'expense_comment_added'],
         'push_trip_invites_enabled' => ['trip_invitation', 'trip_added', 'trip_member_added', 'trip_member_removed'],

@@ -1023,6 +1023,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationTripStartsTomorrowBodyGeneric => 'Your trip starts tomorrow.';
 
   @override
+  String get notificationQuickSplitAddedTitle => 'Quick split';
+
+  @override
+  String notificationQuickSplitAddedBodyWithNote(String name, String note) {
+    return '$name added you to a quick split: $note';
+  }
+
+  @override
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount) {
+    return '$name added you to a quick split of $amount';
+  }
+
+  @override
+  String get notificationQuickSplitAddedBodyGeneric => 'You were added to a quick split.';
+
+  @override
   String get notificationSettlementSentTitle => 'Transfer marked as sent';
 
   @override
@@ -1732,6 +1748,110 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeYourActiveTrips => 'Your active trips';
+
+  @override
+  String get quickSplitsTitle => 'Quick splits';
+
+  @override
+  String get homeYourQuickSplits => 'Your quick splits';
+
+  @override
+  String get quickSplitLabel => 'Quick split';
+
+  @override
+  String get quickSplitTargetHint => 'Not part of a trip';
+
+  @override
+  String get expenseTargetTitle => 'Add to';
+
+  @override
+  String get expenseTargetChange => 'change';
+
+  @override
+  String get quickSplitSplitAction => 'Split';
+
+  @override
+  String get quickSplitAddPerson => 'Add';
+
+  @override
+  String get quickSplitAddPersonTitle => 'Add someone';
+
+  @override
+  String get quickSplitNameHint => 'Name (no app needed)';
+
+  @override
+  String get quickSplitFriendsFailed => 'Couldn\'t load friends. You can still add a name.';
+
+  @override
+  String get quickSplitNeedTwoPeople => 'Add at least one more person.';
+
+  @override
+  String get quickSplitShareResult => 'Share result';
+
+  @override
+  String quickSplitShareTotal(String amount, String name) {
+    return 'Total $amount, paid by $name';
+  }
+
+  @override
+  String get quickSplitShareFailed => 'Couldn\'t share.';
+
+  @override
+  String quickSplitPaidBy(String name) {
+    return 'paid by $name';
+  }
+
+  @override
+  String quickSplitOfTotal(String total) {
+    return 'of $total';
+  }
+
+  @override
+  String quickSplitYourPart(String amount) {
+    return 'your part $amount';
+  }
+
+  @override
+  String get quickSplitAddToTrip => 'Add to a trip';
+
+  @override
+  String get quickSplitAddToTripHint => 'Becomes a trip expense';
+
+  @override
+  String get quickSplitAddToTripOnlyPayer => 'Only the person who paid can add it to a trip.';
+
+  @override
+  String get quickSplitNoActiveTrip => 'You have no active trip.';
+
+  @override
+  String get quickSplitStillListed => 'Added to the trip, but it\'s still in Quick splits.';
+
+  @override
+  String get quickSplitDeleteTitle => 'Delete quick split?';
+
+  @override
+  String get quickSplitDeleteMessage => 'It disappears for everyone in it.';
+
+  @override
+  String get quickSplitDeleted => 'Quick split deleted';
+
+  @override
+  String get quickSplitsEmpty => 'Quick splits you\'re in show up here.';
+
+  @override
+  String get quickSplitsLoadFailed => 'Couldn\'t load quick splits.';
+
+  @override
+  String get quickSplitsOffline => 'Quick splits need internet.';
+
+  @override
+  String get quickSplitsShowMore => 'Show more';
+
+  @override
+  String get receiptButtonTooltip => 'Scan or pick a receipt';
+
+  @override
+  String get scanReceiptAction => 'Scan receipt';
 
   @override
   String get homeYourArchivedTrips => 'Your archived trips';

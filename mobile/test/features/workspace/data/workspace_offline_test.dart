@@ -34,7 +34,7 @@ class Remote extends Fake implements WorkspaceRemoteDataSource {
   @override
   dynamic noSuchMethod(Invocation invocation) {
     if (invocation.memberName == #addExpense) {
-      return Future<void>(() {
+      return Future<int?>(() {
         final args = invocation.namedArguments;
         final id = args[#clientMutationId] as String;
         mutationIds.add(id);
@@ -51,6 +51,7 @@ class Remote extends Fake implements WorkspaceRemoteDataSource {
             'paid_by_id': 7,
           },
         );
+        return confirmed[id]!['id'] as int;
       });
     }
     return super.noSuchMethod(invocation);

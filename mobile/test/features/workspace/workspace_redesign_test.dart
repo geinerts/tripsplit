@@ -44,7 +44,12 @@ import 'package:tripsplit/features/workspace/domain/entities/payment_item.dart';
 import 'package:tripsplit/features/workspace/domain/entities/workspace_activity_event.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_comment.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_comment_reaction.dart';
+import 'package:tripsplit/features/workspace/domain/entities/expense_draft.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_item.dart';
+import 'package:tripsplit/features/quick_splits/data/quick_splits_repository.dart';
+import 'package:tripsplit/features/quick_splits/domain/quick_split.dart';
+import 'package:tripsplit/features/quick_splits/presentation/quick_splits_controller.dart';
+import 'package:tripsplit/features/quick_splits/presentation/quick_splits_views.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_split_value.dart';
 import 'package:tripsplit/features/workspace/domain/entities/mutation_result.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_reaction.dart';
@@ -527,8 +532,10 @@ class _Workspace implements WorkspaceController {
     savedReceiptPath = receiptPath;
     if (saveGate != null) await saveGate!.future;
     if (saveFailure) throw const ApiException('Save failed');
-    return const MutationResult(queued: true);
+    return addResult;
   }
+
+  MutationResult addResult = const MutationResult(queued: true);
 
   @override
   Future<MutationResult> updateExpense({
@@ -658,6 +665,10 @@ Future<void> _mount(
   GlobalKey? boundary,
   Map<String, bool>? premiumFeatures,
   Future<void> Function()? onExportTripRequested,
+  ExpenseDraft? initialExpenseDraft,
+  Future<ExpenseTarget?> Function(BuildContext, Trip)? pickExpenseTarget,
+  void Function(ExpenseTarget, ExpenseDraft)? onExpenseTargetChanged,
+  Future<void> Function(int, int, int)? onQuickSplitAddedToTrip,
 }) async {
   tester.view.physicalSize = Size(width, height);
   tester.view.devicePixelRatio = 1;
@@ -729,6 +740,10 @@ Future<void> _mount(
         commandController: commands,
         showAppBar: false,
         showBottomNav: false,
+        initialExpenseDraft: initialExpenseDraft,
+        pickExpenseTarget: pickExpenseTarget,
+        onExpenseTargetChanged: onExpenseTargetChanged,
+        onQuickSplitAddedToTrip: onQuickSplitAddedToTrip,
       ),
     ),
   );
@@ -4365,7 +4380,7 @@ void main() {
               '1234.56',
             );
             await tester.scrollUntilVisible(
-              find.text(t.addReceiptAction),
+              find.byKey(const ValueKey('expense-category')),
               200,
               scrollable: find.byType(Scrollable).last,
             );
@@ -4452,14 +4467,14 @@ void main() {
           tester.element(find.byType(WorkspacePage, skipOffstage: false)),
         )!;
         for (final label in [
-          t.takePhotoAction,
+          t.scanReceiptAction,
           t.chooseFromLibraryAction,
           t.chooseReceiptFile,
         ]) {
           expect(find.text(label), findsOneWidget);
         }
         final label = source == 'camera'
-            ? t.takePhotoAction
+            ? t.scanReceiptAction
             : source == 'gallery'
             ? t.chooseFromLibraryAction
             : t.chooseReceiptFile;
@@ -4500,7 +4515,8 @@ void main() {
           find.byKey(const ValueKey('receipt-attachment-card')),
           findsOneWidget,
         );
-        expect(find.text(t.replaceReceiptAction), findsOneWidget);
+        // Replacing is the same camera button; no separate row.
+        expect(find.text(t.replaceReceiptAction), findsNothing);
         await tester.ensureVisible(
           find.byKey(const ValueKey('receipt-attachment-card')),
         );
@@ -4539,7 +4555,7 @@ void main() {
             find.byKey(const ValueKey('receipt-attachment-card')),
             findsNothing,
           );
-          expect(find.text(t.addReceiptAction), findsOneWidget);
+          expect(find.byKey(const ValueKey('receipt-add')), findsOneWidget);
         }
 
         await tester.enterText(
@@ -4592,7 +4608,7 @@ void main() {
         final t = AppLocalizations.of(
           tester.element(find.byType(WorkspacePage, skipOffstage: false)),
         )!;
-        await tester.tap(find.text(t.takePhotoAction));
+        await tester.tap(find.text(t.scanReceiptAction));
         await tester.pumpAndSettle();
         expect(controller.receiptUploads, isEmpty);
         expect(
@@ -4606,8 +4622,13 @@ void main() {
         );
         expect(
           tester
-              .widget<TextButton>(find.byKey(const ValueKey('receipt-add')))
-              .onPressed,
+              .widget<InkWell>(
+                find.descendant(
+                  of: find.byKey(const ValueKey('receipt-add')),
+                  matching: find.byType(InkWell),
+                ),
+              )
+              .onTap,
           isNotNull,
         );
         if (denied) {
@@ -6008,4 +6029,506 @@ void main() {
       });
     }
   }
+
+  group('Quick split', () {
+    QuickSplit fixture() => QuickSplit.fromJson({
+      'id': 31,
+      'note': 'Dinner at Lido',
+      'category': 'food',
+      'date': '2026-11-16',
+      'amount': 84,
+      'currency_code': 'EUR',
+      'people_count': 4,
+      'my_amount': 21,
+      'paid_by_me': true,
+      'paid_by_name': 'Matiss',
+      'can_edit': true,
+      'split_mode': 'equal',
+      'created_by': 7,
+      'people': [
+        for (final p in [
+          (1, 7, 'Matiss', true),
+          (2, 8, 'Valērija', false),
+          (3, null, 'Andris', false),
+          (4, 10, 'Kate', false),
+        ])
+          {
+            'id': p.$1,
+            'user_id': p.$2,
+            'name': p.$3,
+            'is_me': p.$4,
+            'is_payer': p.$4,
+            'amount': 21,
+          },
+      ],
+    });
+
+    Future<void> mountHost(
+      WidgetTester tester, {
+      required Future<QuickSplit> Function(QuickSplitInput) save,
+      bool dark = false,
+      GlobalKey? boundary,
+      ValueChanged<QuickSplit?>? onDone,
+    }) async {
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      final app = MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: dark ? AppTheme.dark() : AppTheme.light(),
+        locale: const Locale('en'),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(disableAnimations: true),
+          child: child!,
+        ),
+        home: Scaffold(
+          body: Builder(
+            builder: (context) => Center(
+              child: TextButton(
+                key: const ValueKey('open-quick-split'),
+                onPressed: () async {
+                  final saved = await showQuickSplitForm(
+                    context,
+                    authController: _Auth(),
+                    friendsController: _Friends(),
+                    workspaceController: _Workspace(),
+                    save: save,
+                    pickTarget: (_) async => null,
+                    onTargetChanged: (_, _) {},
+                  );
+                  onDone?.call(saved);
+                },
+                child: const Text('open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpWidget(
+        boundary == null ? app : RepaintBoundary(key: boundary, child: app),
+      );
+      await tester.tap(find.byKey(const ValueKey('open-quick-split')));
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> addPeople(WidgetTester tester) async {
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-add-person')),
+      );
+      await tester.tap(find.byKey(const ValueKey('quick-split-friend-8')));
+      await tester.pumpAndSettle();
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-add-person')),
+      );
+      await tester.enterText(
+        find.byKey(const ValueKey('quick-split-name')),
+        'Andris',
+      );
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('quick-split-name-add')));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('form is Add expense with the Quick split chip and camera', (
+      tester,
+    ) async {
+      QuickSplitInput? sent;
+      QuickSplit? result;
+      await mountHost(
+        tester,
+        save: (input) async {
+          sent = input;
+          return fixture();
+        },
+        onDone: (saved) => result = saved,
+      );
+      final t = AppLocalizations.of(
+        tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+      )!;
+      expect(find.text(t.addExpenseTitle), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('expense-target')),
+          matching: find.text(t.quickSplitLabel),
+        ),
+        findsOneWidget,
+      );
+      // The camera sits left of the amount; there is no "Add receipt" row.
+      expect(
+        tester.getCenter(find.byKey(const ValueKey('receipt-add'))).dx,
+        lessThan(
+          tester
+              .getCenter(find.byKey(const ValueKey('expense-form-amount')))
+              .dx,
+        ),
+      );
+      expect(find.text(t.addReceiptAction), findsNothing);
+
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-form-amount')),
+        '90',
+      );
+      await selectExpenseFood(tester);
+      // Alone it can't be saved.
+      await visibleTap(
+        tester,
+        find.widgetWithText(ElevatedButton, t.quickSplitSplitAction),
+      );
+      expect(find.text(t.quickSplitNeedTwoPeople), findsOneWidget);
+      expect(sent, isNull);
+
+      await addPeople(tester);
+      expect(
+        find.byKey(const ValueKey('expense-participant-8')),
+        findsOneWidget,
+      );
+      expect(find.text('Andris'), findsOneWidget);
+      await visibleTap(
+        tester,
+        find.widgetWithText(ElevatedButton, t.quickSplitSplitAction),
+      );
+      expect(sent, isNotNull);
+      final json = sent!.toJson();
+      expect(json['people'], [
+        {'key': 'p7', 'user_id': 7},
+        {'key': 'p8', 'user_id': 8},
+        {'key': 'p2000000001', 'name': 'Andris'},
+      ]);
+      expect(json['paid_by'], 'p7');
+      expect(json['split_mode'], 'equal');
+      expect(json['participants'], ['p7', 'p8', 'p2000000001']);
+      expect(json['amount'], 90.0);
+      expect(json['category'], 'food');
+      expect(json['client_mutation_id'], startsWith('qs_7_'));
+      expect(result?.id, 31);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('a quick split fills the trip form and leaves after saving', (
+      tester,
+    ) async {
+      final moved = <List<int>>[];
+      final controller = _Workspace()
+        ..addResult = const MutationResult(queued: false, expenseId: 950);
+      await _mount(
+        tester,
+        controller,
+        openAddExpenseOnStart: true,
+        initialExpenseDraft: const ExpenseDraft(
+          quickSplitId: 31,
+          amount: 84,
+          currencyCode: 'EUR',
+          note: 'Dinner at Lido',
+          category: 'food',
+          date: '2026-11-16',
+          payerUserId: 7,
+          participantUserIds: [7, 8],
+          splitMode: 'exact',
+          splitValues: {7: 50, 8: 34},
+        ),
+        onQuickSplitAddedToTrip: (id, trip, expense) async =>
+            moved.add([id, trip, expense]),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<TextField>(
+              find.byKey(const ValueKey('expense-form-amount')),
+            )
+            .controller!
+            .text,
+        '84.00',
+      );
+      final t = AppLocalizations.of(
+        tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+      )!;
+      await visibleTap(
+        tester,
+        find.widgetWithText(ElevatedButton, t.addAction),
+      );
+      expect(controller.savedMode, 'exact');
+      expect(controller.savedParticipants, [7, 8]);
+      expect(controller.savedSplits?.map((s) => s.value), [50, 34]);
+      expect(moved, [
+        [31, 1, 950],
+      ]);
+      await disposePage(tester);
+    });
+
+    testWidgets('people outside the trip make the split equal again', (
+      tester,
+    ) async {
+      final controller = _Workspace();
+      await _mount(
+        tester,
+        controller,
+        openAddExpenseOnStart: true,
+        initialExpenseDraft: const ExpenseDraft(
+          amount: 30,
+          category: 'food',
+          participantUserIds: [7, 8, 99],
+          splitMode: 'exact',
+          splitValues: {7: 10, 8: 10, 99: 10},
+        ),
+      );
+      await tester.pumpAndSettle();
+      final t = AppLocalizations.of(
+        tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+      )!;
+      await visibleTap(
+        tester,
+        find.widgetWithText(ElevatedButton, t.addAction),
+      );
+      expect(controller.savedMode, 'equal');
+      expect(controller.savedParticipants, [7, 8]);
+      await disposePage(tester);
+    });
+
+    testWidgets('trip form switches to Quick split and keeps the amount', (
+      tester,
+    ) async {
+      final commands = WorkspacePageCommandController();
+      ExpenseTarget? target;
+      ExpenseDraft? carried;
+      await _mount(
+        tester,
+        _Workspace(),
+        commands: commands,
+        pickExpenseTarget: (_, _) async => const ExpenseTarget.quickSplit(),
+        onExpenseTargetChanged: (to, draft) {
+          target = to;
+          carried = draft;
+        },
+      );
+      await tester.pumpAndSettle();
+      commands.requestOpenAddExpense();
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-form-amount')),
+        '12.50',
+      );
+      await tester.tap(find.byKey(const ValueKey('expense-target')));
+      await tester.pumpAndSettle();
+      expect(target?.isQuickSplit, isTrue);
+      expect(carried?.amount, 12.5);
+      expect(carried?.hasPeople, isFalse);
+      expect(find.byKey(const ValueKey('expense-form-amount')), findsNothing);
+      await disposePage(tester);
+      commands.dispose();
+    });
+
+    testWidgets('sheet shows each amount; only the creator gets actions', (
+      tester,
+    ) async {
+      for (final creator in [true, false]) {
+        final split = creator
+            ? fixture()
+            : QuickSplit.fromJson({
+                ...{
+                  'id': 31,
+                  'note': 'Dinner at Lido',
+                  'category': 'food',
+                  'date': '2026-11-16',
+                  'amount': 84,
+                  'currency_code': 'EUR',
+                  'can_edit': false,
+                  'people': [
+                    {'id': 1, 'user_id': 7, 'name': 'Matiss', 'amount': 42},
+                    {
+                      'id': 2,
+                      'user_id': 8,
+                      'name': 'Anna',
+                      'is_payer': true,
+                      'amount': 42,
+                    },
+                  ],
+                },
+              });
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.light(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: QuickSplitSheet(split: split)),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Dinner at Lido'), findsOneWidget);
+        expect(find.textContaining('42.00'), findsNWidgets(creator ? 0 : 2));
+        expect(find.byKey(const ValueKey('quick-split-share')), findsOneWidget);
+        for (final key in [
+          'quick-split-add-to-trip',
+          'quick-split-edit',
+          'quick-split-delete',
+        ]) {
+          expect(
+            find.byKey(ValueKey(key)),
+            creator ? findsOneWidget : findsNothing,
+          );
+        }
+      }
+    });
+
+    testWidgets('quick split review images', (tester) async {
+      if (!const bool.fromEnvironment('QUICK_SPLIT_PREVIEWS')) return;
+      Future<void> capture(GlobalKey key, String name) => tester.runAsync(
+        () async {
+          final image =
+              await (key.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File('../output/design/quick-split/$name.png');
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        },
+      );
+      for (final dark in [false, true]) {
+        final mode = dark ? 'dark' : 'light';
+        final key = GlobalKey();
+        await mountHost(
+          tester,
+          save: (_) async => fixture(),
+          dark: dark,
+          boundary: key,
+        );
+        await tester.enterText(
+          find.byKey(const ValueKey('expense-form-amount')),
+          '84',
+        );
+        await selectExpenseFood(tester);
+        final t = AppLocalizations.of(
+          tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+        )!;
+        await tester.enterText(
+          find.byWidgetPredicate(
+            (w) => w is TextField && w.decoration?.labelText == t.noteLabel,
+          ),
+          'Dinner at Lido',
+        );
+        await addPeople(tester);
+        FocusManager.instance.primaryFocus?.unfocus();
+        await tester.pumpAndSettle();
+        Scrollable.of(
+          tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+        ).position.jumpTo(0);
+        await tester.pumpAndSettle();
+        await capture(key, '$mode-form');
+
+        final sheetKey = GlobalKey();
+        await tester.pumpWidget(
+          RepaintBoundary(
+            key: sheetKey,
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: dark ? AppTheme.dark() : AppTheme.light(),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: Builder(
+                builder: (context) => Scaffold(
+                  body: Center(
+                    child: TextButton(
+                      key: const ValueKey('open-sheet'),
+                      onPressed: () =>
+                          showQuickSplitSheet(context, split: fixture()),
+                      child: const Text('sheet'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.byKey(const ValueKey('open-sheet')));
+        await tester.pumpAndSettle();
+        await capture(sheetKey, '$mode-sheet');
+
+        final listKey = GlobalKey();
+        final repository = _QuickSplitsFake();
+        final controller = QuickSplitsController(repository);
+        await controller.load();
+        await tester.pumpWidget(
+          RepaintBoundary(
+            key: listKey,
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: dark ? AppTheme.dark() : AppTheme.light(),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: Builder(
+                builder: (context) => Scaffold(
+                  body: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.l10nHome,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          QuickSplitsList(
+                            controller: controller,
+                            onOpen: (_) {},
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await capture(listKey, '$mode-list');
+        controller.dispose();
+      }
+    });
+  });
+}
+
+extension on BuildContext {
+  String get l10nHome => AppLocalizations.of(this)!.homeYourQuickSplits;
+}
+
+class _QuickSplitsFake implements QuickSplitsRepository {
+  QuickSplit row(int id, String note, String date, double mine, double total) =>
+      QuickSplit(
+        id: id,
+        note: note,
+        category: id.isEven ? 'food' : 'transport',
+        date: date,
+        amount: total,
+        currencyCode: 'EUR',
+        peopleCount: id % 3 + 2,
+        myAmount: mine,
+        paidByMe: id.isEven,
+        paidByName: 'Matiss',
+        canEdit: true,
+      );
+
+  @override
+  Future<QuickSplitPage> list({String? cursor, int limit = 30}) async {
+    final now = DateTime.now();
+    String day(int back) =>
+        now.subtract(Duration(days: back)).toIso8601String().substring(0, 10);
+    return QuickSplitPage(
+      items: [
+        row(4, 'Dinner at Lido', day(0), 21, 84),
+        row(3, 'Taxi from airport', day(1), 12, 36),
+        row(2, 'Concert tickets', day(5), 35, 70),
+        row(1, 'Groceries', day(15), 20.65, 41.30),
+      ],
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

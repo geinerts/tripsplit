@@ -1023,6 +1023,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notificationTripStartsTomorrowBodyGeneric => 'Tu viaje empieza mañana.';
 
   @override
+  String get notificationQuickSplitAddedTitle => 'División rápida';
+
+  @override
+  String notificationQuickSplitAddedBodyWithNote(String name, String note) {
+    return '$name te añadió a una división rápida: $note';
+  }
+
+  @override
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount) {
+    return '$name te añadió a una división rápida de $amount';
+  }
+
+  @override
+  String get notificationQuickSplitAddedBodyGeneric => 'Te añadieron a una división rápida.';
+
+  @override
   String get notificationSettlementSentTitle => 'Transferencia marcada como enviada';
 
   @override
@@ -1732,6 +1748,110 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get homeYourActiveTrips => 'Tus viajes activos';
+
+  @override
+  String get quickSplitsTitle => 'Divisiones rápidas';
+
+  @override
+  String get homeYourQuickSplits => 'Tus divisiones rápidas';
+
+  @override
+  String get quickSplitLabel => 'División rápida';
+
+  @override
+  String get quickSplitTargetHint => 'Sin viaje';
+
+  @override
+  String get expenseTargetTitle => 'Añadir a';
+
+  @override
+  String get expenseTargetChange => 'cambiar';
+
+  @override
+  String get quickSplitSplitAction => 'Dividir';
+
+  @override
+  String get quickSplitAddPerson => 'Añadir';
+
+  @override
+  String get quickSplitAddPersonTitle => 'Añadir a alguien';
+
+  @override
+  String get quickSplitNameHint => 'Nombre (sin la app)';
+
+  @override
+  String get quickSplitFriendsFailed => 'No se pudieron cargar los amigos. Puedes añadir un nombre.';
+
+  @override
+  String get quickSplitNeedTwoPeople => 'Añade al menos una persona más.';
+
+  @override
+  String get quickSplitShareResult => 'Compartir resultado';
+
+  @override
+  String quickSplitShareTotal(String amount, String name) {
+    return 'Total $amount, pagó $name';
+  }
+
+  @override
+  String get quickSplitShareFailed => 'No se pudo compartir.';
+
+  @override
+  String quickSplitPaidBy(String name) {
+    return 'pagó $name';
+  }
+
+  @override
+  String quickSplitOfTotal(String total) {
+    return 'de $total';
+  }
+
+  @override
+  String quickSplitYourPart(String amount) {
+    return 'tu parte $amount';
+  }
+
+  @override
+  String get quickSplitAddToTrip => 'Añadir a un viaje';
+
+  @override
+  String get quickSplitAddToTripHint => 'Pasa a ser un gasto del viaje';
+
+  @override
+  String get quickSplitAddToTripOnlyPayer => 'Solo quien pagó puede añadirla a un viaje.';
+
+  @override
+  String get quickSplitNoActiveTrip => 'No tienes ningún viaje activo.';
+
+  @override
+  String get quickSplitStillListed => 'Añadida al viaje, pero sigue en divisiones rápidas.';
+
+  @override
+  String get quickSplitDeleteTitle => '¿Eliminar la división rápida?';
+
+  @override
+  String get quickSplitDeleteMessage => 'Desaparece para todas las personas en ella.';
+
+  @override
+  String get quickSplitDeleted => 'División rápida eliminada';
+
+  @override
+  String get quickSplitsEmpty => 'Aquí aparecen las divisiones rápidas en las que estás.';
+
+  @override
+  String get quickSplitsLoadFailed => 'No se pudieron cargar las divisiones rápidas.';
+
+  @override
+  String get quickSplitsOffline => 'Las divisiones rápidas necesitan internet.';
+
+  @override
+  String get quickSplitsShowMore => 'Mostrar más';
+
+  @override
+  String get receiptButtonTooltip => 'Escanear o elegir un recibo';
+
+  @override
+  String get scanReceiptAction => 'Escanear recibo';
 
   @override
   String get homeYourArchivedTrips => 'Tus viajes archivados';

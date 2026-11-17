@@ -83,6 +83,7 @@ function push_should_queue_notification_type(string $type): bool
     if (
         in_array($normalizedType, [
             'expense_added',
+            'quick_split_added',
             'expense_comment_mention',
             'expense_comment_added',
             'friend_invite_received',

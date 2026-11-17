@@ -269,7 +269,9 @@ void main() {
             mode == 'solo' ? findsNothing : findsOneWidget,
           );
           expect(find.text('Note'), findsOneWidget);
-          expect(find.text('Add receipt'), findsOneWidget);
+          // The receipt is added with the camera button next to the amount.
+          expect(find.byKey(const ValueKey('receipt-add')), findsOneWidget);
+          expect(find.text('Add receipt'), findsNothing);
           if (mode == 'solo') {
             await tester.enterText(find.byType(TextField).first, '12.34');
             await tester.ensureVisible(

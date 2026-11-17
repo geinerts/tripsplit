@@ -1029,6 +1029,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notificationTripStartsTomorrowBodyGeneric => 'Ваша поездка начинается завтра.';
 
   @override
+  String get notificationQuickSplitAddedTitle => 'Быстрый раздел';
+
+  @override
+  String notificationQuickSplitAddedBodyWithNote(String name, String note) {
+    return '$name добавляет тебя в быстрый раздел: $note';
+  }
+
+  @override
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount) {
+    return '$name добавляет тебя в быстрый раздел на $amount';
+  }
+
+  @override
+  String get notificationQuickSplitAddedBodyGeneric => 'Тебя добавили в быстрый раздел.';
+
+  @override
   String get notificationSettlementSentTitle => 'Перевод отмечен как отправленный';
 
   @override
@@ -1744,6 +1760,110 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get homeYourActiveTrips => 'Ваши активные поездки';
+
+  @override
+  String get quickSplitsTitle => 'Быстрые разделы';
+
+  @override
+  String get homeYourQuickSplits => 'Твои быстрые разделы';
+
+  @override
+  String get quickSplitLabel => 'Быстрый раздел';
+
+  @override
+  String get quickSplitTargetHint => 'Без поездки';
+
+  @override
+  String get expenseTargetTitle => 'Добавить в';
+
+  @override
+  String get expenseTargetChange => 'изменить';
+
+  @override
+  String get quickSplitSplitAction => 'Разделить';
+
+  @override
+  String get quickSplitAddPerson => 'Добавить';
+
+  @override
+  String get quickSplitAddPersonTitle => 'Добавить человека';
+
+  @override
+  String get quickSplitNameHint => 'Имя (без приложения)';
+
+  @override
+  String get quickSplitFriendsFailed => 'Не удалось загрузить друзей. Имя можно добавить.';
+
+  @override
+  String get quickSplitNeedTwoPeople => 'Добавь ещё хотя бы одного человека.';
+
+  @override
+  String get quickSplitShareResult => 'Поделиться результатом';
+
+  @override
+  String quickSplitShareTotal(String amount, String name) {
+    return 'Итого $amount, платил(а) $name';
+  }
+
+  @override
+  String get quickSplitShareFailed => 'Не удалось поделиться.';
+
+  @override
+  String quickSplitPaidBy(String name) {
+    return 'платил(а) $name';
+  }
+
+  @override
+  String quickSplitOfTotal(String total) {
+    return 'из $total';
+  }
+
+  @override
+  String quickSplitYourPart(String amount) {
+    return 'твоя доля $amount';
+  }
+
+  @override
+  String get quickSplitAddToTrip => 'Добавить в поездку';
+
+  @override
+  String get quickSplitAddToTripHint => 'Станет расходом поездки';
+
+  @override
+  String get quickSplitAddToTripOnlyPayer => 'Добавить в поездку может только тот, кто платил.';
+
+  @override
+  String get quickSplitNoActiveTrip => 'У тебя нет активной поездки.';
+
+  @override
+  String get quickSplitStillListed => 'Добавлено в поездку, но всё ещё в быстрых разделах.';
+
+  @override
+  String get quickSplitDeleteTitle => 'Удалить быстрый раздел?';
+
+  @override
+  String get quickSplitDeleteMessage => 'Он исчезнет у всех участников.';
+
+  @override
+  String get quickSplitDeleted => 'Быстрый раздел удалён';
+
+  @override
+  String get quickSplitsEmpty => 'Здесь появятся быстрые разделы, в которых ты есть.';
+
+  @override
+  String get quickSplitsLoadFailed => 'Не удалось загрузить быстрые разделы.';
+
+  @override
+  String get quickSplitsOffline => 'Для быстрых разделов нужен интернет.';
+
+  @override
+  String get quickSplitsShowMore => 'Показать ещё';
+
+  @override
+  String get receiptButtonTooltip => 'Сканировать или выбрать чек';
+
+  @override
+  String get scanReceiptAction => 'Сканировать чек';
 
   @override
   String get homeYourArchivedTrips => 'Ваши архивные поездки';

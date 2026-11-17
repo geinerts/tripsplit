@@ -1923,6 +1923,30 @@ abstract class AppLocalizations {
   /// **'Your trip starts tomorrow.'**
   String get notificationTripStartsTomorrowBodyGeneric;
 
+  /// No description provided for @notificationQuickSplitAddedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick split'**
+  String get notificationQuickSplitAddedTitle;
+
+  /// No description provided for @notificationQuickSplitAddedBodyWithNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added you to a quick split: {note}'**
+  String notificationQuickSplitAddedBodyWithNote(String name, String note);
+
+  /// No description provided for @notificationQuickSplitAddedBodyWithAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added you to a quick split of {amount}'**
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount);
+
+  /// No description provided for @notificationQuickSplitAddedBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'You were added to a quick split.'**
+  String get notificationQuickSplitAddedBodyGeneric;
+
   /// No description provided for @notificationSettlementSentTitle.
   ///
   /// In en, this message translates to:
@@ -3152,6 +3176,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your active trips'**
   String get homeYourActiveTrips;
+
+  /// No description provided for @quickSplitsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick splits'**
+  String get quickSplitsTitle;
+
+  /// No description provided for @homeYourQuickSplits.
+  ///
+  /// In en, this message translates to:
+  /// **'Your quick splits'**
+  String get homeYourQuickSplits;
+
+  /// No description provided for @quickSplitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick split'**
+  String get quickSplitLabel;
+
+  /// No description provided for @quickSplitTargetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Not part of a trip'**
+  String get quickSplitTargetHint;
+
+  /// No description provided for @expenseTargetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to'**
+  String get expenseTargetTitle;
+
+  /// No description provided for @expenseTargetChange.
+  ///
+  /// In en, this message translates to:
+  /// **'change'**
+  String get expenseTargetChange;
+
+  /// No description provided for @quickSplitSplitAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Split'**
+  String get quickSplitSplitAction;
+
+  /// No description provided for @quickSplitAddPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get quickSplitAddPerson;
+
+  /// No description provided for @quickSplitAddPersonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add someone'**
+  String get quickSplitAddPersonTitle;
+
+  /// No description provided for @quickSplitNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (no app needed)'**
+  String get quickSplitNameHint;
+
+  /// No description provided for @quickSplitFriendsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load friends. You can still add a name.'**
+  String get quickSplitFriendsFailed;
+
+  /// No description provided for @quickSplitNeedTwoPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one more person.'**
+  String get quickSplitNeedTwoPeople;
+
+  /// No description provided for @quickSplitShareResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Share result'**
+  String get quickSplitShareResult;
+
+  /// No description provided for @quickSplitShareTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total {amount}, paid by {name}'**
+  String quickSplitShareTotal(String amount, String name);
+
+  /// No description provided for @quickSplitShareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t share.'**
+  String get quickSplitShareFailed;
+
+  /// No description provided for @quickSplitPaidBy.
+  ///
+  /// In en, this message translates to:
+  /// **'paid by {name}'**
+  String quickSplitPaidBy(String name);
+
+  /// No description provided for @quickSplitOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'of {total}'**
+  String quickSplitOfTotal(String total);
+
+  /// No description provided for @quickSplitYourPart.
+  ///
+  /// In en, this message translates to:
+  /// **'your part {amount}'**
+  String quickSplitYourPart(String amount);
+
+  /// No description provided for @quickSplitAddToTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to a trip'**
+  String get quickSplitAddToTrip;
+
+  /// No description provided for @quickSplitAddToTripHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Becomes a trip expense'**
+  String get quickSplitAddToTripHint;
+
+  /// No description provided for @quickSplitAddToTripOnlyPayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Only the person who paid can add it to a trip.'**
+  String get quickSplitAddToTripOnlyPayer;
+
+  /// No description provided for @quickSplitNoActiveTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no active trip.'**
+  String get quickSplitNoActiveTrip;
+
+  /// No description provided for @quickSplitStillListed.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to the trip, but it\'s still in Quick splits.'**
+  String get quickSplitStillListed;
+
+  /// No description provided for @quickSplitDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete quick split?'**
+  String get quickSplitDeleteTitle;
+
+  /// No description provided for @quickSplitDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'It disappears for everyone in it.'**
+  String get quickSplitDeleteMessage;
+
+  /// No description provided for @quickSplitDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick split deleted'**
+  String get quickSplitDeleted;
+
+  /// No description provided for @quickSplitsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick splits you\'re in show up here.'**
+  String get quickSplitsEmpty;
+
+  /// No description provided for @quickSplitsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load quick splits.'**
+  String get quickSplitsLoadFailed;
+
+  /// No description provided for @quickSplitsOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick splits need internet.'**
+  String get quickSplitsOffline;
+
+  /// No description provided for @quickSplitsShowMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show more'**
+  String get quickSplitsShowMore;
+
+  /// No description provided for @receiptButtonTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan or pick a receipt'**
+  String get receiptButtonTooltip;
+
+  /// No description provided for @scanReceiptAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan receipt'**
+  String get scanReceiptAction;
 
   /// No description provided for @homeYourArchivedTrips.
   ///

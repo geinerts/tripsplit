@@ -126,7 +126,7 @@ abstract class WorkspaceRemoteDataSource {
     required ReceiptUploadPayload payload,
   });
 
-  Future<void> addExpense({
+  Future<int?> addExpense({
     required int tripId,
     required double amount,
     required String currencyCode,
@@ -520,7 +520,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
   }
 
   @override
-  Future<void> addExpense({
+  Future<int?> addExpense({
     required int tripId,
     required double amount,
     required String currencyCode,

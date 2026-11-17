@@ -14,7 +14,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
     if (!prefs.inAppBannerEnabled) {
       return false;
     }
-    if (type == 'expense_added') {
+    if (type == 'expense_added' || type == 'quick_split_added') {
       return prefs.inAppExpenseAddedEnabled;
     }
     if (type == 'expense_comment_mention' ||
@@ -236,6 +236,11 @@ extension _MainShellPageNotifications on _MainShellPageState {
         });
       }
       _friendsCommandController.requestRefresh();
+      return;
+    }
+
+    if (notification.type == 'quick_split_added') {
+      _showHomeQuickSplits(refresh: true);
       return;
     }
 

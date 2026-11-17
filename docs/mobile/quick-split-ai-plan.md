@@ -364,3 +364,13 @@ Aizstāj 2.4 "Save to Archive" un 3. sadaļas vienoto arhīvu.
   uz tripu) un paziņojuma veids. Pirms koda: līguma dokuments `docs/api/quick-splits.md` un
   īpašnieka atļauja; deploy un migrācija tikai pēc iOS 1.0.20 review
   (`docs/operations/release-1.1.0-server-steps.md` papildināt).
+
+### Izlemts 2026-11-17: čeka foto tikai caur kameras pogu
+
+- Atsevišķās rindas "Add receipt" formas apakšā vairs nav. Čeku pievieno ar kameras pogu
+  pa kreisi no summas, gan tripa izdevumam, gan Quick split.
+- Kameras poga atver izvēlni: Scan receipt / Choose from Photos / Choose file / Cancel.
+  Kamēr AI nav, tā tikai piesaista čeka foto; vēlāk tā pati poga palaiž arī AI nolasīšanu.
+- Kad čeks pievienots, formas apakšā "Add receipt" vietā rāda čeka bildi (pieskaroties var
+  apskatīt, nomainīt vai noņemt).
+- Quick split arī glabā čeka foto (`receipt_path`, sk. `docs/api/quick-splits.md`).

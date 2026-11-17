@@ -1023,6 +1023,22 @@ class AppLocalizationsSv extends AppLocalizations {
   String get notificationTripStartsTomorrowBodyGeneric => 'Din resa börjar i morgon.';
 
   @override
+  String get notificationQuickSplitAddedTitle => 'Snabbdelning';
+
+  @override
+  String notificationQuickSplitAddedBodyWithNote(String name, String note) {
+    return '$name lade till dig i en snabbdelning: $note';
+  }
+
+  @override
+  String notificationQuickSplitAddedBodyWithAmount(String name, String amount) {
+    return '$name lade till dig i en snabbdelning på $amount';
+  }
+
+  @override
+  String get notificationQuickSplitAddedBodyGeneric => 'Du lades till i en snabbdelning.';
+
+  @override
   String get notificationSettlementSentTitle => 'Överföring markerad som skickad';
 
   @override
@@ -1732,6 +1748,110 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get homeYourActiveTrips => 'Dina aktiva resor';
+
+  @override
+  String get quickSplitsTitle => 'Snabbdelningar';
+
+  @override
+  String get homeYourQuickSplits => 'Dina snabbdelningar';
+
+  @override
+  String get quickSplitLabel => 'Snabbdelning';
+
+  @override
+  String get quickSplitTargetHint => 'Utan resa';
+
+  @override
+  String get expenseTargetTitle => 'Lägg till i';
+
+  @override
+  String get expenseTargetChange => 'ändra';
+
+  @override
+  String get quickSplitSplitAction => 'Dela';
+
+  @override
+  String get quickSplitAddPerson => 'Lägg till';
+
+  @override
+  String get quickSplitAddPersonTitle => 'Lägg till någon';
+
+  @override
+  String get quickSplitNameHint => 'Namn (utan appen)';
+
+  @override
+  String get quickSplitFriendsFailed => 'Kunde inte läsa in vänner. Du kan ändå lägga till ett namn.';
+
+  @override
+  String get quickSplitNeedTwoPeople => 'Lägg till minst en person till.';
+
+  @override
+  String get quickSplitShareResult => 'Dela resultatet';
+
+  @override
+  String quickSplitShareTotal(String amount, String name) {
+    return 'Totalt $amount, betalt av $name';
+  }
+
+  @override
+  String get quickSplitShareFailed => 'Kunde inte dela.';
+
+  @override
+  String quickSplitPaidBy(String name) {
+    return 'betalt av $name';
+  }
+
+  @override
+  String quickSplitOfTotal(String total) {
+    return 'av $total';
+  }
+
+  @override
+  String quickSplitYourPart(String amount) {
+    return 'din del $amount';
+  }
+
+  @override
+  String get quickSplitAddToTrip => 'Lägg till i en resa';
+
+  @override
+  String get quickSplitAddToTripHint => 'Blir en utgift i resan';
+
+  @override
+  String get quickSplitAddToTripOnlyPayer => 'Bara den som betalade kan lägga till den i en resa.';
+
+  @override
+  String get quickSplitNoActiveTrip => 'Du har ingen aktiv resa.';
+
+  @override
+  String get quickSplitStillListed => 'Tillagd i resan, men finns kvar bland snabbdelningar.';
+
+  @override
+  String get quickSplitDeleteTitle => 'Ta bort snabbdelningen?';
+
+  @override
+  String get quickSplitDeleteMessage => 'Den försvinner för alla som är med.';
+
+  @override
+  String get quickSplitDeleted => 'Snabbdelningen har tagits bort';
+
+  @override
+  String get quickSplitsEmpty => 'Snabbdelningar du är med i visas här.';
+
+  @override
+  String get quickSplitsLoadFailed => 'Kunde inte läsa in snabbdelningar.';
+
+  @override
+  String get quickSplitsOffline => 'Snabbdelningar kräver internet.';
+
+  @override
+  String get quickSplitsShowMore => 'Visa fler';
+
+  @override
+  String get receiptButtonTooltip => 'Skanna eller välj ett kvitto';
+
+  @override
+  String get scanReceiptAction => 'Skanna kvitto';
 
   @override
   String get homeYourArchivedTrips => 'Dina arkiverade resor';

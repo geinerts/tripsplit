@@ -643,6 +643,30 @@
   "notificationTripStartsTomorrowTitle": "Trip starts tomorrow",
   "notificationTripStartsTomorrowBody": "\"{trip}\" starts tomorrow.",
   "notificationTripStartsTomorrowBodyGeneric": "Your trip starts tomorrow.",
+  "notificationQuickSplitAddedTitle": "Quick split",
+  "notificationQuickSplitAddedBodyWithNote": "{name} added you to a quick split: {note}",
+  "@notificationQuickSplitAddedBodyWithNote": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationQuickSplitAddedBodyWithAmount": "{name} added you to a quick split of {amount}",
+  "@notificationQuickSplitAddedBodyWithAmount": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationQuickSplitAddedBodyGeneric": "You were added to a quick split.",
   "@notificationTripStartsTomorrowBody": {
     "placeholders": {
       "trip": {
@@ -855,6 +879,69 @@
   "yourShare": "Your share",
   "yourTrips": "Your trips",
   "homeYourActiveTrips": "Your active trips",
+  "quickSplitsTitle": "Quick splits",
+  "homeYourQuickSplits": "Your quick splits",
+  "quickSplitLabel": "Quick split",
+  "quickSplitTargetHint": "Not part of a trip",
+  "expenseTargetTitle": "Add to",
+  "expenseTargetChange": "change",
+  "quickSplitSplitAction": "Split",
+  "quickSplitAddPerson": "Add",
+  "quickSplitAddPersonTitle": "Add someone",
+  "quickSplitNameHint": "Name (no app needed)",
+  "quickSplitFriendsFailed": "Couldn't load friends. You can still add a name.",
+  "quickSplitNeedTwoPeople": "Add at least one more person.",
+  "quickSplitShareResult": "Share result",
+  "quickSplitShareTotal": "Total {amount}, paid by {name}",
+  "@quickSplitShareTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSplitShareFailed": "Couldn't share.",
+  "quickSplitPaidBy": "paid by {name}",
+  "@quickSplitPaidBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSplitOfTotal": "of {total}",
+  "@quickSplitOfTotal": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSplitYourPart": "your part {amount}",
+  "@quickSplitYourPart": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSplitAddToTrip": "Add to a trip",
+  "quickSplitAddToTripHint": "Becomes a trip expense",
+  "quickSplitAddToTripOnlyPayer": "Only the person who paid can add it to a trip.",
+  "quickSplitNoActiveTrip": "You have no active trip.",
+  "quickSplitStillListed": "Added to the trip, but it's still in Quick splits.",
+  "quickSplitDeleteTitle": "Delete quick split?",
+  "quickSplitDeleteMessage": "It disappears for everyone in it.",
+  "quickSplitDeleted": "Quick split deleted",
+  "quickSplitsEmpty": "Quick splits you're in show up here.",
+  "quickSplitsLoadFailed": "Couldn't load quick splits.",
+  "quickSplitsOffline": "Quick splits need internet.",
+  "quickSplitsShowMore": "Show more",
+  "receiptButtonTooltip": "Scan or pick a receipt",
+  "scanReceiptAction": "Scan receipt",
   "homeYourArchivedTrips": "Your archived trips",
   "authIntroSplitSmarter": "Split smarter.",
   "authIntroTravelFree": "Travel free.",
