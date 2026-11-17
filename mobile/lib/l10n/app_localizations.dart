@@ -8031,6 +8031,78 @@ abstract class AppLocalizations {
   /// **'Open a payment to view details and available actions.'**
   String get settleOpenPaymentCaption;
 
+  /// No description provided for @settleStepReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get settleStepReady;
+
+  /// No description provided for @settleStepTripEnds.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip ends'**
+  String get settleStepTripEnds;
+
+  /// No description provided for @settleStepPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get settleStepPay;
+
+  /// No description provided for @settleEstimateBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'estimate'**
+  String get settleEstimateBadge;
+
+  /// No description provided for @settleAddedAllMyExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'I added all my expenses'**
+  String get settleAddedAllMyExpenses;
+
+  /// No description provided for @settleToYou.
+  ///
+  /// In en, this message translates to:
+  /// **'To you'**
+  String get settleToYou;
+
+  /// No description provided for @settleYouPaySection.
+  ///
+  /// In en, this message translates to:
+  /// **'You pay'**
+  String get settleYouPaySection;
+
+  /// No description provided for @settleBetweenOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'Between others'**
+  String get settleBetweenOthers;
+
+  /// No description provided for @settlePaysYou.
+  ///
+  /// In en, this message translates to:
+  /// **'pays you'**
+  String get settlePaysYou;
+
+  /// No description provided for @settleYouPayRow.
+  ///
+  /// In en, this message translates to:
+  /// **'you pay'**
+  String get settleYouPayRow;
+
+  /// No description provided for @settleRequestShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Request'**
+  String get settleRequestShort;
+
+  /// No description provided for @settleRecordShort.
+  ///
+  /// In en, this message translates to:
+  /// **'I paid'**
+  String get settleRecordShort;
+
   /// No description provided for @tripBudgetEnable.
   ///
   /// In en, this message translates to:

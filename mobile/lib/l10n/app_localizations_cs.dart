@@ -4350,6 +4350,42 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settleOpenPaymentCaption => 'Otevřete platbu, abyste si prohlédli podrobnosti a dostupné akce.';
 
   @override
+  String get settleStepReady => 'Připraveni';
+
+  @override
+  String get settleStepTripEnds => 'Konec výletu';
+
+  @override
+  String get settleStepPay => 'Platba';
+
+  @override
+  String get settleEstimateBadge => 'odhad';
+
+  @override
+  String get settleAddedAllMyExpenses => 'Všechny své výdaje mám zadané';
+
+  @override
+  String get settleToYou => 'Tobě';
+
+  @override
+  String get settleYouPaySection => 'Platíš';
+
+  @override
+  String get settleBetweenOthers => 'Mezi ostatními';
+
+  @override
+  String get settlePaysYou => 'platí ti';
+
+  @override
+  String get settleYouPayRow => 'platíš';
+
+  @override
+  String get settleRequestShort => 'Požádat';
+
+  @override
+  String get settleRecordShort => 'Zaplaceno';
+
+  @override
   String get tripBudgetEnable => 'Stanovte rozpočet';
 
   @override

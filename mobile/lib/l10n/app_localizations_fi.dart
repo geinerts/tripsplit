@@ -4343,6 +4343,42 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settleOpenPaymentCaption => 'Avaa maksu nähdäksesi yksityiskohdat ja käytettävissä olevat toiminnot.';
 
   @override
+  String get settleStepReady => 'Valmiit';
+
+  @override
+  String get settleStepTripEnds => 'Matka päättyy';
+
+  @override
+  String get settleStepPay => 'Maksu';
+
+  @override
+  String get settleEstimateBadge => 'arvio';
+
+  @override
+  String get settleAddedAllMyExpenses => 'Lisäsin kaikki kuluni';
+
+  @override
+  String get settleToYou => 'Sinulle';
+
+  @override
+  String get settleYouPaySection => 'Sinä maksat';
+
+  @override
+  String get settleBetweenOthers => 'Muiden kesken';
+
+  @override
+  String get settlePaysYou => 'maksaa sinulle';
+
+  @override
+  String get settleYouPayRow => 'sinä maksat';
+
+  @override
+  String get settleRequestShort => 'Pyydä';
+
+  @override
+  String get settleRecordShort => 'Maksoin';
+
+  @override
   String get tripBudgetEnable => 'Aseta budjetti';
 
   @override

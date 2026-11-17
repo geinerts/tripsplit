@@ -4343,6 +4343,42 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settleOpenPaymentCaption => 'Öppna en betalning för att se detaljer och tillgängliga åtgärder.';
 
   @override
+  String get settleStepReady => 'Redo';
+
+  @override
+  String get settleStepTripEnds => 'Resan slutar';
+
+  @override
+  String get settleStepPay => 'Betala';
+
+  @override
+  String get settleEstimateBadge => 'uppskattning';
+
+  @override
+  String get settleAddedAllMyExpenses => 'Jag har lagt till alla mina utgifter';
+
+  @override
+  String get settleToYou => 'Till dig';
+
+  @override
+  String get settleYouPaySection => 'Du betalar';
+
+  @override
+  String get settleBetweenOthers => 'Mellan andra';
+
+  @override
+  String get settlePaysYou => 'betalar dig';
+
+  @override
+  String get settleYouPayRow => 'du betalar';
+
+  @override
+  String get settleRequestShort => 'Begär';
+
+  @override
+  String get settleRecordShort => 'Jag har betalat';
+
+  @override
   String get tripBudgetEnable => 'Ställ in en budget';
 
   @override

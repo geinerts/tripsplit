@@ -772,7 +772,7 @@ Future<Uint8List> _receiptPreviewFixture() async {
   return data!.buffer.asUint8List();
 }
 
-Future<void> expandFirstSettlement(WidgetTester tester) async {
+Future<void> openFirstSettlement(WidgetTester tester) async {
   final card = find
       .byWidgetPredicate(
         (w) =>
@@ -1050,9 +1050,11 @@ void main() {
             .data,
         '€24.00',
       );
-      expect(find.text('I sent'), findsNothing);
-      await expandFirstSettlement(tester);
+      // Actions sit on the rows now, no need to open them first.
+      expect(find.text('I sent'), findsOneWidget);
       expect(find.text('Confirm received'), findsOneWidget);
+      expect(find.text('To you'), findsOneWidget);
+      expect(find.text('You pay'), findsOneWidget);
       await disposePage(tester);
     },
   );
@@ -1130,7 +1132,7 @@ void main() {
         );
         await tester.pumpAndSettle();
         await _selectTab(tester, 'Settle');
-        if (phase == 'expanded') await expandFirstSettlement(tester);
+        if (phase == 'expanded') await openFirstSettlement(tester);
         await tester.ensureVisible(
           find.byKey(const ValueKey('settle-personal-summary')),
         );
@@ -2349,13 +2351,7 @@ void main() {
         tester.element(find.byType(WorkspacePage)),
       )!;
       await _selectTab(tester, t.workspaceSettle);
-      await expandFirstSettlement(tester);
-      await tester.scrollUntilVisible(
-        find.text(t.workspaceOpenFlow),
-        200,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await visibleTap(tester, find.text(t.workspaceOpenFlow));
+      await openFirstSettlement(tester);
       await visibleTap(
         tester,
         find.descendant(
@@ -2405,13 +2401,12 @@ void main() {
         tester.element(find.byType(WorkspacePage)),
       )!;
       await _selectTab(tester, t.workspaceSettle);
-      await expandFirstSettlement(tester);
       await tester.scrollUntilVisible(
-        find.text(t.paymentRecordAction),
+        find.text(t.settleRecordShort),
         200,
         scrollable: find.byType(Scrollable).first,
       );
-      await visibleTap(tester, find.text(t.paymentRecordAction));
+      await visibleTap(tester, find.text(t.settleRecordShort));
       await tester.enterText(
         find.byKey(const ValueKey('payment-amount')),
         '12,50',
@@ -4624,15 +4619,7 @@ void main() {
             scrollable: find.byType(Scrollable).first,
           );
           await tester.pumpAndSettle();
-          await expandFirstSettlement(tester);
-          await tester.scrollUntilVisible(
-            find.text(t.workspaceOpenFlow),
-            200,
-            scrollable: find.byType(Scrollable).first,
-          );
-          await tester.pumpAndSettle();
-          await tester.ensureVisible(find.text(t.workspaceOpenFlow));
-          await tester.tap(find.text(t.workspaceOpenFlow));
+          await openFirstSettlement(tester);
           await tester.pumpAndSettle();
           await tester.scrollUntilVisible(
             find.text(t.workspaceActions),
@@ -4712,20 +4699,11 @@ void main() {
         tester.element(find.byType(WorkspacePage)),
       )!;
       await _selectTab(tester, t.workspaceSettle);
-      await expandFirstSettlement(tester);
-      await tester.scrollUntilVisible(
-        find.text(t.workspaceOpenFlow),
-        200,
-        scrollable: find.byType(Scrollable).first,
-      );
-      await tester.pumpAndSettle();
       expect(
         find.text(t.workspaceAllTripSettlementsAreFullyCompleted),
         state == 'confirmed' ? findsOneWidget : findsNothing,
       );
-      await tester.ensureVisible(find.text(t.workspaceOpenFlow));
-      await tester.tap(find.text(t.workspaceOpenFlow));
-      await tester.pumpAndSettle();
+      await openFirstSettlement(tester);
       await tester.scrollUntilVisible(
         find.text(t.workspaceActions),
         200,
@@ -5168,15 +5146,7 @@ void main() {
           );
           await tester.tap(find.byKey(const ValueKey('balance-row-7')));
         } else if (screen == 'flow') {
-          await expandFirstSettlement(tester);
-          await tester.scrollUntilVisible(
-            find.text(t.workspaceOpenFlow),
-            200,
-            scrollable: find.byType(Scrollable).first,
-          );
-          await tester.pumpAndSettle();
-          await tester.ensureVisible(find.text(t.workspaceOpenFlow));
-          await tester.tap(find.text(t.workspaceOpenFlow));
+          await openFirstSettlement(tester);
         } else if (screen == 'ready') {
           await tester.ensureVisible(find.text(t.workspaceReadyToSettle));
         } else if (screen == 'complete') {

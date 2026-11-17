@@ -148,7 +148,6 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
               snapshot.balances.every((item) => item.net.abs() < .005)));
 
   Widget _buildSettleTab(WorkspaceSnapshot snapshot) {
-    final colors = Theme.of(context).colorScheme;
     final semantic =
         Theme.of(context).extension<AppSemanticColors>() ??
         AppSemanticColors.light;
@@ -179,12 +178,9 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
     final isCurrentUserReady = currentUser?.isReadyToSettle ?? false;
     final canToggleReady =
         snapshot.isActive && !_isMutating && _currentUserId > 0;
-    final pendingSettlements = settlements
-        .where((item) => !item.isConfirmed)
-        .toList(growable: false);
-    final paidSettlements = settlements
-        .where((item) => item.isConfirmed)
-        .toList(growable: false);
+    final settlementTotal = snapshot.settlementTotal > 0
+        ? snapshot.settlementTotal
+        : settlements.length;
     final payments =
         snapshot.payments
             .where((item) => !item.isCancelled)
@@ -203,32 +199,28 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
       shrinkWrap: true,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
       children: [
-        _settlementSummary(snapshot),
-        if (snapshot.isActive) ...[
+        _settleStepBar(
+          step: snapshot.isActive ? (allMembersReady ? 2 : 1) : 3,
+          caption: !snapshot.isActive && settlements.isNotEmpty
+              ? context.l10n.settlementConfirmedCount(
+                  snapshot.settlementConfirmed.clamp(0, settlementTotal),
+                  settlementTotal,
+                )
+              : null,
+        ),
+        const SizedBox(height: 18),
+        if (snapshot.isActive)
           _buildFinishTripActionBlock(
-            colors: colors,
             canFinishTrip: canFinishTrip,
-            allMembersReady: allMembersReady,
             readyMembers: readyMembers,
             totalMembers: totalMembers,
             hasPendingPayments: hasPendingPayments,
             isCurrentUserReady: isCurrentUserReady,
             canToggleReady: canToggleReady,
-            finishLabel: context.l10n.finishTripAction,
-            creatorMustFinishLabel: context.l10n.creatorMustFinishTripFirst,
           ),
-          const SizedBox(height: 12),
-        ],
-        if (!snapshot.isActive && settlements.isNotEmpty) ...[
-          _buildSettlementProgressOverview(
-            snapshot: snapshot,
-            settlements: settlements,
-            usersById: usersById,
-            semantic: semantic,
-          ),
-          const SizedBox(height: 12),
-        ],
+        _settlementSummary(snapshot),
         if (payments.isNotEmpty) ...[
+          const SizedBox(height: 12),
           _buildTripPaymentsSection(
             payments: payments,
             usersById: usersById,
@@ -252,111 +244,13 @@ extension _WorkspacePageBalancesTab on _WorkspacePageState {
                 ? context.l10n.settlementEmptyActive
                 : context.l10n.settlementEmptyClosed,
           )
-        else ...[
-          if (settlements.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Text(
-              context.l10n.settleWhoPaysWhom,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              snapshot.isActive
-                  ? context.l10n.settlePreviewCaption
-                  : context.l10n.settleOpenPaymentCaption,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
-            ),
-            const SizedBox(height: 12),
-          ],
-          if (pendingSettlements.isNotEmpty) ...[
-            ...pendingSettlements.map(
-              (item) => _buildSettlementFlowCard(
-                snapshot: snapshot,
-                item: item,
-                usersById: usersById,
-                semantic: semantic,
-              ),
-            ),
-          ],
-          if (paidSettlements.isNotEmpty) ...[
-            if (pendingSettlements.isNotEmpty) const SizedBox(height: 8),
-            ...paidSettlements.map(
-              (item) => _buildSettlementFlowCard(
-                snapshot: snapshot,
-                item: item,
-                usersById: usersById,
-                semantic: semantic,
-              ),
-            ),
-          ],
-        ],
+        else if (settlements.isNotEmpty)
+          _buildSettleSections(
+            snapshot: snapshot,
+            settlements: settlements,
+            usersById: usersById,
+          ),
       ],
-    );
-  }
-
-  Widget _buildSettlementProgressOverview({
-    required WorkspaceSnapshot snapshot,
-    required List<SettlementItem> settlements,
-    required Map<int, WorkspaceUser> usersById,
-    required AppSemanticColors semantic,
-  }) {
-    final total = snapshot.settlementTotal > 0
-        ? snapshot.settlementTotal
-        : settlements.length;
-    final confirmed = snapshot.settlementConfirmed.clamp(0, total);
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withValues(alpha: .08),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.flag_outlined,
-                size: 22,
-                color: theme.colorScheme.primary,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.workspaceTripFinished,
-                      style: theme.textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      context.l10n.settlementConfirmedCount(confirmed, total),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          LinearProgressIndicator(
-            value: total == 0 ? 0 : confirmed / total,
-            minHeight: 4,
-            borderRadius: BorderRadius.circular(999),
-            semanticsLabel: context.l10n.settlementConfirmedCount(
-              confirmed,
-              total,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

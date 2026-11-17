@@ -4343,6 +4343,42 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settleOpenPaymentCaption => 'Open een betaling om de details en beschikbare acties te bekijken.';
 
   @override
+  String get settleStepReady => 'Klaar';
+
+  @override
+  String get settleStepTripEnds => 'Reis eindigt';
+
+  @override
+  String get settleStepPay => 'Betalen';
+
+  @override
+  String get settleEstimateBadge => 'schatting';
+
+  @override
+  String get settleAddedAllMyExpenses => 'Ik heb al mijn uitgaven toegevoegd';
+
+  @override
+  String get settleToYou => 'Aan jou';
+
+  @override
+  String get settleYouPaySection => 'Jij betaalt';
+
+  @override
+  String get settleBetweenOthers => 'Tussen anderen';
+
+  @override
+  String get settlePaysYou => 'betaalt jou';
+
+  @override
+  String get settleYouPayRow => 'jij betaalt';
+
+  @override
+  String get settleRequestShort => 'Vragen';
+
+  @override
+  String get settleRecordShort => 'Ik heb betaald';
+
+  @override
   String get tripBudgetEnable => 'Stel een budget vast';
 
   @override

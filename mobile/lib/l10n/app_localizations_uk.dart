@@ -4357,6 +4357,42 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settleOpenPaymentCaption => 'Відкрийте платіж, щоб переглянути деталі та доступні дії.';
 
   @override
+  String get settleStepReady => 'Готові';
+
+  @override
+  String get settleStepTripEnds => 'Кінець подорожі';
+
+  @override
+  String get settleStepPay => 'Оплата';
+
+  @override
+  String get settleEstimateBadge => 'оцінка';
+
+  @override
+  String get settleAddedAllMyExpenses => 'Усі мої витрати додано';
+
+  @override
+  String get settleToYou => 'Тобі';
+
+  @override
+  String get settleYouPaySection => 'Ти платиш';
+
+  @override
+  String get settleBetweenOthers => 'Між іншими';
+
+  @override
+  String get settlePaysYou => 'платить тобі';
+
+  @override
+  String get settleYouPayRow => 'ти платиш';
+
+  @override
+  String get settleRequestShort => 'Запросити';
+
+  @override
+  String get settleRecordShort => 'Оплачено';
+
+  @override
   String get tripBudgetEnable => 'Встановіть бюджет';
 
   @override

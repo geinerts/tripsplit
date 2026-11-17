@@ -4343,6 +4343,42 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settleOpenPaymentCaption => 'Abre un pago para ver los detalles y las acciones disponibles.';
 
   @override
+  String get settleStepReady => 'Listos';
+
+  @override
+  String get settleStepTripEnds => 'Fin del viaje';
+
+  @override
+  String get settleStepPay => 'Pagar';
+
+  @override
+  String get settleEstimateBadge => 'estimado';
+
+  @override
+  String get settleAddedAllMyExpenses => 'He añadido todos mis gastos';
+
+  @override
+  String get settleToYou => 'Para ti';
+
+  @override
+  String get settleYouPaySection => 'Tú pagas';
+
+  @override
+  String get settleBetweenOthers => 'Entre otros';
+
+  @override
+  String get settlePaysYou => 'te paga';
+
+  @override
+  String get settleYouPayRow => 'tú pagas';
+
+  @override
+  String get settleRequestShort => 'Solicitar';
+
+  @override
+  String get settleRecordShort => 'He pagado';
+
+  @override
   String get tripBudgetEnable => 'Establecer un presupuesto';
 
   @override

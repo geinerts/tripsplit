@@ -4357,6 +4357,42 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settleOpenPaymentCaption => 'Откройте платёж, чтобы увидеть детали и доступные действия.';
 
   @override
+  String get settleStepReady => 'Готовы';
+
+  @override
+  String get settleStepTripEnds => 'Конец поездки';
+
+  @override
+  String get settleStepPay => 'Оплата';
+
+  @override
+  String get settleEstimateBadge => 'оценка';
+
+  @override
+  String get settleAddedAllMyExpenses => 'Все мои расходы добавлены';
+
+  @override
+  String get settleToYou => 'Вам';
+
+  @override
+  String get settleYouPaySection => 'Вы платите';
+
+  @override
+  String get settleBetweenOthers => 'Между другими';
+
+  @override
+  String get settlePaysYou => 'платит вам';
+
+  @override
+  String get settleYouPayRow => 'вы платите';
+
+  @override
+  String get settleRequestShort => 'Запросить';
+
+  @override
+  String get settleRecordShort => 'Оплачено';
+
+  @override
   String get tripBudgetEnable => 'Задать бюджет';
 
   @override

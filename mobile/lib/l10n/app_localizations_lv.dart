@@ -4350,6 +4350,42 @@ class AppLocalizationsLv extends AppLocalizations {
   String get settleOpenPaymentCaption => 'Atver maksājumu, lai skatītu detaļas un pieejamās darbības.';
 
   @override
+  String get settleStepReady => 'Gatavi';
+
+  @override
+  String get settleStepTripEnds => 'Ceļojums beidzas';
+
+  @override
+  String get settleStepPay => 'Maksājumi';
+
+  @override
+  String get settleEstimateBadge => 'aplēse';
+
+  @override
+  String get settleAddedAllMyExpenses => 'Visi mani izdevumi pievienoti';
+
+  @override
+  String get settleToYou => 'Tev';
+
+  @override
+  String get settleYouPaySection => 'Tu maksā';
+
+  @override
+  String get settleBetweenOthers => 'Starp citiem';
+
+  @override
+  String get settlePaysYou => 'maksā tev';
+
+  @override
+  String get settleYouPayRow => 'tu maksā';
+
+  @override
+  String get settleRequestShort => 'Pieprasīt';
+
+  @override
+  String get settleRecordShort => 'Samaksāju';
+
+  @override
   String get tripBudgetEnable => 'Iestatīt budžetu';
 
   @override

@@ -181,7 +181,6 @@ class WorkspacePageCommandController extends ChangeNotifier {
 class _WorkspacePageState extends State<WorkspacePage> {
   bool _isLoading = true;
   bool _isMutating = false;
-  final Set<String> _expandedSettlementCards = {};
   bool _isAddExpenseDialogOpen = false;
   String? _errorText;
   String? _refreshError;
