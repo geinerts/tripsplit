@@ -1905,6 +1905,24 @@ abstract class AppLocalizations {
   /// **'Reminder: please confirm receiving the payment.'**
   String get notificationConfirmationReminderBodyGeneric;
 
+  /// No description provided for @notificationTripStartsTomorrowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip starts tomorrow'**
+  String get notificationTripStartsTomorrowTitle;
+
+  /// No description provided for @notificationTripStartsTomorrowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{trip}\" starts tomorrow.'**
+  String notificationTripStartsTomorrowBody(String trip);
+
+  /// No description provided for @notificationTripStartsTomorrowBodyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trip starts tomorrow.'**
+  String get notificationTripStartsTomorrowBodyGeneric;
+
   /// No description provided for @notificationSettlementSentTitle.
   ///
   /// In en, this message translates to:
@@ -8234,6 +8252,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Receipt'**
   String get expenseReceiptChip;
+
+  /// No description provided for @expenseTypeRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant'**
+  String get expenseTypeRestaurant;
+
+  /// No description provided for @expenseTypeCafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Café'**
+  String get expenseTypeCafe;
+
+  /// No description provided for @expenseTypeBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Bar'**
+  String get expenseTypeBar;
+
+  /// No description provided for @expenseTypeFastFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast food'**
+  String get expenseTypeFastFood;
+
+  /// No description provided for @expenseTypeSnacks.
+  ///
+  /// In en, this message translates to:
+  /// **'Snacks'**
+  String get expenseTypeSnacks;
+
+  /// No description provided for @expenseTypeTaxi.
+  ///
+  /// In en, this message translates to:
+  /// **'Taxi'**
+  String get expenseTypeTaxi;
+
+  /// No description provided for @expenseTypeFlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Flight'**
+  String get expenseTypeFlight;
+
+  /// No description provided for @expenseTypeTrain.
+  ///
+  /// In en, this message translates to:
+  /// **'Train'**
+  String get expenseTypeTrain;
+
+  /// No description provided for @expenseTypeBus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bus'**
+  String get expenseTypeBus;
+
+  /// No description provided for @expenseTypeCarRental.
+  ///
+  /// In en, this message translates to:
+  /// **'Car rental'**
+  String get expenseTypeCarRental;
+
+  /// No description provided for @expenseTypeFerry.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferry'**
+  String get expenseTypeFerry;
+
+  /// No description provided for @expenseTypePublicTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Public transport'**
+  String get expenseTypePublicTransport;
+
+  /// No description provided for @expenseTypeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get expenseTypeButton;
+
+  /// No description provided for @expenseTypeTitleFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Type of food'**
+  String get expenseTypeTitleFood;
+
+  /// No description provided for @expenseTypeTitleTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Type of transport'**
+  String get expenseTypeTitleTransport;
+
+  /// No description provided for @expenseTypeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'optional'**
+  String get expenseTypeOptional;
+
+  /// No description provided for @expenseTypeNoneFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Just food'**
+  String get expenseTypeNoneFood;
+
+  /// No description provided for @expenseTypeNoneTransport.
+  ///
+  /// In en, this message translates to:
+  /// **'Just transport'**
+  String get expenseTypeNoneTransport;
+
+  /// No description provided for @expenseTypeCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom type…'**
+  String get expenseTypeCustom;
+
+  /// No description provided for @expenseTypeCustomHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your type'**
+  String get expenseTypeCustomHint;
+
+  /// No description provided for @expenseTypeHotel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hotel'**
+  String get expenseTypeHotel;
+
+  /// No description provided for @expenseTypeHostel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hostel'**
+  String get expenseTypeHostel;
+
+  /// No description provided for @expenseTypeApartment.
+  ///
+  /// In en, this message translates to:
+  /// **'Apartment'**
+  String get expenseTypeApartment;
+
+  /// No description provided for @expenseTypeCamping.
+  ///
+  /// In en, this message translates to:
+  /// **'Camping'**
+  String get expenseTypeCamping;
+
+  /// No description provided for @expenseTypeTitleAccommodation.
+  ///
+  /// In en, this message translates to:
+  /// **'Type of stay'**
+  String get expenseTypeTitleAccommodation;
+
+  /// No description provided for @expenseTypeTitleActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Type of activity'**
+  String get expenseTypeTitleActivities;
+
+  /// No description provided for @expenseTypeTitleShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Type of shopping'**
+  String get expenseTypeTitleShopping;
+
+  /// No description provided for @expenseTypeNoneAccommodation.
+  ///
+  /// In en, this message translates to:
+  /// **'Just accommodation'**
+  String get expenseTypeNoneAccommodation;
+
+  /// No description provided for @expenseTypeNoneActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Just activity'**
+  String get expenseTypeNoneActivities;
+
+  /// No description provided for @expenseTypeNoneShopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Just shopping'**
+  String get expenseTypeNoneShopping;
 
   /// No description provided for @memberHistoryPaid.
   ///

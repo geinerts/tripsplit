@@ -1015,6 +1015,17 @@ class AppLocalizationsLv extends AppLocalizations {
   String get notificationConfirmationReminderBodyGeneric => 'Atgādinājums: lūdzu apstiprini maksājuma saņemšanu.';
 
   @override
+  String get notificationTripStartsTomorrowTitle => 'Ceļojums sākas rīt';
+
+  @override
+  String notificationTripStartsTomorrowBody(String trip) {
+    return '“$trip” sākas rīt.';
+  }
+
+  @override
+  String get notificationTripStartsTomorrowBodyGeneric => 'Tavs ceļojums sākas rīt.';
+
+  @override
   String get notificationSettlementSentTitle => 'Pārskaitījums atzīmēts kā nosūtīts';
 
   @override
@@ -4475,6 +4486,96 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get expenseReceiptChip => 'Čeks';
+
+  @override
+  String get expenseTypeRestaurant => 'Restorāns';
+
+  @override
+  String get expenseTypeCafe => 'Kafejnīca';
+
+  @override
+  String get expenseTypeBar => 'Bārs';
+
+  @override
+  String get expenseTypeFastFood => 'Ātrā ēdināšana';
+
+  @override
+  String get expenseTypeSnacks => 'Uzkodas';
+
+  @override
+  String get expenseTypeTaxi => 'Taksometrs';
+
+  @override
+  String get expenseTypeFlight => 'Lidojums';
+
+  @override
+  String get expenseTypeTrain => 'Vilciens';
+
+  @override
+  String get expenseTypeBus => 'Autobuss';
+
+  @override
+  String get expenseTypeCarRental => 'Auto noma';
+
+  @override
+  String get expenseTypeFerry => 'Prāmis';
+
+  @override
+  String get expenseTypePublicTransport => 'Sabiedriskais transports';
+
+  @override
+  String get expenseTypeButton => 'Tips';
+
+  @override
+  String get expenseTypeTitleFood => 'Ēdiena tips';
+
+  @override
+  String get expenseTypeTitleTransport => 'Transporta tips';
+
+  @override
+  String get expenseTypeOptional => 'nav obligāti';
+
+  @override
+  String get expenseTypeNoneFood => 'Tikai ēdiens';
+
+  @override
+  String get expenseTypeNoneTransport => 'Tikai transports';
+
+  @override
+  String get expenseTypeCustom => 'Savs tips…';
+
+  @override
+  String get expenseTypeCustomHint => 'Tavs tips';
+
+  @override
+  String get expenseTypeHotel => 'Viesnīca';
+
+  @override
+  String get expenseTypeHostel => 'Hostelis';
+
+  @override
+  String get expenseTypeApartment => 'Dzīvoklis';
+
+  @override
+  String get expenseTypeCamping => 'Kempings';
+
+  @override
+  String get expenseTypeTitleAccommodation => 'Naktsmītnes tips';
+
+  @override
+  String get expenseTypeTitleActivities => 'Aktivitātes tips';
+
+  @override
+  String get expenseTypeTitleShopping => 'Pirkuma tips';
+
+  @override
+  String get expenseTypeNoneAccommodation => 'Tikai naktsmītne';
+
+  @override
+  String get expenseTypeNoneActivities => 'Tikai aktivitāte';
+
+  @override
+  String get expenseTypeNoneShopping => 'Tikai iepirkšanās';
 
   @override
   String memberHistoryPaid(String amount) {

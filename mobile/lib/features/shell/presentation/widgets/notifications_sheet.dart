@@ -248,6 +248,8 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
               ? Icons.chat_bubble_outline_rounded
               : item.type == 'live_location_started'
               ? Icons.location_on_outlined
+              : item.type == 'trip_starts_tomorrow'
+              ? Icons.flight_takeoff_rounded
               : Icons.notifications_none,
           size: 22,
         );

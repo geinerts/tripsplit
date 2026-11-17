@@ -93,6 +93,8 @@ function push_localized_notification_title(string $type, string $rawTitle, strin
             return push_locale_phrase($locale, 'payment_not_received_title');
         case 'settlement_reminder':
             return push_locale_phrase($locale, 'settlement_reminder_title');
+        case 'trip_starts_tomorrow':
+            return push_locale_phrase($locale, 'trip_starts_tomorrow_title');
         case 'settlement_auto_reminder':
             if (str_contains(strtolower($rawTitle), 'confirmation')) {
                 return push_locale_phrase($locale, 'confirmation_reminder_title');
@@ -361,6 +363,14 @@ function push_localized_notification_body(string $type, string $rawBody, string 
                 );
             }
             return push_locale_phrase($locale, 'settlement_reminder_body_generic');
+        case 'trip_starts_tomorrow':
+            if (preg_match('/^"(.+)" starts tomorrow\.$/u', $rawBody, $match) === 1) {
+                return push_locale_format(
+                    push_locale_phrase($locale, 'trip_starts_tomorrow_body'),
+                    ['trip' => trim((string) ($match[1] ?? ''))]
+                );
+            }
+            return push_locale_phrase($locale, 'trip_starts_tomorrow_body_generic');
         case 'settlement_auto_reminder':
             if (preg_match('/^Reminder: please mark (.+?) as sent to (.+?) in "(.+?)"\.$/u', $rawBody, $match) === 1) {
                 return push_locale_format(

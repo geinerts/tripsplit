@@ -723,7 +723,7 @@ function notification_in_app_pref_key_for_type(string $type): ?string
         return 'in_app_expense_added_enabled';
     }
 
-    if (in_array($normalized, ['expense_comment_mention', 'expense_comment_added', 'live_location_started'], true)) {
+    if (in_array($normalized, ['expense_comment_mention', 'expense_comment_added', 'live_location_started', 'trip_starts_tomorrow'], true)) {
         return 'in_app_trip_updates_enabled';
     }
 
@@ -825,7 +825,7 @@ function notification_push_pref_key_for_type(string $type): ?string
             'settlement_sent_cancelled',
             'settlement_not_received',
         ],
-        'push_reminders_enabled' => ['settlement_reminder', 'settlement_auto_reminder'],
+        'push_reminders_enabled' => ['settlement_reminder', 'settlement_auto_reminder', 'trip_starts_tomorrow'],
         'push_location_enabled' => ['live_location_started'],
     ];
     foreach ($categories as $prefKey => $types) {

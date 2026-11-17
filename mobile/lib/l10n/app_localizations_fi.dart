@@ -1012,6 +1012,17 @@ class AppLocalizationsFi extends AppLocalizations {
   String get notificationConfirmationReminderBodyGeneric => 'Muistutus: vahvista maksun vastaanottaminen.';
 
   @override
+  String get notificationTripStartsTomorrowTitle => 'Matka alkaa huomenna';
+
+  @override
+  String notificationTripStartsTomorrowBody(String trip) {
+    return '”$trip” alkaa huomenna.';
+  }
+
+  @override
+  String get notificationTripStartsTomorrowBodyGeneric => 'Matkasi alkaa huomenna.';
+
+  @override
   String get notificationSettlementSentTitle => 'Tilisiirto merkitty lähetetyksi';
 
   @override
@@ -4467,6 +4478,96 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get expenseReceiptChip => 'Kuitti';
+
+  @override
+  String get expenseTypeRestaurant => 'Ravintola';
+
+  @override
+  String get expenseTypeCafe => 'Kahvila';
+
+  @override
+  String get expenseTypeBar => 'Baari';
+
+  @override
+  String get expenseTypeFastFood => 'Pikaruoka';
+
+  @override
+  String get expenseTypeSnacks => 'Välipalat';
+
+  @override
+  String get expenseTypeTaxi => 'Taksi';
+
+  @override
+  String get expenseTypeFlight => 'Lento';
+
+  @override
+  String get expenseTypeTrain => 'Juna';
+
+  @override
+  String get expenseTypeBus => 'Bussi';
+
+  @override
+  String get expenseTypeCarRental => 'Vuokra-auto';
+
+  @override
+  String get expenseTypeFerry => 'Lautta';
+
+  @override
+  String get expenseTypePublicTransport => 'Joukkoliikenne';
+
+  @override
+  String get expenseTypeButton => 'Tyyppi';
+
+  @override
+  String get expenseTypeTitleFood => 'Ruoan tyyppi';
+
+  @override
+  String get expenseTypeTitleTransport => 'Kulkuneuvo';
+
+  @override
+  String get expenseTypeOptional => 'valinnainen';
+
+  @override
+  String get expenseTypeNoneFood => 'Pelkkä ruoka';
+
+  @override
+  String get expenseTypeNoneTransport => 'Pelkkä kuljetus';
+
+  @override
+  String get expenseTypeCustom => 'Oma tyyppi…';
+
+  @override
+  String get expenseTypeCustomHint => 'Oma tyyppisi';
+
+  @override
+  String get expenseTypeHotel => 'Hotelli';
+
+  @override
+  String get expenseTypeHostel => 'Hostelli';
+
+  @override
+  String get expenseTypeApartment => 'Huoneisto';
+
+  @override
+  String get expenseTypeCamping => 'Leirintä';
+
+  @override
+  String get expenseTypeTitleAccommodation => 'Majoituksen tyyppi';
+
+  @override
+  String get expenseTypeTitleActivities => 'Aktiviteetin tyyppi';
+
+  @override
+  String get expenseTypeTitleShopping => 'Ostoksen tyyppi';
+
+  @override
+  String get expenseTypeNoneAccommodation => 'Pelkkä majoitus';
+
+  @override
+  String get expenseTypeNoneActivities => 'Pelkkä aktiviteetti';
+
+  @override
+  String get expenseTypeNoneShopping => 'Pelkät ostokset';
 
   @override
   String memberHistoryPaid(String amount) {

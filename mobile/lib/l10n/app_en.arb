@@ -640,6 +640,16 @@
   "notificationConfirmationReminderTitle": "Confirmation reminder",
   "notificationConfirmationReminderBody": "Reminder: please confirm receiving {amount} from {payer} in \"{trip}\".",
   "notificationConfirmationReminderBodyGeneric": "Reminder: please confirm receiving the payment.",
+  "notificationTripStartsTomorrowTitle": "Trip starts tomorrow",
+  "notificationTripStartsTomorrowBody": "\"{trip}\" starts tomorrow.",
+  "notificationTripStartsTomorrowBodyGeneric": "Your trip starts tomorrow.",
+  "@notificationTripStartsTomorrowBody": {
+    "placeholders": {
+      "trip": {
+        "type": "String"
+      }
+    }
+  },
   "notificationSettlementSentTitle": "Transfer marked as sent",
   "notificationSettlementSentBody": "{name} marked {amount} as sent to you.",
   "notificationSettlementSentBodyGeneric": "A transfer was marked as sent.",
@@ -1934,6 +1944,36 @@
   "memberHistoryPayment": "Payment",
   "memberHistoryShare": "share",
   "expenseReceiptChip": "Receipt",
+  "expenseTypeRestaurant": "Restaurant",
+  "expenseTypeCafe": "Café",
+  "expenseTypeBar": "Bar",
+  "expenseTypeFastFood": "Fast food",
+  "expenseTypeSnacks": "Snacks",
+  "expenseTypeTaxi": "Taxi",
+  "expenseTypeFlight": "Flight",
+  "expenseTypeTrain": "Train",
+  "expenseTypeBus": "Bus",
+  "expenseTypeCarRental": "Car rental",
+  "expenseTypeFerry": "Ferry",
+  "expenseTypePublicTransport": "Public transport",
+  "expenseTypeButton": "Type",
+  "expenseTypeTitleFood": "Type of food",
+  "expenseTypeTitleTransport": "Type of transport",
+  "expenseTypeOptional": "optional",
+  "expenseTypeNoneFood": "Just food",
+  "expenseTypeNoneTransport": "Just transport",
+  "expenseTypeCustom": "Custom type…",
+  "expenseTypeCustomHint": "Your type",
+  "expenseTypeHotel": "Hotel",
+  "expenseTypeHostel": "Hostel",
+  "expenseTypeApartment": "Apartment",
+  "expenseTypeCamping": "Camping",
+  "expenseTypeTitleAccommodation": "Type of stay",
+  "expenseTypeTitleActivities": "Type of activity",
+  "expenseTypeTitleShopping": "Type of shopping",
+  "expenseTypeNoneAccommodation": "Just accommodation",
+  "expenseTypeNoneActivities": "Just activity",
+  "expenseTypeNoneShopping": "Just shopping",
   "memberHistoryPaid": "paid {amount}",
   "@memberHistoryPaid": {
     "placeholders": {

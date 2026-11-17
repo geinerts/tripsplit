@@ -1018,6 +1018,17 @@ class AppLocalizationsUk extends AppLocalizations {
   String get notificationConfirmationReminderBodyGeneric => 'Нагадування: будь ласка, підтвердьте отримання платежу.';
 
   @override
+  String get notificationTripStartsTomorrowTitle => 'Подорож починається завтра';
+
+  @override
+  String notificationTripStartsTomorrowBody(String trip) {
+    return '«$trip» починається завтра.';
+  }
+
+  @override
+  String get notificationTripStartsTomorrowBodyGeneric => 'Твоя подорож починається завтра.';
+
+  @override
   String get notificationSettlementSentTitle => 'Переказ позначено як надісланий';
 
   @override
@@ -4483,6 +4494,96 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get expenseReceiptChip => 'Чек';
+
+  @override
+  String get expenseTypeRestaurant => 'Ресторан';
+
+  @override
+  String get expenseTypeCafe => 'Кафе';
+
+  @override
+  String get expenseTypeBar => 'Бар';
+
+  @override
+  String get expenseTypeFastFood => 'Фастфуд';
+
+  @override
+  String get expenseTypeSnacks => 'Перекус';
+
+  @override
+  String get expenseTypeTaxi => 'Таксі';
+
+  @override
+  String get expenseTypeFlight => 'Переліт';
+
+  @override
+  String get expenseTypeTrain => 'Потяг';
+
+  @override
+  String get expenseTypeBus => 'Автобус';
+
+  @override
+  String get expenseTypeCarRental => 'Оренда авто';
+
+  @override
+  String get expenseTypeFerry => 'Пором';
+
+  @override
+  String get expenseTypePublicTransport => 'Громадський транспорт';
+
+  @override
+  String get expenseTypeButton => 'Тип';
+
+  @override
+  String get expenseTypeTitleFood => 'Тип їжі';
+
+  @override
+  String get expenseTypeTitleTransport => 'Тип транспорту';
+
+  @override
+  String get expenseTypeOptional => 'необов’язково';
+
+  @override
+  String get expenseTypeNoneFood => 'Просто їжа';
+
+  @override
+  String get expenseTypeNoneTransport => 'Просто транспорт';
+
+  @override
+  String get expenseTypeCustom => 'Свій тип…';
+
+  @override
+  String get expenseTypeCustomHint => 'Твій тип';
+
+  @override
+  String get expenseTypeHotel => 'Готель';
+
+  @override
+  String get expenseTypeHostel => 'Хостел';
+
+  @override
+  String get expenseTypeApartment => 'Апартаменти';
+
+  @override
+  String get expenseTypeCamping => 'Кемпінг';
+
+  @override
+  String get expenseTypeTitleAccommodation => 'Тип житла';
+
+  @override
+  String get expenseTypeTitleActivities => 'Тип активності';
+
+  @override
+  String get expenseTypeTitleShopping => 'Тип покупки';
+
+  @override
+  String get expenseTypeNoneAccommodation => 'Просто житло';
+
+  @override
+  String get expenseTypeNoneActivities => 'Просто активність';
+
+  @override
+  String get expenseTypeNoneShopping => 'Просто покупки';
 
   @override
   String memberHistoryPaid(String amount) {

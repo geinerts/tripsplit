@@ -20,6 +20,7 @@ final RegExp _friendInviteAcceptedBodyPattern = RegExp(
   r'^(.+?) accepted your friend invite\.$',
 );
 
+final RegExp _tripStartsTomorrowPattern = RegExp(r'^"(.+)" starts tomorrow\.$');
 final RegExp _tripAddedBodyPattern = RegExp(
   r'^(.+?) added you to trip "(.+?)"\.$',
 );
@@ -501,6 +502,17 @@ LocalizedWorkspaceNotification localizeWorkspaceNotification(
         return LocalizedWorkspaceNotification(
           title: t.notificationSettlementReminderTitle,
           body: t.notificationSettlementReminderBodyGeneric,
+        );
+      }
+    case 'trip_starts_tomorrow':
+      {
+        final match = _tripStartsTomorrowPattern.firstMatch(rawBody);
+        final name = match?.group(1)?.trim() ?? tripName;
+        return LocalizedWorkspaceNotification(
+          title: t.notificationTripStartsTomorrowTitle,
+          body: name.isNotEmpty
+              ? t.notificationTripStartsTomorrowBody(name)
+              : t.notificationTripStartsTomorrowBodyGeneric,
         );
       }
     case 'settlement_auto_reminder':

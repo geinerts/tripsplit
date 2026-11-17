@@ -1012,6 +1012,17 @@ class AppLocalizationsSv extends AppLocalizations {
   String get notificationConfirmationReminderBodyGeneric => 'Påminnelse: bekräfta gärna att du har mottagit betalningen.';
 
   @override
+  String get notificationTripStartsTomorrowTitle => 'Resan börjar i morgon';
+
+  @override
+  String notificationTripStartsTomorrowBody(String trip) {
+    return '”$trip” börjar i morgon.';
+  }
+
+  @override
+  String get notificationTripStartsTomorrowBodyGeneric => 'Din resa börjar i morgon.';
+
+  @override
   String get notificationSettlementSentTitle => 'Överföring markerad som skickad';
 
   @override
@@ -4467,6 +4478,96 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get expenseReceiptChip => 'Kvitto';
+
+  @override
+  String get expenseTypeRestaurant => 'Restaurang';
+
+  @override
+  String get expenseTypeCafe => 'Kafé';
+
+  @override
+  String get expenseTypeBar => 'Bar';
+
+  @override
+  String get expenseTypeFastFood => 'Snabbmat';
+
+  @override
+  String get expenseTypeSnacks => 'Snacks';
+
+  @override
+  String get expenseTypeTaxi => 'Taxi';
+
+  @override
+  String get expenseTypeFlight => 'Flyg';
+
+  @override
+  String get expenseTypeTrain => 'Tåg';
+
+  @override
+  String get expenseTypeBus => 'Buss';
+
+  @override
+  String get expenseTypeCarRental => 'Hyrbil';
+
+  @override
+  String get expenseTypeFerry => 'Färja';
+
+  @override
+  String get expenseTypePublicTransport => 'Kollektivtrafik';
+
+  @override
+  String get expenseTypeButton => 'Typ';
+
+  @override
+  String get expenseTypeTitleFood => 'Typ av mat';
+
+  @override
+  String get expenseTypeTitleTransport => 'Typ av transport';
+
+  @override
+  String get expenseTypeOptional => 'valfritt';
+
+  @override
+  String get expenseTypeNoneFood => 'Bara mat';
+
+  @override
+  String get expenseTypeNoneTransport => 'Bara transport';
+
+  @override
+  String get expenseTypeCustom => 'Egen typ…';
+
+  @override
+  String get expenseTypeCustomHint => 'Din typ';
+
+  @override
+  String get expenseTypeHotel => 'Hotell';
+
+  @override
+  String get expenseTypeHostel => 'Vandrarhem';
+
+  @override
+  String get expenseTypeApartment => 'Lägenhet';
+
+  @override
+  String get expenseTypeCamping => 'Camping';
+
+  @override
+  String get expenseTypeTitleAccommodation => 'Typ av boende';
+
+  @override
+  String get expenseTypeTitleActivities => 'Typ av aktivitet';
+
+  @override
+  String get expenseTypeTitleShopping => 'Typ av köp';
+
+  @override
+  String get expenseTypeNoneAccommodation => 'Bara boende';
+
+  @override
+  String get expenseTypeNoneActivities => 'Bara aktivitet';
+
+  @override
+  String get expenseTypeNoneShopping => 'Bara shopping';
 
   @override
   String memberHistoryPaid(String amount) {

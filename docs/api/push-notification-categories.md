@@ -12,7 +12,7 @@ push notifications.
 | `trip_status` | `push_trip_status_enabled` | `trip_finished`, `trip_ready_to_settle`, `member_ready_to_settle` |
 | `payment_requests` | `push_payment_requests_enabled` | `payment_requested`, `payment_request_sent`, `payment_request_cancelled`, `payment_request_declined` |
 | `payments` | `push_payments_enabled` | `payment_sent`, `payment_confirmed`, `payment_cancelled`, `payment_not_received`, `settlement_sent`, `settlement_confirmed`, `settlement_sent_cancelled`, `settlement_not_received` |
-| `reminders` | `push_reminders_enabled` | `settlement_reminder`, `settlement_auto_reminder` |
+| `reminders` | `push_reminders_enabled` | `settlement_reminder`, `settlement_auto_reminder`, `trip_starts_tomorrow` |
 | `friend_invites` | `push_friend_invites_enabled` | `friend_invite`, `friend_invite_received`, `friend_invite_accepted` |
 | `location` | `push_location_enabled` | `live_location_started` |
 
@@ -70,3 +70,14 @@ Then run `sql/migrations/2026-11-08-add-live-location-push.sql`, which adds
 Without the migrations the server still works. The split categories read from the old
 switches, and updates to them only change the old switches. Location reads as on until
 its column exists, and changes to it are ignored until then.
+
+## Trip start reminder (2026-11-17, not deployed)
+
+`trip_starts_tomorrow` is sent the day before an active trip's `date_from` to each
+active member, by `scripts/run_trip_start_reminders.php`. It belongs to `reminders`
+for push and to `trip_updates` for the in-app list. Title "Trip starts tomorrow",
+body `"<trip>" starts tomorrow.`; both are translated from the app catalogs
+(`notificationTripStartsTomorrow*`). A member is never reminded twice for the same
+trip: the script skips anyone who already has this notification for it. No new
+preference column and no migration. App versions that don't know the type show
+the server's English text, so 1.0.20 keeps working.

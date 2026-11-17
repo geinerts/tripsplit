@@ -17,6 +17,7 @@ function ops_status_jobs(): array
     return [
         'push_delivery' => ['label' => 'Push delivery', 'schedule' => 'every minute', 'max_age' => 5 * 60],
         'settlement_reminders' => ['label' => 'Settlement reminders', 'schedule' => 'every 5 minutes', 'max_age' => 20 * 60],
+        'trip_start_reminders' => ['label' => 'Trip start reminders', 'schedule' => 'daily at 17:00 UTC', 'max_age' => 26 * 3600],
         'email_verification_cleanup' => ['label' => 'Unverified account cleanup', 'schedule' => 'every 10 minutes', 'max_age' => 40 * 60],
         'trip_report_delivery' => ['label' => 'Trip report emails', 'schedule' => 'every minute', 'max_age' => 5 * 60],
         'live_location_cleanup' => ['label' => 'Live location cleanup', 'schedule' => 'every minute', 'max_age' => 5 * 60],

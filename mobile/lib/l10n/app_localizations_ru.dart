@@ -1018,6 +1018,17 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notificationConfirmationReminderBodyGeneric => 'Напоминание: подтвердите получение платежа.';
 
   @override
+  String get notificationTripStartsTomorrowTitle => 'Поездка начинается завтра';
+
+  @override
+  String notificationTripStartsTomorrowBody(String trip) {
+    return '«$trip» начинается завтра.';
+  }
+
+  @override
+  String get notificationTripStartsTomorrowBodyGeneric => 'Ваша поездка начинается завтра.';
+
+  @override
   String get notificationSettlementSentTitle => 'Перевод отмечен как отправленный';
 
   @override
@@ -4483,6 +4494,96 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get expenseReceiptChip => 'Чек';
+
+  @override
+  String get expenseTypeRestaurant => 'Ресторан';
+
+  @override
+  String get expenseTypeCafe => 'Кафе';
+
+  @override
+  String get expenseTypeBar => 'Бар';
+
+  @override
+  String get expenseTypeFastFood => 'Фастфуд';
+
+  @override
+  String get expenseTypeSnacks => 'Перекус';
+
+  @override
+  String get expenseTypeTaxi => 'Такси';
+
+  @override
+  String get expenseTypeFlight => 'Перелёт';
+
+  @override
+  String get expenseTypeTrain => 'Поезд';
+
+  @override
+  String get expenseTypeBus => 'Автобус';
+
+  @override
+  String get expenseTypeCarRental => 'Аренда авто';
+
+  @override
+  String get expenseTypeFerry => 'Паром';
+
+  @override
+  String get expenseTypePublicTransport => 'Общественный транспорт';
+
+  @override
+  String get expenseTypeButton => 'Тип';
+
+  @override
+  String get expenseTypeTitleFood => 'Тип еды';
+
+  @override
+  String get expenseTypeTitleTransport => 'Тип транспорта';
+
+  @override
+  String get expenseTypeOptional => 'необязательно';
+
+  @override
+  String get expenseTypeNoneFood => 'Просто еда';
+
+  @override
+  String get expenseTypeNoneTransport => 'Просто транспорт';
+
+  @override
+  String get expenseTypeCustom => 'Свой тип…';
+
+  @override
+  String get expenseTypeCustomHint => 'Ваш тип';
+
+  @override
+  String get expenseTypeHotel => 'Отель';
+
+  @override
+  String get expenseTypeHostel => 'Хостел';
+
+  @override
+  String get expenseTypeApartment => 'Апартаменты';
+
+  @override
+  String get expenseTypeCamping => 'Кемпинг';
+
+  @override
+  String get expenseTypeTitleAccommodation => 'Тип жилья';
+
+  @override
+  String get expenseTypeTitleActivities => 'Тип активности';
+
+  @override
+  String get expenseTypeTitleShopping => 'Тип покупки';
+
+  @override
+  String get expenseTypeNoneAccommodation => 'Просто жильё';
+
+  @override
+  String get expenseTypeNoneActivities => 'Просто активность';
+
+  @override
+  String get expenseTypeNoneShopping => 'Просто покупки';
 
   @override
   String memberHistoryPaid(String amount) {

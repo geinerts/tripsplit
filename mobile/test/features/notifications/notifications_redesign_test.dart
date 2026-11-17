@@ -447,6 +447,7 @@ void main() {
         ),
         ('settlement_sent', 'Anna marked €42.00 as sent to you.'),
         ('settlement_confirmed', 'Anna confirmed receiving €42.00 from you.'),
+        ('trip_starts_tomorrow', '"Lisbon" starts tomorrow.'),
       ]) {
         expect(
           localizeWorkspaceNotification(

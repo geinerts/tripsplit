@@ -1015,6 +1015,17 @@ class AppLocalizationsCs extends AppLocalizations {
   String get notificationConfirmationReminderBodyGeneric => 'Připomenutí: potvrďte prosím přijetí platby.';
 
   @override
+  String get notificationTripStartsTomorrowTitle => 'Výlet začíná zítra';
+
+  @override
+  String notificationTripStartsTomorrowBody(String trip) {
+    return '„$trip“ začíná zítra.';
+  }
+
+  @override
+  String get notificationTripStartsTomorrowBodyGeneric => 'Tvůj výlet začíná zítra.';
+
+  @override
   String get notificationSettlementSentTitle => 'Převod označen jako odeslaný';
 
   @override
@@ -4476,6 +4487,96 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get expenseReceiptChip => 'Účtenka';
+
+  @override
+  String get expenseTypeRestaurant => 'Restaurace';
+
+  @override
+  String get expenseTypeCafe => 'Kavárna';
+
+  @override
+  String get expenseTypeBar => 'Bar';
+
+  @override
+  String get expenseTypeFastFood => 'Rychlé občerstvení';
+
+  @override
+  String get expenseTypeSnacks => 'Svačina';
+
+  @override
+  String get expenseTypeTaxi => 'Taxi';
+
+  @override
+  String get expenseTypeFlight => 'Let';
+
+  @override
+  String get expenseTypeTrain => 'Vlak';
+
+  @override
+  String get expenseTypeBus => 'Autobus';
+
+  @override
+  String get expenseTypeCarRental => 'Půjčovna aut';
+
+  @override
+  String get expenseTypeFerry => 'Trajekt';
+
+  @override
+  String get expenseTypePublicTransport => 'MHD';
+
+  @override
+  String get expenseTypeButton => 'Typ';
+
+  @override
+  String get expenseTypeTitleFood => 'Typ jídla';
+
+  @override
+  String get expenseTypeTitleTransport => 'Typ dopravy';
+
+  @override
+  String get expenseTypeOptional => 'nepovinné';
+
+  @override
+  String get expenseTypeNoneFood => 'Jen jídlo';
+
+  @override
+  String get expenseTypeNoneTransport => 'Jen doprava';
+
+  @override
+  String get expenseTypeCustom => 'Vlastní typ…';
+
+  @override
+  String get expenseTypeCustomHint => 'Tvůj typ';
+
+  @override
+  String get expenseTypeHotel => 'Hotel';
+
+  @override
+  String get expenseTypeHostel => 'Hostel';
+
+  @override
+  String get expenseTypeApartment => 'Apartmán';
+
+  @override
+  String get expenseTypeCamping => 'Kemp';
+
+  @override
+  String get expenseTypeTitleAccommodation => 'Typ ubytování';
+
+  @override
+  String get expenseTypeTitleActivities => 'Typ aktivity';
+
+  @override
+  String get expenseTypeTitleShopping => 'Typ nákupu';
+
+  @override
+  String get expenseTypeNoneAccommodation => 'Jen ubytování';
+
+  @override
+  String get expenseTypeNoneActivities => 'Jen aktivita';
+
+  @override
+  String get expenseTypeNoneShopping => 'Jen nákupy';
 
   @override
   String memberHistoryPaid(String amount) {

@@ -27,6 +27,22 @@ final class PushLocalizationTest extends TestCase
             }
         }
     }
+    public function test_trip_start_reminder_is_translated_with_the_trip_name(): void
+    {
+        foreach (['en', 'lv', 'de', 'ru'] as $locale) {
+            $result = push_localize_notification_for_locale([
+                'type' => 'trip_starts_tomorrow', 'title' => 'Trip starts tomorrow',
+                'body' => '"Lisbon" starts tomorrow.',
+            ], $locale);
+            self::assertNotSame('', $result['title']);
+            self::assertStringContainsString('Lisbon', $result['body']);
+            self::assertStringNotContainsString('{', $result['body']);
+        }
+        self::assertSame('Ceļojums sākas rīt', push_localize_notification_for_locale([
+            'type' => 'trip_starts_tomorrow', 'title' => 'x', 'body' => 'odd',
+        ], 'lv')['title']);
+    }
+
     public function test_locale_alias_and_untrusted_locale_fallback(): void
     {
         self::assertSame('nb', normalize_push_locale_code('no_NO'));
