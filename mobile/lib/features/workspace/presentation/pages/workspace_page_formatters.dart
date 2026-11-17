@@ -47,15 +47,6 @@ String _signedMoney(
   );
 }
 
-/// Equal is the usual split and also how an unknown mode is labelled.
-bool _isEqualSplitMode(String splitMode) => !const {
-  'exact',
-  'percent',
-  'shares',
-  'adjustment',
-  'itemized',
-}.contains(splitMode.trim().toLowerCase());
-
 String _splitModeShortLabel(BuildContext context, String splitMode) {
   final t = context.l10n;
   switch (splitMode.trim().toLowerCase()) {

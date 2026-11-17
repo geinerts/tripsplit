@@ -4460,6 +4460,20 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settleRecordShort => 'Jag har betalat';
 
   @override
+  String get memberHistoryPayment => 'Betalning';
+
+  @override
+  String get memberHistoryShare => 'andel';
+
+  @override
+  String get expenseReceiptChip => 'Kvitto';
+
+  @override
+  String memberHistoryPaid(String amount) {
+    return 'betalt $amount';
+  }
+
+  @override
   String get tripBudgetEnable => 'Ställ in en budget';
 
   @override

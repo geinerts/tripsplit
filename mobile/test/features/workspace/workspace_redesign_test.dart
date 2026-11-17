@@ -3721,55 +3721,57 @@ void main() {
     await disposePage(tester);
   });
 
-  testWidgets(
-    'expense days get headings and split modes show when they matter',
-    (tester) async {
-      final controller = _Workspace()
-        ..data = snapshot(
-          expenses: [
-            expense(1, name: 'Dinner', date: '2026-10-21'),
-            expense(2, name: 'Taxi', date: '2026-10-21', splitMode: 'exact'),
-            expense(3, name: 'Museum', date: '2026-10-20'),
-          ],
-        );
-      await _mount(tester, controller);
-      await tester.pumpAndSettle();
-      final context = tester.element(find.byType(WorkspacePage));
-      final t = AppLocalizations.of(context)!;
-      final row = find.byKey(const ValueKey('expense-row-1'));
-      await tester.scrollUntilVisible(
-        find.byKey(const ValueKey('expense-row-3')),
-        200,
-        scrollable: find.byType(Scrollable).first,
+  testWidgets('expense days get headings and rows show the category and note', (
+    tester,
+  ) async {
+    final controller = _Workspace()
+      ..data = snapshot(
+        expenses: [
+          expense(1, name: 'Dinner', date: '2026-10-21'),
+          expense(2, name: 'Taxi', date: '2026-10-21', splitMode: 'exact'),
+          expense(3, name: 'Museum', date: '2026-10-20'),
+        ],
       );
-      String details(int id) => tester
-          .widgetList<Text>(
-            find.descendant(
-              of: find.byKey(ValueKey('expense-row-$id')),
-              matching: find.byType(Text),
-            ),
-          )
-          .map((text) => text.data ?? '')
-          .join(' | ');
-      expect(find.text(t.equalSplitLabel), findsNothing);
-      expect(details(1), isNot(contains(t.equalSplitLabel)));
-      expect(details(2), contains(t.exactAmountsLabel));
-      // Every day has its own heading, so rows never repeat the date.
-      expect(details(3), isNot(contains('Oct 20')));
-      expect(details(1), isNot(contains('Oct 21')));
-      expect(find.text('Oct 21'), findsOneWidget);
-      expect(find.text('Oct 20'), findsOneWidget);
-      expect(
-        find.descendant(of: row, matching: find.byIcon(Icons.chevron_right)),
-        findsNothing,
-      );
-      final height = tester.getSize(row).height;
-      expect(height, greaterThanOrEqualTo(48));
-      expect(height, lessThanOrEqualTo(64));
-      expect(tester.takeException(), isNull);
-      await disposePage(tester);
-    },
-  );
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    final context = tester.element(find.byType(WorkspacePage));
+    final t = AppLocalizations.of(context)!;
+    final row = find.byKey(const ValueKey('expense-row-1'));
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('expense-row-3')),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    String details(int id) => tester
+        .widgetList<Text>(
+          find.descendant(
+            of: find.byKey(ValueKey('expense-row-$id')),
+            matching: find.byType(Text),
+          ),
+        )
+        .map((text) => text.data ?? '')
+        .join(' | ');
+    expect(find.text(t.equalSplitLabel), findsNothing);
+    expect(details(1), isNot(contains(t.equalSplitLabel)));
+    // The split mode only shows in the opened expense now; the row shows
+    // the category with the note under it.
+    expect(details(2), isNot(contains(t.exactAmountsLabel)));
+    expect(details(2), contains('Taxi'));
+    // Every day has its own heading, so rows never repeat the date.
+    expect(details(3), isNot(contains('Oct 20')));
+    expect(details(1), isNot(contains('Oct 21')));
+    expect(find.text('Oct 21'), findsOneWidget);
+    expect(find.text('Oct 20'), findsOneWidget);
+    expect(
+      find.descendant(of: row, matching: find.byIcon(Icons.chevron_right)),
+      findsNothing,
+    );
+    final height = tester.getSize(row).height;
+    expect(height, greaterThanOrEqualTo(48));
+    expect(height, lessThanOrEqualTo(64));
+    expect(tester.takeException(), isNull);
+    await disposePage(tester);
+  });
 
   testWidgets('activity sentence uses a first name unless it is ambiguous', (
     tester,
@@ -4753,7 +4755,7 @@ void main() {
           await tester.tap(find.byKey(const ValueKey('balance-row-7')));
           await tester.pumpAndSettle();
           await tester.scrollUntilVisible(
-            find.text(t.balanceHistoryScope),
+            find.byKey(const ValueKey('member-history-filter-2')),
             200,
             scrollable: find.byType(Scrollable).last,
           );

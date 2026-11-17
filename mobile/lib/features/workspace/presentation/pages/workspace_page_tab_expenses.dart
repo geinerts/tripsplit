@@ -290,15 +290,11 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
       expense.category,
       Localizations.localeOf(context),
     );
-    final title = expense.note.trim().isEmpty ? category : expense.note.trim();
+    // The category is always the title; the note goes under it. Who paid
+    // shows as a small face on the icon, the split mode only in details.
+    final title = category;
     final payerName = (payer?.preferredName ?? expense.paidByNickname).trim();
-    final details = [
-      if (widget.trip.isSolo && expense.note.trim().isNotEmpty) category,
-      if (!widget.trip.isSolo && payerName.isNotEmpty)
-        context.l10n.expensePaidByName(payerName),
-      if (!widget.trip.isSolo && !_isEqualSplitMode(expense.splitMode))
-        _splitModeShortLabel(context, expense.splitMode),
-    ].join(' · ');
+    final details = expense.note.trim();
     final amount = AppFormatters.displayCurrencyFromCents(
       context,
       (expense.amount * 100).round(),
@@ -398,19 +394,14 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ExcludeSemantics(
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        ExpenseCategoryCatalog.iconFor(expense.category),
-                        size: 18,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
+                  Semantics(
+                    label: widget.trip.isSolo || payerName.isEmpty
+                        ? null
+                        : context.l10n.expensePaidByName(payerName),
+                    excludeSemantics: true,
+                    child: _expenseIconWithPayer(
+                      expense,
+                      widget.trip.isSolo ? null : payer,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -427,7 +418,14 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        if (details.isNotEmpty) Text(details, style: muted),
+                        if (details.isNotEmpty)
+                          Text(
+                            details,
+                            key: ValueKey('expense-note-${expense.id}'),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: muted,
+                          ),
                         if (expense.id <= 0)
                           Text(context.l10n.queuePendingStatus, style: muted),
                         if (stacked) ...[
@@ -454,6 +452,65 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  /// The category icon with the payer's face on its top-left corner.
+  Widget _expenseIconWithPayer(
+    TripExpense expense,
+    WorkspaceUser? payer, {
+    double size = 40,
+    bool showPayer = true,
+  }) {
+    final theme = Theme.of(context);
+    final payerName = (payer?.preferredName ?? expense.paidByNickname).trim();
+    final face = size * .5;
+    return SizedBox(
+      width: size + 4,
+      height: size + 4,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            right: 0,
+            bottom: 0,
+            child: Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(size * .28),
+              ),
+              child: Icon(
+                ExpenseCategoryCatalog.iconFor(expense.category),
+                size: size * .48,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          if (showPayer && (payer != null || payerName.isNotEmpty))
+            Positioned(
+              left: -2,
+              top: -2,
+              child: Container(
+                key: ValueKey('expense-payer-${expense.id}'),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: theme.colorScheme.surface,
+                    width: 2,
+                  ),
+                ),
+                child: _largeMemberAvatar(
+                  id: expense.paidById,
+                  name: payerName,
+                  avatarUrl: payer?.avatarThumbUrl ?? payer?.avatarUrl,
+                  size: face,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

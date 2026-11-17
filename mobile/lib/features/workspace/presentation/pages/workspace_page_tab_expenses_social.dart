@@ -884,8 +884,22 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          sectionLabel,
+        Text.rich(
+          TextSpan(
+            text: context.l10n.expenseCommentsTitle,
+            children: [
+              if (count > 0)
+                TextSpan(
+                  text: '  $count',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: isDark
+                        ? colors.onSurfaceVariant
+                        : AppDesign.lightMuted,
+                  ),
+                ),
+            ],
+          ),
+          semanticsLabel: sectionLabel,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: isDark ? null : AppDesign.lightForeground,
@@ -1125,88 +1139,117 @@ class _CommentTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        comment.userNickname,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: isDark ? null : AppDesign.lightForeground,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        timeStr,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: isDark
-                              ? colors.onSurfaceVariant
-                              : AppDesign.lightMuted,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if ((replyToNickname ?? '').trim().isNotEmpty ||
-                      (replyToBody ?? '').trim().isNotEmpty) ...[
-                    const SizedBox(height: 6),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
-                      decoration: BoxDecoration(
-                        color: isDark
-                            ? colors.surfaceContainerHighest.withValues(
-                                alpha: 0.55,
-                              )
-                            : AppDesign.lightSurfaceMuted.withValues(
-                                alpha: 0.72,
-                              ),
-                        borderRadius: AppDesign.cardRadius,
-                        border: Border.all(
-                          color: isDark
-                              ? colors.outlineVariant.withValues(alpha: 0.30)
-                              : AppDesign.lightStroke,
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if ((replyToNickname ?? '').trim().isNotEmpty)
-                            Text(
-                              context.l10n.expenseReplyTo(
-                                (replyToNickname ?? '').trim(),
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: isDark
-                                        ? colors.primary
-                                        : AppDesign.lightPrimary,
-                                  ),
-                            ),
-                          if ((replyToBody ?? '').trim().isNotEmpty)
-                            Text(
-                              (replyToBody ?? '').trim(),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodySmall
-                                  ?.copyWith(
-                                    color: isDark
-                                        ? colors.onSurfaceVariant
-                                        : AppDesign.lightMuted,
-                                  ),
-                            ),
-                        ],
+                  Container(
+                    key: ValueKey('comment-bubble-${comment.id}'),
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? colors.surfaceContainerHigh
+                          : AppDesign.lightSurfaceMuted,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(4),
+                        topRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
                       ),
                     ),
-                  ],
-                  const SizedBox(height: 4),
-                  CommentBodyText(
-                    body: comment.body,
-                    mentions: comment.mentions,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: isDark ? null : AppDesign.lightForeground,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text.rich(
+                          TextSpan(
+                            text: comment.userNickname,
+                            children: [
+                              if (timeStr.isNotEmpty)
+                                TextSpan(
+                                  text: '  $timeStr',
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w400,
+                                        color: isDark
+                                            ? colors.onSurfaceVariant
+                                            : AppDesign.lightMuted,
+                                      ),
+                                ),
+                            ],
+                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: isDark
+                                    ? null
+                                    : AppDesign.lightForeground,
+                              ),
+                        ),
+                        if ((replyToNickname ?? '').trim().isNotEmpty ||
+                            (replyToBody ?? '').trim().isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? colors.surfaceContainerHighest.withValues(
+                                      alpha: 0.55,
+                                    )
+                                  : AppDesign.lightSurfaceMuted.withValues(
+                                      alpha: 0.72,
+                                    ),
+                              borderRadius: AppDesign.cardRadius,
+                              border: Border.all(
+                                color: isDark
+                                    ? colors.outlineVariant.withValues(
+                                        alpha: 0.30,
+                                      )
+                                    : AppDesign.lightStroke,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if ((replyToNickname ?? '').trim().isNotEmpty)
+                                  Text(
+                                    context.l10n.expenseReplyTo(
+                                      (replyToNickname ?? '').trim(),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          color: isDark
+                                              ? colors.primary
+                                              : AppDesign.lightPrimary,
+                                        ),
+                                  ),
+                                if ((replyToBody ?? '').trim().isNotEmpty)
+                                  Text(
+                                    (replyToBody ?? '').trim(),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: isDark
+                                              ? colors.onSurfaceVariant
+                                              : AppDesign.lightMuted,
+                                        ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 3),
+                        CommentBodyText(
+                          body: comment.body,
+                          mentions: comment.mentions,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: isDark
+                                    ? null
+                                    : AppDesign.lightForeground,
+                              ),
+                        ),
+                      ],
                     ),
                   ),
                   if (reactionRows.isNotEmpty) ...[

@@ -4468,6 +4468,20 @@ class AppLocalizationsLv extends AppLocalizations {
   String get settleRecordShort => 'Samaksāju';
 
   @override
+  String get memberHistoryPayment => 'Maksājums';
+
+  @override
+  String get memberHistoryShare => 'daļa';
+
+  @override
+  String get expenseReceiptChip => 'Čeks';
+
+  @override
+  String memberHistoryPaid(String amount) {
+    return 'samaksāja $amount';
+  }
+
+  @override
   String get tripBudgetEnable => 'Iestatīt budžetu';
 
   @override

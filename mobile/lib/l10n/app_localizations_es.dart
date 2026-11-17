@@ -4460,6 +4460,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settleRecordShort => 'He pagado';
 
   @override
+  String get memberHistoryPayment => 'Pago';
+
+  @override
+  String get memberHistoryShare => 'parte';
+
+  @override
+  String get expenseReceiptChip => 'Ticket';
+
+  @override
+  String memberHistoryPaid(String amount) {
+    return 'pagado $amount';
+  }
+
+  @override
   String get tripBudgetEnable => 'Establecer un presupuesto';
 
   @override

@@ -15,226 +15,484 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
     final linkedSettlements = snapshot.settlements
         .where((row) => row.fromUserId == item.id || row.toUserId == item.id)
         .toList(growable: false);
-    final transactions = _buildMemberTransactionHistory(
+    final history = _buildMemberHistory(
       snapshot: snapshot,
       memberId: item.id,
       usersById: usersById,
     );
+    final paymentsNet = history
+        .where((entry) => entry.payment != null)
+        .fold<double>(0, (sum, entry) => sum + entry.effect);
+    var filter = 0;
     await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (context) {
-        final theme = Theme.of(context);
-        Widget stat(String label, double value) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: theme.textTheme.bodyMedium),
-            const SizedBox(height: 4),
-            Text(_balanceMoney(value), style: theme.textTheme.headlineSmall),
-          ],
-        );
-        return SizedBox(
-          height: MediaQuery.sizeOf(context).height * .74,
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
-                  icon: const Icon(Icons.close),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setSheet) {
+          final t = context.l10n;
+          final theme = Theme.of(context);
+          final colors = theme.colorScheme;
+          final settled = item.net.abs() < .005;
+          final owes = item.net < -.004;
+          final tone = settled
+              ? colors.onSurfaceVariant
+              : owes
+              ? colors.error
+              : colors.primary;
+          final shown = history
+              .where(
+                (entry) =>
+                    filter == 0 ||
+                    (filter == 1 && entry.expense != null) ||
+                    (filter == 2 && entry.payment != null),
+              )
+              .toList(growable: false);
+          return SizedBox(
+            height: MediaQuery.sizeOf(context).height * .8,
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).closeButtonTooltip,
+                    icon: const Icon(Icons.close),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                  children: [
-                    Center(
-                      child: _largeMemberAvatar(
-                        id: item.id,
-                        name: memberName,
-                        avatarUrl: member?.avatarThumbUrl ?? member?.avatarUrl,
-                        size: 76,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      memberName,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _balanceDescription(item.net),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _balanceMoney(item.net.abs()),
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.displaySmall?.copyWith(
-                        color: item.net < -.004
-                            ? theme.colorScheme.error
-                            : theme.colorScheme.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        final metrics = [
-                          stat(context.l10n.workspaceTotalPaid, item.paid),
-                          stat(context.l10n.balanceExpenseShare, item.owed),
-                        ];
-                        if (constraints.maxWidth < 340 ||
-                            MediaQuery.textScalerOf(context).scale(16) > 21) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              metrics[0],
-                              const SizedBox(height: 16),
-                              metrics[1],
-                            ],
-                          );
-                        }
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(child: metrics[0]),
-                            const SizedBox(width: 16),
-                            Expanded(child: metrics[1]),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      context.l10n.workspaceTransactionHistory,
-                      style: theme.textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      context.l10n.balanceHistoryScope,
-                      style: theme.textTheme.bodySmall,
-                    ),
-                    for (final entry in transactions) ...[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final amount = Text(
-                              '${entry.isPositive ? '+' : '−'}${_balanceMoney(entry.amount)}',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: entry.isPositive
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.error,
-                              ),
-                            );
-                            final stacked =
-                                MediaQuery.textScalerOf(context).scale(16) >
-                                    23 ||
-                                constraints.maxWidth < 300;
-                            return Row(
-                              children: [
-                                Container(
-                                  width: 44,
-                                  height: 44,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        theme.colorScheme.surfaceContainerLow,
-                                    borderRadius: AppDesign.cardRadius,
-                                  ),
-                                  child: Icon(
-                                    entry.icon,
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        entry.title,
-                                        style: theme.textTheme.titleMedium,
-                                      ),
-                                      Text(
-                                        entry.subtitle,
-                                        style: theme.textTheme.bodyMedium,
-                                      ),
-                                      if (stacked) amount,
-                                    ],
-                                  ),
-                                ),
-                                if (!stacked) ...[
-                                  const SizedBox(width: 12),
-                                  amount,
-                                ],
-                              ],
-                            );
-                          },
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                    children: [
+                      Center(
+                        child: _largeMemberAvatar(
+                          id: item.id,
+                          name: memberName,
+                          avatarUrl:
+                              member?.avatarThumbUrl ?? member?.avatarUrl,
+                          size: 64,
                         ),
                       ),
-                      const Divider(height: 1),
-                    ],
-                    if (linkedSettlements.isNotEmpty) ...[
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                       Text(
-                        context.l10n.workspaceSettle,
-                        style: theme.textTheme.titleLarge,
+                        memberName,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                      for (final settlement in linkedSettlements)
-                        TextButton(
-                          onPressed: () => _openSettlementFlowTimelineSheet(
-                            snapshot: snapshot,
-                            item: settlement,
-                            usersById: usersById,
+                      const SizedBox(height: 6),
+                      Center(
+                        child: Container(
+                          key: const ValueKey('member-balance-status'),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: tone.withValues(alpha: .12),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            '${settlement.from} → ${settlement.to} · ${_balanceMoney(settlement.amount)}',
+                            _balanceDescription(item.net),
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              color: tone,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
+                      ),
+                      if (!settled) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          _balanceMoney(item.net.abs()),
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.displaySmall?.copyWith(
+                            color: tone,
+                            fontWeight: FontWeight.w700,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 18),
+                      _memberStatsRow(
+                        paid: item.paid,
+                        share: item.owed,
+                        payments: paymentsNet,
+                      ),
+                      const SizedBox(height: 18),
+                      _memberFilterTabs(
+                        selected: filter,
+                        onSelected: (value) => setSheet(() => filter = value),
+                      ),
+                      const SizedBox(height: 4),
+                      ..._memberHistoryRows(
+                        snapshot: snapshot,
+                        entries: shown,
+                        usersById: usersById,
+                      ),
+                      if (linkedSettlements.isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          t.workspaceSettle,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        for (final settlement in linkedSettlements)
+                          TextButton(
+                            onPressed: () => _openSettlementFlowTimelineSheet(
+                              snapshot: snapshot,
+                              item: settlement,
+                              usersById: usersById,
+                            ),
+                            child: Text(
+                              '${settlement.from} → ${settlement.to} · ${_balanceMoney(settlement.amount)}',
+                            ),
+                          ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
-  List<_MemberTransactionEntry> _buildMemberTransactionHistory({
+  /// Paid · Share · Payments in one row with thin lines between them.
+  Widget _memberStatsRow({
+    required double paid,
+    required double share,
+    required double payments,
+  }) {
+    final t = context.l10n;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    Widget stat(String label, double value, {bool signed = false}) {
+      final zero = value.abs() < .005;
+      final text = signed && !zero
+          ? '${value > 0 ? '+' : '−'}${_balanceMoney(value.abs())}'
+          : _balanceMoney(value.abs());
+      return Expanded(
+        child: Column(
+          children: [
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 2),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                text,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: zero ? colors.onSurfaceVariant : null,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget line() =>
+        Container(width: 1, height: 32, color: colors.outlineVariant);
+    return Row(
+      key: const ValueKey('member-balance-stats'),
+      children: [
+        stat(t.paidLabel, paid),
+        line(),
+        stat(t.tripReportShare, share),
+        line(),
+        stat(t.tripReportPayments, payments, signed: true),
+      ],
+    );
+  }
+
+  Widget _memberFilterTabs({
+    required int selected,
+    required ValueChanged<int> onSelected,
+  }) {
+    final t = context.l10n;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final labels = [t.allFilter, t.expensesLabel, t.tripReportPayments];
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        children: [
+          for (var i = 0; i < labels.length; i++)
+            Expanded(
+              child: Semantics(
+                button: true,
+                selected: selected == i,
+                child: Material(
+                  color: selected == i ? colors.primary : Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
+                  child: InkWell(
+                    key: ValueKey('member-history-filter-$i'),
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () => onSelected(i),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 38),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 6,
+                          ),
+                          child: Text(
+                            labels[i],
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: selected == i
+                                  ? colors.onPrimary
+                                  : colors.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  String _signedBalanceMoney(double value) => value.abs() < .005
+      ? _balanceMoney(0)
+      : '${value > 0 ? '+' : '−'}${_balanceMoney(value.abs())}';
+
+  Color _effectColor(double value) {
+    final colors = Theme.of(context).colorScheme;
+    return value.abs() < .005
+        ? colors.onSurfaceVariant
+        : value > 0
+        ? colors.primary
+        : colors.error;
+  }
+
+  /// Rows grouped by day, newest first; each day shows its total effect.
+  List<Widget> _memberHistoryRows({
+    required WorkspaceSnapshot snapshot,
+    required List<_MemberHistoryEntry> entries,
+    required Map<int, WorkspaceUser> usersById,
+  }) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final rows = <Widget>[];
+    String? day;
+    for (var i = 0; i < entries.length; i++) {
+      final entry = entries[i];
+      if (entry.date != day) {
+        day = entry.date;
+        final total = entries
+            .where((other) => other.date == day)
+            .fold<double>(0, (sum, other) => sum + other.effect);
+        rows.add(
+          Padding(
+            padding: const EdgeInsets.only(top: 14, bottom: 2),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    day.isEmpty ? '' : _formatDisplayDate(context, day),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                Text(
+                  _signedBalanceMoney(total),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: _effectColor(total),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+      rows.add(
+        entry.expense != null
+            ? _memberExpenseRow(snapshot, entry, usersById)
+            : _memberPaymentRow(entry, usersById),
+      );
+    }
+    return rows;
+  }
+
+  Widget _memberAmountColumn(_MemberHistoryEntry entry) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          _signedBalanceMoney(entry.effect),
+          textAlign: TextAlign.end,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: _effectColor(entry.effect),
+            fontFeatures: const [FontFeature.tabularFigures()],
+          ),
+        ),
+        if (entry.hint.isNotEmpty)
+          Text(
+            entry.hint,
+            textAlign: TextAlign.end,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _memberExpenseRow(
+    WorkspaceSnapshot snapshot,
+    _MemberHistoryEntry entry,
+    Map<int, WorkspaceUser> usersById,
+  ) {
+    final theme = Theme.of(context);
+    final expense = entry.expense!;
+    final note = expense.note.trim();
+    return InkWell(
+      key: ValueKey('member-history-expense-${expense.id}'),
+      onTap: () =>
+          unawaited(_openExpenseDetails(snapshot: snapshot, expense: expense)),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: theme.colorScheme.outlineVariant),
+          ),
+        ),
+        child: Row(
+          children: [
+            _expenseIconWithPayer(
+              expense,
+              usersById[expense.paidById],
+              showPayer: !widget.trip.isSolo,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    ExpenseCategoryCatalog.labelFor(
+                      expense.category,
+                      Localizations.localeOf(context),
+                    ),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  if (note.isNotEmpty)
+                    Text(
+                      note,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Flexible(flex: 2, child: _memberAmountColumn(entry)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _memberPaymentRow(
+    _MemberHistoryEntry entry,
+    Map<int, WorkspaceUser> usersById,
+  ) {
+    final t = context.l10n;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final payment = entry.payment!;
+    final from = usersById[payment.fromUserId];
+    final to = usersById[payment.toUserId];
+    final fromName = _paymentMemberName(payment.from, payment.fromUserId, from);
+    final toName = _paymentMemberName(payment.to, payment.toUserId, to);
+    return Container(
+      key: ValueKey('member-history-payment-${payment.id}'),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: colors.outlineVariant)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: colors.primary.withValues(alpha: .12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.swap_horiz_rounded, color: colors.primary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  t.memberHistoryPayment,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  '$fromName → $toName · ${t.statusConfirmed.toLowerCase()}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Flexible(flex: 2, child: _memberAmountColumn(entry)),
+        ],
+      ),
+    );
+  }
+
+  /// What each expense and confirmed payment did to this person's balance.
+  List<_MemberHistoryEntry> _buildMemberHistory({
     required WorkspaceSnapshot snapshot,
     required int memberId,
     required Map<int, WorkspaceUser> usersById,
   }) {
-    final transactions = <_MemberTransactionEntry>[];
-    final locale = Localizations.localeOf(context);
-
+    final t = context.l10n;
+    final entries = <_MemberHistoryEntry>[];
     for (final expense in snapshot.expenses) {
-      final categoryLabel = ExpenseCategoryCatalog.labelFor(
-        expense.category,
-        locale,
-      );
-      final title = expense.note.trim().isEmpty ? categoryLabel : expense.note;
-      final date = _formatDisplayDate(context, expense.expenseDate);
-
-      if (expense.paidById == memberId) {
-        transactions.add(
-          _MemberTransactionEntry(
-            title: title,
-            subtitle: date.isEmpty
-                ? context.l10n.workspacePaidForGroup
-                : context.l10n.workspacePaidForGroupDate(date),
-            amount: expense.amount,
-            isPositive: true,
-            icon: Icons.account_balance_wallet_outlined,
-          ),
-        );
-      }
-
       final participants = expense.participants.isNotEmpty
           ? [
               for (final person in expense.participants)
@@ -259,87 +517,64 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
         expense: expense,
         participants: participants,
         payerName: payerName.isEmpty
-            ? context.l10n.userWithId(expense.paidById)
+            ? t.userWithId(expense.paidById)
             : payerName,
       );
-
-      for (final line in lines) {
-        if (line.userId != memberId || line.isPayer || line.owes <= 0) {
-          continue;
-        }
-        transactions.add(
-          _MemberTransactionEntry(
-            title: title,
-            subtitle: date.isEmpty
-                ? context.l10n.workspaceShareOfExpense
-                : context.l10n.workspaceShareOfExpenseDate(date),
-            amount: line.owes,
-            isPositive: false,
-            icon: Icons.call_received_rounded,
-          ),
-        );
-      }
-    }
-
-    for (final payment in snapshot.payments) {
-      if (!payment.isConfirmed) {
-        continue;
-      }
-      final fromUser = usersById[payment.fromUserId];
-      final toUser = usersById[payment.toUserId];
-      final fromName = (fromUser?.preferredName ?? payment.from).trim();
-      final toName = (toUser?.preferredName ?? payment.to).trim();
-      final date = _formatDisplayDate(
-        context,
-        (payment.confirmedAt ?? payment.markedSentAt ?? '').split(' ').first,
+      final share = lines
+          .where((line) => line.userId == memberId)
+          .fold<double>(0, (sum, line) => sum + line.owes);
+      final paid = expense.paidById == memberId ? expense.amount : 0.0;
+      if (paid <= 0 && share <= 0) continue;
+      entries.add(
+        _MemberHistoryEntry(
+          date: expense.expenseDate.trim(),
+          expense: expense,
+          effect: paid - share,
+          hint: paid > 0
+              ? t.memberHistoryPaid(_balanceMoney(paid))
+              : t.memberHistoryShare,
+        ),
       );
-      if (payment.fromUserId == memberId) {
-        transactions.add(
-          _MemberTransactionEntry(
-            title: context.l10n.balancePaymentTo(
-              toName.isEmpty
-                  ? context.l10n.userWithId(payment.toUserId)
-                  : toName,
-            ),
-            subtitle: '${context.l10n.statusConfirmed} $date'.trim(),
-            amount: payment.amount,
-            isPositive: true,
-            icon: Icons.payments_rounded,
-          ),
-        );
-      } else if (payment.toUserId == memberId) {
-        transactions.add(
-          _MemberTransactionEntry(
-            title: context.l10n.balancePaymentFrom(
-              fromName.isEmpty
-                  ? context.l10n.userWithId(payment.fromUserId)
-                  : fromName,
-            ),
-            subtitle: '${context.l10n.statusConfirmed} $date'.trim(),
-            amount: payment.amount,
-            isPositive: false,
-            icon: Icons.payments_rounded,
-          ),
-        );
-      }
     }
-
-    return transactions;
+    for (final payment in snapshot.payments) {
+      if (!payment.isConfirmed) continue;
+      final sent = payment.fromUserId == memberId;
+      if (!sent && payment.toUserId != memberId) continue;
+      entries.add(
+        _MemberHistoryEntry(
+          date: (payment.confirmedAt ?? payment.markedSentAt ?? '')
+              .split(' ')
+              .first
+              .split('T')
+              .first,
+          payment: payment,
+          effect: sent ? payment.amount : -payment.amount,
+          hint: '',
+        ),
+      );
+    }
+    // Newest day first; the order within a day stays as loaded.
+    final indexed = entries.indexed.toList()
+      ..sort((a, b) {
+        final byDate = b.$2.date.compareTo(a.$2.date);
+        return byDate != 0 ? byDate : a.$1.compareTo(b.$1);
+      });
+    return [for (final pair in indexed) pair.$2];
   }
 }
 
-class _MemberTransactionEntry {
-  const _MemberTransactionEntry({
-    required this.title,
-    required this.subtitle,
-    required this.amount,
-    required this.isPositive,
-    required this.icon,
+class _MemberHistoryEntry {
+  const _MemberHistoryEntry({
+    required this.date,
+    required this.effect,
+    required this.hint,
+    this.expense,
+    this.payment,
   });
 
-  final String title;
-  final String subtitle;
-  final double amount;
-  final bool isPositive;
-  final IconData icon;
+  final String date;
+  final double effect;
+  final String hint;
+  final TripExpense? expense;
+  final PaymentItem? payment;
 }

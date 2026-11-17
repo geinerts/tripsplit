@@ -4469,6 +4469,20 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settleRecordShort => 'Zaplaceno';
 
   @override
+  String get memberHistoryPayment => 'Platba';
+
+  @override
+  String get memberHistoryShare => 'podíl';
+
+  @override
+  String get expenseReceiptChip => 'Účtenka';
+
+  @override
+  String memberHistoryPaid(String amount) {
+    return 'zaplaceno $amount';
+  }
+
+  @override
   String get tripBudgetEnable => 'Stanovte rozpočet';
 
   @override

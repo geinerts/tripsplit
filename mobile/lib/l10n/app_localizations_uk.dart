@@ -4476,6 +4476,20 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settleRecordShort => 'Оплачено';
 
   @override
+  String get memberHistoryPayment => 'Платіж';
+
+  @override
+  String get memberHistoryShare => 'частка';
+
+  @override
+  String get expenseReceiptChip => 'Чек';
+
+  @override
+  String memberHistoryPaid(String amount) {
+    return 'сплачено $amount';
+  }
+
+  @override
   String get tripBudgetEnable => 'Встановіть бюджет';
 
   @override

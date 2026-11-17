@@ -1931,6 +1931,17 @@
   "settleYouPayRow": "you pay",
   "settleRequestShort": "Request",
   "settleRecordShort": "I paid",
+  "memberHistoryPayment": "Payment",
+  "memberHistoryShare": "share",
+  "expenseReceiptChip": "Receipt",
+  "memberHistoryPaid": "paid {amount}",
+  "@memberHistoryPaid": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "tripBudgetEnable": "Set a budget",
   "tripBudgetSoloHint": "Optional spending target for this trip.",
   "tripBudgetGroupHint": "One shared budget for the whole group.",

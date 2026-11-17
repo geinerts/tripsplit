@@ -8217,6 +8217,30 @@ abstract class AppLocalizations {
   /// **'I paid'**
   String get settleRecordShort;
 
+  /// No description provided for @memberHistoryPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get memberHistoryPayment;
+
+  /// No description provided for @memberHistoryShare.
+  ///
+  /// In en, this message translates to:
+  /// **'share'**
+  String get memberHistoryShare;
+
+  /// No description provided for @expenseReceiptChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt'**
+  String get expenseReceiptChip;
+
+  /// No description provided for @memberHistoryPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'paid {amount}'**
+  String memberHistoryPaid(String amount);
+
   /// No description provided for @tripBudgetEnable.
   ///
   /// In en, this message translates to:

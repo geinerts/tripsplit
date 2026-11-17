@@ -4460,6 +4460,20 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settleRecordShort => 'Maksoin';
 
   @override
+  String get memberHistoryPayment => 'Maksu';
+
+  @override
+  String get memberHistoryShare => 'osuus';
+
+  @override
+  String get expenseReceiptChip => 'Kuitti';
+
+  @override
+  String memberHistoryPaid(String amount) {
+    return 'maksettu $amount';
+  }
+
+  @override
   String get tripBudgetEnable => 'Aseta budjetti';
 
   @override

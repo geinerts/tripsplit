@@ -50,15 +50,75 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
       expense.category,
       Localizations.localeOf(context),
     );
-    final categoryIcon = ExpenseCategoryCatalog.iconFor(expense.category);
-    final title = expense.note.trim().isEmpty
-        ? categoryLabel
-        : expense.note.trim();
+    final note = expense.note.trim();
+    final foreign = expense.expenseCurrencyCode != expense.tripCurrencyCode;
+    final hasReceipt = expense.receiptUrl != null;
     await showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (context) {
         final theme = Theme.of(context);
+        Widget detailChip({
+          required Key key,
+          required Widget leading,
+          required List<InlineSpan> children,
+        }) => Container(
+          key: key,
+          constraints: const BoxConstraints(minHeight: 36),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ExcludeSemantics(child: leading),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text.rich(
+                  TextSpan(children: children),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+        Widget receiptChip() => ReceiptOpenAction(
+          compactLabel: context.l10n.expenseReceiptChip,
+          load: () async {
+            final userId = widget.authController.currentUser?.id;
+            final uri = await widget.workspaceController.loadReceiptUri(
+              tripId: widget.trip.id,
+              expenseId: expense.id,
+            );
+            if (!mounted || widget.authController.currentUser?.id != userId) {
+              return null;
+            }
+            return uri;
+          },
+          open: (uri) async {
+            final account = widget.authController.currentUser?.id;
+            if (!mounted || account == null) return false;
+            await Navigator.of(context).push<void>(
+              AppFormPageRoute(
+                builder: (_) => ReceiptViewerPage(
+                  initialUri: uri,
+                  isCurrentAccount: () =>
+                      mounted &&
+                      widget.authController.currentUser?.id == account,
+                  reload: () => widget.workspaceController.loadReceiptUri(
+                    tripId: widget.trip.id,
+                    expenseId: expense.id,
+                  ),
+                ),
+              ),
+            );
+            return true;
+          },
+        );
         String money(double amount, String currency) =>
             AppFormatters.displayCurrencyFromCents(
               context,
@@ -111,14 +171,11 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ExcludeSemantics(
-                            child: Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.surfaceContainerLow,
-                                borderRadius: AppDesign.cardRadius,
-                              ),
-                              child: Icon(categoryIcon),
+                            child: _expenseIconWithPayer(
+                              expense,
+                              payerUser,
+                              size: 48,
+                              showPayer: !widget.trip.isSolo,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -127,13 +184,25 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  title,
-                                  style: theme.textTheme.headlineSmall,
+                                  categoryLabel,
+                                  key: const ValueKey('expense-detail-title'),
+                                  style: theme.textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
-                                const SizedBox(height: 4),
+                                if (note.isNotEmpty)
+                                  Text(
+                                    note,
+                                    key: const ValueKey('expense-detail-note'),
+                                    style: theme.textTheme.bodyLarge,
+                                  ),
+                                const SizedBox(height: 2),
                                 Text(
-                                  '${_formatDisplayDate(context, expense.expenseDate)} · $categoryLabel',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                  _formatDisplayDate(
+                                    context,
+                                    expense.expenseDate,
+                                  ),
+                                  style: theme.textTheme.bodySmall?.copyWith(
                                     color: theme.colorScheme.onSurfaceVariant,
                                   ),
                                 ),
@@ -142,89 +211,98 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
-                      Text(
-                        money(expense.amount, expense.tripCurrencyCode),
-                        key: const ValueKey('expense-detail-total'),
-                        style: theme.textTheme.displaySmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontFeatures: const [FontFeature.tabularFigures()],
-                        ),
-                      ),
-                      if (expense.expenseCurrencyCode !=
-                          expense.tripCurrencyCode) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          context.l10n.workspaceOriginalExpenseAmount(
-                            money(
-                              expense.originalAmount,
-                              expense.expenseCurrencyCode,
+                      const SizedBox(height: 20),
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 4,
+                        crossAxisAlignment: WrapCrossAlignment.end,
+                        children: [
+                          Text(
+                            money(expense.amount, expense.tripCurrencyCode),
+                            key: const ValueKey('expense-detail-total'),
+                            style: theme.textTheme.displaySmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontFeatures: const [
+                                FontFeature.tabularFigures(),
+                              ],
                             ),
                           ),
-                        ),
+                          if (foreign)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: Text(
+                                money(
+                                  expense.originalAmount,
+                                  expense.expenseCurrencyCode,
+                                ),
+                                semanticsLabel: context.l10n
+                                    .workspaceOriginalExpenseAmount(
+                                      money(
+                                        expense.originalAmount,
+                                        expense.expenseCurrencyCode,
+                                      ),
+                                    ),
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      if (foreign)
                         Text(
                           _formatFxRateSummary(context, expense),
-                          style: theme.textTheme.bodySmall,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
-                      ],
                       if (expense.id <= 0) ...[
                         const SizedBox(height: 8),
                         Text(context.l10n.queuePendingStatus),
                       ],
-                      if (!widget.trip.isSolo) ...[
-                        const SizedBox(height: 16),
-                        Row(
+                      if (!widget.trip.isSolo || hasReceipt) ...[
+                        const SizedBox(height: 14),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
                           children: [
-                            _largeMemberAvatar(
-                              id: expense.paidById,
-                              name: payerName,
-                              avatarUrl:
-                                  payerUser?.avatarThumbUrl ??
-                                  payerUser?.avatarUrl,
-                              size: 40,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                '${context.l10n.paidByLabel} $payerName',
+                            if (!widget.trip.isSolo)
+                              detailChip(
+                                key: const ValueKey('expense-paid-by'),
+                                leading: _largeMemberAvatar(
+                                  id: expense.paidById,
+                                  name: payerName,
+                                  avatarUrl:
+                                      payerUser?.avatarThumbUrl ??
+                                      payerUser?.avatarUrl,
+                                  size: 22,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: '${context.l10n.paidByLabel} ',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  TextSpan(text: payerName),
+                                ],
                               ),
-                            ),
+                            if (!widget.trip.isSolo)
+                              detailChip(
+                                key: const ValueKey('expense-split-mode'),
+                                leading: Icon(
+                                  splitIcon,
+                                  size: 18,
+                                  color: theme.colorScheme.primary,
+                                ),
+                                children: [TextSpan(text: splitLabel)],
+                              ),
+                            if (hasReceipt) receiptChip(),
                           ],
                         ),
-                        const SizedBox(height: 12),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            key: const ValueKey('expense-split-mode'),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.surfaceContainerLow,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ExcludeSemantics(
-                                  child: Icon(
-                                    splitIcon,
-                                    size: 20,
-                                    color: theme.colorScheme.primary,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Flexible(
-                                  child: Text(
-                                    splitLabel,
-                                    style: theme.textTheme.labelLarge,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      ],
+                      if (!widget.trip.isSolo) ...[
                         if (expense.items.isNotEmpty) ...[
                           const SizedBox(height: 16),
                           _ExpenseItemsSummary(
@@ -240,12 +318,29 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                         const SizedBox(height: 20),
                         const Divider(),
                         const SizedBox(height: 16),
-                        Semantics(
-                          header: true,
-                          child: Text(
-                            context.l10n.splitBreakdownTitle,
-                            style: theme.textTheme.titleLarge,
-                          ),
+                        Wrap(
+                          spacing: 8,
+                          crossAxisAlignment: WrapCrossAlignment.end,
+                          children: [
+                            Semantics(
+                              header: true,
+                              child: Text(
+                                context.l10n.splitBreakdownTitle,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 2),
+                              child: Text(
+                                context.l10n.homePeople(lines.length),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 8),
                         for (final line in lines)
@@ -290,9 +385,60 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            name,
-                                            style: theme.textTheme.titleMedium,
+                                          Wrap(
+                                            spacing: 6,
+                                            crossAxisAlignment:
+                                                WrapCrossAlignment.center,
+                                            children: [
+                                              Text(
+                                                name,
+                                                style:
+                                                    theme.textTheme.titleMedium,
+                                              ),
+                                              if (!widget.trip.isSolo &&
+                                                  line.userId ==
+                                                      expense.paidById)
+                                                Container(
+                                                  key: ValueKey(
+                                                    'expense-share-paid-${line.userId}',
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 1,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: theme
+                                                        .colorScheme
+                                                        .primary
+                                                        .withValues(alpha: .12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          6,
+                                                        ),
+                                                  ),
+                                                  child: Text(
+                                                    context.l10n
+                                                        .memberHistoryPaid(
+                                                          money(
+                                                            expense.amount,
+                                                            expense
+                                                                .tripCurrencyCode,
+                                                          ),
+                                                        ),
+                                                    style: theme
+                                                        .textTheme
+                                                        .labelSmall
+                                                        ?.copyWith(
+                                                          color: theme
+                                                              .colorScheme
+                                                              .primary,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
+                                                  ),
+                                                ),
+                                            ],
                                           ),
                                           if (line.userId == _currentUserId)
                                             Text(
@@ -323,48 +469,6 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                               );
                             },
                           ),
-                      ],
-                      if (expense.receiptUrl != null) ...[
-                        const SizedBox(height: 16),
-                        ReceiptOpenAction(
-                          load: () async {
-                            final userId =
-                                widget.authController.currentUser?.id;
-                            final uri = await widget.workspaceController
-                                .loadReceiptUri(
-                                  tripId: widget.trip.id,
-                                  expenseId: expense.id,
-                                );
-                            if (!mounted ||
-                                widget.authController.currentUser?.id !=
-                                    userId) {
-                              return null;
-                            }
-                            return uri;
-                          },
-                          open: (uri) async {
-                            final account =
-                                widget.authController.currentUser?.id;
-                            if (!mounted || account == null) return false;
-                            await Navigator.of(context).push<void>(
-                              AppFormPageRoute(
-                                builder: (_) => ReceiptViewerPage(
-                                  initialUri: uri,
-                                  isCurrentAccount: () =>
-                                      mounted &&
-                                      widget.authController.currentUser?.id ==
-                                          account,
-                                  reload: () =>
-                                      widget.workspaceController.loadReceiptUri(
-                                        tripId: widget.trip.id,
-                                        expenseId: expense.id,
-                                      ),
-                                ),
-                              ),
-                            );
-                            return true;
-                          },
-                        ),
                       ],
                       if (expense.id > 0) ...[
                         const SizedBox(height: 16),
