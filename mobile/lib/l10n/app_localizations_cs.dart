@@ -4254,6 +4254,89 @@ class AppLocalizationsCs extends AppLocalizations {
   String get expenseItemExtraHint => 'Rozdělí se poměrně podle položek každé osoby.';
 
   @override
+  String get expenseItemsPeople => 'Lidé';
+
+  @override
+  String get expenseItemsEntered => 'Zadáno z účtenky';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered z $total';
+  }
+
+  @override
+  String get expenseItemList => 'Seznam položek';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price za kus';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Cena za kus';
+
+  @override
+  String get expenseItemQty => 'Ks';
+
+  @override
+  String get expenseNextItem => 'Další položka';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Položky $items + daň nebo spropitné $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Do celkové částky účtenky chybí $amount';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return 'O $amount víc než celková částka účtenky';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Zbývá $count',
+      many: 'Zbývá $count',
+      few: 'Zbývají $count',
+      one: 'Zbývá $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count z $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Sdíleno s: $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Zatím nepřiřazeno';
+
+  @override
+  String get expenseItemsNextPerson => 'Další osoba';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Všechny položky přiřazeny · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Podle položek';
+
+  @override
+  String get expenseItemShared => 'Sdílené';
+
+  @override
   String get expenseItemsInvalid => 'Každá položka potřebuje název, částku a alespoň jednu osobu.';
 
   @override

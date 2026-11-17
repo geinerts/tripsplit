@@ -1557,22 +1557,24 @@ void main() {
       find.byKey(const ValueKey('expense-custom-split')),
     );
     // No amount yet, so the items are what add up to it.
-    final done = find.byKey(const ValueKey('expense-editor-done'));
+    final toPeople = find.byKey(const ValueKey('expense-items-to-people'));
     expect(find.byKey(const ValueKey('expense-item-name-0')), findsOneWidget);
-    expect(tester.widget<ElevatedButton>(done).onPressed, isNull);
+    expect(tester.widget<ElevatedButton>(toPeople).onPressed, isNull);
     await tester.enterText(
       find.byKey(const ValueKey('expense-item-name-0')),
       'Pizza',
     );
     await tester.enterText(
       find.byKey(const ValueKey('expense-item-amount-0')),
-      '12',
+      '6',
     );
-    await tester.pumpAndSettle();
-    expect(tester.widget<ElevatedButton>(done).onPressed, isNotNull);
-    await tester.ensureVisible(find.byKey(const ValueKey('expense-add-item')));
-    await tester.tap(find.byKey(const ValueKey('expense-add-item')));
-    await tester.pumpAndSettle();
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-item-qty-0-plus')),
+    );
+    expect(find.text('= €12.00'), findsOneWidget);
+    expect(tester.widget<ElevatedButton>(toPeople).onPressed, isNotNull);
+    await visibleTap(tester, find.byKey(const ValueKey('expense-next-item')));
     await tester.enterText(
       find.byKey(const ValueKey('expense-item-name-1')),
       'Beer',
@@ -1586,12 +1588,26 @@ void main() {
       '3',
     );
     await tester.pumpAndSettle();
-    await tester.ensureVisible(
-      find.byKey(const ValueKey('expense-item-1-person-8')),
+    await visibleTap(tester, toPeople);
+    // The first person takes one pizza and the beer.
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-item-0-person-7')),
     );
-    await tester.tap(find.byKey(const ValueKey('expense-item-1-person-8')));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('20'), findsWidgets);
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-item-1-person-7')),
+    );
+    expect(find.byKey(const ValueKey('expense-editor-done')), findsNothing);
+    await visibleTap(tester, find.byKey(const ValueKey('expense-person-8')));
+    // The beer is taken, so the next person only sees the pizza that's left.
+    expect(find.byKey(const ValueKey('expense-item-1-person-8')), findsNothing);
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-item-0-person-8')),
+    );
+    final done = find.byKey(const ValueKey('expense-editor-done'));
+    expect(tester.widget<ElevatedButton>(done).onPressed, isNotNull);
     await tester.tap(done);
     await tester.pumpAndSettle();
     expect(
@@ -1601,15 +1617,154 @@ void main() {
           .text,
       '20.00',
     );
+    // Opening the split again joins the two pizza lines back into "×2".
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-custom-split')),
+    );
+    expect(find.byKey(const ValueKey('expense-item-row-0')), findsOneWidget);
+    expect(find.byKey(const ValueKey('expense-item-row-2')), findsNothing);
+    expect(find.text('×2'), findsOneWidget);
+    await visibleTap(
+      tester,
+      find.byKey(const ValueKey('expense-items-tab-people')),
+    );
+    expect(find.textContaining('All items assigned'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('expense-editor-close')));
+    await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
     await tester.pumpAndSettle();
     expect(controller.savedMode, 'itemized');
     expect(controller.savedAmount, 20);
     expect(controller.savedExtra, 3);
-    expect(controller.savedItems!.map((item) => item.name), ['Pizza', 'Beer']);
-    expect(controller.savedItems!.last.participantIds, isNot(contains(8)));
+    // Two pizzas go out as one line per person, so the API stays the same.
+    expect(controller.savedItems!.map((item) => item.name), [
+      'Pizza',
+      'Pizza',
+      'Beer',
+    ]);
+    expect(controller.savedItems!.map((item) => item.participantIds), [
+      [7],
+      [8],
+      [7],
+    ]);
     expect(controller.savedSplits, isEmpty);
     await disposePage(tester);
+  });
+
+  testWidgets('by item review images', (tester) async {
+    if (!const bool.fromEnvironment('BY_ITEM_PREVIEWS')) return;
+    for (final dark in [false, true]) {
+      for (final phase in ['items', 'people', 'done']) {
+        final boundary = GlobalKey();
+        final commands = WorkspacePageCommandController();
+        final controller = _Workspace();
+        await _mount(
+          tester,
+          controller,
+          commands: commands,
+          dark: dark,
+          boundary: boundary,
+        );
+        await tester.pumpAndSettle();
+        commands.requestOpenAddExpense();
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.byKey(const ValueKey('expense-form-amount')),
+          '29',
+        );
+        await selectExpenseFood(tester);
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-custom-split')),
+        );
+        await tester.tap(find.byKey(const ValueKey('expense-split-method')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
+        await tester.pumpAndSettle();
+        Future<void> item(int index, String name, String price) async {
+          await tester.enterText(
+            find.byKey(ValueKey('expense-item-name-$index')),
+            name,
+          );
+          await tester.enterText(
+            find.byKey(ValueKey('expense-item-amount-$index')),
+            price,
+          );
+          await tester.pumpAndSettle();
+        }
+
+        await item(0, 'Pizza Margherita', '8');
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-item-qty-0-plus')),
+        );
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-next-item')),
+        );
+        await item(1, 'Beer', '4');
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-item-qty-1-plus')),
+        );
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-next-item')),
+        );
+        await item(2, 'Tiramisu', '3');
+        await visibleTap(
+          tester,
+          find.byKey(const ValueKey('expense-item-shared-2')),
+        );
+        await tester.enterText(
+          find.byKey(const ValueKey('expense-item-extra')),
+          '2',
+        );
+        await tester.pumpAndSettle();
+        if (phase != 'items') {
+          await visibleTap(
+            tester,
+            find.byKey(const ValueKey('expense-items-to-people')),
+          );
+          for (final key in [
+            'expense-item-0-person-7',
+            'expense-item-1-person-7',
+            'expense-item-2-person-7',
+          ]) {
+            await visibleTap(tester, find.byKey(ValueKey(key)));
+          }
+          await visibleTap(
+            tester,
+            find.byKey(const ValueKey('expense-person-8')),
+          );
+          if (phase == 'done') {
+            for (final key in [
+              'expense-item-0-person-8',
+              'expense-item-1-person-8',
+              'expense-item-2-person-8',
+            ]) {
+              await visibleTap(tester, find.byKey(ValueKey(key)));
+            }
+          }
+        }
+        expect(tester.takeException(), isNull);
+        await tester.runAsync(() async {
+          final image =
+              await (boundary.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/by-item/${dark ? 'dark' : 'light'}-$phase.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+        await disposePage(tester);
+      }
+    }
   });
 
   testWidgets(

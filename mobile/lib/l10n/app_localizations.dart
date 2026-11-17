@@ -7863,6 +7863,120 @@ abstract class AppLocalizations {
   /// **'Shared in proportion to each person\'s items.'**
   String get expenseItemExtraHint;
 
+  /// No description provided for @expenseItemsPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get expenseItemsPeople;
+
+  /// No description provided for @expenseItemsEntered.
+  ///
+  /// In en, this message translates to:
+  /// **'Entered from the receipt'**
+  String get expenseItemsEntered;
+
+  /// No description provided for @expenseItemsEnteredOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{entered} of {total}'**
+  String expenseItemsEnteredOf(String entered, String total);
+
+  /// No description provided for @expenseItemList.
+  ///
+  /// In en, this message translates to:
+  /// **'Item list'**
+  String get expenseItemList;
+
+  /// No description provided for @expenseItemEach.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} each'**
+  String expenseItemEach(String price);
+
+  /// No description provided for @expenseItemPriceEach.
+  ///
+  /// In en, this message translates to:
+  /// **'Price each'**
+  String get expenseItemPriceEach;
+
+  /// No description provided for @expenseItemQty.
+  ///
+  /// In en, this message translates to:
+  /// **'Qty'**
+  String get expenseItemQty;
+
+  /// No description provided for @expenseNextItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Next item'**
+  String get expenseNextItem;
+
+  /// No description provided for @expenseItemsCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Items {items} + tax or tip {extra} = {total}'**
+  String expenseItemsCheck(String items, String extra, String total);
+
+  /// No description provided for @expenseItemsMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} is missing from the receipt total'**
+  String expenseItemsMissing(String amount);
+
+  /// No description provided for @expenseItemsOver.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} more than the receipt total'**
+  String expenseItemsOver(String amount);
+
+  /// No description provided for @expenseItemsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} left} other{{count} left}}'**
+  String expenseItemsLeft(int count);
+
+  /// No description provided for @expenseItemsOfQty.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total}'**
+  String expenseItemsOfQty(int count, int total);
+
+  /// No description provided for @expenseItemsSharedWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared with {names}'**
+  String expenseItemsSharedWith(String names);
+
+  /// No description provided for @expenseItemsNotAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Not assigned yet'**
+  String get expenseItemsNotAssigned;
+
+  /// No description provided for @expenseItemsNextPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Next person'**
+  String get expenseItemsNextPerson;
+
+  /// No description provided for @expenseItemsAllAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'All items assigned · {total}'**
+  String expenseItemsAllAssigned(String total);
+
+  /// No description provided for @expenseItemsExtraShort.
+  ///
+  /// In en, this message translates to:
+  /// **'In proportion to items'**
+  String get expenseItemsExtraShort;
+
+  /// No description provided for @expenseItemShared.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared'**
+  String get expenseItemShared;
+
   /// No description provided for @expenseItemsInvalid.
   ///
   /// In en, this message translates to:

@@ -1755,6 +1755,100 @@
   "expenseItemName": "Item",
   "expenseItemExtra": "Tax or tip",
   "expenseItemExtraHint": "Shared in proportion to each person's items.",
+  "expenseItemsPeople": "People",
+  "expenseItemsEntered": "Entered from the receipt",
+  "expenseItemsEnteredOf": "{entered} of {total}",
+  "@expenseItemsEnteredOf": {
+    "placeholders": {
+      "entered": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseItemList": "Item list",
+  "expenseItemEach": "{price} each",
+  "@expenseItemEach": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseItemPriceEach": "Price each",
+  "expenseItemQty": "Qty",
+  "expenseNextItem": "Next item",
+  "expenseItemsCheck": "Items {items} + tax or tip {extra} = {total}",
+  "@expenseItemsCheck": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      },
+      "extra": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseItemsMissing": "{amount} is missing from the receipt total",
+  "@expenseItemsMissing": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseItemsOver": "{amount} more than the receipt total",
+  "@expenseItemsOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseItemsLeft": "{count, plural, one{{count} left} other{{count} left}}",
+  "@expenseItemsLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "expenseItemsOfQty": "{count} of {total}",
+  "@expenseItemsOfQty": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "expenseItemsSharedWith": "Shared with {names}",
+  "@expenseItemsSharedWith": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseItemsNotAssigned": "Not assigned yet",
+  "expenseItemsNextPerson": "Next person",
+  "expenseItemsAllAssigned": "All items assigned · {total}",
+  "@expenseItemsAllAssigned": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "expenseItemsExtraShort": "In proportion to items",
+  "expenseItemShared": "Shared",
   "expenseItemsInvalid": "Each item needs a name, an amount and at least one person.",
   "expenseItemsTotal": "Total from items: {total}",
   "@expenseItemsTotal": {

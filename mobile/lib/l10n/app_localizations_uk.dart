@@ -4261,6 +4261,89 @@ class AppLocalizationsUk extends AppLocalizations {
   String get expenseItemExtraHint => 'Ділиться пропорційно позиціям кожної людини.';
 
   @override
+  String get expenseItemsPeople => 'Люди';
+
+  @override
+  String get expenseItemsEntered => 'Введено з чека';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered з $total';
+  }
+
+  @override
+  String get expenseItemList => 'Список позицій';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price за шт.';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Ціна за шт.';
+
+  @override
+  String get expenseItemQty => 'К-сть';
+
+  @override
+  String get expenseNextItem => 'Наступна позиція';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Позиції $items + податок або чайові $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'До суми чека бракує $amount';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return 'На $amount більше за суму чека';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Залишилося $count',
+      many: 'Залишилося $count',
+      few: 'Залишилося $count',
+      one: 'Залишився $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count з $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Разом з: $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Ще не розподілено';
+
+  @override
+  String get expenseItemsNextPerson => 'Наступна людина';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Усі позиції розподілено · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Пропорційно';
+
+  @override
+  String get expenseItemShared => 'Спільне';
+
+  @override
   String get expenseItemsInvalid => 'Кожна позиція повинна мати назву, суму й принаймні одну людину.';
 
   @override

@@ -4247,6 +4247,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expenseItemExtraHint => 'Shared in proportion to each person\'s items.';
 
   @override
+  String get expenseItemsPeople => 'People';
+
+  @override
+  String get expenseItemsEntered => 'Entered from the receipt';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered of $total';
+  }
+
+  @override
+  String get expenseItemList => 'Item list';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price each';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Price each';
+
+  @override
+  String get expenseItemQty => 'Qty';
+
+  @override
+  String get expenseNextItem => 'Next item';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Items $items + tax or tip $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return '$amount is missing from the receipt total';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return '$amount more than the receipt total';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count left',
+      one: '$count left',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count of $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Shared with $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Not assigned yet';
+
+  @override
+  String get expenseItemsNextPerson => 'Next person';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'All items assigned · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'In proportion to items';
+
+  @override
+  String get expenseItemShared => 'Shared';
+
+  @override
   String get expenseItemsInvalid => 'Each item needs a name, an amount and at least one person.';
 
   @override

@@ -4247,6 +4247,87 @@ class AppLocalizationsPt extends AppLocalizations {
   String get expenseItemExtraHint => 'Dividido em proporção aos artigos de cada pessoa.';
 
   @override
+  String get expenseItemsPeople => 'Pessoas';
+
+  @override
+  String get expenseItemsEntered => 'Introduzido do talão';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered de $total';
+  }
+
+  @override
+  String get expenseItemList => 'Lista de artigos';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price cada';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Preço unitário';
+
+  @override
+  String get expenseItemQty => 'Qtd.';
+
+  @override
+  String get expenseNextItem => 'Próximo artigo';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Artigos $items + imposto ou gorjeta $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Faltam $amount para o total do talão';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return '$amount acima do total do talão';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Restam $count',
+      one: 'Resta $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count de $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Partilhado com $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Ainda não atribuído';
+
+  @override
+  String get expenseItemsNextPerson => 'Pessoa seguinte';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Todos os artigos atribuídos · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Proporcional';
+
+  @override
+  String get expenseItemShared => 'Partilhado';
+
+  @override
   String get expenseItemsInvalid => 'Cada artigo precisa de um nome, um valor e pelo menos uma pessoa.';
 
   @override

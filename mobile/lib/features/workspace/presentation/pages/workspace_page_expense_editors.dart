@@ -128,10 +128,6 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
   /// People whose value was typed in, per mode. The others share what's left.
   final _pinned = <String, Set<int>>{};
 
-  void _addItem() => _items.add(
-    _ExpenseItemDraft(people: widget.users.map((user) => user.id).toSet()),
-  );
-
   @override
   void initState() {
     super.initState();
@@ -140,20 +136,14 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
       mode,
       seed: widget.initialMode == mode ? widget.initialValues : null,
     );
-    final userIds = widget.users.map((user) => user.id).toSet();
-    for (final item in widget.initialItems) {
-      _items.add(
-        _ExpenseItemDraft(
-          name: item.name,
-          amount: AppCurrencyCatalog.amountInputText(
-            item.amount,
-            widget.currencyCode,
-          ),
-          people: item.participantIds.where(userIds.contains).toSet(),
-        ),
-      );
-    }
-    if (_items.isEmpty) _addItem();
+    _items.addAll(
+      _mergeItemDrafts(
+        widget.initialItems,
+        widget.users.map((user) => user.id).toSet(),
+        widget.currencyCode,
+      ),
+    );
+    if (_items.isEmpty) _items.add(_ExpenseItemDraft());
     if (widget.initialExtra > 0) {
       _extra.text = AppCurrencyCatalog.amountInputText(
         widget.initialExtra,
@@ -248,25 +238,6 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
     _extra.dispose();
     super.dispose();
   }
-
-  List<ExpenseItem> get _cleanItems => [
-    for (final item in _items)
-      ExpenseItem(
-        name: item.name.text.trim(),
-        amount: _parseAmount(item.amount.text),
-        participantIds: item.people.toList()..sort(),
-      ),
-  ];
-
-  bool get _itemsValid =>
-      _parseAmount(_extra.text) >= 0 &&
-      _cleanItems.every(
-        (item) =>
-            item.name.isNotEmpty &&
-            item.name.length <= 80 &&
-            item.amount > 0 &&
-            item.participantIds.isNotEmpty,
-      );
 
   /// What each person pays with the current values, when they fit.
   Map<int, int>? get _adjustedOwed => adjustmentOwedCents(
@@ -405,15 +376,16 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
                     decimal: mode != 'shares',
                     signed: mode == 'adjustment',
                   ),
-                  decoration: InputDecoration(
-                    labelText: mode == 'percent'
+                  decoration: _lineInputDecoration(
+                    context,
+                    label: mode == 'percent'
                         ? t.percentLabel
                         : mode == 'shares'
                         ? t.sharesLabel
                         : mode == 'adjustment'
                         ? t.expenseAdjustmentFieldLabel
                         : t.amountLabel,
-                    suffixText: mode == 'percent'
+                    suffix: mode == 'percent'
                         ? '%'
                         : mode == 'exact' || mode == 'adjustment'
                         ? widget.currencyCode
@@ -540,225 +512,15 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
     );
   }
 
-  Widget _buildItemized(BuildContext context) {
-    final t = context.l10n;
-    final valid = _itemsValid;
-    final items = _cleanItems;
-    final extra = _parseAmount(_extra.text);
-    final total = items.fold<double>(
-      extra.isFinite && extra > 0 ? extra : 0,
-      (sum, item) => sum + (item.amount.isFinite ? item.amount : 0),
-    );
-    final owed = valid
-        ? itemizedOwedCents(items, (extra * 100).round())
-        : const <int, int>{};
-    final totalText = _formatMoney(
-      context,
-      total,
-      currencyCode: widget.currencyCode,
-    );
-    return _ExpenseEditorSurface(
-      title: t.expenseCustomSplit,
-      onDone: valid
-          ? () => Navigator.pop(
-              context,
-              _ExpenseSplitDraft(
-                'itemized',
-                const {},
-                items: items,
-                extra: extra,
-              ),
-            )
-          : null,
-      children: [
-        _modeChips(context),
-        const SizedBox(height: 12),
-        for (var index = 0; index < _items.length; index++) ...[
-          _ExpenseItemEditor(
-            key: ObjectKey(_items[index]),
-            index: index,
-            draft: _items[index],
-            users: widget.users,
-            currencyCode: widget.currencyCode,
-            avatarBuilder: widget.avatarBuilder,
-            onChanged: () => setState(() {}),
-            onRemove: _items.length < 2
-                ? null
-                : () => setState(() {
-                    _items.removeAt(index).dispose();
-                  }),
-          ),
-          const Divider(height: 1),
-        ],
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: TextButton.icon(
-            key: const ValueKey('expense-add-item'),
-            onPressed: _items.length >= 100 ? null : () => setState(_addItem),
-            icon: const Icon(Icons.add_rounded),
-            label: Text(t.expenseAddItem),
-          ),
-        ),
-        const SizedBox(height: 4),
-        TextField(
-          key: const ValueKey('expense-item-extra'),
-          controller: _extra,
-          onChanged: (_) => setState(() {}),
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: InputDecoration(
-            labelText: t.expenseItemExtra,
-            helperText: t.expenseItemExtraHint,
-            helperMaxLines: 2,
-            suffixText: widget.currencyCode,
-          ),
-        ),
-        const SizedBox(height: 12),
-        for (final user in widget.users)
-          if ((owed[user.id] ?? 0) > 0)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                children: [
-                  Expanded(child: Text(user.preferredName)),
-                  Text(
-                    _formatMoney(
-                      context,
-                      owed[user.id]! / 100,
-                      currencyCode: widget.currencyCode,
-                    ),
-                    key: ValueKey('split-result-${user.id}'),
-                  ),
-                ],
-              ),
-            ),
-        const SizedBox(height: 8),
-        Semantics(
-          liveRegion: true,
-          child: Text(
-            valid ? t.expenseItemsTotal(totalText) : t.expenseItemsInvalid,
-            key: const ValueKey('expense-split-status'),
-            style: TextStyle(
-              color: valid
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.error,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ExpenseItemDraft {
-  _ExpenseItemDraft({String name = '', String amount = '', Set<int>? people})
-    : name = TextEditingController(text: name),
-      amount = TextEditingController(text: amount),
-      people = people ?? <int>{};
-  final TextEditingController name;
-  final TextEditingController amount;
-  final Set<int> people;
-
-  void dispose() {
-    name.dispose();
-    amount.dispose();
-  }
-}
-
-class _ExpenseItemEditor extends StatelessWidget {
-  const _ExpenseItemEditor({
-    super.key,
-    required this.index,
-    required this.draft,
-    required this.users,
-    required this.currencyCode,
-    required this.avatarBuilder,
-    required this.onChanged,
-    required this.onRemove,
-  });
-  final int index;
-  final _ExpenseItemDraft draft;
-  final List<WorkspaceUser> users;
-  final String currencyCode;
-  final Widget Function(WorkspaceUser) avatarBuilder;
-  final VoidCallback onChanged;
-  final VoidCallback? onRemove;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = context.l10n;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: TextField(
-                  key: ValueKey('expense-item-name-$index'),
-                  controller: draft.name,
-                  onChanged: (_) => onChanged(),
-                  maxLength: 80,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    labelText: t.expenseItemName,
-                    counterText: '',
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 112,
-                child: TextField(
-                  key: ValueKey('expense-item-amount-$index'),
-                  controller: draft.amount,
-                  onChanged: (_) => onChanged(),
-                  textAlign: TextAlign.end,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  decoration: InputDecoration(
-                    labelText: t.amountLabel,
-                    suffixText: currencyCode,
-                  ),
-                ),
-              ),
-              if (onRemove != null)
-                IconButton(
-                  key: ValueKey('expense-item-remove-$index'),
-                  tooltip: t.expenseRemoveItem,
-                  onPressed: onRemove,
-                  icon: const Icon(Icons.close_rounded),
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 12,
-            runSpacing: 10,
-            children: [
-              for (final user in users)
-                AppPersonToggle(
-                  key: ValueKey('expense-item-$index-person-${user.id}'),
-                  name: user.preferredName,
-                  avatar: avatarBuilder(user),
-                  selected: draft.people.contains(user.id),
-                  onChanged: (on) {
-                    if (on) {
-                      draft.people.add(user.id);
-                    } else {
-                      draft.people.remove(user.id);
-                    }
-                    onChanged();
-                  },
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildItemized(BuildContext context) => _ItemizedSplitEditor(
+    users: widget.users,
+    amount: widget.amount,
+    currencyCode: widget.currencyCode,
+    items: _items,
+    extra: _extra,
+    avatarBuilder: widget.avatarBuilder,
+    modeTile: _modeChips(context),
+  );
 }
 
 /// The split methods as a list: icon, name, one-line explanation, check.

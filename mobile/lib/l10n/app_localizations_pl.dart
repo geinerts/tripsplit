@@ -4261,6 +4261,89 @@ class AppLocalizationsPl extends AppLocalizations {
   String get expenseItemExtraHint => 'Dzielone proporcjonalnie do pozycji każdej osoby.';
 
   @override
+  String get expenseItemsPeople => 'Osoby';
+
+  @override
+  String get expenseItemsEntered => 'Wpisano z paragonu';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered z $total';
+  }
+
+  @override
+  String get expenseItemList => 'Lista pozycji';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price za szt.';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Cena za szt.';
+
+  @override
+  String get expenseItemQty => 'Ilość';
+
+  @override
+  String get expenseNextItem => 'Następna pozycja';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Pozycje $items + podatek lub napiwek $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Do sumy paragonu brakuje $amount';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return 'O $amount więcej niż suma paragonu';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Zostało $count',
+      many: 'Zostało $count',
+      few: 'Zostały $count',
+      one: 'Został $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count z $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Wspólne z: $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Jeszcze nieprzypisane';
+
+  @override
+  String get expenseItemsNextPerson => 'Następna osoba';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Wszystkie pozycje przypisane · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Proporcjonalnie';
+
+  @override
+  String get expenseItemShared => 'Wspólne';
+
+  @override
   String get expenseItemsInvalid => 'Każda pozycja wymaga nazwy, kwoty i co najmniej jednej osoby.';
 
   @override

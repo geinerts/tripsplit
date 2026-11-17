@@ -4247,6 +4247,87 @@ class AppLocalizationsFr extends AppLocalizations {
   String get expenseItemExtraHint => 'Réparti proportionnellement aux articles de chacun.';
 
   @override
+  String get expenseItemsPeople => 'Personnes';
+
+  @override
+  String get expenseItemsEntered => 'Saisi depuis le ticket';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered sur $total';
+  }
+
+  @override
+  String get expenseItemList => 'Liste des articles';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price l’unité';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Prix unitaire';
+
+  @override
+  String get expenseItemQty => 'Qté';
+
+  @override
+  String get expenseNextItem => 'Article suivant';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Articles $items + taxes ou pourboire $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Il manque $amount par rapport au total du ticket';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return '$amount de plus que le total du ticket';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count restants',
+      one: '$count restant',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count sur $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Partagé avec $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Pas encore attribué';
+
+  @override
+  String get expenseItemsNextPerson => 'Personne suivante';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Tous les articles attribués · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Au prorata';
+
+  @override
+  String get expenseItemShared => 'Partagé';
+
+  @override
   String get expenseItemsInvalid => 'Chaque article doit avoir un nom, un montant et au moins une personne.';
 
   @override

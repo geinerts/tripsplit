@@ -4254,6 +4254,88 @@ class AppLocalizationsLv extends AppLocalizations {
   String get expenseItemExtraHint => 'Sadalās proporcionāli katra cilvēka pozīcijām.';
 
   @override
+  String get expenseItemsPeople => 'Cilvēki';
+
+  @override
+  String get expenseItemsEntered => 'Ievadīts no čeka';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered no $total';
+  }
+
+  @override
+  String get expenseItemList => 'Pozīciju saraksts';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price gabalā';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Cena gabalā';
+
+  @override
+  String get expenseItemQty => 'Daudz.';
+
+  @override
+  String get expenseNextItem => 'Nākamā pozīcija';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Pozīcijas $items + nodoklis vai dzeramnauda $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Līdz čeka summai trūkst $amount';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return 'Par $amount vairāk nekā čeka summa';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Atlikuši $count',
+      one: 'Atlicis $count',
+      zero: 'Atlikuši $count',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count no $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Kopā ar $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Vēl nav sadalīts';
+
+  @override
+  String get expenseItemsNextPerson => 'Nākamais cilvēks';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Visas pozīcijas sadalītas · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Pēc daļām';
+
+  @override
+  String get expenseItemShared => 'Kopīgs';
+
+  @override
   String get expenseItemsInvalid => 'Katrai pozīcijai vajag nosaukumu, summu un vismaz vienu cilvēku.';
 
   @override

@@ -4247,6 +4247,87 @@ class AppLocalizationsSv extends AppLocalizations {
   String get expenseItemExtraHint => 'Delas i proportion till varje persons artiklar.';
 
   @override
+  String get expenseItemsPeople => 'Personer';
+
+  @override
+  String get expenseItemsEntered => 'Inmatat från kvittot';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered av $total';
+  }
+
+  @override
+  String get expenseItemList => 'Artikellista';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price/st';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Pris per st';
+
+  @override
+  String get expenseItemQty => 'Antal';
+
+  @override
+  String get expenseNextItem => 'Nästa artikel';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Artiklar $items + skatt eller dricks $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Det saknas $amount till kvittots total';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return '$amount mer än kvittots total';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count kvar',
+      one: '$count kvar',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count av $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Delas med $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Inte fördelat ännu';
+
+  @override
+  String get expenseItemsNextPerson => 'Nästa person';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Alla artiklar fördelade · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Efter andel';
+
+  @override
+  String get expenseItemShared => 'Delad';
+
+  @override
   String get expenseItemsInvalid => 'Varje artikel behöver ett namn, ett belopp och minst en person.';
 
   @override

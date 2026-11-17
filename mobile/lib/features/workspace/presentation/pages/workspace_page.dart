@@ -109,6 +109,7 @@ part 'workspace_page_tab_activity.dart';
 part 'workspace_page_tab_random.dart';
 part 'workspace_page_dialogs.dart';
 part 'workspace_page_expense_editors.dart';
+part 'workspace_page_expense_items.dart';
 part 'workspace_page_dialogs_helpers.dart';
 part 'workspace_page_support_sync.dart';
 part 'workspace_page_support_models.dart';

@@ -4247,6 +4247,87 @@ class AppLocalizationsNl extends AppLocalizations {
   String get expenseItemExtraHint => 'Verdeeld naar verhouding van ieders items.';
 
   @override
+  String get expenseItemsPeople => 'Personen';
+
+  @override
+  String get expenseItemsEntered => 'Ingevoerd van de bon';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered van $total';
+  }
+
+  @override
+  String get expenseItemList => 'Itemlijst';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price per stuk';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Prijs per stuk';
+
+  @override
+  String get expenseItemQty => 'Aantal';
+
+  @override
+  String get expenseNextItem => 'Volgend item';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Items $items + belasting of fooi $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Er ontbreekt $amount tot het bontotaal';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return '$amount meer dan het bontotaal';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count over',
+      one: '$count over',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count van $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Gedeeld met $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Nog niet toegewezen';
+
+  @override
+  String get expenseItemsNextPerson => 'Volgende persoon';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Alle items toegewezen · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Naar verhouding';
+
+  @override
+  String get expenseItemShared => 'Gedeeld';
+
+  @override
   String get expenseItemsInvalid => 'Elk item heeft een naam, een bedrag en minstens één persoon nodig.';
 
   @override

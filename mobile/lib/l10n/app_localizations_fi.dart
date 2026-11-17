@@ -4247,6 +4247,87 @@ class AppLocalizationsFi extends AppLocalizations {
   String get expenseItemExtraHint => 'Jaetaan suhteessa kunkin tuotteisiin.';
 
   @override
+  String get expenseItemsPeople => 'Henkilöt';
+
+  @override
+  String get expenseItemsEntered => 'Syötetty kuitista';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered / $total';
+  }
+
+  @override
+  String get expenseItemList => 'Tuotelista';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price / kpl';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Kappalehinta';
+
+  @override
+  String get expenseItemQty => 'Määrä';
+
+  @override
+  String get expenseNextItem => 'Seuraava tuote';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Tuotteet $items + verot tai tippi $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Kuitin loppusummasta puuttuu $amount';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return '$amount yli kuitin loppusumman';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count jäljellä',
+      one: '$count jäljellä',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count/$total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Jaettu: $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Ei vielä jaettu';
+
+  @override
+  String get expenseItemsNextPerson => 'Seuraava henkilö';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Kaikki tuotteet jaettu · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Osuuksien mukaan';
+
+  @override
+  String get expenseItemShared => 'Jaettu';
+
+  @override
   String get expenseItemsInvalid => 'Jokaisella tuotteella on oltava nimi, summa ja vähintään yksi henkilö.';
 
   @override

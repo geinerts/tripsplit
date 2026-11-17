@@ -4247,6 +4247,87 @@ class AppLocalizationsDe extends AppLocalizations {
   String get expenseItemExtraHint => 'Wird anteilig nach den Positionen jeder Person aufgeteilt.';
 
   @override
+  String get expenseItemsPeople => 'Personen';
+
+  @override
+  String get expenseItemsEntered => 'Vom Beleg eingegeben';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered von $total';
+  }
+
+  @override
+  String get expenseItemList => 'Positionen';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price pro Stück';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Preis pro Stück';
+
+  @override
+  String get expenseItemQty => 'Menge';
+
+  @override
+  String get expenseNextItem => 'Nächste Position';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Positionen $items + Steuer oder Trinkgeld $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Zur Belegsumme fehlen $amount';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return '$amount mehr als die Belegsumme';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count übrig',
+      one: '$count übrig',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count von $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Geteilt mit $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Noch nicht zugeordnet';
+
+  @override
+  String get expenseItemsNextPerson => 'Nächste Person';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Alle Positionen zugeordnet · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Nach Anteil';
+
+  @override
+  String get expenseItemShared => 'Geteilt';
+
+  @override
   String get expenseItemsInvalid => 'Jede Position braucht einen Namen, einen Betrag und mindestens eine Person.';
 
   @override

@@ -4247,6 +4247,87 @@ class AppLocalizationsDa extends AppLocalizations {
   String get expenseItemExtraHint => 'Deles i forhold til hver persons varer.';
 
   @override
+  String get expenseItemsPeople => 'Personer';
+
+  @override
+  String get expenseItemsEntered => 'Indtastet fra kvitteringen';
+
+  @override
+  String expenseItemsEnteredOf(String entered, String total) {
+    return '$entered af $total';
+  }
+
+  @override
+  String get expenseItemList => 'Vareliste';
+
+  @override
+  String expenseItemEach(String price) {
+    return '$price pr. stk.';
+  }
+
+  @override
+  String get expenseItemPriceEach => 'Pris pr. stk.';
+
+  @override
+  String get expenseItemQty => 'Antal';
+
+  @override
+  String get expenseNextItem => 'Næste vare';
+
+  @override
+  String expenseItemsCheck(String items, String extra, String total) {
+    return 'Varer $items + skat eller drikkepenge $extra = $total';
+  }
+
+  @override
+  String expenseItemsMissing(String amount) {
+    return 'Der mangler $amount i forhold til kvitteringens total';
+  }
+
+  @override
+  String expenseItemsOver(String amount) {
+    return '$amount mere end kvitteringens total';
+  }
+
+  @override
+  String expenseItemsLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tilbage',
+      one: '$count tilbage',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String expenseItemsOfQty(int count, int total) {
+    return '$count af $total';
+  }
+
+  @override
+  String expenseItemsSharedWith(String names) {
+    return 'Delt med $names';
+  }
+
+  @override
+  String get expenseItemsNotAssigned => 'Ikke fordelt endnu';
+
+  @override
+  String get expenseItemsNextPerson => 'Næste person';
+
+  @override
+  String expenseItemsAllAssigned(String total) {
+    return 'Alle varer fordelt · $total';
+  }
+
+  @override
+  String get expenseItemsExtraShort => 'Efter varer';
+
+  @override
+  String get expenseItemShared => 'Delt';
+
+  @override
   String get expenseItemsInvalid => 'Hver vare skal have et navn, et beløb og mindst én person.';
 
   @override
