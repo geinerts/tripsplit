@@ -142,4 +142,28 @@ $results['in_app_pref'] = notification_in_app_pref_key_for_type('expense_comment
 $results['push_pref'] = notification_push_pref_key_for_type('expense_comment_mention');
 $results['actor'] = notification_actor_user_id(['type'=>'expense_comment_mention', 'payload'=>['mentioned_by_user_id'=>7]]);
 
+// Mentions sent with their position (UTF-16 units): the name no longer has to match.
+$pdo->exec(file_get_contents(__DIR__ . '/../../../sql/migrations/2026-11-17-add-comment-mention-offsets.sql'));
+$notifications();
+$posBody = 'Hi @Annuška and 🎉 @Nia';
+$pos = $add(['body'=>$posBody, 'mentioned_user_ids'=>[2, 4], 'mentions'=>[
+    ['user_id'=>2, 'start'=>3, 'end'=>11],
+    ['user_id'=>4, 'start'=>19, 'end'=>23],
+    ['user_id'=>3, 'start'=>19, 'end'=>23],
+    ['user_id'=>2, 'start'=>0, 'end'=>4],
+    ['user_id'=>4, 'start'=>'19', 'end'=>23],
+]]);
+$results['pos_created'] = $pos['body']['comment']['mentions'];
+$results['pos_notifications'] = $notifications();
+$results['pos_wrong_place'] = $add(['body'=>'Hello Nia', 'mentions'=>[['user_id'=>4, 'start'=>0, 'end'=>5]]])['body']['comment']['mentions'];
+$results['pos_split_emoji'] = $add(['body'=>'🎉@Nia', 'mentions'=>[['user_id'=>4, 'start'=>1, 'end'=>6]]])['body']['comment']['mentions'];
+$posId = (int) $pos['body']['comment']['id'];
+$results['pos_edit'] = $edit($posId, ['body'=>'Yo @Nia', 'mentions'=>[['user_id'=>4, 'start'=>3, 'end'=>7]]])['body']['comment']['mentions'];
+$results['pos_edit_notifications'] = $notifications();
+$results['pos_old_client_edit'] = $edit($posId, ['body'=>'Yo @Nia!'])['body']['comment']['mentions'];
+$results['pos_list'] = array_values(array_filter(
+    invitation_call('list_expense_comments_action', 1)['body']['comments'],
+    static fn(array $comment): bool => (int) $comment['id'] === $posId
+))[0]['mentions'] ?? null;
+
 echo json_encode($results, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);

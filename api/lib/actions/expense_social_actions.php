@@ -71,6 +71,75 @@ function expense_comment_mentions_available(PDO $pdo): bool
     return $cached;
 }
 
+/** True once the mention table has the position columns. Only a found result is cached. */
+function expense_comment_mention_offsets_available(PDO $pdo): bool
+{
+    static $found = [];
+    $key = spl_object_id($pdo);
+    if (isset($found[$key])) {
+        return true;
+    }
+    try {
+        $pdo->query('SELECT start_offset, end_offset FROM ' . table_name('expense_comment_mentions') . ' LIMIT 0');
+    } catch (Throwable $error) {
+        return false;
+    }
+    $found[$key] = true;
+    return true;
+}
+
+/** Text length in UTF-16 code units, the unit the apps count in. */
+function comment_utf16_length(string $text): int
+{
+    return intdiv(strlen(mb_convert_encoding($text, 'UTF-16LE', 'UTF-8')), 2);
+}
+
+/** Part of the text between two UTF-16 positions, or null when it splits a character. */
+function comment_utf16_slice(string $text, int $start, int $end): ?string
+{
+    $encoded = mb_convert_encoding($text, 'UTF-16LE', 'UTF-8');
+    $slice = mb_convert_encoding(substr($encoded, $start * 2, ($end - $start) * 2), 'UTF-8', 'UTF-16LE');
+    return mb_check_encoding($slice, 'UTF-8') && !str_contains($slice, "\u{FFFD}") ? $slice : null;
+}
+
+/**
+ * Mentions sent with their position: `[{user_id, start, end}]`, where the text
+ * from start to end is `@` and the name as written. Positions count UTF-16 code
+ * units. Bad entries are ignored, not an error; one position per person.
+ *
+ * @return array<int, array{start: int, end: int, text: string}> user ID => mention
+ */
+function normalize_comment_mention_spans(mixed $raw, string $commentBody): array
+{
+    if (!is_array($raw)) {
+        return [];
+    }
+    $length = comment_utf16_length($commentBody);
+    $spans = [];
+    $used = [];
+    foreach (array_slice($raw, 0, 50) as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+        $userId = $item['user_id'] ?? null;
+        $start = $item['start'] ?? null;
+        $end = $item['end'] ?? null;
+        if (!is_int($userId) || !is_int($start) || !is_int($end) || $userId <= 0
+            || $start < 0 || $end > $length || $end - $start < 2 || $end - $start > 81
+            || isset($spans[$userId]) || isset($used[$start])) {
+            continue;
+        }
+        $slice = comment_utf16_slice($commentBody, $start, $end);
+        if ($slice === null || !str_starts_with($slice, '@') || trim(substr($slice, 1)) === '') {
+            continue;
+        }
+        // One place in the text names one person.
+        $used[$start] = true;
+        $spans[$userId] = ['start' => $start, 'end' => $end, 'text' => substr($slice, 1)];
+    }
+    return $spans;
+}
+
 /** Normalize the request list to unique positive IDs; a bad value is ignored, not an error. */
 function normalize_mentioned_user_ids($raw): array
 {
@@ -150,8 +219,12 @@ function resolve_expense_comment_mentions(
     int $tripId,
     string $commentBody,
     array $requestedIds,
-    array $existingRows = []
+    array $existingRows = [],
+    ?array $spans = null
 ): array {
+    if ($spans !== null) {
+        $requestedIds = array_keys($spans);
+    }
     if (!$requestedIds) {
         return [];
     }
@@ -171,6 +244,13 @@ function resolve_expense_comment_mentions(
     $resolved = [];
     foreach ($stmt->fetchAll() as $row) {
         $userId = (int) $row['id'];
+        if ($spans !== null) {
+            // The position says who is meant; the name is not compared.
+            if (isset($spans[$userId])) {
+                $resolved[$userId] = $spans[$userId]['text'];
+            }
+            continue;
+        }
         $fullName = combine_full_name(
             normalize_me_name_value($row['first_name'] ?? null),
             normalize_me_name_value($row['last_name'] ?? null)
@@ -201,7 +281,8 @@ function save_expense_comment_mentions(
     int $commentId,
     int $actorId,
     string $commentBody,
-    array $requestedIds
+    array $requestedIds,
+    ?array $spans = null
 ): void {
     if (!expense_comment_mentions_available($pdo)) {
         return;
@@ -209,7 +290,7 @@ function save_expense_comment_mentions(
     // The comment is already saved, so a mention failure must not fail the request.
     try {
         $existing = load_expense_comment_mention_rows($pdo, $commentId);
-        $resolved = resolve_expense_comment_mentions($pdo, $tripId, $commentBody, $requestedIds, $existing);
+        $resolved = resolve_expense_comment_mentions($pdo, $tripId, $commentBody, $requestedIds, $existing, $spans);
         $table = table_name('expense_comment_mentions');
         $insert = $pdo->prepare(
             'INSERT INTO ' . $table . ' (comment_id, user_id, mention_text, is_active)
@@ -234,6 +315,21 @@ function save_expense_comment_mentions(
                 'user_id' => $userId,
                 'mention_text' => $resolved[$userId],
             ]);
+        }
+        if (expense_comment_mention_offsets_available($pdo)) {
+            $positions = $pdo->prepare(
+                'UPDATE ' . $table . ' SET start_offset = :start_offset, end_offset = :end_offset
+                 WHERE comment_id = :comment_id AND user_id = :user_id'
+            );
+            foreach (array_keys($existing + $resolved) as $userId) {
+                $span = isset($resolved[$userId]) ? ($spans[$userId] ?? null) : null;
+                $positions->execute([
+                    'start_offset' => $span['start'] ?? null,
+                    'end_offset' => $span['end'] ?? null,
+                    'comment_id' => $commentId,
+                    'user_id' => $userId,
+                ]);
+            }
         }
         notify_expense_comment_mentions($pdo, $tripId, $expenseId, $expenseNote, $commentId, $actorId, $newUserIds);
     } catch (Throwable $error) {
@@ -331,13 +427,35 @@ function expense_comment_mentions_payload(PDO $pdo, int $commentId): array
     if (!expense_comment_mentions_available($pdo)) {
         return [];
     }
+    $positions = [];
+    if (expense_comment_mention_offsets_available($pdo)) {
+        $stmt = $pdo->prepare(
+            'SELECT user_id, start_offset, end_offset FROM ' . table_name('expense_comment_mentions') . '
+             WHERE comment_id = :comment_id'
+        );
+        $stmt->execute(['comment_id' => $commentId]);
+        foreach ($stmt->fetchAll() as $row) {
+            $positions[(int) $row['user_id']] = $row;
+        }
+    }
     $mentions = [];
     foreach (load_expense_comment_mention_rows($pdo, $commentId) as $userId => $row) {
         if ($row['active']) {
-            $mentions[] = ['user_id' => $userId, 'name' => $row['text']];
+            $mentions[] = expense_comment_mention_item($userId, $row['text'], $positions[$userId] ?? []);
         }
     }
     return $mentions;
+}
+
+/** `{user_id, name}`, plus `start` and `end` when the position is known. */
+function expense_comment_mention_item(int $userId, string $name, array $row): array
+{
+    $item = ['user_id' => $userId, 'name' => $name];
+    if (($row['start_offset'] ?? null) !== null && ($row['end_offset'] ?? null) !== null) {
+        $item['start'] = (int) $row['start_offset'];
+        $item['end'] = (int) $row['end_offset'];
+    }
+    return $item;
 }
 
 /** @return array<int, list<array{user_id: int, name: string}>> comment ID => mentions */
@@ -346,8 +464,11 @@ function expense_mentions_by_comment(PDO $pdo, int $expenseId): array
     if (!expense_comment_mentions_available($pdo)) {
         return [];
     }
+    $positionSelect = expense_comment_mention_offsets_available($pdo)
+        ? ', m.start_offset, m.end_offset'
+        : '';
     $stmt = $pdo->prepare(
-        'SELECT m.comment_id, m.user_id, m.mention_text
+        'SELECT m.comment_id, m.user_id, m.mention_text' . $positionSelect . '
          FROM ' . table_name('expense_comment_mentions') . ' m
          JOIN ' . table_name('expense_comments') . ' c ON c.id = m.comment_id
          WHERE c.expense_id = :expense_id AND m.is_active = 1'
@@ -355,10 +476,11 @@ function expense_mentions_by_comment(PDO $pdo, int $expenseId): array
     $stmt->execute(['expense_id' => $expenseId]);
     $byComment = [];
     foreach ($stmt->fetchAll() as $row) {
-        $byComment[(int) $row['comment_id']][] = [
-            'user_id' => (int) $row['user_id'],
-            'name' => (string) $row['mention_text'],
-        ];
+        $byComment[(int) $row['comment_id']][] = expense_comment_mention_item(
+            (int) $row['user_id'],
+            (string) $row['mention_text'],
+            $row
+        );
     }
     return $byComment;
 }
@@ -795,7 +917,10 @@ function add_expense_comment_action(): void
         $commentId,
         $userId,
         $commentBody,
-        normalize_mentioned_user_ids($body['mentioned_user_ids'] ?? [])
+        normalize_mentioned_user_ids($body['mentioned_user_ids'] ?? []),
+        array_key_exists('mentions', $body)
+            ? normalize_comment_mention_spans($body['mentions'], $commentBody)
+            : null
     );
     notify_expense_comment_added(
         $pdo,
@@ -912,7 +1037,7 @@ function update_expense_comment_action(): void
         'id'   => $commentId,
     ]);
 
-    if (array_key_exists('mentioned_user_ids', $body)) {
+    if (array_key_exists('mentioned_user_ids', $body) || array_key_exists('mentions', $body)) {
         $commentExpenseId = (int) ($comment['expense_id'] ?? 0);
         save_expense_comment_mentions(
             $pdo,
@@ -922,7 +1047,10 @@ function update_expense_comment_action(): void
             $commentId,
             $userId,
             $commentBody,
-            normalize_mentioned_user_ids($body['mentioned_user_ids'])
+            normalize_mentioned_user_ids($body['mentioned_user_ids'] ?? []),
+            array_key_exists('mentions', $body)
+                ? normalize_comment_mention_spans($body['mentions'], $commentBody)
+                : null
         );
     }
 

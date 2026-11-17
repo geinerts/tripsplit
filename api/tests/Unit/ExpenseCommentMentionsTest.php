@@ -26,6 +26,22 @@ final class ExpenseCommentMentionsTest extends TestCase
         return $ids;
     }
 
+    public function test_positions_decide_the_mention_without_comparing_names(): void
+    {
+        self::assertEqualsCanonicalizing([
+            ['user_id'=>2, 'name'=>'Annuška', 'start'=>3, 'end'=>11],
+            ['user_id'=>4, 'name'=>'Nia', 'start'=>19, 'end'=>23],
+        ], self::$r['pos_created']);
+        self::assertSame([2, 4], self::userIds(self::$r['pos_notifications']));
+        self::assertSame([], self::$r['pos_wrong_place']);
+        self::assertSame([], self::$r['pos_split_emoji']);
+        self::assertSame([['user_id'=>4, 'name'=>'Nia', 'start'=>3, 'end'=>7]], self::$r['pos_edit']);
+        self::assertSame([], self::$r['pos_edit_notifications']);
+        // An old app sends no list, so the stored mention stays as it was.
+        self::assertSame([['user_id'=>4, 'name'=>'Nia', 'start'=>3, 'end'=>7]], self::$r['pos_old_client_edit']);
+        self::assertSame([['user_id'=>4, 'name'=>'Nia', 'start'=>3, 'end'=>7]], self::$r['pos_list']);
+    }
+
     public function test_new_comment_stores_text_as_written_and_notifies_each_member(): void
     {
         self::assertEqualsCanonicalizing(
