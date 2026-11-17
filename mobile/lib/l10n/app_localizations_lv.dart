@@ -4682,10 +4682,27 @@ class AppLocalizationsLv extends AppLocalizations {
   String get liveShareTitle => 'Kopīgot manu lokāciju';
 
   @override
-  String get liveConsent => 'Kopīgo savu precīzo atrašanās vietu tikai ar šī ceļojuma apstiprinātajiem dalībniekiem uz izvēlēto laiku. Kopīgošana turpinās fonā, un tu to vari apturēt jebkurā brīdī.';
+  String get liveShareShort => 'Tripa dalībnieki redz, kur tu esi. Vari apturēt jebkurā brīdī.';
 
   @override
-  String get liveBackgroundNote => 'Bez interneta vai piespiedu kārtā aizverot lietotni, atjaunošana var apstāties. Tiek glabāta tikai pēdējā lokācija, nevis maršruta vēsture.';
+  String liveVisibleTo(int count, String trip) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Redz $count dalībnieki tripā $trip',
+      one: 'Redz $count dalībnieks tripā $trip',
+      zero: 'Redz $count dalībnieki tripā $trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveForHowLong => 'Cik ilgi';
+
+  @override
+  String liveSharingUntil(String time) {
+    return 'Kopīgo līdz $time, tad apstāsies pats.';
+  }
 
   @override
   String get liveStart => 'Sākt kopīgot';

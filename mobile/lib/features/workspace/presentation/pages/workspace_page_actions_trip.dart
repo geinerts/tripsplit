@@ -601,6 +601,7 @@ extension _WorkspacePageTripActions on _WorkspacePageState {
           tripName: widget.trip.name,
           controller: widget.liveLocationController!,
           users: _snapshot?.users ?? [],
+          currentUserId: _currentUserId,
         ),
       ),
     );

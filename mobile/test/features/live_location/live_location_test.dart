@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
 import 'package:tripsplit/core/auth/account_data_session.dart';
@@ -9,6 +13,7 @@ import 'package:tripsplit/features/live_location/data/live_location_repository.d
 import 'package:tripsplit/features/live_location/domain/live_location.dart';
 import 'package:tripsplit/features/live_location/presentation/live_location_controller.dart';
 import 'package:tripsplit/features/live_location/presentation/live_map_page.dart';
+import 'package:tripsplit/features/workspace/domain/entities/workspace_user.dart';
 import 'package:tripsplit/l10n/app_localizations.dart';
 
 DateTime Function() clock = DateTime.now;
@@ -114,6 +119,21 @@ void main() {
   testWidgets(
     'view and cancelled consent never request GPS; confirmation starts timed share',
     (tester) async {
+      const preview = bool.fromEnvironment('LIVE_SHARE_PREVIEW');
+      if (preview) {
+        tester.view.physicalSize = const Size(390, 844);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.runAsync(() async {
+          await (FontLoader(
+            'Inter',
+          )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
+          await (FontLoader('MaterialIcons')
+                ..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf')))
+              .load();
+        });
+      }
       final base = DateTime.now(), tick = tester.binding.clock.now();
       clock = () => base.add(tester.binding.clock.now().difference(tick));
       await tester.pumpWidget(
@@ -125,6 +145,12 @@ void main() {
             tripId: 9,
             tripName: 'Lisbon',
             controller: controller,
+            users: const [
+              WorkspaceUser(id: 7, nickname: 'Matiss'),
+              WorkspaceUser(id: 8, nickname: 'Anna'),
+              WorkspaceUser(id: 9, nickname: 'Jana'),
+            ],
+            currentUserId: 7,
             showTiles: false,
           ),
         ),
@@ -144,7 +170,24 @@ void main() {
       await tester.ensureVisible(find.byKey(const ValueKey('live-share')));
       await tester.tap(find.byKey(const ValueKey('live-share')));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('15 min'));
+      // Only the others are counted, and the sheet says when it ends.
+      expect(find.text('Visible to 2 members of Lisbon'), findsOneWidget);
+      expect(find.byKey(const ValueKey('live-sharing-until')), findsOneWidget);
+      if (preview) {
+        await tester.runAsync(() async {
+          final view = tester.binding.renderViews.first;
+          final image = await (view.debugLayer! as OffsetLayer).toImage(
+            Offset.zero & view.size,
+            pixelRatio: 2,
+          );
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File('../output/design/live-share/dark-sheet.png');
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+      }
+      await tester.tap(find.byKey(const ValueKey('live-duration-15')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('live-confirm')));
       await tester.pumpAndSettle();

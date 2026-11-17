@@ -2011,8 +2011,27 @@
   "travelDuplicate": "This visit is already on your map.",
   "liveMapTitle": "Live map",
   "liveShareTitle": "Share my location",
-  "liveConsent": "Share your precise location only with accepted members of this trip for the time you choose. Sharing continues in the background and you can stop it at any time.",
-  "liveBackgroundNote": "Updates can pause without internet or if you force-close the app. Only the latest location is kept; no route history is recorded.",
+  "liveShareShort": "Your trip members see where you are. Stop anytime.",
+  "liveVisibleTo": "{count, plural, one{Visible to 1 member of {trip}} other{Visible to {count} members of {trip}}}",
+  "@liveVisibleTo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "trip": {
+        "type": "String"
+      }
+    }
+  },
+  "liveForHowLong": "For how long",
+  "liveSharingUntil": "Sharing until {time}, then it stops on its own.",
+  "@liveSharingUntil": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "liveStart": "Start sharing",
   "liveStop": "Stop sharing",
   "liveNotification": "Your location is being shared with your trip. Open Splyto to stop sharing.",

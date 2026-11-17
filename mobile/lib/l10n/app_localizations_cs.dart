@@ -4683,10 +4683,28 @@ class AppLocalizationsCs extends AppLocalizations {
   String get liveShareTitle => 'Sdílet mou polohu';
 
   @override
-  String get liveConsent => 'Sdílej svou přesnou polohu pouze se schválenými účastníky této cesty po dobu, kterou si zvolíš. Sdílení pokračuje na pozadí a můžeš ho kdykoli ukončit.';
+  String get liveShareShort => 'Členové výletu vidí, kde jsi. Můžeš kdykoli přestat.';
 
   @override
-  String get liveBackgroundNote => 'Aktualizace se mohou pozastavit bez připojení k internetu nebo pokud aplikaci násilně ukončíte. Uchovává se pouze poslední poloha; historie trasy se nezaznamenává.';
+  String liveVisibleTo(int count, String trip) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Uvidí $count členů výletu $trip',
+      many: 'Uvidí $count členů výletu $trip',
+      few: 'Uvidí $count členové výletu $trip',
+      one: 'Uvidí 1 člen výletu $trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveForHowLong => 'Na jak dlouho';
+
+  @override
+  String liveSharingUntil(String time) {
+    return 'Sdílení do $time, pak se samo zastaví.';
+  }
 
   @override
   String get liveStart => 'Začít sdílet';

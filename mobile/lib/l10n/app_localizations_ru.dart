@@ -4693,10 +4693,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String get liveShareTitle => 'Поделиться геопозицией';
 
   @override
-  String get liveConsent => 'Делитесь точной геопозицией только с принятыми участниками этой поездки на выбранное время. Передача продолжается в фоне, и её можно остановить в любой момент.';
+  String get liveShareShort => 'Участники поездки видят, где вы. Остановить можно в любой момент.';
 
   @override
-  String get liveBackgroundNote => 'Обновления могут приостановиться без интернета или при принудительном закрытии приложения. Хранится только последняя геопозиция, история маршрута не записывается.';
+  String liveVisibleTo(int count, String trip) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Видно $count участникам поездки $trip',
+      many: 'Видно $count участникам поездки $trip',
+      few: 'Видно $count участникам поездки $trip',
+      one: 'Видно $count участнику поездки $trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveForHowLong => 'На какое время';
+
+  @override
+  String liveSharingUntil(String time) {
+    return 'Доступ до $time, затем он отключится сам.';
+  }
 
   @override
   String get liveStart => 'Начать передачу';

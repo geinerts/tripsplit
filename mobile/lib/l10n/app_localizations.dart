@@ -8595,17 +8595,29 @@ abstract class AppLocalizations {
   /// **'Share my location'**
   String get liveShareTitle;
 
-  /// No description provided for @liveConsent.
+  /// No description provided for @liveShareShort.
   ///
   /// In en, this message translates to:
-  /// **'Share your precise location only with accepted members of this trip for the time you choose. Sharing continues in the background and you can stop it at any time.'**
-  String get liveConsent;
+  /// **'Your trip members see where you are. Stop anytime.'**
+  String get liveShareShort;
 
-  /// No description provided for @liveBackgroundNote.
+  /// No description provided for @liveVisibleTo.
   ///
   /// In en, this message translates to:
-  /// **'Updates can pause without internet or if you force-close the app. Only the latest location is kept; no route history is recorded.'**
-  String get liveBackgroundNote;
+  /// **'{count, plural, one{Visible to 1 member of {trip}} other{Visible to {count} members of {trip}}}'**
+  String liveVisibleTo(int count, String trip);
+
+  /// No description provided for @liveForHowLong.
+  ///
+  /// In en, this message translates to:
+  /// **'For how long'**
+  String get liveForHowLong;
+
+  /// No description provided for @liveSharingUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing until {time}, then it stops on its own.'**
+  String liveSharingUntil(String time);
 
   /// No description provided for @liveStart.
   ///

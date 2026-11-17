@@ -4693,10 +4693,28 @@ class AppLocalizationsUk extends AppLocalizations {
   String get liveShareTitle => 'Поділитися моїм місцезнаходженням';
 
   @override
-  String get liveConsent => 'Ділися своїм точним місцезнаходженням лише зі схваленими учасниками цієї подорожі протягом обраного тобою часу. Передавання триває у фоновому режимі, і його можна зупинити будь-коли.';
+  String get liveShareShort => 'Учасники подорожі бачать, де ти. Зупинити можна будь-коли.';
 
   @override
-  String get liveBackgroundNote => 'Оновлення можуть призупинятися без інтернету або якщо ви примусово закриєте додаток. Зберігається лише останнє місцезнаходження; історія маршруту не записується.';
+  String liveVisibleTo(int count, String trip) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Бачать $count учасника подорожі $trip',
+      many: 'Бачать $count учасників подорожі $trip',
+      few: 'Бачать $count учасники подорожі $trip',
+      one: 'Бачить $count учасник подорожі $trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveForHowLong => 'На скільки';
+
+  @override
+  String liveSharingUntil(String time) {
+    return 'Ділишся до $time, потім усе зупиниться саме.';
+  }
 
   @override
   String get liveStart => 'Почати обмін даними';

@@ -4671,10 +4671,26 @@ class AppLocalizationsFi extends AppLocalizations {
   String get liveShareTitle => 'Jaa sijaintini';
 
   @override
-  String get liveConsent => 'Jaa tarkka sijaintisi vain tämän matkan hyväksytyille osallistujille valitsemaksesi ajaksi. Jakaminen jatkuu taustalla, ja voit lopettaa sen milloin tahansa.';
+  String get liveShareShort => 'Matkan jäsenet näkevät, missä olet. Voit lopettaa milloin tahansa.';
 
   @override
-  String get liveBackgroundNote => 'Päivitykset voivat keskeytyä ilman internetyhteyttä tai jos suljet sovelluksen pakotetusti. Vain viimeisin sijainti tallennetaan; reittihistoriaa ei tallenneta.';
+  String liveVisibleTo(int count, String trip) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Näkyy $count jäsenelle matkalla $trip',
+      one: 'Näkyy 1 jäsenelle matkalla $trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveForHowLong => 'Kuinka kauan';
+
+  @override
+  String liveSharingUntil(String time) {
+    return 'Jaetaan klo $time asti, sitten jakaminen loppuu itsestään.';
+  }
 
   @override
   String get liveStart => 'Aloita jakaminen';

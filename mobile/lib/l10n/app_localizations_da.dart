@@ -4671,10 +4671,26 @@ class AppLocalizationsDa extends AppLocalizations {
   String get liveShareTitle => 'Del min position';
 
   @override
-  String get liveConsent => 'Del kun din præcise placering med godkendte deltagere i denne rejse i det tidsrum, du vælger. Delingen fortsætter i baggrunden, og du kan stoppe den når som helst.';
+  String get liveShareShort => 'Turens medlemmer kan se, hvor du er. Stop når som helst.';
 
   @override
-  String get liveBackgroundNote => 'Opdateringer kan sættes på pause uden internetforbindelse eller hvis du tvinger appen til at lukke. Kun den seneste position gemmes; der registreres ingen rutehistorik.';
+  String liveVisibleTo(int count, String trip) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Synlig for $count medlemmer af $trip',
+      one: 'Synlig for 1 medlem af $trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveForHowLong => 'Hvor længe';
+
+  @override
+  String liveSharingUntil(String time) {
+    return 'Deler indtil $time, derefter stopper det af sig selv.';
+  }
 
   @override
   String get liveStart => 'Start deling';

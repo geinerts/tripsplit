@@ -4671,10 +4671,26 @@ class AppLocalizationsNl extends AppLocalizations {
   String get liveShareTitle => 'Deel mijn locatie';
 
   @override
-  String get liveConsent => 'Deel je exacte locatie alleen met geaccepteerde deelnemers van deze reis, gedurende de periode die je kiest. Het delen gaat op de achtergrond door en je kunt het op elk moment stoppen.';
+  String get liveShareShort => 'Je reisgenoten zien waar je bent. Stop wanneer je wilt.';
 
   @override
-  String get liveBackgroundNote => 'Updates kunnen worden onderbroken zonder internetverbinding of als je de app geforceerd sluit. Alleen de meest recente locatie wordt bewaard; er wordt geen routegeschiedenis vastgelegd.';
+  String liveVisibleTo(int count, String trip) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Zichtbaar voor $count leden van $trip',
+      one: 'Zichtbaar voor 1 lid van $trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get liveForHowLong => 'Hoe lang';
+
+  @override
+  String liveSharingUntil(String time) {
+    return 'Delen tot $time, daarna stopt het vanzelf.';
+  }
 
   @override
   String get liveStart => 'Begin met delen';

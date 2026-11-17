@@ -20,12 +20,14 @@ class LiveMapPage extends StatefulWidget {
     required this.tripName,
     required this.controller,
     this.users = const [],
+    this.currentUserId = 0,
     this.showTiles = true,
   });
   final int tripId;
   final String tripName;
   final LiveLocationController controller;
   final List<WorkspaceUser> users;
+  final int currentUserId;
   final bool showTiles;
   @override
   State<LiveMapPage> createState() => _LiveMapPageState();
@@ -135,63 +137,154 @@ class _LiveMapPageState extends State<LiveMapPage> with WidgetsBindingObserver {
   Future<void> _share() async {
     var minutes = 60;
     final t = context.l10n;
+    final others = widget.users
+        .where((user) => user.id != widget.currentUserId)
+        .toList(growable: false);
     final accepted = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) => StatefulBuilder(
-        builder: (context, setSheet) => SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+        builder: (context, setSheet) {
+          final theme = Theme.of(context);
+          final colors = theme.colorScheme;
+          final muted = theme.textTheme.bodyMedium?.copyWith(
+            color: colors.onSurfaceVariant,
+          );
+          final until = MaterialLocalizations.of(context).formatTimeOfDay(
+            TimeOfDay.fromDateTime(
+              DateTime.now().add(Duration(minutes: minutes)),
+            ),
+            alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context),
+          );
+          return SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    t.liveShareTitle,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(t.liveConsent),
-                  const SizedBox(height: 12),
-                  Text(
-                    t.liveBackgroundNote,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  const SizedBox(height: 20),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                  Row(
                     children: [
-                      for (final item in const {
-                        15: '15 min',
-                        60: '1 h',
-                        240: '4 h',
-                        480: '8 h',
-                      }.entries)
-                        ChoiceChip(
-                          label: Text(item.value),
-                          selected: minutes == item.key,
-                          onSelected: (_) => setSheet(() => minutes = item.key),
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: colors.primary.withValues(alpha: .12),
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                        child: Icon(
+                          Icons.location_on_outlined,
+                          color: colors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          t.liveShareTitle,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      key: const ValueKey('live-confirm'),
-                      onPressed: () => Navigator.pop(context, true),
-                      icon: const Icon(Icons.location_on_outlined),
-                      label: Text(t.liveStart),
+                  const SizedBox(height: 10),
+                  Text(t.liveShareShort, style: muted),
+                  if (others.isNotEmpty) ...[
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        _memberStack(others),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            t.liveVisibleTo(others.length, widget.tripName),
+                            key: const ValueKey('live-visible-to'),
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
                     ),
+                  ],
+                  const SizedBox(height: 22),
+                  Text(
+                    t.liveForHowLong,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: colors.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Row(
+                      children: [
+                        for (final item in const {
+                          15: '15 min',
+                          60: '1 h',
+                          240: '4 h',
+                          480: '8 h',
+                        }.entries)
+                          Expanded(
+                            child: Semantics(
+                              button: true,
+                              selected: minutes == item.key,
+                              child: Material(
+                                color: minutes == item.key
+                                    ? colors.primary
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(20),
+                                child: InkWell(
+                                  key: ValueKey('live-duration-${item.key}'),
+                                  borderRadius: BorderRadius.circular(20),
+                                  onTap: () =>
+                                      setSheet(() => minutes = item.key),
+                                  child: SizedBox(
+                                    height: 40,
+                                    child: Center(
+                                      child: Text(
+                                        item.value,
+                                        style: theme.textTheme.labelLarge
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: minutes == item.key
+                                                  ? colors.onPrimary
+                                                  : colors.onSurfaceVariant,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    t.liveSharingUntil(until),
+                    key: const ValueKey('live-sharing-until'),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  FilledButton.icon(
+                    key: const ValueKey('live-confirm'),
+                    onPressed: () => Navigator.pop(context, true),
+                    icon: const Icon(Icons.location_on_outlined),
+                    label: Text(t.liveStart),
                   ),
                 ],
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
     if (accepted != true || !mounted || !_lease.isCurrent) return;
@@ -234,6 +327,52 @@ class _LiveMapPageState extends State<LiveMapPage> with WidgetsBindingObserver {
         context,
       ).showSnackBar(SnackBar(content: Text(context.l10n.liveStopPending)));
     }
+  }
+
+  /// Up to four overlapping faces of the people who will see you.
+  Widget _memberStack(List<WorkspaceUser> users) {
+    final shown = users.take(4).toList(growable: false);
+    const size = 28.0, step = 18.0;
+    final surface = Theme.of(context).colorScheme.surface;
+    return SizedBox(
+      width: size + step * (shown.length - 1),
+      height: size,
+      child: Stack(
+        children: [
+          for (var i = 0; i < shown.length; i++)
+            Positioned(
+              left: step * i,
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: surface, width: 2),
+                ),
+                child: CircleAvatar(
+                  radius: size / 2 - 2,
+                  backgroundImage:
+                      (shown[i].avatarThumbUrl ?? shown[i].avatarUrl) == null
+                      ? null
+                      : NetworkImage(
+                          (shown[i].avatarThumbUrl ?? shown[i].avatarUrl)!,
+                        ),
+                  child: (shown[i].avatarThumbUrl ?? shown[i].avatarUrl) == null
+                      ? Text(
+                          shown[i].preferredName.isEmpty
+                              ? '?'
+                              : shown[i].preferredName.characters.first
+                                    .toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        )
+                      : null,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   Widget _avatar(LiveMember member, {double radius = 22}) {
