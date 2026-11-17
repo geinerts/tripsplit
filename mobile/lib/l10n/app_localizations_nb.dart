@@ -4597,6 +4597,18 @@ class AppLocalizationsNb extends AppLocalizations {
   String get memberHistoryShare => 'andel';
 
   @override
+  String get memberHistorySent => 'sendt';
+
+  @override
+  String get memberHistoryReceived => 'mottatt';
+
+  @override
+  String get memberPaymentsSent => 'Sendt';
+
+  @override
+  String get memberPaymentsReceived => 'Mottatt';
+
+  @override
   String get expenseReceiptChip => 'Kvittering';
 
   @override

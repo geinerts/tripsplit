@@ -6030,6 +6030,62 @@ void main() {
     }
   }
 
+  testWidgets('member sheet shows payments as sent or received', (
+    tester,
+  ) async {
+    final controller = _Workspace()
+      ..data = snapshot(
+        preview: true,
+      ).copyWith(payments: [payment('confirmed')]);
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    await _selectTab(tester, t.navBalances);
+    for (final (id, stat, hint) in [
+      (8, t.memberPaymentsReceived, t.memberHistoryReceived),
+      (7, t.memberPaymentsSent, t.memberHistorySent),
+    ]) {
+      await visibleTap(tester, find.byKey(ValueKey('balance-row-$id')));
+      final stats = find.byKey(const ValueKey('member-balance-stats'));
+      expect(
+        find.descendant(of: stats, matching: find.text(stat)),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: stats, matching: find.text(t.tripReportPayments)),
+        findsNothing,
+      );
+      final row = find.byKey(const ValueKey('member-history-payment-1'));
+      await tester.scrollUntilVisible(
+        row,
+        200,
+        scrollable: find.byType(Scrollable).last,
+      );
+      expect(
+        find.descendant(of: row, matching: find.text(hint)),
+        findsOneWidget,
+      );
+      // No sign on the amount: receiving money is not shown as a loss.
+      expect(
+        find.descendant(
+          of: row,
+          matching: find.textContaining(RegExp('[−+-]')),
+        ),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+      await tester.tap(
+        find.byTooltip(
+          MaterialLocalizations.of(
+            tester.element(find.byType(WorkspacePage)),
+          ).closeButtonTooltip,
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+    await disposePage(tester);
+  });
+
   group('Quick split', () {
     QuickSplit fixture() => QuickSplit.fromJson({
       'id': 31,

@@ -4606,6 +4606,18 @@ class AppLocalizationsCs extends AppLocalizations {
   String get memberHistoryShare => 'podíl';
 
   @override
+  String get memberHistorySent => 'odesláno';
+
+  @override
+  String get memberHistoryReceived => 'přijato';
+
+  @override
+  String get memberPaymentsSent => 'Odesláno';
+
+  @override
+  String get memberPaymentsReceived => 'Přijato';
+
+  @override
   String get expenseReceiptChip => 'Účtenka';
 
   @override

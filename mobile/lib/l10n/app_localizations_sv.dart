@@ -4597,6 +4597,18 @@ class AppLocalizationsSv extends AppLocalizations {
   String get memberHistoryShare => 'andel';
 
   @override
+  String get memberHistorySent => 'skickat';
+
+  @override
+  String get memberHistoryReceived => 'mottaget';
+
+  @override
+  String get memberPaymentsSent => 'Skickat';
+
+  @override
+  String get memberPaymentsReceived => 'Mottaget';
+
+  @override
   String get expenseReceiptChip => 'Kvitto';
 
   @override

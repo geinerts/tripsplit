@@ -4613,6 +4613,18 @@ class AppLocalizationsUk extends AppLocalizations {
   String get memberHistoryShare => 'частка';
 
   @override
+  String get memberHistorySent => 'надіслано';
+
+  @override
+  String get memberHistoryReceived => 'отримано';
+
+  @override
+  String get memberPaymentsSent => 'Надіслано';
+
+  @override
+  String get memberPaymentsReceived => 'Отримано';
+
+  @override
   String get expenseReceiptChip => 'Чек';
 
   @override

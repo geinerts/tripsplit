@@ -8463,6 +8463,30 @@ abstract class AppLocalizations {
   /// **'share'**
   String get memberHistoryShare;
 
+  /// No description provided for @memberHistorySent.
+  ///
+  /// In en, this message translates to:
+  /// **'sent'**
+  String get memberHistorySent;
+
+  /// No description provided for @memberHistoryReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'received'**
+  String get memberHistoryReceived;
+
+  /// No description provided for @memberPaymentsSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent'**
+  String get memberPaymentsSent;
+
+  /// No description provided for @memberPaymentsReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get memberPaymentsReceived;
+
   /// No description provided for @expenseReceiptChip.
   ///
   /// In en, this message translates to:

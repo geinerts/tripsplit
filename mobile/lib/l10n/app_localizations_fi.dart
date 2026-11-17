@@ -4597,6 +4597,18 @@ class AppLocalizationsFi extends AppLocalizations {
   String get memberHistoryShare => 'osuus';
 
   @override
+  String get memberHistorySent => 'lähetetty';
+
+  @override
+  String get memberHistoryReceived => 'vastaanotettu';
+
+  @override
+  String get memberPaymentsSent => 'Lähetetty';
+
+  @override
+  String get memberPaymentsReceived => 'Vastaanotettu';
+
+  @override
   String get expenseReceiptChip => 'Kuitti';
 
   @override

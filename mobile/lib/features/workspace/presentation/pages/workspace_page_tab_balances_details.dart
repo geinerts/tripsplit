@@ -20,6 +20,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       memberId: item.id,
       usersById: usersById,
     );
+    // Positive: this person sent more than they received.
     final paymentsNet = history
         .where((entry) => entry.payment != null)
         .fold<double>(0, (sum, entry) => sum + entry.effect);
@@ -170,11 +171,9 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
     final t = context.l10n;
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-    Widget stat(String label, double value, {bool signed = false}) {
+    Widget stat(String label, double value) {
       final zero = value.abs() < .005;
-      final text = signed && !zero
-          ? '${value > 0 ? '+' : '−'}${_balanceMoney(value.abs())}'
-          : _balanceMoney(value.abs());
+      final text = _balanceMoney(value.abs());
       return Expanded(
         child: Column(
           children: [
@@ -211,7 +210,15 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
         line(),
         stat(t.tripReportShare, share),
         line(),
-        stat(t.tripReportPayments, payments, signed: true),
+        // Sent or received, without a sign: receiving money is not a loss.
+        stat(
+          payments.abs() < .005
+              ? t.tripReportPayments
+              : payments > 0
+              ? t.memberPaymentsSent
+              : t.memberPaymentsReceived,
+          payments,
+        ),
       ],
     );
   }
@@ -301,9 +308,14 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
       final entry = entries[i];
       if (entry.date != day) {
         day = entry.date;
-        final total = entries
-            .where((other) => other.date == day)
-            .fold<double>(0, (sum, other) => sum + other.effect);
+        // Payments settle the balance, so the day total counts expenses only.
+        final dayExpenses = entries
+            .where((other) => other.date == day && other.expense != null)
+            .toList(growable: false);
+        final total = dayExpenses.fold<double>(
+          0,
+          (sum, other) => sum + other.effect,
+        );
         rows.add(
           Padding(
             padding: const EdgeInsets.only(top: 14, bottom: 2),
@@ -317,13 +329,14 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
                     ),
                   ),
                 ),
-                Text(
-                  _signedBalanceMoney(total),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: _effectColor(total),
-                    fontWeight: FontWeight.w600,
+                if (dayExpenses.isNotEmpty)
+                  Text(
+                    _signedBalanceMoney(total),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: _effectColor(total),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
               ],
             ),
           ),
@@ -340,15 +353,22 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
 
   Widget _memberAmountColumn(_MemberHistoryEntry entry) {
     final theme = Theme.of(context);
+    // A payment shows its amount with "sent" or "received", in the text
+    // colour: money received is not a loss even though the balance drops.
+    final isPayment = entry.payment != null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          _signedBalanceMoney(entry.effect),
+          isPayment
+              ? _balanceMoney(entry.effect.abs())
+              : _signedBalanceMoney(entry.effect),
           textAlign: TextAlign.end,
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w700,
-            color: _effectColor(entry.effect),
+            color: isPayment
+                ? theme.colorScheme.onSurface
+                : _effectColor(entry.effect),
             fontFeatures: const [FontFeature.tabularFigures()],
           ),
         ),
@@ -548,7 +568,7 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
               .first,
           payment: payment,
           effect: sent ? payment.amount : -payment.amount,
-          hint: '',
+          hint: sent ? t.memberHistorySent : t.memberHistoryReceived,
         ),
       );
     }

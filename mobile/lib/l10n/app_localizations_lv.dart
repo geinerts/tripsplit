@@ -4605,6 +4605,18 @@ class AppLocalizationsLv extends AppLocalizations {
   String get memberHistoryShare => 'daļa';
 
   @override
+  String get memberHistorySent => 'nosūtīts';
+
+  @override
+  String get memberHistoryReceived => 'saņemts';
+
+  @override
+  String get memberPaymentsSent => 'Nosūtīts';
+
+  @override
+  String get memberPaymentsReceived => 'Saņemts';
+
+  @override
   String get expenseReceiptChip => 'Čeks';
 
   @override

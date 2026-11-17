@@ -4597,6 +4597,18 @@ class AppLocalizationsDa extends AppLocalizations {
   String get memberHistoryShare => 'andel';
 
   @override
+  String get memberHistorySent => 'sendt';
+
+  @override
+  String get memberHistoryReceived => 'modtaget';
+
+  @override
+  String get memberPaymentsSent => 'Sendt';
+
+  @override
+  String get memberPaymentsReceived => 'Modtaget';
+
+  @override
   String get expenseReceiptChip => 'Kvittering';
 
   @override

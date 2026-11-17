@@ -4597,6 +4597,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get memberHistoryShare => 'part';
 
   @override
+  String get memberHistorySent => 'envoyé';
+
+  @override
+  String get memberHistoryReceived => 'reçu';
+
+  @override
+  String get memberPaymentsSent => 'Envoyé';
+
+  @override
+  String get memberPaymentsReceived => 'Reçu';
+
+  @override
   String get expenseReceiptChip => 'Ticket';
 
   @override

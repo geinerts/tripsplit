@@ -4613,6 +4613,18 @@ class AppLocalizationsPl extends AppLocalizations {
   String get memberHistoryShare => 'udział';
 
   @override
+  String get memberHistorySent => 'wysłano';
+
+  @override
+  String get memberHistoryReceived => 'otrzymano';
+
+  @override
+  String get memberPaymentsSent => 'Wysłano';
+
+  @override
+  String get memberPaymentsReceived => 'Otrzymano';
+
+  @override
   String get expenseReceiptChip => 'Paragon';
 
   @override
