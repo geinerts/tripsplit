@@ -1,4 +1,5 @@
 import '../../../../core/config/app_env.dart';
+import '../../domain/entities/comment_mention_text.dart';
 import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
@@ -330,6 +331,7 @@ class WorkspaceController {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
   }) {
@@ -345,6 +347,7 @@ class WorkspaceController {
       splitValues: splitValues,
       items: items,
       extraAmount: extraAmount,
+      subcategory: subcategory,
       paidBy: paidBy,
       receiptPath: receiptPath,
     );
@@ -363,6 +366,7 @@ class WorkspaceController {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
@@ -380,6 +384,7 @@ class WorkspaceController {
       splitValues: splitValues,
       items: items,
       extraAmount: extraAmount,
+      subcategory: subcategory,
       paidBy: paidBy,
       receiptPath: receiptPath,
       removeReceipt: removeReceipt,
@@ -478,6 +483,7 @@ class WorkspaceController {
     required String body,
     int? parentCommentId,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) {
     return _repository.addExpenseComment(
       expenseId: expenseId,
@@ -485,6 +491,7 @@ class WorkspaceController {
       body: body,
       parentCommentId: parentCommentId,
       mentionedUserIds: mentionedUserIds,
+      mentionSpans: mentionSpans,
     );
   }
 
@@ -494,6 +501,7 @@ class WorkspaceController {
     required int tripId,
     required String body,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) {
     return _repository.updateExpenseComment(
       commentId: commentId,
@@ -501,6 +509,7 @@ class WorkspaceController {
       tripId: tripId,
       body: body,
       mentionedUserIds: mentionedUserIds,
+      mentionSpans: mentionSpans,
     );
   }
 

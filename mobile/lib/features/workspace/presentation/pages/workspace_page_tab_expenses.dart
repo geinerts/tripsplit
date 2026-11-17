@@ -286,13 +286,8 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
     WorkspaceUser? payer,
   ) {
     final theme = Theme.of(context);
-    final category = ExpenseCategoryCatalog.labelFor(
-      expense.category,
-      Localizations.localeOf(context),
-    );
-    // The category is always the title; the note goes under it. Who paid
-    // shows as a small face on the icon, the split mode only in details.
-    final title = category;
+    // The category (and type) is always the title; the note goes under it.
+    // Who paid shows as a small face on the icon, the split mode in details.
     final payerName = (payer?.preferredName ?? expense.paidByNickname).trim();
     final details = expense.note.trim();
     final amount = AppFormatters.displayCurrencyFromCents(
@@ -409,10 +404,11 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
+                        _expenseCategoryTitle(
+                          context,
+                          expense,
+                          key: ValueKey('expense-title-${expense.id}'),
                           maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,

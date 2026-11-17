@@ -17,6 +17,7 @@ class _ExpenseFormResult {
     this.items = const [],
     this.extraAmount = 0,
     this.paidBy,
+    this.subcategory,
   });
 
   final double amount;
@@ -36,6 +37,9 @@ class _ExpenseFormResult {
 
   /// Set when the trip owner chose who paid.
   final int? paidBy;
+
+  /// Optional type within the category, or null.
+  final String? subcategory;
 }
 
 class _PickedFile {

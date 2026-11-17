@@ -3,6 +3,7 @@ import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/network/http_method.dart';
 import '../../../../core/network/legacy_receipt_uploader.dart';
 import '../../../../core/errors/api_exception.dart';
+import '../../domain/entities/comment_mention_text.dart';
 import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_mention.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
@@ -285,6 +286,7 @@ class WorkspaceRemoteMutationApi {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
     String? clientMutationId,
@@ -313,6 +315,7 @@ class WorkspaceRemoteMutationApi {
         if (items.isNotEmpty)
           'items': items.map((item) => item.toJson()).toList(growable: false),
         if (extraAmount > 0) 'extra_amount': extraAmount,
+        'subcategory': ?subcategory,
         'paid_by': ?paidBy,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
@@ -333,6 +336,8 @@ class WorkspaceRemoteMutationApi {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
+    bool subcategorySet = true,
     int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
@@ -363,6 +368,8 @@ class WorkspaceRemoteMutationApi {
         if (items.isNotEmpty)
           'items': items.map((item) => item.toJson()).toList(growable: false),
         if (extraAmount > 0) 'extra_amount': extraAmount,
+        // Always sent: null removes the type, omitted keeps it (old queue).
+        if (subcategorySet) 'subcategory': subcategory,
         'paid_by': ?paidBy,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
@@ -531,6 +538,8 @@ class WorkspaceRemoteMutationApi {
                   (mention) => ExpenseCommentMention(
                     userId: (mention['user_id'] as num?)?.toInt() ?? 0,
                     name: mention['name'] as String? ?? '',
+                    start: (mention['start'] as num?)?.toInt(),
+                    end: (mention['end'] as num?)?.toInt(),
                   ),
                 )
                 .toList(growable: false)
@@ -555,12 +564,20 @@ class WorkspaceRemoteMutationApi {
         .toList(growable: false);
   }
 
+  static List<Map<String, int>> _mentionSpansJson(
+    List<CommentMentionSpan> spans,
+  ) => [
+    for (final span in spans)
+      {'user_id': span.userId, 'start': span.start, 'end': span.end},
+  ];
+
   Future<ExpenseComment> addExpenseComment({
     required int expenseId,
     required int tripId,
     required String body,
     int? parentCommentId,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) async {
     final payload = <String, dynamic>{'expense_id': expenseId, 'body': body};
     if ((parentCommentId ?? 0) > 0) {
@@ -568,6 +585,9 @@ class WorkspaceRemoteMutationApi {
     }
     if (mentionedUserIds.isNotEmpty) {
       payload['mentioned_user_ids'] = mentionedUserIds;
+    }
+    if (mentionSpans.isNotEmpty) {
+      payload['mentions'] = _mentionSpansJson(mentionSpans);
     }
     final response = await _apiClient.request(
       path: ApiEndpoints.legacyAction('add_expense_comment'),
@@ -584,6 +604,7 @@ class WorkspaceRemoteMutationApi {
     required int tripId,
     required String body,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) async {
     final response = await _apiClient.request(
       path: ApiEndpoints.legacyAction('update_expense_comment'),
@@ -594,6 +615,8 @@ class WorkspaceRemoteMutationApi {
         'expense_id': expenseId,
         'body': body,
         'mentioned_user_ids': mentionedUserIds,
+        // Positions let the server skip name matching; older servers ignore it.
+        'mentions': _mentionSpansJson(mentionSpans),
       },
     );
     return _expenseCommentFromJson(response['comment'] as Map<String, dynamic>);

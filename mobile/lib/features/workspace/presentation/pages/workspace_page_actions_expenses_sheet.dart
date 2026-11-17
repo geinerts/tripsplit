@@ -46,10 +46,6 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
       'itemized' => Icons.receipt_long_rounded,
       _ => Icons.drag_handle_rounded,
     };
-    final categoryLabel = ExpenseCategoryCatalog.labelFor(
-      expense.category,
-      Localizations.localeOf(context),
-    );
     final note = expense.note.trim();
     final foreign = expense.expenseCurrencyCode != expense.tripCurrencyCode;
     final hasReceipt = expense.receiptUrl != null;
@@ -183,9 +179,11 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  categoryLabel,
+                                _expenseCategoryTitle(
+                                  context,
+                                  expense,
                                   key: const ValueKey('expense-detail-title'),
+                                  maxLines: 2,
                                   style: theme.textTheme.titleLarge?.copyWith(
                                     fontWeight: FontWeight.w700,
                                   ),

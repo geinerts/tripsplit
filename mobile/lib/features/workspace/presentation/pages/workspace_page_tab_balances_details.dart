@@ -396,11 +396,10 @@ extension _WorkspacePageBalancesDetails on _WorkspacePageState {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    ExpenseCategoryCatalog.labelFor(
-                      expense.category,
-                      Localizations.localeOf(context),
-                    ),
+                  _expenseCategoryTitle(
+                    context,
+                    expense,
+                    maxLines: 2,
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),

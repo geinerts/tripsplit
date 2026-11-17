@@ -709,6 +709,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
         tripId: widget.tripId,
         body: next,
         mentionedUserIds: edited?.mentionedUserIds ?? const <int>[],
+        mentionSpans: edited?.mentionSpans ?? const <CommentMentionSpan>[],
       );
       if (!mounted) return;
       final fresh = await widget.controller.listExpenseComments(
@@ -746,6 +747,7 @@ class _ExpenseSocialSectionState extends State<_ExpenseSocialSection> {
         body: body,
         parentCommentId: replyTarget?.id,
         mentionedUserIds: _commentController.mentionedUserIds,
+        mentionSpans: _commentController.mentionSpansFor(body),
       );
       if (!mounted) return;
       _commentController.clear();

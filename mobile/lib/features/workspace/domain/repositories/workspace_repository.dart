@@ -1,3 +1,4 @@
+import '../entities/comment_mention_text.dart';
 import '../entities/expense_comment.dart';
 import '../entities/expense_comment_reaction.dart';
 import '../entities/expense_reaction.dart';
@@ -140,6 +141,7 @@ abstract class WorkspaceRepository {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
   });
@@ -157,6 +159,7 @@ abstract class WorkspaceRepository {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
     bool removeReceipt,
@@ -214,6 +217,7 @@ abstract class WorkspaceRepository {
     required String body,
     int? parentCommentId,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   });
 
   Future<ExpenseComment> updateExpenseComment({
@@ -222,6 +226,7 @@ abstract class WorkspaceRepository {
     required int tripId,
     required String body,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   });
 
   Future<void> deleteExpenseComment({

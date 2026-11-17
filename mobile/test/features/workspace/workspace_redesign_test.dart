@@ -2,6 +2,7 @@ import 'package:tripsplit/features/live_location/presentation/live_location_cont
 import 'package:tripsplit/features/live_location/domain/live_location.dart';
 import 'package:tripsplit/features/workspace/data/datasources/workspace_remote_parsers.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:tripsplit/features/workspace/domain/entities/comment_mention_text.dart';
 import 'package:tripsplit/features/workspace/domain/entities/payment_details.dart';
 import 'package:tripsplit/features/workspace/domain/entities/receipt_upload_payload.dart';
 import 'package:tripsplit/features/workspace/domain/entities/uploaded_receipt.dart';
@@ -184,6 +185,7 @@ TripExpense expense(
   String splitMode = 'equal',
   String? receiptUrl,
   String date = '2026-10-21',
+  String? subcategory,
 }) => TripExpense(
   id: id,
   amount: 24,
@@ -199,6 +201,7 @@ TripExpense expense(
   paidByNickname: payer == 7 ? 'Matiss' : 'Anna',
   receiptUrl: receiptUrl,
   participants: [],
+  subcategory: subcategory,
 );
 WorkspaceSnapshot snapshot({
   List<TripExpense>? expenses,
@@ -391,6 +394,7 @@ class _Workspace implements WorkspaceController {
     required int tripId,
     required String body,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) async {
     commentEditCalls.add((tripId, expenseId, commentId, body));
     commentMentionCalls.add(mentionedUserIds);
@@ -412,6 +416,7 @@ class _Workspace implements WorkspaceController {
     required String body,
     int? parentCommentId,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) async {
     commentReplyCalls.add((tripId, expenseId, parentCommentId, body));
     commentMentionCalls.add(mentionedUserIds);
@@ -485,6 +490,7 @@ class _Workspace implements WorkspaceController {
   List<ExpenseSplitValue>? savedSplits;
   List<ExpenseItem>? savedItems;
   double? savedExtra;
+  String? savedSubcategory;
   double? savedAmount;
   String? savedMode;
   String? savedCategory;
@@ -503,6 +509,7 @@ class _Workspace implements WorkspaceController {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
   }) async {
@@ -511,6 +518,7 @@ class _Workspace implements WorkspaceController {
     savedSplits = splitValues;
     savedItems = items;
     savedExtra = extraAmount;
+    savedSubcategory = subcategory;
     savedPaidBy = paidBy;
     savedAmount = amount;
     savedCategory = category;
@@ -536,6 +544,7 @@ class _Workspace implements WorkspaceController {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
@@ -1541,6 +1550,172 @@ void main() {
       controller.savedSplits!.firstWhere((item) => item.userId == 7).value,
       -5,
     );
+    await disposePage(tester);
+  });
+
+  testWidgets('expense type menu review images', (tester) async {
+    if (!const bool.fromEnvironment('TYPE_MENU_PREVIEWS')) return;
+    debugDisableShadows = false;
+    for (final dark in [false, true]) {
+      final boundary = GlobalKey();
+      final commands = WorkspacePageCommandController();
+      final controller = _Workspace()
+        ..data = snapshot(
+          expenses: [
+            for (final id in [1, 2])
+              expense(id, name: 'Lunch $id', subcategory: 'Street food'),
+          ],
+        );
+      await _mount(
+        tester,
+        controller,
+        commands: commands,
+        dark: dark,
+        boundary: boundary,
+      );
+      await tester.pumpAndSettle();
+      commands.requestOpenAddExpense();
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-form-amount')),
+        '132,25',
+      );
+      await selectExpenseFood(tester);
+      Future<void> shot(String name) async {
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        await tester.runAsync(() async {
+          final image =
+              await (boundary.currentContext!.findRenderObject()!
+                      as RenderRepaintBoundary)
+                  .toImage(pixelRatio: 2);
+          final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+          final file = File(
+            '../output/design/type-menu/${dark ? 'dark' : 'light'}-$name.png',
+          );
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(bytes!.buffer.asUint8List());
+          image.dispose();
+        });
+      }
+
+      await shot('button');
+      await visibleTap(tester, find.byKey(const ValueKey('expense-type-add')));
+      await shot('menu');
+      await tester.tap(find.byKey(const ValueKey('expense-type-custom')));
+      await tester.pumpAndSettle();
+      tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+      await tester.enterText(
+        find.byKey(const ValueKey('expense-type-custom-field')),
+        'Street f',
+      );
+      await shot('custom');
+      await tester.tap(
+        find.byKey(const ValueKey('expense-type-suggestion-street food')),
+      );
+      tester.view.resetViewInsets();
+      await shot('picked');
+      await disposePage(tester);
+    }
+    debugDisableShadows = true;
+  });
+
+  testWidgets('accommodation has stays, activities only own types', (
+    tester,
+  ) async {
+    final commands = WorkspacePageCommandController();
+    final controller = _Workspace();
+    await _mount(tester, controller, commands: commands);
+    await tester.pumpAndSettle();
+    commands.requestOpenAddExpense();
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-form-amount')),
+      '80',
+    );
+    Future<void> pickCategory(String label) async {
+      await tester.ensureVisible(
+        find.byKey(const ValueKey('expense-category')),
+      );
+      await tester.tap(find.byKey(const ValueKey('expense-category')));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.descendant(
+          of: find.byKey(const ValueKey('expense-category-picker')),
+          matching: find.text(label),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    await pickCategory('Activities');
+    await visibleTap(tester, find.byKey(const ValueKey('expense-type-add')));
+    expect(find.byKey(const ValueKey('expense-type-hotel')), findsNothing);
+    expect(find.byKey(const ValueKey('expense-type-custom')), findsOneWidget);
+    await tester.tapAt(const Offset(5, 5));
+    await tester.pumpAndSettle();
+    await pickCategory('Accommodation');
+    await visibleTap(tester, find.byKey(const ValueKey('expense-type-add')));
+    await tester.tap(find.byKey(const ValueKey('expense-type-hostel')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+    await tester.pumpAndSettle();
+    expect(controller.savedSubcategory, 'hostel');
+    await disposePage(tester);
+  });
+
+  testWidgets('food can get an optional type, built-in or own', (tester) async {
+    final commands = WorkspacePageCommandController();
+    final controller = _Workspace()
+      ..data = snapshot(
+        expenses: [
+          // Used three times in this trip, so it is offered to everyone.
+          for (final id in [1, 2, 3])
+            expense(id, name: 'Lunch $id', subcategory: 'Street food'),
+        ],
+      );
+    await _mount(tester, controller, commands: commands);
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    commands.requestOpenAddExpense();
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-form-amount')),
+      '20',
+    );
+    expect(find.byKey(const ValueKey('expense-type-add')), findsNothing);
+    await selectExpenseFood(tester);
+    await visibleTap(tester, find.byKey(const ValueKey('expense-type-add')));
+    expect(
+      find.textContaining(t.expenseTypeTitleFood, findRichText: true),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey('expense-type-trip-street food')),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const ValueKey('expense-type-restaurant')));
+    await tester.pumpAndSettle();
+    expect(
+      find.textContaining('Food · Restaurant', findRichText: true),
+      findsOneWidget,
+    );
+    // An own type, typed in place; a used one is suggested while typing.
+    await visibleTap(tester, find.byKey(const ValueKey('expense-type-edit')));
+    await tester.tap(find.byKey(const ValueKey('expense-type-custom')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('expense-type-custom-field')),
+      'stre',
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey('expense-type-suggestion-street food')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Add'));
+    await tester.pumpAndSettle();
+    expect(controller.savedSubcategory, 'Street food');
     await disposePage(tester);
   });
 

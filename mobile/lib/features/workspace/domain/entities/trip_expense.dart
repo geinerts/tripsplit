@@ -20,6 +20,7 @@ class TripExpense {
     required this.participants,
     this.items = const [],
     this.extraAmount = 0,
+    this.subcategory,
   });
 
   final int id;
@@ -39,4 +40,8 @@ class TripExpense {
   final List<ExpenseParticipant> participants;
   final List<ExpenseItem> items;
   final double extraAmount;
+
+  /// Optional type within the category: a built-in key (`restaurant`) or a
+  /// member's own text. Null when there is none or the server is older.
+  final String? subcategory;
 }

@@ -21,6 +21,25 @@ void main() {
     expect(legacy.actorAvatarThumbUrl, isNull);
   });
 
+  test('expense type is optional and missing on older servers', () {
+    Map<String, dynamic> raw(Object? type) => {
+      'id': 1,
+      'amount': 12,
+      'category': 'food',
+      'subcategory': type,
+    };
+    expect(
+      WorkspaceRemoteParsers.parseExpense(raw('taxi')).subcategory,
+      'taxi',
+    );
+    expect(WorkspaceRemoteParsers.parseExpense(raw(' ')).subcategory, isNull);
+    expect(WorkspaceRemoteParsers.parseExpense(raw(null)).subcategory, isNull);
+    expect(
+      WorkspaceRemoteParsers.parseExpense({'id': 2, 'amount': 5}).subcategory,
+      isNull,
+    );
+  });
+
   group('WorkspaceRemoteParsers.parseTripStatus', () {
     test('normalizes allowed statuses and defaults unknown to active', () {
       expect(WorkspaceRemoteParsers.parseTripStatus('active'), 'active');

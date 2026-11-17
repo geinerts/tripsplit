@@ -96,6 +96,9 @@ WorkspaceSnapshot withPendingExpenses(
       ],
       items: items,
       extraAmount: extra,
+      subcategory: payload.containsKey('subcategory')
+          ? payload['subcategory'] as String?
+          : previous?.subcategory,
     );
     if (previous == null) {
       expenses.insert(0, expense);

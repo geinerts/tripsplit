@@ -61,6 +61,7 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
       participants: participantModels,
       items: form.items,
       extraAmount: form.extraAmount,
+      subcategory: form.subcategory,
     );
     final nextSnapshotExpenses = [queuedExpense, ...snapshot.expenses];
     final visibleExpenses = [queuedExpense, ..._expensesFeed];
@@ -139,6 +140,7 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
         participants: participantModels,
         items: form.items,
         extraAmount: form.extraAmount,
+        subcategory: form.subcategory,
       );
     }
 

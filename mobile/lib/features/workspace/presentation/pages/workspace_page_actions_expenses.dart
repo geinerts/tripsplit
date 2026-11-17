@@ -75,6 +75,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                     splitValues: form.splitValues,
                     items: form.items,
                     extraAmount: form.extraAmount,
+                    subcategory: form.subcategory,
                     paidBy: form.paidBy,
                     receiptPath: receipt?.path,
                   )
@@ -91,6 +92,7 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
                     splitValues: form.splitValues,
                     items: form.items,
                     extraAmount: form.extraAmount,
+                    subcategory: form.subcategory,
                     paidBy: form.paidBy,
                     receiptPath: receipt?.path,
                     removeReceipt: form.removeReceipt,

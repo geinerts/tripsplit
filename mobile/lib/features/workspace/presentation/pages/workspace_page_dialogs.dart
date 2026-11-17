@@ -25,6 +25,9 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         initialCategory.isNotEmpty &&
         !ExpenseCategoryCatalog.isBuiltInKey(initialCategory);
     var selectedCategory = isCustomCategoryMode ? '' : initialCategory;
+    var selectedType = ExpenseTypeCatalog.clean(existing?.subcategory);
+    // The type menu opens right under the category field.
+    final typeAnchorKey = GlobalKey();
     final customCategoryController = TextEditingController(
       text: isCustomCategoryMode ? initialCategory : '',
     );
@@ -548,44 +551,112 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                     const SizedBox(height: 20),
                                     LayoutBuilder(
                                       builder: (context, constraints) {
-                                        final category = _ExpenseCompactTile(
-                                          key: const ValueKey(
-                                            'expense-category',
-                                          ),
-                                          label: t.workspaceCategory,
-                                          value:
-                                              selectedCategory.isEmpty &&
-                                                  !isCustomCategoryMode
-                                              ? t.workspaceChooseCategory
-                                              : selectedCategoryLabel,
-                                          icon: selectedCategoryIcon,
-                                          onTap: () async {
-                                            FocusScope.of(context).unfocus();
-                                            final value =
-                                                await pickCategoryValue(
-                                                  sheetContext,
-                                                  categoryDropdownValue,
-                                                );
-                                            if (!mounted ||
-                                                !context.mounted ||
-                                                value == null) {
-                                              return;
-                                            }
-                                            setDialogState(() {
-                                              isCustomCategoryMode =
-                                                  value ==
-                                                  customCategoryDropdownValue;
-                                              selectedCategory =
-                                                  isCustomCategoryMode
-                                                  ? ''
-                                                  : value;
-                                              if (!isCustomCategoryMode) {
-                                                customCategoryController
-                                                    .clear();
+                                        final hasTypes =
+                                            !isCustomCategoryMode &&
+                                            ExpenseTypeCatalog.hasTypes(
+                                              selectedCategory,
+                                            );
+                                        Future<void> pickType() async {
+                                          FocusScope.of(context).unfocus();
+                                          final box =
+                                              typeAnchorKey.currentContext
+                                                      ?.findRenderObject()
+                                                  as RenderBox?;
+                                          if (box == null || !box.hasSize) {
+                                            return;
+                                          }
+                                          final choice =
+                                              await _showExpenseTypeMenu(
+                                                context: sheetContext,
+                                                anchor:
+                                                    box.localToGlobal(
+                                                      Offset.zero,
+                                                    ) &
+                                                    box.size,
+                                                category: selectedCategory,
+                                                selected: selectedType,
+                                                tripTypes: _tripCustomTypes(
+                                                  {
+                                                    // Each expense once, even when
+                                                    // it is in both lists.
+                                                    for (final expense in [
+                                                      ...recentExpenses,
+                                                      ...?_snapshot?.expenses,
+                                                    ])
+                                                      expense.id: expense,
+                                                  }.values,
+                                                  selectedCategory,
+                                                ),
+                                              );
+                                          if (!mounted ||
+                                              !context.mounted ||
+                                              choice == null) {
+                                            return;
+                                          }
+                                          setDialogState(
+                                            () => selectedType = choice.type,
+                                          );
+                                        }
+
+                                        final category = KeyedSubtree(
+                                          key: typeAnchorKey,
+                                          child: _ExpenseCompactTile(
+                                            key: const ValueKey(
+                                              'expense-category',
+                                            ),
+                                            label: t.workspaceCategory,
+                                            value:
+                                                selectedCategory.isEmpty &&
+                                                    !isCustomCategoryMode
+                                                ? t.workspaceChooseCategory
+                                                : selectedCategoryLabel,
+                                            type:
+                                                hasTypes && selectedType != null
+                                                ? _expenseTypeLabel(
+                                                    context,
+                                                    selectedType!,
+                                                  )
+                                                : null,
+                                            trailing: hasTypes
+                                                ? _ExpenseTypeButton(
+                                                    hasType:
+                                                        selectedType != null,
+                                                    onTap: pickType,
+                                                  )
+                                                : null,
+                                            icon: selectedCategoryIcon,
+                                            onTap: () async {
+                                              FocusScope.of(context).unfocus();
+                                              final value =
+                                                  await pickCategoryValue(
+                                                    sheetContext,
+                                                    categoryDropdownValue,
+                                                  );
+                                              if (!mounted ||
+                                                  !context.mounted ||
+                                                  value == null) {
+                                                return;
                                               }
-                                              errorText = null;
-                                            });
-                                          },
+                                              setDialogState(() {
+                                                isCustomCategoryMode =
+                                                    value ==
+                                                    customCategoryDropdownValue;
+                                                if (value != selectedCategory) {
+                                                  // A type belongs to its category.
+                                                  selectedType = null;
+                                                }
+                                                selectedCategory =
+                                                    isCustomCategoryMode
+                                                    ? ''
+                                                    : value;
+                                                if (!isCustomCategoryMode) {
+                                                  customCategoryController
+                                                      .clear();
+                                                }
+                                                errorText = null;
+                                              });
+                                            },
+                                          ),
                                         );
                                         final date = _ExpenseCompactTile(
                                           key: const ValueKey('expense-date'),
@@ -1378,6 +1449,13 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                                             }
 
                                             final form = _ExpenseFormResult(
+                                              subcategory:
+                                                  !isCustomCategoryMode &&
+                                                      ExpenseTypeCatalog.hasTypes(
+                                                        category,
+                                                      )
+                                                  ? selectedType
+                                                  : null,
                                               amount: amount,
                                               currencyCode:
                                                   selectedCurrencyCode,
@@ -1587,9 +1665,17 @@ class _ExpenseCompactTile extends StatelessWidget {
     required this.icon,
     required this.onTap,
     this.detail,
+    this.type,
+    this.trailing,
   });
   final String label, value;
   final String? detail;
+
+  /// Shown after the value, lighter: "Food · Restaurant".
+  final String? type;
+
+  /// Replaces the chevron, e.g. the "+ Type" button.
+  final Widget? trailing;
   final IconData icon;
   final VoidCallback onTap;
   @override
@@ -1618,7 +1704,23 @@ class _ExpenseCompactTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(value, style: Theme.of(context).textTheme.bodyMedium),
+                    Text.rich(
+                      TextSpan(
+                        text: value,
+                        children: [
+                          if (type != null)
+                            TextSpan(
+                              text: ' · $type',
+                              style: TextStyle(
+                                color: AppDesign.mutedColor(context),
+                              ),
+                            ),
+                        ],
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                     if (detail != null) ...[
                       const SizedBox(height: 4),
                       Text(
@@ -1632,13 +1734,64 @@ class _ExpenseCompactTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 4),
-              const Icon(Icons.chevron_right, size: 18),
+              if (trailing != null)
+                // Never more than a small corner, so the value keeps its room.
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 76),
+                  child: FittedBox(fit: BoxFit.scaleDown, child: trailing),
+                )
+              else
+                const Icon(Icons.chevron_right, size: 18),
             ],
           ),
         ),
       ),
     ),
   );
+}
+
+/// "+ Type" until a type is picked, then a small chevron that reopens it.
+class _ExpenseTypeButton extends StatelessWidget {
+  const _ExpenseTypeButton({required this.hasType, required this.onTap});
+  final bool hasType;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    if (hasType) {
+      return IconButton(
+        key: const ValueKey('expense-type-edit'),
+        tooltip: context.l10n.expenseTypeButton,
+        visualDensity: VisualDensity.compact,
+        constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+        padding: EdgeInsets.zero,
+        onPressed: onTap,
+        icon: const Icon(Icons.expand_more_rounded, size: 20),
+      );
+    }
+    return Material(
+      key: const ValueKey('expense-type-add'),
+      color: Colors.transparent,
+      shape: StadiumBorder(
+        side: BorderSide(color: colors.primary.withValues(alpha: .7)),
+      ),
+      child: InkWell(
+        customBorder: const StadiumBorder(),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+          child: Text(
+            '+ ${context.l10n.expenseTypeButton}',
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: colors.primary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _ExpenseSplitMethodButton extends StatelessWidget {

@@ -55,6 +55,24 @@ class CommentMentionTextController extends TextEditingController {
   List<int> get mentionedUserIds =>
       _spans.map((span) => span.userId).toSet().toList(growable: false);
 
+  /// Each person's first mention, placed in [sent], the text as sent (the
+  /// field's text without leading and trailing spaces).
+  List<CommentMentionSpan> mentionSpansFor(String sent) {
+    final shift = text.length - text.trimLeft().length;
+    final seen = <int>{};
+    return [
+      for (final span in _spans)
+        if (span.start - shift >= 0 &&
+            span.end - shift <= sent.length &&
+            seen.add(span.userId))
+          CommentMentionSpan(
+            start: span.start - shift,
+            end: span.end - shift,
+            userId: span.userId,
+          ),
+    ];
+  }
+
   /// Null when the mention would make the comment too long.
   VoidCallback? insertAction(CommentMentionQuery query, WorkspaceUser member) {
     final inserted = insertCommentMention(text, query, member.preferredName);
@@ -143,11 +161,35 @@ class CommentBodyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spans = findCommentMentionSpans(
+    // A stored position wins; mentions saved before positions fall back to
+    // finding the name in the text.
+    final placed = [
+      for (final mention in mentions)
+        if (mention.start case final start?)
+          if (mention.end case final end?)
+            if (start >= 0 &&
+                end <= body.length &&
+                start < end &&
+                body.startsWith('@', start))
+              CommentMentionSpan(
+                start: start,
+                end: end,
+                userId: mention.userId,
+              ),
+    ];
+    final placedIds = placed.map((span) => span.userId).toSet();
+    final found = findCommentMentionSpans(
       body,
-      commentMentionCandidatesFromMentions(mentions),
+      commentMentionCandidatesFromMentions(
+        mentions.where((mention) => !placedIds.contains(mention.userId)),
+      ),
       preferredUserIds: mentions.map((mention) => mention.userId).toSet(),
     );
+    final spans = [
+      ...placed,
+      for (final span in found)
+        if (!placed.any((p) => span.start < p.end && p.start < span.end)) span,
+    ]..sort((a, b) => a.start.compareTo(b.start));
     if (spans.isEmpty) {
       return Text(body, style: style);
     }

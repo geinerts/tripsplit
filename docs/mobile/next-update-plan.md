@@ -244,8 +244,10 @@ Uzmetums: `output/design/expense-subcategories/board3.png` (gitignored).
 
 - **Food:** Restaurant, Café, Bar, Fast food, Snacks.
 - **Transport:** Taxi / ride-share, Flight, Train, Bus, Car rental, Ferry, Public transport.
-- Vēlāk, ja vajadzēs: Accommodation (Hotel, Hostel, Apartment, Camping), Activities,
-  Shopping. Groceries, Fuel, Parking, Party un Other tipus nesaņem.
+- **Accommodation:** Hotel, Hostel, Apartment, Camping (izlemts 2026-11-17).
+- **Activities un Shopping:** bez iebūvētiem tipiem, bet ar "+ Type" un "Custom type…",
+  lai var ierakstīt savu (izlemts 2026-11-17).
+- Groceries, Fuel, Parking, Party un Other tipus nesaņem.
 - Vērts reizē izlemt pārklāšanos: Tickets (Transport/Activities) un Party (Food → Bar).
 
 ### Savs tips (custom)

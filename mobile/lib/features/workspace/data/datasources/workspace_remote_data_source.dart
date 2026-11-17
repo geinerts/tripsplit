@@ -1,5 +1,6 @@
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/legacy_receipt_uploader.dart';
+import '../../domain/entities/comment_mention_text.dart';
 import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
@@ -137,6 +138,7 @@ abstract class WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
     String? clientMutationId,
@@ -155,6 +157,8 @@ abstract class WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
+    bool subcategorySet = true,
     int? paidBy,
     String? receiptPath,
     bool removeReceipt,
@@ -214,6 +218,7 @@ abstract class WorkspaceRemoteDataSource {
     required String body,
     int? parentCommentId,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   });
 
   Future<ExpenseComment> updateExpenseComment({
@@ -222,6 +227,7 @@ abstract class WorkspaceRemoteDataSource {
     required int tripId,
     required String body,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   });
 
   Future<void> deleteExpenseComment({
@@ -526,6 +532,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
     String? clientMutationId,
@@ -542,6 +549,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       splitValues: splitValues,
       items: items,
       extraAmount: extraAmount,
+      subcategory: subcategory,
       paidBy: paidBy,
       receiptPath: receiptPath,
       clientMutationId: clientMutationId,
@@ -562,6 +570,8 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
+    bool subcategorySet = true,
     int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
@@ -580,6 +590,8 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       splitValues: splitValues,
       items: items,
       extraAmount: extraAmount,
+      subcategory: subcategory,
+      subcategorySet: subcategorySet,
       paidBy: paidBy,
       receiptPath: receiptPath,
       removeReceipt: removeReceipt,
@@ -694,6 +706,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required String body,
     int? parentCommentId,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) {
     return _mutationApi.addExpenseComment(
       expenseId: expenseId,
@@ -701,6 +714,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       body: body,
       parentCommentId: parentCommentId,
       mentionedUserIds: mentionedUserIds,
+      mentionSpans: mentionSpans,
     );
   }
 
@@ -711,6 +725,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required int tripId,
     required String body,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) {
     return _mutationApi.updateExpenseComment(
       commentId: commentId,
@@ -718,6 +733,7 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
       tripId: tripId,
       body: body,
       mentionedUserIds: mentionedUserIds,
+      mentionSpans: mentionSpans,
     );
   }
 

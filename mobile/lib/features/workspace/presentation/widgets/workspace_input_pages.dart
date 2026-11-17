@@ -65,9 +65,14 @@ class WorkspaceInputPage extends StatelessWidget {
 }
 
 class ExpenseCommentEditDraft {
-  const ExpenseCommentEditDraft(this.body, this.mentionedUserIds);
+  const ExpenseCommentEditDraft(
+    this.body,
+    this.mentionedUserIds, [
+    this.mentionSpans = const <CommentMentionSpan>[],
+  ]);
   final String body;
   final List<int> mentionedUserIds;
+  final List<CommentMentionSpan> mentionSpans;
 }
 
 class EditExpenseCommentPage extends StatefulWidget {
@@ -121,6 +126,7 @@ class _EditExpenseCommentPageState extends State<EditExpenseCommentPage> {
                     ExpenseCommentEditDraft(
                       value.text.trim(),
                       _text.mentionedUserIds,
+                      _text.mentionSpansFor(value.text.trim()),
                     ),
                   );
                 },

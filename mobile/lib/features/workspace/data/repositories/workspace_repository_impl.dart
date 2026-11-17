@@ -1,5 +1,6 @@
 import '../local/workspace_pending_snapshot.dart';
 import '../../../../core/errors/api_exception.dart';
+import '../../domain/entities/comment_mention_text.dart';
 import '../../domain/entities/expense_comment.dart';
 import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_reaction.dart';
@@ -439,6 +440,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
   }) {
@@ -460,6 +462,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           items: items,
           extraAmount: extraAmount,
+          subcategory: subcategory,
           paidBy: paidBy,
           receiptPath: receiptPath,
           clientMutationId: mutationId,
@@ -478,6 +481,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           items: items,
           extraAmount: extraAmount,
+          subcategory: subcategory,
           paidBy: paidBy,
           receiptPath: receiptPath,
           mutationId: mutationId,
@@ -500,6 +504,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
@@ -523,6 +528,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           items: items,
           extraAmount: extraAmount,
+          subcategory: subcategory,
           paidBy: paidBy,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
@@ -543,6 +549,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
           splitValues: splitValues,
           items: items,
           extraAmount: extraAmount,
+          subcategory: subcategory,
           paidBy: paidBy,
           receiptPath: receiptPath,
           removeReceipt: removeReceipt,
@@ -732,6 +739,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required String body,
     int? parentCommentId,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) {
     return _remote.addExpenseComment(
       expenseId: expenseId,
@@ -739,6 +747,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       body: body,
       parentCommentId: parentCommentId,
       mentionedUserIds: mentionedUserIds,
+      mentionSpans: mentionSpans,
     );
   }
 
@@ -749,6 +758,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
     required int tripId,
     required String body,
     List<int> mentionedUserIds = const <int>[],
+    List<CommentMentionSpan> mentionSpans = const <CommentMentionSpan>[],
   }) {
     return _remote.updateExpenseComment(
       commentId: commentId,
@@ -756,6 +766,7 @@ class WorkspaceRepositoryImpl implements WorkspaceRepository {
       tripId: tripId,
       body: body,
       mentionedUserIds: mentionedUserIds,
+      mentionSpans: mentionSpans,
     );
   }
 

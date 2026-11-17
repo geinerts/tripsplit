@@ -232,6 +232,10 @@ class WorkspaceRemoteParsers {
       participants: participants,
       items: ExpenseItem.listFromJson(item['items']),
       extraAmount: (item['extra_amount'] as num?)?.toDouble() ?? 0,
+      subcategory: switch ((item['subcategory'] as String?)?.trim()) {
+        final String type when type.isNotEmpty => type,
+        _ => null,
+      },
     );
   }
 

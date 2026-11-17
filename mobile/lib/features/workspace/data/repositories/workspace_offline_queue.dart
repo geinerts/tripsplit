@@ -51,6 +51,7 @@ class WorkspaceOfflineQueue {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
     String? mutationId,
@@ -81,6 +82,7 @@ class WorkspaceOfflineQueue {
         if (items.isNotEmpty)
           'items': items.map((item) => item.toJson()).toList(growable: false),
         if (extraAmount > 0) 'extra_amount': extraAmount,
+        'subcategory': subcategory,
         'paid_by': ?paidBy,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
@@ -102,6 +104,7 @@ class WorkspaceOfflineQueue {
     required List<ExpenseSplitValue> splitValues,
     List<ExpenseItem> items = const [],
     double extraAmount = 0,
+    String? subcategory,
     int? paidBy,
     String? receiptPath,
     bool removeReceipt = false,
@@ -134,6 +137,7 @@ class WorkspaceOfflineQueue {
         if (items.isNotEmpty)
           'items': items.map((item) => item.toJson()).toList(growable: false),
         if (extraAmount > 0) 'extra_amount': extraAmount,
+        'subcategory': subcategory,
         'paid_by': ?paidBy,
         if (receiptPath != null && receiptPath.trim().isNotEmpty)
           'receipt_path': receiptPath,
@@ -227,6 +231,7 @@ class WorkspaceOfflineQueue {
           splitValues: _toSplitValues(payload['splits']),
           items: ExpenseItem.listFromJson(payload['items']),
           extraAmount: (payload['extra_amount'] as num?)?.toDouble() ?? 0,
+          subcategory: payload['subcategory'] as String?,
           paidBy: (payload['paid_by'] as num?)?.toInt(),
           receiptPath: payload['receipt_path'] as String?,
           clientMutationId: mutationId,
@@ -246,6 +251,9 @@ class WorkspaceOfflineQueue {
           splitValues: _toSplitValues(payload['splits']),
           items: ExpenseItem.listFromJson(payload['items']),
           extraAmount: (payload['extra_amount'] as num?)?.toDouble() ?? 0,
+          subcategory: payload['subcategory'] as String?,
+          // Updates queued by an older version keep the stored type.
+          subcategorySet: payload.containsKey('subcategory'),
           paidBy: (payload['paid_by'] as num?)?.toInt(),
           receiptPath: payload['receipt_path'] as String?,
           removeReceipt: payload['remove_receipt'] == true,
