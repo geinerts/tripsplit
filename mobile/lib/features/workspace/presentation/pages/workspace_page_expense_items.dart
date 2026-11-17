@@ -1215,7 +1215,9 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
     final colors = theme.colorScheme;
     final ready = _listReady;
     late final Widget status;
-    late final Widget button;
+    // The items tab has no button: the tabs at the top switch to People, so
+    // the keyboard keeps its room. People only has Done.
+    Widget? button;
     if (!_peopleTab) {
       final receipt = _receiptCents;
       final entered = _enteredCents;
@@ -1237,12 +1239,6 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
           color: ok ? colors.onSurfaceVariant : _warnColor(context),
           fontWeight: ok ? FontWeight.w400 : FontWeight.w600,
         ),
-      );
-      button = ElevatedButton.icon(
-        key: const ValueKey('expense-items-to-people'),
-        onPressed: ready ? _openPeople : null,
-        icon: const Icon(Icons.people_outline_rounded, size: 20),
-        label: Text(t.expenseItemsPeople),
       );
     } else if (!_allAssigned) {
       final unassigned = _filled.fold<int>(
@@ -1268,15 +1264,10 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
           ),
         ],
       );
-      final ids = widget.users.map((user) => user.id).toList();
       button = ElevatedButton(
-        key: const ValueKey('expense-next-person'),
-        onPressed: ids.length < 2
-            ? null
-            : () => setState(() {
-                _person = ids[(ids.indexOf(_person) + 1) % ids.length];
-              }),
-        child: Text(t.expenseItemsNextPerson),
+        key: const ValueKey('expense-editor-done'),
+        onPressed: null,
+        child: Text(t.doneStatus),
       );
     } else {
       status = Text(
@@ -1304,8 +1295,10 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Semantics(liveRegion: true, child: status),
-          const SizedBox(height: 10),
-          SizedBox(width: double.infinity, child: button),
+          if (button != null) ...[
+            const SizedBox(height: 10),
+            SizedBox(width: double.infinity, child: button),
+          ],
         ],
       ),
     );

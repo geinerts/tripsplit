@@ -1664,6 +1664,54 @@ void main() {
     await disposePage(tester);
   });
 
+  testWidgets('same items show as one line with the price for one', (
+    tester,
+  ) async {
+    final base = expense(1, name: 'Dinner');
+    final controller = _Workspace()
+      ..data = snapshot(
+        expenses: [
+          TripExpense(
+            id: 1,
+            amount: 39.3,
+            originalAmount: 39.3,
+            tripCurrencyCode: 'EUR',
+            expenseCurrencyCode: 'EUR',
+            fxRateToTrip: 1,
+            category: 'food',
+            note: base.note,
+            expenseDate: base.expenseDate,
+            splitMode: 'itemized',
+            paidById: 7,
+            paidByNickname: 'Matiss',
+            receiptUrl: null,
+            participants: [],
+            items: const [
+              ExpenseItem(name: 'Beer', amount: 4.5, participantIds: [7]),
+              ExpenseItem(name: 'Beer', amount: 4.5, participantIds: [7]),
+              ExpenseItem(name: 'Pizza', amount: 12.9, participantIds: [7]),
+              ExpenseItem(name: 'Pizza', amount: 12.9, participantIds: [8]),
+              ExpenseItem(name: 'Vino', amount: 4.5, participantIds: [8]),
+              ExpenseItem(name: 'Cola', amount: 2, participantIds: [7]),
+              ExpenseItem(name: 'Cola', amount: 2, participantIds: [7]),
+              ExpenseItem(name: 'Cola', amount: 2, participantIds: [8]),
+            ],
+          ),
+        ],
+      );
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    await visibleTap(tester, find.byKey(const ValueKey('expense-row-1')));
+    expect(find.text('€9.00'), findsOneWidget);
+    expect(find.text('€4.50 each · Matiss'), findsOneWidget);
+    expect(find.text('€2.00 each · Matiss ×2, Anna ×1'), findsOneWidget);
+    expect(find.text('€25.80'), findsOneWidget);
+    expect(find.text('€12.90 each · Matiss, Anna'), findsOneWidget);
+    expect(find.text('Anna'), findsWidgets);
+    expect(find.textContaining('Beer', findRichText: true), findsOneWidget);
+    await disposePage(tester);
+  });
+
   testWidgets('food can get an optional type, built-in or own', (tester) async {
     final commands = WorkspacePageCommandController();
     final controller = _Workspace()
@@ -1731,10 +1779,15 @@ void main() {
       tester,
       find.byKey(const ValueKey('expense-custom-split')),
     );
-    // No amount yet, so the items are what add up to it.
-    final toPeople = find.byKey(const ValueKey('expense-items-to-people'));
+    // Custom split opens on Exact amounts; Items is picked from the list.
+    expect(find.byKey(const ValueKey('split-input-7')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('expense-split-method')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
+    await tester.pumpAndSettle();
+    final toPeople = find.byKey(const ValueKey('expense-items-tab-people'));
     expect(find.byKey(const ValueKey('expense-item-name-0')), findsOneWidget);
-    expect(tester.widget<ElevatedButton>(toPeople).onPressed, isNull);
+    expect(find.byKey(const ValueKey('expense-items-to-people')), findsNothing);
     await tester.enterText(
       find.byKey(const ValueKey('expense-item-name-0')),
       'Pizza',
@@ -1748,7 +1801,7 @@ void main() {
       find.byKey(const ValueKey('expense-item-qty-0-plus')),
     );
     expect(find.text('= €12.00'), findsOneWidget);
-    expect(tester.widget<ElevatedButton>(toPeople).onPressed, isNotNull);
+
     await visibleTap(tester, find.byKey(const ValueKey('expense-next-item')));
     await tester.enterText(
       find.byKey(const ValueKey('expense-item-name-1')),
@@ -1773,7 +1826,15 @@ void main() {
       tester,
       find.byKey(const ValueKey('expense-item-1-person-7')),
     );
-    expect(find.byKey(const ValueKey('expense-editor-done')), findsNothing);
+    // Done waits until everything is assigned.
+    expect(
+      tester
+          .widget<ElevatedButton>(
+            find.byKey(const ValueKey('expense-editor-done')),
+          )
+          .onPressed,
+      isNull,
+    );
     await visibleTap(tester, find.byKey(const ValueKey('expense-person-8')));
     // The beer is taken, so the next person only sees the pizza that's left.
     expect(find.byKey(const ValueKey('expense-item-1-person-8')), findsNothing);
@@ -1900,7 +1961,7 @@ void main() {
         if (phase != 'items') {
           await visibleTap(
             tester,
-            find.byKey(const ValueKey('expense-items-to-people')),
+            find.byKey(const ValueKey('expense-items-tab-people')),
           );
           for (final key in [
             'expense-item-0-person-7',

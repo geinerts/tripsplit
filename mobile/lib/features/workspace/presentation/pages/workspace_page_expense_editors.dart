@@ -584,17 +584,85 @@ class _ExpenseSplitModePicker extends StatelessWidget {
   }
 }
 
+/// Same item at the same price, each for one person, shows as one line:
+/// "Beer ×2 · €4.50 each · Matiss ×2" with the total on the right.
+class _ExpenseItemsSummaryLine {
+  _ExpenseItemsSummaryLine(this.name, this.unitCents);
+  final String name;
+  final int unitCents;
+  int qty = 0;
+  final List<int> people = [];
+  bool shared = false;
+}
+
 class _ExpenseItemsSummary extends StatelessWidget {
   const _ExpenseItemsSummary({required this.expense, required this.nameFor});
   final TripExpense expense;
   final String Function(int id) nameFor;
 
+  static List<_ExpenseItemsSummaryLine> groupLines(List<ExpenseItem> items) {
+    final lines = <_ExpenseItemsSummaryLine>[];
+    final byKey = <String, _ExpenseItemsSummaryLine>{};
+    for (final item in items) {
+      final cents = (item.amount * 100).round();
+      if (item.participantIds.length != 1) {
+        // Shared by several people: its own line, never merged.
+        lines.add(
+          _ExpenseItemsSummaryLine(item.name, cents)
+            ..qty = 1
+            ..shared = true
+            ..people.addAll(item.participantIds),
+        );
+        continue;
+      }
+      final key = '${item.name.trim().toLowerCase()}|$cents';
+      final line = byKey.putIfAbsent(key, () {
+        final created = _ExpenseItemsSummaryLine(item.name.trim(), cents);
+        lines.add(created);
+        return created;
+      });
+      line.qty++;
+      line.people.add(item.participantIds.single);
+    }
+    return lines;
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = context.l10n;
     final theme = Theme.of(context);
-    Widget line(String title, double amount, String? detail) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+    final muted = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+    String money(int cents) => _formatMoney(
+      context,
+      cents / 100,
+      currencyCode: expense.expenseCurrencyCode,
+    );
+    String people(_ExpenseItemsSummaryLine line) {
+      final counts = <int, int>{};
+      for (final id in line.people) {
+        counts[id] = (counts[id] ?? 0) + 1;
+      }
+      // One person: just the name, the ×N is already on the item. Several:
+      // counts only when someone had more than one, then for everyone.
+      final withCounts =
+          counts.length > 1 && counts.values.any((count) => count > 1);
+      return [
+        for (final entry in counts.entries)
+          withCounts
+              ? '${nameFor(entry.key)} ×${entry.value}'
+              : nameFor(entry.key),
+      ].join(', ');
+    }
+
+    Widget row({
+      required String title,
+      int qty = 1,
+      required int totalCents,
+      String? detail,
+    }) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -602,20 +670,33 @@ class _ExpenseItemsSummary extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: theme.textTheme.bodyMedium),
-                if (detail != null)
-                  Text(detail, style: theme.textTheme.bodySmall),
+                Text.rich(
+                  TextSpan(
+                    text: title,
+                    children: [
+                      if (qty > 1)
+                        TextSpan(
+                          text: '  ×$qty',
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                    ],
+                  ),
+                  style: theme.textTheme.bodyMedium,
+                ),
+                if (detail != null && detail.isNotEmpty)
+                  Text(detail, style: muted),
               ],
             ),
           ),
           const SizedBox(width: 12),
           Text(
-            _formatMoney(
-              context,
-              amount,
-              currencyCode: expense.expenseCurrencyCode,
+            money(totalCents),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
-            style: theme.textTheme.bodyMedium,
           ),
         ],
       ),
@@ -628,14 +709,21 @@ class _ExpenseItemsSummary extends StatelessWidget {
           child: Text(t.expenseItemsLabel, style: theme.textTheme.titleSmall),
         ),
         const SizedBox(height: 4),
-        for (final item in expense.items)
-          line(
-            item.name,
-            item.amount,
-            item.participantIds.map(nameFor).join(', '),
+        for (final line in groupLines(expense.items))
+          row(
+            title: line.name,
+            qty: line.qty,
+            totalCents: line.unitCents * line.qty,
+            detail: [
+              if (line.qty > 1) t.expenseItemEach(money(line.unitCents)),
+              people(line),
+            ].join(' · '),
           ),
         if (expense.extraAmount > 0)
-          line(t.expenseItemExtra, expense.extraAmount, null),
+          row(
+            title: t.expenseItemExtra,
+            totalCents: (expense.extraAmount * 100).round(),
+          ),
       ],
     );
   }

@@ -344,10 +344,8 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                       users: activeUsers,
                       amount: amount,
                       currencyCode: selectedCurrencyCode,
-                      // Without an amount yet, the items are what add up to it.
-                      initialMode: splitMode == 'equal' && amount <= 0
-                          ? 'itemized'
-                          : splitMode,
+                      // Opens on Exact amounts; Items only when already chosen.
+                      initialMode: splitMode,
                       initialItems: itemDrafts,
                       initialExtra: extraDraft,
                       initialValues: {
