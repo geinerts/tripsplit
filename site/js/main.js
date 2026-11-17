@@ -16,6 +16,36 @@
   });
 })();
 
+// Menu links scroll to their section without putting "#features" and the like
+// in the address. Old links with a hash still work, and the hash is then
+// dropped once the page is there.
+(function () {
+  'use strict';
+
+  var cleanAddress = function () {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  };
+
+  document.querySelectorAll('.site-nav a[href^="#"]').forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      var target = document.getElementById(link.getAttribute('href').slice(1));
+      if (!target) return;
+      event.preventDefault();
+      // CSS keeps the section below the fixed header and turns the smooth
+      // scroll off for people who prefer reduced motion.
+      target.scrollIntoView({ block: 'start' });
+      if (window.location.hash) cleanAddress();
+    });
+  });
+
+  if (window.location.hash && document.getElementById(window.location.hash.slice(1))) {
+    window.addEventListener('load', function () {
+      window.setTimeout(cleanAddress, 0);
+    });
+  }
+})();
+
 // Ribbons drift slightly while scrolling, as they do in the app's Quick Start.
 (function () {
   'use strict';
