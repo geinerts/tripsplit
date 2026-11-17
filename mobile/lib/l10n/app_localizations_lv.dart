@@ -851,6 +851,53 @@ class AppLocalizationsLv extends AppLocalizations {
   String get notificationsTitle => 'Paziņojumi';
 
   @override
+  String notificationHeadlineExpense(String name) {
+    return '$name pievienoja izdevumu';
+  }
+
+  @override
+  String notificationHeadlineSentYou(String name, String amount) {
+    return '$name tev nosūtīja $amount';
+  }
+
+  @override
+  String notificationHeadlineFriendRequest(String name) {
+    return '$name grib būt tavs draugs';
+  }
+
+  @override
+  String notificationHeadlineFriendAccepted(String name) {
+    return '$name tagad ir tavs draugs';
+  }
+
+  @override
+  String notificationHeadlineMentioned(String name) {
+    return '$name tevi pieminēja';
+  }
+
+  @override
+  String notificationHeadlineCommented(String name) {
+    return '$name komentēja';
+  }
+
+  @override
+  String notificationHeadlineInvited(String trip) {
+    return 'Ielūgums uz $trip';
+  }
+
+  @override
+  String get notificationAnswerReceived => 'Saņemts';
+
+  @override
+  String get notificationAnswerNotReceived => 'Nav saņemts';
+
+  @override
+  String get notificationAnswerAccepted => 'Pieņemts';
+
+  @override
+  String get notificationAnswerDeclined => 'Noraidīts';
+
+  @override
   String get notificationFriendInviteTitle => 'Draudzības uzaicinājums';
 
   @override
@@ -2799,6 +2846,9 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get shellFailedToOpenTrip => 'Neizdevās atvērt ceļojumu.';
+
+  @override
+  String get pushExpenseNotFound => 'Šī izdevuma tripā vairs nav.';
 
   @override
   String get shellYesterday => 'Vakar';

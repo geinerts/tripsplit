@@ -109,6 +109,8 @@ class WorkspaceLocalStore {
               'trip_id': item.tripId,
               'trip_name': item.tripName,
               'invite_token': item.inviteToken,
+              'expense_id': item.expenseId,
+              'refs': item.refs,
               'type': item.type,
               'title': item.title,
               'body': item.body,
@@ -144,6 +146,13 @@ class WorkspaceLocalStore {
                   id: (item['id'] as num?)?.toInt() ?? 0,
                   tripId: (item['trip_id'] as num?)?.toInt() ?? 0,
                   inviteToken: item['invite_token'] as String?,
+                  expenseId: (item['expense_id'] as num?)?.toInt(),
+                  refs: {
+                    for (final entry
+                        in (item['refs'] as Map? ?? const {}).entries)
+                      if (entry.key is String && entry.value is num)
+                        entry.key as String: (entry.value as num).toInt(),
+                  },
                   tripName:
                       (item['trip_name'] as String?)?.trim().isNotEmpty == true
                       ? (item['trip_name'] as String).trim()

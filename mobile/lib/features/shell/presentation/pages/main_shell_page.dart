@@ -41,6 +41,9 @@ import '../../../workspace/domain/entities/workspace_notification.dart';
 import '../../../workspace/domain/entities/workspace_notifications_inbox.dart';
 import '../../../workspace/presentation/pages/workspace_page.dart';
 import '../../../workspace/domain/entities/expense_draft.dart';
+import '../../../workspace/domain/entities/workspace_focus.dart';
+import '../../../../core/push/push_tap.dart';
+import '../push_tap_destination.dart';
 import '../../../workspace/domain/entities/expense_item.dart';
 import '../../../workspace/domain/entities/uploaded_receipt.dart';
 import '../../../quick_splits/domain/quick_split.dart';
@@ -126,6 +129,7 @@ class _MainShellPageState extends State<MainShellPage>
   int? _quickStartGeneration;
   bool _openAddExpenseOnWorkspaceStart = false;
   ExpenseDraft? _workspaceExpenseDraft;
+  WorkspaceFocus? _workspaceFocus;
 
   /// Bumped to start the trip page again, e.g. to open a filled form.
   int _workspaceSession = 0;
@@ -188,6 +192,7 @@ class _MainShellPageState extends State<MainShellPage>
     _wasOffline = widget.offlineStatus?.value ?? false;
     widget.offlineStatus?.addListener(_onOfflineStatusChanged);
     _bindInviteDeepLinkHandling();
+    _bindPushTaps();
     unawaited(_flushWorkspaceQueueBestEffort());
     if (widget.openCreateTripOnStart) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -216,6 +221,7 @@ class _MainShellPageState extends State<MainShellPage>
     _inviteCodeSubscription?.cancel();
     _friendTargetSubscription?.cancel();
     _friendLinkTokenSubscription?.cancel();
+    PushTapChannel.stop(this);
     unawaited(
       AppMonitoring.updateRuntimeContext(
         userId: widget.authController.currentUser?.id,
@@ -617,6 +623,7 @@ class _MainShellPageState extends State<MainShellPage>
       _openedTrip = null;
       _openAddExpenseOnWorkspaceStart = false;
       _workspaceExpenseDraft = null;
+      _workspaceFocus = null;
     });
   }
 

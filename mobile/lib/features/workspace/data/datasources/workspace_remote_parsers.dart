@@ -278,6 +278,10 @@ class WorkspaceRemoteParsers {
       inviteToken: item['type'] == 'trip_invitation' && item['payload'] is Map
           ? _toNullableString((item['payload'] as Map)['invite_token'])
           : null,
+      expenseId: item['payload'] is Map
+          ? int.tryParse('${(item['payload'] as Map)['expense_id'] ?? ''}')
+          : null,
+      refs: notificationRefs(item['payload']),
       type: _toString(item['type'], fallback: 'info').trim(),
       title: _toString(item['title']).trim(),
       body: _toString(item['body']).trim(),
@@ -385,4 +389,18 @@ class WorkspaceRemoteParsers {
     final value = (raw as String? ?? '').trim();
     return value.isEmpty ? 'other' : value;
   }
+}
+
+/// The payload ids a notification can be answered with.
+Map<String, int> notificationRefs(Object? payload) {
+  if (payload is! Map) return const {};
+  int? positive(Object? raw) {
+    final id = int.tryParse('${raw ?? ''}');
+    return id != null && id > 0 ? id : null;
+  }
+
+  return {
+    for (final key in const ['payment_id', 'settlement_id', 'request_id'])
+      key: ?positive(payload[key]),
+  };
 }

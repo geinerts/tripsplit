@@ -30,17 +30,24 @@ class SplytoFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         ensureChannel()
-        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
+        val notificationId = Random.nextInt()
+        // Same extras as a notification that FCM shows itself, so MainActivity
+        // reads both the same way when it is tapped.
+        val launchIntent = (packageManager.getLaunchIntentForPackage(packageName)
+            ?: Intent(this, MainActivity::class.java)).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            putExtra("push_type", data["type"] ?: "")
-            putExtra("push_trip_id", data["trip_id"] ?: "")
-        } ?: Intent(this, MainActivity::class.java)
+            for ((key, value) in data) {
+                putExtra(key, value)
+            }
+            putExtra(MainActivity.PUSH_TAP_MARKER, true)
+        }
 
         val pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT or
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+        // One request code per notification, so each keeps its own extras.
         val pendingIntent = PendingIntent.getActivity(
             this,
-            0,
+            notificationId,
             launchIntent,
             pendingIntentFlags
         )
@@ -69,7 +76,7 @@ class SplytoFirebaseMessagingService : FirebaseMessagingService() {
             builder.setStyle(NotificationCompat.BigTextStyle().bigText(body))
         }
 
-        NotificationManagerCompat.from(this).notify(Random.nextInt(), builder.build())
+        NotificationManagerCompat.from(this).notify(notificationId, builder.build())
     }
 
     private fun ensureChannel() {

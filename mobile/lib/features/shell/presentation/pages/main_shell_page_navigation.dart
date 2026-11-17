@@ -51,6 +51,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
         _openedTrip = null;
         _openAddExpenseOnWorkspaceStart = false;
         _workspaceExpenseDraft = null;
+        _workspaceFocus = null;
       });
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -243,6 +244,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
             _openedTrip = null;
             _openAddExpenseOnWorkspaceStart = false;
             _workspaceExpenseDraft = null;
+            _workspaceFocus = null;
           });
         }
         return;
@@ -254,6 +256,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
             _openedTrip = null;
             _openAddExpenseOnWorkspaceStart = false;
             _workspaceExpenseDraft = null;
+            _workspaceFocus = null;
           });
         }
         return;
@@ -265,6 +268,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
             _openedTrip = null;
             _openAddExpenseOnWorkspaceStart = false;
             _workspaceExpenseDraft = null;
+            _workspaceFocus = null;
           });
         }
         return;
@@ -276,6 +280,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
             _openedTrip = null;
             _openAddExpenseOnWorkspaceStart = false;
             _workspaceExpenseDraft = null;
+            _workspaceFocus = null;
           });
         }
         return;
@@ -286,14 +291,16 @@ extension _MainShellPageNavigation on _MainShellPageState {
     Trip trip, {
     bool openAddExpense = false,
     ExpenseDraft? draft,
+    WorkspaceFocus? focus,
   }) {
     _updateState(() {
       _selectedTabIndex = _MainShellPageState._tabHome;
-      // A filled form needs a fresh trip page, also for the open trip.
-      if (draft != null) _workspaceSession++;
+      // A filled form or a focus needs a fresh trip page, also for the open trip.
+      if (draft != null || focus != null) _workspaceSession++;
       _openedTrip = trip;
       _openAddExpenseOnWorkspaceStart = openAddExpense;
       _workspaceExpenseDraft = draft;
+      _workspaceFocus = focus;
     });
     unawaited(_refreshGlobalNotifications());
   }
@@ -306,6 +313,7 @@ extension _MainShellPageNavigation on _MainShellPageState {
       _openedTrip = null;
       _openAddExpenseOnWorkspaceStart = false;
       _workspaceExpenseDraft = null;
+      _workspaceFocus = null;
     });
     _tripsCommandController.requestRefresh();
     _analyticsCommandController?.requestRefresh();

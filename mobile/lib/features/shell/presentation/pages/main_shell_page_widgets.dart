@@ -51,6 +51,7 @@ extension _MainShellPageWidgets on _MainShellPageState {
               showBottomNav: false,
               openAddExpenseOnStart: _openAddExpenseOnWorkspaceStart,
               initialExpenseDraft: _workspaceExpenseDraft,
+              initialFocus: _workspaceFocus,
               pickExpenseTarget: widget.quickSplitsController == null
                   ? null
                   : (formContext, current) =>

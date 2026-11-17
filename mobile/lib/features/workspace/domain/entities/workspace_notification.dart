@@ -4,6 +4,8 @@ class WorkspaceNotification {
     required this.tripId,
     this.tripName,
     this.inviteToken,
+    this.expenseId,
+    this.refs = const {},
     this.actorUserId,
     this.actorAvatarUrl,
     this.actorAvatarThumbUrl,
@@ -19,6 +21,8 @@ class WorkspaceNotification {
     tripId: tripId,
     tripName: tripName,
     inviteToken: inviteToken,
+    expenseId: expenseId,
+    refs: refs,
     actorUserId: actorUserId,
     actorAvatarUrl: actorAvatarUrl,
     actorAvatarThumbUrl: actorAvatarThumbUrl,
@@ -33,6 +37,13 @@ class WorkspaceNotification {
   final int tripId;
   final String? tripName;
   final String? inviteToken;
+
+  /// The expense it is about, for expense and comment notifications.
+  final int? expenseId;
+
+  /// Ids from the server payload needed to answer it from the list:
+  /// `payment_id`, `settlement_id` or `request_id`.
+  final Map<String, int> refs;
   final int? actorUserId;
   final String? actorAvatarUrl;
   final String? actorAvatarThumbUrl;

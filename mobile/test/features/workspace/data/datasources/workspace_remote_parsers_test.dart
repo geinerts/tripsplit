@@ -21,6 +21,23 @@ void main() {
     expect(legacy.actorAvatarThumbUrl, isNull);
   });
 
+  test('a notification keeps the expense it is about, for opening it', () {
+    final comment = WorkspaceRemoteParsers.parseNotification({
+      'id': 3,
+      'trip_id': 7,
+      'type': 'expense_comment_mention',
+      'payload': {'trip_id': 7, 'expense_id': 950, 'comment_id': 12},
+    });
+    expect(comment.expenseId, 950);
+    expect(comment.copyWith(isRead: true).expenseId, 950);
+    final trip = WorkspaceRemoteParsers.parseNotification({
+      'id': 4,
+      'trip_id': 7,
+      'type': 'trip_finished',
+    });
+    expect(trip.expenseId, isNull);
+  });
+
   test('expense type is optional and missing on older servers', () {
     Map<String, dynamic> raw(Object? type) => {
       'id': 1,

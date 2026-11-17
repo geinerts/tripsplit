@@ -848,6 +848,53 @@ class AppLocalizationsDa extends AppLocalizations {
   String get notificationsTitle => 'Meddelelser';
 
   @override
+  String notificationHeadlineExpense(String name) {
+    return '$name tilføjede en udgift';
+  }
+
+  @override
+  String notificationHeadlineSentYou(String name, String amount) {
+    return '$name sendte dig $amount';
+  }
+
+  @override
+  String notificationHeadlineFriendRequest(String name) {
+    return '$name vil være venner';
+  }
+
+  @override
+  String notificationHeadlineFriendAccepted(String name) {
+    return '$name er nu din ven';
+  }
+
+  @override
+  String notificationHeadlineMentioned(String name) {
+    return '$name nævnte dig';
+  }
+
+  @override
+  String notificationHeadlineCommented(String name) {
+    return '$name kommenterede';
+  }
+
+  @override
+  String notificationHeadlineInvited(String trip) {
+    return 'Invitation til $trip';
+  }
+
+  @override
+  String get notificationAnswerReceived => 'Modtaget';
+
+  @override
+  String get notificationAnswerNotReceived => 'Ikke modtaget';
+
+  @override
+  String get notificationAnswerAccepted => 'Accepteret';
+
+  @override
+  String get notificationAnswerDeclined => 'Afvist';
+
+  @override
   String get notificationFriendInviteTitle => 'Venneanmodning';
 
   @override
@@ -2793,6 +2840,9 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get shellFailedToOpenTrip => 'Det lykkedes ikke at åbne rejsen.';
+
+  @override
+  String get pushExpenseNotFound => 'Udgiften er ikke længere i rejsen.';
 
   @override
   String get shellYesterday => 'I går';

@@ -26,6 +26,7 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
         _openedTrip = null;
         _openAddExpenseOnWorkspaceStart = false;
         _workspaceExpenseDraft = null;
+        _workspaceFocus = null;
       });
     }
     _tripsCommandController.requestShowQuickSplits();

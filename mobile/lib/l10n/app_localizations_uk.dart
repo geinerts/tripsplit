@@ -854,6 +854,53 @@ class AppLocalizationsUk extends AppLocalizations {
   String get notificationsTitle => 'Повідомлення';
 
   @override
+  String notificationHeadlineExpense(String name) {
+    return '$name додає витрату';
+  }
+
+  @override
+  String notificationHeadlineSentYou(String name, String amount) {
+    return '$name надсилає тобі $amount';
+  }
+
+  @override
+  String notificationHeadlineFriendRequest(String name) {
+    return '$name хоче дружити';
+  }
+
+  @override
+  String notificationHeadlineFriendAccepted(String name) {
+    return '$name тепер твій друг';
+  }
+
+  @override
+  String notificationHeadlineMentioned(String name) {
+    return '$name згадує тебе';
+  }
+
+  @override
+  String notificationHeadlineCommented(String name) {
+    return '$name коментує';
+  }
+
+  @override
+  String notificationHeadlineInvited(String trip) {
+    return 'Запрошення до $trip';
+  }
+
+  @override
+  String get notificationAnswerReceived => 'Отримано';
+
+  @override
+  String get notificationAnswerNotReceived => 'Не отримано';
+
+  @override
+  String get notificationAnswerAccepted => 'Прийнято';
+
+  @override
+  String get notificationAnswerDeclined => 'Відхилено';
+
+  @override
   String get notificationFriendInviteTitle => 'Запит у друзі';
 
   @override
@@ -2805,6 +2852,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get shellFailedToOpenTrip => 'Не вдалося відкрити поїздку.';
+
+  @override
+  String get pushExpenseNotFound => 'Цієї витрати вже немає в подорожі.';
 
   @override
   String get shellYesterday => 'Вчора';

@@ -45,6 +45,7 @@ import 'package:tripsplit/features/workspace/domain/entities/workspace_activity_
 import 'package:tripsplit/features/workspace/domain/entities/expense_comment.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_comment_reaction.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_draft.dart';
+import 'package:tripsplit/features/workspace/domain/entities/workspace_focus.dart';
 import 'package:tripsplit/features/workspace/domain/entities/expense_item.dart';
 import 'package:tripsplit/features/quick_splits/data/quick_splits_repository.dart';
 import 'package:tripsplit/features/quick_splits/domain/quick_split.dart';
@@ -669,6 +670,7 @@ Future<void> _mount(
   Future<ExpenseTarget?> Function(BuildContext, Trip)? pickExpenseTarget,
   void Function(ExpenseTarget, ExpenseDraft)? onExpenseTargetChanged,
   Future<void> Function(int, int, int)? onQuickSplitAddedToTrip,
+  WorkspaceFocus? initialFocus,
 }) async {
   tester.view.physicalSize = Size(width, height);
   tester.view.devicePixelRatio = 1;
@@ -744,6 +746,7 @@ Future<void> _mount(
         pickExpenseTarget: pickExpenseTarget,
         onExpenseTargetChanged: onExpenseTargetChanged,
         onQuickSplitAddedToTrip: onQuickSplitAddedToTrip,
+        initialFocus: initialFocus,
       ),
     ),
   );
@@ -6029,6 +6032,49 @@ void main() {
       });
     }
   }
+
+  testWidgets('a tapped push opens Settle or the expense in the trip', (
+    tester,
+  ) async {
+    await _mount(
+      tester,
+      _Workspace()..data = snapshot(expenses: [expense(5, name: 'Taxi')]),
+      initialFocus: const WorkspaceFocus.settle(),
+    );
+    await tester.pumpAndSettle();
+    // The Settle tab is on show: its step bar is there.
+    expect(find.byKey(const ValueKey('settle-step-bar')), findsOneWidget);
+    expect(find.byKey(const ValueKey('expense-detail-title')), findsNothing);
+    await disposePage(tester);
+
+    await _mount(
+      tester,
+      _Workspace()..data = snapshot(expenses: [expense(5, name: 'Taxi')]),
+      initialFocus: const WorkspaceFocus.expense(5),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('expense-detail-title')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('expense-detail-note')),
+        matching: find.textContaining('Taxi', findRichText: true),
+      ),
+      findsOneWidget,
+    );
+    await disposePage(tester);
+
+    // An expense that is gone says so instead of opening something else.
+    await _mount(
+      tester,
+      _Workspace()..data = snapshot(expenses: [expense(5)]),
+      initialFocus: const WorkspaceFocus.expense(99),
+    );
+    await tester.pumpAndSettle();
+    final t = AppLocalizations.of(tester.element(find.byType(WorkspacePage)))!;
+    expect(find.text(t.pushExpenseNotFound), findsOneWidget);
+    expect(find.byKey(const ValueKey('expense-detail-title')), findsNothing);
+    await disposePage(tester);
+  });
 
   testWidgets('member sheet shows payments as sent or received', (
     tester,

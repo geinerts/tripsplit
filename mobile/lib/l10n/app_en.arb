@@ -598,6 +598,69 @@
   "noteMustBeMaxChars": "Note must be at most {max} chars.",
   "notificationFallbackTitle": "Notification",
   "notificationsTitle": "Notifications",
+  "notificationHeadlineExpense": "{name} added an expense",
+  "@notificationHeadlineExpense": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationHeadlineSentYou": "{name} sent you {amount}",
+  "@notificationHeadlineSentYou": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationHeadlineFriendRequest": "{name} wants to be friends",
+  "@notificationHeadlineFriendRequest": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationHeadlineFriendAccepted": "{name} is now your friend",
+  "@notificationHeadlineFriendAccepted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationHeadlineMentioned": "{name} mentioned you",
+  "@notificationHeadlineMentioned": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationHeadlineCommented": "{name} commented",
+  "@notificationHeadlineCommented": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationHeadlineInvited": "Invitation to {trip}",
+  "@notificationHeadlineInvited": {
+    "placeholders": {
+      "trip": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationAnswerReceived": "Received",
+  "notificationAnswerNotReceived": "Not received",
+  "notificationAnswerAccepted": "Accepted",
+  "notificationAnswerDeclined": "Declined",
   "notificationFriendInviteTitle": "Friend invite",
   "notificationFriendInviteBody": "{name} sent you a friend invite.",
   "notificationFriendInviteBodyGeneric": "You received a friend invite.",
@@ -1253,6 +1316,7 @@
   "shellLoadMoreNotificationsAction": "Load more notifications",
   "shellTripNoLongerAvailable": "This trip is no longer available.",
   "shellFailedToOpenTrip": "Failed to open trip.",
+  "pushExpenseNotFound": "This expense is no longer in the trip.",
   "shellYesterday": "Yesterday",
   "shellInviteAlreadyMemberOpenTripNow": "You are already a member of \"{tripName}\". Open this trip now?\n\nInvited by: {inviterName}",
   "shellInviteJoinTripQuestion": "Do you want to join trip \"{tripName}\"?\n\nInvited by: {inviterName}",

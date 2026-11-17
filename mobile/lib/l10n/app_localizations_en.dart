@@ -848,6 +848,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsTitle => 'Notifications';
 
   @override
+  String notificationHeadlineExpense(String name) {
+    return '$name added an expense';
+  }
+
+  @override
+  String notificationHeadlineSentYou(String name, String amount) {
+    return '$name sent you $amount';
+  }
+
+  @override
+  String notificationHeadlineFriendRequest(String name) {
+    return '$name wants to be friends';
+  }
+
+  @override
+  String notificationHeadlineFriendAccepted(String name) {
+    return '$name is now your friend';
+  }
+
+  @override
+  String notificationHeadlineMentioned(String name) {
+    return '$name mentioned you';
+  }
+
+  @override
+  String notificationHeadlineCommented(String name) {
+    return '$name commented';
+  }
+
+  @override
+  String notificationHeadlineInvited(String trip) {
+    return 'Invitation to $trip';
+  }
+
+  @override
+  String get notificationAnswerReceived => 'Received';
+
+  @override
+  String get notificationAnswerNotReceived => 'Not received';
+
+  @override
+  String get notificationAnswerAccepted => 'Accepted';
+
+  @override
+  String get notificationAnswerDeclined => 'Declined';
+
+  @override
   String get notificationFriendInviteTitle => 'Friend invite';
 
   @override
@@ -2793,6 +2840,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shellFailedToOpenTrip => 'Failed to open trip.';
+
+  @override
+  String get pushExpenseNotFound => 'This expense is no longer in the trip.';
 
   @override
   String get shellYesterday => 'Yesterday';

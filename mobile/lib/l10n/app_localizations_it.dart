@@ -848,6 +848,53 @@ class AppLocalizationsIt extends AppLocalizations {
   String get notificationsTitle => 'Notifiche';
 
   @override
+  String notificationHeadlineExpense(String name) {
+    return '$name ha aggiunto una spesa';
+  }
+
+  @override
+  String notificationHeadlineSentYou(String name, String amount) {
+    return '$name ti ha inviato $amount';
+  }
+
+  @override
+  String notificationHeadlineFriendRequest(String name) {
+    return '$name vuole essere tuo amico';
+  }
+
+  @override
+  String notificationHeadlineFriendAccepted(String name) {
+    return '$name ora è tuo amico';
+  }
+
+  @override
+  String notificationHeadlineMentioned(String name) {
+    return '$name ti ha menzionato';
+  }
+
+  @override
+  String notificationHeadlineCommented(String name) {
+    return '$name ha commentato';
+  }
+
+  @override
+  String notificationHeadlineInvited(String trip) {
+    return 'Invito a $trip';
+  }
+
+  @override
+  String get notificationAnswerReceived => 'Ricevuto';
+
+  @override
+  String get notificationAnswerNotReceived => 'Non ricevuto';
+
+  @override
+  String get notificationAnswerAccepted => 'Accettato';
+
+  @override
+  String get notificationAnswerDeclined => 'Rifiutato';
+
+  @override
   String get notificationFriendInviteTitle => 'Richiesta di amicizia';
 
   @override
@@ -2793,6 +2840,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get shellFailedToOpenTrip => 'Impossibile aprire il viaggio.';
+
+  @override
+  String get pushExpenseNotFound => 'Questa spesa non è più nel viaggio.';
 
   @override
   String get shellYesterday => 'Ieri';

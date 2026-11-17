@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:ui' as ui;
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tripsplit/app/theme/app_theme.dart';
@@ -22,7 +26,9 @@ WorkspaceNotification _item(
   String? body,
   String? avatar,
   String? thumbnail,
+  Map<String, int> refs = const {},
 }) => WorkspaceNotification(
+  refs: refs,
   id: id,
   tripId: tripId,
   inviteToken: token,
@@ -97,6 +103,8 @@ Future<void> _mount(
   ValueChanged<int>? onUnread,
   ValueChanged<WorkspaceNotification?>? onSelected,
   bool settle = true,
+  Future<void> Function(WorkspaceNotification, bool)? onAnswer,
+  GlobalKey? boundary,
 }) async {
   tester.view.physicalSize = Size(width, 844);
   tester.view.devicePixelRatio = 1;
@@ -104,39 +112,42 @@ Future<void> _mount(
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
   addTearDown(tester.view.resetPadding);
-  await tester.pumpWidget(
-    MaterialApp(
-      theme: dark ? AppTheme.dark() : AppTheme.light(),
-      locale: Locale(locale),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(
-          context,
-        ).copyWith(textScaler: TextScaler.linear(scale)),
-        child: child!,
-      ),
-      home: Scaffold(
-        body: Builder(
-          builder: (context) => TextButton(
-            onPressed: () async {
-              final result = await showAppBottomSheet<WorkspaceNotification>(
-                context: context,
-                useSafeArea: false,
-                builder: (_) => NotificationsSheet(
-                  controller: controller,
-                  isAccountCurrent: current ?? () => true,
-                  onUnreadCount: onUnread ?? (_) {},
-                  now: () => _now,
-                ),
-              );
-              onSelected?.call(result);
-            },
-            child: const Text('Open'),
-          ),
+  final app = MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: dark ? AppTheme.dark() : AppTheme.light(),
+    locale: Locale(locale),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    builder: (context, child) => MediaQuery(
+      data: MediaQuery.of(
+        context,
+      ).copyWith(textScaler: TextScaler.linear(scale)),
+      child: child!,
+    ),
+    home: Scaffold(
+      body: Builder(
+        builder: (context) => TextButton(
+          onPressed: () async {
+            final result = await showAppBottomSheet<WorkspaceNotification>(
+              context: context,
+              useSafeArea: false,
+              builder: (_) => NotificationsSheet(
+                controller: controller,
+                isAccountCurrent: current ?? () => true,
+                onUnreadCount: onUnread ?? (_) {},
+                onAnswer: onAnswer,
+                now: () => _now,
+              ),
+            );
+            onSelected?.call(result);
+          },
+          child: const Text('Open'),
         ),
       ),
     ),
+  );
+  await tester.pumpWidget(
+    boundary == null ? app : RepaintBoundary(key: boundary, child: app),
   );
   await tester.tap(find.text('Open'));
   if (settle) {
@@ -517,4 +528,198 @@ void main() {
       expect(result!.isRead, true);
     });
   }
+
+  List<WorkspaceNotification> answerable() => [
+    _item(
+      1,
+      type: 'payment_sent',
+      tripId: 7,
+      refs: const {'payment_id': 5},
+      body: 'Valērija marked EUR 322.60 as paid to you.',
+    ),
+    _item(
+      2,
+      type: 'friend_invite_received',
+      refs: const {'request_id': 9},
+      body: 'Kate Moss sent you a friend invite.',
+    ),
+    _item(
+      3,
+      days: 1,
+      read: true,
+      type: 'expense_added',
+      tripId: 7,
+      body: 'Marta Kalnīte added an expense of EUR 41.65 in "Albania".',
+    ),
+    _item(
+      4,
+      days: 1,
+      read: true,
+      type: 'expense_added',
+      tripId: 7,
+      body: 'Marta Kalnīte added an expense of EUR 58.00: Taxi to Theth',
+    ),
+    _item(
+      5,
+      days: 2,
+      read: true,
+      type: 'expense_comment_mention',
+      tripId: 7,
+      body: 'Andris Ozols mentioned you in a comment on "Fuel".',
+    ),
+  ];
+
+  testWidgets('rows say who did what, with the amount on the right', (
+    tester,
+  ) async {
+    await _mount(tester, _Workspace()..inbox = _page(answerable()));
+    final t = _t(tester);
+    expect(find.text('Invite accepted'), findsNothing);
+    expect(
+      find.text(t.notificationHeadlineSentYou('Valērija', '€322.60')),
+      findsOneWidget,
+    );
+    expect(
+      find.text(t.notificationHeadlineFriendRequest('Kate Moss')),
+      findsOneWidget,
+    );
+    expect(
+      find.text(t.notificationHeadlineExpense('Marta Kalnīte')),
+      findsOneWidget,
+    );
+    expect(find.text('€41.65'), findsOneWidget);
+    expect(find.text('Marta Kalnīte · Taxi to Theth'), findsOneWidget);
+    expect(find.text('€58.00'), findsOneWidget);
+    expect(
+      find.text(t.notificationHeadlineMentioned('Andris Ozols')),
+      findsOneWidget,
+    );
+    expect(find.text('Fuel'), findsOneWidget);
+    // Without an answer callback there are no buttons.
+    expect(find.byKey(const ValueKey('notification-actions-1')), findsNothing);
+  });
+
+  testWidgets('✕ and ✓ answer from the list and show the result', (
+    tester,
+  ) async {
+    final answers = <(int, bool)>[];
+    var fail = false;
+    await _mount(
+      tester,
+      _Workspace()..inbox = _page(answerable()),
+      onAnswer: (item, accept) async {
+        if (fail) throw const ApiException('Already confirmed.');
+        answers.add((item.id, accept));
+      },
+    );
+    final t = _t(tester);
+    for (final id in [1, 2]) {
+      expect(find.byKey(ValueKey('notification-actions-$id')), findsOneWidget);
+    }
+    // Expenses have no buttons.
+    expect(find.byKey(const ValueKey('notification-actions-3')), findsNothing);
+
+    // A failure keeps the buttons and says why.
+    fail = true;
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey('notification-actions-2')),
+        matching: find.byKey(const ValueKey('notification-accept')),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Already confirmed.'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('notification-actions-2')),
+      findsOneWidget,
+    );
+    fail = false;
+
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey('notification-actions-2')),
+        matching: find.byKey(const ValueKey('notification-decline')),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(answers, [(2, false)]);
+    expect(find.text(t.notificationAnswerDeclined), findsOneWidget);
+
+    // "Not received" asks first; cancelling sends nothing.
+    final payment = find.byKey(const ValueKey('notification-actions-1'));
+    await tester.tap(
+      find.descendant(
+        of: payment,
+        matching: find.byKey(const ValueKey('notification-decline')),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text(t.settlementNotReceivedConfirmTitle), findsOneWidget);
+    await tester.tap(find.text(t.cancelAction).last);
+    await tester.pumpAndSettle();
+    expect(answers, [(2, false)]);
+
+    await tester.tap(
+      find.descendant(
+        of: payment,
+        matching: find.byKey(const ValueKey('notification-accept')),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(answers, [(2, false), (1, true)]);
+    expect(find.text(t.notificationAnswerReceived), findsOneWidget);
+    expect(find.byKey(const ValueKey('notification-actions-1')), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('answer buttons fit at 320px and 200% text', (tester) async {
+    for (final locale in ['en', 'lv', 'de']) {
+      await _mount(
+        tester,
+        _Workspace()..inbox = _page(answerable()),
+        locale: locale,
+        width: 320,
+        scale: 2,
+        onAnswer: (_, _) async {},
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
+
+  testWidgets('notification list review images', (tester) async {
+    if (!const bool.fromEnvironment('NOTIFICATIONS_PREVIEWS')) return;
+    await tester.runAsync(() async {
+      await (FontLoader(
+        'Inter',
+      )..addFont(rootBundle.load('assets/fonts/Inter.ttf'))).load();
+      await (FontLoader(
+        'MaterialIcons',
+      )..addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'))).load();
+    });
+    for (final dark in [false, true]) {
+      final key = GlobalKey();
+      await _mount(
+        tester,
+        _Workspace()..inbox = _page(answerable()),
+        dark: dark,
+        boundary: key,
+        onAnswer: (_, _) async {},
+      );
+      await tester.runAsync(() async {
+        final image =
+            await (key.currentContext!.findRenderObject()!
+                    as RenderRepaintBoundary)
+                .toImage(pixelRatio: 2);
+        final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+        final file = File(
+          '../output/design/notifications/app-${dark ? 'dark' : 'light'}.png',
+        );
+        await file.parent.create(recursive: true);
+        await file.writeAsBytes(bytes!.buffer.asUint8List());
+        image.dispose();
+      });
+      await tester.pumpWidget(const SizedBox.shrink());
+    }
+  });
 }

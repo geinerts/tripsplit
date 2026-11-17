@@ -854,6 +854,53 @@ class AppLocalizationsRu extends AppLocalizations {
   String get notificationsTitle => 'Уведомления';
 
   @override
+  String notificationHeadlineExpense(String name) {
+    return '$name добавляет расход';
+  }
+
+  @override
+  String notificationHeadlineSentYou(String name, String amount) {
+    return '$name отправляет тебе $amount';
+  }
+
+  @override
+  String notificationHeadlineFriendRequest(String name) {
+    return '$name хочет дружить';
+  }
+
+  @override
+  String notificationHeadlineFriendAccepted(String name) {
+    return '$name теперь твой друг';
+  }
+
+  @override
+  String notificationHeadlineMentioned(String name) {
+    return '$name упоминает тебя';
+  }
+
+  @override
+  String notificationHeadlineCommented(String name) {
+    return '$name комментирует';
+  }
+
+  @override
+  String notificationHeadlineInvited(String trip) {
+    return 'Приглашение в $trip';
+  }
+
+  @override
+  String get notificationAnswerReceived => 'Получено';
+
+  @override
+  String get notificationAnswerNotReceived => 'Не получено';
+
+  @override
+  String get notificationAnswerAccepted => 'Принято';
+
+  @override
+  String get notificationAnswerDeclined => 'Отклонено';
+
+  @override
   String get notificationFriendInviteTitle => 'Приглашение в друзья';
 
   @override
@@ -2805,6 +2852,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get shellFailedToOpenTrip => 'Не удалось открыть поездку.';
+
+  @override
+  String get pushExpenseNotFound => 'Этого расхода больше нет в поездке.';
 
   @override
   String get shellYesterday => 'Вчера';

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../features/workspace/domain/entities/workspace_notification.dart';
+import '../ui/app_formatters.dart';
 import 'l10n.dart';
 
 class LocalizedWorkspaceNotification {
@@ -665,6 +666,120 @@ String? notificationActorName(WorkspaceNotification notification) {
   for (final pattern in patterns) {
     final name = pattern.firstMatch(notification.body.trim())?.group(1)?.trim();
     if (name != null && name.isNotEmpty) return name;
+  }
+  return null;
+}
+
+/// A short line for the notifications list: who did what, plus an amount or
+/// a note when there is one.
+class NotificationHeadline {
+  const NotificationHeadline({required this.title, this.detail, this.amount});
+
+  final String title;
+  final String? detail;
+
+  /// Shown on the right, like in the expense list.
+  final String? amount;
+}
+
+final RegExp _serverAmountPattern = RegExp(r'^([A-Z]{3}) (-?\d+(?:\.\d+)?)$');
+final RegExp _tripInvitationPattern = RegExp(
+  r'^You have been invited to "(.+)"\.$',
+);
+
+/// "EUR 41.65" from the server as the app shows money, e.g. "€41.65".
+String _displayAmount(BuildContext context, String raw) {
+  final match = _serverAmountPattern.firstMatch(raw.trim());
+  final value = double.tryParse(match?.group(2) ?? '');
+  if (match == null || value == null) return raw.trim();
+  return AppFormatters.currency(context, value, currencyCode: match.group(1)!);
+}
+
+/// Null when the server sentence is not recognized; the list then shows the
+/// type's title and the whole sentence, as before.
+NotificationHeadline? notificationHeadline(
+  BuildContext context,
+  WorkspaceNotification notification,
+) {
+  final t = context.l10n;
+  final body = notification.body.trim();
+  RegExpMatch? match(RegExp pattern) => pattern.firstMatch(body);
+  switch (notification.type.trim().toLowerCase()) {
+    case 'expense_added':
+      if (match(_expenseAddedWithTripPattern) case final m?) {
+        return NotificationHeadline(
+          title: t.notificationHeadlineExpense(m.group(1)!.trim()),
+          amount: _displayAmount(context, m.group(2)!),
+        );
+      }
+      if (match(_expenseAddedWithNotePattern) case final m?) {
+        return NotificationHeadline(
+          title: '${m.group(1)!.trim()} · ${m.group(3)!.trim()}',
+          amount: _displayAmount(context, m.group(2)!),
+        );
+      }
+    case 'payment_sent':
+      if (match(_paymentSentPattern) case final m?) {
+        return NotificationHeadline(
+          title: t.notificationHeadlineSentYou(
+            m.group(1)!.trim(),
+            _displayAmount(context, m.group(2)!),
+          ),
+        );
+      }
+    case 'settlement_sent':
+      if (match(_settlementSentPattern) case final m?) {
+        return NotificationHeadline(
+          title: t.notificationHeadlineSentYou(
+            m.group(1)!.trim(),
+            _displayAmount(context, m.group(2)!),
+          ),
+        );
+      }
+    case 'friend_invite':
+    case 'friend_invite_received':
+      if (match(_friendInviteBodyPattern) case final m?) {
+        return NotificationHeadline(
+          title: t.notificationHeadlineFriendRequest(m.group(1)!.trim()),
+        );
+      }
+    case 'friend_invite_accepted':
+      if (match(_friendInviteAcceptedBodyPattern) case final m?) {
+        return NotificationHeadline(
+          title: t.notificationHeadlineFriendAccepted(m.group(1)!.trim()),
+        );
+      }
+    case 'expense_comment_mention':
+      if (match(_commentMentionWithNotePattern) case final m?) {
+        return NotificationHeadline(
+          title: t.notificationHeadlineMentioned(m.group(1)!.trim()),
+          detail: m.group(2)!.trim(),
+        );
+      }
+      if (match(_commentMentionGenericPattern) case final m?) {
+        return NotificationHeadline(
+          title: t.notificationHeadlineMentioned(m.group(1)!.trim()),
+        );
+      }
+    case 'expense_comment_added':
+      if (match(_commentAddedWithNotePattern) case final m?) {
+        return NotificationHeadline(
+          title: t.notificationHeadlineCommented(m.group(1)!.trim()),
+          detail: m.group(2)!.trim(),
+        );
+      }
+      if (match(_commentAddedGenericPattern) case final m?) {
+        return NotificationHeadline(
+          title: t.notificationHeadlineCommented(m.group(1)!.trim()),
+        );
+      }
+    case 'trip_invitation':
+      final trip =
+          match(_tripInvitationPattern)?.group(1)?.trim() ??
+          notification.tripName?.trim();
+      if (trip != null && trip.isNotEmpty) {
+        return NotificationHeadline(title: t.notificationHeadlineInvited(trip));
+      }
   }
   return null;
 }

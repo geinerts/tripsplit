@@ -7,6 +7,10 @@ import UserNotifications
   private let pushChannelName = "app.splyto/push"
   private var cachedPushToken: String?
   private var pendingPushTokenResult: FlutterResult?
+  private var pushChannel: FlutterMethodChannel?
+  /// A tap that arrived before Flutter asked for it, e.g. the tap that opened the app.
+  private var pendingPushTap: [String: String]?
+  private var flutterReadyForPushTaps = false
 
   private enum PushPermissionState {
     case authorized
@@ -66,6 +70,7 @@ import UserNotifications
     pushChannel.setMethodCallHandler { [weak self] call, result in
       self?.handlePushMethodCall(call: call, result: result)
     }
+    self.pushChannel = pushChannel
   }
 
   private func handlePushMethodCall(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -74,6 +79,12 @@ import UserNotifications
       requestPushToken(result: result)
     case "getCachedPushToken":
       result(cachedPushToken)
+    case "takePendingNotificationTap":
+      // Flutter is listening from now on; later taps are sent right away.
+      flutterReadyForPushTaps = true
+      let tap = pendingPushTap
+      pendingPushTap = nil
+      result(tap)
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -171,5 +182,51 @@ import UserNotifications
       pendingResult(nil)
     }
     super.application(application, didFailToRegisterForRemoteNotificationsWithError: error)
+  }
+
+  // A notification was tapped: hand its type, trip and ids to Flutter.
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+      let tap = Self.pushTapData(response.notification.request.content.userInfo)
+      if !tap.isEmpty {
+        DispatchQueue.main.async { [weak self] in
+          self?.deliverPushTap(tap)
+        }
+      }
+    }
+    super.userNotificationCenter(
+      center, didReceive: response, withCompletionHandler: completionHandler)
+  }
+
+  private func deliverPushTap(_ tap: [String: String]) {
+    if flutterReadyForPushTaps, let channel = pushChannel {
+      channel.invokeMethod("notificationTapped", arguments: tap)
+    } else {
+      pendingPushTap = tap
+    }
+  }
+
+  /// Flat string map from either push shape: APNs sends `data` with a nested
+  /// `payload`, FCM sends the same keys at the top level.
+  private static func pushTapData(_ userInfo: [AnyHashable: Any]) -> [String: String] {
+    var out: [String: String] = [:]
+    func add(_ dict: [AnyHashable: Any]) {
+      for (rawKey, value) in dict {
+        guard let key = rawKey as? String, key != "aps" else { continue }
+        if key == "payload" || key == "data", let nested = value as? [AnyHashable: Any] {
+          add(nested)
+        } else if let text = value as? String {
+          out[key] = text
+        } else if let number = value as? NSNumber {
+          out[key] = number.stringValue
+        }
+      }
+    }
+    add(userInfo)
+    return out["type"] == nil ? [:] : out
   }
 }

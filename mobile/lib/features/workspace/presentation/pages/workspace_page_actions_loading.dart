@@ -165,7 +165,32 @@ extension _WorkspacePageLoadingActions on _WorkspacePageState {
           _openAddExpenseAfterLoad = false;
           _updateState(() => _isStartingWithAddExpense = false);
         }
+        if (success) _applyInitialFocus();
       }
+    }
+  }
+
+  /// Settle, an expense or the live map, once, after the first fresh load.
+  void _applyInitialFocus() {
+    final focus = widget.initialFocus;
+    final snapshot = _snapshot;
+    if (_initialFocusHandled || focus == null || snapshot == null) return;
+    _initialFocusHandled = true;
+    switch (focus.kind) {
+      case WorkspaceFocusKind.settle:
+        if (!widget.trip.isSolo) _updateState(() => _workspaceTabIndex = 2);
+      case WorkspaceFocusKind.liveMap:
+        if (widget.liveLocationController != null) unawaited(_openLiveMap());
+      case WorkspaceFocusKind.expense:
+        final expense = [
+          ...snapshot.expenses,
+          ..._expensesFeed,
+        ].where((item) => item.id == focus.expenseId).firstOrNull;
+        if (expense == null) {
+          _showSnack(context.l10n.pushExpenseNotFound, isError: true);
+          return;
+        }
+        unawaited(_openExpenseDetails(snapshot: snapshot, expense: expense));
     }
   }
 

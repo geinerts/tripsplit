@@ -1653,6 +1653,72 @@ abstract class AppLocalizations {
   /// **'Notifications'**
   String get notificationsTitle;
 
+  /// No description provided for @notificationHeadlineExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added an expense'**
+  String notificationHeadlineExpense(String name);
+
+  /// No description provided for @notificationHeadlineSentYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} sent you {amount}'**
+  String notificationHeadlineSentYou(String name, String amount);
+
+  /// No description provided for @notificationHeadlineFriendRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} wants to be friends'**
+  String notificationHeadlineFriendRequest(String name);
+
+  /// No description provided for @notificationHeadlineFriendAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is now your friend'**
+  String notificationHeadlineFriendAccepted(String name);
+
+  /// No description provided for @notificationHeadlineMentioned.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} mentioned you'**
+  String notificationHeadlineMentioned(String name);
+
+  /// No description provided for @notificationHeadlineCommented.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} commented'**
+  String notificationHeadlineCommented(String name);
+
+  /// No description provided for @notificationHeadlineInvited.
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation to {trip}'**
+  String notificationHeadlineInvited(String trip);
+
+  /// No description provided for @notificationAnswerReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get notificationAnswerReceived;
+
+  /// No description provided for @notificationAnswerNotReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Not received'**
+  String get notificationAnswerNotReceived;
+
+  /// No description provided for @notificationAnswerAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get notificationAnswerAccepted;
+
+  /// No description provided for @notificationAnswerDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get notificationAnswerDeclined;
+
   /// No description provided for @notificationFriendInviteTitle.
   ///
   /// In en, this message translates to:
@@ -5234,6 +5300,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to open trip.'**
   String get shellFailedToOpenTrip;
+
+  /// No description provided for @pushExpenseNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This expense is no longer in the trip.'**
+  String get pushExpenseNotFound;
 
   /// No description provided for @shellYesterday.
   ///

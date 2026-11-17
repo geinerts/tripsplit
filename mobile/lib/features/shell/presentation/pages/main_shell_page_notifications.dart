@@ -1,13 +1,6 @@
 part of 'main_shell_page.dart';
 
 extension _MainShellPageNotifications on _MainShellPageState {
-  bool _isFriendNotificationType(String rawType) {
-    final type = rawType.trim().toLowerCase();
-    return type == 'friend_invite' ||
-        type == 'friend_invite_received' ||
-        type == 'friend_invite_accepted';
-  }
-
   bool _inAppCategoryEnabledForType(String rawType) {
     final type = rawType.trim().toLowerCase();
     final prefs = widget.authController.notificationPreferences;
@@ -176,6 +169,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
               _updateState(() => _unreadNotificationsCount = count);
             }
           },
+          onAnswer: _answerNotification,
         ),
       );
     } finally {
@@ -216,40 +210,131 @@ extension _MainShellPageNotifications on _MainShellPageState {
     }
   }
 
+  /// ✕ or ✓ in the bell list: the same actions as on Settle, Friends and the
+  /// invitation page. Joining a trip goes through its preview instead.
+  Future<void> _answerNotification(
+    WorkspaceNotification item,
+    bool accept,
+  ) async {
+    final workspace = widget.workspaceController;
+    switch (notificationAnswerKind(item)) {
+      case NotificationAnswerKind.payment:
+        final paymentId = item.refs['payment_id']!;
+        accept
+            ? await workspace.confirmTripPaymentReceived(
+                tripId: item.tripId,
+                paymentId: paymentId,
+              )
+            : await workspace.reportTripPaymentNotReceived(
+                tripId: item.tripId,
+                paymentId: paymentId,
+              );
+      case NotificationAnswerKind.settlement:
+        final settlementId = item.refs['settlement_id']!;
+        accept
+            ? await workspace.confirmSettlementReceived(
+                tripId: item.tripId,
+                settlementId: settlementId,
+              )
+            : await workspace.reportSettlementNotReceived(
+                tripId: item.tripId,
+                settlementId: settlementId,
+              );
+      case NotificationAnswerKind.friend:
+        await widget.friendsController.respondInvite(
+          requestId: item.refs['request_id']!,
+          accept: accept,
+        );
+        _friendsCommandController.requestRefresh();
+      case NotificationAnswerKind.tripInvitation:
+        if (accept) return;
+        await widget.tripsController.declineTripInvite(
+          inviteToken: item.inviteToken!,
+        );
+        _tripsCommandController.requestInvitationsRefresh();
+      case null:
+        return;
+    }
+    if (!mounted) return;
+    if (item.id > 0 && !item.isRead) unawaited(_markNotificationRead(item.id));
+    if (_openedTrip?.id == item.tripId) {
+      _workspaceCommandController.requestRefresh();
+    }
+  }
+
+  /// The bell list opens the same place as the push for this notification.
   Future<void> _openTripFromNotification(
     WorkspaceNotification notification,
   ) async {
     if (!mounted) {
       return;
     }
-    if (notification.type == 'trip_invitation' &&
-        notification.inviteToken != null) {
-      await _handleInviteDeepLinkCode(notification.inviteToken!);
-      return;
-    }
-    if (_isFriendNotificationType(notification.type)) {
-      if (_selectedTabIndex != _MainShellPageState._tabFriends ||
-          _isWorkspaceOpen) {
+    final expenseId = notification.expenseId;
+    final inviteToken = notification.inviteToken;
+    await _openDestination(
+      PushTapDestination.of(
+        PushTap(
+          type: notification.type.trim().toLowerCase(),
+          tripId: notification.tripId,
+          values: {
+            'expense_id': ?expenseId?.toString(),
+            'invite_token': ?inviteToken,
+          },
+        ),
+      ),
+    );
+  }
+
+  void _bindPushTaps() {
+    unawaited(() async {
+      final launchTap = await PushTapChannel.listen(this, (tap) {
+        if (mounted) unawaited(_openFromPush(tap));
+      });
+      if (launchTap == null) return;
+      // The tap that opened the app: wait for the first frame of the shell.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) unawaited(_openFromPush(launchTap));
+      });
+    }());
+  }
+
+  /// Opens what a tapped push is about, like the bell list does.
+  Future<void> _openFromPush(PushTap tap) async {
+    if (_isLoggingOut || widget.authController.currentUser == null) return;
+    unawaited(_refreshGlobalNotifications());
+    await _openDestination(PushTapDestination.of(tap));
+  }
+
+  Future<void> _openDestination(PushTapDestination destination) async {
+    switch (destination) {
+      case PushOpenInvitation(:final inviteToken):
+        await _handleInviteDeepLinkCode(inviteToken);
+      case PushOpenFriends():
         _updateState(() {
           _selectedTabIndex = _MainShellPageState._tabFriends;
           _openedTrip = null;
+          _openAddExpenseOnWorkspaceStart = false;
+          _workspaceExpenseDraft = null;
+          _workspaceFocus = null;
         });
-      }
-      _friendsCommandController.requestRefresh();
-      return;
+        _friendsCommandController.requestRefresh();
+      case PushOpenQuickSplits():
+        _showHomeQuickSplits(refresh: true);
+      case PushOpenTrip(:final tripId, :final focus):
+        await _openTripById(tripId, focus: focus);
+      case PushOpenNothing():
+        break;
     }
+  }
 
-    if (notification.type == 'quick_split_added') {
-      _showHomeQuickSplits(refresh: true);
-      return;
-    }
-
-    final tripId = notification.tripId;
+  /// Opens a trip from the server's list; [focus] opens Settle, an expense
+  /// or the map inside it.
+  Future<void> _openTripById(int tripId, {WorkspaceFocus? focus}) async {
     if (tripId <= 0) {
       return;
     }
 
-    if (_openedTrip != null && _openedTrip!.id == tripId) {
+    if (focus == null && _openedTrip != null && _openedTrip!.id == tripId) {
       return;
     }
 
@@ -269,7 +354,7 @@ extension _MainShellPageNotifications on _MainShellPageState {
         _showSnack(context.l10n.shellTripNoLongerAvailable, isError: true);
         return;
       }
-      _openWorkspaceInShell(target);
+      _openWorkspaceInShell(target, focus: focus);
     } on ApiException catch (error) {
       if (!mounted) {
         return;

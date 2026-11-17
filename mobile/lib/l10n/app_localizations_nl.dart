@@ -848,6 +848,53 @@ class AppLocalizationsNl extends AppLocalizations {
   String get notificationsTitle => 'Meldingen';
 
   @override
+  String notificationHeadlineExpense(String name) {
+    return '$name heeft een uitgave toegevoegd';
+  }
+
+  @override
+  String notificationHeadlineSentYou(String name, String amount) {
+    return '$name stuurde je $amount';
+  }
+
+  @override
+  String notificationHeadlineFriendRequest(String name) {
+    return '$name wil vrienden worden';
+  }
+
+  @override
+  String notificationHeadlineFriendAccepted(String name) {
+    return '$name is nu je vriend';
+  }
+
+  @override
+  String notificationHeadlineMentioned(String name) {
+    return '$name noemde je';
+  }
+
+  @override
+  String notificationHeadlineCommented(String name) {
+    return '$name reageerde';
+  }
+
+  @override
+  String notificationHeadlineInvited(String trip) {
+    return 'Uitnodiging voor $trip';
+  }
+
+  @override
+  String get notificationAnswerReceived => 'Ontvangen';
+
+  @override
+  String get notificationAnswerNotReceived => 'Niet ontvangen';
+
+  @override
+  String get notificationAnswerAccepted => 'Geaccepteerd';
+
+  @override
+  String get notificationAnswerDeclined => 'Afgewezen';
+
+  @override
   String get notificationFriendInviteTitle => 'Vriendschapsverzoek';
 
   @override
@@ -2793,6 +2840,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get shellFailedToOpenTrip => 'Het openen van de reis is mislukt.';
+
+  @override
+  String get pushExpenseNotFound => 'Deze uitgave staat niet meer in de reis.';
 
   @override
   String get shellYesterday => 'Gisteren';

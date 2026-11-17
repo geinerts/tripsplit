@@ -851,6 +851,53 @@ class AppLocalizationsCs extends AppLocalizations {
   String get notificationsTitle => 'Oznámení';
 
   @override
+  String notificationHeadlineExpense(String name) {
+    return '$name přidal(a) výdaj';
+  }
+
+  @override
+  String notificationHeadlineSentYou(String name, String amount) {
+    return '$name ti poslal(a) $amount';
+  }
+
+  @override
+  String notificationHeadlineFriendRequest(String name) {
+    return '$name chce být tvůj přítel';
+  }
+
+  @override
+  String notificationHeadlineFriendAccepted(String name) {
+    return '$name je teď tvůj přítel';
+  }
+
+  @override
+  String notificationHeadlineMentioned(String name) {
+    return '$name tě zmínil(a)';
+  }
+
+  @override
+  String notificationHeadlineCommented(String name) {
+    return '$name okomentoval(a)';
+  }
+
+  @override
+  String notificationHeadlineInvited(String trip) {
+    return 'Pozvánka do $trip';
+  }
+
+  @override
+  String get notificationAnswerReceived => 'Přijato';
+
+  @override
+  String get notificationAnswerNotReceived => 'Nepřijato';
+
+  @override
+  String get notificationAnswerAccepted => 'Přijato';
+
+  @override
+  String get notificationAnswerDeclined => 'Odmítnuto';
+
+  @override
   String get notificationFriendInviteTitle => 'Žádost o přátelství';
 
   @override
@@ -2799,6 +2846,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get shellFailedToOpenTrip => 'Nepodařilo se otevřít výlet.';
+
+  @override
+  String get pushExpenseNotFound => 'Tento výdaj už v cestě není.';
 
   @override
   String get shellYesterday => 'Včera';

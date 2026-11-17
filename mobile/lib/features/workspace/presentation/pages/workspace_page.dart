@@ -67,6 +67,7 @@ import '../../domain/entities/expense_comment_reaction.dart';
 import '../../domain/entities/expense_participant.dart';
 import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_draft.dart';
+import '../../domain/entities/workspace_focus.dart';
 import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/services/expense_split_math.dart';
@@ -144,6 +145,7 @@ class WorkspacePage extends StatefulWidget {
     this.pickExpenseTarget,
     this.onExpenseTargetChanged,
     this.onQuickSplitAddedToTrip,
+    this.initialFocus,
   });
 
   final Trip trip;
@@ -175,6 +177,9 @@ class WorkspacePage extends StatefulWidget {
   /// A quick split became the expense [expenseId] of this trip.
   final Future<void> Function(int quickSplitId, int tripId, int expenseId)?
   onQuickSplitAddedToTrip;
+
+  /// Opens Settle, an expense or the live map once the trip has loaded.
+  final WorkspaceFocus? initialFocus;
 
   @override
   State<WorkspacePage> createState() => _WorkspacePageState();
@@ -228,6 +233,7 @@ class _WorkspacePageState extends State<WorkspacePage> {
   int _handledOpenAddExpenseRequestCount = 0;
   int _handledOpenTripActionsRequestCount = 0;
   bool _openAddExpenseAfterLoad = false;
+  bool _initialFocusHandled = false;
   bool _isStartingWithAddExpense = false;
   List<QueuedMutation> _queuedMutations = const <QueuedMutation>[];
   WorkspaceSnapshot? _snapshot;

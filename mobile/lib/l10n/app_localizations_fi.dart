@@ -848,6 +848,53 @@ class AppLocalizationsFi extends AppLocalizations {
   String get notificationsTitle => 'Ilmoitukset';
 
   @override
+  String notificationHeadlineExpense(String name) {
+    return '$name lisäsi kulun';
+  }
+
+  @override
+  String notificationHeadlineSentYou(String name, String amount) {
+    return '$name lähetti sinulle $amount';
+  }
+
+  @override
+  String notificationHeadlineFriendRequest(String name) {
+    return '$name haluaa olla kaverisi';
+  }
+
+  @override
+  String notificationHeadlineFriendAccepted(String name) {
+    return '$name on nyt kaverisi';
+  }
+
+  @override
+  String notificationHeadlineMentioned(String name) {
+    return '$name mainitsi sinut';
+  }
+
+  @override
+  String notificationHeadlineCommented(String name) {
+    return '$name kommentoi';
+  }
+
+  @override
+  String notificationHeadlineInvited(String trip) {
+    return 'Kutsu matkaan $trip';
+  }
+
+  @override
+  String get notificationAnswerReceived => 'Vastaanotettu';
+
+  @override
+  String get notificationAnswerNotReceived => 'Ei vastaanotettu';
+
+  @override
+  String get notificationAnswerAccepted => 'Hyväksytty';
+
+  @override
+  String get notificationAnswerDeclined => 'Hylätty';
+
+  @override
   String get notificationFriendInviteTitle => 'Kaveripyyntö';
 
   @override
@@ -2793,6 +2840,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get shellFailedToOpenTrip => 'Matkan avaaminen epäonnistui.';
+
+  @override
+  String get pushExpenseNotFound => 'Tätä kulua ei enää ole matkassa.';
 
   @override
   String get shellYesterday => 'Eilen';

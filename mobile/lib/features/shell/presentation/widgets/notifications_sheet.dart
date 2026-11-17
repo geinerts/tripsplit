@@ -5,6 +5,7 @@ import '../../../../app/theme/app_design.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../core/l10n/l10n.dart';
 import '../../../../core/l10n/notification_localizer.dart';
+import '../../../../core/ui/app_components.dart';
 import '../../../workspace/domain/entities/workspace_notification.dart';
 import '../../../workspace/presentation/controllers/workspace_controller.dart';
 
@@ -27,17 +28,43 @@ List<WorkspaceNotification> sortNotifications(
     return order == 0 ? b.id.compareTo(a.id) : order;
   });
 
+/// What can be answered from the list: a payment to confirm, a friend
+/// request or a trip invitation.
+enum NotificationAnswerKind { payment, settlement, friend, tripInvitation }
+
+NotificationAnswerKind? notificationAnswerKind(WorkspaceNotification item) {
+  switch (item.type.trim().toLowerCase()) {
+    case 'payment_sent' when item.tripId > 0 && item.refs['payment_id'] != null:
+      return NotificationAnswerKind.payment;
+    case 'settlement_sent'
+        when item.tripId > 0 && item.refs['settlement_id'] != null:
+      return NotificationAnswerKind.settlement;
+    case 'friend_invite' || 'friend_invite_received'
+        when item.refs['request_id'] != null:
+      return NotificationAnswerKind.friend;
+    case 'trip_invitation' when (item.inviteToken ?? '').isNotEmpty:
+      return NotificationAnswerKind.tripInvitation;
+  }
+  return null;
+}
+
 class NotificationsSheet extends StatefulWidget {
   const NotificationsSheet({
     super.key,
     required this.controller,
     required this.isAccountCurrent,
     required this.onUnreadCount,
+    this.onAnswer,
     this.now,
   });
   final WorkspaceController controller;
   final bool Function() isAccountCurrent;
   final ValueChanged<int> onUnreadCount;
+
+  /// Answers [item] from the list: [accept] is ✓, otherwise ✕. Throws an
+  /// [ApiException] with a message to show when it fails. Null hides ✕ | ✓.
+  final Future<void> Function(WorkspaceNotification item, bool accept)?
+  onAnswer;
   final DateTime Function()? now;
   @override
   State<NotificationsSheet> createState() => _NotificationsSheetState();
@@ -56,6 +83,10 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
   int? _offset;
   int _generation = 0, _unread = 0;
   int _earlierVisible = 5;
+
+  /// Answered in this sheet: notification id → ✓ (true) or ✕ (false).
+  final _answers = <int, bool>{};
+  final _answering = <int>{};
   bool get _busy => _loading || _loadingMore || _marking;
   bool _current(int generation) =>
       mounted && widget.isAccountCurrent() && generation == _generation;
@@ -200,6 +231,123 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
     }
   }
 
+  Future<void> _answer(WorkspaceNotification item, bool accept) async {
+    final onAnswer = widget.onAnswer;
+    final kind = notificationAnswerKind(item);
+    if (onAnswer == null || kind == null || _answering.contains(item.id)) {
+      return;
+    }
+    final t = context.l10n;
+    // Joining a trip shows its preview first, like tapping the row.
+    if (accept && kind == NotificationAnswerKind.tripInvitation) {
+      Navigator.pop(context, item.copyWith(isRead: true));
+      return;
+    }
+    if (!accept &&
+        (kind == NotificationAnswerKind.payment ||
+            kind == NotificationAnswerKind.settlement)) {
+      final sure = await showAppConfirmationDialog(
+        context: context,
+        title: t.settlementNotReceivedConfirmTitle,
+        message: t.settlementNotReceivedConfirmText,
+        confirmLabel: t.settlementNotReceivedAction,
+        cancelLabel: t.cancelAction,
+        icon: Icons.report_gmailerrorred_rounded,
+        destructive: true,
+      );
+      if (!sure || !mounted) return;
+    }
+    final generation = _generation;
+    setState(() => _answering.add(item.id));
+    try {
+      await onAnswer(item, accept);
+      if (!mounted || generation != _generation) return;
+      setState(() => _answers[item.id] = accept);
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          content: Text(
+            error.message.trim().isEmpty
+                ? t.shellFailedToUpdateNotifications
+                : error.message,
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(content: Text(t.shellFailedToUpdateNotifications)),
+      );
+    } finally {
+      if (mounted) setState(() => _answering.remove(item.id));
+    }
+  }
+
+  /// "Received", "Accepted"… after an answer in this sheet.
+  String _answerLabel(NotificationAnswerKind kind, bool accept) {
+    final t = context.l10n;
+    return switch ((kind, accept)) {
+      (
+        NotificationAnswerKind.payment || NotificationAnswerKind.settlement,
+        true,
+      ) =>
+        t.notificationAnswerReceived,
+      (
+        NotificationAnswerKind.payment || NotificationAnswerKind.settlement,
+        false,
+      ) =>
+        t.notificationAnswerNotReceived,
+      (_, true) => t.notificationAnswerAccepted,
+      (_, false) => t.notificationAnswerDeclined,
+    };
+  }
+
+  Widget _trailing(WorkspaceNotification item, NotificationHeadline? headline) {
+    final kind = widget.onAnswer == null ? null : notificationAnswerKind(item);
+    final theme = Theme.of(context);
+    final answer = _answers[item.id];
+    if (kind != null && answer != null) {
+      return Text(
+        _answerLabel(kind, answer),
+        key: ValueKey('notification-answer-${item.id}'),
+        style: theme.textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: answer
+              ? theme.colorScheme.primary
+              : AppDesign.mutedColor(context),
+        ),
+      );
+    }
+    if (kind != null) {
+      return _AnswerButtons(
+        key: ValueKey('notification-actions-${item.id}'),
+        busy: _answering.contains(item.id),
+        declineLabel:
+            kind == NotificationAnswerKind.payment ||
+                kind == NotificationAnswerKind.settlement
+            ? context.l10n.settlementNotReceivedAction
+            : context.l10n.friendsDecline,
+        acceptLabel:
+            kind == NotificationAnswerKind.payment ||
+                kind == NotificationAnswerKind.settlement
+            ? context.l10n.notificationAnswerReceived
+            : context.l10n.friendsAccept,
+        onDecline: () => _answer(item, false),
+        onAccept: () => _answer(item, true),
+      );
+    }
+    final amount = headline?.amount;
+    if (amount == null) return const SizedBox.shrink();
+    return Text(
+      amount,
+      style: theme.textTheme.titleSmall?.copyWith(
+        fontWeight: FontWeight.w600,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      ),
+    );
+  }
+
   bool _today(WorkspaceNotification item) {
     final date = notificationDate(item.createdAt);
     final now = (widget.now?.call() ?? DateTime.now()).toLocal();
@@ -256,6 +404,14 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
 
   Widget _tile(WorkspaceNotification item) {
     final localized = localizeWorkspaceNotification(context, item);
+    // Who did what, instead of one title shared by every row of a type.
+    final headline = notificationHeadline(context, item);
+    final title =
+        headline?.title ??
+        (localized.title.trim().isEmpty
+            ? context.l10n.notificationFallbackTitle
+            : localized.title);
+    final detail = headline != null ? headline.detail : localized.body;
     final actor = notificationActorName(item);
     final initials = actor
         ?.split(RegExp(r'\s+'))
@@ -315,16 +471,18 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      localized.title.trim().isEmpty
-                          ? context.l10n.notificationFallbackTitle
-                          : localized.title,
+                      title,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    if (localized.body.trim().isNotEmpty)
+                    if (detail != null && detail.trim().isNotEmpty)
                       Text(
-                        localized.body,
+                        detail,
+                        maxLines: headline != null ? 2 : null,
+                        overflow: headline != null
+                            ? TextOverflow.ellipsis
+                            : null,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppDesign.mutedColor(context),
                         ),
@@ -341,6 +499,8 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
                 ),
               ),
               const SizedBox(width: 10),
+              _trailing(item, headline),
+              const SizedBox(width: 6),
               SizedBox(
                 width: 8,
                 child: unread
@@ -544,6 +704,98 @@ class _NotificationsSheetState extends State<NotificationsSheet> {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// ✕ | ✓ in one light grey group: ✕ declines, ✓ accepts or confirms.
+class _AnswerButtons extends StatelessWidget {
+  const _AnswerButtons({
+    super.key,
+    required this.busy,
+    required this.declineLabel,
+    required this.acceptLabel,
+    required this.onDecline,
+    required this.onAccept,
+  });
+
+  final bool busy;
+  final String declineLabel;
+  final String acceptLabel;
+  final VoidCallback onDecline;
+  final VoidCallback onAccept;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final muted = AppDesign.mutedColor(context);
+    Widget button({
+      required Key key,
+      required String label,
+      required IconData icon,
+      required Color color,
+      required VoidCallback onTap,
+      required BorderRadius radius,
+    }) => Tooltip(
+      message: label,
+      child: Semantics(
+        button: true,
+        label: label,
+        excludeSemantics: true,
+        child: InkWell(
+          key: key,
+          onTap: busy ? null : onTap,
+          borderRadius: radius,
+          child: SizedBox(
+            width: 44,
+            height: 36,
+            child: Icon(icon, size: 20, color: busy ? muted : color),
+          ),
+        ),
+      ),
+    );
+    return Material(
+      color: AppDesign.isDark(context)
+          ? AppDesign.darkSurfaceRaised
+          : AppDesign.lightSurfaceMutedAlt,
+      borderRadius: BorderRadius.circular(18),
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          button(
+            key: const ValueKey('notification-decline'),
+            label: declineLabel,
+            icon: Icons.close_rounded,
+            color: muted,
+            onTap: onDecline,
+            radius: const BorderRadius.horizontal(left: Radius.circular(18)),
+          ),
+          Container(width: 1, height: 18, color: colors.outlineVariant),
+          busy
+              ? const SizedBox(
+                  width: 44,
+                  height: 36,
+                  child: Center(
+                    child: SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                )
+              : button(
+                  key: const ValueKey('notification-accept'),
+                  label: acceptLabel,
+                  icon: Icons.check_rounded,
+                  color: colors.onSurface,
+                  onTap: onAccept,
+                  radius: const BorderRadius.horizontal(
+                    right: Radius.circular(18),
+                  ),
+                ),
         ],
       ),
     );
