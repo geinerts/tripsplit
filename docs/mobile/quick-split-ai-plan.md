@@ -341,3 +341,26 @@ cik katram jāmaksā, poga "Share result" un trīs izvēles:
 - **Keep in Quick splits** (galvenā) — paliek cilnē, lai var sekot, kurš atdevis;
 - **Add to a trip** — kļūst par trip izdevumu un no cilnes pazūd;
 - **Don't save** — aizver.
+
+### Izlemts 2026-11-17: Quick split ir kopīgs ar iesaistītajiem
+
+Aizstāj 2.4 "Save to Archive" un 3. sadaļas vienoto arhīvu.
+
+- **Glabājas serverī**, nevis tikai telefonā. Katrs dalībnieks ar Splyto kontu to redz savā
+  Quick splits cilnē un saņem paziņojumu (piemēram, "Matiss added you to a quick split").
+  Tikai lokāla glabāšana nederēja: "Share" aizsūta tekstu, ko otrs nevar pievienot savai cilnei.
+- **Cilvēki bez app:** tāpat kā tripā (dalībnieki bez konta), izveido cilvēku tikai šim
+  quick split; viņš rezultātu redz caur "Share result".
+- **Bez naudas izsekošanas:** nav "Request", "I paid" vai "Confirm". Quick split ir ieraksts
+  "kurš maksāja, kas ko ēda, cik katram sanāca", un tiek pieņemts, ka uz vietas viss nokārtots.
+  Tāpēc cilnē nav "Open / Settled" dalījuma, tikai saraksts pēc datuma (jaunākais augšā).
+- **Add to a trip** paliek: quick split kļūst par parastu tripa izdevumu (esošais `add_expense`,
+  ieskaitot "By item"), un no Quick splits cilnes pazūd. Tad bilances un norēķini strādā kā tripā.
+- **Forma** ir tā pati Add expense (board21): "⚡ Quick split ▾" trip nosaukuma vietā, kameras
+  poga blakus summai AI čekiem vēlāk. Vidējā Expenses poga pēc noklusējuma pievieno aktīvajam
+  tripam; Quick split izvēlas ar "▾"; ja aktīva tripa nav, atveras kā Quick split.
+- **Kurš var labot/dzēst:** tas, kurš izveidoja (tāpat kā izdevumu tripā).
+- **Serveris:** jaunas tabulas, API darbības (izveidot, sarakstīt, atvērt, labot, dzēst, pārnest
+  uz tripu) un paziņojuma veids. Pirms koda: līguma dokuments `docs/api/quick-splits.md` un
+  īpašnieka atļauja; deploy un migrācija tikai pēc iOS 1.0.20 review
+  (`docs/operations/release-1.1.0-server-steps.md` papildināt).
