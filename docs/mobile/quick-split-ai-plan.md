@@ -374,3 +374,67 @@ Aizstāj 2.4 "Save to Archive" un 3. sadaļas vienoto arhīvu.
 - Kad čeks pievienots, formas apakšā "Add receipt" vietā rāda čeka bildi (pieskaroties var
   apskatīt, nomainīt vai noņemt).
 - Quick split arī glabā čeka foto (`receipt_path`, sk. `docs/api/quick-splits.md`).
+
+### Izlemts 2026-11-17: AI vispirms tikai testa kontiem, ar karogu
+
+Nākamais lielais darbs pēc Quick split. AI čeku nolasīšana nonāk produkcijas app, bet strādā tikai
+kontiem, kam tā ieslēgta admin panelī (sākumā īpašnieks un daži testētāji). Pārējie redz to pašu
+kameras pogu, kas tikai pievieno čeka foto. **Visi limiti un aizsardzība jābūt gataviem jau pirms
+pirmā testa konta**, jo AI darbība būs produkcijas serverī un to var mēģināt izsaukt arī citi.
+
+**Funkciju karogi (feature flags)**
+
+- Serverī karogi pa kontiem, piemēram `receipt_ai`. Konta datos (`me`) app saņem
+  `features: { receipt_ai: true }` un tikai tad rāda AI izvēli.
+- **Serveris pārbauda karogu katrā AI pieprasījumā, pirms jebkādām izmaksām.** Paslēpta poga
+  nav aizsardzība.
+- Admin panelī: kontu meklēšana, karoga ieslēgšana/izslēgšana, kas un kad ieslēdza (ieraksts
+  žurnālā), un globāls slēdzis "AI izslēgts visiem" avārijas gadījumam.
+- Vēlāk to pašu mehānismu var izmantot citām funkcijām; publiskai palaišanai karogu ieslēdz
+  visiem bez jaunas app versijas.
+
+**Limiti un aizsardzība pret botiem** (papildina 5. un 6. sadaļu)
+
+Pārbaudes secība katram pieprasījumam, lētākās vispirms; neviena ārēja AI izsaukuma, ja kāda
+neiziet:
+
+1. Pieslēdzies konts ar apstiprinātu e-pastu, aktīvs, nav viesis; globālais slēdzis ieslēgts.
+2. Karogs `receipt_ai` šim kontam.
+3. Biežums: līdz 2 pieprasījumiem minūtē uz kontu, 1 vienlaicīgs; arī uz IP (esošais
+   `enforce_rate_limit`).
+4. Kvota uz kontu: testa posmā 20 čeki dienā un 200 mēnesī (publiski: 6.2 sadaļas skaitļi).
+   Rezervē atomiski pirms izsaukuma, atgriež, ja pakalpojums neatbildēja.
+5. **Globālais budžets ar cieto apstāšanos**: piemēram 2 USD dienā un 20 USD mēnesī testa
+   posmā. Paredzamās izmaksas rezervē pirms izsaukuma; sasniedzot limitu, AI apstājas visiem,
+   bet manuālā dalīšana un čeka foto strādā.
+6. Attēls: tikai JPG/PNG/WebP/HEIC, pārbaudīts saturs, līdz 5 MB un pikseļu limitam, bez EXIF.
+7. Tas pats attēls (hash) tajā pašā kontā nedēļas laikā atgriež iepriekšējo rezultātu bez
+   jauna izsaukuma.
+8. Izsaukumam: maksimālais tokenu skaits, noildze, bez automātiskiem atkārtojumiem pēc
+   maksas kļūdām.
+
+Ārpus app:
+
+- Cloudflare: atsevišķs rate limiting noteikums AI adresei un bot aizsardzība tai.
+- AI pakalpojumā: atsevišķs projekts ar savu atslēgu (tikai serverī) un pakalpojuma
+  budžeta brīdinājumi kā otrā līnija (ne vienīgā).
+- Uzraudzība: katra izsaukuma modelis, tokeni, izmaksas, ilgums, kļūda; dienas kopsumma
+  ops digestā; brīdinājums, ja izmaksas vai kļūdas pēkšņi aug vai kāds konts sit limitus.
+- Vēlāk, pirms publiskas palaišanas: Apple App Attest un Google Play Integrity.
+
+**Pirms pirmā testa konta (obligāti)**
+
+- Privātuma politikā nosaukts AI pakalpojuma sniedzējs un datu pārsūtīšana ārpus ES (ja tāda
+  ir); App Store privacy un Play Data safety atjaunoti.
+- API līgums (`docs/api/feature-flags.md`, `docs/api/receipt-scan.md`) un migrācijas,
+  īpašnieka apstiprināti.
+- App Review piezīmēs uzrakstīt, ka AI čeku nolasīšana ieslēgta tikai testa kontiem, un dot
+  recenzentiem kontu, kam tā ir ieslēgta.
+
+**Secība**
+
+1. Karogi + admin panelis + globālais slēdzis (bez AI).
+2. Limiti, budžeta rezervācija, žurnāls, uzraudzība un Cloudflare noteikums.
+3. AI pakalpojuma izvēle (30–50 īstu čeku tests, sk. 11. sadaļu) un `ReceiptScanner`.
+4. App: AI izvēle kameras izvēlnē tikai ar karogu, rezultāts "By item" redaktorā.
+5. Ieslēgt īpašniekam → dažiem testētājiem → pēc testiem lemt par publisku palaišanu.
