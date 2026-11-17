@@ -21,7 +21,7 @@ class NativeTravelLocationService implements TravelLocationService {
   Geocoding get _geocoder => Geocoding();
   static const _locale = Locale('en');
   static const _timeout = Duration(seconds: 20);
-  String _city(Placemark p) => (p.locality ?? '').trim();
+  String _city(Placemark p) => placemarkCity(p);
   PlaceCandidate _candidate(Placemark p, Location l) => PlaceCandidate(
     city: _city(p),
     region: (p.administrativeArea ?? '').trim(),
@@ -92,7 +92,10 @@ class NativeTravelLocationService implements TravelLocationService {
           timeLimit: Duration(seconds: 20),
         ),
       );
-      final marks = await _geocoder
+      // Two lookups at most: Apple and Google throttle quick bursts, and the
+      // old exact name match failed on spellings such as Rīga and Riga.
+      final geocoder = _geocoder;
+      final marks = await geocoder
           .placemarkFromCoordinates(
             position.latitude,
             position.longitude,
@@ -102,20 +105,28 @@ class NativeTravelLocationService implements TravelLocationService {
       final valid = marks.where(_valid);
       if (valid.isEmpty) throw const TravelLocationError('lookup');
       final mark = valid.first;
-      final candidates = await search(
-        [
-          _city(mark),
-          mark.administrativeArea,
-          mark.country,
-        ].whereType<String>().join(', '),
+      Location? centre;
+      try {
+        final centres = await geocoder
+            .locationFromAddress(
+              [
+                _city(mark),
+                mark.administrativeArea,
+                mark.country,
+              ].where((part) => (part ?? '').trim().isNotEmpty).join(', '),
+              locale: _locale,
+            )
+            .timeout(_timeout);
+        centre = centres.isEmpty ? null : centres.first;
+      } catch (_) {
+        centre = null;
+      }
+      return currentCityCandidate(
+        mark,
+        centre: centre,
+        latitude: position.latitude,
+        longitude: position.longitude,
       );
-      final matching = candidates.where(
-        (c) =>
-            c.countryCode == (mark.isoCountryCode ?? '').toUpperCase() &&
-            c.city.toLowerCase() == _city(mark).toLowerCase(),
-      );
-      if (matching.isEmpty) throw const TravelLocationError('lookup');
-      return matching.first;
     } on TravelLocationError {
       rethrow;
     } catch (error) {
@@ -129,4 +140,35 @@ class NativeTravelLocationService implements TravelLocationService {
     LocationAccessProblem.deniedForever => 'deniedForever',
     LocationAccessProblem.servicesDisabled => 'disabled',
   };
+}
+
+/// The town of a placemark. Small places often have no locality, so the
+/// district or county stands in for it.
+String placemarkCity(Placemark p) {
+  for (final value in [p.locality, p.subAdministrativeArea, p.subLocality]) {
+    final clean = (value ?? '').trim();
+    if (clean.isNotEmpty) return clean;
+  }
+  return '';
+}
+
+/// The current city as a place to save. It uses the city centre when that
+/// lookup worked; otherwise the device position rounded to about 10 km, so
+/// the exact spot is never stored.
+@visibleForTesting
+PlaceCandidate currentCityCandidate(
+  Placemark mark, {
+  Location? centre,
+  required double latitude,
+  required double longitude,
+}) {
+  double rounded(double value) => (value * 10).roundToDouble() / 10;
+  return PlaceCandidate(
+    city: placemarkCity(mark),
+    region: (mark.administrativeArea ?? '').trim(),
+    country: (mark.country ?? '').trim(),
+    countryCode: (mark.isoCountryCode ?? '').toUpperCase(),
+    latitude: centre?.latitude ?? rounded(latitude),
+    longitude: centre?.longitude ?? rounded(longitude),
+  );
 }
