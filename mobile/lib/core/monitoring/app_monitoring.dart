@@ -91,6 +91,14 @@ class AppMonitoring {
             options.attachStacktrace = true;
             options.sendDefaultPii = false;
             options.tracesSampleRate = tracesSampleRate;
+            // Crash reports carry only what is needed to fix the crash: no
+            // console output, screenshots, screen trees, IP or request data.
+            options.enablePrintBreadcrumbs = false;
+            options.attachScreenshot = false;
+            options.maxBreadcrumbs = 40;
+            options.beforeBreadcrumb = (breadcrumb, _) =>
+                scrubBreadcrumb(breadcrumb);
+            options.beforeSend = (event, _) => scrubEvent(event);
           }, appRunner: runAppOnce).timeout(const Duration(seconds: 5));
           await _syncScope();
         } on TimeoutException {
@@ -112,6 +120,51 @@ class AppMonitoring {
         );
       },
     );
+  }
+
+  /// Drops console lines and strips route arguments and URL queries, which
+  /// can hold names, notes, tokens or places.
+  @visibleForTesting
+  static Breadcrumb? scrubBreadcrumb(Breadcrumb? breadcrumb) {
+    if (breadcrumb == null) return null;
+    final category = (breadcrumb.category ?? '').toLowerCase();
+    if (category == 'console' || category == 'print' || category == 'log') {
+      return null;
+    }
+    final data = breadcrumb.data;
+    if (data == null || data.isEmpty) return breadcrumb;
+    final clean = <String, dynamic>{};
+    data.forEach((key, value) {
+      if (key == 'arguments' ||
+          key == 'from_arguments' ||
+          key == 'to_arguments') {
+        return;
+      }
+      if (key == 'url' && value is String) {
+        final uri = Uri.tryParse(value);
+        clean[key] = uri == null
+            ? value
+            : uri
+                  .replace(query: '', fragment: '')
+                  .toString()
+                  .replaceAll(RegExp(r'[?#]+$'), '');
+        return;
+      }
+      clean[key] = value;
+    });
+    breadcrumb.data = clean;
+    return breadcrumb;
+  }
+
+  /// Keeps only the account number as the user; no IP, email or name, and
+  /// no request or device name.
+  @visibleForTesting
+  static SentryEvent scrubEvent(SentryEvent event) {
+    final id = event.user?.id;
+    event.user = id == null ? null : SentryUser(id: id);
+    event.request = null;
+    event.serverName = null;
+    return event;
   }
 
   static Future<void> updateRuntimeContext({int? userId, int? tripId}) async {
