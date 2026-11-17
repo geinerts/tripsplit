@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_expense_subcategory.php';
+
 require_once __DIR__ . '/../helpers/helper_trip_guests.php';
 
 require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
@@ -690,6 +692,7 @@ function add_expense_action(): void
     $sourceCurrencyCode = normalize_currency_code($body['currency_code'] ?? $tripCurrencyCode);
     $sourceAmountCents = validate_amount_cents($body['amount'] ?? null);
     $category = normalize_expense_category($body['category'] ?? '');
+    $subcategory = normalize_expense_subcategory($body['subcategory'] ?? null);
     $note = trim((string) ($body['note'] ?? ''));
     if (str_length($note) > 255) {
         json_out(['ok' => false, 'error' => 'Note is too long.'], 400);
@@ -792,6 +795,9 @@ function add_expense_action(): void
             ]);
         }
         $expenseId = (int) $pdo->lastInsertId();
+        if ($subcategory !== null) {
+            save_expense_subcategory($pdo, $expenseId, $subcategory);
+        }
 
         $insertParticipant = $pdo->prepare(
             'INSERT INTO ' . $participantsTable . ' (expense_id, user_id, owed_cents, split_value)
@@ -849,6 +855,7 @@ function add_expense_action(): void
             'ok' => true,
             'expense_id' => $expenseId,
             'trip_id' => $tripId,
+            'subcategory' => expenses_subcategory_column_available($pdo) ? $subcategory : null,
             'trip_currency_code' => $tripCurrencyCode,
             'expense_currency_code' => $sourceCurrencyCode,
             'amount' => cents_to_float($amountCents),
@@ -935,7 +942,8 @@ function update_expense_action(): void
         ? 'currency_code, source_amount, fx_rate_to_trip'
         : '\'' . default_trip_currency_code() . '\' AS currency_code, amount AS source_amount, 1.00000000 AS fx_rate_to_trip';
     $ownerStmt = $pdo->prepare(
-        'SELECT id, trip_id, paid_by, category, receipt_path, ' . $currencySelect . '
+        'SELECT id, trip_id, paid_by, category, receipt_path, '
+            . expense_subcategory_select($pdo, '') . ', ' . $currencySelect . '
          FROM ' . $expensesTable . '
          WHERE id = :id
          LIMIT 1'
@@ -975,6 +983,14 @@ function update_expense_action(): void
     $category = array_key_exists('category', $body)
         ? normalize_expense_category($body['category'] ?? '')
         : ($existingCategory !== '' ? $existingCategory : 'other');
+    // Omitted keeps the type (old app versions never send it) unless the
+    // category changed, because the type belonged to the old category.
+    $subcategoryChanged = array_key_exists('subcategory', $body)
+        || $category !== ($existingCategory !== '' ? $existingCategory : 'other');
+    $existingSubcategory = trim((string) ($expense['subcategory'] ?? ''));
+    $subcategory = array_key_exists('subcategory', $body)
+        ? normalize_expense_subcategory($body['subcategory'])
+        : ($subcategoryChanged ? null : ($existingSubcategory !== '' ? $existingSubcategory : null));
     $note = trim((string) ($body['note'] ?? ''));
     if (str_length($note) > 255) {
         json_out(['ok' => false, 'error' => 'Note is too long.'], 400);
@@ -1077,6 +1093,10 @@ function update_expense_action(): void
             ]);
         }
 
+        if ($subcategoryChanged) {
+            save_expense_subcategory($pdo, $expenseId, $subcategory);
+        }
+
         $deleteParticipants = $pdo->prepare('DELETE FROM ' . $participantsTable . ' WHERE expense_id = :expense_id');
         $deleteParticipants->execute(['expense_id' => $expenseId]);
         $deleteItems = $pdo->prepare('DELETE FROM ' . table_name('expense_items') . ' WHERE expense_id = :expense_id');
@@ -1108,6 +1128,7 @@ function update_expense_action(): void
         $responsePayload = [
             'ok' => true,
             'expense_id' => $expenseId,
+            'subcategory' => expenses_subcategory_column_available($pdo) ? $subcategory : null,
             'trip_currency_code' => $tripCurrencyCode,
             'expense_currency_code' => $sourceCurrencyCode,
             'amount' => cents_to_float($amountCents),
@@ -1284,6 +1305,7 @@ function list_expenses_action(): void
                 : '\'' . default_trip_currency_code() . '\' AS expense_currency_code, e.amount AS source_amount, 1.00000000 AS fx_rate_to_trip,'
         ) . '
             e.category,
+            ' . expense_subcategory_select($pdo) . ',
             e.note,
             e.split_mode,
             e.expense_date,

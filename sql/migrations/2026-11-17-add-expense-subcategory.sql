@@ -1,0 +1,2 @@
+ALTER TABLE trip_expenses
+  ADD COLUMN subcategory VARCHAR(40) NULL DEFAULT NULL;

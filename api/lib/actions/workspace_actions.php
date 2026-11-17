@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/../helpers/helper_expense_subcategory.php';
+
 function workspace_parse_since_cursor(): int
 {
     $raw = trim((string) ($_GET['since'] ?? ''));
@@ -187,6 +189,7 @@ function workspace_load_trip_expenses(PDO $pdo, int $tripId, int $limit = 300): 
                 : '\'' . default_trip_currency_code() . '\' AS expense_currency_code, e.amount AS source_amount, 1.00000000 AS fx_rate_to_trip,'
         ) . '
             e.category,
+            ' . expense_subcategory_select($pdo) . ',
             e.note,
             e.split_mode,
             e.expense_date,
