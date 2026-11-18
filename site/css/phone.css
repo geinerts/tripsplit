@@ -569,6 +569,15 @@
   background: var(--pink);
 }
 
+/* Bar heights live here, not in HTML, so the site's CSP can block inline styles. */
+.daily__bars i:nth-child(1) { --value: 45%; }
+.daily__bars i:nth-child(2) { --value: 80%; }
+.daily__bars i:nth-child(3) { --value: 35%; }
+.daily__bars i:nth-child(4) { --value: 100%; }
+.daily__bars i:nth-child(5) { --value: 60%; }
+.daily__bars i:nth-child(6) { --value: 72%; }
+.daily__bars i:nth-child(7) { --value: 50%; }
+
 .place__name {
   font-size: 16px;
   font-weight: 700;
