@@ -1,0 +1,11 @@
+[Unit]
+Description=Send Splyto trip start reminders once a day at 17:00 UTC
+
+[Timer]
+OnCalendar=*-*-* 17:00:00 UTC
+Persistent=true
+AccuracySec=1min
+Unit=splyto-trip-start-reminders.service
+
+[Install]
+WantedBy=timers.target
