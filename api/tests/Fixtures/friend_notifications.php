@@ -49,8 +49,8 @@ if ($mysql) {
 }
 $idType = $mysql ? 'INT UNSIGNED' : 'INTEGER';
 $id = $idType . ' PRIMARY KEY ' . ($mysql ? 'AUTO_INCREMENT' : 'AUTOINCREMENT');
-$pdo->exec('CREATE TABLE trip_users (id '.$idType.' PRIMARY KEY, nickname VARCHAR(64), avatar_path TEXT)');
-$pdo->exec('INSERT INTO trip_users VALUES (1,"One",NULL),(2,"Two",NULL),(3,"Three",NULL)');
+$pdo->exec('CREATE TABLE trip_users (id '.$idType.' PRIMARY KEY, nickname VARCHAR(64), avatar_path TEXT, guest_trip_id INT NULL)');
+$pdo->exec('INSERT INTO trip_users VALUES (1,"One",NULL,NULL),(2,"Two",NULL,NULL),(3,"Three",NULL,NULL),(4,"Guest",NULL,99)');
 $pdo->exec('CREATE TABLE trip_friends (id '.$id.',user_a_id INT,user_b_id INT,requested_by INT,status VARCHAR(20),responded_at TIMESTAMP NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,UNIQUE(user_a_id,user_b_id))');
 $pdo->exec('CREATE TABLE trip_trips (id '.$idType.' PRIMARY KEY,name TEXT)');
 $pdo->exec('CREATE TABLE trip_notifications (id '.$id.',trip_id '.$idType.($mysql ? ' NOT NULL' : ' NULL').',user_id '.$idType.',type VARCHAR(48),title TEXT,body TEXT,payload_json '.($mysql ? 'JSON' : 'TEXT').',is_read INT DEFAULT 0,read_at TIMESTAMP NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -65,6 +65,11 @@ function callAction(string $name, int $actor, array $body=[], array $query=[]): 
     throw new RuntimeException('Missing response');
 }
 function inbox(int $actor, array $query=[]): array { return callAction('list_notifications_global_action',$actor,[],['paged'=>1]+$query)[1]; }
+// A trip guest (no account, named by another trip's owner) cannot be invited
+// and its name is not returned.
+$guestInvite=callAction('send_friend_invite_action',1,['user_id'=>4]);
+check($guestInvite[0]===404 && !str_contains(json_encode($guestInvite[1]),'Guest'));
+check((int)$pdo->query('SELECT COUNT(*) FROM trip_friends')->fetchColumn()===0);
 // A new account with no trips receives one durable notification and one push.
 check(callAction('send_friend_invite_action',1,['user_id'=>2])[0]===200);
 $first=inbox(2); $id=$first['notifications'][0]['id'];

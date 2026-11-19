@@ -18,6 +18,15 @@ if (str_starts_with($scenario, 'request_')) {
     if ($scenario === 'request_failed_mail') { $mailSucceeds = false; }
     if ($scenario === 'request_missing_schema') { $pdo->exec('ALTER TABLE trip_password_resets DROP COLUMN credential_state_hash'); }
     if ($scenario === 'request_preserves_link') { seed_password_reset($pdo); }
+    if ($scenario === 'request_global_budget') {
+        ini_set('error_log', '/dev/null'); // the handler logs the budget event
+        $insert = $pdo->prepare('INSERT INTO trip_password_resets (user_id, token_hash, expires_at, created_at)
+            VALUES (2, ?, ?, ?)');
+        for ($i = 0; $i < 100; $i++) {
+            $insert->execute([hash('sha256', 'other-' . $i), gmdate('Y-m-d H:i:s', time() + 3600),
+                gmdate('Y-m-d H:i:s', time() - 600)]);
+        }
+    }
     if ($scenario === 'request_rolling_limit') {
         foreach (['a', 'b', 'c'] as $token) { seed_password_reset($pdo, $token); }
     }

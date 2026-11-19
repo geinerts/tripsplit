@@ -9,8 +9,13 @@ define(
     defined('ADMIN_PANEL_SESSION_TTL_SEC') ? (int) ADMIN_PANEL_SESSION_TTL_SEC : 7200
 ); // 2 h sliding by default (configurable via TRIP_ADMIN_PANEL_SESSION_TTL_SEC)
 define('ADMIN_MAX_SESSIONS',     5);      // concurrent sessions per admin user
-define('ADMIN_LOCK_THRESHOLD',   5);      // failed logins before lock
-define('ADMIN_LOCK_MINUTES',     15);     // lock duration
+define('ADMIN_PASSWORD_BCRYPT_COST', 12);
+// A bcrypt hash of a random, discarded secret, checked when the username is
+// unknown or inactive so that path costs the same as a real admin login.
+define('ADMIN_DUMMY_PASSWORD_HASH', '$2y$12$VrQoINHXathb9ALOCmxyLeTbtl4W2hEwhjp8s2wdgQ9P11GzOvrfa');
+// Wrong 2FA codes per admin account, across all sessions and IPs.
+define('ADMIN_2FA_ACCOUNT_MAX_PER_WINDOW', 10);   // per RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC
+define('ADMIN_2FA_ACCOUNT_MAX_PER_DAY',    30);
 
 // ── Role helpers ───────────────────────────────────────────────────────────────
 

@@ -203,7 +203,7 @@ function resolve_friend_link_action(): void
 
     $tokenId = (int) ($row['id'] ?? 0);
     $targetUserId = (int) ($row['user_id'] ?? 0);
-    $targetUser = find_public_user_by_id($pdo, $targetUserId);
+    $targetUser = find_public_user_by_id($pdo, $targetUserId, true);
     if (!$targetUser) {
         json_out(['ok' => false, 'error' => 'User not found.'], 404);
     }

@@ -29,7 +29,7 @@ function send_friend_invite_action(): void
     );
 
     [$userAId, $userBId] = friend_pair_ids($meId, $targetUserId);
-    $targetUser = find_public_user_by_id($pdo, $targetUserId);
+    $targetUser = find_public_user_by_id($pdo, $targetUserId, true);
     if (!$targetUser) {
         json_out(['ok' => false, 'error' => 'User not found.'], 404);
     }

@@ -37,7 +37,11 @@ function friend_user_payload_from_row(array $row): array
 
 }
 
-function find_public_user_by_id(PDO $pdo, int $userId): ?array
+/**
+ * $excludeGuests: trip guests (people without an account, named by a trip
+ * owner) must never be found from outside their trip, e.g. by friend invites.
+ */
+function find_public_user_by_id(PDO $pdo, int $userId, bool $excludeGuests = false): ?array
 {
     if ($userId <= 0) {
         return null;
@@ -47,6 +51,9 @@ function find_public_user_by_id(PDO $pdo, int $userId): ?array
         ? 'first_name, last_name, '
         : 'NULL AS first_name, NULL AS last_name, ';
     $activeFilter = users_active_filter_sql($pdo, '');
+    if ($excludeGuests) {
+        $activeFilter .= ' AND guest_trip_id IS NULL';
+    }
     $stmt = $pdo->prepare(
         'SELECT id, ' . $nameSelect . 'nickname, avatar_path
          FROM ' . $usersTable . '

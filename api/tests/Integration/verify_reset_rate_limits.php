@@ -11,7 +11,7 @@ $pdo->exec('CREATE TABLE trip_request_limits (scope VARCHAR(48) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (scope, subject_hash, window_start)) ENGINE=InnoDB');
 foreach ([['password_reset_request_ip', 10, 900], ['password_reset_request_email', 3, 3600],
-    ['password_reset_request_global', 100, 3600], ['password_reset_confirm_ip', 20, 900],
+    ['password_reset_confirm_ip', 20, 900],
     ['password_reset_confirm_token', 5, 900]] as [$scope, $max, $window]) {
     for ($i = 0; $i < $max; $i++) { enforce_rate_limit($pdo, $scope, 'synthetic-subject', $max, $window, true); }
     try {

@@ -48,6 +48,20 @@ used for reading. No admin has to re-enrol.
 
 Recovery without the panel: `sudo php scripts/admin_totp.php reset --username=NAME --apply`.
 
+## Login and 2FA limits (2026-11-19)
+
+- Wrong 2FA codes are limited per admin account across all sessions and IPs:
+  10 per 15-minute window and 30 per UTC day (`ADMIN_2FA_ACCOUNT_MAX_*`), on top
+  of the per-IP and per-session limits. A new password login no longer resets it.
+- There is no account-wide password lock any more: it let anyone lock a real
+  admin out. Password attempts are limited per IP and per account-and-IP, where
+  the account is the resolved admin row, so case variants share one counter.
+  `failed_login_count` is still counted (atomically) for the audit trail.
+- Unknown and inactive usernames are checked against a cost-12 dummy hash, and
+  older admin hashes are upgraded to cost 12 on login, so timing does not reveal
+  usernames. Locked, unknown and wrong-password answers are the same 401.
+- Tests: `api/tests/Unit/AdminLoginSecurityTest.php`.
+
 ## Rollout
 
 1. Back up the database.

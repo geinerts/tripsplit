@@ -23,6 +23,8 @@ function password_reset_credential_state(array $user): string
     ], JSON_THROW_ON_ERROR));
 }
 
+const PASSWORD_RESET_GLOBAL_LINKS_PER_HOUR = 100;
+
 function password_reset_user_is_eligible(array $user): bool
 {
     return user_account_is_active($user) && (int) $user['credentials_required'] === 0
@@ -41,7 +43,9 @@ function forgot_password_action(): void
     // Apply identical limits before account lookup, including unknown email addresses.
     enforce_rate_limit($pdo, 'password_reset_request_ip', client_ip_address(), 10, 900, true);
     enforce_rate_limit($pdo, 'password_reset_request_email', $email, 3, 3600, true);
-    enforce_rate_limit($pdo, 'password_reset_request_global', 'all', 100, 3600, true);
+    // No global request counter here: one shared counter that fails closed let
+    // anyone block recovery for everybody with random addresses. The global
+    // cap below counts only links actually created for eligible accounts.
     ensure_password_reset_security_schema($pdo);
     $users = table_name('users');
     $resets = table_name('password_resets');
@@ -63,7 +67,16 @@ function forgot_password_action(): void
                 WHERE user_id = :user_id AND created_at > :cutoff ORDER BY created_at DESC FOR UPDATE');
             $recent->execute(['user_id' => $user['id'], 'cutoff' => gmdate('Y-m-d H:i:s', time() - 3600)]);
             $attempts = $recent->fetchAll(PDO::FETCH_COLUMN);
-            if (count($attempts) < 3 && ($attempts === []
+            // Global mail budget per rolling hour, counted from links actually
+            // created. Over budget the answer stays the same, so it reveals
+            // nothing about the account; the event is only logged.
+            $global = $pdo->prepare('SELECT COUNT(*) FROM ' . $resets . ' WHERE created_at > :cutoff');
+            $global->execute(['cutoff' => gmdate('Y-m-d H:i:s', time() - 3600)]);
+            $withinGlobalBudget = (int) $global->fetchColumn() < PASSWORD_RESET_GLOBAL_LINKS_PER_HOUR;
+            if (!$withinGlobalBudget) {
+                error_log('Password reset global hourly link budget reached.');
+            }
+            if ($withinGlobalBudget && count($attempts) < 3 && ($attempts === []
                 || $attempts[0] <= gmdate('Y-m-d H:i:s', time() - 60))) {
                 $token = bin2hex(random_bytes(32));
                 $pdo->prepare('INSERT INTO ' . $resets . '
@@ -149,7 +162,7 @@ function reset_password_action(): void
         $pdo->prepare('UPDATE ' . $resets . ' SET used_at = UTC_TIMESTAMP()
             WHERE user_id = :id AND used_at IS NULL')->execute(['id' => $userId]);
         record_user_password_capability($pdo, $userId, true);
-        revoke_refresh_tokens_for_user($pdo, $userId);
+        revoke_sessions_and_push_for_user($pdo, $userId);
         $pdo->commit();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) { $pdo->rollBack(); }

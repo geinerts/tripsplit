@@ -21,24 +21,15 @@ function admin_panel_login_action(): void
     $clientIp = client_ip_address();
     $username = trim((string) ($body['username'] ?? ''));
     $password = (string) ($body['password'] ?? '');
-    $usernameForRateLimit = strtolower($username);
 
     enforce_rate_limit(
         $pdo,
         'admin_panel_login_ip',
         $clientIp,
         max(1, RATE_LIMIT_ADMIN_PANEL_LOGIN_IP_MAX),
-        max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC)
+        max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC),
+        true
     );
-    if ($usernameForRateLimit !== '') {
-        enforce_rate_limit(
-            $pdo,
-            'admin_panel_login_username',
-            $usernameForRateLimit,
-            max(1, RATE_LIMIT_ADMIN_PANEL_LOGIN_USERNAME_MAX),
-            max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC)
-        );
-    }
 
     if ($username === '' || $password === '') {
         json_out(['ok' => false, 'error' => 'Username and password are required.'], 400);
@@ -49,49 +40,39 @@ function admin_panel_login_action(): void
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
-    // Rate-limit: check lock first
-    if (is_array($user) && $user['locked_until'] !== null) {
-        $lockedUntil = strtotime($user['locked_until'] . ' UTC');
-        if ($lockedUntil > time()) {
-            $remaining = ceil(($lockedUntil - time()) / 60);
-            admin_audit_event(
-                $pdo,
-                (int) $user['id'],
-                (string) $user['username'],
-                'admin.auth.login_blocked_locked',
-                'admin_user',
-                (int) $user['id'],
-                [
-                    'ip' => $clientIp,
-                    'remaining_minutes' => $remaining,
-                ]
-            );
-            json_out(['ok' => false, 'error' => "Account locked. Try again in {$remaining} minute(s)."], 429);
-        }
-        // Lock expired — reset counter
-        $pdo->prepare("UPDATE {$userTable} SET failed_login_count = 0, locked_until = NULL WHERE id = ?")
-            ->execute([$user['id']]);
-        $user['failed_login_count'] = 0;
-        $user['locked_until']       = null;
-    }
+    // The account limit is keyed on the resolved account (so case or accent
+    // variants of a username share one counter) and on the client IP (so
+    // nobody can lock a real admin out from elsewhere). Unknown names get the
+    // same treatment, keyed on the lower-cased name.
+    $accountKey = is_array($user)
+        ? 'id:' . (int) $user['id']
+        : 'name:' . strtolower($username);
+    enforce_rate_limit(
+        $pdo,
+        'admin_panel_login_account_ip',
+        $accountKey . '|' . $clientIp,
+        max(1, RATE_LIMIT_ADMIN_PANEL_LOGIN_USERNAME_MAX),
+        max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC),
+        true
+    );
 
-    // Constant-time validation (avoids user enumeration timing)
+    // Exactly one bcrypt check on every path, at the cost real admin hashes
+    // use, so response time does not tell real usernames from unknown ones.
+    // There is no account-wide lock: it let anyone lock a real admin out, and
+    // the per-account-and-IP limit above plus mandatory 2FA cover guessing.
     $validUser     = is_array($user) && (int) $user['is_active'] === 1;
-    $hashToCheck   = $validUser ? (string) $user['password_hash'] : password_hash('dummy', PASSWORD_BCRYPT);
+    $hashToCheck   = $validUser ? (string) $user['password_hash'] : ADMIN_DUMMY_PASSWORD_HASH;
     $passwordValid = password_verify($password, $hashToCheck);
 
     if (!$validUser || !$passwordValid) {
         if ($validUser) {
-            $fails = (int) $user['failed_login_count'] + 1;
-            $lockUntil = null;
-            if ($fails >= ADMIN_LOCK_THRESHOLD) {
-                $lockUntil = date('Y-m-d H:i:s', time() + ADMIN_LOCK_MINUTES * 60);
-                $pdo->prepare("UPDATE {$userTable} SET failed_login_count = ?, locked_until = ? WHERE id = ?")
-                    ->execute([$fails, $lockUntil, $user['id']]);
-            } else {
-                $pdo->prepare("UPDATE {$userTable} SET failed_login_count = ? WHERE id = ?")
-                    ->execute([$fails, $user['id']]);
-            }
+            // Counted atomically for the audit trail and the admin list. The
+            // column is TINYINT UNSIGNED, so the count stops at 255.
+            $pdo->prepare("UPDATE {$userTable} SET failed_login_count = CASE WHEN failed_login_count < 255 THEN failed_login_count + 1 ELSE 255 END, locked_until = NULL WHERE id = ?")
+                ->execute([$user['id']]);
+            $countStmt = $pdo->prepare("SELECT failed_login_count FROM {$userTable} WHERE id = ?");
+            $countStmt->execute([$user['id']]);
+            $fails = (int) $countStmt->fetchColumn();
 
             admin_audit_event(
                 $pdo,
@@ -103,7 +84,6 @@ function admin_panel_login_action(): void
                 [
                     'ip' => $clientIp,
                     'failed_login_count' => $fails,
-                    'locked_until_utc' => $lockUntil,
                 ]
             );
         } else {
@@ -120,9 +100,16 @@ function admin_panel_login_action(): void
         json_out(['ok' => false, 'error' => 'Invalid username or password.'], 401);
     }
 
-    // Reset failed counter on success
+    // Reset failed counter on success; bring older, cheaper hashes up to the
+    // cost the dummy hash uses, so timing stays the same for every account.
     $pdo->prepare("UPDATE {$userTable} SET failed_login_count = 0, locked_until = NULL, last_login_at = UTC_TIMESTAMP() WHERE id = ?")
         ->execute([$user['id']]);
+    if (password_needs_rehash((string) $user['password_hash'], PASSWORD_BCRYPT, ['cost' => ADMIN_PASSWORD_BCRYPT_COST])) {
+        $pdo->prepare("UPDATE {$userTable} SET password_hash = ? WHERE id = ?")->execute([
+            password_hash($password, PASSWORD_BCRYPT, ['cost' => ADMIN_PASSWORD_BCRYPT_COST]),
+            $user['id'],
+        ]);
+    }
 
     // 2FA is mandatory: a password-only session is never fully authenticated.
     $needs2fa    = (int) $user['totp_enabled'] === 1;
@@ -188,6 +175,18 @@ function admin_panel_verify_2fa_action(): void
     if (!is_array($sess)) {
         json_out(['ok' => false, 'error' => 'Session not found or expired.'], 401);
     }
+    // Per account, across sessions and IPs: a new password login gives a new
+    // session token, so the per-token limit alone allowed endless guessing.
+    $adminKey = (string) (int) $sess['admin_user_id'];
+    enforce_rate_limit(
+        $pdo,
+        'admin_panel_2fa_account',
+        $adminKey,
+        ADMIN_2FA_ACCOUNT_MAX_PER_WINDOW,
+        max(60, RATE_LIMIT_ADMIN_PANEL_WINDOW_SEC),
+        true
+    );
+    enforce_rate_limit($pdo, 'admin_panel_2fa_account_day', $adminKey, ADMIN_2FA_ACCOUNT_MAX_PER_DAY, 86400, true);
     $result = admin_totp_verify_login($pdo, $sess, $code, time());
     if ($result === 'enrollment_required') {
         json_out(['ok' => false, 'code' => '2fa_enrollment_required',
@@ -820,7 +819,7 @@ function admin_panel_user_sign_out_everywhere_action(): void
         . ' WHERE user_id = ? AND revoked_at IS NULL AND expires_at > ?');
     $count->execute([$userId, gmdate('Y-m-d H:i:s')]);
     $active = (int) $count->fetchColumn();
-    revoke_refresh_tokens_for_user($pdo, $userId);
+    revoke_sessions_and_push_for_user($pdo, $userId);
     admin_audit($pdo, $sess, 'user.sessions.revoke_all', 'user', $userId, ['sessions' => $active]);
     json_out(['ok' => true, 'revoked' => $active]);
 }

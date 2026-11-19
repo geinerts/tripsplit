@@ -101,7 +101,7 @@ try {
 } catch (PDOException $e) { $failure=true; $response=null; }
 $after=scenario_snapshot($pdo,$scenario);
 $ownerProofs=array_values(array_filter($after['account_action_tokens'],fn($r)=>(int)$r['user_id']===1));
-echo json_encode(['token_http'=>social_token_http_report(),'response'=>$response,'second'=>$second,'failure'=>$failure,'unchanged'=>$before===$after,
+echo json_encode(['rates'=>$rates,'token_http'=>social_token_http_report(),'response'=>$response,'second'=>$second,'failure'=>$failure,'unchanged'=>$before===$after,
     'other_unchanged'=>unrelated_lifecycle_rows($before)===unrelated_lifecycle_rows($after),
     'open'=>$pdo->inTransaction(),'user'=>$after['users'][0],
     'sessions'=>count(array_filter($after['refresh_tokens']??[],fn($r)=>(int)$r['user_id']===1 && $r['revoked_at']===null)),

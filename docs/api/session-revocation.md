@@ -11,6 +11,11 @@ are unchanged; existing clients can exchange a still-valid refresh token.
   revoke the existing refresh rows, invalidating their access
   tokens as well.
 - Password change issues a replacement session inside the same transaction.
+- The same events, plus admin "sign out everywhere", also deactivate every push
+  token of the account (`revoke_sessions_and_push_for_user`). Push tokens belong
+  to the user, not to a session, so otherwise a signed-out device kept receiving
+  notifications. A device that stays signed in registers again; the app forces
+  this right after a password change.
 - Logout invalidates access bound to the submitted refresh row. Session-limit
   eviction also invalidates access belonging to the evicted row.
 - Refresh rotates the row and invalidates the preceding access token. Mobile

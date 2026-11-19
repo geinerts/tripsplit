@@ -80,4 +80,26 @@ void main() {
       expect(api.locales.last, 'en');
     },
   );
+
+  test(
+    'forced sync registers the same token again in the same app run',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      final api = _Api();
+      final service = PushRegistrationService(
+        apiClient: api,
+        deviceTokenStore: DeviceTokenStore(),
+        nativeBridge: _Push(),
+        registrationStore: PushRegistrationStore(),
+        localeCodeProvider: () => 'en',
+      );
+      await service.syncRegistration();
+      await service.syncRegistration();
+      expect(api.locales, ['en']);
+      await service.syncRegistration(force: true);
+      expect(api.locales, ['en', 'en']);
+    },
+  );
 }

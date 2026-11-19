@@ -148,7 +148,6 @@ function request_account_deletion_link_action(): void
     $pdo = db();
     enforce_rate_limit($pdo, 'delete_link_ip', client_ip_address(), 10, 900, true);
     enforce_rate_limit($pdo, 'delete_link_user', (string) $me['id'], 3, 3600, true);
-    enforce_rate_limit($pdo, 'delete_link_global', 'all', 100, 3600, true);
     ensure_account_action_proof_schema($pdo);
     $userId = (int) $me['id'];
     $proof = null;
@@ -172,6 +171,9 @@ function request_account_deletion_link_action(): void
             json_out(['ok' => false, 'code' => 'REAUTHENTICATION_REQUIRED',
                 'error' => 'Confirm your current password to request the deletion email.'], 403);
         }
+        // The global mail budget counts only eligible, reauthenticated
+        // requests, so guest accounts cannot use it up for everyone.
+        enforce_rate_limit($pdo, 'delete_link_global', 'all', 100, 3600, true);
         $proof = create_account_action_link_token($pdo, $user);
         $pdo->commit();
     } catch (Throwable $error) {

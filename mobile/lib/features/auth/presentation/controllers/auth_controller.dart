@@ -168,7 +168,10 @@ class AuthController {
       ),
     );
     await _setCurrentUser(user, generation);
-    unawaited(_syncPushRegistration());
+    // A password change stops push to every device on the server; register
+    // this one again at once.
+    final passwordChanged = password != null && password.isNotEmpty;
+    unawaited(_syncPushRegistration(force: passwordChanged));
     return user;
   }
 
@@ -468,14 +471,14 @@ class AuthController {
     return _syncPushRegistration();
   }
 
-  Future<void> _syncPushRegistration() async {
+  Future<void> _syncPushRegistration({bool force = false}) async {
     try {
       await _pushRegistrationService.syncAccountLocale();
     } catch (_) {
       // Reports fall back to the last known language.
     }
     try {
-      await _pushRegistrationService.syncRegistration();
+      await _pushRegistrationService.syncRegistration(force: force);
     } catch (_) {
       // Push setup is best-effort and must not block auth flow.
     }

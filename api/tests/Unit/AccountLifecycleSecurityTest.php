@@ -34,6 +34,8 @@ final class AccountLifecycleSecurityTest extends TestCase
         $r=$this->scenario($action,$scenario);self::assertSame($status,$r['response']['status']);
         self::assertTrue($r['unchanged']);self::assertSame(0,$r['mail']);
         self::assertSame([], $r['feedback']);
+        // Refused requests never touch the shared hourly mail budget.
+        self::assertNotContains('delete_link_global', $r['rates']);
     }
     public static function confirmations(): iterable
     {

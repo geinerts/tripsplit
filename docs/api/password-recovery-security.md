@@ -17,13 +17,14 @@ Request limits run before user lookup, also for unknown addresses:
 | --- | --- |
 | Request IP | 10 per 15-minute fixed window |
 | Request email | 3 per hourly fixed window |
-| Request global | 100 per hourly fixed window |
 | Account delivery attempts | 60-second rolling cooldown, 3 per rolling hour |
 | Confirmation IP | 20 per 15-minute fixed window |
 | Confirmation token | 5 per 15-minute fixed window |
 
-The global budget counts requests, not just sent mail. It deliberately bounds delivery but
-can also limit legitimate recovery under abuse; tune with monitoring before wider rollout.
+A global budget of 100 links per rolling hour counts only links actually created for
+eligible accounts (since 2026-11-19). Requests with unknown or ineligible addresses no
+longer count, so random addresses cannot block recovery for everyone. Over budget the
+response is unchanged (`ok: true`), no mail is sent and the server logs the event.
 Use the existing rate-limiter store. Recovery opts into fail-closed behavior if that table
 is missing; other callers retain their previous default. Missing reset-state migration or
 refresh-session storage also fails closed. Database/infrastructure errors do not grant access.

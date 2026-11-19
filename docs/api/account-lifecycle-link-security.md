@@ -33,7 +33,8 @@ This completes the scoped link-hardening work, not the whole account-erasure or 
 - New requests preserve delivered prior links. Under the user lock, enforce a 60-second
   cooldown and three delivery attempts per rolling hour, including failed attempts.
 - Additional fail-closed limits: request IP 10/15 minutes, email or user 3/hour, global
-  100/hour per action; confirmation IP 20/15 minutes and proof 5/15 minutes. Shared storage
+  100/hour per action (for deletion links, counted only after the account is eligible and
+  reauthenticated, so guest accounts cannot use it up); confirmation IP 20/15 minutes and proof 5/15 minutes. Shared storage
   failures cannot bypass the limits. Mail failure invalidates only the newly issued proof.
 
 ## Atomic confirmation

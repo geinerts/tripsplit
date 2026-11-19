@@ -84,7 +84,7 @@ class QuietPush extends Fake implements PushRegistrationService {
   @override
   Future<void> unregisterCurrentDevice() async {}
   @override
-  Future<bool> syncRegistration() async => true;
+  Future<bool> syncRegistration({bool force = false}) async => true;
 }
 
 class ControllerHarness {

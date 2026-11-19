@@ -498,7 +498,7 @@ function set_credentials_action(): void
              WHERE id = :id'
         )->execute(['email' => $email, 'password_hash' => $passwordHash, 'id' => $userId]);
         record_user_password_capability($pdo, $userId, true);
-        revoke_refresh_tokens_for_user($pdo, $userId);
+        revoke_sessions_and_push_for_user($pdo, $userId);
         $fresh = fetch_me_row_by_id($pdo, $userId);
         if (!$fresh) {
             throw new RuntimeException('Failed to resolve enrolled user.');
@@ -596,7 +596,7 @@ function change_profile_password(PDO $pdo, int $userId, array $body): void
         $pdo->prepare('UPDATE ' . table_name('users') . ' SET password_hash = :hash WHERE id = :id')
             ->execute(['hash' => $hash, 'id' => $userId]);
         record_user_password_capability($pdo, $userId, true);
-        revoke_refresh_tokens_for_user($pdo, $userId);
+        revoke_sessions_and_push_for_user($pdo, $userId);
         $auth = issue_auth_payload($pdo, $userId);
         $fresh = fetch_me_row_by_id($pdo, $userId);
         if (!$fresh) {

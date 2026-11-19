@@ -443,6 +443,18 @@ function revoke_refresh_tokens_for_user(PDO $pdo, int $userId): void
     $stmt->execute(['user_id' => $userId]);
 }
 
+/**
+ * Signs the user out everywhere and stops push delivery to every device.
+ * Push tokens are tied to the user, not to a session, so revoking sessions
+ * alone would keep notifications flowing to a device someone was signed out
+ * of. A device that stays signed in registers its token again.
+ */
+function revoke_sessions_and_push_for_user(PDO $pdo, int $userId): void
+{
+    revoke_refresh_tokens_for_user($pdo, $userId);
+    deactivate_push_tokens_for_user($pdo, $userId);
+}
+
 function deactivate_push_tokens_for_user(PDO $pdo, int $userId): void
 {
     if ($userId <= 0 || !function_exists('push_tokens_table_available')) {

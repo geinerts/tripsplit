@@ -46,7 +46,10 @@ class PushRegistrationService {
     _verifiedAccountLocaleInSession = localeCode;
   }
 
-  Future<bool> syncRegistration() async {
+  /// [force] skips the once-per-app-run shortcut. Use it after the server
+  /// signed every device out of push (for example after a password change),
+  /// so this device registers its token again right away.
+  Future<bool> syncRegistration({bool force = false}) async {
     if (!_supportsPushRegistration) {
       return false;
     }
@@ -62,7 +65,8 @@ class PushRegistrationService {
     // This recovers from server-side token deactivation (for example after
     // migrations, manual cleanup, or stale-token invalidation) while still
     // avoiding repeated register calls in the same app run.
-    if (previousToken == pushToken &&
+    if (!force &&
+        previousToken == pushToken &&
         _verifiedTokenInSession == pushToken &&
         _verifiedLocaleInSession == localeCode) {
       return true;

@@ -71,6 +71,8 @@ final class PasswordResetSecurityTest extends TestCase
         yield ['request_unverified', 0, 0, 0]; yield ['request_guest', 0, 0, 0];
         yield ['request_failed_mail', 1, 1, 0]; yield ['request_cooldown', 1, 1, 1];
         yield ['request_preserves_link', 1, 2, 2]; yield ['request_rolling_limit', 0, 3, 3];
+        // Over the global link budget the answer is unchanged and no mail is sent.
+        yield ['request_global_budget', 0, 100, 0];
     }
     #[DataProvider('requests')]
     public function test_requests_are_bounded_without_revealing_accounts_or_invalidating_delivered_links(
@@ -82,8 +84,8 @@ final class PasswordResetSecurityTest extends TestCase
         self::assertSame($tokens, $r['token_count']);
         self::assertSame($active, $r['active_resets']);
         self::assertSame(2, $r['active_sessions']);
-        self::assertSame(['password_reset_request_ip', 'password_reset_request_email',
-            'password_reset_request_global'], array_slice($r['rates'], 0, 3));
+        self::assertSame(['password_reset_request_ip', 'password_reset_request_email'], array_slice($r['rates'], 0, 2));
+        self::assertNotContains('password_reset_request_global', $r['rates']);
         if ($name === 'request_cooldown') { self::assertSame($r['response'], $r['second']); }
     }
     public function test_requests_fail_closed_without_migration(): void
