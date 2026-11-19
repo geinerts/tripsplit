@@ -134,6 +134,39 @@ function users_email_verified_at_column_available(PDO $pdo): bool
     return $cached;
 }
 
+function users_email_reactivation_column_available(PDO $pdo): bool
+{
+    static $cached = null;
+    if (is_bool($cached)) {
+        return $cached;
+    }
+    // A failed metadata query is not proof that the column is absent. In
+    // particular, suspension must never silently omit revoking permission.
+    $stmt = $pdo->prepare(
+        'SELECT COUNT(1) FROM information_schema.columns
+         WHERE table_schema = DATABASE() AND table_name = :table_name
+           AND column_name = \'email_verification_can_reactivate\''
+    );
+    $stmt->execute(['table_name' => DB_TABLE_PREFIX . 'users']);
+    $cached = (int) $stmt->fetchColumn() > 0;
+    return $cached;
+}
+
+/** Internal permission, never inferred from legacy timestamps or an absent audit event. */
+function email_verification_reactivation_select_sql(PDO $pdo): string
+{
+    return users_email_reactivation_column_available($pdo)
+        ? 'email_verification_can_reactivate, '
+        : '0 AS email_verification_can_reactivate, ';
+}
+
+function user_can_confirm_email_verification(array $user): bool
+{
+    $status = user_account_status($user);
+    return $status === 'active' || ($status === 'deactivated'
+        && (int) ($user['email_verification_can_reactivate'] ?? 0) === 1);
+}
+
 function users_account_status_select_sql(PDO $pdo, string $alias = ''): string
 {
     if (!users_account_status_column_available($pdo)) {
@@ -434,6 +467,7 @@ function process_unverified_account_deactivation(PDO $pdo, array $options = []):
     $enabled = email_verification_required();
     $hasAccountStatus = users_account_status_column_available($pdo);
     $hasEmailVerified = users_email_verified_at_column_available($pdo);
+    $hasReactivationPermission = users_email_reactivation_column_available($pdo);
     $limit = (int) ($options['limit'] ?? email_verification_cleanup_batch_limit());
     $limit = max(1, min(2000, $limit));
     $dryRun = !empty($options['dry_run']);
@@ -441,7 +475,7 @@ function process_unverified_account_deactivation(PDO $pdo, array $options = []):
 
     $result = [
         'enabled' => $enabled,
-        'table_ready' => $hasAccountStatus && $hasEmailVerified,
+        'table_ready' => $hasAccountStatus && $hasEmailVerified && $hasReactivationPermission,
         'dry_run' => $dryRun,
         'limit' => $limit,
         'grace_days' => $graceDays,
@@ -450,7 +484,7 @@ function process_unverified_account_deactivation(PDO $pdo, array $options = []):
         'user_ids' => [],
     ];
 
-    if (!$enabled || !$hasAccountStatus || !$hasEmailVerified) {
+    if (!$enabled || !$hasAccountStatus || !$hasEmailVerified || !$hasReactivationPermission) {
         return $result;
     }
 
@@ -494,7 +528,7 @@ function process_unverified_account_deactivation(PDO $pdo, array $options = []):
     try {
         $stmt = $pdo->prepare(
             'UPDATE ' . $usersTable . '
-             SET account_status = "deactivated"' . $setDeactivatedAt . $setDeletedAt . '
+             SET account_status = "deactivated", email_verification_can_reactivate = 1' . $setDeactivatedAt . $setDeletedAt . '
              WHERE id IN (' . $placeholders . ')
                AND account_status = "active"
                AND credentials_required = 0

@@ -74,4 +74,25 @@ were never used: no refresh session, trip membership, friend or Apple/Google lin
 Erasure is the same as a self-service deletion (`erase_account_for_deletion`): personal
 data is removed and the email address becomes free for a new sign-up. Each account is
 rechecked under a row lock, so a verification or sign-in in the meantime keeps it.
-Verifying a deactivated (not yet erased) account reactivates it.
+Verifying an automatically deactivated (not yet erased) account reactivates it only
+when the internal `email_verification_can_reactivate` permission is set. Automatic
+cleanup grants this permission atomically with deactivation; administrator suspension
+revokes it, including when the account was already automatically deactivated.
+Confirmation checks the locked account row. Administrative/unknown suspensions return
+the existing HTTP 403 account-block response and cannot receive new verification mail.
+Public resend retains its generic successful response to avoid account enumeration.
+
+### 2026-11-18 rollout
+
+Apply `sql/migrations/2026-11-18-email-verification-reactivation-permission.sql` before
+deploying the updated backend. Deploy the backend consistently across workers before
+running the updated cleanup job. This is an internal column; public account statuses,
+request fields and successful verification responses are unchanged.
+
+The migration defaults existing rows to no automatic-reactivation permission. Old
+deactivated rows cannot reliably distinguish administrative suspension from cleanup:
+do not backfill permission based only on timestamps or missing audit entries. Support
+must review these accounts and explicitly reactivate eligible users. Active unverified
+accounts still verify normally. Without the migration, automatic deactivation is
+skipped and unknown deactivated accounts remain blocked. Metadata-query errors fail
+closed rather than being treated as an absent column. No migration is run by API code.

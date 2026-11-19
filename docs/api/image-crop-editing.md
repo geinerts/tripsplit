@@ -46,6 +46,15 @@ are unaffected.
 
 ### Saving a new image
 
+Security correction (2026-11-18): shared multipart image validation and every conversion,
+fallback and thumbnail entrypoint check metadata before decoding. Images are limited to
+12,000,000 pixels and a 12,000-pixel edge. Imagick inputs additionally have a 100-frame/page
+limit and the same total pixel budget across frames. Unknown or excessive dimensions
+are rejected with the existing HTTP 400 error shape. Compressed-byte and upload quotas
+still apply. HEIC/HEIF metadata requires Imagick; no decoder is used as a fallback for
+uninspectable metadata. The mobile receipt preparer now checks dimensions even for small
+files, resizes larger photos and checks the encoder output against the same budget.
+
 `upload_trip_image` and `upload_avatar` still take the cropped image as `trip_image` or
 `avatar`, and now also accept two optional multipart fields:
 

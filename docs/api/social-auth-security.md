@@ -4,6 +4,13 @@ Local implementation: 2026-10-04. SEC-04 is IN_PROGRESS; no production rollout.
 
 ## Login contract
 
+- Security correction (2026-11-18): the existing `social_auth_ip` limiter runs before
+  provider key retrieval or token verification, including invalid-signature attempts.
+  Exhausted quota uses the existing HTTP 429 response. Missing limiter storage returns
+  the existing service-unavailable HTTP 503 response and does not contact the provider.
+  Subject throttling and all signature/claim checks remain in place. A shared JWKS cache
+  remains optional hardening; the correction closes the uncharged provider-work path.
+
 - Production JWT verification checks the accepted provider, signing key, signature,
   issuer, audience, timestamps and subject before account selection.
 - A previously linked `(provider, subject)` authenticates only that linked user. The

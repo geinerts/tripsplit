@@ -20,6 +20,12 @@ foreach (['AUTH_ACCESS_TOKEN_SECRET' => str_repeat('synthetic-credentials-only-'
 class_alias(class_exists('Pdo\\Sqlite') ? 'Pdo\\Sqlite' : PDO::class, 'CredentialsSQLiteBase');
 final class CredentialsSQLite extends CredentialsSQLiteBase
 {
+    public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement|false
+    {
+        $query = preg_replace('/UTC_TIMESTAMP\(\) - INTERVAL (\d+) DAY/', "datetime('now', '-$1 days')", $query);
+        return $fetchMode === null ? parent::query($query) : parent::query($query, $fetchMode, ...$fetchModeArgs);
+    }
+
     public function prepare(string $query, array $options = []): PDOStatement|false
     {
         if (str_contains($query, 'information_schema.tables')) {
@@ -78,7 +84,12 @@ function require_post(): void {}
 function read_json(): array { return $GLOBALS['requestBody']; }
 function bearer_access_token_from_header(): string { return $GLOBALS['accessToken'] ?? ''; }
 function client_ip_address(): string { return '192.0.2.1'; }
-function enforce_rate_limit(PDO $pdo, string $scope, ...$args): void { $GLOBALS['rates'][] = $scope; }
+function enforce_rate_limit(PDO $pdo, string $scope, ...$args): void {
+    $GLOBALS['rates'][] = $scope;
+    if (($GLOBALS['rejectRateScope'] ?? '') === $scope) {
+        json_out(['ok' => false, 'error' => 'Too many requests. Try again later.'], 429);
+    }
+}
 function credential_password_algo(): string { return PASSWORD_BCRYPT; }
 function users_name_columns_available(PDO $pdo): bool { return true; }
 function users_payment_columns_available(PDO $pdo): bool { return false; }

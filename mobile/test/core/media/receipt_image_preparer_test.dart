@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -36,6 +37,46 @@ class _Encoder extends FlutterImageCompressPlatform {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+Uint8List png(int width, int height) {
+  List<int> chunk(String type, List<int> data) {
+    final body = [...type.codeUnits, ...data];
+    var crc = 0xffffffff;
+    for (final byte in body) {
+      crc ^= byte;
+      for (var bit = 0; bit < 8; bit++) {
+        crc = (crc >>> 1) ^ ((crc & 1) == 1 ? 0xedb88320 : 0);
+      }
+    }
+    final length = ByteData(4)..setUint32(0, data.length);
+    final checksum = ByteData(4)..setUint32(0, crc ^ 0xffffffff);
+    return [
+      ...length.buffer.asUint8List(),
+      ...body,
+      ...checksum.buffer.asUint8List(),
+    ];
+  }
+
+  final header = ByteData(13)
+    ..setUint32(0, width)
+    ..setUint32(4, height)
+    ..setUint8(8, 8)
+    ..setUint8(9, 3);
+  return Uint8List.fromList([
+    137,
+    80,
+    78,
+    71,
+    13,
+    10,
+    26,
+    10,
+    ...chunk('IHDR', header.buffer.asUint8List()),
+    ...chunk('PLTE', [0, 0, 0]),
+    ...chunk('IDAT', ZLibEncoder().convert(Uint8List((width + 1) * height))),
+    ...chunk('IEND', []),
+  ]);
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late FlutterImageCompressPlatform original;
@@ -49,7 +90,7 @@ void main() {
 
   test('small supported receipts retain their bytes and filename', () async {
     for (final extension in ['jpg', 'JPEG', 'png', 'webp']) {
-      final bytes = Uint8List.fromList([1, 2, 3]);
+      final bytes = png(120, 80);
       final result = await ReceiptImagePreparer.prepare(
         bytes: bytes,
         fileName: 'receipt.$extension',
@@ -64,11 +105,7 @@ void main() {
     'oversized receipts retry from the original and never exceed the budget',
     () async {
       final source = Uint8List(ReceiptImagePreparer.maxUploadBytes + 1);
-      encoder.outputs.addAll([
-        source,
-        source,
-        Uint8List.fromList([255, 216, 255, 217]),
-      ]);
+      encoder.outputs.addAll([source, source, png(120, 80)]);
       final result = await ReceiptImagePreparer.prepare(
         bytes: source,
         fileName: 'receipt.PNG',
@@ -87,8 +124,42 @@ void main() {
     },
   );
 
+  test(
+    'small compressed high-resolution receipts are resized before upload',
+    () async {
+      final source = png(4096, 3072);
+      expect(source.length, lessThan(ReceiptImagePreparer.maxUploadBytes));
+      encoder.outputs.add(png(3200, 2400));
+      final result = await ReceiptImagePreparer.prepare(
+        bytes: source,
+        fileName: 'camera.png',
+      );
+      expect(identical(result.bytes, source), isFalse);
+      expect(encoder.calls, hasLength(1));
+      expect(
+        encoder.calls.single.width * encoder.calls.single.height,
+        lessThanOrEqualTo(ReceiptImagePreparer.maxUploadPixels),
+      );
+    },
+  );
+
+  test(
+    'an encoder that ignores requested dimensions cannot bypass the cap',
+    () async {
+      encoder.outputs.add(png(4096, 3072));
+      await expectLater(
+        ReceiptImagePreparer.prepare(
+          bytes: png(4096, 3072),
+          fileName: 'large.png',
+        ),
+        throwsFormatException,
+      );
+      expect(encoder.calls, hasLength(12));
+    },
+  );
+
   test('HEIC is converted even when its file is small', () async {
-    encoder.outputs.add(Uint8List.fromList([255, 216, 255, 217]));
+    encoder.outputs.add(png(120, 80));
     final result = await ReceiptImagePreparer.prepare(
       bytes: Uint8List.fromList([1]),
       fileName: 'IMG_1234.HEIC',

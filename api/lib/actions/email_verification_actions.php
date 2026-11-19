@@ -57,8 +57,7 @@ function send_email_verification_link_for_user(PDO $pdo, array $user, bool $supp
         return true;
     }
 
-    $status = user_account_status($user);
-    if ($status === 'deleted') {
+    if (!user_can_confirm_email_verification($user)) {
         return false;
     }
     if (!user_has_email_credentials($user) || !user_requires_email_verification($user)) {
@@ -139,7 +138,7 @@ function request_email_verification_link_action(): void
     $nameSelect = users_name_columns_available($pdo)
         ? 'first_name, '
         : 'NULL AS first_name, ';
-    $accountSelect = users_account_status_select_sql($pdo);
+    $accountSelect = users_account_status_select_sql($pdo) . email_verification_reactivation_select_sql($pdo);
     $stmt = $pdo->prepare(
         'SELECT id, email, credentials_required, ' . $nameSelect . $accountSelect . '
             nickname
@@ -155,7 +154,7 @@ function request_email_verification_link_action(): void
     if (!user_has_email_credentials((array) $user) || !user_requires_email_verification((array) $user)) {
         json_out(['ok' => true]);
     }
-    if (user_account_status((array) $user) === 'deleted') {
+    if (!user_can_confirm_email_verification((array) $user)) {
         json_out(['ok' => true]);
     }
 
@@ -221,7 +220,7 @@ function confirm_email_verification_action(): void
             json_out(['ok' => false, 'error' => 'Invalid verification token state.'], 400);
         }
 
-        $accountSelect = users_account_status_select_sql($pdo);
+        $accountSelect = users_account_status_select_sql($pdo) . email_verification_reactivation_select_sql($pdo);
         $userStmt = $pdo->prepare(
             'SELECT id, email, credentials_required, ' . $accountSelect . '
                 nickname
@@ -242,7 +241,7 @@ function confirm_email_verification_action(): void
             json_out(['ok' => false, 'error' => 'Invalid or expired verification link.'], 400);
         }
 
-        if (user_account_status((array) $user) === 'deleted') {
+        if (!user_can_confirm_email_verification((array) $user)) {
             $pdo->prepare(
                 'UPDATE ' . $tokensTable . '
                  SET used_at = UTC_TIMESTAMP()
@@ -269,11 +268,14 @@ function confirm_email_verification_action(): void
         $setDeletedAt = users_deleted_at_column_available($pdo)
             ? ', deleted_at = NULL'
             : '';
+        $clearReactivation = users_email_reactivation_column_available($pdo)
+            ? ', email_verification_can_reactivate = 0'
+            : '';
 
         $pdo->prepare(
             'UPDATE ' . $usersTable . '
              SET email_verified_at = COALESCE(email_verified_at, UTC_TIMESTAMP()),
-                 account_status = "active"' . $setDeactivatedAt . $setDeletedAt . '
+                 account_status = "active"' . $setDeactivatedAt . $setDeletedAt . $clearReactivation . '
              WHERE id = :id'
         )->execute(['id' => $userId]);
 

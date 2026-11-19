@@ -839,17 +839,21 @@ function admin_panel_user_suspend_action(): void
     }
 
     $userTable = table_name('users');
-    $stmt = $pdo->prepare("SELECT id, nickname, account_status FROM {$userTable} WHERE id = ? LIMIT 1");
+    $reactivationSelect = email_verification_reactivation_select_sql($pdo);
+    $stmt = $pdo->prepare("SELECT id, nickname, {$reactivationSelect} account_status FROM {$userTable} WHERE id = ? LIMIT 1");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
     if (!is_array($user)) {
         json_out(['ok' => false, 'error' => 'User not found.'], 404);
     }
-    if ($user['account_status'] === 'deactivated') {
+    if ($user['account_status'] === 'deactivated'
+        && (int) ($user['email_verification_can_reactivate'] ?? 0) !== 1) {
         json_out(['ok' => false, 'error' => 'User is already deactivated/suspended.'], 409);
     }
 
-    $pdo->prepare("UPDATE {$userTable} SET account_status = 'deactivated' WHERE id = ?")->execute([$userId]);
+    $clearReactivation = users_email_reactivation_column_available($pdo)
+        ? ', email_verification_can_reactivate = 0' : '';
+    $pdo->prepare("UPDATE {$userTable} SET account_status = 'deactivated'{$clearReactivation} WHERE id = ?")->execute([$userId]);
     admin_audit($pdo, $sess, 'user.suspend', 'user', $userId, [
         'nickname' => $user['nickname'],
         'reason'   => $reason,
@@ -871,14 +875,17 @@ function admin_panel_user_reactivate_action(): void
     }
 
     $userTable = table_name('users');
-    $stmt = $pdo->prepare("SELECT id, nickname, account_status FROM {$userTable} WHERE id = ? LIMIT 1");
+    $reactivationSelect = email_verification_reactivation_select_sql($pdo);
+    $stmt = $pdo->prepare("SELECT id, nickname, {$reactivationSelect} account_status FROM {$userTable} WHERE id = ? LIMIT 1");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
     if (!is_array($user)) {
         json_out(['ok' => false, 'error' => 'User not found.'], 404);
     }
 
-    $pdo->prepare("UPDATE {$userTable} SET account_status = 'active' WHERE id = ?")->execute([$userId]);
+    $clearReactivation = users_email_reactivation_column_available($pdo)
+        ? ', email_verification_can_reactivate = 0' : '';
+    $pdo->prepare("UPDATE {$userTable} SET account_status = 'active'{$clearReactivation} WHERE id = ?")->execute([$userId]);
     admin_audit($pdo, $sess, 'user.reactivate', 'user', $userId, [
         'nickname' => $user['nickname'],
         'reason'   => $reason,

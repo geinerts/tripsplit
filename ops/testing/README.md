@@ -15,6 +15,11 @@ block the `deploy-vps` job, whose `needs` list is unchanged. A failure still mak
 
 ## Run
 
+The runner also includes `run_security_fixes_mysql.php`: it applies the email-reactivation
+permission migration twice, preserves legacy restrictions, tests suspension/verification
+and valid social logins, and checks invalid social attempts against the real MySQL limiter.
+No external identity-provider requests or real email are sent.
+
 Prerequisites: running Docker Desktop and the project's locked PHPUnit dependencies
 already installed under `api/vendor` (`composer install` in `api` if missing).
 From the repository root:

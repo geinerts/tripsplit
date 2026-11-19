@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS trip_users (
   has_password TINYINT(1) NULL DEFAULT NULL,
   credentials_required TINYINT(1) NOT NULL DEFAULT 1,
   account_status ENUM('active', 'deactivated', 'deleted') NOT NULL DEFAULT 'active',
+  email_verification_can_reactivate TINYINT(1) NOT NULL DEFAULT 0,
   email_verified_at TIMESTAMP NULL DEFAULT NULL,
   deactivated_at TIMESTAMP NULL DEFAULT NULL,
   deleted_at TIMESTAMP NULL DEFAULT NULL,

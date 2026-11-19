@@ -13,11 +13,15 @@ define('SOCIAL_AUTH_APPLE_CLIENT_IDS', 'synthetic-apple-client');
 
 // Only the external key download is replaced. JWT parsing, RSA signature and claim
 // validation execute the production code with a throwaway signing key.
-function http_get_json_assoc(string $url, int $timeout): array { return ['keys' => [$GLOBALS['jwk']]]; }
+function http_get_json_assoc(string $url, int $timeout): array {
+    $GLOBALS['jwks_rates'][] = $GLOBALS['rates'];
+    return ['keys' => [$GLOBALS['jwk']]];
+}
 function token_from_header(): string { return str_repeat('c', 64); }
 
 $provider = $argv[1] ?? 'google';
 $scenario = $argv[2] ?? 'collision_verified';
+if ($scenario === 'rate_limited') { $rejectRateScope = 'social_auth_ip'; }
 $pdo = credentials_test_db();
 reset_credentials_test_schema($pdo);
 $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
@@ -106,6 +110,7 @@ $afterSessions = $pdo->query('SELECT * FROM trip_refresh_tokens ORDER BY id')->f
 $userId = $response['payload']['me']['id'] ?? null;
 $authenticated = $userId === null ? null : fetch_me_row_by_id($pdo, $userId);
 echo json_encode(['response' => $response, 'users_unchanged' => $beforeUsers === $afterUsers,
+    'rates' => $rates, 'jwks_rates' => $GLOBALS['jwks_rates'] ?? [],
     'identities_unchanged' => $beforeIdentities === $afterIdentities,
     'sessions_unchanged' => $beforeSessions === $afterSessions,
     'user_count' => count($afterUsers), 'identity_count' => count($afterIdentities),

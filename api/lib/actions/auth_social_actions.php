@@ -120,6 +120,17 @@ function social_auth_action(): void
     $fullNameInput = trim((string) ($body['full_name'] ?? ''));
     $deviceToken = token_from_header();
 
+    // Charge every attempt before provider I/O or signature verification.
+    $pdo = db();
+    enforce_rate_limit(
+        $pdo,
+        'social_auth_ip',
+        client_ip_address(),
+        RATE_LIMIT_LOGIN_IP_MAX,
+        RATE_LIMIT_LOGIN_WINDOW_SEC,
+        true
+    );
+
     $claims = verify_social_id_token($provider, $idToken);
     $providerSubject = trim((string) ($claims['subject'] ?? ''));
     $providerEmail = strtolower(trim((string) ($claims['email'] ?? '')));
@@ -129,14 +140,6 @@ function social_auth_action(): void
         json_out(['ok' => false, 'error' => 'Invalid social token subject.'], 401);
     }
 
-    $pdo = db();
-    enforce_rate_limit(
-        $pdo,
-        'social_auth_ip',
-        client_ip_address(),
-        RATE_LIMIT_LOGIN_IP_MAX,
-        RATE_LIMIT_LOGIN_WINDOW_SEC
-    );
     enforce_rate_limit(
         $pdo,
         'social_auth_subject',

@@ -597,8 +597,56 @@ function upload_image_thumb_webp_quality(): int
     return $quality;
 }
 
+/** Inspect metadata before allocating pixels, including any Imagick frames/pages. */
+function upload_image_within_decode_budget(string $file): bool
+{
+    $maxPixels = 12_000_000;
+    $maxEdge = 12_000;
+    $within = static fn(int $width, int $height): bool => $width > 0 && $height > 0
+        && $width <= $maxEdge && $height <= $maxEdge
+        && $width <= intdiv($maxPixels, $height);
+    $size = @getimagesize($file);
+    if (is_array($size) && !$within((int) $size[0], (int) $size[1])) {
+        return false;
+    }
+    if (!extension_loaded('imagick')) {
+        return is_array($size) && in_array($size['mime'] ?? '', ['image/jpeg', 'image/png', 'image/webp'], true);
+    }
+
+    // pingImage reads metadata without decoding the raster, including HEIC/HEIF.
+    $probe = new Imagick();
+    try {
+        if (!$probe->pingImage($file) || $probe->getNumberImages() < 1 || $probe->getNumberImages() > 100) {
+            return false;
+        }
+        $pixels = 0;
+        foreach ($probe as $frame) {
+            if (!in_array(strtoupper($frame->getImageFormat()), ['JPEG', 'JPG', 'PNG', 'WEBP', 'HEIC', 'HEIF'], true)) {
+                return false;
+            }
+            $width = $frame->getImageWidth();
+            $height = $frame->getImageHeight();
+            if (!$within($width, $height)) {
+                return false;
+            }
+            $pixels += $width * $height;
+            if ($pixels > $maxPixels) {
+                return false;
+            }
+        }
+        return true;
+    } catch (Throwable $error) {
+        return false;
+    } finally {
+        $probe->clear();
+    }
+}
+
 function decode_image_from_upload(string $tmpFile)
 {
+    if (!upload_image_within_decode_budget($tmpFile)) {
+        return null;
+    }
     $raw = @file_get_contents($tmpFile);
     if (!is_string($raw) || $raw === '') {
         return null;
@@ -613,7 +661,7 @@ function decode_image_from_upload(string $tmpFile)
 
 function create_webp_thumbnail(string $sourceFile, string $targetFile): bool
 {
-    if (!is_file($sourceFile)) {
+    if (!is_file($sourceFile) || !upload_image_within_decode_budget($sourceFile)) {
         return false;
     }
 
@@ -711,6 +759,9 @@ function convert_uploaded_image_to_webp_via_class_upload(
     string $targetFile,
     string $sourceMime = ''
 ): bool {
+    if (!upload_image_within_decode_budget($tmpFile)) {
+        return false;
+    }
     if (!load_class_upload_library()) {
         return false;
     }
@@ -790,6 +841,9 @@ function convert_uploaded_image_to_webp(
     string $sourceMime = ''
 ): bool
 {
+    if (!upload_image_within_decode_budget($tmpFile)) {
+        return false;
+    }
     if (convert_uploaded_image_to_webp_via_class_upload($tmpFile, $targetFile, $sourceMime)) {
         return true;
     }
@@ -882,6 +936,10 @@ function validate_uploaded_image_file(
         ], 400);
     }
 
+    if (!upload_image_within_decode_budget($tmp)) {
+        json_out(['ok' => false, 'error' => 'Choose a valid image up to 12 megapixels.'], 400);
+    }
+
     return [
         'tmp' => $tmp,
         'size' => $size,
@@ -904,6 +962,10 @@ function store_uploaded_image_as_webp(
             'ok' => false,
             'error' => 'HEIC/HEIF is not supported on server. Please upload JPG or PNG.',
         ], 400);
+    }
+
+    if (!upload_image_within_decode_budget($tmpFile)) {
+        json_out(['ok' => false, 'error' => 'Choose a valid image up to 12 megapixels.'], 400);
     }
 
     $ensureDir();

@@ -5,6 +5,21 @@ use PHPUnit\Framework\TestCase;
 
 final class SocialIdentitySecurityTest extends TestCase
 {
+    public function test_provider_work_is_throttled_even_for_invalid_signatures_and_algorithms(): void
+    {
+        foreach (['apple', 'google'] as $provider) {
+            foreach (['bad_signature', 'wrong_algorithm', 'linked_verified'] as $scenario) {
+                $r = $this->scenario($provider, $scenario);
+                self::assertSame([['social_auth_ip']], $r['jwks_rates']);
+                self::assertSame($scenario === 'linked_verified' ? 200 : 401, $r['response']['status']);
+            }
+            $r = $this->scenario($provider, 'rate_limited');
+            self::assertSame(429, $r['response']['status']);
+            self::assertSame([], $r['jwks_rates']);
+            self::assertTrue($r['sessions_unchanged']);
+        }
+    }
+
     private function scenario(string $provider, string $scenario): array
     {
         $process = proc_open([PHP_BINARY, __DIR__ . '/../Fixtures/social_security.php', $provider, $scenario],
