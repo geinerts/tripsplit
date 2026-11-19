@@ -62,6 +62,17 @@ function issue_auth_payload(PDO $pdo, int $userId): array {
     return ['synthetic_user_id' => $userId];
 }
 function app_event(PDO $pdo, int $userId, ...$args): void { $GLOBALS['events'][] = $userId; }
+$notices = [];
+if (!defined('APP_BASE_URL')) { define('APP_BASE_URL', 'https://example.invalid'); }
+function email_verification_required(): bool { return true; }
+function rate_limit_try(PDO $pdo, string $scope, ...$args): bool { $GLOBALS['rateCalls'][] = $scope; return true; }
+function users_account_status_select_sql(PDO $pdo, string $alias = ''): string { return 'account_status, '; }
+function user_account_status(array $user): string { return (string) ($user['account_status'] ?? 'active'); }
+function build_existing_account_notice_email(string $url, string $firstName): string { return $url; }
+function send_email_via_resend(string $to, string $subject, string $html): bool {
+    $GLOBALS['notices'][] = $to;
+    return true;
+}
 
 require __DIR__ . '/../../lib/helpers/helper_validation.php';
 require __DIR__ . '/../../config/config_user_validation.php';

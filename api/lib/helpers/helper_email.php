@@ -219,6 +219,17 @@ function build_email_verification_email(
     );
 }
 
+function build_existing_account_notice_email(string $appUrl, string $firstName): string
+{
+    return build_account_email_template(
+        'You already have an account.', $firstName,
+        'Someone just tried to create a Splyto account with this email address. It already belongs to your account, so nothing was changed.',
+        'Open Splyto', $appUrl,
+        'If it was you, sign in with this email, or choose "Forgot password" on the sign-in screen. If you have not verified your email yet, request a new link there. If it was not you, you can ignore this email.',
+        'Someone tried to sign up with your email. Your account is unchanged.'
+    );
+}
+
 function build_account_delete_email(string $deleteUrl, string $firstName): string
 {
     return build_account_email_template(

@@ -25,8 +25,8 @@ final class RegistrationSecurityTest extends TestCase
     public static function existingAccounts(): iterable
     {
         foreach ([true, false] as $hasNames) {
-            foreach (['existing_guest', 'existing_credentials', 'existing_same_email',
-                'existing_unverified', 'existing_inactive', 'existing_no_credentials', 'duplicate_email'] as $scenario) {
+            foreach (['existing_guest', 'existing_credentials',
+                'existing_unverified', 'existing_inactive', 'existing_no_credentials'] as $scenario) {
                 yield $scenario . ($hasNames ? '-names' : '-legacy') => [$scenario, $hasNames];
             }
         }
@@ -45,6 +45,28 @@ final class RegistrationSecurityTest extends TestCase
         self::assertSame([], $result['auth_issued']);
         self::assertSame([], $result['mail_users']);
         self::assertSame([], $result['event_users']);
+    }
+
+    /** A taken email gets exactly the new-account answer; the owner is told by email. */
+    public function test_taken_email_answers_like_a_new_account_and_notifies_the_owner(): void
+    {
+        foreach (['existing_same_email', 'duplicate_email'] as $scenario) {
+            foreach ([true, false] as $hasNames) {
+                $result = $this->runScenario($scenario, $hasNames);
+                $fresh = $this->runScenario('new_credentials', $hasNames);
+                self::assertSame(200, $result['response']['status']);
+                $expected = $fresh['response']['payload'];
+                $expected['verification_email'] = 'existing@example.invalid';
+                self::assertSame($expected, $result['response']['payload']);
+                self::assertTrue($result['existing_unchanged']);
+                self::assertSame(1, $result['user_count']);
+                self::assertSame([], $result['auth_issued']);
+                self::assertSame([], $result['mail_users']);
+                self::assertSame([], $result['event_users']);
+                self::assertSame(['existing@example.invalid'], $result['notices']);
+                self::assertContains('existing_account_notice', $result['rate_scopes']);
+            }
+        }
     }
 
     public function test_new_guest_gets_only_the_newly_created_identity(): void

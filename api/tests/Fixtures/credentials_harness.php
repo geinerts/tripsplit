@@ -106,6 +106,10 @@ function build_me_payload(array $user, ?PDO $pdo = null): array {
         'has_password' => user_password_capability($pdo, (int) $user['id'])];
 }
 function build_email_verification_email(string $url, ...$args): string { return $url; }
+function rate_limit_try(PDO $pdo, string $scope, ...$args): bool { return true; }
+if (!function_exists('build_existing_account_notice_email')) {
+    function build_existing_account_notice_email(string $url, string $firstName): string { return $url; }
+}
 function send_email_via_resend(string $to, string $subject, string $html): bool {
     $GLOBALS['mail'][] = ['to' => $to, 'body' => $html];
     return $GLOBALS['mailSucceeds'];

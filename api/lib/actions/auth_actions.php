@@ -122,6 +122,54 @@ function register_proof_action(): void
 }
 
 
+/** True when any account, in any state, already uses this email. */
+function registration_email_in_use(PDO $pdo, string $email): bool
+{
+    $stmt = $pdo->prepare('SELECT 1 FROM ' . table_name('users') . ' WHERE email = :email LIMIT 1');
+    $stmt->execute(['email' => strtolower(trim($email))]);
+    return (bool) $stmt->fetchColumn();
+}
+
+/**
+ * Tells the owner of $email that someone tried to use it for another account.
+ * Silent and best effort: at most one notice per address per 24 hours, and a
+ * refused or failed send never changes the response.
+ */
+function send_existing_account_notice(PDO $pdo, string $email): void
+{
+    $email = strtolower(trim($email));
+    if ($email === '' || !rate_limit_try($pdo, 'existing_account_notice', $email, 1, 86400)) {
+        return;
+    }
+    try {
+        $nameSelect = users_name_columns_available($pdo) ? 'first_name' : 'nickname AS first_name';
+        $stmt = $pdo->prepare('SELECT email, ' . users_account_status_select_sql($pdo) . $nameSelect
+            . ' FROM ' . table_name('users') . ' WHERE email = :email LIMIT 1');
+        $stmt->execute(['email' => $email]);
+        $owner = $stmt->fetch();
+        if (!is_array($owner) || user_account_status($owner) === 'deleted') {
+            return;
+        }
+        send_email_via_resend((string) $owner['email'], 'Someone tried to sign up with your email',
+            build_existing_account_notice_email(rtrim((string) APP_BASE_URL, '/') . '/',
+                (string) ($owner['first_name'] ?? '')));
+    } catch (Throwable $error) {
+        error_log('Existing account notice failed.');
+    }
+}
+
+/** The answer a new email account gets; also used when the email is taken. */
+function registration_verification_required_response(string $email): void
+{
+    json_out([
+        'ok' => true,
+        'code' => 'EMAIL_VERIFICATION_REQUIRED',
+        'email_verification_required' => true,
+        'verification_email' => strtolower(trim($email)),
+        'message' => 'Verification email sent. Please verify your email before logging in.',
+    ]);
+}
+
 function register_action(): void
 {
     require_post();
@@ -183,6 +231,16 @@ function register_action(): void
         $values['email_verified_at'] = null;
     }
 
+    // An email that is already taken gets the same answer as a new account, so
+    // sign-up does not reveal which addresses are registered; the owner is told
+    // by email instead. Only when sign-up needs email verification, so the
+    // answers really are the same.
+    $hideEmailInUse = $hasCredentials && email_verification_required();
+    if ($hideEmailInUse && registration_email_in_use($pdo, (string) $values['email'])) {
+        send_existing_account_notice($pdo, (string) $values['email']);
+        registration_verification_required_response((string) $values['email']);
+    }
+
     // Registration creates an identity; a device ID must never authenticate an old one.
     // Unique indexes arbitrate concurrent requests without updating the winning account.
     $columns = array_keys($values);
@@ -195,6 +253,11 @@ function register_action(): void
     } catch (PDOException $error) {
         if ((string) $error->getCode() !== '23000') {
             throw $error;
+        }
+        // A concurrent sign-up may have taken the email between the check and the insert.
+        if ($hideEmailInUse && registration_email_in_use($pdo, (string) $values['email'])) {
+            send_existing_account_notice($pdo, (string) $values['email']);
+            registration_verification_required_response((string) $values['email']);
         }
         json_out([
             'ok' => false,
@@ -212,13 +275,7 @@ function register_action(): void
 
     if ($hasCredentials && user_requires_email_verification((array) $me)) {
         send_email_verification_link_for_user($pdo, (array) $me);
-        json_out([
-            'ok' => true,
-            'code' => 'EMAIL_VERIFICATION_REQUIRED',
-            'email_verification_required' => true,
-            'verification_email' => strtolower(trim((string) ($me['email'] ?? ''))),
-            'message' => 'Verification email sent. Please verify your email before logging in.',
-        ]);
+        registration_verification_required_response((string) ($me['email'] ?? ''));
     }
 
     $newUserId = (int) ($me['id'] ?? 0);
@@ -268,6 +325,8 @@ function login_action(): void
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch();
     if (!$user) {
+        // Same work as a real account, so timing does not reveal the email.
+        password_verify($password, login_dummy_password_hash());
         json_out(['ok' => false, 'error' => 'Invalid email or password.'], 401);
     }
 
@@ -470,6 +529,11 @@ function set_credentials_action(): void
     $usersTable = table_name('users');
     $userId = (int) $me['id'];
     enforce_credential_change_rate_limits($pdo, $userId);
+    // The 409 below must stay (the app signs out on the success answer, which
+    // would cost a guest their account), so it is limited per day instead:
+    // guests are cheap to create, and this answer shows whether an email is taken.
+    enforce_rate_limit($pdo, 'credential_enroll_ip_day', client_ip_address(), 10, 86400, true);
+    enforce_rate_limit($pdo, 'credential_enroll_user_day', (string) $userId, 5, 86400, true);
     ensure_refresh_tokens_table_available($pdo);
     if (!email_verification_required() || !users_email_verified_at_column_available($pdo)) {
         json_out(['ok' => false, 'error' => 'Verified credential enrollment is unavailable.'], 503);
@@ -509,6 +573,7 @@ function set_credentials_action(): void
             $pdo->rollBack();
         }
         if ($error instanceof PDOException && (string) $error->getCode() === '23000') {
+            send_existing_account_notice($pdo, $email);
             json_out(['ok' => false, 'code' => 'CREDENTIALS_CONFLICT',
                 'error' => 'Credentials could not be saved. Use another email or account recovery.'], 409);
         }
@@ -527,6 +592,18 @@ function set_credentials_action(): void
         'message' => $sent
             ? 'Verify your email before logging in.'
             : 'Credentials saved. Request a verification email from the login screen.']);
+}
+
+/**
+ * A fixed hash of a random, discarded secret with the same settings as user
+ * passwords (PHP 8.3 defaults on the server), precomputed so the unknown-email
+ * path does one verify and no extra hashing.
+ */
+function login_dummy_password_hash(): string
+{
+    return credential_password_algo() === PASSWORD_BCRYPT
+        ? '$2y$10$lnIDDmOEHQe7R70n1WrO7.7OKWZ3qSJ8Orswa5zP0weS.Jfqk9NPq'
+        : '$argon2id$v=19$m=65536,t=4,p=1$WUUyeXFaUnZ5SEJZVmkxVA$unl7s5NVgjHeKQujzl0Kkm702oVmnFXYrJnDG2cg1IE';
 }
 
 function enforce_credential_change_rate_limits(PDO $pdo, int $userId): void

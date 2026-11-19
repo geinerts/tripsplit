@@ -317,6 +317,38 @@ function enforce_rate_limit(
     }
 }
 
+/**
+ * Counts one hit and says whether it is within the limit, without answering
+ * the request. For silent budgets (e.g. notice mails) whose refusal must not
+ * show in the response. Missing storage counts as "not allowed".
+ */
+function rate_limit_try(PDO $pdo, string $scope, string $subject, int $maxHits, int $windowSeconds): bool
+{
+    $scope = trim($scope);
+    $subject = trim(strtolower($subject));
+    if ($scope === '' || $subject === '' || $maxHits <= 0 || $windowSeconds <= 0) {
+        return false;
+    }
+    $windowStart = (int) (floor(time() / $windowSeconds) * $windowSeconds);
+    $params = ['scope' => $scope, 'subject_hash' => hash('sha256', $subject), 'window_start' => $windowStart];
+    $table = table_name('request_limits');
+    try {
+        $pdo->prepare(
+            'INSERT INTO ' . $table . ' (scope, subject_hash, window_start, hits)
+             VALUES (:scope, :subject_hash, :window_start, 1)
+             ON DUPLICATE KEY UPDATE hits = hits + 1, updated_at = CURRENT_TIMESTAMP'
+        )->execute($params);
+        $select = $pdo->prepare(
+            'SELECT hits FROM ' . $table . '
+             WHERE scope = :scope AND subject_hash = :subject_hash AND window_start = :window_start LIMIT 1'
+        );
+        $select->execute($params);
+        return (int) ($select->fetchColumn() ?: 0) <= $maxHits;
+    } catch (Throwable $error) {
+        return false;
+    }
+}
+
 function enforce_upload_daily_quota(
     PDO $pdo,
     string $scope,

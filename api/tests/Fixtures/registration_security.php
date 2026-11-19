@@ -79,4 +79,4 @@ try {
     $result = ['database_error_propagated' => true];
 }
 echo json_encode($result + ['auth_issued' => $authIssued, 'mail_users' => $verificationMail,
-    'event_users' => $events, 'rate_scopes' => $rateCalls], JSON_THROW_ON_ERROR);
+    'event_users' => $events, 'rate_scopes' => $rateCalls, 'notices' => $notices], JSON_THROW_ON_ERROR);

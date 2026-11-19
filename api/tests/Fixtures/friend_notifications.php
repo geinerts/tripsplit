@@ -7,6 +7,9 @@ require __DIR__ . '/../../lib/helpers/helper_pagination.php';
 require __DIR__ . '/../../lib/actions/notifications_actions.php';
 require __DIR__ . '/../../lib/actions/friends/friends_helpers.php';
 require __DIR__ . '/../../lib/actions/friends/friends_mutations.php';
+require __DIR__ . '/../../lib/actions/friends/friends_search.php';
+if (!function_exists('ids_from_csv')) { function ids_from_csv(string $csv): array { return []; } }
+if (!function_exists('str_length')) { function str_length(string $v): int { return mb_strlen($v); } }
 foreach (['RATE_LIMIT_FRIENDS_INVITE_IP_MAX','RATE_LIMIT_FRIENDS_INVITE_USER_MAX','RATE_LIMIT_MUTATION_WINDOW_SEC','RATE_LIMIT_SEARCH_IP_MAX','RATE_LIMIT_SEARCH_USER_MAX','RATE_LIMIT_SEARCH_WINDOW_SEC'] as $key) define($key, 100);
 class Response extends RuntimeException {
     public function __construct(public array $payload, public int $status) { parent::__construct(); }
@@ -49,8 +52,8 @@ if ($mysql) {
 }
 $idType = $mysql ? 'INT UNSIGNED' : 'INTEGER';
 $id = $idType . ' PRIMARY KEY ' . ($mysql ? 'AUTO_INCREMENT' : 'AUTOINCREMENT');
-$pdo->exec('CREATE TABLE trip_users (id '.$idType.' PRIMARY KEY, nickname VARCHAR(64), avatar_path TEXT, guest_trip_id INT NULL)');
-$pdo->exec('INSERT INTO trip_users VALUES (1,"One",NULL,NULL),(2,"Two",NULL,NULL),(3,"Three",NULL,NULL),(4,"Guest",NULL,99)');
+$pdo->exec('CREATE TABLE trip_users (id '.$idType.' PRIMARY KEY, nickname VARCHAR(64), avatar_path TEXT, guest_trip_id INT NULL, email VARCHAR(190) NULL)');
+$pdo->exec('INSERT INTO trip_users VALUES (1,"One",NULL,NULL,NULL),(2,"Two",NULL,NULL,"two.person@example.test"),(3,"Three",NULL,NULL,NULL),(4,"Guest",NULL,99,NULL)');
 $pdo->exec('CREATE TABLE trip_friends (id '.$id.',user_a_id INT,user_b_id INT,requested_by INT,status VARCHAR(20),responded_at TIMESTAMP NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,UNIQUE(user_a_id,user_b_id))');
 $pdo->exec('CREATE TABLE trip_trips (id '.$idType.' PRIMARY KEY,name TEXT)');
 $pdo->exec('CREATE TABLE trip_notifications (id '.$id.',trip_id '.$idType.($mysql ? ' NOT NULL' : ' NULL').',user_id '.$idType.',type VARCHAR(48),title TEXT,body TEXT,payload_json '.($mysql ? 'JSON' : 'TEXT').',is_read INT DEFAULT 0,read_at TIMESTAMP NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -145,4 +148,10 @@ foreach ([['type'=>'trip_ready_to_settle', 'payload'=>['user_id'=>2]],
           ['type'=>'trip_finished', 'payload'=>['ended_by_user_id'=>'invalid']]] as $item) {
     check(notifications_with_actor_avatars($pdo, [$item])[0]['actor_avatar_url']===null);
 }
+// Friend search finds an email only as the whole address (F16).
+$searchIds = static fn(string $q): array => array_column(callAction('search_users_action',1,[],['q'=>$q])[1]['users'],'id');
+check($searchIds('two.person@example.test')===[2]);
+check($searchIds('TWO.PERSON@example.test')===[2]);
+foreach (['two.person@','@example.test','person','example'] as $partial) check($searchIds($partial)===[]);
+check($searchIds('Two')===[2]);
 echo json_encode(['assertions'=>$assertions]);

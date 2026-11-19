@@ -37,7 +37,8 @@ final class CredentialsSecurityTest extends TestCase
         self::assertSame($status, $result['response']['status']);
         self::assertTrue($result['user_unchanged']);
         self::assertTrue($result['sessions_unchanged']);
-        self::assertSame(0, $result['mail_count']);
+        // A taken email only sends the owner a notice (F16); nothing else mails.
+        self::assertSame($scenario === 'enroll_duplicate' ? 1 : 0, $result['mail_count']);
         self::assertArrayNotHasKey('auth', $result['response']['payload']);
     }
     public function test_password_login_resolves_unknown_status_only_after_valid_proof(): void
@@ -69,7 +70,8 @@ final class CredentialsSecurityTest extends TestCase
             self::assertSame(2, $result['old_sessions_revoked']);
             self::assertSame(0, $result['active_sessions']);
             self::assertTrue($result['other_session_active']);
-            self::assertSame(['credential_change_ip', 'credential_change_user'], $result['rates']);
+            self::assertSame(['credential_change_ip', 'credential_change_user',
+                'credential_enroll_ip_day', 'credential_enroll_user_day'], $result['rates']);
         }
     }
     public function test_enrollment_cannot_be_replayed_and_verification_link_still_works(): void

@@ -8,11 +8,19 @@ device-ID reuse path; it does not complete SEC-01 or the wider authentication au
 - `register_proof` still returns a short-lived proof bound to a device identifier.
   A proof authorizes an attempt to create a new account, not access to an existing one.
 - `register` inserts a new user. It never updates a user on email/device-token collision.
-- Collision response: HTTP 409, `ok: false`, `code: REGISTRATION_CONFLICT` and a message
+- **Email already in use (changed 2026-11-19, F16):** when the request carries credentials and
+  the email belongs to any existing account, nothing is created or changed and the answer is
+  exactly the verification-required response a new account gets (HTTP 200,
+  `code: EMAIL_VERIFICATION_REQUIRED`, the submitted `verification_email`). The account owner
+  instead gets a notice email ("someone tried to create an account with your email; sign in or
+  reset your password"), at most once per address per 24 hours. So a sign-up no longer reveals
+  whether an email is registered. Apps already show the "check your email" screen for this
+  response; no app change is needed.
+- **Device ID collision:** HTTP 409, `ok: false`, `code: REGISTRATION_CONFLICT` and a message
   directing the user to sign in or recover their account. No `me`/`auth` payload is returned.
-- This applies to guest, verified, unverified and inactive existing accounts, whether
-  or not the request supplies credentials. No mail, registration event or session is
-  issued for the rejected attempt. A valid proof replay does not bypass this rule.
+  The device ID is chosen by the client, so this reveals nothing about other people.
+- In both cases no session, registration event or verification mail is issued for an existing
+  account, and existing rows stay unchanged. A valid proof replay does not bypass this rule.
 - Ordinary successful creation and verification-required response contracts remain
   unchanged. Session issuance resolves the new insert ID, not the client device token.
 - Infrastructure errors outside integrity-constraint violations propagate as errors;
@@ -25,8 +33,8 @@ indexes. Confirm those indexes on the target database before rollout. Their uniq
 is the concurrency boundary; a separate SELECT-before-INSERT would not suffice.
 
 Existing clients must sign in/recover rather than replay registration to regain access.
-In particular, retrying after an uncertain network response or a verification-required
-response can now return 409. Never automatically fall back to device-ID authentication.
+In particular, retrying after an uncertain network response with the same device ID can
+return 409; with the same email it gets the verification-required response again. Never automatically fall back to device-ID authentication.
 Test the verification resend/login UI and same-device new-account journey before release.
 Authenticated guest credential enrollment is a separate flow; registration is not an upgrade.
 
@@ -96,3 +104,14 @@ must review these accounts and explicitly reactivate eligible users. Active unve
 accounts still verify normally. Without the migration, automatic deactivation is
 skipped and unknown deactivated accounts remain blocked. Metadata-query errors fail
 closed rather than being treated as an absent column. No migration is run by API code.
+
+## Related enumeration fixes (2026-11-19, F16)
+
+- `set_credentials` (guest adds email and password) keeps its 409 `CREDENTIALS_CONFLICT` for an
+  email that is already taken: the app signs out on the success answer, so answering "success"
+  would cost the guest their account. Instead the account owner gets the same notice email, and
+  the action is limited to 10 per IP and 5 per account per day (429 above that).
+- `login` with an unknown email checks the password against a fixed dummy hash, so the answer
+  takes as long as for a real account.
+- Friend search (`search_users`) matches an email only when `q` is the whole address
+  (case-insensitive). Parts of an email no longer match; names match as before.

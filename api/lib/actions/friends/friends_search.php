@@ -100,22 +100,25 @@ function search_users_action(): void
     } else {
         $queryLike = '%' . $qRaw . '%';
         $queryPrefix = $qRaw . '%';
+        // An email matches only as the whole address, so search cannot be used
+        // to guess or confirm parts of other people's emails.
+        $queryEmail = strtolower($qRaw);
 
         if ($hasNameColumns) {
             $searchParams = array_merge([
                 'q_like_display' => $queryLike,
                 'q_like_nickname' => $queryLike,
-                'q_like_email' => $queryLike,
+                'q_email' => $queryEmail,
+                'q_email_match' => $queryEmail,
                 'q_prefix_display' => $queryPrefix,
                 'q_prefix_nickname' => $queryPrefix,
-                'q_prefix_email' => $queryPrefix,
             ], $excludeParams);
         } else {
             $searchParams = array_merge([
                 'q_like_nickname' => $queryLike,
-                'q_like_email' => $queryLike,
+                'q_email' => $queryEmail,
+                'q_email_match' => $queryEmail,
                 'q_prefix_nickname' => $queryPrefix,
-                'q_prefix_email' => $queryPrefix,
             ], $excludeParams);
         }
 
@@ -132,12 +135,12 @@ function search_users_action(): void
                         WHEN u.nickname LIKE :q_prefix_nickname THEN 1
                         ELSE 2
                     END AS rank_prefix,
-                    CASE WHEN u.email IS NOT NULL AND u.email LIKE :q_prefix_email THEN 0 ELSE 1 END AS rank_email
+                    CASE WHEN u.email IS NOT NULL AND LOWER(u.email) = :q_email THEN 0 ELSE 1 END AS rank_email
                  FROM ' . $usersTable . ' u
                  WHERE (
                     (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_like_display)
                     OR u.nickname LIKE :q_like_nickname
-                    OR (u.email IS NOT NULL AND u.email LIKE :q_like_email)
+                    OR (u.email IS NOT NULL AND LOWER(u.email) = :q_email_match)
                  )' . $activeFilter . $excludeClause . '
                  ORDER BY rank_prefix ASC, rank_email ASC, ' . $displayExpr . ' ASC, u.nickname ASC, u.id ASC
                  LIMIT ' . $limit;
@@ -149,9 +152,9 @@ function search_users_action(): void
                     u.nickname,
                     u.avatar_path,
                     CASE WHEN u.nickname LIKE :q_prefix_nickname THEN 0 ELSE 1 END AS rank_prefix,
-                    CASE WHEN u.email IS NOT NULL AND u.email LIKE :q_prefix_email THEN 0 ELSE 1 END AS rank_email
+                    CASE WHEN u.email IS NOT NULL AND LOWER(u.email) = :q_email THEN 0 ELSE 1 END AS rank_email
                  FROM ' . $usersTable . ' u
-                 WHERE (u.nickname LIKE :q_like_nickname OR (u.email IS NOT NULL AND u.email LIKE :q_like_email))' . $activeFilter . $excludeClause . '
+                 WHERE (u.nickname LIKE :q_like_nickname OR (u.email IS NOT NULL AND LOWER(u.email) = :q_email_match))' . $activeFilter . $excludeClause . '
                  ORDER BY rank_prefix ASC, rank_email ASC, u.nickname ASC, u.id ASC
                  LIMIT ' . $limit;
         }
