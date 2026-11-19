@@ -79,8 +79,11 @@ for ($round = 1; $round <= 5; $round++) {
             $before = $pdo->query('SELECT * FROM trip_users')->fetchAll();
         }
         $results = raceRegistration($scenario);
-        $successes = array_filter($results, static fn(array $result): bool => $result['response']['status'] === 200);
-        requireTest(count($successes) === ($scenario === 'existing' ? 0 : 1), 'Unexpected number of successful registrations');
+        // A taken email answers 200 like a new account (F16), so count the
+        // requests that actually created something: they mailed or signed in.
+        $winners = array_filter($results, static fn(array $result): bool => $result['response']['status'] === 200
+            && ($result['auth_issued'] !== [] || $result['mail_users'] !== []));
+        requireTest(count($winners) === ($scenario === 'existing' ? 0 : 1), 'Unexpected number of successful registrations');
         $authCount = $mailCount = $eventCount = 0;
         $rows = $pdo->query('SELECT * FROM trip_users')->fetchAll();
         requireTest(count($rows) === 1, 'Duplicate or missing user after race');
@@ -93,6 +96,11 @@ for ($round = 1; $round <= 5; $round++) {
                     && ($result['response']['payload']['code'] ?? '') === 'REGISTRATION_CONFLICT', 'Unexpected rejection');
                 requireTest($result['auth_issued'] === [] && $result['mail_users'] === []
                     && $result['event_users'] === [], 'Rejected registration produced side effects');
+            } elseif ($result['auth_issued'] === [] && $result['mail_users'] === []) {
+                // Lost the race for the email: same answer as a new account, no side effects.
+                requireTest($scenario === 'email_credentials'
+                    && ($result['response']['payload']['code'] ?? '') === 'EMAIL_VERIFICATION_REQUIRED'
+                    && $result['event_users'] === [], 'Unexpected answer for a taken email');
             } elseif ($scenario === 'device_guest') {
                 requireTest($result['auth_issued'] === [(int) $rows[0]['id']], 'Session bound to wrong account');
             } else {
