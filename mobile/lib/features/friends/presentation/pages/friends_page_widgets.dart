@@ -486,9 +486,12 @@ extension _FriendsPageWidgets on _FriendsPageState {
         const SizedBox(height: 8),
         Text(context.l10n.friendsEmptyBody, textAlign: TextAlign.center),
         const SizedBox(height: 16),
+        // New friends come by QR code or the friend link shared from the
+        // same page; there is no search across all users.
         FilledButton.icon(
-          onPressed: () => unawaited(_openFriendSearch()),
-          icon: const Icon(Icons.person_add_alt_1_outlined),
+          key: const ValueKey('friends-empty-add'),
+          onPressed: () => unawaited(_openMyFriendQr()),
+          icon: const Icon(Icons.qr_code_2),
           label: Text(context.l10n.friendsAddFriend),
         ),
       ],

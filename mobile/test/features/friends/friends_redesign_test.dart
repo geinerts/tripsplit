@@ -1,5 +1,4 @@
 import 'friend_trip_test_fakes.dart';
-import 'package:tripsplit/features/friends/presentation/pages/friend_search_page.dart';
 import 'package:tripsplit/features/trips/domain/entities/trip.dart';
 import 'package:tripsplit/features/auth/domain/entities/auth_user.dart';
 import 'package:tripsplit/features/friends/domain/entities/friend_link.dart';
@@ -77,9 +76,7 @@ class _Friends implements FriendsController {
   ];
   Object? failure;
   Object? pageFailure;
-  Object? searchFailure;
   Object? inviteFailure;
-  final searchCalls = <(String, int, List<int>)>[];
   Completer<void>? gate;
   Completer<void>? mutationGate;
   final responses = <(int, bool)>[];
@@ -87,8 +84,6 @@ class _Friends implements FriendsController {
   final invites = <int>[];
   final removed = <int>[];
   bool more = false;
-  List<FriendUser> search = [const FriendUser(id: 12, nickname: 'Alex')];
-  Future<List<FriendUser>> Function(String)? searchHandler;
   @override
   Future<FriendsSectionPage> loadSectionPage({
     required String section,
@@ -151,21 +146,6 @@ class _Friends implements FriendsController {
   Future<void> removeFriend({required int userId}) async {
     removed.add(userId);
     friends = friends.where((u) => u.id != userId).toList();
-  }
-
-  @override
-  Future<List<FriendUser>> searchUsers({
-    required String query,
-    int limit = 20,
-    List<int> excludeIds = const [],
-  }) async {
-    searchCalls.add((query, limit, List.of(excludeIds)));
-    if (searchFailure != null) throw searchFailure!;
-    final users = searchHandler == null ? search : await searchHandler!(query);
-    return users
-        .where((user) => !excludeIds.contains(user.id))
-        .take(limit)
-        .toList();
   }
 
   @override
@@ -236,11 +216,6 @@ Future<void> _mount(
     home: Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-            key: const ValueKey('friends-open-search'),
-            onPressed: pageCommands.requestSearch,
-            icon: const Icon(Icons.search_rounded),
-          ),
           if (boundary != null) const Icon(Icons.notifications_outlined),
         ],
         title: Builder(
@@ -683,62 +658,20 @@ void main() {
       await dispose(tester);
     },
   );
-  for (final dark in [false, true]) {
-    testWidgets('empty Friends opens search at 320px 200% dark=$dark', (
-      tester,
-    ) async {
-      final f = _Friends()
-        ..friends = []
-        ..received = []
-        ..sent = []
-        ..search = [
-          const FriendUser(id: 12, nickname: 'A very long friend display name'),
-        ];
-      await _mount(tester, f, width: 320, scale: 2, dark: dark);
-      await tester.pumpAndSettle();
-      await show(tester, find.text(strings(tester).friendsAddFriend));
-      await tester.tap(find.text(strings(tester).friendsAddFriend));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField), 'friend');
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.pumpAndSettle();
-      expect(find.text('A very long friend display name'), findsOneWidget);
-      expect(
-        find.byTooltip(strings(tester).friendsInviteAction),
-        findsOneWidget,
-      );
-      expect(tester.takeException(), isNull);
-      await dispose(tester);
-    });
-  }
-  testWidgets('search discards results when its account changes', (
+  testWidgets('empty Friends add button opens My QR with the share link', (
     tester,
   ) async {
-    final pending = Completer<List<FriendUser>>();
-    var current = true;
-    final f = _Friends()..searchHandler = (_) => pending.future;
-    await tester.pumpWidget(
-      MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: FriendSearchPage(
-          controller: f,
-          accountIsCurrent: () => current,
-          excludeIds: () => {},
-          onInvited: () async {},
-        ),
-      ),
-    );
+    final f = _Friends()
+      ..friends = []
+      ..received = []
+      ..sent = [];
+    await _mount(tester, f, width: 320, scale: 2);
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'Alex');
-    await tester.pump(const Duration(milliseconds: 300));
-    current = false;
-    pending.complete([const FriendUser(id: 12, nickname: 'Alex')]);
+    await show(tester, find.byKey(const ValueKey('friends-empty-add')));
+    await tester.tap(find.byKey(const ValueKey('friends-empty-add')));
     await tester.pumpAndSettle();
-    expect(find.text('Alex'), findsOneWidget); // The entered query only.
-    expect(find.byKey(const ValueKey('friend-search-user-12')), findsNothing);
-    expect(tester.widget<TextField>(find.byType(TextField)).enabled, isFalse);
-    expect(f.invites, isEmpty);
+    expect(find.byKey(const ValueKey('friend-qr-page')), findsOneWidget);
+    expect(tester.takeException(), isNull);
     await dispose(tester);
   });
   testWidgets('friends show as a grid with QR actions above the bottom', (
@@ -788,213 +721,6 @@ void main() {
     expect(find.text(t.workspacePaymentDetails), findsOneWidget);
     await dispose(tester);
   });
-  testWidgets('search lists matching friends first with a Friend badge', (
-    tester,
-  ) async {
-    final f = _Friends()
-      ..received = []
-      ..sent = []
-      ..searchHandler = (_) async => [
-        const FriendUser(id: 30, nickname: 'Annija Stranger'),
-      ];
-    await _mount(tester, f);
-    await tester.pumpAndSettle();
-    final t = strings(tester);
-    await tester.tap(find.byKey(const ValueKey('friends-open-search')));
-    await tester.pumpAndSettle();
-    // Diacritics are ignored: "berz" finds "Bērziņa".
-    await tester.enterText(find.byType(TextField), 'berz');
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.pumpAndSettle();
-    expect(
-      find.byKey(const ValueKey('friend-search-friend-8')),
-      findsOneWidget,
-    );
-    expect(find.text(t.friendsNoUsersFound), findsNothing);
-
-    await tester.enterText(find.byType(TextField), 'ann');
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.pumpAndSettle();
-    // Friends are still left out of the server request.
-    expect(f.searchCalls.last.$3, containsAll(<int>[8, 9]));
-    final friendRow = find.byKey(const ValueKey('friend-search-friend-8'));
-    final stranger = find.byKey(const ValueKey('friend-search-user-30'));
-    expect(friendRow, findsOneWidget);
-    expect(stranger, findsOneWidget);
-    expect(
-      tester.getRect(friendRow).top,
-      lessThan(tester.getRect(stranger).top),
-    );
-    expect(
-      find.descendant(
-        of: friendRow,
-        matching: find.text(t.friendRelationshipLabel),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.descendant(
-        of: friendRow,
-        matching: find.text(t.friendsInviteAction),
-      ),
-      findsNothing,
-    );
-
-    await tester.tap(friendRow);
-    await tester.pumpAndSettle();
-    expect(find.byType(UserProfilePage), findsOneWidget);
-    expect(find.byType(BottomSheet), findsOneWidget);
-    await dispose(tester);
-  });
-  testWidgets('latest search query wins; invitation uses selected user', (
-    tester,
-  ) async {
-    final old = Completer<List<FriendUser>>();
-    final f = _Friends();
-    f.searchHandler = (q) => q == 'old'
-        ? old.future
-        : Future.value([const FriendUser(id: 12, nickname: 'Alex')]);
-    await _mount(tester, f);
-    await tester.pumpAndSettle();
-    expect(find.byType(TextField), findsNothing);
-    await tester.tap(find.byKey(const ValueKey('friends-open-search')));
-    await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField), 'old');
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.enterText(find.byType(TextField), 'new');
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.pumpAndSettle();
-    old.complete([const FriendUser(id: 99, nickname: 'Stale')]);
-    await tester.pumpAndSettle();
-    expect(find.text('Stale'), findsNothing);
-    await tester.tap(find.text(strings(tester).friendsInviteAction));
-    await tester.pumpAndSettle();
-    expect(f.invites, [12]);
-    await dispose(tester);
-  });
-  testWidgets(
-    'search opens separately, adds ten results and retries the next batch',
-    (tester) async {
-      final f = _Friends()
-        ..search = List.generate(
-          23,
-          (i) => FriendUser(id: 100 + i, nickname: 'Person $i'),
-        );
-      await _mount(tester, f);
-      await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('friends-search')), findsNothing);
-      await tester.tap(find.byKey(const ValueKey('friends-open-search')));
-      await tester.pumpAndSettle();
-      expect(find.byType(FriendSearchPage), findsOneWidget);
-      await tester.enterText(find.byType(TextField), 'Person');
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.pumpAndSettle();
-      expect(f.searchCalls.single.$2, 11);
-      expect(f.searchCalls.single.$3, containsAll([7, 8, 10, 11]));
-      final more = find.byKey(const ValueKey('friends-search-show-more'));
-      final scroll = find.descendant(
-        of: find.byKey(const ValueKey('friends-search-results')),
-        matching: find.byType(Scrollable),
-      );
-      Future<void> reachMore() async {
-        await tester.scrollUntilVisible(more, 300, scrollable: scroll);
-        await tester.pumpAndSettle();
-      }
-
-      await reachMore();
-      expect(find.text('Person 9'), findsOneWidget);
-      expect(find.text('Person 10'), findsNothing);
-      f.searchFailure = const ApiException('Next batch failed');
-      await tester.tap(more);
-      await tester.pumpAndSettle();
-      expect(find.text('Next batch failed'), findsOneWidget);
-      expect(find.text('Person 9'), findsOneWidget);
-      f.searchFailure = null;
-      await tester.ensureVisible(find.text(strings(tester).retryAction));
-      await tester.tap(find.text(strings(tester).retryAction));
-      await tester.pumpAndSettle();
-      expect(
-        f.searchCalls.last.$3,
-        containsAll(List.generate(10, (i) => 100 + i)),
-      );
-      await reachMore();
-      expect(find.text('Person 19'), findsOneWidget);
-      expect(find.text('Person 20'), findsNothing);
-      await tester.tap(more);
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.text('Person 22'),
-        300,
-        scrollable: scroll,
-      );
-      expect(more, findsNothing);
-      await tester.pageBack();
-      await tester.pumpAndSettle();
-      expect(find.byType(FriendSearchPage), findsNothing);
-      expect(find.byType(TextField), findsNothing);
-      await dispose(tester);
-    },
-  );
-  testWidgets(
-    'search invitation blocks duplicates, retries and stays excluded across queries',
-    (tester) async {
-      final f = _Friends()..mutationGate = Completer<void>();
-      await _mount(tester, f);
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('friends-open-search')));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField), 'Alex');
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.pumpAndSettle();
-      final invite = find.text(strings(tester).friendsInviteAction);
-      await tester.tap(invite);
-      await tester.pump();
-      await tester.tap(invite);
-      expect(f.invites, [12]);
-      f.inviteFailure = const ApiException('Invite failed');
-      f.mutationGate!.complete();
-      await tester.pumpAndSettle();
-      expect(find.text('Invite failed'), findsOneWidget);
-      f.inviteFailure = null;
-      f.mutationGate = null;
-      await tester.tap(invite);
-      await tester.pumpAndSettle();
-      expect(f.invites, [12, 12]);
-      await tester.enterText(find.byType(TextField), 'Al');
-      await tester.pump(const Duration(milliseconds: 300));
-      await tester.pumpAndSettle();
-      expect(f.searchCalls.last.$3, contains(12));
-      expect(find.text('Alex'), findsNothing);
-      await dispose(tester);
-    },
-  );
-  testWidgets(
-    'closing search ignores a late response and reopening starts empty',
-    (tester) async {
-      final pending = Completer<List<FriendUser>>();
-      final f = _Friends()..searchHandler = (_) => pending.future;
-      await _mount(tester, f);
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const ValueKey('friends-open-search')));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField), 'Alex');
-      await tester.pump(const Duration(milliseconds: 300));
-      expect(find.byType(LinearProgressIndicator), findsOneWidget);
-      await tester.pageBack();
-      await tester.pump(const Duration(seconds: 1));
-      pending.complete([const FriendUser(id: 12, nickname: 'Alex')]);
-      await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
-      await tester.tap(find.byKey(const ValueKey('friends-open-search')));
-      await tester.pumpAndSettle();
-      expect(
-        tester.widget<TextField>(find.byType(TextField)).controller!.text,
-        isEmpty,
-      );
-      expect(find.text('Alex'), findsNothing);
-      await dispose(tester);
-    },
-  );
   testWidgets(
     'refresh retains rows on failure, denies access and rejects older snapshot',
     (tester) async {
@@ -1163,13 +889,7 @@ void main() {
   testWidgets('friend review images', (tester) async {
     if (!const bool.fromEnvironment('FRIENDS_PREVIEWS')) return;
     for (final dark in [false, true]) {
-      for (final screen in [
-        'list',
-        'empty',
-        'profile',
-        'search',
-        'search-large',
-      ]) {
+      for (final screen in ['list', 'empty', 'profile']) {
         final key = GlobalKey();
         final f = _Friends()
           ..sent = []
@@ -1197,7 +917,7 @@ void main() {
             const FriendUser(id: 14, nickname: 'Sofia Martin'),
           ];
         final previewWorkspace = _Workspace();
-        if (screen == 'empty' || screen.startsWith('search')) {
+        if (screen == 'empty') {
           f.friends = [];
           f.received = [];
           f.sent = [];
@@ -1214,24 +934,11 @@ void main() {
           locale: 'en',
           dark: dark,
           boundary: key,
-          width: screen == 'search-large' ? 320 : 390,
-          scale: screen == 'search-large' ? 2 : 1,
+          width: 390,
+          scale: 1,
           workspace: previewWorkspace,
         );
         await tester.pumpAndSettle();
-        if (screen.startsWith('search')) {
-          await tester.tap(find.byKey(const ValueKey('friends-open-search')));
-          await tester.pumpAndSettle();
-          f.search = [const FriendUser(id: 12, nickname: 'Matiss Geinerts')];
-          await tester.enterText(
-            find.byKey(const ValueKey('friends-search')),
-            'mat',
-          );
-          await tester.pump(const Duration(milliseconds: 350));
-          await tester.pumpAndSettle();
-          FocusManager.instance.primaryFocus?.unfocus();
-          await tester.pumpAndSettle();
-        }
         if (screen == 'profile') {
           await tester.tap(find.byKey(const ValueKey('friend-row-8')));
           await tester.pumpAndSettle();

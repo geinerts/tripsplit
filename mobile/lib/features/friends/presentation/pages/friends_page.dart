@@ -36,12 +36,10 @@ import '../controllers/friend_trip_actions.dart';
 import '../widgets/friend_trip_invite_page.dart';
 import '../widgets/friend_avatar.dart';
 import '../widgets/friend_grid_tile.dart';
-import 'friend_search_page.dart';
 import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../../trips/domain/entities/trip.dart';
 
 part 'friends_page_actions_core.dart';
-part 'friends_page_actions_search.dart';
 part 'friends_page_actions_relationships.dart';
 part 'friends_page_actions_qr.dart';
 part 'friends_page_profile.dart';
@@ -50,15 +48,6 @@ part 'friends_page_components.dart';
 
 class FriendsPageCommandController extends ChangeNotifier {
   int _refreshRequestCount = 0;
-  int _searchRequestCount = 0;
-
-  int get searchRequestCount => _searchRequestCount;
-
-  void requestSearch() {
-    _searchRequestCount++;
-    notifyListeners();
-  }
-
   int get refreshRequestCount => _refreshRequestCount;
 
   void requestRefresh() {
@@ -121,8 +110,6 @@ class _FriendsPageState extends State<FriendsPage> {
   final ScrollController _scrollController = ScrollController();
   final Set<int> _respondLoading = <int>{};
   int _handledRefreshRequestCount = 0;
-  int _handledSearchRequestCount = 0;
-  bool _searchPageOpen = false;
 
   @override
   void initState() {

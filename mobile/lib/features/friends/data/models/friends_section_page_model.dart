@@ -39,8 +39,8 @@ class FriendsSectionPageModel extends FriendsSectionPage {
             .toList(growable: false),
         requests: const <FriendRequest>[],
         hasMore: pagination['has_more'] == true,
-        nextCursor: (pagination['next_cursor'] as String?)?.trim().isEmpty ==
-                true
+        nextCursor:
+            (pagination['next_cursor'] as String?)?.trim().isEmpty == true
             ? null
             : pagination['next_cursor'] as String?,
         nextOffset: (pagination['next_offset'] as num?)?.toInt(),
@@ -61,15 +61,12 @@ class FriendsSectionPageModel extends FriendsSectionPage {
       requests: items
           .whereType<Map<String, dynamic>>()
           .map(
-            (item) => FriendRequestModel.fromLegacyMap(
-              item,
-              userKey: requestUserKey,
-            ),
+            (item) =>
+                FriendRequestModel.fromLegacyMap(item, userKey: requestUserKey),
           )
           .toList(growable: false),
       hasMore: pagination['has_more'] == true,
-      nextCursor:
-          (pagination['next_cursor'] as String?)?.trim().isEmpty == true
+      nextCursor: (pagination['next_cursor'] as String?)?.trim().isEmpty == true
           ? null
           : pagination['next_cursor'] as String?,
       nextOffset: (pagination['next_offset'] as num?)?.toInt(),

@@ -113,5 +113,7 @@ closed rather than being treated as an absent column. No migration is run by API
   the action is limited to 10 per IP and 5 per account per day (429 above that).
 - `login` with an unknown email checks the password against a fixed dummy hash, so the answer
   takes as long as for a real account.
-- Friend search (`search_users`) matches an email only when `q` is the whole address
-  (case-insensitive). Parts of an email no longer match; names match as before.
+- Friend search (`search_users`, owner decision 2026-11-19) only lists people the caller already
+  shares a trip with, optionally filtered by name with `q`. It never searches all users by name
+  or email and no longer falls back to the newest users. New friends are added by QR code or
+  friend link; the app (1.1.0) has no search box. Old apps keep working with the narrower list.

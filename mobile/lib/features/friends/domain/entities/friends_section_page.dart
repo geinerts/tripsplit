@@ -24,4 +24,3 @@ class FriendsSectionPage {
   final String? nextCursor;
   final int? nextOffset;
 }
-

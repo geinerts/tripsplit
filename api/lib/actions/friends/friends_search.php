@@ -67,102 +67,36 @@ function search_users_action(): void
         $excludeClause = ' AND u.id NOT IN (' . implode(',', $placeholders) . ')';
     }
 
-    if ($qRaw === '') {
-        $recentParams = array_merge(['me_id' => $meId], $excludeParams);
-        $recentSql =
-            'SELECT u.id, ' . $nameSelect . 'u.nickname, u.avatar_path, MAX(t.created_at) AS last_shared_at
-             FROM ' . $tripMembersTable . ' tm_me
-             JOIN ' . $tripMembersTable . ' tm_other
-               ON tm_other.trip_id = tm_me.trip_id
-              AND tm_other.user_id <> tm_me.user_id
-             JOIN ' . $usersTable . ' u ON u.id = tm_other.user_id
-             JOIN ' . $tripsTable . ' t ON t.id = tm_me.trip_id
-             WHERE tm_me.user_id = :me_id' . $activeFilter . $excludeClause . '
-             GROUP BY u.id' . $nameGroupBy . ', u.nickname, u.avatar_path
-             ORDER BY last_shared_at DESC, u.nickname ASC, u.id ASC
-             LIMIT ' . $limit;
-
-        $recentStmt = $pdo->prepare($recentSql);
-        $recentStmt->execute($recentParams);
-        $rows = $recentStmt->fetchAll();
-
-        if (!$rows) {
-            $fallbackSql =
-                'SELECT u.id, ' . $nameSelect . 'u.nickname, u.avatar_path
-                 FROM ' . $usersTable . ' u
-                 WHERE 1=1' . $activeFilter . $excludeClause . '
-                 ORDER BY u.created_at DESC, u.id DESC
-                 LIMIT ' . $limit;
-            $fallbackStmt = $pdo->prepare($fallbackSql);
-            $fallbackStmt->execute($excludeParams);
-            $rows = $fallbackStmt->fetchAll();
-        }
-    } else {
-        $queryLike = '%' . $qRaw . '%';
-        $queryPrefix = $qRaw . '%';
-        // An email matches only as the whole address, so search cannot be used
-        // to guess or confirm parts of other people's emails.
-        $queryEmail = strtolower($qRaw);
-
+    // Only people you already share a trip with (2026-11-19). The app adds new
+    // friends by QR code or friend link; searching all users by name or email
+    // let anyone list other people's names and photos, or confirm an email.
+    $params = array_merge(['me_id' => $meId], $excludeParams);
+    $nameFilter = '';
+    if ($qRaw !== '') {
+        $params['q_like_nickname'] = '%' . $qRaw . '%';
         if ($hasNameColumns) {
-            $searchParams = array_merge([
-                'q_like_display' => $queryLike,
-                'q_like_nickname' => $queryLike,
-                'q_email' => $queryEmail,
-                'q_email_match' => $queryEmail,
-                'q_prefix_display' => $queryPrefix,
-                'q_prefix_nickname' => $queryPrefix,
-            ], $excludeParams);
+            $params['q_like_display'] = '%' . $qRaw . '%';
+            $nameFilter = ' AND (TRIM(CONCAT(COALESCE(u.first_name, \'\'), \' \', COALESCE(u.last_name, \'\'))) LIKE :q_like_display'
+                . ' OR u.nickname LIKE :q_like_nickname)';
         } else {
-            $searchParams = array_merge([
-                'q_like_nickname' => $queryLike,
-                'q_email' => $queryEmail,
-                'q_email_match' => $queryEmail,
-                'q_prefix_nickname' => $queryPrefix,
-            ], $excludeParams);
+            $nameFilter = ' AND u.nickname LIKE :q_like_nickname';
         }
-
-        if ($hasNameColumns) {
-            $displayExpr = 'TRIM(CONCAT(COALESCE(u.first_name, \'\'), \' \', COALESCE(u.last_name, \'\')))';
-            $searchSql =
-                'SELECT
-                    u.id,
-                    ' . $nameSelect . '
-                    u.nickname,
-                    u.avatar_path,
-                    CASE
-                        WHEN (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_prefix_display) THEN 0
-                        WHEN u.nickname LIKE :q_prefix_nickname THEN 1
-                        ELSE 2
-                    END AS rank_prefix,
-                    CASE WHEN u.email IS NOT NULL AND LOWER(u.email) = :q_email THEN 0 ELSE 1 END AS rank_email
-                 FROM ' . $usersTable . ' u
-                 WHERE (
-                    (' . $displayExpr . ' <> \'\' AND ' . $displayExpr . ' LIKE :q_like_display)
-                    OR u.nickname LIKE :q_like_nickname
-                    OR (u.email IS NOT NULL AND LOWER(u.email) = :q_email_match)
-                 )' . $activeFilter . $excludeClause . '
-                 ORDER BY rank_prefix ASC, rank_email ASC, ' . $displayExpr . ' ASC, u.nickname ASC, u.id ASC
-                 LIMIT ' . $limit;
-        } else {
-            $searchSql =
-                'SELECT
-                    u.id,
-                    ' . $nameSelect . '
-                    u.nickname,
-                    u.avatar_path,
-                    CASE WHEN u.nickname LIKE :q_prefix_nickname THEN 0 ELSE 1 END AS rank_prefix,
-                    CASE WHEN u.email IS NOT NULL AND LOWER(u.email) = :q_email THEN 0 ELSE 1 END AS rank_email
-                 FROM ' . $usersTable . ' u
-                 WHERE (u.nickname LIKE :q_like_nickname OR (u.email IS NOT NULL AND LOWER(u.email) = :q_email_match))' . $activeFilter . $excludeClause . '
-                 ORDER BY rank_prefix ASC, rank_email ASC, u.nickname ASC, u.id ASC
-                 LIMIT ' . $limit;
-        }
-
-        $searchStmt = $pdo->prepare($searchSql);
-        $searchStmt->execute($searchParams);
-        $rows = $searchStmt->fetchAll();
     }
+    $sql =
+        'SELECT u.id, ' . $nameSelect . 'u.nickname, u.avatar_path, MAX(t.created_at) AS last_shared_at
+         FROM ' . $tripMembersTable . ' tm_me
+         JOIN ' . $tripMembersTable . ' tm_other
+           ON tm_other.trip_id = tm_me.trip_id
+          AND tm_other.user_id <> tm_me.user_id
+         JOIN ' . $usersTable . ' u ON u.id = tm_other.user_id
+         JOIN ' . $tripsTable . ' t ON t.id = tm_me.trip_id
+         WHERE tm_me.user_id = :me_id' . $activeFilter . $excludeClause . $nameFilter . '
+         GROUP BY u.id' . $nameGroupBy . ', u.nickname, u.avatar_path
+         ORDER BY last_shared_at DESC, u.nickname ASC, u.id ASC
+         LIMIT ' . $limit;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll();
 
     foreach ($rows as &$row) {
         $row['id'] = (int) ($row['id'] ?? 0);

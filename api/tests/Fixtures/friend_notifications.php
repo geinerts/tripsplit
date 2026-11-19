@@ -46,7 +46,7 @@ $mysql = getenv('SPLYTO_ISOLATED_MYSQL') === '1';
 $pdo = $mysql ? isolated_test_mysql() : new FriendSQLite('sqlite::memory:', null, null,
     [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
 if ($mysql) {
-    foreach (['trip_notifications','trip_friends','trip_trips','trip_users'] as $table) $pdo->exec('DROP TABLE IF EXISTS '.$table);
+    foreach (['trip_notifications','trip_friends','trip_trip_members','trip_trips','trip_users'] as $table) $pdo->exec('DROP TABLE IF EXISTS '.$table);
 } else {
     $pdo->exec('PRAGMA foreign_keys=ON');
 }
@@ -55,7 +55,8 @@ $id = $idType . ' PRIMARY KEY ' . ($mysql ? 'AUTO_INCREMENT' : 'AUTOINCREMENT');
 $pdo->exec('CREATE TABLE trip_users (id '.$idType.' PRIMARY KEY, nickname VARCHAR(64), avatar_path TEXT, guest_trip_id INT NULL, email VARCHAR(190) NULL)');
 $pdo->exec('INSERT INTO trip_users VALUES (1,"One",NULL,NULL,NULL),(2,"Two",NULL,NULL,"two.person@example.test"),(3,"Three",NULL,NULL,NULL),(4,"Guest",NULL,99,NULL)');
 $pdo->exec('CREATE TABLE trip_friends (id '.$id.',user_a_id INT,user_b_id INT,requested_by INT,status VARCHAR(20),responded_at TIMESTAMP NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,UNIQUE(user_a_id,user_b_id))');
-$pdo->exec('CREATE TABLE trip_trips (id '.$idType.' PRIMARY KEY,name TEXT)');
+$pdo->exec('CREATE TABLE trip_trips (id '.$idType.' PRIMARY KEY,name TEXT,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)');
+$pdo->exec('CREATE TABLE trip_trip_members (trip_id INT, user_id INT)');
 $pdo->exec('CREATE TABLE trip_notifications (id '.$id.',trip_id '.$idType.($mysql ? ' NOT NULL' : ' NULL').',user_id '.$idType.',type VARCHAR(48),title TEXT,body TEXT,payload_json '.($mysql ? 'JSON' : 'TEXT').',is_read INT DEFAULT 0,read_at TIMESTAMP NULL,created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
  FOREIGN KEY(trip_id) REFERENCES trip_trips(id), FOREIGN KEY(user_id) REFERENCES trip_users(id))');
 $migration = __DIR__.'/../../../sql/migrations/2026-10-23-persist-friend-notifications.sql';
@@ -148,10 +149,14 @@ foreach ([['type'=>'trip_ready_to_settle', 'payload'=>['user_id'=>2]],
           ['type'=>'trip_finished', 'payload'=>['ended_by_user_id'=>'invalid']]] as $item) {
     check(notifications_with_actor_avatars($pdo, [$item])[0]['actor_avatar_url']===null);
 }
-// Friend search finds an email only as the whole address (F16).
+// Friend search only covers people you share a trip with: no global name,
+// email or "newest users" listing (2026-11-19). New friends come by QR or link.
 $searchIds = static fn(string $q): array => array_column(callAction('search_users_action',1,[],['q'=>$q])[1]['users'],'id');
-check($searchIds('two.person@example.test')===[2]);
-check($searchIds('TWO.PERSON@example.test')===[2]);
-foreach (['two.person@','@example.test','person','example'] as $partial) check($searchIds($partial)===[]);
-check($searchIds('Two')===[2]);
+check($searchIds('')===[]);
+check($searchIds('Two')===[] && $searchIds('two.person@example.test')===[]);
+$pdo->exec("INSERT INTO trip_trips (id,name) VALUES (7,'Shared')");
+$pdo->exec('INSERT INTO trip_trip_members VALUES (7,1),(7,3)');
+check($searchIds('')===[3]);
+check($searchIds('Three')===[3]);
+check($searchIds('Two')===[] && $searchIds('two.person@example.test')===[]);
 echo json_encode(['assertions'=>$assertions]);

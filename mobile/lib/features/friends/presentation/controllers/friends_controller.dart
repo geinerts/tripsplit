@@ -1,7 +1,6 @@
 import '../../../trips/presentation/controllers/trips_controller.dart';
 import '../../domain/entities/friends_section_page.dart';
 import '../../domain/entities/friend_link.dart';
-import '../../domain/entities/friend_user.dart';
 import '../../domain/entities/friends_snapshot.dart';
 import '../../domain/usecases/cancel_friend_invite_use_case.dart';
 import '../../domain/usecases/get_friend_link_use_case.dart';
@@ -110,30 +109,6 @@ class FriendsController {
 
   Future<void> removeFriend({required int userId}) {
     return _removeFriendUseCase.call(userId: userId);
-  }
-
-  Future<List<FriendUser>> searchUsers({
-    required String query,
-    int limit = 20,
-    List<int> excludeIds = const <int>[],
-  }) async {
-    final users = await _tripsController.loadDirectoryUsers(
-      query: query,
-      limit: limit,
-      excludeIds: excludeIds,
-    );
-    return users
-        .map(
-          (user) => FriendUser(
-            id: user.id,
-            nickname: user.nickname,
-            displayName: null,
-            avatarUrl: user.avatarUrl,
-            avatarThumbUrl: user.avatarThumbUrl,
-            commonTripsCount: 0,
-          ),
-        )
-        .toList(growable: false);
   }
 
   void clearSnapshotCache() {

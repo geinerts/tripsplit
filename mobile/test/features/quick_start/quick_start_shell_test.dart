@@ -19,7 +19,6 @@ import 'package:tripsplit/features/auth/presentation/pages/profile_page.dart';
 import 'package:tripsplit/features/friends/domain/entities/friends_snapshot.dart';
 import 'package:tripsplit/features/friends/domain/entities/friends_section_page.dart';
 import 'package:tripsplit/features/friends/presentation/controllers/friends_controller.dart';
-import 'package:tripsplit/features/friends/presentation/pages/friend_search_page.dart';
 import 'package:tripsplit/features/quick_start/data/quick_start_seen_store.dart';
 import 'package:tripsplit/features/quick_start/data/quick_start_service.dart';
 import 'package:tripsplit/features/quick_start/presentation/quick_start_sheet.dart';
@@ -239,35 +238,24 @@ void main() {
     );
   });
 
-  testWidgets(
-    'Friends header opens search next to notifications and returns cleanly',
-    (tester) async {
-      final session = AccountDataSession()..activate(1);
-      final links = _Links();
-      await _mount(
-        tester,
-        _Trips(session),
-        _Service(session)..eligible = false,
-        links,
-        tab: 3,
-      );
-      await _tick(tester);
-      final search = find.byKey(const ValueKey('friends-open-search'));
-      final bell = find.byIcon(Icons.notifications_none_outlined);
-      expect(search, findsOneWidget);
-      expect(tester.getCenter(search).dx, lessThan(tester.getCenter(bell).dx));
-      expect(find.byKey(const ValueKey('friends-search')), findsNothing);
-      await tester.tap(search);
-      await _tick(tester);
-      expect(find.byType(FriendSearchPage), findsOneWidget);
-      expect(find.byKey(const ValueKey('friends-search')), findsOneWidget);
-      await tester.pageBack();
-      await _tick(tester);
-      expect(search, findsOneWidget);
-      expect(find.byKey(const ValueKey('friends-search')), findsNothing);
-      await _dispose(tester, links);
-    },
-  );
+  testWidgets('Friends header has no user search; friends come by QR or link', (
+    tester,
+  ) async {
+    final session = AccountDataSession()..activate(1);
+    final links = _Links();
+    await _mount(
+      tester,
+      _Trips(session),
+      _Service(session)..eligible = false,
+      links,
+      tab: 3,
+    );
+    await _tick(tester);
+    expect(find.byKey(const ValueKey('friends-open-search')), findsNothing);
+    expect(find.byIcon(Icons.search_rounded), findsNothing);
+    expect(find.byKey(const ValueKey('friends-qr-bar')), findsOneWidget);
+    await _dispose(tester, links);
+  });
 
   testWidgets(
     'Expenses chooses a cached trip without waiting for the network',

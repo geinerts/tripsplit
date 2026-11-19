@@ -23,13 +23,13 @@ class FriendsSnapshotModel extends FriendsSnapshot {
           .toList(growable: false),
       pendingSent: pendingSentList
           .whereType<Map<String, dynamic>>()
-          .map((item) =>
-              FriendRequestModel.fromLegacyMap(item, userKey: 'to'))
+          .map((item) => FriendRequestModel.fromLegacyMap(item, userKey: 'to'))
           .toList(growable: false),
       pendingReceived: pendingReceivedList
           .whereType<Map<String, dynamic>>()
-          .map((item) =>
-              FriendRequestModel.fromLegacyMap(item, userKey: 'from'))
+          .map(
+            (item) => FriendRequestModel.fromLegacyMap(item, userKey: 'from'),
+          )
           .toList(growable: false),
     );
   }
