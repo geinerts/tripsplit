@@ -9,7 +9,7 @@ Each user object has these fields in addition to `id`, `nickname`, `email`,
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| `sign_in_methods` | string[] | `email` when a password is set, plus each linked provider (`apple`, `google`). Empty for an account that cannot sign in (for example a deleted one). |
+| `sign_in_methods` | string[] | `email` when the user chose a password (`has_password = 1`), plus each linked provider (`apple`, `google`). Apple/Google sign-ups store a random placeholder hash, so for legacy rows with `has_password` NULL a stored hash counts as `email` only when no provider is linked. Empty for an account that cannot sign in (for example a deleted one). |
 | `platforms` | string[] | Distinct push token platforms (`ios`, `android`, `web`), active or not. Empty when the app never registered for push. |
 | `email_verified` | bool or null | Whether `email_verified_at` is set; `null` when the column is unavailable. |
 

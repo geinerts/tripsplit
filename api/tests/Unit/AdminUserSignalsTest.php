@@ -25,6 +25,8 @@ final class AdminUserSignalsTest extends TestCase
         self::assertFalse($users[2]['email_verified']);
         self::assertSame(['email', 'google'], $users[3]['sign_in_methods']);
         self::assertSame([], $users[4]['sign_in_methods']);
+        self::assertSame(['google'], $users[5]['sign_in_methods']);
+        self::assertSame(['email'], $users[6]['sign_in_methods']);
         foreach ($users as $user) {
             self::assertArrayNotHasKey('has_password_login', $user);
             self::assertArrayNotHasKey('password_hash', $user);

@@ -13,17 +13,20 @@ $pdo = new PDO('sqlite::memory:');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 $pdo->exec('CREATE TABLE trip_users (id INTEGER PRIMARY KEY, nickname TEXT, email TEXT, account_status TEXT,
-    created_at TEXT, password_hash TEXT, email_verified_at TEXT)');
+    created_at TEXT, password_hash TEXT, email_verified_at TEXT, has_password INTEGER NULL)');
 $pdo->exec('CREATE TABLE trip_user_identities (user_id INTEGER, provider TEXT)');
 $pdo->exec('CREATE TABLE trip_push_tokens (user_id INTEGER, platform TEXT)');
+// Social sign-ups store a random placeholder hash with has_password = 0.
 $pdo->exec("INSERT INTO trip_users VALUES
-    (1,'Password user','a@example.invalid','active','2026-11-01','hash','2026-11-01'),
-    (2,'Apple user','b@example.invalid','active','2026-11-02',NULL,NULL),
-    (3,'Both','c@example.invalid','active','2026-11-03','hash',NULL),
-    (4,'Empty hash',NULL,'deleted','2026-11-04','',NULL)");
-$pdo->exec("INSERT INTO trip_user_identities VALUES (2,'apple'),(3,'google')");
+    (1,'Password user','a@example.invalid','active','2026-11-01','hash','2026-11-01',1),
+    (2,'Apple user','b@example.invalid','active','2026-11-02','placeholder',NULL,0),
+    (3,'Both','c@example.invalid','active','2026-11-03','hash',NULL,1),
+    (4,'Empty hash',NULL,'deleted','2026-11-04','',NULL,NULL),
+    (5,'Legacy Google','e@example.invalid','active','2026-11-05','placeholder',NULL,NULL),
+    (6,'Legacy password','f@example.invalid','active','2026-11-06','hash',NULL,NULL)");
+$pdo->exec("INSERT INTO trip_user_identities VALUES (2,'apple'),(3,'google'),(5,'google')");
 $pdo->exec("INSERT INTO trip_push_tokens VALUES (1,'ios'),(1,'ios'),(1,'android'),(3,'android')");
-$rows = $pdo->query("SELECT id, nickname, " . admin_has_password_login_sql() . "
+$rows = $pdo->query("SELECT id, nickname, " . admin_has_password_login_sql($pdo) . "
     FROM trip_users ORDER BY id")->fetchAll();
 echo json_encode(['users' => admin_users_with_account_signals($pdo, $rows),
     'empty' => admin_users_with_account_signals($pdo, [])], JSON_THROW_ON_ERROR);

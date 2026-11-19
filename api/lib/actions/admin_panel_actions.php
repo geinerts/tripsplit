@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../helpers/helper_travel_places.php';
 require_once __DIR__ . '/../helpers/helper_account_deletion_feedback.php';
 require_once __DIR__ . '/../helpers/helper_feature_usage.php';
+require_once __DIR__ . '/../helpers/helper_password_capability.php';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // Admin Panel v2 Actions
@@ -638,7 +639,7 @@ function admin_user_search(PDO $pdo, array $query, string $now): array
     };
 
     $stmt = $pdo->prepare('SELECT u.id, u.nickname, u.email, u.account_status, u.created_at, '
-        . admin_has_password_login_sql() . ',
+        . admin_has_password_login_sql($pdo) . ',
             (SELECT COUNT(*) FROM ' . table_name('trip_members') . ' m WHERE m.user_id = u.id) AS trips_count,
             (SELECT MAX(r.last_used_at) FROM ' . table_name('refresh_tokens') . ' r WHERE r.user_id = u.id) AS last_active_at,
             ' . $premiumSql . ' AS premium_grant
@@ -663,16 +664,26 @@ function admin_user_search(PDO $pdo, array $query, string $now): array
     ];
 }
 
-/** A boolean column: the user can sign in with email and password. The hash itself is never selected. */
-function admin_has_password_login_sql(): string
+/**
+ * has_password_login: 1 = the user chose a password, 0 = no password login,
+ * 2 = legacy account with a stored hash but unknown origin. Apple/Google sign-ups
+ * store a random placeholder hash, so the hash alone does not mean email login.
+ * The hash itself is never selected.
+ */
+function admin_has_password_login_sql(PDO $pdo): string
 {
-    return "(password_hash IS NOT NULL AND password_hash <> '') AS has_password_login";
+    $legacy = "CASE WHEN password_hash IS NOT NULL AND password_hash <> '' THEN 2 ELSE 0 END";
+    if (!users_password_capability_available($pdo)) {
+        return "{$legacy} AS has_password_login";
+    }
+    return "CASE WHEN has_password = 1 THEN 1 WHEN has_password = 0 THEN 0 ELSE {$legacy} END AS has_password_login";
 }
 
 /**
  * Adds how each user signs in, which app platforms they use and whether the
  * email is verified, so support can spot test or bot accounts at a glance.
- * Rows must contain has_password_login; it becomes the "email" sign-in method.
+ * Rows must contain has_password_login (see admin_has_password_login_sql). A legacy
+ * hash counts as email sign-in only when no Apple/Google identity is linked.
  */
 function admin_users_with_account_signals(PDO $pdo, array $users): array
 {
@@ -708,8 +719,10 @@ function admin_users_with_account_signals(PDO $pdo, array $users): array
     }
     return array_map(static function (array $user) use ($providers, $platforms, $verified): array {
         $id = (int) $user['id'];
-        $methods = !empty($user['has_password_login']) ? ['email'] : [];
-        $user['sign_in_methods'] = array_merge($methods, $providers[$id] ?? []);
+        $linked = $providers[$id] ?? [];
+        $passwordFlag = (int) ($user['has_password_login'] ?? 0);
+        $email = $passwordFlag === 1 || ($passwordFlag === 2 && $linked === []);
+        $user['sign_in_methods'] = array_merge($email ? ['email'] : [], $linked);
         $user['platforms'] = array_values(array_unique($platforms[$id] ?? []));
         $user['email_verified'] = $verified[$id] ?? null;
         unset($user['has_password_login']);
@@ -732,7 +745,7 @@ function admin_panel_user_detail_action(): void
     $pushTable   = table_name('push_tokens');
     $notifTable  = table_name('notifications');
 
-    $hasPassword = admin_has_password_login_sql();
+    $hasPassword = admin_has_password_login_sql($pdo);
     $stmt = $pdo->prepare("SELECT id, nickname, email, account_status, created_at, {$hasPassword} FROM {$userTable} WHERE id = ? LIMIT 1");
     $stmt->execute([$userId]);
     $user = $stmt->fetch();
