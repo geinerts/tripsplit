@@ -2442,5 +2442,15 @@
   "workspaceExpenseFilters": "Expense filters",
   "workspaceClearFilters": "Clear filters",
   "workspaceFiltersLoadedHint": "Filters cover loaded expenses. Load more to include older expenses.",
-  "workspaceFiltersNoMatchesHint": "Change the filters or clear them to see all loaded expenses."
+  "workspaceFiltersNoMatchesHint": "Change the filters or clear them to see all loaded expenses.",
+  "receiptAiFillAction": "Fill from receipt",
+  "@receiptAiFillAction": {
+    "description": "Button under the uploaded receipt: AI reads it and fills the items."
+  },
+  "receiptAiReading": "Reading the receipt…",
+  "receiptAiFailed": "Could not read the receipt. You can add the items by hand.",
+  "receiptAiNotReceipt": "This photo doesn't look like a receipt.",
+  "receiptAiNoItems": "No items found on the receipt.",
+  "receiptAiTotalsMismatch": "Totals don't match, check the items.",
+  "receiptAiCheckItems": "Some lines were hard to read, check them."
 }

@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Udgiftsfiltre",
   "workspaceClearFilters": "Ryd filtre",
   "workspaceFiltersLoadedHint": "Filtrene gælder indlæste udgifter. Indlæs flere for at medtage ældre udgifter.",
-  "workspaceFiltersNoMatchesHint": "Skift eller ryd filtrene for at se alle indlæste udgifter."
+  "workspaceFiltersNoMatchesHint": "Skift eller ryd filtrene for at se alle indlæste udgifter.",
+  "receiptAiFillAction": "Udfyld fra kvittering",
+  "receiptAiReading": "Læser kvitteringen…",
+  "receiptAiFailed": "Kvitteringen kunne ikke læses. Du kan tilføje varerne selv.",
+  "receiptAiNotReceipt": "Dette foto ligner ikke en kvittering.",
+  "receiptAiNoItems": "Ingen varer fundet på kvitteringen.",
+  "receiptAiTotalsMismatch": "Beløbene passer ikke, tjek varerne.",
+  "receiptAiCheckItems": "Nogle linjer var svære at læse, tjek dem."
 }

@@ -5540,4 +5540,25 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Ändra eller rensa filtren för att se alla inlästa utgifter.';
+
+  @override
+  String get receiptAiFillAction => 'Fyll i från kvitto';
+
+  @override
+  String get receiptAiReading => 'Läser kvittot…';
+
+  @override
+  String get receiptAiFailed => 'Kvittot kunde inte läsas. Du kan lägga till raderna själv.';
+
+  @override
+  String get receiptAiNotReceipt => 'Det här fotot ser inte ut som ett kvitto.';
+
+  @override
+  String get receiptAiNoItems => 'Inga rader hittades på kvittot.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Summorna stämmer inte, kontrollera raderna.';
+
+  @override
+  String get receiptAiCheckItems => 'Vissa rader var svåra att läsa, kontrollera dem.';
 }

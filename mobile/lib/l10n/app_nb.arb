@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Utgiftsfiltre",
   "workspaceClearFilters": "Nullstill filtre",
   "workspaceFiltersLoadedHint": "Filtrene gjelder innlastede utgifter. Last inn flere for å inkludere eldre utgifter.",
-  "workspaceFiltersNoMatchesHint": "Endre eller nullstill filtrene for å se alle innlastede utgifter."
+  "workspaceFiltersNoMatchesHint": "Endre eller nullstill filtrene for å se alle innlastede utgifter.",
+  "receiptAiFillAction": "Fyll ut fra kvittering",
+  "receiptAiReading": "Leser kvitteringen…",
+  "receiptAiFailed": "Kunne ikke lese kvitteringen. Du kan legge til varene selv.",
+  "receiptAiNotReceipt": "Dette bildet ser ikke ut som en kvittering.",
+  "receiptAiNoItems": "Fant ingen varer på kvitteringen.",
+  "receiptAiTotalsMismatch": "Summene stemmer ikke, sjekk varene.",
+  "receiptAiCheckItems": "Noen linjer var vanskelige å lese, sjekk dem."
 }

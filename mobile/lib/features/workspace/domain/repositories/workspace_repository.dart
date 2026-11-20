@@ -7,6 +7,7 @@ import '../entities/queued_mutation.dart';
 import '../entities/random_draw_result.dart';
 import '../entities/expense_item.dart';
 import '../entities/expense_split_value.dart';
+import '../entities/receipt_scan.dart';
 import '../entities/receipt_upload_payload.dart';
 import '../entities/trip_expenses_page.dart';
 import '../entities/uploaded_receipt.dart';
@@ -60,6 +61,12 @@ abstract class WorkspaceRepository {
 
   Future<UploadedReceiptData> uploadReceipt({
     required ReceiptUploadPayload payload,
+  });
+
+  /// Reads an uploaded receipt with AI; online only (docs/api/receipt-scan.md).
+  Future<ReceiptScan> scanReceipt({
+    required String receiptPath,
+    required String requestId,
   });
 
   Future<void> endTrip({required int tripId});

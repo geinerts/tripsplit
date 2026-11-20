@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Фільтри витрат",
   "workspaceClearFilters": "Скинути фільтри",
   "workspaceFiltersLoadedHint": "Фільтри застосовуються до завантажених витрат. Завантаж більше, щоб включити попередні витрати.",
-  "workspaceFiltersNoMatchesHint": "Зміни або скинь фільтри, щоб побачити всі завантажені витрати."
+  "workspaceFiltersNoMatchesHint": "Зміни або скинь фільтри, щоб побачити всі завантажені витрати.",
+  "receiptAiFillAction": "Заповнити з чека",
+  "receiptAiReading": "Читаємо чек…",
+  "receiptAiFailed": "Не вдалося прочитати чек. Позиції можна додати вручну.",
+  "receiptAiNotReceipt": "Це фото не схоже на чек.",
+  "receiptAiNoItems": "У чеку не знайдено позицій.",
+  "receiptAiTotalsMismatch": "Суми не збігаються, перевірте позиції.",
+  "receiptAiCheckItems": "Деякі рядки важко прочитати, перевірте їх."
 }

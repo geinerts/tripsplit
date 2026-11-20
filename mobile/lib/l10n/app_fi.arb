@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Menojen suodattimet",
   "workspaceClearFilters": "Tyhjennä suodattimet",
   "workspaceFiltersLoadedHint": "Suodattimet koskevat ladattuja menoja. Lataa lisää, jotta myös vanhemmat menot tulevat mukaan.",
-  "workspaceFiltersNoMatchesHint": "Muuta tai tyhjennä suodattimet nähdäksesi kaikki ladatut menot."
+  "workspaceFiltersNoMatchesHint": "Muuta tai tyhjennä suodattimet nähdäksesi kaikki ladatut menot.",
+  "receiptAiFillAction": "Täytä kuitista",
+  "receiptAiReading": "Luetaan kuittia…",
+  "receiptAiFailed": "Kuittia ei voitu lukea. Voit lisätä rivit itse.",
+  "receiptAiNotReceipt": "Tämä kuva ei näytä kuitilta.",
+  "receiptAiNoItems": "Kuitista ei löytynyt rivejä.",
+  "receiptAiTotalsMismatch": "Summat eivät täsmää, tarkista rivit.",
+  "receiptAiCheckItems": "Joitakin rivejä oli vaikea lukea, tarkista ne."
 }

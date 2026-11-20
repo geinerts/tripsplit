@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Фильтры расходов",
   "workspaceClearFilters": "Сбросить фильтры",
   "workspaceFiltersLoadedHint": "Фильтры применяются к загруженным расходам. Загрузите больше, чтобы включить более ранние расходы.",
-  "workspaceFiltersNoMatchesHint": "Измените или сбросьте фильтры, чтобы увидеть все загруженные расходы."
+  "workspaceFiltersNoMatchesHint": "Измените или сбросьте фильтры, чтобы увидеть все загруженные расходы.",
+  "receiptAiFillAction": "Заполнить по чеку",
+  "receiptAiReading": "Читаем чек…",
+  "receiptAiFailed": "Не удалось прочитать чек. Позиции можно добавить вручную.",
+  "receiptAiNotReceipt": "Это фото не похоже на чек.",
+  "receiptAiNoItems": "В чеке не найдено позиций.",
+  "receiptAiTotalsMismatch": "Суммы не сходятся, проверьте позиции.",
+  "receiptAiCheckItems": "Некоторые строки трудно прочитать, проверьте их."
 }

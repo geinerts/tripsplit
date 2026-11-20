@@ -2195,5 +2195,12 @@
   "workspaceExpenseFilters": "Izdevumu filtri",
   "workspaceClearFilters": "Notīrīt filtrus",
   "workspaceFiltersLoadedHint": "Filtri attiecas uz ielādētajiem izdevumiem. Ielādē vairāk, lai iekļautu senākus izdevumus.",
-  "workspaceFiltersNoMatchesHint": "Maini vai notīri filtrus, lai redzētu visus ielādētos izdevumus."
+  "workspaceFiltersNoMatchesHint": "Maini vai notīri filtrus, lai redzētu visus ielādētos izdevumus.",
+  "receiptAiFillAction": "Aizpildīt no čeka",
+  "receiptAiReading": "Lasa čeku…",
+  "receiptAiFailed": "Neizdevās nolasīt čeku. Pozīcijas vari ievadīt pats.",
+  "receiptAiNotReceipt": "Šis foto neizskatās pēc čeka.",
+  "receiptAiNoItems": "Čekā netika atrastas pozīcijas.",
+  "receiptAiTotalsMismatch": "Summas nesakrīt, pārbaudi pozīcijas.",
+  "receiptAiCheckItems": "Dažas rindas bija grūti nolasīt, pārbaudi tās."
 }

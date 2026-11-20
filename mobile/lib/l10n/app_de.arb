@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Ausgabenfilter",
   "workspaceClearFilters": "Filter zurücksetzen",
   "workspaceFiltersLoadedHint": "Die Filter gelten für geladene Ausgaben. Lade weitere, um ältere Ausgaben einzubeziehen.",
-  "workspaceFiltersNoMatchesHint": "Ändere die Filter oder setze sie zurück, um alle geladenen Ausgaben zu sehen."
+  "workspaceFiltersNoMatchesHint": "Ändere die Filter oder setze sie zurück, um alle geladenen Ausgaben zu sehen.",
+  "receiptAiFillAction": "Aus Beleg ausfüllen",
+  "receiptAiReading": "Beleg wird gelesen…",
+  "receiptAiFailed": "Der Beleg konnte nicht gelesen werden. Du kannst die Posten selbst eingeben.",
+  "receiptAiNotReceipt": "Dieses Foto sieht nicht wie ein Beleg aus.",
+  "receiptAiNoItems": "Keine Posten auf dem Beleg gefunden.",
+  "receiptAiTotalsMismatch": "Die Summen stimmen nicht, prüfe die Posten.",
+  "receiptAiCheckItems": "Einige Zeilen waren schwer lesbar, prüfe sie."
 }

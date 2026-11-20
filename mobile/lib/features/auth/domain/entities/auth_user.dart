@@ -28,6 +28,7 @@ class AuthUser {
     this.avatarUrl,
     this.avatarThumbUrl,
     this.premiumAccess,
+    this.receiptAi = false,
   });
 
   final int id;
@@ -62,6 +63,10 @@ class AuthUser {
   final String? avatarThumbUrl;
   final PremiumAccess? premiumAccess;
 
+  /// `features.receipt_ai` from `me` (docs/api/feature-flags.md): whether to
+  /// offer AI receipt reading. The server checks again on every scan.
+  final bool receiptAi;
+
   AuthUser copyWith({
     int? id,
     String? firstName,
@@ -94,6 +99,7 @@ class AuthUser {
     return AuthUser(
       id: id ?? this.id,
       premiumAccess: id == null || id == this.id ? premiumAccess : null,
+      receiptAi: (id == null || id == this.id) && receiptAi,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       displayName: displayName ?? this.displayName,

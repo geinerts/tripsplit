@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Filtres des dépenses",
   "workspaceClearFilters": "Effacer les filtres",
   "workspaceFiltersLoadedHint": "Les filtres concernent les dépenses chargées. Charge davantage de dépenses pour inclure les plus anciennes.",
-  "workspaceFiltersNoMatchesHint": "Modifie ou efface les filtres pour voir toutes les dépenses chargées."
+  "workspaceFiltersNoMatchesHint": "Modifie ou efface les filtres pour voir toutes les dépenses chargées.",
+  "receiptAiFillAction": "Remplir depuis le reçu",
+  "receiptAiReading": "Lecture du reçu…",
+  "receiptAiFailed": "Impossible de lire le reçu. Tu peux ajouter les articles à la main.",
+  "receiptAiNotReceipt": "Cette photo ne ressemble pas à un reçu.",
+  "receiptAiNoItems": "Aucun article trouvé sur le reçu.",
+  "receiptAiTotalsMismatch": "Les totaux ne correspondent pas, vérifie les articles.",
+  "receiptAiCheckItems": "Certaines lignes étaient difficiles à lire, vérifie-les."
 }

@@ -5540,4 +5540,25 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Wijzig of wis de filters om alle geladen uitgaven te zien.';
+
+  @override
+  String get receiptAiFillAction => 'Invullen vanaf bon';
+
+  @override
+  String get receiptAiReading => 'Bon wordt gelezen…';
+
+  @override
+  String get receiptAiFailed => 'De bon kon niet worden gelezen. Je kunt de items zelf invoeren.';
+
+  @override
+  String get receiptAiNotReceipt => 'Deze foto lijkt geen bon.';
+
+  @override
+  String get receiptAiNoItems => 'Geen items gevonden op de bon.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'De totalen kloppen niet, controleer de items.';
+
+  @override
+  String get receiptAiCheckItems => 'Sommige regels waren moeilijk leesbaar, controleer ze.';
 }

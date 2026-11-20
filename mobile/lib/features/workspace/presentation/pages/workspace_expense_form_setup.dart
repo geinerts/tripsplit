@@ -16,6 +16,7 @@ class _ExpenseFormSetup {
     this.loadSavedReceipt,
     this.addPerson,
     this.submitLabel,
+    this.scanReceipt,
   });
 
   final int currentUserId;
@@ -53,6 +54,11 @@ class _ExpenseFormSetup {
 
   /// Replaces "Add" on the main button of a new expense.
   final String? submitLabel;
+
+  /// Reads the uploaded receipt with AI; null hides "Fill from receipt".
+  /// Only set where the account has `receipt_ai` (docs/api/receipt-scan.md).
+  final Future<ReceiptScan> Function(String receiptPath, String requestId)?
+  scanReceipt;
 }
 
 /// The values a form opens with: a saved expense, or a draft carried over.

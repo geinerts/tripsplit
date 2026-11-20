@@ -5540,4 +5540,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Change the filters or clear them to see all loaded expenses.';
+
+  @override
+  String get receiptAiFillAction => 'Fill from receipt';
+
+  @override
+  String get receiptAiReading => 'Reading the receipt…';
+
+  @override
+  String get receiptAiFailed => 'Could not read the receipt. You can add the items by hand.';
+
+  @override
+  String get receiptAiNotReceipt => 'This photo doesn\'t look like a receipt.';
+
+  @override
+  String get receiptAiNoItems => 'No items found on the receipt.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Totals don\'t match, check the items.';
+
+  @override
+  String get receiptAiCheckItems => 'Some lines were hard to read, check them.';
 }

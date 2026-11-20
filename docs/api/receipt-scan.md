@@ -19,8 +19,9 @@ Request:
 
 The receipt must have been uploaded by the caller (same ownership rule as `add_expense`).
 `request_id` makes the call idempotent: repeating it returns the stored result (or
-`scan_in_progress`) and never calls the AI again. The same `request_id` with another
-`receipt_path` answers 409.
+`scan_in_progress`) and never calls the AI again. A repeated `request_id` is answered before
+the per-minute limits, so the app may ask again (every few seconds) while a slow scan runs or
+after its own request timed out. The same `request_id` with another `receipt_path` answers 409.
 
 Checks run in this order, cheapest first; none of the later steps runs if one fails:
 

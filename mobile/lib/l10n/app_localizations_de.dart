@@ -5540,4 +5540,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Ändere die Filter oder setze sie zurück, um alle geladenen Ausgaben zu sehen.';
+
+  @override
+  String get receiptAiFillAction => 'Aus Beleg ausfüllen';
+
+  @override
+  String get receiptAiReading => 'Beleg wird gelesen…';
+
+  @override
+  String get receiptAiFailed => 'Der Beleg konnte nicht gelesen werden. Du kannst die Posten selbst eingeben.';
+
+  @override
+  String get receiptAiNotReceipt => 'Dieses Foto sieht nicht wie ein Beleg aus.';
+
+  @override
+  String get receiptAiNoItems => 'Keine Posten auf dem Beleg gefunden.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Die Summen stimmen nicht, prüfe die Posten.';
+
+  @override
+  String get receiptAiCheckItems => 'Einige Zeilen waren schwer lesbar, prüfe sie.';
 }

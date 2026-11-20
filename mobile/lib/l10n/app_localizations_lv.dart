@@ -5552,4 +5552,25 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Maini vai notīri filtrus, lai redzētu visus ielādētos izdevumus.';
+
+  @override
+  String get receiptAiFillAction => 'Aizpildīt no čeka';
+
+  @override
+  String get receiptAiReading => 'Lasa čeku…';
+
+  @override
+  String get receiptAiFailed => 'Neizdevās nolasīt čeku. Pozīcijas vari ievadīt pats.';
+
+  @override
+  String get receiptAiNotReceipt => 'Šis foto neizskatās pēc čeka.';
+
+  @override
+  String get receiptAiNoItems => 'Čekā netika atrastas pozīcijas.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Summas nesakrīt, pārbaudi pozīcijas.';
+
+  @override
+  String get receiptAiCheckItems => 'Dažas rindas bija grūti nolasīt, pārbaudi tās.';
 }

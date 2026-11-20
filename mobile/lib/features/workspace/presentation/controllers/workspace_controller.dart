@@ -8,6 +8,7 @@ import '../../domain/entities/queued_mutation.dart';
 import '../../domain/entities/random_draw_result.dart';
 import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
+import '../../domain/entities/receipt_scan.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/trip_expenses_page.dart';
 import '../../domain/entities/uploaded_receipt.dart';
@@ -117,6 +118,16 @@ class WorkspaceController {
     required ReceiptUploadPayload payload,
   }) {
     return _repository.uploadReceipt(payload: payload);
+  }
+
+  Future<ReceiptScan> scanReceipt({
+    required String receiptPath,
+    required String requestId,
+  }) {
+    return _repository.scanReceipt(
+      receiptPath: receiptPath,
+      requestId: requestId,
+    );
   }
 
   Future<void> endTrip({required int tripId}) {

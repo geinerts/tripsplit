@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Filtry výdajů",
   "workspaceClearFilters": "Vymazat filtry",
   "workspaceFiltersLoadedHint": "Filtry se vztahují na načtené výdaje. Načti další, aby zahrnovaly i starší výdaje.",
-  "workspaceFiltersNoMatchesHint": "Změň nebo vymaž filtry pro zobrazení všech načtených výdajů."
+  "workspaceFiltersNoMatchesHint": "Změň nebo vymaž filtry pro zobrazení všech načtených výdajů.",
+  "receiptAiFillAction": "Vyplnit z účtenky",
+  "receiptAiReading": "Čtu účtenku…",
+  "receiptAiFailed": "Účtenku se nepodařilo přečíst. Položky můžeš zadat ručně.",
+  "receiptAiNotReceipt": "Tato fotka nevypadá jako účtenka.",
+  "receiptAiNoItems": "Na účtence nebyly nalezeny žádné položky.",
+  "receiptAiTotalsMismatch": "Součty nesedí, zkontroluj položky.",
+  "receiptAiCheckItems": "Některé řádky byly špatně čitelné, zkontroluj je."
 }

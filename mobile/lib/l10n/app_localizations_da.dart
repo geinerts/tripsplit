@@ -5540,4 +5540,25 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Skift eller ryd filtrene for at se alle indlæste udgifter.';
+
+  @override
+  String get receiptAiFillAction => 'Udfyld fra kvittering';
+
+  @override
+  String get receiptAiReading => 'Læser kvitteringen…';
+
+  @override
+  String get receiptAiFailed => 'Kvitteringen kunne ikke læses. Du kan tilføje varerne selv.';
+
+  @override
+  String get receiptAiNotReceipt => 'Dette foto ligner ikke en kvittering.';
+
+  @override
+  String get receiptAiNoItems => 'Ingen varer fundet på kvitteringen.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Beløbene passer ikke, tjek varerne.';
+
+  @override
+  String get receiptAiCheckItems => 'Nogle linjer var svære at læse, tjek dem.';
 }

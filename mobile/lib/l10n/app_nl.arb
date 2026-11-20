@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Uitgavenfilters",
   "workspaceClearFilters": "Filters wissen",
   "workspaceFiltersLoadedHint": "De filters gelden voor geladen uitgaven. Laad meer om oudere uitgaven mee te nemen.",
-  "workspaceFiltersNoMatchesHint": "Wijzig of wis de filters om alle geladen uitgaven te zien."
+  "workspaceFiltersNoMatchesHint": "Wijzig of wis de filters om alle geladen uitgaven te zien.",
+  "receiptAiFillAction": "Invullen vanaf bon",
+  "receiptAiReading": "Bon wordt gelezen…",
+  "receiptAiFailed": "De bon kon niet worden gelezen. Je kunt de items zelf invoeren.",
+  "receiptAiNotReceipt": "Deze foto lijkt geen bon.",
+  "receiptAiNoItems": "Geen items gevonden op de bon.",
+  "receiptAiTotalsMismatch": "De totalen kloppen niet, controleer de items.",
+  "receiptAiCheckItems": "Sommige regels waren moeilijk leesbaar, controleer ze."
 }

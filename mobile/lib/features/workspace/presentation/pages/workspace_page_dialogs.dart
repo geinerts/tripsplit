@@ -182,6 +182,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
       : null;
   bool isReceiptUploading = false;
   bool isReceiptPicking = false;
+  bool isReceiptReading = false;
   String? receiptUploadHint;
   bool removeExistingReceipt = false;
   bool isSaving = false;
@@ -438,7 +439,10 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
               }
 
               final receiptBusy =
-                  isSaving || isReceiptPicking || isReceiptUploading;
+                  isSaving ||
+                  isReceiptPicking ||
+                  isReceiptUploading ||
+                  isReceiptReading;
               ExpenseDraft currentDraft() {
                 final amount = _parseAmount(amountController.text);
                 final category = isCustomCategoryMode
@@ -506,6 +510,107 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                     receiptUploadHint = t.expenseReceiptUploadOnSave;
                   });
                 }
+              }
+
+              // AI receipt reading: fills amount, date, note and "By item"
+              // from the uploaded photo, then opens the item editor to
+              // assign people. Nothing is saved until the user saves.
+              Future<void> readReceipt() async {
+                final scan = setup.scanReceipt;
+                final receipt = preuploadedReceipt;
+                if (scan == null || receipt == null || isReceiptReading) {
+                  return;
+                }
+                FocusScope.of(context).unfocus();
+                final account = setup.currentAccountId();
+                bool stillHere() =>
+                    context.mounted && setup.currentAccountId() == account;
+                void tell(String message) => ScaffoldMessenger.maybeOf(
+                  context,
+                )?.showSnackBar(SnackBar(content: Text(message)));
+                // The same id never starts a second AI call; asking again
+                // returns the result once the server has it.
+                final requestId =
+                    'rs_${account ?? 0}_${DateTime.now().microsecondsSinceEpoch}';
+                setDialogState(() => isReceiptReading = true);
+                final deadline = DateTime.now().add(
+                  const Duration(seconds: 75),
+                );
+                ReceiptScan? result;
+                String? failure;
+                while (true) {
+                  try {
+                    result = await scan(receipt.path, requestId);
+                    break;
+                  } on ApiException catch (error) {
+                    final again =
+                        error.isNetworkError ||
+                        error.code == 'scan_in_progress';
+                    if (!again || DateTime.now().isAfter(deadline)) {
+                      failure = error.isNetworkError
+                          ? t.receiptAiFailed
+                          : error.message;
+                      break;
+                    }
+                  } catch (_) {
+                    failure = t.receiptAiFailed;
+                    break;
+                  }
+                  await Future<void>.delayed(const Duration(seconds: 3));
+                  if (!stillHere()) return;
+                }
+                if (!stillHere()) return;
+                setDialogState(() => isReceiptReading = false);
+                final scanned = result;
+                if (scanned == null) {
+                  tell(failure ?? t.receiptAiFailed);
+                  return;
+                }
+                if (!scanned.isReceipt) {
+                  tell(t.receiptAiNotReceipt);
+                  return;
+                }
+                final draft = scanned.splitDraft();
+                if (draft == null) {
+                  tell(t.receiptAiNoItems);
+                  return;
+                }
+                final people = selected.isNotEmpty
+                    ? (selected.toList()..sort())
+                    : <int>[setup.currentUserId];
+                setDialogState(() {
+                  selectedCurrencyCode = AppCurrencyCatalog.normalize(
+                    scanned.currencyCode,
+                    fallback: selectedCurrencyCode,
+                  );
+                  final date = parseExpenseDate(scanned.date);
+                  if (date != null) selectedExpenseDate = date;
+                  final merchant = scanned.merchant;
+                  if (noteController.text.trim().isEmpty && merchant != null) {
+                    noteController.text = merchant;
+                  }
+                  itemDrafts = [
+                    for (final line in draft.lines)
+                      ExpenseItem(
+                        name: line.name,
+                        amount: line.cents / 100,
+                        participantIds: people,
+                      ),
+                  ];
+                  extraDraft = draft.extraCents / 100;
+                  splitMode = 'itemized';
+                  amountController.text = AppCurrencyCatalog.amountInputText(
+                    draft.totalCents / 100,
+                    selectedCurrencyCode,
+                  );
+                  errorText = null;
+                });
+                if (!scanned.sumMatches) {
+                  tell(t.receiptAiTotalsMismatch);
+                } else if (scanned.hasUncertainItems) {
+                  tell(t.receiptAiCheckItems);
+                }
+                await editSplit();
               }
 
               return PopScope(
@@ -1104,6 +1209,32 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                         receiptUploadHint = null;
                                       }),
                                     ),
+                                    if (setup.scanReceipt != null &&
+                                        preuploadedReceipt != null) ...[
+                                      const SizedBox(height: 8),
+                                      OutlinedButton.icon(
+                                        key: const ValueKey('receipt-ai-fill'),
+                                        onPressed: receiptBusy
+                                            ? null
+                                            : readReceipt,
+                                        icon: isReceiptReading
+                                            ? const SizedBox.square(
+                                                dimension: 18,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                    ),
+                                              )
+                                            : const Icon(
+                                                Icons.auto_awesome_outlined,
+                                              ),
+                                        label: Text(
+                                          isReceiptReading
+                                              ? t.receiptAiReading
+                                              : t.receiptAiFillAction,
+                                        ),
+                                      ),
+                                    ],
                                   ] else if (hasSavedReceipt) ...[
                                     const SizedBox(height: 12),
                                     ReceiptAttachmentCard(

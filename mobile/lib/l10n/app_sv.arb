@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Utgiftsfilter",
   "workspaceClearFilters": "Rensa filter",
   "workspaceFiltersLoadedHint": "Filtren gäller inlästa utgifter. Läs in fler för att inkludera äldre utgifter.",
-  "workspaceFiltersNoMatchesHint": "Ändra eller rensa filtren för att se alla inlästa utgifter."
+  "workspaceFiltersNoMatchesHint": "Ändra eller rensa filtren för att se alla inlästa utgifter.",
+  "receiptAiFillAction": "Fyll i från kvitto",
+  "receiptAiReading": "Läser kvittot…",
+  "receiptAiFailed": "Kvittot kunde inte läsas. Du kan lägga till raderna själv.",
+  "receiptAiNotReceipt": "Det här fotot ser inte ut som ett kvitto.",
+  "receiptAiNoItems": "Inga rader hittades på kvittot.",
+  "receiptAiTotalsMismatch": "Summorna stämmer inte, kontrollera raderna.",
+  "receiptAiCheckItems": "Vissa rader var svåra att läsa, kontrollera dem."
 }

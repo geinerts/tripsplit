@@ -5540,4 +5540,25 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Modifica o cancella i filtri per vedere tutte le spese caricate.';
+
+  @override
+  String get receiptAiFillAction => 'Compila dallo scontrino';
+
+  @override
+  String get receiptAiReading => 'Lettura dello scontrino…';
+
+  @override
+  String get receiptAiFailed => 'Impossibile leggere lo scontrino. Puoi aggiungere le voci a mano.';
+
+  @override
+  String get receiptAiNotReceipt => 'Questa foto non sembra uno scontrino.';
+
+  @override
+  String get receiptAiNoItems => 'Nessuna voce trovata sullo scontrino.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'I totali non corrispondono, controlla le voci.';
+
+  @override
+  String get receiptAiCheckItems => 'Alcune righe erano difficili da leggere, controllale.';
 }

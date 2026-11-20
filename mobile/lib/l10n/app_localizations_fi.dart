@@ -5540,4 +5540,25 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Muuta tai tyhjennä suodattimet nähdäksesi kaikki ladatut menot.';
+
+  @override
+  String get receiptAiFillAction => 'Täytä kuitista';
+
+  @override
+  String get receiptAiReading => 'Luetaan kuittia…';
+
+  @override
+  String get receiptAiFailed => 'Kuittia ei voitu lukea. Voit lisätä rivit itse.';
+
+  @override
+  String get receiptAiNotReceipt => 'Tämä kuva ei näytä kuitilta.';
+
+  @override
+  String get receiptAiNoItems => 'Kuitista ei löytynyt rivejä.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Summat eivät täsmää, tarkista rivit.';
+
+  @override
+  String get receiptAiCheckItems => 'Joitakin rivejä oli vaikea lukea, tarkista ne.';
 }

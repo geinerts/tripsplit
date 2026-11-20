@@ -5540,4 +5540,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Modifie ou efface les filtres pour voir toutes les dépenses chargées.';
+
+  @override
+  String get receiptAiFillAction => 'Remplir depuis le reçu';
+
+  @override
+  String get receiptAiReading => 'Lecture du reçu…';
+
+  @override
+  String get receiptAiFailed => 'Impossible de lire le reçu. Tu peux ajouter les articles à la main.';
+
+  @override
+  String get receiptAiNotReceipt => 'Cette photo ne ressemble pas à un reçu.';
+
+  @override
+  String get receiptAiNoItems => 'Aucun article trouvé sur le reçu.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Les totaux ne correspondent pas, vérifie les articles.';
+
+  @override
+  String get receiptAiCheckItems => 'Certaines lignes étaient difficiles à lire, vérifie-les.';
 }

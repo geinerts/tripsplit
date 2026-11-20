@@ -7,6 +7,7 @@ import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/random_draw_result.dart';
+import '../../domain/entities/receipt_scan.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/trip_expenses_page.dart';
 import '../../domain/entities/uploaded_receipt.dart';
@@ -124,6 +125,11 @@ abstract class WorkspaceRemoteDataSource {
 
   Future<UploadedReceiptData> uploadReceipt({
     required ReceiptUploadPayload payload,
+  });
+
+  Future<ReceiptScan> scanReceipt({
+    required String receiptPath,
+    required String requestId,
   });
 
   Future<int?> addExpense({
@@ -517,6 +523,17 @@ class WorkspaceRemoteDataSourceImpl implements WorkspaceRemoteDataSource {
     required ReceiptUploadPayload payload,
   }) {
     return _mutationApi.uploadReceipt(payload: payload);
+  }
+
+  @override
+  Future<ReceiptScan> scanReceipt({
+    required String receiptPath,
+    required String requestId,
+  }) {
+    return _mutationApi.scanReceipt(
+      receiptPath: receiptPath,
+      requestId: requestId,
+    );
   }
 
   @override

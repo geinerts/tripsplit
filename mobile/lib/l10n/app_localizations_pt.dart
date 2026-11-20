@@ -5540,4 +5540,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Altera ou limpa os filtros para ver todas as despesas carregadas.';
+
+  @override
+  String get receiptAiFillAction => 'Preencher a partir do recibo';
+
+  @override
+  String get receiptAiReading => 'A ler o recibo…';
+
+  @override
+  String get receiptAiFailed => 'Não foi possível ler o recibo. Podes adicionar os itens à mão.';
+
+  @override
+  String get receiptAiNotReceipt => 'Esta foto não parece um recibo.';
+
+  @override
+  String get receiptAiNoItems => 'Nenhum item encontrado no recibo.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Os totais não coincidem, verifica os itens.';
+
+  @override
+  String get receiptAiCheckItems => 'Algumas linhas eram difíceis de ler, verifica-as.';
 }

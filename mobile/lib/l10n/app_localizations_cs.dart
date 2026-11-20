@@ -5554,4 +5554,25 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Změň nebo vymaž filtry pro zobrazení všech načtených výdajů.';
+
+  @override
+  String get receiptAiFillAction => 'Vyplnit z účtenky';
+
+  @override
+  String get receiptAiReading => 'Čtu účtenku…';
+
+  @override
+  String get receiptAiFailed => 'Účtenku se nepodařilo přečíst. Položky můžeš zadat ručně.';
+
+  @override
+  String get receiptAiNotReceipt => 'Tato fotka nevypadá jako účtenka.';
+
+  @override
+  String get receiptAiNoItems => 'Na účtence nebyly nalezeny žádné položky.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Součty nesedí, zkontroluj položky.';
+
+  @override
+  String get receiptAiCheckItems => 'Některé řádky byly špatně čitelné, zkontroluj je.';
 }

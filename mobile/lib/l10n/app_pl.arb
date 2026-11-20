@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Filtry wydatków",
   "workspaceClearFilters": "Wyczyść filtry",
   "workspaceFiltersLoadedHint": "Filtry obejmują wczytane wydatki. Wczytaj więcej, aby uwzględnić starsze wydatki.",
-  "workspaceFiltersNoMatchesHint": "Zmień lub wyczyść filtry, aby zobaczyć wszystkie wczytane wydatki."
+  "workspaceFiltersNoMatchesHint": "Zmień lub wyczyść filtry, aby zobaczyć wszystkie wczytane wydatki.",
+  "receiptAiFillAction": "Wypełnij z paragonu",
+  "receiptAiReading": "Odczytywanie paragonu…",
+  "receiptAiFailed": "Nie udało się odczytać paragonu. Możesz dodać pozycje ręcznie.",
+  "receiptAiNotReceipt": "To zdjęcie nie wygląda na paragon.",
+  "receiptAiNoItems": "Nie znaleziono pozycji na paragonie.",
+  "receiptAiTotalsMismatch": "Sumy się nie zgadzają, sprawdź pozycje.",
+  "receiptAiCheckItems": "Niektóre wiersze były trudne do odczytania, sprawdź je."
 }

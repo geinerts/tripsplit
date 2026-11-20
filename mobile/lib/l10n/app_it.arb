@@ -2209,5 +2209,12 @@
   "workspaceExpenseFilters": "Filtri delle spese",
   "workspaceClearFilters": "Cancella filtri",
   "workspaceFiltersLoadedHint": "I filtri si applicano alle spese caricate. Caricane altre per includere quelle precedenti.",
-  "workspaceFiltersNoMatchesHint": "Modifica o cancella i filtri per vedere tutte le spese caricate."
+  "workspaceFiltersNoMatchesHint": "Modifica o cancella i filtri per vedere tutte le spese caricate.",
+  "receiptAiFillAction": "Compila dallo scontrino",
+  "receiptAiReading": "Lettura dello scontrino…",
+  "receiptAiFailed": "Impossibile leggere lo scontrino. Puoi aggiungere le voci a mano.",
+  "receiptAiNotReceipt": "Questa foto non sembra uno scontrino.",
+  "receiptAiNoItems": "Nessuna voce trovata sullo scontrino.",
+  "receiptAiTotalsMismatch": "I totali non corrispondono, controlla le voci.",
+  "receiptAiCheckItems": "Alcune righe erano difficili da leggere, controllale."
 }

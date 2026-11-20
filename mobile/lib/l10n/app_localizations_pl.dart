@@ -5564,4 +5564,25 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Zmień lub wyczyść filtry, aby zobaczyć wszystkie wczytane wydatki.';
+
+  @override
+  String get receiptAiFillAction => 'Wypełnij z paragonu';
+
+  @override
+  String get receiptAiReading => 'Odczytywanie paragonu…';
+
+  @override
+  String get receiptAiFailed => 'Nie udało się odczytać paragonu. Możesz dodać pozycje ręcznie.';
+
+  @override
+  String get receiptAiNotReceipt => 'To zdjęcie nie wygląda na paragon.';
+
+  @override
+  String get receiptAiNoItems => 'Nie znaleziono pozycji na paragonie.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Sumy się nie zgadzają, sprawdź pozycje.';
+
+  @override
+  String get receiptAiCheckItems => 'Niektóre wiersze były trudne do odczytania, sprawdź je.';
 }

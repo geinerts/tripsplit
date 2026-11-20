@@ -2195,5 +2195,12 @@
   "workspaceExpenseFilters": "Filtros de gastos",
   "workspaceClearFilters": "Borrar filtros",
   "workspaceFiltersLoadedHint": "Los filtros se aplican a los gastos cargados. Carga más para incluir gastos anteriores.",
-  "workspaceFiltersNoMatchesHint": "Cambia o borra los filtros para ver todos los gastos cargados."
+  "workspaceFiltersNoMatchesHint": "Cambia o borra los filtros para ver todos los gastos cargados.",
+  "receiptAiFillAction": "Rellenar desde el recibo",
+  "receiptAiReading": "Leyendo el recibo…",
+  "receiptAiFailed": "No se pudo leer el recibo. Puedes añadir los artículos a mano.",
+  "receiptAiNotReceipt": "Esta foto no parece un recibo.",
+  "receiptAiNoItems": "No se encontraron artículos en el recibo.",
+  "receiptAiTotalsMismatch": "Los totales no coinciden, revisa los artículos.",
+  "receiptAiCheckItems": "Algunas líneas eran difíciles de leer, revísalas."
 }

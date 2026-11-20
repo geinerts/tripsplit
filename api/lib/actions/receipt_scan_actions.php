@@ -41,11 +41,8 @@ function scan_receipt_action(): void
         json_out(['ok' => false, 'error' => 'receipt_path and request_id are required.'], 400);
     }
 
-    // 3. Per-minute limits (fail closed).
-    enforce_rate_limit($pdo, 'receipt_ai_user', (string) $userId, 2, 60);
-    enforce_rate_limit($pdo, 'receipt_ai_ip', client_ip_address(), 10, 60);
-
-    // Same request again: never a second AI call.
+    // Same request again: never a second AI call. Answered before the
+    // per-minute limits, so the app can ask again while a slow scan runs.
     $existing = $pdo->prepare('SELECT id, receipt_path, status, result_json FROM ' . table_name('ai_scans')
         . ' WHERE user_id = ? AND request_id = ? LIMIT 1');
     $existing->execute([$userId, $requestId]);
@@ -64,6 +61,10 @@ function scan_receipt_action(): void
         }
         receipt_ai_error('ai_unavailable', 'Receipt reading did not work this time. You can add the expense by hand.', 503);
     }
+
+    // 3. Per-minute limits (fail closed), for new scans only.
+    enforce_rate_limit($pdo, 'receipt_ai_user', (string) $userId, 2, 60);
+    enforce_rate_limit($pdo, 'receipt_ai_ip', client_ip_address(), 10, 60);
 
     // 4. Ownership and file checks.
     assert_receipt_attachment_owned($receiptPath, $userId);

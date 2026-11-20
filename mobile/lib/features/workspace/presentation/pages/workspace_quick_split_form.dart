@@ -137,6 +137,13 @@ Future<QuickSplit?> showQuickSplitForm(
           ? null
           : () async => Uri.tryParse(existing!.receiptUrl!),
       currentAccountId: currentAccountId,
+      // AI receipt reading starts in Quick split, for accounts that have it.
+      scanReceipt: authController.currentUser?.receiptAi == true
+          ? (receiptPath, requestId) => workspaceController.scanReceipt(
+              receiptPath: receiptPath,
+              requestId: requestId,
+            )
+          : null,
       addPerson: (formContext, users) async {
         final person = await _pickQuickSplitPerson(
           formContext,

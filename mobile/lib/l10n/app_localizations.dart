@@ -10196,6 +10196,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change the filters or clear them to see all loaded expenses.'**
   String get workspaceFiltersNoMatchesHint;
+
+  /// Button under the uploaded receipt: AI reads it and fills the items.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill from receipt'**
+  String get receiptAiFillAction;
+
+  /// No description provided for @receiptAiReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading the receipt…'**
+  String get receiptAiReading;
+
+  /// No description provided for @receiptAiFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the receipt. You can add the items by hand.'**
+  String get receiptAiFailed;
+
+  /// No description provided for @receiptAiNotReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'This photo doesn\'t look like a receipt.'**
+  String get receiptAiNotReceipt;
+
+  /// No description provided for @receiptAiNoItems.
+  ///
+  /// In en, this message translates to:
+  /// **'No items found on the receipt.'**
+  String get receiptAiNoItems;
+
+  /// No description provided for @receiptAiTotalsMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Totals don\'t match, check the items.'**
+  String get receiptAiTotalsMismatch;
+
+  /// No description provided for @receiptAiCheckItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Some lines were hard to read, check them.'**
+  String get receiptAiCheckItems;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

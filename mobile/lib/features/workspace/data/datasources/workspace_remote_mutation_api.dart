@@ -11,6 +11,7 @@ import '../../domain/entities/expense_reaction.dart';
 import '../../domain/entities/expense_item.dart';
 import '../../domain/entities/expense_split_value.dart';
 import '../../domain/entities/random_draw_result.dart';
+import '../../domain/entities/receipt_scan.dart';
 import '../../domain/entities/receipt_upload_payload.dart';
 import '../../domain/entities/uploaded_receipt.dart';
 import 'workspace_remote_parsers.dart';
@@ -272,6 +273,28 @@ class WorkspaceRemoteMutationApi {
       url: uploaded.receiptUrl,
       thumbUrl: uploaded.receiptThumbUrl,
     );
+  }
+
+  /// Reads an uploaded receipt with AI (docs/api/receipt-scan.md). The same
+  /// [requestId] never starts a second AI call; asking again returns the
+  /// result once ready, or `scan_in_progress` while it runs.
+  Future<ReceiptScan> scanReceipt({
+    required String receiptPath,
+    required String requestId,
+  }) async {
+    final response = await _apiClient.request(
+      path: ApiEndpoints.legacyAction('scan_receipt'),
+      method: HttpMethod.post,
+      body: <String, dynamic>{
+        'receipt_path': receiptPath,
+        'request_id': requestId,
+      },
+    );
+    final scan = response['scan'];
+    if (scan is! Map) {
+      throw const ApiException('Receipt reading failed.');
+    }
+    return ReceiptScan.fromJson(Map<String, dynamic>.from(scan));
   }
 
   /// Returns the new expense id.

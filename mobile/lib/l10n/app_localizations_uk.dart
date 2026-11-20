@@ -5564,4 +5564,25 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get workspaceFiltersNoMatchesHint => 'Зміни або скинь фільтри, щоб побачити всі завантажені витрати.';
+
+  @override
+  String get receiptAiFillAction => 'Заповнити з чека';
+
+  @override
+  String get receiptAiReading => 'Читаємо чек…';
+
+  @override
+  String get receiptAiFailed => 'Не вдалося прочитати чек. Позиції можна додати вручну.';
+
+  @override
+  String get receiptAiNotReceipt => 'Це фото не схоже на чек.';
+
+  @override
+  String get receiptAiNoItems => 'У чеку не знайдено позицій.';
+
+  @override
+  String get receiptAiTotalsMismatch => 'Суми не збігаються, перевірте позиції.';
+
+  @override
+  String get receiptAiCheckItems => 'Деякі рядки важко прочитати, перевірте їх.';
 }
