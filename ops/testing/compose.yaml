@@ -42,6 +42,7 @@ services:
       - ../../sql/migrations/2026-10-04-deactivation-email-proof.sql:/workspace/sql/migrations/2026-10-04-deactivation-email-proof.sql:ro
       - ../../sql/migrations/2026-11-07-add-feature-usage-counts.sql:/workspace/sql/migrations/2026-11-07-add-feature-usage-counts.sql:ro
       - ../../sql/migrations/2026-11-18-email-verification-reactivation-permission.sql:/workspace/sql/migrations/2026-11-18-email-verification-reactivation-permission.sql:ro
+      - ../../sql/migrations/2026-11-20-feature-flags.sql:/workspace/sql/migrations/2026-11-20-feature-flags.sql:ro
     depends_on:
       mysql:
         condition: service_healthy

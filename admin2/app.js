@@ -202,7 +202,7 @@ function actionAttrs(action, ...args) {
 }
 
 const clickActions = Object.freeze({
-  openPremiumForm, premiumPage,
+  openPremiumForm, premiumPage, setFeatureMode, setUserFeature,
   navigate, openUserDetail, suspendUser, reactivateUser, deleteUser, clearPushTokens, signOutEverywhere,
   userSearch, retryPush,
   updateIncident, submitIncident, loadAuditLog, loadAppEvents,
@@ -304,6 +304,7 @@ function showApp() {
     }
     document.getElementById('nav-system').style.display = can('superadmin', 'admin', 'ops') ? '' : 'none';
     document.getElementById('nav-security').style.display = can('superadmin', 'admin') ? '' : 'none';
+    document.getElementById('nav-features').style.display = can('superadmin', 'admin') ? '' : 'none';
     document.getElementById('sidebar-avatar').textContent =
       state.user.username.slice(0, 2).toUpperCase();
     document.getElementById('sidebar-username').textContent = state.user.username;
@@ -1055,6 +1056,7 @@ async function openUserDetail(userId) {
     <div class="detail-row"><span class="detail-label">Unread notifs</span><span class="detail-value">${res.unread_notifs}</span></div>
     <div class="detail-row"><span class="detail-label">Sign-in &amp; apps</span><span class="detail-value user-signals">${userSignalBadges(u)}</span></div>
     <div class="detail-row"><span class="detail-label">Push tokens</span><span class="detail-value">${pushTokenSummary(res.push_tokens || [])}</span></div>
+    ${userFeaturesHtml(res.features || [], u)}
     <div style="margin-top:14px;font-size:12px;font-weight:700;color:var(--fg-muted);letter-spacing:0.3px;text-transform:uppercase;margin-bottom:6px;">Recent trips</div>
     ${trips}
     ${premiumDetailHtml(res.premium, u)}
@@ -1105,6 +1107,94 @@ function pushTokenSummary(tokens) {
   return tokens.map(t => `${esc(PLATFORM_LABELS[String(t.platform).toLowerCase()] || t.platform)}`
     + `${Number(t.is_active) === 1 ? '' : ' (inactive)'} · ${esc(relTime(t.last_seen_at))}`).join('<br>');
 }
+
+// ── Feature flags (docs/api/feature-flags.md) ────────────────────────────────
+
+const FEATURE_MODE_LABELS = { off: 'Off for everyone', allowlist: 'Allowed accounts only', everyone: 'Everyone' };
+const FEATURE_MODE_BADGES = { off: 'badge-gray', allowlist: 'badge-amber', everyone: 'badge-green' };
+
+function userFeaturesHtml(features, u) {
+  if (!features.length) return '';
+  return features.map(f => {
+    const state = f.effective ? '<span class="badge badge-green">On now</span>'
+      : f.granted ? '<span class="badge badge-amber">Allowed · feature off</span>'
+      : '<span class="badge badge-gray">Not allowed</span>';
+    const button = can('superadmin')
+      ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('setUserFeature', u.id, f.key, !f.granted, u.nickname, f.label)}>${f.granted ? 'Remove access' : 'Allow'}</button>`
+      : '';
+    return `<div class="detail-row"><span class="detail-label">${esc(f.label)}</span><span class="detail-value">${state} ${button}</span></div>`;
+  }).join('');
+}
+
+async function setUserFeature(userId, key, enabled, name, label) {
+  const reason = await askInModal({
+    title: `${enabled ? 'Allow' : 'Remove'} ${label} for ${name}?`,
+    confirmLabel: enabled ? 'Allow' : 'Remove access', danger: !enabled,
+    message: enabled
+      ? 'The account gets the feature while the feature is set to "Allowed accounts only" or "Everyone".'
+      : 'The account loses the feature unless it is set to "Everyone".',
+    input: { label: 'Reason', required: true } });
+  if (!reason) return;
+  const res = await post('admin_panel_user_feature_set', { user_id: userId, key, enabled, reason });
+  if (!res.ok) { toast(res.error || 'Failed', 'error'); return; }
+  toast(enabled ? `${label} allowed for ${name}` : `${label} removed for ${name}`, 'success');
+  if (state.view === 'features') navigate('features'); else openUserDetail(userId);
+}
+
+async function setFeatureMode(key, mode, label) {
+  const messages = {
+    off: 'Emergency stop: nobody can use it, allowed accounts included. Their access is kept for later.',
+    allowlist: 'Only the allowed accounts listed below can use it.',
+    everyone: 'Every active account can use it. Limits and budget still apply.',
+  };
+  const reason = await askInModal({ title: `${label}: ${FEATURE_MODE_LABELS[mode]}?`,
+    confirmLabel: mode === 'off' ? 'Turn off for everyone' : 'Change', danger: mode !== 'allowlist',
+    message: messages[mode], input: { label: 'Reason', required: true } });
+  if (!reason) return;
+  const res = await post('admin_panel_feature_set_mode', { key, mode, reason });
+  if (!res.ok) { toast(res.error || 'Failed', 'error'); return; }
+  toast(`${label}: ${FEATURE_MODE_LABELS[mode]}`, 'success');
+  navigate('features');
+}
+
+registerView('features', {
+  title: 'Features',
+  async render() {
+    const res = await get('admin_panel_features');
+    if (!res.ok) return `<div class="empty-state">${esc(res.error || 'Failed to load features.')}</div>`;
+    const manage = can('superadmin');
+    return (res.flags || []).map(f => {
+      const grants = (res.grants || []).filter(g => g.key === f.key);
+      const modeButtons = manage ? ['off', 'allowlist', 'everyone'].filter(m => m !== f.mode).map(m =>
+        `<button class="btn ${m === 'off' ? 'btn-danger' : 'btn-ghost'} btn-sm" ${actionAttrs('setFeatureMode', f.key, m, f.label)}>${esc(FEATURE_MODE_LABELS[m])}</button>`).join('') : '';
+      const rows = grants.length ? grants.map(g => `
+        <div class="cl-item"><div class="cl-row">
+          <div style="flex:1;min-width:0">
+            <div class="cl-title">${esc(g.nickname)} <span class="muted-inline">#${g.user_id}</span></div>
+            <div class="cl-sub">${esc(g.email || '—')} · ${esc(g.account_status)} · allowed ${esc(relTime(g.granted_at))}${g.granted_by ? ` by ${esc(g.granted_by)}` : ''}</div>
+          </div>
+          ${manage ? `<button class="btn btn-ghost btn-sm" ${actionAttrs('setUserFeature', g.user_id, f.key, false, g.nickname, f.label)}>Remove</button>` : ''}
+        </div></div>`).join('')
+        : '<div class="empty-state">No accounts allowed yet. Open a user in Users and choose Allow.</div>';
+      return `
+        <div class="card feature-card">
+          <div class="cl-row">
+            <div style="flex:1;min-width:0">
+              <div class="cl-title">${esc(f.label)}</div>
+              <div class="cl-sub">${esc(f.description)}</div>
+            </div>
+            <span class="badge ${FEATURE_MODE_BADGES[f.mode] || 'badge-gray'}">${esc(FEATURE_MODE_LABELS[f.mode] || f.mode)}</span>
+          </div>
+          <div class="cl-sub" style="margin-top:6px">${f.updated_at ? `Changed ${esc(relTime(f.updated_at))}${f.updated_by ? ` by ${esc(f.updated_by)}` : ''}` : 'Never changed'}</div>
+          ${modeButtons ? `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">${modeButtons}</div>` : ''}
+        </div>
+        <div class="table-card">
+          <div class="table-card-header"><div class="table-card-title">Allowed accounts (${grants.length})</div></div>
+          ${rows}
+        </div>`;
+    }).join('');
+  },
+});
 
 async function suspendUser(userId, name) {
   const reason = await askInModal({ title: `Suspend ${name}?`, confirmLabel: 'Suspend', danger: true,

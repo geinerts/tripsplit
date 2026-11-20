@@ -46,6 +46,11 @@ async function openPanel(browser, width) {
           system: { disk_total_bytes: 100, disk_free_bytes: 10, database_bytes: 1048576, php_version: '8.3', mysql_version: '8.4', commit: 'abc1234' },
           limits: { request_limits: true, upload_daily_usage: false },
           push: { pending: 0, failed_24h: 0, oldest_pending_at: null, last_sent_at: null } },
+        admin_panel_features: { ok: true,
+          flags: [{ key: 'receipt_ai', label: 'AI receipt reading', description: hostile, mode: 'allowlist',
+            updated_at: '2026-11-20 08:00:00', updated_by: 'owner' }],
+          grants: [{ key: 'receipt_ai', user_id: 1, nickname: hostile, email: 'owner@example.invalid',
+            account_status: 'active', granted_at: '2026-11-20 08:00:00', granted_by: 'owner' }] },
         admin_panel_security_overview: { ok: true, counts_7d: { failed_logins: 2, failed_2fa: 0, locked: 0, successful_logins: 1 },
           events: [{ admin_username: hostile, action: 'admin.auth.login_failed', ip_address: '192.0.2.1', created_at: '2026-11-12 07:00:00' }],
           rate_limits_24h: [{ scope: 'login_ip', windows: 2, requests: 9, peak: 7 }], active_admin_sessions: 1 },
@@ -119,6 +124,16 @@ for (const width of [1280, 390]) {
       for (const label of ['Failed', 'OK', 'No data yet', '1 need attention', '90%', 'abc1234',
         'Security limits', 'Not working', 'Missing: upload_daily_usage']) {
         assert.ok(systemText.includes(label), label);
+      }
+      assert.ok(await noOverflow(page));
+
+      // Feature flags: mode is labelled, other modes are offered, allowed accounts listed.
+      await page.evaluate(() => navigate('features'));
+      await page.locator('.feature-card').waitFor();
+      const featuresText = await page.locator('#page-content').textContent();
+      for (const label of ['AI receipt reading', 'Allowed accounts only', 'Off for everyone', 'Everyone',
+        'Allowed accounts (1)', 'owner@example.invalid']) {
+        assert.ok(featuresText.includes(label), label);
       }
       assert.ok(await noOverflow(page));
 

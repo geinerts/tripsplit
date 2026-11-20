@@ -1246,3 +1246,6 @@ tbody td:first-child { color: var(--fg); }
 .timeline-row:last-child { border-bottom: none; }
 .timeline-event { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--fg); overflow-wrap: anywhere; }
 .timeline-meta { color: var(--fg-muted); white-space: nowrap; }
+
+/* Feature flags page */
+.feature-card { margin-bottom: 12px; }

@@ -791,6 +791,7 @@ function admin_panel_user_detail_action(): void
         'unread_notifs'  => $unreadNotifs,
         'sessions'       => admin_user_sessions($pdo, $userId, gmdate('Y-m-d H:i:s')),
         'timeline'       => admin_user_timeline($pdo, $userId),
+        'features'       => admin_user_features($pdo, $userId),
     ]);
 }
 
