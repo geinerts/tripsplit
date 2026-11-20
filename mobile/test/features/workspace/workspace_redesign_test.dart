@@ -6538,6 +6538,76 @@ void main() {
       commands.dispose();
     });
 
+    testWidgets('sheet shows items like a trip expense', (tester) async {
+      final split = QuickSplit.fromJson({
+        'id': 32,
+        'note': 'MNL SIA',
+        'category': 'food',
+        'date': '2026-11-20',
+        'amount': 20,
+        'currency_code': 'EUR',
+        'can_edit': true,
+        'split_mode': 'itemized',
+        'extra_amount': 3,
+        'people': [
+          {
+            'id': 1,
+            'user_id': 7,
+            'name': 'Matiss',
+            'is_me': true,
+            'is_payer': true,
+            'amount': 14,
+          },
+          {'id': 2, 'user_id': 8, 'name': 'Anna', 'amount': 6},
+        ],
+        'items': [
+          {
+            'name': 'Pizza',
+            'amount': 6,
+            'person_ids': [1],
+          },
+          {
+            'name': 'Pizza',
+            'amount': 6,
+            'person_ids': [1],
+          },
+          {
+            'name': 'Water',
+            'amount': 5,
+            'person_ids': [1, 2],
+          },
+        ],
+      });
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: QuickSplitSheet(
+              split: split,
+              receiptAction: const Text('receipt-action'),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final t = AppLocalizations.of(
+        tester.element(find.byType(QuickSplitSheet)),
+      )!;
+      expect(find.byKey(const ValueKey('quick-split-mode')), findsOneWidget);
+      expect(find.text('receipt-action'), findsOneWidget);
+      expect(find.text(t.expenseItemsLabel), findsWidgets);
+      expect(find.textContaining('Pizza', findRichText: true), findsOneWidget);
+      expect(
+        find.text('${t.expenseItemEach('€6.00')} · ${t.youLabel}'),
+        findsOneWidget,
+      );
+      expect(find.text('€12.00'), findsOneWidget);
+      expect(find.text('${t.youLabel}, Anna'), findsOneWidget);
+      expect(find.text(t.expenseItemExtra), findsOneWidget);
+    });
+
     testWidgets('sheet shows each amount; only the creator gets actions', (
       tester,
     ) async {

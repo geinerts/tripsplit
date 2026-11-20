@@ -219,15 +219,177 @@ enum QuickSplitSheetAction { addToTrip, edit, delete }
 Future<QuickSplitSheetAction?> showQuickSplitSheet(
   BuildContext context, {
   required QuickSplit split,
+  Widget? receiptAction,
 }) => showAppBottomSheet<QuickSplitSheetAction>(
   context: context,
-  builder: (sheetContext) => QuickSplitSheet(split: split),
+  isScrollControlled: true,
+  builder: (sheetContext) =>
+      QuickSplitSheet(split: split, receiptAction: receiptAction),
 );
 
 class QuickSplitSheet extends StatelessWidget {
-  const QuickSplitSheet({super.key, required this.split});
+  const QuickSplitSheet({super.key, required this.split, this.receiptAction});
 
   final QuickSplit split;
+
+  /// Opens the receipt photo; shown when the quick split has one.
+  final Widget? receiptAction;
+
+  static String _splitLabel(BuildContext context, String mode) {
+    final t = context.l10n;
+    return switch (mode.trim().toLowerCase()) {
+      'exact' => t.exactAmountsLabel,
+      'percent' => t.percentagesLabel,
+      'shares' => t.sharesLabel,
+      'adjustment' => t.expenseAdjustmentsLabel,
+      'itemized' => t.expenseItemsLabel,
+      _ => t.equalSplitLabel,
+    };
+  }
+
+  static IconData _splitIcon(String mode) =>
+      switch (mode.trim().toLowerCase()) {
+        'exact' => Icons.payments_outlined,
+        'percent' => Icons.percent_rounded,
+        'shares' => Icons.pie_chart_outline_rounded,
+        'adjustment' => Icons.exposure_rounded,
+        'itemized' => Icons.receipt_long_rounded,
+        _ => Icons.drag_handle_rounded,
+      };
+
+  Widget _chip(
+    BuildContext context, {
+    required Key key,
+    required Widget leading,
+    required String label,
+  }) {
+    final theme = Theme.of(context);
+    return Container(
+      key: key,
+      constraints: const BoxConstraints(minHeight: 36),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ExcludeSemantics(child: leading),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              label,
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// "Beer ×2 · €4.50 each · You, Anna" with the line total on the right,
+  /// then tax or tip; the same layout as a trip expense.
+  List<Widget> _items(BuildContext context) {
+    final t = context.l10n;
+    final theme = Theme.of(context);
+    final muted = theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    );
+    String money(int cents) => _money(context, cents / 100, split.currencyCode);
+    String nameFor(int id) {
+      for (final person in split.people) {
+        if (person.id == id) return person.isMe ? t.youLabel : person.name;
+      }
+      return '?';
+    }
+
+    String people(QuickSplitItemLine line) {
+      final counts = <int, int>{};
+      for (final id in line.personIds) {
+        counts[id] = (counts[id] ?? 0) + 1;
+      }
+      final withCounts =
+          counts.length > 1 && counts.values.any((count) => count > 1);
+      return [
+        for (final entry in counts.entries)
+          withCounts
+              ? '${nameFor(entry.key)} ×${entry.value}'
+              : nameFor(entry.key),
+      ].join(', ');
+    }
+
+    Widget row({
+      required String title,
+      int qty = 1,
+      required int totalCents,
+      String? detail,
+    }) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text.rich(
+                  TextSpan(
+                    text: title,
+                    children: [
+                      if (qty > 1)
+                        TextSpan(
+                          text: '  ×$qty',
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                    ],
+                  ),
+                  style: theme.textTheme.bodyMedium,
+                ),
+                if (detail != null && detail.isNotEmpty)
+                  Text(detail, style: muted),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            money(totalCents),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return [
+      Semantics(
+        header: true,
+        child: Text(t.expenseItemsLabel, style: theme.textTheme.titleSmall),
+      ),
+      const SizedBox(height: 4),
+      for (final line in QuickSplitItemLine.group(split.items))
+        row(
+          title: line.name,
+          qty: line.qty,
+          totalCents: line.totalCents,
+          detail: [
+            if (line.qty > 1) t.expenseItemEach(money(line.unitCents)),
+            people(line),
+          ].join(' · '),
+        ),
+      if (split.extraAmount > 0)
+        row(
+          title: t.expenseItemExtra,
+          totalCents: (split.extraAmount * 100).round(),
+        ),
+    ];
+  }
 
   String _shareText(BuildContext context) {
     final t = context.l10n;
@@ -300,17 +462,15 @@ class QuickSplitSheet extends StatelessWidget {
                   IconButton(
                     key: const ValueKey('quick-split-edit'),
                     tooltip: t.editAction,
-                    onPressed: () => Navigator.of(
-                      context,
-                    ).pop(QuickSplitSheetAction.edit),
+                    onPressed: () =>
+                        Navigator.of(context).pop(QuickSplitSheetAction.edit),
                     icon: const Icon(Icons.edit_outlined),
                   ),
                   IconButton(
                     key: const ValueKey('quick-split-delete'),
                     tooltip: t.deleteAction,
-                    onPressed: () => Navigator.of(
-                      context,
-                    ).pop(QuickSplitSheetAction.delete),
+                    onPressed: () =>
+                        Navigator.of(context).pop(QuickSplitSheetAction.delete),
                     icon: const Icon(Icons.delete_outline_rounded),
                   ),
                 ],
@@ -331,7 +491,29 @@ class QuickSplitSheet extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _chip(
+                  context,
+                  key: const ValueKey('quick-split-mode'),
+                  leading: Icon(
+                    _splitIcon(split.splitMode),
+                    size: 18,
+                    color: theme.colorScheme.primary,
+                  ),
+                  label: _splitLabel(context, split.splitMode),
+                ),
+                ?receiptAction,
+              ],
+            ),
+            if (split.items.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              ..._items(context),
+            ],
+            const SizedBox(height: 16),
             for (final person in split.people) ...[
               const Divider(height: 1),
               Padding(
@@ -379,9 +561,8 @@ class QuickSplitSheet extends StatelessWidget {
                 title: Text(t.quickSplitAddToTrip),
                 subtitle: Text(t.quickSplitAddToTripHint),
                 trailing: const Icon(Icons.chevron_right_rounded),
-                onTap: () => Navigator.of(
-                  context,
-                ).pop(QuickSplitSheetAction.addToTrip),
+                onTap: () =>
+                    Navigator.of(context).pop(QuickSplitSheetAction.addToTrip),
               ),
             ],
           ],

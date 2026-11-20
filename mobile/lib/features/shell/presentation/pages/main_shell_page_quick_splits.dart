@@ -93,7 +93,42 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
       }
     }
     if (!mounted || widget.authController.currentUser?.id != account) return;
-    final action = await showQuickSplitSheet(context, split: full);
+    final hasReceipt = full.hasReceipt || full.receiptUrl != null;
+    final action = await showQuickSplitSheet(
+      context,
+      split: full,
+      receiptAction: hasReceipt
+          ? ReceiptOpenAction(
+              compactLabel: context.l10n.expenseReceiptChip,
+              load: () async {
+                final uri = await controller.loadReceiptUri(full.id);
+                if (!mounted ||
+                    widget.authController.currentUser?.id != account) {
+                  return null;
+                }
+                return uri;
+              },
+              open: (uri) async {
+                if (!mounted ||
+                    widget.authController.currentUser?.id != account) {
+                  return false;
+                }
+                await Navigator.of(context).push<void>(
+                  AppFormPageRoute(
+                    builder: (_) => ReceiptViewerPage(
+                      initialUri: uri,
+                      isCurrentAccount: () =>
+                          mounted &&
+                          widget.authController.currentUser?.id == account,
+                      reload: () => controller.loadReceiptUri(full.id),
+                    ),
+                  ),
+                );
+                return true;
+              },
+            )
+          : null,
+    );
     if (!mounted ||
         action == null ||
         widget.authController.currentUser?.id != account) {

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/config/app_env.dart';
 import '../../../core/errors/api_exception.dart';
 import '../data/quick_splits_repository.dart';
 import '../domain/quick_split.dart';
@@ -67,6 +68,22 @@ class QuickSplitsController extends ChangeNotifier {
   }
 
   Future<QuickSplit> get(int id) => repository.get(id);
+
+  /// A fresh, authorized link to the receipt photo, loaded on every open;
+  /// only an https link on the API host is accepted, as for trip receipts.
+  Future<Uri?> loadReceiptUri(int id) async {
+    final split = await repository.get(id);
+    final uri = Uri.tryParse(split.receiptUrl ?? '');
+    final base = Uri.parse(AppEnv.current.apiBaseUrl);
+    if (uri == null ||
+        uri.scheme != 'https' ||
+        uri.host != base.host ||
+        uri.port != base.port ||
+        uri.userInfo.isNotEmpty) {
+      return null;
+    }
+    return uri;
+  }
 
   Future<void> delete(int id) async {
     await repository.delete(id);

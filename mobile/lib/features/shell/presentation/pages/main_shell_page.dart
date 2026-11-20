@@ -46,6 +46,8 @@ import '../../../../core/push/push_tap.dart';
 import '../push_tap_destination.dart';
 import '../../../workspace/domain/entities/expense_item.dart';
 import '../../../workspace/domain/entities/uploaded_receipt.dart';
+import '../../../workspace/presentation/widgets/receipt_open_action.dart';
+import '../../../workspace/presentation/widgets/receipt_viewer_page.dart';
 import '../../../quick_splits/domain/quick_split.dart';
 import '../../../quick_splits/presentation/quick_splits_controller.dart';
 import '../../../quick_splits/presentation/quick_splits_views.dart';

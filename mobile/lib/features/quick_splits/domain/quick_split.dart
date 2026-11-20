@@ -296,3 +296,46 @@ String? _nullableString(Object? raw) {
   final value = raw is String ? raw.trim() : '';
   return value.isEmpty ? null : value;
 }
+
+/// One line of the item list as people read it: the same item at the same
+/// price, each for one person, shows once as "Beer ×2"; an item several
+/// people had together stays its own line. Same rules as a trip expense.
+class QuickSplitItemLine {
+  QuickSplitItemLine(this.name, this.unitCents);
+
+  final String name;
+  final int unitCents;
+  int qty = 0;
+
+  /// Person ids, once per unit (a person with two beers is listed twice).
+  final List<int> personIds = [];
+  bool shared = false;
+
+  int get totalCents => unitCents * qty;
+
+  static List<QuickSplitItemLine> group(List<QuickSplitItem> items) {
+    final lines = <QuickSplitItemLine>[];
+    final byKey = <String, QuickSplitItemLine>{};
+    for (final item in items) {
+      final cents = (item.amount * 100).round();
+      if (item.personIds.length != 1) {
+        lines.add(
+          QuickSplitItemLine(item.name.trim(), cents)
+            ..qty = 1
+            ..shared = true
+            ..personIds.addAll(item.personIds),
+        );
+        continue;
+      }
+      final key = '${item.name.trim().toLowerCase()}|$cents';
+      final line = byKey.putIfAbsent(key, () {
+        final created = QuickSplitItemLine(item.name.trim(), cents);
+        lines.add(created);
+        return created;
+      });
+      line.qty++;
+      line.personIds.add(item.personIds.single);
+    }
+    return lines;
+  }
+}
