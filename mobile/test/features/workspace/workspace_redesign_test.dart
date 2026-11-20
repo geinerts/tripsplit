@@ -6476,6 +6476,38 @@ void main() {
       await disposePage(tester);
     });
 
+    testWidgets('a by-item quick split ticks only its own people', (
+      tester,
+    ) async {
+      final controller = _Workspace();
+      await _mount(
+        tester,
+        controller,
+        openAddExpenseOnStart: true,
+        initialExpenseDraft: const ExpenseDraft(
+          quickSplitId: 32,
+          amount: 12,
+          currencyCode: 'EUR',
+          category: 'food',
+          payerUserId: 7,
+          participantUserIds: [7],
+          splitMode: 'itemized',
+          items: [
+            ExpenseItem(name: 'Pizza', amount: 12, participantIds: [7]),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+      bool ticked(int id) => tester
+          .widget<AppPersonToggle>(
+            find.byKey(ValueKey('expense-participant-$id')),
+          )
+          .selected;
+      expect(ticked(7), isTrue);
+      expect(ticked(8), isFalse);
+      await disposePage(tester);
+    });
+
     testWidgets('people outside the trip make the split equal again', (
       tester,
     ) async {

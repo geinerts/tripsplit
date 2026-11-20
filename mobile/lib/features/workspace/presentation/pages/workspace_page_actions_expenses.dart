@@ -200,9 +200,9 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
       date: draft.date,
       receipt: draft.receipt,
       payerId: payer != null && members.contains(payer) ? payer : null,
-      participantIds: draft.splitMode == 'itemized' && keepSplit
-          ? const []
-          : participants,
+      // Only the people of the draft are ticked, also for "By item"; an
+      // empty list would mean everyone in the trip.
+      participantIds: participants,
       splitMode: keepSplit ? draft.splitMode : 'equal',
       splitValues: keepSplit ? draft.splitValues : const {},
       items: keepSplit ? draft.items : const [],
