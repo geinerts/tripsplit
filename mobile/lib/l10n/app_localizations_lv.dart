@@ -5573,4 +5573,13 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get receiptAiCheckItems => 'Dažas rindas bija grūti nolasīt, pārbaudi tās.';
+
+  @override
+  String get receiptAiNoticeTitle => 'Nolasīt čeku ar AI?';
+
+  @override
+  String get receiptAiNoticeBody => 'Čeka foto tiek nosūtīts OpenAI, lai nolasītu pozīcijas. Tiek sūtīts tikai foto, ne tavs vārds, e-pasts vai ceļojums. Pirms saglabāšanas visu pārbaudi pats. Vairāk privātuma politikā.';
+
+  @override
+  String get receiptAiNoticeContinue => 'Turpināt';
 }

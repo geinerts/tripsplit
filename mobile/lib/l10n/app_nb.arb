@@ -2216,5 +2216,8 @@
   "receiptAiNotReceipt": "Dette bildet ser ikke ut som en kvittering.",
   "receiptAiNoItems": "Fant ingen varer på kvitteringen.",
   "receiptAiTotalsMismatch": "Summene stemmer ikke, sjekk varene.",
-  "receiptAiCheckItems": "Noen linjer var vanskelige å lese, sjekk dem."
+  "receiptAiCheckItems": "Noen linjer var vanskelige å lese, sjekk dem.",
+  "receiptAiNoticeTitle": "Lese kvitteringen med AI?",
+  "receiptAiNoticeBody": "Bildet av kvitteringen sendes til OpenAI for å lese varene. Bare bildet sendes, ikke navnet ditt, e-posten din eller reisen. Du sjekker alt før du lagrer. Mer i personvernerklæringen.",
+  "receiptAiNoticeContinue": "Fortsett"
 }

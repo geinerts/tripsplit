@@ -5561,4 +5561,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get receiptAiCheckItems => 'Algunas líneas eran difíciles de leer, revísalas.';
+
+  @override
+  String get receiptAiNoticeTitle => '¿Leer el recibo con IA?';
+
+  @override
+  String get receiptAiNoticeBody => 'La foto del recibo se envía a OpenAI para leer los artículos. Solo se envía la foto, no tu nombre, correo ni viaje. Revisas todo antes de guardar. Más información en la Política de privacidad.';
+
+  @override
+  String get receiptAiNoticeContinue => 'Continuar';
 }

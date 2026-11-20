@@ -2202,5 +2202,8 @@
   "receiptAiNotReceipt": "Šis foto neizskatās pēc čeka.",
   "receiptAiNoItems": "Čekā netika atrastas pozīcijas.",
   "receiptAiTotalsMismatch": "Summas nesakrīt, pārbaudi pozīcijas.",
-  "receiptAiCheckItems": "Dažas rindas bija grūti nolasīt, pārbaudi tās."
+  "receiptAiCheckItems": "Dažas rindas bija grūti nolasīt, pārbaudi tās.",
+  "receiptAiNoticeTitle": "Nolasīt čeku ar AI?",
+  "receiptAiNoticeBody": "Čeka foto tiek nosūtīts OpenAI, lai nolasītu pozīcijas. Tiek sūtīts tikai foto, ne tavs vārds, e-pasts vai ceļojums. Pirms saglabāšanas visu pārbaudi pats. Vairāk privātuma politikā.",
+  "receiptAiNoticeContinue": "Turpināt"
 }

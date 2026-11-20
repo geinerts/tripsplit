@@ -2216,5 +2216,8 @@
   "receiptAiNotReceipt": "Det här fotot ser inte ut som ett kvitto.",
   "receiptAiNoItems": "Inga rader hittades på kvittot.",
   "receiptAiTotalsMismatch": "Summorna stämmer inte, kontrollera raderna.",
-  "receiptAiCheckItems": "Vissa rader var svåra att läsa, kontrollera dem."
+  "receiptAiCheckItems": "Vissa rader var svåra att läsa, kontrollera dem.",
+  "receiptAiNoticeTitle": "Läsa kvittot med AI?",
+  "receiptAiNoticeBody": "Fotot av kvittot skickas till OpenAI för att läsa raderna. Bara fotot skickas, inte ditt namn, din e-post eller din resa. Du kontrollerar allt innan du sparar. Mer i integritetspolicyn.",
+  "receiptAiNoticeContinue": "Fortsätt"
 }

@@ -82,6 +82,15 @@ Errors (`ok: false`, `code`):
 A provider failure after the request was sent still counts against the quota and budget,
 because the provider may already have charged for it.
 
+## App
+
+"Fill from receipt" is a button in the "By item" split editor, in trip expenses and in Quick
+split, shown only when the account's `features.receipt_ai` is true. The first use per account on
+a device shows a notice that the photo goes to OpenAI; nothing is sent until the user agrees.
+Without an uploaded receipt the button takes a photo first (the expense's receipt). The result
+fills the item lines (no people assigned), the extra (tax + tip + service), currency, date and an
+empty note. Equal and other splits have no AI button.
+
 ## Limits (test phase; server configuration, no app change)
 
 | Setting | Env | Default |

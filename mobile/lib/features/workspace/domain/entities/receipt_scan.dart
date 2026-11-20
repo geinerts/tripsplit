@@ -111,12 +111,30 @@ class ReceiptScan {
       }
     }
     if (left != 0) return null;
+    ({int qty, int unitCents}) units(ReceiptScanItem line, int cut) {
+      final qty = line.quantity;
+      final unit = line.unitPriceCents;
+      // "3 × 1.20" stays three units when nothing was taken off it.
+      if (cut == 0 &&
+          qty != null &&
+          unit != null &&
+          qty >= 2 &&
+          qty <= 100 &&
+          qty == qty.roundToDouble() &&
+          unit * qty.round() == line.totalCents) {
+        return (qty: qty.round(), unitCents: unit);
+      }
+      return (qty: 1, unitCents: line.totalCents - cut);
+    }
+
     return ReceiptSplitDraft(
       lines: [
         for (var i = 0; i < lines.length; i++)
           (
             name: lines[i].name,
             cents: lines[i].totalCents - cuts[i],
+            qty: units(lines[i], cuts[i]).qty,
+            unitCents: units(lines[i], cuts[i]).unitCents,
             uncertain: lines[i].uncertain,
           ),
       ],
@@ -155,7 +173,9 @@ class ReceiptScan {
 class ReceiptSplitDraft {
   const ReceiptSplitDraft({required this.lines, required this.extraCents});
 
-  final List<({String name, int cents, bool uncertain})> lines;
+  /// [cents] is the line total; [qty] × [unitCents] equals it.
+  final List<({String name, int cents, int qty, int unitCents, bool uncertain})>
+  lines;
   final int extraCents;
 
   int get totalCents =>

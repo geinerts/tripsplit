@@ -5585,4 +5585,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get receiptAiCheckItems => 'Niektóre wiersze były trudne do odczytania, sprawdź je.';
+
+  @override
+  String get receiptAiNoticeTitle => 'Odczytać paragon za pomocą AI?';
+
+  @override
+  String get receiptAiNoticeBody => 'Zdjęcie paragonu jest wysyłane do OpenAI, aby odczytać pozycje. Wysyłane jest tylko zdjęcie, bez Twojego imienia, e-maila czy podróży. Wszystko sprawdzasz przed zapisaniem. Więcej w Polityce prywatności.';
+
+  @override
+  String get receiptAiNoticeContinue => 'Dalej';
 }

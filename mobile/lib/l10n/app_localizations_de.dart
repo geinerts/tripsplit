@@ -5561,4 +5561,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get receiptAiCheckItems => 'Einige Zeilen waren schwer lesbar, prüfe sie.';
+
+  @override
+  String get receiptAiNoticeTitle => 'Beleg mit KI lesen?';
+
+  @override
+  String get receiptAiNoticeBody => 'Das Belegfoto wird an OpenAI gesendet, um die Posten zu lesen. Gesendet wird nur das Foto, nicht dein Name, deine E-Mail oder deine Reise. Du prüfst alles vor dem Speichern. Mehr in der Datenschutzerklärung.';
+
+  @override
+  String get receiptAiNoticeContinue => 'Weiter';
 }

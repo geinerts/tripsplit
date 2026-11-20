@@ -5585,4 +5585,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get receiptAiCheckItems => 'Некоторые строки трудно прочитать, проверьте их.';
+
+  @override
+  String get receiptAiNoticeTitle => 'Прочитать чек с помощью ИИ?';
+
+  @override
+  String get receiptAiNoticeBody => 'Фото чека отправляется в OpenAI, чтобы распознать позиции. Отправляется только фото, без вашего имени, почты и поездки. Вы проверяете всё перед сохранением. Подробнее в Политике конфиденциальности.';
+
+  @override
+  String get receiptAiNoticeContinue => 'Продолжить';
 }

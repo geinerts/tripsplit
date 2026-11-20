@@ -5561,4 +5561,13 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get receiptAiCheckItems => 'Joitakin rivejä oli vaikea lukea, tarkista ne.';
+
+  @override
+  String get receiptAiNoticeTitle => 'Luetaanko kuitti tekoälyllä?';
+
+  @override
+  String get receiptAiNoticeBody => 'Kuitin kuva lähetetään OpenAI:lle rivien lukemista varten. Vain kuva lähetetään, ei nimeäsi, sähköpostiasi tai matkaasi. Tarkistat kaiken ennen tallentamista. Lisää tietosuojakäytännössä.';
+
+  @override
+  String get receiptAiNoticeContinue => 'Jatka';
 }

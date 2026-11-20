@@ -2216,5 +2216,8 @@
   "receiptAiNotReceipt": "Tato fotka nevypadá jako účtenka.",
   "receiptAiNoItems": "Na účtence nebyly nalezeny žádné položky.",
   "receiptAiTotalsMismatch": "Součty nesedí, zkontroluj položky.",
-  "receiptAiCheckItems": "Některé řádky byly špatně čitelné, zkontroluj je."
+  "receiptAiCheckItems": "Některé řádky byly špatně čitelné, zkontroluj je.",
+  "receiptAiNoticeTitle": "Přečíst účtenku pomocí AI?",
+  "receiptAiNoticeBody": "Fotka účtenky se odešle do OpenAI, aby se přečetly položky. Odesílá se jen fotka, ne tvé jméno, e-mail ani výlet. Vše zkontroluješ před uložením. Více v zásadách ochrany soukromí.",
+  "receiptAiNoticeContinue": "Pokračovat"
 }

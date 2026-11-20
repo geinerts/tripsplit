@@ -2202,5 +2202,8 @@
   "receiptAiNotReceipt": "Esta foto no parece un recibo.",
   "receiptAiNoItems": "No se encontraron artículos en el recibo.",
   "receiptAiTotalsMismatch": "Los totales no coinciden, revisa los artículos.",
-  "receiptAiCheckItems": "Algunas líneas eran difíciles de leer, revísalas."
+  "receiptAiCheckItems": "Algunas líneas eran difíciles de leer, revísalas.",
+  "receiptAiNoticeTitle": "¿Leer el recibo con IA?",
+  "receiptAiNoticeBody": "La foto del recibo se envía a OpenAI para leer los artículos. Solo se envía la foto, no tu nombre, correo ni viaje. Revisas todo antes de guardar. Más información en la Política de privacidad.",
+  "receiptAiNoticeContinue": "Continuar"
 }

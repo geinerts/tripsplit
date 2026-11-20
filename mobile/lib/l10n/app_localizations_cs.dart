@@ -5575,4 +5575,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get receiptAiCheckItems => 'Některé řádky byly špatně čitelné, zkontroluj je.';
+
+  @override
+  String get receiptAiNoticeTitle => 'Přečíst účtenku pomocí AI?';
+
+  @override
+  String get receiptAiNoticeBody => 'Fotka účtenky se odešle do OpenAI, aby se přečetly položky. Odesílá se jen fotka, ne tvé jméno, e-mail ani výlet. Vše zkontroluješ před uložením. Více v zásadách ochrany soukromí.';
+
+  @override
+  String get receiptAiNoticeContinue => 'Pokračovat';
 }

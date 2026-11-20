@@ -2452,5 +2452,11 @@
   "receiptAiNotReceipt": "This photo doesn't look like a receipt.",
   "receiptAiNoItems": "No items found on the receipt.",
   "receiptAiTotalsMismatch": "Totals don't match, check the items.",
-  "receiptAiCheckItems": "Some lines were hard to read, check them."
+  "receiptAiCheckItems": "Some lines were hard to read, check them.",
+  "receiptAiNoticeTitle": "Read the receipt with AI?",
+  "receiptAiNoticeBody": "The receipt photo is sent to OpenAI to read the items. Only the photo is sent, not your name, email or trip. You check everything before saving. More in the Privacy Policy.",
+  "receiptAiNoticeContinue": "Continue",
+  "@receiptAiNoticeBody": {
+    "description": "Shown once per account before the first AI receipt reading."
+  }
 }

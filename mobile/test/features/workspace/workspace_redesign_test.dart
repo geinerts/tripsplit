@@ -6,6 +6,7 @@ import 'package:tripsplit/features/workspace/domain/entities/comment_mention_tex
 import 'package:tripsplit/features/workspace/domain/entities/payment_details.dart';
 import 'package:tripsplit/features/workspace/domain/entities/receipt_upload_payload.dart';
 import 'package:tripsplit/features/workspace/domain/entities/uploaded_receipt.dart';
+import 'package:tripsplit/features/workspace/domain/entities/receipt_scan.dart';
 import 'package:tripsplit/core/ui/user_profile_payment_section.dart';
 import 'package:tripsplit/features/trips/domain/entities/trip.dart';
 import 'package:tripsplit/features/trips/domain/entities/uploaded_trip_image.dart';
@@ -82,9 +83,10 @@ class _LiveLocation extends ChangeNotifier implements LiveLocationController {
 }
 
 class _Auth implements AuthController {
-  _Auth({this.revtag, this.premiumAccess});
+  _Auth({this.revtag, this.premiumAccess, this.receiptAi = false});
   final String? revtag;
   final PremiumAccess? premiumAccess;
+  final bool receiptAi;
   @override
   AuthUser? get currentUser => AuthUser(
     id: 7,
@@ -92,6 +94,7 @@ class _Auth implements AuthController {
     needsCredentials: false,
     revolutHandle: revtag,
     premiumAccess: premiumAccess,
+    receiptAi: receiptAi,
   );
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -476,6 +479,33 @@ class _Workspace implements WorkspaceController {
     required String emoji,
   }) async {
     reactionCalls.add((tripId, expenseId, emoji));
+  }
+
+  final scannedReceipts = <String>[];
+  @override
+  Future<ReceiptScan> scanReceipt({
+    required String receiptPath,
+    required String requestId,
+  }) async {
+    scannedReceipts.add(receiptPath);
+    return ReceiptScan.fromJson({
+      'is_receipt': true,
+      'merchant': 'Lido',
+      'date': '2026-11-18',
+      'currency': 'EUR',
+      'items': [
+        {
+          'name': 'Pizza',
+          'quantity': 2,
+          'unit_price_cents': 600,
+          'total_cents': 1200,
+        },
+        {'name': 'Beer', 'total_cents': 500, 'uncertain': true},
+      ],
+      'tip_cents': 300,
+      'total_cents': 2000,
+      'sum_matches': true,
+    });
   }
 
   final receiptUploads = <ReceiptUploadPayload>[];
@@ -1904,6 +1934,90 @@ void main() {
     ]);
     expect(controller.savedSplits, isEmpty);
     await disposePage(tester);
+  });
+
+  group('fill from receipt', () {
+    setUp(() => SharedPreferences.setMockInitialValues({}));
+
+    Future<void> openItems(WidgetTester tester) async {
+      await tester.pumpAndSettle();
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-custom-split')),
+      );
+      await tester.tap(find.byKey(const ValueKey('expense-split-method')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('By item reads the receipt after a one-time notice', (
+      tester,
+    ) async {
+      final controller = _Workspace();
+      await _mount(
+        tester,
+        controller,
+        auth: _Auth(receiptAi: true),
+        openAddExpenseOnStart: true,
+        initialExpenseDraft: const ExpenseDraft(
+          category: 'food',
+          receipt: UploadedReceiptData(path: 'receipts/r_owner_ab.webp'),
+        ),
+      );
+      await openItems(tester);
+      final t = AppLocalizations.of(
+        tester.element(find.byKey(const ValueKey('receipt-ai-fill'))),
+      )!;
+      // The button spins while the notice is open, so no settling here.
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('receipt-ai-fill')),
+        settle: false,
+      );
+      // Nothing is sent before the user agrees.
+      expect(find.text(t.receiptAiNoticeTitle), findsOneWidget);
+      expect(controller.scannedReceipts, isEmpty);
+      await tester.tap(
+        find.byKey(const ValueKey('receipt-ai-notice-continue')),
+      );
+      await tester.pumpAndSettle();
+      expect(controller.scannedReceipts, ['receipts/r_owner_ab.webp']);
+      expect(find.textContaining('Pizza', findRichText: true), findsWidgets);
+      expect(find.textContaining('Beer', findRichText: true), findsWidgets);
+      expect(find.text(t.receiptAiCheckItems), findsOneWidget);
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('expense-items-entered')))
+            .data,
+        contains('20.00'),
+      );
+
+      // Asked again: no second notice.
+      await visibleTap(tester, find.byKey(const ValueKey('receipt-ai-fill')));
+      expect(find.text(t.receiptAiNoticeTitle), findsNothing);
+      expect(controller.scannedReceipts, hasLength(2));
+      await disposePage(tester);
+    });
+
+    testWidgets('without the feature there is no AI button', (tester) async {
+      await _mount(
+        tester,
+        _Workspace(),
+        openAddExpenseOnStart: true,
+        initialExpenseDraft: const ExpenseDraft(
+          category: 'food',
+          receipt: UploadedReceiptData(path: 'receipts/r_owner_ab.webp'),
+        ),
+      );
+      await openItems(tester);
+      expect(
+        find.byKey(const ValueKey('expense-items-entered')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const ValueKey('receipt-ai-fill')), findsNothing);
+      await disposePage(tester);
+    });
   });
 
   testWidgets('by item review images', (tester) async {

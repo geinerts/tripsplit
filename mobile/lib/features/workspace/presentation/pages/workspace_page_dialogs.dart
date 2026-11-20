@@ -49,6 +49,11 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
                 expenseId: existing.id,
               ),
         currentAccountId: () => widget.authController.currentUser?.id,
+        // AI receipt reading in "By item", for accounts that have it.
+        scanReceipt: widget.authController.currentUser?.receiptAi == true
+            ? (receiptPath, requestId) => widget.workspaceController
+                  .scanReceipt(receiptPath: receiptPath, requestId: requestId)
+            : null,
       ),
     );
   }
@@ -383,60 +388,6 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                 avatarUrl: user.avatarThumbUrl ?? user.avatarUrl,
                 size: 30,
               );
-              Future<void> editSplit() async {
-                final amount = _parseAmount(amountController.text);
-                if (activeUsers.isEmpty) {
-                  setDialogState(() {
-                    errorText = t.pickAtLeastOneParticipant;
-                  });
-                  return;
-                }
-                FocusScope.of(context).unfocus();
-                final result = await showAppBottomSheet<_ExpenseSplitDraft>(
-                  context: context,
-                  builder: (_) => _ExpenseSplitEditor(
-                    users: activeUsers,
-                    amount: amount,
-                    currencyCode: selectedCurrencyCode,
-                    // Opens on Exact amounts; Items only when already chosen.
-                    initialMode: splitMode,
-                    initialItems: itemDrafts,
-                    initialExtra: extraDraft,
-                    initialValues: {
-                      for (final entry in splitControllers.entries)
-                        entry.key: entry.value.text,
-                    },
-                    avatarBuilder: memberAvatar,
-                  ),
-                );
-                if (!hostContext.mounted ||
-                    !context.mounted ||
-                    result == null) {
-                  return;
-                }
-                setDialogState(() {
-                  splitMode = result.mode;
-                  if (result.mode == 'itemized') {
-                    itemDrafts = result.items;
-                    extraDraft = result.extra;
-                    final total = result.items.fold<double>(
-                      result.extra,
-                      (sum, item) => sum + item.amount,
-                    );
-                    amountController.text = AppCurrencyCatalog.amountInputText(
-                      total,
-                      selectedCurrencyCode,
-                    );
-                  }
-                  for (final entry in result.values.entries) {
-                    splitControllers
-                        .putIfAbsent(entry.key, () => TextEditingController())
-                        .text = entry
-                        .value;
-                  }
-                  errorText = null;
-                });
-              }
 
               final receiptBusy =
                   isSaving ||
@@ -512,26 +463,59 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                 }
               }
 
-              // AI receipt reading: fills amount, date, note and "By item"
-              // from the uploaded photo, then opens the item editor to
-              // assign people. Nothing is saved until the user saves.
-              Future<void> readReceipt() async {
+              // AI receipt reading, asked for from "By item": takes a photo
+              // first when there is none, reads it and sets currency, date
+              // and note here; the editor fills its lines from the result.
+              // Nothing is saved until the user saves the expense.
+              Future<_ReceiptFill?> fillFromReceipt() async {
                 final scan = setup.scanReceipt;
-                final receipt = preuploadedReceipt;
-                if (scan == null || receipt == null || isReceiptReading) {
-                  return;
-                }
-                FocusScope.of(context).unfocus();
                 final account = setup.currentAccountId();
+                if (scan == null || account == null || isReceiptReading) {
+                  return null;
+                }
                 bool stillHere() =>
                     context.mounted && setup.currentAccountId() == account;
-                void tell(String message) => ScaffoldMessenger.maybeOf(
-                  context,
-                )?.showSnackBar(SnackBar(content: Text(message)));
+                const notice = ReceiptAiNoticeStore();
+                if (!await notice.isSeen(account)) {
+                  if (!context.mounted || !stillHere()) return null;
+                  final agreed = await showDialog<bool>(
+                    context: context,
+                    builder: (noticeContext) => AlertDialog(
+                      title: Text(t.receiptAiNoticeTitle),
+                      content: Text(t.receiptAiNoticeBody),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(noticeContext, false),
+                          child: Text(
+                            MaterialLocalizations.of(
+                              noticeContext,
+                            ).cancelButtonLabel,
+                          ),
+                        ),
+                        FilledButton(
+                          key: const ValueKey('receipt-ai-notice-continue'),
+                          onPressed: () => Navigator.pop(noticeContext, true),
+                          child: Text(t.receiptAiNoticeContinue),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (agreed != true || !stillHere()) return null;
+                  await notice.markSeen(account);
+                }
+                if (preuploadedReceipt == null) {
+                  await pickReceipt();
+                  if (!stillHere()) return null;
+                  if (preuploadedReceipt == null) {
+                    final hint = receiptUploadHint;
+                    return hint == null ? null : _ReceiptFill(message: hint);
+                  }
+                }
+                final receipt = preuploadedReceipt!;
                 // The same id never starts a second AI call; asking again
                 // returns the result once the server has it.
                 final requestId =
-                    'rs_${account ?? 0}_${DateTime.now().microsecondsSinceEpoch}';
+                    'rs_${account}_${DateTime.now().microsecondsSinceEpoch}';
                 setDialogState(() => isReceiptReading = true);
                 final deadline = DateTime.now().add(
                   const Duration(seconds: 75),
@@ -557,27 +541,21 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                     break;
                   }
                   await Future<void>.delayed(const Duration(seconds: 3));
-                  if (!stillHere()) return;
+                  if (!stillHere()) return null;
                 }
-                if (!stillHere()) return;
+                if (!stillHere()) return null;
                 setDialogState(() => isReceiptReading = false);
                 final scanned = result;
                 if (scanned == null) {
-                  tell(failure ?? t.receiptAiFailed);
-                  return;
+                  return _ReceiptFill(message: failure ?? t.receiptAiFailed);
                 }
                 if (!scanned.isReceipt) {
-                  tell(t.receiptAiNotReceipt);
-                  return;
+                  return _ReceiptFill(message: t.receiptAiNotReceipt);
                 }
                 final draft = scanned.splitDraft();
                 if (draft == null) {
-                  tell(t.receiptAiNoItems);
-                  return;
+                  return _ReceiptFill(message: t.receiptAiNoItems);
                 }
-                final people = selected.isNotEmpty
-                    ? (selected.toList()..sort())
-                    : <int>[setup.currentUserId];
                 setDialogState(() {
                   selectedCurrencyCode = AppCurrencyCatalog.normalize(
                     scanned.currencyCode,
@@ -589,28 +567,75 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   if (noteController.text.trim().isEmpty && merchant != null) {
                     noteController.text = merchant;
                   }
-                  itemDrafts = [
-                    for (final line in draft.lines)
-                      ExpenseItem(
-                        name: line.name,
-                        amount: line.cents / 100,
-                        participantIds: people,
-                      ),
-                  ];
-                  extraDraft = draft.extraCents / 100;
-                  splitMode = 'itemized';
-                  amountController.text = AppCurrencyCatalog.amountInputText(
-                    draft.totalCents / 100,
-                    selectedCurrencyCode,
-                  );
                   errorText = null;
                 });
-                if (!scanned.sumMatches) {
-                  tell(t.receiptAiTotalsMismatch);
-                } else if (scanned.hasUncertainItems) {
-                  tell(t.receiptAiCheckItems);
+                return _ReceiptFill(
+                  draft: draft,
+                  currencyCode: selectedCurrencyCode,
+                  message: !scanned.sumMatches
+                      ? t.receiptAiTotalsMismatch
+                      : scanned.hasUncertainItems
+                      ? t.receiptAiCheckItems
+                      : null,
+                );
+              }
+
+              Future<void> editSplit() async {
+                final amount = _parseAmount(amountController.text);
+                if (activeUsers.isEmpty) {
+                  setDialogState(() {
+                    errorText = t.pickAtLeastOneParticipant;
+                  });
+                  return;
                 }
-                await editSplit();
+                FocusScope.of(context).unfocus();
+                final result = await showAppBottomSheet<_ExpenseSplitDraft>(
+                  context: context,
+                  builder: (_) => _ExpenseSplitEditor(
+                    users: activeUsers,
+                    amount: amount,
+                    currencyCode: selectedCurrencyCode,
+                    // Opens on Exact amounts; Items only when already chosen.
+                    initialMode: splitMode,
+                    initialItems: itemDrafts,
+                    initialExtra: extraDraft,
+                    initialValues: {
+                      for (final entry in splitControllers.entries)
+                        entry.key: entry.value.text,
+                    },
+                    avatarBuilder: memberAvatar,
+                    scanReceipt: setup.scanReceipt == null
+                        ? null
+                        : fillFromReceipt,
+                  ),
+                );
+                if (!hostContext.mounted ||
+                    !context.mounted ||
+                    result == null) {
+                  return;
+                }
+                setDialogState(() {
+                  splitMode = result.mode;
+                  if (result.mode == 'itemized') {
+                    itemDrafts = result.items;
+                    extraDraft = result.extra;
+                    final total = result.items.fold<double>(
+                      result.extra,
+                      (sum, item) => sum + item.amount,
+                    );
+                    amountController.text = AppCurrencyCatalog.amountInputText(
+                      total,
+                      selectedCurrencyCode,
+                    );
+                  }
+                  for (final entry in result.values.entries) {
+                    splitControllers
+                        .putIfAbsent(entry.key, () => TextEditingController())
+                        .text = entry
+                        .value;
+                  }
+                  errorText = null;
+                });
               }
 
               return PopScope(
@@ -1209,32 +1234,6 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                                         receiptUploadHint = null;
                                       }),
                                     ),
-                                    if (setup.scanReceipt != null &&
-                                        preuploadedReceipt != null) ...[
-                                      const SizedBox(height: 8),
-                                      OutlinedButton.icon(
-                                        key: const ValueKey('receipt-ai-fill'),
-                                        onPressed: receiptBusy
-                                            ? null
-                                            : readReceipt,
-                                        icon: isReceiptReading
-                                            ? const SizedBox.square(
-                                                dimension: 18,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                    ),
-                                              )
-                                            : const Icon(
-                                                Icons.auto_awesome_outlined,
-                                              ),
-                                        label: Text(
-                                          isReceiptReading
-                                              ? t.receiptAiReading
-                                              : t.receiptAiFillAction,
-                                        ),
-                                      ),
-                                    ],
                                   ] else if (hasSavedReceipt) ...[
                                     const SizedBox(height: 12),
                                     ReceiptAttachmentCard(

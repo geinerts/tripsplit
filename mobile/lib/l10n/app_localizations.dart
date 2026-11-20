@@ -76,7 +76,8 @@ import 'app_localizations_uk.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -84,7 +85,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -96,12 +98,13 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
@@ -120,7 +123,7 @@ abstract class AppLocalizations {
     Locale('pt'),
     Locale('ru'),
     Locale('sv'),
-    Locale('uk')
+    Locale('uk'),
   ];
 
   /// No description provided for @homeFirstTrip.
@@ -1807,13 +1810,21 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{name} added an expense of {amount} in \"{trip}\".'**
-  String notificationExpenseAddedBodyWithTrip(Object amount, Object name, Object trip);
+  String notificationExpenseAddedBodyWithTrip(
+    Object amount,
+    Object name,
+    Object trip,
+  );
 
   /// No description provided for @notificationExpenseAddedBodyWithNote.
   ///
   /// In en, this message translates to:
   /// **'{name} added an expense of {amount}: {note}'**
-  String notificationExpenseAddedBodyWithNote(Object amount, Object name, Object note);
+  String notificationExpenseAddedBodyWithNote(
+    Object amount,
+    Object name,
+    Object note,
+  );
 
   /// No description provided for @notificationExpenseAddedBodyGeneric.
   ///
@@ -1921,13 +1932,21 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{actor} reminded {target} to mark {amount} as sent.'**
-  String notificationSettlementReminderBodyMarkSent(Object actor, Object amount, Object target);
+  String notificationSettlementReminderBodyMarkSent(
+    Object actor,
+    Object amount,
+    Object target,
+  );
 
   /// No description provided for @notificationSettlementReminderBodyConfirm.
   ///
   /// In en, this message translates to:
   /// **'{actor} reminded {target} to confirm receiving {amount}.'**
-  String notificationSettlementReminderBodyConfirm(Object actor, Object amount, Object target);
+  String notificationSettlementReminderBodyConfirm(
+    Object actor,
+    Object amount,
+    Object target,
+  );
 
   /// No description provided for @notificationSettlementReminderBodyGeneric.
   ///
@@ -1945,7 +1964,11 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Reminder: please mark {amount} as sent to {target} in \"{trip}\".'**
-  String notificationPaymentReminderBody(Object amount, Object target, Object trip);
+  String notificationPaymentReminderBody(
+    Object amount,
+    Object target,
+    Object trip,
+  );
 
   /// No description provided for @notificationPaymentReminderBodyGeneric.
   ///
@@ -1963,7 +1986,11 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Reminder: please confirm receiving {amount} from {payer} in \"{trip}\".'**
-  String notificationConfirmationReminderBody(Object amount, Object payer, Object trip);
+  String notificationConfirmationReminderBody(
+    Object amount,
+    Object payer,
+    Object trip,
+  );
 
   /// No description provided for @notificationConfirmationReminderBodyGeneric.
   ///
@@ -5221,7 +5248,9 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Delete \"{tripLabel}\"? This is allowed only before any expenses are added.'**
-  String shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(Object tripLabel);
+  String shellDeleteTriplabelAllowedOnlyBeforeAnyExpensesAdded(
+    Object tripLabel,
+  );
 
   /// No description provided for @shellTripDeleted.
   ///
@@ -5317,7 +5346,10 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'You are already a member of \"{tripName}\". Open this trip now?\n\nInvited by: {inviterName}'**
-  String shellInviteAlreadyMemberOpenTripNow(Object inviterName, Object tripName);
+  String shellInviteAlreadyMemberOpenTripNow(
+    Object inviterName,
+    Object tripName,
+  );
 
   /// No description provided for @shellInviteJoinTripQuestion.
   ///
@@ -5665,7 +5697,10 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{arg1} payment(s) to mark as sent, {arg2} to confirm as received.'**
-  String workspacePaymentSToMarkAsSentToConfirmAsReceived(Object arg1, Object arg2);
+  String workspacePaymentSToMarkAsSentToConfirmAsReceived(
+    Object arg1,
+    Object arg2,
+  );
 
   /// No description provided for @workspaceReadyToSettle.
   ///
@@ -10238,9 +10273,28 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Some lines were hard to read, check them.'**
   String get receiptAiCheckItems;
+
+  /// No description provided for @receiptAiNoticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Read the receipt with AI?'**
+  String get receiptAiNoticeTitle;
+
+  /// Shown once per account before the first AI receipt reading.
+  ///
+  /// In en, this message translates to:
+  /// **'The receipt photo is sent to OpenAI to read the items. Only the photo is sent, not your name, email or trip. You check everything before saving. More in the Privacy Policy.'**
+  String get receiptAiNoticeBody;
+
+  /// No description provided for @receiptAiNoticeContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get receiptAiNoticeContinue;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -10249,39 +10303,70 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['cs', 'da', 'de', 'en', 'es', 'fi', 'fr', 'it', 'lv', 'nb', 'nl', 'pl', 'pt', 'ru', 'sv', 'uk'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'cs',
+    'da',
+    'de',
+    'en',
+    'es',
+    'fi',
+    'fr',
+    'it',
+    'lv',
+    'nb',
+    'nl',
+    'pl',
+    'pt',
+    'ru',
+    'sv',
+    'uk',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'cs': return AppLocalizationsCs();
-    case 'da': return AppLocalizationsDa();
-    case 'de': return AppLocalizationsDe();
-    case 'en': return AppLocalizationsEn();
-    case 'es': return AppLocalizationsEs();
-    case 'fi': return AppLocalizationsFi();
-    case 'fr': return AppLocalizationsFr();
-    case 'it': return AppLocalizationsIt();
-    case 'lv': return AppLocalizationsLv();
-    case 'nb': return AppLocalizationsNb();
-    case 'nl': return AppLocalizationsNl();
-    case 'pl': return AppLocalizationsPl();
-    case 'pt': return AppLocalizationsPt();
-    case 'ru': return AppLocalizationsRu();
-    case 'sv': return AppLocalizationsSv();
-    case 'uk': return AppLocalizationsUk();
+    case 'cs':
+      return AppLocalizationsCs();
+    case 'da':
+      return AppLocalizationsDa();
+    case 'de':
+      return AppLocalizationsDe();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fi':
+      return AppLocalizationsFi();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'it':
+      return AppLocalizationsIt();
+    case 'lv':
+      return AppLocalizationsLv();
+    case 'nb':
+      return AppLocalizationsNb();
+    case 'nl':
+      return AppLocalizationsNl();
+    case 'pl':
+      return AppLocalizationsPl();
+    case 'pt':
+      return AppLocalizationsPt();
+    case 'ru':
+      return AppLocalizationsRu();
+    case 'sv':
+      return AppLocalizationsSv();
+    case 'uk':
+      return AppLocalizationsUk();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

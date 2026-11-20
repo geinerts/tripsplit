@@ -2216,5 +2216,8 @@
   "receiptAiNotReceipt": "Tämä kuva ei näytä kuitilta.",
   "receiptAiNoItems": "Kuitista ei löytynyt rivejä.",
   "receiptAiTotalsMismatch": "Summat eivät täsmää, tarkista rivit.",
-  "receiptAiCheckItems": "Joitakin rivejä oli vaikea lukea, tarkista ne."
+  "receiptAiCheckItems": "Joitakin rivejä oli vaikea lukea, tarkista ne.",
+  "receiptAiNoticeTitle": "Luetaanko kuitti tekoälyllä?",
+  "receiptAiNoticeBody": "Kuitin kuva lähetetään OpenAI:lle rivien lukemista varten. Vain kuva lähetetään, ei nimeäsi, sähköpostiasi tai matkaasi. Tarkistat kaiken ennen tallentamista. Lisää tietosuojakäytännössä.",
+  "receiptAiNoticeContinue": "Jatka"
 }

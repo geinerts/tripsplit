@@ -2216,5 +2216,8 @@
   "receiptAiNotReceipt": "Deze foto lijkt geen bon.",
   "receiptAiNoItems": "Geen items gevonden op de bon.",
   "receiptAiTotalsMismatch": "De totalen kloppen niet, controleer de items.",
-  "receiptAiCheckItems": "Sommige regels waren moeilijk leesbaar, controleer ze."
+  "receiptAiCheckItems": "Sommige regels waren moeilijk leesbaar, controleer ze.",
+  "receiptAiNoticeTitle": "Bon lezen met AI?",
+  "receiptAiNoticeBody": "De foto van de bon wordt naar OpenAI gestuurd om de items te lezen. Alleen de foto wordt verstuurd, niet je naam, e-mail of reis. Je controleert alles voordat je opslaat. Meer in het privacybeleid.",
+  "receiptAiNoticeContinue": "Doorgaan"
 }

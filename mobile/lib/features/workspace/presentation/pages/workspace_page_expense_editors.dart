@@ -95,6 +95,16 @@ class _ExpenseEditorSurface extends StatelessWidget {
   }
 }
 
+/// What "Fill from receipt" gives the item editor: lines to fill, or only a
+/// message when the receipt could not be used.
+class _ReceiptFill {
+  const _ReceiptFill({this.draft, this.currencyCode, this.message});
+
+  final ReceiptSplitDraft? draft;
+  final String? currencyCode;
+  final String? message;
+}
+
 class _ExpenseSplitEditor extends StatefulWidget {
   const _ExpenseSplitEditor({
     required this.users,
@@ -105,6 +115,7 @@ class _ExpenseSplitEditor extends StatefulWidget {
     required this.avatarBuilder,
     this.initialItems = const [],
     this.initialExtra = 0,
+    this.scanReceipt,
   });
   final List<WorkspaceUser> users;
   final double amount;
@@ -114,6 +125,9 @@ class _ExpenseSplitEditor extends StatefulWidget {
   final List<ExpenseItem> initialItems;
   final double initialExtra;
   final Widget Function(WorkspaceUser) avatarBuilder;
+
+  /// AI receipt reading for "By item"; null hides the button.
+  final Future<_ReceiptFill?> Function()? scanReceipt;
   @override
   State<_ExpenseSplitEditor> createState() => _ExpenseSplitEditorState();
 }
@@ -127,6 +141,91 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
 
   /// People whose value was typed in, per mode. The others share what's left.
   final _pinned = <String, Set<int>>{};
+
+  bool _scanning = false;
+  String? _scanMessage;
+
+  /// Set once a receipt was read: its total and currency replace the form's
+  /// for the item list, and a new run rebuilds the item editor from scratch.
+  double? _scanAmount;
+  String? _scanCurrency;
+  int _scanRun = 0;
+
+  Future<void> _scan() async {
+    final scan = widget.scanReceipt;
+    if (scan == null || _scanning) return;
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _scanning = true;
+      _scanMessage = null;
+    });
+    final fill = await scan();
+    if (!mounted) return;
+    setState(() {
+      _scanning = false;
+      _scanMessage = fill?.message;
+      final draft = fill?.draft;
+      if (draft == null) return;
+      final currency = fill?.currencyCode ?? widget.currencyCode;
+      // The old rows' fields are still attached until this frame is built.
+      final old = List.of(_items);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        for (final item in old) {
+          item.dispose();
+        }
+      });
+      _items
+        ..clear()
+        ..addAll([
+          for (final line in draft.lines)
+            _ExpenseItemDraft(
+              name: line.name,
+              price: AppCurrencyCatalog.amountInputText(
+                line.unitCents / 100,
+                currency,
+              ),
+            )..qty = line.qty,
+        ]);
+      _extra.text = draft.extraCents > 0
+          ? AppCurrencyCatalog.amountInputText(draft.extraCents / 100, currency)
+          : '';
+      _scanAmount = draft.totalCents / 100;
+      _scanCurrency = currency;
+      _scanRun++;
+    });
+  }
+
+  Widget _receiptButton(BuildContext context) {
+    final t = context.l10n;
+    final theme = Theme.of(context);
+    final message = _scanMessage;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        OutlinedButton.icon(
+          key: const ValueKey('receipt-ai-fill'),
+          onPressed: _scanning ? null : _scan,
+          icon: _scanning
+              ? const SizedBox.square(
+                  dimension: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.auto_awesome_outlined),
+          label: Text(_scanning ? t.receiptAiReading : t.receiptAiFillAction),
+        ),
+        if (message != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            message,
+            key: const ValueKey('receipt-ai-message'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
 
   @override
   void initState() {
@@ -513,9 +612,11 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
   }
 
   Widget _buildItemized(BuildContext context) => _ItemizedSplitEditor(
+    key: ValueKey('itemized-$_scanRun'),
     users: widget.users,
-    amount: widget.amount,
-    currencyCode: widget.currencyCode,
+    amount: _scanAmount ?? widget.amount,
+    currencyCode: _scanCurrency ?? widget.currencyCode,
+    receiptAction: widget.scanReceipt == null ? null : _receiptButton(context),
     items: _items,
     extra: _extra,
     avatarBuilder: widget.avatarBuilder,

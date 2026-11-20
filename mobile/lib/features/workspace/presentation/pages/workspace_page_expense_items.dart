@@ -169,6 +169,7 @@ InputDecoration _lineInputDecoration(
 /// "By item": first the receipt lines, then each person ticks what they had.
 class _ItemizedSplitEditor extends StatefulWidget {
   const _ItemizedSplitEditor({
+    super.key,
     required this.users,
     required this.amount,
     required this.currencyCode,
@@ -176,6 +177,7 @@ class _ItemizedSplitEditor extends StatefulWidget {
     required this.extra,
     required this.avatarBuilder,
     required this.modeTile,
+    this.receiptAction,
   });
 
   final List<WorkspaceUser> users;
@@ -185,6 +187,9 @@ class _ItemizedSplitEditor extends StatefulWidget {
   final TextEditingController extra;
   final Widget Function(WorkspaceUser) avatarBuilder;
   final Widget modeTile;
+
+  /// "Fill from receipt", above the item list; null when AI isn't available.
+  final Widget? receiptAction;
 
   @override
   State<_ItemizedSplitEditor> createState() => _ItemizedSplitEditorState();
@@ -429,6 +434,10 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
       color: colors.onSurfaceVariant,
     );
     return [
+      if (widget.receiptAction case final action?) ...[
+        action,
+        const SizedBox(height: 16),
+      ],
       Row(
         children: [
           Expanded(child: Text(t.expenseItemsEntered, style: muted)),

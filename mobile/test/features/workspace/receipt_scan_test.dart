@@ -78,6 +78,21 @@ void main() {
     expect(draft.extraCents, 0);
   });
 
+  test('quantities stay as units unless a discount was taken off', () {
+    Map<String, dynamic> units(String name, int qty, int unit) => {
+      'name': name,
+      'quantity': qty,
+      'unit_price_cents': unit,
+      'total_cents': qty * unit,
+    };
+    final plain = scan([units('Beer', 3, 450)]).splitDraft()!.lines.single;
+    expect((plain.qty, plain.unitCents, plain.cents), (3, 450, 1350));
+    final cut = scan([
+      units('Beer', 3, 450),
+    ], discount: 100).splitDraft()!.lines.single;
+    expect((cut.qty, cut.unitCents, cut.cents), (1, 1250, 1250));
+  });
+
   test('nothing to fill when there are no lines or the discount eats them', () {
     expect(scan(const []).splitDraft(), isNull);
     expect(scan([item('A', 100)], discount: 100).splitDraft(), isNull);
