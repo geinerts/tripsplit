@@ -2205,5 +2205,6 @@
   "receiptAiCheckItems": "Algunas líneas eran difíciles de leer, revísalas.",
   "receiptAiNoticeTitle": "¿Leer el recibo con IA?",
   "receiptAiNoticeBody": "La foto del recibo se envía a OpenAI para leer los artículos. Solo se envía la foto, no tu nombre, correo ni viaje. Revisas todo antes de guardar. Más información en la Política de privacidad.",
-  "receiptAiNoticeContinue": "Continuar"
+  "receiptAiNoticeContinue": "Continuar",
+  "expenseItemsAddFirst": "Primero añade artículos y luego elige quién tomó qué."
 }

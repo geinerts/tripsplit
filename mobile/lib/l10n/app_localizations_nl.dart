@@ -5570,4 +5570,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get receiptAiNoticeContinue => 'Doorgaan';
+
+  @override
+  String get expenseItemsAddFirst => 'Voeg eerst items toe en kies dan wie wat had.';
 }

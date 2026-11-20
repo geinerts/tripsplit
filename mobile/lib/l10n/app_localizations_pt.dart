@@ -5570,4 +5570,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get receiptAiNoticeContinue => 'Continuar';
+
+  @override
+  String get expenseItemsAddFirst => 'Adiciona primeiro os itens e depois escolhe quem ficou com o quê.';
 }

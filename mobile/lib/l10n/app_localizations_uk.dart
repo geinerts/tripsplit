@@ -5594,4 +5594,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get receiptAiNoticeContinue => 'Продовжити';
+
+  @override
+  String get expenseItemsAddFirst => 'Спершу додайте позиції, потім виберіть, хто що брав.';
 }

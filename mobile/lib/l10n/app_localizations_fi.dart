@@ -5570,4 +5570,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get receiptAiNoticeContinue => 'Jatka';
+
+  @override
+  String get expenseItemsAddFirst => 'Lisää ensin rivit ja valitse sitten, kuka otti mitäkin.';
 }

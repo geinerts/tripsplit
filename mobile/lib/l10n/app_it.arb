@@ -2219,5 +2219,6 @@
   "receiptAiCheckItems": "Alcune righe erano difficili da leggere, controllale.",
   "receiptAiNoticeTitle": "Leggere lo scontrino con l’IA?",
   "receiptAiNoticeBody": "La foto dello scontrino viene inviata a OpenAI per leggere le voci. Viene inviata solo la foto, non il tuo nome, la tua email o il tuo viaggio. Controlli tutto prima di salvare. Maggiori dettagli nell’Informativa sulla privacy.",
-  "receiptAiNoticeContinue": "Continua"
+  "receiptAiNoticeContinue": "Continua",
+  "expenseItemsAddFirst": "Aggiungi prima le voci, poi scegli chi ha preso cosa."
 }

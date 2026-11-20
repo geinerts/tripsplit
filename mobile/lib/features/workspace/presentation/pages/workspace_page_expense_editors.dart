@@ -116,6 +116,7 @@ class _ExpenseSplitEditor extends StatefulWidget {
     this.initialItems = const [],
     this.initialExtra = 0,
     this.scanReceipt,
+    this.addPerson,
   });
   final List<WorkspaceUser> users;
   final double amount;
@@ -128,6 +129,9 @@ class _ExpenseSplitEditor extends StatefulWidget {
 
   /// AI receipt reading for "By item"; null hides the button.
   final Future<_ReceiptFill?> Function()? scanReceipt;
+
+  /// Adds someone to the split (quick split only); null hides "+ Add".
+  final Future<WorkspaceUser?> Function()? addPerson;
   @override
   State<_ExpenseSplitEditor> createState() => _ExpenseSplitEditorState();
 }
@@ -144,6 +148,30 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
 
   bool _scanning = false;
   String? _scanMessage;
+
+  /// Everyone in the split; grows when a person is added from People.
+  late final List<WorkspaceUser> _users = List.of(widget.users);
+
+  Future<WorkspaceUser?> _addPerson() async {
+    final add = widget.addPerson;
+    if (add == null) return null;
+    final person = await add();
+    if (!mounted || person == null) return null;
+    setState(() {
+      if (_users.any((user) => user.id == person.id)) return;
+      _users.add(person);
+      // Values typed for other methods no longer fit; they start again.
+      for (final entry in drafts.entries.toList()) {
+        if (entry.key == mode) continue;
+        for (final controller in entry.value.values) {
+          controller.dispose();
+        }
+        drafts.remove(entry.key);
+      }
+      _pinned.clear();
+    });
+    return person;
+  }
 
   /// Set once a receipt was read: its total and currency replace the form's
   /// for the item list, and a new run rebuilds the item editor from scratch.
@@ -238,7 +266,7 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
     _items.addAll(
       _mergeItemDrafts(
         widget.initialItems,
-        widget.users.map((user) => user.id).toSet(),
+        _users.map((user) => user.id).toSet(),
         widget.currencyCode,
       ),
     );
@@ -254,12 +282,12 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
   void _prepare(String value, {Map<int, String>? seed}) {
     if (drafts.containsKey(value)) return;
     final total = value == 'percent' ? 10000 : (widget.amount * 100).round();
-    final count = widget.users.length;
+    final count = _users.length;
     drafts[value] = {
       for (var index = 0; index < count; index++)
-        widget.users[index].id: TextEditingController(
+        _users[index].id: TextEditingController(
           text:
-              seed?[widget.users[index].id] ??
+              seed?[_users[index].id] ??
               (value == 'shares'
                   ? '1'
                   : value == 'adjustment'
@@ -278,7 +306,7 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
     if (!_autoFills) return;
     final pinned = _pinned.putIfAbsent(mode, () => <int>{})..add(userId);
     final free = [
-      for (final user in widget.users)
+      for (final user in _users)
         if (!pinned.contains(user.id)) user.id,
     ];
     if (free.isEmpty) return;
@@ -298,10 +326,10 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
   void _splitEvenly() {
     _pinned.remove(mode);
     final total = mode == 'percent' ? 10000 : (widget.amount * 100).round();
-    final count = widget.users.length;
+    final count = _users.length;
     for (var i = 0; i < count; i++) {
       final cents = total ~/ count + (i < total % count ? 1 : 0);
-      controllers[widget.users[i].id]?.text = (cents / 100).toStringAsFixed(2);
+      controllers[_users[i].id]?.text = (cents / 100).toStringAsFixed(2);
     }
   }
 
@@ -341,7 +369,7 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
   /// What each person pays with the current values, when they fit.
   Map<int, int>? get _adjustedOwed => adjustmentOwedCents(
     (widget.amount * 100).round(),
-    widget.users.map((user) => user.id).toList(),
+    _users.map((user) => user.id).toList(),
     {
       for (final entry
           in drafts['adjustment']?.entries ??
@@ -429,7 +457,7 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
             ),
           ),
         const SizedBox(height: 12),
-        for (final user in widget.users) ...[
+        for (final user in _users) ...[
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: LayoutBuilder(
@@ -613,10 +641,11 @@ class _ExpenseSplitEditorState extends State<_ExpenseSplitEditor> {
 
   Widget _buildItemized(BuildContext context) => _ItemizedSplitEditor(
     key: ValueKey('itemized-$_scanRun'),
-    users: widget.users,
+    users: _users,
     amount: _scanAmount ?? widget.amount,
     currencyCode: _scanCurrency ?? widget.currencyCode,
     receiptAction: widget.scanReceipt == null ? null : _receiptButton(context),
+    addPerson: widget.addPerson == null ? null : _addPerson,
     items: _items,
     extra: _extra,
     avatarBuilder: widget.avatarBuilder,

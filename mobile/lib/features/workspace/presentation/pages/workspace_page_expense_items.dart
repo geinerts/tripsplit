@@ -178,6 +178,7 @@ class _ItemizedSplitEditor extends StatefulWidget {
     required this.avatarBuilder,
     required this.modeTile,
     this.receiptAction,
+    this.addPerson,
   });
 
   final List<WorkspaceUser> users;
@@ -190,6 +191,9 @@ class _ItemizedSplitEditor extends StatefulWidget {
 
   /// "Fill from receipt", above the item list; null when AI isn't available.
   final Widget? receiptAction;
+
+  /// Adds a person from the People tab; null hides "+ Add".
+  final Future<WorkspaceUser?> Function()? addPerson;
 
   @override
   State<_ItemizedSplitEditor> createState() => _ItemizedSplitEditorState();
@@ -360,12 +364,11 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
     final colors = Theme.of(context).colorScheme;
     Widget tab(bool people, IconData icon, String label, String key) {
       final selected = _peopleTab == people;
-      final enabled = !people || _listReady;
+      // People opens any time, also before any item, to see or add people.
       return Expanded(
         child: Semantics(
           button: true,
           selected: selected,
-          enabled: enabled,
           label: label,
           excludeSemantics: true,
           child: Material(
@@ -374,7 +377,7 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
             child: InkWell(
               key: ValueKey(key),
               borderRadius: BorderRadius.circular(20),
-              onTap: !enabled || selected
+              onTap: selected
                   ? null
                   : () => people
                         ? _openPeople()
@@ -384,11 +387,7 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
                 child: Icon(
                   icon,
                   size: 22,
-                  color: selected
-                      ? colors.onPrimary
-                      : enabled
-                      ? colors.onSurfaceVariant
-                      : colors.onSurfaceVariant.withValues(alpha: .4),
+                  color: selected ? colors.onPrimary : colors.onSurfaceVariant,
                 ),
               ),
             ),
@@ -921,10 +920,29 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
           children: [
             for (final user in widget.users)
               _personPick(context, user, owed[user.id] ?? 0),
+            if (widget.addPerson case final add?)
+              _ExpenseAddPersonButton(
+                onTap: () async {
+                  final person = await add();
+                  if (!mounted || person == null) return;
+                  setState(() => _person = person.id);
+                },
+              ),
           ],
         ),
       ),
       const SizedBox(height: 8),
+      if (_filled.isEmpty)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Text(
+            t.expenseItemsAddFirst,
+            key: const ValueKey('expense-people-no-items'),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colors.onSurfaceVariant,
+            ),
+          ),
+        ),
       for (final index in active) _personItemRow(context, index, person),
       if (_extraCents > 0)
         Padding(
@@ -1227,7 +1245,8 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
     // The items tab has no button: the tabs at the top switch to People, so
     // the keyboard keeps its room. People only has Done.
     Widget? button;
-    if (!_peopleTab) {
+    // People before the list adds up shows what is missing, Done waits.
+    if (!_peopleTab || !ready) {
       final receipt = _receiptCents;
       final entered = _enteredCents;
       final itemsCents = entered - _extraCents;
@@ -1249,6 +1268,13 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
           fontWeight: ok ? FontWeight.w400 : FontWeight.w600,
         ),
       );
+      if (_peopleTab) {
+        button = ElevatedButton(
+          key: const ValueKey('expense-editor-done'),
+          onPressed: null,
+          child: Text(t.doneStatus),
+        );
+      }
     } else if (!_allAssigned) {
       final unassigned = _filled.fold<int>(
         0,

@@ -2219,5 +2219,6 @@
   "receiptAiCheckItems": "Vissa rader var svåra att läsa, kontrollera dem.",
   "receiptAiNoticeTitle": "Läsa kvittot med AI?",
   "receiptAiNoticeBody": "Fotot av kvittot skickas till OpenAI för att läsa raderna. Bara fotot skickas, inte ditt namn, din e-post eller din resa. Du kontrollerar allt innan du sparar. Mer i integritetspolicyn.",
-  "receiptAiNoticeContinue": "Fortsätt"
+  "receiptAiNoticeContinue": "Fortsätt",
+  "expenseItemsAddFirst": "Lägg först till rader och välj sedan vem som hade vad."
 }

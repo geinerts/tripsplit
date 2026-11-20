@@ -2458,5 +2458,6 @@
   "receiptAiNoticeContinue": "Continue",
   "@receiptAiNoticeBody": {
     "description": "Shown once per account before the first AI receipt reading."
-  }
+  },
+  "expenseItemsAddFirst": "Add items first, then pick who had what."
 }

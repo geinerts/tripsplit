@@ -5584,4 +5584,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get receiptAiNoticeContinue => 'Pokračovat';
+
+  @override
+  String get expenseItemsAddFirst => 'Nejdřív přidej položky, pak vyber, kdo co měl.';
 }

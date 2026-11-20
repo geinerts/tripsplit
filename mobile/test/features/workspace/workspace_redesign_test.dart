@@ -6350,6 +6350,42 @@ void main() {
       await tester.pumpAndSettle();
     }
 
+    testWidgets('People in By item opens before items and adds people', (
+      tester,
+    ) async {
+      await mountHost(tester, save: (input) async => fixture());
+      final t = AppLocalizations.of(
+        tester.element(find.byKey(const ValueKey('expense-form-amount'))),
+      )!;
+      await selectExpenseFood(tester);
+      await visibleTap(
+        tester,
+        find.byKey(const ValueKey('expense-custom-split')),
+      );
+      await tester.tap(find.byKey(const ValueKey('expense-split-method')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('split-mode-itemized')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('expense-items-tab-people')));
+      await tester.pumpAndSettle();
+      expect(find.text(t.expenseItemsAddFirst), findsOneWidget);
+      expect(find.byKey(const ValueKey('expense-person-8')), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('expense-add-person')).last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('quick-split-friend-8')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('expense-person-8')), findsOneWidget);
+      // Done waits for items.
+      expect(
+        tester
+            .widget<ElevatedButton>(
+              find.byKey(const ValueKey('expense-editor-done')),
+            )
+            .onPressed,
+        isNull,
+      );
+    });
+
     testWidgets('form is Add expense with the Quick split chip and camera', (
       tester,
     ) async {

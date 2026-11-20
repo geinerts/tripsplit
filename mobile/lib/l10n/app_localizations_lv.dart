@@ -5582,4 +5582,7 @@ class AppLocalizationsLv extends AppLocalizations {
 
   @override
   String get receiptAiNoticeContinue => 'Turpināt';
+
+  @override
+  String get expenseItemsAddFirst => 'Vispirms pievieno pozīcijas, tad izvēlies, kurš ko ņēma.';
 }

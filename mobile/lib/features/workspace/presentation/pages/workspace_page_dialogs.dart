@@ -607,6 +607,23 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                     scanReceipt: setup.scanReceipt == null
                         ? null
                         : fillFromReceipt,
+                    addPerson: setup.addPerson == null
+                        ? null
+                        : () async {
+                            final person = await setup.addPerson!(
+                              context,
+                              users,
+                            );
+                            if (person == null || !context.mounted) {
+                              return null;
+                            }
+                            setDialogState(() {
+                              users.add(person);
+                              if (selected.isNotEmpty) selected.add(person.id);
+                              errorText = null;
+                            });
+                            return person;
+                          },
                   ),
                 );
                 if (!hostContext.mounted ||
