@@ -5597,4 +5597,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get expenseItemsAddFirst => 'Спершу додайте позиції, потім виберіть, хто що брав.';
+
+  @override
+  String get quickSplitFromAction => 'З Quick split';
+
+  @override
+  String get quickSplitFromTitle => 'Додати Quick split';
+
+  @override
+  String get quickSplitNoneForTrip => 'Немає Quick split лише з людьми з цієї подорожі.';
 }

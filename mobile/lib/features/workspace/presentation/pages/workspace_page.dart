@@ -147,6 +147,8 @@ class WorkspacePage extends StatefulWidget {
     this.pickExpenseTarget,
     this.onExpenseTargetChanged,
     this.onQuickSplitAddedToTrip,
+    this.pickQuickSplit,
+    this.hasQuickSplitsToAdd,
     this.initialFocus,
   });
 
@@ -179,6 +181,18 @@ class WorkspacePage extends StatefulWidget {
   /// A quick split became the expense [expenseId] of this trip.
   final Future<void> Function(int quickSplitId, int tripId, int expenseId)?
   onQuickSplitAddedToTrip;
+
+  /// "From a quick split" in a new expense: picks one whose people are all
+  /// in this trip (the member ids) and returns it as a draft; null when none.
+  final Future<ExpenseDraft?> Function(
+    BuildContext context,
+    Set<int> memberIds,
+  )?
+  pickQuickSplit;
+
+  /// Whether the account has quick splits that might go to a trip; shows
+  /// "From a quick split" only then.
+  final bool Function()? hasQuickSplitsToAdd;
 
   /// Opens Settle, an expense or the live map once the trip has loaded.
   final WorkspaceFocus? initialFocus;
@@ -216,6 +230,9 @@ class _WorkspacePageState extends State<WorkspacePage> {
   bool _isLoading = true;
   bool _isMutating = false;
   bool _isAddExpenseDialogOpen = false;
+
+  /// A quick split picked in the open form; the form reopens filled from it.
+  ExpenseDraft? _quickSplitDraftToOpen;
   String? _errorText;
   String? _refreshError;
   bool _workspaceOffline = false;

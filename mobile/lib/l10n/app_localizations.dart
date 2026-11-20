@@ -10262,6 +10262,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add items first, then pick who had what.'**
   String get expenseItemsAddFirst;
+
+  /// No description provided for @quickSplitFromAction.
+  ///
+  /// In en, this message translates to:
+  /// **'From a quick split'**
+  String get quickSplitFromAction;
+
+  /// No description provided for @quickSplitFromTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a quick split'**
+  String get quickSplitFromTitle;
+
+  /// No description provided for @quickSplitNoneForTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'No quick split has only this trip\'s people.'**
+  String get quickSplitNoneForTrip;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

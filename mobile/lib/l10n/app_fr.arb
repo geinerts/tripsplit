@@ -2220,5 +2220,8 @@
   "receiptAiNoticeTitle": "Lire le reçu avec l’IA ?",
   "receiptAiNoticeBody": "La photo du reçu est envoyée à OpenAI pour lire les articles. Seule la photo est envoyée, pas ton nom, ton e-mail ni ton voyage. Tu vérifies tout avant d’enregistrer. Plus de détails dans la Politique de confidentialité.",
   "receiptAiNoticeContinue": "Continuer",
-  "expenseItemsAddFirst": "Ajoute d’abord des articles, puis choisis qui a pris quoi."
+  "expenseItemsAddFirst": "Ajoute d’abord des articles, puis choisis qui a pris quoi.",
+  "quickSplitFromAction": "Depuis un Quick split",
+  "quickSplitFromTitle": "Ajouter un Quick split",
+  "quickSplitNoneForTrip": "Aucun Quick split n’a que des personnes de ce voyage."
 }

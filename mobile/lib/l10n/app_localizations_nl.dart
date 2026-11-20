@@ -5573,4 +5573,13 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get expenseItemsAddFirst => 'Voeg eerst items toe en kies dan wie wat had.';
+
+  @override
+  String get quickSplitFromAction => 'Uit een Quick split';
+
+  @override
+  String get quickSplitFromTitle => 'Quick split toevoegen';
+
+  @override
+  String get quickSplitNoneForTrip => 'Geen Quick split heeft alleen mensen uit deze reis.';
 }

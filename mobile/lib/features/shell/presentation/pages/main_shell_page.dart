@@ -20,6 +20,7 @@ import '../../../../core/monitoring/app_monitoring.dart';
 import '../../../../core/ui/app_bottom_nav_bar.dart';
 import '../../../../core/ui/app_components.dart';
 import '../../../../core/ui/app_scaffold.dart';
+import '../../../../core/ui/app_formatters.dart';
 import '../../../../core/ui/app_sheet.dart';
 import '../../../../core/ui/test_keys.dart';
 import '../../../quick_start/data/quick_start_service.dart';

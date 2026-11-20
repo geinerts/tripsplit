@@ -52,6 +52,14 @@ extension _MainShellPageWidgets on _MainShellPageState {
               onQuickSplitAddedToTrip: widget.quickSplitsController == null
                   ? null
                   : _onQuickSplitAddedToTrip,
+              pickQuickSplit: widget.quickSplitsController == null
+                  ? null
+                  : _pickQuickSplitForTrip,
+              hasQuickSplitsToAdd: () =>
+                  widget.quickSplitsController?.items.any(
+                    (split) => split.mayFitATrip,
+                  ) ==
+                  true,
               commandController: _workspaceCommandController,
               onExitRequested: _closeWorkspaceInShell,
               onTravelMapRequested: widget.travelPlacesRepository == null

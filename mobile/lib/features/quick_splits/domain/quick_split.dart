@@ -64,6 +64,22 @@ class QuickSplit {
   QuickSplitPerson? get payer =>
       people.where((person) => person.isPayer).firstOrNull;
 
+  /// Whether this quick split can become an expense of a trip with these
+  /// members: the signed-in user paid it and created it, and every person
+  /// in it has an account and is a member. The trip may have more people;
+  /// nobody is ever dropped or re-split. Needs the full quick split.
+  bool fitsTrip(Set<int> memberIds) =>
+      canEdit &&
+      addedToTripId == null &&
+      payer?.isMe == true &&
+      people.length >= 2 &&
+      people.every(
+        (person) => person.userId != null && memberIds.contains(person.userId),
+      );
+
+  /// A list row that might fit a trip; [fitsTrip] decides on the full split.
+  bool get mayFitATrip => canEdit && paidByMe && addedToTripId == null;
+
   factory QuickSplit.fromJson(Map<String, dynamic> json) {
     final added = json['added_to_trip'];
     return QuickSplit(

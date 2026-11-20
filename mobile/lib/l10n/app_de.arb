@@ -2220,5 +2220,8 @@
   "receiptAiNoticeTitle": "Beleg mit KI lesen?",
   "receiptAiNoticeBody": "Das Belegfoto wird an OpenAI gesendet, um die Posten zu lesen. Gesendet wird nur das Foto, nicht dein Name, deine E-Mail oder deine Reise. Du prüfst alles vor dem Speichern. Mehr in der Datenschutzerklärung.",
   "receiptAiNoticeContinue": "Weiter",
-  "expenseItemsAddFirst": "Füge zuerst Posten hinzu und wähle dann, wer was hatte."
+  "expenseItemsAddFirst": "Füge zuerst Posten hinzu und wähle dann, wer was hatte.",
+  "quickSplitFromAction": "Aus Quick Split",
+  "quickSplitFromTitle": "Quick Split hinzufügen",
+  "quickSplitNoneForTrip": "Kein Quick Split hat nur Personen dieser Reise."
 }

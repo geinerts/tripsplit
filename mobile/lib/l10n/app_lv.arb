@@ -2206,5 +2206,8 @@
   "receiptAiNoticeTitle": "Nolasīt čeku ar AI?",
   "receiptAiNoticeBody": "Čeka foto tiek nosūtīts OpenAI, lai nolasītu pozīcijas. Tiek sūtīts tikai foto, ne tavs vārds, e-pasts vai ceļojums. Pirms saglabāšanas visu pārbaudi pats. Vairāk privātuma politikā.",
   "receiptAiNoticeContinue": "Turpināt",
-  "expenseItemsAddFirst": "Vispirms pievieno pozīcijas, tad izvēlies, kurš ko ņēma."
+  "expenseItemsAddFirst": "Vispirms pievieno pozīcijas, tad izvēlies, kurš ko ņēma.",
+  "quickSplitFromAction": "No Quick split",
+  "quickSplitFromTitle": "Pievienot Quick split",
+  "quickSplitNoneForTrip": "Nav neviena Quick split tikai ar šī ceļojuma cilvēkiem."
 }

@@ -93,10 +93,13 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
       }
     }
     if (!mounted || widget.authController.currentUser?.id != account) return;
+    final fitting = await _tripsFittingQuickSplit(full);
+    if (!mounted || widget.authController.currentUser?.id != account) return;
     final hasReceipt = full.hasReceipt || full.receiptUrl != null;
     final action = await showQuickSplitSheet(
       context,
       split: full,
+      canAddToTrip: fitting.isNotEmpty,
       receiptAction: hasReceipt
           ? ReceiptOpenAction(
               compactLabel: context.l10n.expenseReceiptChip,
@@ -140,7 +143,7 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
       case QuickSplitSheetAction.delete:
         await _deleteQuickSplit(full);
       case QuickSplitSheetAction.addToTrip:
-        await _addQuickSplitToTrip(full);
+        await _addQuickSplitToTrip(full, fitting);
     }
   }
 
@@ -167,38 +170,121 @@ extension _MainShellPageQuickSplits on _MainShellPageState {
   }
 
   /// Opens Add expense in the chosen trip, filled from the quick split. Saving
-  /// it there takes the quick split off the list.
-  Future<void> _addQuickSplitToTrip(QuickSplit split) async {
-    final t = context.l10n;
-    // Trip expenses are entered by whoever paid.
-    if (split.payer?.isMe != true) {
-      _showSnack(t.quickSplitAddToTripOnlyPayer, isError: true);
-      return;
-    }
-    List<Trip> trips;
-    try {
-      trips =
-          widget.tripsController.peekTripsCache() ??
-          await widget.tripsController.loadTrips(forceRefresh: true);
-    } catch (_) {
-      if (mounted) _showSnack(t.unexpectedErrorLoadingTrips, isError: true);
-      return;
-    }
-    if (!mounted) return;
-    final active = trips.where((trip) => trip.isActive).toList();
-    if (active.isEmpty) {
-      _showSnack(t.quickSplitNoActiveTrip, isError: true);
-      return;
-    }
-    final trip = active.length == 1
-        ? active.single
-        : (await _pickExpenseTarget(context, includeQuickSplit: false))?.trip;
+  /// it there takes the quick split off the list. Only trips that fit are
+  /// offered ([QuickSplit.fitsTrip]).
+  Future<void> _addQuickSplitToTrip(
+    QuickSplit split,
+    List<Trip> fitting,
+  ) async {
+    if (fitting.isEmpty) return;
+    final trip = fitting.length == 1
+        ? fitting.single
+        : (await _pickExpenseTarget(
+            context,
+            includeQuickSplit: false,
+            trips: fitting,
+          ))?.trip;
     if (trip == null || !mounted) return;
     _openWorkspaceInShell(
       trip,
       openAddExpense: true,
       draft: _draftFromQuickSplit(split),
     );
+  }
+
+  /// Members of a trip, from its cached snapshot or else from the server.
+  /// Null when they can't be read.
+  Future<Set<int>?> _tripMemberIds(int tripId) async {
+    try {
+      final snapshot =
+          await widget.workspaceController.readCachedSnapshot(tripId: tripId) ??
+          await widget.workspaceController.loadSnapshot(tripId: tripId);
+      return {
+        for (final user in snapshot.users)
+          if (user.id > 0) user.id,
+      };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Active trips that have every person of this quick split.
+  Future<List<Trip>> _tripsFittingQuickSplit(QuickSplit split) async {
+    if (!split.mayFitATrip || split.payer?.isMe != true) return const [];
+    var trips = widget.tripsController.peekTripsCache();
+    if (trips == null) {
+      try {
+        trips = await widget.tripsController.loadTrips();
+      } catch (_) {
+        return const [];
+      }
+    }
+    final fitting = <Trip>[];
+    for (final trip in trips) {
+      if (!trip.isActive || trip.isSolo) continue;
+      final members = await _tripMemberIds(trip.id);
+      if (members != null && split.fitsTrip(members)) fitting.add(trip);
+    }
+    return fitting;
+  }
+
+  /// "From a quick split" inside a trip: the user's quick splits whose people
+  /// are all in this trip. Null when closed or none fits.
+  Future<ExpenseDraft?> _pickQuickSplitForTrip(
+    BuildContext formContext,
+    Set<int> memberIds,
+  ) async {
+    final controller = _quickSplits;
+    if (controller == null) return null;
+    final account = widget.authController.currentUser?.id;
+    final t = formContext.l10n;
+    if (!controller.hasLoaded) await controller.load();
+    final candidates = controller.items
+        .where((split) => split.mayFitATrip)
+        .take(30)
+        .toList();
+    final loaded = await Future.wait([
+      for (final split in candidates)
+        (split.isFull ? Future.value(split) : controller.get(split.id))
+            .then<QuickSplit?>((full) => full)
+            .catchError((Object _) => null),
+    ]);
+    if (!formContext.mounted ||
+        widget.authController.currentUser?.id != account) {
+      return null;
+    }
+    final fitting = [
+      for (final split in loaded)
+        if (split != null && split.fitsTrip(memberIds)) split,
+    ];
+    if (fitting.isEmpty) {
+      ScaffoldMessenger.maybeOf(
+        formContext,
+      )?.showSnackBar(SnackBar(content: Text(t.quickSplitNoneForTrip)));
+      return null;
+    }
+    final picked = await showAppBottomSheet<QuickSplit>(
+      context: formContext,
+      builder: (pickerContext) => AppActionSheet(
+        key: const ValueKey('quick-split-for-trip-sheet'),
+        title: t.quickSplitFromTitle,
+        children: [
+          for (final split in fitting)
+            AppActionSheetTile(
+              key: ValueKey('quick-split-for-trip-${split.id}'),
+              icon: Icons.bolt_rounded,
+              title: quickSplitTitle(pickerContext, split),
+              subtitle:
+                  '${AppFormatters.currency(pickerContext, split.amount, currencyCode: split.currencyCode)} · ${t.homePeople(split.people.length)}',
+              onTap: () => Navigator.of(pickerContext).pop(split),
+            ),
+        ],
+      ),
+    );
+    if (picked == null || widget.authController.currentUser?.id != account) {
+      return null;
+    }
+    return _draftFromQuickSplit(picked);
   }
 
   ExpenseDraft _draftFromQuickSplit(QuickSplit split) {

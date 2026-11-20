@@ -2459,5 +2459,8 @@
   "@receiptAiNoticeBody": {
     "description": "Shown once per account before the first AI receipt reading."
   },
-  "expenseItemsAddFirst": "Add items first, then pick who had what."
+  "expenseItemsAddFirst": "Add items first, then pick who had what.",
+  "quickSplitFromAction": "From a quick split",
+  "quickSplitFromTitle": "Add a quick split",
+  "quickSplitNoneForTrip": "No quick split has only this trip's people."
 }

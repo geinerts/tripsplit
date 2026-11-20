@@ -5587,4 +5587,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get expenseItemsAddFirst => 'Nejdřív přidej položky, pak vyber, kdo co měl.';
+
+  @override
+  String get quickSplitFromAction => 'Z Quick split';
+
+  @override
+  String get quickSplitFromTitle => 'Přidat Quick split';
+
+  @override
+  String get quickSplitNoneForTrip => 'Žádný Quick split nemá jen lidi z tohoto výletu.';
 }

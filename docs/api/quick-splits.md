@@ -134,7 +134,10 @@ viewer. `my_amount` is the viewer's part (0 when they only paid).
 1. It calls the existing `add_expense` for the chosen trip with the quick split's amount,
    currency, note, category, type, date, payer, split and `receipt_path`, so trip rules apply unchanged
    (trip members only, guests through the trip owner, currency conversion, notifications).
-   People who aren't in that trip are left for the user to fix in the form first.
+   The app offers only trips that fit (owner decision 2026-11-20): the user created and paid
+   the quick split, every person in it has an account and is a member of the trip (the trip
+   may have more people), and the trip is active. Nobody is dropped or re-split. The same
+   rule lists quick splits under "From a quick split" in a new trip expense.
 2. It calls `move_quick_split_to_trip` with `{"id": 31, "trip_id": 7, "expense_id": 950}`.
 
 The server checks that the caller created the quick split, is a member of the trip and that

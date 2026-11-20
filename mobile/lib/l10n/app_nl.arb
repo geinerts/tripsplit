@@ -2220,5 +2220,8 @@
   "receiptAiNoticeTitle": "Bon lezen met AI?",
   "receiptAiNoticeBody": "De foto van de bon wordt naar OpenAI gestuurd om de items te lezen. Alleen de foto wordt verstuurd, niet je naam, e-mail of reis. Je controleert alles voordat je opslaat. Meer in het privacybeleid.",
   "receiptAiNoticeContinue": "Doorgaan",
-  "expenseItemsAddFirst": "Voeg eerst items toe en kies dan wie wat had."
+  "expenseItemsAddFirst": "Voeg eerst items toe en kies dan wie wat had.",
+  "quickSplitFromAction": "Uit een Quick split",
+  "quickSplitFromTitle": "Quick split toevoegen",
+  "quickSplitNoneForTrip": "Geen Quick split heeft alleen mensen uit deze reis."
 }

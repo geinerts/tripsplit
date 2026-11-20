@@ -2220,5 +2220,8 @@
   "receiptAiNoticeTitle": "Odczytać paragon za pomocą AI?",
   "receiptAiNoticeBody": "Zdjęcie paragonu jest wysyłane do OpenAI, aby odczytać pozycje. Wysyłane jest tylko zdjęcie, bez Twojego imienia, e-maila czy podróży. Wszystko sprawdzasz przed zapisaniem. Więcej w Polityce prywatności.",
   "receiptAiNoticeContinue": "Dalej",
-  "expenseItemsAddFirst": "Najpierw dodaj pozycje, potem wybierz, kto co miał."
+  "expenseItemsAddFirst": "Najpierw dodaj pozycje, potem wybierz, kto co miał.",
+  "quickSplitFromAction": "Z Quick split",
+  "quickSplitFromTitle": "Dodaj Quick split",
+  "quickSplitNoneForTrip": "Żaden Quick split nie ma tylko osób z tej podróży."
 }

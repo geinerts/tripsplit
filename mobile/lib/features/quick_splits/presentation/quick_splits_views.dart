@@ -220,15 +220,26 @@ Future<QuickSplitSheetAction?> showQuickSplitSheet(
   BuildContext context, {
   required QuickSplit split,
   Widget? receiptAction,
+  bool canAddToTrip = false,
 }) => showAppBottomSheet<QuickSplitSheetAction>(
   context: context,
-  isScrollControlled: true,
-  builder: (sheetContext) =>
-      QuickSplitSheet(split: split, receiptAction: receiptAction),
+  builder: (sheetContext) => QuickSplitSheet(
+    split: split,
+    receiptAction: receiptAction,
+    canAddToTrip: canAddToTrip,
+  ),
 );
 
 class QuickSplitSheet extends StatelessWidget {
-  const QuickSplitSheet({super.key, required this.split, this.receiptAction});
+  const QuickSplitSheet({
+    super.key,
+    required this.split,
+    this.receiptAction,
+    this.canAddToTrip = false,
+  });
+
+  /// Shown only when an active trip has every person of this quick split.
+  final bool canAddToTrip;
 
   final QuickSplit split;
 
@@ -549,7 +560,7 @@ class QuickSplitSheet extends StatelessWidget {
               icon: const Icon(Icons.ios_share_rounded),
               label: Text(t.quickSplitShareResult),
             ),
-            if (split.canEdit) ...[
+            if (split.canEdit && canAddToTrip) ...[
               const Divider(height: 1),
               ListTile(
                 key: const ValueKey('quick-split-add-to-trip'),

@@ -220,4 +220,70 @@ void main() {
     expect(controller.hasFailed, isTrue);
     expect(controller.isOffline, isTrue);
   });
+
+  group('fitsTrip', () {
+    QuickSplit split({
+      bool paidByMe = true,
+      bool canEdit = true,
+      List<Map<String, dynamic>>? people,
+    }) => QuickSplit.fromJson({
+      'id': 40,
+      'note': 'Lunch',
+      'category': 'food',
+      'date': '2026-11-20',
+      'amount': 30,
+      'currency_code': 'EUR',
+      'can_edit': canEdit,
+      'people':
+          people ??
+          [
+            {
+              'id': 1,
+              'user_id': 7,
+              'name': 'Me',
+              'is_me': true,
+              'is_payer': paidByMe,
+              'amount': 10,
+            },
+            {
+              'id': 2,
+              'user_id': 8,
+              'name': 'Anna',
+              'is_payer': !paidByMe,
+              'amount': 10,
+            },
+            {'id': 3, 'user_id': 9, 'name': 'Ben', 'amount': 10},
+          ],
+    });
+
+    test('a trip with all of its people and more fits', () {
+      expect(split().fitsTrip({7, 8, 9, 10, 11}), isTrue);
+    });
+
+    test('someone missing from the trip does not fit', () {
+      expect(split().fitsTrip({7, 8}), isFalse);
+    });
+
+    test('someone without an account never fits', () {
+      final withName = split(
+        people: [
+          {
+            'id': 1,
+            'user_id': 7,
+            'name': 'Me',
+            'is_me': true,
+            'is_payer': true,
+            'amount': 15,
+          },
+          {'id': 2, 'name': 'Mum', 'amount': 15},
+        ],
+      );
+      expect(withName.fitsTrip({7, 8, 9}), isFalse);
+    });
+
+    test('only the creator who paid can add it', () {
+      expect(split(paidByMe: false).fitsTrip({7, 8, 9}), isFalse);
+      expect(split(canEdit: false).fitsTrip({7, 8, 9}), isFalse);
+    });
+  });
 }

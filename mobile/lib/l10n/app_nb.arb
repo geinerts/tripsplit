@@ -2220,5 +2220,8 @@
   "receiptAiNoticeTitle": "Lese kvitteringen med AI?",
   "receiptAiNoticeBody": "Bildet av kvitteringen sendes til OpenAI for å lese varene. Bare bildet sendes, ikke navnet ditt, e-posten din eller reisen. Du sjekker alt før du lagrer. Mer i personvernerklæringen.",
   "receiptAiNoticeContinue": "Fortsett",
-  "expenseItemsAddFirst": "Legg til varer først, og velg så hvem som hadde hva."
+  "expenseItemsAddFirst": "Legg til varer først, og velg så hvem som hadde hva.",
+  "quickSplitFromAction": "Fra et Quick split",
+  "quickSplitFromTitle": "Legg til et Quick split",
+  "quickSplitNoneForTrip": "Ingen Quick split har bare personer fra denne reisen."
 }

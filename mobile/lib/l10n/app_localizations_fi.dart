@@ -5573,4 +5573,13 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get expenseItemsAddFirst => 'Lisää ensin rivit ja valitse sitten, kuka otti mitäkin.';
+
+  @override
+  String get quickSplitFromAction => 'Quick splitistä';
+
+  @override
+  String get quickSplitFromTitle => 'Lisää Quick split';
+
+  @override
+  String get quickSplitNoneForTrip => 'Yhdessäkään Quick splitissä ei ole vain tämän matkan ihmisiä.';
 }

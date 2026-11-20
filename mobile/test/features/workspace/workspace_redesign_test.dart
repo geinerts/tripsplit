@@ -700,6 +700,8 @@ Future<void> _mount(
   Future<ExpenseTarget?> Function(BuildContext, Trip)? pickExpenseTarget,
   void Function(ExpenseTarget, ExpenseDraft)? onExpenseTargetChanged,
   Future<void> Function(int, int, int)? onQuickSplitAddedToTrip,
+  Future<ExpenseDraft?> Function(BuildContext, Set<int>)? pickQuickSplit,
+  bool Function()? hasQuickSplitsToAdd,
   WorkspaceFocus? initialFocus,
 }) async {
   tester.view.physicalSize = Size(width, height);
@@ -776,6 +778,8 @@ Future<void> _mount(
         pickExpenseTarget: pickExpenseTarget,
         onExpenseTargetChanged: onExpenseTargetChanged,
         onQuickSplitAddedToTrip: onQuickSplitAddedToTrip,
+        pickQuickSplit: pickQuickSplit,
+        hasQuickSplitsToAdd: hasQuickSplitsToAdd,
         initialFocus: initialFocus,
       ),
     ),
@@ -6512,6 +6516,63 @@ void main() {
       await disposePage(tester);
     });
 
+    testWidgets('From a quick split fills a new trip expense', (tester) async {
+      Set<int>? askedWith;
+      await _mount(
+        tester,
+        _Workspace(),
+        openAddExpenseOnStart: true,
+        hasQuickSplitsToAdd: () => true,
+        pickQuickSplit: (_, members) async {
+          askedWith = members;
+          return const ExpenseDraft(
+            quickSplitId: 33,
+            amount: 18,
+            currencyCode: 'EUR',
+            note: 'Taxi',
+            category: 'transport',
+            payerUserId: 7,
+            participantUserIds: [7, 8],
+          );
+        },
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('expense-from-quick-split')));
+      await tester.pumpAndSettle();
+      // The form closes and opens again after its close animation.
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(askedWith, {7, 8});
+      expect(
+        tester
+            .widget<TextField>(
+              find.byKey(const ValueKey('expense-form-amount')),
+            )
+            .controller!
+            .text,
+        '18.00',
+      );
+      // The reopened form is filled from it and has no second chip.
+      expect(find.text('Taxi'), findsOneWidget);
+      await disposePage(tester);
+    });
+
+    testWidgets('no quick splits, no chip', (tester) async {
+      await _mount(
+        tester,
+        _Workspace(),
+        openAddExpenseOnStart: true,
+        hasQuickSplitsToAdd: () => false,
+        pickQuickSplit: (_, _) async => null,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('expense-from-quick-split')),
+        findsNothing,
+      );
+      await disposePage(tester);
+    });
+
     testWidgets('a by-item quick split ticks only its own people', (
       tester,
     ) async {
@@ -6708,7 +6769,9 @@ void main() {
             theme: AppTheme.light(),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            home: Scaffold(body: QuickSplitSheet(split: split)),
+            home: Scaffold(
+              body: QuickSplitSheet(split: split, canAddToTrip: creator),
+            ),
           ),
         );
         await tester.pumpAndSettle();

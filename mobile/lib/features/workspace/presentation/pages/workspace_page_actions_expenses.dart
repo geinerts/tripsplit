@@ -132,6 +132,14 @@ extension _WorkspacePageExpensesActions on _WorkspacePageState {
     } finally {
       _isAddExpenseDialogOpen = false;
     }
+    // "From a quick split" closed the form: open it again, filled.
+    final fromQuickSplit = _quickSplitDraftToOpen;
+    _quickSplitDraftToOpen = null;
+    if (result == null && fromQuickSplit != null && mounted) {
+      await _waitForDialogCloseTransition();
+      if (mounted) await _openExpenseForm(draft: fromQuickSplit);
+      return;
+    }
     if (result == null || !mounted) return;
     await _waitForDialogCloseTransition();
     if (!mounted) return;

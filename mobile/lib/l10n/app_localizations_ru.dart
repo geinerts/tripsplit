@@ -5597,4 +5597,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get expenseItemsAddFirst => 'Сначала добавьте позиции, потом выберите, кто что брал.';
+
+  @override
+  String get quickSplitFromAction => 'Из Quick split';
+
+  @override
+  String get quickSplitFromTitle => 'Добавить Quick split';
+
+  @override
+  String get quickSplitNoneForTrip => 'Нет Quick split только с людьми из этой поездки.';
 }

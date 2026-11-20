@@ -19,7 +19,11 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
         isSolo: trip.isSolo,
         soloOwnerId: trip.createdBy ?? _currentUserId,
         defaultCurrencyCode: trip.currencyCode,
-        subtitle: _expenseFormTripSubtitle,
+        subtitle: (formContext, draft) => _expenseFormTripSubtitle(
+          formContext,
+          draft,
+          offerQuickSplit: existing == null,
+        ),
         payerChoices: (users) {
           if (trip.isSolo || !_isCurrentTripOwner()) return const [];
           final guests = users.where((user) => user.isGuest).toList();
@@ -61,6 +65,46 @@ extension _WorkspacePageDialogs on _WorkspacePageState {
   /// The trip name under the title; with "▾" when the expense can go to
   /// Quick split or another trip instead.
   Widget _expenseFormTripSubtitle(
+    BuildContext formContext,
+    ExpenseDraft Function() draft, {
+    bool offerQuickSplit = false,
+  }) {
+    final target = _expenseFormTargetChip(formContext, draft);
+    final pickQuickSplit = widget.pickQuickSplit;
+    if (!offerQuickSplit ||
+        pickQuickSplit == null ||
+        widget.trip.isSolo ||
+        widget.hasQuickSplitsToAdd?.call() != true) {
+      return target;
+    }
+    return Wrap(
+      spacing: 8,
+      runSpacing: 6,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        target,
+        ActionChip(
+          key: const ValueKey('expense-from-quick-split'),
+          avatar: const Icon(Icons.bolt_rounded, size: 16),
+          label: Text(formContext.l10n.quickSplitFromAction),
+          visualDensity: VisualDensity.compact,
+          onPressed: () async {
+            FocusScope.of(formContext).unfocus();
+            final members = {
+              for (final user in _snapshot?.users ?? const <WorkspaceUser>[])
+                if (user.id > 0) user.id,
+            };
+            final picked = await pickQuickSplit(formContext, members);
+            if (picked == null || !formContext.mounted || !mounted) return;
+            _quickSplitDraftToOpen = picked;
+            Navigator.of(formContext).pop();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _expenseFormTargetChip(
     BuildContext formContext,
     ExpenseDraft Function() draft,
   ) {
