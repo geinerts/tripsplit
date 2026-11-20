@@ -248,18 +248,37 @@ function is_missing_table_error(Throwable $error): bool
     return strpos($message, 'doesn\'t exist') !== false || strpos($message, 'no such table') !== false;
 }
 
+/**
+ * Answers 503 when a security limit cannot be enforced. Limits fail closed
+ * (2026-11-20): a missing table or a broken limit setting must stop the
+ * request, never let it through unchecked. Logged so monitoring sees it.
+ */
+function security_limit_unavailable(string $reason): void
+{
+    error_log('Security limit unavailable: ' . $reason);
+    json_out(['ok' => false, 'error' => 'This service is temporarily unavailable.'], 503);
+}
+
+/**
+ * Counts one hit for $scope/$subject and answers 429 over $maxHits per window.
+ * Always fails closed; $failClosed is kept only so existing callers stay valid.
+ */
 function enforce_rate_limit(
     PDO $pdo,
     string $scope,
     string $subject,
     int $maxHits,
     int $windowSeconds,
-    bool $failClosed = false
+    bool $failClosed = true
 ): void {
     $scope = trim($scope);
     $subject = trim(strtolower($subject));
-    if ($scope === '' || $subject === '' || $maxHits <= 0 || $windowSeconds <= 0) {
-        return;
+    if ($scope === '' || $maxHits <= 0 || $windowSeconds <= 0) {
+        security_limit_unavailable('invalid limit setting for scope "' . $scope . '"');
+    }
+    if ($subject === '') {
+        // An unknown subject shares one bucket instead of skipping the limit.
+        $subject = 'unknown';
     }
 
     $windowStart = (int) (floor(time() / $windowSeconds) * $windowSeconds);
@@ -308,10 +327,7 @@ function enforce_rate_limit(
         }
     } catch (Throwable $error) {
         if (is_missing_table_error($error)) {
-            if ($failClosed) {
-                json_out(['ok' => false, 'error' => 'This service is temporarily unavailable.'], 503);
-            }
-            return;
+            security_limit_unavailable('request_limits table is missing');
         }
         throw $error;
     }
@@ -358,13 +374,11 @@ function enforce_upload_daily_quota(
     int $maxBytesPerDay
 ): void {
     $scope = strtolower(trim($scope));
-    if (
-        $scopeId <= 0 ||
-        $fileBytes <= 0 ||
-        $maxFilesPerDay <= 0 ||
-        $maxBytesPerDay <= 0 ||
-        !in_array($scope, ['user', 'trip'], true)
-    ) {
+    if ($maxFilesPerDay <= 0 || $maxBytesPerDay <= 0 || !in_array($scope, ['user', 'trip'], true)) {
+        security_limit_unavailable('invalid upload quota setting for scope "' . $scope . '"');
+    }
+    if ($scopeId <= 0 || $fileBytes <= 0) {
+        // Nothing to count: no owner or an empty file; upload checks reject those.
         return;
     }
 
@@ -418,7 +432,7 @@ function enforce_upload_daily_quota(
         }
     } catch (Throwable $error) {
         if (is_missing_table_error($error)) {
-            return;
+            security_limit_unavailable('upload_daily_usage table is missing');
         }
         throw $error;
     }
@@ -450,3 +464,23 @@ function require_admin(): void
     }
 }
 
+/**
+ * Whether the tables that hold security limits exist. Shown on the admin
+ * System page and checked after deploys (scripts/check_security_limits.php).
+ * A failed check reports false: unknown is not "present".
+ */
+function security_limit_storage_status(PDO $pdo): array
+{
+    $status = [];
+    foreach (['request_limits', 'upload_daily_usage'] as $key) {
+        try {
+            $stmt = $pdo->prepare('SELECT COUNT(*) FROM information_schema.tables
+                WHERE table_schema = DATABASE() AND table_name = :name');
+            $stmt->execute(['name' => trim(table_name($key), '`')]);
+            $status[$key] = (int) $stmt->fetchColumn() > 0;
+        } catch (Throwable $error) {
+            $status[$key] = false;
+        }
+    }
+    return $status;
+}

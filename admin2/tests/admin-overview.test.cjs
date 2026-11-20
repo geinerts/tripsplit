@@ -44,6 +44,7 @@ async function openPanel(browser, width) {
             { job: 'push_delivery', label: 'Push delivery', schedule: 'every minute', state: 'ok', last_run: '2026-11-12 07:59:00', details: {} },
             { job: 'image_originals_cleanup', label: 'Image originals cleanup', schedule: 'weekly', state: 'unknown', last_run: null, details: [] }],
           system: { disk_total_bytes: 100, disk_free_bytes: 10, database_bytes: 1048576, php_version: '8.3', mysql_version: '8.4', commit: 'abc1234' },
+          limits: { request_limits: true, upload_daily_usage: false },
           push: { pending: 0, failed_24h: 0, oldest_pending_at: null, last_sent_at: null } },
         admin_panel_security_overview: { ok: true, counts_7d: { failed_logins: 2, failed_2fa: 0, locked: 0, successful_logins: 1 },
           events: [{ admin_username: hostile, action: 'admin.auth.login_failed', ip_address: '192.0.2.1', created_at: '2026-11-12 07:00:00' }],
@@ -115,7 +116,8 @@ for (const width of [1280, 390]) {
       await page.evaluate(() => navigate('system'));
       await page.locator('.cl-item').first().waitFor();
       const systemText = await page.locator('#page-content').textContent();
-      for (const label of ['Failed', 'OK', 'No data yet', '1 need attention', '90%', 'abc1234']) {
+      for (const label of ['Failed', 'OK', 'No data yet', '1 need attention', '90%', 'abc1234',
+        'Security limits', 'Not working', 'Missing: upload_daily_usage']) {
         assert.ok(systemText.includes(label), label);
       }
       assert.ok(await noOverflow(page));

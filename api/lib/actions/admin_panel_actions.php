@@ -498,6 +498,8 @@ function admin_panel_system_health_action(): void
     $now = time();
     json_out(['ok' => true, 'jobs' => ops_status_read($now),
         'system' => ops_system_snapshot($pdo, dirname(__DIR__, 3)),
+        // Tables that hold security limits; a missing one makes those actions answer 503.
+        'limits' => security_limit_storage_status($pdo),
         'push' => admin_push_queue_health($pdo, gmdate('Y-m-d H:i:s', $now))]);
 }
 

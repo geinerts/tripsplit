@@ -1367,6 +1367,8 @@ registerView('system', {
     const used = sys.disk_total_bytes && sys.disk_free_bytes !== null ? sys.disk_total_bytes - sys.disk_free_bytes : null;
     const usedPct = used !== null ? Math.round((used / sys.disk_total_bytes) * 100) : null;
     const oldestAge = push.oldest_pending_at ? relTime(push.oldest_pending_at) : '—';
+    const limits = res.limits || {};
+    const missingLimits = Object.keys(limits).filter(k => !limits[k]);
 
     const jobRows = jobs.map(j => `
       <div class="cl-item">
@@ -1396,6 +1398,11 @@ registerView('system', {
           <div class="stat-label">Database</div>
           <div class="stat-value">${formatBytes(sys.database_bytes)}</div>
           <div class="stat-sub">MySQL ${esc(sys.mysql_version || '—')}</div>
+        </div>
+        <div class="stat-card ${missingLimits.length ? 'red' : 'green'}">
+          <div class="stat-label">Security limits</div>
+          <div class="stat-value">${missingLimits.length ? 'Not working' : 'Working'}</div>
+          <div class="stat-sub">${missingLimits.length ? `Missing: ${esc(missingLimits.join(', '))}` : 'Limit tables in place'}</div>
         </div>
         <div class="stat-card ${push.failed_24h ? 'amber' : ''}">
           <div class="stat-label">Push queue</div>

@@ -38,6 +38,11 @@ fixes are locally tested but not yet deployed; see
 - Upload, log and backup filesystem permissions use least-readable modes.
 - HSTS, nosniff, frame, referrer and permissions headers are set by Nginx.
 - UFW, Fail2ban and unattended security updates are enabled.
+- Security limits fail closed (2026-11-20): every `enforce_rate_limit` and the daily
+  upload quota answer 503 when their table is missing or a limit setting is zero or
+  negative, instead of letting the request through. The refusal is logged. The admin
+  System page shows "Security limits", and `scripts/check_security_limits.php` exits 1
+  when a limit table is missing; run it after deploys and database restores.
 
 ## Required operations
 
