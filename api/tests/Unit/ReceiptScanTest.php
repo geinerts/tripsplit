@@ -155,6 +155,10 @@ final class ReceiptScanTest extends TestCase
         self::assertNull($r['future_date']);
         self::assertSame(100, $r['many_items']);
         self::assertSame([], $r['huge_amount']);
+        self::assertSame([1953, 499, 100], array_column($r['line_discounts']['items'], 'total_cents'));
+        self::assertSame([2170, 499, 100], array_column($r['line_discounts']['items'], 'unit_price_cents'));
+        self::assertTrue($r['line_discounts']['sum_matches']);
+        self::assertContains('discount', $r['item_required']);
         self::assertSame(3300, $r['cost']);
         self::assertContains('is_receipt', $r['schema_required']);
     }

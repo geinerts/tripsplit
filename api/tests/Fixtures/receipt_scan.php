@@ -193,6 +193,13 @@ switch ($scenario) {
         $many = array_fill(0, 150, ['name' => 'x', 'quantity' => 1, 'unit_price' => 0.01, 'total' => 0.01, 'uncertain' => false]);
         $out['many_items'] = count(receipt_ai_validate(['is_receipt' => true, 'items' => $many, 'total' => 1.5], $now)['items']);
         $out['huge_amount'] = receipt_ai_validate(['is_receipt' => true, 'items' => [['name' => 'x', 'total' => 1e12]], 'total' => 1e12], $now)['items'];
+        // Discounts printed under each line come off that line only.
+        $out['line_discounts'] = receipt_ai_validate(['is_receipt' => true, 'items' => [
+            ['name' => 'Paint', 'quantity' => 1, 'unit_price' => 21.70, 'total' => 21.70, 'discount' => 2.17, 'uncertain' => false],
+            ['name' => 'Glue', 'quantity' => 1, 'unit_price' => 4.99, 'total' => 4.99, 'discount' => null, 'uncertain' => false],
+            ['name' => 'Odd', 'quantity' => 1, 'unit_price' => 1, 'total' => 1, 'discount' => 5, 'uncertain' => false],
+        ], 'discounts' => null, 'total' => 25.52], $now);
+        $out['item_required'] = receipt_ai_schema()['properties']['items']['items']['required'];
         $out['cost'] = receipt_ai_cost_microusd(2000, 400);
         $out['schema_required'] = receipt_ai_schema()['required'];
         break;

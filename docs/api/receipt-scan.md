@@ -56,8 +56,12 @@ Success (`200`):
 ```
 
 - Amounts are integer cents in `currency`. `tax_cents` is only tax added on top of the item
-  prices; VAT already included in prices is not repeated. Discount lines may appear as
-  negative items; `discount_cents` holds further discounts not listed as items.
+  prices; VAT already included in prices is not repeated.
+- An item's `total_cents` is after the discount printed for that line (for example "Atlaide"
+  under it; fixed 2026-11-20), while `unit_price_cents` stays the printed price. Discount lines
+  that belong to no item may appear as negative items; `discount_cents` holds discounts on the
+  whole receipt, which the app spreads over the lines. Results read before this fix are not
+  reused from the same-image cache.
 - `sum_matches` is computed by the server: items − discount + tax + tip + service = total
   (±1 cent). When false, the app shows "Totals don't match, check the items".
 - `currency` is `null` when unknown or unsupported; `date` is `null` when unreadable or
