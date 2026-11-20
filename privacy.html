@@ -33,7 +33,7 @@
   <main class="legal" id="top">
     <div class="wrap">
       <h1>Privacy Policy</h1>
-      <p class="updated">Effective 12 November 2026</p>
+      <p class="updated">Effective 20 November 2026</p>
 
       <p>Splyto helps you keep track of travel costs, alone or with the people you travel with. To do that, we have to store some information about you, and the people you share a trip with will see some of it. This policy explains what that information is, why we need it, who else is involved and what you can do about it. It covers the Splyto apps for iPhone and Android, the website at splyto.eu and the emails we send.</p>
 
@@ -43,7 +43,7 @@
           <li>We use your data to run Splyto for you. We don’t sell it, and the app has no ads, no advertising trackers and no third-party analytics.</li>
           <li>What you add to a trip is visible to the members of that trip. Your bank details stay private unless you choose to share them.</li>
           <li>Your travel map is private. Live location is off until you start it, for a time you choose, and only the latest position is kept.</li>
-          <li>Our server is in Helsinki, Finland. A few providers, such as Apple, Google, Mapbox and our email service, also handle some data to deliver their part of the service.</li>
+          <li>Our server is in Helsinki, Finland. A few providers, such as Apple, Google, Mapbox and our email service, also handle some data to deliver their part of the service. If you ask Splyto to read a receipt, the photo is sent to OpenAI.</li>
           <li>You can see, correct, export or delete your data. Write to <a href="mailto:support@splyto.eu">support@splyto.eu</a>.</li>
         </ul>
       </section>
@@ -79,9 +79,17 @@
       <h3>Trips and expenses</h3>
       <p>Splyto stores the trips you create or join, their members and invitations, and the dates, destinations and cover photo of each trip. For every expense we keep the description, amount, currency, date, category, who paid, who takes part and how the cost is split, along with any comments, reactions and receipt photos. We also store settlements, payment requests and an activity history, and we calculate balances, budgets and spending summaries from these records.</p>
       <p>Some of this information may be about you even if you didn’t enter it yourself. For example, a friend can add an expense that you take part in, or comment on one. If you take part in a trip, we treat what other members record about you in it as part of the trip.</p>
+      <p>A quick split is a single bill shared without a trip. For it we keep the same details as for an expense, along with the people in it.</p>
+
+      <h3>People without an account</h3>
+      <p>The owner of a trip, or the person who creates a quick split, can add someone who doesn’t use Splyto by name only, for example “Mum”. For that person we store only the name and their share of the costs. They don’t get an account, emails or notifications from us.</p>
 
       <h3>Friends</h3>
       <p>If you add friends, we store those connections, friend requests and the personal link or QR code that lets someone add you.</p>
+
+      <h3>Receipt reading (optional)</h3>
+      <p>Where receipt reading is available for your account, you can tap “Fill from receipt” after adding a receipt photo. We then send that photo, made smaller, to OpenAI, which reads the shop, date, currency, the lines and the totals. We send only the image, without your name, email address or any trip or account details. A receipt itself can still show things like the last digits of a card or a loyalty number, so check the photo before you use this.</p>
+      <p>The result only fills in the expense form. Nothing is saved until you check it and save the expense yourself. We keep the result for 7 days so that the same photo isn’t read twice, and we keep a short record of each reading (time, status and cost, without the photo or its content) to apply usage limits.</p>
 
       <h3>Payment details (optional)</h3>
       <p>To make it easier for friends to pay you back, you can add an account-holder name, IBAN and BIC/SWIFT, and Revolut, PayPal or Wise usernames or links. Splyto only displays these details. It doesn’t move money, and we never ask for card numbers or online-banking passwords.</p>
@@ -106,8 +114,9 @@
 
       <h2 id="visible">3. What other people can see</h2>
       <ul>
-        <li><strong>Other Splyto users</strong> can find you by name, nickname or email. Search results show your name, profile photo and an account identifier, but not your email address.</li>
+        <li><strong>Other Splyto users</strong> can’t search for you. Someone can add you as a friend only with your QR code or your personal friend link. People who share a trip with you can find you among the members of those trips.</li>
         <li><strong>Trip members</strong> can see the trip and everything recorded in it, including the expenses, comments, receipts, balances and activity, and your name and profile photo.</li>
+        <li><strong>People in a quick split</strong> who have a Splyto account can see the whole bill, its items and each person’s share.</li>
         <li><strong>Your payment details</strong> stay private by default. Someone can see them only if you attach them to a payment request you send to that person, or if you turn on “Share payment methods with my trips”. With that setting on, accepted members of your trips can see them. Being someone’s friend is not enough.</li>
         <li><strong>Your live location</strong> is visible only to accepted members of the trip you are sharing it with, and only while you share.</li>
         <li><strong>Your travel map</strong> is private to you. Joining a trip doesn’t share your visits.</li>
@@ -122,7 +131,7 @@
             <tr><th scope="col">What we do</th><th scope="col">Legal basis</th></tr>
           </thead>
           <tbody>
-            <tr><td>Create and run your account, sign you in, store and share your trips, expenses, friends and balances, send notifications and emails you need, and give you the features you choose.</td><td>Performing our agreement with you (Art. 6(1)(b))</td></tr>
+            <tr><td>Create and run your account, sign you in, store and share your trips, expenses, friends and balances, send notifications and emails you need, and give you the features you choose, such as reading a receipt when you ask for it.</td><td>Performing our agreement with you (Art. 6(1)(b))</td></tr>
             <tr><td>Show your bank details to a specific payer or to your trip members, and share your live location.</td><td>Your consent, which you can withdraw at any time (Art. 6(1)(a))</td></tr>
             <tr><td>Keep the service secure, prevent abuse and fraud, fix errors, make backups, answer support requests and improve the app.</td><td>Our legitimate interests in a safe, reliable service (Art. 6(1)(f))</td></tr>
             <tr><td>Keep a trip’s shared history available to its other members after you leave or delete your account.</td><td>The legitimate interests of those members in an accurate record (Art. 6(1)(f))</td></tr>
@@ -148,18 +157,19 @@
             <tr><td>Mapbox</td><td>Map tiles for the travel map and live map</td><td>Your IP address and the map area you view. Pins, names and photos are drawn on your phone and are not sent to Mapbox. You can opt out of Mapbox’s own telemetry using the “i” button on the map.</td></tr>
             <tr><td>OpenStreetMap</td><td>Map tiles in app versions without Mapbox</td><td>Your IP address and the map area you view</td></tr>
             <tr><td>Your phone’s maps service (Apple or Google)</td><td>Turns your one-time location into a city name for the travel map</td><td>The location reading, processed under your phone’s terms</td></tr>
+            <tr><td>OpenAI (United States)</td><td>Reads a receipt photo when you tap “Fill from receipt”</td><td>The receipt image only. We ask OpenAI not to store it, and OpenAI doesn’t use it to train its models. It may keep it for up to 30 days to detect abuse, then deletes it.</td></tr>
             <tr><td>Frankfurter</td><td>Daily exchange rates for currency conversion</td><td>No personal data, only currencies and dates</td></tr>
           </tbody>
         </table>
       </div>
-      <p>Our server and database are in the European Union. Some of the providers above, such as Cloudflare, Resend, Mapbox, Apple and Google, may also process data outside the European Economic Area, including in the United States. When that happens, we rely on the safeguards these providers offer under the GDPR, such as the European Commission’s Standard Contractual Clauses or the EU–US Data Privacy Framework.</p>
+      <p>Our server and database are in the European Union. Some of the providers above, such as Cloudflare, Resend, Mapbox, OpenAI, Apple and Google, may also process data outside the European Economic Area, including in the United States. When that happens, we rely on the safeguards these providers offer under the GDPR, such as the European Commission’s Standard Contractual Clauses or the EU–US Data Privacy Framework.</p>
       <p>A small number of authorised people who run Splyto can access data when needed for support, maintenance or security. Access is protected with two-factor authentication. We may also disclose data if the law requires it, or to protect the rights and safety of our users or the service. If Splyto is ever reorganised or transferred, your data would move with it under the same protections, and we would tell you in advance.</p>
 
       <h2 id="not">6. What we don’t do</h2>
       <ul>
         <li>We don’t sell your personal data or share it with anyone for their marketing.</li>
         <li>We don’t show ads, and the app contains no advertising or third-party analytics trackers.</li>
-        <li>We don’t read your receipts with AI or send them to outside services.</li>
+        <li>We read a receipt with AI only when you ask for it, and then send only that photo. We don’t use your data to train AI models.</li>
         <li>We don’t track your location in the background unless you have started live location sharing yourself.</li>
       </ul>
 
@@ -174,6 +184,7 @@
             <tr><td>Trips, expenses and comments</td><td>While the trip exists. Because other members rely on the shared history, it can stay in their trips after you leave or delete your account.</td></tr>
             <tr><td>Payment details, travel map visits and photos</td><td>Until you remove them or delete your account.</td></tr>
             <tr><td>Uncropped photo originals</td><td>Until you replace or remove the photo, or the trip, visit or your account is deleted.</td></tr>
+            <tr><td>Receipt reading results</td><td>7 days. The short record of each reading, without the photo or its content, stays until you delete your account.</td></tr>
             <tr><td>Live location</td><td>Only your latest position, removed when sharing ends or expires.</td></tr>
             <tr><td>Server access logs</td><td>14 days</td></tr>
             <tr><td>Server error logs</td><td>About 3 months</td></tr>
