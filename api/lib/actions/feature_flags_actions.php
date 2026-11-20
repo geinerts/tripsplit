@@ -6,6 +6,7 @@ declare(strict_types=1);
 // and writes its audit entry in the same transaction.
 
 require_once __DIR__ . '/../helpers/helper_feature_flags.php';
+require_once __DIR__ . '/../helpers/helper_receipt_ai.php';
 
 function feature_admin_require_tables(PDO $pdo): void
 {
@@ -74,7 +75,12 @@ function admin_panel_features_action(): void
         return $row;
     }, array_values(array_filter($stmt->fetchAll(PDO::FETCH_ASSOC),
         static fn (array $row): bool => feature_flag_key_is_known((string) $row['key']))));
-    json_out(['ok' => true, 'flags' => feature_admin_flags($pdo), 'grants' => $grants]);
+    try {
+        $usage = receipt_ai_admin_usage($pdo, time());
+    } catch (Throwable $error) {
+        $usage = null; // before the receipt-scans migration
+    }
+    json_out(['ok' => true, 'flags' => feature_admin_flags($pdo), 'grants' => $grants, 'receipt_ai_usage' => $usage]);
 }
 
 function admin_panel_feature_set_mode_action(): void

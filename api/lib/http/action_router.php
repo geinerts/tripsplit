@@ -23,6 +23,7 @@ function api_action_handlers(): array
         'update_profile' => 'update_profile_action',
         'me' => 'me_action',
         'claim_quick_start' => 'claim_quick_start_action',
+        'scan_receipt' => 'scan_receipt_action',
         'admin_panel_premium_mutate' => 'admin_panel_premium_mutate_action',
         'admin_panel_premium_list' => 'admin_panel_premium_list_action',
         'subscription_sandbox_session' => 'subscription_sandbox_session_action',

@@ -47,6 +47,8 @@ function table_name(string $key): string
         'quick_split_item_people' => DB_TABLE_PREFIX . 'quick_split_item_people',
         'feature_flags' => DB_TABLE_PREFIX . 'feature_flags',
         'user_features' => DB_TABLE_PREFIX . 'user_features',
+        'ai_scans' => DB_TABLE_PREFIX . 'ai_scans',
+        'ai_budget' => DB_TABLE_PREFIX . 'ai_budget',
         'expense_reactions'    => DB_TABLE_PREFIX . 'expense_reactions',
         'expense_comment_reactions' => DB_TABLE_PREFIX . 'expense_comment_reactions',
         'expense_comments'     => DB_TABLE_PREFIX . 'expense_comments',

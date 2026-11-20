@@ -7,6 +7,7 @@ require_once __DIR__ . '/../helpers/helper_travel_places.php';
 require_once __DIR__ . '/../helpers/helper_account_action_proofs.php';
 require_once __DIR__ . '/../helpers/helper_social_tokens.php';
 require_once __DIR__ . '/../helpers/helper_feature_flags.php';
+require_once __DIR__ . '/../helpers/helper_receipt_ai.php';
 
 function account_action_token_is_well_formed(string $token): bool
 {
@@ -29,6 +30,7 @@ function erase_account_for_deletion(PDO $pdo, array $user): array
     delete_user_travel_places($pdo, $userId);
     $quickSplitReceipts = function_exists('delete_user_quick_splits') ? delete_user_quick_splits($pdo, $userId) : [];
     delete_user_feature_grants($pdo, $userId);
+    delete_user_ai_scans($pdo, $userId);
     $pdo->prepare('DELETE FROM ' . table_name('friends')
         . ' WHERE user_a_id = :a OR user_b_id = :b')->execute(['a' => $userId, 'b' => $userId]);
     if (social_auth_identity_table_available($pdo)) {

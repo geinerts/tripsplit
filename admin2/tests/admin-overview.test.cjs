@@ -50,7 +50,14 @@ async function openPanel(browser, width) {
           flags: [{ key: 'receipt_ai', label: 'AI receipt reading', description: hostile, mode: 'allowlist',
             updated_at: '2026-11-20 08:00:00', updated_by: 'owner' }],
           grants: [{ key: 'receipt_ai', user_id: 1, nickname: hostile, email: 'owner@example.invalid',
-            account_status: 'active', granted_at: '2026-11-20 08:00:00', granted_by: 'owner' }] },
+            account_status: 'active', granted_at: '2026-11-20 08:00:00', granted_by: 'owner' }],
+          receipt_ai_usage: { model: 'gpt-5.4-mini-2026-03-17', configured: true, scans_today: 3, failed_today: 1,
+            quota: { day: 20, month: 200 },
+            budget: { hour: { spent_microusd: 6600, reserved_microusd: 0, limit_microusd: 500000 },
+              day: { spent_microusd: 21600, reserved_microusd: 15000, limit_microusd: 2000000 },
+              month: { spent_microusd: 21600, reserved_microusd: 0, limit_microusd: 15000000 } },
+            recent: [{ id: 3, user_id: 1, status: 'failed', cost_microusd: 15000, duration_ms: 30000,
+              error_code: hostile, created_at: '2026-11-20 09:00:00' }] } },
         admin_panel_security_overview: { ok: true, counts_7d: { failed_logins: 2, failed_2fa: 0, locked: 0, successful_logins: 1 },
           events: [{ admin_username: hostile, action: 'admin.auth.login_failed', ip_address: '192.0.2.1', created_at: '2026-11-12 07:00:00' }],
           rate_limits_24h: [{ scope: 'login_ip', windows: 2, requests: 9, peak: 7 }], active_admin_sessions: 1 },
@@ -132,7 +139,8 @@ for (const width of [1280, 390]) {
       await page.locator('.feature-card').waitFor();
       const featuresText = await page.locator('#page-content').textContent();
       for (const label of ['AI receipt reading', 'Allowed accounts only', 'Off for everyone', 'Everyone',
-        'Allowed accounts (1)', 'owner@example.invalid']) {
+        'Allowed accounts (1)', 'owner@example.invalid', 'AI budget · today', 'AI scans today',
+        'gpt-5.4-mini-2026-03-17', 'Recent AI scans']) {
         assert.ok(featuresText.includes(label), label);
       }
       assert.ok(await noOverflow(page));

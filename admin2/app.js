@@ -1191,10 +1191,51 @@ registerView('features', {
         <div class="table-card">
           <div class="table-card-header"><div class="table-card-title">Allowed accounts (${grants.length})</div></div>
           ${rows}
-        </div>`;
+        </div>
+        ${f.key === 'receipt_ai' ? receiptAiUsageHtml(res.receipt_ai_usage) : ''}`;
     }).join('');
   },
 });
+
+function usd(micro) {
+  return '$' + ((Number(micro) || 0) / 1e6).toFixed(micro && micro < 10000 ? 4 : 2);
+}
+
+function receiptAiUsageHtml(u) {
+  if (!u) return '<div class="card feature-card"><div class="cl-sub">AI usage appears after the receipt-scans migration.</div></div>';
+  const budgetCard = (label, b) => {
+    const used = (b.spent_microusd || 0) + (b.reserved_microusd || 0);
+    const pct = b.limit_microusd ? Math.round(used / b.limit_microusd * 100) : 0;
+    return `<div class="stat-card ${pct >= 90 ? 'red' : pct >= 60 ? 'amber' : ''}">
+      <div class="stat-label">AI budget · ${esc(label)}</div>
+      <div class="stat-value">${usd(b.spent_microusd)}</div>
+      <div class="stat-sub">of ${usd(b.limit_microusd)}${b.reserved_microusd ? ` · ${usd(b.reserved_microusd)} reserved` : ''}</div>
+    </div>`;
+  };
+  const rows = (u.recent || []).length ? u.recent.map(r => `
+    <div class="cl-item"><div class="cl-row">
+      <div style="flex:1;min-width:0">
+        <div class="cl-title">#${r.id} · account #${r.user_id}</div>
+        <div class="cl-sub">${esc(relTime(r.created_at))} · ${r.cost_microusd === null ? '—' : usd(r.cost_microusd)} · ${r.duration_ms === null ? '—' : (r.duration_ms / 1000).toFixed(1) + ' s'}${r.error_code ? ` · ${esc(r.error_code)}` : ''}</div>
+      </div>
+      <span class="badge ${r.status === 'done' ? 'badge-green' : r.status === 'failed' ? 'badge-red' : 'badge-amber'}">${esc(r.status)}</span>
+    </div></div>`).join('') : '<div class="empty-state">No scans yet.</div>';
+  return `
+    <div class="stats-grid">
+      ${budgetCard('this hour', u.budget.hour)}
+      ${budgetCard('today', u.budget.day)}
+      ${budgetCard('this month', u.budget.month)}
+      <div class="stat-card ${u.configured ? '' : 'red'}">
+        <div class="stat-label">AI scans today</div>
+        <div class="stat-value">${u.scans_today}</div>
+        <div class="stat-sub">${u.failed_today} failed · ${u.configured ? esc(u.model) : 'API key not set'}</div>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-card-header"><div class="table-card-title">Recent AI scans (no receipt content)</div></div>
+      ${rows}
+    </div>`;
+}
 
 async function suspendUser(userId, name) {
   const reason = await askInModal({ title: `Suspend ${name}?`, confirmLabel: 'Suspend', danger: true,

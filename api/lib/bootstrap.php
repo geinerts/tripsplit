@@ -30,6 +30,7 @@ require_once __DIR__ . '/actions/workspace_actions.php';
 require_once __DIR__ . '/actions/admin_panel_actions.php';
 require_once __DIR__ . '/actions/premium_actions.php';
 require_once __DIR__ . '/actions/feature_flags_actions.php';
+require_once __DIR__ . '/actions/receipt_scan_actions.php';
 require_once __DIR__ . '/actions/trip_reports_actions.php';
 require_once __DIR__ . '/actions/analytics_actions.php';
 
