@@ -141,6 +141,7 @@ extension _WorkspacePageQueueActions on _WorkspacePageState {
         items: form.items,
         extraAmount: form.extraAmount,
         subcategory: form.subcategory,
+        fromQuickSplit: expense.fromQuickSplit,
       );
     }
 

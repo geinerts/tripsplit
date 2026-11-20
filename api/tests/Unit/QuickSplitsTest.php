@@ -100,6 +100,8 @@ final class QuickSplitsTest extends TestCase
         self::assertSame('Expense not found.', $r['move_errors'][1]['error']);
         self::assertSame(['ok' => true], $r['move']);
         self::assertSame([2], $r['after_move_list']);
+        // The trip expense knows it came from a quick split, only in that trip.
+        self::assertSame([[true, false], false], $r['origin']);
         self::assertSame([['trip_id' => 7, 'expense_id' => 950], false], $r['after_move_get']);
         self::assertSame('This quick split was added to a trip.', $r['after_move_update']['error']);
         self::assertSame(409, $r['after_move_delete']);

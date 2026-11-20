@@ -236,6 +236,7 @@ class WorkspaceRemoteParsers {
         final String type when type.isNotEmpty => type,
         _ => null,
       },
+      fromQuickSplit: item['from_quick_split'] == true,
     );
   }
 

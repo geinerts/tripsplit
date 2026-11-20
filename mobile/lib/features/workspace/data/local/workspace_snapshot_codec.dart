@@ -150,6 +150,7 @@ class WorkspaceSnapshotCodec {
                   .toList(growable: false),
               'extra_amount': expense.extraAmount,
               'subcategory': expense.subcategory,
+              'from_quick_split': expense.fromQuickSplit,
               'participants': expense.participants
                   .map(
                     (participant) => <String, dynamic>{
@@ -355,6 +356,7 @@ class WorkspaceSnapshotCodec {
             items: ExpenseItem.listFromJson(item['items']),
             extraAmount: (item['extra_amount'] as num?)?.toDouble() ?? 0,
             subcategory: item['subcategory'] as String?,
+            fromQuickSplit: item['from_quick_split'] == true,
           );
         })
         .toList(growable: false);

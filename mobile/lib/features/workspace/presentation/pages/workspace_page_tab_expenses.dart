@@ -404,14 +404,19 @@ extension _WorkspacePageExpensesTab on _WorkspacePageState {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _expenseCategoryTitle(
+                        _withQuickSplitMark(
                           context,
                           expense,
-                          key: ValueKey('expense-title-${expense.id}'),
-                          maxLines: 2,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                          size: 16,
+                          child: _expenseCategoryTitle(
+                            context,
+                            expense,
+                            key: ValueKey('expense-title-${expense.id}'),
+                            maxLines: 2,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         if (details.isNotEmpty)
@@ -1052,4 +1057,28 @@ class _FilterMenuOption extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The title with a small ⚡ after it when the expense came from a quick
+/// split, in the list and in the details.
+Widget _withQuickSplitMark(
+  BuildContext context,
+  TripExpense expense, {
+  required double size,
+  required Widget child,
+}) {
+  if (!expense.fromQuickSplit) return child;
+  return Row(
+    children: [
+      Flexible(child: child),
+      const SizedBox(width: 4),
+      Icon(
+        Icons.bolt_rounded,
+        key: ValueKey('expense-quick-split-${expense.id}'),
+        size: size,
+        color: Theme.of(context).colorScheme.primary,
+        semanticLabel: context.l10n.quickSplitLabel,
+      ),
+    ],
+  );
 }

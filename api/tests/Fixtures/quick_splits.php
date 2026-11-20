@@ -138,6 +138,12 @@ $r['move_errors'] = [
 ];
 $r['move'] = $call('move_quick_split_to_trip_action', 1, ['id' => $firstId, 'trip_id' => 7, 'expense_id' => 950])['body'];
 $r['after_move_list'] = array_column($call('list_quick_splits_action', 2)['body']['items'], 'id');
+require_once __DIR__ . '/../../lib/helpers/helper_quick_split_origin.php';
+$origin = [['id' => 950], ['id' => 951]];
+attach_quick_split_origin($pdo, 7, $origin);
+$otherTrip = [['id' => 950]];
+attach_quick_split_origin($pdo, 8, $otherTrip);
+$r['origin'] = [array_column($origin, 'from_quick_split'), $otherTrip[0]['from_quick_split']];
 $moved = $call('get_quick_split_action', 1, ['id' => $firstId])['body']['quick_split'];
 $r['after_move_get'] = [$moved['added_to_trip'], $moved['can_edit']];
 $r['after_move_update'] = $call('update_quick_split_action', 1, ['id' => $firstId] + $base)['body'];

@@ -57,6 +57,25 @@ void main() {
     );
   });
 
+  test('from_quick_split marks expenses added from a quick split', () {
+    expect(
+      WorkspaceRemoteParsers.parseExpense({
+        'id': 3,
+        'amount': 5,
+        'from_quick_split': true,
+      }).fromQuickSplit,
+      isTrue,
+    );
+    // Older servers don't send it.
+    expect(
+      WorkspaceRemoteParsers.parseExpense({
+        'id': 4,
+        'amount': 5,
+      }).fromQuickSplit,
+      isFalse,
+    );
+  });
+
   group('WorkspaceRemoteParsers.parseTripStatus', () {
     test('normalizes allowed statuses and defaults unknown to active', () {
       expect(WorkspaceRemoteParsers.parseTripStatus('active'), 'active');

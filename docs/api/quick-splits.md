@@ -146,6 +146,13 @@ leaves everyone's list. The receipt photo now belongs to the trip expense and is
 deleted with the quick split. Returns `{"ok": true}`. Errors: 403, 404 as above, 404
 `Expense not found.`, 409 `This quick split was added to a trip.`
 
+### Trip expenses added from a quick split
+
+Approved by the owner on 2026-11-20 (additive). Each expense in `list_expenses` adds
+`from_quick_split` (boolean): true when a quick split was moved to this trip as that expense
+(`moved_trip_id` and `moved_expense_id`). The app shows a small ⚡ after the title in the list
+and in the details, for every member. Older servers don't send it; the app treats that as false.
+
 ## Notification
 
 New type `quick_split_added`, sent to accounts only, never to people added by name.

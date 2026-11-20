@@ -6,6 +6,7 @@ require_once __DIR__ . '/../helpers/helper_expense_subcategory.php';
 require_once __DIR__ . '/../helpers/helper_trip_guests.php';
 
 require_once __DIR__ . '/../helpers/helper_receipt_ownership.php';
+require_once __DIR__ . '/../helpers/helper_quick_split_origin.php';
 
 function normalize_expense_split_mode($value): string
 {
@@ -1400,6 +1401,7 @@ function list_expenses_action(): void
     }
     unset($row);
     attach_expense_items($pdo, $rows);
+    attach_quick_split_origin($pdo, (int) $trip['id'], $rows);
 
     $nextCursor = null;
     if ($hasMore && count($rows) > 0) {

@@ -1716,6 +1716,40 @@ void main() {
     await disposePage(tester);
   });
 
+  testWidgets('an expense from a quick split shows a bolt', (tester) async {
+    final base = expense(1, name: 'Taxi');
+    final controller = _Workspace()
+      ..data = snapshot(
+        expenses: [
+          TripExpense(
+            id: 1,
+            amount: 18,
+            originalAmount: 18,
+            tripCurrencyCode: 'EUR',
+            expenseCurrencyCode: 'EUR',
+            fxRateToTrip: 1,
+            category: 'transport',
+            note: base.note,
+            expenseDate: base.expenseDate,
+            splitMode: 'equal',
+            paidById: 7,
+            paidByNickname: 'Matiss',
+            receiptUrl: null,
+            participants: base.participants,
+            fromQuickSplit: true,
+          ),
+          expense(2, name: 'Lunch'),
+        ],
+      );
+    await _mount(tester, controller);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('expense-quick-split-1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('expense-quick-split-2')), findsNothing);
+    await visibleTap(tester, find.byKey(const ValueKey('expense-row-1')));
+    expect(find.byKey(const ValueKey('expense-quick-split-1')), findsWidgets);
+    await disposePage(tester);
+  });
+
   testWidgets('same items show as one line with the price for one', (
     tester,
   ) async {

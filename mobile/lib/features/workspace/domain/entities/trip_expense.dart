@@ -21,6 +21,7 @@ class TripExpense {
     this.items = const [],
     this.extraAmount = 0,
     this.subcategory,
+    this.fromQuickSplit = false,
   });
 
   final int id;
@@ -44,4 +45,7 @@ class TripExpense {
   /// Optional type within the category: a built-in key (`restaurant`) or a
   /// member's own text. Null when there is none or the server is older.
   final String? subcategory;
+
+  /// Added to the trip from a quick split; shown with ⚡.
+  final bool fromQuickSplit;
 }

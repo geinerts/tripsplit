@@ -179,13 +179,18 @@ extension _WorkspacePageExpenseSheetActions on _WorkspacePageState {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _expenseCategoryTitle(
+                                _withQuickSplitMark(
                                   context,
                                   expense,
-                                  key: const ValueKey('expense-detail-title'),
-                                  maxLines: 2,
-                                  style: theme.textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.w700,
+                                  size: 20,
+                                  child: _expenseCategoryTitle(
+                                    context,
+                                    expense,
+                                    key: const ValueKey('expense-detail-title'),
+                                    maxLines: 2,
+                                    style: theme.textTheme.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                 ),
                                 if (note.isNotEmpty)
