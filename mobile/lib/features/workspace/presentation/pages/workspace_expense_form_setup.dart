@@ -204,7 +204,6 @@ enum _ReceiptSource { camera, gallery, files }
 Future<_PickedFile?> _pickReceiptPhoto(
   BuildContext pickerContext, {
   required int? Function() currentAccountId,
-  bool crop = true,
 }) async {
   final t = pickerContext.l10n;
   final account = currentAccountId();
@@ -216,25 +215,16 @@ Future<_PickedFile?> _pickReceiptPhoto(
     )?.showSnackBar(SnackBar(content: Text(message)));
   }
 
+  // Receipt photos are used as taken: no crop screen. The native crop
+  // screen sometimes did not open right after the camera on iOS and left the
+  // form waiting forever; receipts and AI reading don't need cropping.
   Future<_PickedFile?> prepare(String fileName, Uint8List bytes) async {
     try {
-      // For AI reading the photo goes as it is: no crop screen. That native
-      // screen sometimes did not open right after the camera on iOS and left
-      // the reading waiting forever; the AI does not need a cropped photo.
-      if (!crop) {
-        final prepared = await ReceiptImagePreparer.prepare(
-          bytes: bytes,
-          fileName: fileName,
-        );
-        if (!stillHere()) return null;
-        return _PickedFile(fileName: prepared.fileName, bytes: prepared.bytes);
-      }
-      final prepared = await ReceiptImageEditor.cropAndPrepare(
-        context: pickerContext,
-        fileName: fileName,
+      final prepared = await ReceiptImagePreparer.prepare(
         bytes: bytes,
+        fileName: fileName,
       );
-      if (!stillHere() || prepared == null) return null;
+      if (!stillHere()) return null;
       return _PickedFile(fileName: prepared.fileName, bytes: prepared.bytes);
     } catch (_) {
       fail(t.receiptPickFailed);
@@ -251,7 +241,7 @@ Future<_PickedFile?> _pickReceiptPhoto(
         AppPlatformAction(
           value: _ReceiptSource.camera,
           icon: Icons.photo_camera_outlined,
-          title: t.scanReceiptAction,
+          title: t.takePhotoAction,
         ),
         AppPlatformAction(
           value: _ReceiptSource.gallery,
