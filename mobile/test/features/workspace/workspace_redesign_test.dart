@@ -1888,6 +1888,11 @@ void main() {
     await tester.pumpAndSettle();
     // A full page with a back button, not a sheet.
     expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+    // Back sits on the left, before the title.
+    expect(
+      tester.getCenter(find.byIcon(Icons.arrow_back_rounded)).dx,
+      lessThan(tester.getCenter(find.text(t.expenseCustomSplit)).dx),
+    );
     expect(find.byKey(const ValueKey('expense-item-name-0')), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('expense-editor-close')));
     await tester.pumpAndSettle();

@@ -632,7 +632,7 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   });
                   return;
                 }
-                FocusScope.of(context).unfocus();
+                FocusManager.instance.primaryFocus?.unfocus();
                 final result = await Navigator.of(context)
                     .push<_ExpenseSplitDraft>(
                       AppFormPageRoute<_ExpenseSplitDraft>(
@@ -714,7 +714,8 @@ Future<_ExpenseFormResult?> _showExpenseFormPage(
                   });
                   return;
                 }
-                FocusScope.of(context).unfocus();
+                // Whatever field had the keyboard (note, a name) gives it up.
+                FocusManager.instance.primaryFocus?.unfocus();
                 final picked = await showAppBottomSheet<String>(
                   context: context,
                   builder: (_) => _ExpenseSplitModePicker(

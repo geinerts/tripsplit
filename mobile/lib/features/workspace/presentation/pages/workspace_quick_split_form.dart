@@ -323,6 +323,8 @@ class _QuickSplitPersonSheetState extends State<_QuickSplitPersonSheet> {
   void _addName() {
     final name = _name.text.trim().replaceAll(RegExp(r'\s+'), ' ');
     if (name.isEmpty) return;
+    // The keyboard must not stay up over the form after the sheet closes.
+    FocusManager.instance.primaryFocus?.unfocus();
     Navigator.of(context).pop(
       WorkspaceUser(
         id: widget.nextNameId(),
@@ -338,71 +340,78 @@ class _QuickSplitPersonSheetState extends State<_QuickSplitPersonSheet> {
     final friends = (_friends ?? const <FriendUser>[])
         .where((friend) => !widget.taken.contains(friend.id))
         .toList(growable: false);
-    return AppActionSheet(
-      key: const ValueKey('quick-split-person-sheet'),
-      title: t.quickSplitAddPersonTitle,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  key: const ValueKey('quick-split-name'),
-                  controller: _name,
-                  maxLength: 32,
-                  textCapitalization: TextCapitalization.words,
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: (_) => _addName(),
-                  onChanged: (_) => setState(() {}),
-                  decoration: InputDecoration(
-                    hintText: t.quickSplitNameHint,
-                    counterText: '',
-                    filled: false,
-                    border: const UnderlineInputBorder(),
-                    enabledBorder: const UnderlineInputBorder(),
+    // Lifts the sheet above the keyboard so the name field stays visible.
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: AppActionSheet(
+        key: const ValueKey('quick-split-person-sheet'),
+        title: t.quickSplitAddPersonTitle,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    key: const ValueKey('quick-split-name'),
+                    controller: _name,
+                    maxLength: 32,
+                    textCapitalization: TextCapitalization.words,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => _addName(),
+                    onChanged: (_) => setState(() {}),
+                    decoration: InputDecoration(
+                      hintText: t.quickSplitNameHint,
+                      counterText: '',
+                      filled: false,
+                      border: const UnderlineInputBorder(),
+                      enabledBorder: const UnderlineInputBorder(),
+                    ),
                   ),
                 ),
-              ),
-              TextButton(
-                key: const ValueKey('quick-split-name-add'),
-                onPressed: _name.text.trim().isEmpty ? null : _addName,
-                child: Text(t.addAction),
-              ),
-            ],
-          ),
-        ),
-        if (_friends == null && !_failed)
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(child: CircularProgressIndicator()),
-          )
-        else if (_failed)
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(t.quickSplitFriendsFailed),
-          )
-        else
-          for (final friend in friends)
-            ListTile(
-              key: ValueKey('quick-split-friend-${friend.id}'),
-              leading: _memberAvatarFor(
-                context,
-                name: friend.preferredName,
-                avatarUrl: friend.avatarThumbUrl ?? friend.avatarUrl,
-                size: 36,
-              ),
-              title: Text(friend.preferredName),
-              onTap: () => Navigator.of(context).pop(
-                WorkspaceUser(
-                  id: friend.id,
-                  nickname: friend.preferredName,
-                  avatarUrl: friend.avatarUrl,
-                  avatarThumbUrl: friend.avatarThumbUrl,
+                TextButton(
+                  key: const ValueKey('quick-split-name-add'),
+                  onPressed: _name.text.trim().isEmpty ? null : _addName,
+                  child: Text(t.addAction),
                 ),
-              ),
+              ],
             ),
-      ],
+          ),
+          if (_friends == null && !_failed)
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (_failed)
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(t.quickSplitFriendsFailed),
+            )
+          else
+            for (final friend in friends)
+              ListTile(
+                key: ValueKey('quick-split-friend-${friend.id}'),
+                leading: _memberAvatarFor(
+                  context,
+                  name: friend.preferredName,
+                  avatarUrl: friend.avatarThumbUrl ?? friend.avatarUrl,
+                  size: 36,
+                ),
+                title: Text(friend.preferredName),
+                onTap: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  Navigator.of(context).pop(
+                    WorkspaceUser(
+                      id: friend.id,
+                      nickname: friend.preferredName,
+                      avatarUrl: friend.avatarUrl,
+                      avatarThumbUrl: friend.avatarThumbUrl,
+                    ),
+                  );
+                },
+              ),
+        ],
+      ),
     );
   }
 }

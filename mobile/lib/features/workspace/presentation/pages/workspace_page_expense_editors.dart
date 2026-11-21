@@ -33,6 +33,25 @@ class _ExpenseSplitPage extends StatelessWidget {
 bool _expenseEditorOnPage(BuildContext context) =>
     ModalRoute.of(context) is PageRoute;
 
+/// The title row: on a page, back on the left like any page; in a sheet,
+/// close on the right.
+Widget _expenseEditorHeader(BuildContext context, Widget title) {
+  final page = _expenseEditorOnPage(context);
+  return Row(
+    crossAxisAlignment: page
+        ? CrossAxisAlignment.center
+        : CrossAxisAlignment.start,
+    children: [
+      if (page) ...[
+        _expenseEditorCloseButton(context),
+        const SizedBox(width: 4),
+      ],
+      Expanded(child: title),
+      if (!page) _expenseEditorCloseButton(context),
+    ],
+  );
+}
+
 /// Back on a page, close in a sheet.
 Widget _expenseEditorCloseButton(BuildContext context) {
   final page = _expenseEditorOnPage(context);
@@ -59,17 +78,12 @@ class _ExpenseEditorSurface extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final page = _expenseEditorOnPage(context);
-    final header = Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Text(title, style: Theme.of(context).textTheme.titleLarge),
-          ),
-        ),
-        _expenseEditorCloseButton(context),
-      ],
+    final header = _expenseEditorHeader(
+      context,
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Text(title, style: Theme.of(context).textTheme.titleLarge),
+      ),
     );
     final done = Padding(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 12),
@@ -90,7 +104,7 @@ class _ExpenseEditorSurface extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+              padding: const EdgeInsets.fromLTRB(8, 4, 20, 0),
               child: header,
             ),
             Expanded(

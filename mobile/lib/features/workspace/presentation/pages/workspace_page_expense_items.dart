@@ -316,17 +316,13 @@ class _ItemizedSplitEditorState extends State<_ItemizedSplitEditor> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 8, 0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      t.expenseCustomSplit,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  _expenseEditorCloseButton(context),
-                ],
+              padding: EdgeInsets.fromLTRB(page ? 8 : 20, 4, 8, 0),
+              child: _expenseEditorHeader(
+                context,
+                Text(
+                  t.expenseCustomSplit,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
             ),
             Flexible(
